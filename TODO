@@ -1,0 +1,5 @@
+Please use the dev-todo interface as found at
+http://swapoff.org/DevTodo for keeping track of tasks to be done.
+
+Running `todo` in the top level directory of this package should
+provide you with a list of things to be done.
