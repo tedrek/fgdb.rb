@@ -24,7 +24,10 @@ RequiredLibraries = [
 	# libraryname, nice name, RAA URL, Download URL
 	["postgres", "Ruby-Postgres",
 	 "http://raa.ruby-lang.org/project/postgres/",
-	 "http://www.postgresql.jp/interfaces/ruby/archive/ruby-postgres-0.7.1.tar.gz"]
+	 "http://www.postgresql.jp/interfaces/ruby/archive/ruby-postgres-0.7.1.tar.gz"],
+	["arrow", "Arrow Web Application",
+	 "http://raa.ruby-lang.org/project/arrow",
+	 "http://www.rubycrafters.com/projects/Arrow/Arrow-0.1.0.tar.gz"],
 ]
 
 class Installer
