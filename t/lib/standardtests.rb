@@ -28,12 +28,12 @@ module StandardTests
 		assert_kind_of( Class, self.class.tested_class )
 		assert( FGDB::Object >= self.class.tested_class )
 		test = nil
-		assert_nothing_raised { test = self.class.tested_class.new( * self.class.test_initialization_parameters ) }
+		assert_nothing_raised { test = self.class.tested_class.new( * (self.class.test_initialization_parameters or []) ) }
 		assert_kind_of( self.class.tested_class, test )
 	end
 
 	def test_001_basicfunctions
-		instance = self.class.tested_class.new( * self.class.test_initialization_parameters )
+		instance = self.class.tested_class.new( * (self.class.test_initialization_parameters or []) )
 		assert_respond_to( instance, :attributes )
 		assert_respond_to( instance, :readOnlyAttributes )
 		assert_respond_to( instance, :writableAttributes )
