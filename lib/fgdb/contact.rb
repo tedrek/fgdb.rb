@@ -31,17 +31,15 @@ class FGDB::Contact
 
 	class << self
 
-		def attributes 
-			@@attrs
-		end
+		attr_accessor :attributes
 
 	end # class << self
 
-	@@attrs = %w[ id firstname middlename lastname organization
+	self.attributes = %w[ id firstname middlename lastname organization
 		address address2 city state zip phone fax email emailOK mailOK
-		phoneOK faxOK notes modified created sortName ]
+		phoneOK faxOK notes modified created sortName lists ]
 
-	@@attrs.each {|attribute|
+	self.attributes.each {|attribute|
 		attr_accessor attribute.intern
 	}
 
@@ -54,6 +52,11 @@ class FGDB::Contact
 
 	def attributes 
 		self.class.attributes
+	end
+
+	def addToList( list )
+		self.lists ||= []
+		self.lists << list
 	end
 
 end # class FGDB::Contact

@@ -27,7 +27,17 @@ class ContactTests < Test::Unit::TestCase
 		assert( ! attrs.empty? )
 		attrs.each {|attribute, value|
 			assert_respond_to( contact, attribute )
+			assert_respond_to( contact, attribute + "=" )
 		}
+	end
+
+	def test_030_lists 
+		contact = FGDB::Contact.new()
+		assert_respond_to( contact, :lists )
+		assert_respond_to( contact, :addToList )
+		list = FGDB::ContactList.new()
+		assert_nothing_raised { contact.addToList( list ) }
+		assert( contact.lists.include?( list ) )
 	end
 
 end # class ContactTests
