@@ -13,8 +13,8 @@ require 'ftools'
 
 include Config
 
-$version	= %q$Rev$
-$rcsId		= %q$Id$
+$SVNRev		= %q$Rev$
+$SVNId		= %q$Id$
 
 stty_save = `stty -g`.chomp
 trap("INT") { system "stty", stty_save; exit }
@@ -122,7 +122,7 @@ class Installer
 end
 
 if $0 == __FILE__
-	header "FGDB.rb Installer #$version"
+	header "FGDB.rb Installer #$SVNRev"
 
 	unless RUBY_VERSION >= "1.8.1" || ENV['NO_VERSION_CHECK']
 		abort "FGDB.rb will not run under this version of Ruby. It " +
