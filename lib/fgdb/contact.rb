@@ -64,6 +64,18 @@ class FGDB::Contact < FGDB::Object
 		end
 	end
 
+	def addAct( act )
+		act.contact = self
+		self.acts << act
+	end
+
+	def removeAct( act )
+		self.acts.delete( act )
+		if act.contact == self
+			act.contact = nil
+		end
+	end
+
 	def hours 
 		hour_sum = 0
 		self.tasks.each {|task|

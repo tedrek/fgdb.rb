@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 #
-# This file contians the class definition for the Task class.
+# This file contians the class definition for the Act class.
 #
 # == Subversion ID
 # 
@@ -13,7 +13,7 @@
 
 require 'fgdb/work'
 
-class FGDB::Task < FGDB::Work
+class FGDB::Act < FGDB::Work
 
 	# SVN Revision
 	SVNRev = %q$Rev$
@@ -28,8 +28,4 @@ class FGDB::Task < FGDB::Work
 
 	addAttributesReadOnly( *%w[ created modified ] )
 
-	addAttributes( "hours" ) {|value|
-		value and value.respond_to?(:to_f) and value.to_f >= 0
-	}
-
-end # class FGDB::Task
+end # class FGDB::Act

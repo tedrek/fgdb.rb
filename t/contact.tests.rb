@@ -99,5 +99,4 @@ class ContactTests < Test::Unit::TestCase
 
 	end
 
-
 end # class ContactTests
