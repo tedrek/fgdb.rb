@@ -75,6 +75,7 @@ ARGV.options {|oparser|
 }
 
 verboseOff {
+	require 'fgdb'
 	require 'find'
 	require 'test/unit'
 	require 'test/unit/testsuite'

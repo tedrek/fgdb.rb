@@ -1,6 +1,6 @@
 #
 #	Install/distribution utility functions
-#	$Id: utils.rb,v 1.20 2003/11/23 04:37:57 stillflame Exp $
+#	$Id$
 #
 #	Copyright (c) 2001-2004, The FaerieMUD Consortium.
 #

@@ -3,8 +3,6 @@
 #   data layer tests
 #
 
-require 'fgdb/data'
-
 class DataTests < Test::Unit::TestCase
 
     def setup 
@@ -20,7 +18,7 @@ class DataTests < Test::Unit::TestCase
 	    table = FGDB::Data.const_get(name)
 	    assert_kind_of( Class, table )
 	    new = nil
-	    assert_nothing_raised {new = table.new}
+	    assert_nothing_raised { new = table.new }
 	    assert_kind_of( table, new )
 	}
     end
