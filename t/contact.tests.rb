@@ -101,9 +101,14 @@ class ContactTests < Test::Unit::TestCase
     def test_040_actions
         contact = FGDB::Contact.new
         act = FGDB::Act.new( 'Login' )
+        loginP = FGDB::Permission.new( 'Login' )
+        logoutP = FGDB::Permission.new( 'Logout' )
         list = FGDB::ContactList.new
-        list.grant( 'Login' )
+        
+        list.grant( loginP )
+        list.grant( logoutP )
         list.addContact( contact )
+        
         assert_responds_to( contact, :perform? )
         assert_responds_to( contact, :perform )
         assert_responds_to( contact, :acts )

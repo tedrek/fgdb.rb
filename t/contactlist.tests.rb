@@ -47,12 +47,32 @@ class ContactListTests < Test::Unit::TestCase
 
         contact = FGDB::Contact.new
         list = FGDB::ContactList.new
+        loginP = FGDB::Permission.new( 'Login' )
+        logoutP = FGDB::Permission.new( 'Logout' )
+        
         assert_respond_to( list, :grant )
         assert_respond_to( list, :revoke )
         assert_respond_to( list, :rights )
         
+        assert_nothing_raised { list.rights } 
         
-        list.revoke( 'Login' )
+        assert( list.rights.empty? )
+
+        list.grant( loginP )
+        assert( list.rights.include?( loginP ) )
+        list.grant( logoutP )
+        assert( list.rights.include?( logoutP ) )
+        assert( list.rights.include?( loginP ) )
+        
+        list.revoke( loginP  )
+        assert( list.rights.include?( logoutP ) )
+        assert( !list.rights.include?( loginP ) )
+        list.revoke( logoutP )
+        assert( !list.rights.include?( logoutP ) )
+        assert( list.rights.empty? )
+        
+        list.addContact( contact )
+        
         perform = nil
         assert_nothing_raised { perform = contact.perform?( act ) }
         assert( !perform )
