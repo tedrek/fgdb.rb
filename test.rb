@@ -5,7 +5,7 @@
 
 BEGIN {
 	$basedir = File::dirname( __FILE__ )
-	["lib", "tests/lib", "redist"].each do |subdir|
+	["lib", "t/lib", "redist"].each do |subdir|
 		$LOAD_PATH.unshift File::join( $basedir, subdir )
 	end
 
@@ -86,7 +86,7 @@ ARGV.each {|pat| patterns << Regexp::new( pat, Regexp::IGNORECASE )}
 $stderr.puts "#{patterns.length} patterns given on the command line"
 
 ### Load all the tests from the tests dir
-Find.find( File::join($basedir, "tests") ) {|file|
+Find.find( File::join($basedir, "t") ) {|file|
 	Find.prune if /\/\./ =~ file or /~$/ =~ file
 	Find.prune if /TEMPLATE/ =~ file
 	next if File.stat( file ).directory?
