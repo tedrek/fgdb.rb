@@ -24,8 +24,8 @@ class FGDB::ContactList < FGDB::Object
 	# SVN URL
 	SVNURL = %q$URL$
 
-	add_attributes( "contacts", "remarks" )
-	add_attributes( "listname" ) {|value|
+	addAttributes( "contacts", "remarks" )
+	addAttributes( "listname" ) {|value|
 		value and
 			value.respond_to?(:to_s) and
 			value.to_s.strip.length < 256 and

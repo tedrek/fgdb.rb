@@ -30,7 +30,7 @@ class FGDB::Object
 
 		attr_accessor :attributes
 
-		def add_attributes( *attrs, &validator )
+		def addAttributes( *attrs, &validator )
 			self.attributes ||= []
 			self.attributes += attrs
 			attrs.each {|attribute|
@@ -50,7 +50,7 @@ class FGDB::Object
 
 	end # class << self
 
-	add_attributes( "id" ) {|value|
+	addAttributes( "id" ) {|value|
 		value and value.respond_to?(:to_i) and value.to_f == value.to_i.to_f and value.to_i > 0
 	}
 

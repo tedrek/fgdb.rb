@@ -27,7 +27,7 @@ class FGDB::Contact < FGDB::Object
 	# SVN URL
 	SVNURL = %q$URL$
 
-	add_attributes( *%w[ firstname middlename lastname organization
+	addAttributes( *%w[ firstname middlename lastname organization
 		address address2 city state zip phone fax email emailOK mailOK
 		phoneOK faxOK notes modified created sortName lists tasks ] )
 
