@@ -3,6 +3,12 @@
 # This file contains various miscellaneous utility functions which don't fit
 # anywhere else. They are all module functions of the FGDB module.
 # 
+# == Copyright
+#
+# Copyright (c) 2005, The FaerieMUD Consortium.  Some rights
+# reserverd.  This is free software, subject to the terms of the GNU
+# General Public License.  See the LICENSE file for details.
+#
 # == Subversion ID
 # 
 # $Id$
@@ -78,6 +84,8 @@ module FGDB
 
 
 	class InvalidValueError < RuntimeError; end
+
+	class LoginError < RuntimeError; end
 
 end # module FGDB
 

@@ -3,6 +3,12 @@
 # Base class for all objects which are in the business logic layer of
 # FGDB.rb.
 #
+# == Copyright
+#
+# Copyright (c) 2005, Freegeek.  Some rights reserverd.  This is free
+# software, subject to the terms of the GNU General Public License.
+# See the LICENSE file for details.
+#
 # == Subversion ID
 # 
 # $Id$
