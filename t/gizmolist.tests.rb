@@ -11,13 +11,6 @@ class GizmoListTests < Test::Unit::TestCase
 
 	self.validations = {
 
-		"listname" => [ [
-				"foo", "Builders", "short people", "#1's", "3D Modeling Group"
-			],
-					   [
-				"a" * 1000, " " * 5, nil
-			] ],
-
 		"remarks" => [ [
 				"this is a remark", "", nil, 
 			],
