@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 #
-#
+# This file contians the class definition for the Task class.
 #
 # == Subversion ID
 # 
@@ -11,7 +11,9 @@
 # * Martin Chase <mchase@freegeek.org>
 # 
 
-class FGDB::Task
+require 'fgdb/object'
+
+class FGDB::Task < FGDB::Object
 
 	# SVN Revision
 	SVNRev = %q$Rev$
@@ -21,5 +23,7 @@ class FGDB::Task
 
 	# SVN URL
 	SVNURL = %q$URL$
+
+	add_attributes( *%w[ hours type contact ] )
 
 end # class FGDB::Task
