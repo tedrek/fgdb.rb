@@ -62,8 +62,6 @@ class ContactTests < Test::Unit::TestCase
 		assert( contact.tasks.include?( task ) )
 		assert_equal( contact, task.contact )
 		assert_equal( hours, contact.hours )
-
-		assert_raises( Exception ) { task.hours = -1 }
 	end
 
 

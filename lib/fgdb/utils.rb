@@ -77,5 +77,7 @@ module FGDB
 	end
 
 
+	class InvalidValueError < RuntimeError; end
+
 end # module FGDB
 

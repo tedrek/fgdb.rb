@@ -13,7 +13,6 @@
 # 
 
 class FGDB::Object
-
 	# SVN Revision
 	SVNRev = %q$Rev$
 
@@ -31,11 +30,21 @@ class FGDB::Object
 
 		attr_accessor :attributes
 
-		def add_attributes( *attrs )
+		def add_attributes( *attrs, &validator )
 			self.attributes ||= []
 			self.attributes += attrs
 			attrs.each {|attribute|
-				attr_accessor attribute.intern
+				attr_reader attribute.intern
+				if validator
+					define_method( attribute + "=" ) {|value|
+						raise FGDB::InvalidValueError.new(
+							"'#{value.inspect}' is not a valid value for the #{attribute} attribute." ) unless
+							validator.call(value)
+						self.instance_variable_set( "@" + attribute, value )
+					}
+				else
+					attr_writer attribute.intern
+				end
 			}
 		end
 
