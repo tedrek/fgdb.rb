@@ -42,3 +42,12 @@ Do not write code that is not related to making a test pass. Write
 tests that consider many boundaries and exceptional cases.  Change the
 tests to match your design as it evolves.  Run the tests often as you
 write code.
+
+Health
+------
+
+Code cleanliness is important. So is developer health. We recommend Workrave
+for keeping hands and muscles in good shape, as well as chips, salsa, and 
+organic veggies for keeping all parts of the body happy. Chocolate is also
+good. Frequent rest breaks (at least once per day) are considered a 
+necessity. When sick, lots of fluids with electrolytes should be consumed.
