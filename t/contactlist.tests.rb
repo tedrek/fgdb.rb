@@ -27,9 +27,17 @@ class ContactListTests < Test::Unit::TestCase
 
 #		"" => [ [ ], [ ] ],
 	}
-
-	def test_040_add_contact 
-		# :TODO:
+	def test_010_lists 
+		contact = FGDB::Contact.new
+		list = FGDB::ContactList.new
+		assert_respond_to( contact, :lists )
+		assert_respond_to( list, :addContact )
+		assert_respond_to( list, :contacts )
+		assert_nothing_raised { list.addContact( contact ) }
+		assert( contact.lists.include?( list ) )
+		assert( list.contacts.include?( contact ) )
 	end
+
+
 
 end # class ContactListTests

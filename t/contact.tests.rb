@@ -9,17 +9,8 @@ class ContactTests < Test::Unit::TestCase
 
 	self.tested_class = FGDB::Contact
 
-	def test_010_lists 
-		contact = FGDB::Contact.new
-		list = FGDB::ContactList.new
-		assert_respond_to( contact, :lists )
-		assert_respond_to( list, :addContact )
-		assert_respond_to( list, :contacts )
-		assert_nothing_raised { list.addContact( contact ) }
-		assert( contact.lists.include?( list ) )
-		assert( list.contacts.include?( contact ) )
-	end
-
+	# list testing moved to contactlist.tests.rb
+	
 	def test_020_tasks
 		contact = FGDB::Contact.new
 		task = FGDB::Task.new
