@@ -26,6 +26,14 @@ class FGDB::ContactList
 	SVNURL = %q$URL$
 
 	def initialize()
+		self.contacts ||= []
+	end
+
+	attr_accessor :contacts
+
+	def addContact( contact )
+		self.contacts << contact
+		contact.addToList( self )
 	end
 
 end # class FGDB::ContactList
