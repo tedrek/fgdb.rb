@@ -33,6 +33,12 @@ module FGDB
 	# SVN URL
 	SVNURL = %q$URL$
 
+	# This is the only public interface FGDB should have - INCLUDING
+	# all classes underneath FGDB.
+	def FGDB.login( name, pass )
+		FGDB::User.login( name, pass )
+	end
+
 end # module FGDB
 
 require 'fgdb/utils'

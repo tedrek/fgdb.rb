@@ -4,9 +4,9 @@
 <font NAME="SansSerif" BOLD="true" SIZE="12"/>
 <node TEXT="data">
 <font NAME="SansSerif" BOLD="true" SIZE="12"/>
-<node TEXT="heavily normalize the database">
+<node TEXT="normalize and otherwise clean up the schema">
 <node TEXT="this will never get past richard"/>
-<node TEXT="unless i have parallel normalized/unnormalized data"/>
+<node TEXT="unless i have parallel normalized/unnormalized data for backwards compatability"/>
 </node>
 <node TEXT="database interface">
 <font NAME="SansSerif" BOLD="true" SIZE="12"/>

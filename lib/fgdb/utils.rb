@@ -89,5 +89,6 @@ module FGDB
 
 	class UninitializedError < RuntimeError; end
 
+	class UnauthorizedError < RuntimeError; end
 end # module FGDB
 

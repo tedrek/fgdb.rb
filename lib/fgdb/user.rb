@@ -18,6 +18,7 @@
 # 
 
 require 'fgdb/object'
+require 'fgdb/objectfactory'
 require 'md5'
 
 class FGDB::User < FGDB::Object
@@ -37,20 +38,22 @@ class FGDB::User < FGDB::Object
 		def login( name, pass = nil )
 			user = self.allocate
 			user.send( :initialize, name )
-			raise FGDB::LoginError unless user.valid_password?( pass )
+			user.login( pass )
 			user
 		end
-
-		undef_method :new
 
 	end # class << self
 
 	def initialize( name )
 		@name = name
+		@logged_in = false
 		self.password = "sex"
+		@object_factory = FGDB::ObjectFactory.new(self)
 	end
 
-	attr_reader :name
+	addAttributes( *%w[ name ] )
+
+	addAttributesReadOnly( *%w[ object_factory logged_in ] )
 
 	def password=( pass )
 		@pass = MD5::hexdigest( pass )
@@ -59,7 +62,22 @@ class FGDB::User < FGDB::Object
 	def commit 
 	end
 
+	def delete
+	end
+
+	def login( pass = nil )
+		if pass
+			raise FGDB::LoginError unless self.valid_password?( pass )
+		end
+		@logged_in = true
+	end
+
 	def logout 
+		@logged_in = false
+	end
+
+	def logged_in?
+		@logged_in
 	end
 
 	def valid_password?( pass )
