@@ -13,4 +13,9 @@ Ruby-Postgres    http://raa.ruby-lang.org/project/postgres/
   ./test.rb
   ./install.rb
 
+== Configuration
+
+Make sure the config file at /etc/fgdb/fgdb.conf is correct for your
+needs.
+
  $Id$

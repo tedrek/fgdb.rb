@@ -32,7 +32,7 @@ class FGDB::Config
 
 	attr_reader :data
 
-	def initialize( filename )
+	def initialize( filename = "/etc/fgdb/fgdb.conf" )
 		File.open( filename ) {|file|
 			@data = YAML::load( file.read )
 		}
