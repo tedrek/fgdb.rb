@@ -111,12 +111,10 @@ module FGDB::Data
 				self.class.table, set_statement,
 				self.class.primary_key, self.key
 			]
-			$stderr.puts sql
 			stmt = self.class.db.prepare( sql )
 			values = fields.map {|field|
 				self[field]
 			}
-			$stderr.puts values.inspect
 			stmt.execute( *values )
 		end
 
