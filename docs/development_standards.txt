@@ -1,31 +1,44 @@
-========================
-FGDB.rb Coding Standards
-========================
+=============================
+FGDB.rb Development Standards
+=============================
 
 These are some point to keep in mind while working on this project to
-keep things clean and maintainable.  Don't consider these laws or in
-any way unbreakable, but consider each point and what it is attempting
-to enforce, and try to adhere to a similar philosophy.
+keep things clean and maintainable for everyone involved.  Don't
+consider these as laws or in any way unbreakable, but consider each
+point and what it is attempting to enforce, and try to adhere to a
+similar philosophy.
 
 
 Documentation
 -------------
 
-Add API level documentation inline to classes, modules, methods and
-functions you write, so that a full set of useful docs can be
-generated from the source, generally using the rdoc format.
+Add API level documentation immediately preceeding all classes,
+modules, methods and functions you write, so that a full set of useful
+docs can be generated from the source, generally using the rdoc
+format.
 
 
 Readable Code
 -------------
 
-Keep the code well-formatted, simple, concise, descriptive and if
-possible, poetic.  Choose readability over cleverness.
+Keep the code well-formatted, simple, concise, descriptive and, if
+possible, poetic.  Choose readability over cleverness.  Use
+whitespace.  Avoid having to document individual pieces of code by
+making it very readable.
+
+
+Simplify
+--------
+
+Tend towards the fewest number of classes, methods, layers or
+abstractions as can be reasonably used to accomplish the tasks to be
+done.
 
 
 Test First
 ----------
 
 Do not write code that is not related to making a test pass. Write
-extensive tests that consider many boundaries and exceptional cases.
-Change the tests to match your design as it evolves.
+tests that consider many boundaries and exceptional cases.  Change the
+tests to match your design as it evolves.  Run the tests often as you
+write code.
