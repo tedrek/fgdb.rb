@@ -28,6 +28,10 @@ class ContactTests < Test::Unit::TestCase
 		attrs.each {|attribute, value|
 			assert_respond_to( contact, attribute )
 			assert_respond_to( contact, attribute + "=" )
+			assert_nothing_raised { contact.send( attribute + "=", "foo" ) }
+			test = nil
+			assert_nothing_raised { test = contact.send( attribute ) }
+			assert( test == "foo" )
 		}
 	end
 
