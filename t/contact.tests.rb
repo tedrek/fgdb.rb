@@ -68,13 +68,6 @@ class ContactTests < Test::Unit::TestCase
 
 	# list testing moved to contactlist.tests.rb
 	
-	def test_030_donttouch
-		contact = FGDB::Contact.new
-		assert_raises( NoMethodError ) { contact.modified = "hello" }
-		assert_raises( NoMethodError ) { contact.sortName = "hello" }
-		assert_raises( NoMethodError ) { contact.created = "hello" }
-	end
-
 	def test_020_tasks
 		contact = FGDB::Contact.new
 		task = FGDB::Task.new
@@ -98,5 +91,73 @@ class ContactTests < Test::Unit::TestCase
 		assert_equal( 0, contact.hours )
 
 	end
+	def test_030_donttouch
+		contact = FGDB::Contact.new
+		assert_raises( NoMethodError ) { contact.modified = "hello" }
+		assert_raises( NoMethodError ) { contact.sortName = "hello" }
+		assert_raises( NoMethodError ) { contact.created = "hello" }
+	end
+
+    def test_040_actions
+        contact = FGDB::Contact.new
+        act = FGDB::Act.new( 'Login' )
+        list = FGDB::ContactList.new
+        list.grant( 'Login' )
+        list.addContact( contact )
+        assert_responds_to( contact, :perform? )
+        assert_responds_to( contact, :perform )
+        assert_responds_to( contact, :acts )
+        assert_responds_to( contact, :loggedIn? )
+        
+        perform = nil
+        assert_nothing_raised { perform = contact.perform?( act ) }
+        assert( perform )
+        
+        assert_nothing_raised { contact.perform( act ) }
+ 
+        acts = nil
+        assert_nothing_raised { acts = contact.acts }
+        assert( acts.include?( act ) )
+        assert( act.contact == contact )
+        
+        assert( contact.loggedIn? )
+        
+        logout = FGDB::Act.new( 'Logout' )
+        
+        perform = nil
+        assert_nothing_raised { perform = contact.perform?( perform ) }
+        assert( perform )
+        
+        assert_nothing_raised { contact.perform( logout ) }
+        assert( acts.include?( logout ) )
+        assert( acts.include?( act ) )
+        
+        assert( !contact.loggedIn? )
+        
+    end 
+       
+    def test_041_acts2
+
+        contact = FGDB::Contact.new
+        list = FGDB::ContactList.new( 'Users' )
+        login = FGDB::Act.new( 'Login' )
+        
+        perform = nil
+        assert_nothing_raised { perform = contact.perform?( login ) }
+        assert( !perform )
+
+        assert_raises ( Exception ) { contact.perform( login ) }
+        list.addContact( contact )
+
+        perform = nil
+        assert_nothing_raised { perform = contact.perform?( login ) }
+        assert( perform )
+        
+        assert_nothing_raised { contact.perform( login ) }
+        assert( contact.loggedIn? )
+        
+        
+    end 
+        
 
 end # class ContactTests

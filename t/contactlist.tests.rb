@@ -43,6 +43,22 @@ class ContactListTests < Test::Unit::TestCase
 
 	end
 
+    def test_020_permissions
 
+        contact = FGDB::Contact.new
+        list = FGDB::ContactList.new
+        assert_respond_to( list, :grant )
+        assert_respond_to( list, :revoke )
+        assert_respond_to( list, :rights )
+        
+        
+        list.revoke( 'Login' )
+        perform = nil
+        assert_nothing_raised { perform = contact.perform?( act ) }
+        assert( !perform )
+
+        assert_raises( Exception ) { contact.perform( act ) }
+
+    end
 
 end # class ContactListTests
