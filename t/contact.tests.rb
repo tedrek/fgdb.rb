@@ -58,6 +58,9 @@ class ContactTests < Test::Unit::TestCase
 		assert_respond_to( task, :hours= )
 		assert_respond_to( task, :type )
 		assert_respond_to( task, :type= )
+		assert_respond_to( task, :date )
+		assert_respond_to( task, :date= )
+
 		
 		assert_nothing_raised { task.hours = 5 }
 		assert( task.hours == 5 )
