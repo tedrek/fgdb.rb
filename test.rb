@@ -75,11 +75,12 @@ ARGV.options {|oparser|
 }
 
 verboseOff {
-	require 'fgdb'
 	require 'find'
 	require 'test/unit'
 	require 'test/unit/testsuite'
 	require 'test/unit/ui/console/testrunner'
+	require 'fgdb'
+	FGDB::requireAllFromPath( 't/lib' )
 }
 
 # Parse test patterns

@@ -5,38 +5,11 @@
 
 class ContactTests < Test::Unit::TestCase
 
-    def setup 
-    end
+	include StandardTests
 
-    def teardown 
-    end
+	self.tested_class = FGDB::Contact
 
-	def test_010_initialization 
-		assert_kind_of( Class, FGDB::Contact )
-		assert( FGDB::Object > FGDB::Contact )
-		test = nil
-		assert_nothing_raised { test = FGDB::Contact.new }
-		assert_kind_of( FGDB::Contact, test )
-	end
-
-	def test_020_simple_attributes 
-		contact = FGDB::Contact.new
-		assert_respond_to( contact, :attributes )
-		attrs = nil
-		assert_nothing_raised { attrs = contact.attributes }
-		assert( attrs )
-		assert( ! attrs.empty? )
-		attrs.each {|attribute, value|
-			assert_respond_to( contact, attribute )
-			assert_respond_to( contact, attribute + "=" )
-			assert_nothing_raised { contact.send( attribute + "=", "foo" ) }
-			test = nil
-			assert_nothing_raised { test = contact.send( attribute ) }
-			assert_equal( "foo", test )
-		}
-	end
-
-	def test_030_lists 
+	def test_010_lists 
 		contact = FGDB::Contact.new
 		list = FGDB::ContactList.new
 		assert_respond_to( contact, :lists )
@@ -47,7 +20,7 @@ class ContactTests < Test::Unit::TestCase
 		assert( list.contacts.include?( contact ) )
 	end
 
-	def test_040_tasks
+	def test_020_tasks
 		contact = FGDB::Contact.new
 		task = FGDB::Task.new
 		assert_respond_to( contact, :tasks )
