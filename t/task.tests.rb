@@ -20,15 +20,18 @@ class TaskTests < Test::Unit::TestCase
 	end
 
 	def test_020_basicfunctions
-	
+		task = FGDB::Task.new()
+		
 		assert_respond_to( task, :hours )
 		assert_respond_to( task, :hours= )
 		assert_respond_to( task, :type )
 		assert_respond_to( task, :type= )
 		assert_respond_to( task, :date )
 		assert_respond_to( task, :date= )
-		# need to test the type functions
-		# need to test the date functions
+		assert_respond_to( task, :contact )
+		assert_respond_to( task, :contact= )
+
+		# need to test the type functions?
 	
 	end
 		
