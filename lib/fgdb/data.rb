@@ -119,11 +119,11 @@ module FGDB::Data
 		end
 
 		def insert 
-			fields = self.class.fields.grep {|field|
+			fields = self.class.fields.find_all {|field|
 				self[field]
 			}
 			sql = "INSERT INTO %s (%s) VALUES (%s)" % [
-				self.table, fields.join( ', ' ),
+				self.class.table, fields.join( ', ' ),
 				fields.map { '?' }.join( ', ' )
 			]
 			values = fields.map {|field|
