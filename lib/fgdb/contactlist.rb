@@ -1,20 +1,19 @@
 #!/usr/bin/ruby
 #
-# This file contains the Contact class, which represents a person or
-# organization, and has references to all other aspects of what that
-# contact does, from buying things, to working, from adopting a
-# computer, to borrowing a book.
+#
 #
 # == Subversion ID
-# 
+#
 # $Id$
-# 
+#
 # == Authors
-# 
+#
 # * Martin Chase <mchase@freegeek.org>
-# 
+#
 
-class FGDB::ContactList
+require 'fgdb/object'
+
+class FGDB::ContactList < FGDB::Object
 
 	# SVN Revision
 	SVNRev = %q$Rev$
@@ -25,11 +24,17 @@ class FGDB::ContactList
 	# SVN URL
 	SVNURL = %q$URL$
 
+	add_attributes( "contacts", "remarks" )
+	add_attributes( "listname" ) {|value|
+		value and
+			value.respond_to?(:to_s) and
+			value.to_s.strip.length < 256 and
+			value.to_s.strip.length > 0
+	}
+
 	def initialize()
 		self.contacts ||= []
 	end
-
-	attr_accessor :contacts
 
 	def addContact( contact )
 		self.contacts << contact
