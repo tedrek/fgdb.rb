@@ -13,17 +13,19 @@ class DataTests < Test::Unit::TestCase
 
     @@tablenames = %w[ Gizmo Contact Users ]
 
-    def test_010_initialization 
-	@@tablenames.each {|name|
-	    table = FGDB::Data.const_get(name)
-	    assert_kind_of( Class, table )
-	    new = nil
-	    assert_nothing_raised { new = table.new }
-	    assert_kind_of( table, new )
-	}
+    def test_010_basics 
+		@@tablenames.each {|name|
+			table = FGDB::Data.const_get(name)
+			assert_kind_of( Class, table )
+			new = nil
+			assert_nothing_raised { new = table.new }
+			assert_kind_of( table, new )
+			
+		}
     end
 
 	def test_020_config
+		assert_raises( FGDB::UninitializedError )   { FGDB::Data::db }
 		config = FGDB::Config.new( File.join( File.dirname( File.dirname( __FILE__ ) ), "etc", "fgdb.conf" ) )
 		assert_nothing_raised		    { FGDB::Data::setup( config ) }
 		assert                          FGDB::Data::db
@@ -35,7 +37,10 @@ class DataTests < Test::Unit::TestCase
 		assert							users.length > 2
 		user = nil
 		assert_nothing_raised           { user = FGDB::Data::Users[2] }
-		assert                          user[id] == 2
+		assert_equal                    2, user['id']
+		assert_equal                    'rseymour', user['username']
+		assert_nothing_raised           { user = FGDB::Data::Users["moo"] }
+		assert_equal                    nil, user
 	end
 
 end # class DataTests

@@ -9,7 +9,7 @@
 
 require 'fgdb/utils'
 require 'fgdb/object'
-require 'postgres'
+require 'dbi'
 
 module FGDB::Data
 
@@ -17,14 +17,14 @@ module FGDB::Data
 
 	def setup( config )
 		dbconfig = config['database']
-		@@db = PGconn.connect( dbconfig['hostname'], nil, nil, nil, # port, opts, stuff?
-							   dbconfig['dbname'],
-							   dbconfig['username'],
-							   dbconfig['password'] )
+		@@dbh = DBI.connect( 'DBI:Pg:%s:%s' % [ dbconfig['dbname'], dbconfig['hostname'] ],
+							 dbconfig['username'], dbconfig['password'] )
 	end
 
 	def db
-		@@db
+		self.class_variables.include?('@@dbh') ?
+			@@dbh :
+			raise( FGDB::UninitializedError, "Database has not been setup." )
 	end
 
 	class DBRecord < FGDB::Object
@@ -34,7 +34,7 @@ module FGDB::Data
 		class << self
 
 			def db
-				FGDB::Data::db or raise( FGDB::UninitializedError, "Database has not been setup." )
+				FGDB::Data::db
 			end
 
 			def table; end
@@ -46,43 +46,33 @@ module FGDB::Data
 			# Return all the entries in this table.
 			def all
 				sql = "SELECT %s FROM %s" % [ self.fields.join(", "), self.table ]
-				results = self.db.exec( sql )
-				results.map {|res|
-					results.fields.inject({}) {|hash,key|
-						hash[key] = res.shift
-						hash
-					}
-				}
-			rescue PGError
+				self.db.execute( sql ).fetch_all
+			rescue DBI::DatabaseError => e
 				nil
 			end
 
-			# Iterate over each of the entries in this table, as hashes.
-			def each_raw( &block )
+			# Iterate over each of the entries in this table.
+			def each( &block )
 				self.all.each( &block )
 			end
 
-			# Iterate over each of the entries in this table, as DBRecord objects.
-			def each( &block )
-				self.all.map {|rec| self.new(rec)}.each( &block )
-			end
-
 			def []( key )
-				sql = "SELECT %s FROM %s WHERE %s = '%s'" % [ self.fields.join(", "), self.table,
-															  self.key, self.db.class.escape(key.to_s) ]
-				results = self.db.exec( sql )
-				self.new( results.fields.zip( results[0] ) )
-			rescue PGError
+				sql = "SELECT %s FROM %s WHERE %s = ?" % [ self.fields.join(", "), self.table, self.key ]
+				self.new( self.db.execute( sql, key ).fetch )
+			rescue DBI::DatabaseError => e
 				nil
 			end
 
 		end # class << self
 
-		def initialize( *args )
+		def initialize( values = nil )
+			@data = values
 		end
 
+		attr_reader :data
+
 		def []( key )
-			2
+			self.data[key]
 		end
 
 	end # class DBRecord
