@@ -54,13 +54,19 @@ class ContactTests < Test::Unit::TestCase
 			] ],
 	
 		"phone" => [ [
-				"503-333-4455", "503.444.4565", "5033365542", "15034561234", "18004562200", "415-554-5544 ext. 444", "752-4159", "7524159", 5034456699, nil, "", "503.5445599"
+				"503-333-4455", "503.444.4565", "5033365542",
+				"15034561234", "18004562200", "415-554-5544 ext. 444",
+				"752-4159", "7524159", 5034456699, nil, "",
+				"503.5445599"
 			], [
-				"50-551-4455", "28004451122", "415-112-111", "911", "1", "515-51-5522", "111.111.1111"
+				"50-551-4455", "28004451122", "415-112-111", "911",
+				"1", "515-51-5522", "111.111.1111"
 			] ],
 	
 		"email" => [ [
-				nil, "", "email@yahoo.com", "abuse@yahoo.com", "abuse@a.ca", "fabuloso@boring.tv", "foo@gmail.com", "zero at google dot com"
+				nil, "", "email@yahoo.com", "abuse@yahoo.com",
+				"abuse@a.ca", "fabuloso@boring.tv", "foo@gmail.com",
+				"zero at google dot com"
 			], [
 				"foo", "foogmailcom", 0, "1", "abuse@example.com"
 			] ],
@@ -91,6 +97,7 @@ class ContactTests < Test::Unit::TestCase
 		assert_equal( 0, contact.hours )
 
 	end
+
 	def test_030_donttouch
 		contact = FGDB::Contact.new
 		assert_raises( NoMethodError ) { contact.modified = "hello" }
@@ -100,22 +107,25 @@ class ContactTests < Test::Unit::TestCase
 
     def test_040_actions
         contact = FGDB::Contact.new
-        act = FGDB::Act.new( 'Login' )
-        loginP = FGDB::Permission.new( 'Login' )
-        logoutP = FGDB::Permission.new( 'Logout' )
+        act = FGDB::Act.new
+		loginActType = FGDB::ActType.new( 'Login' )
+		logoutActType = FGDB::ActType.new( 'Logout' )
+		act.type = loginActType
+        loginP = FGDB::Permission.new( loginActType )
+        logoutP = FGDB::Permission.new( logoutActType )
         list = FGDB::ContactList.new
         
         list.grant( loginP )
         list.grant( logoutP )
         list.addContact( contact )
-        
-        assert_responds_to( contact, :perform? )
-        assert_responds_to( contact, :perform )
-        assert_responds_to( contact, :acts )
-        assert_responds_to( contact, :loggedIn? )
-        
+
+        assert_respond_to( contact, :canPerform? )
+        assert_respond_to( contact, :perform )
+        assert_respond_to( contact, :acts )
+        assert_respond_to( contact, :loggedIn? )
+
         perform = nil
-        assert_nothing_raised { perform = contact.perform?( act ) }
+        assert_nothing_raised { perform = contact.canPerform?( act ) }
         assert( perform )
         
         assert_nothing_raised { contact.perform( act ) }
@@ -127,10 +137,11 @@ class ContactTests < Test::Unit::TestCase
         
         assert( contact.loggedIn? )
         
-        logout = FGDB::Act.new( 'Logout' )
-        
+        logout = FGDB::Act.new
+		logout.type = logoutActType
+
         perform = nil
-        assert_nothing_raised { perform = contact.perform?( perform ) }
+        assert_nothing_raised { perform = contact.canPerform?( logout ) }
         assert( perform )
         
         assert_nothing_raised { contact.perform( logout ) }
@@ -144,18 +155,20 @@ class ContactTests < Test::Unit::TestCase
     def test_041_acts2
 
         contact = FGDB::Contact.new
-        list = FGDB::ContactList.new( 'Users' )
-        login = FGDB::Act.new( 'Login' )
+        list = FGDB::ContactList.new
+		list.listname = 'Users'
+        login = FGDB::Act.new
+		login.type = 'Login'
         
         perform = nil
-        assert_nothing_raised { perform = contact.perform?( login ) }
+        assert_nothing_raised { perform = contact.canPerform?( login ) }
         assert( !perform )
 
         assert_raises ( Exception ) { contact.perform( login ) }
         list.addContact( contact )
 
         perform = nil
-        assert_nothing_raised { perform = contact.perform?( login ) }
+        assert_nothing_raised { perform = contact.canPerform?( login ) }
         assert( perform )
         
         assert_nothing_raised { contact.perform( login ) }

@@ -24,7 +24,7 @@ class FGDB::ContactList < FGDB::Object
 	# SVN URL
 	SVNURL = %q$URL$
 
-	addAttributes( "contacts", "remarks" )
+	addAttributes( "contacts", "remarks", "permissions" )
 	addAttributes( "listname" ) {|value|
 		value and
 			value.respond_to?(:to_s) and
@@ -34,6 +34,7 @@ class FGDB::ContactList < FGDB::Object
 
 	def initialize()
 		self.contacts ||= []
+		self.permissions ||= []
 	end
 
 	def addContact( contact )
@@ -44,6 +45,10 @@ class FGDB::ContactList < FGDB::Object
 	def removeContact( contact )
 		self.contacts.delete( contact )
 		contact.removeFromList( self )
+	end
+
+	def grant( permission )
+		self.permissions << permission
 	end
 
 end # class FGDB::ContactList

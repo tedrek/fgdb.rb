@@ -29,9 +29,9 @@ class FGDB::Contact < FGDB::Object
 
 	addAttributes( *%w[ firstname middlename lastname organization
 		address address2 city state zip phone fax email emailOK mailOK
-		phoneOK faxOK notes lists tasks ] )
+		phoneOK faxOK notes lists tasks acts ] )
 
-	addAttributesReadOnly( *%w[ modified created sortName ] )
+	addAttributesReadOnly( *%w[ modified created sortName loggedIn ] )
 
 	####################
 	# Instance Methods #
@@ -40,6 +40,7 @@ class FGDB::Contact < FGDB::Object
 	def initialize()
 		self.lists = []
 		self.tasks = []
+		self.acts = []
 	end
 
 	# the lists are responsible for calling this.
@@ -82,6 +83,31 @@ class FGDB::Contact < FGDB::Object
 			hour_sum += task.hours
 		}
 		return hour_sum
+	end
+
+	def canPerform?( action )
+		permissions = self.lists.map {|list|
+			list.permissions.map {|permission|
+				permission.type
+			}
+		}.flatten
+		permissions.include?(action.type)
+	end
+
+	def perform( action )
+		if self.canPerform?( action )
+			case action.type
+			when "Login"
+				@loggedIn = true
+			when "Logout"
+				@loggedIn = false
+			end
+			self.addAct( action )
+		end
+	end
+
+	def loggedIn? 
+		self.loggedIn
 	end
 
 end # class FGDB::Contact

@@ -1,0 +1,18 @@
+capabilities.
+
+users are the actors, so only give them references to objects that we
+will allow them to do anything they want to do with.
+
+control object references in factories.
+
+things_i_can_see = ThingFactory.searchForThings( search_criteria, user_object )
+
+this puts the security into these factories - they need to make sure
+that what the give to the user is only what they're allowed to use.
+
+so what if another object wants an object?  hmm...
+
+the validation has to always come from a user, so objects must have a
+reference to the user and their permissions to be able to get at the
+factories with those to unlock objects and get what the user would be
+able to see.
