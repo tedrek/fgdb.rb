@@ -27,7 +27,11 @@ class FGDB::ObjectFactory < Module
 
 	def const_missing( const )
 		if @user.logged_in?
-			FGDB.const_get( const )
+			if @user.name == 'guest'
+				nil
+			else
+				FGDB.const_get( const )
+			end
 		else
 			raise FGDB::UnauthorizedError
 		end

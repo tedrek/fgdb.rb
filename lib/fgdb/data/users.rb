@@ -17,7 +17,7 @@ class FGDB::Data::Users < FGDB::Data::DBRecord
 			%w[ id username password ]
 		end
 
-		def key; "id"; end
+		def primary_key; "id"; end
 
 	end
 

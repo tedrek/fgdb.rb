@@ -35,7 +35,7 @@ module FGDB
 
 	# This is the only public interface FGDB should have - INCLUDING
 	# all classes underneath FGDB.
-	def FGDB.login( name, pass )
+	def FGDB.login( name, pass = nil )
 		FGDB::User.login( name, pass )
 	end
 

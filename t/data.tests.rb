@@ -31,7 +31,7 @@ class DataTests < Test::Unit::TestCase
 		assert                          FGDB::Data::db
 	end
 
-	def test_030_each
+	def test_030_lookup
 		users = nil
 		assert_nothing_raised           { users = FGDB::Data::Users.all }
 		assert							users.length > 2
@@ -39,8 +39,25 @@ class DataTests < Test::Unit::TestCase
 		assert_nothing_raised           { user = FGDB::Data::Users[2] }
 		assert_equal                    2, user['id']
 		assert_equal                    'rseymour', user['username']
+		FGDB::Data::Users.fields.each {|field|
+			assert                      user[field]
+		}
+
 		assert_nothing_raised           { user = FGDB::Data::Users["moo"] }
 		assert_equal                    nil, user
+	end
+
+	def test_040_permanance 
+		user = nil
+		assert_nothing_raised           { user = FGDB::Data::Users[2] }
+
+		assert_nothing_raised           { user['username'] = 'mrblock' }
+		assert_equal                    'mrblock', user['username']
+		assert_nothing_raised           { user.save }
+		assert_equal                    'mrblock', FGDB::Data::Users[2]['username']
+		assert_nothing_raised           { user['username'] = 'rseymour' }
+		assert_equal                    'rseymour', user['username']
+		assert_nothing_raised           { user.save }
 	end
 
 end # class DataTests

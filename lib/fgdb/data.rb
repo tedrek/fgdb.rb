@@ -41,7 +41,7 @@ module FGDB::Data
 
 			def fields; end
 
-			def key; "id"; end
+			def primary_key; "id"; end
 
 			# Return all the entries in this table.
 			def all
@@ -57,7 +57,7 @@ module FGDB::Data
 			end
 
 			def []( key )
-				sql = "SELECT %s FROM %s WHERE %s = ?" % [ self.fields.join(", "), self.table, self.key ]
+				sql = "SELECT %s FROM %s WHERE %s = ?" % [ self.fields.join(", "), self.table, self.primary_key ]
 				self.new( self.db.execute( sql, key ).fetch )
 			rescue DBI::DatabaseError => e
 				nil
@@ -65,14 +65,74 @@ module FGDB::Data
 
 		end # class << self
 
-		def initialize( values = nil )
-			@data = values
-		end
-
 		attr_reader :data
 
 		def []( key )
 			self.data[key]
+		end
+
+		def []=( key, value )
+			self.data[key] = value
+		end
+
+		def key 
+			self[self.class.primary_key]
+		end
+
+		def save 
+			if self.key and self.class[self.key]
+				update
+			else
+				insert
+			end
+		end
+
+		#######
+		private
+		#######
+
+		def initialize( values = nil )
+			@data = values
+		end
+
+		def update
+			clean = self.class[self.key]
+			fields = self.class.fields.find_all {|field|
+				self[field] != clean[field]
+			}
+			set_statement = fields.map {|field|
+				if self[field]
+					"%s=?" % field
+				else
+					"%s=NULL" % field
+				end
+			}.join( ', ' )
+			sql = "UPDATE %s SET %s WHERE %s = %s" % [
+				self.class.table, set_statement,
+				self.class.primary_key, self.key
+			]
+			$stderr.puts sql
+			stmt = self.class.db.prepare( sql )
+			values = fields.map {|field|
+				self[field]
+			}
+			$stderr.puts values.inspect
+			stmt.execute( *values )
+		end
+
+		def insert 
+			fields = self.class.fields.grep {|field|
+				self[field]
+			}
+			sql = "INSERT INTO %s (%s) VALUES (%s)" % [
+				self.table, fields.join( ', ' ),
+				fields.map { '?' }.join( ', ' )
+			]
+			values = fields.map {|field|
+				self[field]
+			}
+			stmt = self.class.db.prepare( sql )
+			stmt.execute( *values )
 		end
 
 	end # class DBRecord

@@ -59,7 +59,8 @@ class FGDB::User < FGDB::Object
 		@pass = MD5::hexdigest( pass )
 	end
 
-	def commit 
+	def save
+		@@users[self.name] = self
 	end
 
 	def delete
