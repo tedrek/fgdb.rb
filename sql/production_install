@@ -1,0 +1,35 @@
+#!/bin/sh
+
+#this script starts with a mysql db dump, processes it to postgres-allowed format, 
+#drops and recreates the postgres database "USER" where USER is hte value of the current
+#user's environament variable, creates tables in postgres, and imports the data.
+
+#If the mysql data structure changes, comparing ddl.1.sql from the mysql dump and 
+# the checked-in ddlpg should allow you to update ddlpg appropriately.
+#Also compare seq.1.sql and seq.ddl.sql 
+# and trigger.1.sql and trigger.ddl.sql
+
+USER=fgdb
+
+#process mysql dump
+./mysql2psql.pl database 1.sql database.pg.dml.sql
+
+#drop/create database USER, psql references the environment variable as ":USER", 
+psql -U fgdb -f replacedb template1
+
+#create tables
+psql -U fgdb -f ddlpg.sql $USER 2>ddlerror.log
+
+#create trigger functions
+psql -U fgdb -f triggerfunctions.plsql $USER
+
+#import data
+psql -U fgdb -f database.pg.dml.sql $USER 1>insert.log 2>error.log
+
+#create triggers
+psql -U fgdb -f trigger.ddl.sql $USER 2>trigerror.log
+
+#create and initialize sequences
+psql -U fgdb -f seq.ddl.sql $USER 2>seqerror.log
+
+

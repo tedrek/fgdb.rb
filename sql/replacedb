@@ -1,0 +1,4 @@
+drop database :USER;
+vacuum;
+create database :USER;
+
