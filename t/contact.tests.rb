@@ -15,12 +15,12 @@ class ContactTests < Test::Unit::TestCase
 		assert_kind_of( Class, FGDB::Contact )
 		assert( FGDB::Object > FGDB::Contact )
 		test = nil
-		assert_nothing_raised { test = FGDB::Contact.new() }
+		assert_nothing_raised { test = FGDB::Contact.new }
 		assert_kind_of( FGDB::Contact, test )
 	end
 
 	def test_020_simple_attributes 
-		contact = FGDB::Contact.new()
+		contact = FGDB::Contact.new
 		assert_respond_to( contact, :attributes )
 		attrs = nil
 		assert_nothing_raised { attrs = contact.attributes }
@@ -32,13 +32,13 @@ class ContactTests < Test::Unit::TestCase
 			assert_nothing_raised { contact.send( attribute + "=", "foo" ) }
 			test = nil
 			assert_nothing_raised { test = contact.send( attribute ) }
-			assert( test == "foo" )
+			assert_equal( "foo", test )
 		}
 	end
 
 	def test_030_lists 
-		contact = FGDB::Contact.new()
-		list = FGDB::ContactList.new()
+		contact = FGDB::Contact.new
+		list = FGDB::ContactList.new
 		assert_respond_to( contact, :lists )
 		assert_respond_to( list, :addContact )
 		assert_respond_to( list, :contacts )
@@ -48,20 +48,20 @@ class ContactTests < Test::Unit::TestCase
 	end
 
 	def test_040_tasks
-		contact = FGDB::Contact.new()
-		task = FGDB::Task.new()
+		contact = FGDB::Contact.new
+		task = FGDB::Task.new
 		assert_respond_to( contact, :tasks )
 		assert_respond_to( contact, :addTask )
 		assert_respond_to( contact, :hours )
 		assert_respond_to( task, :contact )	
 	
-		assert_nothing_raised { task.hours = 5 }
-		assert( task.hours == 5 )
+		hours = 5
+		assert_nothing_raised { task.hours = hours }
+		assert_equal( 5, task.hours )
 		assert_nothing_raised { contact.addTask( task ) }
 		assert( contact.tasks.include?( task ) )
-		assert( task.contact == contact )
-		assert( contact.hours == 5 )
-
+		assert_equal( contact, task.contact )
+		assert_equal( hours, contact.hours )
 	end
 
 

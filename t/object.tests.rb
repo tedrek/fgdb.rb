@@ -1,6 +1,6 @@
 #!/usr/bin/ruby -w
 #
-#   contact api tests
+#   superclass FGDB::Object api tests
 #
 
 class ObjectTests < Test::Unit::TestCase
@@ -14,24 +14,31 @@ class ObjectTests < Test::Unit::TestCase
 	def test_010_initialization 
 		assert_kind_of( Class, FGDB::Object )
 		test = nil
-		assert_nothing_raised { test = FGDB::Object.new() }
+		assert_nothing_raised { test = FGDB::Object.new }
 		assert_kind_of( FGDB::Object, test )
 	end
 
-	def test_020_simple_attributes 
-		object = FGDB::Object.new()
-		assert_respond_to( object, :attributes )
+	def test_020_add_attributes
+		subclass = Class::new(FGDB::Object)
+		instance = subclass.new
+		attrs = %w[ foo bar ]
+		assert_nothing_raised { subclass.add_attributes( *attrs ) }
+		assert_respond_to( subclass, :attributes )
+		assert_respond_to( instance, :attributes )
 		attrs = nil
-		assert_nothing_raised { attrs = object.attributes }
+		assert_nothing_raised { attrs = instance.attributes }
 		assert( attrs )
 		assert( ! attrs.empty? )
-		attrs.each {|attribute, value|
-			assert_respond_to( object, attribute )
-			assert_respond_to( object, attribute + "=" )
-			assert_nothing_raised { object.send( attribute + "=", "foo" ) }
+		meow = "meow"
+		attrs.each {|attribute|
+			assert_respond_to( instance, attribute )
+			assert_respond_to( instance, attribute + "=" )
+			assert( subclass.attributes.include?( attribute ) )
+			assert( instance.attributes.include?( attribute ) )
+			assert_nothing_raised { instance.send( attribute + "=", meow ) }
 			test = nil
-			assert_nothing_raised { test = object.send( attribute ) }
-			assert( test == "foo" )
+			assert_nothing_raised { test = instance.send( attribute ) }
+			assert_equal( meow, test )
 		}
 	end
 
