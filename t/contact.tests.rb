@@ -46,4 +46,27 @@ class ContactTests < Test::Unit::TestCase
 		assert( list.contacts.include?( contact ) )
 	end
 
+	def test_040_tasks
+		contact = FGDB::Contact.new()
+		task = FGDB::Task.new()
+		assert_respond_to( contact, :tasks )
+		assert_respond_to( contact, :addTask )
+		assert_respond_to( contact, :hours )
+		
+		assert_respond_to( task, :contact )
+		assert_respond_to( task, :hours )
+		assert_respond_to( task, :hours= )
+		assert_respond_to( task, :type )
+		assert_respond_to( task, :type= )
+		
+		assert_nothing_raised { task.hours = 5 }
+		assert( task.hours == 5 )
+		assert_nothing_raised { contact.addTask( task ) }
+		assert( contact.tasks.include?( task ) )
+		assert( task.contact == contact )
+		assert( contact.hours == 5 )
+		
+	end
+
+
 end # class ContactTests
