@@ -21,10 +21,14 @@ class UserTests < Test::Unit::TestCase
 
         assert_nothing_raised { user.password = 'blah' }
         assert_nothing_raised { user.commit }
+
+        assert_nothing_raised { user.logout }
+        
         assert_raises( FGDB::LoginError) { FGDB::UserFactory.login( 'god', 'sex' ) }
         assert_nothing_raised { user = FGDB::UserFactory.login( 'god', 'blah' ) }
         assert_nothing_raised { user.password = 'sex' }
         assert_nothing_raised { user.commit }
+        assert_nothing_raised { user.logout }
 
         assert_nothing_raised { user = FGDB::UserFactory.login( 'god', 'sex' ) }
         assert_raises( FGDB::LoginError ) { FGDB::UserFactory.login( 'god', 'blah' ) }

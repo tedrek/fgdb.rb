@@ -6,9 +6,11 @@
 module StandardTests
 
 	def setup
+        @god = FGDB::UserFactory.login( 'god', 'sex' )
 	end
 
 	def teardown
+        @god.logout
 	end
 
 	def StandardTests.append_features( klass )

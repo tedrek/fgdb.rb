@@ -75,6 +75,7 @@ class ContactTests < Test::Unit::TestCase
 	# list testing moved to contactlist.tests.rb
 	
 	def test_020_tasks
+        # TODO: redo for security model
 		contact = FGDB::Contact.new
 		task = FGDB::Task.new
 
@@ -106,7 +107,46 @@ class ContactTests < Test::Unit::TestCase
 	end
 
     def test_040_actions
-        contact = FGDB::Contact.new
+        # for the new security model
+
+        # god gets a list of lists, which includes users
+        # god can create a new contact
+        # god can put the new contact into the list of users
+        # the user, however cannot.
+        
+        assert_nothing_raised {
+            list = FGDB::ContactListFactory.search( [ name => 'users'], god )
+            }
+        assert_kind_of( list, FGDB::ContactList )
+        assert_nothing_raised { 
+            contact = FGDB::ContactFactory.new( 
+                    [ firstname => 'test', lastname => 'tester' ],
+                    god)
+            }
+        assert_kind_of( contact, FGDB::Contact )
+        assert_raises ( Exception ) { contact.username = 'test' }
+        assert_raises ( Exception ) { contact.password = 'test' }
+        
+        assert_nothing_raised { list.addContact( contact ) }
+        assert_nothing_raised { contact.username = 'test' }
+        assert_nothing_raised { contact.password = 'test' }
+        
+        assert_nothing_raised { testUser = FGDB::UserFactory.login( 'test', 'test' ) }
+        assert_nothing_raised {
+            nilList = FGDB::ContactFactory.search( [ name => 'users' ], testUser )
+            }
+        assert_equal( nil, nilList )
+        assert_nothing_raised { 
+            nilContact = FGDB::ContactFactory.new( [ 'firstname' => 'whatev',
+                                                      'lastname' => 'er' ],
+                                                      testUser )
+            }
+        assert_equal( nil, nilContact )
+        
+
+    end
+
+    def test_041_oldpermtests
         act = FGDB::Act.new
 		loginActType = FGDB::ActType.new( 'Login' )
 		logoutActType = FGDB::ActType.new( 'Logout' )
@@ -152,7 +192,7 @@ class ContactTests < Test::Unit::TestCase
         
     end 
        
-    def test_041_acts2
+    def test_042_acts2
 
         contact = FGDB::Contact.new
         list = FGDB::ContactList.new
