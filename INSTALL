@@ -1,0 +1,16 @@
+
+= Installation
+
+== Requirements
+
+Ruby => http://www.ruby-lang.org
+Arrow => http://raa.ruby-lang.org/project/arrow/
+PostgreSQL => http://www.postgresql.org
+Ruby-Postgres => http://raa.ruby-lang.org/project/postgres/
+
+== Process
+
+  ./test.rb
+  ./install.rb
+
+ $Id$

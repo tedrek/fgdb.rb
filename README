@@ -1,0 +1,33 @@
+
+= FGDB.rb
+
+FreeGeek DataBase interface, the ruby version.
+
+== Authors
+
+ Martin Chase <mchase@freegeek.org>
+
+== General Information
+
+This is an application for tracking gizmos and volunteers.
+
+== Current Status
+
+This is just the skeleton of a project.
+
+== Legal
+
+Copyright (c) 2004 Freegeek.  Most rights reserved.
+
+This application is free software, licensed under the Creative Commons
+GNU General Public License (CC-GNU GPL).  To view a copy of this
+license, see the LICENSE file that should have been included with this
+distribution, visit http://creativecommons.org/licenses/GPL/2.0/ or
+send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford,
+California 94305, USA.
+
+THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+ $Id$
