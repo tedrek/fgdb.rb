@@ -70,9 +70,9 @@ class ContactTests < Test::Unit::TestCase
 	
 	def test_030_donttouch
 		contact = FGDB::Contact.new
-		assert_raises( Exception ) { contact.modified= "hello" }
-		assert_raises( Exception ) { contact.sortName = "hello" }
-		assert_raises( Exception ) { contact.created = "hello" }
+		assert_raises( NoMethodError ) { contact.modified = "hello" }
+		assert_raises( NoMethodError ) { contact.sortName = "hello" }
+		assert_raises( NoMethodError ) { contact.created = "hello" }
 	end
 
 	def test_020_tasks

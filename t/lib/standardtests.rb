@@ -31,17 +31,25 @@ module StandardTests
 	def test_001_basicfunctions
 		instance = self.class.tested_class.new
 		assert_respond_to( instance, :attributes )
+		assert_respond_to( instance, :readOnlyAttributes )
+		assert_respond_to( instance, :writableAttributes )
 		attrs = nil
 		assert_nothing_raised { attrs = instance.attributes }
 		assert( attrs )
 		assert( ! attrs.empty? )
+		writables = nil
+		assert_nothing_raised { writables = instance.writableAttributes }
+		assert( writables )
 		attrs.each {|attribute, value|
 			assert_respond_to( instance, attribute )
-			assert_respond_to( instance, attribute + "=" )
-			assert_nothing_raised { instance.send( attribute + "=", 1 ) }
-			test = nil
-			assert_nothing_raised { test = instance.send( attribute ) }
-			assert_equal( 1, test )
+			
+			if writables.include?( attribute )
+				assert_respond_to( instance, attribute + "=" )
+				assert_nothing_raised { instance.send( attribute + "=", 1 ) }
+				test = nil
+				assert_nothing_raised { test = instance.send( attribute ) }
+				assert_equal( 1, test )
+			end
 		}
 	end
 

@@ -41,4 +41,9 @@ class FGDB::ContactList < FGDB::Object
 		contact.addToList( self )
 	end
 
+	def removeContact( contact )
+		self.contacts.delete( contact )
+		contact.removeFromList( self )
+	end
+
 end # class FGDB::ContactList

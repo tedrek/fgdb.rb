@@ -29,7 +29,9 @@ class FGDB::Contact < FGDB::Object
 
 	addAttributes( *%w[ firstname middlename lastname organization
 		address address2 city state zip phone fax email emailOK mailOK
-		phoneOK faxOK notes modified created sortName lists tasks ] )
+		phoneOK faxOK notes lists tasks ] )
+
+	addAttributesReadOnly( *%w[ modified created sortName ] )
 
 	####################
 	# Instance Methods #
@@ -40,13 +42,26 @@ class FGDB::Contact < FGDB::Object
 		self.tasks = []
 	end
 
+	# the lists are responsible for calling this.
 	def addToList( list )
 		self.lists << list
+	end
+
+	# the lists are responsible for calling this.
+	def removeFromList( list )
+		self.lists.delete( list )
 	end
 
 	def addTask( task )
 		task.contact = self
 		self.tasks << task
+	end
+
+	def removeTask( task )
+		self.tasks.delete( task )
+		if task.contact == self
+			task.contact = nil
+		end
 	end
 
 	def hours 

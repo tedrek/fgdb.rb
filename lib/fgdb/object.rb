@@ -30,11 +30,25 @@ class FGDB::Object
 
 		attr_accessor :attributes
 
-		def addAttributes( *attrs, &validator )
+		attr_accessor :writableAttributes
+
+		def readOnlyAttributes 
+			self.attributes - self.writableAttributes
+		end
+
+		def addAttributesReadOnly( *attrs )
 			self.attributes ||= []
 			self.attributes += attrs
 			attrs.each {|attribute|
 				attr_reader attribute.intern
+			}
+		end
+
+		def addAttributes( *attrs, &validator )
+			addAttributesReadOnly( *attrs )
+			self.writableAttributes ||= []
+			self.writableAttributes += attrs
+			attrs.each {|attribute|
 				if validator
 					define_method( attribute + "=" ) {|value|
 						raise FGDB::InvalidValueError.new(
@@ -56,6 +70,14 @@ class FGDB::Object
 
 	def attributes 
 		self.class.attributes
+	end
+
+	def readOnlyAttributes 
+		self.class.readOnlyAttributes
+	end
+
+	def writableAttributes 
+		self.class.writableAttributes
 	end
 
 end # class FGDB::Object
