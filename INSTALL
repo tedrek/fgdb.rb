@@ -18,4 +18,4 @@ Ruby-Postgres    http://raa.ruby-lang.org/project/postgres/
 Make sure the config file at /etc/fgdb/fgdb.conf is correct for your
 needs.
 
- $Id$
+ $Id: INSTALL 64 2005-02-11 04:08:45Z stillflame $

@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 #
 #   FGDB.rb installation script
-#   $Id$
+#   $Id: install.rb 22 2004-12-13 02:02:09Z stillflame $
 #
 
 require './utils.rb'
@@ -13,8 +13,8 @@ require 'ftools'
 
 include Config
 
-$SVNRev		= %q$Rev$
-$SVNId		= %q$Id$
+$SVNRev		= %q$Rev: 22 $
+$SVNId		= %q$Id: install.rb 22 2004-12-13 02:02:09Z stillflame $
 
 stty_save = `stty -g`.chomp
 trap("INT") { system "stty", stty_save; exit }

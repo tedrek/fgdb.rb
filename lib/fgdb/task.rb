@@ -10,7 +10,7 @@
 #
 # == Subversion ID
 # 
-# $Id$
+# $Id: task.rb 61 2005-02-10 23:12:46Z stillflame $
 # 
 # == Authors
 # 
@@ -22,10 +22,10 @@ require 'fgdb/work'
 class FGDB::Task < FGDB::Work
 
 	# SVN Revision
-	SVNRev = %q$Rev$
+	SVNRev = %q$Rev: 61 $
 
 	# SVN Id
-	SVNId = %q$Id$
+	SVNId = %q$Id: task.rb 61 2005-02-10 23:12:46Z stillflame $
 
 	# SVN URL
 	SVNURL = %q$URL$

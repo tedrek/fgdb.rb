@@ -11,7 +11,7 @@
 #
 # == Subversion ID
 # 
-# $Id$
+# $Id: utils.rb 67 2005-03-06 09:23:06Z stillflame $
 # 
 # == Authors
 # 

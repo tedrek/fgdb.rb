@@ -12,7 +12,7 @@
 #
 # == Subversion ID
 # 
-# $Id$
+# $Id: fgdb.rb 69 2005-03-13 02:10:57Z stillflame $
 # 
 # == Authors
 # 
@@ -25,10 +25,10 @@
 module FGDB
 
 	# SVN Revision
-	SVNRev = %q$Rev$
+	SVNRev = %q$Rev: 69 $
 
 	# SVN Id
-	SVNId = %q$Id$
+	SVNId = %q$Id: fgdb.rb 69 2005-03-13 02:10:57Z stillflame $
 
 	# SVN URL
 	SVNURL = %q$URL$

@@ -60,7 +60,7 @@ class FGDB::User < FGDB::Object
 	end
 
 	def save
-		@@users[self.name] = self
+		
 	end
 
 	def delete

@@ -10,7 +10,7 @@
 #
 # == Subversion ID
 # 
-# $Id$
+# $Id: permission.rb 61 2005-02-10 23:12:46Z stillflame $
 # 
 # == Authors
 # 
@@ -22,10 +22,10 @@ require 'fgdb/object'
 class FGDB::Permission < FGDB::Object
 
 	# SVN Revision
-	SVNRev = %q$Rev$
+	SVNRev = %q$Rev: 61 $
 
 	# SVN Id
-	SVNId = %q$Id$
+	SVNId = %q$Id: permission.rb 61 2005-02-10 23:12:46Z stillflame $
 
 	# SVN URL
 	SVNURL = %q$URL$
