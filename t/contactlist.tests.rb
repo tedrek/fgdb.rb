@@ -32,10 +32,15 @@ class ContactListTests < Test::Unit::TestCase
 		list = FGDB::ContactList.new
 		assert_respond_to( contact, :lists )
 		assert_respond_to( list, :addContact )
+		assert_respond_to( list, :removeContact )
 		assert_respond_to( list, :contacts )
 		assert_nothing_raised { list.addContact( contact ) }
 		assert( contact.lists.include?( list ) )
 		assert( list.contacts.include?( contact ) )
+		assert_nothing_raised { list.removeContact( contact ) }
+		assert( ! contact.lists.include?( list ) )
+		assert( ! list.contacts.include?( contact ) )
+
 	end
 
 
