@@ -41,4 +41,10 @@ class FGDB::Object
 
 	end # class << self
 
+	add_attributes( *%w[ id ] )
+
+	def attributes 
+		self.class.attributes
+	end
+
 end # class FGDB::Object

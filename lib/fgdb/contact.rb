@@ -27,7 +27,7 @@ class FGDB::Contact < FGDB::Object
 	# SVN URL
 	SVNURL = %q$URL$
 
-	add_attributes( *%w[ id firstname middlename lastname organization
+	add_attributes( *%w[ firstname middlename lastname organization
 		address address2 city state zip phone fax email emailOK mailOK
 		phoneOK faxOK notes modified created sortName lists tasks ] )
 
@@ -38,10 +38,6 @@ class FGDB::Contact < FGDB::Object
 	def initialize()
 		self.lists = []
 		self.tasks = []
-	end
-
-	def attributes 
-		self.class.attributes
 	end
 
 	def addToList( list )

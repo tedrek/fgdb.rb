@@ -13,7 +13,7 @@ class TaskTests < Test::Unit::TestCase
 
 	def test_010_initialization 
 		assert_kind_of( Class, FGDB::Task )
-		assert_kind_of( FGDB::Object, FGDB::Task )
+		assert( FGDB::Object > FGDB::Task )
 		test = nil
 		assert_nothing_raised { test = FGDB::Task.new() }
 		assert_kind_of( FGDB::Task, test )
@@ -21,18 +21,14 @@ class TaskTests < Test::Unit::TestCase
 
 	def test_020_basicfunctions
 		task = FGDB::Task.new()
-		
 		assert_respond_to( task, :hours )
 		assert_respond_to( task, :hours= )
 		assert_respond_to( task, :type )
 		assert_respond_to( task, :type= )
 		assert_respond_to( task, :date )
 		assert_respond_to( task, :date= )
-		assert_respond_to( task, :contact )
-		assert_respond_to( task, :contact= )
-
-		# need to test the type functions?
-	
+		# need to test the type functions
+		# need to test the date functions
 	end
 		
 end

@@ -24,6 +24,6 @@ class FGDB::Task < FGDB::Object
 	# SVN URL
 	SVNURL = %q$URL$
 
-	add_attributes( *%w[ hours type contact ] )
+	add_attributes( *%w[ hours type contact date ] )
 
 end # class FGDB::Task

@@ -20,17 +20,17 @@ class ObjectTests < Test::Unit::TestCase
 
 	def test_020_simple_attributes 
 		object = FGDB::Object.new()
-		assert_respond_to( contact, :attributes )
+		assert_respond_to( object, :attributes )
 		attrs = nil
-		assert_nothing_raised { attrs = contact.attributes }
+		assert_nothing_raised { attrs = object.attributes }
 		assert( attrs )
 		assert( ! attrs.empty? )
 		attrs.each {|attribute, value|
-			assert_respond_to( contact, attribute )
-			assert_respond_to( contact, attribute + "=" )
-			assert_nothing_raised { contact.send( attribute + "=", "foo" ) }
+			assert_respond_to( object, attribute )
+			assert_respond_to( object, attribute + "=" )
+			assert_nothing_raised { object.send( attribute + "=", "foo" ) }
 			test = nil
-			assert_nothing_raised { test = contact.send( attribute ) }
+			assert_nothing_raised { test = object.send( attribute ) }
 			assert( test == "foo" )
 		}
 	end
