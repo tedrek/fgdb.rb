@@ -37,7 +37,6 @@ def redefine_task(args, &block)
   Rake::Task.redefine_task(args, &block)
 end
 
-
 SCHEMADUMPFILE = 'db/schema.sql'
 DATADUMPFILE = 'db/devel_data.sql'
 
