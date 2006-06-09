@@ -9,11 +9,39 @@ require 'rake/rdoctask'
 
 require 'tasks/rails'
 
+module Rake
+  module TaskManager
+    def redefine_task(task_class, args, &block)
+      task_name, deps = resolve_args(args)
+      task_name = task_class.scope_name(@scope, task_name)
+      deps = [deps] unless deps.respond_to?(:to_ary)
+      deps = deps.collect {|d| d.to_s }
+      task = @tasks[task_name.to_s] = task_class.new(task_name, self)
+      task.application = self
+      task.add_comment(@last_comment)
+      @last_comment = nil
+      task.enhance(deps, &block)
+      task
+    end
+  end
+  class Task
+    class << self
+      def redefine_task(args, &block)
+        Rake.application.redefine_task(self, args, &block)
+      end
+    end
+  end
+end
+
+def redefine_task(args, &block)
+  Rake::Task.redefine_task(args, &block)
+end
+
+
 SCHEMADUMPFILE = 'db/schema.sql'
 DATADUMPFILE = 'db/devel_data.sql'
 
-def dump_schema
-  rails_env = "development"
+def dump_schema( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
   case abcs[rails_env]["adapter"] 
   when "postgresql"
@@ -26,8 +54,7 @@ def dump_schema
   end
 end
 
-def dump_data
-  rails_env = "development"
+def dump_data( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
   case abcs[rails_env]["adapter"] 
   when "postgresql"
@@ -40,8 +67,7 @@ def dump_data
   end
 end
 
-def load_schema
-  rails_env = "development"
+def load_schema( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
   case abcs[rails_env]["adapter"] 
   when "postgresql"
@@ -63,8 +89,7 @@ def load_schema
   end
 end
 
-def load_data
-  rails_env = "development"
+def load_data( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
   case abcs[rails_env]["adapter"] 
   when "postgresql"
@@ -93,12 +118,12 @@ namespace :db do
   namespace :schema do
 
     desc "Dump the development database to an SQL file"
-    task :dump => :environment do
+    redefine_task :dump => :environment do
       dump_schema
     end
 
     desc "Load the database schema into the development database"
-    task :load => :environment do
+    redefine_task :load => :environment do
       load_schema
     end
 
@@ -116,6 +141,15 @@ namespace :db do
     task :load => :environment do
       load_schema
       load_data
+    end
+
+  end
+
+  namespace :test do
+
+    desc "Prepare the test database and load the schema"
+    redefine_task :prepare => :environment do
+      load_schema("test")
     end
 
   end
