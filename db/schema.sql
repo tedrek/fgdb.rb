@@ -180,7 +180,7 @@ VALUES
     CHILDREC.bar_chr, 
     CHILDREC.dupe_key);
 
-UPDATE donation SET contactid = PARENT_ID WHERE dupe_key = DUPEKEY;
+UPDATE donation SET contact_id = PARENT_ID WHERE dupe_key = DUPEKEY;
 
 RETURN 0 ;
 END ;
@@ -277,16 +277,16 @@ $_$
 
 
 --
--- Name: gizmo_status_changed(); Type: FUNCTION; Schema: public; Owner: stillflame
+-- Name: gizmos_status_changed(); Type: FUNCTION; Schema: public; Owner: stillflame
 --
 
-CREATE FUNCTION gizmo_status_changed() RETURNS "trigger"
+CREATE FUNCTION gizmos_status_changed() RETURNS "trigger"
     AS $$
   BEGIN
     IF NEW.newstatus <> OLD.newstatus THEN
       INSERT INTO gizmostatuschanges (id, oldStatus, newStatus) VALUES (OLD.id, OLD.newstatus, NEW.newstatus);
       -- this is redundant oldstatus is in the history table, so
-      -- it does not really need to be in gizmo as well
+      -- it does not really need to be in gizmos as well
       NEW.oldstatus := OLD.newstatus;
     END IF;
     RETURN NEW;
@@ -296,15 +296,15 @@ $$
 
 
 --
--- Name: gizmo_status_insert(); Type: FUNCTION; Schema: public; Owner: stillflame
+-- Name: gizmos_status_insert(); Type: FUNCTION; Schema: public; Owner: stillflame
 --
 
-CREATE FUNCTION gizmo_status_insert() RETURNS "trigger"
+CREATE FUNCTION gizmos_status_insert() RETURNS "trigger"
     AS $$
   BEGIN
     INSERT INTO gizmostatuschanges (id, oldStatus, newStatus) VALUES (NEW.id, 'none', NEW.newstatus);
     -- this is redundant oldstatus is in the history table, so
-    -- it does not really need to be in gizmo as well
+    -- it does not really need to be in gizmos as well
     NEW.oldstatus := 'none';
     RETURN NEW;
   END;
@@ -329,31 +329,31 @@ BEGIN
 
 
 
-UPDATE sales        SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
-UPDATE donation     SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
-UPDATE income       SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
-UPDATE pickups      SET vendorid  = KEEP_ID WHERE vendorid  = TOSS_ID;
+UPDATE sales        SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
+UPDATE donation     SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
+UPDATE income       SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
+UPDATE pickups      SET vendor_id  = KEEP_ID WHERE vendor_id  = TOSS_ID;
 
 UPDATE workersqualifyforjobs 
-                    SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
-UPDATE daysoff      SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
-UPDATE workmonths   SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
-UPDATE weeklyshifts SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
+                    SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
+UPDATE daysoff      SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
+UPDATE workmonths   SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
+UPDATE weeklyshifts SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
 UPDATE workers      SET id =        KEEP_ID WHERE id        = TOSS_ID
     AND NOT EXISTS (SELECT * FROM workers WHERE id = KEEP_ID);
 
-UPDATE memberhour   SET memberid  = KEEP_ID WHERE memberid  = TOSS_ID;
+UPDATE memberhour   SET member_id  = KEEP_ID WHERE member_id  = TOSS_ID;
 UPDATE member       SET id        = KEEP_ID WHERE id        = TOSS_ID
     AND NOT EXISTS (SELECT * FROM member WHERE id = KEEP_ID);
 
-UPDATE contactlist  SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
-UPDATE borrow       SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
-UPDATE gizmo        SET inspectorid = 
-                                    KEEP_ID WHERE inspectorid = 
+UPDATE contactlist  SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
+UPDATE borrow       SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
+UPDATE gizmos        SET inspector_id = 
+                                    KEEP_ID WHERE inspector_id = 
                                                              TOSS_ID;
-UPDATE gizmo        SET adopterid = KEEP_ID WHERE adopterid = TOSS_ID;
-UPDATE gizmo        SET builderid = KEEP_ID WHERE builderid = TOSS_ID;
-UPDATE scratchpad   SET contactid = KEEP_ID WHERE contactid = TOSS_ID;
+UPDATE gizmos        SET adopter_id = KEEP_ID WHERE adopter_id = TOSS_ID;
+UPDATE gizmos        SET builder_id = KEEP_ID WHERE builder_id = TOSS_ID;
+UPDATE scratchpad   SET contact_id = KEEP_ID WHERE contact_id = TOSS_ID;
 
 
 
@@ -433,7 +433,7 @@ AND toss.id = TOSS_ID ;
 
 
 DELETE FROM contact WHERE id = TOSS_ID;
-DELETE FROM dupe_sets WHERE keepid = KEEP_ID AND tossid = TOSS_ID;
+DELETE FROM dupe_sets WHERE keep_id = KEEP_ID AND toss_id = TOSS_ID;
 RETURN 0 ;
 END ;
 $_$
@@ -519,7 +519,7 @@ VALUES
     CHILDREC.bar_chr, 
     CHILDREC.dupe_key);
 
-UPDATE sales SET contactid = PARENT_ID WHERE dupe_key = DUPEKEY;
+UPDATE sales SET contact_id = PARENT_ID WHERE dupe_key = DUPEKEY;
 
 RETURN 0 ;
 END ;
@@ -540,8 +540,8 @@ DECLARE
 BEGIN
 
 UPDATE dupe_sets SET 
-    keepid = TOSS_ID, tossid = KEEP_ID 
-    WHERE keepid = KEEP_ID AND tossid = TOSS_ID;
+    keep_id = TOSS_ID, toss_id = KEEP_ID 
+    WHERE keep_id = KEEP_ID AND toss_id = TOSS_ID;
 
 RETURN 0 ;
 
@@ -607,8 +607,8 @@ CREATE SEQUENCE answers_id_seq
 
 CREATE TABLE borrow (
     id integer DEFAULT nextval('Borrow_id_seq'::text) NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
-    gizmoid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
+    gizmo_id integer DEFAULT 0 NOT NULL,
     borrowdate date NOT NULL,
     returndate date NOT NULL,
     modified timestamp with time zone DEFAULT now(),
@@ -629,10 +629,10 @@ CREATE SEQUENCE borrow_id_seq
 
 
 --
--- Name: card; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: cards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE card (
+CREATE TABLE cards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     slottype character varying(10)
@@ -640,10 +640,10 @@ CREATE TABLE card (
 
 
 --
--- Name: cddrive; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: cddrives; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE cddrive (
+CREATE TABLE cddrives (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     interface character varying(10) DEFAULT ''::character varying,
@@ -651,15 +651,15 @@ CREATE TABLE cddrive (
     writemode character varying(15) DEFAULT ''::character varying,
     scsi character varying(1) DEFAULT 'N'::character varying,
     spinrate integer,
-    CONSTRAINT cddrive_scsi CHECK ((((scsi)::text = ('N'::character varying)::text) OR ((scsi)::text = ('Y'::character varying)::text)))
+    CONSTRAINT cddrives_scsi CHECK ((((scsi)::text = ('N'::character varying)::text) OR ((scsi)::text = ('Y'::character varying)::text)))
 );
 
 
 --
--- Name: cellphone; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: cellphones; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE cellphone (
+CREATE TABLE cellphones (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100)
 );
@@ -705,7 +705,7 @@ CREATE TABLE cleanup (
     volunteer character(1),
     donor character(1),
     buyer character(1),
-    sourceid integer,
+    source_id integer,
     contacttype character(1),
     firstname character(25),
     middlename character(25),
@@ -747,9 +747,9 @@ CREATE TABLE cleanup (
     zip_final character(10),
     lot_seq character(4),
     lot_ad character(1),
-    contactid integer,
-    donationid integer,
-    salesid integer
+    contact_id integer,
+    donation_id integer,
+    sales_id integer
 );
 
 
@@ -781,13 +781,13 @@ CREATE SEQUENCE codedinfo_id_seq
 
 
 --
--- Name: component; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: components; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE component (
+CREATE TABLE components (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
-    insysid integer DEFAULT 0 NOT NULL
+    insys_id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -866,7 +866,7 @@ CREATE SEQUENCE contact_id_seq
 
 CREATE TABLE contactlist (
     id integer DEFAULT nextval('ContactList_id_seq'::text) NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
     listname character varying(20),
     putonlist date,
     modified timestamp with time zone DEFAULT now(),
@@ -891,17 +891,17 @@ CREATE SEQUENCE contactlist_id_seq
 
 
 --
--- Name: controllercard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: controllercards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE controllercard (
+CREATE TABLE controllercards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     numserial integer DEFAULT 0 NOT NULL,
     numparallel integer DEFAULT 0 NOT NULL,
     numide integer DEFAULT 0 NOT NULL,
     floppy character varying(1) DEFAULT 'Y'::character varying NOT NULL,
-    CONSTRAINT controllercard_floppy CHECK ((((floppy)::text = ('N'::character varying)::text) OR ((floppy)::text = ('Y'::character varying)::text)))
+    CONSTRAINT controllercards_floppy CHECK ((((floppy)::text = ('N'::character varying)::text) OR ((floppy)::text = ('Y'::character varying)::text)))
 );
 
 
@@ -911,7 +911,7 @@ CREATE TABLE controllercard (
 
 CREATE TABLE daysoff (
     id integer DEFAULT nextval('DaysOff_id_seq'::text) NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
     dayoff date,
     vacation character varying(1) DEFAULT 'N'::character varying,
     offsitework character varying(1) DEFAULT 'N'::character varying,
@@ -946,7 +946,7 @@ CREATE TABLE deduper (
     volunteer character varying,
     donor character varying,
     buyer character varying,
-    sourceid integer,
+    source_id integer,
     contacttype character varying(1),
     firstname character varying(25),
     middlename character varying(25),
@@ -1008,7 +1008,7 @@ CREATE SEQUENCE defaultvalues_id_seq
 
 CREATE TABLE donation (
     id integer DEFAULT nextval('Donation_id_seq'::text) NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
     zip character varying(10),
     cashdonation numeric(8,2) DEFAULT 0.00 NOT NULL,
     modified timestamp with time zone DEFAULT now(),
@@ -1039,7 +1039,7 @@ CREATE SEQUENCE donation_id_seq
 
 CREATE TABLE donationline (
     id integer DEFAULT nextval('DonationLine_id_seq'::text) NOT NULL,
-    donationid integer DEFAULT 0 NOT NULL,
+    donation_id integer DEFAULT 0 NOT NULL,
     description text,
     quantity integer DEFAULT 1 NOT NULL,
     crt boolean
@@ -1059,10 +1059,10 @@ CREATE SEQUENCE donationline_id_seq
 
 
 --
--- Name: drive; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: drives; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE drive (
+CREATE TABLE drives (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100)
 );
@@ -1084,8 +1084,8 @@ CREATE TABLE dupe_keys (
 --
 
 CREATE TABLE dupe_sets (
-    keepid integer,
-    tossid integer
+    keep_id integer,
+    toss_id integer
 );
 
 
@@ -1123,10 +1123,10 @@ CREATE SEQUENCE fieldmap_id_seq
 
 
 --
--- Name: floppydrive; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: floppydrives; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE floppydrive (
+CREATE TABLE floppydrives (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     disksize character varying(10),
@@ -1138,11 +1138,36 @@ CREATE TABLE floppydrive (
 
 
 --
--- Name: gizmo; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: gizmoclones; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE gizmo (
-    id integer DEFAULT nextval('Gizmo_id_seq'::text) NOT NULL,
+CREATE TABLE gizmoclones (
+    id integer DEFAULT nextval('GizmoClones_id_seq'::text) NOT NULL,
+    parent_id integer DEFAULT 0 NOT NULL,
+    child_id integer DEFAULT 0 NOT NULL,
+    modified timestamp with time zone DEFAULT now(),
+    created timestamp with time zone DEFAULT now()
+);
+
+
+--
+-- Name: gizmoclones_id_seq; Type: SEQUENCE; Schema: public; Owner: stillflame
+--
+
+CREATE SEQUENCE gizmoclones_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: gizmos; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE gizmos (
+    id integer DEFAULT nextval('Gizmos_id_seq'::text) NOT NULL,
     classtree character varying(100),
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now(),
@@ -1158,51 +1183,26 @@ CREATE TABLE gizmo (
     testdata character varying(1) DEFAULT 'N'::character varying,
     value numeric(5,1) DEFAULT 0.0 NOT NULL,
     inventoried timestamp with time zone DEFAULT now(),
-    builderid integer DEFAULT 0 NOT NULL,
-    inspectorid integer DEFAULT 0 NOT NULL,
+    builder_id integer DEFAULT 0 NOT NULL,
+    inspector_id integer DEFAULT 0 NOT NULL,
     linuxfund character varying(1) DEFAULT 'N'::character varying NOT NULL,
     cashvalue numeric(8,2) DEFAULT 0.00 NOT NULL,
     needsexpert character varying(1) DEFAULT 'N'::character varying,
     gizmotype character varying(10) DEFAULT 'Other'::character varying,
-    adopterid integer DEFAULT 0 NOT NULL,
-    CONSTRAINT gizmo_linuxfund CHECK (((((linuxfund)::text = ('N'::character varying)::text) OR ((linuxfund)::text = ('Y'::character varying)::text)) OR ((linuxfund)::text = ('M'::character varying)::text))),
-    CONSTRAINT gizmo_needsexpert CHECK ((((needsexpert)::text = ('N'::character varying)::text) OR ((needsexpert)::text = ('Y'::character varying)::text))),
-    CONSTRAINT gizmo_obsolete CHECK (((((obsolete)::text = ('N'::character varying)::text) OR ((obsolete)::text = ('Y'::character varying)::text)) OR ((obsolete)::text = ('M'::character varying)::text))),
-    CONSTRAINT gizmo_testdata CHECK ((((testdata)::text = ('N'::character varying)::text) OR ((testdata)::text = ('Y'::character varying)::text))),
-    CONSTRAINT gizmo_working CHECK (((((working)::text = ('N'::character varying)::text) OR ((working)::text = ('Y'::character varying)::text)) OR ((working)::text = ('M'::character varying)::text)))
+    adopter_id integer DEFAULT 0 NOT NULL,
+    CONSTRAINT gizmos_linuxfund CHECK (((((linuxfund)::text = ('N'::character varying)::text) OR ((linuxfund)::text = ('Y'::character varying)::text)) OR ((linuxfund)::text = ('M'::character varying)::text))),
+    CONSTRAINT gizmos_needsexpert CHECK ((((needsexpert)::text = ('N'::character varying)::text) OR ((needsexpert)::text = ('Y'::character varying)::text))),
+    CONSTRAINT gizmos_obsolete CHECK (((((obsolete)::text = ('N'::character varying)::text) OR ((obsolete)::text = ('Y'::character varying)::text)) OR ((obsolete)::text = ('M'::character varying)::text))),
+    CONSTRAINT gizmos_testdata CHECK ((((testdata)::text = ('N'::character varying)::text) OR ((testdata)::text = ('Y'::character varying)::text))),
+    CONSTRAINT gizmos_working CHECK (((((working)::text = ('N'::character varying)::text) OR ((working)::text = ('Y'::character varying)::text)) OR ((working)::text = ('M'::character varying)::text)))
 );
 
 
 --
--- Name: gizmo_id_seq; Type: SEQUENCE; Schema: public; Owner: stillflame
+-- Name: gizmos_id_seq; Type: SEQUENCE; Schema: public; Owner: stillflame
 --
 
-CREATE SEQUENCE gizmo_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: gizmoclones; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
---
-
-CREATE TABLE gizmoclones (
-    id integer DEFAULT nextval('GizmoClones_id_seq'::text) NOT NULL,
-    parentid integer DEFAULT 0 NOT NULL,
-    childid integer DEFAULT 0 NOT NULL,
-    modified timestamp with time zone DEFAULT now(),
-    created timestamp with time zone DEFAULT now()
-);
-
-
---
--- Name: gizmoclones_id_seq; Type: SEQUENCE; Schema: public; Owner: stillflame
---
-
-CREATE SEQUENCE gizmoclones_id_seq
+CREATE SEQUENCE gizmos_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
@@ -1273,10 +1273,10 @@ CREATE SEQUENCE holidays_id_seq
 
 
 --
--- Name: ideharddrive; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: ideharddrives; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE ideharddrive (
+CREATE TABLE ideharddrives (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     cylinders integer DEFAULT 0 NOT NULL,
@@ -1299,7 +1299,7 @@ CREATE TABLE income (
     amount numeric(8,2) DEFAULT 0.00 NOT NULL,
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now(),
-    contactid integer DEFAULT 0 NOT NULL
+    contact_id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1321,7 +1321,7 @@ CREATE SEQUENCE income_id_seq
 
 CREATE TABLE issuenotes (
     id integer DEFAULT 0 NOT NULL,
-    issueid integer DEFAULT 0 NOT NULL,
+    issue_id integer DEFAULT 0 NOT NULL,
     techname character varying(25),
     notes text,
     modified timestamp with time zone DEFAULT now(),
@@ -1335,8 +1335,8 @@ CREATE TABLE issuenotes (
 
 CREATE TABLE issues (
     id integer DEFAULT 0 NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
-    gizmoid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
+    gizmo_id integer DEFAULT 0 NOT NULL,
     issuename character varying(100),
     issuestatus character varying(10),
     modified timestamp with time zone DEFAULT now(),
@@ -1371,10 +1371,10 @@ CREATE SEQUENCE jobs_id_seq
 
 
 --
--- Name: keyboard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: keyboards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE keyboard (
+CREATE TABLE keyboards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     kbtype character varying(10),
@@ -1383,14 +1383,14 @@ CREATE TABLE keyboard (
 
 
 --
--- Name: laptop; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: laptops; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE laptop (
+CREATE TABLE laptops (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     ram integer,
-    harddrivesizegb numeric(8,2) DEFAULT 0.00,
+    harddrivessizegb numeric(8,2) DEFAULT 0.00,
     chipclass character varying(15),
     chipspeed integer DEFAULT 0 NOT NULL
 );
@@ -1433,8 +1433,8 @@ CREATE SEQUENCE links_id_seq
 
 CREATE TABLE mailingpieces (
     id integer DEFAULT nextval('"mailingpieces_id_seq"'::text) NOT NULL,
-    mailingid integer DEFAULT 0 NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
+    mailing_id integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
     container integer,
     containertype character varying(10),
     bundle integer
@@ -1569,7 +1569,7 @@ CREATE TABLE member (
 
 CREATE TABLE memberhour (
     id integer DEFAULT nextval('MemberHour_id_seq'::text) NOT NULL,
-    memberid integer DEFAULT 0 NOT NULL,
+    member_id integer DEFAULT 0 NOT NULL,
     workdate date,
     intime time without time zone,
     outtime time without time zone,
@@ -1596,10 +1596,10 @@ CREATE SEQUENCE memberhour_id_seq
 
 
 --
--- Name: misccard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: misccards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE misccard (
+CREATE TABLE misccards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     miscnotes text
@@ -1607,10 +1607,10 @@ CREATE TABLE misccard (
 
 
 --
--- Name: misccomponent; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: misccomponents; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE misccomponent (
+CREATE TABLE misccomponents (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     miscnotes text
@@ -1618,10 +1618,10 @@ CREATE TABLE misccomponent (
 
 
 --
--- Name: miscdrive; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: miscdrives; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE miscdrive (
+CREATE TABLE miscdrives (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     miscnotes text
@@ -1629,20 +1629,20 @@ CREATE TABLE miscdrive (
 
 
 --
--- Name: miscgizmo; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: miscgizmos; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE miscgizmo (
+CREATE TABLE miscgizmos (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100)
 );
 
 
 --
--- Name: modem; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: modems; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE modem (
+CREATE TABLE modems (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     speed character varying(15)
@@ -1650,10 +1650,10 @@ CREATE TABLE modem (
 
 
 --
--- Name: modemcard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: modemcards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE modemcard (
+CREATE TABLE modemcards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     speed character varying(15)
@@ -1661,10 +1661,10 @@ CREATE TABLE modemcard (
 
 
 --
--- Name: monitor; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: monitors; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE monitor (
+CREATE TABLE monitors (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     size character varying(10),
@@ -1673,10 +1673,10 @@ CREATE TABLE monitor (
 
 
 --
--- Name: networkcard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: networkcards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE networkcard (
+CREATE TABLE networkcards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     speed character varying(10),
@@ -1687,18 +1687,18 @@ CREATE TABLE networkcard (
     module character varying(50),
     io character varying(10),
     irq character varying(2),
-    CONSTRAINT networkcard_aux CHECK ((((aux)::text = ('N'::character varying)::text) OR ((aux)::text = ('Y'::character varying)::text))),
-    CONSTRAINT networkcard_bnc CHECK ((((bnc)::text = ('N'::character varying)::text) OR ((bnc)::text = ('Y'::character varying)::text))),
-    CONSTRAINT networkcard_rj45 CHECK ((((rj45)::text = ('N'::character varying)::text) OR ((rj45)::text = ('Y'::character varying)::text))),
-    CONSTRAINT networkcard_thicknet CHECK ((((thicknet)::text = ('N'::character varying)::text) OR ((thicknet)::text = ('Y'::character varying)::text)))
+    CONSTRAINT networkcards_aux CHECK ((((aux)::text = ('N'::character varying)::text) OR ((aux)::text = ('Y'::character varying)::text))),
+    CONSTRAINT networkcards_bnc CHECK ((((bnc)::text = ('N'::character varying)::text) OR ((bnc)::text = ('Y'::character varying)::text))),
+    CONSTRAINT networkcards_rj45 CHECK ((((rj45)::text = ('N'::character varying)::text) OR ((rj45)::text = ('Y'::character varying)::text))),
+    CONSTRAINT networkcards_thicknet CHECK ((((thicknet)::text = ('N'::character varying)::text) OR ((thicknet)::text = ('Y'::character varying)::text)))
 );
 
 
 --
--- Name: networkingdevice; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: networkingdevices; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE networkingdevice (
+CREATE TABLE networkingdevices (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     speed character varying(10),
@@ -1706,10 +1706,10 @@ CREATE TABLE networkingdevice (
     aux character varying(1) DEFAULT 'N'::character varying NOT NULL,
     bnc character varying(1) DEFAULT 'N'::character varying NOT NULL,
     thicknet character varying(1) DEFAULT 'N'::character varying NOT NULL,
-    CONSTRAINT networkingdevice_aux CHECK ((((aux)::text = ('N'::character varying)::text) OR ((aux)::text = ('Y'::character varying)::text))),
-    CONSTRAINT networkingdevice_bnc CHECK ((((bnc)::text = ('N'::character varying)::text) OR ((bnc)::text = ('Y'::character varying)::text))),
-    CONSTRAINT networkingdevice_rj45 CHECK ((((rj45)::text = ('N'::character varying)::text) OR ((rj45)::text = ('Y'::character varying)::text))),
-    CONSTRAINT networkingdevice_thicknet CHECK ((((thicknet)::text = ('N'::character varying)::text) OR ((thicknet)::text = ('Y'::character varying)::text)))
+    CONSTRAINT networkingdevices_aux CHECK ((((aux)::text = ('N'::character varying)::text) OR ((aux)::text = ('Y'::character varying)::text))),
+    CONSTRAINT networkingdevices_bnc CHECK ((((bnc)::text = ('N'::character varying)::text) OR ((bnc)::text = ('Y'::character varying)::text))),
+    CONSTRAINT networkingdevices_rj45 CHECK ((((rj45)::text = ('N'::character varying)::text) OR ((rj45)::text = ('Y'::character varying)::text))),
+    CONSTRAINT networkingdevices_thicknet CHECK ((((thicknet)::text = ('N'::character varying)::text) OR ((thicknet)::text = ('Y'::character varying)::text)))
 );
 
 
@@ -1731,7 +1731,7 @@ CREATE SEQUENCE options_id_seq
 
 CREATE TABLE organization (
     id integer DEFAULT 0 NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
     missionstatement text,
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now()
@@ -1744,8 +1744,8 @@ CREATE TABLE organization (
 
 CREATE TABLE pagelinks (
     id integer DEFAULT nextval('PageLinks_id_seq'::text) NOT NULL,
-    pageid integer DEFAULT 0 NOT NULL,
-    linkid integer DEFAULT 0 NOT NULL,
+    page_id integer DEFAULT 0 NOT NULL,
+    link_id integer DEFAULT 0 NOT NULL,
     break character varying(1) DEFAULT 'N'::character varying,
     displayorder integer DEFAULT 0 NOT NULL,
     helptext character varying(100),
@@ -1777,7 +1777,7 @@ CREATE TABLE pages (
     shortname character varying(25),
     longname character varying(100),
     visible character varying(1) DEFAULT 'Y'::character varying,
-    linkid integer DEFAULT 0 NOT NULL,
+    link_id integer DEFAULT 0 NOT NULL,
     displayorder integer DEFAULT 0 NOT NULL,
     helptext character varying(100),
     CONSTRAINT pages_visible CHECK ((((visible)::text = ('N'::character varying)::text) OR ((visible)::text = ('Y'::character varying)::text)))
@@ -1804,8 +1804,8 @@ CREATE TABLE pickuplines (
     id integer DEFAULT nextval('PickupLines_id_seq'::text) NOT NULL,
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now(),
-    pickupid integer DEFAULT 0 NOT NULL,
-    materialid integer DEFAULT 0 NOT NULL,
+    pickup_id integer DEFAULT 0 NOT NULL,
+    material_id integer DEFAULT 0 NOT NULL,
     pickupunittype character varying(20),
     processedunittype character varying(20),
     pickupunitcount integer DEFAULT 1 NOT NULL,
@@ -1837,7 +1837,7 @@ CREATE TABLE pickups (
     id integer DEFAULT nextval('Pickups_id_seq'::text) NOT NULL,
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now(),
-    vendorid integer DEFAULT 0 NOT NULL,
+    vendor_id integer DEFAULT 0 NOT NULL,
     pickupdate date NOT NULL,
     receiptnumber character varying(20),
     settlementnumber character varying(20)
@@ -1857,10 +1857,10 @@ CREATE SEQUENCE pickups_id_seq
 
 
 --
--- Name: pointingdevice; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: pointingdevices; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE pointingdevice (
+CREATE TABLE pointingdevices (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     connector character varying(10),
@@ -1869,10 +1869,10 @@ CREATE TABLE pointingdevice (
 
 
 --
--- Name: powersupply; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: powersupplies; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE powersupply (
+CREATE TABLE powersupplies (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     watts integer DEFAULT 0 NOT NULL,
@@ -1881,10 +1881,10 @@ CREATE TABLE powersupply (
 
 
 --
--- Name: printer; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: printers; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE printer (
+CREATE TABLE printers (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     speedppm integer DEFAULT 0 NOT NULL,
@@ -1894,10 +1894,10 @@ CREATE TABLE printer (
 
 
 --
--- Name: processor; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: processors; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE processor (
+CREATE TABLE processors (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     chipclass character varying(15),
@@ -1936,7 +1936,7 @@ CREATE SEQUENCE relations_id_seq
 
 CREATE TABLE sales (
     id integer DEFAULT nextval('Sales_id_seq'::text) NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
     zip character varying(10),
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now(),
@@ -1965,8 +1965,8 @@ CREATE SEQUENCE sales_id_seq
 
 CREATE TABLE salesline (
     id integer DEFAULT nextval('SalesLine_id_seq'::text) NOT NULL,
-    salesid integer DEFAULT 0 NOT NULL,
-    gizmoid integer DEFAULT 0 NOT NULL,
+    sales_id integer DEFAULT 0 NOT NULL,
+    gizmo_id integer DEFAULT 0 NOT NULL,
     description text,
     cashvalue numeric(8,2) DEFAULT 0.00 NOT NULL,
     subtotal numeric(8,2) DEFAULT 0.00 NOT NULL,
@@ -1988,10 +1988,10 @@ CREATE SEQUENCE salesline_id_seq
 
 
 --
--- Name: scanner; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: scanners; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE scanner (
+CREATE TABLE scanners (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     interface character varying(10)
@@ -2004,10 +2004,10 @@ CREATE TABLE scanner (
 
 CREATE TABLE scratchpad (
     id integer DEFAULT nextval('ScratchPad_id_seq'::text) NOT NULL,
-    pageid integer DEFAULT 0 NOT NULL,
+    page_id integer DEFAULT 0 NOT NULL,
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now(),
-    contactid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
     name character varying(25),
     note text,
     urgent character varying(1) DEFAULT 'N'::character varying,
@@ -2030,10 +2030,10 @@ CREATE SEQUENCE scratchpad_id_seq
 
 
 --
--- Name: scsicard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: scsicards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE scsicard (
+CREATE TABLE scsicards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     internalinterface character varying(15),
@@ -2043,10 +2043,10 @@ CREATE TABLE scsicard (
 
 
 --
--- Name: scsiharddrive; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: scsiharddrives; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE scsiharddrive (
+CREATE TABLE scsiharddrives (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     sizemb integer DEFAULT 0 NOT NULL,
@@ -2079,10 +2079,10 @@ CREATE SEQUENCE shifts_id_seq
 
 
 --
--- Name: soundcard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: soundcards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE soundcard (
+CREATE TABLE soundcards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     soundtype character varying(15)
@@ -2090,16 +2090,16 @@ CREATE TABLE soundcard (
 
 
 --
--- Name: speaker; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: speakers; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE speaker (
+CREATE TABLE speakers (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     powered character varying(1) DEFAULT 'N'::character varying NOT NULL,
     subwoofer character varying(1) DEFAULT 'N'::character varying NOT NULL,
-    CONSTRAINT speaker_powered CHECK ((((powered)::text = ('N'::character varying)::text) OR ((powered)::text = ('Y'::character varying)::text))),
-    CONSTRAINT speaker_subwoofer CHECK ((((subwoofer)::text = ('N'::character varying)::text) OR ((subwoofer)::text = ('Y'::character varying)::text)))
+    CONSTRAINT speakers_powered CHECK ((((powered)::text = ('N'::character varying)::text) OR ((powered)::text = ('Y'::character varying)::text))),
+    CONSTRAINT speakers_subwoofer CHECK ((((subwoofer)::text = ('N'::character varying)::text) OR ((subwoofer)::text = ('Y'::character varying)::text)))
 );
 
 
@@ -2116,24 +2116,24 @@ CREATE SEQUENCE standardshifts_id_seq
 
 
 --
--- Name: stereo; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: stereos; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE stereo (
+CREATE TABLE stereos (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100)
 );
 
 
 --
--- Name: system; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: systems; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE system (
+CREATE TABLE systems (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     systemconfiguration text,
-    systemboard text,
+    systemboards text,
     adapterinformation text,
     multiprocessorinformation text,
     displaydetails text,
@@ -2143,22 +2143,22 @@ CREATE TABLE system (
     modeminformation text,
     multimediainformation text,
     plugnplayinformation text,
-    physicaldrives text,
+    physicaldrivess text,
     ram integer,
     videoram integer,
     sizemb integer,
     scsi character varying(1) DEFAULT 'N'::character varying,
     chipclass character varying(15),
     speed integer DEFAULT 0 NOT NULL,
-    CONSTRAINT system_scsi CHECK ((((scsi)::text = ('N'::character varying)::text) OR ((scsi)::text = ('Y'::character varying)::text)))
+    CONSTRAINT systems_scsi CHECK ((((scsi)::text = ('N'::character varying)::text) OR ((scsi)::text = ('Y'::character varying)::text)))
 );
 
 
 --
--- Name: systemboard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: systemboards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE systemboard (
+CREATE TABLE systemboards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     pcislots integer DEFAULT 0 NOT NULL,
@@ -2177,15 +2177,15 @@ CREATE TABLE systemboard (
     procpro integer DEFAULT 0 NOT NULL,
     procsocket7 integer DEFAULT 0 NOT NULL,
     procslot1 integer DEFAULT 0 NOT NULL,
-    CONSTRAINT systemboard_agpslot CHECK ((((agpslot)::text = ('N'::character varying)::text) OR ((agpslot)::text = ('Y'::character varying)::text)))
+    CONSTRAINT systemboards_agpslot CHECK ((((agpslot)::text = ('N'::character varying)::text) OR ((agpslot)::text = ('Y'::character varying)::text)))
 );
 
 
 --
--- Name: systemcase; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: systemcases; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE systemcase (
+CREATE TABLE systemcases (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     casetype character varying(10)
@@ -2193,10 +2193,10 @@ CREATE TABLE systemcase (
 
 
 --
--- Name: tapedrive; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: tapedrives; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE tapedrive (
+CREATE TABLE tapedrives (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     interface character varying(15)
@@ -2211,7 +2211,7 @@ CREATE TABLE unit2material (
     id integer DEFAULT nextval('Unit2Material_id_seq'::text) NOT NULL,
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now(),
-    materialid integer DEFAULT 0 NOT NULL,
+    material_id integer DEFAULT 0 NOT NULL,
     unittype character varying(20)
 );
 
@@ -2229,10 +2229,10 @@ CREATE SEQUENCE unit2material_id_seq
 
 
 --
--- Name: ups; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: upses; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE ups (
+CREATE TABLE upses (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     rj11 character varying(1) DEFAULT 'N'::character varying NOT NULL,
@@ -2274,20 +2274,20 @@ CREATE SEQUENCE users_id_seq
 
 
 --
--- Name: vcr; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: vcrs; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE vcr (
+CREATE TABLE vcrs (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100)
 );
 
 
 --
--- Name: videocard; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: videocards; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-CREATE TABLE videocard (
+CREATE TABLE videocards (
     id integer DEFAULT 0 NOT NULL,
     classtree character varying(100),
     videomemory character varying(10),
@@ -2302,8 +2302,8 @@ CREATE TABLE videocard (
 CREATE TABLE weeklyshifts (
     id integer DEFAULT nextval('WeeklyShifts_id_seq'::text) NOT NULL,
     schedulename character varying(15) DEFAULT 'Main'::character varying NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
-    jobid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
+    job_id integer DEFAULT 0 NOT NULL,
     weekday integer DEFAULT 0 NOT NULL,
     intime time without time zone,
     outtime time without time zone,
@@ -2352,8 +2352,8 @@ CREATE TABLE workers (
 
 CREATE TABLE workersqualifyforjobs (
     id integer DEFAULT nextval('WorkersQualifyForJobs_id_seq'::text) NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
-    jobid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
+    job_id integer DEFAULT 0 NOT NULL,
     injobdescription character varying(1) DEFAULT 'N'::character varying,
     modified timestamp with time zone DEFAULT now(),
     created timestamp with time zone DEFAULT now(),
@@ -2379,7 +2379,7 @@ CREATE SEQUENCE workersqualifyforjobs_id_seq
 
 CREATE TABLE workmonths (
     id integer DEFAULT nextval('WorkMonths_id_seq'::text) NOT NULL,
-    contactid integer DEFAULT 0 NOT NULL,
+    contact_id integer DEFAULT 0 NOT NULL,
     work_year integer DEFAULT 2004 NOT NULL,
     work_month integer DEFAULT 1 NOT NULL,
     day_01 numeric(5,2) DEFAULT 0.00 NOT NULL,
@@ -2447,27 +2447,27 @@ ALTER TABLE ONLY borrow
 
 
 --
--- Name: card_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: cards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY card
-    ADD CONSTRAINT card_pkey PRIMARY KEY (id);
-
-
---
--- Name: cddrive_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY cddrive
-    ADD CONSTRAINT cddrive_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY cards
+    ADD CONSTRAINT cards_pkey PRIMARY KEY (id);
 
 
 --
--- Name: cellphone_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: cddrives_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY cellphone
-    ADD CONSTRAINT cellphone_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY cddrives
+    ADD CONSTRAINT cddrives_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cellphones_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY cellphones
+    ADD CONSTRAINT cellphones_pkey PRIMARY KEY (id);
 
 
 --
@@ -2487,11 +2487,11 @@ ALTER TABLE ONLY codedinfo
 
 
 --
--- Name: component_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: components_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY component
-    ADD CONSTRAINT component_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY components
+    ADD CONSTRAINT components_pkey PRIMARY KEY (id);
 
 
 --
@@ -2511,11 +2511,11 @@ ALTER TABLE ONLY contactlist
 
 
 --
--- Name: controllercard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: controllercards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY controllercard
-    ADD CONSTRAINT controllercard_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY controllercards
+    ADD CONSTRAINT controllercards_pkey PRIMARY KEY (id);
 
 
 --
@@ -2551,11 +2551,11 @@ ALTER TABLE ONLY donationline
 
 
 --
--- Name: drive_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: drives_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY drive
-    ADD CONSTRAINT drive_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY drives
+    ADD CONSTRAINT drives_pkey PRIMARY KEY (id);
 
 
 --
@@ -2567,19 +2567,11 @@ ALTER TABLE ONLY fieldmap
 
 
 --
--- Name: floppydrive_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: floppydrives_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY floppydrive
-    ADD CONSTRAINT floppydrive_pkey PRIMARY KEY (id);
-
-
---
--- Name: gizmo_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY gizmo
-    ADD CONSTRAINT gizmo_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY floppydrives
+    ADD CONSTRAINT floppydrives_pkey PRIMARY KEY (id);
 
 
 --
@@ -2588,6 +2580,14 @@ ALTER TABLE ONLY gizmo
 
 ALTER TABLE ONLY gizmoclones
     ADD CONSTRAINT gizmoclones_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: gizmos_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY gizmos
+    ADD CONSTRAINT gizmos_pkey PRIMARY KEY (id);
 
 
 --
@@ -2607,11 +2607,11 @@ ALTER TABLE ONLY holidays
 
 
 --
--- Name: ideharddrive_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: ideharddrives_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY ideharddrive
-    ADD CONSTRAINT ideharddrive_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY ideharddrives
+    ADD CONSTRAINT ideharddrives_pkey PRIMARY KEY (id);
 
 
 --
@@ -2647,19 +2647,19 @@ ALTER TABLE ONLY jobs
 
 
 --
--- Name: keyboard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: keyboards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY keyboard
-    ADD CONSTRAINT keyboard_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY keyboards
+    ADD CONSTRAINT keyboards_pkey PRIMARY KEY (id);
 
 
 --
--- Name: laptop_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: laptops_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY laptop
-    ADD CONSTRAINT laptop_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY laptops
+    ADD CONSTRAINT laptops_pkey PRIMARY KEY (id);
 
 
 --
@@ -2695,75 +2695,75 @@ ALTER TABLE ONLY memberhour
 
 
 --
--- Name: misccard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: misccards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY misccard
-    ADD CONSTRAINT misccard_pkey PRIMARY KEY (id);
-
-
---
--- Name: misccomponent_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY misccomponent
-    ADD CONSTRAINT misccomponent_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY misccards
+    ADD CONSTRAINT misccards_pkey PRIMARY KEY (id);
 
 
 --
--- Name: miscdrive_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: misccomponents_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY miscdrive
-    ADD CONSTRAINT miscdrive_pkey PRIMARY KEY (id);
-
-
---
--- Name: miscgizmo_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY miscgizmo
-    ADD CONSTRAINT miscgizmo_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY misccomponents
+    ADD CONSTRAINT misccomponents_pkey PRIMARY KEY (id);
 
 
 --
--- Name: modem_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: miscdrives_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY modem
-    ADD CONSTRAINT modem_pkey PRIMARY KEY (id);
-
-
---
--- Name: modemcard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY modemcard
-    ADD CONSTRAINT modemcard_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY miscdrives
+    ADD CONSTRAINT miscdrives_pkey PRIMARY KEY (id);
 
 
 --
--- Name: monitor_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: miscgizmos_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY monitor
-    ADD CONSTRAINT monitor_pkey PRIMARY KEY (id);
-
-
---
--- Name: networkcard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY networkcard
-    ADD CONSTRAINT networkcard_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY miscgizmos
+    ADD CONSTRAINT miscgizmos_pkey PRIMARY KEY (id);
 
 
 --
--- Name: networkingdevice_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: modems_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY networkingdevice
-    ADD CONSTRAINT networkingdevice_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY modems
+    ADD CONSTRAINT modems_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: modemcards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY modemcards
+    ADD CONSTRAINT modemcards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: monitors_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY monitors
+    ADD CONSTRAINT monitors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: networkcards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY networkcards
+    ADD CONSTRAINT networkcards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: networkingdevices_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY networkingdevices
+    ADD CONSTRAINT networkingdevices_pkey PRIMARY KEY (id);
 
 
 --
@@ -2807,35 +2807,35 @@ ALTER TABLE ONLY pickups
 
 
 --
--- Name: pointingdevice_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: pointingdevices_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY pointingdevice
-    ADD CONSTRAINT pointingdevice_pkey PRIMARY KEY (id);
-
-
---
--- Name: powersupply_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY powersupply
-    ADD CONSTRAINT powersupply_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY pointingdevices
+    ADD CONSTRAINT pointingdevices_pkey PRIMARY KEY (id);
 
 
 --
--- Name: printer_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: powersupplies_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY printer
-    ADD CONSTRAINT printer_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY powersupplies
+    ADD CONSTRAINT powersupplies_pkey PRIMARY KEY (id);
 
 
 --
--- Name: processor_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: printers_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY processor
-    ADD CONSTRAINT processor_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY printers
+    ADD CONSTRAINT printers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: processors_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY processors
+    ADD CONSTRAINT processors_pkey PRIMARY KEY (id);
 
 
 --
@@ -2855,11 +2855,11 @@ ALTER TABLE ONLY salesline
 
 
 --
--- Name: scanner_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: scanners_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY scanner
-    ADD CONSTRAINT scanner_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY scanners
+    ADD CONSTRAINT scanners_pkey PRIMARY KEY (id);
 
 
 --
@@ -2871,75 +2871,75 @@ ALTER TABLE ONLY scratchpad
 
 
 --
--- Name: scsicard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: scsicards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY scsicard
-    ADD CONSTRAINT scsicard_pkey PRIMARY KEY (id);
-
-
---
--- Name: scsiharddrive_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY scsiharddrive
-    ADD CONSTRAINT scsiharddrive_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY scsicards
+    ADD CONSTRAINT scsicards_pkey PRIMARY KEY (id);
 
 
 --
--- Name: soundcard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: scsiharddrives_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY soundcard
-    ADD CONSTRAINT soundcard_pkey PRIMARY KEY (id);
-
-
---
--- Name: speaker_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY speaker
-    ADD CONSTRAINT speaker_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY scsiharddrives
+    ADD CONSTRAINT scsiharddrives_pkey PRIMARY KEY (id);
 
 
 --
--- Name: stereo_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: soundcards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY stereo
-    ADD CONSTRAINT stereo_pkey PRIMARY KEY (id);
-
-
---
--- Name: system_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY system
-    ADD CONSTRAINT system_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY soundcards
+    ADD CONSTRAINT soundcards_pkey PRIMARY KEY (id);
 
 
 --
--- Name: systemboard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: speakers_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY systemboard
-    ADD CONSTRAINT systemboard_pkey PRIMARY KEY (id);
-
-
---
--- Name: systemcase_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY systemcase
-    ADD CONSTRAINT systemcase_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY speakers
+    ADD CONSTRAINT speakers_pkey PRIMARY KEY (id);
 
 
 --
--- Name: tapedrive_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: stereos_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY tapedrive
-    ADD CONSTRAINT tapedrive_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY stereos
+    ADD CONSTRAINT stereos_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: systems_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY systems
+    ADD CONSTRAINT systems_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: systemboards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY systemboards
+    ADD CONSTRAINT systemboards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: systemcases_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY systemcases
+    ADD CONSTRAINT systemcases_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tapedrives_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY tapedrives
+    ADD CONSTRAINT tapedrives_pkey PRIMARY KEY (id);
 
 
 --
@@ -2951,11 +2951,11 @@ ALTER TABLE ONLY unit2material
 
 
 --
--- Name: ups_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: upses_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY ups
-    ADD CONSTRAINT ups_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY upses
+    ADD CONSTRAINT upses_pkey PRIMARY KEY (id);
 
 
 --
@@ -2967,19 +2967,19 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: vcr_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: vcrs_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY vcr
-    ADD CONSTRAINT vcr_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY vcrs
+    ADD CONSTRAINT vcrs_pkey PRIMARY KEY (id);
 
 
 --
--- Name: videocard_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+-- Name: videocards_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
-ALTER TABLE ONLY videocard
-    ADD CONSTRAINT videocard_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY videocards
+    ADD CONSTRAINT videocards_pkey PRIMARY KEY (id);
 
 
 --
@@ -3043,1047 +3043,1047 @@ CREATE UNIQUE INDEX users_username_key ON users USING btree (username);
 
 
 --
--- Name: RI_ConstraintTrigger_45371; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54137; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER component_gizmo_fk
-    AFTER INSERT OR UPDATE ON component
-    FROM gizmo
+CREATE CONSTRAINT TRIGGER components_gizmo_fk
+    AFTER INSERT OR UPDATE ON components
+    FROM gizmos
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('component_gizmo_fk', 'component', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('components_gizmo_fk', 'components', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45372; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54138; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER component_gizmo_fk
-    AFTER DELETE ON gizmo
-    FROM component
+CREATE CONSTRAINT TRIGGER components_gizmos_fk
+    AFTER DELETE ON gizmos
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('component_gizmo_fk', 'component', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('components_gizmos_fk', 'components', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45373; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54139; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER component_gizmo_fk
-    AFTER UPDATE ON gizmo
-    FROM component
+CREATE CONSTRAINT TRIGGER components_gizmos_fk
+    AFTER UPDATE ON gizmos
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('component_gizmo_fk', 'component', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('components_gizmos_fk', 'components', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45374; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54140; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER card_component_fk
-    AFTER INSERT OR UPDATE ON card
-    FROM component
+CREATE CONSTRAINT TRIGGER cards_components_fk
+    AFTER INSERT OR UPDATE ON cards
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('card_component_fk', 'card', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('cards_components_fk', 'cards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45375; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54141; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER card_component_fk
-    AFTER DELETE ON component
-    FROM card
+CREATE CONSTRAINT TRIGGER cards_components_fk
+    AFTER DELETE ON components
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('card_component_fk', 'card', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('cards_components_fk', 'cards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45376; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54142; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER card_component_fk
-    AFTER UPDATE ON component
-    FROM card
+CREATE CONSTRAINT TRIGGER cards_components_fk
+    AFTER UPDATE ON components
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('card_component_fk', 'card', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('cards_components_fk', 'cards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45377; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54143; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER misccard_card_fk
-    AFTER INSERT OR UPDATE ON misccard
-    FROM card
+CREATE CONSTRAINT TRIGGER misccards_cards_fk
+    AFTER INSERT OR UPDATE ON misccards
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('misccard_card_fk', 'misccard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('misccards_cards_fk', 'misccards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45378; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54144; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER misccard_card_fk
-    AFTER DELETE ON card
-    FROM misccard
+CREATE CONSTRAINT TRIGGER misccards_cards_fk
+    AFTER DELETE ON cards
+    FROM misccards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('misccard_card_fk', 'misccard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('misccards_cards_fk', 'misccards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45379; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54145; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER misccard_card_fk
-    AFTER UPDATE ON card
-    FROM misccard
+CREATE CONSTRAINT TRIGGER misccards_cards_fk
+    AFTER UPDATE ON cards
+    FROM misccards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('misccard_card_fk', 'misccard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('misccards_cards_fk', 'misccards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45380; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54146; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER modemcard_card_fk
-    AFTER INSERT OR UPDATE ON modemcard
-    FROM card
+CREATE CONSTRAINT TRIGGER modemcards_cards_fk
+    AFTER INSERT OR UPDATE ON modemcards
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('modemcard_card_fk', 'modemcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('modemcards_cards_fk', 'modemcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45381; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54147; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER modemcard_card_fk
-    AFTER DELETE ON card
-    FROM modemcard
+CREATE CONSTRAINT TRIGGER modemcards_cards_fk
+    AFTER DELETE ON cards
+    FROM modemcards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('modemcard_card_fk', 'modemcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('modemcards_cards_fk', 'modemcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45382; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54148; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER modemcard_card_fk
-    AFTER UPDATE ON card
-    FROM modemcard
+CREATE CONSTRAINT TRIGGER modemcards_cards_fk
+    AFTER UPDATE ON cards
+    FROM modemcards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('modemcard_card_fk', 'modemcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('modemcards_cards_fk', 'modemcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45383; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54149; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER networkcard_card_fk
-    AFTER INSERT OR UPDATE ON networkcard
-    FROM card
+CREATE CONSTRAINT TRIGGER networkcards_cards_fk
+    AFTER INSERT OR UPDATE ON networkcards
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('networkcard_card_fk', 'networkcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('networkcards_cards_fk', 'networkcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45384; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54150; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER networkcard_card_fk
-    AFTER DELETE ON card
-    FROM networkcard
+CREATE CONSTRAINT TRIGGER networkcards_cards_fk
+    AFTER DELETE ON cards
+    FROM networkcards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('networkcard_card_fk', 'networkcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('networkcards_cards_fk', 'networkcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45385; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54151; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER networkcard_card_fk
-    AFTER UPDATE ON card
-    FROM networkcard
+CREATE CONSTRAINT TRIGGER networkcards_cards_fk
+    AFTER UPDATE ON cards
+    FROM networkcards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('networkcard_card_fk', 'networkcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('networkcards_cards_fk', 'networkcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45386; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54152; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scsicard_card_fk
-    AFTER INSERT OR UPDATE ON scsicard
-    FROM card
+CREATE CONSTRAINT TRIGGER scsicards_cards_fk
+    AFTER INSERT OR UPDATE ON scsicards
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('scsicard_card_fk', 'scsicard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('scsicards_cards_fk', 'scsicards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45387; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54153; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scsicard_card_fk
-    AFTER DELETE ON card
-    FROM scsicard
+CREATE CONSTRAINT TRIGGER scsicards_cards_fk
+    AFTER DELETE ON cards
+    FROM scsicards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('scsicard_card_fk', 'scsicard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('scsicards_cards_fk', 'scsicards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45388; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54154; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scsicard_card_fk
-    AFTER UPDATE ON card
-    FROM scsicard
+CREATE CONSTRAINT TRIGGER scsicards_cards_fk
+    AFTER UPDATE ON cards
+    FROM scsicards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('scsicard_card_fk', 'scsicard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('scsicards_cards_fk', 'scsicards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45389; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54155; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER soundcard_card_fk
-    AFTER INSERT OR UPDATE ON soundcard
-    FROM card
+CREATE CONSTRAINT TRIGGER soundcards_cards_fk
+    AFTER INSERT OR UPDATE ON soundcards
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('soundcard_card_fk', 'soundcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('soundcards_cards_fk', 'soundcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45390; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54156; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER soundcard_card_fk
-    AFTER DELETE ON card
-    FROM soundcard
+CREATE CONSTRAINT TRIGGER soundcards_cards_fk
+    AFTER DELETE ON cards
+    FROM soundcards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('soundcard_card_fk', 'soundcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('soundcards_cards_fk', 'soundcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45391; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54157; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER soundcard_card_fk
-    AFTER UPDATE ON card
-    FROM soundcard
+CREATE CONSTRAINT TRIGGER soundcards_cards_fk
+    AFTER UPDATE ON cards
+    FROM soundcards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('soundcard_card_fk', 'soundcard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('soundcards_cards_fk', 'soundcards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45392; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54158; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER videocard_card_fk
-    AFTER INSERT OR UPDATE ON videocard
-    FROM card
+CREATE CONSTRAINT TRIGGER videocards_cards_fk
+    AFTER INSERT OR UPDATE ON videocards
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('videocard_card_fk', 'videocard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('videocards_cards_fk', 'videocards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45393; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54159; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER videocard_card_fk
-    AFTER DELETE ON card
-    FROM videocard
+CREATE CONSTRAINT TRIGGER videocards_cards_fk
+    AFTER DELETE ON cards
+    FROM videocards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('videocard_card_fk', 'videocard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('videocards_cards_fk', 'videocards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45394; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54160; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER videocard_card_fk
-    AFTER UPDATE ON card
-    FROM videocard
+CREATE CONSTRAINT TRIGGER videocards_cards_fk
+    AFTER UPDATE ON cards
+    FROM videocards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('videocard_card_fk', 'videocard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('videocards_cards_fk', 'videocards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45395; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54161; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER controllercard_card_fk
-    AFTER INSERT OR UPDATE ON controllercard
-    FROM card
+CREATE CONSTRAINT TRIGGER controllercards_cards_fk
+    AFTER INSERT OR UPDATE ON controllercards
+    FROM cards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('controllercard_card_fk', 'controllercard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('controllercards_cards_fk', 'controllercards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45396; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54162; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER controllercard_card_fk
-    AFTER DELETE ON card
-    FROM controllercard
+CREATE CONSTRAINT TRIGGER controllercards_cards_fk
+    AFTER DELETE ON cards
+    FROM controllercards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('controllercard_card_fk', 'controllercard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('controllercards_cards_fk', 'controllercards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45397; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54163; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER controllercard_card_fk
-    AFTER UPDATE ON card
-    FROM controllercard
+CREATE CONSTRAINT TRIGGER controllercards_cards_fk
+    AFTER UPDATE ON cards
+    FROM controllercards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('controllercard_card_fk', 'controllercard', 'card', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('controllercards_cards_fk', 'controllercards', 'cards', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45398; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54164; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER drive_gizmo_fk
-    AFTER INSERT OR UPDATE ON drive
-    FROM gizmo
+CREATE CONSTRAINT TRIGGER drives_gizmos_fk
+    AFTER INSERT OR UPDATE ON drives
+    FROM gizmos
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('drive_gizmo_fk', 'drive', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('drives_gizmos_fk', 'drives', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45399; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54165; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER drive_gizmo_fk
-    AFTER DELETE ON gizmo
-    FROM drive
+CREATE CONSTRAINT TRIGGER drives_gizmos_fk
+    AFTER DELETE ON gizmos
+    FROM drives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('drive_gizmo_fk', 'drive', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('drives_gizmos_fk', 'drives', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45400; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54166; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER drive_gizmo_fk
-    AFTER UPDATE ON gizmo
-    FROM drive
+CREATE CONSTRAINT TRIGGER drives_gizmos_fk
+    AFTER UPDATE ON gizmos
+    FROM drives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('drive_gizmo_fk', 'drive', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('drives_gizmos_fk', 'drives', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45401; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54167; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER floppydrive_drive_fk
-    AFTER INSERT OR UPDATE ON floppydrive
-    FROM drive
+CREATE CONSTRAINT TRIGGER floppydrives_drives_fk
+    AFTER INSERT OR UPDATE ON floppydrives
+    FROM drives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('floppydrive_drive_fk', 'floppydrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('floppydrives_drives_fk', 'floppydrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45402; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54168; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER floppydrive_drive_fk
-    AFTER DELETE ON drive
-    FROM floppydrive
+CREATE CONSTRAINT TRIGGER floppydrives_drives_fk
+    AFTER DELETE ON drives
+    FROM floppydrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('floppydrive_drive_fk', 'floppydrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('floppydrives_drives_fk', 'floppydrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45403; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54169; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER floppydrive_drive_fk
-    AFTER UPDATE ON drive
-    FROM floppydrive
+CREATE CONSTRAINT TRIGGER floppydrives_drives_fk
+    AFTER UPDATE ON drives
+    FROM floppydrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('floppydrive_drive_fk', 'floppydrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('floppydrives_drives_fk', 'floppydrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45404; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54170; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER ideharddrive_drive_fk
-    AFTER INSERT OR UPDATE ON ideharddrive
-    FROM drive
+CREATE CONSTRAINT TRIGGER ideharddrives_drives_fk
+    AFTER INSERT OR UPDATE ON ideharddrives
+    FROM drives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('ideharddrive_drive_fk', 'ideharddrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('ideharddrives_drives_fk', 'ideharddrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45405; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54171; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER ideharddrive_drive_fk
-    AFTER DELETE ON drive
-    FROM ideharddrive
+CREATE CONSTRAINT TRIGGER ideharddrives_drives_fk
+    AFTER DELETE ON drives
+    FROM ideharddrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('ideharddrive_drive_fk', 'ideharddrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('ideharddrives_drives_fk', 'ideharddrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45406; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54172; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER ideharddrive_drive_fk
-    AFTER UPDATE ON drive
-    FROM ideharddrive
+CREATE CONSTRAINT TRIGGER ideharddrives_drives_fk
+    AFTER UPDATE ON drives
+    FROM ideharddrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('ideharddrive_drive_fk', 'ideharddrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('ideharddrives_drives_fk', 'ideharddrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45407; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54173; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER miscdrive_drive_fk
-    AFTER INSERT OR UPDATE ON miscdrive
-    FROM drive
+CREATE CONSTRAINT TRIGGER miscdrives_drives_fk
+    AFTER INSERT OR UPDATE ON miscdrives
+    FROM drives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('miscdrive_drive_fk', 'miscdrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('miscdrives_drives_fk', 'miscdrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45408; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54174; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER miscdrive_drive_fk
-    AFTER DELETE ON drive
-    FROM miscdrive
+CREATE CONSTRAINT TRIGGER miscdrives_drives_fk
+    AFTER DELETE ON drives
+    FROM miscdrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('miscdrive_drive_fk', 'miscdrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('miscdrives_drives_fk', 'miscdrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45409; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54175; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER miscdrive_drive_fk
-    AFTER UPDATE ON drive
-    FROM miscdrive
+CREATE CONSTRAINT TRIGGER miscdrives_drives_fk
+    AFTER UPDATE ON drives
+    FROM miscdrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('miscdrive_drive_fk', 'miscdrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('miscdrives_drives_fk', 'miscdrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45410; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54176; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scsiharddrive_drive_fk
-    AFTER INSERT OR UPDATE ON scsiharddrive
-    FROM drive
+CREATE CONSTRAINT TRIGGER scsiharddrives_drives_fk
+    AFTER INSERT OR UPDATE ON scsiharddrives
+    FROM drives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('scsiharddrive_drive_fk', 'scsiharddrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('scsiharddrives_drives_fk', 'scsiharddrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45411; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54177; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scsiharddrive_drive_fk
-    AFTER DELETE ON drive
-    FROM scsiharddrive
+CREATE CONSTRAINT TRIGGER scsiharddrives_drives_fk
+    AFTER DELETE ON drives
+    FROM scsiharddrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('scsiharddrive_drive_fk', 'scsiharddrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('scsiharddrives_drives_fk', 'scsiharddrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45412; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54178; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scsiharddrive_drive_fk
-    AFTER UPDATE ON drive
-    FROM scsiharddrive
+CREATE CONSTRAINT TRIGGER scsiharddrives_drives_fk
+    AFTER UPDATE ON drives
+    FROM scsiharddrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('scsiharddrive_drive_fk', 'scsiharddrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('scsiharddrives_drives_fk', 'scsiharddrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45413; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54179; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER tapedrive_drive_fk
-    AFTER INSERT OR UPDATE ON tapedrive
-    FROM drive
+CREATE CONSTRAINT TRIGGER tapedrives_drives_fk
+    AFTER INSERT OR UPDATE ON tapedrives
+    FROM drives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('tapedrive_drive_fk', 'tapedrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('tapedrives_drives_fk', 'tapedrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45414; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54180; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER tapedrive_drive_fk
-    AFTER DELETE ON drive
-    FROM tapedrive
+CREATE CONSTRAINT TRIGGER tapedrives_drives_fk
+    AFTER DELETE ON drives
+    FROM tapedrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('tapedrive_drive_fk', 'tapedrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('tapedrives_drives_fk', 'tapedrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45415; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54181; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER tapedrive_drive_fk
-    AFTER UPDATE ON drive
-    FROM tapedrive
+CREATE CONSTRAINT TRIGGER tapedrives_drives_fk
+    AFTER UPDATE ON drives
+    FROM tapedrives
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('tapedrive_drive_fk', 'tapedrive', 'drive', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('tapedrives_drives_fk', 'tapedrives', 'drives', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45416; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54182; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER keyboard_component_fk
-    AFTER INSERT OR UPDATE ON keyboard
-    FROM component
+CREATE CONSTRAINT TRIGGER keyboards_components_fk
+    AFTER INSERT OR UPDATE ON keyboards
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('keyboard_component_fk', 'keyboard', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('keyboards_components_fk', 'keyboards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45417; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54183; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER keyboard_component_fk
-    AFTER DELETE ON component
-    FROM keyboard
+CREATE CONSTRAINT TRIGGER keyboards_components_fk
+    AFTER DELETE ON components
+    FROM keyboards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('keyboard_component_fk', 'keyboard', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('keyboards_components_fk', 'keyboards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45418; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54184; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER keyboard_component_fk
-    AFTER UPDATE ON component
-    FROM keyboard
+CREATE CONSTRAINT TRIGGER keyboards_components_fk
+    AFTER UPDATE ON components
+    FROM keyboards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('keyboard_component_fk', 'keyboard', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('keyboards_components_fk', 'keyboards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45419; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54185; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER misccompponent_component_fk
-    AFTER INSERT OR UPDATE ON misccomponent
-    FROM component
+CREATE CONSTRAINT TRIGGER misccomponents_components_fk
+    AFTER INSERT OR UPDATE ON misccomponents
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('misccompponent_component_fk', 'misccomponent', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('misccomponents_components_fk', 'misccomponents', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45420; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54186; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER misccompponent_component_fk
-    AFTER DELETE ON component
-    FROM misccomponent
+CREATE CONSTRAINT TRIGGER misccomponents_components_fk
+    AFTER DELETE ON components
+    FROM misccomponents
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('misccompponent_component_fk', 'misccomponent', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('misccomponents_components_fk', 'misccomponents', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45421; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54187; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER misccompponent_component_fk
-    AFTER UPDATE ON component
-    FROM misccomponent
+CREATE CONSTRAINT TRIGGER misccomponents_components_fk
+    AFTER UPDATE ON components
+    FROM misccomponents
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('misccompponent_component_fk', 'misccomponent', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('misccomponents_components_fk', 'misccomponents', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45422; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54188; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER modem_component_fk
-    AFTER INSERT OR UPDATE ON modem
-    FROM component
+CREATE CONSTRAINT TRIGGER modems_components_fk
+    AFTER INSERT OR UPDATE ON modems
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('modem_component_fk', 'modem', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('modems_components_fk', 'modems', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45423; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54189; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER modem_component_fk
-    AFTER DELETE ON component
-    FROM modem
+CREATE CONSTRAINT TRIGGER modems_components_fk
+    AFTER DELETE ON components
+    FROM modems
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('modem_component_fk', 'modem', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('modems_components_fk', 'modems', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45424; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54190; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER modem_component_fk
-    AFTER UPDATE ON component
-    FROM modem
+CREATE CONSTRAINT TRIGGER modems_components_fk
+    AFTER UPDATE ON components
+    FROM modems
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('modem_component_fk', 'modem', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('modems_components_fk', 'modems', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45425; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54191; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER monitor_component_fk
-    AFTER INSERT OR UPDATE ON monitor
-    FROM component
+CREATE CONSTRAINT TRIGGER monitors_components_fk
+    AFTER INSERT OR UPDATE ON monitors
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('monitor_component_fk', 'monitor', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('monitors_components_fk', 'monitors', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45426; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54192; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER monitor_component_fk
-    AFTER DELETE ON component
-    FROM monitor
+CREATE CONSTRAINT TRIGGER monitors_components_fk
+    AFTER DELETE ON components
+    FROM monitors
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('monitor_component_fk', 'monitor', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('monitors_components_fk', 'monitors', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45427; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54193; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER monitor_component_fk
-    AFTER UPDATE ON component
-    FROM monitor
+CREATE CONSTRAINT TRIGGER monitors_components_fk
+    AFTER UPDATE ON components
+    FROM monitors
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('monitor_component_fk', 'monitor', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('monitors_components_fk', 'monitors', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45428; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54194; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER pointingdevice_component_fk
-    AFTER INSERT OR UPDATE ON pointingdevice
-    FROM component
+CREATE CONSTRAINT TRIGGER pointingdevices_components_fk
+    AFTER INSERT OR UPDATE ON pointingdevices
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('pointingdevice_component_fk', 'pointingdevice', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('pointingdevices_components_fk', 'pointingdevices', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45429; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54195; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER pointingdevice_component_fk
-    AFTER DELETE ON component
-    FROM pointingdevice
+CREATE CONSTRAINT TRIGGER pointingdevices_components_fk
+    AFTER DELETE ON components
+    FROM pointingdevices
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('pointingdevice_component_fk', 'pointingdevice', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('pointingdevices_components_fk', 'pointingdevices', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45430; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54196; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER pointingdevice_component_fk
-    AFTER UPDATE ON component
-    FROM pointingdevice
+CREATE CONSTRAINT TRIGGER pointingdevices_components_fk
+    AFTER UPDATE ON components
+    FROM pointingdevices
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('pointingdevice_component_fk', 'pointingdevice', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('pointingdevices_components_fk', 'pointingdevices', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45431; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54197; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER powersupply_component_fk
-    AFTER INSERT OR UPDATE ON powersupply
-    FROM component
+CREATE CONSTRAINT TRIGGER powersupplies_components_fk
+    AFTER INSERT OR UPDATE ON powersupplies
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('powersupply_component_fk', 'powersupply', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('powersupplies_components_fk', 'powersupplies', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45432; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54198; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER powersupply_component_fk
-    AFTER DELETE ON component
-    FROM powersupply
+CREATE CONSTRAINT TRIGGER powersupplies_components_fk
+    AFTER DELETE ON components
+    FROM powersupplies
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('powersupply_component_fk', 'powersupply', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('powersupplies_components_fk', 'powersupplies', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45433; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54199; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER powersupply_component_fk
-    AFTER UPDATE ON component
-    FROM powersupply
+CREATE CONSTRAINT TRIGGER powersupplies_components_fk
+    AFTER UPDATE ON components
+    FROM powersupplies
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('powersupply_component_fk', 'powersupply', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('powersupplies_components_fk', 'powersupplies', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45434; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54200; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER printer_component_fk
-    AFTER INSERT OR UPDATE ON printer
-    FROM component
+CREATE CONSTRAINT TRIGGER printers_components_fk
+    AFTER INSERT OR UPDATE ON printers
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('printer_component_fk', 'printer', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('printers_components_fk', 'printers', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45435; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54201; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER printer_component_fk
-    AFTER DELETE ON component
-    FROM printer
+CREATE CONSTRAINT TRIGGER printers_components_fk
+    AFTER DELETE ON components
+    FROM printers
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('printer_component_fk', 'printer', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('printers_components_fk', 'printers', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45436; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54202; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER printer_component_fk
-    AFTER UPDATE ON component
-    FROM printer
+CREATE CONSTRAINT TRIGGER printers_components_fk
+    AFTER UPDATE ON components
+    FROM printers
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('printer_component_fk', 'printer', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('printers_components_fk', 'printers', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45437; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54203; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER processor_component_fk
-    AFTER INSERT OR UPDATE ON processor
-    FROM component
+CREATE CONSTRAINT TRIGGER processors_components_fk
+    AFTER INSERT OR UPDATE ON processors
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('processor_component_fk', 'processor', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('processors_components_fk', 'processors', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45438; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54204; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER processor_component_fk
-    AFTER DELETE ON component
-    FROM processor
+CREATE CONSTRAINT TRIGGER processors_components_fk
+    AFTER DELETE ON components
+    FROM processors
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('processor_component_fk', 'processor', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('processors_components_fk', 'processors', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45439; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54205; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER processor_component_fk
-    AFTER UPDATE ON component
-    FROM processor
+CREATE CONSTRAINT TRIGGER processors_components_fk
+    AFTER UPDATE ON components
+    FROM processors
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('processor_component_fk', 'processor', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('processors_components_fk', 'processors', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45440; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54206; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scanner_component_fk
-    AFTER INSERT OR UPDATE ON scanner
-    FROM component
+CREATE CONSTRAINT TRIGGER scanners_components_fk
+    AFTER INSERT OR UPDATE ON scanners
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('scanner_component_fk', 'scanner', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('scanners_components_fk', 'scanners', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45441; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54207; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scanner_component_fk
-    AFTER DELETE ON component
-    FROM scanner
+CREATE CONSTRAINT TRIGGER scanners_components_fk
+    AFTER DELETE ON components
+    FROM scanners
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('scanner_component_fk', 'scanner', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('scanners_components_fk', 'scanners', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45442; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54208; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER scanner_component_fk
-    AFTER UPDATE ON component
-    FROM scanner
+CREATE CONSTRAINT TRIGGER scanners_components_fk
+    AFTER UPDATE ON components
+    FROM scanners
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('scanner_component_fk', 'scanner', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('scanners_components_fk', 'scanners', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45443; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54209; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER speaker_component_fk
-    AFTER INSERT OR UPDATE ON speaker
-    FROM component
+CREATE CONSTRAINT TRIGGER speakers_components_fk
+    AFTER INSERT OR UPDATE ON speakers
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('speaker_component_fk', 'speaker', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('speakers_components_fk', 'speakers', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45444; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54210; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER speaker_component_fk
-    AFTER DELETE ON component
-    FROM speaker
+CREATE CONSTRAINT TRIGGER speakers_components_fk
+    AFTER DELETE ON components
+    FROM speakers
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('speaker_component_fk', 'speaker', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('speakers_components_fk', 'speakers', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45445; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54211; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER speaker_component_fk
-    AFTER UPDATE ON component
-    FROM speaker
+CREATE CONSTRAINT TRIGGER speakers_components_fk
+    AFTER UPDATE ON components
+    FROM speakers
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('speaker_component_fk', 'speaker', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('speakers_components_fk', 'speakers', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45446; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54212; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER systemboard_component_fk
-    AFTER INSERT OR UPDATE ON systemboard
-    FROM component
+CREATE CONSTRAINT TRIGGER systemboards_components_fk
+    AFTER INSERT OR UPDATE ON systemboards
+    FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('systemboard_component_fk', 'systemboard', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('systemboards_components_fk', 'systemboards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45447; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54213; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER systemboard_component_fk
-    AFTER DELETE ON component
-    FROM systemboard
+CREATE CONSTRAINT TRIGGER systemboards_components_fk
+    AFTER DELETE ON components
+    FROM systemboards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('systemboard_component_fk', 'systemboard', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('systemboards_components_fk', 'systemboards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45448; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54214; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER systemboard_component_fk
-    AFTER UPDATE ON component
-    FROM systemboard
+CREATE CONSTRAINT TRIGGER systemboards_components_fk
+    AFTER UPDATE ON components
+    FROM systemboards
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('systemboard_component_fk', 'systemboard', 'component', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('systemboards_components_fk', 'systemboards', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45449; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54215; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER miscgizmo_gizmo_fk
-    AFTER INSERT OR UPDATE ON miscgizmo
-    FROM gizmo
+CREATE CONSTRAINT TRIGGER miscgizmos_gizmos_fk
+    AFTER INSERT OR UPDATE ON miscgizmos
+    FROM gizmos
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('miscgizmo_gizmo_fk', 'miscgizmo', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('miscgizmos_gizmos_fk', 'miscgizmos', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45450; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54216; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER miscgizmo_gizmo_fk
-    AFTER DELETE ON gizmo
-    FROM miscgizmo
+CREATE CONSTRAINT TRIGGER miscgizmos_gizmos_fk
+    AFTER DELETE ON gizmos
+    FROM miscgizmos
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('miscgizmo_gizmo_fk', 'miscgizmo', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('miscgizmos_gizmos_fk', 'miscgizmos', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45451; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54217; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER miscgizmo_gizmo_fk
-    AFTER UPDATE ON gizmo
-    FROM miscgizmo
+CREATE CONSTRAINT TRIGGER miscgizmos_gizmos_fk
+    AFTER UPDATE ON gizmos
+    FROM miscgizmos
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('miscgizmo_gizmo_fk', 'miscgizmo', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('miscgizmos_gizmos_fk', 'miscgizmos', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45452; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54218; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER system_gizmo_fk
-    AFTER INSERT OR UPDATE ON system
-    FROM gizmo
+CREATE CONSTRAINT TRIGGER systems_gizmos_fk
+    AFTER INSERT OR UPDATE ON systems
+    FROM gizmos
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('system_gizmo_fk', 'system', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('systems_gizmos_fk', 'systems', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45453; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54219; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER system_gizmo_fk
-    AFTER DELETE ON gizmo
-    FROM system
+CREATE CONSTRAINT TRIGGER systems_gizmos_fk
+    AFTER DELETE ON gizmos
+    FROM systems
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('system_gizmo_fk', 'system', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('systems_gizmos_fk', 'systems', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45454; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54220; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER system_gizmo_fk
-    AFTER UPDATE ON gizmo
-    FROM system
+CREATE CONSTRAINT TRIGGER systems_gizmos_fk
+    AFTER UPDATE ON gizmos
+    FROM systems
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('system_gizmo_fk', 'system', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('systems_gizmos_fk', 'systems', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45455; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54221; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER systemcase_gizmo_fk
-    AFTER INSERT OR UPDATE ON systemcase
-    FROM gizmo
+CREATE CONSTRAINT TRIGGER systemcases_gizmos_fk
+    AFTER INSERT OR UPDATE ON systemcases
+    FROM gizmos
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('systemcase_gizmo_fk', 'systemcase', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('systemcases_gizmos_fk', 'systemcases', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45456; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54222; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER systemcase_gizmo_fk
-    AFTER DELETE ON gizmo
-    FROM systemcase
+CREATE CONSTRAINT TRIGGER systemcases_gizmos_fk
+    AFTER DELETE ON gizmos
+    FROM systemcases
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('systemcase_gizmo_fk', 'systemcase', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('systemcases_gizmos_fk', 'systemcases', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_45457; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_54223; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER systemcase_gizmo_fk
-    AFTER UPDATE ON gizmo
-    FROM systemcase
+CREATE CONSTRAINT TRIGGER systemcases_gizmos_fk
+    AFTER UPDATE ON gizmos
+    FROM systemcases
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('systemcase_gizmo_fk', 'systemcase', 'gizmo', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('systemcases_gizmos_fk', 'systemcases', 'gizmos', 'UNSPECIFIED', 'id', 'id');
 
 
 --
@@ -4227,46 +4227,6 @@ CREATE TRIGGER donation_modified_trigger
 
 
 --
--- Name: gizmo_created_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
---
-
-CREATE TRIGGER gizmo_created_trigger
-    BEFORE INSERT ON gizmo
-    FOR EACH ROW
-    EXECUTE PROCEDURE created_trigger();
-
-
---
--- Name: gizmo_modified_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
---
-
-CREATE TRIGGER gizmo_modified_trigger
-    BEFORE UPDATE ON gizmo
-    FOR EACH ROW
-    EXECUTE PROCEDURE modified_trigger();
-
-
---
--- Name: gizmo_status_change_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
---
-
-CREATE TRIGGER gizmo_status_change_trigger
-    BEFORE UPDATE ON gizmo
-    FOR EACH ROW
-    EXECUTE PROCEDURE gizmo_status_changed();
-
-
---
--- Name: gizmo_status_insert_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
---
-
-CREATE TRIGGER gizmo_status_insert_trigger
-    BEFORE INSERT ON gizmo
-    FOR EACH ROW
-    EXECUTE PROCEDURE gizmo_status_insert();
-
-
---
 -- Name: gizmoclones_created_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
@@ -4284,6 +4244,46 @@ CREATE TRIGGER gizmoclones_modified_trigger
     BEFORE UPDATE ON gizmoclones
     FOR EACH ROW
     EXECUTE PROCEDURE modified_trigger();
+
+
+--
+-- Name: gizmos_created_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
+--
+
+CREATE TRIGGER gizmos_created_trigger
+    BEFORE INSERT ON gizmos
+    FOR EACH ROW
+    EXECUTE PROCEDURE created_trigger();
+
+
+--
+-- Name: gizmos_modified_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
+--
+
+CREATE TRIGGER gizmos_modified_trigger
+    BEFORE UPDATE ON gizmos
+    FOR EACH ROW
+    EXECUTE PROCEDURE modified_trigger();
+
+
+--
+-- Name: gizmos_status_change_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
+--
+
+CREATE TRIGGER gizmos_status_change_trigger
+    BEFORE UPDATE ON gizmos
+    FOR EACH ROW
+    EXECUTE PROCEDURE gizmos_status_changed();
+
+
+--
+-- Name: gizmos_status_insert_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
+--
+
+CREATE TRIGGER gizmos_status_insert_trigger
+    BEFORE INSERT ON gizmos
+    FOR EACH ROW
+    EXECUTE PROCEDURE gizmos_status_insert();
 
 
 --
@@ -4667,243 +4667,243 @@ CREATE TRIGGER workmonths_modified_trigger
 
 
 --
--- Name: card_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: cards_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY card
-    ADD CONSTRAINT card_component_fk FOREIGN KEY (id) REFERENCES component(id);
-
-
---
--- Name: cddrive_drive_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY cddrive
-    ADD CONSTRAINT cddrive_drive_fk FOREIGN KEY (id) REFERENCES drive(id);
+ALTER TABLE ONLY cards
+    ADD CONSTRAINT cards_components_fk FOREIGN KEY (id) REFERENCES components(id);
 
 
 --
--- Name: component_gizmo_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: cddrives_drives_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY component
-    ADD CONSTRAINT component_gizmo_fk FOREIGN KEY (id) REFERENCES gizmo(id);
-
-
---
--- Name: controllercard_card_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY controllercard
-    ADD CONSTRAINT controllercard_card_fk FOREIGN KEY (id) REFERENCES card(id);
+ALTER TABLE ONLY cddrives
+    ADD CONSTRAINT cddrives_drives_fk FOREIGN KEY (id) REFERENCES drives(id);
 
 
 --
--- Name: drive_gizmo_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: components_gizmos_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY drive
-    ADD CONSTRAINT drive_gizmo_fk FOREIGN KEY (id) REFERENCES gizmo(id);
-
-
---
--- Name: floppydrive_drive_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY floppydrive
-    ADD CONSTRAINT floppydrive_drive_fk FOREIGN KEY (id) REFERENCES drive(id);
+ALTER TABLE ONLY components
+    ADD CONSTRAINT components_gizmos_fk FOREIGN KEY (id) REFERENCES gizmos(id);
 
 
 --
--- Name: ideharddrive_drive_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: controllercards_cards_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY ideharddrive
-    ADD CONSTRAINT ideharddrive_drive_fk FOREIGN KEY (id) REFERENCES drive(id);
-
-
---
--- Name: keyboard_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY keyboard
-    ADD CONSTRAINT keyboard_component_fk FOREIGN KEY (id) REFERENCES component(id);
+ALTER TABLE ONLY controllercards
+    ADD CONSTRAINT controllercards_cards_fk FOREIGN KEY (id) REFERENCES cards(id);
 
 
 --
--- Name: misccard_card_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: drives_gizmos_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY misccard
-    ADD CONSTRAINT misccard_card_fk FOREIGN KEY (id) REFERENCES card(id);
-
-
---
--- Name: misccompponent_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY misccomponent
-    ADD CONSTRAINT misccompponent_component_fk FOREIGN KEY (id) REFERENCES component(id);
+ALTER TABLE ONLY drives
+    ADD CONSTRAINT drives_gizmos_fk FOREIGN KEY (id) REFERENCES gizmos(id);
 
 
 --
--- Name: miscdrive_drive_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: floppydrives_drives_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY miscdrive
-    ADD CONSTRAINT miscdrive_drive_fk FOREIGN KEY (id) REFERENCES drive(id);
-
-
---
--- Name: miscgizmo_gizmo_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY miscgizmo
-    ADD CONSTRAINT miscgizmo_gizmo_fk FOREIGN KEY (id) REFERENCES gizmo(id);
+ALTER TABLE ONLY floppydrives
+    ADD CONSTRAINT floppydrives_drives_fk FOREIGN KEY (id) REFERENCES drives(id);
 
 
 --
--- Name: modem_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: ideharddrives_drives_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY modem
-    ADD CONSTRAINT modem_component_fk FOREIGN KEY (id) REFERENCES component(id);
-
-
---
--- Name: modemcard_card_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY modemcard
-    ADD CONSTRAINT modemcard_card_fk FOREIGN KEY (id) REFERENCES card(id);
+ALTER TABLE ONLY ideharddrives
+    ADD CONSTRAINT ideharddrives_drives_fk FOREIGN KEY (id) REFERENCES drives(id);
 
 
 --
--- Name: monitor_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: keyboards_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY monitor
-    ADD CONSTRAINT monitor_component_fk FOREIGN KEY (id) REFERENCES component(id);
-
-
---
--- Name: networkcard_card_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY networkcard
-    ADD CONSTRAINT networkcard_card_fk FOREIGN KEY (id) REFERENCES card(id);
+ALTER TABLE ONLY keyboards
+    ADD CONSTRAINT keyboards_components_fk FOREIGN KEY (id) REFERENCES components(id);
 
 
 --
--- Name: pointingdevice_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: misccards_cards_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY pointingdevice
-    ADD CONSTRAINT pointingdevice_component_fk FOREIGN KEY (id) REFERENCES component(id);
-
-
---
--- Name: powersupply_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY powersupply
-    ADD CONSTRAINT powersupply_component_fk FOREIGN KEY (id) REFERENCES component(id);
+ALTER TABLE ONLY misccards
+    ADD CONSTRAINT misccards_cards_fk FOREIGN KEY (id) REFERENCES cards(id);
 
 
 --
--- Name: printer_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: misccomponents_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY printer
-    ADD CONSTRAINT printer_component_fk FOREIGN KEY (id) REFERENCES component(id);
-
-
---
--- Name: processor_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY processor
-    ADD CONSTRAINT processor_component_fk FOREIGN KEY (id) REFERENCES component(id);
+ALTER TABLE ONLY misccomponents
+    ADD CONSTRAINT misccomponents_components_fk FOREIGN KEY (id) REFERENCES components(id);
 
 
 --
--- Name: scanner_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: miscdrives_drives_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY scanner
-    ADD CONSTRAINT scanner_component_fk FOREIGN KEY (id) REFERENCES component(id);
-
-
---
--- Name: scsicard_card_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY scsicard
-    ADD CONSTRAINT scsicard_card_fk FOREIGN KEY (id) REFERENCES card(id);
+ALTER TABLE ONLY miscdrives
+    ADD CONSTRAINT miscdrives_drives_fk FOREIGN KEY (id) REFERENCES drives(id);
 
 
 --
--- Name: scsiharddrive_drive_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: miscgizmos_gizmos_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY scsiharddrive
-    ADD CONSTRAINT scsiharddrive_drive_fk FOREIGN KEY (id) REFERENCES drive(id);
-
-
---
--- Name: soundcard_card_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY soundcard
-    ADD CONSTRAINT soundcard_card_fk FOREIGN KEY (id) REFERENCES card(id);
+ALTER TABLE ONLY miscgizmos
+    ADD CONSTRAINT miscgizmos_gizmos_fk FOREIGN KEY (id) REFERENCES gizmos(id);
 
 
 --
--- Name: speaker_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: modems_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY speaker
-    ADD CONSTRAINT speaker_component_fk FOREIGN KEY (id) REFERENCES component(id);
-
-
---
--- Name: system_gizmo_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY system
-    ADD CONSTRAINT system_gizmo_fk FOREIGN KEY (id) REFERENCES gizmo(id);
+ALTER TABLE ONLY modems
+    ADD CONSTRAINT modems_components_fk FOREIGN KEY (id) REFERENCES components(id);
 
 
 --
--- Name: systemboard_component_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: modemcards_cards_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY systemboard
-    ADD CONSTRAINT systemboard_component_fk FOREIGN KEY (id) REFERENCES component(id);
-
-
---
--- Name: systemcase_gizmo_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY systemcase
-    ADD CONSTRAINT systemcase_gizmo_fk FOREIGN KEY (id) REFERENCES gizmo(id);
+ALTER TABLE ONLY modemcards
+    ADD CONSTRAINT modemcards_cards_fk FOREIGN KEY (id) REFERENCES cards(id);
 
 
 --
--- Name: tapedrive_drive_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: monitors_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY tapedrive
-    ADD CONSTRAINT tapedrive_drive_fk FOREIGN KEY (id) REFERENCES drive(id);
+ALTER TABLE ONLY monitors
+    ADD CONSTRAINT monitors_components_fk FOREIGN KEY (id) REFERENCES components(id);
 
 
 --
--- Name: videocard_card_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+-- Name: networkcards_cards_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
-ALTER TABLE ONLY videocard
-    ADD CONSTRAINT videocard_card_fk FOREIGN KEY (id) REFERENCES card(id);
+ALTER TABLE ONLY networkcards
+    ADD CONSTRAINT networkcards_cards_fk FOREIGN KEY (id) REFERENCES cards(id);
+
+
+--
+-- Name: pointingdevices_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY pointingdevices
+    ADD CONSTRAINT pointingdevices_components_fk FOREIGN KEY (id) REFERENCES components(id);
+
+
+--
+-- Name: powersupplies_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY powersupplies
+    ADD CONSTRAINT powersupplies_components_fk FOREIGN KEY (id) REFERENCES components(id);
+
+
+--
+-- Name: printers_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY printers
+    ADD CONSTRAINT printers_components_fk FOREIGN KEY (id) REFERENCES components(id);
+
+
+--
+-- Name: processors_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY processors
+    ADD CONSTRAINT processors_components_fk FOREIGN KEY (id) REFERENCES components(id);
+
+
+--
+-- Name: scanners_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY scanners
+    ADD CONSTRAINT scanners_components_fk FOREIGN KEY (id) REFERENCES components(id);
+
+
+--
+-- Name: scsicards_cards_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY scsicards
+    ADD CONSTRAINT scsicards_cards_fk FOREIGN KEY (id) REFERENCES cards(id);
+
+
+--
+-- Name: scsiharddrives_drives_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY scsiharddrives
+    ADD CONSTRAINT scsiharddrives_drives_fk FOREIGN KEY (id) REFERENCES drives(id);
+
+
+--
+-- Name: soundcards_cards_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY soundcards
+    ADD CONSTRAINT soundcards_cards_fk FOREIGN KEY (id) REFERENCES cards(id);
+
+
+--
+-- Name: speakers_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY speakers
+    ADD CONSTRAINT speakers_components_fk FOREIGN KEY (id) REFERENCES components(id);
+
+
+--
+-- Name: systems_gizmos_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY systems
+    ADD CONSTRAINT systems_gizmos_fk FOREIGN KEY (id) REFERENCES gizmos(id);
+
+
+--
+-- Name: systemboards_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY systemboards
+    ADD CONSTRAINT systemboards_components_fk FOREIGN KEY (id) REFERENCES components(id);
+
+
+--
+-- Name: systemcases_gizmos_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY systemcases
+    ADD CONSTRAINT systemcases_gizmos_fk FOREIGN KEY (id) REFERENCES gizmos(id);
+
+
+--
+-- Name: tapedrives_drives_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY tapedrives
+    ADD CONSTRAINT tapedrives_drives_fk FOREIGN KEY (id) REFERENCES drives(id);
+
+
+--
+-- Name: videocards_cards_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY videocards
+    ADD CONSTRAINT videocards_cards_fk FOREIGN KEY (id) REFERENCES cards(id);
 
 
 --
