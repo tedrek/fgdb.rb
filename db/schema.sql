@@ -47,42 +47,6 @@ $$
 
 
 --
--- Name: gizmos_status_changed(); Type: FUNCTION; Schema: public; Owner: stillflame
---
-
-CREATE FUNCTION gizmos_status_changed() RETURNS "trigger"
-    AS $$
-  BEGIN
-    IF NEW.newstatus <> OLD.newstatus THEN
-      INSERT INTO gizmostatuschanges (id, oldStatus, newStatus) VALUES (OLD.id, OLD.newstatus, NEW.newstatus);
-      -- this is redundant oldstatus is in the history table, so
-      -- it does not really need to be in gizmos as well
-      NEW.oldstatus := OLD.newstatus;
-    END IF;
-    RETURN NEW;
-  END;
-$$
-    LANGUAGE plpgsql;
-
-
---
--- Name: gizmos_status_insert(); Type: FUNCTION; Schema: public; Owner: stillflame
---
-
-CREATE FUNCTION gizmos_status_insert() RETURNS "trigger"
-    AS $$
-  BEGIN
-    INSERT INTO gizmostatuschanges (id, oldStatus, newStatus) VALUES (NEW.id, 'none', NEW.newstatus);
-    -- this is redundant oldstatus is in the history table, so
-    -- it does not really need to be in gizmos as well
-    NEW.oldstatus := 'none';
-    RETURN NEW;
-  END;
-$$
-    LANGUAGE plpgsql;
-
-
---
 -- Name: modified_trigger(); Type: FUNCTION; Schema: public; Owner: stillflame
 --
 
@@ -106,7 +70,6 @@ SET default_with_oids = true;
 
 CREATE TABLE cards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     slot_type character varying(10)
 );
 
@@ -117,7 +80,6 @@ CREATE TABLE cards (
 
 CREATE TABLE cd_drives (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     interface character varying(10) DEFAULT ''::character varying,
     speed character varying(10) DEFAULT ''::character varying,
     write_mode character varying(15) DEFAULT ''::character varying,
@@ -131,8 +93,7 @@ CREATE TABLE cd_drives (
 --
 
 CREATE TABLE cell_phones (
-    id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100)
+    id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -170,7 +131,6 @@ CREATE SEQUENCE class_trees_id_seq
 
 CREATE TABLE components (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     system_id integer DEFAULT 0 NOT NULL
 );
 
@@ -181,7 +141,6 @@ CREATE TABLE components (
 
 CREATE TABLE controller_cards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     serial_ports integer DEFAULT 0 NOT NULL,
     parallel_ports integer DEFAULT 0 NOT NULL,
     ide_ports integer DEFAULT 0 NOT NULL,
@@ -218,8 +177,7 @@ CREATE SEQUENCE default_values_id_seq
 --
 
 CREATE TABLE drives (
-    id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100)
+    id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -229,7 +187,6 @@ CREATE TABLE drives (
 
 CREATE TABLE floppy_drives (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     disk_size character varying(10),
     capacity character varying(10),
     cylinders integer DEFAULT 0,
@@ -317,27 +274,27 @@ CREATE SEQUENCE gizmo_statuses_id_seq
 
 CREATE TABLE gizmos (
     id integer DEFAULT nextval('Gizmos_id_seq'::text) NOT NULL,
-    class_tree character varying(100),
     gizmo_status_id integer,
+    class_tree_id integer,
     modified timestamp with time zone DEFAULT now(),
-    created timestamp with time zone DEFAULT now(),
-    obsolete boolean DEFAULT false,
-    working character varying(1) DEFAULT 'M'::character varying NOT NULL,
-    architecture character varying(10) DEFAULT 'PC'::character varying NOT NULL,
-    manufacturer character varying(50),
-    model_number character varying(50),
-    "location" character varying(10) DEFAULT 'Free Geek'::character varying NOT NULL,
-    notes text,
-    value numeric(5,1) DEFAULT 0.0 NOT NULL,
-    inventoried timestamp with time zone DEFAULT now(),
-    builder_id integer DEFAULT 0 NOT NULL,
-    inspector_id integer DEFAULT 0 NOT NULL,
-    linux_fund boolean DEFAULT false,
-    cash_value numeric(8,2) DEFAULT 0.00 NOT NULL,
-    needs_expert_attention boolean DEFAULT false,
-    gizmo_type character varying(10) DEFAULT 'Other'::character varying,
-    adopter_id integer DEFAULT 0 NOT NULL,
-    CONSTRAINT gizmos_working CHECK (((((working)::text = ('N'::character varying)::text) OR ((working)::text = ('Y'::character varying)::text)) OR ((working)::text = ('M'::character varying)::text)))
+    created timestamp with time zone DEFAULT now() --,
+--     obsolete boolean DEFAULT false,
+--     working character varying(1) DEFAULT 'M'::character varying NOT NULL,
+--     architecture character varying(10) DEFAULT 'PC'::character varying NOT NULL,
+--     manufacturer character varying(50),
+--     model_number character varying(50),
+--     "location" character varying(10) DEFAULT 'Free Geek'::character varying NOT NULL,
+--     notes text,
+--     value numeric(5,1) DEFAULT 0.0 NOT NULL,
+--     inventoried timestamp with time zone DEFAULT now(),
+--     builder_id integer DEFAULT 0 NOT NULL,
+--     inspector_id integer DEFAULT 0 NOT NULL,
+--     linux_fund boolean DEFAULT false,
+--     cash_value numeric(8,2) DEFAULT 0.00 NOT NULL,
+--     needs_expert_attention boolean DEFAULT false,
+--     gizmo_type character varying(10) DEFAULT 'Other'::character varying,
+--     adopter_id integer DEFAULT 0 NOT NULL,
+--     CONSTRAINT gizmos_working CHECK (((((working)::text = ('N'::character varying)::text) OR ((working)::text = ('Y'::character varying)::text)) OR ((working)::text = ('M'::character varying)::text)))
 );
 
 
@@ -359,7 +316,6 @@ CREATE SEQUENCE gizmos_id_seq
 
 CREATE TABLE ide_hard_drives (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     cylinders integer DEFAULT 0 NOT NULL,
     heads integer DEFAULT 0 NOT NULL,
     sectors integer DEFAULT 0 NOT NULL,
@@ -374,7 +330,6 @@ CREATE TABLE ide_hard_drives (
 
 CREATE TABLE keyboards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     connector_type character varying(10),
     number_of_keys character varying(10)
 );
@@ -386,7 +341,6 @@ CREATE TABLE keyboards (
 
 CREATE TABLE laptops (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     ram integer,
     hard_drives_size integer DEFAULT 0,
     processor_class character varying(15),
@@ -400,7 +354,6 @@ CREATE TABLE laptops (
 
 CREATE TABLE misc_cards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     misc_notes text
 );
 
@@ -411,7 +364,6 @@ CREATE TABLE misc_cards (
 
 CREATE TABLE misc_components (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     misc_notes text
 );
 
@@ -422,7 +374,6 @@ CREATE TABLE misc_components (
 
 CREATE TABLE misc_drives (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     misc_notes text
 );
 
@@ -432,8 +383,7 @@ CREATE TABLE misc_drives (
 --
 
 CREATE TABLE misc_gizmos (
-    id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100)
+    id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -443,7 +393,6 @@ CREATE TABLE misc_gizmos (
 
 CREATE TABLE modem_cards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     speed character varying(15)
 );
 
@@ -454,7 +403,6 @@ CREATE TABLE modem_cards (
 
 CREATE TABLE modems (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     speed character varying(15)
 );
 
@@ -465,7 +413,6 @@ CREATE TABLE modems (
 
 CREATE TABLE monitors (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     size character varying(10),
     resolution character varying(10)
 );
@@ -477,7 +424,6 @@ CREATE TABLE monitors (
 
 CREATE TABLE network_cards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     speed character varying(10),
     rj45 boolean DEFAULT false,
     aux boolean DEFAULT false,
@@ -495,7 +441,6 @@ CREATE TABLE network_cards (
 
 CREATE TABLE networking_devices (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     speed character varying(10),
     rj45 boolean DEFAULT false,
     aux boolean DEFAULT false,
@@ -510,7 +455,6 @@ CREATE TABLE networking_devices (
 
 CREATE TABLE pointing_devices (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     connector_type character varying(10),
     pointer_type character varying(10)
 );
@@ -522,7 +466,6 @@ CREATE TABLE pointing_devices (
 
 CREATE TABLE power_supplies (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     watts integer DEFAULT 0 NOT NULL,
     connection character varying(10)
 );
@@ -534,7 +477,6 @@ CREATE TABLE power_supplies (
 
 CREATE TABLE printers (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     page_per_minute integer DEFAULT 0 NOT NULL,
     printer_type character varying(10),
     interface character varying(10) DEFAULT 'Parallel'::character varying
@@ -547,7 +489,6 @@ CREATE TABLE printers (
 
 CREATE TABLE processors (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     "class" character varying(15),
     interface character varying(10),
     speed integer DEFAULT 0 NOT NULL
@@ -560,7 +501,6 @@ CREATE TABLE processors (
 
 CREATE TABLE scanners (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     interface character varying(10)
 );
 
@@ -571,7 +511,6 @@ CREATE TABLE scanners (
 
 CREATE TABLE scsi_cards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     internal_interface character varying(15),
     external_interface character varying(15),
     parms text
@@ -584,7 +523,6 @@ CREATE TABLE scsi_cards (
 
 CREATE TABLE scsi_hard_drives (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     size integer DEFAULT 0 NOT NULL,
     scsi_version character varying(10)
 );
@@ -596,7 +534,6 @@ CREATE TABLE scsi_hard_drives (
 
 CREATE TABLE sound_cards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     sound_type character varying(15)
 );
 
@@ -607,7 +544,6 @@ CREATE TABLE sound_cards (
 
 CREATE TABLE speakers (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     powered boolean DEFAULT false,
     subwoofer boolean DEFAULT false
 );
@@ -618,8 +554,7 @@ CREATE TABLE speakers (
 --
 
 CREATE TABLE stereos (
-    id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100)
+    id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -629,7 +564,6 @@ CREATE TABLE stereos (
 
 CREATE TABLE system_boards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     pci_slots integer DEFAULT 0 NOT NULL,
     vesa_slots integer DEFAULT 0 NOT NULL,
     isa_slots integer DEFAULT 0 NOT NULL,
@@ -651,7 +585,6 @@ CREATE TABLE system_boards (
 
 CREATE TABLE system_cases (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     case_type character varying(10)
 );
 
@@ -662,7 +595,6 @@ CREATE TABLE system_cases (
 
 CREATE TABLE systems (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     system_configuration text,
     system_boards text,
     adapter_information text,
@@ -690,7 +622,6 @@ CREATE TABLE systems (
 
 CREATE TABLE tape_drives (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     interface character varying(15)
 );
 
@@ -701,7 +632,6 @@ CREATE TABLE tape_drives (
 
 CREATE TABLE upses (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     rj11 boolean DEFAULT false,
     rj45 boolean DEFAULT false,
     usb boolean DEFAULT false,
@@ -717,8 +647,7 @@ CREATE TABLE upses (
 --
 
 CREATE TABLE vcrs (
-    id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100)
+    id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -728,7 +657,6 @@ CREATE TABLE vcrs (
 
 CREATE TABLE video_cards (
     id integer DEFAULT 0 NOT NULL,
-    class_tree character varying(100),
     memory character varying(10),
     resolutions text
 );
@@ -2152,26 +2080,6 @@ CREATE TRIGGER gizmos_modified_trigger
     BEFORE UPDATE ON gizmos
     FOR EACH ROW
     EXECUTE PROCEDURE modified_trigger();
-
-
---
--- Name: gizmos_status_change_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
---
-
-CREATE TRIGGER gizmos_status_change_trigger
-    BEFORE UPDATE ON gizmos
-    FOR EACH ROW
-    EXECUTE PROCEDURE gizmos_status_changed();
-
-
---
--- Name: gizmos_status_insert_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
---
-
-CREATE TRIGGER gizmos_status_insert_trigger
-    BEFORE INSERT ON gizmos
-    FOR EACH ROW
-    EXECUTE PROCEDURE gizmos_status_insert();
 
 
 --

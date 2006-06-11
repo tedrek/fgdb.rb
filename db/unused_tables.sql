@@ -2465,3 +2465,59 @@ CREATE TRIGGER workmonths_modified_trigger
     EXECUTE PROCEDURE modified_trigger();
 
 
+--
+-- Name: gizmos_status_changed(); Type: FUNCTION; Schema: public; Owner: stillflame
+--
+
+CREATE FUNCTION gizmos_status_changed() RETURNS "trigger"
+    AS $$
+  BEGIN
+    IF NEW.newstatus <> OLD.newstatus THEN
+      INSERT INTO gizmostatuschanges (id, oldStatus, newStatus) VALUES (OLD.id, OLD.newstatus, NEW.newstatus);
+      -- this is redundant oldstatus is in the history table, so
+      -- it does not really need to be in gizmos as well
+      NEW.oldstatus := OLD.newstatus;
+    END IF;
+    RETURN NEW;
+  END;
+$$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: gizmos_status_insert(); Type: FUNCTION; Schema: public; Owner: stillflame
+--
+
+CREATE FUNCTION gizmos_status_insert() RETURNS "trigger"
+    AS $$
+  BEGIN
+    INSERT INTO gizmostatuschanges (id, oldStatus, newStatus) VALUES (NEW.id, 'none', NEW.newstatus);
+    -- this is redundant oldstatus is in the history table, so
+    -- it does not really need to be in gizmos as well
+    NEW.oldstatus := 'none';
+    RETURN NEW;
+  END;
+$$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: gizmos_status_change_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
+--
+
+CREATE TRIGGER gizmos_status_change_trigger
+    BEFORE UPDATE ON gizmos
+    FOR EACH ROW
+    EXECUTE PROCEDURE gizmos_status_changed();
+
+
+--
+-- Name: gizmos_status_insert_trigger; Type: TRIGGER; Schema: public; Owner: stillflame
+--
+
+CREATE TRIGGER gizmos_status_insert_trigger
+    BEFORE INSERT ON gizmos
+    FOR EACH ROW
+    EXECUTE PROCEDURE gizmos_status_insert();
+
+
