@@ -2,6 +2,18 @@
 SCHEMADUMPFILE = 'db/schema.sql'
 DATADUMPFILE = 'db/devel_data.sql'
 
+def dump_metadata( rails_env = "development" )
+  abcs, search_path = setup_environment(rails_env)
+  case abcs[rails_env]["adapter"] 
+  when "postgresql"
+    print "Dumping the metadata..."
+    print ":TODO:"
+    puts "done"
+  else 
+    raise "Task not supported by '#{abcs["test"]["adapter"]}'"
+  end
+end
+
 def dump_schema( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
   case abcs[rails_env]["adapter"] 
@@ -22,6 +34,18 @@ def dump_data( rails_env = "development" )
     print "Dumping the data..."
     `pg_dump -i -U "#{abcs[rails_env]["username"]}" -a -x -O -f #{DATADUMPFILE} #{search_path} #{abcs[rails_env]["database"]}`
     raise "Error dumping database" if $?.exitstatus == 1
+    puts "done"
+  else 
+    raise "Task not supported by '#{abcs["test"]["adapter"]}'"
+  end
+end
+
+def load_metadata( rails_env = "development" )
+  abcs, search_path = setup_environment(rails_env)
+  case abcs[rails_env]["adapter"] 
+  when "postgresql"
+    print "Loading the meta data..."
+    print ":TODO:"
     puts "done"
   else 
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
@@ -76,6 +100,20 @@ def setup_environment(rails_env)
 end
 
 namespace :db do
+  namespace :metadata do
+
+    desc "Dump the metadata-related data from devel to SQL"
+    task :dump => :environment do
+      dump_metadata
+    end
+
+    desc "Load the metadata to all databases"
+    task :load => :environment do
+      load_metadata
+    end
+
+  end # namespace :metadata
+
   namespace :schema do
 
     desc "Dump the development database to an SQL file"
@@ -88,7 +126,7 @@ namespace :db do
       load_schema
     end
 
-  end
+  end # namespace :schema
 
   namespace :data do
 
@@ -104,7 +142,7 @@ namespace :db do
       load_data
     end
 
-  end
+  end # namespace :data
 
   namespace :test do
 
@@ -113,5 +151,6 @@ namespace :db do
       load_schema("test")
     end
 
-  end
-end
+  end # namespace :test
+
+end # namespace :db
