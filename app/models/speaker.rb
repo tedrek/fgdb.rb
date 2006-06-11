@@ -1,2 +1,2 @@
-class Speaker < ActiveRecord::Base
+class Speaker < Component
 end

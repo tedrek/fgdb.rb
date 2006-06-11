@@ -1,2 +1,2 @@
-class Keyboard < ActiveRecord::Base
+class Keyboard < Component
 end

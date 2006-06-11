@@ -1,2 +1,2 @@
-class CdDrive < ActiveRecord::Base
+class CdDrive < Drive
 end

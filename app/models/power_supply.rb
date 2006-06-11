@@ -1,2 +1,2 @@
-class PowerSupply < ActiveRecord::Base
+class PowerSupply < Component
 end

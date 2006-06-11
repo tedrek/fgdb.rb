@@ -1,2 +1,2 @@
-class SystemCase < ActiveRecord::Base
+class SystemCase < Component
 end

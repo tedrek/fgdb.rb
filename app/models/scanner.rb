@@ -1,2 +1,2 @@
-class Scanner < ActiveRecord::Base
+class Scanner < Component
 end

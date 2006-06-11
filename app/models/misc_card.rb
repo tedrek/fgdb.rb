@@ -1,2 +1,2 @@
-class MiscCard < ActiveRecord::Base
+class MiscCard < Card
 end

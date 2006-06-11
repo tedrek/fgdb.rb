@@ -1,2 +1,2 @@
-class PointingDevice < ActiveRecord::Base
+class PointingDevice < Component
 end

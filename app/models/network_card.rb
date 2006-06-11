@@ -1,2 +1,2 @@
-class NetworkCard < ActiveRecord::Base
+class NetworkCard < Card
 end

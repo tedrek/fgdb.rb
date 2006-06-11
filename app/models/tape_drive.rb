@@ -1,2 +1,2 @@
-class TapeDrive < ActiveRecord::Base
+class TapeDrive < Drive
 end

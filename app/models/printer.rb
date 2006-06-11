@@ -1,2 +1,2 @@
-class Printer < ActiveRecord::Base
+class Printer < Component
 end

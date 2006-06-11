@@ -1,2 +1,2 @@
-class Laptop < ActiveRecord::Base
+class Laptop < Gizmo
 end

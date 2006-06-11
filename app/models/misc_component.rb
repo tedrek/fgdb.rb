@@ -1,2 +1,2 @@
-class MiscComponent < ActiveRecord::Base
+class MiscComponent < Component
 end

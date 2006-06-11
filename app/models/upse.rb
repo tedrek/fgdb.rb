@@ -1,2 +1,2 @@
-class Upse < ActiveRecord::Base
+class Ups < Gizmo
 end

@@ -1,2 +1,2 @@
-class MiscGizmo < ActiveRecord::Base
+class MiscGizmo < Gizmo
 end

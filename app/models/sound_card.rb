@@ -1,2 +1,2 @@
-class SoundCard < ActiveRecord::Base
+class SoundCard < Card
 end

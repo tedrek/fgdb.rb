@@ -1,2 +1,2 @@
-class ScsiCard < ActiveRecord::Base
+class ScsiCard < Card
 end

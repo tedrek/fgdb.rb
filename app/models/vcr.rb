@@ -1,2 +1,2 @@
-class Vcr < ActiveRecord::Base
+class Vcr < Gizmo
 end

@@ -1,2 +1,2 @@
-class ScsiHardDrive < ActiveRecord::Base
+class ScsiHardDrive < Drive
 end

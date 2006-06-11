@@ -1,2 +1,2 @@
-class ControllerCard < ActiveRecord::Base
+class ControllerCard < Card
 end

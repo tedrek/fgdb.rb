@@ -1,2 +1,2 @@
-class NetworkingDevice < ActiveRecord::Base
+class NetworkingDevice < Gizmo
 end

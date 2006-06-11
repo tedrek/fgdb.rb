@@ -1,2 +1,2 @@
-class IdeHardDrive < ActiveRecord::Base
+class IdeHardDrive < Drive
 end

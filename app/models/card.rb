@@ -1,2 +1,2 @@
-class Card < ActiveRecord::Base
+class Card < Component
 end

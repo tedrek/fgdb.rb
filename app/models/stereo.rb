@@ -1,2 +1,2 @@
-class Stereo < ActiveRecord::Base
+class Stereo < Gizmo
 end

@@ -1,2 +1,2 @@
-class System < ActiveRecord::Base
+class System < Gizmo
 end

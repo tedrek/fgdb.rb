@@ -1,2 +1,2 @@
-class MiscDrive < ActiveRecord::Base
+class MiscDrive < Drive
 end

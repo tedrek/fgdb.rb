@@ -1,2 +1,2 @@
-class SystemBoard < ActiveRecord::Base
+class SystemBoard < Component
 end

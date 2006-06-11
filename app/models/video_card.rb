@@ -1,2 +1,2 @@
-class VideoCard < ActiveRecord::Base
+class VideoCard < Card
 end

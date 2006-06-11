@@ -1,2 +1,2 @@
-class ModemCard < ActiveRecord::Base
+class ModemCard < Card
 end

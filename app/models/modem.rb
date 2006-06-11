@@ -1,2 +1,2 @@
-class Modem < ActiveRecord::Base
+class Modem < Component
 end

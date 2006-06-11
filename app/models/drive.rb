@@ -1,2 +1,2 @@
-class Drive < ActiveRecord::Base
+class Drive < Component
 end

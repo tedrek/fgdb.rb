@@ -1,2 +1,2 @@
-class FloppyDrive < ActiveRecord::Base
+class FloppyDrive < Drive
 end

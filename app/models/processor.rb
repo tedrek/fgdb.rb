@@ -1,2 +1,2 @@
-class Processor < ActiveRecord::Base
+class Processor < Component
 end

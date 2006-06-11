@@ -1,2 +1,2 @@
-class CellPhone < ActiveRecord::Base
+class CellPhone < Gizmo
 end
