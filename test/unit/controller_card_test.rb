@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ControllerCardTest < Test::Unit::TestCase
-  fixtures :controller_cards
+  fixtures :gizmos, :controller_cards
 
   # Replace this with your real tests.
   def test_truth

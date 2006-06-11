@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class MiscComponentTest < Test::Unit::TestCase
-  fixtures :misc_components
+  fixtures :gizmos, :misc_components
 
   # Replace this with your real tests.
   def test_truth

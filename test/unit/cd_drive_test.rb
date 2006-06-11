@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CdDriveTest < Test::Unit::TestCase
-  fixtures :cd_drives
+  fixtures :gizmos, :cd_drives
 
   # Replace this with your real tests.
   def test_truth

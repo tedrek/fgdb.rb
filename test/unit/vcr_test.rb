@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class VcrTest < Test::Unit::TestCase
-  fixtures :vcrs
+  fixtures :gizmos, :vcrs
 
   # Replace this with your real tests.
   def test_truth

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class PointingDeviceTest < Test::Unit::TestCase
-  fixtures :pointing_devices
+  fixtures :gizmos, :pointing_devices
 
   # Replace this with your real tests.
   def test_truth
