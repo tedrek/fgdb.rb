@@ -173,6 +173,17 @@ CREATE SEQUENCE default_values_id_seq
 
 
 --
+-- Name: displays; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE displays (
+    id integer DEFAULT 0 NOT NULL,
+    size character varying(10),
+    resolution character varying(10)
+);
+
+
+--
 -- Name: drives; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
@@ -386,17 +397,6 @@ CREATE TABLE modem_cards (
 CREATE TABLE modems (
     id integer DEFAULT 0 NOT NULL,
     speed character varying(15)
-);
-
-
---
--- Name: monitors; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
---
-
-CREATE TABLE monitors (
-    id integer DEFAULT 0 NOT NULL,
-    size character varying(10),
-    resolution character varying(10)
 );
 
 
@@ -701,6 +701,14 @@ ALTER TABLE ONLY default_values
 
 
 --
+-- Name: displays_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY displays
+    ADD CONSTRAINT displays_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: drives_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
@@ -818,14 +826,6 @@ ALTER TABLE ONLY modem_cards
 
 ALTER TABLE ONLY modems
     ADD CONSTRAINT modems_pkey PRIMARY KEY (id);
-
-
---
--- Name: monitors_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
---
-
-ALTER TABLE ONLY monitors
-    ADD CONSTRAINT monitors_pkey PRIMARY KEY (id);
 
 
 --
@@ -981,7 +981,7 @@ ALTER TABLE ONLY video_cards
 
 
 --
--- Name: RI_ConstraintTrigger_62087; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63210; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER components_gizmo_fk
@@ -993,7 +993,7 @@ CREATE CONSTRAINT TRIGGER components_gizmo_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62088; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63211; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER components_gizmos_fk
@@ -1005,7 +1005,7 @@ CREATE CONSTRAINT TRIGGER components_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62089; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63212; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER components_gizmos_fk
@@ -1017,7 +1017,7 @@ CREATE CONSTRAINT TRIGGER components_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62090; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63213; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER cards_components_fk
@@ -1029,7 +1029,7 @@ CREATE CONSTRAINT TRIGGER cards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62091; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63214; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER cards_components_fk
@@ -1041,7 +1041,7 @@ CREATE CONSTRAINT TRIGGER cards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62092; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63215; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER cards_components_fk
@@ -1053,7 +1053,7 @@ CREATE CONSTRAINT TRIGGER cards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62093; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63216; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_cards_cards_fk
@@ -1065,7 +1065,7 @@ CREATE CONSTRAINT TRIGGER misc_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62094; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63217; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_cards_cards_fk
@@ -1077,7 +1077,7 @@ CREATE CONSTRAINT TRIGGER misc_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62095; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63218; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_cards_cards_fk
@@ -1089,7 +1089,7 @@ CREATE CONSTRAINT TRIGGER misc_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62096; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63219; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER modem_cards_cards_fk
@@ -1101,7 +1101,7 @@ CREATE CONSTRAINT TRIGGER modem_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62097; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63220; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER modem_cards_cards_fk
@@ -1113,7 +1113,7 @@ CREATE CONSTRAINT TRIGGER modem_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62098; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63221; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER modem_cards_cards_fk
@@ -1125,7 +1125,7 @@ CREATE CONSTRAINT TRIGGER modem_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62099; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63222; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER network_cards_cards_fk
@@ -1137,7 +1137,7 @@ CREATE CONSTRAINT TRIGGER network_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62100; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63223; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER network_cards_cards_fk
@@ -1149,7 +1149,7 @@ CREATE CONSTRAINT TRIGGER network_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62101; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63224; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER network_cards_cards_fk
@@ -1161,7 +1161,7 @@ CREATE CONSTRAINT TRIGGER network_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62102; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63225; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scsi_cards_cards_fk
@@ -1173,7 +1173,7 @@ CREATE CONSTRAINT TRIGGER scsi_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62103; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63226; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scsi_cards_cards_fk
@@ -1185,7 +1185,7 @@ CREATE CONSTRAINT TRIGGER scsi_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62104; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63227; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scsi_cards_cards_fk
@@ -1197,7 +1197,7 @@ CREATE CONSTRAINT TRIGGER scsi_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62105; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63228; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER sound_cards_cards_fk
@@ -1209,7 +1209,7 @@ CREATE CONSTRAINT TRIGGER sound_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62106; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63229; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER sound_cards_cards_fk
@@ -1221,7 +1221,7 @@ CREATE CONSTRAINT TRIGGER sound_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62107; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63230; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER sound_cards_cards_fk
@@ -1233,7 +1233,7 @@ CREATE CONSTRAINT TRIGGER sound_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62108; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63231; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER video_cards_cards_fk
@@ -1245,7 +1245,7 @@ CREATE CONSTRAINT TRIGGER video_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62109; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63232; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER video_cards_cards_fk
@@ -1257,7 +1257,7 @@ CREATE CONSTRAINT TRIGGER video_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62110; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63233; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER video_cards_cards_fk
@@ -1269,7 +1269,7 @@ CREATE CONSTRAINT TRIGGER video_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62111; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63234; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER controller_cards_cards_fk
@@ -1281,7 +1281,7 @@ CREATE CONSTRAINT TRIGGER controller_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62112; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63235; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER controller_cards_cards_fk
@@ -1293,7 +1293,7 @@ CREATE CONSTRAINT TRIGGER controller_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62113; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63236; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER controller_cards_cards_fk
@@ -1305,7 +1305,7 @@ CREATE CONSTRAINT TRIGGER controller_cards_cards_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62114; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63237; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER drives_gizmos_fk
@@ -1317,7 +1317,7 @@ CREATE CONSTRAINT TRIGGER drives_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62115; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63238; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER drives_gizmos_fk
@@ -1329,7 +1329,7 @@ CREATE CONSTRAINT TRIGGER drives_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62116; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63239; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER drives_gizmos_fk
@@ -1341,7 +1341,7 @@ CREATE CONSTRAINT TRIGGER drives_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62117; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63240; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER floppy_drives_drives_fk
@@ -1353,7 +1353,7 @@ CREATE CONSTRAINT TRIGGER floppy_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62118; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63241; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER floppy_drives_drives_fk
@@ -1365,7 +1365,7 @@ CREATE CONSTRAINT TRIGGER floppy_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62119; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63242; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER floppy_drives_drives_fk
@@ -1377,7 +1377,7 @@ CREATE CONSTRAINT TRIGGER floppy_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62120; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63243; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER ide_hard_drives_drives_fk
@@ -1389,7 +1389,7 @@ CREATE CONSTRAINT TRIGGER ide_hard_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62121; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63244; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER ide_hard_drives_drives_fk
@@ -1401,7 +1401,7 @@ CREATE CONSTRAINT TRIGGER ide_hard_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62122; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63245; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER ide_hard_drives_drives_fk
@@ -1413,7 +1413,7 @@ CREATE CONSTRAINT TRIGGER ide_hard_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62123; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63246; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_drives_drives_fk
@@ -1425,7 +1425,7 @@ CREATE CONSTRAINT TRIGGER misc_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62124; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63247; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_drives_drives_fk
@@ -1437,7 +1437,7 @@ CREATE CONSTRAINT TRIGGER misc_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62125; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63248; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_drives_drives_fk
@@ -1449,7 +1449,7 @@ CREATE CONSTRAINT TRIGGER misc_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62126; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63249; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scsi_hard_drives_drives_fk
@@ -1461,7 +1461,7 @@ CREATE CONSTRAINT TRIGGER scsi_hard_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62127; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63250; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scsi_hard_drives_drives_fk
@@ -1473,7 +1473,7 @@ CREATE CONSTRAINT TRIGGER scsi_hard_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62128; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63251; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scsi_hard_drives_drives_fk
@@ -1485,7 +1485,7 @@ CREATE CONSTRAINT TRIGGER scsi_hard_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62129; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63252; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER tape_drives_drives_fk
@@ -1497,7 +1497,7 @@ CREATE CONSTRAINT TRIGGER tape_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62130; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63253; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER tape_drives_drives_fk
@@ -1509,7 +1509,7 @@ CREATE CONSTRAINT TRIGGER tape_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62131; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63254; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER tape_drives_drives_fk
@@ -1521,7 +1521,7 @@ CREATE CONSTRAINT TRIGGER tape_drives_drives_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62132; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63255; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER keyboards_components_fk
@@ -1533,7 +1533,7 @@ CREATE CONSTRAINT TRIGGER keyboards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62133; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63256; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER keyboards_components_fk
@@ -1545,7 +1545,7 @@ CREATE CONSTRAINT TRIGGER keyboards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62134; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63257; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER keyboards_components_fk
@@ -1557,7 +1557,7 @@ CREATE CONSTRAINT TRIGGER keyboards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62135; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63258; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_components_components_fk
@@ -1569,7 +1569,7 @@ CREATE CONSTRAINT TRIGGER misc_components_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62136; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63259; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_components_components_fk
@@ -1581,7 +1581,7 @@ CREATE CONSTRAINT TRIGGER misc_components_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62137; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63260; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_components_components_fk
@@ -1593,7 +1593,7 @@ CREATE CONSTRAINT TRIGGER misc_components_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62138; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63261; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER modems_components_fk
@@ -1605,7 +1605,7 @@ CREATE CONSTRAINT TRIGGER modems_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62139; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63262; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER modems_components_fk
@@ -1617,7 +1617,7 @@ CREATE CONSTRAINT TRIGGER modems_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62140; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63263; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER modems_components_fk
@@ -1629,43 +1629,43 @@ CREATE CONSTRAINT TRIGGER modems_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62141; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63264; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER monitors_components_fk
-    AFTER INSERT OR UPDATE ON monitors
+CREATE CONSTRAINT TRIGGER displays_components_fk
+    AFTER INSERT OR UPDATE ON displays
     FROM components
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_check_ins"('monitors_components_fk', 'monitors', 'components', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_check_ins"('displays_components_fk', 'displays', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_62142; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63265; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER monitors_components_fk
+CREATE CONSTRAINT TRIGGER displays_components_fk
     AFTER DELETE ON components
-    FROM monitors
+    FROM displays
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_del"('monitors_components_fk', 'monitors', 'components', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_del"('displays_components_fk', 'displays', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_62143; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63266; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
-CREATE CONSTRAINT TRIGGER monitors_components_fk
+CREATE CONSTRAINT TRIGGER displays_components_fk
     AFTER UPDATE ON components
-    FROM monitors
+    FROM displays
     NOT DEFERRABLE INITIALLY IMMEDIATE
     FOR EACH ROW
-    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('monitors_components_fk', 'monitors', 'components', 'UNSPECIFIED', 'id', 'id');
+    EXECUTE PROCEDURE "RI_FKey_noaction_upd"('displays_components_fk', 'displays', 'components', 'UNSPECIFIED', 'id', 'id');
 
 
 --
--- Name: RI_ConstraintTrigger_62144; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63267; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER pointing_devices_components_fk
@@ -1677,7 +1677,7 @@ CREATE CONSTRAINT TRIGGER pointing_devices_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62145; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63268; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER pointing_devices_components_fk
@@ -1689,7 +1689,7 @@ CREATE CONSTRAINT TRIGGER pointing_devices_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62146; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63269; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER pointing_devices_components_fk
@@ -1701,7 +1701,7 @@ CREATE CONSTRAINT TRIGGER pointing_devices_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62147; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63270; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER power_supplies_components_fk
@@ -1713,7 +1713,7 @@ CREATE CONSTRAINT TRIGGER power_supplies_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62148; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63271; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER power_supplies_components_fk
@@ -1725,7 +1725,7 @@ CREATE CONSTRAINT TRIGGER power_supplies_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62149; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63272; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER power_supplies_components_fk
@@ -1737,7 +1737,7 @@ CREATE CONSTRAINT TRIGGER power_supplies_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62150; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63273; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER printers_components_fk
@@ -1749,7 +1749,7 @@ CREATE CONSTRAINT TRIGGER printers_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62151; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63274; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER printers_components_fk
@@ -1761,7 +1761,7 @@ CREATE CONSTRAINT TRIGGER printers_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62152; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63275; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER printers_components_fk
@@ -1773,7 +1773,7 @@ CREATE CONSTRAINT TRIGGER printers_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62153; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63276; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER processors_components_fk
@@ -1785,7 +1785,7 @@ CREATE CONSTRAINT TRIGGER processors_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62154; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63277; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER processors_components_fk
@@ -1797,7 +1797,7 @@ CREATE CONSTRAINT TRIGGER processors_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62155; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63278; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER processors_components_fk
@@ -1809,7 +1809,7 @@ CREATE CONSTRAINT TRIGGER processors_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62156; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63279; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scanners_components_fk
@@ -1821,7 +1821,7 @@ CREATE CONSTRAINT TRIGGER scanners_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62157; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63280; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scanners_components_fk
@@ -1833,7 +1833,7 @@ CREATE CONSTRAINT TRIGGER scanners_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62158; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63281; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER scanners_components_fk
@@ -1845,7 +1845,7 @@ CREATE CONSTRAINT TRIGGER scanners_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62159; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63282; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER speakers_components_fk
@@ -1857,7 +1857,7 @@ CREATE CONSTRAINT TRIGGER speakers_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62160; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63283; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER speakers_components_fk
@@ -1869,7 +1869,7 @@ CREATE CONSTRAINT TRIGGER speakers_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62161; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63284; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER speakers_components_fk
@@ -1881,7 +1881,7 @@ CREATE CONSTRAINT TRIGGER speakers_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62162; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63285; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER system_boards_components_fk
@@ -1893,7 +1893,7 @@ CREATE CONSTRAINT TRIGGER system_boards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62163; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63286; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER system_boards_components_fk
@@ -1905,7 +1905,7 @@ CREATE CONSTRAINT TRIGGER system_boards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62164; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63287; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER system_boards_components_fk
@@ -1917,7 +1917,7 @@ CREATE CONSTRAINT TRIGGER system_boards_components_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62165; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63288; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_gizmos_gizmos_fk
@@ -1929,7 +1929,7 @@ CREATE CONSTRAINT TRIGGER misc_gizmos_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62166; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63289; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_gizmos_gizmos_fk
@@ -1941,7 +1941,7 @@ CREATE CONSTRAINT TRIGGER misc_gizmos_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62167; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63290; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER misc_gizmos_gizmos_fk
@@ -1953,7 +1953,7 @@ CREATE CONSTRAINT TRIGGER misc_gizmos_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62168; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63291; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER systems_gizmos_fk
@@ -1965,7 +1965,7 @@ CREATE CONSTRAINT TRIGGER systems_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62169; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63292; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER systems_gizmos_fk
@@ -1977,7 +1977,7 @@ CREATE CONSTRAINT TRIGGER systems_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62170; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63293; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER systems_gizmos_fk
@@ -1989,7 +1989,7 @@ CREATE CONSTRAINT TRIGGER systems_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62171; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63294; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER system_cases_gizmos_fk
@@ -2001,7 +2001,7 @@ CREATE CONSTRAINT TRIGGER system_cases_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62172; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63295; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER system_cases_gizmos_fk
@@ -2013,7 +2013,7 @@ CREATE CONSTRAINT TRIGGER system_cases_gizmos_fk
 
 
 --
--- Name: RI_ConstraintTrigger_62173; Type: TRIGGER; Schema: public; Owner: stillflame
+-- Name: RI_ConstraintTrigger_63296; Type: TRIGGER; Schema: public; Owner: stillflame
 --
 
 CREATE CONSTRAINT TRIGGER system_cases_gizmos_fk
@@ -2094,6 +2094,14 @@ ALTER TABLE ONLY components
 
 ALTER TABLE ONLY controller_cards
     ADD CONSTRAINT controller_cards_cards_fk FOREIGN KEY (id) REFERENCES cards(id);
+
+
+--
+-- Name: displays_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY displays
+    ADD CONSTRAINT displays_components_fk FOREIGN KEY (id) REFERENCES components(id);
 
 
 --
@@ -2182,14 +2190,6 @@ ALTER TABLE ONLY modem_cards
 
 ALTER TABLE ONLY modems
     ADD CONSTRAINT modems_components_fk FOREIGN KEY (id) REFERENCES components(id);
-
-
---
--- Name: monitors_components_fk; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
---
-
-ALTER TABLE ONLY monitors
-    ADD CONSTRAINT monitors_components_fk FOREIGN KEY (id) REFERENCES components(id);
 
 
 --
