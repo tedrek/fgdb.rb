@@ -18,6 +18,7 @@ class GizmosController < ApplicationController
 
   def new
     @gizmo = Gizmo.new
+    @class_trees = ClassTree.find_all
   end
 
   def create
@@ -32,6 +33,7 @@ class GizmosController < ApplicationController
 
   def edit
     @gizmo = Gizmo.find(params[:id])
+    @class_trees = ClassTree.find_all
   end
 
   def update

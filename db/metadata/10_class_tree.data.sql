@@ -5,7 +5,7 @@
 SET client_encoding = 'SQL_ASCII';
 SET check_function_bodies = false;
 
-SET SESSION AUTHORIZATION 'fgdb';
+-- SET SESSION AUTHORIZATION 'fgdb';
 
 SET search_path = public, pg_catalog;
 
@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: classtree; Type: TABLE DATA; Schema: public; Owner: fgdb
 --
 
-COPY classtree (id, classtree, tablename, "level", instantiable, intakecode, intakeadd, description) FROM stdin;
+COPY class_trees (id, class_tree, table_name, "level", instantiable, intake_code, intake_add, description) FROM stdin;
 1	Gizmo	Gizmo	1	N	\N	0	Gizmo
 2	Gizmo.Component	Component	2	N	\N	0	Component
 4	Gizmo.Component.Card.MiscCard	MiscCard	4	Y	MISCCARD	0	Miscellaneous Card
