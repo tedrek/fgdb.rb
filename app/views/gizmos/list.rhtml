@@ -2,6 +2,7 @@
 
 <table>
   <tr>
+    <th>Type of gizmo</th>
   <% for column in Gizmo.content_columns %>
     <th><%= column.human_name %></th>
   <% end %>
@@ -9,6 +10,7 @@
   
 <% for gizmo in @gizmos %>
   <tr>
+    <td><%=h gizmo.class_tree.description %></td>
   <% for column in Gizmo.content_columns %>
     <td><%=h gizmo.send(column.name) %></td>
   <% end %>
