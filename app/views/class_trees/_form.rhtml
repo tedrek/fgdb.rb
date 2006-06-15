@@ -1,13 +1,22 @@
-<%= error_messages_for 'class_tree' %>
+<fieldset>
+	<div class="row">
+		<!--[form:class_tree]-->
+<div class="form-element">
+  <label for="class_tree_instantiable">Instantiable</label>
+  <%= select "class_tree", "instantiable", [["True", true], ["False", false]], { :selected => @class_tree.instantiable } %>
+</div>
 
-<!--[form:class_tree]-->
-<p><label for="class_tree_instantiable">Instantiable</label><br/>
-<select id="class_tree_instantiable" name="class_tree[instantiable]"><option value="false">False</option><option value="true" selected>True</option></select></p>
+<div class="form-element">
+  <label for="class_tree_table_name">Table name</label>
+  <%= text_field 'class_tree', 'table_name' , {:class=>"text-input"} %>
+</div>
 
-<p><label for="class_tree_table_name">Table name</label><br/>
-<%= text_field 'class_tree', 'table_name'  %></p>
+<div class="form-element">
+  <label for="class_tree_description">Description</label>
+  <%= text_field 'class_tree', 'description' , {:class=>"text-input"} %>
+</div>
 
-<p><label for="class_tree_description">Description</label><br/>
-<%= text_field 'class_tree', 'description'  %></p>
 <!--[eoform:class_tree]-->
 
+	</div>
+</fieldset>
