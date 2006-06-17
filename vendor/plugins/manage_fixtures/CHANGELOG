@@ -1,0 +1,10 @@
+-----
+2.0.0
+- Added two new export tasks
+  - db:fixtures:import_all
+  - db:fixtures:import_for_models MODELS=Foo,Bar
+
+1.0.0
+
+- imported original code by Chris McGrath [octopod]
+- added namespace support for the tasks [nshb]

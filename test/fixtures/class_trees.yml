@@ -1,5 +1,223 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+class_trees_034: 
+  instantiable: t
+  id: "39"
+  description: Stereo Equipment
+  table_name: stereos
+  parent_id: "1"
+class_trees_023: 
+  instantiable: t
+  id: "26"
+  description: Power Supply
+  table_name: power_supplies
+  parent_id: "2"
+class_trees_012: 
+  instantiable: t
+  id: "12"
+  description: CD Drive
+  table_name: cd_drives
+  parent_id: "11"
+class_trees_001: 
+  instantiable: f
+  id: "1"
+  description: Gizmo
+  table_name: gizmos
+  parent_id: "1"
+class_trees_035: 
+  instantiable: t
+  id: "40"
+  description: VCR
+  table_name: vcrs
+  parent_id: "1"
+class_trees_024: 
+  instantiable: t
+  id: "27"
+  description: Printer
+  table_name: printers
+  parent_id: "2"
+class_trees_013: 
+  instantiable: t
+  id: "13"
+  description: Floppy Drive
+  table_name: floppy_drives
+  parent_id: "11"
+class_trees_002: 
+  instantiable: f
+  id: "2"
+  description: Component
+  table_name: components
+  parent_id: "1"
+class_trees_036: 
+  instantiable: t
+  id: "41"
+  description: UPS
+  table_name: upses
+  parent_id: "1"
+class_trees_025: 
+  instantiable: t
+  id: "28"
+  description: Processor
+  table_name: processors
+  parent_id: "2"
+class_trees_014: 
+  instantiable: t
+  id: "15"
+  description: Miscellaneous Drive
+  table_name: misc_drives
+  parent_id: "11"
+class_trees_003: 
+  instantiable: f
+  id: "3"
+  description: Card
+  table_name: cards
+  parent_id: "2"
+class_trees_037: 
+  instantiable: t
+  id: "14"
+  description: IDE Hard Drive
+  table_name: ide_hard_drives
+  parent_id: "11"
+class_trees_026: 
+  instantiable: t
+  id: "30"
+  description: Scanner
+  table_name: scanners
+  parent_id: "2"
+class_trees_015: 
+  instantiable: t
+  id: "16"
+  description: SCSI Hard Drive
+  table_name: scsi_hard_drives
+  parent_id: "11"
+class_trees_004: 
+  instantiable: t
+  id: "4"
+  description: Miscellaneous Card
+  table_name: misc_cards
+  parent_id: "3"
+class_trees_027: 
+  instantiable: t
+  id: "31"
+  description: Speaker
+  table_name: speakers
+  parent_id: "2"
+class_trees_016: 
+  instantiable: t
+  id: "17"
+  description: Tape Drive
+  table_name: tape_drives
+  parent_id: "11"
+class_trees_005: 
+  instantiable: t
+  id: "5"
+  description: Regular Internal Modem
+  table_name: modem_cards
+  parent_id: "3"
+class_trees_028: 
+  instantiable: t
+  id: "32"
+  description: Motherboard (System Mainboard)
+  table_name: system_boards
+  parent_id: "2"
+class_trees_017: 
+  instantiable: t
+  id: "18"
+  description: System Case
+  table_name: system_cases
+  parent_id: "2"
+class_trees_006: 
+  instantiable: t
+  id: "6"
+  description: Network Card
+  table_name: network_cards
+  parent_id: "3"
+class_trees_030: 
+  instantiable: t
+  id: "34"
+  description: Miscellaneous Gizmo
+  table_name: misc_gizmos
+  parent_id: "1"
+class_trees_029: 
+  instantiable: t
+  id: "33"
+  description: Networking Device
+  table_name: networking_devices
+  parent_id: "1"
+class_trees_018: 
+  instantiable: t
+  id: "21"
+  description: Keyboard
+  table_name: keyboards
+  parent_id: "2"
+class_trees_007: 
+  instantiable: t
+  id: "7"
+  description: SCSI Card
+  table_name: scsi_cards
+  parent_id: "3"
+class_trees_031: 
+  instantiable: t
+  id: "35"
+  description: System
+  table_name: systems
+  parent_id: "2"
+class_trees_020: 
+  instantiable: t
+  id: "23"
+  description: External Modem
+  table_name: modems
+  parent_id: "2"
+class_trees_019: 
+  instantiable: t
+  id: "22"
+  description: Miscellaneous Component
+  table_name: misc_components
+  parent_id: "2"
+class_trees_008: 
+  instantiable: t
+  id: "8"
+  description: Sound Card
+  table_name: sound_cards
+  parent_id: "3"
+class_trees_032: 
+  instantiable: t
+  id: "37"
+  description: Laptop System
+  table_name: laptops
+  parent_id: "1"
+class_trees_021: 
+  instantiable: t
+  id: "24"
+  description: Display
+  table_name: displays
+  parent_id: "2"
+class_trees_010: 
+  instantiable: t
+  id: "10"
+  description: I/O or Controller Card
+  table_name: controller_cards
+  parent_id: "3"
+class_trees_009: 
+  instantiable: t
+  id: "9"
+  description: Video Card
+  table_name: video_cards
+  parent_id: "3"
+class_trees_033: 
+  instantiable: t
+  id: "38"
+  description: Cell Phone
+  table_name: cell_phones
+  parent_id: "1"
+class_trees_022: 
+  instantiable: t
+  id: "25"
+  description: Mouse or other Pointing Device
+  table_name: pointing_devices
+  parent_id: "2"
+class_trees_011: 
+  instantiable: f
+  id: "11"
+  description: Drive
+  table_name: drives
+  parent_id: "2"
