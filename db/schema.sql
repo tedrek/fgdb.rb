@@ -106,6 +106,7 @@ CREATE TABLE class_trees (
     parent_id integer,
     instantiable boolean DEFAULT true,
     table_name character varying(50),
+    class_name character varying(50),
     description character varying(50)
 );
 
@@ -335,6 +336,14 @@ CREATE TABLE laptops (
     hard_drives_size integer DEFAULT 0,
     processor_class character varying(15),
     processor_speed integer DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE laptop_drives (
+    id integer DEFAULT 0 NOT NULL
+);
+
+CREATE TABLE laptop_components (
+    id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -775,6 +784,12 @@ ALTER TABLE ONLY keyboards
 
 ALTER TABLE ONLY laptops
     ADD CONSTRAINT laptops_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY laptop_drives
+    ADD CONSTRAINT laptop_drives_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY laptop_components
+    ADD CONSTRAINT laptop_components_pkey PRIMARY KEY (id);
 
 
 --
