@@ -1,0 +1,32 @@
+<fieldset>
+  <div class="row">
+    <!--[form:contact_method]-->
+<div class="form-element">
+  <label for="contact_method_description">Description</label>
+  <%= text_field 'contact_method', 'description' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_method_ok">Ok</label>
+  <%= select "contact_method", "ok", [["True", true], ["False", false]], { :selected => @contact_method.ok } %>
+</div>
+
+<div class="form-element">
+  <label for="contact_method_lock_version">Lock version</label>
+  <%= text_field 'contact_method', 'lock_version' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_method_created_by">Created by</label>
+  <%= text_field 'contact_method', 'created_by' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_method_updated_by">Updated by</label>
+  <%= text_field 'contact_method', 'updated_by' , {:class=>"text-input"} %>
+</div>
+
+<!--[eoform:contact_method]-->
+
+  </div>
+</fieldset>
