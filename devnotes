@@ -1,0 +1,101 @@
+
+#===========================================================
+# 19 sep
+# first begin working with the (existing) fgdb.rb project
+# the project rails scaffold was generated earlier but little else done
+
+# create the fgdb databases
+$ su - pgsql
+pgsql$  psql template1
+template1=# create database fgdb_test;
+template1=# create database fgdb_prod;
+template1=# create database fgdb_dev;
+template1=# \q
+  # does at least one of them exist??
+  pgsql$  psql fgdb_dev
+  fgdb_dev=# \d+          -> nada to show
+  fgdb_dev=# \q
+
+# create the fgdb user(s)
+$ su - pgsql
+pgsql $ createuser -a -d -e -P fgdbdev      # dev, test
+pgsql $ createuser -a -d -e -P fgdb         # prod
+
+# edit the sample database.yml file
+$ vi config/database.yml
+  # the development stanza from the final file
+development:
+  adapter: postgresql
+  database: fgdb_dev
+  username: fgdbdev
+  password: ********
+  host: localhost
+
+
+# we want to switch to using ajax scaffolding
+# install the ajax scaffolding gem
+$ sudo gem install ajax_scaffold_generator
+  # install the rails v 1.1.2 gem dependency for ajax scaff gen
+  $ sudo gem install rails -v1.1.2
+
+# create a basic first devel table:  contacts(id)
+$ psql -U fgdbdev fgdb_dev
+fgdb_dev=# create table contacts(id serial);
+  
+  # recreate db/schema.sql and db/devel_data.sql files
+  $ rake db:data:dump
+
+# generate ajax scaffold for contact model (with auto-add to svn)
+$ script/generate ajax_scaffold --svn contact
+
+# start http server then browse to http://localhost:3000/
+$ script/server &
+[3] 2378
+/i/client/fg/proj/work/fgdb.rb/trunk $ => Booting WEBrick...
+=> Rails application started on http://0.0.0.0:3000
+=> Ctrl-C to shutdown server; call with --help for options
+
+# run tests
+$ rake    # runs model then functional (aka, controller) tests
+
+  # stop http server in order to change schema
+  $ jobs
+  ...
+  [3]+  Running                 script/server &
+  ...
+  $ fg 3
+  $ <ctrl-c>
+
+  # add a 2nd attr to contact beyond the id to correct failure
+  $ vi db/schema.sql
+
+# link contacts table into project main page
+$ vi public/index.html 
+		+++ <li>
+		+++   <a href="/contacts">contacts</a>
+		+++ </li> 
+
+# edit schema with contact-related table ddl from another project
+$ vi db/schema.sql
+
+  # resync rails with schema and data 
+  # (there's still just rails boilerplate data)
+  $ rake db:data:load
+
+  # generate ajax scaffold for each class
+  $ for n in contact_method_type contact_method contact_type relationship_type relationship
+    do
+      script/generate ajax_scaffold --svn $n; done
+
+# populate fixtures from devel database
+$ rake db:fixtures:export_all
+
+### roadmap for 20 sep
+1)  port over model relationship statements from wobble
+
+2)  create sample data using screens
+
+3)  auto-populate fixtures from data entered by hand
+
+4)  replace tabs with spaces in all auto-generated files
+$ perl -pi -e 's/\t/  /g' *
