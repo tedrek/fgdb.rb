@@ -1,4 +1,4 @@
-class ClassTreesController < ApplicationController
+class GizmoTypesController < ApplicationController
   include AjaxScaffold::Controller
   
   after_filter :clear_flashes
@@ -26,23 +26,23 @@ class ClassTreesController < ApplicationController
     else
       # If this is from a client without javascript we want to update the session parameters and then delegate
       # back to whatever page is displaying the scaffold, which will then rerender all scaffolds with these update parameters
-      update_params :default_scaffold_id => "class_tree", :default_sort => nil, :default_sort_direction => "asc"
+      update_params :default_scaffold_id => "gizmo_type", :default_sort => nil, :default_sort_direction => "asc"
       return_to_main
     end
   end
 
   def component
-    update_params :default_scaffold_id => "class_tree", :default_sort => nil, :default_sort_direction => "asc"
+    update_params :default_scaffold_id => "gizmo_type", :default_sort => nil, :default_sort_direction => "asc"
      
-    @sort_sql = ClassTree.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
-    @sort_by = @sort_sql.nil? ? "#{ClassTree.table_name}.#{ClassTree.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
-    @paginator, @class_trees = paginate(:class_trees, :order => @sort_by, :per_page => default_per_page)
+    @sort_sql = GizmoType.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    @sort_by = @sort_sql.nil? ? "#{GizmoType.table_name}.#{GizmoType.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
+    @paginator, @gizmo_types = paginate(:gizmo_types, :order => @sort_by, :per_page => default_per_page)
     
     render :action => "component", :layout => false
   end
 
   def new
-    @class_tree = ClassTree.new
+    @gizmo_type = GizmoType.new
     @successful = true
 
     return render :action => 'new.rjs' if request.xhr?
@@ -58,8 +58,8 @@ class ClassTreesController < ApplicationController
   
   def create
     begin
-      @class_tree = ClassTree.new(params[:class_tree])
-      @successful = @class_tree.save
+      @gizmo_type = GizmoType.new(params[:gizmo_type])
+      @successful = @gizmo_type.save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -75,8 +75,8 @@ class ClassTreesController < ApplicationController
 
   def edit
     begin
-      @class_tree = ClassTree.find(params[:id])
-      @successful = !@class_tree.nil?
+      @gizmo_type = GizmoType.find(params[:id])
+      @successful = !@gizmo_type.nil?
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -93,8 +93,8 @@ class ClassTreesController < ApplicationController
 
   def update
     begin
-      @class_tree = ClassTree.find(params[:id])
-      @successful = @class_tree.update_attributes(params[:class_tree])
+      @gizmo_type = GizmoType.find(params[:id])
+      @successful = @gizmo_type.update_attributes(params[:gizmo_type])
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -111,7 +111,7 @@ class ClassTreesController < ApplicationController
 
   def destroy
     begin
-      @successful = ClassTree.find(params[:id]).destroy
+      @successful = GizmoType.find(params[:id]).destroy
     rescue
       flash[:error], @successful  = $!.to_s, false
     end

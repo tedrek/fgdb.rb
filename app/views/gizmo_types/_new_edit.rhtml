@@ -5,14 +5,14 @@
 <tr id="<%= element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
   <td id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
   
-    <%= form_remote_tag :url => @options.merge(:controller => '/class_trees'), 
+    <%= form_remote_tag :url => @options.merge(:controller => '/gizmo_types'), 
     			:loading => "Element.show('#{loading_indicator_id(@options)}');",
-    			:html => { :href => url_for(@options.merge(:controller => '/class_trees')),
+    			:html => { :href => url_for(@options.merge(:controller => '/gizmo_types')),
                      :id => element_form_id(@options) } %>
       
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
          
-      <h4><%= Inflector.titleize(@options[:action]) %> Class Tree</h4>
+      <h4><%= Inflector.titleize(@options[:action]) %> Gizmo Type</h4>
 
       <% if request.xhr? %>
         <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
@@ -24,7 +24,7 @@
       
       <p class="form-footer">
       	<%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
-      	<% cancel_params = @options.merge(:controller => '/class_trees', :action => 'cancel', :referring_action => @options[:action]) %>
+      	<% cancel_params = @options.merge(:controller => '/gizmo_types', :action => 'cancel', :referring_action => @options[:action]) %>
       	<%= link_to_remote "Cancel",
       	  { :url => cancel_params,
       	    :loading => "Element.show('#{loading_indicator_id(@options)}');" },

@@ -1,4 +1,4 @@
-module ClassTreesHelper
+module GizmoStatusesHelper
   include AjaxScaffold::Helper
   
   def num_columns
@@ -6,7 +6,7 @@ module ClassTreesHelper
   end
   
   def scaffold_columns
-    ClassTree.scaffold_columns
+    GizmoStatus.scaffold_columns
   end
 
 end

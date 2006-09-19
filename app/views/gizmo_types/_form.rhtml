@@ -1,0 +1,17 @@
+<fieldset>
+	<div class="row">
+		<!--[form:gizmo_type]-->
+<div class="form-element">
+  <label for="gizmo_type_instantiable">Instantiable</label>
+  <%= select "gizmo_type", "instantiable", [["True", true], ["False", false]], { :selected => @gizmo_type.instantiable } %>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_type_description">Description</label>
+  <%= text_field 'gizmo_type', 'description' , {:class=>"text-input"} %>
+</div>
+
+<!--[eoform:gizmo_type]-->
+
+	</div>
+</fieldset>

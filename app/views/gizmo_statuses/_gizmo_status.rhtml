@@ -1,6 +1,6 @@
 <% # The following is used when the browser doesn't have javascript enabled %>
 <% classAttr = cycle("", "class=\"even\"") %>
-<% @options = params.merge(:controller => '/class_trees', :action => "view", :id => class_tree.send("#{ClassTree.primary_key}")) %>
+<% @options = params.merge(:controller => '/gizmo_statuses', :action => "view", :id => gizmo_status.send("#{GizmoStatus.primary_key}")) %>
 
 <tr <%= classAttr %> id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
 	<% for scaffold_column in scaffold_columns %>

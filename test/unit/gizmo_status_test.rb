@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ClassTreeTest < Test::Unit::TestCase
-  fixtures :class_trees
+class GizmoStatusTest < Test::Unit::TestCase
+  fixtures :gizmo_statuses
 
   # Replace this with your real tests.
   def test_truth

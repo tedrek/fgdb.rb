@@ -2,20 +2,17 @@
 	<div class="row">
 		<!--[form:gizmo]-->
 <div class="form-element">
-  <label for="gizmo_class_tree_id">Class of gizmo</label>
-  <select id="gizmo_class_tree_id" name="gizmo[class_tree_id]">
-    <%= options_from_collection_for_select @class_trees, "id", "description", @gizmo.class_tree_id %>
+  <label for="gizmo_gizmo_type_id">Kind of gizmo</label>
+  <select id="gizmo_gizmo_type_id" name="gizmo[gizmo_type_id]">
+    <%= options_from_collection_for_select GizmoType.find_all_instantiable, "id", "description", @gizmo.gizmo_type_id %>
   </select>
 </div>
 
 <div class="form-element">
-  <label for="gizmo_modified">Modified</label>
-  <%= datetime_select 'gizmo', 'modified'  %>
-</div>
-
-<div class="form-element">
-  <label for="gizmo_created">Created</label>
-  <%= datetime_select 'gizmo', 'created'  %>
+  <label for="gizmo_gizmo_status_id">Status</label>
+  <select id="gizmo_gizmo_status_id" name="gizmo[gizmo_status_id]">
+    <%= options_from_collection_for_select GizmoStatus.find_all, "id", "description", @gizmo.gizmo_status_id %>
+  </select>
 </div>
 
 <!--[eoform:gizmo]-->

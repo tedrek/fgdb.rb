@@ -1,4 +1,4 @@
-class GizmosController < ApplicationController
+class GizmoStatusesController < ApplicationController
   include AjaxScaffold::Controller
   
   after_filter :clear_flashes
@@ -26,23 +26,23 @@ class GizmosController < ApplicationController
     else
       # If this is from a client without javascript we want to update the session parameters and then delegate
       # back to whatever page is displaying the scaffold, which will then rerender all scaffolds with these update parameters
-      update_params :default_scaffold_id => "gizmo", :default_sort => nil, :default_sort_direction => "asc"
+      update_params :default_scaffold_id => "gizmo_status", :default_sort => nil, :default_sort_direction => "asc"
       return_to_main
     end
   end
 
   def component
-    update_params :default_scaffold_id => "gizmo", :default_sort => nil, :default_sort_direction => "asc"
+    update_params :default_scaffold_id => "gizmo_status", :default_sort => nil, :default_sort_direction => "asc"
      
-    @sort_sql = Gizmo.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
-    @sort_by = @sort_sql.nil? ? "#{Gizmo.table_name}.#{Gizmo.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
-    @paginator, @gizmos = paginate(:gizmos, :order => @sort_by, :per_page => default_per_page)
+    @sort_sql = GizmoStatus.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    @sort_by = @sort_sql.nil? ? "#{GizmoStatus.table_name}.#{GizmoStatus.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
+    @paginator, @gizmo_statuses = paginate(:gizmo_statuses, :order => @sort_by, :per_page => default_per_page)
     
     render :action => "component", :layout => false
   end
 
   def new
-    @gizmo = Gizmo.new
+    @gizmo_status = GizmoStatus.new
     @successful = true
 
     return render :action => 'new.rjs' if request.xhr?
@@ -58,8 +58,8 @@ class GizmosController < ApplicationController
   
   def create
     begin
-      @gizmo = Gizmo.new(params[:gizmo])
-      @successful = @gizmo.save
+      @gizmo_status = GizmoStatus.new(params[:gizmo_status])
+      @successful = @gizmo_status.save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -75,8 +75,8 @@ class GizmosController < ApplicationController
 
   def edit
     begin
-      @gizmo = Gizmo.find(params[:id])
-      @successful = !@gizmo.nil?
+      @gizmo_status = GizmoStatus.find(params[:id])
+      @successful = !@gizmo_status.nil?
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -93,8 +93,8 @@ class GizmosController < ApplicationController
 
   def update
     begin
-      @gizmo = Gizmo.find(params[:id])
-      @successful = @gizmo.update_attributes(params[:gizmo])
+      @gizmo_status = GizmoStatus.find(params[:id])
+      @successful = @gizmo_status.update_attributes(params[:gizmo_status])
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -111,7 +111,7 @@ class GizmosController < ApplicationController
 
   def destroy
     begin
-      @successful = Gizmo.find(params[:id]).destroy
+      @successful = GizmoStatus.find(params[:id]).destroy
     rescue
       flash[:error], @successful  = $!.to_s, false
     end

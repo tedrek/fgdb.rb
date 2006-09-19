@@ -1,8 +1,8 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => @class_tree.id }
+@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => @gizmo_status.id }
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  page.insert_html :bottom, scaffold_tbody_id(@options), :partial => 'class_tree', :locals => { :hidden => true }
+  page.insert_html :bottom, scaffold_tbody_id(@options), :partial => 'gizmo_status', :locals => { :hidden => true }
   page << "new TableRow.MoveAfter('#{element_row_id(@create_options)}', '#{element_row_id(@options)}');"
   page.remove element_row_id(@create_options)
   page.show element_row_id(@options)

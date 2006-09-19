@@ -1,14 +1,14 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require '/class_trees_controller'
+require '/gizmo_types_controller'
 
 # Re-raise errors caught by the controller.
-class ClassTreesController; def rescue_action(e) raise e end; end
+class GizmoTypesController; def rescue_action(e) raise e end; end
 
-class ClassTreesControllerTest < Test::Unit::TestCase
-  fixtures :class_trees
+class GizmoTypesControllerTest < Test::Unit::TestCase
+  fixtures :gizmo_types
 
   def setup
-    @controller = ClassTreesController.new
+    @controller = GizmoTypesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
   end
