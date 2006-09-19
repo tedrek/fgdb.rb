@@ -1,9 +1,9 @@
-/*  
+/*
  AjaxScaffoldGenerator version 3.1.0
  (c) 2006 Richard White <rrwhite@gmail.com>
- 
+
  AjaxScaffoldGenerator is freely distributable under the terms of an MIT-style license.
- 
+
  For details, see the AjaxScaffoldGenerator web site: http://www.ajaxscaffold.com/
 */
 
@@ -30,14 +30,14 @@ text-decoration: none;
 }
 
 .ajax-scaffold a:hover {
-background: #ff8;
+background-color: #ff8;
 }
 
 /* Header Styling
    ======================== */
 
 .ajax-scaffold-header {
-background: #005CB8;
+background-color: #005CB8;
 position: relative;
 }
 
@@ -50,7 +50,7 @@ font: normal 17px verdana, sans-serif;
 
 .ajax-scaffold-header div.actions a {
 color: #fff;
-background: url(/images/add.gif) 1px 50% no-repeat;
+background: url(../images/add.gif) 1px 50% no-repeat;
 font: bold 14px arial, sans-serif;
 letter-spacing: -1px;
 text-decoration: none;
@@ -58,7 +58,7 @@ padding: 1px 2px 1px 19px;
 }
 
 .ajax-scaffold-header div.actions a:hover {
-background: #378CDF url(/images/add.gif) 1px 50% no-repeat;
+background: #378CDF url(../images/add.gif) 1px 50% no-repeat;
 }
 
 .ajax-scaffold-header div.actions {
@@ -98,7 +98,7 @@ top: 4px;
    ============================= */
 
 .ajax-scaffold th {
-background: #555;
+background-color: #555;
 text-align: left;
 }
 
@@ -106,7 +106,7 @@ text-align: left;
 .ajax-scaffold th p {
 font: bold 11px arial, sans-serif;
 display: block;
-background: #555;
+background-color: #555;
 }
 
 .ajax-scaffold th a {
@@ -120,27 +120,27 @@ padding: 2px 5px;
 }
 
 .ajax-scaffold th a:hover {
-background: #000;
+background-color: #000;
 color: #ff8;
 }
 
 .ajax-scaffold th.sorted {
-background: #333;
+background-color: #333;
 }
 
 .ajax-scaffold th.asc a,
 .ajax-scaffold th.asc a:hover {
-background: #333 url(/images/arrow_up.gif) right 50% no-repeat;
+background: #333 url(../images/arrow_up.gif) right 50% no-repeat;
 }
 
 .ajax-scaffold th.desc a,
 .ajax-scaffold th.desc a:hover {
-background: #333 url(/images/arrow_down.gif) right 50% no-repeat;
+background: #333 url(../images/arrow_down.gif) right 50% no-repeat;
 }
 
 .ajax-scaffold th.loading a,
 .ajax-scaffold th.loading a:hover {
-background: #333 url(/images/indicator-small.gif) right 50% no-repeat;
+background: #333 url(../images/indicator-small.gif) right 50% no-repeat;
 }
 
 /* Table Body Styling
@@ -204,15 +204,16 @@ padding: 0 2px;
 font: bold 11px verdana, sans-serif;
 letter-spacing: -1px;
 padding: 2px;
+margin: 0 2px;
 line-height: 16px;
 }
 
-/* ajax-scaffold Footer Styling 
+/* ajax-scaffold Footer Styling
    ========================== */
 
 .ajax-scaffold .ajax-scaffold-footer {
 text-align: right;
-background: #005CB8;
+background-color: #005CB8;
 padding: 3px 5px 2px 5px;
 border-bottom: none;
 color: #ccc;
@@ -229,7 +230,7 @@ font: bold 12px arial, sans-serif;
 }
 
 .ajax-scaffold-footer a:hover {
-background: #378CDF;
+background-color: #378CDF;
 }
 
 .ajax-scaffold-footer .next {
@@ -244,7 +245,7 @@ padding-right: 5px;
 border-right: solid 1px #ccc;
 }
 
-/* Messages 
+/* Messages
    ========================= */
 
 .ajax-scaffold .messages-container,
@@ -255,7 +256,7 @@ border: none;
 }
 
 .ajax-scaffold .empty-message {
-background: #e8e8e8;
+background-color: #e8e8e8;
 padding: 4px;
 text-align: center;
 color: #666;
@@ -264,14 +265,14 @@ color: #666;
 .ajax-scaffold .message {
 font-size: 11px;
 font-weight: bold;
-padding: 5px 20px 5px 21px;
+padding: 5px 20px 5px 5px;
 color: #333;
 position: relative;
 margin: 2px 7px;
 line-height: 12px;
 }
 
-.ajax-scaffold td .message a {
+.ajax-scaffold .message a {
 position: absolute;
 right: 10px;
 top: 4px;
@@ -286,29 +287,25 @@ margin: 0;
 
 .ajax-scaffold .error-message {
 border-left: solid 5px #f66;
-background: #fbb url(/images/error.gif) 2px 3px no-repeat;
+background-color: #fbb;
 }
 
 .ajax-scaffold .warning-message {
 border-left: solid 5px #ff6;
-background: #ffb url(/images/warning.gif) 2px 3px no-repeat;
+background-color: #ffb;
 }
 
 .ajax-scaffold .info-message {
 border-left: solid 5px #66f;
-background: #bbf url(/images/information.gif) 2px 3px no-repeat;
+background-color: #bbf;
 }
 
-* html .ajax-scaffold .messages-container .message {
-background-position: 7px 3px;
-}
-
-/* Error Styling 
+/* Error Styling
    ========================== */
 
 .ajax-scaffold #errorExplanation {
-background: #fcc;
-margin: 2px 7px;
+background-color: #fcc;
+margin: 2px 0;
 border: solid 1px #f66;
 float: left;
 }
@@ -318,13 +315,13 @@ clear: both;
 }
 
 .ajax-scaffold #errorExplanation h2 {
-padding: 2px 5px 3px 20px;
+padding: 2px 5px;
 color: #333;
 font-size: 11px;
 margin: 0;
 letter-spacing: 0;
 font-family: Verdana;
-background: #f66 url(/images/error.gif) 2px 1px no-repeat;
+background-color: #f66;
 }
 
 .ajax-scaffold #errorExplanation ul {
@@ -345,7 +342,7 @@ font: bold 11px verdana;
 letter-spacing: -1px;
 margin: 0;
 padding: 0;
-background: transparent;
+background-color: transparent;
 }
 
 .ajax-scaffold .fieldWithErrors input {
@@ -367,12 +364,12 @@ vertical-align: bottom;
 margin-bottom: 3px;
 }
 
-/* Form Styling 
+/* Form Styling
    ============================== */
 
 .ajax-scaffold td.update,
 .ajax-scaffold td.create {
-background: #DAFFCD;
+background-color: #DAFFCD;
 padding: 4px;
 border: solid 1px #7FcF00;
 border-top: none;
@@ -380,11 +377,11 @@ border-top: none;
 
 .ajax-scaffold .ajax-scaffold td.update,
 .ajax-scaffold .ajax-scaffold td.create {
-background: #ffb;
+background-color: #ffb;
 border: solid 1px #DDDF37;
 border-top: none;
 }
-   
+
 .ajax-scaffold .submit {
 font-weight: bold;
 font-size: 14px;
@@ -470,10 +467,10 @@ border: solid 1px #1F7F00;
 
 /* IE hacks
    ==================================== */
-   
+
 * html .ajax-scaffold-header {
 height: 1%;
-}   
+}
 
 * html .ajax-scaffold td .messages-container {
 border-top: solid 1px #DAFFCD;
