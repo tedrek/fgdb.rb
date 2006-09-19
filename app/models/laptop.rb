@@ -1,2 +1,0 @@
-class Laptop < Gizmo
-end

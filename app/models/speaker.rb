@@ -1,2 +1,0 @@
-class Speaker < Component
-end

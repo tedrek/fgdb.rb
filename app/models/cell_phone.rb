@@ -1,2 +1,0 @@
-class CellPhone < Gizmo
-end

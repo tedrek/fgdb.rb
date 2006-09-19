@@ -1,2 +1,0 @@
-class SoundCard < Card
-end

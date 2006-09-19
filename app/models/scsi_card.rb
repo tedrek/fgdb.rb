@@ -1,2 +1,0 @@
-class ScsiCard < Card
-end

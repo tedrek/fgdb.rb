@@ -1,2 +1,0 @@
-class NetworkCard < Card
-end

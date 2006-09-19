@@ -1,2 +1,0 @@
-class Display < Component
-end

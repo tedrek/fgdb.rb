@@ -1,2 +1,0 @@
-class Ups < Gizmo
-end

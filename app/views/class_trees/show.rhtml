@@ -1,8 +1,0 @@
-<% for column in ClassTree.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @class_tree.send(column.name) %>
-</p>
-<% end %>
-
-<%= link_to 'Edit', :action => 'edit', :id => @class_tree %> |
-<%= link_to 'Back', :action => 'list' %>

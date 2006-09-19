@@ -1,2 +1,0 @@
-class SystemCase < Component
-end

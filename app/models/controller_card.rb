@@ -1,2 +1,0 @@
-class ControllerCard < Card
-end

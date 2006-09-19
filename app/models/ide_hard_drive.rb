@@ -1,2 +1,0 @@
-class IdeHardDrive < Drive
-end

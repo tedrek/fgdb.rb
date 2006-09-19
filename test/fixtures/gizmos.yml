@@ -1,7 +1,0 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-cell_phone_001:
-  id: 1
-  class_tree_id: 38
-pointing_device_001:
-  id: 2
-  class_tree_id: 25

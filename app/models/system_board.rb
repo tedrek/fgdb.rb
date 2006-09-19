@@ -1,2 +1,0 @@
-class SystemBoard < Component
-end

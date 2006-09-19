@@ -1,2 +1,0 @@
-class VideoCard < Card
-end

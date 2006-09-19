@@ -1,2 +1,0 @@
-class TapeDrive < Drive
-end

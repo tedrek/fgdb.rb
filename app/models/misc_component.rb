@@ -1,2 +1,0 @@
-class MiscComponent < Component
-end

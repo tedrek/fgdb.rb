@@ -1,2 +1,0 @@
-class ScsiHardDrive < Drive
-end
