@@ -2,8 +2,83 @@
   <div class="row">
     <!--[form:contact]-->
 <div class="form-element">
+  <label for="contact_is_organization">Is organization</label>
+  <%= select "contact", "is_organization", [["True", true], ["False", false]], { :selected => @contact.is_organization } %>
+</div>
+
+<div class="form-element">
+  <label for="contact_sort_name">Sort name</label>
+  <%= text_field 'contact', 'sort_name' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
   <label for="contact_first_name">First name</label>
   <%= text_field 'contact', 'first_name' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_middle_name">Middle name</label>
+  <%= text_field 'contact', 'middle_name' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_surname">Surname</label>
+  <%= text_field 'contact', 'surname' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_organization">Organization</label>
+  <%= text_field 'contact', 'organization' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_extra_address">Extra address</label>
+  <%= text_field 'contact', 'extra_address' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_address">Address</label>
+  <%= text_field 'contact', 'address' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_city">City</label>
+  <%= text_field 'contact', 'city' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_state_or_province">State or province</label>
+  <%= text_field 'contact', 'state_or_province' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_postal_code">Postal code</label>
+  <%= text_field 'contact', 'postal_code' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_country">Country</label>
+  <%= text_field 'contact', 'country' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_notes">Notes</label>
+  <%= text_area 'contact', 'notes'  %>
+</div>
+
+<div class="form-element">
+  <label for="contact_lock_version">Lock version</label>
+  <%= text_field 'contact', 'lock_version' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_created_by">Created by</label>
+  <%= text_field 'contact', 'created_by' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_updated_by">Updated by</label>
+  <%= text_field 'contact', 'updated_by' , {:class=>"text-input"} %>
 </div>
 
 <!--[eoform:contact]-->
