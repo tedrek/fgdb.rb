@@ -1,5 +1,34 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+contact_methods_001: 
+  updated_at: 2006-09-20 09:54:41-05
+  created_by: "1"
+  lock_version: "0"
+  contact_id: 
+  updated_by: "1"
+  contact_method_type_id: 
+  id: "1"
+  ok: t
+  description: "6125551212"
+  created_at: 2006-09-20 09:54:41-05
+contact_methods_002: 
+  updated_at: 2006-09-20 09:54:57-05
+  created_by: "1"
+  lock_version: "0"
+  contact_id: 
+  updated_by: "1"
+  contact_method_type_id: 
+  id: "2"
+  ok: f
+  description: "5035039999"
+  created_at: 2006-09-20 09:54:57-05
+contact_methods_003: 
+  updated_at: 2006-09-20 09:55:21-05
+  created_by: "1"
+  lock_version: "0"
+  contact_id: 
+  updated_by: "1"
+  contact_method_type_id: 
+  id: "3"
+  ok: t
+  description: fake@mailme.org
+  created_at: 2006-09-20 09:55:21-05

@@ -1,4 +1,14 @@
 
+### roadmap for 20 sep
+1)  port over model relationship statements from wobble
+
+2)  create sample data using screens
+
+3)  auto-populate fixtures from data entered by hand
+
+4)  replace tabs with spaces in all auto-generated files
+$ perl -pi -e 's/\t/  /g' *
+
 #===========================================================
 # 19 sep
 # first begin working with the (existing) fgdb.rb project
@@ -89,13 +99,3 @@ $ vi db/schema.sql
 
 # populate fixtures from devel database
 $ rake db:fixtures:export_all
-
-### roadmap for 20 sep
-1)  port over model relationship statements from wobble
-
-2)  create sample data using screens
-
-3)  auto-populate fixtures from data entered by hand
-
-4)  replace tabs with spaces in all auto-generated files
-$ perl -pi -e 's/\t/  /g' *

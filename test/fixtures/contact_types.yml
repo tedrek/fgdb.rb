@@ -1,5 +1,65 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+contact_types_007: 
+  updated_at: 2006-09-20 09:45:14-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "7"
+  description: donor
+  created_at: 2006-09-20 09:45:14-05
+contact_types_008: 
+  updated_at: 2006-09-20 09:45:26-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "8"
+  description: donor organization
+  created_at: 2006-09-20 09:45:26-05
+contact_types_001: 
+  updated_at: 2006-09-20 09:43:17-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "2"
+  description: nonprofit organization
+  created_at: 2006-09-20 09:43:17-05
+contact_types_002: 
+  updated_at: 2006-09-20 09:44:10-05
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "1"
+  description: public walkin
+  created_at: 2006-09-20 09:42:59-05
+contact_types_003: 
+  updated_at: 2006-09-20 09:44:20-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "3"
+  description: staff
+  created_at: 2006-09-20 09:44:20-05
+contact_types_004: 
+  updated_at: 2006-09-20 09:44:25-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "4"
+  description: volunteer
+  created_at: 2006-09-20 09:44:25-05
+contact_types_005: 
+  updated_at: 2006-09-20 09:44:41-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "5"
+  description: forprofit organization
+  created_at: 2006-09-20 09:44:41-05
+contact_types_006: 
+  updated_at: 2006-09-20 09:45:11-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "6"
+  description: sustainer
+  created_at: 2006-09-20 09:45:11-05

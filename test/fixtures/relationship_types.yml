@@ -1,5 +1,19 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+relationship_types_001: 
+  updated_at: 2006-09-20 09:57:11-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "1"
+  description: coworker
+  direction_matters: t
+  created_at: 2006-09-20 09:57:11-05
+relationship_types_002: 
+  updated_at: 2006-09-20 09:57:30-05
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "2"
+  description: housemate
+  direction_matters: f
+  created_at: 2006-09-20 09:57:30-05
