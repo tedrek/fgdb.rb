@@ -67,19 +67,21 @@
 </div>
 
 <div class="form-element">
-  <label for="contact_lock_version">Lock version</label>
-  <%= text_field 'contact', 'lock_version' , {:class=>"text-input"} %>
+<% for contact_type in @contact_types %>
+  <input type="checkbox" id="<%= contact_type.id %>" name="contact_types[]" value="<%= contact_type.id %>"
+  <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
+  >
+  <%= contact_type.description %>
+<% end %>
 </div>
 
 <div class="form-element">
-  <label for="contact_created_by">Created by</label>
-  <%= text_field 'contact', 'created_by' , {:class=>"text-input"} %>
+  <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">Organization</label>
 </div>
 
-<div class="form-element">
-  <label for="contact_updated_by">Updated by</label>
-  <%= text_field 'contact', 'updated_by' , {:class=>"text-input"} %>
-</div>
+
+  </div>
+</fieldset>
 
 <!--[eoform:contact]-->
 
