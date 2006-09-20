@@ -1,0 +1,13 @@
+./test/unit/contact_test.rb
+./test/unit/contact_method_type_test.rb
+./test/unit/contact_method_test.rb
+./test/unit/relationship_type_test.rb
+./test/unit/relationship_test.rb
+./test/functional/contacts_controller_test.rb
+./test/functional/contact_method_types_controller_test.rb
+./test/functional/contact_methods_controller_test.rb
+./test/functional/contact_types_controller_test.rb
+./test/functional/relationship_types_controller_test.rb
+./test/functional/relationships_controller_test.rb
+./public/javascripts/ajax_scaffold.js
+./public/javascripts/rico_corner.js

@@ -7,17 +7,17 @@ class ContactMethodsController; def rescue_action(e) raise e end; end
 class ContactMethodsControllerTest < Test::Unit::TestCase
   fixtures :contact_methods
 
-	NEW_CONTACT_METHOD = {}	# e.g. {:name => 'Test ContactMethod', :description => 'Dummy'}
-	REDIRECT_TO_MAIN = {:action => 'list'} # put hash or string redirection that you normally expect
+  NEW_CONTACT_METHOD = {}  # e.g. {:name => 'Test ContactMethod', :description => 'Dummy'}
+  REDIRECT_TO_MAIN = {:action => 'list'} # put hash or string redirection that you normally expect
 
-	def setup
-		@controller = ContactMethodsController.new
-		@request    = ActionController::TestRequest.new
-		@response   = ActionController::TestResponse.new
-		# Retrieve fixtures via their name
-		# @first = contact_methods(:first)
-		@first = ContactMethod.find_first
-	end
+  def setup
+    @controller = ContactMethodsController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+    # Retrieve fixtures via their name
+    # @first = contact_methods(:first)
+    @first = ContactMethod.find_first
+  end
 
   def test_component
     get :component
@@ -42,7 +42,7 @@ class ContactMethodsControllerTest < Test::Unit::TestCase
   end
 
   def test_create
-  	contact_method_count = ContactMethod.find(:all).length
+    contact_method_count = ContactMethod.find(:all).length
     post :create, {:contact_method => NEW_CONTACT_METHOD}
     contact_method, successful = check_attrs(%w(contact_method successful))
     assert successful, "Should be successful"
@@ -52,7 +52,7 @@ class ContactMethodsControllerTest < Test::Unit::TestCase
   end
 
   def test_create_xhr
-  	contact_method_count = ContactMethod.find(:all).length
+    contact_method_count = ContactMethod.find(:all).length
     xhr :post, :create, {:contact_method => NEW_CONTACT_METHOD}
     contact_method, successful = check_attrs(%w(contact_method successful))
     assert successful, "Should be successful"
@@ -62,12 +62,12 @@ class ContactMethodsControllerTest < Test::Unit::TestCase
   end
 
   def test_update
-  	contact_method_count = ContactMethod.find(:all).length
+    contact_method_count = ContactMethod.find(:all).length
     post :update, {:id => @first.id, :contact_method => @first.attributes.merge(NEW_CONTACT_METHOD)}
     contact_method, successful = check_attrs(%w(contact_method successful))
     assert successful, "Should be successful"
     contact_method.reload
-   	NEW_CONTACT_METHOD.each do |attr_name|
+     NEW_CONTACT_METHOD.each do |attr_name|
       assert_equal NEW_CONTACT_METHOD[attr_name], contact_method.attributes[attr_name], "@contact_method.#{attr_name.to_s} incorrect"
     end
     assert_equal contact_method_count, ContactMethod.find(:all).length, "Number of ContactMethods should be the same"
@@ -76,12 +76,12 @@ class ContactMethodsControllerTest < Test::Unit::TestCase
   end
 
   def test_update_xhr
-  	contact_method_count = ContactMethod.find(:all).length
+    contact_method_count = ContactMethod.find(:all).length
     xhr :post, :update, {:id => @first.id, :contact_method => @first.attributes.merge(NEW_CONTACT_METHOD)}
     contact_method, successful = check_attrs(%w(contact_method successful))
     assert successful, "Should be successful"
     contact_method.reload
-   	NEW_CONTACT_METHOD.each do |attr_name|
+     NEW_CONTACT_METHOD.each do |attr_name|
       assert_equal NEW_CONTACT_METHOD[attr_name], contact_method.attributes[attr_name], "@contact_method.#{attr_name.to_s} incorrect"
     end
     assert_equal contact_method_count, ContactMethod.find(:all).length, "Number of ContactMethods should be the same"
@@ -90,7 +90,7 @@ class ContactMethodsControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy
-  	contact_method_count = ContactMethod.find(:all).length
+    contact_method_count = ContactMethod.find(:all).length
     post :destroy, {:id => @first.id}
     assert_response :redirect
     assert_equal contact_method_count - 1, ContactMethod.find(:all).length, "Number of ContactMethods should be one less"
@@ -98,7 +98,7 @@ class ContactMethodsControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy_xhr
-  	contact_method_count = ContactMethod.find(:all).length
+    contact_method_count = ContactMethod.find(:all).length
     xhr :post, :destroy, {:id => @first.id}
     assert_response :success
     assert_equal contact_method_count - 1, ContactMethod.find(:all).length, "Number of ContactMethods should be one less"
@@ -106,7 +106,7 @@ class ContactMethodsControllerTest < Test::Unit::TestCase
   end
 
 protected
-	# Could be put in a Helper library and included at top of test class
+  # Could be put in a Helper library and included at top of test class
   def check_attrs(attr_list)
     attrs = []
     attr_list.each do |attr_sym|

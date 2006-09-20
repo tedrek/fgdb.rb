@@ -7,17 +7,17 @@ class ContactsController; def rescue_action(e) raise e end; end
 class ContactsControllerTest < Test::Unit::TestCase
   fixtures :contacts
 
-	NEW_CONTACT = {}	# e.g. {:name => 'Test Contact', :description => 'Dummy'}
-	REDIRECT_TO_MAIN = {:action => 'list'} # put hash or string redirection that you normally expect
+  NEW_CONTACT = {}  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
+  REDIRECT_TO_MAIN = {:action => 'list'} # put hash or string redirection that you normally expect
 
-	def setup
-		@controller = ContactsController.new
-		@request    = ActionController::TestRequest.new
-		@response   = ActionController::TestResponse.new
-		# Retrieve fixtures via their name
-		# @first = contacts(:first)
-		@first = Contact.find_first
-	end
+  def setup
+    @controller = ContactsController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+    # Retrieve fixtures via their name
+    # @first = contacts(:first)
+    @first = Contact.find_first
+  end
 
   def test_component
     get :component
@@ -42,7 +42,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_create
-  	contact_count = Contact.find(:all).length
+    contact_count = Contact.find(:all).length
     post :create, {:contact => NEW_CONTACT}
     contact, successful = check_attrs(%w(contact successful))
     assert successful, "Should be successful"
@@ -52,7 +52,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_create_xhr
-  	contact_count = Contact.find(:all).length
+    contact_count = Contact.find(:all).length
     xhr :post, :create, {:contact => NEW_CONTACT}
     contact, successful = check_attrs(%w(contact successful))
     assert successful, "Should be successful"
@@ -62,12 +62,12 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_update
-  	contact_count = Contact.find(:all).length
+    contact_count = Contact.find(:all).length
     post :update, {:id => @first.id, :contact => @first.attributes.merge(NEW_CONTACT)}
     contact, successful = check_attrs(%w(contact successful))
     assert successful, "Should be successful"
     contact.reload
-   	NEW_CONTACT.each do |attr_name|
+     NEW_CONTACT.each do |attr_name|
       assert_equal NEW_CONTACT[attr_name], contact.attributes[attr_name], "@contact.#{attr_name.to_s} incorrect"
     end
     assert_equal contact_count, Contact.find(:all).length, "Number of Contacts should be the same"
@@ -76,12 +76,12 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_update_xhr
-  	contact_count = Contact.find(:all).length
+    contact_count = Contact.find(:all).length
     xhr :post, :update, {:id => @first.id, :contact => @first.attributes.merge(NEW_CONTACT)}
     contact, successful = check_attrs(%w(contact successful))
     assert successful, "Should be successful"
     contact.reload
-   	NEW_CONTACT.each do |attr_name|
+     NEW_CONTACT.each do |attr_name|
       assert_equal NEW_CONTACT[attr_name], contact.attributes[attr_name], "@contact.#{attr_name.to_s} incorrect"
     end
     assert_equal contact_count, Contact.find(:all).length, "Number of Contacts should be the same"
@@ -90,7 +90,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy
-  	contact_count = Contact.find(:all).length
+    contact_count = Contact.find(:all).length
     post :destroy, {:id => @first.id}
     assert_response :redirect
     assert_equal contact_count - 1, Contact.find(:all).length, "Number of Contacts should be one less"
@@ -98,7 +98,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy_xhr
-  	contact_count = Contact.find(:all).length
+    contact_count = Contact.find(:all).length
     xhr :post, :destroy, {:id => @first.id}
     assert_response :success
     assert_equal contact_count - 1, Contact.find(:all).length, "Number of Contacts should be one less"
@@ -106,7 +106,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
 protected
-	# Could be put in a Helper library and included at top of test class
+  # Could be put in a Helper library and included at top of test class
   def check_attrs(attr_list)
     attrs = []
     attr_list.each do |attr_sym|

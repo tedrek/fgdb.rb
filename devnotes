@@ -81,9 +81,9 @@ $ rake    # runs model then functional (aka, controller) tests
 
 # link contacts table into project main page
 $ vi public/index.html 
-		+++ <li>
-		+++   <a href="/contacts">contacts</a>
-		+++ </li> 
+    +++ <li>
+    +++   <a href="/contacts">contacts</a>
+    +++ </li> 
 
 # edit schema with contact-related table ddl from another project
 $ vi db/schema.sql
