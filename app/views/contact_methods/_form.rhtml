@@ -12,18 +12,11 @@
 </div>
 
 <div class="form-element">
-  <label for="contact_method_lock_version">Lock version</label>
-  <%= text_field 'contact_method', 'lock_version' , {:class=>"text-input"} %>
-</div>
 
-<div class="form-element">
-  <label for="contact_method_created_by">Created by</label>
-  <%= text_field 'contact_method', 'created_by' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="contact_method_updated_by">Updated by</label>
-  <%= text_field 'contact_method', 'updated_by' , {:class=>"text-input"} %>
+<label for="contact_method_type_id">Contact method type</label><br/>
+<select id="contact_contact_method_type_id" name="contact_method[contact_method_type_id]">
+  <%= options_from_collection_for_select ContactMethodType.find_all, "id", "description", @contact_method.contact_method_type_id %>
+</select>
 </div>
 
 <!--[eoform:contact_method]-->

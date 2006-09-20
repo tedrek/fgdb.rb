@@ -13,7 +13,7 @@ class Contact < ActiveRecord::Base
   has_many :sources,  :through => :relationships_as_sink
   has_many :sinks,    :through => :relationships_as_source
 
-  acts_as_userstamp
+  # acts_as_userstamp
 
   def is_organization?
     self.is_organization

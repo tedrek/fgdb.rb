@@ -20,8 +20,7 @@ SET default_tablespace = '';
 SET default_with_oids = true;
 
 --
--- TOC entry 7 (OID 6189649)
--- Name: contact_method_types; Type: TABLE; Schema: public; Owner: rfs
+-- Name: contact_method_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 CREATE TABLE contact_method_types (
@@ -31,14 +30,20 @@ CREATE TABLE contact_method_types (
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
-    created_by bigint NOT NULL default 1,
-    updated_by bigint NOT NULL default 1
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
 );
 
 
 --
--- TOC entry 9 (OID 6189657)
--- Name: contact_methods; Type: TABLE; Schema: public; Owner: rfs
+-- Name: TABLE contact_method_types; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE contact_method_types IS 'types of ways we can contact someone, i.e. phone, email website, online chat name -- not physical address';
+
+
+--
+-- Name: contact_methods; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 CREATE TABLE contact_methods (
@@ -50,14 +55,20 @@ CREATE TABLE contact_methods (
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
-    created_by bigint NOT NULL default 1,
-    updated_by bigint NOT NULL default 1
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
 );
 
 
 --
--- TOC entry 11 (OID 6189665)
--- Name: contact_types; Type: TABLE; Schema: public; Owner: rfs
+-- Name: TABLE contact_methods; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE contact_methods IS 'actual ways a specific contact can be contacted (i.e. phone, email, etc.) note: not physical address';
+
+
+--
+-- Name: contact_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 CREATE TABLE contact_types (
@@ -66,14 +77,20 @@ CREATE TABLE contact_types (
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
-    created_by bigint NOT NULL default 1,
-    updated_by bigint NOT NULL default 1
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
 );
 
 
 --
--- TOC entry 13 (OID 6189671)
--- Name: contact_types_contacts; Type: TABLE; Schema: public; Owner: rfs
+-- Name: TABLE contact_types; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE contact_types IS 'types of contacts we track, for instance media contact, member, organization';
+
+
+--
+-- Name: contact_types_contacts; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 CREATE TABLE contact_types_contacts (
@@ -83,8 +100,7 @@ CREATE TABLE contact_types_contacts (
 
 
 --
--- TOC entry 14 (OID 6189677)
--- Name: contacts; Type: TABLE; Schema: public; Owner: rfs
+-- Name: contacts; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 CREATE TABLE contacts (
@@ -105,14 +121,14 @@ CREATE TABLE contacts (
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
-    created_by bigint NOT NULL default 1,
-    updated_by bigint NOT NULL default 1,
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL,
     user_id bigint
 );
 
+
 --
--- TOC entry 47 (OID 6189822)
--- Name: relationship_types; Type: TABLE; Schema: public; Owner: rfs
+-- Name: relationship_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 CREATE TABLE relationship_types (
@@ -122,14 +138,20 @@ CREATE TABLE relationship_types (
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
-    created_by bigint NOT NULL default 1,
-    updated_by bigint NOT NULL default 1
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
 );
 
 
 --
--- TOC entry 49 (OID 6189830)
--- Name: relationships; Type: TABLE; Schema: public; Owner: rfs
+-- Name: TABLE relationship_types; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE relationship_types IS 'abstract type of relationships that can exist between contacts, i.e. sibling, parent-child, spouse, employer-employee';
+
+
+--
+-- Name: relationships; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 CREATE TABLE relationships (
@@ -141,21 +163,28 @@ CREATE TABLE relationships (
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
-    created_by bigint NOT NULL default 1,
-    updated_by bigint NOT NULL default 1
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
 );
 
+
 --
--- TOC entry 69 (OID 6189901)
--- Name: contact_types_contacts_contact_id_key; Type: CONSTRAINT; Schema: public; Owner: rfs
+-- Name: TABLE relationships; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE relationships IS 'actual relationship between two contacts';
+
+
+--
+-- Name: contact_types_contacts_contact_id_key; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 ALTER TABLE ONLY contact_types_contacts
     ADD CONSTRAINT contact_types_contacts_contact_id_key UNIQUE (contact_id, contact_type_id);
 
+
 --
--- TOC entry 66 (OID 6189907)
--- Name: pk_contact_method_types; Type: CONSTRAINT; Schema: public; Owner: rfs
+-- Name: pk_contact_method_types; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 ALTER TABLE ONLY contact_method_types
@@ -163,8 +192,7 @@ ALTER TABLE ONLY contact_method_types
 
 
 --
--- TOC entry 67 (OID 6189909)
--- Name: pk_contact_methods; Type: CONSTRAINT; Schema: public; Owner: rfs
+-- Name: pk_contact_methods; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 ALTER TABLE ONLY contact_methods
@@ -172,8 +200,7 @@ ALTER TABLE ONLY contact_methods
 
 
 --
--- TOC entry 68 (OID 6189911)
--- Name: pk_contact_types; Type: CONSTRAINT; Schema: public; Owner: rfs
+-- Name: pk_contact_types; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 ALTER TABLE ONLY contact_types
@@ -181,8 +208,7 @@ ALTER TABLE ONLY contact_types
 
 
 --
--- TOC entry 70 (OID 6189913)
--- Name: pk_contacts; Type: CONSTRAINT; Schema: public; Owner: rfs
+-- Name: pk_contacts; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 ALTER TABLE ONLY contacts
@@ -190,8 +216,7 @@ ALTER TABLE ONLY contacts
 
 
 --
--- TOC entry 86 (OID 6189943)
--- Name: pk_relationship_types; Type: CONSTRAINT; Schema: public; Owner: rfs
+-- Name: pk_relationship_types; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 ALTER TABLE ONLY relationship_types
@@ -199,8 +224,7 @@ ALTER TABLE ONLY relationship_types
 
 
 --
--- TOC entry 87 (OID 6189945)
--- Name: pk_relationships; Type: CONSTRAINT; Schema: public; Owner: rfs
+-- Name: pk_relationships; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 ALTER TABLE ONLY relationships
@@ -208,8 +232,7 @@ ALTER TABLE ONLY relationships
 
 
 --
--- TOC entry 119 (OID 6189981)
--- Name: contact_methods_fk_contact_id; Type: FK CONSTRAINT; Schema: public; Owner: rfs
+-- Name: contact_methods_fk_contact_id; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
 --
 
 ALTER TABLE ONLY contact_methods
@@ -217,8 +240,7 @@ ALTER TABLE ONLY contact_methods
 
 
 --
--- TOC entry 120 (OID 6189985)
--- Name: contact_methods_fk_contact_method_type; Type: FK CONSTRAINT; Schema: public; Owner: rfs
+-- Name: contact_methods_fk_contact_method_type; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
 --
 
 ALTER TABLE ONLY contact_methods
@@ -226,8 +248,7 @@ ALTER TABLE ONLY contact_methods
 
 
 --
--- TOC entry 178 (OID 6190061)
--- Name: relationships_fk_relationship_type; Type: FK CONSTRAINT; Schema: public; Owner: rfs
+-- Name: relationships_fk_relationship_type; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
 --
 
 ALTER TABLE ONLY relationships
@@ -235,8 +256,7 @@ ALTER TABLE ONLY relationships
 
 
 --
--- TOC entry 179 (OID 6190065)
--- Name: relationships_fk_sink_id; Type: FK CONSTRAINT; Schema: public; Owner: rfs
+-- Name: relationships_fk_sink_id; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
 --
 
 ALTER TABLE ONLY relationships
@@ -244,54 +264,11 @@ ALTER TABLE ONLY relationships
 
 
 --
--- TOC entry 180 (OID 6190069)
--- Name: relationships_fk_source_id; Type: FK CONSTRAINT; Schema: public; Owner: rfs
+-- Name: relationships_fk_source_id; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
 --
 
 ALTER TABLE ONLY relationships
     ADD CONSTRAINT relationships_fk_source_id FOREIGN KEY (source_id) REFERENCES contacts(id) ON DELETE SET NULL;
-
-
-
---
--- TOC entry 8 (OID 6189649)
--- Name: TABLE contact_method_types; Type: COMMENT; Schema: public; Owner: rfs
---
-
-COMMENT ON TABLE contact_method_types IS 'types of ways we can contact someone, i.e. phone, email website, online chat name -- not physical address';
-
-
---
--- TOC entry 10 (OID 6189657)
--- Name: TABLE contact_methods; Type: COMMENT; Schema: public; Owner: rfs
---
-
-COMMENT ON TABLE contact_methods IS 'actual ways a specific contact can be contacted (i.e. phone, email, etc.) note: not physical address';
-
-
---
--- TOC entry 12 (OID 6189665)
--- Name: TABLE contact_types; Type: COMMENT; Schema: public; Owner: rfs
---
-
-COMMENT ON TABLE contact_types IS 'types of contacts we track, for instance media contact, member, organization';
-
-
---
--- TOC entry 48 (OID 6189822)
--- Name: TABLE relationship_types; Type: COMMENT; Schema: public; Owner: rfs
---
-
-COMMENT ON TABLE relationship_types IS 'abstract type of relationships that can exist between contacts, i.e. sibling, parent-child, spouse, employer-employee';
-
-
---
--- TOC entry 50 (OID 6189830)
--- Name: TABLE relationships; Type: COMMENT; Schema: public; Owner: rfs
---
-
-COMMENT ON TABLE relationships IS 'actual relationship between two contacts';
-
 
 
 --
