@@ -1,0 +1,15 @@
+
+#===========================================================
+### roadmap for 21 sep
+
+. change default scaffold_columns 
+  . see revision 114
+
+. add code for treelike use of parent_id in contact_method_types
+  . see revision 114
+
+. remove column 'user_id' from contacts table and regenerate or
+adjust appropriate files
+  . drop from database, then dump and reload to maximize
+    integrity of everything
+
