@@ -6,4 +6,8 @@ class ContactMethod < ActiveRecord::Base
   belongs_to :contact
   validates_associated :contact
   # acts_as_userstamp
+
+  def to_s
+    description
+  end
 end
