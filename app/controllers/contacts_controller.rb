@@ -44,7 +44,6 @@ class ContactsController < ApplicationController
 
   def new
     @contact = Contact.new
-    @contact_types = ContactType.find_all
     @successful = true
 
     return render(:action => 'new.rjs') if request.xhr?
@@ -62,6 +61,7 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.new(params[:contact])
       @successful = @contact.save
+      @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -96,6 +96,7 @@ class ContactsController < ApplicationController
   def update
     begin
       @contact = Contact.find(params[:id])
+      @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
       @successful = @contact.update_attributes(params[:contact])
     rescue
       flash[:error], @successful  = $!.to_s, false

@@ -2,7 +2,7 @@
   <div class="row">
     <!--[form:contact]-->
 <div class="form-element">
-  <label for="contact_is_organization">Is organization</label>
+  <label for="contact_is_organization">Is organization?</label>
   <%= select "contact", "is_organization", [["True", true], ["False", false]], { :selected => @contact.is_organization } %>
 </div>
 
@@ -66,14 +66,16 @@
   <%= text_area 'contact', 'notes'  %>
 </div>
 
+<% for contact_type in ContactType.find_all %>
 <div class="form-element">
-<% for contact_type in @contact_types %>
-  <input type="checkbox" id="<%= contact_type.id %>" name="contact_types[]" value="<%= contact_type.id %>"
+  <label for="<%= contact_type.id %>"><%= contact_type.description %></label>
+  <input type="checkbox" id="<%= contact_type.id %>"
+    name="contact_types[]" 
+    value="<%= contact_type.id %>"
   <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
   >
-  <%= contact_type.description %>
-<% end %>
 </div>
+<% end %>
 
 <div class="form-element">
   <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">Organization</label>
