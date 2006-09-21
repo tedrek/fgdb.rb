@@ -4,13 +4,6 @@
 . remove column 'user_id' from contacts table and regenerate or
 adjust appropriate files
 
-. figure out why contacts "create new" screen will not load
-after adding in dropdown box code 
-  - probably to do with the find_all class
-  - switched .../views/contacts/_form.rhtml to use
-    checkbox-centric code fr analogous wobble html partial
-    * still does not load
-
 #===========================================================
 # 20 sep
 
@@ -53,3 +46,22 @@ $ rake db:data:load
 . dump to fixtures from devel db then reload devel db from fixtures
 $ rake db:fixtures:export_all
 $ rake db:fixtures:import_all
+
+. figure out why contacts "create new" screen will not load
+after adding in dropdown box code 
+  - probably to do with the find_all class
+  - switched .../views/contacts/_form.rhtml to use
+    checkbox-centric code fr analogous wobble html partial
+    * still does not load
+
+  - dev log gives error:
+
+  ActionView::TemplateError (You have a nil object when you didn't expect it!
+  You might have expected an instance of Array.
+  The error occured while evaluating nil.each) on line #70 of
+  app/views/contacts/_ form.rhtml:
+  70: <% for contact_type in @contact_types %>
+
+  - added this line to app/controllers/contacts_controller.rb#new:
+   @contact_types = ContactType.find_all
+

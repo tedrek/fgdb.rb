@@ -44,6 +44,7 @@ class ContactsController < ApplicationController
 
   def new
     @contact = Contact.new
+    @contact_types = ContactType.find_all
     @successful = true
 
     return render(:action => 'new.rjs') if request.xhr?
