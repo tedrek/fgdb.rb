@@ -6,7 +6,9 @@ module ContactTypesHelper
   end
   
   def scaffold_columns
-    ContactType.scaffold_columns
+    [
+    AjaxScaffold::ScaffoldColumn.new(ContactType, :name => 'description'),
+    ]
   end
 
 end
