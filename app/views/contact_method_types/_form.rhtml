@@ -7,21 +7,15 @@
 </div>
 
 <div class="form-element">
-  <label for="contact_method_type_lock_version">Lock version</label>
-  <%= text_field 'contact_method_type', 'lock_version' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="contact_method_type_created_by">Created by</label>
-  <%= text_field 'contact_method_type', 'created_by' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="contact_method_type_updated_by">Updated by</label>
-  <%= text_field 'contact_method_type', 'updated_by' , {:class=>"text-input"} %>
+  <label for="contact_method_type_parent">Parent Type</label>
+  <select id="contact_method_type_parent" name="contact_method_type[parent_id]">
+    <%= options_from_collection_for_select ContactMethodType.find_all_except(@contact_method_type), "id", "description", @contact_method_type.parent_id %>
+  </select>
 </div>
 
 <!--[eoform:contact_method_type]-->
 
   </div>
 </fieldset>
+
+

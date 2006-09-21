@@ -6,7 +6,12 @@ module ContactMethodTypesHelper
   end
   
   def scaffold_columns
-    ContactMethodType.scaffold_columns
+     [ AjaxScaffold::ScaffoldColumn.new(ContactMethodType, 
+        :name => 'parent_id', :label => 'Parent Type', 
+        :eval => 'contact_method_type.parent.description', :sortable => false),
+      AjaxScaffold::ScaffoldColumn.new(ContactMethodType, 
+        :name => 'description'),
+      ]
   end
 
 end
