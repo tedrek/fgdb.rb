@@ -2,6 +2,23 @@
 #===========================================================
 ### roadmap for 21 sep
 
+TODO
+----
+
+. remove column 'user_id' from contacts table and regenerate or
+adjust appropriate files
+  . drop via database prompt, then dump and reload to maximize
+    integrity of everything
+
+. build up [scaffold_columns] in contacts helper
+
+DONE
+----
+
+. resolve checkbox/dropdown possible conflict in contacts
+_form.rhtml
+  . remove dropdown logic, move checkbox logic to top - fixed!
+
 . add method 'find_all_except' to ActiveRecord::Base
   . returns all recs in table but for those in list of records
   passed as arg
@@ -97,10 +114,4 @@ Index: app/views/contact_method_types/_form.rhtml
 +    <%= options_from_collection_for_select ContactMethodType.find_all_except(@contact_method_type), "id", "description", @contact_method_type.parent_id %>
 +  </select>
  </div>
-
-
-. remove column 'user_id' from contacts table and regenerate or
-adjust appropriate files
-  . drop via database prompt, then dump and reload to maximize
-    integrity of everything
 

@@ -1,9 +1,9 @@
 <fieldset>
   <div class="row">
     <!--[form:contact]-->
+
 <div class="form-element">
-  <label for="contact_is_organization">Is organization?</label>
-  <%= select "contact", "is_organization", [["True", true], ["False", false]], { :selected => @contact.is_organization } %>
+  <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">Organization</label>
 </div>
 
 <div class="form-element">
@@ -76,10 +76,6 @@
   >
 </div>
 <% end %>
-
-<div class="form-element">
-  <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">Organization</label>
-</div>
 
 
   </div>
