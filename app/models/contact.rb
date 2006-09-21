@@ -23,6 +23,10 @@ class Contact < ActiveRecord::Base
     ! self.is_organization?
   end
 
+  def to_s
+    display_name
+  end
+
   def display_name
     if is_person?
       if (self.first_name || self.middle_name || self.surname) &&
