@@ -6,7 +6,12 @@ module RelationshipTypesHelper
   end
   
   def scaffold_columns
-    RelationshipType.scaffold_columns
+     [ AjaxScaffold::ScaffoldColumn.new(RelationshipType, 
+        :name => 'description'),
+      AjaxScaffold::ScaffoldColumn.new(RelationshipType, 
+        :name => 'direction_matters', :label => "Does direction matter?",
+        :eval => 'relationship_type.direction_matters ? "yes" : "no"'),
+      ]
   end
 
 end

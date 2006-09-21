@@ -7,23 +7,9 @@
 </div>
 
 <div class="form-element">
-  <label for="relationship_type_direction_matters">Direction matters</label>
-  <%= select "relationship_type", "direction_matters", [["True", true], ["False", false]], { :selected => @relationship_type.direction_matters } %>
-</div>
-
-<div class="form-element">
-  <label for="relationship_type_lock_version">Lock version</label>
-  <%= text_field 'relationship_type', 'lock_version' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="relationship_type_created_by">Created by</label>
-  <%= text_field 'relationship_type', 'created_by' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="relationship_type_updated_by">Updated by</label>
-  <%= text_field 'relationship_type', 'updated_by' , {:class=>"text-input"} %>
+  <label for="relationship_type_direction_matters">Does direction matter?</label>
+  <%= select "relationship_type", "direction_matters", [["Yes", true], ["No", false]],
+	{ :selected => @relationship_type.direction_matters } %>
 </div>
 
 <!--[eoform:relationship_type]-->
