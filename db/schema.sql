@@ -41,6 +41,22 @@ CREATE TABLE contact_method_types (
 
 COMMENT ON TABLE contact_method_types IS 'types of ways we can contact someone, i.e. phone, email website, online chat name -- not physical address';
 
+CREATE TABLE volunteer_tasks (
+    id serial NOT NULL,
+    contact_id integer,
+    date_performed date DEFAULT now(),
+    duration  numeric(5,2) DEFAULT 0.00 NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+CREATE TABLE volunteer_tasks_volunteer_task_types (
+    volunteer_tasks_id integer NOT NULL,
+    volunteer_task_types_id integer NOT NULL
+);
 
 --
 -- Name: contact_methods; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
