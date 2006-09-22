@@ -1,0 +1,29 @@
+<fieldset>
+  <div class="row">
+    <!--[form:volunteer_task]-->
+<div class="form-element">
+  <label for="volunteer_task_date_performed">Date performed</label>
+  <%= date_select 'volunteer_task', 'date_performed'  %>
+</div>
+
+<div class="form-element">
+  <label for="volunteer_task_duration">Duration</label>
+  <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="volunteer_task_volunteer_task_type">Task Type</label>
+  <% dropdown_list = VolunteerTaskType.find_all_instantiable
+      isect = (dropdown_list & @volunteer_task.volunteer_task_types).first %>
+  <select id="volunteer_task_volunteer_task_type"
+  name="volunteer_task_types[]">
+    <%= options_from_collection_for_select(
+    dropdown_list, "id", "description", 
+    (isect ? isect.id : nil) ) %>
+  </select>
+</div>
+
+<!--[eoform:volunteer_task]-->
+
+  </div>
+</fieldset>

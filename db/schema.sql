@@ -53,9 +53,9 @@ CREATE TABLE volunteer_tasks (
     updated_by bigint DEFAULT 1 NOT NULL
 );
 
-CREATE TABLE volunteer_tasks_volunteer_task_types (
-    volunteer_tasks_id integer NOT NULL,
-    volunteer_task_types_id integer NOT NULL
+CREATE TABLE volunteer_task_types_volunteer_tasks (
+    volunteer_task_id integer NOT NULL,
+    volunteer_task_type_id integer NOT NULL
 );
 
 --
