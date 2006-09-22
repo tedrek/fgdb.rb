@@ -175,6 +175,24 @@ COMMENT ON TABLE relationships IS 'actual relationship between two contacts';
 
 
 --
+-- Name: volunteer_task_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE volunteer_task_types (
+    id serial NOT NULL,
+    description character varying(100),
+    parent_id integer,
+    hours_multiplier integer DEFAULT 1 NOT NULL,
+    instantiable boolean DEFAULT true NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
 -- Name: contact_types_contacts_contact_id_key; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
