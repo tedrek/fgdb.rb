@@ -1,0 +1,16 @@
+
+#===========================================================
+### roadmap for 22 sep
+
+TODO
+----
+
+DONE
+----
+
+. build up [scaffold_columns] in contacts_helper.rb
+
+. remove column 'user_id' from contacts table and regenerate or
+adjust appropriate files
+  . drop via database prompt, then dump and reload to maximize
+    integrity of everything
