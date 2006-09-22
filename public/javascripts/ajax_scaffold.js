@@ -16,8 +16,8 @@ Abstract.Table = function() {};
 Abstract.Table.prototype = {
   tagTest: function(element, tagName) {
     return $(element).tagName.toLowerCase() == tagName.toLowerCase();
-  }    
-};  
+  }		
+};	
 
 Abstract.TableRow = function() {};
 Abstract.TableRow.prototype = Object.extend(new Abstract.Table(), {
@@ -27,7 +27,7 @@ Abstract.TableRow.prototype = Object.extend(new Abstract.Table(), {
       var targetTableRow = $(targetTableRow);
       
       if (targetTableRow == null || !this.tagTest(targetTableRow,'tr') 
-        || sourceTableRow == null || !this.tagTest(sourceTableRow,'tr')) {
+      	|| sourceTableRow == null || !this.tagTest(sourceTableRow,'tr')) {
         throw("TableRow: both parameters must be a <tr> tag.");
       }
       
@@ -62,7 +62,7 @@ Abstract.TableRow.prototype = Object.extend(new Abstract.Table(), {
       }
       currentSearchDepth++;
     }
-  }    
+  }		
 });
 
 var TableRow = new Object();
@@ -97,7 +97,7 @@ var AjaxScaffold = {
       //Make sure to skip rows that are create or edit rows or messages
       if (!Element.hasClassName(tableRow, "create") 
         && !Element.hasClassName(tableRow, "update")) {
-        
+      	
         if (even) {
           Element.addClassName(tableRow, "even");
         } else {
