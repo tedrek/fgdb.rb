@@ -21,7 +21,9 @@
       isect = (dropdown_list & @volunteer_task.volunteer_task_types).first %>
   <select id="volunteer_task_volunteer_task_type"
   name="volunteer_task_types[]">
-    <option value="">---</option>
+    <% unless top.required %>
+      <option value="0">---</option>
+    <% end %>
     <%= options_from_collection_for_select(
     dropdown_list, "id", "description", 
     (isect ? isect.id : nil) ) %>

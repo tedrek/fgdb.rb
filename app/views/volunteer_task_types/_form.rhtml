@@ -24,6 +24,12 @@
   </select>
 </div>
 
+<div class="form-element">
+  <label for="volunteer_task_type_required">required</label>
+  <%= select "volunteer_task_type", "required", [["True", true],
+  ["False", false]], { :selected => @volunteer_task_type.required || false} %>
+</div>
+
 <!--[eoform:volunteer_task_type]-->
 
   </div>

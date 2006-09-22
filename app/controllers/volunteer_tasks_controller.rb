@@ -60,7 +60,7 @@ class VolunteerTasksController < ApplicationController
   def create
     begin
       @volunteer_task = VolunteerTask.new(params[:volunteer_task])
-      @volunteer_task.volunteer_task_types = VolunteerTaskType.find(@params[:volunteer_task_types]) if @params[:volunteer_task_types]
+      @volunteer_task.volunteer_task_types = VolunteerTaskType.find_actual(@params[:volunteer_task_types]) if @params[:volunteer_task_types]
       @successful = @volunteer_task.save
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -96,7 +96,7 @@ class VolunteerTasksController < ApplicationController
   def update
     begin
       @volunteer_task = VolunteerTask.find(params[:id])
-      @volunteer_task.volunteer_task_types = VolunteerTaskType.find(@params[:volunteer_task_types]) if @params[:volunteer_task_types]
+      @volunteer_task.volunteer_task_types = VolunteerTaskType.find_actual(@params[:volunteer_task_types]) if @params[:volunteer_task_types]
       @successful = @volunteer_task.update_attributes(params[:volunteer_task])
     rescue
       flash[:error], @successful  = $!.to_s, false
