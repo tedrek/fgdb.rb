@@ -11,17 +11,24 @@
   <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input"} %>
 </div>
 
+<% for top in VolunteerTaskType.root_nodes %>
+
 <div class="form-element">
-  <label for="volunteer_task_volunteer_task_type">Task Type</label>
-  <% dropdown_list = VolunteerTaskType.find_all_instantiable
+  <label for="volunteer_task_volunteer_task_type">
+    <%= top.description %> type
+  </label>
+  <% dropdown_list = top.all_instantiable_descendants
       isect = (dropdown_list & @volunteer_task.volunteer_task_types).first %>
   <select id="volunteer_task_volunteer_task_type"
   name="volunteer_task_types[]">
+    <option value="">---</option>
     <%= options_from_collection_for_select(
     dropdown_list, "id", "description", 
     (isect ? isect.id : nil) ) %>
   </select>
 </div>
+
+<% end %>
 
 <!--[eoform:volunteer_task]-->
 

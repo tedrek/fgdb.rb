@@ -7,4 +7,23 @@ class VolunteerTaskType < ActiveRecord::Base
     find(:all, :conditions => [ 'instantiable = ?', true ])
   end
 
+  def self.root_nodes
+    find(:all, :conditions => [ 'parent_id is null' ])
+  end
+
+  def all_descendants
+    all = children + children.map do |child|
+      child.all_descendants
+    end
+    all.flatten
+  end
+
+  def all_instantiable_descendants
+    kids = self.all_descendants.find_all do |child|
+      child.instantiable
+    end
+    kids.unshift(self) if self.instantiable
+    kids
+  end
+
 end
