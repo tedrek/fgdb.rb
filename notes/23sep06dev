@@ -17,6 +17,9 @@ and removing non-displaying columns from forms
 . add donated gizmos to donation screen
   . using datalist_for plugin as modified for wobble
 
+. consider contact attributes:  preferred_contact_method_id
+  . maybe add a radio button set going against bridge table
+
 ### 23 sep
 DONE
 ----
