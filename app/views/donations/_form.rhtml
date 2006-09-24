@@ -1,0 +1,27 @@
+<fieldset>
+  <div class="row">
+    <!--[form:donation]-->
+<div class="form-element">
+  <label for="donation_money_tendered">Money tendered</label>
+  <%= text_field 'donation', 'money_tendered' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="donation_lock_version">Lock version</label>
+  <%= text_field 'donation', 'lock_version' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="donation_created_by">Created by</label>
+  <%= text_field 'donation', 'created_by' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="donation_updated_by">Updated by</label>
+  <%= text_field 'donation', 'updated_by' , {:class=>"text-input"} %>
+</div>
+
+<!--[eoform:donation]-->
+
+  </div>
+</fieldset>
