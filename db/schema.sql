@@ -7,7 +7,7 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pgsql
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
 COMMENT ON SCHEMA public IS 'Standard public schema';
@@ -20,7 +20,7 @@ SET default_tablespace = '';
 SET default_with_oids = true;
 
 --
--- Name: contact_method_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: contact_method_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE contact_method_types (
@@ -36,14 +36,14 @@ CREATE TABLE contact_method_types (
 
 
 --
--- Name: TABLE contact_method_types; Type: COMMENT; Schema: public; Owner: fgdbdev
+-- Name: TABLE contact_method_types; Type: COMMENT; Schema: public; Owner: stillflame
 --
 
 COMMENT ON TABLE contact_method_types IS 'types of ways we can contact someone, i.e. phone, email website, online chat name -- not physical address';
 
 
 --
--- Name: contact_methods; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: contact_methods; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE contact_methods (
@@ -61,14 +61,14 @@ CREATE TABLE contact_methods (
 
 
 --
--- Name: TABLE contact_methods; Type: COMMENT; Schema: public; Owner: fgdbdev
+-- Name: TABLE contact_methods; Type: COMMENT; Schema: public; Owner: stillflame
 --
 
 COMMENT ON TABLE contact_methods IS 'actual ways a specific contact can be contacted (i.e. phone, email, etc.) note: not physical address';
 
 
 --
--- Name: contact_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: contact_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE contact_types (
@@ -83,14 +83,14 @@ CREATE TABLE contact_types (
 
 
 --
--- Name: TABLE contact_types; Type: COMMENT; Schema: public; Owner: fgdbdev
+-- Name: TABLE contact_types; Type: COMMENT; Schema: public; Owner: stillflame
 --
 
 COMMENT ON TABLE contact_types IS 'types of contacts we track, for instance media contact, member, organization';
 
 
 --
--- Name: contact_types_contacts; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: contact_types_contacts; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE contact_types_contacts (
@@ -100,7 +100,7 @@ CREATE TABLE contact_types_contacts (
 
 
 --
--- Name: contacts; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: contacts; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE contacts (
@@ -127,7 +127,74 @@ CREATE TABLE contacts (
 
 
 --
--- Name: relationship_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: donated_gizmos; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE donated_gizmos (
+    id serial NOT NULL,
+    donation_id integer,
+    gizmo_type_id integer,
+    quantity integer,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint NOT NULL,
+    updated_by bigint NOT NULL
+);
+
+
+--
+-- Name: donations; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE donations (
+    id serial NOT NULL,
+    contact_id integer,
+    payment_method_id integer,
+    money_tendered numeric(10,2) DEFAULT 0.0,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint NOT NULL,
+    updated_by bigint NOT NULL
+);
+
+
+--
+-- Name: gizmo_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE gizmo_types (
+    id serial NOT NULL,
+    description character varying(100),
+    fee_is_required boolean DEFAULT false,
+    fee numeric(10,2) DEFAULT 0.0,
+    parent_id integer,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint NOT NULL,
+    updated_by bigint NOT NULL
+);
+
+
+--
+-- Name: payment_methods; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE payment_methods (
+    id serial NOT NULL,
+    description character varying(100),
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint NOT NULL,
+    updated_by bigint NOT NULL
+);
+
+
+--
+-- Name: relationship_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE relationship_types (
@@ -143,14 +210,14 @@ CREATE TABLE relationship_types (
 
 
 --
--- Name: TABLE relationship_types; Type: COMMENT; Schema: public; Owner: fgdbdev
+-- Name: TABLE relationship_types; Type: COMMENT; Schema: public; Owner: stillflame
 --
 
 COMMENT ON TABLE relationship_types IS 'abstract type of relationships that can exist between contacts, i.e. sibling, parent-child, spouse, employer-employee';
 
 
 --
--- Name: relationships; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: relationships; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE relationships (
@@ -168,14 +235,14 @@ CREATE TABLE relationships (
 
 
 --
--- Name: TABLE relationships; Type: COMMENT; Schema: public; Owner: fgdbdev
+-- Name: TABLE relationships; Type: COMMENT; Schema: public; Owner: stillflame
 --
 
 COMMENT ON TABLE relationships IS 'actual relationship between two contacts';
 
 
 --
--- Name: volunteer_task_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: volunteer_task_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE volunteer_task_types (
@@ -194,7 +261,7 @@ CREATE TABLE volunteer_task_types (
 
 
 --
--- Name: volunteer_task_types_volunteer_tasks; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: volunteer_task_types_volunteer_tasks; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE volunteer_task_types_volunteer_tasks (
@@ -204,7 +271,7 @@ CREATE TABLE volunteer_task_types_volunteer_tasks (
 
 
 --
--- Name: volunteer_tasks; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: volunteer_tasks; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 CREATE TABLE volunteer_tasks (
@@ -221,7 +288,7 @@ CREATE TABLE volunteer_tasks (
 
 
 --
--- Name: contact_types_contacts_contact_id_key; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: contact_types_contacts_contact_id_key; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 ALTER TABLE ONLY contact_types_contacts
@@ -229,7 +296,7 @@ ALTER TABLE ONLY contact_types_contacts
 
 
 --
--- Name: pk_contact_method_types; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: pk_contact_method_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 ALTER TABLE ONLY contact_method_types
@@ -237,7 +304,7 @@ ALTER TABLE ONLY contact_method_types
 
 
 --
--- Name: pk_contact_methods; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: pk_contact_methods; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 ALTER TABLE ONLY contact_methods
@@ -245,7 +312,7 @@ ALTER TABLE ONLY contact_methods
 
 
 --
--- Name: pk_contact_types; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: pk_contact_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 ALTER TABLE ONLY contact_types
@@ -253,7 +320,7 @@ ALTER TABLE ONLY contact_types
 
 
 --
--- Name: pk_contacts; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: pk_contacts; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 ALTER TABLE ONLY contacts
@@ -261,7 +328,7 @@ ALTER TABLE ONLY contacts
 
 
 --
--- Name: pk_relationship_types; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: pk_relationship_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 ALTER TABLE ONLY relationship_types
@@ -269,7 +336,7 @@ ALTER TABLE ONLY relationship_types
 
 
 --
--- Name: pk_relationships; Type: CONSTRAINT; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: pk_relationships; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
 ALTER TABLE ONLY relationships
@@ -277,7 +344,7 @@ ALTER TABLE ONLY relationships
 
 
 --
--- Name: contact_methods_fk_contact_id; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
+-- Name: contact_methods_fk_contact_id; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
 ALTER TABLE ONLY contact_methods
@@ -285,7 +352,7 @@ ALTER TABLE ONLY contact_methods
 
 
 --
--- Name: contact_methods_fk_contact_method_type; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
+-- Name: contact_methods_fk_contact_method_type; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
 ALTER TABLE ONLY contact_methods
@@ -293,7 +360,7 @@ ALTER TABLE ONLY contact_methods
 
 
 --
--- Name: relationships_fk_relationship_type; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
+-- Name: relationships_fk_relationship_type; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
 ALTER TABLE ONLY relationships
@@ -301,7 +368,7 @@ ALTER TABLE ONLY relationships
 
 
 --
--- Name: relationships_fk_sink_id; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
+-- Name: relationships_fk_sink_id; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
 ALTER TABLE ONLY relationships
@@ -309,7 +376,7 @@ ALTER TABLE ONLY relationships
 
 
 --
--- Name: relationships_fk_source_id; Type: FK CONSTRAINT; Schema: public; Owner: fgdbdev
+-- Name: relationships_fk_source_id; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
 ALTER TABLE ONLY relationships
