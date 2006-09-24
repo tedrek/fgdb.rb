@@ -17,18 +17,16 @@
 </div>
 
 <div class="form-element">
-  <label for="gizmo_type_lock_version">Lock version</label>
-  <%= text_field 'gizmo_type', 'lock_version' , {:class=>"text-input"} %>
+  <label for="gizmo_type_parent">Parent Type</label>
+  <select id="gizmo_type_parent" name="gizmo_type[parent_id]">
+    <option value="">---</option>
+    <%= options_from_collection_for_select GizmoType.find_all_except(@gizmo_type), "id", "description", @gizmo_type.parent_id %>
+  </select>
 </div>
 
 <div class="form-element">
-  <label for="gizmo_type_created_by">Created by</label>
-  <%= text_field 'gizmo_type', 'created_by' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="gizmo_type_updated_by">Updated by</label>
-  <%= text_field 'gizmo_type', 'updated_by' , {:class=>"text-input"} %>
+  <label for="gizmo_type_instantiable">Instantiable?</label>
+  <%= select "gizmo_type", "instantiable", [["Yes", true], ["No", false]], { :selected => @gizmo_type.instantiable } %>
 </div>
 
 <!--[eoform:gizmo_type]-->

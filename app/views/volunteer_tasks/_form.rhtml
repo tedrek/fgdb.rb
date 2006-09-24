@@ -1,4 +1,12 @@
 <fieldset>
+
+<div class="form-element">
+<label for="volunteer_task_contact_id">Contact</label><br/>
+<select id="volunteer_task_contact_id" name="volunteer_task[contact_id]">
+  <%= options_from_collection_for_select Contact.find_all, "id", "display_name", @volunteer_task.contact_id %>
+</select>
+</div>
+
   <div class="row">
     <!--[form:volunteer_task]-->
 <div class="form-element">
