@@ -13,6 +13,10 @@
     GizmoType.find_all_instantiable, "id", "description", 
       @donated_gizmo.gizmo_type_id) %>
 </select>
+
+<div class="form-element">
+  <label for="donated_gizmo_donation_id">donation id</label>
+  <%= text_field 'donated_gizmo', 'donation_id' , {:class=>"text-input"} %>
 </div>
 
 <!--[eoform:donated_gizmo]-->
