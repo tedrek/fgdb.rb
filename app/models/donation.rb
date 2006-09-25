@@ -4,4 +4,8 @@ class Donation < ActiveRecord::Base
   belongs_to :contact
   belongs_to :payment_method
   has_many :donated_gizmos
+
+  def to_s
+    id
+  end
 end
