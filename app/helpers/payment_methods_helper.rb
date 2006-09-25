@@ -6,7 +6,9 @@ module PaymentMethodsHelper
   end
   
   def scaffold_columns
-    PaymentMethod.scaffold_columns
+    [
+    AjaxScaffold::ScaffoldColumn.new(PaymentMethod, :name => 'description'),
+    ]
   end
 
 end

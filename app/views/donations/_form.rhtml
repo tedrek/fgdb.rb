@@ -6,6 +6,20 @@
   <%= text_field 'donation', 'money_tendered' , {:class=>"text-input"} %>
 </div>
 
+<div class="form-element">
+<label for="payment_method_id">Payment method</label><br/>
+<select id="donation_payment_method_id" name="donation[payment_method_id]">
+  <%= options_from_collection_for_select PaymentMethod.find_all, "id", "description", @donation.payment_method_id %>
+</select>
+</div>
+
+<div class="form-element">
+<label for="contact_id">Donor</label><br/>
+<select id="donation_contact_id" name="donation[contact_id]">
+<%= options_from_collection_for_select Contact.find_all, "id", "display_name", @donation.contact_id %>
+</select>
+</div>
+
 <!--[eoform:donation]-->
 
   </div>

@@ -9,9 +9,7 @@
 <div class="form-element">
 <label for="donated_gizmo_gizmo_type_id">donated gizmo type</label><br/>
 <select id="donated_gizmo_gizmo_type_id" name="donated_gizmo[gizmo_type_id]">
-  <%= options_from_collection_for_select(
-    GizmoType.find_all_instantiable, "id", "description", 
-      @donated_gizmo.gizmo_type_id) %>
+  <%= options_from_collection_for_select( GizmoType.find_all_instantiable, "id", "description", @donated_gizmo.gizmo_type_id) %>
 </select>
 
 <div class="form-element">
