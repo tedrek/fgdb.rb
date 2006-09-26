@@ -1,5 +1,6 @@
 class DonationsController < ApplicationController
   include AjaxScaffold::Controller
+  include DatalistFor
   
   after_filter :clear_flashes
   before_filter :update_params_filter
@@ -61,6 +62,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.new(params[:donation])
       @successful = @donation.save
+      save_datalist(:donation_id => @donation.id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -96,6 +98,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = @donation.update_attributes(params[:donation])
+      save_datalist
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
