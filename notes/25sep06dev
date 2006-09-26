@@ -1,0 +1,43 @@
+
+#===========================================================
+### roadmap for 26 sep
+TODO
+----
+
+. preprocess params in
+  app/controllers/volunteer_tasks_controller.rb in methods create
+  and update to handle '---' and '0' values to eliminate them from
+  the list passed into the lookup method.
+
+. add donated gizmos to donation screen
+  . using datalist_for plugin as modified for wobble
+
+. consider contact attributes:  preferred_contact_method_id
+  . maybe add a radio button set going against bridge table
+
+### 25 sep
+DONE
+----
+. see revisions 143, 145-147
+
+. add contact dropdown to donations form, an easy standard
+dropdown, but I'm still learning :-)
+
+  .  app/helpers/donations_helper.rb
+AjaxScaffold::ScaffoldColumn.new(Donation, 
+  :name => 'contact_id', :label => 'Donor', 
+  :eval => 'donation.contact', :sortable => false),
+
+  .  app/views/donations/_form.rhtml
+    . note use of 'display_name' method for displayed value -
+    defined in app/models/contact.rb
+<div class="form-element">
+<label for="contact_id">Donor</label><br/>
+<select id="donation_contact_id" name="donation[contact_id]">
+<%= options_from_collection_for_select Contact.find_all, "id", "display_name", @donation.contact_id %>
+</select>
+</div>
+
+. cleanup list views by editing helpers, adding scaffold columns
+and removing non-displaying columns from forms, and adding 
+display (mostly .to_s) methods to some models
