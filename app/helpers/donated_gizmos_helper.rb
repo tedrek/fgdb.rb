@@ -12,9 +12,6 @@ module DonatedGizmosHelper
         :eval => 'donated_gizmo.gizmo_type', :sortable => false),
       AjaxScaffold::ScaffoldColumn.new(DonatedGizmo, 
         :name => 'quantity'),
-      AjaxScaffold::ScaffoldColumn.new(DonatedGizmo, 
-        :name => 'donation_id', :label => 'Donation Id', 
-        :eval => 'donated_gizmo.donation', :sortable => false),
     ]
   end
 
