@@ -1,0 +1,14 @@
+<div id="totals">
+  <span id="required_lbl">Required fee: </span>
+  <span id="required_amt"><%= @required_fee %></span>
+  <span id="suggested_lbl">Suggested fee: </span>
+  <span id="suggested_amt"><%= @suggested_fee %></span>
+  <span id="total_lbl">Total fee: </span>
+  <span id="total_amt"><%= @required_fee + @suggested_fee %></span>
+  <span id="tendered_lbl">tendered fee: </span>
+  <span id="tendered_amt"><%= @money_tendered %></span>
+  <span id="overunder_lbl">overunder: </span>
+  <span id="overunder_amt">
+    <%= @money_tendered - (@required_fee + @suggested_fee) %>
+  </span>
+</div>

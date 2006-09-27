@@ -46,6 +46,9 @@ class DonationsController < ApplicationController
   def new
     @donation = Donation.new
     @successful = true
+    @required_fee = 0
+    @suggested_fee = 1
+    @money_tendered = 0
 
     return render(:action => 'new.rjs') if request.xhr?
 
@@ -80,6 +83,9 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = !@donation.nil?
+      @required_fee = 0
+      @suggested_fee = 1
+      @money_tendered = @donation.money_tendered
     rescue
       flash[:error], @successful  = $!.to_s, false
     end

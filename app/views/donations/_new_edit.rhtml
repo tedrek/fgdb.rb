@@ -20,6 +20,7 @@
         <%= render :partial => 'form_messages' %>
       <% end %>
 
+      <%= render :partial => 'totals' %>
       <%= render :partial => 'form' %>
       <%= datalist_for :donated_gizmos, DonatedGizmo.find(:all, :conditions => ['donated_gizmos.donation_id = ?', @donation.id ] ), :create_with => { :donation_id => @donation.id }, :show_header => false, :render => "donated_gizmos/_form" %>
 
