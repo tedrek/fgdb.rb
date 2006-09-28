@@ -139,4 +139,8 @@ class DonationsController < ApplicationController
     
     return_to_main
   end
+
+  def update_fee
+    # render_text('return from update_fee')
+  end
 end

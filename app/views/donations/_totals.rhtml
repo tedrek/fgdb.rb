@@ -11,4 +11,9 @@
   <span id="overunder_amt">
     <%= @money_tendered - (@required_fee + @suggested_fee) %>
   </span>
+  <span id="timestamp"><%= Time.now %></span>
+  <span id="update_fee_button">
+    <INPUT type="button" id="update_fee_input" value="Update fee" 
+      onclick="new Ajax.Request('/donations/update_fee/1?scaffold_id=donation', {asynchronous:true, evalScripts:true, parameters:Form.serialize(this)}); return false;">
+  </span>
 </div>
