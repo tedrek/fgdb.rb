@@ -1,0 +1,25 @@
+<fieldset>
+  <div class="row">
+    <!--[form:till_handler]-->
+
+<div class="form-element">
+<label for="contact_id">Authorized Person</label><br/>
+<select id="till_handler_contact_id" name="till_handler[contact_id]">
+<%= options_from_collection_for_select Contact.find_all, "id", "display_name", @till_handler.contact_id %>
+</select>
+</div>
+
+<div class="form-element">
+  <label for="till_handler_can_alter_price">Can alter price</label>
+  <%= select "till_handler", "can_alter_price", [["True", true], ["False", false]], { :selected => @till_handler.can_alter_price } %>
+</div>
+
+<div class="form-element">
+  <label for="till_handler_description">Remarks</label>
+  <%= text_field 'till_handler', 'description' , {:class=>"text-input"} %>
+</div>
+
+<!--[eoform:till_handler]-->
+
+  </div>
+</fieldset>

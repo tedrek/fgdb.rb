@@ -161,6 +161,32 @@ CREATE TABLE donations (
 
 
 --
+-- Name: forsale_items; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE forsale_items (
+    id serial NOT NULL,
+    source_type_id integer,
+    description character varying(100) NOT NULL,
+    price numeric(10,2) DEFAULT 9.99,
+    onhand_qty integer,
+    taxable boolean DEFAULT false NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: TABLE forsale_items; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE forsale_items IS 'items for sale; not intended as inventory';
+
+
+--
 -- Name: gizmo_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
@@ -240,6 +266,117 @@ CREATE TABLE relationships (
 --
 
 COMMENT ON TABLE relationships IS 'actual relationship between two contacts';
+
+
+--
+-- Name: sale_txn_lines; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE sale_txn_lines (
+    id serial NOT NULL,
+    sale_txn_id integer NOT NULL,
+    forsale_item_id integer NOT NULL,
+    base_price numeric(10,2) NOT NULL,
+    quantity integer NOT NULL,
+    extended_price numeric(10,2) NOT NULL,
+    discount_applied numeric(10,2),
+    taxable boolean DEFAULT false NOT NULL,
+    tax_applied numeric(10,2),
+    sale_txn_amount numeric(10,2) NOT NULL,
+    is_refund boolean,
+    comments character varying(100) NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL,
+    standard_extended_discount numeric(10,2),
+    is_custom_discount boolean
+);
+
+
+--
+-- Name: TABLE sale_txn_lines; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE sale_txn_lines IS 'one record is one detail line in a sales transaction';
+
+
+--
+-- Name: sale_txns; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE sale_txns (
+    id serial NOT NULL,
+    description character varying(100) NOT NULL,
+    contact_id integer NOT NULL,
+    till_handler_id integer NOT NULL,
+    payment_method_id integer NOT NULL,
+    gross_amount numeric(10,2) NOT NULL,
+    discount_amount numeric(10,2),
+    tax_amount numeric(10,2),
+    amount_due numeric(10,2) NOT NULL,
+    is_refund boolean,
+    comments character varying(100) NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: TABLE sale_txns; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE sale_txns IS 'each record represents one sales transaction';
+
+
+--
+-- Name: source_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE source_types (
+    id serial NOT NULL,
+    description character varying(100),
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: TABLE source_types; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE source_types IS 'sources of items for sale: store, other';
+
+
+--
+-- Name: till_handlers; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE till_handlers (
+    id serial NOT NULL,
+    description character varying(100) NOT NULL,
+    contact_id integer,
+    can_alter_price boolean DEFAULT false NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: TABLE till_handlers; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE till_handlers IS 'identifies those who operate the till';
 
 
 --

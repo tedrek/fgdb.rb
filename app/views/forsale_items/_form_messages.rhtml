@@ -1,0 +1,5 @@
+<%= render :partial => 'messages' %>
+
+<% unless @forsale_item.nil? %>
+<%= error_messages_for 'forsale_item' %>
+<% end %>
