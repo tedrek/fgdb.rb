@@ -127,6 +127,31 @@ CREATE TABLE contacts (
 
 
 --
+-- Name: discount_schedules; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE discount_schedules (
+    id serial NOT NULL,
+    short_name character varying(25),
+    donated_item_rate numeric(10,2) DEFAULT 0,
+    resale_item_rate numeric(10,2) DEFAULT 0,
+    description character varying(100),
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: TABLE discount_schedules; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+
+COMMENT ON TABLE discount_schedules IS 'discount schedules and their discount percents';
+
+
+--
 -- Name: donated_gizmos; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
@@ -170,7 +195,6 @@ CREATE TABLE forsale_items (
     description character varying(100) NOT NULL,
     price numeric(10,2) DEFAULT 9.99,
     onhand_qty integer,
-    taxable boolean DEFAULT false NOT NULL,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
@@ -276,14 +300,11 @@ CREATE TABLE sale_txn_lines (
     id serial NOT NULL,
     sale_txn_id integer NOT NULL,
     forsale_item_id integer NOT NULL,
-    base_price numeric(10,2) NOT NULL,
+    unit_price numeric(10,2) NOT NULL,
     quantity integer NOT NULL,
     extended_price numeric(10,2) NOT NULL,
     discount_applied numeric(10,2),
-    taxable boolean DEFAULT false NOT NULL,
-    tax_applied numeric(10,2),
     sale_txn_amount numeric(10,2) NOT NULL,
-    is_refund boolean,
     comments character varying(100) NOT NULL,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
@@ -308,21 +329,19 @@ COMMENT ON TABLE sale_txn_lines IS 'one record is one detail line in a sales tra
 
 CREATE TABLE sale_txns (
     id serial NOT NULL,
-    description character varying(100) NOT NULL,
     contact_id integer NOT NULL,
     till_handler_id integer NOT NULL,
     payment_method_id integer NOT NULL,
     gross_amount numeric(10,2) NOT NULL,
     discount_amount numeric(10,2),
-    tax_amount numeric(10,2),
     amount_due numeric(10,2) NOT NULL,
-    is_refund boolean,
     comments character varying(100) NOT NULL,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
     created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
+    updated_by bigint DEFAULT 1 NOT NULL,
+    discount_schedule_id integer DEFAULT 1 NOT NULL
 );
 
 

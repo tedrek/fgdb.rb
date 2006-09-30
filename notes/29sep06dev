@@ -1,0 +1,40 @@
+
+#===========================================================
+### roadmap for 30 sep
+TODO
+----
+
+. checkout wobble active rbac code here as external project
+
+. mock up some gizmo classes to capture 29sep discussion
+
+. modify datalist_for to give unique ids to each element that we
+need to modify via code as well as datalist_for-specific elems
+  . all these can can exist multiple times in document so each
+  must have unique id
+  . to include: 
+    . every screen input field
+    . tables, divs, spans, buttons, other elements created by
+    plugin to manage its screen objects
+    . hierarchical coordination of ids btw surrounding elements
+    and input, delete elements
+
+. add ajax logic to manage donation fee-tracking calc/display
+    . some special elements that we are using to track fees, etc
+    . needs some id-related changes in datalist_for to be able to 
+    identify and group the data input elements that we track
+
+. consider contact attributes:  preferred_contact_method_id
+  . maybe add a radio button set going against bridge table
+
+
+### 29 sep
+DONE
+----
+
+. create tentative logic, schema for selling items
+  . models:  SourceType, ForsaleItem, SaleTxnLine, SaleTxn,
+  TillHandler, DiscountSchedule
+
+. Keep TillHandler as placeholder until active rbac is
+integrated into this system

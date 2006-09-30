@@ -17,11 +17,6 @@
 </div>
 
 <div class="form-element">
-  <label for="forsale_item_taxable">Taxable</label>
-  <%= select "forsale_item", "taxable", [["True", true], ["False", false]], { :selected => @forsale_item.taxable } %>
-</div>
-
-<div class="form-element">
 <label for="source_type_id">Item location</label><br/>
 <select id="forsale_item_source_type_id" name="forsale_item[source_type_id]">
 <%= options_from_collection_for_select SourceType.find_all, "id", "description", @forsale_item.source_type_id %>

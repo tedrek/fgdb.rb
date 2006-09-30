@@ -17,6 +17,13 @@
 </div>
 
 <div class="form-element">
+<label for="discount_schedule_id">Discount schedule</label><br/>
+<select id="sale_txn_discount_schedule_id" name="sale_txn[discount_schedule_id]">
+<%= options_from_collection_for_select DiscountSchedule.find_all, "id", "description", @sale_txn.discount_schedule_id %>
+</select>
+</div>
+
+<div class="form-element">
 <label for="payment_method_id">Payment method</label><br/>
 <select id="sale_txn_payment_method_id" name="sale_txn[payment_method_id]">
 <%= options_from_collection_for_select PaymentMethod.find_all, "id", "description", @sale_txn.payment_method_id %>
@@ -34,11 +41,6 @@
 </div>
 
 <div class="form-element">
-  <label for="sale_txn_tax_amount">Tax amount</label>
-  <%= text_field 'sale_txn', 'tax_amount' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
   <label for="sale_txn_amount_due">Amount due</label>
   <%= text_field 'sale_txn', 'amount_due' , {:class=>"text-input"} %>
 </div>
@@ -46,11 +48,6 @@
 <div class="form-element">
   <label for="sale_txn_comments">Comments</label>
   <%= text_field 'sale_txn', 'comments' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="sale_txn_is_refund">Is refund</label>
-  <%= select "sale_txn", "is_refund", [["False", false], ["True", true]], { :selected => @sale_txn.is_refund } %>
 </div>
 
 <!--[eoform:sale_txn]-->

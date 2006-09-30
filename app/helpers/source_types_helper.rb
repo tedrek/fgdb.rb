@@ -6,7 +6,10 @@ module SourceTypesHelper
   end
   
   def scaffold_columns
-    SourceType.scaffold_columns
+    [
+      AjaxScaffold::ScaffoldColumn.new(SourceType, 
+        :name => 'description'),
+    ]
   end
 
 end

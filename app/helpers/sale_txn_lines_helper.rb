@@ -13,7 +13,7 @@ module SaleTxnLinesHelper
         :name => 'forsale_item_id', :label => 'Item', 
         :eval => 'forsale_item.forsale_item', :sortable => false),
       AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
-        :name => 'base_price'),
+        :name => 'unit_price'),
       AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
         :name => 'quantity'),
       AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
@@ -21,17 +21,11 @@ module SaleTxnLinesHelper
       AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
         :name => 'discount_applied'),
       AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
-        :name => 'tax_applied'),
-      AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
         :name => 'net_price'),
-      AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
-        :name => 'taxable'),
       AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
         :name => 'comments'),
       AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
         :name => 'standard_extended_discount'),
-      AjaxScaffold::ScaffoldColumn.new(SaleTxnLine, 
-        :name => 'is_refund'),
     ]
   end
 

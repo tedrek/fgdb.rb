@@ -15,8 +15,6 @@ module ForsaleItemsHelper
         :name => 'price'),
       AjaxScaffold::ScaffoldColumn.new(ForsaleItem, 
         :name => 'onhand_qty'),
-      AjaxScaffold::ScaffoldColumn.new(ForsaleItem, 
-        :name => 'taxable'),
     ]
   end
 

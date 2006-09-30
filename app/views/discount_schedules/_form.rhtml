@@ -1,0 +1,28 @@
+<fieldset>
+  <div class="row">
+    <!--[form:discount_schedule]-->
+<div class="form-element">
+  <label for="discount_schedule_short_name">Short name</label>
+  <%= text_field 'discount_schedule', 'short_name' ,
+  {:class=>"text-input", :size => 15} %>
+</div>
+
+<div class="form-element">
+  <label for="discount_schedule_donated_item_rate">Donated item rate</label>
+  <%= text_field 'discount_schedule', 'donated_item_rate' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="discount_schedule_resale_item_rate">Resale item rate</label>
+  <%= text_field 'discount_schedule', 'resale_item_rate' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="discount_schedule_description">Description</label>
+  <%= text_area 'discount_schedule', 'description' , {:class=>"text-input", :cols => 30, :rows => 3} %>
+</div>
+
+<!--[eoform:discount_schedule]-->
+
+  </div>
+</fieldset>

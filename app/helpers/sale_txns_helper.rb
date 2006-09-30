@@ -18,16 +18,12 @@ module SaleTxnsHelper
       AjaxScaffold::ScaffoldColumn.new(SaleTxn, 
         :name => 'discount_amount'),
       AjaxScaffold::ScaffoldColumn.new(SaleTxn, 
-        :name => 'tax_amount'),
-      AjaxScaffold::ScaffoldColumn.new(SaleTxn, 
         :name => 'amount_due'),
       AjaxScaffold::ScaffoldColumn.new(SaleTxn, 
         :name => 'payment_method_id', :label => 'Payment method', 
         :eval => 'payment_method.payment_method', :sortable => false),
       AjaxScaffold::ScaffoldColumn.new(SaleTxn, 
         :name => 'comments'),
-      AjaxScaffold::ScaffoldColumn.new(SaleTxn, 
-        :name => 'is_refund'),
     ]
   end
 

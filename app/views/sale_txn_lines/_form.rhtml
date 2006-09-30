@@ -15,8 +15,8 @@
 </div>
 
 <div class="form-element">
-  <label for="sale_txn_line_base_price">Base price</label>
-  <%= text_field 'sale_txn_line', 'base_price' , {:class=>"text-input"} %>
+  <label for="sale_txn_line_unit_price">unit price</label>
+  <%= text_field 'sale_txn_line', 'unit_price' , {:class=>"text-input"} %>
 </div>
 
 <div class="form-element">
@@ -35,11 +35,6 @@
 </div>
 
 <div class="form-element">
-  <label for="sale_txn_line_tax_applied">Tax applied</label>
-  <%= text_field 'sale_txn_line', 'tax_applied' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
   <label for="sale_txn_line_sale_txn_amount">Sale txn amount</label>
   <%= text_field 'sale_txn_line', 'sale_txn_amount' , {:class=>"text-input"} %>
 </div>
@@ -47,16 +42,6 @@
 <div class="form-element">
   <label for="sale_txn_line_comments">Comments</label>
   <%= text_field 'sale_txn_line', 'comments' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="sale_txn_line_taxable">Taxable</label>
-  <%= select "sale_txn_line", "taxable", [["True", true], ["False", false]], { :selected => @sale_txn_line.taxable } %>
-</div>
-
-<div class="form-element">
-  <label for="sale_txn_line_is_refund">Is refund</label>
-  <%= select "sale_txn_line", "is_refund", [["True", true], ["False", false]], { :selected => @sale_txn_line.is_refund } %>
 </div>
 
 <div class="form-element">

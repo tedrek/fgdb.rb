@@ -1,0 +1,5 @@
+<%= render :partial => 'messages' %>
+
+<% unless @discount_schedule.nil? %>
+<%= error_messages_for 'discount_schedule' %>
+<% end %>
