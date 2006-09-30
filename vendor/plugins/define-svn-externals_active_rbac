@@ -1,0 +1,7 @@
+# set the following svn:externals property thus:
+# $ cd vendor/plugins
+# $ svn propset svn:externals . -F define-svn-externals_active_rbac
+# check out the external code
+# $ svn co svn+ssh://gp@svn.freegeek.org/svn/wobble/trunk/vendor/plugins/active_rbac
+
+active_rbac svn+ssh://svn.freegeek.org/svn/wobble/trunk/vendor/plugins/active_rbac
