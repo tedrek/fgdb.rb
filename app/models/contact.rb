@@ -29,6 +29,10 @@ class Contact < ActiveRecord::Base
     display_name
   end
 
+  def screen_sortby
+    display_name
+  end
+
   def display_name
     if is_person?
       if (self.first_name || self.middle_name || self.surname) &&

@@ -1,0 +1,722 @@
+# Logfile created on Sun Oct 01 15:25:00 CDT 2006 by logger.rb/1.5.2.4
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8f0975c @attributes={"updated_at"=>"2006-10-01 00:59:32-05", "created_by"=>"1", "lock_version"=>"0", "quantity"=>"2", "updated_by"=>"1", "id"=>"12", "donation_id"=>"1", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 00:59:32-05"}>
+return from keeper?
+cannot convert Fixnum into String
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:38:in `+'
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:38:in `save_existing'
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:34:in `each'
+{"datalist_update"=>{"donations_donated_gizmos"=>{"2"=>{"12"=>{"quantity"=>"22", "gizmo_type_id"=>"3"}}}}, "commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQY6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"1", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"7.00", "contact_id"=>"3", "payment_method_id"=>"1"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation"}
+model: DonatedGizmo
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8f09770 @attributes={"updated_at"=>"2006-10-01 00:59:32-05", "created_by"=>"1", "lock_version"=>"0", "quantity"=>"2", "updated_by"=>"1", "id"=>"12", "donation_id"=>"1", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 00:59:32-05"}>
+return from keeper?
+1
+1
+1
+[{"12"=>{"quantity"=>"3", "gizmo_type_id"=>"4"}}]
+undefined method `first' for {"3"=>{"12"=>{"quantity"=>"3", "gizmo_type_id"=>"4"}}}:HashWithIndifferentAccess
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:42:in `save_existing'
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:34:in `each'
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:34:in `save_existing'
+{"datalist_update"=>{"donations_donated_gizmos"=>{"3"=>{"12"=>{"quantity"=>"3", "gizmo_type_id"=>"4"}}}}, "commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQY6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"1", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"7.00", "contact_id"=>"3", "payment_method_id"=>"1"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation"}
+model: DonatedGizmo
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8e37a90 @attributes={"updated_at"=>"2006-09-26 12:19:10-05", "created_by"=>"1", "lock_version"=>"1", "quantity"=>"1", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+1
+2
+[{"4"=>{"quantity"=>"12", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"3", "gizmo_type_id"=>"3"}}]
+"4"
+You have a nil object when you didn't expect it!
+You might have expected an instance of Array.
+The error occured while evaluating nil.size
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:43:in `save_existing'
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:34:in `each'
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:34:in `save_existing'
+{"datalist_update"=>{"donations_donated_gizmos"=>{"4"=>{"4"=>{"quantity"=>"12", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"3", "gizmo_type_id"=>"3"}}}}, "commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQg6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"3", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"20.00", "contact_id"=>"5", "payment_method_id"=>"1"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation"}
+model: DonatedGizmo
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8e38120 @attributes={"updated_at"=>"2006-09-26 12:19:10-05", "created_by"=>"1", "lock_version"=>"1", "quantity"=>"1", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+1
+2
+[{"4"=>{"quantity"=>"12", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"4", "gizmo_type_id"=>"3"}}]
+"5"
+You have a nil object when you didn't expect it!
+You might have expected an instance of Array.
+The error occured while evaluating nil.size
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:43:in `save_existing'
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:34:in `each'
+./script/../config/../vendor/plugins/datalist_for/lib/datalist_for.rb:34:in `save_existing'
+{"datalist_update"=>{"donations_donated_gizmos"=>{"5"=>{"4"=>{"quantity"=>"12", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"4", "gizmo_type_id"=>"3"}}}}, "commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQg6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"3", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"20.00", "contact_id"=>"5", "payment_method_id"=>"1"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation"}
+model: DonatedGizmo
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8e379b4 @attributes={"updated_at"=>"2006-09-26 12:19:10-05", "created_by"=>"1", "lock_version"=>"1", "quantity"=>"1", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+1
+2
+[{"4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"1", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"1", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8e37950 @attributes={"updated_at"=>"2006-09-26 12:19:10-05", "created_by"=>"1", "lock_version"=>"0", "quantity"=>"2", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+1
+2
+[{"4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"1", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"1", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"1", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>1
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8dc97d4 @attributes={"updated_at"=>"2006-10-01 16:10:09-05", "created_by"=>"1", "lock_version"=>"2", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+1
+2
+[{"4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"12", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"12", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8dc9798 @attributes={"updated_at"=>"2006-10-01 16:10:09-05", "created_by"=>"1", "lock_version"=>"1", "quantity"=>"1", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+1
+2
+[{"4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"12", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"12", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"12", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>12
+inside params...each loop
+col=>val: gizmo_type_id=>3
+return from keeper?
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ddd608 @attributes={"updated_at"=>"2006-10-01 16:13:37-05", "created_by"=>"1", "lock_version"=>"3", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ddd414 @attributes={"updated_at"=>"2006-10-01 16:13:37-05", "created_by"=>"1", "lock_version"=>"2", "quantity"=>"12", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"123", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>123
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ddd158 @attributes={"updated_at"=>"2006-10-01 16:13:37-05", "created_by"=>"1", "lock_version"=>"0", "quantity"=>"3", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"4", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>4
+inside params...each loop
+col=>val: gizmo_type_id=>4
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cf9bb0 @attributes={"updated_at"=>"2006-10-01 16:16:37-05", "created_by"=>"1", "lock_version"=>"4", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cf9b74 @attributes={"updated_at"=>"2006-10-01 16:16:37-05", "created_by"=>"1", "lock_version"=>"3", "quantity"=>"123", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"123", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>123
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cf9b38 @attributes={"updated_at"=>"2006-10-01 16:16:37-05", "created_by"=>"1", "lock_version"=>"1", "quantity"=>"4", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"4", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>4
+inside params...each loop
+col=>val: gizmo_type_id=>4
+return from keeper?
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d100f4 @attributes={"updated_at"=>"2006-10-01 16:17:25-05", "created_by"=>"1", "lock_version"=>"5", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+4
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "14"=>{"quantity"=>"", "gizmo_type_id"=>"0"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "14"=>{"quantity"=>"", "gizmo_type_id"=>"0"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d10054 @attributes={"updated_at"=>"2006-10-01 16:17:25-05", "created_by"=>"1", "lock_version"=>"4", "quantity"=>"123", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+4
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "14"=>{"quantity"=>"", "gizmo_type_id"=>"0"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "14"=>{"quantity"=>"", "gizmo_type_id"=>"0"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"123", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>123
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d0fff0 @attributes={"updated_at"=>"2006-10-01 16:17:25-05", "created_by"=>"1", "lock_version"=>"2", "quantity"=>"4", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+4
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "14"=>{"quantity"=>"", "gizmo_type_id"=>"0"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "14"=>{"quantity"=>"", "gizmo_type_id"=>"0"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"4", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>4
+inside params...each loop
+col=>val: gizmo_type_id=>4
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d0ffb4 @attributes={"updated_at"=>"2006-10-01 16:17:25-05", "created_by"=>"1", "lock_version"=>"0", "quantity"=>nil, "updated_by"=>"1", "id"=>"14", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-10-01 16:17:25-05"}>
+return from keeper?
+1
+4
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "14"=>{"quantity"=>"", "gizmo_type_id"=>"0"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "14"=>{"quantity"=>"", "gizmo_type_id"=>"0"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"", "gizmo_type_id"=>"0"}
+inside params...each loop
+col=>val: quantity=>
+inside params...each loop
+col=>val: gizmo_type_id=>0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8c968f8 @attributes={"updated_at"=>"2006-10-01 16:47:47-05", "created_by"=>"1", "lock_version"=>"6", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8c968bc @attributes={"updated_at"=>"2006-10-01 16:47:47-05", "created_by"=>"1", "lock_version"=>"5", "quantity"=>"123", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"123", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>123
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8c96880 @attributes={"updated_at"=>"2006-10-01 16:47:47-05", "created_by"=>"1", "lock_version"=>"3", "quantity"=>"4", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"4", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>4
+inside params...each loop
+col=>val: gizmo_type_id=>4
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8f24b88 @attributes={"updated_at"=>"2006-10-01 16:47:59-05", "created_by"=>"1", "lock_version"=>"7", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8f24b4c @attributes={"updated_at"=>"2006-10-01 16:47:59-05", "created_by"=>"1", "lock_version"=>"6", "quantity"=>"123", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"123", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>123
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8f248f4 @attributes={"updated_at"=>"2006-10-01 16:47:59-05", "created_by"=>"1", "lock_version"=>"4", "quantity"=>"4", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"4", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>4
+inside params...each loop
+col=>val: gizmo_type_id=>4
+return from keeper?
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d3bc68 @attributes={"updated_at"=>"2006-10-01 16:48:11-05", "created_by"=>"1", "lock_version"=>"8", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d3bc2c @attributes={"updated_at"=>"2006-10-01 16:48:11-05", "created_by"=>"1", "lock_version"=>"7", "quantity"=>"123", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"123", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>123
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d3bbf0 @attributes={"updated_at"=>"2006-10-01 16:48:11-05", "created_by"=>"1", "lock_version"=>"5", "quantity"=>"4", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"4", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>4
+inside params...each loop
+col=>val: gizmo_type_id=>4
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cbb75c @attributes={"updated_at"=>"2006-10-01 16:49:00-05", "created_by"=>"1", "lock_version"=>"9", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cbb720 @attributes={"updated_at"=>"2006-10-01 16:49:00-05", "created_by"=>"1", "lock_version"=>"8", "quantity"=>"123", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"123", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>123
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cbb6e4 @attributes={"updated_at"=>"2006-10-01 16:49:00-05", "created_by"=>"1", "lock_version"=>"6", "quantity"=>"4", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"4", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>4
+inside params...each loop
+col=>val: gizmo_type_id=>4
+return from keeper?
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8dac094 @attributes={"updated_at"=>"2006-10-01 16:49:08-05", "created_by"=>"1", "lock_version"=>"10", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"11", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>11
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8dabf2c @attributes={"updated_at"=>"2006-10-01 16:49:08-05", "created_by"=>"1", "lock_version"=>"9", "quantity"=>"123", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"123", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>123
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8dabd60 @attributes={"updated_at"=>"2006-10-01 16:49:08-05", "created_by"=>"1", "lock_version"=>"7", "quantity"=>"4", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"4", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"11", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"123", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"4", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>4
+inside params...each loop
+col=>val: gizmo_type_id=>4
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cf0010 @attributes={"updated_at"=>"2006-10-01 19:36:35-05", "created_by"=>"1", "lock_version"=>"11", "quantity"=>"11", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"333", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"333", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"111", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>111
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ceffd4 @attributes={"updated_at"=>"2006-10-01 19:36:35-05", "created_by"=>"1", "lock_version"=>"10", "quantity"=>"123", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"333", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"333", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"222", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>222
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cefe6c @attributes={"updated_at"=>"2006-10-01 19:36:35-05", "created_by"=>"1", "lock_version"=>"8", "quantity"=>"4", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"333", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"333", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"333", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>333
+inside params...each loop
+col=>val: gizmo_type_id=>4
+return from keeper?
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ee50f0 @attributes={"updated_at"=>"2006-10-01 19:37:18-05", "created_by"=>"1", "lock_version"=>"12", "quantity"=>"111", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"303", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"303", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"111", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>111
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ee50b4 @attributes={"updated_at"=>"2006-10-01 19:37:18-05", "created_by"=>"1", "lock_version"=>"11", "quantity"=>"222", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"303", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"303", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"222", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>222
+inside params...each loop
+col=>val: gizmo_type_id=>3
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ee5078 @attributes={"updated_at"=>"2006-10-01 19:37:18-05", "created_by"=>"1", "lock_version"=>"9", "quantity"=>"333", "updated_by"=>"1", "id"=>"13", "donation_id"=>"3", "gizmo_type_id"=>"4", "created_at"=>"2006-10-01 16:13:37-05"}>
+return from keeper?
+1
+3
+[{"13"=>{"quantity"=>"303", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"13"=>{"quantity"=>"303", "gizmo_type_id"=>"4"}, "4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"303", "gizmo_type_id"=>"4"}
+inside params...each loop
+col=>val: quantity=>303
+inside params...each loop
+col=>val: gizmo_type_id=>4
+return from keeper?
+ENTERING save_existing
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8f0e1a8 @attributes={"updated_at"=>"2006-10-01 19:39:01-05", "created_by"=>"1", "lock_version"=>"13", "quantity"=>"111", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"111", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>111
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8f0dfdc @attributes={"updated_at"=>"2006-10-01 19:39:01-05", "created_by"=>"1", "lock_version"=>"12", "quantity"=>"222", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"222", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>222
+inside params...each loop
+col=>val: gizmo_type_id=>3
+ENTERING save_existing
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8e28f2c @attributes={"updated_at"=>"2006-10-01 20:37:13-05", "created_by"=>"1", "lock_version"=>"14", "quantity"=>"111", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"111", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>111
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8e28ef0 @attributes={"updated_at"=>"2006-10-01 20:37:13-05", "created_by"=>"1", "lock_version"=>"13", "quantity"=>"222", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"222", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>222
+inside params...each loop
+col=>val: gizmo_type_id=>3
+ENTERING save_new
+id: 0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8e0eb2c @new_record=true, @attributes={"updated_at"=>nil, "created_by"=>1, "lock_version"=>0, "quantity"=>nil, "updated_by"=>1, "donation_id"=>3, "gizmo_type_id"=>nil, "created_at"=>nil}>
+{"datalist_update"=>{"donations_donated_gizmos"=>{"5"=>{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}}}, "commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQg6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"3", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"20.00", "contact_id"=>"5", "payment_method_id"=>"1"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation", "datalist_new"=>{"donations_donated_gizmos"=>{"5"=>{"0"=>{"quantity"=>"", "gizmo_type_id"=>"---"}}}}}
+return from keeper?
+ENTERING save_existing
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ce2820 @attributes={"updated_at"=>"2006-10-01 20:37:46-05", "created_by"=>"1", "lock_version"=>"15", "quantity"=>"111", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"111", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>111
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ce27e4 @attributes={"updated_at"=>"2006-10-01 20:37:46-05", "created_by"=>"1", "lock_version"=>"14", "quantity"=>"222", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"222", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>222
+inside params...each loop
+col=>val: gizmo_type_id=>3
+ENTERING save_existing
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cb3f34 @attributes={"updated_at"=>"2006-10-01 20:53:46-05", "created_by"=>"1", "lock_version"=>"16", "quantity"=>"111", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"111", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>111
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cb3ef8 @attributes={"updated_at"=>"2006-10-01 20:53:46-05", "created_by"=>"1", "lock_version"=>"15", "quantity"=>"222", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"222", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>222
+inside params...each loop
+col=>val: gizmo_type_id=>3
+ENTERING save_new
+id: 0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ca360c @new_record=true, @attributes={"updated_at"=>nil, "created_by"=>1, "lock_version"=>0, "quantity"=>nil, "updated_by"=>1, "donation_id"=>3, "gizmo_type_id"=>nil, "created_at"=>nil}>
+params:
+ENTERING save_existing
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d0e6c8 @attributes={"updated_at"=>"2006-10-01 20:54:00-05", "created_by"=>"1", "lock_version"=>"17", "quantity"=>"111", "updated_by"=>"1", "id"=>"4", "donation_id"=>"3", "gizmo_type_id"=>"2", "created_at"=>"2006-09-26 12:18:46-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"111", "gizmo_type_id"=>"2"}
+inside params...each loop
+col=>val: quantity=>111
+inside params...each loop
+col=>val: gizmo_type_id=>2
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d0e68c @attributes={"updated_at"=>"2006-10-01 20:54:00-05", "created_by"=>"1", "lock_version"=>"16", "quantity"=>"222", "updated_by"=>"1", "id"=>"5", "donation_id"=>"3", "gizmo_type_id"=>"3", "created_at"=>"2006-09-26 12:19:10-05"}>
+return from keeper?
+1
+2
+[{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}]
+{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}
+2
+{"quantity"=>"222", "gizmo_type_id"=>"3"}
+inside params...each loop
+col=>val: quantity=>222
+inside params...each loop
+col=>val: gizmo_type_id=>3
+ENTERING save_new
+id: 0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8cf70b8 @new_record=true, @attributes={"updated_at"=>nil, "created_by"=>1, "lock_version"=>0, "quantity"=>nil, "updated_by"=>1, "donation_id"=>3, "gizmo_type_id"=>nil, "created_at"=>nil}>
+params:
+{"datalist_update"=>{"donations_donated_gizmos"=>{"9"=>{"4"=>{"quantity"=>"111", "gizmo_type_id"=>"2"}, "5"=>{"quantity"=>"222", "gizmo_type_id"=>"3"}}}}, "commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQg6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"3", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"20.00", "contact_id"=>"5", "payment_method_id"=>"1"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation", "datalist_new"=>{"donations_donated_gizmos"=>{"9"=>{"0"=>{"quantity"=>"", "gizmo_type_id"=>""}}}}}
+col=>val: quantity=>
+col=>val: gizmo_type_id=>
+return from keeper?
+ENTERING save_new
+id: 0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8c8a468 @new_record=true, @attributes={"updated_at"=>nil, "created_by"=>1, "lock_version"=>0, "quantity"=>nil, "updated_by"=>1, "donation_id"=>5, "gizmo_type_id"=>nil, "created_at"=>nil}>
+params:
+{"commit"=>"Create", "action"=>"create", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkMDoQc2hvd19oZWFkZXJGOgtyZW5kZXIiGWRv\nbmF0ZWRfZ2l6bW9zL19mb3Jt", "id"=>"1159754333345", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"17", "contact_id"=>"7", "payment_method_id"=>"2"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation", "datalist_new"=>{"donations_donated_gizmos"=>{"11"=>{"0"=>{"quantity"=>"", "gizmo_type_id"=>""}}}}}
+col=>val: quantity=>
+col=>val: gizmo_type_id=>
+return from keeper?
+ENTERING save_new
+id: 0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8c8835c @new_record=true, @attributes={"updated_at"=>nil, "created_by"=>1, "lock_version"=>0, "quantity"=>nil, "updated_by"=>1, "donation_id"=>5, "gizmo_type_id"=>nil, "created_at"=>nil}>
+params:
+{"commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQo6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"5", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"17.00", "contact_id"=>"7", "payment_method_id"=>"2"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation", "datalist_new"=>{"donations_donated_gizmos"=>{"14"=>{"0"=>{"quantity"=>"", "gizmo_type_id"=>""}}}}}
+col=>val: quantity=>
+col=>val: gizmo_type_id=>
+keeper: fieldname: quantity (truth value: 
+keeper: fieldname: gizmo_type_id (truth value: 
+return from keeper?
+ENTERING save_new
+id: 0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8e2d0a4 @new_record=true, @attributes={"updated_at"=>nil, "created_by"=>1, "lock_version"=>0, "quantity"=>nil, "updated_by"=>1, "donation_id"=>6, "gizmo_type_id"=>nil, "created_at"=>nil}>
+params:
+{"commit"=>"Create", "action"=>"create", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkMDoQc2hvd19oZWFkZXJGOgtyZW5kZXIiGWRv\nbmF0ZWRfZ2l6bW9zL19mb3Jt", "id"=>"1159754557330", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"0.0", "contact_id"=>"5", "payment_method_id"=>"1"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation", "datalist_new"=>{"donations_donated_gizmos"=>{"16"=>{"0"=>{"quantity"=>"", "gizmo_type_id"=>""}}}}}
+col=>val: quantity=>
+col=>val: gizmo_type_id=>
+keeper: fieldname: quantity (truth value: '')
+keeper: fieldname: gizmo_type_id (truth value: '')
+return from keeper?
+ENTERING save_existing
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8db3b64 @attributes={"updated_at"=>"2006-10-01 21:01:33-05", "created_by"=>"1", "lock_version"=>"0", "quantity"=>nil, "updated_by"=>"1", "id"=>"22", "donation_id"=>"5", "gizmo_type_id"=>nil, "created_at"=>"2006-10-01 21:01:33-05"}>
+keeper: fieldname: quantity (truth value: '')
+keeper: fieldname: gizmo_type_id (truth value: '')
+return from keeper?
+1
+1
+[{"22"=>{"quantity"=>"", "gizmo_type_id"=>""}}]
+{"22"=>{"quantity"=>"", "gizmo_type_id"=>""}}
+2
+{"quantity"=>"", "gizmo_type_id"=>""}
+inside params...each loop
+col=>val: quantity=>
+inside params...each loop
+col=>val: gizmo_type_id=>
+ENTERING save_new
+id: 0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d9d1ac @new_record=true, @attributes={"updated_at"=>nil, "created_by"=>1, "lock_version"=>0, "quantity"=>nil, "updated_by"=>1, "donation_id"=>5, "gizmo_type_id"=>nil, "created_at"=>nil}>
+params:
+{"datalist_update"=>{"donations_donated_gizmos"=>{"18"=>{"22"=>{"quantity"=>"", "gizmo_type_id"=>""}}}}, "commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQo6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"5", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"17.00", "contact_id"=>"7", "payment_method_id"=>"2"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation", "datalist_new"=>{"donations_donated_gizmos"=>{"18"=>{"0"=>{"quantity"=>"", "gizmo_type_id"=>""}}}}}
+col=>val: quantity=>
+col=>val: gizmo_type_id=>
+keeper: fieldname: quantity (truth value: '')
+keeper: fieldname: gizmo_type_id (truth value: '')
+return from keeper?
+ENTERING save_new
+id: 0
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8d6566c @new_record=true, @attributes={"updated_at"=>nil, "created_by"=>1, "lock_version"=>0, "quantity"=>nil, "updated_by"=>1, "donation_id"=>5, "gizmo_type_id"=>nil, "created_at"=>nil}>
+params:
+{"commit"=>"Update", "action"=>"update", "datalist_donations_donated_gizmos_options"=>"BAh7CToIdGFnIh1kb25hdGlvbnNfZG9uYXRlZF9naXptb3M6EGNyZWF0ZV93\naXRoewY6EGRvbmF0aW9uX2lkaQo6EHNob3dfaGVhZGVyRjoLcmVuZGVyIhlk\nb25hdGVkX2dpem1vcy9fZm9ybQ==", "id"=>"5", "datalist_donations_donated_gizmos_model"=>"DonatedGizmo", "controller"=>"donations", "donation"=>{"money_tendered"=>"17.00", "contact_id"=>"7", "payment_method_id"=>"2"}, "page"=>"1", "sort_direction"=>"asc", "sort"=>nil, "scaffold_id"=>"donation", "datalist_new"=>{"donations_donated_gizmos"=>{"20"=>{"0"=>{"quantity"=>"", "gizmo_type_id"=>""}}}}}
+col=>val: quantity=>
+col=>val: gizmo_type_id=>
+keeper: fieldname: quantity (truth value: '')
+keeper: fieldname: gizmo_type_id (truth value: '')
+return from keeper?
+ENTERING save_existing at Time.now
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8ea64f4 @attributes={"updated_at"=>"2006-10-01 21:04:32-05", "created_by"=>"1", "lock_version"=>"0", "quantity"=>nil, "updated_by"=>"1", "id"=>"25", "donation_id"=>"5", "gizmo_type_id"=>nil, "created_at"=>"2006-10-01 21:04:32-05"}>
+keeper: fieldname: quantity (truth value: '')
+keeper: fieldname: gizmo_type_id (truth value: '')
+return from keeper?
+1
+1
+[{"25"=>{"quantity"=>"", "gizmo_type_id"=>""}}]
+{"25"=>{"quantity"=>"", "gizmo_type_id"=>""}}
+2
+{"quantity"=>"", "gizmo_type_id"=>""}
+inside params...each loop
+col=>val: quantity=>
+inside params...each loop
+col=>val: gizmo_type_id=>
+ENTERING save_existing at Sun Oct 01 21:12:45 CDT 2006
+obj: class: DonatedGizmo, #<DonatedGizmo:0x8fd774c @attributes={"updated_at"=>"2006-10-01 21:10:53-05", "created_by"=>"1", "lock_version"=>"1", "quantity"=>nil, "updated_by"=>"1", "id"=>"25", "donation_id"=>"5", "gizmo_type_id"=>nil, "created_at"=>"2006-10-01 21:04:32-05"}>
+keeper: fieldname: quantity (truth value: '')
+keeper: fieldname: gizmo_type_id (truth value: '')
+return from keeper?
+1
+1
+[{"25"=>{"quantity"=>"", "gizmo_type_id"=>""}}]
+{"25"=>{"quantity"=>"", "gizmo_type_id"=>""}}
+2
+{"quantity"=>"", "gizmo_type_id"=>""}
+inside params...each loop
+col=>val: quantity=>
+inside params...each loop
+col=>val: gizmo_type_id=>
