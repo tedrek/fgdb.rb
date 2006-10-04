@@ -53,6 +53,7 @@ class DonationsController < ApplicationController
     @required_fee = 0
     @suggested_fee = 1
     @money_tendered = 0
+    @somefee = 999
 
     return render(:action => 'new.rjs') if request.xhr?
 
@@ -90,6 +91,7 @@ class DonationsController < ApplicationController
       @required_fee = 0
       @suggested_fee = 1
       @money_tendered = @donation.money_tendered
+      @somefee = 999
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -150,9 +152,17 @@ class DonationsController < ApplicationController
     $LOG.debug "ENTERING donations_controller.rb::update_fee #{Time.now}"
     params.inspect.each {|par| $LOG.debug par}
 
+    #child_ids = donated_gizmo_subforms('donations_donated_gizmos')
+
     render :action => 'update_fee.rjs'
 
     # render_text('return from update_fee')
   end
 
+#  def donated_gizmo_subforms(tag)
+#    ids = []
+#    ids << params[:datalist_update][tag.to_sym].values.first.keys
+#    ids << params[:datalist_new][tag.to_sym].values.first.keys
+#    return ids
+#  end
 end
