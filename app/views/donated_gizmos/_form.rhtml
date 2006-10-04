@@ -4,12 +4,13 @@
 <div class="form-element">
   <label for="donated_gizmo_quantity">Quantity</label>
   <%= text_field 'donated_gizmo', 'quantity' ,
-    {:class=>"text-input", :onchange => "update_totals(this)"} %>
+    {:class=>"text-input", :onchange => "playwith_fees(this);"} %>
 </div>
 
 <div class="form-element">
 <label for="donated_gizmo_gizmo_type_id">donated gizmo type</label><br/>
-<select id="donated_gizmo_gizmo_type_id" name="donated_gizmo[gizmo_type_id]" onchange="update_totals(this)"  >
+<select id="donated_gizmo_gizmo_type_id"
+name="donated_gizmo[gizmo_type_id]" onchange="playwith_fees(this);"  >
   <option value=""></option>
   <%= options_from_collection_for_select( GizmoType.find_all_instantiable, "id", "description", @donated_gizmo.gizmo_type_id) %>
 </select>

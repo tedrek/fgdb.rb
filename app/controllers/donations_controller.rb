@@ -3,6 +3,9 @@ class DonationsController < ApplicationController
   include DatalistFor
   DonatedGizmosTag='donations_donated_gizmos' 
 
+  require 'logger'
+  $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
+
   after_filter :clear_flashes
   before_filter :update_params_filter
   
@@ -141,7 +144,15 @@ class DonationsController < ApplicationController
     return_to_main
   end
 
+  # figure out then update fees and related totals for donation
+  # based on quantities, gizmo types for each donated gizmo
   def update_fee
+    $LOG.debug "ENTERING donations_controller.rb::update_fee #{Time.now}"
+    params.inspect.each {|par| $LOG.debug par}
+
+    render :action => 'update_fee.rjs'
+
     # render_text('return from update_fee')
   end
+
 end
