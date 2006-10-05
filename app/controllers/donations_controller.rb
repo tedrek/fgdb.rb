@@ -1,7 +1,7 @@
 class DonationsController < ApplicationController
   include AjaxScaffold::Controller
   include DatalistFor
-  DonatedGizmosTag='donations_donated_gizmos' 
+  DonationLinesTag='donations_donation_lines' 
 
   require 'logger'
   $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
@@ -70,7 +70,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.new(params[:donation])
       @successful = @donation.save
-      save_datalist(DonatedGizmosTag, :donation_id => @donation.id)
+      save_datalist(DonationLinesTag, :donation => @donation)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -110,7 +110,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = @donation.update_attributes(params[:donation])
-      save_datalist(DonatedGizmosTag)
+      save_datalist(DonationLinesTag)
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
@@ -150,19 +150,28 @@ class DonationsController < ApplicationController
   # based on quantities, gizmo types for each donated gizmo
   def update_fee
     $LOG.debug "ENTERING donations_controller.rb::update_fee #{Time.now}"
-    params.inspect.each {|par| $LOG.debug par}
+    params.inspect.each {|par| $LOG.debug "#{par}, "}
+    @formatted_params = params.inspect.each {|par| "#{par}<br />"}
 
-    #child_ids = donated_gizmo_subforms('donations_donated_gizmos')
+    child_ids = donated_gizmo_subforms('donations_donated_gizmos')
+    @somefee = "child_ids: " + child_ids.join(', ')
 
     render :action => 'update_fee.rjs'
 
     # render_text('return from update_fee')
   end
 
-#  def donated_gizmo_subforms(tag)
-#    ids = []
-#    ids << params[:datalist_update][tag.to_sym].values.first.keys
-#    ids << params[:datalist_new][tag.to_sym].values.first.keys
-#    return ids
-#  end
+  def donated_gizmo_subforms(tag)
+    grabbed = []
+    ids = params[:datalist_update][tag.to_sym].values.first.keys
+    grabbed << "ids list:" + ids.join(',')
+    ids.each do |id|
+      params[:datalist_update][tag.to_sym].values.first[id].each do |k,v|
+        grabbed << "k:#{k}"
+        grabbed << "v:#{v}"
+      end
+    end
+    #grabbed << params[:datalist_new][tag.to_sym].values.first.keys
+    return grabbed
+  end
 end

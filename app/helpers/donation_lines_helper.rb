@@ -6,7 +6,10 @@ module DonationLinesHelper
   end
   
   def scaffold_columns
-    DonationLine.scaffold_columns
+    [ 
+      AjaxScaffold::ScaffoldColumn.new(DonatedGizmo, 
+        :name => 'gizmo_event_id'),
+    ]
   end
 
 end
