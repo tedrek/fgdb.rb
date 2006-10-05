@@ -1,0 +1,103 @@
+
+- What is a gizmo?
+
+  A gizmo is some thing that we wish to keep track of.  For
+  instance, we keep track of things we call CRTs, LCDs, systems,
+  and a few others.  We record the kind of gizmos that we track
+  in the gizmo types table.
+
+- What is a gizmo type?
+
+  A gizmo type designates a category of gizmo that we need to
+  keep track of.  It can be more ("monitor") or less ("CRT",
+  "LCD") general in nature.
+
+  An entry in this table is required if we are to track gizmos
+  of this type.  However, an entry in this table does not
+  guarantee that in practice we actually do track this type of
+  gizmo.
+
+- What is a gizmo attribute?
+
+  Sometimes we want to keep track of certain characteristics of
+  a gizmo, usually so we can produce reports later on.  The
+  characteristics that we choose are called gizmo attributes.
+  Some hypothetical examples include size (esp for CRTs at the
+  moment), speed.
+
+  (Most gizmo characteristics we simply neglect:  line
+  voltage, number of fans, motherboard type, etc.)
+
+- What do we keep track of?
+
+  We intend to count numbers of different types of gizmos at
+  various stages during their passage into, out of (and maybe
+  inside) Freegeek.
+
+  For example, the particular system and monitor dropped off by
+  Sally yesterday are not followed from entry to exit.  We will
+  add one to the tallies kept for donated systems and monitors
+  when she drops them off.  Later on the same piece might add
+  its count to a recycling or sales tally, for instance.
+
+  By and large we are keeping tallies, buckets.  See "What do we
+  NOT keep track of?"
+
+  In limited contexts (eg, at sale time) we might also keep some
+  additional data on a gizmo, like its price, id number, and so
+  on.
+
+- What do we NOT keep track of?
+
+  As of the current design, we will not nor do we intend
+  to track particular gizmo instances.  But we do not tag this
+  particular system with an id and follow that id throughout its
+  lifecycle at Freegeek.  We also do not plan to keep track of
+  such things as circuit boards or power supplies.  Refer to the
+  gizmo types table to learn what we presently (may) track.
+
+- What's a gizmo context?
+
+  When it comes to gizmos, there are a few traditional ways to
+  carve up Freegeek; eg, receiving (donations), recycling,
+  building, testing, selling, giving away, etc.
+
+  Certain of these are crucial enough to tracking gizmos that
+  they have been canonized into the database, each one becoming a
+  gizmo context:  donation, sale, grant, recycling, etc.
+
+  Each context has its own way of viewing a gizmo, thus its own
+  set of gizmo types and gizmo attributes.  For example, while
+  in receiving, a monitor is a monitor is a monitor, in the
+  store we might want to know that we have sold a 17-inch CRT or
+  an LCD monitor.
+
+- How can I set up or change the master lists of gizmo type /
+  context / attribute / [name your table]?  
+  
+  Login as administrator and choose the table, then add, edit,
+  delete.  It's that simple.
+
+- I'm in the store.  I need to sell a tablet PC, but I only see
+  "system" and "laptop" in the dropdown.  What do I do?
+
+  Tell someone who can administer the database.
+  
+  1)  The administrator may need to add "tablet" to the gizmo
+  type table as a type of "system" (or "laptop", depending on
+  how things are organized).
+
+  2)  Once the "tablet" gizmo type is established, it needs to
+  be made available as a drop down choice during sale.  Either
+  in the gizmo types screen or in a separate "types and
+  contexts" screen, choose "sale" context for the "tablet" gizmo
+  type.
+
+- How can I add a 23-inch monitor to the list of monitor sizes?
+
+- What is a gizmo event?
+
+- What is a gizmo attribute type?
+
+- What is going on in the database when we need to associate a
+  gizmo event with a price or a size?
