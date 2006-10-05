@@ -1,0 +1,60 @@
+
+#===========================================================
+### roadmap for  6 oct
+TODO
+----
+
+. ? rails unique-id generator
+
+. add ajax logic to manage donation fee-tracking calc/display
+    . some special elements that we are using to track fees, etc
+    . needs some id-related changes in datalist_for to be able to 
+    identify and group the data input elements that we track
+
+. consider contact attributes:  preferred_contact_method_id
+  . maybe add a radio button set going against bridge table
+
+. integrate datalist_for with situation where two layers of
+belongs_to associations exist under the parent
+  . eg, GizmoEvent belongs to DonationLine belongs to Donation
+
+### 05 oct
+DONE
+----
+
+. additional schema changes to accommodate revamped gizmo design
+  . donated gizmo, sale txn line gone
+    . donation line, sale line in their place
+    . latter models are basically a bridge from their parent
+    model to the gizmo event model
+
+. choose means to provide searchability for models such as
+contact
+  . chose and installed
+    . searchable
+      . http://searchable.rubyforge.org/
+      . script/plugin install -x svn://rubyforge.org/var/svn/searchable/trunk
+      . tackling two significant backends a plus
+      . good howto at rubyforge main page
+      . requires either ferret or solr backend
+        . http://ferret.davebalmain.com/trac
+        . gem install ferret
+
+  . also considered these:
+    . ActiveSearch
+      . http://julik.nl/code/active-search/
+      . can be pure ruby (by default it is)
+      . can use ferret
+      . seems a bit less mature, with perhaps a smaller user
+      community at present
+    . acts_as_searchable
+      . http://ar-searchable.rubyforge.org/
+      . requires HyperEstraier base search engine
+        . http://hyperestraier.sourceforge.net/
+        . can install as either pure ruby or ruby C binding
+        . requires ruby 1.8.4 (difficult at moment for gp)
+    . acts_as_ferret
+      . http://projects.jkraemer.net/acts_as_ferret/
+      . looks solid, less documentation outside the code that I
+      could find
+      . possibly not being currently maintained

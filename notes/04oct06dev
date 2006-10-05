@@ -1,0 +1,41 @@
+
+#===========================================================
+### roadmap for 05 oct
+TODO
+----
+
+. ? rails unique-id generator
+
+. add ajax logic to manage donation fee-tracking calc/display
+    . some special elements that we are using to track fees, etc
+    . needs some id-related changes in datalist_for to be able to 
+    identify and group the data input elements that we track
+
+. consider contact attributes:  preferred_contact_method_id
+  . maybe add a radio button set going against bridge table
+
+
+### 04 oct
+DONE
+----
+
+. substantial schema changes to accommodate revamped gizmo
+design, added these tables:
+  . gizmo_actions
+  . gizmo_attr_types
+  . gizmo_attrs
+  . gizmo_attrs_gizmo_contexts
+  . gizmo_attrs_gizmo_events
+  . gizmo_contexts
+  . gizmo_contexts_gizmo_types
+  . gizmo_events
+  . gizmo_types
+
+and obsoleted these tables:
+  . donated_gizmos
+  . sale_txn_lines
+
+. generated basic rails code for new schema objects
+
+. start some FAQs in doc/ to keep schema design clear for future
+developers and users

@@ -1,0 +1,26 @@
+
+#===========================================================
+### roadmap for 04 oct
+TODO
+----
+
+. ? rails unique-id generator
+
+. add ajax logic to manage donation fee-tracking calc/display
+    . some special elements that we are using to track fees, etc
+    . needs some id-related changes in datalist_for to be able to 
+    identify and group the data input elements that we track
+
+. figure out how we want to provide searchability for contact
+and maybe other models
+
+. consider contact attributes:  preferred_contact_method_id
+  . maybe add a radio button set going against bridge table
+
+
+### 03 oct
+DONE
+----
+
+. implement simple display of params within div element "totals"
+in donations screen

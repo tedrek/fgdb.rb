@@ -17,6 +17,9 @@ solved the basic issue with ids, it may be better-designed overall
 . consider contact attributes:  preferred_contact_method_id
   . maybe add a radio button set going against bridge table
 
+. figure out how we want to provide searchability for contact
+and maybe other models
+
 
 ### 30 sep
 DONE
