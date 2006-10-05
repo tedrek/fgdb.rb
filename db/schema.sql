@@ -152,6 +152,22 @@ COMMENT ON TABLE discount_schedules IS 'discount schedules and their discount pe
 
 
 --
+-- Name: donation_lines; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE donation_lines (
+    id serial NOT NULL,
+    donation_id integer,
+    gizmo_event_id integer,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
 -- Name: donations; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
@@ -446,6 +462,7 @@ CREATE TABLE sale_txns (
     till_handler_id integer NOT NULL,
     payment_method_id integer NOT NULL,
     gross_amount numeric(10,2) NOT NULL,
+    discount_schedule_id integer DEFAULT 1 NOT NULL,
     discount_amount numeric(10,2),
     amount_due numeric(10,2) NOT NULL,
     comments character varying(100) NOT NULL,
@@ -453,8 +470,7 @@ CREATE TABLE sale_txns (
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
     created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL,
-    discount_schedule_id integer DEFAULT 1 NOT NULL
+    updated_by bigint DEFAULT 1 NOT NULL
 );
 
 
