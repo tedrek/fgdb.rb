@@ -34,11 +34,18 @@ contact
     . searchable
       . http://searchable.rubyforge.org/
       . script/plugin install -x svn://rubyforge.org/var/svn/searchable/trunk
+      . sounds like it automatically updates index when an
+      instance is updated or removed
       . tackling two significant backends a plus
       . good howto at rubyforge main page
       . requires either ferret or solr backend
         . http://ferret.davebalmain.com/trac
         . gem install ferret
+
+. make a stab at creating rdoc, ri for searchable
+$ cd .../plugins/searchable
+$ rdoc -f html -i lib -i README -o rdoc --inline-source --line-numbers -t 'Searchable'
+$ sudo rdoc --ri-site -i lib -i README  --inline-source --line-numbers -t 'Searchable'
 
   . also considered these:
     . ActiveSearch

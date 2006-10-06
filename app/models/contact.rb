@@ -1,6 +1,7 @@
 require 'ajax_scaffold'
 
 class Contact < ActiveRecord::Base
+  include Searchable
   
   has_and_belongs_to_many :contact_types
   has_many :contact_methods, :dependent => true
@@ -14,6 +15,18 @@ class Contact < ActiveRecord::Base
   has_many :sinks,    :through => :relationships_as_source
 
   has_many :donations
+
+  index_attr  :first_name do |attr|
+    attr.boost  2.0
+    attr.sortable true
+  end
+  index_attr  :surname do |attr|
+    attr.aliases ["last_name", "ln"]
+    attr.sortable true
+  end
+  index_attr  :organization
+  index_attr  :city
+  index_attr  :postal_code
 
   # acts_as_userstamp
 
