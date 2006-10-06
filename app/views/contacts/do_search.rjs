@@ -1,0 +1,1 @@
+  page.replace_html @contact_searchbox_id, :partial => 'search_dropdown'

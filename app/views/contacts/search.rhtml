@@ -1,0 +1,15 @@
+<%= javascript_tag "
+  function contact_searchbox_submit() {
+    var field_val = $('#{@contact_searchbox_field_id}').value;
+    new Ajax.Request('/contacts/do_search/?query=' + field_val + 
+      '&searchbox_id=#{@contact_searchbox_id}',
+      {asynchronous:true, evalScripts:true}
+      );
+  }
+" %>
+<div id="<%= @contact_searchbox_id %>">
+  <input type="text" name="contact_searchbox_query"
+    id="<%= @contact_searchbox_field_id %>"/>
+  <button name="contact_searchbox_search"
+    onclick="contact_searchbox_submit();">Search</button>
+</div>

@@ -132,4 +132,26 @@ class ContactsController < ApplicationController
     
     return_to_main
   end
+
+  # searching for a contact
+  def search
+    seed = Time.now.to_i
+    @contact_searchbox_id = "contact_searchbox_id-#{seed}"
+    @contact_searchbox_field_id = "contact_searchbox_field_id-#{seed}"
+  end
+
+  def do_search
+    @search_results = Contact.search(params[:query])
+    @contact_searchbox_id = params[:searchbox_id]
+    seed = Time.now.to_i
+    @contact_searchbox_field_id = "contact_searchbox_field_id-#{seed}"
+    render :update do |page|
+      page.replace_html @contact_searchbox_id, :partial => 'search_dropdown'
+    end
+  end
+
+  def insert_searchbox
+    @contact_searchbox_id = params[:searchbox_id]
+    render(:action => 'insert_searchbox.rjs')
+  end
 end
