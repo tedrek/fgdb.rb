@@ -134,17 +134,21 @@ class ContactsController < ApplicationController
   end
 
   # searching for a contact
-  def search
-    seed = Time.now.to_i
-    @contact_searchbox_id = "contact_searchbox_id-#{seed}"
-    @contact_searchbox_field_id = "contact_searchbox_field_id-#{seed}"
+
+  def search(searchbox_id_arg=nil)
+    set_search_vars(searchbox_id_arg=nil)
+  end
+
+  def repeat_search(searchbox_id_arg=nil)
+    set_search_vars(searchbox_id_arg=nil)
   end
 
   def do_search
     @search_results = Contact.search(params[:query])
     @contact_searchbox_id = params[:searchbox_id]
     seed = Time.now.to_i
-    @contact_searchbox_field_id = "contact_searchbox_field_id-#{seed}"
+    #@contact_searchbox_field_id = "contact_searchbox_field_id-#{seed}"
+    @contact_searchbox_field_id = "#{@contact_searchbox_id}_field"
     render :update do |page|
       page.replace_html @contact_searchbox_id, :partial => 'search_dropdown'
     end
@@ -152,6 +156,22 @@ class ContactsController < ApplicationController
 
   def insert_searchbox
     @contact_searchbox_id = params[:searchbox_id]
-    render(:action => 'insert_searchbox.rjs')
+    #render(:action => 'insert_searchbox.rjs')
+    @contact_searchbox_field_id = "#{@contact_searchbox_id}_field"
+    render :update do |page|
+      page.replace_html @contact_searchbox_id, 
+        :partial => 'searchbox_field'
+    end
+  end
+
+  protected
+
+  # we usually need to create the searchbox multiple times
+  def set_search_vars(contact_searchbox_id_arg=nil)
+    seed = Time.now.to_i
+    @contact_searchbox_id = contact_searchbox_id_arg || 
+      "contact_searchbox_id"
+      #"contact_searchbox_id-#{seed}"
+    @contact_searchbox_field_id = "#{@contact_searchbox_id}_field"
   end
 end

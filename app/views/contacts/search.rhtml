@@ -8,8 +8,5 @@
   }
 " %>
 <div id="<%= @contact_searchbox_id %>">
-  <input type="text" name="contact_searchbox_query"
-    id="<%= @contact_searchbox_field_id %>"/>
-  <button name="contact_searchbox_search"
-    onclick="contact_searchbox_submit();">Search</button>
+  <%= render :partial => "searchbox_field" %>
 </div>

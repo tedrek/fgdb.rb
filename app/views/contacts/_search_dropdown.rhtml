@@ -3,13 +3,14 @@ selectme
 <select name="" id="<%= @contact_searchbox_field_id %>" >
   <%= options_from_collection_for_select @search_results, 
     :id, :display_name %>
+  <option value=""></option>
   <option value="__search again__">Search again</option>
 </select>
 <%= observe_field @contact_searchbox_field_id, 
   :on => 'change', 
-  :with => "searchbox_id=" + @contact_searchbox_id.to_s,
+  :with => "'searchbox_id=#{@contact_searchbox_id.to_s}'",
   :url  => "/contacts/insert_searchbox"
   %>
-  <%= @contact_searchbox_id %>
+  <%= @contact_searchbox_id.to_s %>
 
 metoo
