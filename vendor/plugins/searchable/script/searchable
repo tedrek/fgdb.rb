@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require("#{RAILS_ROOT}/config/environment")
+require 'drb_search_service'
+
+begin
+  DRb.start_service("druby://:7778", MojoDNA::Searchable::DRbSearchService.new)
+  DRb.thread.join
+rescue
+  puts "An exception occurred: #{$!}"
+  puts $!.backtrace
+end

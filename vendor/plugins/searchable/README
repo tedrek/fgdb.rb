@@ -1,0 +1,179 @@
+Searchable
+==========
+
+ActiveRecord Integration for Rails
+----------------------------------
+
+### Overview
+_Searchable is a Rails plugin that uses the [Ferret](http://ferret.davebalmain.com/trac) toolkit (a [Lucene](http://lucene.apache.org/) derivative) to provide full-text search integration with ActiveRecord._
+
+### Compatibility
+Searchable has been tested with Rails 1.0+.
+
+### Installation
+    
+    script/plugin install -x http://svn.mojodna.net/repository/acts_as_searchable/trunk
+    
+### Configuration
+
+_environment.rb:_
+    
+    # Globally override the default index path ("#{RAILS_ROOT}/db/ferret_index")
+    MojoDNA::Searchable::Indexer::default_index_path "#{RAILS_ROOT}/db/my_index"
+    
+    # Globally override the default analyzer (Ferret::Analysis::StandardAnalyzer)
+    MojoDNA::Searchable::Indexer::default_analyzer Ferret::Analysis::StopAnalyzer
+    
+    # Force Searchable to use the DRb backend (default: local)
+    MojoDNA::Searchable::remote
+
+### Indexing Models
+
+The are 3 ways to specify indexing strategies for models.
+
+#### Using Defaults
+
+The first way is to simply `include Searchable` which triggers Searchable's default behavior, which is to index all attributes returned by `Model.content_columns` using each attributes name as its field name within the index.
+
+For example:
+    
+    class Person < ActiveRecord::Base
+        include Searchable
+        
+        # attrs: first_name, last_name
+    end
+
+This model can then be searched:
+
+    Person.search("seth")
+
+This will attempt to match "_seth_" on all fields available in the index (_first\_name_ and _last\_name_).  If you wish to target a specific field:
+    
+    Person.search("first_name: seth")
+    
+#### Indexing DSL
+
+Searchable includes a DSL which allows one to exercise fine-grained control over indexing strategies.
+
+An overly complex example:
+    
+    class Person < ActiveRecord::Base
+        include Searchable
+        
+        # attrs: first_name, last_name, address (an Address object)
+        has_one :address
+        
+        # (locally) override the index path
+        index_path "#{RAILS_ROOT}/db/person_index"
+        
+        # (locally) override the default analyzer for this model
+        default_analyzer Ferret::Analysis::StopAnalyzer
+        
+        # index the person's first name (specifying defaults as a hash)
+        index_attr :first_name, :boost => 1.0, :indexed => true, :tokenized => true, :stored => false, :indexed_name => "first_name", :sortable => false
+        
+        # index the person's last name (overriding some defaults using the block format)
+        index_attr :last_name do |attr|
+            attr.indexed_name "last_name"
+            
+            # alias "surname" and "sn" to this field so queries for "sn:fitzsimmons" will work
+            attr.aliases ["surname", "sn"]
+            attr.boost 2.0
+            attr.indexed true
+            attr.tokenized true
+            attr.stored false
+            
+            # allow resultsets to be sortable by last name
+            attr.sortable true
+        end
+        
+        # index (part of) the person's address, including attributes of the address association
+        index_attr :address do |attr|
+            attr.include :city, :boost => 0.75
+            attr.include :state do |state|
+                # alias state to province to queries for "address.province: MA" will work
+                state.aliases ["province"]
+                state.boost 0.75
+            end
+            attr.include :country, :boost => 0.75
+        end
+    end
+
+#### Custom to_doc
+
+If the DSL doesn't provide enough flexibility and you want to be even more specific about how attributes are indexed, you can provide your own to_doc method that will be used in conjunction with the DSL to provide additional fields to the index.
+
+If you have field/value pairs where you want the field name used as a field name:
+    
+    # custom to_doc to handle field/value pairings
+    def to_doc(doc)
+      fields.each do |field|
+        f.values.each do |value|
+          doc << Indexer::create_field("#{field.name}", value)
+        end
+      end
+      doc
+    end
+
+#### Creating the Index
+
+The instance method `model.add_to_index` is used to add an instance of a model to the appropriate index.  Searchable will handle creation of the index files and will remove any existing documents corresponding to the instance being indexed.  `model.remove_from_index` is used to explicitly remove an instance from the index.  Both methods are registered as ActiveRecord callbacks, so if an object is created, updated, or deleted, it will be created, updated, or deleted within the index as well.
+
+If you wish to index all instances of a given model, use the class method `Model.index_all`.  This will load all instances of a model (in batches of 500) and add them to the index.  By default, it creates a temporary index and copies it over the existing index when it's done being processed.  This avoids any interruption of service if this is being done to rebuild an index on a live site.  When running in local mode, avoid calling this from a process that shouldn't block (i.e. a FastCGI process).
+
+### Searching
+
+By now, you've seen the basics of how to search for instances of models:
+    
+    all_people_named_or_living_in_kerry = Person.search("kerry")
+    all_people_named_seth = Person.search("first_name: seth")
+
+You can pass the `search` method either a String or a Ferret Query that you've constructed yourself.  If you pass in a String, you can use the Ferret Query Language, which is very similar to [Lucene's query syntax](http://lucene.apache.org/java/docs/queryparsersyntax.html).
+
+By default, all results returned by `search` will be fully-loaded models (loaded using the appropriate `find` method).  If you wish to have just the ids returned, pass `:load => false` as part of the options hash.
+    
+    Person.search("seth", :load => false)
+
+You can take advantage of attributes that have been marked as sortable (reversible):
+    
+    Person.search("seth", :sort_by => :last_name)
+    Person.search("seth", :sort_by => :last_name, :reverse => true )
+
+Specify the default fields to be searched:
+    
+    Person.search("seth", :default_fields => ["first_name, last_name"])
+
+Support pagination by using `:offset` and `:limit`:
+    
+    Person.search("seth", :limit => 10, :offset => 10)
+
+### Remote Mode (DRb)
+
+Searchable includes a DRb backend that allows AR models to communicate with a single "search server".  This is a much better option for clustered environments where index consistency is important and there are enough reads and writes that index file locking issues come into play.
+
+To enable remote mode, add this to your environment.rb:
+
+    # Force Searchable to use the DRb backend (default: local)
+    MojoDNA::Searchable::remote
+    
+And copy the appropriate scripts to your `script` directory:
+    
+    for f in searchable indexer; do
+        cp vendor/plugins/acts_as_searchable/script/$f script
+        chmod 755 script/$f
+    done
+
+You can then use Searchable in exactly the same manner.  The only difference is that your index(es) will be stored on the server running the DRb service.
+
+To start the DRb service:
+    
+    script/searchable &
+    script/indexer &
+    
+### Additional backends
+
+Alternative backends can be created by following the example of `LocalSearchable` and `RemoteSearchable`.  You'll also need to modify `Searchable` to include the appropriate backend under appropriate conditions.
+
+### The Future
+
+Support for searching across multiple models has not yet been added.  Nor has support for searching across multiple indexes.  Dates should be handled for more efficient querying.

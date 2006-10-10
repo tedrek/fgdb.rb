@@ -1,0 +1,22 @@
+#
+# Sample searchable.yml to be copied to config/searchable.yml and modified.
+#
+# Searching and indexing are split to allow for master/slave SOLR configurations.
+#
+development:
+  solr_index_host: localhost
+  solr_index_port: 8983
+  solr_search_host: localhost
+  solr_search_port: 8983
+
+test:
+  solr_index_host: localhost
+  solr_index_port: 8984
+  solr_search_host: localhost
+  solr_search_port: 8984
+
+production:
+  solr_index_host: localhost
+  solr_index_port: 8985
+  solr_search_host: localhost
+  solr_search_port: 8985
