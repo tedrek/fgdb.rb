@@ -22,7 +22,10 @@
 
       <%= render :partial => 'totals' %>
       <%= render :partial => 'form' %>
-      <%= datalist_for :donation_line, 'donations_donation_lines', @donation.donation_lines, :create_with => { :donation => @donation }, :show_header => false, :render => "donation_lines/_form" %>
+
+      <%= datalist_for :gizmo_event, 'donations_gizmo_events,
+        @donation.gizmo_events, :create_with => { :donation => @donation },
+        :show_header => false, :render => "gizmo_events/_form" %>
 
       <p class="form-footer">
         <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>

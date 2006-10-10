@@ -152,22 +152,6 @@ COMMENT ON TABLE discount_schedules IS 'discount schedules and their discount pe
 
 
 --
--- Name: donation_lines; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
---
-
-CREATE TABLE donation_lines (
-    id serial NOT NULL,
-    donation_id integer,
-    gizmo_event_id integer,
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
 -- Name: donations; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
@@ -328,6 +312,10 @@ CREATE TABLE gizmo_contexts_gizmo_types (
 
 CREATE TABLE gizmo_events (
     id serial NOT NULL,
+    donation_id integer,
+    sale_txn_id integer,
+    grant_id integer,
+    recycling_id integer,
     gizmo_type_id integer NOT NULL,
     gizmo_action_id integer NOT NULL,
     gizmo_count integer NOT NULL,

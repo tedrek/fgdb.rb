@@ -1,6 +1,18 @@
 <fieldset>
   <div class="row">
     <!--[form:donation_line]-->
+
+<div class="form-element">
+  <label for="gizmo_type_parent">Gizmo Type</label>
+  <select id="donation_line_gizmo_type_id"
+	name="donation_line[gizmo_type_id]"
+	onchange="<%= remote_function(
+	:url => { :action => :foo }) %>" >
+    <option value="">---</option>
+    <%= options_from_collection_for_select GizmoType.find_all, "id", "description" %>
+  </select>
+</div>
+
 <div class="form-element">
   <label for="donation_line_gizmo_event_id">gizmo_event_id</label>
   <%= text_field 'donation_line', 'gizmo_event_id' , {:class=>"text-input"} %>

@@ -17,9 +17,6 @@ module GizmoTypesHelper
       AjaxScaffold::ScaffoldColumn.new(GizmoType, 
         :name => 'fee_is_required', :label => "Fee Required?",
         :eval => 'gizmo_type.fee_is_required ? "yes" : "no"'),
-      AjaxScaffold::ScaffoldColumn.new(GizmoType, 
-        :name => 'instantiable', :label => "Instantiable?",
-        :eval => 'gizmo_type.instantiable ? "yes" : "no"'),
       ]
   end
 

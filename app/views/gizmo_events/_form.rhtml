@@ -1,6 +1,7 @@
 <fieldset>
   <div class="row">
     <!--[form:gizmo_event]-->
+
 <div class="form-element">
   <label for="gizmo_event_gizmo_count">Quantity</label>
   <%= text_field 'gizmo_event', 'gizmo_count' ,
@@ -8,12 +9,13 @@
 </div>
 
 <div class="form-element">
-<label for="gizmo_event_gizmo_type_id">donated gizmo type</label><br/>
-<select id="gizmo_event_gizmo_type_id"
-name="gizmo_event[gizmo_type_id]"   >
-  <option value=""></option>
-  <%= options_from_collection_for_select( GizmoType.find_all, "id", "description", @gizmo_event.gizmo_type_id) %>
-</select>
+  <label for="gizmo_event_gizmo_type_id">donated gizmo type</label><br/>
+  <select id="gizmo_event_gizmo_type_id"
+    name="gizmo_event[gizmo_type_id]"   >
+    <option value=""></option>
+    <%= options_from_collection_for_select( GizmoType.find_all, "id", "description", @gizmo_event.gizmo_type_id) %>
+  </select>
+</div>
 
 <!--[eoform:gizmo_event]-->
 
