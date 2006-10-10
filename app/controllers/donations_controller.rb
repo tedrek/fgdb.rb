@@ -1,7 +1,7 @@
 class DonationsController < ApplicationController
   include AjaxScaffold::Controller
   include DatalistFor
-  DonationLinesTag='donations_donation_lines' 
+  DonationLinesTag='donations_gizmo_events' 
 
   require 'logger'
   $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
@@ -70,7 +70,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.new(params[:donation])
       @successful = @donation.save
-      save_datalist(DonationLinesTag, :donation => @donation)
+      save_datalist(DonationLinesTag, :donation_id => @donation.id, :gizmo_action_id => GizmoAction.donation.id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -110,7 +110,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = @donation.update_attributes(params[:donation])
-      save_datalist(DonationLinesTag)
+      save_datalist(DonationLinesTag, :donation_id => @donation.id, :gizmo_action_id => GizmoAction.donation.id)
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
