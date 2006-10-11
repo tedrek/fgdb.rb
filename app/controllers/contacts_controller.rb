@@ -57,6 +57,13 @@ class ContactsController < ApplicationController
       return_to_main
     end
   end
+
+  def new_into_external
+    @contact = Contact.new
+    @successful = true
+
+    return render(:action => 'new_into_external.rjs') if request.xhr?
+  end
   
   def create
     begin
@@ -172,7 +179,7 @@ class ContactsController < ApplicationController
     if params[:searchbox_value] == "__search again__"
       render :update do |page|
         page.replace_html @search_vars[:id],
-        :partial => 'searchbox_field'
+          :partial => 'searchbox_field'
       end
     else
       @contact = Contact.find( params[:searchbox_value] )

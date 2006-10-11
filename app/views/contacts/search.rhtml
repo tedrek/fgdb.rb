@@ -6,3 +6,12 @@
     <%= render :partial => "searchbox_field" %>
   <% end %>
 </div>
+<button type="button" onClick="<%= remote_function(
+  :url => { :controller => 'contacts', 
+            :action => 'new_into_external', 
+            :div_id => @search_vars[:id],
+            :insertion_div_id => 'insert_new_here' }
+  ) %>"
+>
+  Create new contact
+</button>

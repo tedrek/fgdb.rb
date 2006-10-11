@@ -36,4 +36,8 @@ module ContactsHelper
     ]
   end
 
+  def insertion_div_id(options)
+    params[:insertion_div_id] or scaffold_tbody_id(options)
+  end
+
 end

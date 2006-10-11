@@ -2,7 +2,7 @@
 @new_options = @options.merge(:action => "new", :id => nil)
 
 if @successful
-  page.insert_html :top, scaffold_tbody_id(@options), :partial => 'new_edit'
+  page.insert_html :top, insertion_div_id(@options), :partial => 'new_edit'
   page.show element_row_id(@options)
   page << "Form.focusFirstElement('#{element_form_id(@options)}');"
   page.visual_effect :highlight, element_cell_id(@options)
