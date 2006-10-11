@@ -1,16 +1,18 @@
-selectme
-
-<select name="" id="<%= @contact_searchbox_field_id %>" >
+<label for="<%= @contact_searchbox_field_id %>"><%= @contact_searchbox_select_label %></label>
+<select name="<%= @contact_searchbox_field_name %>" id="<%= @contact_searchbox_field_id %>">
   <%= options_from_collection_for_select @search_results, 
     :id, :display_name %>
-  <option value=""></option>
+  <option disabled value=""></option>
   <option value="__search again__">Search again</option>
 </select>
 <%= observe_field @contact_searchbox_field_id, 
   :on => 'change', 
-  :with => "'searchbox_id=#{@contact_searchbox_id.to_s}'",
+  :with => "'searchbox_id=#{@contact_searchbox_id.to_s}&searchbox_value=' + $('#{@contact_searchbox_field_id.to_s}').value",
   :url  => "/contacts/insert_searchbox"
   %>
-  <%= @contact_searchbox_id.to_s %>
 
-metoo
+  <div id="<%= @contact_searchbox_display_id %>">
+    <% if @search_results[0] %>
+      <%= render :partial => "display", :locals => { :@contact => @search_results[0] } %>
+    <% end %>
+  </div>
