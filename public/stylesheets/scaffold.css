@@ -52,6 +52,11 @@ a:hover { color: #fff; background-color:#000; }
   list-style: square;
 }
 
+.notices p{
+  background-color: red;
+  color: #333;
+}
+
 div.uploadStatus {
   margin: 5px;
 }

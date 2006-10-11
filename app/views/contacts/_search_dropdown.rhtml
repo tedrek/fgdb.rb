@@ -1,3 +1,7 @@
+<div class="notices" >
+  <p><%= @search_vars[:notices] %></p>
+</div>
+
 <label for="<%= @search_vars[:field_id] %>"><%= @search_vars[:select_label] %></label>
 <select name="<%= @search_vars[:field_name] %>" id="<%= @search_vars[:field_id] %>">
   <%= options_from_collection_for_select @search_results, 

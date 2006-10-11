@@ -149,11 +149,16 @@ class ContactsController < ApplicationController
         "*#{word}*" 
       end.join(' ')
     end
-    @search_results = Contact.search( query_str )
+    @search_results = Contact.search( query_str, :limit => default_per_page )
     @search_vars = get_contact_search_vars( params[:searchbox_id] )
     if @search_results.size == 0
-      @search_vars[:search_label] = "Your search for '#{query_str}' failed.<br />Search for name, city, postal code or organization:"
+      @search_vars[:notices] = "Your search for '#{query_str}' failed."
       partial = 'searchbox_field'
+    elsif @search_results.size >= default_per_page
+      @search_vars[:notices] = "Your search for '#{query_str}'
+        returned too many results to disply.  You may want to
+        refine your search."
+      partial = 'search_dropdown'
     else
       partial = 'search_dropdown'
     end
