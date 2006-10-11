@@ -141,10 +141,20 @@ class ContactsController < ApplicationController
   end
 
   def do_search
-    @search_results = Contact.search( params[:query] )
+    query_str = params[:query]
+    # if the user added query wildcards, leave be
+    # if not, assume it's better to bracket with wildcards
+    query_str = "*#{query_str}*" unless query_str =~ /\*/
+    @search_results = Contact.search( query_str )
     @search_vars = get_contact_search_vars( params[:searchbox_id] )
+    if @search_results.size == 0
+      @search_vars[:search_label] = "Your search for '#{query_str}' failed.<br />Search for name, city, postal code or organization:"
+      partial = 'searchbox_field'
+    else
+      partial = 'search_dropdown'
+    end
     render :update do |page|
-      page.replace_html @search_vars[:id], :partial => 'search_dropdown'
+      page.replace_html @search_vars[:id], :partial => partial
     end
   end
 
