@@ -1,5 +1,8 @@
 class ContactsController < ApplicationController
   include AjaxScaffold::Controller
+
+  require "lib/search_contact"
+  include SearchContact
   
   after_filter :clear_flashes
   before_filter :update_params_filter
@@ -133,50 +136,4 @@ class ContactsController < ApplicationController
     return_to_main
   end
 
-  # searching for a contact
-
-  def search(searchbox_id_arg=nil)
-    set_search_vars(searchbox_id_arg=nil)
-  end
-
-  def repeat_search(searchbox_id_arg=nil)
-    set_search_vars(searchbox_id_arg=nil)
-  end
-
-  def do_search
-    @search_results = Contact.search( params[:query] )
-    set_search_vars( params[:searchbox_id] )
-    render :update do |page|
-      page.replace_html @contact_searchbox_id, :partial => 'search_dropdown'
-    end
-  end
-
-  def insert_searchbox
-    set_search_vars( params[:searchbox_id] )
-    if params[:searchbox_value] == "__search again__"
-      render :update do |page|
-        page.replace_html @contact_searchbox_id, 
-        :partial => 'searchbox_field'
-      end
-    else
-      @contact = Contact.find( params[:searchbox_value] )
-      render :update do |page|
-        page.replace_html @contact_searchbox_display_id, :partial => 'display'
-      end
-    end
-  end
-
-  protected
-
-  # we usually need to create the searchbox multiple times
-  def set_search_vars(contact_searchbox_id_arg=nil)
-    seed = Time.now.to_i
-    @contact_searchbox_id = contact_searchbox_id_arg || 
-      "contact_searchbox_id_#{seed}"
-    @contact_searchbox_field_id = "#{@contact_searchbox_id}_field"
-    @contact_searchbox_display_id = "#{@contact_searchbox_id}_display"
-    @contact_searchbox_field_name ||= "contact_id"
-    @contact_searchbox_search_label ||= "Search for a contact:"
-    @contact_searchbox_select_label ||= "Choose a contact:"
-  end
 end
