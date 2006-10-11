@@ -1,8 +1,6 @@
 class ContactsController < ApplicationController
   include AjaxScaffold::Controller
-
-  require "lib/search_contact"
-  include SearchContact
+  include ContactsHelper
   
   after_filter :clear_flashes
   before_filter :update_params_filter
@@ -134,6 +132,54 @@ class ContactsController < ApplicationController
     return render(:action => 'cancel.rjs') if request.xhr?
     
     return_to_main
+  end
+
+  # searching for a contact
+
+  def search
+    @search_vars = init_contact_search_vars
+  end
+
+  def do_search
+    @search_results = Contact.search( params[:query] )
+    @search_vars = get_contact_search_vars( params[:searchbox_id] )
+    render :update do |page|
+      page.replace_html @search_vars[:id], :partial => 'search_dropdown'
+    end
+  end
+
+  def update_searchbox
+    @search_vars = get_contact_search_vars( params[:searchbox_id] )
+    if params[:searchbox_value] == "__search again__"
+      render :update do |page|
+        page.replace_html @search_vars[:id],
+        :partial => 'searchbox_field'
+      end
+    else
+      @contact = Contact.find( params[:searchbox_value] )
+      render :update do |page|
+        page.replace_html @search_vars[:display_id], :partial => 'display'
+      end
+    end
+  end
+
+  private
+
+  def init_contact_search_vars
+    seed = Time.now.to_i
+    searchbox_id = "contact_searchbox_id_#{seed}"
+    session[searchbox_id] = {}
+    session[searchbox_id][:id]             = searchbox_id
+    session[searchbox_id][:field_id]       = "#{searchbox_id}_field"
+    session[searchbox_id][:display_id]     = "#{searchbox_id}_display"
+    session[searchbox_id][:field_name]   ||= params[:field_name]   || 'contact_id'
+    session[searchbox_id][:search_label] ||= params[:search_label] || "Search for a contact:"
+    session[searchbox_id][:select_label] ||= params[:select_label] || "Choose a contact:"
+    return session[searchbox_id]
+  end
+
+  def get_contact_search_vars(searchbox_id)
+    return session[searchbox_id]
   end
 
 end

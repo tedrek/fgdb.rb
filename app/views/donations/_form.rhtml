@@ -15,10 +15,9 @@
 </div>
 
 <div class="form-element">
-<label for="contact_id">Donor</label><br/>
-<select id="donation_contact_id" name="donation[contact_id]">
-<%= options_from_collection_for_select Contact.find_all, "id", "display_name", @donation.contact_id %>
-</select>
+  <%= render_component( :controller => '/contacts', :action => 'search',
+    :params => { :field_name => "donation[contact_id]", :contact => @donation.contact,
+      :search_label => "Find the donor:", :select_label => "Select the donor:" } ) %>
 </div>
 
 <!--[eoform:donation]-->

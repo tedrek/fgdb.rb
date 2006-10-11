@@ -1,5 +1,5 @@
-  <label for="<%= @contact_searchbox_field_id %>"><%= @contact_searchbox_search_label %></label>
+  <label for="<%= @search_vars[:field_id] %>"><%= @search_vars[:search_label] %></label>
   <input type="text" name="contact_searchbox_query"
-    id="<%= @contact_searchbox_field_id %>"/>
-  <button name="contact_searchbox_search"
-    onclick="contact_searchbox_submit();">Search</button>
+    id="<%= @search_vars[:field_id] %>"/>
+  <button name="contact_searchbox_search" type="button"
+    onclick="contact_searchbox_submit('<%= @search_vars[:id] %>', '<%= @search_vars[:field_id] %>');">Search</button>

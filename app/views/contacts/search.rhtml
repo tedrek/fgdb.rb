@@ -1,12 +1,3 @@
-<%= javascript_tag "
-  function contact_searchbox_submit() {
-    var field_val = $('#{@contact_searchbox_field_id}').value;
-    new Ajax.Request('/contacts/do_search/?query=' + field_val + 
-      '&searchbox_id=#{@contact_searchbox_id}',
-      {asynchronous:true, evalScripts:true}
-      );
-  }
-" %>
-<div id="<%= @contact_searchbox_id %>">
+<div id="<%= @search_vars[:id] %>">
   <%= render :partial => "searchbox_field" %>
 </div>
