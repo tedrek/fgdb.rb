@@ -144,7 +144,11 @@ class ContactsController < ApplicationController
     query_str = params[:query]
     # if the user added query wildcards, leave be
     # if not, assume it's better to bracket with wildcards
-    query_str = "*#{query_str}*" unless query_str =~ /\*/
+    unless query_str =~ /\*/
+      query_str = query_str.split.map do |word|
+        "*#{word}*" 
+      end.join(' ')
+    end
     @search_results = Contact.search( query_str )
     @search_vars = get_contact_search_vars( params[:searchbox_id] )
     if @search_results.size == 0
