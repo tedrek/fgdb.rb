@@ -1,3 +1,8 @@
 <div id="<%= @search_vars[:id] %>">
-  <%= render :partial => "searchbox_field" %>
+  <% if params[:contact] %>
+    <% @search_results = [ params[:contact] ] %>
+    <%= render :partial => "search_dropdown" %>
+  <% else %>
+    <%= render :partial => "searchbox_field" %>
+  <% end %>
 </div>
