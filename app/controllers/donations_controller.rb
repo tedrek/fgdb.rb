@@ -50,10 +50,12 @@ class DonationsController < ApplicationController
   def new
     @donation = Donation.new
     @successful = true
+
     @required_fee = 0
     @suggested_fee = 1
     @money_tendered = 0
-    @somefee = 999
+    @overunder_fee = 0
+    @demodisp = 999
 
     return render(:action => 'new.rjs') if request.xhr?
 
@@ -88,10 +90,12 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = !@donation.nil?
+
       @required_fee = 0
       @suggested_fee = 1
       @money_tendered = @donation.money_tendered
-      @somefee = 999
+      @overunder_fee = 0
+      @demodisp = 999
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -151,27 +155,45 @@ class DonationsController < ApplicationController
   def update_fee
     $LOG.debug "ENTERING donations_controller.rb::update_fee #{Time.now}"
     params.inspect.each {|par| $LOG.debug "#{par}, "}
-    @formatted_params = params.inspect.each {|par| "#{par}<br />"}
+    @formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
 
-    child_ids = donated_gizmo_subforms('donations_donated_gizmos')
-    @somefee = "child_ids: " + child_ids.join(', ')
+    #child_ids = gizmo_event_subforms('donations_gizmo_events')
+    @demodisp = nil #"child_ids: " + child_ids.join(', ')
+    @money_tendered = params[:donation][:money_tendered].to_f
+    gizmo_type_rollup = summarize_by_gizmo_type
+    @required_fee =  calc_required_fee(gizmo_type_rollup).to_f
+    @suggested_fee = calc_suggested_fee(gizmo_type_rollup).to_f
+    @overunder_fee = @money_tendered - @required_fee
 
     render :action => 'update_fee.rjs'
-
-    # render_text('return from update_fee')
   end
 
-  def donated_gizmo_subforms(tag)
-    grabbed = []
-    ids = params[:datalist_update][tag.to_sym].values.first.keys
-    grabbed << "ids list:" + ids.join(',')
-    ids.each do |id|
-      params[:datalist_update][tag.to_sym].values.first[id].each do |k,v|
-        grabbed << "k:#{k}"
-        grabbed << "v:#{v}"
-      end
-    end
-    #grabbed << params[:datalist_new][tag.to_sym].values.first.keys
-    return grabbed
+  def summarize_by_gizmo_type
+    giztyp = [ 
+      {:id => 1, :required_fee => 3.0, :quantity => 1, 
+      :description => 'CRT'} 
+      ]
+    return giztyp
+  end
+
+  def calc_gizmo_type_fees(giztyp)
+    return giztyp
+  end
+
+  def calc_required_fee(giztyp)
+    req_fee = -2.0
+    return req_fee
+  end
+
+  def calc_suggested_fee(giztyp)
+    sugg_fee = -1.0
+    return sugg_fee
+  end
+
+  def gizmo_event_subforms(tag)
+    ids = []
+    params[:datalist_update][tag.to_sym].values.first.each {|k,v| ids << k} unless params[:datalist_update].nil?
+    params[:datalist_new][tag.to_sym].values.first.each    {|k,v| ids << k} unless params[:datalist_new].nil?
+    return ids
   end
 end
