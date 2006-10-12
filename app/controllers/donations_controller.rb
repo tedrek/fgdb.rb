@@ -160,34 +160,69 @@ class DonationsController < ApplicationController
     #child_ids = gizmo_event_subforms('donations_gizmo_events')
     @demodisp = nil #"child_ids: " + child_ids.join(', ')
     @money_tendered = params[:donation][:money_tendered].to_f
-    gizmo_type_rollup = summarize_by_gizmo_type
+    tag = 'donations_gizmo_events'
+    gizmo_type_rollup = summarize_by_gizmo_type(tag)
     @required_fee =  calc_required_fee(gizmo_type_rollup).to_f
     @suggested_fee = calc_suggested_fee(gizmo_type_rollup).to_f
     @overunder_fee = @money_tendered - @required_fee
+    $LOG.debug "Calculated fees: required_fee[#{@required_fee}], overunder_fee[#{@overunder_fee}]"
 
     render :action => 'update_fee.rjs'
   end
 
-  def summarize_by_gizmo_type
-    giztyp = [ 
-      {:id => 1, :required_fee => 3.0, :quantity => 1, 
-      :description => 'CRT'} 
-      ]
+  def summarize_by_gizmo_type(tag)
+    giztyp = {} 
+    params[:datalist_new][tag.to_sym].values.first.each do |k,v| 
+      $LOG.debug "k: #{k.inspect}; v: #{v.inspect}"
+      next if k.nil? or v.nil?
+      type_id = v[:gizmo_type_id]
+      count = v[:gizmo_count].to_i
+      $LOG.debug "type_id: #{type_id}; count: #{count}"
+      next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
+      h = { k => v }
+      if giztyp.has_key?(type_id)
+        giztyp[type_id.to_sym][:count] += (count >= 0 ? count : 0)
+      else
+        giztyp[type_id.to_sym] = {}
+        giztyp[type_id.to_sym][:count]  = (count >= 0 ? count : 0)
+      end
+      $LOG.debug "giztyp: #{giztyp.inspect}"
+      
+#      if giztyp.has_key?(typ)
+#        giztyp[typ][:required_fee] += 
+#          (!h[k][:required_fee].nil? and h[k][:required_fee] >= 0)
+#            ? h[k][:required_fee].to_f  : 0.0
+#      else
+#        giztyp[typ][:required_fee] = 
+#          (!h[k][:required_fee].nil? and h[k][:required_fee] >= 0)
+#            ? h[k][:required_fee].to_f  : 0.0
+#      end
+      #ids << k} unless params[:datalist_new].nil?
+    end
+    giztyp = { 
+      1 => { :required_fee => 10.0, :quantity => 1, 
+        :description => 'CRT'},
+      2 => { :required_fee => 0.0, :quantity => 1, 
+        :description => 'LCD'} 
+      }
     return giztyp
   end
 
-  def calc_gizmo_type_fees(giztyp)
-    return giztyp
+  def sum_hash_by_inner_key(myhash,inner_key)
+    $LOG.debug "myhash: #{myhash.inspect}"
+    fees = myhash.map {|id,rec| myhash[id][inner_key.to_sym]}
+    $LOG.debug "Mapped fees: #{inner_key}[#{fees.inspect}]"
+    sum = 0
+    fees.each {|fee| sum += fee unless fee.nil?}
+    return sum
   end
 
   def calc_required_fee(giztyp)
-    req_fee = -2.0
-    return req_fee
+    sum_hash_by_inner_key(giztyp,'required_fee').to_f
   end
 
   def calc_suggested_fee(giztyp)
-    sugg_fee = -1.0
-    return sugg_fee
+    sum_hash_by_inner_key(giztyp,'suggested_fee').to_f
   end
 
   def gizmo_event_subforms(tag)
