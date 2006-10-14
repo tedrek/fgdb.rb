@@ -157,11 +157,19 @@ class DonationsController < ApplicationController
     params.inspect.each {|par| $LOG.debug "#{par}, "}
     @formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
 
-    #child_ids = gizmo_event_subforms('donations_gizmo_events')
     @demodisp = nil #"child_ids: " + child_ids.join(', ')
     @money_tendered = params[:donation][:money_tendered].to_f
+
+    # build hash to summarize desired values by gizmo_type 
     tag = 'donations_gizmo_events'
+    gizmo_type_rollup = {}
+#    [:datalist_new, :datalist_update].each do |datalist_kind|
+#      gizmo_type_rollup = 
+#        summarize_by_gizmo_type(tag, datalist_kind, gizmo_type_rollup)
+#    end
     gizmo_type_rollup = summarize_by_gizmo_type(tag)
+    gizmo_type_rollup = fees_by_gizmo_type(gizmo_type_rollup)
+
     @required_fee =  calc_required_fee(gizmo_type_rollup).to_f
     @suggested_fee = calc_suggested_fee(gizmo_type_rollup).to_f
     @overunder_fee = @money_tendered - @required_fee
@@ -170,9 +178,15 @@ class DonationsController < ApplicationController
     render :action => 'update_fee.rjs'
   end
 
+#  def summarize_by_gizmo_type(tag, datalist_kind, giztyp )
+#    return giztyp if params[datalist_kind].nil?
+#    #params[datalist_kind][tag.to_sym].values.first.each do |k,v| 
+#    # etc as with current version
+#  end
+
   def summarize_by_gizmo_type(tag)
-    giztyp = {} 
-    params[:datalist_new][tag.to_sym].values.first.each do |k,v| 
+    giztyp = {}
+    get_datalist_detail(tag).each do |k,v|
       $LOG.debug "k: #{k.inspect}; v: #{v.inspect}"
       next if k.nil? or v.nil?
       type_id = v[:gizmo_type_id]
@@ -180,31 +194,49 @@ class DonationsController < ApplicationController
       $LOG.debug "type_id: #{type_id}; count: #{count}"
       next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
       h = { k => v }
-      if giztyp.has_key?(type_id)
+      if giztyp.has_key?(type_id.to_sym)
         giztyp[type_id.to_sym][:count] += (count >= 0 ? count : 0)
       else
         giztyp[type_id.to_sym] = {}
         giztyp[type_id.to_sym][:count]  = (count >= 0 ? count : 0)
       end
       $LOG.debug "giztyp: #{giztyp.inspect}"
-      
-#      if giztyp.has_key?(typ)
-#        giztyp[typ][:required_fee] += 
-#          (!h[k][:required_fee].nil? and h[k][:required_fee] >= 0)
-#            ? h[k][:required_fee].to_f  : 0.0
-#      else
-#        giztyp[typ][:required_fee] = 
-#          (!h[k][:required_fee].nil? and h[k][:required_fee] >= 0)
-#            ? h[k][:required_fee].to_f  : 0.0
-#      end
-      #ids << k} unless params[:datalist_new].nil?
     end
-    giztyp = { 
-      1 => { :required_fee => 10.0, :quantity => 1, 
-        :description => 'CRT'},
-      2 => { :required_fee => 0.0, :quantity => 1, 
-        :description => 'LCD'} 
-      }
+    return giztyp
+  end
+
+  def fees_by_gizmo_type(giztyp)
+    giztyp.each do |kk,vv|
+      $LOG.debug "kk: #{kk.inspect}, #{kk.to_s.to_i}"
+      gt = GizmoType.find(kk.to_s.to_i)
+      if gt.nil?
+        #  raise "Can't find GizmoType #{kk.to_s}"
+        puts "Can't find GizmoType #{kk.to_s}"
+      end
+      if gt.fee_is_required
+        if !gt.fee.nil? and gt.fee.kind_of?(Numeric)
+          giztyp[kk][:required_fee] = gt.fee * giztyp[kk][:count]
+        else
+          giztyp[kk][:required_fee] = 99.99
+        end
+      else
+        giztyp[kk][:required_fee] = 0.0
+        if !gt.fee.nil? and gt.fee.kind_of?(Numeric)
+          giztyp[kk][:suggested_fee] = gt.fee * giztyp[kk][:count]
+        else
+          giztyp[kk][:suggested_fee] = 1.00
+        end
+      end
+      giztyp[kk][:description] = gt.description unless gt.description.nil?
+    end
+    $LOG.debug "fees_by_gizmo_type::giztyp: #{giztyp.inspect}"
+
+#    giztyp = { 
+#      1 => { :required_fee => 10.0, :count => 1, 
+#        :description => 'CRT'},
+#      2 => { :required_fee => 0.0, :count => 1, 
+#        :description => 'LCD'} 
+#      }
     return giztyp
   end
 
@@ -223,12 +255,5 @@ class DonationsController < ApplicationController
 
   def calc_suggested_fee(giztyp)
     sum_hash_by_inner_key(giztyp,'suggested_fee').to_f
-  end
-
-  def gizmo_event_subforms(tag)
-    ids = []
-    params[:datalist_update][tag.to_sym].values.first.each {|k,v| ids << k} unless params[:datalist_update].nil?
-    params[:datalist_new][tag.to_sym].values.first.each    {|k,v| ids << k} unless params[:datalist_new].nil?
-    return ids
   end
 end
