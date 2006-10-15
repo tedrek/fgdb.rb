@@ -6,7 +6,6 @@
 
 <%= observe_field @search_vars[:field_id], 
   :on => 'change',
-  :function => 'foobar'
   :with => "'searchbox_id=#{@search_vars[:id].to_s}&searchbox_value=' + $('#{@search_vars[:field_id].to_s}').value",
   :url  => { :controller => "/contacts",
 	:action => "update_display_area" }
