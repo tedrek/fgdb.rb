@@ -3,7 +3,7 @@
 
 function contact_searchbox_submit(div_id, field_id) {
   var field_val = $(field_id).value;
-  new Ajax.Request('/contacts/do_search/?query=' + field_val + 
+  new Ajax.Request('/contacts/search_results/?query=' + field_val + 
       '&searchbox_id=' + div_id,
       {asynchronous:true, evalScripts:true}
     );

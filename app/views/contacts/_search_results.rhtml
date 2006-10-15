@@ -1,0 +1,23 @@
+<div class="notices" >
+  <p><%= @search_vars[:notices] %></p>
+</div>
+
+<%= render :partial => 'searchbox' %>
+
+<button type="button" onClick="<%= remote_function(
+  :url => { :controller => 'contacts', 
+            :action => 'new_into_external', 
+            :div_id => @search_vars[:id],
+            :insertion_div_id => 'insert_new_here' }
+  ) %>"
+>
+  new contact
+</button>
+
+<%= render :partial => 'results_dropdown' %>
+
+<div id="<%= @search_vars[:display_area_id] %>">
+  <% if @search_results[0] %>
+    <%= render :partial => "display", :locals => { :@contact => @search_results[0] } %>
+  <% end %>
+</div>

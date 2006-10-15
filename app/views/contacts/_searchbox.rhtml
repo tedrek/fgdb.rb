@@ -1,9 +1,7 @@
-<div class="notices" >
-  <p><%= @search_vars[:notices] %></p>
-</div>
-
   <label for="<%= @search_vars[:field_id] %>"><%= @search_vars[:search_label] %></label>
   <input type="text" name="contact_searchbox_query"
     id="<%= @search_vars[:field_id] %>"/>
   <button name="contact_searchbox_search" type="button"
-    onclick="contact_searchbox_submit('<%= @search_vars[:id] %>', '<%= @search_vars[:field_id] %>');">Search</button>
+    onclick="contact_searchbox_submit('<%= @search_vars[:id] %>', '<%= @search_vars[:field_id] %>');">
+    Search
+  </button>

@@ -1,22 +1,13 @@
-<div class="notices" >
-  <p><%= @search_vars[:notices] %></p>
-</div>
-
 <label for="<%= @search_vars[:field_id] %>"><%= @search_vars[:select_label] %></label>
 <select name="<%= @search_vars[:field_name] %>" id="<%= @search_vars[:field_id] %>">
   <%= options_from_collection_for_select @search_results, 
     :id, :display_name %>
-  <option disabled value=""></option>
-  <option value="__search again__">Search again</option>
 </select>
-<%= observe_field @search_vars[:field_id], 
-  :on => 'change', 
-  :with => "'searchbox_id=#{@search_vars[:id].to_s}&searchbox_value=' + $('#{@search_vars[:field_id].to_s}').value",
-  :url  => "/contacts/update_searchbox"
-  %>
 
-  <div id="<%= @search_vars[:display_id] %>">
-    <% if @search_results[0] %>
-      <%= render :partial => "display", :locals => { :@contact => @search_results[0] } %>
-    <% end %>
-  </div>
+<%= observe_field @search_vars[:field_id], 
+  :on => 'change',
+  :function => 'foobar'
+  :with => "'searchbox_id=#{@search_vars[:id].to_s}&searchbox_value=' + $('#{@search_vars[:field_id].to_s}').value",
+  :url  => { :controller => "/contacts",
+	:action => "update_display_area" }
+  %>
