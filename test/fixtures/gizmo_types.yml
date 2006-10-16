@@ -1,5 +1,61 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+gizmo_types_002: 
+  updated_at: 2006-09-25 13:22:11-05
+  discounts_apply: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  fee_is_required: t
+  id: "3"
+  fee: "10.00"
+  description: CRT
+  parent_id: "1"
+  created_at: 2006-09-25 13:22:11-05
+gizmo_types_003: 
+  updated_at: 2006-09-25 13:22:48-05
+  discounts_apply: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  fee_is_required: f
+  id: "1"
+  fee: 
+  description: Monitor
+  parent_id: "0"
+  created_at: 2006-09-25 13:21:29-05
+gizmo_types_004: 
+  updated_at: 2006-09-29 16:22:28-05
+  discounts_apply: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  fee_is_required: t
+  id: "5"
+  fee: "10.00"
+  description: System w/builtin monitor
+  parent_id: "1"
+  created_at: 2006-09-29 16:22:28-05
+gizmo_types_005: 
+  updated_at: 2006-10-10 14:14:25-05
+  discounts_apply: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  fee_is_required: f
+  id: "4"
+  fee: "5.00"
+  description: System
+  parent_id: "0"
+  created_at: 2006-09-25 13:22:30-05
+gizmo_types_001: 
+  updated_at: 2006-09-25 13:21:53-05
+  discounts_apply: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  fee_is_required: f
+  id: "2"
+  fee: 
+  description: LCD
+  parent_id: "1"
+  created_at: 2006-09-25 13:21:53-05

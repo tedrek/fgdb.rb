@@ -1,6 +1,8 @@
 class DonationsController < ApplicationController
   include AjaxScaffold::Controller
   include DatalistFor
+  require 'gizmo_detail_list'
+
   DonationLinesTag='donations_gizmo_events' 
 
   require 'logger'
@@ -152,108 +154,37 @@ class DonationsController < ApplicationController
 
   # figure out then update fees and related totals for donation
   # based on quantities, gizmo types for each donated gizmo
+  # render desired information
   def update_fee
     $LOG.debug "ENTERING donations_controller.rb::update_fee #{Time.now}"
-    params.inspect.each {|par| $LOG.debug "#{par}, "}
-    @formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
+    #params.inspect.each {|par| $LOG.debug "#{par}, "}
+    #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
 
-    @demodisp = nil #"child_ids: " + child_ids.join(', ')
     @money_tendered = params[:donation][:money_tendered].to_f
 
-    # build hash to summarize desired values by gizmo_type 
     tag = 'donations_gizmo_events'
-    gizmo_type_rollup = {}
-#    [:datalist_new, :datalist_update].each do |datalist_kind|
-#      gizmo_type_rollup = 
-#        summarize_by_gizmo_type(tag, datalist_kind, gizmo_type_rollup)
-#    end
-    gizmo_type_rollup = summarize_by_gizmo_type(tag)
-    gizmo_type_rollup = fees_by_gizmo_type(gizmo_type_rollup)
 
-    @required_fee =  calc_required_fee(gizmo_type_rollup).to_f
-    @suggested_fee = calc_suggested_fee(gizmo_type_rollup).to_f
+    giztypes_list = create_gizmo_types_detail_list(tag)
+    @required_fee =  giztypes_list.total('extended_required_fee')
+    @suggested_fee =  giztypes_list.total('extended_suggested_fee')
     @overunder_fee = @money_tendered - @required_fee
     $LOG.debug "Calculated fees: required_fee[#{@required_fee}], overunder_fee[#{@overunder_fee}]"
 
     render :action => 'update_fee.rjs'
   end
 
-#  def summarize_by_gizmo_type(tag, datalist_kind, giztyp )
-#    return giztyp if params[datalist_kind].nil?
-#    #params[datalist_kind][tag.to_sym].values.first.each do |k,v| 
-#    # etc as with current version
-#  end
+  private
 
-  def summarize_by_gizmo_type(tag)
-    giztyp = {}
+  def create_gizmo_types_detail_list(tag)
+    gdl = GizmoDetailList.new
     get_datalist_detail(tag).each do |k,v|
-      $LOG.debug "k: #{k.inspect}; v: #{v.inspect}"
       next if k.nil? or v.nil?
       type_id = v[:gizmo_type_id]
       count = v[:gizmo_count].to_i
-      $LOG.debug "type_id: #{type_id}; count: #{count}"
       next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
-      h = { k => v }
-      if giztyp.has_key?(type_id.to_sym)
-        giztyp[type_id.to_sym][:count] += (count >= 0 ? count : 0)
-      else
-        giztyp[type_id.to_sym] = {}
-        giztyp[type_id.to_sym][:count]  = (count >= 0 ? count : 0)
-      end
-      $LOG.debug "giztyp: #{giztyp.inspect}"
+      gdl.add(type_id, count)
     end
-    return giztyp
-  end
-
-  def fees_by_gizmo_type(giztyp)
-    giztyp.each do |kk,vv|
-      $LOG.debug "kk: #{kk.inspect}, #{kk.to_s.to_i}"
-      gt = GizmoType.find(kk.to_s.to_i)
-      if gt.nil?
-        #  raise "Can't find GizmoType #{kk.to_s}"
-        puts "Can't find GizmoType #{kk.to_s}"
-      end
-      if gt.fee_is_required
-        if !gt.fee.nil? and gt.fee.kind_of?(Numeric)
-          giztyp[kk][:required_fee] = gt.fee * giztyp[kk][:count]
-        else
-          giztyp[kk][:required_fee] = 99.99
-        end
-      else
-        giztyp[kk][:required_fee] = 0.0
-        if !gt.fee.nil? and gt.fee.kind_of?(Numeric)
-          giztyp[kk][:suggested_fee] = gt.fee * giztyp[kk][:count]
-        else
-          giztyp[kk][:suggested_fee] = 1.00
-        end
-      end
-      giztyp[kk][:description] = gt.description unless gt.description.nil?
-    end
-    $LOG.debug "fees_by_gizmo_type::giztyp: #{giztyp.inspect}"
-
-#    giztyp = { 
-#      1 => { :required_fee => 10.0, :count => 1, 
-#        :description => 'CRT'},
-#      2 => { :required_fee => 0.0, :count => 1, 
-#        :description => 'LCD'} 
-#      }
-    return giztyp
-  end
-
-  def sum_hash_by_inner_key(myhash,inner_key)
-    $LOG.debug "myhash: #{myhash.inspect}"
-    fees = myhash.map {|id,rec| myhash[id][inner_key.to_sym]}
-    $LOG.debug "Mapped fees: #{inner_key}[#{fees.inspect}]"
-    sum = 0
-    fees.each {|fee| sum += fee unless fee.nil?}
-    return sum
-  end
-
-  def calc_required_fee(giztyp)
-    sum_hash_by_inner_key(giztyp,'required_fee').to_f
-  end
-
-  def calc_suggested_fee(giztyp)
-    sum_hash_by_inner_key(giztyp,'suggested_fee').to_f
+    $LOG.debug "gdl: #{gdl.inspect}"
+    return gdl
   end
 end
