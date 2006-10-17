@@ -1,12 +1,12 @@
-<label for="<%= @search_vars[:field_id] %>"><%= @search_vars[:select_label] %></label>
-<select name="<%= @search_vars[:field_name] %>" id="<%= @search_vars[:field_id] %>">
+<label for="<%= @search_vars[:select_id] %>"><%= @search_vars[:select_label] %></label>
+<select name="<%= @search_vars[:field_name] %>" id="<%= @search_vars[:select_id] %>">
   <%= options_from_collection_for_select @search_results, 
     :id, :display_name %>
 </select>
 
-<%= observe_field @search_vars[:field_id], 
+<%= observe_field @search_vars[:select_id], 
   :on => 'change',
-  :with => "'searchbox_id=#{@search_vars[:id].to_s}&searchbox_value=' + $('#{@search_vars[:field_id].to_s}').value",
+  :with => "'searchbox_id=#{@search_vars[:id].to_s}&searchbox_value=' + $('#{@search_vars[:select_id].to_s}').value",
   :url  => { :controller => "/contacts",
 	:action => "update_display_area" }
   %>

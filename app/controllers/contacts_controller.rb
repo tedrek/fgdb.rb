@@ -84,10 +84,11 @@ class ContactsController < ApplicationController
     seed = Time.now.to_i
     searchbox_id = "contact_searchbox_id_#{seed}"
     session[searchbox_id] = {}
-    session[searchbox_id][:id]           = searchbox_id
-    session[searchbox_id][:field_id]     = "#{searchbox_id}_field"
-    session[searchbox_id][:display_area_id]   = "#{searchbox_id}_display"
-    session[searchbox_id][:field_name]   = params[:field_name]   || 'contact_id'
+    session[searchbox_id][:id] = searchbox_id
+    session[searchbox_id][:field_id] = "#{searchbox_id}_field"
+    session[searchbox_id][:select_id] = "#{searchbox_id}_select"
+    session[searchbox_id][:display_area_id] = "#{searchbox_id}_display"
+    session[searchbox_id][:field_name] = params[:field_name]   || 'contact_id'
     session[searchbox_id][:search_label] = params[:search_label] || "Search for a contact:"
     session[searchbox_id][:select_label] = params[:select_label] || "Choose a contact:"
     return session[searchbox_id]
