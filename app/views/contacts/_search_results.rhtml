@@ -14,10 +14,11 @@
   new contact
 </button>
 
-<%= render :partial => 'results_dropdown' %>
-
-<div id="<%= @search_vars[:display_area_id] %>">
-  <% if @search_results[0] %>
-    <%= render :partial => "display", :locals => { :@contact => @search_results[0] } %>
-  <% end %>
-</div>
+<% if @search_results.length > 0 %>
+  <%= render :partial => 'results_dropdown' %>
+  <div id="<%= @search_vars[:display_area_id] %>">
+    <% if @search_results[0] %>
+      <%= render :partial => "display", :locals => { :@contact => @search_results[0] } %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,6 +1,6 @@
 class ContactsController < ApplicationController
   include ContactsHelper
-  
+
   def index
     redirect_to :action => 'search'
   end
@@ -99,6 +99,7 @@ class ContactsController < ApplicationController
   end
 
   def do_search( query_str )
+    @search_vars[:notices] = nil
     # if the user added query wildcards, leave be if not, assume it's
     # better to bracket each word with wildcards
     unless query_str =~ /\*/
