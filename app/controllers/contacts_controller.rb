@@ -27,6 +27,13 @@ class ContactsController < ApplicationController
     end
   end
 
+  def new
+    @contact = Contact.new
+    @insertion_id = params[:insertion_div_id]
+    @search_vars = get_contact_search_vars( params[:searchbox_id] )
+    render :action => 'new.rjs'
+  end
+
   def create
     begin
       @contact = Contact.new(params[:contact])
@@ -43,6 +50,9 @@ class ContactsController < ApplicationController
       @options = { :scaffold_id => params[:scaffold_id], :action => "create" }
       render :partial => 'new_edit', :layout => true
     end
+  end
+
+  def edit
   end
 
   def update
@@ -77,6 +87,11 @@ class ContactsController < ApplicationController
     return_to_main
   end
 
+  def cancel
+    @form_display_id = params[:form_display_id]
+    @searchbox_id = params[:searchbox_id]
+    render action => 'cancel.rjs'
+  end
 
   private
 

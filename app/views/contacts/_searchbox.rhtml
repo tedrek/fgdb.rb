@@ -2,6 +2,10 @@
   <input type="text" name="contact_searchbox_query"
     id="<%= @search_vars[:field_id] %>"/>
   <button name="contact_searchbox_search" type="button"
-    onclick="contact_searchbox_submit('<%= @search_vars[:id] %>', '<%= @search_vars[:field_id] %>');">
+    onclick="<%= remote_function :url => {
+        :action => 'search_results',
+        :controller => '/contacts' },
+      :with => "'searchbox_id=#{@search_vars[:id]}&query=' + $('#{@search_vars[:field_id]}').value"
+ %>">
     Search
   </button>

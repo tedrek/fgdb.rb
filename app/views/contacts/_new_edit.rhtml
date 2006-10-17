@@ -1,0 +1,10 @@
+    <%= form_remote_tag :url => { :controller => '/contacts', :action => 'create' } %>
+
+      <h4><%= Inflector.titleize('new') %> Contact</h4>
+
+      <%= render :partial => 'form' %>
+
+      <p class="form-footer">
+        <%= submit_tag Inflector.titleize('new'), :class => "submit" %>
+      </p>
+    <%= end_form_tag %>

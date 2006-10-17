@@ -1,0 +1,8 @@
+@options = { :searchbox_id => params[:searchbox_id], :action => "create" }
+@new_options = @options.merge(:action => "new", :id => nil)
+
+page.insert_html :top, @insertion_id, :partial => 'new_edit'
+page << "Form.focusFirstElement('#{element_form_id(@options)}');"
+page.visual_effect :highlight, element_cell_id(@options)
+
+page.hide loading_indicator_id(@new_options)

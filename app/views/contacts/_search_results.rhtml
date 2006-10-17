@@ -4,15 +4,15 @@
 
 <%= render :partial => 'searchbox' %>
 
-<button type="button" onClick="<%= remote_function(
-  :url => { :controller => 'contacts', 
-            :action => 'new_into_external', 
-            :div_id => @search_vars[:id],
-            :insertion_div_id => 'insert_new_here' }
-  ) %>"
->
-  new contact
-</button>
+<% new_params = params.merge( :controller => '/contacts',
+                              :action => 'new',
+                              :searchbox_id => @search_vars[:id],
+                              :insertion_div_id => 'insert_form_here' )  %>
+<%= link_to_remote 'Create New',
+  :url => new_params,
+  :loading => "Element.show('#{loading_indicator_id(new_params)}');"
+%>
+<%= loading_indicator_tag(new_params) %>
 
 <% if @search_results.length > 0 %>
   <%= render :partial => 'results_dropdown' %>
@@ -20,5 +20,15 @@
     <% if @search_results[0] %>
       <%= render :partial => "display", :locals => { :@contact => @search_results[0] } %>
     <% end %>
+    <%= link_to_remote "Edit", :url => {
+        :controller => 'contacts',
+        :action => 'edit',
+        :searchbox_id => @search_vars[:id],
+        :insertion_div_id => 'insert_form_here',
+        :contact_id => "$('#{@search_vars[:searchbox_select_id]}').value"
+      }  %>
+    <%= link_to_remote "Destroy" %>
   </div>
 <% end %>
+
+<div id="insert_form_here />
