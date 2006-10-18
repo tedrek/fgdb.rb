@@ -1,8 +1,12 @@
-@options = { :searchbox_id => params[:searchbox_id], :action => "create" }
+@options = { :scaffold_id => params[:scaffold_id], :action => "create", :id => generate_temporary_id }
 @new_options = @options.merge(:action => "new", :id => nil)
 
-page.insert_html :top, @insertion_id, :partial => 'new_edit'
-page << "Form.focusFirstElement('#{element_form_id(@options)}');"
-page.visual_effect :highlight, element_cell_id(@options)
+if @successful
+  page.insert_html :top, 'insert_form_here', :partial => 'new_edit'
+  page << "Form.focusFirstElement('#{element_form_id(@options)}');"
+  page.replace_html element_messages_id(@options), :partial => 'form_messages'
+else
+  page.replace_html scaffold_messages_id(@options), :partial => 'messages'
+end
 
 page.hide loading_indicator_id(@new_options)

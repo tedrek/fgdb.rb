@@ -1,0 +1,7 @@
+@options = { :scaffold_id => params[:scaffold_id], :action => params[:referring_action], :id => params[:id] }
+
+if @successful
+  page.replace_html 'insert_form_here', ''
+else
+  page.hide loading_indicator_id(@options)
+end

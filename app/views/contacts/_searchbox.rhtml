@@ -1,11 +1,11 @@
-  <label for="<%= @search_vars[:field_id] %>"><%= @search_vars[:search_label] %></label>
+  <label for="<%= searchbox_field_id(params) %>"><%= searchbox_search_label(params) %></label>
   <input type="text" name="contact_searchbox_query"
-    id="<%= @search_vars[:field_id] %>"/>
+    id="<%= searchbox_field_id(params) %>"/>
   <button name="contact_searchbox_search" type="button"
     onclick="<%= remote_function :url => {
         :action => 'search_results',
         :controller => '/contacts' },
-      :with => "'searchbox_id=#{@search_vars[:id]}&query=' + $('#{@search_vars[:field_id]}').value"
+      :with => "'scaffold_id=#{@scaffold_id}&query=' + $('#{searchbox_field_id(params)}').value"
  %>">
     Search
   </button>
