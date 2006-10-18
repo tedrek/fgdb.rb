@@ -1,0 +1,47 @@
+
+#===========================================================
+### roadmap for 17 oct
+TODO
+----
+
+. add detail (gizmo_event) lines into sale_txn
+  . extend GizmoSummer to handle sale txn-related amounts
+
+. incorporate Contact search into relationships controller, view
+
+. design widgets for searching for one or multiple contacts
+  . couple results with ability to edit, delete
+  . figure out smart button placement for "add new contact"
+
+. add ajax logic to manage donation fee-tracking calc/display
+    . some special elements that we are using to track fees, etc
+    . needs some id-related changes in datalist_for to be able to 
+    identify and group the data input elements that we track
+
+. consider contact attributes:  preferred_contact_method_id
+  . maybe add a radio button set going against bridge table
+
+. integrate datalist_for with situation where two layers of
+belongs_to associations exist under the parent
+  . eg, GizmoEvent belongs to DonationLine belongs to Donation
+
+. ? rails unique-id generator
+
+### 16 oct
+DONE
+----
+
+. Create class GizmoSummer to track quantities and associated
+donation-related fees
+  . can calculate the extended fee for suggested, required fees
+
+. Create GizmoDetailList to lightly wrap a hash of GizmoSummer
+objects
+  . facilitate add/removal of GizmoSummer items from list
+  . simplify totalling of extended amounts for summable
+  attributes
+
+. Create test class for GizmoDetailList
+  . needs further work to pull in and use GizmoType fixture data
+
+. Update donations controller to use GizmoDetailList

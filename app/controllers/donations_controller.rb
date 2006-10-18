@@ -1,9 +1,8 @@
 class DonationsController < ApplicationController
   include AjaxScaffold::Controller
-  include DatalistFor
   require 'gizmo_detail_list'
-
-  DonationLinesTag='donations_gizmo_events' 
+  include DatalistFor
+  GizmoEventsTag='donations_gizmo_events' 
 
   require 'logger'
   $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
@@ -74,7 +73,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.new(params[:donation])
       @successful = @donation.save
-      save_datalist(DonationLinesTag, :donation_id => @donation.id, :gizmo_action_id => GizmoAction.donation.id)
+      save_datalist(GizmoEventsTag, :donation_id => @donation.id, :gizmo_action_id => GizmoAction.donation.id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -116,7 +115,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = @donation.update_attributes(params[:donation])
-      save_datalist(DonationLinesTag, :donation_id => @donation.id, :gizmo_action_id => GizmoAction.donation.id)
+      save_datalist(GizmoEventsTag, :donation_id => @donation.id, :gizmo_action_id => GizmoAction.donation.id)
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
@@ -162,9 +161,7 @@ class DonationsController < ApplicationController
 
     @money_tendered = params[:donation][:money_tendered].to_f
 
-    tag = 'donations_gizmo_events'
-
-    giztypes_list = create_gizmo_types_detail_list(tag)
+    giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag)
     @required_fee =  giztypes_list.total('extended_required_fee')
     @suggested_fee =  giztypes_list.total('extended_suggested_fee')
     @overunder_fee = @money_tendered - @required_fee

@@ -10,6 +10,11 @@
   <span id="timestamp"><%= Time.now %></span>
   <span id="show_params">formatted params are "<%= @formatted_params %>"</span>
   <span id="update_fee_button">
-    <INPUT type="button" id="update_fee_input" value="Update fee" onclick="playwith_fees(this);">
+    <INPUT type="button" id="update_fee_input" value="Update fee" 
+      onclick="<%= remote_function( :url => {
+            :controller => '/donations', 
+            :action => 'update_fee' },
+          :with => 'Form.serialize(this.form)' 
+        ) %> " >
   </span>
 </div>
