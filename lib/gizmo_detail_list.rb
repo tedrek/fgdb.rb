@@ -23,11 +23,11 @@ class GizmoDetailList
   # - if item not present, create new item with arg quantity
   #
   # returns item value for added item
-  def add(add_id, quantity=0)
+  def add(add_id, quantity=0, options={})
     if @gizmo_list.has_key?(add_id)
       @gizmo_list[add_id].quantity += quantity
     else
-      gs = GizmoSummer.new(add_id,quantity)
+      gs = GizmoSummer.new(add_id, quantity, options)
       @gizmo_list[add_id] = gs
     end
     return @gizmo_list[add_id]

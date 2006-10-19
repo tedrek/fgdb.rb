@@ -28,6 +28,32 @@
   (Most gizmo characteristics we simply neglect:  line
   voltage, number of fans, motherboard type, etc.)
 
+- What is a gizmo type-attribute?
+
+  Different gizmo types have differing attributes.
+
+  For example, a system might have a speed associated with it,
+  whereas we don't tend to think of a CRT as having a speed.  On
+  the other hand, a CRT might need to have a color_capability
+  attribute ('mono', 'color') whereas a system would not.
+
+  The gizmo typeattr table is a bridge table that let's us
+  assign the attribute "speed" to the type "system".  This
+  relates the gizmo attribute table to gizmo type table.
+
+- How do I create an attribute "runs_palmos" for my gizmo type
+  "pda"?
+
+  You've already created a gizmo type called "pda" in the gizmo
+  type table, right?
+
+  Now create the attribute "runs_palmos" in the gizmo attr
+  table.  
+
+  Finally (??exact method is still unclear, easiest probably a
+  simple double dropdown bridge table screen) relate the two by
+  choosing "runs_palmos" attribute to apply to a "pda" type.
+
 - What do we keep track of?
 
   We intend to count numbers of different types of gizmos at
@@ -50,7 +76,7 @@
 - What do we NOT keep track of?
 
   As of the current design, we will not nor do we intend
-  to track particular gizmo instances.  But we do not tag this
+  to track particular gizmo instances.  We do not tag this
   particular system with an id and follow that id throughout its
   lifecycle at Freegeek.  We also do not plan to keep track of
   such things as circuit boards or power supplies.  Refer to the
@@ -63,7 +89,7 @@
   building, testing, selling, giving away, etc.
 
   Certain of these are crucial enough to tracking gizmos that
-  they have been canonized into the database, each one becoming a
+  they have been entered into the database, each one becoming a
   gizmo context:  donation, sale, grant, recycling, etc.
 
   Each context has its own way of viewing a gizmo, thus its own
@@ -85,7 +111,8 @@
   
   1)  The administrator may need to add "tablet" to the gizmo
   type table as a type of "system" (or "laptop", depending on
-  how things are organized).
+  how things are organized, or as a full-type entity in its own
+  right).
 
   2)  Once the "tablet" gizmo type is established, it needs to
   be made available as a drop down choice during sale.  Either
@@ -93,9 +120,12 @@
   contexts" screen, choose "sale" context for the "tablet" gizmo
   type.
 
-- How can I add a 23-inch monitor to the list of monitor sizes?
+- How can I add a 21-inch CRT to the list of CRT sizes and give
+  it a standard unit price for sales?
 
 - What is a gizmo event?
+
+  A gizmo event happens when 
 
 - What is a gizmo event with attributes?
 

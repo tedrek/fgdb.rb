@@ -1,0 +1,42 @@
+<fieldset>
+  <div class="row">
+    <!--[form:gizmo_typeattrs_gizmo_event]-->
+<div class="form-element">
+  <label for="gizmo_typeattrs_gizmo_event_attr_val_text">Attr val text</label>
+  <%= text_area 'gizmo_typeattrs_gizmo_event', 'attr_val_text'  %>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_typeattrs_gizmo_event_attr_val_boolean">Attr val boolean</label>
+  <%= select "gizmo_typeattrs_gizmo_event", "attr_val_boolean", [["True", true], ["False", false]], { :selected => @gizmo_typeattrs_gizmo_event.attr_val_boolean } %>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_typeattrs_gizmo_event_attr_val_integer">Attr val integer</label>
+  <%= text_field 'gizmo_typeattrs_gizmo_event', 'attr_val_integer' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_typeattrs_gizmo_event_attr_val_monetary">Attr val monetary</label>
+  <%= text_field 'gizmo_typeattrs_gizmo_event', 'attr_val_monetary' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_typeattrs_gizmo_event_lock_version">Lock version</label>
+  <%= text_field 'gizmo_typeattrs_gizmo_event', 'lock_version' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_typeattrs_gizmo_event_created_by">Created by</label>
+  <%= text_field 'gizmo_typeattrs_gizmo_event', 'created_by' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_typeattrs_gizmo_event_updated_by">Updated by</label>
+  <%= text_field 'gizmo_typeattrs_gizmo_event', 'updated_by' , {:class=>"text-input"} %>
+</div>
+
+<!--[eoform:gizmo_typeattrs_gizmo_event]-->
+
+  </div>
+</fieldset>

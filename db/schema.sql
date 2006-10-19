@@ -194,25 +194,10 @@ COMMENT ON TABLE forsale_items IS 'items for sale; not intended as inventory';
 
 
 --
--- Name: gizmo_actions; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: gizmo_attrs; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
-CREATE TABLE gizmo_actions (
-    id serial NOT NULL,
-    name character varying(100),
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
--- Name: gizmo_attr_types; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
---
-
-CREATE TABLE gizmo_attr_types (
+CREATE TABLE gizmo_attrs (
     id serial NOT NULL,
     name character varying(100),
     datatype character varying(10),
@@ -225,49 +210,34 @@ CREATE TABLE gizmo_attr_types (
 
 
 --
--- Name: gizmo_attrs; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: gizmo_typeattrs_gizmo_events; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
-CREATE TABLE gizmo_attrs (
-    id serial NOT NULL,
-    gizmo_type_id integer NOT NULL,
-    gizmo_attr_type_id integer NOT NULL,
-    validation_callback text,
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
--- Name: gizmo_attrs_gizmo_contexts; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
---
-
-CREATE TABLE gizmo_attrs_gizmo_contexts (
-    gizmo_context_id integer NOT NULL,
-    gizmo_attr_type_id integer NOT NULL,
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
--- Name: gizmo_attrs_gizmo_events; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
---
-
-CREATE TABLE gizmo_attrs_gizmo_events (
+CREATE TABLE gizmo_typeattrs_gizmo_events (
     id serial NOT NULL,
     gizmo_event_id integer NOT NULL,
-    gizmo_attr_type_id integer NOT NULL,
+    gizmo_typeattr_id integer NOT NULL,
     attr_val_text text,
     attr_val_boolean boolean,
     attr_val_integer integer,
     attr_val_monetary numeric(10,2),
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: gizmo_typeattrs; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE gizmo_typeattrs (
+    id serial NOT NULL,
+    gizmo_type_id integer NOT NULL,
+    gizmo_attr_id integer NOT NULL,
+    validation_callback text,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
@@ -317,15 +287,24 @@ CREATE TABLE gizmo_events (
     grant_id integer,
     recycling_id integer,
     gizmo_type_id integer NOT NULL,
-    gizmo_action_id integer NOT NULL,
+    gizmo_context_id integer NOT NULL,
     gizmo_count integer NOT NULL,
-    unit_price numeric(10,2) NOT NULL,
-    standard_extended_discount numeric(10,2),
-    is_custom_discount boolean,
-    extended_price numeric(10,2) NOT NULL,
-    discount_applied numeric(10,2),
-    sale_txn_amount numeric(10,2) NOT NULL,
     comments character varying(100) NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: gizmo_typeattrs_gizmo_contexts; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE gizmo_typeattrs_gizmo_contexts (
+    gizmo_context_id integer NOT NULL,
+    gizmo_typeattr_id integer NOT NULL,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
@@ -342,9 +321,6 @@ CREATE TABLE gizmo_types (
     id serial NOT NULL,
     description character varying(100),
     parent_id integer,
-    fee numeric(10,2),
-    fee_is_required boolean DEFAULT false,
-    discounts_apply boolean DEFAULT true,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),

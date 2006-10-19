@@ -6,3 +6,9 @@ function playwith_fees(o) {
   new Ajax.Request('/donations/update_fee?' + params,
     {asynchronous:true, evalScripts:true});
 }
+
+function playwith_amounts(o) {
+  var params = Form.serialize(o.form);
+  new Ajax.Request('/sale_txns/update_sale_txn_amounts?' + params,
+    {asynchronous:true, evalScripts:true});
+}
