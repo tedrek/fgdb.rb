@@ -13,27 +13,12 @@ module GizmoTypesHelper
       AjaxScaffold::ScaffoldColumn.new(GizmoType, 
         :name => 'description'),
       AjaxScaffold::ScaffoldColumn.new(GizmoType, 
-        :name => 'fee'),
+        :name => 'required_fee'),
       AjaxScaffold::ScaffoldColumn.new(GizmoType, 
-        :name => 'fee_is_required', :label => "Fee Required?",
-        :eval => 'gizmo_type.fee_is_required ? "yes" : "no"'),
-      ]
-  end
-
-end
-module RelationshipTypesHelper
-  include AjaxScaffold::Helper
-  
-  def num_columns
-    scaffold_columns.length + 1 
-  end
-  
-  def scaffold_columns
-     [ AjaxScaffold::ScaffoldColumn.new(RelationshipType, 
-        :name => 'description'),
-      AjaxScaffold::ScaffoldColumn.new(RelationshipType, 
-        :name => 'direction_matters', :label => "Does direction matter?",
-        :eval => 'relationship_type.direction_matters ? "yes" : "no"'),
+        :name => 'suggested_fee'),
+      AjaxScaffold::ScaffoldColumn.new(GizmoType, 
+        :name => 'discounts_apply', :label => "Discount Can Apply?",
+        :eval => 'gizmo_type.discounts_apply ? "yes" : "no"'),
       ]
   end
 

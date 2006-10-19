@@ -7,13 +7,18 @@
 </div>
 
 <div class="form-element">
-  <label for="gizmo_type_fee_is_required">Fee is required</label>
-  <%= select "gizmo_type", "fee_is_required", [["Yes", true], ["No", false]], { :selected => @gizmo_type.fee_is_required } %>
+  <label for="gizmo_type_discounts_apply">Discounts can apply?</label>
+  <%= select "gizmo_type", "discounts_apply", [["Yes", true], ["No", false]], { :selected => @gizmo_type.discounts_apply } %>
 </div>
 
 <div class="form-element">
-  <label for="gizmo_type_fee">Fee</label>
-  <%= text_field 'gizmo_type', 'fee' , {:class=>"text-input"} %>
+  <label for="gizmo_type_required_fee">required_fee</label>
+  <%= text_field 'gizmo_type', 'required_fee' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_type_suggested_fee">suggested_fee</label>
+  <%= text_field 'gizmo_type', 'suggested_fee' , {:class=>"text-input"} %>
 </div>
 
 <div class="form-element">
