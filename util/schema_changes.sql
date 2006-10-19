@@ -1,63 +1,73 @@
 -- Tables (and table modifications) for selling items
 
 -- change set 18oct06
--- gizmo_actions deemed superfluous; using gizmo_contexts instead
-DROP TABLE gizmo_actions;
-
--- The old "gizmo_attrs" table name was chosen to minimize
--- length of rails-conventional bridge table names
--- It was really a bridge table from the old "gizmo_attr_types" to
--- gizmo_types, now renamed to better reflect that yet still be
--- short
-alter table gizmo_attrs         RENAME TO gizmo_typeattrs;
-alter table gizmo_typeattrs
-  RENAME COLUMN gizmo_attr_type_id TO gizmo_attr_id;
-
-alter table gizmo_attrs_gizmo_contexts
-  RENAME TO gizmo_typeattrs_gizmo_contexts;
-alter table gizmo_typeattrs_gizmo_contexts
-  RENAME COLUMN gizmo_attr_type_id TO gizmo_typeattr_id;
-
-alter table gizmo_attrs_gizmo_events
-  RENAME TO gizmo_typeattrs_gizmo_events;
-alter table gizmo_typeattrs_gizmo_events
-  RENAME COLUMN gizmo_attr_type_id TO gizmo_typeattr_id;
-
-alter table gizmo_attr_types    RENAME TO gizmo_attrs;
--- the following values will be entered via rails maint screens
---INSERT INTO gizmo_attrs (name,datatype) 
---  VALUES ('Unit Price','monetary');
---  VALUES ('Extended Price','monetary');
---  VALUES ('Discount Applied','monetary');
---  VALUES ('Sale Txn Amount','monetary');
---  VALUES ('Standard Extended Discount','monetary');
---  VALUES ('Is Custom Discount?','boolean');
---  VALUES ('Required Fee','monetary');
---  VALUES ('Suggested Fee','monetary');
---  VALUES ('Fee Is Required?','boolean');
---  VALUES ('Discountable?','boolean');
-
+-- replace class-level attributes in gizmo_types table
+-- switch from fee, fee_is_required to two fee amount attributes
 alter table gizmo_types
-  DROP COLUMN fee;
+  add COLUMN required_fee      numeric(10,2) default 0.0;
 alter table gizmo_types
-  DROP COLUMN fee_is_required;
+  add COLUMN suggested_fee     numeric(10,2) default 0.0;
 alter table gizmo_types
-  DROP COLUMN discounts_apply;
+  add COLUMN discounts_apply   boolean  default true not null;
 
-alter table gizmo_events
-  RENAME COLUMN gizmo_action_id   TO gizmo_context_id;
-alter table gizmo_events
-  DROP COLUMN unit_price;
-alter table gizmo_events
-  DROP COLUMN standard_extended_discount;
-alter table gizmo_events
-  DROP COLUMN is_custom_discount;
-alter table gizmo_events
-  DROP COLUMN extended_price;
-alter table gizmo_events
-  DROP COLUMN discount_applied;
-alter table gizmo_events
-  DROP COLUMN sale_txn_amount;
+---- change set 18oct06
+---- gizmo_actions deemed superfluous; using gizmo_contexts instead
+--DROP TABLE gizmo_actions;
+--
+---- The old "gizmo_attrs" table name was chosen to minimize
+---- length of rails-conventional bridge table names
+---- It was really a bridge table from the old "gizmo_attr_types" to
+---- gizmo_types, now renamed to better reflect that yet still be
+---- short
+--alter table gizmo_attrs         RENAME TO gizmo_typeattrs;
+--alter table gizmo_typeattrs
+--  RENAME COLUMN gizmo_attr_type_id TO gizmo_attr_id;
+--
+--alter table gizmo_attrs_gizmo_contexts
+--  RENAME TO gizmo_typeattrs_gizmo_contexts;
+--alter table gizmo_typeattrs_gizmo_contexts
+--  RENAME COLUMN gizmo_attr_type_id TO gizmo_typeattr_id;
+--
+--alter table gizmo_attrs_gizmo_events
+--  RENAME TO gizmo_typeattrs_gizmo_events;
+--alter table gizmo_typeattrs_gizmo_events
+--  RENAME COLUMN gizmo_attr_type_id TO gizmo_typeattr_id;
+--
+--alter table gizmo_attr_types    RENAME TO gizmo_attrs;
+---- the following values will be entered via rails maint screens
+----INSERT INTO gizmo_attrs (name,datatype) 
+----  VALUES ('Unit Price','monetary');
+----  VALUES ('Extended Price','monetary');
+----  VALUES ('Discount Applied','monetary');
+----  VALUES ('Sale Txn Amount','monetary');
+----  VALUES ('Standard Extended Discount','monetary');
+----  VALUES ('Is Custom Discount?','boolean');
+----  VALUES ('Required Fee','monetary');
+----  VALUES ('Suggested Fee','monetary');
+----  VALUES ('Fee Is Required?','boolean');
+----  VALUES ('Discountable?','boolean');
+--
+--alter table gizmo_types
+--  DROP COLUMN fee;
+--alter table gizmo_types
+--  DROP COLUMN fee_is_required;
+--alter table gizmo_types
+--  DROP COLUMN discounts_apply;
+--
+--alter table gizmo_events
+--  RENAME COLUMN gizmo_action_id   TO gizmo_context_id;
+--alter table gizmo_events
+--  DROP COLUMN unit_price;
+--alter table gizmo_events
+--  DROP COLUMN standard_extended_discount;
+--alter table gizmo_events
+--  DROP COLUMN is_custom_discount;
+--alter table gizmo_events
+--  DROP COLUMN extended_price;
+--alter table gizmo_events
+--  DROP COLUMN discount_applied;
+--alter table gizmo_events
+--  DROP COLUMN sale_txn_amount;
 
 
 -- change set 30sep06

@@ -325,7 +325,10 @@ CREATE TABLE gizmo_types (
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
     created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
+    updated_by bigint DEFAULT 1 NOT NULL,
+    required_fee numeric(10,2) DEFAULT 0.0,
+    suggested_fee numeric(10,2) DEFAULT 0.0,
+    discounts_apply boolean DEFAULT true NOT NULL
 );
 
 
