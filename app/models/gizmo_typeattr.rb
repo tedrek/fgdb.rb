@@ -6,7 +6,7 @@ class GizmoTypeattr < ActiveRecord::Base
 
   has_and_belongs_to_many    :gizmo_contexts
 
-  has_many    :gizmo_events_gizmo_typeattr,
+  has_many    :gizmo_events_gizmo_typeattrs,
               :dependent => :destroy
   has_many    :gizmo_events, :through => :gizmo_events_gizmo_typeattr
 
