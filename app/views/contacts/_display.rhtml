@@ -1,4 +1,17 @@
+<% @options = params.merge(:controller => '/contacts', :action => "view", :id => @contact.send("#{Contact.primary_key}")) %>
+
 <p>(<%= @contact.id %>) <%= @contact.display_name %>,
   <%= @contact.city %>, <%= @contact.postal_code %>,
   <%= @contact.organization %>
+  <%= loading_indicator_tag(@options) %>
+
+  <% edit_options = @options.merge(:action => 'edit') %>
+  <%= link_to_remote "Edit",
+    { :url => edit_options,
+      :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
+  <% delete_options = @options.merge(:action => 'destroy') %>
+  <%= link_to_remote "Delete",
+    { :url => delete_options,
+      :confirm => 'Are you sure?',
+      :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
 </p>

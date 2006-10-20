@@ -1,0 +1,9 @@
+@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => params[:id] }
+
+if @successful
+  page.replace_html params[:scaffold_id], :partial => 'search_results', :locals => { :@search_results => [] }
+else
+  page.hide loading_indicator_id(@options)
+end
+
+
