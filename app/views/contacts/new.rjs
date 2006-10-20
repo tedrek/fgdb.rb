@@ -9,4 +9,4 @@ else
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
 end
 
-page << "$('#{loading_indicator_id(@new_options)}').hide();" #page.hide loading_indicator_id(@new_options)
+page.hide loading_indicator_id(@new_options)
