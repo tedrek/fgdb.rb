@@ -2,6 +2,8 @@ require 'ajax_scaffold'
 
 class GizmoType < ActiveRecord::Base
   acts_as_tree
+  has_many  :gizmo_typeattr
+  has_many  :gizmo_attr,  :through => :gizmo_typeattr
 
   def to_s
     description

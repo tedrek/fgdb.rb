@@ -1,24 +1,24 @@
 <fieldset>
   <div class="row">
     <!--[form:gizmo_typeattr]-->
+
+<div class="form-element">
+<label for="gizmo_typeattr_gizmo_type_id">gizmo type</label><br/>
+<select id="gizmo_typeattr_gizmo_type_id" name="gizmo_typeattr[gizmo_type_id]">
+  <%= options_from_collection_for_select GizmoType.find_all, "id", "description", @gizmo_typeattr.gizmo_type_id %>
+</select>
+</div>
+
+<div class="form-element">
+<label for="gizmo_typeattr_gizmo_attr_id">gizmo attr</label><br/>
+<select id="gizmo_typeattr_gizmo_attr_id" name="gizmo_typeattr[gizmo_attr_id]">
+  <%= options_from_collection_for_select GizmoAttr.find_all, "id", "name", @gizmo_typeattr.gizmo_attr_id %>
+</select>
+</div>
+
 <div class="form-element">
   <label for="gizmo_typeattr_validation_callback">Validation callback</label>
   <%= text_area 'gizmo_typeattr', 'validation_callback'  %>
-</div>
-
-<div class="form-element">
-  <label for="gizmo_typeattr_lock_version">Lock version</label>
-  <%= text_field 'gizmo_typeattr', 'lock_version' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="gizmo_typeattr_created_by">Created by</label>
-  <%= text_field 'gizmo_typeattr', 'created_by' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="gizmo_typeattr_updated_by">Updated by</label>
-  <%= text_field 'gizmo_typeattr', 'updated_by' , {:class=>"text-input"} %>
 </div>
 
 <!--[eoform:gizmo_typeattr]-->

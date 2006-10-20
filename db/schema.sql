@@ -210,49 +210,27 @@ CREATE TABLE gizmo_attrs (
 
 
 --
--- Name: gizmo_typeattrs_gizmo_events; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
---
-
-CREATE TABLE gizmo_typeattrs_gizmo_events (
-    id serial NOT NULL,
-    gizmo_event_id integer NOT NULL,
-    gizmo_typeattr_id integer NOT NULL,
-    attr_val_text text,
-    attr_val_boolean boolean,
-    attr_val_integer integer,
-    attr_val_monetary numeric(10,2),
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
--- Name: gizmo_typeattrs; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
---
-
-CREATE TABLE gizmo_typeattrs (
-    id serial NOT NULL,
-    gizmo_type_id integer NOT NULL,
-    gizmo_attr_id integer NOT NULL,
-    validation_callback text,
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
 -- Name: gizmo_contexts; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
 CREATE TABLE gizmo_contexts (
     id serial NOT NULL,
     name character varying(100),
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: gizmo_contexts_gizmo_typeattrs; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE gizmo_contexts_gizmo_typeattrs (
+    gizmo_context_id integer NOT NULL,
+    gizmo_typeattr_id integer NOT NULL,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
@@ -299,12 +277,34 @@ CREATE TABLE gizmo_events (
 
 
 --
--- Name: gizmo_typeattrs_gizmo_contexts; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+-- Name: gizmo_events_gizmo_typeattrs; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
 --
 
-CREATE TABLE gizmo_typeattrs_gizmo_contexts (
-    gizmo_context_id integer NOT NULL,
+CREATE TABLE gizmo_events_gizmo_typeattrs (
+    id serial NOT NULL,
+    gizmo_event_id integer NOT NULL,
     gizmo_typeattr_id integer NOT NULL,
+    attr_val_text text,
+    attr_val_boolean boolean,
+    attr_val_integer integer,
+    attr_val_monetary numeric(10,2),
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: gizmo_typeattrs; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE gizmo_typeattrs (
+    id serial NOT NULL,
+    gizmo_type_id integer NOT NULL,
+    gizmo_attr_id integer NOT NULL,
+    validation_callback text,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),

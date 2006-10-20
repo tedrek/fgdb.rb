@@ -1,6 +1,6 @@
 <% # The following is used when the browser doesn't have javascript enabled %>
 <% classAttr = cycle("", "class=\"even\"") %>
-<% @options = params.merge(:controller => '/gizmo_typeattrs_gizmo_events', :action => "view", :id => gizmo_typeattrs_gizmo_event.send("#{GizmoTypeattrsGizmoEvent.primary_key}")) %>
+<% @options = params.merge(:controller => '/gizmo_events_gizmo_typeattrs', :action => "view", :id => gizmo_events_gizmo_typeattr.send("#{GizmoEventsGizmoTypeattr.primary_key}")) %>
 
 <tr <%= classAttr %> id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for scaffold_column in scaffold_columns %>

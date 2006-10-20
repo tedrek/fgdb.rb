@@ -1,4 +1,4 @@
-module GizmoContextsHelper
+module GizmoContextsGizmoTypeattrsHelper
   include AjaxScaffold::Helper
   
   def num_columns
@@ -6,10 +6,7 @@ module GizmoContextsHelper
   end
   
   def scaffold_columns
-    [
-      AjaxScaffold::ScaffoldColumn.new(GizmoContext, 
-        :name => 'name'),
-    ]
+    GizmoContextsGizmoTypeattr.scaffold_columns
   end
 
 end

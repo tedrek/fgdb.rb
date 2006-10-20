@@ -1,14 +1,22 @@
 -- Tables (and table modifications) for selling items
 
+-- change set 20oct06
+-- rename a couple of tables to conform to Rails default names
+-- for join tables
+alter table gizmo_typeattrs_gizmo_contexts
+  RENAME TO gizmo_contexts_gizmo_typeattrs;
+alter table gizmo_typeattrs_gizmo_events
+  RENAME TO gizmo_events_gizmo_typeattrs;
+
 -- change set 18oct06
 -- replace class-level attributes in gizmo_types table
 -- switch from fee, fee_is_required to two fee amount attributes
-alter table gizmo_types
-  add COLUMN required_fee      numeric(10,2) default 0.0;
-alter table gizmo_types
-  add COLUMN suggested_fee     numeric(10,2) default 0.0;
-alter table gizmo_types
-  add COLUMN discounts_apply   boolean  default true not null;
+--alter table gizmo_types
+--  add COLUMN required_fee      numeric(10,2) default 0.0;
+--alter table gizmo_types
+--  add COLUMN suggested_fee     numeric(10,2) default 0.0;
+--alter table gizmo_types
+--  add COLUMN discounts_apply   boolean  default true not null;
 
 ---- change set 18oct06
 ---- gizmo_actions deemed superfluous; using gizmo_contexts instead

@@ -1,11 +1,11 @@
-class GizmoTypeattrsGizmoEventsController < ApplicationController
+class GizmoEventsGizmoTypeattrsController < ApplicationController
   include AjaxScaffold::Controller
   
   after_filter :clear_flashes
   before_filter :update_params_filter
   
   def update_params_filter
-    update_params :default_scaffold_id => "gizmo_typeattrs_gizmo_event", :default_sort => nil, :default_sort_direction => "asc"
+    update_params :default_scaffold_id => "gizmo_events_gizmo_typeattr", :default_sort => nil, :default_sort_direction => "asc"
   end
   def index
     redirect_to :action => 'list'
@@ -35,15 +35,15 @@ class GizmoTypeattrsGizmoEventsController < ApplicationController
 
   def component  
     @show_wrapper = true if @show_wrapper.nil?
-    @sort_sql = GizmoTypeattrsGizmoEvent.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
-    @sort_by = @sort_sql.nil? ? "#{GizmoTypeattrsGizmoEvent.table_name}.#{GizmoTypeattrsGizmoEvent.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
-    @paginator, @gizmo_typeattrs_gizmo_events = paginate(:gizmo_typeattrs_gizmo_events, :order => @sort_by, :per_page => default_per_page)
+    @sort_sql = GizmoEventsGizmoTypeattr.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    @sort_by = @sort_sql.nil? ? "#{GizmoEventsGizmoTypeattr.table_name}.#{GizmoEventsGizmoTypeattr.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
+    @paginator, @gizmo_events_gizmo_typeattrs = paginate(:gizmo_events_gizmo_typeattrs, :order => @sort_by, :per_page => default_per_page)
     
     render :action => "component", :layout => false
   end
 
   def new
-    @gizmo_typeattrs_gizmo_event = GizmoTypeattrsGizmoEvent.new
+    @gizmo_events_gizmo_typeattr = GizmoEventsGizmoTypeattr.new
     @successful = true
 
     return render(:action => 'new.rjs') if request.xhr?
@@ -59,8 +59,8 @@ class GizmoTypeattrsGizmoEventsController < ApplicationController
   
   def create
     begin
-      @gizmo_typeattrs_gizmo_event = GizmoTypeattrsGizmoEvent.new(params[:gizmo_typeattrs_gizmo_event])
-      @successful = @gizmo_typeattrs_gizmo_event.save
+      @gizmo_events_gizmo_typeattr = GizmoEventsGizmoTypeattr.new(params[:gizmo_events_gizmo_typeattr])
+      @successful = @gizmo_events_gizmo_typeattr.save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -76,8 +76,8 @@ class GizmoTypeattrsGizmoEventsController < ApplicationController
 
   def edit
     begin
-      @gizmo_typeattrs_gizmo_event = GizmoTypeattrsGizmoEvent.find(params[:id])
-      @successful = !@gizmo_typeattrs_gizmo_event.nil?
+      @gizmo_events_gizmo_typeattr = GizmoEventsGizmoTypeattr.find(params[:id])
+      @successful = !@gizmo_events_gizmo_typeattr.nil?
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -94,8 +94,8 @@ class GizmoTypeattrsGizmoEventsController < ApplicationController
 
   def update
     begin
-      @gizmo_typeattrs_gizmo_event = GizmoTypeattrsGizmoEvent.find(params[:id])
-      @successful = @gizmo_typeattrs_gizmo_event.update_attributes(params[:gizmo_typeattrs_gizmo_event])
+      @gizmo_events_gizmo_typeattr = GizmoEventsGizmoTypeattr.find(params[:id])
+      @successful = @gizmo_events_gizmo_typeattr.update_attributes(params[:gizmo_events_gizmo_typeattr])
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -112,7 +112,7 @@ class GizmoTypeattrsGizmoEventsController < ApplicationController
 
   def destroy
     begin
-      @successful = GizmoTypeattrsGizmoEvent.find(params[:id]).destroy
+      @successful = GizmoEventsGizmoTypeattr.find(params[:id]).destroy
     rescue
       flash[:error], @successful  = $!.to_s, false
     end

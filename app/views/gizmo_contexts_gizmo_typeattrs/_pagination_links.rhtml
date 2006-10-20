@@ -1,4 +1,4 @@
-   <% pagination_params = params.merge(:controller => '/gizmo_typeattrs_gizmo_events', :action => 'component_update') %>
+   <% pagination_params = params.merge(:controller => '/gizmo_contexts_gizmo_typeattrs', :action => 'component_update') %>
    <% indicator_params = pagination_params.merge(:action => 'pagination') %>
    <%= loading_indicator_tag indicator_params %>
    <%= link_to_remote('Previous',

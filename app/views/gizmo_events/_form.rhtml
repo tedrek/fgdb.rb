@@ -3,18 +3,32 @@
     <!--[form:gizmo_event]-->
 
 <div class="form-element">
+  <label for="gizmo_event_gizmo_context_id">gizmo context</label><br/>
+  <select id="gizmo_event_gizmo_context_id"
+    name="gizmo_event[gizmo_context_id]"   >
+    <option value=""></option>
+    <%= options_from_collection_for_select( GizmoContext.find_all, "id", "name", @gizmo_event.gizmo_context_id) %>
+  </select>
+</div>
+
+<div class="form-element">
+  <label for="gizmo_event_gizmo_type_id">gizmo type</label><br/>
+  <select id="gizmo_event_gizmo_type_id"
+    name="gizmo_event[gizmo_type_id]"   >
+    <option value=""></option>
+    <%= options_from_collection_for_select( GizmoType.find_all, "id", "description", @gizmo_event.gizmo_type_id) %>
+  </select>
+</div>
+
+<div class="form-element">
   <label for="gizmo_event_gizmo_count">Quantity</label>
   <%= text_field 'gizmo_event', 'gizmo_count' ,
     {:class=>"text-input"} %>
 </div>
 
 <div class="form-element">
-  <label for="gizmo_event_gizmo_type_id">donated gizmo type</label><br/>
-  <select id="gizmo_event_gizmo_type_id"
-    name="gizmo_event[gizmo_type_id]"   >
-    <option value=""></option>
-    <%= options_from_collection_for_select( GizmoType.find_all, "id", "description", @gizmo_event.gizmo_type_id) %>
-  </select>
+  <label for="gizmo_event_comments">comments</label>
+  <%= text_field 'gizmo_event', 'comments' , {:class=>"text-input"} %>
 </div>
 
 <!--[eoform:gizmo_event]-->

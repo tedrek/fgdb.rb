@@ -6,7 +6,12 @@ module GizmoAttrsHelper
   end
   
   def scaffold_columns
-    GizmoAttr.scaffold_columns
+    [
+      AjaxScaffold::ScaffoldColumn.new(GizmoAttr, 
+        :name => 'name'),
+      AjaxScaffold::ScaffoldColumn.new(GizmoAttr, 
+        :name => 'datatype'),
+    ]
   end
 
 end
