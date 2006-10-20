@@ -7,4 +7,8 @@ class GizmoContext < ActiveRecord::Base
   def to_s
     name
   end
+
+  def GizmoContext.find_all_for_select
+    find(:all).map {|context| [context.name, context.id]}
+  end
 end
