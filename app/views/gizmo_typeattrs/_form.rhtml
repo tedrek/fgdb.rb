@@ -16,7 +16,18 @@
 </select>
 </div>
 
-<%= @context_checkbox %>
+
+<% for gizmo_context in GizmoContext.find_all %>
+<div class="form-element">
+  <label for="<%= gizmo_context.id %>"><%= gizmo_context.name %></label>
+  <input type="checkbox" id="<%= gizmo_context.id %>"
+    name="gizmo_contexts[]" 
+    value="<%= gizmo_context.id %>"
+  <% if @gizmo_typeattr.gizmo_contexts.include? gizmo_context %>checked="checked"<% end %>
+  >
+</div>
+<% end %>
+
 
 <div class="form-element">
   <label for="gizmo_typeattr_validation_callback">Validation callback</label>

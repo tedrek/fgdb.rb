@@ -1,0 +1,24 @@
+<div id="totals">
+  <span id="gross_amount_lbl">gross_amount: </span>
+  <span id="gross_amount_value"><%= @gross_amount %></span>
+  <span id="standard_discount_amount_lbl">standard_discount_amount: </span>
+  <span id="standard_discount_amount_value"><%= @standard_discount_amount %></span>
+  <span id="discount_amount_lbl">discount_amount: </span>
+  <span id="discount_amount_value"><%= @discount_amount %></span>
+  <span id="amount_due_lbl">amount_due: </span>
+  <span id="amount_due_value"><%= @amount_due %></span>
+  <span id="tendered_lbl">tendered fee: </span>
+  <span id="tendered_amt"><%= @money_tendered %></span>
+  <span id="change_due_lbl">change_due: </span>
+  <span id="change_due_value"><%= @change_due %></span>
+  <span id="timestamp"><%= Time.now %></span>
+  <span id="show_params">formatted params are "<%= @formatted_params %>"</span>
+  <span id="update_sale_txn_amounts_button">
+    <INPUT type="button" id="update_sale_txn_amounts_input" value="update_sale_txn_amounts" 
+      onclick="<%= remote_function( :url => {
+            :controller => '/sale_txns', 
+            :action => 'update_sale_txn_amounts' },
+          :with => 'Form.serialize(this.form)' 
+        ) %> " >
+  </span>
+</div>

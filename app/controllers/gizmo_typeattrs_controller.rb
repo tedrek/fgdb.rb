@@ -44,7 +44,6 @@ class GizmoTypeattrsController < ApplicationController
 
   def new
     @gizmo_typeattr = GizmoTypeattr.new
-    @context_checkbox = checkbox_collection('gizmo_typeattr','gizmo_context', @gizmo_typeattr, GizmoContext.find_all_for_select)
     @successful = true
 
     return render(:action => 'new.rjs') if request.xhr?
@@ -62,6 +61,7 @@ class GizmoTypeattrsController < ApplicationController
     begin
       @gizmo_typeattr = GizmoTypeattr.new(params[:gizmo_typeattr])
       @successful = @gizmo_typeattr.save
+      @gizmo_typeattr.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts]) if @params[:gizmo_contexts]
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -78,7 +78,6 @@ class GizmoTypeattrsController < ApplicationController
   def edit
     begin
       @gizmo_typeattr = GizmoTypeattr.find(params[:id])
-      @context_checkbox = checkbox_collection('gizmo_typeattr','gizmo_context', @gizmo_typeattr, GizmoContext.find_all_for_select)
       @successful = !@gizmo_typeattr.nil?
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -97,6 +96,7 @@ class GizmoTypeattrsController < ApplicationController
   def update
     begin
       @gizmo_typeattr = GizmoTypeattr.find(params[:id])
+      @gizmo_typeattr.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts]) if @params[:gizmo_contexts]
       @successful = @gizmo_typeattr.update_attributes(params[:gizmo_typeattr])
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -132,39 +132,4 @@ class GizmoTypeattrsController < ApplicationController
     
     return_to_main
   end
-
-  # checkbox_collection
-  # create a set of checkboxes for updating a habtm
-  # relationship
-  # source: http://exdolo.com/2006/8/8/habtm-checkbox-helper
-  #
-  # imagine you have a Role and User model with a habtm
-  # relationship.
-  # given an @user object for the current user and a collection
-  # of all roles in @roles:
-  #
-  # checkbox_collection("user","role", @user, @roles.collect{|r| [r.title,r.id]})
-  #
-  # the collection parameter expects an array of arrays with the
-  # label as the first member in an element array and it's value
-  # as the last. 
-  def checkbox_collection(objekt,method,instance,collection)
-    m2m = instance.send("#{method}s".to_sym)
-    name_string = "#{objekt}[#{method}_ids][]" 
-    collection.map do |item|
-      id_string = "#{objekt}_#{method}_#{item.last}" 
-      tag_options = {
-        "type" => "checkbox", 
-        "name" => name_string,
-        "id" => id_string,
-        "value" => item.last
-      }
-      tag_options["checked"] = "checked" if m2m.collect{|a| a.id}.include?  item.last
-      #content_tag("li", tag("input", tag_options) + content_tag("label",item.first,"for" => id_string))
-      #ActionView::Helpers::TagHelper.content_tag("li", "<input type=\"checkbox\" value=\"<%= item.last %>\" /> " + ActionView::Helpers::TagHelper.content_tag("label",item.first,"for" => id_string))
-      checked_var =  tag_options["checked"].nil? ? '' : 'checked="checked"'
-      "<li><input  checked_var name=\"#{name_string}\" id=\"#{id_string}\" type=\"checkbox\" value=\"#{item.last}\" /> " + 
-        "<label for=\"#{id_string}\">#{item.first}</label>"
-    end.join("\n")
-  end 
 end
