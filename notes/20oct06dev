@@ -1,0 +1,15 @@
+### 20 oct
+DONE
+----
+
+. Add context checkbox to gizmo typeattr view
+
+. Model changes to accompany recent schema reorg:
+
+  . add has_many, belongs_to, has_many :through, habtm as needed
+  reflect that it is where we record the attributes assumed by
+  various gizmos
+
+. Rename tables to conform with rails defaults:
+  . gizmo_typeattrs_gizmo_contexts to gizmo_contexts_gizmo_typeattrs
+  . gizmo_typeattrs_gizmo_events to gizmo_events_gizmo_typeattrs

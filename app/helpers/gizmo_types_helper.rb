@@ -19,6 +19,10 @@ module GizmoTypesHelper
       AjaxScaffold::ScaffoldColumn.new(GizmoType, 
         :name => 'discounts_apply', :label => "Discount Can Apply?",
         :eval => 'gizmo_type.discounts_apply ? "yes" : "no"'),
+      AjaxScaffold::ScaffoldColumn.new(GizmoType, 
+        :name => 'context', :label => 'Context(s)', 
+        :eval => 'gizmo_type.gizmo_contexts.map {|c| c.abbrev}.sort.join(",")', 
+        :sortable => false),
       ]
   end
 

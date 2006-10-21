@@ -6,6 +6,8 @@ class GizmoType < ActiveRecord::Base
             :dependent => :destroy
   has_many  :gizmo_attrs,  :through => :gizmo_typeattr
 
+  has_and_belongs_to_many    :gizmo_contexts
+
   def to_s
     description
   end
