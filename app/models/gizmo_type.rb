@@ -8,6 +8,8 @@ class GizmoType < ActiveRecord::Base
 
   has_and_belongs_to_many    :gizmo_contexts
 
+  validates_numericality_of :required_fee, :suggested_fee
+
   def to_s
     description
   end

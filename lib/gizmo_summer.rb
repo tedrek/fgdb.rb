@@ -1,6 +1,5 @@
 # create and manipulate sums of various attributes attached to
-# gizmo types, such as required_fee, suggested_fee,
-# standard_extended_discount, etc, based on the
+# gizmo types, such as required_fee, suggested_fee, based on the
 # quantity provided by client
 
 class GizmoSummer
@@ -25,13 +24,7 @@ class GizmoSummer
   #   database values for those attributes 
   #   - for example, set required_fee to value of GizmoType.fee
   #     if the GizmoType.fee_is_required flag is TRUE
-  def initialize(id,quantity=0, options={})
-    # parse options
-    @discount_applied = 0
-    @discount_applied = options[:discount_applied] if
-      !options[:discount_applied].nil? and
-        options[:discount_applied].kind_of?(Numeric)
-
+  def initialize(id,quantity=0)
     begin
       gt = GizmoType.find(id.to_s.to_i)
     rescue
@@ -39,29 +32,11 @@ class GizmoSummer
     end
 
       @quantity = quantity
-      @quantity = (!quantity.nil? and quantity.kind_of?(Numeric)) ? quantity  : 0
 
       @description = gt.description
 
-      # donations-related amounts
-      if gt.fee_is_required
-        @unit_suggested_fee = 0
-        @unit_required_fee = (!gt.fee.nil? and gt.fee.kind_of?(Numeric)) ? gt.fee  : 99.99
-      else
-        @unit_required_fee = 0
-        @unit_suggested_fee = (!gt.fee.nil? and gt.fee.kind_of?(Numeric)) ? gt.fee  : 1
-      end
-      @unit_required_fee = @unit_required_fee.to_f
-      @unit_suggested_fee = @unit_suggested_fee.to_f
-
-      # sale_txns-related
-      unit_price = (!gt.unit_price.nil? and gt.unit_price.kind_of?(Numeric)) ? gt.unit_price  : 99.99
-      # rename this to standard_discount
-      # and it needs to be calculated based on discount schedule id
-      @standard_extended_discount = (!gt.standard_extended_discount.nil? and gt.standard_extended_discount.kind_of?(Numeric)) ?  gt.standard_extended_discount  : 0.0
-      @extended_price = unit_price * @quantity
-      @standard_extended_discount.to_f
-      @extended_price.to_f
+      @unit_required_fee = (!gt.required_fee.nil? and gt.required_fee.kind_of?(Numeric)) ? gt.required_fee.to_f  : 99.99
+      @unit_suggested_fee = (!gt.suggested_fee.nil? and gt.suggested_fee.kind_of?(Numeric)) ? gt.suggested_fee.to_f  : 1
   end
 
 end
