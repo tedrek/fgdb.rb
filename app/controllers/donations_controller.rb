@@ -1,8 +1,9 @@
 class DonationsController < ApplicationController
   include AjaxScaffold::Controller
-  require 'gizmo_detail_list'
+  require 'gizmo_tools'
   include DatalistFor
   GizmoEventsTag='donations_gizmo_events' 
+  $gegci = GizmoContext.find(:first, :conditions => [ "name = ?", 'donation']).id
 
   require 'logger'
   $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
@@ -73,7 +74,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.new(params[:donation])
       @successful = @donation.save
-      save_datalist(GizmoEventsTag, :donation_id => @donation.id, :gizmo_action_id => GizmoAction.donation.id)
+      save_datalist(GizmoEventsTag, :donation_id => @donation.id, :gizmo_event_id => GizmoEvent.donation.id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -115,7 +116,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = @donation.update_attributes(params[:donation])
-      save_datalist(GizmoEventsTag, :donation_id => @donation.id, :gizmo_action_id => GizmoAction.donation.id)
+      save_datalist(GizmoEventsTag, :donation_id => @donation.id, :gizmo_event_id => GizmoEvent.donation.id)
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
@@ -173,7 +174,7 @@ class DonationsController < ApplicationController
   private
 
   def create_gizmo_types_detail_list(tag)
-    gdl = GizmoDetailList.new
+    gdl = GizmoTools::GizmoDetailList.new
     get_datalist_detail(tag).each do |k,v|
       next if k.nil? or v.nil?
       type_id = v[:gizmo_type_id]
