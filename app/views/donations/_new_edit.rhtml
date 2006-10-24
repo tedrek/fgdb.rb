@@ -26,7 +26,8 @@
       <%= datalist_for( :gizmo_event, 'donations_gizmo_events',
         @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
         :show_header => false, :render => "gizmo_events/_form",
-        :add_text => "More gizmos" ) %>
+        :add_text => "More gizmos",
+        :new_defaults => @datalist_for_new_defaults) %>
 
       <p class="form-footer">
         <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>

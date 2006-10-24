@@ -3,13 +3,20 @@ class DonationsController < ApplicationController
   require 'gizmo_tools'
   include DatalistFor
   GizmoEventsTag='donations_gizmo_events' 
-  $gegci = GizmoContext.find(:first, :conditions => [ "name = ?", 'donation']).id
 
   require 'logger'
   $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
 
   after_filter :clear_flashes
   before_filter :update_params_filter
+
+  def initialize
+    @datalist_for_new_defaults = {
+      GizmoEventsTag.to_sym  => {
+        :gizmo_context_id => GizmoContext.find(:first, :conditions => [ "name = ?", 'donation']).id
+      }
+    }
+  end
   
   def update_params_filter
     update_params :default_scaffold_id => "donation", :default_sort => nil, :default_sort_direction => "asc"
@@ -156,7 +163,7 @@ class DonationsController < ApplicationController
   # based on quantities, gizmo types for each donated gizmo
   # render desired information
   def update_fee
-    $LOG.debug "ENTERING donations_controller.rb::update_fee #{Time.now}"
+    $LOG.debug "ENTERING DonationsController::update_fee #{Time.now}"
     #params.inspect.each {|par| $LOG.debug "#{par}, "}
     #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
 
