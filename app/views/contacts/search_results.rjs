@@ -1,0 +1,6 @@
+page.replace_html params[:scaffold_id], :partial => 'search_results'
+page << "foo = document.createElement('div');
+         foo.id = 'insert_form_here_div';
+         foo.class = 'ajax_scaffold';
+         document.body.appendChild(foo);"
+page.insert_html :bottom, 'insert_form_here_div', '<div id="insert_form_here" />'

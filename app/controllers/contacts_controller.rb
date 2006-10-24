@@ -15,8 +15,18 @@ class ContactsController < ApplicationController
     store_or_get_from_session(@scaffold_id, :select_label)
   end
 
+  layout :contact_layout_choice
+
+  def contact_layout_choice
+    action_name == 'test' ? 'contacts.rhtml' : nil
+  end
+
   def index
-    redirect_to :action => 'search'
+    redirect_to :action => 'test'
+  end
+
+  def test
+    @contact = Contact.find( params[:contact_id] ) if params[:contact_id]
   end
 
   def search
@@ -25,9 +35,7 @@ class ContactsController < ApplicationController
 
   def search_results
     @search_results = do_search( params[:query] )
-    render :update do |page|
-      page.replace_html params[:scaffold_id], :partial => 'search_results'
-    end
+    render :action => 'search_results.rjs'
   end
 
   def update_display_area
