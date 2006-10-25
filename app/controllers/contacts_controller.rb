@@ -37,6 +37,7 @@ class ContactsController < ApplicationController
     @search_results ||= do_search( params[:query] )
     render :update do |page|
       page.replace_html params[:scaffold_id], :partial => 'search_results'
+      page << "Field.focus('#{searchbox_select_id(params)}');"
     end
   end
 
