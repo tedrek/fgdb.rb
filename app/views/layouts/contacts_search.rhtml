@@ -9,10 +9,6 @@
 <script type="text/javascript">
   Rico.Corner.round('<%= params[:scaffold_id] %>', {color: '#005CB8', bgColor: '#fff', compact: true});
   foo = document.createElement('div');
-  foo.id = 'insert_form_here_div';
-  foo.class = 'ajax_scaffold';
+  foo.innerHTML = '<div class="searchbox_form" id="insert_form_here" />';
   document.body.appendChild(foo);
-  bar = document.createElement('div');
-  bar.id = 'insert_form_here';
-  foo.appendChild(bar);
 </script>
