@@ -12,3 +12,36 @@ function playwith_amounts(o) {
   new Ajax.Request('/sale_txns/update_sale_txn_amounts?' + params,
     {asynchronous:true, evalScripts:true});
 }
+
+// Called as:
+// calculateOffsetLeft(_inputField)
+// was ob
+function calculateOffsetLeft(r){
+  return Ya(r,"offsetLeft")
+}
+
+// Called as:
+// calculateOffsetTop(_inputField)
+// Was Qb...
+function calculateOffsetTop(r){
+  return Ya(r,"offsetTop")
+}
+
+function Ya(r,attr){
+  var kb=0;
+  while(r){
+    kb+=r[attr]; 
+    r=r.offsetParent
+  }
+  return kb
+}
+
+function setRelativelyAbsolute(elem_id, relative_to_id) {
+  rel = $(relative_to_id);
+  elem = $(elem_id);
+  elem.style.position = 'absolute';
+  elem.style.backgroundColor="white";
+  elem.style.left=calculateOffsetLeft(rel)+"px";
+  elem.style.top=calculateOffsetTop(rel)+rel.offsetHeight-1+"px";
+}
+

@@ -6,7 +6,7 @@ if @successful
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
   page.replace_html params[:scaffold_id], :partial => 'search_results', :locals => { :@search_results => [@contact] }
   page << "Form.enable($('#{searchbox_field_id(@options)}').form.id);"
-  page << "Field.focus('#{searchbox_field_id(@options)}');"
+  page << "Field.focus('#{searchbox_select_id(@options)}');"
 else
   page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
   page << "Form.enable('#{element_form_id(@create_options)}');"
