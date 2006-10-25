@@ -11,9 +11,10 @@ class DonationsController < ApplicationController
   before_filter :update_params_filter
 
   def initialize
+    @gizmo_context_id = GizmoContext.find(:first, :conditions => [ "name = ?", 'donation']).id
     @datalist_for_new_defaults = {
       GizmoEventsTag.to_sym  => {
-        :gizmo_context_id => GizmoContext.find(:first, :conditions => [ "name = ?", 'donation']).id
+        :gizmo_context_id => @gizmo_context_id
       }
     }
   end
@@ -81,7 +82,8 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.new(params[:donation])
       @successful = @donation.save
-      save_datalist(GizmoEventsTag, :donation_id => @donation.id, :gizmo_event_id => GizmoEvent.donation.id)
+      save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
+        :gizmo_context_id => @gizmo_context_id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -123,7 +125,8 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = @donation.update_attributes(params[:donation])
-      save_datalist(GizmoEventsTag, :donation_id => @donation.id, :gizmo_event_id => GizmoEvent.donation.id)
+      save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
+        :gizmo_context_id => @gizmo_context_id)
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
@@ -175,6 +178,7 @@ class DonationsController < ApplicationController
     @overunder_fee = @money_tendered - @required_fee
     $LOG.debug "Calculated fees: required_fee[#{@required_fee}], overunder_fee[#{@overunder_fee}]"
 
+    @options = { :scaffold_id => params[:scaffold_id]}
     render :action => 'update_fee.rjs'
   end
 

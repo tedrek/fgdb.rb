@@ -1,12 +1,20 @@
 -- Tables (and table modifications) for selling items
 
+-- change set 24oct06
+-- need to allow invoice tracking
+ALTER TABLE donations
+  ADD COLUMN invoice_paid_at TIMESTAMP WITH TIME ZONE DEFAULT now();
+
+-- change set 24oct06
+-- change/reload schema to remove "not null" from gizmo_events.comments
+
 -- change set 20oct06
 -- rename a couple of tables to conform to Rails default names
 -- for join tables
-alter table gizmo_typeattrs_gizmo_contexts
-  RENAME TO gizmo_contexts_gizmo_typeattrs;
-alter table gizmo_typeattrs_gizmo_events
-  RENAME TO gizmo_events_gizmo_typeattrs;
+--alter table gizmo_typeattrs_gizmo_contexts
+--  RENAME TO gizmo_contexts_gizmo_typeattrs;
+--alter table gizmo_typeattrs_gizmo_events
+--  RENAME TO gizmo_events_gizmo_typeattrs;
 
 -- change set 18oct06
 -- replace class-level attributes in gizmo_types table

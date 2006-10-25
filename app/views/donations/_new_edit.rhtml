@@ -27,7 +27,7 @@
         @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
         :show_header => false, :render => "gizmo_events/_form",
         :add_text => "More gizmos",
-        :new_defaults => @datalist_for_new_defaults) %>
+        :new_defaults => @datalist_for_new_defaults || nil) %>
 
       <p class="form-footer">
         <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>

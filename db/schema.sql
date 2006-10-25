@@ -164,7 +164,8 @@ CREATE TABLE donations (
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
     created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
+    updated_by bigint DEFAULT 1 NOT NULL,
+    invoice_paid_at timestamp with time zone DEFAULT now()
 );
 
 
@@ -267,7 +268,7 @@ CREATE TABLE gizmo_events (
     gizmo_type_id integer NOT NULL,
     gizmo_context_id integer NOT NULL,
     gizmo_count integer NOT NULL,
-    comments character varying(100) NOT NULL,
+    comments character varying(100),
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
