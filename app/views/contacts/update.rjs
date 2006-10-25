@@ -5,6 +5,8 @@ if @successful
   page.replace_html 'insert_form_here', ''
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
   page.replace_html params[:scaffold_id], :partial => 'search_results', :locals => { :@search_results => [@contact] }
+  page << "Form.enable($('#{searchbox_field_id(@options)}').form.id);"
+  page << "Field.focus('#{searchbox_field_id(@options)}');"
 #  page.replace_html searchbox_display_id(@options), :partial => 'display', :locals => { :@contact => Contact.find(params[:id]) }
 else
   page.replace_html element_messages_id(@update_options), :partial => 'form_messages'

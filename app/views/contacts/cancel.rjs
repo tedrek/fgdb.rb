@@ -2,6 +2,8 @@
 
 if @successful
   page.replace_html 'insert_form_here', ''
+  page << "Form.enable($('#{searchbox_field_id(@options)}').form.id);"
+  page << "Field.focus('#{searchbox_field_id(@options)}');"
 else
   page.hide loading_indicator_id(@options)
 end
