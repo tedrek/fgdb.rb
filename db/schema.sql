@@ -165,7 +165,10 @@ CREATE TABLE donations (
     created_at timestamp with time zone DEFAULT now(),
     created_by bigint DEFAULT 1 NOT NULL,
     updated_by bigint DEFAULT 1 NOT NULL,
-    invoice_paid_at timestamp with time zone DEFAULT now()
+    reported_required_fee numeric(10,2),
+    reported_suggested_fee numeric(10,2),
+    txn_complete boolean DEFAULT true,
+    txn_completed_at timestamp with time zone DEFAULT now()
 );
 
 

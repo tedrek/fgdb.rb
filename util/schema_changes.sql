@@ -1,9 +1,21 @@
 -- Tables (and table modifications) for selling items
 
+-- change set 25oct06
+-- track total reported required, suggested fees for a donation
+ALTER TABLE donations
+  ADD COLUMN reported_required_fee numeric(10,2);
+ALTER TABLE donations
+  ADD COLUMN reported_suggested_fee numeric(10,2);
+ALTER TABLE donations
+  ADD COLUMN txn_complete boolean default true;
+ALTER TABLE donations DROP COLUMN invoice_paid_at;
+ALTER TABLE donations
+  ADD COLUMN txn_completed_at TIMESTAMP WITH TIME ZONE DEFAULT now();
+
 -- change set 24oct06
 -- need to allow invoice tracking
-ALTER TABLE donations
-  ADD COLUMN invoice_paid_at TIMESTAMP WITH TIME ZONE DEFAULT now();
+--ALTER TABLE donations
+--  ADD COLUMN invoice_paid_at TIMESTAMP WITH TIME ZONE DEFAULT now();
 
 -- change set 24oct06
 -- change/reload schema to remove "not null" from gizmo_events.comments
