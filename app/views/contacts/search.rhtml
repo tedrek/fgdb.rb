@@ -1,13 +1,5 @@
-<div id="<%= params[:scaffold_id] %>" class="ajax-scaffold">
-  <div id="<%= scaffold_content_id(params) %>">
-    <% if @search_results %>
-      <%= render :partial => "search_results" %>
-    <% else %>
-      <%= render :partial => "searchbox" %>
-    <% end %>
-  </div>
-</div>
-
-<script type="text/javascript">
-Rico.Corner.round('<%= params[:scaffold_id] %>', {color: '#005CB8', bgColor: '#fff', compact: true});
-</script>
+<% if @search_results %>
+  <%= render :partial => "search_results" %>
+<% else %>
+  <%= render :partial => "searchbox" %>
+<% end %>

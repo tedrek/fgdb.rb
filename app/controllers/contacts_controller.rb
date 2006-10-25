@@ -18,7 +18,7 @@ class ContactsController < ApplicationController
   layout :contact_layout_choice
 
   def contact_layout_choice
-    action_name == 'test' ? 'contacts.rhtml' : nil
+    action_name == 'test' ? 'contacts.rhtml' : 'contacts_search'
   end
 
   def index
@@ -34,8 +34,10 @@ class ContactsController < ApplicationController
   end
 
   def search_results
-    @search_results = do_search( params[:query] )
-    render :action => 'search_results.rjs'
+    @search_results ||= do_search( params[:query] )
+    render :update do |page|
+      page.replace_html params[:scaffold_id], :partial => 'search_results'
+    end
   end
 
   def update_display_area
