@@ -124,6 +124,7 @@ class DonationsController < ApplicationController
   def update
     begin
       @donation = Donation.find(params[:id])
+      update_fee_calculation
       @successful = @donation.update_attributes(params[:donation])
       save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
         :gizmo_context_id => @gizmo_context_id)
@@ -167,22 +168,24 @@ class DonationsController < ApplicationController
   # render desired information
   def update_fee
     $LOG.debug "ENTERING DonationsController::update_fee #{Time.now}"
-    #params.inspect.each {|par| $LOG.debug "#{par}, "}
     #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
 
-    @money_tendered = params[:donation][:money_tendered].to_f
-
-    giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag)
-    @required_fee =  giztypes_list.total('extended_required_fee')
-    @suggested_fee =  giztypes_list.total('extended_suggested_fee')
-    @overunder_fee = @money_tendered - @required_fee
-    $LOG.debug "Calculated fees: required_fee[#{@required_fee}], overunder_fee[#{@overunder_fee}]"
-
+    update_fee_calculations
     @options = { :scaffold_id => params[:scaffold_id]}
     render :action => 'update_fee.rjs'
   end
 
+
   private
+
+  def update_fee_calculations
+    giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag)
+    @money_tendered = params[:donation][:money_tendered].to_f
+    @required_fee =  giztypes_list.total('extended_required_fee')
+    @suggested_fee =  giztypes_list.total('extended_suggested_fee')
+    @overunder_fee = @money_tendered - @required_fee
+    $LOG.debug "Calculated fees: required_fee[#{@required_fee}], overunder_fee[#{@overunder_fee}]"
+  end
 
   def create_gizmo_types_detail_list(tag)
     gdl = GizmoTools::GizmoDetailList.new
