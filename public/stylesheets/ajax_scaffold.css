@@ -527,3 +527,29 @@ font-size: 12px;
 padding: 1px;
 border: solid 1px #1F7F00;
 }
+
+.contact_display {
+background-color: #98A;
+border: solid 1px #22A;
+width: 320px;
+}
+
+.contact_display a {
+font-size: 13px;
+}
+
+.contact_display .id {
+font-size: 13px;
+}
+
+.contact_display .name {
+font-size: 20px;
+}
+
+.contact_display .address {
+font-size: 17px;
+}
+
+.contact_display .hours {
+font-size: 17px;
+}

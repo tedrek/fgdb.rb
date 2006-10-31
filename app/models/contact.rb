@@ -13,6 +13,7 @@ class Contact < ActiveRecord::Base
   has_many :sinks,    :through => :relationships_as_source
 
   has_many :donations
+  has_many :volunteer_tasks
 
   # acts_as_userstamp
 
@@ -22,6 +23,18 @@ class Contact < ActiveRecord::Base
 
   def is_person?
     ! self.is_organization?
+  end
+
+  def hours_actual
+    volunteer_tasks.inject(0.0) do |total,task|
+      total += task.duration
+    end
+  end
+
+  def hours_effective
+    volunteer_tasks.inject(0.0) do |total,task|
+      total += task.effective_duration
+    end
   end
 
   def to_s

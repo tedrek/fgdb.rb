@@ -1,1 +1,0 @@
-page.replace_html params[:scaffold_id], :partial => 'search_results'

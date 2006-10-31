@@ -1,10 +1,19 @@
 <% @options = params.merge(:controller => '/contacts', :action => "view", :id => @contact.send("#{Contact.primary_key}")) %>
 
-<p>(<%= @contact.id %>) <%= @contact.display_name %>,
-  <%= @contact.city %>, <%= @contact.postal_code %>,
-  <%= @contact.organization %>
+<div class="contact_display">
+  <span class="name"><%= @contact.display_name %></span>
+  <span class="id">(<%= @contact.id %>)</span>
+  <br />
+  <% if @contact.is_person? and @contact.contact_types.detect {|c_t| c_t.description == 'volunteer' } %>
+    <span class="hours">(has worked <%= @contact.hours_actual %> hours
+      counted as <%= @contact.hours_effective %> hours)</span>
+    <br />
+  <% end %>
+  <% unless( @contact.city.empty? or @contact.postal_code.empty? or @contact.state_or_province.empty? ) %>
+    <span class="address"><%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %></span>
+    <br />
+  <% end %>
   <%= loading_indicator_tag(@options) %>
-
   <% edit_options = @options.merge(:action => 'edit') %>
   <%= link_to_remote "Edit",
     { :url => edit_options,
@@ -14,4 +23,4 @@
     { :url => delete_options,
       :confirm => 'Are you sure?',
       :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
-</p>
+</div>
