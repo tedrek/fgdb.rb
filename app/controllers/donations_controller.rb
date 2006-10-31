@@ -124,7 +124,6 @@ class DonationsController < ApplicationController
   def update
     begin
       @donation = Donation.find(params[:id])
-      update_fee_calculation
       @successful = @donation.update_attributes(params[:donation])
       save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
         :gizmo_context_id => @gizmo_context_id)
