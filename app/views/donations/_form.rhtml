@@ -16,7 +16,7 @@
 
 <div class="form-element">
   <%= render_component( :controller => '/contacts', :action => 'search',
-    :params => { :field_name => "donation[contact_id]", :contact => @donation.contact,
+    :params => { :select_name => "donation[contact_id]", :contact => @donation.contact,
       :search_label => "Find the donor:", :select_label => "Select the donor:" } ) %>
 </div>
 

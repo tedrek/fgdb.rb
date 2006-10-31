@@ -1,16 +1,23 @@
 <% @options = params.merge(:controller => '/contacts', :action => "view", :id => @contact.send("#{Contact.primary_key}")) %>
 
 <div class="contact_display">
-  <span class="name"><%= @contact.display_name %></span>
-  <span class="id">(<%= @contact.id %>)</span>
+  <div class="id"><%= @contact.is_person? ? 'person' : 'organization' %> (id: <%= @contact.id %>)</div>
+  <div class="name"><%= @contact.display_name %></div>
   <br />
-  <% if @contact.is_person? and @contact.contact_types.detect {|c_t| c_t.description == 'volunteer' } %>
-    <span class="hours">(has worked <%= @contact.hours_actual %> hours
-      counted as <%= @contact.hours_effective %> hours)</span>
+  <% if @contact.is_person? %>
+    <div class="hours">
+      <% if @contact.hours_actual != @contact.hours_effective %>
+        hours <span style="font-size: 10px">(real/effective)</span>:
+        <%= @contact.hours_actual %>/<%= @contact.hours_effective %>
+      <% else %>
+        hours: <%= @contact.hours_actual %>
+      <% end %>
+    </div>
     <br />
   <% end %>
-  <% unless( @contact.city.empty? or @contact.postal_code.empty? or @contact.state_or_province.empty? ) %>
-    <span class="address"><%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %></span>
+  <% unless( @contact.city.empty? or @contact.address.empty? or @contact.postal_code.empty? or @contact.state_or_province.empty? ) %>
+    <div class="address"><%= @contact.address %><br />
+      <%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %></div>
     <br />
   <% end %>
   <%= loading_indicator_tag(@options) %>
