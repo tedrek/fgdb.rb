@@ -335,6 +335,26 @@ CREATE TABLE gizmo_types (
     discounts_apply boolean DEFAULT true NOT NULL
 );
 
+--
+-- Name: gps; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
+--
+
+CREATE TABLE gps (
+    money_tendered numeric(10,2),
+    updated_at timestamp with time zone,
+    reported_required_fee numeric(10,2),
+    reported_suggested_fee numeric(10,2),
+    txn_complete boolean,
+    txn_completed_at timestamp with time zone,
+    id integer DEFAULT nextval('public.gps_id_seq'::text) NOT NULL
+);
+
+
+--
+-- Name: TABLE gps; Type: COMMENT; Schema: public; Owner: fgdbdev
+--
+COMMENT ON TABLE gps IS 'development temp table, delete before production use';
+
 
 --
 -- Name: payment_methods; Type: TABLE; Schema: public; Owner: fgdbdev; Tablespace: 
