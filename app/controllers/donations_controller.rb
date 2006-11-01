@@ -188,7 +188,7 @@ class DonationsController < ApplicationController
 
   def create_gizmo_types_detail_list(tag)
     gdl = GizmoTools::GizmoDetailList.new
-    get_datalist_detail(tag).each do |k,v|
+    datalist_data(tag).each do |k,v|
       next if k.nil? or v.nil?
       type_id = v[:gizmo_type_id]
       count = v[:gizmo_count].to_i
