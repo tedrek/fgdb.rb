@@ -130,4 +130,14 @@ class GizmoEventsController < ApplicationController
     
     return_to_main
   end
+
+  def add_attrs_to_form
+    if params[:gizmo_type_id]
+      render :update do |page|
+        page.replace_html params[:div_id], :partial => 'attr_form', :locals => { :params => params }
+      end
+    else
+      render :text => ''
+    end
+  end
 end

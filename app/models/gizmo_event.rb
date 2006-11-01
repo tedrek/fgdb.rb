@@ -13,4 +13,10 @@ class GizmoEvent < ActiveRecord::Base
   def to_s
     "id[#{id}]; type[#{gizmo_type_id}]; context[#{gizmo_context_id}]; count[#{gizmo_count}]"
   end
+
+  def method_missing_with_gizmo_attrs(sym, *args, &block)
+    unless method_missing_without_gizmo_attrs(sym, *args, &block)
+      #:TODO: check for appropriate attrs before failing?
+    end
+  end
 end

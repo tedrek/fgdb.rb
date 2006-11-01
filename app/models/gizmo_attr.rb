@@ -9,4 +9,8 @@ class GizmoAttr < ActiveRecord::Base
     name
   end
 
+  # for html element ids
+  def to_id
+    name.downcase.gsub(/[^-_a-z0-9]/, '_')
+  end
 end

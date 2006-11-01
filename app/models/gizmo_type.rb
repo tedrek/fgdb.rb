@@ -14,4 +14,19 @@ class GizmoType < ActiveRecord::Base
     description
   end
 
+  def relevant_attrs(context)
+    relevant_typeattrs(context).map {|typeattr|
+      typeattr.gizmo_attr
+    }
+  end
+
+  def relevant_typeattrs(context)
+    typeattrs = gizmo_typeattrs.select {|typeattr|
+      (typeattr.gizmo_contexts.include? context) and
+        (typeattr.is_required)
+    } || []
+    typeattrs += self.parent.relevant_typeattrs(context) if self.parent
+    typeattrs
+  end
+
 end
