@@ -14,5 +14,9 @@ else
   page.replace_html element_messages_id(@update_options), :partial => 'form_messages'
   page << "Form.enable('#{element_form_id(@update_options)}');"
   page.hide loading_indicator_id(@update_options)
+  
+  unless @printurl.nil?
+    page << "var printWinRef=window.open('#{@printurl}','printme','#{@print_window_options}');"
+  end
 end
 

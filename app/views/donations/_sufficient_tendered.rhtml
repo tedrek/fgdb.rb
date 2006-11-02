@@ -1,0 +1,8 @@
+<span class="choice-div-message" id="choice-div-message">
+    Amount owed is:
+    <%= number_to_currency(@calc_total_fee) %>.
+    Enough was tendered:
+    <%= number_to_currency(@money_tendered) %>.
+    <br />A receipt will be printed and transaction marked as
+    fully paid.
+</span>

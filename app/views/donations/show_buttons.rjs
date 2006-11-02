@@ -1,0 +1,4 @@
+@options = { :scaffold_id => params[:scaffold_id], :action => "update", :id => params[:id] }
+  page.replace 'buttons', :partial => 'buttons'
+  page.visual_effect :highlight, 'buttons', :duration => 3
+  page.show 'buttons'

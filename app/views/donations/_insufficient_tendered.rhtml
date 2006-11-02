@@ -1,0 +1,13 @@
+<span class="choice-div-message" id="choice-div-message">
+    Amount owed is:
+    <%= number_to_currency(@calc_total_fee) %>.
+    Amount tendered is insufficient:
+    <%= number_to_currency(@money_tendered) %>.
+    <br />Would you like to 
+    <ul>
+      <li>Save and print an invoice for the balance 
+        (<%= number_to_currency(-@overunder) %>) owed? 
+      <li>Save, print a receipt and mark the transaction fully paid?
+      <li>Do not save and resume editing the transaction?
+    </ul>
+</span>

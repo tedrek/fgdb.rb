@@ -124,14 +124,35 @@ class DonationsController < ApplicationController
   def update
     begin
       @donation = Donation.find(params[:id])
-      @successful = @donation.update_attributes(params[:donation])
-      save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
-        :gizmo_context_id => @gizmo_context_id)
+      resolution = resolve_submit
+      case resolution
+      when 'invoice','receipt'
+        # ?? we probably need 'SAVED' message somewhere
+        _save(resolution)
+      end
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
     
-    return render(:action => 'update.rjs') if request.xhr?
+    @printurl = nil
+    @print_window_options =
+      "resizable=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
+    case resolution
+    when 'ask'
+      # put up buttons for user choice
+      @testflag = false
+      return render(:action => 'show_buttons.rjs') if request.xhr?
+    when 'receipt'
+      @printurl = '/donations/receipt/' + @donation.id.to_s
+      return render(:action => 'update.rjs') if request.xhr?
+    when 'invoice'
+      @printurl = '/donations/invoice/' + @donation.id.to_s
+      return render(:action => 'update.rjs') if request.xhr?
+    else
+      # for simple re-edits and all indecipherable input
+      # just redisplay the edit screen
+      return render(:action => 'update.rjs') if request.xhr?
+    end
 
     if @successful
       return_to_main
@@ -169,21 +190,53 @@ class DonationsController < ApplicationController
     $LOG.debug "ENTERING DonationsController::update_fee #{Time.now}"
     #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
 
-    update_fee_calculations
+    #update_fee_calculations
+    calc_fees
     @options = { :scaffold_id => params[:scaffold_id]}
     render :action => 'update_fee.rjs'
+  end
+
+  # show printable receipt
+  def receipt
+    @donation = Donation.find(params[:id])
+    @total_reported_fees = 
+      @donation.reported_required_fee + @donation.reported_suggested_fee
+    render :partial => 'receipt', :layout => true
   end
 
 
   private
 
+  # save common logic
+  def _save(type)
+    @donation.attributes = params[:donation]
+    case type
+    when 'invoice'
+      @donation.txn_complete = false
+      @donation.txn_completed_at = nil
+    when 'receipt'
+      @donation.txn_complete = true
+      @donation.txn_completed_at = Time.now()
+    end
+    @donation.reported_required_fee = @required_fee
+    @donation.reported_suggested_fee = @suggested_fee
+    @successful = @donation.save
+    save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
+      :gizmo_context_id => @gizmo_context_id)
+  end
+
   def update_fee_calculations
+    #
+  end
+
+  # find out if we received enough money
+  def calc_fees
     giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag)
     @money_tendered = params[:donation][:money_tendered].to_f
-    @required_fee =  giztypes_list.total('extended_required_fee')
-    @suggested_fee =  giztypes_list.total('extended_suggested_fee')
-    @overunder_fee = @money_tendered - @required_fee
-    $LOG.debug "Calculated fees: required_fee[#{@required_fee}], overunder_fee[#{@overunder_fee}]"
+    @required_fee = giztypes_list.total('extended_required_fee')
+    @suggested_fee = giztypes_list.total('extended_suggested_fee')
+    @calc_total_fee = @suggested_fee + @required_fee
+    @overunder = @money_tendered - @calc_total_fee
   end
 
   def create_gizmo_types_detail_list(tag)
@@ -197,5 +250,39 @@ class DonationsController < ApplicationController
     end
     $LOG.debug "gdl: #{gdl.inspect}"
     return gdl
+  end
+
+  # user has submitted form, what is the next step
+  def resolve_submit
+    # by the way, hide the choice buttons now
+
+    resolve_arg = nil
+    # calculate amount owed and set @overunder
+    calc_fees
+    # set default resolution per over/underpayment
+    txn_res = 'receipt'   # base default value
+    txn_res = 'ask' if @overunder < 0
+
+    # adjust resolution if user has just given us input
+    user_input = user_resolve_choice
+    txn_res = user_input if user_input
+
+    # return to caller if resolution involves usual save
+    resolve_arg = case txn_res
+    when 'invoice','receipt','ask'  then  txn_res
+    when 'cancel'                   then  're-edit'
+    else                                  're-edit'
+    end
+    return resolve_arg
+  end
+
+  # parse user choice
+  def user_resolve_choice
+    return nil unless params.has_key? :user_choice
+    set_choice = case params[:user_choice]
+    when 'invoice','receipt','cancel'    then params[:user_choice]
+    else                   nil
+    end
+    return set_choice
   end
 end

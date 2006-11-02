@@ -1,0 +1,47 @@
+<div class="choice-div" style="display: none;" id="buttons">
+  <span id="buttons_messages">
+    <% unless @overunder.nil? %>
+      <% if @overunder < 0 %>
+        <%= render :partial => 'insufficient_tendered' %>
+      <% else %>
+        <%= render :partial => 'sufficient_tendered' %>
+      <% end %>
+    <% end %>
+  </span>
+
+  <p id="choice-div-buttons">
+  <span class="choice-div-button" id="invoice_button">
+    <INPUT type="button" id="buttons_invoice" value="Save + Invoice" 
+      onclick="<%= remote_function( 
+          :url => @options.merge(:user_choice => 'invoice'),
+          :with => 'Form.serialize(this.form)',
+          :complete  => "Element.hide('buttons');"
+        ) %> " >
+  </span>
+  <span class="choice-div-button" id="receipt_button">
+    <INPUT type="button" id="buttons_receipt" value="Save + Receipt" 
+      onclick="<%= remote_function( 
+          :url => @options.merge(:user_choice => 'receipt'),
+          :with => 'Form.serialize(this.form)',
+          :before  => "var urlrec = '/donations/receipt/1';var printWinRef=window.open(urlrec,'Receipt');",
+          :complete  => "Element.hide('buttons');"
+        ) %> " >
+  </span>
+  <span class="choice-div-button" id="cancel_button">
+    <INPUT type="button" id="buttons_cancel" value="Continue editing" 
+      onclick="<%= remote_function( 
+          :url => @options.merge(:user_choice => 'cancel'),
+          :with => 'Form.serialize(this.form)',
+          :before => "$('choice-div-message').innerHTML = 'resuming edit...';",
+          :complete  => "Element.hide('choice-div-buttons');"
+        ) %> " >
+  </span>
+  </p>
+</div>
+<%= javascript_tag <<-END
+      function hide_buttons(request) {
+        Element.hide('buttons');
+        return false;
+      }
+      END
+%>
