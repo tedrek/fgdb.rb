@@ -62,6 +62,29 @@ class Contact < ActiveRecord::Base
     end
   end
 
+  def csz
+    "#{city}, #{state_or_province}  #{postal_code}"
+  end
+
+  def display_name_address
+    disp = []
+    disp.push(display_name) unless display_name.nil?
+    disp.concat(display_address) unless 
+      display_address.nil? or display_address.size == 0
+    return disp
+  end
+
+  def display_address
+    dispaddr = []
+    dispaddr.push(address)
+    dispaddr.push(extra_address) unless 
+      extra_address.nil? or extra_address == ''
+    dispaddr.push(csz)
+    dispaddr.push(country) unless 
+      country.nil? or country == '' or country.upcase =~ /^USA*$/
+    return dispaddr
+  end
+
   def relationships
     (relationships_as_source + relationships_as_sink).uniq
   end

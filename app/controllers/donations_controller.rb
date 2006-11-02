@@ -196,16 +196,27 @@ class DonationsController < ApplicationController
     render :action => 'update_fee.rjs'
   end
 
-  # show printable receipt
   def receipt
-    @donation = Donation.find(params[:id])
-    @total_reported_fees = 
-      @donation.reported_required_fee + @donation.reported_suggested_fee
-    render :partial => 'receipt', :layout => true
+    display_printable_invoice_receipt('receipt')
+  end
+
+  def invoice
+    display_printable_invoice_receipt('invoice')
   end
 
 
   private
+
+  def display_printable_invoice_receipt(type=nil)
+    type ||= 'invoice'
+    @donation = Donation.find(params[:id])
+    @total_reported_fees = 
+      @donation.reported_required_fee + @donation.reported_suggested_fee
+    render :partial => 'receipt_invoice', :layout => true, 
+      :locals => { :type => type, 
+        :owed => @total_reported_fees - @donation.money_tendered
+      }
+  end
 
   # save common logic
   def _save(type)

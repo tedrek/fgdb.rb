@@ -1,0 +1,44 @@
+<img src="/images/freegeeklogo.gif" alt="freegeeklogo.gif" />
+<p>
+Tax-Deductible Donation 
+<% if type == 'receipt' %>
+  Receipt
+<% elsif type == 'invoice' %>
+  Invoice
+<% end %>
+<br />Federal Tax I.D.  -1292010
+</p>
+<p><strong>Issued to:</strong></p>
+<% @donation.contact.display_name_address.each do |li| %>
+  <%= "<br />#{li}" %>
+<% end %>
+
+<hr />
+
+<table><tr>
+  <td>Total fees:</td>
+  <td><%= number_to_currency(@total_reported_fees) %></td>
+  </tr><tr>
+  <td>Total paid:</td>
+  <td><%= number_to_currency(@donation.money_tendered) %></td>
+  </tr>
+  <% if type == 'invoice' %>
+    <tr><td></td><td> ----------</td></tr>
+    <tr>
+    <td>Total owed:</td>
+    <td><%= number_to_currency(owed) %></td>
+    </tr>
+  <% end %>
+</table>
+<% if type == 'invoice' %>
+  Payment due: <%= Time.now.+(60*60*24*30).strftime("%m/%d/%Y") %>
+<% end %>
+
+<p>
+<span id="button_span">
+  <INPUT type="button" id="print_button" value="Print" 
+    onclick="window.print()" >
+  <INPUT type="button" id="close_button" value="Close" 
+    onclick="window.close()" >
+</span>
+</p>
