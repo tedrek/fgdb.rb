@@ -23,7 +23,6 @@
       onclick="<%= remote_function( 
           :url => @options.merge(:user_choice => 'receipt'),
           :with => 'Form.serialize(this.form)',
-          :before  => "var urlrec = '/donations/receipt/1';var printWinRef=window.open(urlrec,'Receipt');",
           :complete  => "Element.hide('buttons');"
         ) %> " >
   </span>
@@ -38,10 +37,3 @@
   </span>
   </p>
 </div>
-<%= javascript_tag <<-END
-      function hide_buttons(request) {
-        Element.hide('buttons');
-        return false;
-      }
-      END
-%>
