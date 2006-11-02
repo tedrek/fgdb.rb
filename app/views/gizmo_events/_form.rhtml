@@ -36,7 +36,7 @@
 
 <div id="<%= params[:scaffold_id] %>_event_extras">
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
-    <%= render :partial => 'attr_form', :locals => { :params => params.merge( {
+    <%= render :partial => 'gizmo_events/attr_form', :locals => { :params => params.merge( {
           :gizmo_type_id => @gizmo_event.gizmo_type_id,
           :gizmo_context_id => @gizmo_event.gizmo_context_id,
           :gizmo_event_id => @gizmo_event.id
