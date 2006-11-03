@@ -33,4 +33,8 @@ module ContactsHelper
     session[options[:scaffold_id]][:select_name]
   end
 
+  def form_insertion_div_id(options)
+    "#{options[:scaffold_id]}_form_insertion"
+  end
+
 end

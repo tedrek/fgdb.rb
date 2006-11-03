@@ -1,0 +1,19 @@
+    <%= form_remote_tag :url => @options.merge(:controller => '/contacts'),
+      :loading => "Form.disable('#{@options[:form_id]}');",
+      :html => { :id => @options[:form_id],
+                :class => 'searchbox_form' } %>
+
+      <h4>Contact</h4>
+
+      <div id="small_form_messages" class="messages-container"></div>
+
+      <%= render :partial => 'form' %>
+
+      <p class="form-footer">
+        <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
+        <% cancel_params = @options.merge(:controller => '/contacts', :action => 'cancel', :referring_action => @options[:action]) %>
+        <%= link_to_remote "Cancel",
+          { :url => cancel_params,
+            :loading => "Element.show('#{@options[:loading_indicator_id]}');" } %>
+      </p>
+    <%= end_form_tag %>

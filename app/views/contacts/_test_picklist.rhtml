@@ -1,0 +1,22 @@
+<button id="picklist_test_button" name="picklist_test_button" type="button"
+  onclick="<%= remote_function :url => {
+      :action => 'picklist',
+      :controller => '/contacts',
+      :scaffold_id => params[:scaffold_id],
+      :id => 3
+    }
+%>">
+  Test Picklist
+</button>
+
+<div id="picklist_div">
+</div>
+<div id="small_edit_div">
+  <div id="small_edit_messages">
+  </div>
+  <div id="<%= form_insertion_div_id(params) %>">
+  </div>
+  <div id="small_edit_form_messages">
+  </div>
+  <%= loading_indicator_tag(params) %>
+</div>
