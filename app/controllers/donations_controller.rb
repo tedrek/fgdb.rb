@@ -61,8 +61,8 @@ class DonationsController < ApplicationController
     @donation = Donation.new
     @successful = true
 
-    @required_fee = 0
-    @suggested_fee = 1
+    @model_required_fee = 0
+    @model_suggested_fee = 0
     @money_tendered = 0
     @overunder_fee = 0
     @demodisp = 999
@@ -102,8 +102,8 @@ class DonationsController < ApplicationController
       @donation = Donation.find(params[:id])
       @successful = !@donation.nil?
 
-      @required_fee = 0
-      @suggested_fee = 1
+      @model_required_fee = 0
+      @model_suggested_fee = 0
       @money_tendered = @donation.money_tendered
       @overunder_fee = 0
       @demodisp = 999
@@ -136,7 +136,7 @@ class DonationsController < ApplicationController
     
     @printurl = nil
     @print_window_options =
-      "resizable=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
+      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
     case resolution
     when 'ask'
       # put up buttons for user choice
@@ -212,9 +212,25 @@ class DonationsController < ApplicationController
     @donation = Donation.find(params[:id])
     @total_reported_fees = 
       @donation.reported_required_fee + @donation.reported_suggested_fee
+    @required_fee_paid = 
+      [@donation.reported_required_fee, @donation.money_tendered].min
+    @required_fee_owed = 
+      [0, @donation.reported_required_fee - @donation.money_tendered].max
+    @cash_donation_paid = 
+      [0, @donation.money_tendered - @donation.reported_required_fee].max
+    @cash_donation_owed = 
+      @donation.reported_suggested_fee - @cash_donation_paid
+
     render :partial => 'receipt_invoice', :layout => true, 
-      :locals => { :type => type, 
-        :owed => @total_reported_fees - @donation.money_tendered
+      :locals => { 
+        :type => type, 
+        :owed => @total_reported_fees - @donation.money_tendered,
+        :cash_donation => @donation.reported_suggested_fee,
+        :required_fee => @donation.reported_required_fee,
+        :cash_donation_paid => @cash_donation_paid,
+        :cash_donation_owed => @cash_donation_owed,
+        :required_fee_paid => @required_fee_paid,
+        :required_fee_owed => @required_fee_owed
       }
   end
 
@@ -229,25 +245,30 @@ class DonationsController < ApplicationController
       @donation.txn_complete = true
       @donation.txn_completed_at = Time.now()
     end
-    @donation.reported_required_fee = @required_fee
-    @donation.reported_suggested_fee = @suggested_fee
+    #@donation.reported_required_fee = @model_required_fee
+    #@donation.reported_suggested_fee = @model_suggested_fee
     @successful = @donation.save
     save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
       :gizmo_context_id => @gizmo_context_id)
   end
 
-  def update_fee_calculations
-    #
-  end
-
   # find out if we received enough money
   def calc_fees
+    @donation = Donation.find(params[:id])
     giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag)
     @money_tendered = params[:donation][:money_tendered].to_f
-    @required_fee = giztypes_list.total('extended_required_fee')
-    @suggested_fee = giztypes_list.total('extended_suggested_fee')
-    @calc_total_fee = @suggested_fee + @required_fee
-    @overunder = @money_tendered - @calc_total_fee
+
+    # these are calculated from model values
+    @model_required_fee = giztypes_list.total('extended_required_fee')
+    @donation.reported_required_fee = @model_required_fee
+    @model_suggested_fee = giztypes_list.total('extended_suggested_fee')
+    $LOG.debug "@model_suggested_fee: #{@model_suggested_fee.inspect}"
+
+    # these reflect onscreen values as well as model values
+    @user_edited_total_fee = 
+      params[:donation][:reported_suggested_fee].to_f + 
+      @model_required_fee
+    @overunder = @money_tendered - @user_edited_total_fee
   end
 
   def create_gizmo_types_detail_list(tag)
@@ -256,6 +277,8 @@ class DonationsController < ApplicationController
       next if k.nil? or v.nil?
       type_id = v[:gizmo_type_id]
       count = v[:gizmo_count].to_i
+      $LOG.debug "type_id: #{type_id.inspect}"
+      $LOG.debug "count: #{count.inspect}"
       next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
       gdl.add(type_id, count)
     end
@@ -265,8 +288,6 @@ class DonationsController < ApplicationController
 
   # user has submitted form, what is the next step
   def resolve_submit
-    # by the way, hide the choice buttons now
-
     resolve_arg = nil
     # calculate amount owed and set @overunder
     calc_fees
@@ -278,7 +299,6 @@ class DonationsController < ApplicationController
     user_input = user_resolve_choice
     txn_res = user_input if user_input
 
-    # return to caller if resolution involves usual save
     resolve_arg = case txn_res
     when 'invoice','receipt','ask'  then  txn_res
     when 'cancel'                   then  're-edit'

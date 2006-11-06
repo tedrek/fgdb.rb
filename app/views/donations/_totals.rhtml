@@ -2,14 +2,16 @@
   <%= observe_form(element_form_id(@options), 
     :url => {
       :controller => '/donations', 
-      :action => 'update_fee'},
+      :action => 'update_fee',
+      :id => @donation.id},
+    :with => 'Form.serialize(this.form)',
     :update => ""
   ) %>
 
   <span id="required_lbl">Required fee: </span>
-  <span id="required_amt"><%= @required_fee %></span>
+  <span id="required_amt"><%= @model_required_fee %></span>
   <span id="suggested_lbl">Suggested fee: </span>
-  <span id="suggested_amt"><%= @suggested_fee %></span>
+  <span id="suggested_amt"><%= @model_suggested_fee %></span>
   <span id="tendered_lbl">tendered fee: </span>
   <span id="tendered_amt"><%= @money_tendered %></span>
   <span id="overunder_lbl">overunder: </span>
@@ -20,7 +22,8 @@
     <INPUT type="button" id="update_fee_input" value="Update fee" 
       onclick="<%= remote_function( :url => {
             :controller => '/donations', 
-            :action => 'update_fee' },
+            :action => 'update_fee' ,
+            :id => @donation.id},
           :with => 'Form.serialize(this.form)' 
         ) %> " >
   </span>

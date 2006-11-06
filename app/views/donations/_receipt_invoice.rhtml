@@ -1,38 +1,69 @@
-<img src="/images/freegeeklogo.gif" alt="freegeeklogo.gif" />
-<p>
-Tax-Deductible Donation 
-<% if type == 'receipt' %>
-  Receipt
-<% elsif type == 'invoice' %>
-  Invoice
-<% end %>
-<br />Federal Tax I.D.  -1292010
-</p>
-<p><strong>Issued to:</strong></p>
-<% @donation.contact.display_name_address.each do |li| %>
-  <%= "<br />#{li}" %>
+<table>
+<tr>
+  <td><img src="/images/freegeeklogo.png" alt="freegeeklogo.png" /></td>
+  <td><img src="/images/hdr-address.gif" alt="hdr-address.gif" /></td>
+  <td>
+    <%= @donation.contact.display_name_address.join('<br />') %>
+  </td>
+</tr>
+<tr>
+  <td colspan="3"><hr /></td>
+</tr>
+
+<tr>
+  <td colspan="2">Tax-Deductible Donation 
+    <strong><font color="#FF0000" size="+2">
+    <% if type == 'receipt' %>
+      Receipt
+    <% elsif type == 'invoice' %>
+      Invoice
+    <% end %>
+    </font></strong>
+  </td>
+  <td align="right">Federal Tax I.D.  93-1292010</td>
+</tr>
+<tr>
+  <td>Date: <%= Time.now.strftime("%m/%d/%Y") %></td>
+  <td>
+    <% if type == 'receipt' %>
+      Receipt
+    <% elsif type == 'invoice' %>
+      Invoice
+    <% end %>
+    Number: <%= @donation.id %>
+  </td>
+  <td align="right">
+    <% if type == 'invoice' %>
+      <strong>
+      Due: <%= Time.now.+(60*60*24*30).strftime("%m/%d/%Y") %>
+      </strong>
+    <% end %>
+  </td>
+</tr>
+
+<%= render :partial => 'donation_detail_totals', :locals => { :type => type, :owed => owed } %> 
+
+<!--
+<% if @donation.money_tendered > 0 %>
+  <p>Payment method: <%= @donation.payment_method.description %></p>
 <% end %>
 
-<hr />
-
-<table><tr>
-  <td>Total fees:</td>
-  <td><%= number_to_currency(@total_reported_fees) %></td>
-  </tr><tr>
+<table>
+<tr>
+  <td>Calculated Required fees:</td>
+  <td><%= number_to_currency(@model_required_fee) %></td>
+</tr>
+<tr>
+  <td>Calculated Suggested donation:</td>
+  <td><%= number_to_currency(@model_suggested_fee) %></td>
+</tr>
+<tr>
   <td>Total paid:</td>
   <td><%= number_to_currency(@donation.money_tendered) %></td>
-  </tr>
-  <% if type == 'invoice' %>
-    <tr><td></td><td> ----------</td></tr>
-    <tr>
-    <td>Total owed:</td>
-    <td><%= number_to_currency(owed) %></td>
-    </tr>
-  <% end %>
+</tr>
+
 </table>
-<% if type == 'invoice' %>
-  Payment due: <%= Time.now.+(60*60*24*30).strftime("%m/%d/%Y") %>
-<% end %>
+-->
 
 <p>
 <span id="button_span">

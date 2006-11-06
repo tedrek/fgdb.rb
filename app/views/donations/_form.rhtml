@@ -1,10 +1,39 @@
 <fieldset>
+
+<div class="view-element">
+  <label for="donation_id">ID</label>
+  <span id="donation_id" name="donation[id]">
+  <%= @donation.id %>
+  </span>
+</div>
+
   <div class="row">
     <!--[form:donation]-->
 <div class="form-element">
   <%= render_component( :controller => '/contacts', :action => 'search',
     :params => { :select_name => "donation[contact_id]", :contact => @donation.contact,
       :search_label => "Find the donor:", :select_label => "Select the donor:" } ) %>
+</div>
+
+<div class="view-element">
+  <label for="donation_reported_required_fee">Required fee</label>
+  <span id="donation_reported_required_fee"
+  name="donation[reported_required_fee]">
+  <%= @donation.reported_required_fee %>
+  </span>
+</div>
+
+<div class="form-element">
+  <label for="donation_reported_suggested_fee">Cash donation</label>
+  <%= text_field 'donation', 'reported_suggested_fee' ,
+    {:class=>"text-input"}  %>
+</div>
+
+<div class="view-element">
+  <label for="donation_owed">Amount owed</label>
+  <span id="donation_owed">
+  <%= @user_edited_total_fee %>
+  </span>
 </div>
 
 <div class="form-element">
