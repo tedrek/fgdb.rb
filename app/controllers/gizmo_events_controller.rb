@@ -95,7 +95,10 @@ class GizmoEventsController < ApplicationController
   def update
     begin
       @gizmo_event = GizmoEvent.find(params[:id])
-      @successful = @gizmo_event.update_attributes(params[:gizmo_event])
+      params[:gizmo_event].each {|name,val|
+        @gizmo_event.send(name.to_s + "=", val)
+      }
+      @successful = @gizmo_event.save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end

@@ -52,13 +52,16 @@ class GizmoEvent < ActiveRecord::Base
   alias :method_missing_without_gizmo_attrs :method_missing
   alias :method_missing :method_missing_with_gizmo_attrs
 
-  before_save :save_gizmo_attrs
-  def save_gizmo_attrs
-    gizmo_events_gizmo_typeattrs = gizmo_typeattrs.map {|typeattr|
-      attr_entry = GizmoEventsGizmoTypeattr.new
-      attr_entry.gizmo_event = self
-      attr_entry.gizmo_typeattr = typeattr
-      attr_entry.value = self.send typeattr.gizmo_attr.name.to_sym
-    }
+  before_save :setup_gizmo_attrs
+  def setup_gizmo_attrs
+    if @gizmo_attrs
+      self.gizmo_events_gizmo_typeattrs = gizmo_typeattrs.map {|typeattr|
+        attr_entry = GizmoEventsGizmoTypeattr.new
+        attr_entry.gizmo_event = self
+        attr_entry.gizmo_typeattr = typeattr
+        attr_entry.value = @gizmo_attrs[typeattr.gizmo_attr.name]
+        attr_entry
+      }
+    end
   end
 end
