@@ -8,15 +8,57 @@ class GizmoEvent < ActiveRecord::Base
 
   has_many    :gizmo_events_gizmo_typeattrs,
               :dependent => :destroy
-  has_many    :gizmo_typeattrs, :through => :gizmo_events_gizmo_typeattr
+
+  def gizmo_attrs
+    if gizmo_type and gizmo_context
+      gizmo_type.relevant_attrs(gizmo_context)
+    else
+      []
+    end
+  end
+
+  def gizmo_typeattrs
+    if gizmo_type and gizmo_context
+      gizmo_type.relevant_typeattrs(gizmo_context)
+    else
+      []
+    end
+  end
 
   def to_s
     "id[#{id}]; type[#{gizmo_type_id}]; context[#{gizmo_context_id}]; count[#{gizmo_count}]"
   end
 
+  def initialize_gizmo_attrs
+    attrs = {}
+    gizmo_events_gizmo_typeattrs.each {|attr|
+      attrs[attr.gizmo_typeattr.gizmo_attr.name] = attr.value
+    }
+    attrs
+  end
+
   def method_missing_with_gizmo_attrs(sym, *args, &block)
-    unless method_missing_without_gizmo_attrs(sym, *args, &block)
-      #:TODO: check for appropriate attrs before failing?
+    attr_name = sym.to_s.sub(/=/, '')
+    if gizmo_attrs.find {|attr| attr.name == attr_name }
+      @gizmo_attrs ||= initialize_gizmo_attrs
+      if attr_name == sym.to_s
+        return @gizmo_attrs[attr_name]
+      else
+        return @gizmo_attrs[attr_name] = args[0]
+      end
     end
+    method_missing_without_gizmo_attrs(sym, *args, &block)
+  end
+  alias :method_missing_without_gizmo_attrs :method_missing
+  alias :method_missing :method_missing_with_gizmo_attrs
+
+  before_save :save_gizmo_attrs
+  def save_gizmo_attrs
+    gizmo_events_gizmo_typeattrs = gizmo_typeattrs.map {|typeattr|
+      attr_entry = GizmoEventsGizmoTypeattr.new
+      attr_entry.gizmo_event = self
+      attr_entry.gizmo_typeattr = typeattr
+      attr_entry.value = self.send typeattr.gizmo_attr.name.to_sym
+    }
   end
 end

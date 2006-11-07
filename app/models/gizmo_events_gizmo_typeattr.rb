@@ -13,4 +13,12 @@ class GizmoEventsGizmoTypeattr < ActiveRecord::Base
 #    "typeattr[#{gizmo_typeattr_id}]; event[#{gizmo_event_id}]; value[#{relevant_vals.join(', ')}]"
 #  end
 
+  def value
+    self.send "attr_val_#{gizmo_typeattr.gizmo_attr.datatype}"
+  end
+
+  def value=( val )
+    self.send "attr_val_#{gizmo_typeattr.gizmo_attr.datatype}=", val
+  end
+
 end
