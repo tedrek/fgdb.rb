@@ -14,8 +14,8 @@ function playwith_amounts(o) {
 }
 
 // Called as:
-// confirmUpdateElement(confirm_message, id, new_value)
-function confirmUpdateElement(msg, id, val){
+// confirmReplaceElementValue(id, new_value, confirm_message)
+function confirmReplaceElementValue(id, val, msg){
   var truth_value = confirm(msg)
   if (truth_value){
     // alert("updating element:" + id + " with value:" + val)

@@ -3,5 +3,5 @@ page.replace_html 'donation_owed', @user_edited_total_fee
 page.replace_html 'donation_reported_required_fee', @donation.reported_required_fee
 if @model_suggested_fee > params[:donation][:reported_suggested_fee].to_f
   page.visual_effect(:highlight, 'donation_reported_suggested_fee', :duration => 10)
-  page.call 'confirmUpdateElement', "Cash donation amount is less than the suggested fee of #{number_to_currency(@model_suggested_fee)}.  Do you want to update cash donation amount with Suggested fee?", 'donation_reported_suggested_fee', @model_suggested_fee
+  page.call 'confirmReplaceElementValue', 'donation_reported_suggested_fee', @model_suggested_fee, "Cash donation amount is less than the Suggested fee of #{number_to_currency(@model_suggested_fee)}.  Do you want to update cash donation amount with Suggested fee?"
 end
