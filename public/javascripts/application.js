@@ -14,6 +14,17 @@ function playwith_amounts(o) {
 }
 
 // Called as:
+// confirmUpdateElement(confirm_message, id, new_value)
+function confirmUpdateElement(msg, id, val){
+  var truth_value = confirm(msg)
+  if (truth_value){
+    // alert("updating element:" + id + " with value:" + val)
+    $(id).value = val
+  }
+  return truth_value
+}
+
+// Called as:
 // calculateOffsetLeft(_inputField)
 // was ob
 function calculateOffsetLeft(r){
