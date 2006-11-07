@@ -2,7 +2,7 @@
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  page.replace_html 'insert_form_here', ''
+  page.replace_html form_insertion_div_id(@options), ''
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
   page.replace_html params[:scaffold_id], :partial => 'search_results', :locals => { :@search_results => [@contact] }
   page << "Form.enable($('#{searchbox_field_id(@options)}').form.id);"

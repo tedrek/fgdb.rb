@@ -4,11 +4,9 @@
   </div>
 </div>
 
-<div id="display_form_here" />
-
-<script type="text/javascript">
-  Rico.Corner.round('<%= params[:scaffold_id] %>', {color: '#005CB8', bgColor: '#fff', compact: true});
-  foo = document.createElement('div');
-  foo.innerHTML = '<div class="searchbox_form" id="insert_form_here" />';
-  document.body.appendChild(foo);
-</script>
+<%= javascript_tag "
+      Rico.Corner.round('#{params[:scaffold_id]}', {color: '#005CB8', bgColor: '#fff', compact: true});
+      foo = document.createElement('div');
+      foo.innerHTML = '<div class=\"searchbox_form\" id=\"#{form_insertion_div_id(params)}\" />';
+      document.body.appendChild(foo);
+    " %>
