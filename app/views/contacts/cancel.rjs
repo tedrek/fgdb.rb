@@ -2,10 +2,8 @@
 
 if @successful
   page.replace_html form_insertion_div_id(@options), ''
-  if params[:restore_focus]
-    page << "Form.enable($('#{params[:restore_focus]}').form.id);"
-    page << "Field.focus('#{params[:restore_focus]}');"
-  end
+  page << "Form.enable($('#{searchbox_field_id(@options)}').form.id);"
+  page << "Field.focus('#{searchbox_field_id(@options)}');"
 else
   page.hide loading_indicator_id(@options)
 end

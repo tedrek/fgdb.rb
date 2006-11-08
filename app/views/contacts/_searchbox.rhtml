@@ -4,8 +4,11 @@
   <button name="contact_searchbox_search" type="button"
     onclick="<%= remote_function :url => {
         :action => 'search_results',
-        :controller => '/contacts' },
-      :with => "'scaffold_id=#{@scaffold_id}&query=' + $('#{searchbox_field_id(params)}').value"
+        :controller => '/contacts',
+        :scaffold_id => @scaffold_id },
+      :with => "'query=' + $('#{searchbox_field_id(params)}').value",
+      :loading => "Element.show('#{loading_indicator_id(params)}');"
  %>">
     Search
   </button>
+  <%= loading_indicator_tag(params) %>
