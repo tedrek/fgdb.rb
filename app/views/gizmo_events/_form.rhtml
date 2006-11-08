@@ -5,12 +5,12 @@
 <div class="form-element">
   <label for="gizmo_event_gizmo_count">Quantity</label>
   <%= text_field 'gizmo_event', 'gizmo_count' ,
-    {:class=>"text-input", :size=>"3"} %>
+    {:class=>"text-input donationFeeObserver", :size=>"3"} %>
 </div>
 
 <div class="form-element">
   <label for="gizmo_event_gizmo_type_id">type</label><br/>
-  <select id="gizmo_event_gizmo_type_id"
+  <select id="gizmo_event_gizmo_type_id" class="donationFeeObserver"
     name="gizmo_event[gizmo_type_id]" >
     <option value=""></option>
     <%= options_from_collection_for_select( GizmoType.find_all, "id", "description", @gizmo_event.gizmo_type_id ) %>
