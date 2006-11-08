@@ -1,0 +1,21 @@
+<% if session[:dropped].empty? %>
+  <%= "Here's your shopping cart." %>
+<% end %>
+<% if true %>
+  <%= "Instead of showing contents we show this message..." %>
+<% else %>
+  <% session[:dropped][:contact].each do |contact,quantity| %>
+  <div>
+    <% quantity.times do |i| %>
+      <%= image_tag "/images/none", 
+            :class => "contact-items", 
+            :id => "item_#{contact}_#{i}", 
+            :style => "position:relative;" %>
+      <%= draggable_element "item_#{contact}_#{i}", :revert => true %>
+    <% end %>
+    <span class="title">
+      <%= contact.find(contact).display_name + " (#{quantity})" %>
+    </span>
+  </div>
+  <% end %>
+<% end %>

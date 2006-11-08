@@ -130,4 +130,31 @@ class TillHandlersController < ApplicationController
     
     return_to_main
   end
+
+  # drop receiver testing
+  def droppad
+    session[:dropped] ||= {}
+    @contacts = Contact.find(:all)
+  end
+  
+  def add
+    id =   params[:id].split("_")[1]
+    type = params[:id].split("_")[0]
+    
+    session[:dropped][type.to_sym] ||= {}
+    session[:dropped][type.to_sym][id] = 
+      session[:dropped][type.to_sym].include?(id) ?  
+      session[:dropped][type.to_sym][id]+1 : 1
+  
+    #render :partial => 'dp_contents'
+    new_w_contact(id) if type == 'contact'
+  end
+
+  def new_w_contact(id = nil)
+    new if id.nil?
+    @till_handler = TillHandler.new
+    @till_handler.contact_id = id
+    @successful = true
+    return render(:action => 'new.rjs') if request.xhr?
+  end
 end
