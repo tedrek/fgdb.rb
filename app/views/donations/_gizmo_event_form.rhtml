@@ -1,0 +1,58 @@
+<fieldset>
+  <div class="row">
+    <!--[form:gizmo_event]-->
+
+<div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Quantity</label>
+  <%= datalist_text_field 'gizmo_event', 'gizmo_count',
+    {:class=>"text-input", :size=>"3"} %>
+</div>
+
+<div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_gizmo_type_id">Type of Gizmo</label><br/>
+  <select id="<%= @datalist_field_id_prefix %>_gizmo_type_id"
+    name="<%= @datalist_field_name_prefix %>[gizmo_type_id]" >
+    <option value=""></option>
+    <%= options_from_collection_for_select( GizmoType.find_all, "id", "description", @gizmo_event.gizmo_type_id ) %>
+  </select>
+
+  <%= observe_field( "#{@datalist_field_id_prefix}_gizmo_type_id",
+    :url => {
+      :action => 'add_attrs_to_form',
+      :controller => 'donations',
+      :div_id => "#{@datalist_field_id_prefix}_event_extras",
+      :gizmo_event_id => @gizmo_event.id,
+      :datalist_field_id_prefix => @datalist_field_id_prefix,
+      :datalist_field_name_prefix => @datalist_field_name_prefix
+    },
+    :with => "'gizmo_type_id=' + $('#{@datalist_field_id_prefix}_gizmo_type_id').value + '&gizmo_context_id=' + $('#{@datalist_field_id_prefix}_gizmo_context_id').value" ) %>
+
+</div>
+
+<div class="form-element">
+  <% if params.has_key? :gizmo_context_id %>
+    <input type="hidden" id="<%= @datalist_field_id_prefix %>_gizmo_context_id"
+      name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= params[:gizmo_context_id] %>" />
+  <% else %>
+    <label for="<%= @datalist_field_id_prefix %>_gizmo_context_id">context</label><br/>
+    <select id="<%= @datalist_field_id_prefix %>_gizmo_context_id"
+      name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" >
+      <%= options_from_collection_for_select( GizmoContext.find_all, "id", "name", @gizmo_event.gizmo_context_id ) %>
+    </select>
+  <% end %>
+</div>
+
+<div id="<%= @datalist_field_id_prefix %>_event_extras">
+  <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
+    <%= render :partial => 'gizmo_events/attr_form', :locals => { :params => params.merge( {
+          :gizmo_type_id => @gizmo_event.gizmo_type_id,
+          :gizmo_context_id => @gizmo_event.gizmo_context_id,
+          :gizmo_event_id => @gizmo_event.id
+      } ) } %>
+  <% end %>
+</div>
+
+<!--[eoform:gizmo_event]-->
+
+  </div>
+</fieldset>

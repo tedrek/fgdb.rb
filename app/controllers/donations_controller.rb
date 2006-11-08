@@ -204,6 +204,16 @@ class DonationsController < ApplicationController
     display_printable_invoice_receipt('invoice')
   end
 
+  def add_attrs_to_form
+    if params[:gizmo_type_id]
+      render :update do |page|
+        page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+      end
+    else
+      render :text => ''
+    end
+  end
+
 
   private
 
@@ -316,4 +326,5 @@ class DonationsController < ApplicationController
     end
     return set_choice
   end
+
 end
