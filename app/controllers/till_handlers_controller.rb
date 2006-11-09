@@ -155,6 +155,9 @@ class TillHandlersController < ApplicationController
     @till_handler = TillHandler.new
     @till_handler.contact_id = id
     @successful = true
-    return render(:action => 'new.rjs') if request.xhr?
+    #return render(:action => 'new.rjs') if request.xhr?
+    @options = { :action => 'create', :id => 9999 }
+    @new_options = @options.merge(:action=>'new', :id=>nil)
+    return render(:partial => 'new_edit') if request.xhr?
   end
 end

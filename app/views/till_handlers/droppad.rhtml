@@ -1,6 +1,6 @@
 <div style="margin-bottom:20px;height:120px;">
-<strong>Drag and drop a contact into the Droppad</strong> (it
-blows up, don't know why yet)
+<strong>Drag and drop a contact into the Droppad</strong> <br />(it
+blows up at both Cancel and Update (although it saves), don't know why yet)
 <% for contact in @contacts %>
   <%= content_tag 'div',
         contact.display_name, 
@@ -28,5 +28,5 @@ blows up, don't know why yet)
 </div>
 
 <%= drop_receiving_element "droppad", 
-      :update => "items", :url => { :action => "add" },
+      :update => 'items', :url => { :action => "add" },
       :accept => "contacts", :hoverclass => "cart-active" %>
