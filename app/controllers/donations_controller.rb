@@ -188,6 +188,7 @@ class DonationsController < ApplicationController
   # render desired information
   def update_fee
     $LOG.debug "ENTERING DonationsController::update_fee #{Time.now}"
+    $LOG.debug params.inspect
     #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
 
     #update_fee_calculations
@@ -220,6 +221,8 @@ class DonationsController < ApplicationController
   def display_printable_invoice_receipt(type=nil)
     type ||= 'invoice'
     @donation = Donation.find(params[:id])
+    @donation.reported_suggested_fee ||= 0.0
+    @donation.money_tendered ||= 0.0
     @total_reported_fees = 
       @donation.reported_required_fee + @donation.reported_suggested_fee
     @required_fee_paid = 
