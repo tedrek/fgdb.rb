@@ -44,7 +44,11 @@
 
 <div id="<%= @datalist_field_id_prefix %>_event_extras">
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
-    <%= render :partial => 'gizmo_events/attr_form', :locals => { :params => params.merge( {
+    <%= render :partial => 'gizmo_event_attr_form', 
+        :locals => { :params => params.merge( {
+          :gizmo_event_id => @gizmo_event.id,
+          :datalist_field_id_prefix => @datalist_field_id_prefix,
+          :datalist_field_name_prefix => @datalist_field_name_prefix,
           :gizmo_type_id => @gizmo_event.gizmo_type_id,
           :gizmo_context_id => @gizmo_event.gizmo_context_id,
           :gizmo_event_id => @gizmo_event.id
