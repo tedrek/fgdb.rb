@@ -1619,10 +1619,10 @@ Abstract.EventObserver.prototype = {
       this.registerCallback(this.element);
   },
 
-  onElementEvent: function() {
+  onElementEvent: function(evt) {
     var value = this.getValue();
     if (this.lastValue != value) {
-      this.callback(this.element, value);
+      this.callback(this.element, value, evt);
       this.lastValue = value;
     }
   },
