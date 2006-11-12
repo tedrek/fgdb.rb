@@ -58,3 +58,14 @@ function alertEvent( element, value,  event) {
   // alert('event element: ' + Event.element(event));
   // alert('event id: ' + Event.element(event).id);
 }
+
+var ActivityResponder = {  
+    onCreate: function(request) {  
+        $('global-indicator-small').show();  
+    },  
+    onComplete: function(request) {  
+        $('global-indicator-small').hide();  
+    }  
+}
+
+Ajax.Responders.register(ActivityResponder);
