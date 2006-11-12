@@ -52,3 +52,4 @@ end
 
 # Include your application configuration below
 require 'model_modifications'
+require 'actionview_modifications'

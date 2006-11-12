@@ -14,7 +14,7 @@ function playwith_amounts(o) {
 }
 
 // Called as:
-// confirmReplaceElementValue(id, new_value, confirm_message)
+// confirmReplaceElementValue(elem_id, new_elem_value, confirm_message)
 function confirmReplaceElementValue(id, val, msg){
   var truth_value = confirm(msg)
   if (truth_value){
@@ -54,3 +54,7 @@ function setRelativelyAbsolute(elem_id, relative_to_id) {
   elem.style.top=calculateOffsetTop(rel)+rel.offsetHeight-1+"px";
 }
 
+function alertEvent( element, value,  event) {
+  // alert('event element: ' + Event.element(event));
+  // alert('event id: ' + Event.element(event).id);
+}

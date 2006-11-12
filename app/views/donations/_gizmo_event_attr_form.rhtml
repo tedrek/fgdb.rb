@@ -16,4 +16,11 @@
       <%= datalist_text_field "gizmo_event", attr.name %>
     <% end %>
   </div>
+  <% if @after_initial_page_load %>
+    <div class="form_js"
+      <%= observe_field(@datalist_field_id_prefix + '_' + attr.name,
+        :function => 'alertEvent(element,value,evt)',
+        :wantEvent => true) %>
+    </div
+  <% end %>
 <% end %>

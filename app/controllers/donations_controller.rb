@@ -206,6 +206,7 @@ class DonationsController < ApplicationController
   end
 
   def add_attrs_to_form
+    @after_initial_page_load = true
     if params[:gizmo_type_id]
       render :update do |page|
         page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }

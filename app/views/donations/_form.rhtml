@@ -23,24 +23,30 @@
   </span>
 </div>
 
-<div class="form-element">
-  <label for="donation_reported_suggested_fee">Cash donation</label>
-  <%= text_field 'donation', 'reported_suggested_fee' ,
-    {:class=>"text-input"}  %>
-</div>
-
-<div class="donationFormObserver">
-  <label for="donation_owed">Amount owed</label>
-  <span id="donation_owed">
-  <%= @user_edited_total_fee %>
+<div class="view-element">
+  <label for="donation_reported_suggested_fee">Suggested donation</label>
+  <span id="donation_reported_required_fee"
+  name="donation[reported_required_fee]">
+  <%= @donation.reported_required_fee %>
   </span>
 </div>
+
+<label for="donation_owed">Amount owed</label>
+<span id="donation_owed">
+<%= @user_edited_total_fee %>
+</span>
 
 <div class="form-element">
   <label for="donation_money_tendered">Money tendered</label>
   <%= text_field 'donation', 'money_tendered' ,
     {:class=>"text-input donationFeeObserver"}  %>
 </div>
+<%= observe_field( "donation_money_tendered",
+  :url => {
+    :action => 'update_fee',
+    :id => @donation.id || params[:id] },
+    :submit => element_form_id(@options) ) %>
+<% #:with => 'Form.serialize(this.form)  /* = */' ) %>
 
 <div class="form-element">
 <label for="payment_method_id">Payment method</label><br/>
@@ -56,8 +62,4 @@
 
 <div class="messages-container">
 <%= render :partial => 'buttons' %>
-</div>
-<div id="form_js">
-  <% #= render :action  => 'form_js.rjs' %>
-  <% #= render :partial  => 'form_js' %>
 </div>

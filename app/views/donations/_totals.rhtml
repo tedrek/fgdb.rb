@@ -1,12 +1,4 @@
 <div id="totals">
-  <%= observe_form(element_form_id(@options), 
-    :url => {
-      :controller => '/donations', 
-      :action => 'update_fee',
-      :id => @donation.id},
-    :with => 'Form.serialize(this.form)',
-    :update => ""
-  ) %>
 
   <span id="required_lbl">Required fee: </span>
   <span id="required_amt"><%= @model_required_fee %></span>
