@@ -60,7 +60,11 @@ class GizmoTypesController < ApplicationController
   def create
     begin
       @gizmo_type = GizmoType.new(params[:gizmo_type])
-      @gizmo_type.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts]) if @params[:gizmo_contexts]
+      if @params[:gizmo_contexts]
+        @gizmo_type.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts])
+      else
+        @gizmo_type.gizmo_contexts = []
+      end
       @successful = @gizmo_type.save
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -96,7 +100,11 @@ class GizmoTypesController < ApplicationController
   def update
     begin
       @gizmo_type = GizmoType.find(params[:id])
-      @gizmo_type.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts]) if @params[:gizmo_contexts]
+      if @params[:gizmo_contexts]
+        @gizmo_type.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts])
+      else
+        @gizmo_type.gizmo_contexts = []
+      end
       @successful = @gizmo_type.update_attributes(params[:gizmo_type])
     rescue
       flash[:error], @successful  = $!.to_s, false
