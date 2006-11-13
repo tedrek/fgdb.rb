@@ -320,7 +320,8 @@ class DonationsController < ApplicationController
     @cash_donation_owed = 
       @donation.reported_suggested_fee - @cash_donation_paid
 
-    render :partial => 'receipt_invoice', :layout => true, 
+    render :partial => 'donation_detail_totals', 
+      :layout => 'receipt_invoice', 
       :locals => { 
         :type => type, 
         :owed => @total_reported_fees - @donation.money_tendered,

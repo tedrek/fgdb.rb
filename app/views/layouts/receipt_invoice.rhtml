@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<head>
+<title class="banner"><%= @page_title %></title>
+</head>
+<body>
+<table>
+<tr>
+  <td><img src="/images/freegeeklogo.png" alt="freegeeklogo.png" /></td>
+  <td><img src="/images/hdr-address.gif" alt="hdr-address.gif" /></td>
+  <td>
+    <%= @contact_name_address.join('<br />') %>
+  </td>
+</tr>
+<tr>
+  <td colspan="3"><hr /></td>
+</tr>
+
+<tr>
+  <td colspan="2">
+    <% if @context == 'donation' %>
+      Tax-Deductible Donation 
+    <% elsif @context == 'donation' %>
+      Sales
+    <% end %>
+
+    <strong><font color="#FF0000" size="+2">
+    <% if @type == 'receipt' %>
+      Receipt
+    <% elsif @type == 'invoice' %>
+      Invoice
+    <% else %>
+      Record
+    <% end %>
+    </font></strong>
+  </td>
+  <td align="right">Federal Tax I.D.  93-1292010</td>
+</tr>
+<tr>
+  <td>Date: <%= Time.now.strftime("%m/%d/%Y") %> | </td>
+  <td>
+    <% if @type == 'receipt' %>
+      Receipt
+    <% elsif @type == 'invoice' %>
+      Invoice
+    <% end %>
+    Number: <%= @id %>
+  </td>
+  <td align="right">
+    <% if @type == 'invoice' %>
+      <strong>
+      Due: <%= Time.now.+(60*60*24*30).strftime("%m/%d/%Y") %>
+      </strong>
+    <% end %>
+  </td>
+</tr>
+
+<%= yield %>
+
+<p>
+<span id="button_span">
+  <INPUT type="button" id="print_button" value="Print" 
+    onclick="window.print()" >
+  <INPUT type="button" id="close_button" value="Close" 
+    onclick="window.close()" >
+</span>
+</p>
+</body>
+</html>
