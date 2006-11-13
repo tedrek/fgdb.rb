@@ -56,7 +56,43 @@ function setRelativelyAbsolute(elem_id, relative_to_id) {
 
 function alertEvent( element, value,  event) {
   // alert('event element: ' + Event.element(event));
-  // alert('event id: ' + Event.element(event).id);
+  alert('alertEvent: event id: ' + Event.element(event).id);
+}
+
+function listDonationElementsPatterns() {
+  var list = [];
+  list.push('money_tendered$');
+  list.push('gizmo_count$');
+  list.push('gizmo_type_id$');
+  return list;
+}
+function matchValueVsManyPatterns(value, patts) {
+  var stringValue = value.toString();
+  var pattArray = $A(patts);
+  var result = false;
+  pattArray.each(function(patt, index) {
+    var stringPatt = patt.toString();
+    var regex = new RegExp(stringPatt);
+    if (stringValue.match(regex)) {
+      /* alert('value ['+value+'] matched pattern ['+patt+']'); */
+      result = true;
+    }
+  });
+  return result;
+}
+function updateFee( element, value,  event, primaryId) {
+  var trigElementId = Event.element(event).id;
+  value = 'id=' + primaryId + '&' + value;
+  var elemMatchPatterns = listDonationElementsPatterns;
+  var patts = listDonationElementsPatterns();
+  if (matchValueVsManyPatterns(trigElementId, patts)) {
+    new Ajax.Request('/donations/update_fee?' + value, {asynchronous:true, evalScripts:true});
+  }
+}
+function calcFees(form_id, primaryId) {
+  var value = Form.serialize(form_id)
+  value = 'id=' + primaryId + '&' + value;
+  new Ajax.Request('/donations/update_fee?' + value, {asynchronous:true, evalScripts:true});
 }
 
 var ActivityResponder = {  

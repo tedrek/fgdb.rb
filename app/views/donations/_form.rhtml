@@ -1,7 +1,6 @@
 <fieldset>
 
 <div class="view-element">
-  <label for="donation_id">ID</label>
   <span id="donation_id" name="donation[id]">
   <%= @donation.id %>
   </span>
@@ -14,38 +13,14 @@
     :params => { :select_name => "donation[contact_id]", :contact => @donation.contact,
       :search_label => "Find the donor:", :select_label => "Select the donor:" } ) %>
 </div>
-
-<div class="view-element">
-  <label for="donation_reported_required_fee">Required fee</label>
-  <span id="donation_reported_required_fee"
-  name="donation[reported_required_fee]">
-  <%= @donation.reported_required_fee %>
-  </span>
-</div>
-
-<div class="view-element">
-  <label for="donation_reported_suggested_fee">Suggested donation</label>
-  <span id="donation_reported_required_fee"
-  name="donation[reported_required_fee]">
-  <%= @donation.reported_required_fee %>
-  </span>
-</div>
-
-<label for="donation_owed">Amount owed</label>
-<span id="donation_owed">
-<%= @user_edited_total_fee %>
-</span>
+      <%= render :partial => 'totals' %>
 
 <div class="form-element">
   <label for="donation_money_tendered">Money tendered</label>
   <%= text_field 'donation', 'money_tendered' ,
-    {:class=>"text-input donationFeeObserver"}  %>
+    {:class=>"text-input donationFeeObserver", :width=>"3"}  %>
 </div>
-<%= observe_field( "donation_money_tendered",
-  :url => {
-    :action => 'update_fee',
-    :id => @donation.id || params[:id] },
-    :submit => element_form_id(@options) ) %>
+<% ##= observe_field( "donation_money_tendered", :url => { :action => 'update_fee', :id => @donation.id || params[:id] }, :submit => element_form_id(@options) ) %>
 <% #:with => 'Form.serialize(this.form)  /* = */' ) %>
 
 <div class="form-element">

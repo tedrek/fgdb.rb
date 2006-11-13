@@ -1,16 +1,30 @@
-<div id="totals">
-
-  <span id="required_lbl">Required fee: </span>
-  <span id="required_amt"><%= @model_required_fee %></span>
-  <span id="suggested_lbl">Suggested fee: </span>
-  <span id="suggested_amt"><%= @model_suggested_fee %></span>
-  <span id="tendered_lbl">tendered fee: </span>
-  <span id="tendered_amt"><%= @money_tendered %></span>
-  <span id="overunder_lbl">overunder: </span>
-  <span id="overunder_amt"><%= @overunder %></span>
+<div id="totals"
+  style="display:block;float:right;width:250px;
+      font-size:11px;text-align:right">
+  <table> 
+    <tr>
+      <td>Required fees: </td>
+      <td><%= number_to_currency(@model_required_fee) %></td>
+    </tr> <tr>
+      <td >Suggested donation: </td>
+      <td><%= number_to_currency(@model_suggested_fee) %></td>
+    </tr> <tr>
+      <td >Expected amount: </td>
+      <td><strong><%= number_to_currency(@expected_total_fee) %></strong></td>
+    
+    </tr> <tr>
+      <td >Amount tendered: </td>
+      <td><%= number_to_currency(@money_tendered) %></td>
+    </tr> 
+    <% if @overunder < 0 %>
+    <tr>
+      <td><strong>Shortfall: </strong></td>
+      <td><strong><%= number_to_currency(-@overunder) %></strong></td>
+    </tr> 
+    <% end %>
+  </table>
   <span id="timestamp"><%= Time.now %></span>
-  <span id="show_params">formatted params are "<%= @formatted_params %>"</span>
-  <span id="update_fee_button">
+  <br /><span id="update_fee_button">
     <INPUT type="button" id="update_fee_input" value="Update fee" 
       onclick="<%= remote_function( :url => {
             :controller => '/donations', 

@@ -1,13 +1,30 @@
 <span class="choice-div-message" id="choice-div-message">
-    Amount owed is:
-    <%= number_to_currency(@user_edited_total_fee) %>.
-    Amount tendered is insufficient:
-    <%= number_to_currency(@money_tendered) %>.
-    <br />Would you like to 
+    <strong>Amount tendered (<%= number_to_currency(@money_tendered) %>)
+    falls short.</strong>
+
+    <br />Summary of suggested donation and required fees:
     <ul>
-      <li>Save and print an invoice for the balance 
-        (<%= number_to_currency(-@overunder) %>) owed? 
-      <li>Save, print a receipt and mark the transaction fully paid?
+      <% if @model_required_fee > 0 %>
+        <li><%= number_to_currency(@model_required_fee) %>
+          : Required fees
+      <% end %>
+      <% if @model_suggested_fee > 0 %>
+        <li><%= number_to_currency(@model_suggested_fee) %>
+          : Suggested donation
+      <% end %>
+      <span class="total-due">
+        <li><strong><%= number_to_currency(@expected_total_fee) %> 
+          : Total payment requested</strong>
+      </span>
+    </ul>
+
+    Would you like to 
+    <ul>
+      <li>Save and print an invoice for the balance owed of
+        <%= number_to_currency(-@overunder) %>? 
+      <li>Save, print a receipt for
+          <%= number_to_currency(@money_tendered) %>
+          and mark the transaction fully paid?
       <li>Do not save and resume editing the transaction?
     </ul>
 </span>

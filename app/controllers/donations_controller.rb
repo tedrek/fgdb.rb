@@ -64,7 +64,7 @@ class DonationsController < ApplicationController
     @model_required_fee = 0
     @model_suggested_fee = 0
     @money_tendered = 0
-    @overunder_fee = 0
+    @overunder = 0
     @demodisp = 999
 
     return render(:action => 'new.rjs') if request.xhr?
@@ -81,14 +81,16 @@ class DonationsController < ApplicationController
   def create
     begin
       @donation = Donation.new(params[:donation])
-      @successful = @donation.save
-      save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
-        :gizmo_context_id => @gizmo_context_id)
+      resolution = resolve_submit
+      case resolution
+      when 'invoice','receipt'
+        _save(resolution)
+      end
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
     
-    return render(:action => 'create.rjs') if request.xhr?
+    return do_xhr_view(resolution, 'create.rjs') if request.xhr?
     if @successful
       return_to_main
     else
@@ -105,8 +107,7 @@ class DonationsController < ApplicationController
       @model_required_fee = 0
       @model_suggested_fee = 0
       @money_tendered = @donation.money_tendered
-      @overunder_fee = 0
-      @demodisp = 999
+      @overunder = 0
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -127,33 +128,14 @@ class DonationsController < ApplicationController
       resolution = resolve_submit
       case resolution
       when 'invoice','receipt'
-        # ?? we probably need 'SAVED' message somewhere
+        @donation.attributes = params[:donation]
         _save(resolution)
       end
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
     
-    @printurl = nil
-    @print_window_options =
-      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
-    case resolution
-    when 'ask'
-      # put up buttons for user choice
-      @testflag = false
-      return render(:action => 'show_buttons.rjs') if request.xhr?
-    when 'receipt'
-      @printurl = '/donations/receipt/' + @donation.id.to_s
-      return render(:action => 'update.rjs') if request.xhr?
-    when 'invoice'
-      @printurl = '/donations/invoice/' + @donation.id.to_s
-      return render(:action => 'update.rjs') if request.xhr?
-    else
-      # for simple re-edits and all indecipherable input
-      # just redisplay the edit screen
-      return render(:action => 'update.rjs') if request.xhr?
-    end
-
+    return do_xhr_view(resolution, 'update.rjs') if request.xhr?
     if @successful
       return_to_main
     else
@@ -191,7 +173,6 @@ class DonationsController < ApplicationController
     $LOG.debug params.inspect
     #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
 
-    #update_fee_calculations
     calc_fees
     @options = { :scaffold_id => params[:scaffold_id]}
     render :action => 'update_fee.rjs'
@@ -219,38 +200,8 @@ class DonationsController < ApplicationController
 
   private
 
-  def display_printable_invoice_receipt(type=nil)
-    type ||= 'invoice'
-    @donation = Donation.find(params[:id])
-    @donation.reported_suggested_fee ||= 0.0
-    @donation.money_tendered ||= 0.0
-    @total_reported_fees = 
-      @donation.reported_required_fee + @donation.reported_suggested_fee
-    @required_fee_paid = 
-      [@donation.reported_required_fee, @donation.money_tendered].min
-    @required_fee_owed = 
-      [0, @donation.reported_required_fee - @donation.money_tendered].max
-    @cash_donation_paid = 
-      [0, @donation.money_tendered - @donation.reported_required_fee].max
-    @cash_donation_owed = 
-      @donation.reported_suggested_fee - @cash_donation_paid
-
-    render :partial => 'receipt_invoice', :layout => true, 
-      :locals => { 
-        :type => type, 
-        :owed => @total_reported_fees - @donation.money_tendered,
-        :cash_donation => @donation.reported_suggested_fee,
-        :required_fee => @donation.reported_required_fee,
-        :cash_donation_paid => @cash_donation_paid,
-        :cash_donation_owed => @cash_donation_owed,
-        :required_fee_paid => @required_fee_paid,
-        :required_fee_owed => @required_fee_owed
-      }
-  end
-
-  # save common logic
+  # record save common logic
   def _save(type)
-    @donation.attributes = params[:donation]
     case type
     when 'invoice'
       @donation.txn_complete = false
@@ -259,14 +210,37 @@ class DonationsController < ApplicationController
       @donation.txn_complete = true
       @donation.txn_completed_at = Time.now()
     end
-    #@donation.reported_required_fee = @model_required_fee
-    #@donation.reported_suggested_fee = @model_suggested_fee
     @successful = @donation.save
     save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
       :gizmo_context_id => @gizmo_context_id)
   end
 
-  # find out if we received enough money
+  # ajax scaffold post-update-or-create-button view handling
+  def do_xhr_view(resolution, default_action)
+    @printurl = nil
+    @print_window_options =
+      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
+    case resolution
+    when 'ask'
+      # unclear what to do; put up buttons for user choice
+      @testflag = false
+      return render(:action => 'show_buttons.rjs') if request.xhr?
+    when 'receipt'
+      # create a receipt to print
+      @printurl = '/donations/receipt/' + @donation.id.to_s
+      return render(:action => default_action) if request.xhr?
+    when 'invoice'
+      # create an invoice to print
+      @printurl = '/donations/invoice/' + @donation.id.to_s
+      return render(:action => default_action) if request.xhr?
+    else
+      # otherwise for chosen re-edits and all indecipherable input
+      # just redisplay the edit screen
+      return render(:action => default_action) if request.xhr?
+    end
+  end
+
+  # compare amount tendered to expected per gizmo types, qtys
   def calc_fees
     @donation = Donation.find(params[:id])
     giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag)
@@ -275,24 +249,23 @@ class DonationsController < ApplicationController
     # these are calculated from model values
     @model_required_fee = giztypes_list.total('extended_required_fee')
     @donation.reported_required_fee = @model_required_fee
+    $LOG.debug "@model_required_fee: #{@model_required_fee.inspect}"
     @model_suggested_fee = giztypes_list.total('extended_suggested_fee')
+    @donation.reported_suggested_fee = @model_suggested_fee
     $LOG.debug "@model_suggested_fee: #{@model_suggested_fee.inspect}"
-
-    # these reflect onscreen values as well as model values
-    @user_edited_total_fee = 
-      params[:donation][:reported_suggested_fee].to_f + 
-      @model_required_fee
-    @overunder = @money_tendered - @user_edited_total_fee
+    @expected_total_fee = 
+      @model_suggested_fee + @model_required_fee
+    @overunder = @money_tendered - @expected_total_fee
   end
 
+  # stash unit amounts, total counts by gizmo type
+  #   for all gizmo events in txn
   def create_gizmo_types_detail_list(tag)
     gdl = GizmoTools::GizmoDetailList.new
     datalist_data(tag).each do |k,v|
       next if k.nil? or v.nil?
       type_id = v[:gizmo_type_id]
       count = v[:gizmo_count].to_i
-      $LOG.debug "type_id: #{type_id.inspect}"
-      $LOG.debug "count: #{count.inspect}"
       next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
       gdl.add(type_id, count)
     end
@@ -321,14 +294,43 @@ class DonationsController < ApplicationController
     return resolve_arg
   end
 
-  # parse user choice
+  # parse user choice regarding insufficient amount tendered
   def user_resolve_choice
     return nil unless params.has_key? :user_choice
-    set_choice = case params[:user_choice]
+    case params[:user_choice]
     when 'invoice','receipt','cancel'    then params[:user_choice]
-    else                   nil
+    else                                      nil
     end
-    return set_choice
+  end
+
+  # setup vars used by invoice and receipt, then render
+  def display_printable_invoice_receipt(type=nil)
+    type ||= 'invoice'
+    @donation = Donation.find(params[:id])
+    @donation.reported_suggested_fee ||= 0.0
+    @donation.money_tendered ||= 0.0
+    @total_reported_fees = 
+      @donation.reported_required_fee + @donation.reported_suggested_fee
+    @required_fee_paid = 
+      [@donation.reported_required_fee, @donation.money_tendered].min
+    @required_fee_owed = 
+      [0, @donation.reported_required_fee - @donation.money_tendered].max
+    @cash_donation_paid = 
+      [0, @donation.money_tendered - @donation.reported_required_fee].max
+    @cash_donation_owed = 
+      @donation.reported_suggested_fee - @cash_donation_paid
+
+    render :partial => 'receipt_invoice', :layout => true, 
+      :locals => { 
+        :type => type, 
+        :owed => @total_reported_fees - @donation.money_tendered,
+        :cash_donation => @donation.reported_suggested_fee,
+        :required_fee => @donation.reported_required_fee,
+        :cash_donation_paid => @cash_donation_paid,
+        :cash_donation_owed => @cash_donation_owed,
+        :required_fee_paid => @required_fee_paid,
+        :required_fee_owed => @required_fee_owed
+      }
   end
 
 end

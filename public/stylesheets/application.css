@@ -12,20 +12,19 @@
       App-local user questions and alerts */
 .choice-div {
   border-style: solid; border-color: #000000;
-  border-width: 2px;
-  background-color: #ffff40;
+  border-width: 1px;
+  background-color: #fffd40;
 }
-.choice-div-message {
-  font: italic 1em Georgia, Times, serif;
-  font-size: 13px;
-  font-weight: bold;
-  margin: 1.5em 2em 0 1.5em;
-  padding: 0; 
-  color: #f00;
-}
-.choice-div-button {
-  font-size: 16px;
-  font-weight: bold;
+
+/* ===================================
+      Displays of special watched values */
+
+.totals {
+  float: right;
+  background-color: white;
+  text-align: right;
+  font-size: 10px;
+  width: 100px;
 }
 
 /* ===================================
