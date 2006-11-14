@@ -21,10 +21,28 @@
 
 .totals {
   float: right;
-  background-color: white;
   text-align: right;
-  font-size: 10px;
-  width: 100px;
+  width: 250px;
+}
+.totals td {
+  background-color: yellow;
+}
+.totals td.amount{
+  font-size: 1.2em;
+}
+.totals td.below_req {
+  color: red;
+  font-weight: bold;
+  font-size: 1.4em;
+}
+.totals td.required {
+  font-weight: bold;
+  font-size: 1.4em;
+}
+.totals td.above_expect {
+  color: green;
+  font-weight: bold;
+  font-size: larger;
 }
 
 /* ===================================

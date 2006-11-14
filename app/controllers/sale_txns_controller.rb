@@ -215,7 +215,7 @@ class SaleTxnsController < ApplicationController
       "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
     type ||= 'receipt'
     @sale_txn = SaleTxn.find(params[:id])
-    $LOG.debug "@sale_txn: #{@sale_txn.inspect}"
+    #$LOG.debug "@sale_txn: #{@sale_txn.inspect}"
     @sale_txn.discount_amount ||= 0.0
     @sale_txn.gross_amount ||= 0.0
 

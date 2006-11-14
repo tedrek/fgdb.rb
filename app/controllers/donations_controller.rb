@@ -64,8 +64,8 @@ class DonationsController < ApplicationController
     @model_required_fee = 0
     @model_suggested_fee = 0
     @money_tendered = 0
-    @overunder = 0
-    @demodisp = 999
+    @expected_total_amount = @model_required_fee + @model_suggested_fee
+    @overunder = @money_tendered - @expected_total_amount
     @gizmo_context_id = GizmoContext::Donation.id
 
     return render(:action => 'new.rjs') if request.xhr?
@@ -108,7 +108,8 @@ class DonationsController < ApplicationController
       @model_required_fee = 0
       @model_suggested_fee = 0
       @money_tendered = @donation.money_tendered
-      @overunder = 0
+      @expected_total_amount = @model_required_fee + @model_suggested_fee
+      @overunder = @money_tendered - @expected_total_amount
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -254,9 +255,9 @@ class DonationsController < ApplicationController
     @model_suggested_fee = giztypes_list.total('extended_suggested_fee')
     @donation.reported_suggested_fee = @model_suggested_fee
     $LOG.debug "@model_suggested_fee: #{@model_suggested_fee.inspect}"
-    @expected_total_fee = 
+    @expected_total_amount = 
       @model_suggested_fee + @model_required_fee
-    @overunder = @money_tendered - @expected_total_fee
+    @overunder = @money_tendered - @expected_total_amount
   end
 
   # stash unit amounts, total counts by gizmo type

@@ -1,29 +1,45 @@
-<div id="totals"
-  style="display:block;float:right;width:250px;
-      font-size:11px;text-align:right">
-  <table> 
+<div id="totals" class="totals">
+  <table cellpadding="0" border="0" cellspacing="0"> 
     <tr>
-      <td>Required fees: </td>
-      <td><%= number_to_currency(@model_required_fee) %></td>
-    </tr> <tr>
-      <td >Suggested donation: </td>
-      <td><%= number_to_currency(@model_suggested_fee) %></td>
-    </tr> <tr>
-      <td >Expected amount: </td>
-      <td><strong><%= number_to_currency(@expected_total_fee) %></strong></td>
-    
-    </tr> <tr>
-      <td >Amount tendered: </td>
-      <td><%= number_to_currency(@money_tendered) %></td>
+      <td class="required">Required:</td>
+      <td class="amount required">
+        <%= number_to_currency(@model_required_fee) %>
+      </td>
     </tr> 
-    <% if @overunder < 0 %>
     <tr>
-      <td><strong>Shortfall: </strong></td>
-      <td><strong><%= number_to_currency(-@overunder) %></strong></td>
+      <td>Plus suggested of 
+        <%= number_to_currency(@model_suggested_fee) %>: </td>
+      <td class="amount">
+        <%= number_to_currency(@expected_total_amount) %></td>
     </tr> 
+    <tr>
+      <td >Amount tendered:</td>
+      <td class="amount"><%= number_to_currency(@money_tendered) %></td>
+    </tr> 
+    <% if @money_tendered < @model_required_fee %>
+      <tr>
+        <td class="below_req">Below Required:</td>
+        <td class="amount below_req">
+          <%= number_to_currency(@money_tendered-@model_required_fee) %>
+        </td>
+      </tr> 
+    <% elsif @money_tendered < @expected_total_amount %>
+      <tr>
+        <td>Below Suggested: </td>
+        <td class="amount">
+          <%= number_to_currency(-@overunder) %>
+        </td>
+      </tr> 
+    <% elsif @money_tendered > @expected_total_amount %>
+      <tr>
+        <td class="above_expect">Bonus Donation!</td>
+        <td class="amount above_expect">
+          <%= number_to_currency(@overunder) %>
+        </td>
+      </tr> 
     <% end %>
   </table>
-  <span id="timestamp"><%= Time.now %></span>
+  <span id="timestamp" style="font-size:-1;><%= Time.now %></span>
   <br /><span id="update_fee_button">
     <INPUT type="button" id="update_fee_input" value="Update fee" 
       onclick="<%= remote_function( :url => {
@@ -34,3 +50,7 @@
         ) %> " >
   </span>
 </div>
+<!--
+  style="display:block;float:right;width:250px;
+      font-size:9em;text-align:right">
+-->
