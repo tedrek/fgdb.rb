@@ -282,7 +282,7 @@ class DonationsController < ApplicationController
     calc_fees
     # set default resolution per over/underpayment
     txn_res = 'receipt'   # base default value
-    txn_res = 'ask' if @overunder < 0
+    txn_res = 'ask' if @model_required_fee > @money_tendered
 
     # adjust resolution if user has just given us input
     user_input = user_resolve_choice
