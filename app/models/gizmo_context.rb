@@ -15,4 +15,8 @@ class GizmoContext < ActiveRecord::Base
   def GizmoContext.find_all_for_select
     find(:all).map {|context| [context.name, context.id]}
   end
+
+  def GizmoContext.donation
+    find(:first, :conditions => ["name = ?", 'donation'])
+  end
 end

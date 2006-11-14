@@ -22,6 +22,7 @@
 
       <%= render :partial => 'form' %>
 
+      <%= params[:gizmo_context_id] ||= @gizmo_context_id %>
       <%= datalist_for( :gizmo_event, 'donations_gizmo_events',
         @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
         :show_header => false, :render_aware => "gizmo_event_form",

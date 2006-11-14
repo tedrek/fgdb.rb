@@ -29,18 +29,8 @@
 
 </div>
 
-<div class="form-element">
-  <% if params.has_key? :gizmo_context_id %>
-    <input type="hidden" id="<%= @datalist_field_id_prefix %>_gizmo_context_id"
-      name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= params[:gizmo_context_id] %>" />
-  <% else %>
-    <label for="<%= @datalist_field_id_prefix %>_gizmo_context_id">context</label><br/>
-    <select id="<%= @datalist_field_id_prefix %>_gizmo_context_id"
-      name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" >
-      <%= options_from_collection_for_select( GizmoContext.find_all, "id", "name", @gizmo_event.gizmo_context_id ) %>
-    </select>
-  <% end %>
-</div>
+<input type="hidden" id="<%= @datalist_field_id_prefix %>_gizmo_context_id"
+    name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= params[:gizmo_context_id] %>" />
 
 <div id="<%= @datalist_field_id_prefix %>_event_extras">
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>

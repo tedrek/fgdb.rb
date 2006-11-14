@@ -66,6 +66,7 @@ class DonationsController < ApplicationController
     @money_tendered = 0
     @overunder = 0
     @demodisp = 999
+    @gizmo_context_id = GizmoContext::Donation.id
 
     return render(:action => 'new.rjs') if request.xhr?
 
