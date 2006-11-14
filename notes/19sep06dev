@@ -15,6 +15,7 @@ $ perl -pi -e 's/\t/  /g' *
 # the project rails scaffold was generated earlier but little else done
 
 # create the fgdb databases
+$ cd /project/rootdir
 $ su - pgsql
 pgsql$  psql template1
 template1=# create database fgdb_test;
@@ -52,6 +53,8 @@ $ sudo gem install ajax_scaffold_generator
 $ psql -U fgdbdev fgdb_dev
 fgdb_dev=# create table contacts(id serial);
   
+  # install a bunch of rake tasks for the db
+  $ cp /some/file/somewhere/20_db_tasks.rake lib/tasks
   # recreate db/schema.sql and db/devel_data.sql files
   $ rake db:data:dump
 

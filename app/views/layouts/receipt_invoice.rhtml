@@ -60,7 +60,10 @@
 <span id="button_span">
   <INPUT type="button" id="print_button" value="Print" 
     onclick="window.print()" >
-  <INPUT type="button" id="close_button" value="Close" 
+  
+  <% value = 'Close' %>
+  <% value = 'Start Over' if @context == 'sale' %>
+  <INPUT type="button" id="restart_button" value="<%= value %>" 
     onclick="window.close()" >
 </span>
 </p>

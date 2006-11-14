@@ -1,0 +1,47 @@
+<!-- set variables used in layout -->
+<% @context = 'sale' %>
+<% @type = type %>
+<% @id = @sale_txn.id %>
+<% @contact_name_address = @sale_txn.contact.display_name_address %>
+
+<div class="item_list">
+<table bgcolor="#cccccc" width="100%" align="center" border="1">
+<tbody><tr>
+    <td width="13%"><strong>Gizmo Id:</strong></td>
+    <td width="33%"><strong>Description:</strong></td>
+    <td width="13%"><strong>Cost:</strong></td>
+    <td width="13%"><strong>Subtotal:</strong></td>
+    <td width="13%"><strong>Discount:</strong></td>
+    <td width="14%"><strong>Total:</strong></td>
+</tr>
+
+<% @sale_txn.gizmo_events.each do |event| %>
+  <tr>
+    <td> <%= event.gizmo_type_id %> </td>
+    <td> <%= event.gizmo_type.description %> </td>
+    <td colspan="4">&nbsp;</td>
+  </tr>
+<% end %>
+
+<tr><td colspan="6">&nbsp;</td></tr>
+
+<tr>
+    <td colspan="3">&nbsp;</td>
+    <td align="right" colspan="2"><strong>Subtotal:</strong></td>
+    <td><strong><%= number_to_currency(subtotal) %></strong></td>
+</tr>
+
+<tr>
+    <td colspan="3">&nbsp;</td>
+    <td align="right" colspan="2"><strong>Discount:</strong></td>
+    <td><strong><%= number_to_currency(discount) %></strong></td>
+</tr>
+
+<tr>
+    <td colspan="3">&nbsp;</td>
+    <td align="right" colspan="2"><strong>Total:</strong></td>
+    <td><strong><%= number_to_currency(amount_due) %></strong></td>
+</tr>
+
+</tbody></table>
+</div>

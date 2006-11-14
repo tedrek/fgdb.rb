@@ -1,8 +1,10 @@
 class SaleTxnsController < ApplicationController
   include AjaxScaffold::Controller
-  require 'gizmo_detail_list'
   include DatalistFor
   GizmoEventsTag='sale_txns_gizmo_events'
+
+  require 'logger'
+  $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
   
   after_filter :clear_flashes
   before_filter :update_params_filter
@@ -137,6 +139,10 @@ class SaleTxnsController < ApplicationController
     return_to_main
   end
 
+  def receipt
+    display_printable_invoice_receipt('receipt')
+  end
+
   # figure out then update fees and related totals for sale txn
   # based on quantities, gizmo types for each sold gizmo
   # render desired information
@@ -200,5 +206,26 @@ class SaleTxnsController < ApplicationController
     end
     $LOG.debug "gdl: #{gdl.inspect}"
     return gdl
+  end
+
+  # setup vars used by receipt, then render
+  def display_printable_invoice_receipt(type=nil)
+    @printurl = nil
+    @print_window_options =
+      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
+    type ||= 'receipt'
+    @sale_txn = SaleTxn.find(params[:id])
+    $LOG.debug "@sale_txn: #{@sale_txn.inspect}"
+    @sale_txn.discount_amount ||= 0.0
+    @sale_txn.gross_amount ||= 0.0
+
+    render :partial => 'sale_txn_detail_totals', 
+      :layout => 'receipt_invoice', 
+      :locals => { 
+        :type => type, 
+        :subtotal => @sale_txn.gross_amount,
+        :discount => @sale_txn.discount_amount,
+        :amount_due => @sale_txn.amount_due
+      }
   end
 end
