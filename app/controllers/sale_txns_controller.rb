@@ -1,5 +1,6 @@
 class SaleTxnsController < ApplicationController
   include AjaxScaffold::Controller
+  require 'gizmo_tools'
   include DatalistFor
   GizmoEventsTag='sale_txns_gizmo_events'
 
@@ -8,6 +9,15 @@ class SaleTxnsController < ApplicationController
   
   after_filter :clear_flashes
   before_filter :update_params_filter
+
+  def initialize
+    @gizmo_context_id = GizmoContext.find(:first, :conditions => [ "name = ?", 'sale']).id
+    @datalist_for_new_defaults = {
+      GizmoEventsTag.to_sym  => {
+        :gizmo_context_id => @gizmo_context_id
+      }
+    }
+  end
   
   def update_params_filter
     update_params :default_scaffold_id => "sale_txn", :default_sort => nil, :default_sort_direction => "asc"
@@ -66,7 +76,8 @@ class SaleTxnsController < ApplicationController
     begin
       @sale_txn = SaleTxn.new(params[:sale_txn])
       @successful = @sale_txn.save
-     save_datalist(GizmoEventsTag, :sale_txn_id => @sale_txn.id, :gizmo_action_id => GizmoAction.sale_txn.id)
+      save_datalist(GizmoEventsTag, :sale_txn_id => @sale_txn.id, 
+        :gizmo_context_id => @gizmo_context_id)
 
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -85,7 +96,8 @@ class SaleTxnsController < ApplicationController
     begin
       @sale_txn = SaleTxn.find(params[:id])
       @successful = !@sale_txn.nil?
-      save_datalist(GizmoEventsTag, :sale_txn_id => @sale_txn.id, :gizmo_action_id => GizmoAction.sale_txn.id)
+      save_datalist(GizmoEventsTag, :sale_txn_id => @sale_txn.id,
+        :gizmo_context_id => @gizmo_context_id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -189,6 +201,17 @@ class SaleTxnsController < ApplicationController
     $LOG.debug "Txn amounts: amount_due[#{@amount_due}], gross_amount[#{@gross_amount}, discount_amount[#{@discount_amount}]]"
 
     render :action => 'update_sale_txn_amounts.rjs'
+  end
+
+  def add_attrs_to_form
+    @after_initial_page_load = true
+    if params[:gizmo_type_id]
+      render :update do |page|
+        page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+      end
+    else
+      render :text => ''
+    end
   end
 
   private

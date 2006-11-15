@@ -3,10 +3,9 @@
     <!--[form:sale_txn]-->
 
 <div class="form-element">
-<label for="contact_id">Purchaser</label><br/>
-<select id="sale_txn_contact_id" name="sale_txn[contact_id]">
-<%= options_from_collection_for_select Contact.find_all, "id", "display_name", @sale_txn.contact_id %>
-</select>
+  <%= render_component( :controller => '/contacts', :action => 'search',
+    :params => { :select_name => "sale_txn[contact_id]", :contact => @sale_txn.contact,
+      :search_label => "Find the customer:", :select_label => "Select the customer:" } ) %>
 </div>
 
 <div class="form-element">
