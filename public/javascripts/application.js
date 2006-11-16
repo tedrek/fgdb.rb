@@ -80,19 +80,19 @@ function matchValueVsManyPatterns(value, patts) {
   });
   return result;
 }
-function updateFee( element, value,  event, primaryId) {
+function updateFee( element, value,  event) {
   var trigElementId = Event.element(event).id;
-  value = 'id=' + primaryId + '&' + value;
-  var elemMatchPatterns = listDonationElementsPatterns;
+  // value = 'id=' + primaryId + '&' + value;
+  // var elemMatchPatterns = listDonationElementsPatterns;
   var patts = listDonationElementsPatterns();
   if (matchValueVsManyPatterns(trigElementId, patts)) {
     new Ajax.Request('/donations/update_fee?' + value, {asynchronous:true, evalScripts:true});
   }
 }
-function calcFees(formId, primaryId) {
+function calcFees(formId) {
   // alert ("Firing calcFees("+formId+','+primaryId+')');
   var value = Form.serialize(formId)
-  value = 'id=' + primaryId + '&' + value;
+  // value = 'id=' + primaryId + '&' + value;
   new Ajax.Request('/donations/update_fee?' + value, {asynchronous:true, evalScripts:true});
 }
 

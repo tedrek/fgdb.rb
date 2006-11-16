@@ -44,8 +44,7 @@
     <INPUT type="button" id="update_fee_input" value="Go figure..." 
       onclick="<%= remote_function( :url => {
             :controller => '/donations', 
-            :action => 'update_fee' ,
-            :id => @donation.id},
+            :action => 'update_fee'},
           :with => 'Form.serialize(this.form)' 
         ) %> " >
   </span>
