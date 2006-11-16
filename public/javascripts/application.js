@@ -89,8 +89,9 @@ function updateFee( element, value,  event, primaryId) {
     new Ajax.Request('/donations/update_fee?' + value, {asynchronous:true, evalScripts:true});
   }
 }
-function calcFees(form_id, primaryId) {
-  var value = Form.serialize(form_id)
+function calcFees(formId, primaryId) {
+  // alert ("Firing calcFees("+formId+','+primaryId+')');
+  var value = Form.serialize(formId)
   value = 'id=' + primaryId + '&' + value;
   new Ajax.Request('/donations/update_fee?' + value, {asynchronous:true, evalScripts:true});
 }

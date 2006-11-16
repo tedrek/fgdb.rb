@@ -41,7 +41,7 @@
   </table>
   <span id="timestamp" style="font-size:-1;><%= Time.now %></span>
   <br /><span id="update_fee_button">
-    <INPUT type="button" id="update_fee_input" value="Update fee" 
+    <INPUT type="button" id="update_fee_input" value="Go figure..." 
       onclick="<%= remote_function( :url => {
             :controller => '/donations', 
             :action => 'update_fee' ,
@@ -50,7 +50,3 @@
         ) %> " >
   </span>
 </div>
-<!--
-  style="display:block;float:right;width:250px;
-      font-size:9em;text-align:right">
--->
