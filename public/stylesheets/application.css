@@ -127,3 +127,37 @@ font-size: 17px;
 .contact_display .hours {
 font-size: 17px;
 }
+
+
+/* ===================================
+         Report stuff */
+
+table.report {
+border: solid 1px black;
+cell-padding: solid 2px;
+background-color: #EEF;
+}
+.report td {
+text-align: right;
+background-color: #EFF;
+}
+.report td.spacer {
+background-color: #EEF;
+border: none;
+}
+.report th {
+text-align: right;
+}
+.report th.column_header {
+border-bottom: solid 2px black;
+}
+.report th.row_header {
+border-right: solid 2px black;
+}
+.report th.section_header {
+border: none;
+border-bottom: solid 2px black;
+text-align: center;
+font-size: 18px;
+background-color: #F0EFEF;
+}

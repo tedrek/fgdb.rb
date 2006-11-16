@@ -19,4 +19,8 @@ class GizmoContext < ActiveRecord::Base
   def GizmoContext.donation
     find(:first, :conditions => ["name = ?", 'donation'])
   end
+
+  def GizmoContext.sale
+    find(:first, :conditions => ["name = ?", 'sale'])
+  end
 end

@@ -1,0 +1,31 @@
+<% methods = PaymentMethod.find_all %>
+<% table_width = @columns.map {|k,a| a.length}.max + 2 %>
+<h1>Income report for <%= @date_range_string %></h1>
+
+<table class="report">
+
+<% for section in @sections %>
+  <tr><th class="section_header" colspan="<%= table_width %>"><%= Inflector.titleize section %></th></tr>
+  <tr>
+    <td class="spacer"></td>
+    <% for method in @columns[section] %>
+      <th class="column_header"><%= Inflector.titleize method %></th>
+    <% end %>
+  </tr>
+
+  <% for category in @rows[section] %>
+    <tr>
+      <th class="row_header"><%= Inflector.titleize category %></th>
+      <% for method in @columns[section] %>
+        <td><%= '$%0.2f' % @income_data[section][method][category] %></td>
+      <% end %>
+    </tr>
+  <% end %>
+
+  <tr><td class="spacer" colspan="<%= table_width %>">&nbsp;</td></tr>
+<% end %>
+
+</table>
+
+
+<p class="timestamp"> - generated at <%= Time.now %></p>
