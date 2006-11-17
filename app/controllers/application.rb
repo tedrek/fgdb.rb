@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
     calc_totals
     @options = { :scaffold_id => params[:scaffold_id]}
     render :update do |page|
-      page.replace      'totals', :partial => 'totals'
+      page.replace  header_totals_id(params), :partial => 'totals'
     end
   end
 
@@ -76,7 +76,7 @@ class ApplicationController < ActionController::Base
     when 'ask'
       # unclear what to do; put up buttons for user choice
       @testflag = false
-      return render(:action => 'show_buttons.rjs') if request.xhr?
+      return render(:action => 'submit_choice_buttons.rjs') if request.xhr?
     when 'receipt'
       # create a receipt to print
       @printurl = "/#{controller}/receipt/" + model_record.id.to_s

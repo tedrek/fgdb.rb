@@ -1,4 +1,5 @@
-<div class="choice-div" style="display: none;" id="buttons">
+<% buttons_id = submit_choice_buttons_id(params) %>
+<div class="choice-div" style="display: none;" id="<%= buttons_id %>">
   <span id="buttons_messages">
     <% unless @overunder.nil? %>
       <% if @overunder < 0 %>
@@ -15,7 +16,7 @@
       onclick="<%= remote_function( 
           :url => @options.merge(:user_choice => 'invoice'),
           :with => 'Form.serialize(this.form)',
-          :complete  => "Element.hide('buttons');"
+          :complete  => "Element.hide('#{buttons_id}');"
         ) %> " >
   </span>
   <span class="choice-div-button" id="receipt_button">
@@ -23,7 +24,7 @@
       onclick="<%= remote_function( 
           :url => @options.merge(:user_choice => 'receipt'),
           :with => 'Form.serialize(this.form)',
-          :complete  => "Element.hide('buttons');"
+          :complete  => "Element.hide('#{buttons_id}');"
         ) %> " >
   </span>
   <span class="choice-div-button" id="cancel_button">
@@ -32,7 +33,7 @@
           :url => @options.merge(:user_choice => 'cancel'),
           :with => 'Form.serialize(this.form)',
           :before => "$('choice-div-message').innerHTML = 'resuming edit...';",
-          :complete  => "Element.hide('buttons');"
+          :complete  => "Element.hide('#{buttons_id}');"
         ) %> " >
   </span>
   </p>
