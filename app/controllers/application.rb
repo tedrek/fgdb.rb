@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     calc_totals
     @options = { :scaffold_id => params[:scaffold_id]}
     render :update do |page|
-      page.replace  header_totals_id(params), :partial => 'totals'
+      page.replace  header_totals_id(params), :partial => 'header_totals'
     end
   end
 
