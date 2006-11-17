@@ -11,6 +11,15 @@ class ApplicationController < ActionController::Base
     display_printable_invoice_receipt('invoice')
   end
 
+  # recalculate controller-specific amounts, render results
+  def update_totals
+    calc_totals
+    @options = { :scaffold_id => params[:scaffold_id]}
+    render :update do |page|
+      page.replace      'totals', :partial => 'totals'
+    end
+  end
+
   private
 
   # stash unit amounts, total counts by gizmo type

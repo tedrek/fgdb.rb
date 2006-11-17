@@ -3,7 +3,7 @@
 
 function playwith_fees(o) {
   var params = Form.serialize(o.form);
-  new Ajax.Request('/donations/update_fee?' + params,
+  new Ajax.Request('/donations/update_totals?' + params,
     {asynchronous:true, evalScripts:true});
 }
 
@@ -59,13 +59,6 @@ function alertEvent( element, value,  event) {
   alert('alertEvent: event id: ' + Event.element(event).id);
 }
 
-function listDonationElementsPatterns() {
-  var list = [];
-  list.push('money_tendered$');
-  list.push('gizmo_count$');
-  list.push('gizmo_type_id$');
-  return list;
-}
 function matchValueVsManyPatterns(value, patts) {
   var stringValue = value.toString();
   var pattArray = $A(patts);
@@ -80,20 +73,27 @@ function matchValueVsManyPatterns(value, patts) {
   });
   return result;
 }
-function updateFee( element, value,  event) {
+// request only if trigger element id matches one of given patterns
+function updateTotalsIfMatch( element, value,  event, patterns) {
   var trigElementId = Event.element(event).id;
-  // value = 'id=' + primaryId + '&' + value;
-  // var elemMatchPatterns = listDonationElementsPatterns;
-  var patts = listDonationElementsPatterns();
-  if (matchValueVsManyPatterns(trigElementId, patts)) {
-    new Ajax.Request('/donations/update_fee?' + value, {asynchronous:true, evalScripts:true});
+  if (patterns.length > 0) {
+    if (matchValueVsManyPatterns(trigElementId, patterns)) {
+      new Ajax.Request('/donations/update_totals?' + value, {asynchronous:true, evalScripts:true});
+    }
   }
 }
-function calcFees(formId) {
-  // alert ("Firing calcFees("+formId+','+primaryId+')');
+function updateTotalsForContext( element, value,  event, context) {
+  var patts = [];
+  if (context == 'donation') {
+    patts.push('money_tendered$');
+    patts.push('gizmo_count$');
+    patts.push('gizmo_type_id$');
+  }
+  updateTotalsIfMatch( element, value, event, patts)
+}
+function updateTotals(formId) {
   var value = Form.serialize(formId)
-  // value = 'id=' + primaryId + '&' + value;
-  new Ajax.Request('/donations/update_fee?' + value, {asynchronous:true, evalScripts:true});
+  new Ajax.Request('/donations/update_totals?' + value, {asynchronous:true, evalScripts:true});
 }
 
 var ActivityResponder = {  

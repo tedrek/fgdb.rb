@@ -159,19 +159,6 @@ class DonationsController < ApplicationController
     return_to_main
   end
 
-  # figure out then update fees and related totals for donation
-  # based on quantities, gizmo types for each donated gizmo
-  # render desired information
-  def update_fee
-    $LOG.debug "ENTERING DonationsController::update_fee #{Time.now}"
-    $LOG.debug params.inspect
-    #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
-
-    calc_totals
-    @options = { :scaffold_id => params[:scaffold_id]}
-    render :action => 'update_fee.rjs'
-  end
-
   def add_attrs_to_form
     @after_initial_page_load = true
     if params[:gizmo_type_id]
@@ -212,8 +199,12 @@ class DonationsController < ApplicationController
       :gizmo_context_id => @gizmo_context_id)
   end
 
-  # compare amount tendered to expected per gizmo types, qtys
+  # figure out total dollar amounts
+  # based on quantities, gizmo types, attributes for each gizmo
   def calc_totals
+    $LOG.debug "ENTERING Donations::calc_totals #{Time.now}"
+    #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
+    $LOG.debug params.inspect
     giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag)
     @money_tendered = params[:donation][:money_tendered].to_f
 

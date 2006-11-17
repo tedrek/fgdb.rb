@@ -20,7 +20,7 @@
   <%= text_field 'donation', 'money_tendered' ,
     {:class=>"text-input donationFeeObserver", :width=>"3"}  %>
 </div>
-<% ##= observe_field( "donation_money_tendered", :url => { :action => 'update_fee', :id => @donation.id || params[:id] }, :submit => element_form_id(@options) ) %>
+<% ##= observe_field( "donation_money_tendered", :url => { :action => 'update_totals', :id => @donation.id || params[:id] }, :submit => element_form_id(@options) ) %>
 <% #:with => 'Form.serialize(this.form)  /* = */' ) %>
 
 <div class="form-element">
