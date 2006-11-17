@@ -11,10 +11,10 @@ class DonationsController < ApplicationController
   before_filter :update_params_filter
 
   def initialize
-    @gizmo_context_id = GizmoContext.find(:first, :conditions => [ "name = ?", 'donation']).id
+    @gizmo_context = GizmoContext.find(:first, :conditions => [ "name = ?", 'donation'])
     @datalist_for_new_defaults = {
       GizmoEventsTag.to_sym  => {
-        :gizmo_context_id => @gizmo_context_id
+        :gizmo_context_id => @gizmo_context.id
       }
     }
   end
@@ -62,7 +62,6 @@ class DonationsController < ApplicationController
     @successful = true
 
       _set_totals_defaults
-    @gizmo_context_id = GizmoContext::Donation.id
 
     return render(:action => 'new.rjs') if request.xhr?
 
@@ -196,7 +195,7 @@ class DonationsController < ApplicationController
     @donation.reported_suggested_fee = @model_suggested_fee
     @successful = @donation.save
     save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
-      :gizmo_context_id => @gizmo_context_id)
+      :gizmo_context_id => @gizmo_context.id)
   end
 
   # figure out total dollar amounts

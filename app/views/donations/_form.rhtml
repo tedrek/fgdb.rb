@@ -1,11 +1,5 @@
 <fieldset>
 
-<div class="view-element">
-  <span id="donation_id" name="donation[id]">
-  <%= @donation.id %>
-  </span>
-</div>
-
   <div class="row">
     <!--[form:donation]-->
 <div class="form-element">
@@ -20,8 +14,6 @@
   <%= text_field 'donation', 'money_tendered' ,
     {:class=>"text-input donationFeeObserver", :width=>"3"}  %>
 </div>
-<% ##= observe_field( "donation_money_tendered", :url => { :action => 'update_totals', :id => @donation.id || params[:id] }, :submit => element_form_id(@options) ) %>
-<% #:with => 'Form.serialize(this.form)  /* = */' ) %>
 
 <div class="form-element">
 <label for="payment_method_id">Payment method</label><br/>

@@ -13,7 +13,7 @@
   <select id="<%= @datalist_field_id_prefix %>_gizmo_type_id"
     name="<%= @datalist_field_name_prefix %>[gizmo_type_id]" >
     <option value=""></option>
-    <%= options_from_collection_for_select( GizmoType.find_all, "id", "description", @gizmo_event.gizmo_type_id ) %>
+    <%= options_from_collection_for_select( @gizmo_context.gizmo_types, "id", "description", @gizmo_event.gizmo_type_id ) %>
   </select>
 
   <%= observe_field( "#{@datalist_field_id_prefix}_gizmo_type_id",
@@ -22,15 +22,16 @@
       :controller => 'donations',
       :div_id => "#{@datalist_field_id_prefix}_event_extras",
       :gizmo_event_id => @gizmo_event.id,
+      :gizmo_context_id => @gizmo_context.id,
       :datalist_field_id_prefix => @datalist_field_id_prefix,
       :datalist_field_name_prefix => @datalist_field_name_prefix
     },
-    :with => "'gizmo_type_id=' + $('#{@datalist_field_id_prefix}_gizmo_type_id').value + '&gizmo_context_id=' + $('#{@datalist_field_id_prefix}_gizmo_context_id').value" ) %>
+    :with => "gizmo_type_id" ) %>
 
 </div>
 
 <input type="hidden" id="<%= @datalist_field_id_prefix %>_gizmo_context_id"
-    name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= params[:gizmo_context_id] %>" />
+    name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= @gizmo_context.id %>" />
 
 <div id="<%= @datalist_field_id_prefix %>_event_extras">
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>

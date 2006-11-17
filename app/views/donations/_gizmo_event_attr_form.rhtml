@@ -2,7 +2,7 @@
 <% @datalist_field_name_prefix = params[:datalist_field_name_prefix] %>
 <% @gizmo_event = gizmo_event = params[:gizmo_event_id] ? GizmoEvent.find( params[:gizmo_event_id] ) : GizmoEvent.new %>
 <% @gizmo_event.gizmo_type = gizmo_type = GizmoType.find( params[:gizmo_type_id] ) %>
-<% @gizmo_event.gizmo_context = gizmo_context = GizmoContext.find( params[:gizmo_context_id] ) %>
+<% @gizmo_event.gizmo_context = gizmo_context = @gizmo_context %>
 
 <% for attr in gizmo_type.relevant_attrs( gizmo_context ) %>
   <div class="form-element">
@@ -19,7 +19,7 @@
   <% if @after_initial_page_load %>
     <div class="form_js">
       <%= observe_field(@datalist_field_id_prefix + '_' + attr.name,
-        :function => "updateTotalsForContext(element,value,evt,'#{@options[:scaffold_id]}')", 
+        :function => "updateTotalsForContext(element, value, evt, gizmo_context.description)", 
         :wantEvent => true) %>
     </div>
   <% end %>
