@@ -1,0 +1,79 @@
+= DatebocksEngine
+
+DatebocksEngine is a very simple Ruby on Rails Engine which provides a helper method to instantly deploy the DateBocks into your application.
+
+The DatebocksEngine also includes JSCalendar as a subset of functionality. It is in the long term goal to enable this plugin to be able to be used as a whole, or by accessing each part. Whether that is the JSCalendar with a default text input box, advanced Datebocks input without JSCalendar, or with both combined which is currently the default.
+
+This software package is developed using the Engines plugin. To find out more about how to use engines in general, go to http://svn.rails-engines.org for general documentation about the Engines mechanism.
+
+To view a live demo of DateBocks, visit:
+
+http://datebocks.inimit.com
+
+== Dependancies
+
+This plugin currently only works with the latest version of the Engines plugin located at:
+
+  http://svn.rails-engines.org/plugins/engines/
+
+== Installation
+
+1. Create your Rails application, set up your databases, grab the Engines plugin and the DatebocksEngine, and install them.
+
+2. Install the DatebocksEngine into your vendor/plugins directory
+
+3. Modify your Engines.start call in config/environment.rb
+
+    Engines.start :datebocks # or :datebocks_engine
+
+4. Edit your application.rb file so it looks something like the following:
+
+    class ApplicationController < ActionController::Base
+      include DatebocksEngine
+    end
+
+5. Edit your application_helper.rb file:
+
+    module ApplicationHelper
+      include DatebocksEngine
+    end
+
+6. The DatebocksEngine provides a core stylesheets and in addition to several javascript files, so you'll need to include these two lines within your application's layout. Add the following lines:
+
+  <%= engine_stylesheet "datebocks_engine", "calendar-blue" %>
+  <%= engine_javascript "datebocks_engine", "calendar", "lang/calendar-en", "calendar-setup" %>
+
+== Usage
+For any model (ex Event) that has a :date column, to utilize DateBocks use datebocks_field('event', 'start_date') as a helper within your view.
+
+  <%= datebocks_field ('model', 'date_column') %>
+
+To adjust the default value, set the "@dateField" variable, before using the datebocks helper method.
+
+  <% @model.date_column = '2006-10-11 %>
+
+== Bugs
+
+Please report any bugs or feature enhancements to http://dev.toolbocks.com
+
+== License
+Copyright (c) 2006 Nathaniel Brown <nshb@inimit.com>
+
+GNU Lesser General Public License
+Version 2.1, February 1999
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+
+

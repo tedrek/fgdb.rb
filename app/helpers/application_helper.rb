@@ -1,5 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  include DatebocksEngine
 
   def global_indicator_small_tag
     image_tag "indicator-small.gif", 

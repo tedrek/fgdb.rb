@@ -2,6 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   layout "application"
+  include DatebocksEngine
 
   def receipt
     display_printable_invoice_receipt('receipt')

@@ -9,6 +9,22 @@ class ReportsController < ApplicationController
   end
 
   def income
+    @defaults = Object.new
+    @date_types = ['daily', 'monthly', 'arbitrary']
+    def @defaults.date
+      Date.today
+    end
+    def @defaults.method_missing(*args)
+      nil
+    end
+  end
+
+  def show_date_type
+    date_types = ['daily', 'monthly', 'arbitrary']
+    render :update do |page|
+      page.show params[:date_type]
+      (date_types - [params[:date_type]]).each {|dt| page.hide dt}
+    end
   end
 
   def income_report

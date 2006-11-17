@@ -1,6 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <head>
 <title class="banner"><%= @page_title %></title>
+  <%= engine_javascript "datebocks_engine", "calendar", "lang/calendar-en", "calendar-setup" %>
+  <%= engine_stylesheet "datebocks_engine", "calendar-win2k-cold-1.css" %>
 </head>
 <body>
 <h1 class="banner">FreeGeek Database on Rails</h1>
