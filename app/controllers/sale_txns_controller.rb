@@ -61,6 +61,7 @@ class SaleTxnsController < ApplicationController
     @sale_txn = SaleTxn.new
     @successful = true
 
+    _set_totals_defaults
     return render(:action => 'new.rjs') if request.xhr?
 
     # Javascript disabled fallback
@@ -96,8 +97,7 @@ class SaleTxnsController < ApplicationController
     begin
       @sale_txn = SaleTxn.find(params[:id])
       @successful = !@sale_txn.nil?
-      save_datalist(GizmoEventsTag, :sale_txn_id => @sale_txn.id,
-        :gizmo_context_id => @gizmo_context_id)
+      _set_totals_defaults
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -116,6 +116,8 @@ class SaleTxnsController < ApplicationController
     begin
       @sale_txn = SaleTxn.find(params[:id])
       @successful = @sale_txn.update_attributes(params[:sale_txn])
+      save_datalist(GizmoEventsTag, :sale_txn_id => @sale_txn.id,
+        :gizmo_context_id => @gizmo_context_id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -215,6 +217,13 @@ class SaleTxnsController < ApplicationController
   end
 
   private
+  def _set_totals_defaults
+    @gross_amount = @sale_txn.gross_amount || 0
+    discount_rate = DiscountSchedule.find(@sale_txn.contact.discount_schedule_id).donated_item_rate
+    #@sale_txn.discount_schedule_id
+    @discount_amount = @gross_amount * discount_rate
+    @amount_due = @gross_amount - @discount_amount
+  end
 
   def create_gizmo_types_detail_list(tag)
     gdl = GizmoDetailList.new

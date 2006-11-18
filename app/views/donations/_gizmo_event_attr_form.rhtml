@@ -19,7 +19,7 @@
   <% if @after_initial_page_load %>
     <div class="form_js">
       <%= observe_field(@datalist_field_id_prefix + '_' + attr.name,
-        :function => "updateTotalsForContext(element, value, evt, gizmo_context.description)", 
+        :function => "updateTotalsForContext(element,value,evt,'#{gizmo_context.name}')", 
         :wantEvent => true) %>
     </div>
   <% end %>

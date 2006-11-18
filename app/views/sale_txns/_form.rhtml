@@ -7,13 +7,7 @@
     :params => { :select_name => "sale_txn[contact_id]", :contact => @sale_txn.contact,
       :search_label => "Find the customer:", :select_label => "Select the customer:" } ) %>
 </div>
-
-<div class="form-element">
-<label for="till_handler_id">Till handler</label><br/>
-<select id="sale_txn_till_handler_id" name="sale_txn[till_handler_id]">
-<%= options_from_collection_for_select TillHandler.find_all, "id", "description", @sale_txn.till_handler_id %>
-</select>
-</div>
+<%= render :partial => 'header_totals' %>
 
 <div class="form-element">
 <label for="discount_schedule_id">Discount schedule</label><br/>

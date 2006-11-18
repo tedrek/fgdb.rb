@@ -90,6 +90,10 @@ class Contact < ActiveRecord::Base
     (relationships_as_source + relationships_as_sink).uniq
   end
 
+  def discount_schedule_id
+    1
+  end
+
   class << self
 
     def people
