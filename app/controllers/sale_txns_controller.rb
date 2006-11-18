@@ -61,7 +61,7 @@ class SaleTxnsController < ApplicationController
     @sale_txn = SaleTxn.new
     @successful = true
 
-    _set_totals_defaults
+    _set_totals_defaults(:new => true)
     return render(:action => 'new.rjs') if request.xhr?
 
     # Javascript disabled fallback
@@ -217,11 +217,16 @@ class SaleTxnsController < ApplicationController
   end
 
   private
-  def _set_totals_defaults
+  def _set_totals_defaults(options = {})
+    if (options[:new])
+      @discount_schedule = DiscountSchedule.find(3)   #no discount
+    else
+      @discount_schedule = DiscountSchedule.find(@sale_txn.contact.discount_schedule_id)
+    end
+    @discount_schedule_description = @discount_schedule.description
+    donated_item_rate = @discount_schedule.donated_item_rate
     @gross_amount = @sale_txn.gross_amount || 0
-    discount_rate = DiscountSchedule.find(@sale_txn.contact.discount_schedule_id).donated_item_rate
-    #@sale_txn.discount_schedule_id
-    @discount_amount = @gross_amount * discount_rate
+    @discount_amount = @gross_amount * donated_item_rate
     @amount_due = @gross_amount - @discount_amount
   end
 

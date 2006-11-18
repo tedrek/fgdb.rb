@@ -5,23 +5,27 @@
 <% @gizmo_event.gizmo_context = gizmo_context = GizmoContext.find( params[:gizmo_context_id] ) %>
 
 <% for attr in gizmo_type.relevant_attrs( gizmo_context ) %>
+  <% options = {} %>
+  <% if (attr.name == 'standard_extended_discount' || attr.name == 'extended_price') %>
+    <% options[:disabled] = true %>
+  <% end %>
   <div class="form-element">
     <% if attr.datatype == 'boolean' %>
 
-      <%= datalist_check_box "gizmo_event", attr.name  %>&nbsp;
+      <%= datalist_check_box "gizmo_event", attr.name, options  %>&nbsp;
 
       <label for="<%= @datalist_field_id_prefix %>_<%= attr.name %>"><%= Inflector.humanize attr.name %></label>
     <% else %>
       <label for="<%= @datalist_field_id_prefix %>_<%= attr.name %>"><%= Inflector.humanize attr.name %></label>
-      <%= datalist_text_field "gizmo_event", attr.name %>
+      <%= datalist_text_field "gizmo_event", attr.name, options %>
     <% end %>
   </div>
   <% if @after_initial_page_load %>
     <div class="form_js">
-      <%= observe_field(@datalist_field_id_prefix + '_' + attr.name,
-        :function => "updateTotalsForContext(element,value,evt,'sale')", 
-        :wantEvent => true) %>
-      <% #  :function => "updateTotalsForContext(element,value,evt,'#{gizmo_context.name}')", %>
-    </div>
+    <%= observe_field(@datalist_field_id_prefix + '_' + attr.name,
+      :function => "updateTotalsForContext(element,value,evt,'sale')", 
+      :wantEvent => true) %>
+    <% #  :function => "updateTotalsForContext(element,value,evt,'#{gizmo_context.name}')", %>
+  </div>
   <% end %>
 <% end %>

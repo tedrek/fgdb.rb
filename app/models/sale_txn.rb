@@ -5,8 +5,6 @@ class SaleTxn < ActiveRecord::Base
   #validates_associated :contact
   belongs_to :payment_method
   #validates_associated :payment_method
-  belongs_to :till_handler
-  #validates_associated :till_handler
   has_many :gizmo_events
 
   def to_s

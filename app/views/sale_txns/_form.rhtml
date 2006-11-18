@@ -10,10 +10,15 @@
 <%= render :partial => 'header_totals' %>
 
 <div class="form-element">
-<label for="discount_schedule_id">Discount schedule</label><br/>
-<select id="sale_txn_discount_schedule_id" name="sale_txn[discount_schedule_id]">
-<%= options_from_collection_for_select DiscountSchedule.find_all, "id", "description", @sale_txn.discount_schedule_id %>
-</select>
+  <%= hidden_field 'sale_txn', 'discount_schedule_id' , 
+    {:class=>"text-input", :value => @discount_schedule.id} %>
+</div>
+
+<div class="form-element">
+  <label for="sale_txn_discount_schedule_description">Discount schedule</label>
+  <%= content_tag 'span', @discount_schedule_description, 
+    :style => "font-size:12px; font-weight:bold", 
+    :class => "required" %>
 </div>
 
 <div class="form-element">
@@ -21,21 +26,6 @@
 <select id="sale_txn_payment_method_id" name="sale_txn[payment_method_id]">
 <%= options_from_collection_for_select PaymentMethod.find_all, "id", "description", @sale_txn.payment_method_id %>
 </select>
-</div>
-
-<div class="form-element">
-  <label for="sale_txn_gross_amount">Gross amount</label>
-  <%= text_field 'sale_txn', 'gross_amount' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="sale_txn_discount_amount">Discount amount</label>
-  <%= text_field 'sale_txn', 'discount_amount' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="sale_txn_amount_due">Amount due</label>
-  <%= text_field 'sale_txn', 'amount_due' , {:class=>"text-input"} %>
 </div>
 
 <div class="form-element">
