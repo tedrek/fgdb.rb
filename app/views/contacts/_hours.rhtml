@@ -1,0 +1,5 @@
+<span class="hours_type">actual hours: </span><%= @contact.hours_actual %>
+<% if @contact.hours_actual != @contact.hours_effective %>
+ <span class="hours_type">adoption hours: </span><%= @contact.hours_effective %>
+<% end %>
+    

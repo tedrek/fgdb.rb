@@ -1,18 +1,22 @@
 <% @options = params.merge(:controller => '/contacts', :action => "view", :id => @contact.send("#{Contact.primary_key}")) %>
 
 <div class="contact_display">
-  <div class="id"><%= @contact.is_person? ? 'person' : 'organization' %> (id: <%= @contact.id %>)</div>
+  <% contact_type_names = @contact.contact_types.map {|c_t| c_t.description} %>
+  <div class="id"><%= if @contact.is_organization?
+      'organization'
+    elsif contact_type_names.include? 'staff'
+      'staff'
+    elsif contact_type_names.include? 'volunteer'
+      'volunteer'
+    else
+      'person'
+    end %> (id: <%= @contact.id %>)</div>
   <div class="name"><%= @contact.display_name %></div>
   <br />
   <% if @contact.is_person? %>
     <div class="hours">
-      <% if @contact.hours_actual != @contact.hours_effective %>
-        hours <span style="font-size: 10px">(real/effective)</span>:
-        <%= @contact.hours_actual %>/<%= @contact.hours_effective %>
-      <% else %>
-        hours: <%= @contact.hours_actual %>
-      <% end %>
-    </div>
+      <%= render :partial => 'hours' %>
+     </div>
     <br />
   <% end %>
   <% unless( @contact.city.empty? or @contact.address.empty? or @contact.postal_code.empty? or @contact.state_or_province.empty? ) %>
