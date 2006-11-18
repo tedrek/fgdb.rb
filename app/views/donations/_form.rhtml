@@ -7,6 +7,13 @@
   <%= render :partial => 'contact_search' %>
 </div>
 
+<% params[:gizmo_context_id] ||= @gizmo_context.id %>
+<%= datalist_for( :gizmo_event, 'donations_gizmo_events',
+  @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
+  :show_header => false, :render_aware => "gizmo_event_form",
+  :add_text => "More gizmos",
+  :new_defaults => @datalist_for_new_defaults || nil) %>
+
 <%= render :partial => 'header_totals' %>
 
 <div class="form-element">

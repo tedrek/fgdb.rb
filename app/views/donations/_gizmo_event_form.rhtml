@@ -3,12 +3,6 @@
     <!--[form:gizmo_event]-->
 
 <div class="form-element">
-  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Quantity</label>
-  <%= datalist_text_field 'gizmo_event', 'gizmo_count',
-    {:class=>"text-input", :size=>"3"} %>
-</div>
-
-<div class="form-element">
   <label for="<%= @datalist_field_id_prefix %>_gizmo_type_id">Type of Gizmo</label><br/>
   <select id="<%= @datalist_field_id_prefix %>_gizmo_type_id"
     name="<%= @datalist_field_name_prefix %>[gizmo_type_id]" >
@@ -46,6 +40,13 @@
       } ) } %>
   <% end %>
 </div>
+
+<div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Quantity</label>
+  <%= datalist_text_field 'gizmo_event', 'gizmo_count',
+    {:class=>"text-input", :size=>"3"} %>
+</div>
+
 
 <!--[eoform:gizmo_event]-->
 

@@ -9,13 +9,12 @@
 </div>
 
 <div class="form-element">
-  <label for="volunteer_task_date_performed">Date performed</label>
-  <%= date_select 'volunteer_task', 'date_performed'  %>
+  <%= datebocks_field 'volunteer_task', 'date_performed'  %>
 </div>
 
 <div class="form-element">
   <label for="volunteer_task_duration">Duration</label>
-  <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input"} %>
+  <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input", :size=>"4"} %>
 </div>
 
 <% for top in VolunteerTaskType.root_nodes %>

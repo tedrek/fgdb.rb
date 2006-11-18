@@ -44,6 +44,7 @@ class VolunteerTasksController < ApplicationController
 
   def new
     @volunteer_task = VolunteerTask.new
+    @volunteer_task.date_performed = Date.today
     @successful = true
 
     return render(:action => 'new.rjs') if request.xhr?

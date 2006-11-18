@@ -5,8 +5,10 @@
 <head>
   <title>Volunteer Tasks</title>
   <%= stylesheet_link_tag 'ajax_scaffold', :media => 'all' %>
+  <%= engine_stylesheet "datebocks_engine", "calendar-win2k-cold-1.css" %>
   <%= javascript_include_tag :defaults %>
   <%= javascript_include_tag 'rico_corner', 'ajax_scaffold' %>
+  <%= engine_javascript "datebocks_engine", "calendar", "lang/calendar-en", "calendar-setup" %>
 </head>
 <body>
 
