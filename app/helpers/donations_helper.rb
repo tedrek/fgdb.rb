@@ -17,4 +17,11 @@ module DonationsHelper
     ]
   end
 
+  def donation_contact_searchbox_id(options)
+    "#{options[:scaffold_id]}_contact_searchbox"
+  end
+
+  def anonymize_button_id(options)
+    "#{options[:scaffold_id]}_anonymize"
+  end
 end

@@ -160,15 +160,16 @@ CREATE TABLE donations (
     contact_id integer,
     payment_method_id integer,
     money_tendered numeric(10,2) DEFAULT 0.0,
+    postal_code character varying(25),
+    reported_required_fee numeric(10,2) DEFAULT 0.0,
+    reported_suggested_fee numeric(10,2) DEFAULT 0.0,
+    txn_complete boolean DEFAULT true,
+    txn_completed_at timestamp with time zone DEFAULT now(),
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
     created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL,
-    reported_required_fee numeric(10,2) DEFAULT 0.0,
-    reported_suggested_fee numeric(10,2) DEFAULT 0.0,
-    txn_complete boolean DEFAULT true,
-    txn_completed_at timestamp with time zone DEFAULT now()
+    updated_by bigint DEFAULT 1 NOT NULL
 );
 
 

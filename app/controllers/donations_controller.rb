@@ -22,9 +22,11 @@ class DonationsController < ApplicationController
   def update_params_filter
     update_params :default_scaffold_id => "donation", :default_sort => nil, :default_sort_direction => "asc"
   end
+
   def index
     redirect_to :action => 'list'
   end
+
   def return_to_main
     # If you have multiple scaffolds on the same view then you will want to change this to
     # to whatever controller/action shows all the views 
@@ -166,6 +168,30 @@ class DonationsController < ApplicationController
       end
     else
       render :text => ''
+    end
+  end
+
+  def anonymize
+    @options = params
+    if params[:donation_id]
+      @donation = Donation.find(params[:donation_id])
+    else
+      @donation = Donation.new
+    end
+    render :update do |page|
+      page.replace_html donation_contact_searchbox_id(params), :partial => 'anonymous'
+    end
+  end
+
+  def de_anonymize
+    @options = params
+    if params[:donation_id]
+      @donation = Donation.find(params[:donation_id])
+    else
+      @donation = Donation.new
+    end
+    render :update do |page|
+      page.replace_html donation_contact_searchbox_id(params), :partial => 'contact_search'
     end
   end
 
