@@ -230,7 +230,7 @@ class DonationsController < ApplicationController
     $LOG.debug "ENTERING Donations::calc_totals #{Time.now}"
     #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
     $LOG.debug params.inspect
-    options = { :context => @gizmo_context.name)}
+    options = { :context => @gizmo_context.name}
     giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag, options)
     @money_tendered = params[:donation][:money_tendered].to_f
 
