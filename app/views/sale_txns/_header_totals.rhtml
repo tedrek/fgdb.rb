@@ -1,5 +1,4 @@
 <div id="sale_txn_header_totals" class="totals">
-<% #<div id="<%= header_totals_id(params) %>" class="totals"> %>
   <table cellpadding="0" border="0" cellspacing="0"> 
     <tr>
       <td>Gross price:</td>
@@ -19,8 +18,9 @@
       </td>
     </tr> 
   </table>
-  <span id="timestamp" style="font-size:-1;><%= Time.now %></span>
-  <br /><span>
+  <span id="timestamp" style="font-size:-1;"><%= Time.now %></span>
+  <br />
+  <span>
     <INPUT type="button" value="Go figure..." 
       onclick="<%= remote_function( :url => {
             :action => 'update_totals'},
@@ -28,3 +28,4 @@
         ) %> " >
   </span>
 </div>
+<% #<div id="<%= header_totals_id(params) %>" class="totals"> %>

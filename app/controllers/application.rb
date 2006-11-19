@@ -25,8 +25,9 @@ class ApplicationController < ActionController::Base
 
   # stash unit amounts, total counts by gizmo type
   #   for all gizmo events in txn
-  def create_gizmo_types_detail_list(tag)
-    gdl = GizmoTools::GizmoDetailList.new
+  def create_gizmo_types_detail_list(tag, options={})
+    options[:context] ||= @gizmo_context.name
+    gdl = GizmoTools::GizmoDetailList.new(options)
     datalist_data(tag).each do |k,v|
       next if k.nil? or v.nil?
       type_id = v[:gizmo_type_id]

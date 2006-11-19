@@ -6,7 +6,7 @@
 
 <% for attr in gizmo_type.relevant_attrs( gizmo_context ) %>
   <% options = {} %>
-  <% if (attr.name == 'standard_extended_discount' || attr.name == 'extended_price') %>
+  <% if (attr.name == 'discount_applied' || attr.name == 'extended_price') %>
     <% options[:disabled] = true %>
   <% end %>
   <div class="form-element">

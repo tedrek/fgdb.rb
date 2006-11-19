@@ -11,7 +11,8 @@ class SaleTxnsController < ApplicationController
   before_filter :update_params_filter
 
   def initialize
-    @gizmo_context_id = GizmoContext.find(:first, :conditions => [ "name = ?", 'sale']).id
+    @gizmo_context = GizmoContext.find(:first, :conditions => [ "name = ?", 'sale'])
+    @gizmo_context_id = @gizmo_context.id
     @datalist_for_new_defaults = {
       GizmoEventsTag.to_sym  => {
         :gizmo_context_id => @gizmo_context_id
@@ -157,6 +158,75 @@ class SaleTxnsController < ApplicationController
     display_printable_invoice_receipt('receipt')
   end
 
+  def add_attrs_to_form
+    @after_initial_page_load = true
+    if params[:gizmo_type_id]
+      render :update do |page|
+        page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+      end
+    else
+      render :text => ''
+    end
+  end
+
+  private
+  def _set_totals_defaults(options = {})
+    if (options[:new])
+      @discount_schedule = DiscountSchedule.find(3)   #no discount
+    else
+      @discount_schedule = DiscountSchedule.find(@sale_txn.contact.discount_schedule_id)
+    end
+    @discount_schedule_description = @discount_schedule.description
+    @gross_amount = @sale_txn.gross_amount || 0
+    @discount_amount = 0
+    @amount_due = @gross_amount - @discount_amount
+  end
+
+  # figure out total dollar amounts
+  # based on quantities, gizmo types, attributes for each gizmo
+  def calc_totals
+    $LOG.debug "ENTERING SaleTxns::calc_totals #{Time.now}"
+    #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
+    $LOG.debug params.inspect
+    options = { :context => @gizmo_context.name,
+      :donated_discount_rate => @discount_schedule.donated_item_rate,
+      :resale_discount_rate  => @discount_schedule.resale_item_rate
+  }
+    giztypes_list = 
+      create_gizmo_types_detail_list(GizmoEventsTag, options)
+    #@money_tendered = params[:donation][:money_tendered].to_f
+
+    @gross_amount = giztypes_list.total('extended_gross_price')
+    $LOG.debug "@gross_amount: #{@gross_amount.inspect}"
+    @amount_due = giztypes_list.total('extended_price')
+    $LOG.debug "@amount_due: #{@amount_due.inspect}"
+    @discount_amount = giztypes_list.total('discount_applied')
+    $LOG.debug "@discount_amount: #{@discount_amount.inspect}"
+    @ask_user_setting = 'receipt'
+  end
+
+  # setup vars used by receipt, then render
+  def display_printable_invoice_receipt(type=nil)
+    @printurl = nil
+    @print_window_options =
+      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
+    type ||= 'receipt'
+    @sale_txn = SaleTxn.find(params[:id])
+    #$LOG.debug "@sale_txn: #{@sale_txn.inspect}"
+    @sale_txn.discount_amount ||= 0.0
+    @sale_txn.gross_amount ||= 0.0
+
+    render :partial => 'sale_txn_detail_totals', 
+      :layout => 'receipt_invoice', 
+      :locals => { 
+        :type => type, 
+        :subtotal => @sale_txn.gross_amount,
+        :discount => @sale_txn.discount_amount,
+        :amount_due => @sale_txn.amount_due
+      }
+  end
+
+  ###!!! 18nov gp  this method is deprecated
   # figure out then update fees and related totals for sale txn
   # based on quantities, gizmo types for each sold gizmo
   # render desired information
@@ -203,66 +273,5 @@ class SaleTxnsController < ApplicationController
     $LOG.debug "Txn amounts: amount_due[#{@amount_due}], gross_amount[#{@gross_amount}, discount_amount[#{@discount_amount}]]"
 
     render :action => 'update_sale_txn_amounts.rjs'
-  end
-
-  def add_attrs_to_form
-    @after_initial_page_load = true
-    if params[:gizmo_type_id]
-      render :update do |page|
-        page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
-      end
-    else
-      render :text => ''
-    end
-  end
-
-  private
-  def _set_totals_defaults(options = {})
-    if (options[:new])
-      @discount_schedule = DiscountSchedule.find(3)   #no discount
-    else
-      @discount_schedule = DiscountSchedule.find(@sale_txn.contact.discount_schedule_id)
-    end
-    @discount_schedule_description = @discount_schedule.description
-    donated_item_rate = @discount_schedule.donated_item_rate
-    @gross_amount = @sale_txn.gross_amount || 0
-    @discount_amount = @gross_amount * donated_item_rate
-    @amount_due = @gross_amount - @discount_amount
-  end
-
-  def create_gizmo_types_detail_list(tag)
-    gdl = GizmoDetailList.new
-    get_datalist_detail(tag).each do |k,v|
-      next if k.nil? or v.nil?
-      type_id = v[:gizmo_type_id]
-      count = v[:gizmo_count].to_i
-      next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
-      options = {}
-      options[:discount_applied] = v[:discount_applied]
-      gdl.add(type_id, count, options)
-    end
-    $LOG.debug "gdl: #{gdl.inspect}"
-    return gdl
-  end
-
-  # setup vars used by receipt, then render
-  def display_printable_invoice_receipt(type=nil)
-    @printurl = nil
-    @print_window_options =
-      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
-    type ||= 'receipt'
-    @sale_txn = SaleTxn.find(params[:id])
-    #$LOG.debug "@sale_txn: #{@sale_txn.inspect}"
-    @sale_txn.discount_amount ||= 0.0
-    @sale_txn.gross_amount ||= 0.0
-
-    render :partial => 'sale_txn_detail_totals', 
-      :layout => 'receipt_invoice', 
-      :locals => { 
-        :type => type, 
-        :subtotal => @sale_txn.gross_amount,
-        :discount => @sale_txn.discount_amount,
-        :amount_due => @sale_txn.amount_due
-      }
   end
 end

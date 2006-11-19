@@ -9,10 +9,11 @@ module GizmoTools
   class GizmoDetailList
     include Enumerable
 
-    attr_reader :gizmo_list
+    attr_reader :gizmo_list, :detail_options
     
-    def initialize
+    def initialize(options={})
       @gizmo_list = Hash.new
+      @detail_options = options
     end
 
     def each
@@ -28,7 +29,7 @@ module GizmoTools
       if @gizmo_list.has_key?(add_id)
         @gizmo_list[add_id].quantity += quantity
       else
-        gs = GizmoSummer.new(add_id,quantity)
+        gs = GizmoSummer.new(add_id, quantity, @detail_options)
         @gizmo_list[add_id] = gs
       end
       return @gizmo_list[add_id]
@@ -63,6 +64,12 @@ module GizmoTools
       @quantity * @unit_suggested_fee
     end
 
+    # return extended suggested fee for present quantity
+    def extended_gross_price
+      return nil if @quantity.nil? or @unit_price.nil?
+      @quantity * @unit_price
+    end
+
     # initialize based partly on values of existing database
     # record for this GizmoType.id
     # - exception if id not found in database
@@ -71,19 +78,32 @@ module GizmoTools
     #   database values for those attributes 
     #   - for example, set required_fee to value of GizmoType.fee
     #     if the GizmoType.fee_is_required flag is TRUE
-    def initialize(id,quantity=0)
+    def initialize(id,quantity=0,options={})
       begin
         gt = GizmoType.find(id.to_s.to_i)
       rescue
         raise "unable to retrieve record for id #{id}"
+        return
       end
 
         @quantity = quantity
-
         @description = gt.description
 
-        @unit_required_fee = (!gt.required_fee.nil? and gt.required_fee.kind_of?(Numeric)) ? gt.required_fee.to_f  : 99.99
-        @unit_suggested_fee = (!gt.suggested_fee.nil? and gt.suggested_fee.kind_of?(Numeric)) ? gt.suggested_fee.to_f  : 1
+        return unless options.has_key?(:context)
+        case options[:context]
+        when 'donation'
+          @unit_required_fee = (!gt.required_fee.nil? and gt.required_fee.kind_of?(Numeric)) ? gt.required_fee.to_f  : 99.99
+          @unit_suggested_fee = (!gt.suggested_fee.nil? and gt.suggested_fee.kind_of?(Numeric)) ? gt.suggested_fee.to_f  : 1
+        when 'sale'
+          @unit_price = 10.00
+          @discount_applied =
+            (options.has_key?(:donated_discount_rate) &&
+              !options[:donated_discount_rate].nil?   &&
+              options[:donated_discount_rate].kind_of?(Numeric) &&
+              options[:donated_discount_rate] < 1)    ?
+              @unit_price * @quantity * options[:donated_discount_rate] :
+              0
+        end
     end
 
   end
