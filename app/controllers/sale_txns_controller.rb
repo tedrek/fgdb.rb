@@ -188,7 +188,7 @@ class SaleTxnsController < ApplicationController
     @discount_schedule = DiscountSchedule.find(params[:sale_txn][:discount_schedule_id])
     $LOG.debug "ENTERING SaleTxns::calc_totals #{Time.now}"
     #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
-    $LOG.debug params.inspect
+    #$LOG.debug params.inspect
     options = { :context => @gizmo_context.name,
       :donated_discount_rate => @discount_schedule.donated_item_rate,
       :resale_discount_rate  => @discount_schedule.resale_item_rate
@@ -199,10 +199,10 @@ class SaleTxnsController < ApplicationController
 
     @gross_amount = giztypes_list.total('extended_gross_price')
     $LOG.debug "@gross_amount: #{@gross_amount.inspect}"
-    @amount_due = 29 #giztypes_list.total('extended_price')
-    $LOG.debug "@amount_due: #{@amount_due.inspect}"
-    @discount_amount = 8 #giztypes_list.total('discount_applied')
+    @discount_amount = giztypes_list.total('extended_discount')
     $LOG.debug "@discount_amount: #{@discount_amount.inspect}"
+    @amount_due = giztypes_list.total('extended_net_price')
+    $LOG.debug "@amount_due: #{@amount_due.inspect}"
     @ask_user_setting = 'receipt'
   end
 

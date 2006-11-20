@@ -51,9 +51,12 @@ module GizmoTools
   # quantity provided by client
 
   class GizmoSummer
-    attr_accessor :quantity, :unit_price
+    attr_accessor :quantity
     attr_reader :unit_required_fee, :unit_suggested_fee,
-                :description, :discount_eligible
+                :description, :discount_eligible, 
+                :discount_rate, :discount_applied,
+                :unit_price, :unit_discount, 
+                :extended_price
 
     # return extended required fee for present quantity
     def extended_required_fee
@@ -65,20 +68,33 @@ module GizmoTools
       @quantity * @unit_suggested_fee
     end
 
-    # return extended suggested fee for present quantity
+    # extended gross price before discount
     def extended_gross_price
       return nil if @quantity.nil? or @unit_price.nil?
       @quantity * @unit_price
+    end
+
+    # extended line discount
+    def extended_discount
+      return 0.0 if @quantity.nil? or @unit_discount.nil?
+      @discount_applied = @quantity * @unit_discount
+    end
+
+    # net extended price
+    def extended_net_price
+      return nil if extended_gross_price.nil? or extended_discount.nil?
+      @extended_price = extended_gross_price - extended_discount
     end
 
     # initialize based partly on values of existing database
     # record for this GizmoType.id
     # - exception if gizmo_type id not found in table
     # - update quantity from caller
-    # - set unit values for various attributes based on
-    #   database values for those attributes 
-    #   - for example, set unit_price to value in
-    #   options[:field_hash] if present
+    # - set values for various attributes based on
+    #   database or form values for those attributes, depending
+    #   on their source
+    #   - for example, set unit_price to form value given in
+    #   options[:field_hash][:unit_price] if present
     #
     def initialize(id,quantity=0,options={})
       begin
@@ -91,6 +107,7 @@ module GizmoTools
       @quantity = quantity
       @description = gt.description
       @discount_eligible = gt.discounts_apply
+      @discount_rate = set_discount_rate(options)
 
       return unless options.has_key?(:context)
 
@@ -104,18 +121,56 @@ module GizmoTools
         # unit price
         if ( options[:field_hash].has_key?(:unit_price)     and
             !options[:field_hash][:unit_price].nil?         and 
-             options[:field_hash][:unit_price].kind_of?(Numeric)
+             options[:field_hash][:unit_price].to_f
            )
           @unit_price = options[:field_hash][:unit_price].to_f
         end
-#          @discount_applied =
-#            (options.has_key?(:donated_discount_rate) &&
-#              !options[:donated_discount_rate].nil?   &&
-#              options[:donated_discount_rate].kind_of?(Numeric) &&
-#              options[:donated_discount_rate] < 1)    ?
-#              @unit_price * @quantity * options[:donated_discount_rate] :
-#              0
+        # unit discount
+        if (@discount_eligible)
+          @unit_discount = @unit_price * @discount_rate
+        end
       end
+    end
+
+    private
+
+    def set_discount_rate(options={})
+      unless (@discount_eligible)
+        return 0.0
+      end
+
+      # needs a ticket but I'm offline  :-(
+      # here we pretend that all gizmo types are eligible for a
+      # donated discount rate if eligible at all; date structure
+      # to support multiple discount rate needs to be designed
+      discount_type = 'donated'
+
+      discount_rate = nil
+      case discount_type
+      when 'donated'
+        if ( options.has_key?(:donated_discount_rate)       and
+            !options[:donated_discount_rate].nil?           and
+             options[:donated_discount_rate].to_f
+           )
+          discount_rate = options[:donated_discount_rate].to_f
+        end
+      when 'resale'
+        if ( options.has_key?(:resale_discount_rate)       and
+            !options[:resale_discount_rate].nil?           and
+             options[:resale_discount_rate].to_f
+           )
+          discount_rate = options[:resale_discount_rate].to_f
+        end
+      end
+      # sanity check
+      if ( discount_rate.nil?                             or
+          !discount_rate.kind_of?(Numeric)                or
+           discount_rate > 1                              or
+           discount_rate < 0
+         )
+        discount_rate = 0.0 
+      end
+      return discount_rate
     end
 
   end

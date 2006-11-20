@@ -30,12 +30,12 @@ class ApplicationController < ActionController::Base
     gdl = GizmoTools::GizmoDetailList.new(list_options)
     datalist_data(tag).each do |row_id,fields|
       next if row_id.nil? or fields.nil?
-      $LOG.debug "row_id,fields: #{row_id.inspect}, #{fields.inspect}"
+      #$LOG.debug "row_id,fields: #{row_id.inspect}, #{fields.inspect}"
       type_id = fields[:gizmo_type_id]
       count = fields[:gizmo_count].to_i
       next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
       gizmo_options = list_options.merge(:field_hash => fields)
-      $LOG.debug "gizmo_options: #{gizmo_options.inspect}"
+      #$LOG.debug "gizmo_options: #{gizmo_options.inspect}"
       gdl.add(row_id, count, gizmo_options)
     end
     $LOG.debug "gdl: #{gdl.inspect}"
