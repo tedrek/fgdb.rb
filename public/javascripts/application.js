@@ -74,22 +74,32 @@ function matchValueVsManyPatterns(value, patts) {
   return result;
 }
 // request only if trigger element id matches one of given patterns
-function updateTotalsIfMatch( element, value,  event, patterns) {
+function updateTotalsIfMatch( element, value,  event, controller, patterns) {
   var trigElementId = Event.element(event).id;
   if (patterns.length > 0) {
     if (matchValueVsManyPatterns(trigElementId, patterns)) {
-      new Ajax.Request('/donations/update_totals?' + value, {asynchronous:true, evalScripts:true});
+      // alert('MATCH occurred!(updateTotalsIfMatch) (' +element.id+ ', ' +value+ ', ' +Event.element(event).id+ ', ' +controller+ ', ' +patterns+ ')');
+      new Ajax.Request('/' + controller + '/update_totals?' + value, {asynchronous:true, evalScripts:true});
     }
   }
 }
 function updateTotalsForContext( element, value,  event, context) {
   var patts = [];
+  var controller = '';
   if (context == 'donation') {
+    controller = 'donations';
     patts.push('money_tendered$');
     patts.push('gizmo_count$');
     patts.push('gizmo_type_id$');
+  } 
+  else if (context == 'sale') {
+    controller = 'sale_txns';
+    patts.push('unit_price$');
+    patts.push('gizmo_count$');
+    patts.push('gizmo_type_id$');
+    patts.push('discount_schedule_id$');
   }
-  updateTotalsIfMatch( element, value, event, patts)
+  updateTotalsIfMatch( element, value, event, controller, patts);
 }
 function updateTotals(formId) {
   var value = Form.serialize(formId)

@@ -32,6 +32,7 @@ class ApplicationController < ActionController::Base
       next if k.nil? or v.nil?
       type_id = v[:gizmo_type_id]
       count = v[:gizmo_count].to_i
+      $LOG.debug "k,v: #{k.inspect}, #{v.inspect}"
       next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
       gdl.add(type_id, count)
     end

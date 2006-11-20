@@ -1,5 +1,5 @@
 <div class="form_js">
   <%= observe_form(element_form_id(@options), 
-    :function => "updateTotalsForContext(element,value,evt,'#{@options[:scaffold_id]}')", 
+    :function => "updateTotalsForContext(element,value,evt,'#{@gizmo_context.name}')", 
     :wantEvent => true) %>
 </div>

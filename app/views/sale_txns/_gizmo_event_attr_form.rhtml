@@ -2,10 +2,11 @@
 <% @datalist_field_name_prefix = params[:datalist_field_name_prefix] %>
 <% @gizmo_event = gizmo_event = params[:gizmo_event_id] ? GizmoEvent.find( params[:gizmo_event_id] ) : GizmoEvent.new %>
 <% @gizmo_event.gizmo_type = gizmo_type = GizmoType.find( params[:gizmo_type_id] ) %>
-<% @gizmo_event.gizmo_context = gizmo_context = GizmoContext.find( params[:gizmo_context_id] ) %>
+<% @gizmo_event.gizmo_context = gizmo_context = @gizmo_context %>
 
 <% for attr in gizmo_type.relevant_attrs( gizmo_context ) %>
   <% options = {} %>
+  <% # options to pass to datalist field-creation fcns %>
   <% if (attr.name == 'discount_applied' || attr.name == 'extended_price') %>
     <% options[:disabled] = true %>
   <% end %>
@@ -23,9 +24,8 @@
   <% if @after_initial_page_load %>
     <div class="form_js">
     <%= observe_field(@datalist_field_id_prefix + '_' + attr.name,
-      :function => "updateTotalsForContext(element,value,evt,'sale')", 
+      :function => "updateTotalsForContext(element,Form.serialize(element.form),evt,'#{gizmo_context.name}')", 
       :wantEvent => true) %>
-    <% #  :function => "updateTotalsForContext(element,value,evt,'#{gizmo_context.name}')", %>
   </div>
   <% end %>
 <% end %>

@@ -17,14 +17,12 @@
         </td>
         <td>
           <% edit_options = @options.merge(:action => 'edit') %>
-          <% update_options = @options.merge(:action => "update") %>
           <%= link_to_remote "Edit",
                          { :url => edit_options,
                            :loading => "Element.show('#{loading_indicator_id(@options)}');",
                            :complete => "updateTotals('#{element_form_id(@options)}');"
                          },
                          { :href => url_for(edit_options) } %>
-<% #:complete => "updateTotals('#{element_form_id(update_options)}');" %>
         </td>
         <td>
           <% delete_options = @options.merge(:action => 'destroy') %>

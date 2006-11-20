@@ -185,6 +185,7 @@ class SaleTxnsController < ApplicationController
   # figure out total dollar amounts
   # based on quantities, gizmo types, attributes for each gizmo
   def calc_totals
+    @discount_schedule = DiscountSchedule.find(params[:sale_txn][:discount_schedule_id])
     $LOG.debug "ENTERING SaleTxns::calc_totals #{Time.now}"
     #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
     $LOG.debug params.inspect
@@ -198,9 +199,9 @@ class SaleTxnsController < ApplicationController
 
     @gross_amount = giztypes_list.total('extended_gross_price')
     $LOG.debug "@gross_amount: #{@gross_amount.inspect}"
-    @amount_due = giztypes_list.total('extended_price')
+    @amount_due = 29 #giztypes_list.total('extended_price')
     $LOG.debug "@amount_due: #{@amount_due.inspect}"
-    @discount_amount = giztypes_list.total('discount_applied')
+    @discount_amount = 8 #giztypes_list.total('discount_applied')
     $LOG.debug "@discount_amount: #{@discount_amount.inspect}"
     @ask_user_setting = 'receipt'
   end
