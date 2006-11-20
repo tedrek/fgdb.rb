@@ -25,16 +25,18 @@ class ApplicationController < ActionController::Base
 
   # stash unit amounts, total counts by gizmo type
   #   for all gizmo events in txn
-  def create_gizmo_types_detail_list(tag, options={})
-    options[:context] ||= @gizmo_context.name
-    gdl = GizmoTools::GizmoDetailList.new(options)
-    datalist_data(tag).each do |k,v|
-      next if k.nil? or v.nil?
-      type_id = v[:gizmo_type_id]
-      count = v[:gizmo_count].to_i
-      $LOG.debug "k,v: #{k.inspect}, #{v.inspect}"
+  def create_gizmo_types_detail_list(tag, list_options={})
+    list_options[:context] ||= @gizmo_context.name
+    gdl = GizmoTools::GizmoDetailList.new(list_options)
+    datalist_data(tag).each do |row_id,fields|
+      next if row_id.nil? or fields.nil?
+      $LOG.debug "row_id,fields: #{row_id.inspect}, #{fields.inspect}"
+      type_id = fields[:gizmo_type_id]
+      count = fields[:gizmo_count].to_i
       next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
-      gdl.add(type_id, count)
+      gizmo_options = list_options.merge(:field_hash => fields)
+      $LOG.debug "gizmo_options: #{gizmo_options.inspect}"
+      gdl.add(row_id, count, gizmo_options)
     end
     $LOG.debug "gdl: #{gdl.inspect}"
     return gdl
