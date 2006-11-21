@@ -81,7 +81,7 @@ class VolunteerTasksController < ApplicationController
       @volunteer_task = VolunteerTask.find(params[:id])
       @successful = !@volunteer_task.nil?
     rescue
-      flash[:error], @successful  = $!.to_s, false
+      flash[:error], @successful  = "<pre>#{$!.backtrace.to_yaml}</pre>", false
     end
     
     return render(:action => 'edit.rjs') if request.xhr?

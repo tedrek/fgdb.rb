@@ -37,6 +37,20 @@ class Contact < ActiveRecord::Base
     end
   end
 
+  def last_few_volunteer_tasks
+    volunteer_tasks.sort_by {|v_t| v_t.date_performed }[-3..-1]
+  end
+
+  def default_volunteer_task_types
+    last_few = last_few_volunteer_tasks
+    if( last_few.length > 1 and
+          last_few.map {|v_t| v_t.volunteer_task_types.sort}.uniq.length == 1 )
+      return last_few.first.volunteer_task_types
+    else
+      return []
+    end
+  end
+
   def to_s
     display_name
   end
