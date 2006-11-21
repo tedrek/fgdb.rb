@@ -5,6 +5,8 @@ class Donation < ActiveRecord::Base
   belongs_to :payment_method
   has_many :gizmo_events
 
+  validates_presence_of :payment_method_id
+
   def to_s
     id
   end
