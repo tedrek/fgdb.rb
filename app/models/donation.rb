@@ -10,4 +10,11 @@ class Donation < ActiveRecord::Base
   def to_s
     id
   end
+
+  def donor
+    contact ?
+      contact.display_name :
+      "anonymous(#{postal_code})"
+  end
+
 end
