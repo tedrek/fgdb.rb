@@ -2,14 +2,17 @@
 <% @context = 'donation' %>
 <% @type = type %>
 <% @id = @donation.id %>
-<% @contact_name_address = @donation.contact.display_name_address %>
+<% if @donation.contact %>
+  <% @contact_name_address = @donation.contact.display_name_address %>
+<% else %>
+  <% @contact_name_address = ["Anonymous (#{@donation.postal_code})"] %>
+<% end %>
 
 <div class="item_list">
 <table bgcolor="#cccccc" width="100%" align="center" border="1">
 <tbody><tr>
     <td width="15%"><strong>Quantity:</strong></td>
     <td width="60%"><strong>Description:</strong></td>
-    <td width="10%"><strong>CRT?</strong></td>
     <td width="15%"><strong>Est Value:</strong></td>
 </tr>
 
@@ -17,7 +20,6 @@
   <tr>
     <td> <%= event.gizmo_count %> </td>
     <td> <%= event.gizmo_type.description %> </td>
-    <td align="center">???</td>
     <td>______</td>
   </tr>
 <% end %>
@@ -26,13 +28,13 @@
 
 <tr>
     <td></td>
-    <td colspan="2">Total Estimated Value (tax deductible):</td>
+    <td>Total Estimated Value (tax deductible):</td>
     <td>_________</td>
 </tr>
 <% if @cash_donation_paid  %> 
   <tr>
     <td></td>
-    <td colspan="2">
+    <td>
     Cash Donation Paid (tax deductible)
     </td>
     <td><%= number_to_currency(@cash_donation_paid) %></td>
@@ -41,7 +43,7 @@
 <% if type == 'invoice' and @cash_donation_owed > 0 %> 
   <tr>
     <td></td>
-    <td colspan="2">
+    <td>
     Cash Donation Due (tax deductible <strong>after payment</strong>)
     </td>
     <td><%= number_to_currency(@cash_donation_owed) %></td>
@@ -49,13 +51,13 @@
 <% end %>
 <tr>
     <td></td>
-    <td colspan="2">Total Deductible Donation:</td>
+    <td>Total Deductible Donation:</td>
     <td>_________</td>
 </tr>
 <% if @required_fee_paid > 0 %> 
   <tr>
     <td></td>
-    <td colspan="2"> Required Fee Paid
+    <td> Required Fee Paid
       (<strong>not</strong> deductible):
     </td>
     <td><%= number_to_currency(@required_fee_paid) %></font></td>
@@ -64,7 +66,7 @@
 <% if type == 'invoice' and @required_fee_owed %> 
   <tr>
     <td></td>
-    <td colspan="2"> Required Fee Due
+    <td> Required Fee Due
       (<strong>not</strong> deductible):
     </td>
     <td><%= number_to_currency(@required_fee_owed) %></font></td>

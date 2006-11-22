@@ -19,31 +19,26 @@
   <td colspan="2">
     <% if @context == 'donation' %>
       Tax-Deductible Donation 
-    <% elsif @context == 'donation' %>
+    <% elsif @context == 'sale' %>
       Sales
     <% end %>
 
-    <strong><font color="#FF0000" size="+2">
+    <strong>
     <% if @type == 'receipt' %>
       Receipt
     <% elsif @type == 'invoice' %>
-      Invoice
+      <font color="#FF0000" size="+2">Invoice</font>
     <% else %>
       Record
     <% end %>
-    </font></strong>
+    </strong>
   </td>
   <td align="right">Federal Tax I.D.  93-1292010</td>
 </tr>
 <tr>
-  <td>Date: <%= Time.now.strftime("%m/%d/%Y") %> | </td>
-  <td>
-    <% if @type == 'receipt' %>
-      Receipt
-    <% elsif @type == 'invoice' %>
-      Invoice
-    <% end %>
-    Number: <%= @id %>
+  <td>Date: <%= Time.now.strftime("%m/%d/%Y") %></td>
+  <td align="center">
+    Record <strong># <%= @id %></strong>
   </td>
   <td align="right">
     <% if @type == 'invoice' %>

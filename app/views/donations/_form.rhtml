@@ -4,7 +4,11 @@
     <!--[form:donation]-->
 
 <div id="<%= donation_contact_searchbox_id(@options) %>">
-  <%= render :partial => 'contact_search' %>
+  <% if @donation.postal_code %>
+    <%= render :partial => 'anonymous' %>
+  <% else %>
+    <%= render :partial => 'contact_search' %>
+  <% end %>
 </div>
 
 <% params[:gizmo_context_id] ||= @gizmo_context.id %>
