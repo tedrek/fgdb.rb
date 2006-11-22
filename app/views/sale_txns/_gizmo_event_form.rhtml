@@ -50,3 +50,13 @@
 
   </div>
 </fieldset>
+
+<% #if @after_initial_page_load %>
+  <div class="form_js">
+  <% for attr_name in ['gizmo_count', 'gizmo_type_id'] %>
+    <%= observe_field(@datalist_field_id_prefix + '_' + attr_name,
+      :function => "updateTotalsForContext(element,Form.serialize(element.form),evt,'#{@gizmo_context.name}')", 
+      :wantEvent => true) %>
+  <% end %>
+  </div>
+<% #end %>
