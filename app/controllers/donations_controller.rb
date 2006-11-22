@@ -120,17 +120,11 @@ class DonationsController < ApplicationController
   def update
     begin
       @donation = Donation.find(params[:id])
-      if (@donation.postal_code and ! @donation.postal_code.empty?) or
-          (@donation.contact_id and ! @donation.contact_id.empty?)
-        resolution = resolve_submit
-        case resolution
-        when 'invoice','receipt'
-          @donation.attributes = params[:donation]
-          _save(resolution)
-        end
-      else
-        # :MC: lame!  this should happen in the model.
-        flash[:error], @successful = "Please choose a contact or enter the anonymous postal code.", false
+      @donation.attributes = params[:donation]
+      resolution = resolve_submit
+      case resolution
+      when 'invoice','receipt'
+        _save(resolution)
       end
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
@@ -225,9 +219,15 @@ class DonationsController < ApplicationController
     end
     @donation.reported_required_fee = @model_required_fee
     @donation.reported_suggested_fee = @model_suggested_fee
-    @successful = @donation.save
-    save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
-      :gizmo_context_id => @gizmo_context.id)
+    if (@donation.postal_code and ! @donation.postal_code.empty?) or
+        (@donation.contact_id and ! @donation.contact_id.empty?)
+      @successful = @donation.save
+      save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
+                    :gizmo_context_id => @gizmo_context.id)
+    else
+      # :MC: lame!  this should happen in the model.
+      flash[:error], @successful = "Please choose a contact or enter the anonymous postal code.", false
+    end
   end
 
   # figure out total dollar amounts
