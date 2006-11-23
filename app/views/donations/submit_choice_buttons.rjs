@@ -3,3 +3,4 @@ buttons_id = submit_choice_buttons_id(params)
 page.replace buttons_id, :partial => 'submit_choice_buttons'
 page.visual_effect :highlight, buttons_id, :duration => 3
 page.show buttons_id
+page << "Field.focus('buttons_invoice');"

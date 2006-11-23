@@ -3,6 +3,10 @@
   <div class="row">
     <!--[form:donation]-->
 
+<div class="messages-container">
+<%= render :partial => 'submit_choice_buttons' %>
+</div>
+
 <div id="<%= donation_contact_searchbox_id(@options) %>">
   <% if @donation.postal_code %>
     <%= render :partial => 'anonymous' %>
@@ -38,7 +42,3 @@
 
   </div>
 </fieldset>
-
-<div class="messages-container">
-<%= render :partial => 'submit_choice_buttons' %>
-</div>
