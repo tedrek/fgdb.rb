@@ -61,6 +61,7 @@ class SaleTxnsController < ApplicationController
   def new
     @sale_txn = SaleTxn.new
     @successful = true
+    @initial_page_load = true
 
     _set_totals_defaults(:new => true)
     return render(:action => 'new.rjs') if request.xhr?
@@ -98,6 +99,7 @@ class SaleTxnsController < ApplicationController
     begin
       @sale_txn = SaleTxn.find(params[:id])
       @successful = !@sale_txn.nil?
+      @initial_page_load = true
       _set_totals_defaults
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -159,7 +161,6 @@ class SaleTxnsController < ApplicationController
   end
 
   def add_attrs_to_form
-    @after_initial_page_load = true
     if params[:gizmo_type_id]
       render :update do |page|
         page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }

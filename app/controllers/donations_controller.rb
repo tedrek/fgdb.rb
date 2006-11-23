@@ -62,6 +62,7 @@ class DonationsController < ApplicationController
   def new
     @donation = Donation.new
     @successful = true
+    @initial_page_load = true
 
       _set_totals_defaults
 
@@ -101,6 +102,7 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @successful = !@donation.nil?
+      @initial_page_load = true
 
       _set_totals_defaults
     rescue
@@ -161,7 +163,6 @@ class DonationsController < ApplicationController
   end
 
   def add_attrs_to_form
-    @after_initial_page_load = true
     if params[:gizmo_type_id]
       render :update do |page|
         page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
@@ -220,7 +221,7 @@ class DonationsController < ApplicationController
     @donation.reported_required_fee = @model_required_fee
     @donation.reported_suggested_fee = @model_suggested_fee
     if (@donation.postal_code and ! @donation.postal_code.empty?) or
-        (@donation.contact_id and ! @donation.contact_id.empty?)
+        (@donation.contact_id and ! @donation.contact_id.nil?)
       @successful = @donation.save
       save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
                     :gizmo_context_id => @gizmo_context.id)
