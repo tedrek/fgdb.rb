@@ -32,7 +32,7 @@ module GizmoTools
         @gizmo_list.remove(add_id)
       end
       gs = GizmoSummer.new(add_id, quantity, options)
-      @gizmo_list[add_id] = gs
+      @gizmo_list[add_id] = gs unless gs.nil?
     end
 
     def remove(id)
@@ -60,17 +60,19 @@ module GizmoTools
 
     # return extended required fee for present quantity
     def extended_required_fee
+      return 0.0 if @quantity.nil? or @unit_required_fee.nil?
       @quantity * @unit_required_fee
     end
 
     # return extended suggested fee for present quantity
     def extended_suggested_fee
+      return 0.0 if @quantity.nil? or @unit_suggested_fee.nil?
       @quantity * @unit_suggested_fee
     end
 
     # extended gross price before discount
     def extended_gross_price
-      return nil if @quantity.nil? or @unit_price.nil?
+      return 0.0 if @quantity.nil? or @unit_price.nil?
       @quantity * @unit_price
     end
 
@@ -82,7 +84,7 @@ module GizmoTools
 
     # net extended price
     def extended_net_price
-      return nil if extended_gross_price.nil? or extended_discount.nil?
+      return 0.0 if extended_gross_price.nil? or extended_discount.nil?
       @extended_price = extended_gross_price - extended_discount
     end
 
@@ -100,8 +102,8 @@ module GizmoTools
       begin
         gt = GizmoType.find(options[:field_hash][:gizmo_type_id].to_s.to_i)
       rescue
-        raise "unable to retrieve record for gizmo_type_id #{options[:field_hash][:gizmo_type_id]}"
-        return
+        #raise "unable to retrieve record for gizmo_type_id #{options[:field_hash][:gizmo_type_id]}"
+        return nil
       end
 
       @quantity = quantity
