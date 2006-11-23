@@ -41,7 +41,11 @@ module GizmoTools
 
     # sums every item's value for given attribute
     def total(attr_name)
-      sum = @gizmo_list.values.inject(0) {|sum, o| sum + o.send(attr_name.to_sym) }
+      sum = @gizmo_list.values.inject(0) do |sum, o| 
+        itot = o.send(attr_name.to_sym)
+        itot = 0 if itot.nil? or !itot.kind_of?(Numeric) 
+        sum + itot
+      end
     end
 
   end

@@ -32,8 +32,11 @@ class ApplicationController < ActionController::Base
       next if row_id.nil? or fields.nil?
       #$LOG.debug "row_id,fields: #{row_id.inspect}, #{fields.inspect}"
       type_id = fields[:gizmo_type_id]
-      count = fields[:gizmo_count].to_i
-      next if type_id.nil? or count.nil? or !count.kind_of?(Numeric)
+      next if type_id.nil? or type_id == ''
+      count = fields[:gizmo_count]
+      next if count.nil? or count == ''
+      count = count.to_i
+      next if !count.kind_of?(Numeric) or (count + 0 == 0)
       gizmo_options = list_options.merge(:field_hash => fields)
       #$LOG.debug "gizmo_options: #{gizmo_options.inspect}"
       gdl.add(row_id, count, gizmo_options)
