@@ -28,15 +28,13 @@
     name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= @gizmo_context.id %>" />
 
 <div id="<%= @datalist_field_id_prefix %>_event_extras">
+  <% @gizmo_type = @gizmo_event.gizmo_type %>
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
     <%= render :partial => 'gizmo_event_attr_form', 
         :locals => { :params => params.merge( {
           :gizmo_event_id => @gizmo_event.id,
           :datalist_field_id_prefix => @datalist_field_id_prefix,
-          :datalist_field_name_prefix => @datalist_field_name_prefix,
-          :gizmo_type_id => @gizmo_event.gizmo_type_id,
-          :gizmo_context_id => @gizmo_event.gizmo_context_id,
-          :gizmo_event_id => @gizmo_event.id
+          :datalist_field_name_prefix => @datalist_field_name_prefix
       } ) } %>
   <% end %>
 </div>
@@ -52,13 +50,3 @@
 
   </div>
 </fieldset>
-
-<% unless @initial_page_load %>
-  <div class="form_js">
-  <% for attr_name in ['gizmo_count', 'gizmo_type_id'] %>
-    <%= observe_field(@datalist_field_id_prefix + '_' + attr_name,
-      :function => "updateTotalsForContext(element,Form.serialize(element.form),evt,'#{@gizmo_context.name}')", 
-      :wantEvent => true) %>
-  <% end %>
-  </div>
-<% end %>

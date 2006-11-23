@@ -10,6 +10,14 @@
           :html => { :href => url_for(@options.merge(:controller => '/donations')),
           :id => element_form_id(@options) } %>
 
+    <%= javascript_tag "
+      $('#{element_form_id(@options)}').onchange = function (e) {
+        context = 'donation';
+        elem = Event.element(e);
+        vals = Form.serialize(this);
+        updateTotalsForContext( elem, vals, e, context );
+      };
+    "%>
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
 
       <h4><%= Inflector.titleize(@options[:action]) %> Donation</h4>
@@ -38,5 +46,3 @@
   </tbody>
 </table>
 <% end %>
-
-<%= render :partial => 'form_js' %>

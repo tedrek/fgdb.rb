@@ -164,11 +164,19 @@ class DonationsController < ApplicationController
 
   def add_attrs_to_form
     if params[:gizmo_type_id]
-      render :update do |page|
-        page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+      @gizmo_context = GizmoContext.find(params[:gizmo_context_id])
+      @gizmo_type = GizmoType.find(params[:gizmo_type_id])
+      if ! @gizmo_type.relevant_attrs(@gizmo_context).empty?
+        render :update do |page|
+          page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+        end
+      else
+        render :update do |page|
+        end
       end
     else
-      render :text => ''
+      render :update do |page|
+      end
     end
   end
 
@@ -196,8 +204,9 @@ class DonationsController < ApplicationController
     end
   end
 
-
+  #######
   private
+  #######
 
   # set some default values used in view by new donation record
   def _set_totals_defaults
@@ -220,13 +229,13 @@ class DonationsController < ApplicationController
     end
     @donation.reported_required_fee = @model_required_fee
     @donation.reported_suggested_fee = @model_suggested_fee
+    # :MC: lame!  validation should happen in the model.
     if (@donation.postal_code and ! @donation.postal_code.empty?) or
-        (@donation.contact_id and ! @donation.contact_id.nil?)
+        (@donation.contact_id)
       @successful = @donation.save
       save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
                     :gizmo_context_id => @gizmo_context.id)
     else
-      # :MC: lame!  this should happen in the model.
       flash[:error], @successful = "Please choose a contact or enter the anonymous postal code.", false
     end
   end
@@ -271,8 +280,8 @@ class DonationsController < ApplicationController
 
     render :partial => 'donation_detail_totals', 
       :layout => 'receipt_invoice', 
-      :locals => { 
-        :type => type, 
+      :locals => {
+        :type => type,
         :owed => @total_reported_fees - @donation.money_tendered,
         :cash_donation => @donation.reported_suggested_fee,
         :required_fee => @donation.reported_required_fee,

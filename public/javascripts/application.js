@@ -1,18 +1,6 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-function playwith_fees(o) {
-  var params = Form.serialize(o.form);
-  new Ajax.Request('/donations/update_totals?' + params,
-    {asynchronous:true, evalScripts:true});
-}
-
-function playwith_amounts(o) {
-  var params = Form.serialize(o.form);
-  new Ajax.Request('/sale_txns/update_sale_txn_amounts?' + params,
-    {asynchronous:true, evalScripts:true});
-}
-
 // Called as:
 // confirmReplaceElementValue(elem_id, new_elem_value, confirm_message)
 function confirmReplaceElementValue(id, val, msg){
@@ -28,23 +16,23 @@ function confirmReplaceElementValue(id, val, msg){
 // calculateOffsetLeft(_inputField)
 // was ob
 function calculateOffsetLeft(r){
-  return Ya(r,"offsetLeft")
+  return absolute_offset(r,"offsetLeft")
 }
 
 // Called as:
 // calculateOffsetTop(_inputField)
 // Was Qb...
 function calculateOffsetTop(r){
-  return Ya(r,"offsetTop")
+  return absolute_offset(r,"offsetTop")
 }
 
-function Ya(r,attr){
-  var kb=0;
+function absolute_offset(r,attr){
+  var tot=0;
   while(r){
-    kb+=r[attr]; 
+    tot+=r[attr]; 
     r=r.offsetParent
   }
-  return kb
+  return tot
 }
 
 function setRelativelyAbsolute(elem_id, relative_to_id) {
@@ -61,13 +49,12 @@ function alertEvent( element, value,  event) {
 
 function matchValueVsManyPatterns(value, patts) {
   var stringValue = value.toString();
-  var pattArray = $A(patts);
+  patts = $A(patts);
   var result = false;
-  pattArray.each(function(patt, index) {
+  patts.each(function(patt, index) {
     var stringPatt = patt.toString();
     var regex = new RegExp(stringPatt);
     if (stringValue.match(regex)) {
-      /* alert('value ['+value+'] matched pattern ['+patt+']'); */
       result = true;
     }
   });
@@ -78,11 +65,11 @@ function updateTotalsIfMatch( element, value,  event, controller, patterns) {
   var trigElementId = Event.element(event).id;
   if (patterns.length > 0) {
     if (matchValueVsManyPatterns(trigElementId, patterns)) {
-      // alert('MATCH occurred!(updateTotalsIfMatch) (' +element.id+ ', ' +value+ ', ' +Event.element(event).id+ ', ' +controller+ ', ' +patterns+ ')');
       new Ajax.Request('/' + controller + '/update_totals?' + value, {asynchronous:true, evalScripts:true});
     }
   }
 }
+
 function updateTotalsForContext( element, value,  event, context) {
   var patts = [];
   var controller = '';
@@ -91,7 +78,7 @@ function updateTotalsForContext( element, value,  event, context) {
     patts.push('money_tendered$');
     patts.push('gizmo_count$');
     patts.push('gizmo_type_id$');
-  } 
+  }
   else if (context == 'sale') {
     controller = 'sale_txns';
     patts.push('unit_price$');
@@ -101,8 +88,9 @@ function updateTotalsForContext( element, value,  event, context) {
   }
   updateTotalsIfMatch( element, value, event, controller, patts);
 }
+
 function updateTotals(formId) {
-  var value = Form.serialize(formId)
+  var value = Form.serialize(formId);
   new Ajax.Request('/donations/update_totals?' + value, {asynchronous:true, evalScripts:true});
 }
 

@@ -1,31 +1,17 @@
 <% @datalist_field_id_prefix = params[:datalist_field_id_prefix] %>
 <% @datalist_field_name_prefix = params[:datalist_field_name_prefix] %>
 <% @gizmo_event = gizmo_event = params[:gizmo_event_id] ? GizmoEvent.find( params[:gizmo_event_id] ) : GizmoEvent.new %>
-<% @gizmo_event.gizmo_type = gizmo_type = GizmoType.find( params[:gizmo_type_id] ) %>
+<% @gizmo_event.gizmo_type = gizmo_type = @gizmo_type %>
 <% @gizmo_event.gizmo_context = gizmo_context = @gizmo_context %>
-
 <% for attr in gizmo_type.relevant_attrs( gizmo_context ) %>
   <% options = {} %>
-  <% # options to pass to datalist field-creation fcns %>
-  <% if (attr.name == 'option_you_want_disabled, for example') %>
-    <% options[:disabled] = true %>
-  <% end %>
   <div class="form-element">
     <% if attr.datatype == 'boolean' %>
-
-      <%= datalist_check_box "gizmo_event", attr.name, options  %>&nbsp;
-
+      <%= datalist_check_box "gizmo_event", attr.name, options %> &nbsp;
       <label for="<%= @datalist_field_id_prefix %>_<%= attr.name %>"><%= Inflector.humanize attr.name %></label>
     <% else %>
       <label for="<%= @datalist_field_id_prefix %>_<%= attr.name %>"><%= Inflector.humanize attr.name %></label>
       <%= datalist_text_field "gizmo_event", attr.name, options %>
     <% end %>
   </div>
-  <% unless @initial_page_load %>
-    <div class="form_js">
-    <%= observe_field(@datalist_field_id_prefix + '_' + attr.name,
-      :function => "updateTotalsForContext(element,Form.serialize(element.form),evt,'#{gizmo_context.name}')", 
-      :wantEvent => true) %>
-  </div>
-  <% end %>
 <% end %>
