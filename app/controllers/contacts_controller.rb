@@ -1,6 +1,8 @@
 class ContactsController < ApplicationController
   include AjaxScaffold::Controller
   include ContactsHelper
+  include DatalistFor
+  ContactMethodsTag = 'contacts_contact_methods'
 
   after_filter :clear_flashes
   before_filter :update_params_filter
@@ -61,8 +63,9 @@ class ContactsController < ApplicationController
   def create
     begin
       @contact = Contact.new(params[:contact])
-      @successful = @contact.save
       @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
+      @successful = @contact.save
+      save_datalist(ContactMethodsTag, :contact_id => @contact.id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -86,6 +89,7 @@ class ContactsController < ApplicationController
       @contact = Contact.find(params[:id])
       @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
       @successful = @contact.update_attributes(params[:contact])
+      save_datalist(ContactMethodsTag, :contact_id => @contact.id)
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
