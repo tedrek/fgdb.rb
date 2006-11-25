@@ -8,4 +8,16 @@ class ContactType < ActiveRecord::Base
   def to_s
     description
   end
+
+  def long_for_who
+    case for_who
+    when 'per'
+      'person'
+    when 'org'
+      'organization'
+    else
+      for_who
+    end
+  end
+
 end

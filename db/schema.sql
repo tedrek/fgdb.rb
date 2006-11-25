@@ -74,6 +74,7 @@ COMMENT ON TABLE contact_methods IS 'actual ways a specific contact can be conta
 CREATE TABLE contact_types (
     id serial NOT NULL,
     description character varying(100),
+    for_who character varying(3) DEFAULT 'any'::character varying,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),

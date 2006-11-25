@@ -6,34 +6,54 @@
   <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">Organization</label>
 </div>
 
-<div class="form-element">
+<%= observe_field 'contact_is_organization', :url => {
+      :action => 'contact_formation'
+    },
+    :with => 'is_organization' %>
+
+<%= javascript_tag( remote_function :url => {
+      :action => 'contact_formation',
+      :is_organization => @contact.is_organization
+    } ) %>
+
+<% for contact_type in ContactType.find_all %>
+<div class="<%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
+  <label for="<%= contact_type.description %>"><%= contact_type.description %></label>
+  <input type="checkbox" id="<%= contact_type.description %>"
+    name="contact_types[]" 
+    value="<%= contact_type.id %>"
+  <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
+  >
+</div>
+<% end %>
+
+<div class="organization form-element">
+  <label for="contact_organization">Name</label>
+  <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
+</div>
+<div class="person form-element">
   <label for="contact_first_name">First name</label>
-  <%= text_field 'contact', 'first_name' , {:class=>"text-input"} %>
+  <%= text_field 'contact', 'first_name' , {:class=>"person text-input"} %>
 </div>
 
-<div class="form-element">
+<div class="person form-element">
   <label for="contact_middle_name">Middle name</label>
-  <%= text_field 'contact', 'middle_name' , {:class=>"text-input"} %>
+  <%= text_field 'contact', 'middle_name' , {:class=>"person text-input"} %>
 </div>
 
-<div class="form-element">
+<div class="person form-element">
   <label for="contact_surname">Surname</label>
-  <%= text_field 'contact', 'surname' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="contact_organization">Organization</label>
-  <%= text_field 'contact', 'organization' , {:class=>"text-input"} %>
-</div>
-
-<div class="form-element">
-  <label for="contact_extra_address">Extra address</label>
-  <%= text_field 'contact', 'extra_address' , {:class=>"text-input"} %>
+  <%= text_field 'contact', 'surname' , {:class=>"person text-input"} %>
 </div>
 
 <div class="form-element">
   <label for="contact_address">Address</label>
   <%= text_field 'contact', 'address' , {:class=>"text-input"} %>
+</div>
+
+<div class="form-element">
+  <label for="contact_extra_address">Extra address</label>
+  <%= text_field 'contact', 'extra_address' , {:class=>"text-input"} %>
 </div>
 
 <div class="form-element">
@@ -60,18 +80,6 @@
   <label for="contact_notes">Notes</label>
   <%= text_area 'contact', 'notes'  %>
 </div>
-
-<% for contact_type in ContactType.find_all %>
-<div class="form-element">
-  <label for="<%= contact_type.id %>"><%= contact_type.description %></label>
-  <input type="checkbox" id="<%= contact_type.id %>"
-    name="contact_types[]" 
-    value="<%= contact_type.id %>"
-  <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
-  >
-</div>
-<% end %>
-
 
 <!--[eoform:contact]-->
 

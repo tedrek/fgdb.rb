@@ -134,6 +134,13 @@ class ContactsController < ApplicationController
     render :action => "small_edit.rjs"
   end
 
+  def contact_formation
+    params[:is_organization] = params[:is_organization] && params[:is_organization] != 'undefined'
+    @show_type = params[:is_organization] ? 'organization' : 'person'
+    @hide_type = params[:is_organization] ? 'person' : 'organization'
+    render :action => "contact_formation.rjs"
+  end
+
   private
 
   def do_search( query_str )
