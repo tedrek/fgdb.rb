@@ -1,6 +1,9 @@
   <label for="<%= searchbox_field_id(params) %>"><%= searchbox_search_label(params) %></label>
   <input type="text" name="contact_searchbox_query"
-    id="<%= searchbox_field_id(params) %>"/>
+    id="<%= searchbox_field_id(params) %>"
+    onKeyPress="magicContactOnlyOnSubmit('<%= @scaffold_id
+      %>', '<%= searchbox_field_id(params)
+      %>', event); return contactKeyListener(event);" />
   <button name="contact_searchbox_search" type="button"
     onclick="<%= remote_function :url => {
         :action => 'search_results',
