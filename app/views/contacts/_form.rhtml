@@ -3,7 +3,7 @@
     <!--[form:contact]-->
 
 <div class="form-element">
-  <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">Organization</label>
+  <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">organization</label>
 </div>
 
 <%= observe_field 'contact_is_organization', :url => {
@@ -18,12 +18,11 @@
 
 <% for contact_type in ContactType.find_all %>
 <div class="<%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
-  <label for="<%= contact_type.description %>"><%= contact_type.description %></label>
   <input type="checkbox" id="<%= contact_type.description %>"
     name="contact_types[]" 
     value="<%= contact_type.id %>"
   <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
-  >
+  >&nbsp;<label for="<%= contact_type.description %>"><%= contact_type.description %></label>
 </div>
 <% end %>
 
@@ -73,7 +72,7 @@
 
 <div class="form-element">
   <label for="contact_country">Country</label>
-  <%= text_field 'contact', 'country' , {:class=>"text-input"} %>
+  <%= country_select 'contact', 'country', ['United States', 'Canada'] %>
 </div>
 
 <div class="form-element">

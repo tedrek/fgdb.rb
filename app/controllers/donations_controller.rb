@@ -11,7 +11,7 @@ class DonationsController < ApplicationController
   before_filter :update_params_filter
 
   def initialize
-    @gizmo_context = GizmoContext.find(:first, :conditions => [ "name = ?", 'donation'])
+    @gizmo_context = GizmoContext.donation
     @datalist_for_new_defaults = {
       GizmoEventsTag.to_sym  => {
         :gizmo_context_id => @gizmo_context.id

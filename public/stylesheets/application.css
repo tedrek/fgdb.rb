@@ -128,6 +128,10 @@ font-size: 17px;
 font-size: 17px;
 }
 
+.searchbox_form {
+background-color: #C5E5E5;
+}
+
 .hours_type {
 font-size: 12px;
 }
