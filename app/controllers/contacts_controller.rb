@@ -148,22 +148,20 @@ class ContactsController < ApplicationController
   private
 
   def do_search( query_str )
-    # if the user added query wildcards, leave be if not, assume it's
-    # better to bracket each word with wildcards
-    unless query_str =~ /\*/
-      query_str = query_str.split.map do |word|
-        "*#{word}*" 
-      end.join(' ')
+    begin
+      @search_results = Contact.search( query_str, :limit => default_per_page )
+      if @search_results.size == 0
+        flash[:error] = "Your search for '#{query_str}' failed."
+      elsif @search_results.size >= default_per_page
+        flash[:error] = "Your search for '#{query_str}' " +
+          "returned too many results to display.  You may want to " +
+          "refine your search."
+      end
+      return @search_results
+    rescue
+      flash[:error] = "Your search for '#{query_str}' failed atrociously."
+      return []
     end
-    @search_results = Contact.search( query_str, :limit => default_per_page )
-    if @search_results.size == 0
-      flash[:error] = "Your search for '#{query_str}' failed."
-    elsif @search_results.size >= default_per_page
-      flash[:error] = "Your search for '#{query_str}' " +
-        "returned too many results to display.  You may want to " +
-        "refine your search."
-    end
-    return @search_results
   end
 
 end

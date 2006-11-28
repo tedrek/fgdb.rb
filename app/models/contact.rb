@@ -114,25 +114,34 @@ class Contact < ActiveRecord::Base
       find(:all, :conditions => ["is_organization = ?", false])
     end
 
+    def volunteers
+      #:MC: opportunity for sql optimization
+      people.find_all {|person| person.contact_types.detect {|type| type.description == 'volunteer' } }
+    end
+
     def organizations
       find(:all, :conditions => ["is_organization = ?", true])
     end
 
+    def search(query, options = {})
+      # if the user added query wildcards or search metaterms, leave
+      # be if not, assume it's better to bracket each word with
+      # wildcards and join with ANDs.
+      unless query =~ /\*|\~| AND| OR/
+        query = query.split.map do |word|
+          "*#{word}*" 
+        end.join(' AND ')
+      end
+      find_by_contents( query, options )
+    end
+
   end # class << self
 
-  include Searchable
-  
-  index_attr  :first_name do |attr|
-    attr.boost  2.0
-    attr.sortable true
-    attr.aliases ["firstname", "fn"]
-  end
-  index_attr  :surname do |attr|
-    attr.boost  2.0
-    attr.sortable true
-    attr.aliases ["last_name", "lastname", "ln"]
-  end
-  index_attr  :organization
-  index_attr  :id
+  acts_as_ferret :fields => {
+    'first_name' => {:boost => 2},
+    'middle_name' => {},
+    'surname' => {:boost => 2.5},
+    'organization' => {:boost => 2}
+  }
 
 end

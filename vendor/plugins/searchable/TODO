@@ -1,7 +1,0 @@
-Check to see why "add_to_index" isn't called on update.
-Extend Ferret::Searcher to handle multiple classes.
-Extend AssociationProxy with search calls that invoke appropriate QueryFilters to restrict the resultset.
-Create a generator for schema.xml
-Modify generator to create a schema.xml suitable for use with multiple models.
-
-script/runner "load('vendor/plugins/acts_as_searchable/lib/solr/config_generator.rb'); puts MojoDNA::Searchable::Solr::ConfigGenerator.create(Audio)" > schema.xml
