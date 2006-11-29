@@ -236,7 +236,7 @@ class DonationsController < ApplicationController
         @successful = @donation.save
         @successful &&= save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
                                       :gizmo_context_id => @gizmo_context.id)
-        raise flash[:error] unless @successful
+        raise( RuntimeError.new( flash[:error] || 'Please appropriately fill in all the required fields.' ) ) unless @successful
       end
     else
       flash[:error], @successful = "Please choose a contact or enter the anonymous postal code.", false
