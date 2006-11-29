@@ -1,0 +1,17 @@
+=========================
+_F_ree_G_eek _D_ata_B_ase
+=========================
+
+this webapp is meant to keep track of two main areas:
+ * volunteers and the time they work
+ * gizmos and their flow through our organization
+
+the /volunteer_tasks controller tracks volunteers and their hours.
+the /donations and /sale_txns controllers are about gizmo flow.
+
+in the near future i hope to add:
+ * classes and who has completed them
+ * projects (such as building a computer) and who has worked on them
+
+a bunch of other controllers are scattered around to support these,
+but should not be used by typical users.

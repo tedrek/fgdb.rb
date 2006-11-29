@@ -6,6 +6,10 @@ class GizmoEvent < ActiveRecord::Base
   belongs_to  :gizmo_type
   belongs_to  :gizmo_context
 
+  validates_presence_of :gizmo_count
+  validates_presence_of :gizmo_type_id
+  validates_presence_of :gizmo_context_id
+
   has_many    :gizmo_events_gizmo_typeattrs,
               :dependent => :destroy
 
