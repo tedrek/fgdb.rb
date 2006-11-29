@@ -86,7 +86,7 @@ class DonationsController < ApplicationController
         _save(resolution)
       end
     rescue
-      flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
+      flash[:error], @successful  = $!.to_s, false #+ "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
     
     return do_xhr_view(resolution, 'create.rjs', 'donations', @donation) if request.xhr?
@@ -129,7 +129,7 @@ class DonationsController < ApplicationController
         _save(resolution)
       end
     rescue
-      flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
+      flash[:error], @successful  = $!.to_s, false # + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
     
     return do_xhr_view(resolution, 'update.rjs', 'donations', @donation) if request.xhr?
@@ -232,9 +232,12 @@ class DonationsController < ApplicationController
     # :MC: lame!  validation should happen in the model.
     if (@donation.postal_code and ! @donation.postal_code.empty?) or
         (@donation.contact_id)
-      @successful = @donation.save
-      @successful &&= save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
-                                    :gizmo_context_id => @gizmo_context.id)
+      Donation.transaction(@donation) do
+        @successful = @donation.save
+        @successful &&= save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
+                                      :gizmo_context_id => @gizmo_context.id)
+        raise flash[:error] unless @successful
+      end
     else
       flash[:error], @successful = "Please choose a contact or enter the anonymous postal code.", false
     end
