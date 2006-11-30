@@ -8,7 +8,7 @@ class Donation < ActiveRecord::Base
   validates_presence_of :payment_method_id
 
   def to_s
-    id
+    "$%0.2f from %s on %s (#%i)" % [money_tendered, donor, created_at.to_date.to_s, id]
   end
 
   def donor
