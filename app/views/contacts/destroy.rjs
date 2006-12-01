@@ -1,7 +1,8 @@
 @options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => params[:id] }
 
 if @successful
-  page.replace_html params[:scaffold_id], :partial => 'search_results', :locals => { :@search_results => [] }
+  page.replace_html searchbox_search_results_div_id(params),
+    :partial => 'search_results', :locals => { :@search_results => [] }
   page << "Field.focus('#{searchbox_field_id(@options)}');"
 else
   page.hide loading_indicator_id(@options)

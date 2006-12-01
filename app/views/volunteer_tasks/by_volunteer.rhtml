@@ -1,0 +1,10 @@
+<%= form_tag( { :controller => '/volunteer_tasks', :action => 'by_volunteer' },
+    :id => 'volunteer_tasks_by_volunteer_form' ) %>
+  <div class="form-element">
+    <%= render_component( :controller => '/contacts', :action => 'search',
+      :params => { :field_name => "contact_id", :contact => @contact,
+        :search_label => "Who do you want to enter hours for?",
+        :select_label => "Which volunteer?",
+        :limit_to_type => 'volunteer' } ) %>
+  </div>
+<%= end_form_tag %>

@@ -43,19 +43,17 @@ function contactKeyListener(event) {
   }
 }
 
-function magicContactOnlyOnSubmit(scaffold, elem, event) {
+function magicContactOnlyOnSubmit(button, event) {
   var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
 
   if (keyCode == 13 || keyCode == 10) {
-    magicContact(scaffold, elem);
+    magicContact(button);
   }
 }
 
-function magicContact(scaffold, elem) {
-  elem = $(elem);
-
-  // :MC: ack.  not very DRY at all.
-  new Ajax.Request('/contacts/search_results?scaffold_id=' + scaffold, {asynchronous:true, evalScripts:true, onLoading:function(request){Element.show(scaffold + '-search_results-loading-indicator');}, parameters:'query=' + elem.value});
+function magicContact(button) {
+  button = $(button);
+  button.click();
 }
 
 function setRelativelyAbsolute(elem_id, relative_to_id) {

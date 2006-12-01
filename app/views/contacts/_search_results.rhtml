@@ -1,17 +1,15 @@
-<div id="<%= scaffold_messages_id(params) %>">
-  <%= render :partial => 'messages' %>
-</div>
-
-<div class="actions">
-
-  <%= render :partial => 'searchbox' %>
-
   <% new_params = params.merge( :controller => '/contacts', :action => 'new', :id => nil ) %>
   <%= loading_indicator_tag(new_params) %>
   <%= link_to_remote 'Create New',
     :url => new_params,
     :loading => "Element.show('#{loading_indicator_id(new_params)}');"
   %>
+
+<div id="<%= scaffold_messages_id(params) %>">
+  <%= render :partial => 'messages' %>
+</div>
+
+<div class="actions">
 
   <% if @search_results.length > 0 %>
     <%= render :partial => 'results_dropdown' %>
@@ -23,7 +21,3 @@
   <% end %>
 
 </div>
-
-<script type="text/javascript">
-Rico.Corner.round('<%= params[:scaffold_id] %>', {color: '#005CB8', bgColor: '#fff', compact: true});
-</script>

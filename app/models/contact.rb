@@ -104,6 +104,10 @@ class Contact < ActiveRecord::Base
     (relationships_as_source + relationships_as_sink).uniq
   end
 
+  def types
+    contact_types.join(' ')
+  end
+
   def discount_schedule_id
     1
   end
@@ -115,8 +119,15 @@ class Contact < ActiveRecord::Base
     end
 
     def volunteers
-      #:MC: opportunity for sql optimization
-      people.find_all {|person| person.contact_types.detect {|type| type.description == 'volunteer' } }
+      find_by_type('volunteer')
+    end
+
+    def find_by_type(type)
+      sql = "SELECT contacts.* FROM contacts
+                 LEFT JOIN contact_types_contacts AS j ON j.contact_id = contacts.id
+                 LEFT JOIN contact_types AS c_t ON j.contact_type_id = c_t.id
+               WHERE c_t.description = ? "
+      find_by_sql([sql, type])
     end
 
     def organizations
@@ -127,12 +138,25 @@ class Contact < ActiveRecord::Base
       # if the user added query wildcards or search metaterms, leave
       # be if not, assume it's better to bracket each word with
       # wildcards and join with ANDs.
-      unless query =~ /\*|\~| AND| OR/
-        query = query.split.map do |word|
+      query = prepare_query(query)
+      find_by_contents( query, options )
+    end
+
+    def search_by_type(type, query, options = {})
+      query = prepare_query(query)
+      query += " AND types:\"*#{type}*\""
+      search(query, options)
+    end
+
+    protected
+
+    def prepare_query(q)
+      unless q =~ /\*|\~| AND| OR/
+        q = q.split.map do |word|
           "*#{word}*" 
         end.join(' AND ')
       end
-      find_by_contents( query, options )
+      q
     end
 
   end # class << self
@@ -141,7 +165,8 @@ class Contact < ActiveRecord::Base
     'first_name' => {:boost => 2},
     'middle_name' => {},
     'surname' => {:boost => 2.5},
-    'organization' => {:boost => 2}
+    'organization' => {:boost => 2},
+    'types' => {:boost => 0}
   }
 
 end

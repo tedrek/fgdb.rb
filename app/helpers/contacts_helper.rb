@@ -13,6 +13,14 @@ module ContactsHelper
     "#{options[:scaffold_id]}_field"
   end
 
+  def searchbox_search_results_div_id(options)
+    "#{options[:scaffold_id]}_search_results"
+  end
+
+  def searchbox_search_button_id(options)
+    "#{options[:scaffold_id]}_search_button"
+  end
+
   def searchbox_select_id(options)
     "#{options[:scaffold_id]}_select"
   end

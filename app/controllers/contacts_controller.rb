@@ -42,7 +42,7 @@ class ContactsController < ApplicationController
   def search_results
     @search_results ||= do_search( params[:query] )
     render :update do |page|
-      page.replace_html params[:scaffold_id], :partial => 'search_results'
+      page.replace_html searchbox_search_results_div_id(params), :partial => 'search_results'
       page << "Field.focus('#{searchbox_select_id(params)}');" unless @search_results.empty?
     end
   end
@@ -149,7 +149,11 @@ class ContactsController < ApplicationController
 
   def do_search( query_str )
     begin
-      @search_results = Contact.search( query_str, :limit => default_per_page )
+      if( params.has_key?( :limit_to_type ) and params[:limit_to_type] )
+        @search_results = Contact.search_by_type( params[:limit_to_type], query_str, :limit => default_per_page )
+      else
+        @search_results = Contact.search( query_str, :limit => default_per_page )
+      end
       if @search_results.size == 0
         flash[:error] = "Your search for '#{query_str}' failed."
       elsif @search_results.size >= default_per_page

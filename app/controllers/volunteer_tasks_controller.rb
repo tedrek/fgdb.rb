@@ -8,7 +8,7 @@ class VolunteerTasksController < ApplicationController
     update_params :default_scaffold_id => "volunteer_task", :default_sort => nil, :default_sort_direction => "asc"
   end
   def index
-    redirect_to :action => 'list'
+    redirect_to :action => 'by_volunteer'
   end
   def return_to_main
     # If you have multiple scaffolds on the same view then you will want to change this to
@@ -18,6 +18,9 @@ class VolunteerTasksController < ApplicationController
   end
 
   def list
+  end
+
+  def by_volunteer
   end
   
   # All posts to change scaffold level variables like sort values or page changes go through this action
