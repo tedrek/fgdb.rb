@@ -1,9 +1,0 @@
-@options = { :action => "view", :id => params[:id],
-  :scaffold_id => params[:scaffold_id] }
-
-if @successful
-  page.replace_html 'picklist_div', :partial => 'picklist',
-    :collection => @donations
-else
-  page.replace_html 'picklist_div', :partial => 'not_found'
-end
