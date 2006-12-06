@@ -22,7 +22,6 @@ class ContactsController < ApplicationController
   def contact_layout_choice
     case action_name
     when 'test'           then 'contacts.rhtml'
-    when 'test_picklist'  then 'contacts.rhtml'
     else                        'contacts_search'
     end
   end
@@ -110,32 +109,6 @@ class ContactsController < ApplicationController
   def cancel
     @successful = true
     render :action => 'cancel.rjs'
-  end
-
-  def test_picklist
-    render :partial => "test_picklist", :layout => true
-  end
-
-  def picklist
-    begin
-      @contact = Contact.find(3)
-      #@contact = Contact.find(params[:id])
-      @donations = @contact.donations
-      @successful = @donations.size
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
-    render :action => "picklist.rjs"
-  end
-
-  def small_edit
-    begin
-      @contact = Contact.find(params[:id])
-      @successful = !@contact.nil?
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
-    render :action => "small_edit.rjs"
   end
 
   def contact_formation
