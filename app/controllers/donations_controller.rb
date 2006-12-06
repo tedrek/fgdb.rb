@@ -13,9 +13,7 @@ class DonationsController < ApplicationController
   def initialize
     @gizmo_context = GizmoContext.donation
     @datalist_for_new_defaults = {
-      GizmoEventsTag.to_sym  => {
-        :gizmo_context_id => @gizmo_context.id
-      }
+      :gizmo_context_id => @gizmo_context.id
     }
   end
   
@@ -201,6 +199,20 @@ class DonationsController < ApplicationController
     end
     render :update do |page|
       page.replace_html donation_contact_searchbox_id(params), :partial => 'contact_search'
+    end
+  end
+
+  def automatic_datalist_row
+    events = datalist_objects( GizmoEventsTag, @datalist_for_new_defaults )
+    if( events.empty? or
+          events.find {|ev| ! ev.valid?} ) # the datalist form is not filled in completely
+      render :text => ''
+    else
+      # :MC: doctor the params for datalist_add_row
+      params[:model] = params["datalist_#{GizmoEventsTag}_model"]
+      params[:options] = params["datalist_#{GizmoEventsTag}_options"]
+      params[:datalist_id] = params["datalist_#{GizmoEventsTag}_id"]
+      datalist_add_row
     end
   end
 

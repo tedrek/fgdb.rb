@@ -2,22 +2,6 @@
     <strong>Amount tendered (<%= number_to_currency(@money_tendered) %>)
     falls short.</strong>
 
-    <br />Summary of suggested donation and required fees:
-    <ul>
-      <% if @model_required_fee > 0 %>
-        <li><%= number_to_currency(@model_required_fee) %>
-          : Required fees
-      <% end %>
-      <% if @model_suggested_fee > 0 %>
-        <li><%= number_to_currency(@model_suggested_fee) %>
-          : Suggested donation
-      <% end %>
-      <span class="total-due">
-        <li><strong><%= number_to_currency(@expected_total_amount) %> 
-          : Total payment requested</strong>
-      </span>
-    </ul>
-
     Would you like to 
     <ul>
       <li>Save and print an invoice for the balance owed of

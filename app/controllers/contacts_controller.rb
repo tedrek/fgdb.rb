@@ -22,7 +22,7 @@ class ContactsController < ApplicationController
   def contact_layout_choice
     case action_name
     when 'test'           then 'contacts.rhtml'
-    else                        'contacts_search'
+    else                       'contacts_search'
     end
   end
 
