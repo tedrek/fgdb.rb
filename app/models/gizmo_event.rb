@@ -29,6 +29,10 @@ class GizmoEvent < ActiveRecord::Base
     end
   end
 
+  def mostly_empty?
+    ((! gizmo_type_id) and (! gizmo_count))
+  end
+
   def to_s
     "id[#{id}]; type[#{gizmo_type_id}]; context[#{gizmo_context_id}]; count[#{gizmo_count}]"
   end
