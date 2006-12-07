@@ -1,6 +1,0 @@
-buttons_id = submit_choice_buttons_id(params)
-@options = { :scaffold_id => params[:scaffold_id], :action => "update", :id => params[:id] }
-page.replace buttons_id, :partial => 'submit_choice_buttons'
-page.show buttons_id
-page.visual_effect :highlight, buttons_id, :duration => 3
-page << "Field.focus('buttons_invoice');"

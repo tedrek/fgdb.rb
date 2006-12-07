@@ -63,8 +63,7 @@ class DonationsController < ApplicationController
     @donation = Donation.new
     @successful = true
     @initial_page_load = true
-
-      _set_totals_defaults
+    _set_totals_defaults
 
     return render(:action => 'new.rjs') if request.xhr?
 
@@ -93,7 +92,6 @@ class DonationsController < ApplicationController
       @donation = Donation.find(params[:id])
       @successful = !@donation.nil?
       @initial_page_load = true
-
       _set_totals_defaults
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -193,6 +191,14 @@ class DonationsController < ApplicationController
       params[:datalist_id] = params["datalist_#{GizmoEventsTag}_id"]
       datalist_add_row
     end
+  end
+
+  def receipt
+    display_printable_invoice_receipt('receipt')
+  end
+
+  def invoice
+    display_printable_invoice_receipt('invoice')
   end
 
   #######

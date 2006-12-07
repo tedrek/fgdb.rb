@@ -9,14 +9,6 @@
 }
 
 /* ===================================
-      App-local user questions and alerts */
-.choice-div {
-  border-style: solid; border-color: #000000;
-  border-width: 1px;
-  background-color: #fffd40;
-}
-
-/* ===================================
       Displays of special watched values */
 
 .totals {
@@ -170,6 +162,8 @@ font-size: 18px;
 background-color: #F0EFEF;
 }
 
+/* ===================================
+         money-related stuff */
 .check td {
 color: black;
 }
