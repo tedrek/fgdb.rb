@@ -17,4 +17,20 @@ class Donation < ActiveRecord::Base
       "anonymous(#{postal_code})"
   end
 
+  def calculated_required_fee
+    gizmo_events.inject(0.0) {|total, gizmo|
+      total + gizmo.required_fee
+    }
+  end
+
+  def calculated_suggested_fee
+    gizmo_events.inject(0.0) {|total, gizmo|
+      total + gizmo.suggested_fee
+    }
+  end
+
+  def valid_amount_tendered?
+    money_tendered >= calculated_required_fee
+  end
+
 end

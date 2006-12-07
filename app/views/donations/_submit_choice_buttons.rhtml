@@ -1,33 +1,17 @@
-<% container_id = submit_choice_buttons_id(params) %>
-<div class="choice-div" style="display: none;" id="<%= container_id %>">
-  <span>
-    <% unless @overunder.nil? %>
-      <% if @overunder < 0 %>
-        <%= render :partial => 'insufficient_tendered' %>
-      <% end %>
-    <% end %>
-  </span>
-
-  <p class="choice-div-buttons">
-  <span>
-    <INPUT type="button" id="buttons_invoice" value="Save + Invoice" 
-      onclick="<%= remote_function( 
-          :url => @options.merge(:user_choice => 'invoice'),
-          :with => 'Form.serialize(this.form)',
-          :complete  => "Element.hide('#{container_id}');"
-        ) %> " />
-  </span>
-  <span>
-    <INPUT type="button" id="buttons_receipt" value="Save + Receipt" 
-      onclick="<%= remote_function( 
-          :url => @options.merge(:user_choice => 'receipt'),
-          :with => 'Form.serialize(this.form)',
-          :complete  => "Element.hide('#{container_id}');"
-        ) %> " />
-  </span>
-  <span>
-    <INPUT type="button" id="buttons_cancel" value="Continue editing" 
-      onclick="Element.hide('<%= container_id %>'); Form.enable(this.form);" /p>
-  </span>
-  </p>
-</div>
+<% @button_options = @update_options || @create_options %>
+<p class="message error-message">
+  Correct these problems or save the donation as-is and print:
+  <button type="button" id="buttons_invoice"
+    onclick="<%= remote_function( 
+        :url => @button_options.merge(:user_choice => 'invoice'),
+        :with => 'Form.serialize(this.form)',
+        :loading => "Element.show('#{loading_indicator_id(@button_options)}');"
+      ) %>">an invoice</button>
+  <button type="button" id="buttons_receipt"
+    onclick="<%= remote_function( 
+        :url => @button_options.merge(:user_choice => 'receipt'),
+        :with => 'Form.serialize(this.form)',
+        :loading => "Element.show('#{loading_indicator_id(@button_options)}');"
+      ) %>">a receipt</button>
+  <%= loading_indicator_tag(@button_options) %>
+</p>

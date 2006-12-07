@@ -15,6 +15,8 @@ class DonationsController < ApplicationController
     @datalist_for_new_defaults = {
       :gizmo_context_id => @gizmo_context.id
     }
+    @print_window_options =
+      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
   end
   
   def update_params_filter
@@ -78,22 +80,12 @@ class DonationsController < ApplicationController
   def create
     begin
       @donation = Donation.new(params[:donation])
-      resolution = resolve_submit
-      case resolution
-      when 'invoice','receipt'
-        _save(resolution)
-      end
+      @successful = _save
     rescue
-      flash[:error], @successful  = $!.to_s, false #+ "<hr />" + $!.backtrace.join("<br />").to_s, false
+      flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
-    
-    return do_xhr_view(resolution, 'create.rjs', 'donations', @donation) if request.xhr?
-    if @successful
-      return_to_main
-    else
-      @options = { :scaffold_id => params[:scaffold_id], :action => "create" }
-      render :partial => 'new_edit', :layout => true
-    end
+
+    render :action => 'create.rjs'
   end
 
   def edit
@@ -121,22 +113,12 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.find(params[:id])
       @donation.attributes = params[:donation]
-      resolution = resolve_submit
-      case resolution
-      when 'invoice','receipt'
-        _save(resolution)
-      end
+      @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s, false # + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
     
-    return do_xhr_view(resolution, 'update.rjs', 'donations', @donation) if request.xhr?
-    if @successful
-      return_to_main
-    else
-      @options = { :action => "update" }
-      render :partial => 'new_edit', :layout => true
-    end
+    render :action => 'update.rjs'
   end
 
   def destroy
@@ -168,13 +150,10 @@ class DonationsController < ApplicationController
         render :update do |page|
           page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
         end
-      else
-        render :update do |page|
-        end
+        return true
       end
-    else
-      render :update do |page|
-      end
+    end
+    render :update do |page|
     end
   end
 
@@ -230,29 +209,44 @@ class DonationsController < ApplicationController
   end
 
   # record save common logic
-  def _save(type)
-    case type
+  def _save
+    @donation.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
+      ! gizmo.mostly_empty?
+    }
+    @include_invoicing_choice = false
+    if params.has_key? :user_choice
+      # ignore underpayment
+      user_choice = params[:user_choice]
+    else
+      # error regarding underpayment
+      unless @donation.valid_amount_tendered?
+        flash[:error] = "Amount tendered is too low"
+        @include_invoicing_choice = true
+        @successful = false
+        return @successful
+      end
+      user_choice = 'receipt'
+    end
+
+    case user_choice
     when 'invoice'
       @donation.txn_complete = false
       @donation.txn_completed_at = nil
     when 'receipt'
       @donation.txn_complete = true
-      @donation.txn_completed_at = Time.now()
+      @donation.txn_completed_at = Time.now
     end
-    @donation.reported_required_fee = @model_required_fee
-    @donation.reported_suggested_fee = @model_suggested_fee
+    @donation.reported_required_fee = @donation.calculated_required_fee
+    @donation.reported_suggested_fee = @donation.calculated_suggested_fee
     # :MC: lame!  validation should happen in the model.
     if (@donation.postal_code and ! @donation.postal_code.empty?) or
         (@donation.contact_id)
-      Donation.transaction(@donation) do
-        @successful = @donation.save
-        @successful &&= save_datalist(GizmoEventsTag, :donation_id => @donation.id, 
-                                      :gizmo_context_id => @gizmo_context.id)
-        raise( RuntimeError.new( flash[:error] || 'Please appropriately fill in all the fields.' ) ) unless @successful
-      end
+      @successful = @donation.save
+      @printurl = "/donations/%s/%d" % [user_choice, @donation.id]
     else
-      flash[:error], @successful = "Please choose a contact or enter the anonymous postal code.", false
+      flash[:error], @successful = "Please choose a donor or enter an anonymous postal code.", false
     end
+    return @successful
   end
 
   # figure out total dollar amounts
