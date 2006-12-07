@@ -33,6 +33,14 @@ class GizmoEvent < ActiveRecord::Base
     ((! gizmo_type_id) and (! gizmo_count))
   end
 
+  def required_fee
+    gizmo_count.to_i * gizmo_type.required_fee
+  end
+
+  def suggested_fee
+    gizmo_count.to_i * gizmo_type.suggested_fee
+  end
+
   def to_s
     "id[#{id}]; type[#{gizmo_type_id}]; context[#{gizmo_context_id}]; count[#{gizmo_count}]"
   end
