@@ -7,7 +7,8 @@
   <select id="<%= @datalist_field_id_prefix %>_gizmo_type_id"
     name="<%= @datalist_field_name_prefix %>[gizmo_type_id]" >
     <option value=""></option>
-    <%= options_from_collection_for_select( @gizmo_context.gizmo_types, "id", "description", @gizmo_event.gizmo_type_id ) %>
+    <%= options_from_collection_for_select( @gizmo_context.gizmo_types.sort_by {|g_t| g_t.description},
+                                            "id", "description", @gizmo_event.gizmo_type_id ) %>
   </select>
 
   <%= observe_field( "#{@datalist_field_id_prefix}_gizmo_type_id",
