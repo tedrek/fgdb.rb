@@ -13,11 +13,7 @@
 </div>
 
 <div class="form-element">
-  <%= datebocks_field 'volunteer_task', 'date_performed'  %>
-</div>
-
-<div class="form-element">
-  <label for="volunteer_task_duration">Duration</label>
+  <label for="volunteer_task_duration">duration</label>
   <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input", :size=>"4"} %>
 </div>
 
@@ -41,6 +37,11 @@
 </div>
 
 <% end %>
+
+<div class="form-element">
+  <label for="volunteer_task_date_performed">what day?</label>
+  <%= datebocks_field 'volunteer_task', 'date_performed'  %>
+</div>
 
 <!--[eoform:volunteer_task]-->
 

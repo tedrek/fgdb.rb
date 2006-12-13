@@ -17,6 +17,8 @@ class Contact < ActiveRecord::Base
 
   # acts_as_userstamp
 
+  validates_presence_of :postal_code
+
   def is_organization?
     self.is_organization
   end
