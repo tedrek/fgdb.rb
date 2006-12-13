@@ -7,9 +7,11 @@ class VolunteerTasksController < ApplicationController
   def update_params_filter
     update_params :default_scaffold_id => "volunteer_task", :default_sort => nil, :default_sort_direction => "asc"
   end
+
   def index
     redirect_to :action => 'by_volunteer'
   end
+
   def return_to_main
     # If you have multiple scaffolds on the same view then you will want to change this to
     # to whatever controller/action shows all the views 
@@ -17,15 +19,15 @@ class VolunteerTasksController < ApplicationController
     redirect_to :action => 'list'
   end
 
+  def by_volunteer
+  end
+
   def list
   end
 
-  def by_volunteer
-  end
-  
   # All posts to change scaffold level variables like sort values or page changes go through this action
   def component_update
-    @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold 
+    @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold
     if request.xhr?
       # If this is an AJAX request then we just want to delegate to the component to rerender itself
       component
@@ -40,14 +42,21 @@ class VolunteerTasksController < ApplicationController
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = VolunteerTask.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_by = @sort_sql.nil? ? "#{VolunteerTask.table_name}.#{VolunteerTask.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
-    @paginator, @volunteer_tasks = paginate(:volunteer_tasks, :order => @sort_by, :per_page => default_per_page)
-    
+    options = { :order => @sort_by, :per_page => default_per_page }
+
+    if params.has_key? :contact_id
+      @contact = Contact.find(params[:contact_id])
+      options[:conditions] = ["contact_id = ?", @contact.id]
+    end
+
+    @paginator, @volunteer_tasks = paginate(:volunteer_tasks, options)
     render :action => "component", :layout => false
   end
 
   def new
     @volunteer_task = VolunteerTask.new
     @volunteer_task.date_performed = Date.today
+    @volunteer_task.contact_id = params[:contact_id]
     @successful = true
 
     return render(:action => 'new.rjs') if request.xhr?
@@ -64,7 +73,9 @@ class VolunteerTasksController < ApplicationController
   def create
     begin
       @volunteer_task = VolunteerTask.new(params[:volunteer_task])
-      @volunteer_task.volunteer_task_types = VolunteerTaskType.find_actual(@params[:volunteer_task_types].reject {|val| val == '---' || val == '0'} ) if @params[:volunteer_task_types]
+      @volunteer_task.volunteer_task_types = VolunteerTaskType.find_actual(
+          @params[:volunteer_task_types].reject {|val| val == '---' || val == '0'}
+        ) if @params[:volunteer_task_types]
       @successful = @volunteer_task.save
     rescue
       flash[:error], @successful  = $!.to_s, false

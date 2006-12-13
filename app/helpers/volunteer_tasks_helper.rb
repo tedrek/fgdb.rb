@@ -16,4 +16,8 @@ module VolunteerTasksHelper
     ]
   end
 
+  def task_form_id
+    "volunteer_tasks_by_volunteer_form"
+  end
+
 end

@@ -12,7 +12,7 @@
           { :href => url_for(new_params),
             :class => "create" } %>
       </div>
-      <h2>Volunteer Tasks</h2>
+      <h2>Volunteer Tasks <%= "for " + @contact.display_name if @contact %></h2>
   </div>
   <table cellpadding="0" cellspacing="0">
   <thead>
@@ -41,6 +41,8 @@
 <div class="ajax-scaffold-footer">
   <%= render :partial => 'pagination_links', :locals => { :paginator => @paginator } %>
 </div>
+
+<%= link_to "Start Over", { :action => 'by_volunteer' } %>
 <% if @show_wrapper %>
 </div>
 </div>

@@ -3,9 +3,13 @@
   <div class="row">
     <!--[form:volunteer_task]-->
 <div class="form-element">
-  <%= render_component( :controller => '/contacts', :action => 'search',
-    :params => { :select_name => "volunteer_task[contact_id]", :contact => @volunteer_task.contact,
-      :search_label => "Find a volunteer:", :select_label => "Select the volunteer:" } ) %>
+  <% if @volunteer_task.contact_id %>
+    <%= hidden_field_tag "volunteer_task[contact_id]", @volunteer_task.contact_id %>
+  <% else %>
+    <%= render_component( :controller => '/contacts', :action => 'search',
+      :params => { :select_name => "volunteer_task[contact_id]", :contact => @volunteer_task.contact,
+        :search_label => "Find a volunteer:", :select_label => "Select the volunteer:" } ) %>
+  <% end %>
 </div>
 
 <div class="form-element">
@@ -23,7 +27,7 @@
   <label for="volunteer_task_volunteer_task_type">
     <%= top.description %> type
   </label>
-  <% dropdown_list = top.all_instantiable_descendants
+  <% dropdown_list = top.all_instantiable_descendants.sort_by {|type| type.description}
       isect = (dropdown_list & @volunteer_task.volunteer_task_types).first %>
   <select id="volunteer_task_volunteer_task_type"
   name="volunteer_task_types[]">
@@ -31,7 +35,7 @@
       <option value="0">---</option>
     <% end %>
     <%= options_from_collection_for_select(
-    dropdown_list, "id", "description", 
+    dropdown_list, "id", "display_name", 
     (isect ? isect.id : nil) ) %>
   </select>
 </div>

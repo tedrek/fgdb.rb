@@ -7,6 +7,11 @@ class VolunteerTaskType < ActiveRecord::Base
     find(:all, :conditions => [ 'parent_id = ?', 0 ])
   end
 
+  def self.find_actual(*ids)
+    ids.delete_if {|id| id == 0 }
+    find(*ids)
+  end
+
   def all_descendants
     all = children + children.map do |child|
       child.all_descendants
@@ -22,9 +27,15 @@ class VolunteerTaskType < ActiveRecord::Base
     kids
   end
 
-  def self.find_actual(*ids)
-    ids.delete_if {|id| id == 0 }
-    find(*ids)
+  def display_name
+    parents = ancestors
+    parents.pop # get rid of the root node
+    if parents.empty?
+      description
+    else
+      parents.reverse!
+      "%s (%s)" % [description, parents.map {|type| type.description}.join(":")]
+    end
   end
 
 end
