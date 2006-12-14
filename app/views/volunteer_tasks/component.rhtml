@@ -1,6 +1,7 @@
 <% if @show_wrapper %>
 <div id="<%= params[:scaffold_id] %>" class="ajax-scaffold">
   <div id="<%= scaffold_content_id(params) %>">
+  <%= link_to "Start Over", { :action => 'by_volunteer' } %>
 <% end %>
   <div class="ajax-scaffold-header">
     <div class="actions">

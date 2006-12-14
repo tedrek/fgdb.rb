@@ -1,3 +1,4 @@
+<div class="search">
 <%= form_tag( { :controller => '/volunteer_tasks', :action => 'list' },
     :id => task_form_id ) %>
   <div class="form-element">
@@ -16,6 +17,7 @@
   <%= loading_indicator_tag(params) %>
 
 <%= end_form_tag %>
+</div>
 <%= javascript_tag "
   Form.focusFirstElement('#{task_form_id}');
 " %>

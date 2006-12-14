@@ -40,16 +40,24 @@
 /* ===================================
          hours */
 
-.hours_report {
-background-color: #5A3;
-width: 300px;
+.search {
+background-color: #DAFFCD;
+padding: 4px;
+border: solid 1px #7FcF00;
+border-top: none;
 }
-.hours {
+.hours_report {
+background-color: #7C5;
+width: 300px;
+padding: 4px;
+border: solid 1px #5FAF00;
+}
+span.hours {
 background-color: #0F0;
 font-weight: bold;
 border: black 1px solid;
 padding: 1px;
-margin: 1px;
+margin-left: 10px;
 }
 
 /* ===================================
@@ -133,6 +141,7 @@ font-size: 17px;
 
 .contact_display .hours {
 font-size: 17px;
+margin-left: 10px;
 }
 
 .searchbox_form {
@@ -141,6 +150,8 @@ background-color: #C5E5E5;
 
 .hours_type {
 font-size: 12px;
+background-color: #7C5;
+width: 240px;
 }
 
 /* ===================================

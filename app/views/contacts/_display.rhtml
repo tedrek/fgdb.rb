@@ -14,9 +14,9 @@
   <div class="name"><%= @contact.display_name %></div>
   <br />
   <% if @contact.is_person? %>
-    <div class="hours">
+    <div class="hours_type">
       <%= render :partial => 'hours' %>
-     </div>
+    </div>
     <br />
   <% end %>
   <% unless( @contact.city.empty? or @contact.address.empty? or @contact.postal_code.empty? or @contact.state_or_province.empty? ) %>
