@@ -9,6 +9,8 @@ if @successful
   page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');" 
   page << "AjaxScaffold.removeSortClasses('#{@options[:scaffold_id]}');"
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
+  page << remote_function( :url => params.merge( { :action => 'new', :contact_id => @volunteer_task.contact_id } ) )
+  page.replace_html "hours_report", :partial => 'contact_hours', :locals => {"contact" => @volunteer_task.contact}
 else
   page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
   page << "Form.enable('#{element_form_id(@create_options)}');"

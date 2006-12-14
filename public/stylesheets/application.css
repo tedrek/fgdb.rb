@@ -38,6 +38,21 @@
 }
 
 /* ===================================
+         hours */
+
+.hours_report {
+background-color: #5A3;
+width: 300px;
+}
+.hours {
+background-color: #0F0;
+font-weight: bold;
+border: black 1px solid;
+padding: 1px;
+margin: 1px;
+}
+
+/* ===================================
          Searchbox stuff */
 
 .loading-indicator {
@@ -128,7 +143,6 @@ background-color: #C5E5E5;
 font-size: 12px;
 }
 
-
 /* ===================================
          Report stuff */
 
@@ -173,3 +187,4 @@ color: #2A2;
 .credit td {
 color: brown;
 }
+

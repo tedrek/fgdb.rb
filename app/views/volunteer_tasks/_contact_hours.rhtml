@@ -1,0 +1,8 @@
+<div id="hours_report" class="hours_report">
+<% if contact %>
+  <%= contact.display_name %> has worked:<br />
+  <span class="hours"><%= contact.hours_actual(true) %></span> hours in the last 90 days<br />
+  <span class="hours"><%= contact.hours_effective %></span> effective hours towards adoption<br />
+  <span class="hours"><%= contact.hours_actual %></span> hours ever<br />
+<% end %>
+</div>

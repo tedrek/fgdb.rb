@@ -12,7 +12,8 @@
 
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
 
-      <h4><%= Inflector.titleize(@options[:action]) %> Volunteer Task</h4>
+      <h4><%= Inflector.titleize(@options[:action]) %> Volunteer Task
+        <%= "for " + @volunteer_task.contact.display_name if @volunteer_task.contact %></h4>
 
       <% if request.xhr? %>
         <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>

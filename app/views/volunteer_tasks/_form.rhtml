@@ -3,7 +3,7 @@
   <div class="row">
     <!--[form:volunteer_task]-->
 <div class="form-element">
-  <% if @volunteer_task.contact_id %>
+  <% if @volunteer_task.contact %>
     <%= hidden_field_tag "volunteer_task[contact_id]", @volunteer_task.contact_id %>
   <% else %>
     <%= render_component( :controller => '/contacts', :action => 'search',

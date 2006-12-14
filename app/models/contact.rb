@@ -27,16 +27,23 @@ class Contact < ActiveRecord::Base
     ! self.is_organization?
   end
 
-  def hours_actual
-    volunteer_tasks.inject(0.0) do |total,task|
+  def hours_actual(last_ninety = false)
+    tasks = last_ninety ? last_ninety_days_of_volunteer_tasks : volunteer_tasks
+    tasks.inject(0.0) do |total,task|
       total += task.duration
     end
   end
 
-  def hours_effective
-    volunteer_tasks.inject(0.0) do |total,task|
+  def hours_effective(last_ninety = false)
+    tasks = last_ninety ? last_ninety_days_of_volunteer_tasks : volunteer_tasks
+    tasks.inject(0.0) do |total,task|
       total += task.effective_duration
     end
+  end
+
+  def last_ninety_days_of_volunteer_tasks
+    cutoff = Date.today - 90
+    volunteer_tasks.select {|v_t| v_t.date_performed >= cutoff}
   end
 
   def last_few_volunteer_tasks
