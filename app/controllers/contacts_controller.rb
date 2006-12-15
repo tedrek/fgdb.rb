@@ -122,13 +122,17 @@ class ContactsController < ApplicationController
 
   def do_search( query_str )
     begin
-      if( params.has_key?( :limit_to_type ) and params[:limit_to_type] )
+      if params[:limit_to_type]
         @search_results = Contact.search_by_type( params[:limit_to_type], query_str, :limit => default_per_page )
       else
         @search_results = Contact.search( query_str, :limit => default_per_page )
       end
       if @search_results.size == 0
-        flash[:error] = "Your search for '#{query_str}' failed."
+        if params[:limit_to_type]
+          flash[:error] = "Your search for '#{query_str}' found no #{params[:limit_to_type]}s."
+        else
+          flash[:error] = "Your search for '#{query_str}' found no results."
+        end
       elsif @search_results.size >= default_per_page
         flash[:error] = "Your search for '#{query_str}' " +
           "returned too many results to display.  You may want to " +

@@ -152,9 +152,14 @@ class Contact < ActiveRecord::Base
     end
 
     def search_by_type(type, query, options = {})
-      query = prepare_query(query)
-      query += " AND types:\"*#{type}*\""
-      search(query, options)
+      if query.to_i.to_s == query
+        # allow searches by id
+        search(query, options)
+      else
+        query = prepare_query(query)
+        query += " AND types:\"*#{type}*\""
+        search(query, options)
+      end
     end
 
     protected
