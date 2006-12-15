@@ -55,6 +55,8 @@ class ContactsController < ApplicationController
 
   def new
     @contact = Contact.new
+    @contact.state_or_province = 'OR'
+    @contact.city = 'Portland'
     @successful = true
     render :action => 'new.rjs'
   end
