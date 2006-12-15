@@ -29,8 +29,24 @@ class Donation < ActiveRecord::Base
     }
   end
 
-  def valid_amount_tendered?
+  def calculated_total
+    calculated_suggested_fee + calculated_required_fee
+  end
+
+  def required_paid?
     money_tendered >= calculated_required_fee
+  end
+
+  def total_paid?
+    money_tendered >= calculated_total
+  end
+
+  def overunder(only_required = false)
+    if only_required
+      money_tendered - calculated_required_fee
+    else
+      money_tendered - calculated_total
+    end
   end
 
 end

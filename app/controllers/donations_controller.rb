@@ -1,11 +1,7 @@
 class DonationsController < ApplicationController
   include AjaxScaffold::Controller
-  require 'gizmo_tools'
   include DatalistFor
   GizmoEventsTag='donations_gizmo_events' 
-
-  require 'logger'
-  $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
 
   after_filter :clear_flashes
   before_filter :update_params_filter
@@ -201,6 +197,16 @@ class DonationsController < ApplicationController
     display_printable_invoice_receipt('invoice')
   end
 
+  def update_totals
+    @donation = Donation.new(params[:donation])
+    @donation.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
+      ! gizmo.mostly_empty?
+    }
+    render :update do |page|
+      page.replace  header_totals_id(params), :partial => 'header_totals'
+    end
+  end
+
   #######
   private
   #######
@@ -221,20 +227,20 @@ class DonationsController < ApplicationController
     }
     @include_invoicing_choice = false
     if params.has_key? :user_choice
-      # ignore underpayment
-      user_choice = params[:user_choice]
+      # ignore underpayment at user request
+      receipt_type = params[:user_choice]
     else
       # error regarding underpayment
-      unless @donation.valid_amount_tendered?
+      unless @donation.required_paid?
         flash[:error] = "Amount tendered is too low"
         @include_invoicing_choice = true
         @successful = false
         return @successful
       end
-      user_choice = 'receipt'
+      receipt_type = 'receipt'
     end
 
-    case user_choice
+    case receipt_type
     when 'invoice'
       @donation.txn_complete = false
       @donation.txn_completed_at = nil
@@ -248,32 +254,11 @@ class DonationsController < ApplicationController
     if (@donation.postal_code and ! @donation.postal_code.empty?) or
         (@donation.contact_id)
       @successful = @donation.save
-      @printurl = "/donations/%s/%d" % [user_choice, @donation.id]
+      @printurl = "/donations/%s/%d" % [receipt_type, @donation.id]
     else
       flash[:error], @successful = "Please choose a donor or enter an anonymous postal code.", false
     end
     return @successful
-  end
-
-  # figure out total dollar amounts
-  # based on quantities, gizmo types, attributes for each gizmo
-  def calc_totals
-    $LOG.debug "ENTERING Donations::calc_totals #{Time.now}"
-    #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
-    $LOG.debug params.inspect
-    options = { :context => @gizmo_context.name}
-    giztypes_list = create_gizmo_types_detail_list(GizmoEventsTag, options)
-    @money_tendered = params[:donation][:money_tendered].to_f
-
-    # these are calculated from model values
-    @model_required_fee = giztypes_list.total('extended_required_fee')
-    $LOG.debug "@model_required_fee: #{@model_required_fee.inspect}"
-    @model_suggested_fee = giztypes_list.total('extended_suggested_fee')
-    $LOG.debug "@model_suggested_fee: #{@model_suggested_fee.inspect}"
-    @expected_total_amount = 
-      @model_suggested_fee + @model_required_fee
-    @overunder = @money_tendered - @expected_total_amount
-    @ask_user_setting = @model_required_fee > @money_tendered ?  'ask' : nil
   end
 
   # setup vars used by donation invoice and receipt, then render
