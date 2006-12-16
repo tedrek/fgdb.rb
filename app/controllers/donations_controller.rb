@@ -11,8 +11,6 @@ class DonationsController < ApplicationController
     @datalist_for_new_defaults = {
       :gizmo_context_id => @gizmo_context.id
     }
-    @print_window_options =
-      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
   end
   
   def update_params_filter
@@ -136,21 +134,6 @@ class DonationsController < ApplicationController
     return_to_main
   end
 
-  def add_attrs_to_form
-    if params[:gizmo_type_id]
-      @gizmo_context = GizmoContext.find(params[:gizmo_context_id])
-      @gizmo_type = GizmoType.find(params[:gizmo_type_id])
-      if ! @gizmo_type.relevant_attrs(@gizmo_context).empty?
-        render :update do |page|
-          page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
-        end
-        return true
-      end
-    end
-    render :update do |page|
-    end
-  end
-
   def anonymize
     @options = params
     if params[:donation_id]
@@ -220,7 +203,7 @@ class DonationsController < ApplicationController
     @overunder = @money_tendered - @expected_total_amount
   end
 
-  # record save common logic
+  # common save logic
   def _save
     @donation.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
       ! gizmo.mostly_empty?

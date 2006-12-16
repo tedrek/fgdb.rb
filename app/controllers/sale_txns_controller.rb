@@ -1,31 +1,26 @@
 class SaleTxnsController < ApplicationController
   include AjaxScaffold::Controller
-  require 'gizmo_tools'
   include DatalistFor
   GizmoEventsTag='sale_txns_gizmo_events'
 
-  require 'logger'
-  $LOG = Logger.new(File.dirname(__FILE__) + '/../../log/alog')
-  
   after_filter :clear_flashes
   before_filter :update_params_filter
 
   def initialize
-    @gizmo_context = GizmoContext.find(:first, :conditions => [ "name = ?", 'sale'])
-    @gizmo_context_id = @gizmo_context.id
+    @gizmo_context = GizmoContext.sale
     @datalist_for_new_defaults = {
-      GizmoEventsTag.to_sym  => {
-        :gizmo_context_id => @gizmo_context_id
-      }
+      :gizmo_context_id => @gizmo_context.id
     }
   end
   
   def update_params_filter
     update_params :default_scaffold_id => "sale_txn", :default_sort => nil, :default_sort_direction => "asc"
   end
+
   def index
     redirect_to :action => 'list'
   end
+
   def return_to_main
     # If you have multiple scaffolds on the same view then you will want to change this to
     # to whatever controller/action shows all the views 
@@ -62,8 +57,8 @@ class SaleTxnsController < ApplicationController
     @sale_txn = SaleTxn.new
     @successful = true
     @initial_page_load = true
-
     _set_totals_defaults(:new => true)
+
     return render(:action => 'new.rjs') if request.xhr?
 
     # Javascript disabled fallback
@@ -78,21 +73,12 @@ class SaleTxnsController < ApplicationController
   def create
     begin
       @sale_txn = SaleTxn.new(params[:sale_txn])
-      @successful = @sale_txn.save
-      save_datalist(GizmoEventsTag, :sale_txn_id => @sale_txn.id, 
-        :gizmo_context_id => @gizmo_context_id)
-
+      @successful = _save
     rescue
-      flash[:error], @successful  = $!.to_s, false
+      flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
     
-    return render(:action => 'create.rjs') if request.xhr?
-    if @successful
-      return_to_main
-    else
-      @options = { :scaffold_id => params[:scaffold_id], :action => "create" }
-      render :partial => 'new_edit', :layout => true
-    end
+    return render(:action => 'create.rjs')
   end
 
   def edit
@@ -118,21 +104,13 @@ class SaleTxnsController < ApplicationController
   def update
     begin
       @sale_txn = SaleTxn.find(params[:id])
-      @successful = @sale_txn.update_attributes(params[:sale_txn])
-      save_datalist(GizmoEventsTag, :sale_txn_id => @sale_txn.id,
-        :gizmo_context_id => @gizmo_context_id)
+      @sale_txn.attributes = params[:sale_txn]
+      @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
     
-    return render(:action => 'update.rjs') if request.xhr?
-
-    if @successful
-      return_to_main
-    else
-      @options = { :action => "update" }
-      render :partial => 'new_edit', :layout => true
-    end
+    return render(:action => 'update.rjs')
   end
 
   def destroy
@@ -156,21 +134,66 @@ class SaleTxnsController < ApplicationController
     return_to_main
   end
 
+  def anonymize
+    @options = params
+    if params[:sale_txn_id]
+      @sale_txn = SaleTxn.find(params[:sale_txn_id])
+    else
+      @sale_txn = SaleTxn.new
+    end
+    render :update do |page|
+      page.replace_html sale_txn_contact_searchbox_id(params), :partial => 'anonymous'
+    end
+  end
+
+  def de_anonymize
+    @options = params
+    if params[:sale_txn_id]
+      @sale_txn = SaleTxn.find(params[:sale_txn_id])
+    else
+      @sale_txn = SaleTxn.new
+    end
+    render :update do |page|
+      page.replace_html sale_txn_contact_searchbox_id(params), :partial => 'contact_search'
+    end
+  end
+
+  def automatic_datalist_row
+    events = datalist_objects( GizmoEventsTag, @datalist_for_new_defaults )
+    if( events.empty? or
+          events.find {|ev| ! ev.valid?} ) # the datalist form is not filled in completely
+      render :text => ''
+    else
+      # :MC: doctor the params for datalist_add_row
+      params[:model] = params["datalist_#{GizmoEventsTag}_model"]
+      params[:options] = params["datalist_#{GizmoEventsTag}_options"]
+      params[:datalist_id] = params["datalist_#{GizmoEventsTag}_id"]
+      datalist_add_row
+    end
+  end
+
   def receipt
     display_printable_invoice_receipt('receipt')
   end
 
-  def add_attrs_to_form
-    if params[:gizmo_type_id]
-      render :update do |page|
-        page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
-      end
-    else
-      render :text => ''
+  def invoice
+    display_printable_invoice_receipt('invoice')
+  end
+
+  def update_totals
+    @sale_txn = SaleTxn.new(params[:sale_txn])
+    @sale_txn.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
+      ! gizmo.mostly_empty?
+    }
+    render :update do |page|
+      page.replace  header_totals_id(params), :partial => 'header_totals'
     end
   end
 
+  #######
   private
+  #######
+
   def _set_totals_defaults(options = {})
     if (options[:new])
       @discount_schedule = DiscountSchedule.find(3)   #no discount
@@ -183,27 +206,54 @@ class SaleTxnsController < ApplicationController
     @amount_due = @gross_amount - @discount_amount
   end
 
+  # common save logic
+  def _save
+    @sale_txn.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
+      ! gizmo.mostly_empty?
+    }
+    @include_invoicing_choice = false
+    if params.has_key? :user_choice
+      # ignore underpayment at user request
+      receipt_type = params[:user_choice]
+    else
+      # error regarding underpayment
+      unless @sale_txn.paid?
+        flash[:error] = "Amount tendered is too low"
+        @include_invoicing_choice = true
+        @successful = false
+        return @successful
+      end
+      receipt_type = 'receipt'
+    end
+
+    case receipt_type
+    when 'invoice'
+      @sale_txn.txn_complete = false
+      @sale_txn.txn_completed_at = nil
+    when 'receipt'
+      @sale_txn.txn_complete = true
+      @sale_txn.txn_completed_at = Time.now
+    end
+
+    @successful = @sale_txn.save
+    @printurl = "/sale_txns/%s/%d" % [receipt_type, @sale_txn.id]
+    return @successful
+  end
+
   # figure out total dollar amounts
   # based on quantities, gizmo types, attributes for each gizmo
   def calc_totals
     @discount_schedule = DiscountSchedule.find(params[:sale_txn][:discount_schedule_id])
-    $LOG.debug "ENTERING SaleTxns::calc_totals #{Time.now}"
-    #@formatted_params = nil #params.inspect.each {|par| "#{par}<br />"}
-    #$LOG.debug params.inspect
     options = { :context => @gizmo_context.name,
       :donated_discount_rate => @discount_schedule.donated_item_rate,
       :resale_discount_rate  => @discount_schedule.resale_item_rate
-  }
+    }
     giztypes_list = 
       create_gizmo_types_detail_list(GizmoEventsTag, options)
-    #@money_tendered = params[:donation][:money_tendered].to_f
 
     @gross_amount = giztypes_list.total('extended_gross_price')
-    $LOG.debug "@gross_amount: #{@gross_amount.inspect}"
     @discount_amount = giztypes_list.total('extended_discount')
-    $LOG.debug "@discount_amount: #{@discount_amount.inspect}"
     @amount_due = giztypes_list.total('extended_net_price')
-    $LOG.debug "@amount_due: #{@amount_due.inspect}"
     @ask_user_setting = 'receipt'
   end
 
