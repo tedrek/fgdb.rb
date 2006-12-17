@@ -1,0 +1,10 @@
+<button id="<%= anonymize_button_id(@options) %>" type="button" onclick="<%= remote_function( :url => @options.merge({
+    :action => 'anonymize',
+    :sale_txn_id => @sale_txn.id
+  }) ) %>">Anonymous?</button>
+
+<div class="form-element">
+  <%= render_component( :controller => '/contacts', :action => 'search',
+    :params => { :select_name => "sale_txn[contact_id]", :contact => @sale_txn.contact,
+      :search_label => "Find the buyer:", :select_label => "Select the buyer:" } ) %>
+</div>

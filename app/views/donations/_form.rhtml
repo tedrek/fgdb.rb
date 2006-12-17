@@ -27,7 +27,7 @@
 <div class="form-element">
   <label for="donation_money_tendered">Money tendered</label>
   <%= text_field 'donation', 'money_tendered' ,
-    {:class=>"text-input donationFeeObserver", :size=>"6"}  %>
+    {:class=>"text-input", :size=>"6"}  %>
 </div>
 
 <div class="form-element">
@@ -36,6 +36,11 @@
   <option />
   <%= options_from_collection_for_select PaymentMethod.find_all, "id", "description", @donation.payment_method_id %>
 </select>
+</div>
+
+<div class="form-element">
+  <label for="sale_txn_comments">Comments</label>
+  <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
 </div>
 
 <!--[eoform:donation]-->

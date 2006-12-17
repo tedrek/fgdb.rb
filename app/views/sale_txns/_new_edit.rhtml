@@ -8,8 +8,16 @@
     <%= form_remote_tag :url => @options.merge(:controller => '/sale_txns'),
           :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
           :html => { :href => url_for(@options.merge(:controller => '/sale_txns')),
-          :id => element_form_id(@options) } %>
+            :id => element_form_id(@options) } %>
 
+    <%= javascript_tag "
+      $('#{element_form_id(@options)}').onchange = function (e) {
+        context = 'sale';
+        elem = Event.element(e);
+        vals = Form.serialize(this);
+        updateTotalsForContext( elem, vals, e, context );
+      };
+    "%>
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
 
       <h4><%= Inflector.titleize(@options[:action]) %> Sale Txn</h4>
@@ -21,11 +29,6 @@
       <% end %>
 
       <%= render :partial => 'form' %>
-
-      <%= datalist_for( :gizmo_event, 'sale_txns_gizmo_events',
-        @sale_txn.gizmo_events, :create_with => { :sale_txn_id => @sale_txn.id },
-        :show_header => false, :render_aware => "gizmo_event_form",
-        :add_text => "More gizmos" ) %>
 
       <p class="form-footer">
         <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
@@ -43,5 +46,3 @@
   </tbody>
 </table>
 <% end %>
-
-<%= render :partial => 'form_js' %>

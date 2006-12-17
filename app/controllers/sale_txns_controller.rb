@@ -201,9 +201,7 @@ class SaleTxnsController < ApplicationController
       @discount_schedule = DiscountSchedule.find(@sale_txn.contact.discount_schedule_id)
     end
     @discount_schedule_description = @discount_schedule.description
-    @gross_amount = @sale_txn.gross_amount || 0
     @discount_amount = 0
-    @amount_due = @gross_amount - @discount_amount
   end
 
   # common save logic
@@ -217,7 +215,7 @@ class SaleTxnsController < ApplicationController
       receipt_type = params[:user_choice]
     else
       # error regarding underpayment
-      unless @sale_txn.paid?
+      unless @sale_txn.total_paid?
         flash[:error] = "Amount tendered is too low"
         @include_invoicing_choice = true
         @successful = false
@@ -235,8 +233,14 @@ class SaleTxnsController < ApplicationController
       @sale_txn.txn_completed_at = Time.now
     end
 
-    @successful = @sale_txn.save
-    @printurl = "/sale_txns/%s/%d" % [receipt_type, @sale_txn.id]
+    # :MC: lame!  validation should happen in the model.
+    if (@sale_txn.postal_code and ! @sale_txn.postal_code.empty?) or
+        (@sale_txn.contact_id)
+      @successful = @sale_txn.save
+      @printurl = "/sale_txns/%s/%d" % [receipt_type, @sale_txn.id]
+    else
+      flash[:error], @successful = "Please choose a buyer or enter an anonymous postal code.", false
+    end
     return @successful
   end
 
@@ -251,7 +255,6 @@ class SaleTxnsController < ApplicationController
     giztypes_list = 
       create_gizmo_types_detail_list(GizmoEventsTag, options)
 
-    @gross_amount = giztypes_list.total('extended_gross_price')
     @discount_amount = giztypes_list.total('extended_discount')
     @amount_due = giztypes_list.total('extended_net_price')
     @ask_user_setting = 'receipt'
@@ -259,22 +262,16 @@ class SaleTxnsController < ApplicationController
 
   # setup vars used by receipt, then render
   def display_printable_invoice_receipt(type=nil)
-    @printurl = nil
-    @print_window_options =
-      "resizable=yes,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no,directories=no"
     type ||= 'receipt'
     @sale_txn = SaleTxn.find(params[:id])
-    #$LOG.debug "@sale_txn: #{@sale_txn.inspect}"
-    @sale_txn.discount_amount ||= 0.0
-    @sale_txn.gross_amount ||= 0.0
 
     render :partial => 'sale_txn_detail_totals', 
       :layout => 'receipt_invoice', 
       :locals => { 
         :type => type, 
-        :subtotal => @sale_txn.gross_amount,
-        :discount => @sale_txn.discount_amount,
-        :amount_due => @sale_txn.amount_due
+        :subtotal => 0,
+        :discount => 0,
+        :amount_due => 0
       }
   end
 end

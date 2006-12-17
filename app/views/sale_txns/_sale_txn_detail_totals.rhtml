@@ -2,7 +2,11 @@
 <% @context = 'sale' %>
 <% @type = type %>
 <% @id = @sale_txn.id %>
-<% @contact_name_address = @sale_txn.contact.display_name_address %>
+<% if @sale_txn.contact %>
+  <% @contact_name_address = @sale_txn.contact.display_name_address %>
+<% else %>
+  <% @contact_name_address = ["Anonymous (#{@sale_txn.postal_code})"] %>
+<% end %>
 
 <div class="item_list">
 <table bgcolor="#cccccc" width="100%" align="center" border="1">

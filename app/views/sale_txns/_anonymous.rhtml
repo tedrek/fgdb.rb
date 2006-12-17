@@ -1,0 +1,9 @@
+<button id="<%= anonymize_button_id(@options) %>" type="button" onclick="<%= remote_function( :url => @options.merge({
+    :action => 'de_anonymize',
+    :sale_txn_id => @sale_txn.id
+  }) ) %>">Not anonymous?</button>
+
+<div class="form-element">
+  <label for="sale_txn_postal_code">Postal code</label>
+  <%= text_field 'sale_txn', 'postal_code', {:class => 'text-input', :size => "6"} %>
+</div>

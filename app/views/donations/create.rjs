@@ -9,6 +9,7 @@ if @successful
   page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');" 
   page << "AjaxScaffold.removeSortClasses('#{@options[:scaffold_id]}');"
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
+  page << remote_function( :url => params.merge( { :action => 'new' } ) )
   unless @printurl.nil?
     # get a page we intend to print
     page << "var printWinRef=window.open('#{@printurl}','printme','#{@print_window_options}');"

@@ -19,6 +19,7 @@ class SaleTxn < ActiveRecord::Base
 
   def calculated_total
     # :TODO:
+    0
   end
 
   def total_paid?

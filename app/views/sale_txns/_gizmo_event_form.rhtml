@@ -3,17 +3,12 @@
     <!--[form:gizmo_event]-->
 
 <div class="form-element">
-  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Quantity</label>
-  <%= datalist_text_field 'gizmo_event', 'gizmo_count',
-    {:class=>"text-input", :size=>"3"} %>
-</div>
-
-<div class="form-element">
   <label for="<%= @datalist_field_id_prefix %>_gizmo_type_id">Type of Gizmo</label><br/>
   <select id="<%= @datalist_field_id_prefix %>_gizmo_type_id"
     name="<%= @datalist_field_name_prefix %>[gizmo_type_id]" >
     <option value=""></option>
-    <%= options_from_collection_for_select( GizmoType.find_all, "id", "description", @gizmo_event.gizmo_type_id ) %>
+    <%= options_from_collection_for_select( @gizmo_context.gizmo_types.sort_by {|g_t| g_t.description},
+                                            "id", "description", @gizmo_event.gizmo_type_id ) %>
   </select>
 
   <%= observe_field( "#{@datalist_field_id_prefix}_gizmo_type_id",
@@ -22,41 +17,37 @@
       :controller => 'sale_txns',
       :div_id => "#{@datalist_field_id_prefix}_event_extras",
       :gizmo_event_id => @gizmo_event.id,
+      :gizmo_context_id => @gizmo_context.id,
       :datalist_field_id_prefix => @datalist_field_id_prefix,
       :datalist_field_name_prefix => @datalist_field_name_prefix
     },
-    :with => "'gizmo_type_id=' + $('#{@datalist_field_id_prefix}_gizmo_type_id').value + '&gizmo_context_id=' + $('#{@datalist_field_id_prefix}_gizmo_context_id').value" ) %>
+    :with => "gizmo_type_id" ) %>
 
 </div>
 
 <input type="hidden" id="<%= @datalist_field_id_prefix %>_gizmo_context_id"
-    name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= params[:gizmo_context_id] %>" />
+    name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= @gizmo_context.id %>" />
 
 <div id="<%= @datalist_field_id_prefix %>_event_extras">
+  <% @gizmo_type = @gizmo_event.gizmo_type %>
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
     <%= render :partial => 'gizmo_event_attr_form', 
         :locals => { :params => params.merge( {
           :gizmo_event_id => @gizmo_event.id,
           :datalist_field_id_prefix => @datalist_field_id_prefix,
-          :datalist_field_name_prefix => @datalist_field_name_prefix,
-          :gizmo_type_id => @gizmo_event.gizmo_type_id,
-          :gizmo_context_id => @gizmo_event.gizmo_context_id,
-          :gizmo_event_id => @gizmo_event.id
+          :datalist_field_name_prefix => @datalist_field_name_prefix
       } ) } %>
   <% end %>
 </div>
+
+<div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Quantity</label>
+  <%= datalist_text_field 'gizmo_event', 'gizmo_count',
+    {:class=>"text-input", :size=>"3"} %>
+</div>
+
 
 <!--[eoform:gizmo_event]-->
 
   </div>
 </fieldset>
-
-<% unless @initial_page_load %>
-  <div class="form_js">
-  <% for attr_name in ['gizmo_count', 'gizmo_type_id'] %>
-    <%= observe_field(@datalist_field_id_prefix + '_' + attr_name,
-      :function => "updateTotalsForContext(element,Form.serialize(element.form),evt,'#{@gizmo_context.name}')", 
-      :wantEvent => true) %>
-  <% end %>
-  </div>
-<% end %>

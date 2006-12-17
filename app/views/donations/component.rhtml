@@ -48,3 +48,4 @@
 Rico.Corner.round('<%= params[:scaffold_id] %>', {color: '#005CB8', bgColor: '#fff', compact: true});
 </script>
 <% end %>
+<%= javascript_tag( remote_function( :url => new_params ) ) %>

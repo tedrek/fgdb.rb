@@ -3,28 +3,19 @@
     <tr>
       <td>Gross price:</td>
       <td class="amount">
-        <%= number_to_currency(@gross_amount) %></td>
+        <%= number_to_currency(0) %></td>
     </tr> 
     <tr>
       <td>Discount: </td>
       <td class="amount">
-        <%= number_to_currency(-@discount_amount) %>
+        <%= number_to_currency(0) %>
       </td>
     </tr> 
     <tr>
       <td class="required">Total due:</td>
       <td class="amount required">
-        <%= number_to_currency(@amount_due) %></td>
+        <%= number_to_currency(0) %></td>
       </td>
     </tr> 
   </table>
-  <span id="timestamp" style="font-size:-1;"><%= Time.now %></span>
-  <br />
-  <span>
-    <INPUT type="button" value="Go figure..." 
-      onclick="<%= remote_function( :url => {
-            :action => 'update_totals'},
-          :with => 'Form.serialize(this.form)' 
-        ) %> " >
-  </span>
 </div>
