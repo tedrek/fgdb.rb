@@ -12,7 +12,7 @@
       <label for="<%= @datalist_field_id_prefix %>_<%= attr.name %>"><%= Inflector.humanize attr.name %></label>
     <% else %>
       <label for="<%= @datalist_field_id_prefix %>_<%= attr.name %>"><%= Inflector.humanize attr.name %></label>
-      <%= datalist_text_field "gizmo_event", attr.name, options %>
+      <%= datalist_text_field "gizmo_event", attr.name, options.merge({:class=>'text-input'}) %>
     <% end %>
   </div>
 <% end %>
