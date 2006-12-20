@@ -5,6 +5,8 @@ class GizmoType < ActiveRecord::Base
   has_many  :gizmo_typeattrs,
             :dependent => :destroy
   has_many  :gizmo_attrs,  :through => :gizmo_typeattr
+  has_many  :discount_schedules_gizmo_types
+  has_many  :discount_schedules, :through => :discount_schedules_gizmo_types
 
   has_and_belongs_to_many    :gizmo_contexts
 
@@ -27,6 +29,10 @@ class GizmoType < ActiveRecord::Base
     } || []
     typeattrs += self.parent.relevant_typeattrs(context) if self.parent
     typeattrs
+  end
+
+  def multiplier_to_apply(schedule)
+    schedule.multiplier_for(self) or schedule.multiplier_for(parent) or 1.0
   end
 
 end

@@ -7,11 +7,6 @@
 </div>
 
 <div class="form-element">
-  <label for="gizmo_type_discounts_apply">Discounts can apply?</label>
-  <%= select "gizmo_type", "discounts_apply", [["Yes", true], ["No", false]], { :selected => @gizmo_type.discounts_apply } %>
-</div>
-
-<div class="form-element">
   <label for="gizmo_type_required_fee">required_fee</label>
   <%= text_field 'gizmo_type', 'required_fee' , {:class=>"text-input"} %>
 </div>
@@ -30,14 +25,24 @@
 </div>
 
 <% for gizmo_context in GizmoContext.find_all %>
-<div class="form-element">
-  <label for="<%= gizmo_context.id %>"><%= gizmo_context.name %></label>
-  <input type="checkbox" id="<%= gizmo_context.id %>"
-    name="gizmo_contexts[]" 
-    value="<%= gizmo_context.id %>"
-  <% if @gizmo_type.gizmo_contexts.include? gizmo_context %>checked="checked"<% end %>
-  >
-</div>
+  <div class="form-element">
+    <label for="<%= gizmo_context.id %>"><%= gizmo_context.name %></label>
+    <input type="checkbox" id="<%= gizmo_context.id %>"
+      name="gizmo_contexts[]" 
+      value="<%= gizmo_context.id %>"
+    <% if @gizmo_type.gizmo_contexts.include? gizmo_context %>checked="checked"<% end %>
+    >
+  </div>
+<% end %>
+
+<% for discount_schedule in DiscountSchedule.find_all %>
+  <div class="form-element">
+    <label for="discount_schedules_<%= discount_schedule.id %>"><%= discount_schedule.name %> discount multiplier</label>
+    <input type="text" class="text-input"
+        name="discount_schedules[<%= discount_schedule.id %>]"
+        id="discount_schedules_<%= discount_schedule.id %>"
+        value="<%= discount_schedule.multiplier_for(@gizmo_type) %>" />
+  </div>
 <% end %>
 
 <!--[eoform:gizmo_type]-->

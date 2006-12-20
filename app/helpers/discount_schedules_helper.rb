@@ -6,15 +6,9 @@ module DiscountSchedulesHelper
   end
   
   def scaffold_columns
-    [ 
+    [
       AjaxScaffold::ScaffoldColumn.new(DiscountSchedule, 
-        :name => 'resale_item_rate'),
-      AjaxScaffold::ScaffoldColumn.new(DiscountSchedule, 
-        :name => 'donated_item_rate'),
-      AjaxScaffold::ScaffoldColumn.new(DiscountSchedule, 
-        :name => 'short_name'),
-      AjaxScaffold::ScaffoldColumn.new(DiscountSchedule, 
-        :name => 'description'),
+                                       :name => 'name')
     ]
   end
 

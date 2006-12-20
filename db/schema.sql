@@ -133,10 +133,7 @@ CREATE TABLE contacts (
 
 CREATE TABLE discount_schedules (
     id serial NOT NULL,
-    short_name character varying(25),
-    donated_item_rate numeric(10,2) DEFAULT 0,
-    resale_item_rate numeric(10,2) DEFAULT 0,
-    description character varying(100),
+    name character varying(25),
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
@@ -149,7 +146,24 @@ CREATE TABLE discount_schedules (
 -- Name: TABLE discount_schedules; Type: COMMENT; Schema: public; Owner: stillflame
 --
 
-COMMENT ON TABLE discount_schedules IS 'discount schedules and their discount percents';
+COMMENT ON TABLE discount_schedules IS 'discount schedules';
+
+
+--
+-- Name: discount_schedules_gizmo_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE discount_schedules_gizmo_types (
+    id serial NOT NULL,
+    gizmo_type_id integer NOT NULL,
+    discount_schedule_id integer NOT NULL,
+    multiplier numeric(10,3),
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
 
 
 --
@@ -334,8 +348,7 @@ CREATE TABLE gizmo_types (
     created_by bigint DEFAULT 1 NOT NULL,
     updated_by bigint DEFAULT 1 NOT NULL,
     required_fee numeric(10,2) DEFAULT 0.0,
-    suggested_fee numeric(10,2) DEFAULT 0.0,
-    discounts_apply boolean DEFAULT true NOT NULL
+    suggested_fee numeric(10,2) DEFAULT 0.0
 );
 
 
@@ -509,7 +522,7 @@ CREATE TABLE volunteer_task_types (
     id serial NOT NULL,
     description character varying(100),
     parent_id integer,
-    hours_multiplier integer DEFAULT 1 NOT NULL,
+    hours_multiplier numeric(10,3) DEFAULT 1.0 NOT NULL,
     instantiable boolean DEFAULT true NOT NULL,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
