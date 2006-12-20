@@ -46,6 +46,10 @@ class Contact < ActiveRecord::Base
     volunteer_tasks.select {|v_t| v_t.date_performed >= cutoff}
   end
 
+  def last_ninety_days_of_actual_hours
+    last_ninety_days_of_volunteer_tasks.inject(0.0) {|tot,task| tot + task.duration}
+  end
+
   def last_few_volunteer_tasks
     volunteer_tasks.sort_by {|v_t| v_t.date_performed }[-3..-1]
   end
@@ -123,9 +127,9 @@ class Contact < ActiveRecord::Base
   end
 
   def default_discount_schedule
-    #:MC: i could move this business logic out to the database itself
-    #(order, condition) if i wanted to
-    if last_ninety_days_of_volunteer_tasks.inject(0.0) {|tot,task| tot + task.duration} >= 4.0
+    #:MC: i should move this business logic out to the database itself
+    #(order, condition)
+    if last_ninety_days_of_actual_hours >= 4.0
       DiscountSchedule.volunteer
     #elsif last_donation.created_at.to_date == Date.today
     #  DiscountSchedule.same_day_donor

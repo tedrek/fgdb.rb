@@ -158,6 +158,17 @@ class SaleTxnsController < ApplicationController
     end
   end
 
+  def update_discount_schedule
+    if params[:sale_txn][:contact_id]
+      default_discount_schedule = Contact.find(params[:sale_txn][:contact_id]).default_discount_schedule
+    else
+      default_discount_schedule = DiscountSchedule.no_discount
+    end
+    render :update do |page|
+      page["sale_txn_discount_schedule_id"].value = default_discount_schedule.id
+    end
+  end
+
   def automatic_datalist_row
     events = datalist_objects( GizmoEventsTag, @datalist_for_new_defaults )
     if( events.empty? or

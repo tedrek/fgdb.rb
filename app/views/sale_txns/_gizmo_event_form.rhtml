@@ -34,6 +34,12 @@
     {:class=>"text-input", :size=>"3"} %>
 </div>
 
+<div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Unit Price</label>
+  <%= datalist_text_field 'gizmo_event', 'unit_price',
+    {:class=>"text-input", :size=>"5"} %>
+</div>
+
 <div id="<%= @datalist_field_id_prefix %>_event_extras">
   <% @gizmo_type = @gizmo_event.gizmo_type %>
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>

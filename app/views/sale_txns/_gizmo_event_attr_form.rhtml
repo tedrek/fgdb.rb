@@ -5,6 +5,7 @@
 <% @gizmo_event.gizmo_context ||= @gizmo_context %>
 
 <% for attr in @gizmo_event.gizmo_type.relevant_attrs( @gizmo_event.gizmo_context ) %>
+  <% next if attr.name == 'unit_price' %>
   <% options = {} %>
   <div class="form-element">
     <% if attr.datatype == 'boolean' %>

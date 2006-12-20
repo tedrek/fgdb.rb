@@ -28,6 +28,12 @@
 <input type="hidden" id="<%= @datalist_field_id_prefix %>_gizmo_context_id"
     name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= @gizmo_context.id %>" />
 
+<div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Quantity</label>
+  <%= datalist_text_field 'gizmo_event', 'gizmo_count',
+    {:class=>"text-input", :size=>"3"} %>
+</div>
+
 <div id="<%= @datalist_field_id_prefix %>_event_extras">
   <% @gizmo_type = @gizmo_event.gizmo_type %>
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
@@ -39,13 +45,6 @@
       } ) } %>
   <% end %>
 </div>
-
-<div class="form-element">
-  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Quantity</label>
-  <%= datalist_text_field 'gizmo_event', 'gizmo_count',
-    {:class=>"text-input", :size=>"3"} %>
-</div>
-
 
 <!--[eoform:gizmo_event]-->
 

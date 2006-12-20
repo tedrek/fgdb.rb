@@ -2,7 +2,9 @@
   <div class="row">
     <!--[form:sale_txn]-->
 
-<div id="<%= sale_txn_contact_searchbox_id(@options) %>">
+<div id="<%= sale_txn_contact_searchbox_id(@options) %>"
+    onchange="new Ajax.Request('/sale_txns/update_discount_schedule/?' + Form.serialize('<%= element_form_id(@options)
+      %>'), {asynchronous:true, evalScripts:true});">
   <% if @sale_txn.postal_code %>
     <%= render :partial => 'anonymous' %>
   <% else %>
@@ -24,7 +26,7 @@
 <%= render :partial => 'header_totals' %>
 
 <div class="form-element">
-<label for="discount_schedule_id">Discount schedule</label><br/>
+<label for="sale_txn_discount_schedule_id">Discount schedule</label><br/>
 <select id="sale_txn_discount_schedule_id" name="sale_txn[discount_schedule_id]">
 <%= options_from_collection_for_select DiscountSchedule.find_all, "id", "name", @sale_txn.discount_schedule_id %>
 </select>
