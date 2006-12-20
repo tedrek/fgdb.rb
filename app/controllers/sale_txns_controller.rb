@@ -208,9 +208,13 @@ class SaleTxnsController < ApplicationController
       receipt_type = params[:user_choice]
     else
       # error regarding underpayment
-      unless @sale_txn.total_paid?
+      if @sale_txn.calculated_total > @sale_txn.money_tendered
         flash[:error] = "Amount tendered is too low"
         @include_invoicing_choice = true
+        @successful = false
+        return @successful
+      elsif @sale_txn.calculated_total < @sale_txn.money_tendered
+        flash[:error] = "Amount tendered is too much"
         @successful = false
         return @successful
       end

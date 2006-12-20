@@ -19,7 +19,7 @@
     <td width="12%"><strong>Total:</strong></td>
     <td width="12%"></td>
 </tr>
-<% subtotal = discount = total = 0.0 %>
+
 <% @sale_txn.gizmo_events.each do |event| %>
   <tr>
     <td> <%= event.gizmo_type.description %> </td>
@@ -35,14 +35,14 @@
 
 <tr>
     <td colspan="4">&nbsp;</td>
-    <td align="right" colspan="2"><strong>Subtotal:</strong></td>
-    <td><strong><%= number_to_currency(@sale_txn.calculated_subtotal) %></strong></td>
+    <td align="right" colspan="2">Subtotal:</td>
+    <td><%= number_to_currency(@sale_txn.calculated_subtotal) %></td>
 </tr>
 
 <tr>
     <td colspan="4">&nbsp;</td>
-    <td align="right" colspan="2"><strong>Discounted:</strong></td>
-    <td><strong><%= number_to_currency(@sale_txn.calculated_discount) %></strong></td>
+    <td align="right" colspan="2">Discounted:</td>
+    <td><%= number_to_currency(@sale_txn.calculated_discount) %></td>
 </tr>
 
 <tr>
@@ -50,6 +50,20 @@
     <td align="right" colspan="2"><strong>Total:</strong></td>
     <td><strong><%= number_to_currency(@sale_txn.calculated_total) %></strong></td>
 </tr>
+
+<% if @sale_txn.calculated_total > @sale_txn.money_tendered %>
+  <tr>
+    <td colspan="4">&nbsp;</td>
+    <td align="right" colspan="2">Paid:</td>
+    <td><%= number_to_currency(@sale_txn.money_tendered) %></td>
+  </tr>
+
+  <tr>
+    <td colspan="4">&nbsp;</td>
+    <td align="right" colspan="2"><strong>Due by <%= Date.today + 30 %>:</strong></td>
+    <td><strong><%= number_to_currency(@sale_txn.calculated_total - @sale_txn.money_tendered) %></strong></td>
+  </tr>
+<% end %>
 
 </tbody></table>
 </div>

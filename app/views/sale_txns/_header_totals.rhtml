@@ -6,16 +6,26 @@
         <%= number_to_currency(@sale_txn.calculated_subtotal) %></td>
     </tr> 
     <tr>
-      <td>Discounted: </td>
-      <td class="amount">
-        <%= number_to_currency(@sale_txn.calculated_discount) %>
-      </td>
-    </tr> 
-    <tr>
-      <td class="required">Total due:</td>
+      <td>minus discount of <%= number_to_currency(@sale_txn.calculated_discount) %>:</td>
       <td class="amount required">
         <%= number_to_currency(@sale_txn.calculated_total) %></td>
       </td>
-    </tr> 
+    </tr>
+    <% if @sale_txn.money_tendered < @sale_txn.calculated_total %>
+      <tr>
+        <td class="below_req">Due:</td>
+        <td class="amount below_req">
+          <%= number_to_currency(@sale_txn.money_tendered - @sale_txn.calculated_total) %></td>
+        </td>
+      </tr>
+    <% elsif @sale_txn.money_tendered > @sale_txn.calculated_total %>
+      <tr>
+        <td class="below_req">Overpayment:</td>
+        <td class="amount below_req">
+          <%= number_to_currency(@sale_txn.money_tendered - @sale_txn.calculated_total) %></td>
+        </td>
+      </tr>
+    <% else %>
+    <% end %>
   </table>
 </div>
