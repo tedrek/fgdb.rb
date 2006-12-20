@@ -21,6 +21,14 @@ class GizmoEvent < ActiveRecord::Base
     end
   end
 
+  def possible_attrs
+    if gizmo_type
+      gizmo_type.possible_attrs
+    else
+      GizmoAttr.find_all
+    end
+  end
+
   def gizmo_typeattrs
     if gizmo_type and gizmo_context
       gizmo_type.relevant_typeattrs(gizmo_context)
@@ -55,7 +63,7 @@ class GizmoEvent < ActiveRecord::Base
 
   def method_missing_with_gizmo_attrs(sym, *args, &block)
     attr_name = sym.to_s.sub(/=/, '')
-    if gizmo_attrs.find {|attr| attr.name == attr_name }
+    if possible_attrs.detect {|attr| attr.name == attr_name }
       @gizmo_attrs ||= initialize_gizmo_attrs
       if attr_name == sym.to_s
         return @gizmo_attrs[attr_name]

@@ -117,8 +117,21 @@ class Contact < ActiveRecord::Base
     contact_types.join(' ')
   end
 
-  def discount_schedule_id
-    1
+  def last_donation
+    #:MC: optimize this into sql
+    donations.sort_by {|don| don.created_at}.last
+  end
+
+  def default_discount_schedule
+    #:MC: i could move this business logic out to the database itself
+    #(order, condition) if i wanted to
+    if last_ninety_days_of_volunteer_tasks.inject(0.0) {|tot,task| tot + task.duration} >= 4.0
+      DiscountSchedule.volunteer
+    #elsif last_donation.created_at.to_date == Date.today
+    #  DiscountSchedule.same_day_donor
+    else
+      DiscountSchedule.no_discount
+    end
   end
 
   class << self

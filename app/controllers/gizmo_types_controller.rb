@@ -60,21 +60,7 @@ class GizmoTypesController < ApplicationController
   def create
     begin
       @gizmo_type = GizmoType.new(params[:gizmo_type])
-      @gizmo_type.discount_schedules_gizmo_types = []
-      if @params[:discount_schedules]
-        @params[:discount_schedules].each do |d_s_id,mult|
-          dsgt = DiscountSchedulesGizmoType.new
-          dsgt.discount_schedule_id = d_s_id
-          dsgt.multiplier = mult
-          @gizmo_type.discount_schedules_gizmo_types << dsgt          
-        end
-      end
-      if @params[:gizmo_contexts]
-        @gizmo_type.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts])
-      else
-        @gizmo_type.gizmo_contexts = []
-      end
-      @successful = @gizmo_type.save
+      @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -109,21 +95,8 @@ class GizmoTypesController < ApplicationController
   def update
     begin
       @gizmo_type = GizmoType.find(params[:id])
-      @gizmo_type.discount_schedules_gizmo_types = []
-      if @params[:discount_schedules]
-        @params[:discount_schedules].each do |d_s_id,mult|
-          dsgt = DiscountSchedulesGizmoType.new
-          dsgt.discount_schedule_id = d_s_id
-          dsgt.multiplier = mult
-          @gizmo_type.discount_schedules_gizmo_types << dsgt          
-        end
-      end
-      if @params[:gizmo_contexts]
-        @gizmo_type.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts])
-      else
-        @gizmo_type.gizmo_contexts = []
-      end
-      @successful = @gizmo_type.update_attributes(params[:gizmo_type])
+      @gizmo_type.attributes = params[:gizmo_type]
+      @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -157,5 +130,27 @@ class GizmoTypesController < ApplicationController
     return render(:action => 'cancel.rjs') if request.xhr?
     
     return_to_main
+  end
+
+  #######
+  private
+  #######
+
+  def _save
+    @gizmo_type.discount_schedules_gizmo_types = []
+    if @params[:discount_schedules]
+      @params[:discount_schedules].each do |d_s_id,mult|
+        dsgt = DiscountSchedulesGizmoType.new
+        dsgt.discount_schedule_id = d_s_id
+        dsgt.multiplier = mult
+        @gizmo_type.discount_schedules_gizmo_types << dsgt          
+      end
+    end
+    if @params[:gizmo_contexts]
+      @gizmo_type.gizmo_contexts = GizmoContext.find(@params[:gizmo_contexts])
+    else
+      @gizmo_type.gizmo_contexts = []
+    end
+     @gizmo_type.save
   end
 end

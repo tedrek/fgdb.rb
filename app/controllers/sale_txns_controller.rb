@@ -195,13 +195,6 @@ class SaleTxnsController < ApplicationController
   #######
 
   def _set_totals_defaults(options = {})
-    if (options[:new])
-      @discount_schedule = DiscountSchedule.find(3)   #no discount
-    else
-      @discount_schedule = DiscountSchedule.find(@sale_txn.contact.discount_schedule_id)
-    end
-    @discount_schedule_description = @discount_schedule.description
-    @discount_amount = 0
   end
 
   # common save logic

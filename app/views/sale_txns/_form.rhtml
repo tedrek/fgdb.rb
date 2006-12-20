@@ -26,7 +26,7 @@
 <div class="form-element">
 <label for="discount_schedule_id">Discount schedule</label><br/>
 <select id="sale_txn_discount_schedule_id" name="sale_txn[discount_schedule_id]">
-<%= options_from_collection_for_select DiscountSchedule.find_all, "id", "description", @sale_txn.discount_schedule_id %>
+<%= options_from_collection_for_select DiscountSchedule.find_all, "id", "name", @sale_txn.discount_schedule_id %>
 </select>
 </div>
 
