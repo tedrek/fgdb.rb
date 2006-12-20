@@ -11,40 +11,44 @@
 <div class="item_list">
 <table bgcolor="#cccccc" width="100%" align="center" border="1">
 <tbody><tr>
-    <td width="13%"><strong>Gizmo Id:</strong></td>
-    <td width="33%"><strong>Description:</strong></td>
-    <td width="13%"><strong>Cost:</strong></td>
-    <td width="13%"><strong>Subtotal:</strong></td>
-    <td width="13%"><strong>Discount:</strong></td>
-    <td width="14%"><strong>Total:</strong></td>
+    <td width="31%"><strong>Description:</strong></td>
+    <td width="11%"><strong>Unit Price:</strong></td>
+    <td width="11%"><strong>Quantity:</strong></td>
+    <td width="11%"><strong>Subtotal:</strong></td>
+    <td width="11%"><strong>Discount:</strong></td>
+    <td width="12%"><strong>Total:</strong></td>
+    <td width="12%"></td>
 </tr>
-
+<% subtotal = discount = total = 0.0 %>
 <% @sale_txn.gizmo_events.each do |event| %>
   <tr>
-    <td> <%= event.gizmo_type_id %> </td>
     <td> <%= event.gizmo_type.description %> </td>
-    <td colspan="4">&nbsp;</td>
+    <td> <%= number_to_currency event.unit_price %> </td>
+    <td> <%= event.gizmo_count %> </td>
+    <td> <%= number_to_currency event.total_price %> </td>
+    <td> <%= event.percent_discount(@sale_txn.discount_schedule) %>% </td>
+    <td> <%= number_to_currency event.discounted_price(@sale_txn.discount_schedule) %> </td>
   </tr>
 <% end %>
 
-<tr><td colspan="6">&nbsp;</td></tr>
+<tr><td colspan="7">&nbsp;</td></tr>
 
 <tr>
-    <td colspan="3">&nbsp;</td>
+    <td colspan="4">&nbsp;</td>
     <td align="right" colspan="2"><strong>Subtotal:</strong></td>
-    <td><strong><%= number_to_currency(subtotal) %></strong></td>
+    <td><strong><%= number_to_currency(@sale_txn.calculated_subtotal) %></strong></td>
 </tr>
 
 <tr>
-    <td colspan="3">&nbsp;</td>
-    <td align="right" colspan="2"><strong>Discount:</strong></td>
-    <td><strong><%= number_to_currency(discount) %></strong></td>
+    <td colspan="4">&nbsp;</td>
+    <td align="right" colspan="2"><strong>Discounted:</strong></td>
+    <td><strong><%= number_to_currency(@sale_txn.calculated_discount) %></strong></td>
 </tr>
 
 <tr>
-    <td colspan="3">&nbsp;</td>
+    <td colspan="4">&nbsp;</td>
     <td align="right" colspan="2"><strong>Total:</strong></td>
-    <td><strong><%= number_to_currency(amount_due) %></strong></td>
+    <td><strong><%= number_to_currency(@sale_txn.calculated_total) %></strong></td>
 </tr>
 
 </tbody></table>

@@ -1,10 +1,10 @@
 <% @datalist_field_id_prefix = params[:datalist_field_id_prefix] %>
 <% @datalist_field_name_prefix = params[:datalist_field_name_prefix] %>
-<% @gizmo_event = gizmo_event = params[:gizmo_event_id] ? GizmoEvent.find( params[:gizmo_event_id] ) : GizmoEvent.new %>
-<% @gizmo_event.gizmo_type = gizmo_type = GizmoType.find( params[:gizmo_type_id] ) %>
-<% @gizmo_event.gizmo_context = gizmo_context = @gizmo_context %>
+<% @gizmo_event ||= params[:gizmo_event_id] ? GizmoEvent.find( params[:gizmo_event_id] ) : GizmoEvent.new %>
+<% @gizmo_event.gizmo_type ||= GizmoType.find( params[:gizmo_type_id] ) %>
+<% @gizmo_event.gizmo_context ||= @gizmo_context %>
 
-<% for attr in gizmo_type.relevant_attrs( gizmo_context ) %>
+<% for attr in @gizmo_event.gizmo_type.relevant_attrs( @gizmo_event.gizmo_context ) %>
   <% options = {} %>
   <div class="form-element">
     <% if attr.datatype == 'boolean' %>

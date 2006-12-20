@@ -37,6 +37,21 @@ class GizmoEvent < ActiveRecord::Base
     end
   end
 
+  def percent_discount(schedule)
+    return 0 unless schedule && gizmo_type
+    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule) ) * 100 ).ceil
+  end
+
+  def total_price
+    return 0 unless unit_price and gizmo_count
+    unit_price.to_f * gizmo_count
+  end
+
+  def discounted_price(schedule)
+    return total_price unless schedule && gizmo_type
+    total_price * gizmo_type.multiplier_to_apply(schedule)
+  end
+
   def mostly_empty?
     ((! gizmo_type_id) and (! gizmo_count))
   end

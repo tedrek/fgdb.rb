@@ -1,6 +1,6 @@
 <% @button_options = @update_options || @create_options %>
 <p class="message error-message">
-  Correct these problems or save the donation as-is and print:
+  Correct these problems or save the transaction as-is and print:
   <button type="button" id="buttons_invoice"
     onclick="<%= remote_function( 
         :url => @button_options.merge(:user_choice => 'invoice'),

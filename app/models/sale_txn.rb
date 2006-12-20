@@ -3,6 +3,7 @@ require 'ajax_scaffold'
 class SaleTxn < ActiveRecord::Base
   belongs_to :contact, :order => "surname, first_name"  
   belongs_to :payment_method
+  belongs_to :discount_schedule
   has_many :gizmo_events
 
   validates_presence_of :payment_method_id
@@ -18,8 +19,23 @@ class SaleTxn < ActiveRecord::Base
   end
 
   def calculated_total
-    # :TODO:
-    0
+    if discount_schedule
+      gizmo_events.inject(0.0) {|tot,gizmo|
+        tot + gizmo.discounted_price(discount_schedule)
+    }
+    else
+      calculated_subtotal
+    end
+  end
+
+  def calculated_subtotal
+    gizmo_events.inject(0.0) {|tot,gizmo|
+      tot + gizmo.total_price.to_f
+    }
+  end
+
+  def calculated_discount
+    calculated_subtotal - calculated_total
   end
 
   def total_paid?

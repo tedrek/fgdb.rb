@@ -1,5 +1,5 @@
 @options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => @sale_txn.id }
-@create_options = @options.merge(:action => "create", :id => params[:id])
+@create_options = @options.merge(:action => "create", :controller => 'sale_txns', :id => params[:id])
 
 if @successful
   page.insert_html :bottom, scaffold_tbody_id(@options), :partial => 'sale_txn', :locals => { :hidden => true }
