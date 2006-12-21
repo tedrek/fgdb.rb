@@ -9,35 +9,23 @@ class ReportsController < ApplicationController
   end
 
   def income
-    @defaults = Object.new
     @date_types = ['daily', 'monthly', 'arbitrary']
-    def @defaults.date
-      Date.today
-    end
-    def @defaults.method_missing(*args)
-      nil
-    end
+    date_choice_init
   end
 
-  def show_date_type
-    date_types = ['daily', 'monthly', 'arbitrary']
+  def select_date_type
+    date_choice_init
     render :update do |page|
-      page.show params[:date_type]
-      (date_types - [params[:date_type]]).each {|dt| page.hide dt}
+      #:MC: scrub this data first?
+      page.replace_html "date_choice", :partial => params[:date_type] + "_income"
     end
   end
 
   def income_report
     income_report_init
-    @date_range_string = "today (#{Date.today})"
-    donations = Donation.find(:all, :conditions => [
-                                "created_at >= ?",
-                                Date.today
-                              ])
-    sales = SaleTxn.find(:all, :conditions => [
-                           "created_at >= ?",
-                           Date.today
-                         ])
+    @date_range_string, conditions = determine_date_range
+    donations = Donation.find(:all, :conditions => conditions)
+    sales = SaleTxn.find(:all, :conditions => conditions)
     totals = @income_data[:grand_totals]
     donations.each do |donation|
       next unless( (donation.money_tendered > 0) and (donation.txn_complete) )
@@ -81,6 +69,22 @@ class ReportsController < ApplicationController
 
   protected
 
+  def date_choice_init
+    @defaults = Object.new
+    def @defaults.date
+      Date.today
+    end
+    def @defaults.month
+      Date.today
+    end
+    def @defaults.year
+      Date.today
+    end
+    def @defaults.method_missing(*args)
+      nil
+    end
+  end
+
   def income_report_init
     methods = PaymentMethod.find_all
     method_names = methods.map {|m| m.description}
@@ -103,4 +107,43 @@ class ReportsController < ApplicationController
       end
     end
   end
+
+  def determine_date_range
+    if params[:defaults][:date]
+      date = Date.parse(params[:defaults][:date])
+      if date == Date.today
+        return "today (#{date})", [
+          "created_at >= ?",
+          date
+        ]
+      else
+        return date, [
+          "created_at >= ? AND created_at < ?",
+          date, date + 1
+        ]
+      end
+    elsif params[:defaults][:start_date] && params[:defaults][:end_date]
+      start_date = Date.parse(params[:defaults][:start_date])
+      end_date = Date.parse(params[:defaults][:end_date])
+      return "from #{start_date} to #{end_date}", [
+          "created_at >= ? AND created_at < ?",
+          start_date, end_date
+        ]
+    elsif params[:defaults][:month]
+      year = (params[:defaults][:year] || Date.today.year).to_i
+      month_start = Time.local(year, params[:defaults][:month], 1)
+      if params[:defaults][:month].to_i == 12
+        month = 1
+        year += 1
+      else
+        month = 1 + params[:defaults][:month].to_i
+      end
+      month_end = Time.local(year, month, 1)
+      return "from #{month_start.to_date} to #{month_end.to_date - 1}", [
+          "created_at >= ? AND created_at < ?",
+          month_start, month_end
+        ]
+    end
+  end
+
 end

@@ -2,21 +2,8 @@
     <%= select "defaults", "date_type", @date_types %>
   </div>
   <%= observe_field "defaults_date_type", :url => {
-      :action => 'show_date_type'
+      :action => 'select_date_type'
     },
     :with => 'date_type' %>
 
-  <div id="daily" class="form-element">
-    <%= datebocks_field('defaults', 'date') %>
-  </div>
-
-  <div id="monthly" class="form-element">
-    <%= select_month(Date.today) %>    
-  </div>
-
-  <div id="arbitrary" class="form-element">
-    From: <%= datebocks_field('defaults', 'start_date') %>
-    To: <%= datebocks_field('defaults', 'end_date') %>
-  </div>
-
-  <%= javascript_tag "Element.hide('monthly', 'arbitrary');" %>
+  <%= render :partial => 'daily_income' %>
