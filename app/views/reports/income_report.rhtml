@@ -1,5 +1,5 @@
 <% methods = PaymentMethod.find_all %>
-<% table_width = @columns.map {|k,a| a.length}.max + 2 %>
+<% table_width = @width + 2 %>
 <h1>Income report for <%= @date_range_string %></h1>
 
 <table class="report">

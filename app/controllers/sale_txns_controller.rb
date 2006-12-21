@@ -241,6 +241,9 @@ class SaleTxnsController < ApplicationController
       @sale_txn.txn_completed_at = Time.now
     end
 
+    @sale_txn.reported_amount_due = @sale_txn.calculated_total
+    @sale_txn.reported_discount_amount = @sale_txn.calculated_discount
+
     # :MC: lame!  validation should happen in the model.
     if (@sale_txn.postal_code and ! @sale_txn.postal_code.empty?) or
         (@sale_txn.contact_id)

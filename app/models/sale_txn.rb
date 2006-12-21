@@ -9,7 +9,7 @@ class SaleTxn < ActiveRecord::Base
   validates_presence_of :payment_method_id
 
   def to_s
-    "$%0.2f from %s on %s (#%i)" % [money_tendered, buyer, created_at.to_date.to_s, id]
+    "$%0.2f from %s on %s (#%i)" % [money_tendered, buyer, created_at.strftime('%Y-%m-%d at %H:%M'), id]
   end
 
   def buyer

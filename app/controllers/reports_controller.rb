@@ -40,7 +40,7 @@ class ReportsController < ApplicationController
                          ])
     totals = @income_data[:grand_totals]
     donations.each do |donation|
-      next unless donation.money_tendered > 0
+      next unless( (donation.money_tendered > 0) and (donation.txn_complete) )
       if donation.txn_complete
         column_to_effect = @income_data[:donations][donation.payment_method.description]
         if donation.money_tendered <= donation.reported_required_fee
@@ -63,14 +63,19 @@ class ReportsController < ApplicationController
       end
     end
     sales.each do |sale|
-      next unless sale.amount_due > 0
-      column_to_effect = @income_data[:sales][sale.payment_method.description]
-      column_to_effect['retail'] += sale.amount_due
-      column_to_effect['subtotals'] += sale.amount_due
-      @income_data[:sales]['total real']['retail'] += sale.amount_due
-      @income_data[:sales]['total real']['subtotals'] += sale.amount_due
-      totals[sale.payment_method.description]['total'] += sale.amount_due
-      totals['total real']['total'] += sale.amount_due
+      next unless( (sale.money_tendered > 0) and (sale.txn_complete) )
+      if sale.txn_complete
+        column_to_effect = @income_data[:sales][sale.payment_method.description]
+        column_to_effect[sale.bulk ? 'wholesale' : 'retail'] += sale.reported_amount_due
+        @income_data[:sales]['total real'][sale.bulk ? 'wholesale' : 'retail'] += sale.reported_amount_due
+        column_to_effect['subtotals'] += sale.reported_amount_due
+        @income_data[:sales]['total real']['subtotals'] += sale.reported_amount_due
+        totals[sale.payment_method.description]['total'] += sale.reported_amount_due
+        totals['total real']['total'] += sale.reported_amount_due
+      else
+        @income_data[:sales]['invoiced'][sale.bulk ? 'wholesale' : 'retail'] += sale.reported_amount_due
+        @income_data[:sales]['invoiced']['subtotals'] += sale.reported_amount_due
+      end
     end
   end
 
@@ -79,8 +84,8 @@ class ReportsController < ApplicationController
   def income_report_init
     methods = PaymentMethod.find_all
     method_names = methods.map {|m| m.description}
-    @columns = Hash.new( method_names + ['total real'] )
-    @columns[:donations] = method_names + ['total real', 'invoiced']
+    @columns = Hash.new( method_names + ['total real', 'invoiced'] )
+    @width = @columns[nil].length
     @rows = {}
     @rows[:donations] = ['voluntary', 'fees', 'subtotals']
     @rows[:sales] = ['retail', 'wholesale', 'subtotals']
