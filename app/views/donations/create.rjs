@@ -17,6 +17,7 @@ if @successful
 else
   page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
   page << "Form.enable('#{element_form_id(@create_options)}');"
+  page << "$('#{element_messages_id(@create_options)}').scrollTo();"
   page.hide loading_indicator_id(@create_options)
 end
 
