@@ -47,7 +47,7 @@ class Contact < ActiveRecord::Base
   end
 
   def last_ninety_days_of_actual_hours
-    last_ninety_days_of_volunteer_tasks.inject(0.0) {|tot,task| tot + task.duration}
+    hours_actual(true)
   end
 
   def last_few_volunteer_tasks
