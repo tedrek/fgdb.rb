@@ -112,38 +112,34 @@ class ReportsController < ApplicationController
     if params[:defaults][:date]
       date = Date.parse(params[:defaults][:date])
       if date == Date.today
-        return "today (#{date})", [
-          "created_at >= ?",
-          date
-        ]
+        desc = "today (#{date})"
+        start_date = date
+        end_date = date + 1
       else
-        return date, [
-          "created_at >= ? AND created_at < ?",
-          date, date + 1
-        ]
+        desc = date
+        start_date = date
+        end_date = date + 1
       end
     elsif params[:defaults][:start_date] && params[:defaults][:end_date]
       start_date = Date.parse(params[:defaults][:start_date])
       end_date = Date.parse(params[:defaults][:end_date])
-      return "from #{start_date} to #{end_date}", [
-          "created_at >= ? AND created_at < ?",
-          start_date, end_date
-        ]
+      desc = "from #{start_date} to #{end_date}"
     elsif params[:defaults][:month]
       year = (params[:defaults][:year] || Date.today.year).to_i
-      month_start = Time.local(year, params[:defaults][:month], 1)
+      start_date = Time.local(year, params[:defaults][:month], 1)
       if params[:defaults][:month].to_i == 12
         month = 1
         year += 1
       else
         month = 1 + params[:defaults][:month].to_i
       end
-      month_end = Time.local(year, month, 1)
-      return "from #{month_start.to_date} to #{month_end.to_date - 1}", [
-          "created_at >= ? AND created_at < ?",
-          month_start, month_end
-        ]
+      end_date = Time.local(year, month, 1)
+      desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     end
+    return desc, [
+      "created_at >= ? AND created_at < ?",
+      start_date, end_date
+    ]
   end
 
 end

@@ -10,6 +10,7 @@ if @successful
   page << "Field.focus('#{searchbox_select_id(@options)}');"
 else
   page.replace_html element_messages_id(@update_options), :partial => 'form_messages'
+  page << "$('#{element_messages_id(@update_options)}').scrollTo();"
   page << "Form.enable('#{element_form_id(@update_options)}');"
   page.hide loading_indicator_id(@update_options)
 end

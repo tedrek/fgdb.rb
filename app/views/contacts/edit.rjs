@@ -9,6 +9,7 @@ if @successful
   page.replace_html element_messages_id(@options), :partial => 'form_messages'
 else
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
+  page << "$('#{scaffold_messages_id(@options)}').scrollTo();"
 end
 
 page.hide loading_indicator_id(@view_options)
