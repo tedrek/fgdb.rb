@@ -1,0 +1,2 @@
+class SidebarLinksController < ApplicationController
+end

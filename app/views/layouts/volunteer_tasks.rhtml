@@ -1,18 +1,3 @@
-<!DOCTYPE html 
-     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-     "DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head>
-  <title>Volunteer Tasks</title>
-  <%= stylesheet_link_tag 'ajax_scaffold', 'application', :media => 'all' %>
-  <%= engine_stylesheet "datebocks_engine", "calendar-win2k-cold-1.css" %>
-  <%= javascript_include_tag :defaults %>
-  <%= javascript_include_tag 'rico_corner', 'ajax_scaffold', 'application' %>
-  <%= engine_javascript "datebocks_engine", "calendar", "lang/calendar-en", "calendar-setup" %>
-</head>
-<body>
-
-<%= @content_for_layout %>
-
-</body>
-</html>
+<%= render :partial => 'sidebar_links/page_header' %>
+  <%= @content_for_layout %>
+<%= render :partial => 'sidebar_links/page_footer' %>

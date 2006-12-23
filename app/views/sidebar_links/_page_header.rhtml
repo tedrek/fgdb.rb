@@ -1,0 +1,22 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <title><%= Inflector.titleize(controller.class.name) %></title>
+  <%= stylesheet_link_tag 'ajax_scaffold', 'application', :media => 'all' %>
+  <%= engine_stylesheet "datebocks_engine", "calendar-win2k-cold-1.css" %>
+  <%= javascript_include_tag :defaults %>
+  <%= javascript_include_tag 'rico_corner', 'ajax_scaffold' %>
+  <%= engine_javascript "datebocks_engine", "calendar", "lang/calendar-en", "calendar-setup" %>
+</head>
+<body>
+
+  <div id="logo">
+    <img src="/images/freegeeklogo.png" alt="freegeeklogo.png" />
+  </div>
+  <div id="sidebar">
+    <%= render :partial => 'sidebar_links/sidebar' %>
+  </div>
+
+  <div id="content">

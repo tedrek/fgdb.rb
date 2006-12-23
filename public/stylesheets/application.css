@@ -93,6 +93,7 @@ margin: 0;
 }
 
 .searchbox_form {
+width: 82%;
 background-color: white;
 border-right: black 1px solid;
 border-top: black 1px solid;
@@ -223,3 +224,32 @@ color: #2A2;
 color: brown;
 }
 
+/* ===================================
+          layout */
+
+div#logo {
+position: absolute;
+top: 0px;
+left: 0px;
+padding: 2px;
+}
+div#sidebar {
+position: absolute;
+top: 140px;
+left: 0px;
+padding: 2px;
+margin: 10px;
+background-color: #DDD;
+}
+div#content {
+position: absolute;
+top: 40px;
+left: 120px;
+padding: 10px;
+}
+div#sidebar a {
+color: #333;
+}
+div#sidebar dd:hover {
+background-color: #CCC;
+}

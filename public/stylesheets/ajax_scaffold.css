@@ -303,7 +303,7 @@ background-color: #bbf;
 /* Error Styling
    ========================== */
 
-.ajax-scaffold #errorExplanation {
+#errorExplanation {
 background-color: #fcc;
 margin: 2px 0;
 border: solid 1px #f66;
@@ -314,39 +314,40 @@ float: left;
 clear: both;
 }
 
-.ajax-scaffold #errorExplanation h2 {
+#errorExplanation h2 {
 padding: 2px 5px;
 color: #333;
-font-size: 11px;
+font-size: 13px;
 margin: 0;
 letter-spacing: 0;
 font-family: Verdana;
 background-color: #f66;
 }
 
-.ajax-scaffold #errorExplanation ul {
+#errorExplanation ul {
 margin: 0;
 padding: 0 2px 4px 25px;
 list-style: disc;
 }
 
-.ajax-scaffold #errorExplanation p {
-font-size: 11px;
+#errorExplanation p {
+font-size: 12px;
 padding: 2px 5px;
 font-family: Verdana;
 margin: 0;
 }
 
-.ajax-scaffold #errorExplanation ul li {
-font: bold 11px verdana;
+#errorExplanation ul li {
+font: bold 12px verdana;
 letter-spacing: -1px;
 margin: 0;
 padding: 0;
 background-color: transparent;
 }
 
-.ajax-scaffold .fieldWithErrors input {
+.fieldWithErrors input {
 border: solid 1px #f00;
+background-color: #fcc;
 }
 
 /* Loading Indicators

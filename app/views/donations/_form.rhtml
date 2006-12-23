@@ -30,7 +30,7 @@
   <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
 </div>
 
-<div class="form-element"
+<div class="datalist"
     onchange="new Ajax.Request('/donations/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
       %>'), {asynchronous:true, evalScripts:true});">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
