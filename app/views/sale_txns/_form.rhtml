@@ -12,7 +12,7 @@
   <% end %>
 </div>
 
-<div class="form-element"
+<div class="datalist"
     onchange="new Ajax.Request('/sale_txns/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
       %>'), {asynchronous:true, evalScripts:true});">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
@@ -22,8 +22,6 @@
     :add_text => "More gizmos",
     :new_defaults => @datalist_for_new_defaults || nil) %>
 </div>
-
-<%= render :partial => 'header_totals' %>
 
 <div class="form-element">
 <label for="sale_txn_discount_schedule_id">Discount schedule</label><br/>
@@ -49,6 +47,8 @@
   <label for="sale_txn_comments">Comments</label>
   <%= text_area 'sale_txn', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
 </div>
+
+<%= render :partial => 'header_totals' %>
 
 <!--[eoform:sale_txn]-->
 

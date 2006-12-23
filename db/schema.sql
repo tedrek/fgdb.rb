@@ -443,7 +443,7 @@ COMMENT ON TABLE relationships IS 'actual relationship between two contacts';
 
 CREATE TABLE sale_txns (
     id serial NOT NULL,
-    contact_id integer NOT NULL,
+    contact_id integer,
     payment_method_id integer NOT NULL,
     money_tendered numeric(10,2) DEFAULT 0.0,
     postal_code character varying(25),
@@ -453,6 +453,7 @@ CREATE TABLE sale_txns (
     txn_completed_at timestamp with time zone DEFAULT now(),
     discount_schedule_id integer,
     comments text,
+    bulk boolean,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),

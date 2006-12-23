@@ -11,19 +11,6 @@
   <% end %>
 </div>
 
-<div class="form-element"
-    onchange="new Ajax.Request('/donations/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
-      %>'), {asynchronous:true, evalScripts:true});">
-  <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-  <%= datalist_for( :gizmo_event, 'donations_gizmo_events',
-    @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
-    :show_header => false, :render_aware => "gizmo_event_form",
-    :add_text => "More gizmos",
-    :new_defaults => @datalist_for_new_defaults || nil) %>
-</div>
-
-<%= render :partial => 'header_totals' %>
-
 <div class="form-element">
   <label for="donation_money_tendered">Money tendered</label>
   <%= text_field 'donation', 'money_tendered' ,
@@ -42,6 +29,19 @@
   <label for="sale_txn_comments">Comments</label>
   <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
 </div>
+
+<div class="form-element"
+    onchange="new Ajax.Request('/donations/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
+      %>'), {asynchronous:true, evalScripts:true});">
+  <% params[:gizmo_context_id] ||= @gizmo_context.id %>
+  <%= datalist_for( :gizmo_event, 'donations_gizmo_events',
+    @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
+    :show_header => false, :render_aware => "gizmo_event_form",
+    :add_text => "More gizmos",
+    :new_defaults => @datalist_for_new_defaults || nil) %>
+</div>
+
+<%= render :partial => 'header_totals' %>
 
 <!--[eoform:donation]-->
 

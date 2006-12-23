@@ -13,6 +13,7 @@
 
 .totals {
   float: right;
+  display: inline;
   text-align: right;
   width: 250px;
 }
@@ -35,6 +36,29 @@
   color: green;
   font-weight: bold;
   font-size: larger;
+}
+
+/* ===================================
+         datalist */
+
+tr.datalist {
+background-color: #BFD;
+}
+table.datalist {
+display: block;
+}
+div.datalist {
+display: inline;
+float: right;
+margin-right: 10px;
+margin-bottom: 2px;
+}
+span.datalist {
+float: none;
+font-family: Verdana, sans-serif;
+color: #555;
+font-size: 11px;
+padding-bottom: 1px;
 }
 
 /* ===================================
@@ -113,7 +137,7 @@ border: solid 1px #1F7F00;
 }
 
 .contact_display {
-background-color: #95B5B5;
+background-color: #A5C5C5;
 border: solid 1px #799;
 text-align: left;
 font-size: 10px;
@@ -145,7 +169,7 @@ margin-left: 10px;
 }
 
 .searchbox_form {
-background-color: #C5E5E5;
+background-color: #DED;
 }
 
 .hours_type {

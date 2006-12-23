@@ -7,11 +7,4 @@
         :with => 'Form.serialize(this.form)',
         :loading => "Element.show('#{loading_indicator_id(@button_options)}');"
       ) %>">an invoice</button>
-  <button type="button" id="buttons_receipt"
-    onclick="<%= remote_function( 
-        :url => @button_options.merge(:user_choice => 'receipt'),
-        :with => 'Form.serialize(this.form)',
-        :loading => "Element.show('#{loading_indicator_id(@button_options)}');"
-      ) %>">a receipt</button>
-  <%= loading_indicator_tag(@button_options) %>
 </p>
