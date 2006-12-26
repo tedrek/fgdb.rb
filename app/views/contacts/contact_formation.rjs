@@ -4,4 +4,3 @@ page << "$$('input.#{@hide_type}').each(function(elem) {
     elem.value = '';
   });"
 page << "$$('.#{@show_type}').each(function(elem) { elem.show(); });"
-

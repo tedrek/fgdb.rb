@@ -116,8 +116,7 @@ class ReportsController < ApplicationController
         start_date = date
         end_date = date + 1
       else
-        desc = date
-        start_date = date
+        desc = start_date = date
         end_date = date + 1
       end
     elsif params[:defaults][:start_date] && params[:defaults][:end_date]
