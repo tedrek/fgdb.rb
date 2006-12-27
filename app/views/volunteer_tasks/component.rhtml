@@ -7,21 +7,11 @@
     <div class="actions">
       <% new_params = params.merge(:controller => '/volunteer_tasks', :action => 'new') %>
       <%= loading_indicator_tag(new_params) %>
-      <%= link_to_remote "Create New",
-        { :url => new_params,
-          :loading => "Element.show('#{loading_indicator_id(new_params)}');" },
-        { :href => url_for(new_params),
-          :class => "create" } %>
     </div>
     <h2>Volunteer Tasks</h2>
     <%= render :partial => 'contact_hours', :locals => {'contact' => @contact} %>
   </div>
   <table cellpadding="0" cellspacing="0">
-  <thead>
-    <tr>
-      <%= render :partial => 'column_headings' %>
-    </tr>
-  </thead>
   <tbody>
     <tr>
       <td colspan="<%= num_columns %>" class="messages-container">
@@ -32,6 +22,13 @@
           No Entries
         </p>
       </td>
+    </tr>
+  </tbody>
+  <tbody id="<%= scaffold_form_tbody_id(params) %>">
+  </tbody>
+  <tbody>
+    <tr>
+      <%= render :partial => 'column_headings' %>
     </tr>
   </tbody>
   <tbody id="<%= scaffold_tbody_id(params) %>">
@@ -52,4 +49,7 @@
 Rico.Corner.round('<%= params[:scaffold_id] %>', {color: '#005CB8', bgColor: '#fff', compact: true});
 </script>
 <% end %>
-<%= javascript_tag( remote_function( :url => new_params ) ) %>
+<%= javascript_tag(
+      "Element.show($('#{loading_indicator_id(new_params)}'));" +
+      remote_function( :url => new_params )
+    ) %>

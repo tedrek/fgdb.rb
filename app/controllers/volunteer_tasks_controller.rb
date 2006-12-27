@@ -12,13 +12,6 @@ class VolunteerTasksController < ApplicationController
     redirect_to :action => 'by_volunteer'
   end
 
-  def return_to_main
-    # If you have multiple scaffolds on the same view then you will want to change this to
-    # to whatever controller/action shows all the views 
-    # (ex: redirect_to :controller => 'AdminConsole', :action => 'index')
-    redirect_to :action => 'list'
-  end
-
   def by_volunteer
   end
 
@@ -28,20 +21,15 @@ class VolunteerTasksController < ApplicationController
   # All posts to change scaffold level variables like sort values or page changes go through this action
   def component_update
     @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold
-    if request.xhr?
-      # If this is an AJAX request then we just want to delegate to the component to rerender itself
-      component
-    else
-      # If this is from a client without javascript we want to update the session parameters and then delegate
-      # back to whatever page is displaying the scaffold, which will then rerender all scaffolds with these update parameters
-      return_to_main
-    end
+    component
   end
 
   def component  
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = VolunteerTask.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
-    @sort_by = @sort_sql.nil? ? "#{VolunteerTask.table_name}.#{VolunteerTask.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
+    @sort_by = @sort_sql.nil? ?
+      "#{VolunteerTask.table_name}.#{VolunteerTask.primary_key} asc" :
+      @sort_sql  + " " + current_sort_direction(params)
     options = { :order => @sort_by, :per_page => default_per_page }
 
     if params.has_key? :contact_id
@@ -59,15 +47,7 @@ class VolunteerTasksController < ApplicationController
     @volunteer_task.contact_id = params[:contact_id]
     @successful = true
 
-    return render(:action => 'new.rjs') if request.xhr?
-
-    # Javascript disabled fallback
-    if @successful
-      @options = { :action => "create" }
-      render :partial => "new_edit", :layout => true
-    else 
-      return_to_main
-    end
+    return render(:action => 'new.rjs')
   end
   
   def create
@@ -81,13 +61,7 @@ class VolunteerTasksController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
     
-    return render(:action => 'create.rjs') if request.xhr?
-    if @successful
-      return_to_main
-    else
-      @options = { :scaffold_id => params[:scaffold_id], :action => "create" }
-      render :partial => 'new_edit', :layout => true
-    end
+    return render(:action => 'create.rjs')
   end
 
   def edit
@@ -98,33 +72,22 @@ class VolunteerTasksController < ApplicationController
       flash[:error], @successful  = "<pre>#{$!.backtrace.to_yaml}</pre>", false
     end
     
-    return render(:action => 'edit.rjs') if request.xhr?
-
-    if @successful
-      @options = { :scaffold_id => params[:scaffold_id], :action => "update", :id => params[:id] }
-      render :partial => 'new_edit', :layout => true
-    else
-      return_to_main
-    end    
+    return render(:action => 'edit.rjs')
   end
 
   def update
     begin
       @volunteer_task = VolunteerTask.find(params[:id])
-      @volunteer_task.volunteer_task_types = VolunteerTaskType.find_actual(@params[:volunteer_task_types].reject {|val| val == '---' || val == '0'} ) if @params[:volunteer_task_types]
+      @volunteer_task.volunteer_task_types =
+        VolunteerTaskType.find_actual(@params[:volunteer_task_types].reject {|val|
+                                        val == '---' || val == '0'
+                                      } ) if @params[:volunteer_task_types]
       @successful = @volunteer_task.update_attributes(params[:volunteer_task])
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
     
-    return render(:action => 'update.rjs') if request.xhr?
-
-    if @successful
-      return_to_main
-    else
-      @options = { :action => "update" }
-      render :partial => 'new_edit', :layout => true
-    end
+    return render(:action => 'update.rjs')
   end
 
   def destroy
@@ -134,17 +97,11 @@ class VolunteerTasksController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
     
-    return render(:action => 'destroy.rjs') if request.xhr?
-    
-    # Javascript disabled fallback
-    return_to_main
+    return render(:action => 'destroy.rjs')
   end
   
   def cancel
     @successful = true
-    
-    return render(:action => 'cancel.rjs') if request.xhr?
-    
-    return_to_main
+    return render(:action => 'cancel.rjs')
   end
 end
