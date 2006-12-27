@@ -138,7 +138,7 @@ class SaleTxnsController < ApplicationController
   def automatic_datalist_row
     events = datalist_objects( GizmoEventsTag, @datalist_for_new_defaults )
     if( events.empty? or
-          events.find {|ev| ! ev.valid?} ) # the datalist form is not filled in completely
+          events.find {|ev| (! ev.valid?) or ev.mostly_empty? } ) # the datalist form is not filled in completely
       render :text => ''
     else
       # :MC: doctor the params for datalist_add_row
