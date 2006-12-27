@@ -21,6 +21,7 @@
           <% update_options = @options.merge(:action => "update") %>
           <%= link_to_remote "Edit",
                          { :url => edit_options,
+                           :confirm => 'Cancel current transaction?',
                            :loading => "Element.show('#{loading_indicator_id(@options)}');",
                            :complete => "updateTotals('#{element_form_id(update_options)}');"
                          },

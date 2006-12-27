@@ -221,7 +221,10 @@ color: black;
 color: #2A2;
 }
 .credit td {
-color: brown;
+color: #828;
+}
+.invoice td {
+color: red;
 }
 
 /* ===================================

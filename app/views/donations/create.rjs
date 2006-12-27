@@ -2,8 +2,7 @@
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  page.insert_html :bottom, scaffold_tbody_id(@options), :partial => 'donation', :locals => { :hidden => true }
-  page << "new TableRow.MoveAfter('#{element_row_id(@create_options)}', '#{element_row_id(@options)}');"
+  page.insert_html :top, scaffold_tbody_id(@options), :partial => 'donation', :locals => { :hidden => true }
   page.remove element_row_id(@create_options)
   page.show element_row_id(@options)
   page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');" 
@@ -20,5 +19,3 @@ else
   page << "$('#{element_messages_id(@create_options)}').scrollTo();"
   page.hide loading_indicator_id(@create_options)
 end
-
-

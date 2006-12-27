@@ -15,4 +15,11 @@ module ApplicationHelper
   def submit_choice_buttons_id(options)
     "#{options[:scaffold_id]}_submit_choice_buttons"
   end
+  def anonymize_button_id(options)
+    "#{options[:scaffold_id]}_anonymize"
+  end
+
+  def scaffold_form_tbody_id(options)
+    "#{options[:scaffold_id]}_form_tbody"
+  end
 end

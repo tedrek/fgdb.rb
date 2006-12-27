@@ -6,9 +6,11 @@ module DonationsHelper
   end
   
   def scaffold_columns
-    [ AjaxScaffold::ScaffoldColumn.new(Donation, 
-        :name => 'to_s', :label => 'Description', 
-        :eval => 'donation.to_s', :sortable => false),
+    [
+      AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'money_tendered',
+                                       :eval => '"$%0.2f %s" % [ donation.money_tendered, donation.payment_method.description ]'),
+      AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'donor', :sortable => false),
+      AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'created_at'),
     ]
   end
 
@@ -16,7 +18,4 @@ module DonationsHelper
     "#{options[:scaffold_id]}_contact_searchbox"
   end
 
-  def anonymize_button_id(options)
-    "#{options[:scaffold_id]}_anonymize"
-  end
 end
