@@ -1,7 +1,7 @@
 @options = { :scaffold_id => params[:scaffold_id], :action => params[:referring_action], :id => params[:id] }
 
 if @successful
-  page.replace_html form_insertion_div_id(@options), ''
+  page[form_insertion_div_id(@options)].hide
   page << "Form.enable($('#{searchbox_field_id(@options)}').form.id);"
   page << "Field.focus('#{searchbox_field_id(@options)}');"
 else

@@ -2,7 +2,7 @@
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  page.replace_html form_insertion_div_id(@options), ''
+  page[form_insertion_div_id(@options)].hide
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
   page.replace_html searchbox_search_results_div_id(params),
     :partial => 'search_results', :locals => { :@search_results => [@contact] }

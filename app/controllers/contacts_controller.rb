@@ -64,9 +64,7 @@ class ContactsController < ApplicationController
   def create
     begin
       @contact = Contact.new(params[:contact])
-      @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
-      @successful = @contact.save
-      save_datalist(ContactMethodsTag, :contact_id => @contact.id)
+      @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -88,9 +86,8 @@ class ContactsController < ApplicationController
   def update
     begin
       @contact = Contact.find(params[:id])
-      @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
-      @successful = @contact.update_attributes(params[:contact])
-      save_datalist(ContactMethodsTag, :contact_id => @contact.id)
+      @contact.attributes = params[:contact]
+      @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -147,4 +144,13 @@ class ContactsController < ApplicationController
     end
   end
 
+  #######
+  private
+  #######
+
+  def _save
+    @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
+    @contact.contact_methods = datalist_objects(ContactMethodsTag, :contact_id => @contact.id)
+    @contact.save
+  end
 end

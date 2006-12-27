@@ -10,4 +10,5 @@
       foo = document.createElement('div');
       foo.innerHTML = '<div class=\"searchbox_form\" id=\"#{form_insertion_div_id(params)}\" />';
       document.body.appendChild(foo);
+      Element.hide('#{form_insertion_div_id(params)}');
     " %>

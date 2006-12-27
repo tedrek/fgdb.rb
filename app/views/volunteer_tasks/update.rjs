@@ -15,4 +15,3 @@ else
   page << "Form.enable('#{element_form_id(@update_options)}');"
   page.hide loading_indicator_id(@update_options)
 end
-
