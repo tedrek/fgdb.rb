@@ -59,8 +59,11 @@ def load_schema( rails_env = "development" )
     dbname = abcs[rails_env]['database']
     print "Droping the database..."
     `dropdb -U "#{abcs[rails_env]["username"]}" #{dbname}`
-    raise "Error dropping database" if $?.exitstatus == 1
-    puts "done"
+    if $?.exitstatus == 1
+      puts "Warning: error dropping database"
+    else
+      puts "done"
+    end
     print "Creating the database..."
     `createdb -U "#{abcs[rails_env]["username"]}" #{dbname}`
     raise "Error creating database" if $?.exitstatus == 1
@@ -99,17 +102,18 @@ def setup_environment(rails_env)
   return abcs, search_path
 end
 
+rails_env = ENV['RAILS_ENV'] || "production"
 namespace :db do
   namespace :metadata do
 
     desc "Dump the metadata-related data from devel to SQL"
     task :dump => :environment do
-      dump_metadata
+      dump_metadata(rails_env)
     end
 
     desc "Load the metadata to all databases"
     task :load => :environment do
-      load_metadata
+      load_metadata(rails_env)
     end
 
   end # namespace :metadata
@@ -118,12 +122,12 @@ namespace :db do
 
     desc "Dump the development database to an SQL file"
     redefine_task :dump => :environment do
-      dump_schema
+      dump_schema(rails_env)
     end
 
     desc "Load the database schema into the development database"
     redefine_task :load => :environment do
-      load_schema
+      load_schema(rails_env)
     end
 
   end # namespace :schema
@@ -132,14 +136,14 @@ namespace :db do
 
     desc "Dump the development database (including data) to a SQL file"
     task :dump => :environment do
-      dump_schema
-      dump_data
+      dump_schema(rails_env)
+      dump_data(rails_env)
     end
 
     desc "Fill the database with data from the dumped SQL file"
     task :load => :environment do
-      load_schema
-      load_data
+      load_schema(rails_env)
+      load_data(rails_env)
     end
 
   end # namespace :data
