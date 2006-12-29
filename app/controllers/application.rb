@@ -20,4 +20,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def with_sidebar
+    "with_sidebar.rhtml"
+  end
+
 end

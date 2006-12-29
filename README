@@ -15,3 +15,23 @@ in the near future i hope to add:
 
 a bunch of other controllers are scattered around to support these,
 but should not be used by typical users.
+
+-------
+Install
+-------
+
+i did this on a debian etch box; alteration may be needed on other
+distros.
+
+ $> apt-get install ruby rubygems postgresql-8.1 build-essential
+ $> gem install -v 1.1.2 rails
+ $> gem install ferret # needs build-essential
+ $> svn co http://svn.freegeek.org/svn/fgdb.rb/trunk fgdb.rb
+ $> cd fgdb.rb
+ $> su - postgres -c 'createuser -P SOMEUSER'
+   ::: edit config/database.yml to fit :::
+ $> export RAILS_ENV=production
+ $> /var/lib/gems/1.8/bin/rake db:data:load
+      # yeah, etch rubygems are broken
+ $> ./script/server &
+

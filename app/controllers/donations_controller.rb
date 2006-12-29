@@ -5,6 +5,7 @@ class DonationsController < ApplicationController
 
   after_filter :clear_flashes
   before_filter :update_params_filter
+  layout :with_sidebar
 
   def initialize
     @gizmo_context = GizmoContext.donation

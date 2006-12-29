@@ -242,7 +242,7 @@ top: 140px;
 left: 0px;
 padding: 2px;
 margin: 10px;
-background-color: #DDD;
+background-color: #49F;
 }
 div#content {
 position: absolute;
@@ -254,5 +254,16 @@ div#sidebar a {
 color: #333;
 }
 div#sidebar dd:hover {
-background-color: #CCC;
+background-color: #ACF;
+}
+
+h1.welcome {
+background-color: #005CB8;
+padding: 8px 5px 4px 5px;
+font: normal 17px verdana, sans-serif;
+color: white;
+}
+
+p.welcome {
+width: 65%;
 }

@@ -5,6 +5,7 @@ class VolunteerTask < ActiveRecord::Base
   belongs_to  :contact, :order => "surname, first_name"
 
   validates_presence_of :date_performed
+  validates_presence_of :contact_id
 
   def effective_duration
     mult = volunteer_task_types.inject(1) do |mu,type|

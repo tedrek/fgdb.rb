@@ -3,9 +3,12 @@ class VolunteerTasksController < ApplicationController
   
   after_filter :clear_flashes
   before_filter :update_params_filter
+  layout :with_sidebar
   
   def update_params_filter
-    update_params :default_scaffold_id => "volunteer_task", :default_sort => nil, :default_sort_direction => "asc"
+    update_params( :default_scaffold_id => "volunteer_task",
+                   :default_sort => nil,
+                   :default_sort_direction => "asc" )
   end
 
   def index
@@ -24,7 +27,7 @@ class VolunteerTasksController < ApplicationController
     component
   end
 
-  def component  
+  def component
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = VolunteerTask.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_by = @sort_sql.nil? ?

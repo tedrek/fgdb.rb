@@ -25,7 +25,10 @@
 
       <p class="form-footer">
         <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
-        <% cancel_params = @options.merge(:controller => '/volunteer_tasks', :action => 'cancel', :referring_action => @options[:action]) %>
+        <% cancel_params = @options.merge(
+                :controller => '/volunteer_tasks', :action => 'cancel',
+                :contact_id => @volunteer_task.contact_id,
+                :referring_action => @options[:action]) %>
         <%= link_to_remote "Cancel",
           { :url => cancel_params,
             :loading => "Element.show('#{loading_indicator_id(@options)}');" },
