@@ -3,7 +3,7 @@ class ReportsController < ApplicationController
   layout :report_layout_choice
   def report_layout_choice
     case action_name
-    when /report$/ then 'reports_display.rhtml'
+    when /report$/ then 'with_sidebar.rhtml'
     else                'reports_form.rhtml'
     end
   end
@@ -28,40 +28,40 @@ class ReportsController < ApplicationController
     sales = SaleTxn.find(:all, :conditions => conditions)
     totals = @income_data[:grand_totals]
     donations.each do |donation|
-      next unless( (donation.money_tendered > 0) and (donation.txn_complete) )
+      next unless( (donation.money_tendered > 0) and ((donation.reported_suggested_fee + donation.reported_required_fee) > 0) )
       if donation.txn_complete
-        column_to_effect = @income_data[:donations][donation.payment_method.description]
+        column = @income_data[:donations][donation.payment_method.description]
         if donation.money_tendered <= donation.reported_required_fee
-          column_to_effect['fees'] += donation.money_tendered
+          column['fees'] += donation.money_tendered
           @income_data[:donations]['total real']['fees'] += donation.money_tendered
         else
-          column_to_effect['fees'] += donation.reported_required_fee
+          column['fees'] += donation.reported_required_fee
           @income_data[:donations]['total real']['fees'] += donation.reported_required_fee
-          column_to_effect['voluntary'] += (donation.money_tendered - donation.reported_required_fee)
+          column['voluntary'] += (donation.money_tendered - donation.reported_required_fee)
           @income_data[:donations]['total real']['voluntary'] += (donation.money_tendered - donation.reported_required_fee)
         end
         @income_data[:donations]['total real']['subtotals'] += donation.money_tendered
-        column_to_effect['subtotals'] += donation.money_tendered
+        column['subtotals'] += donation.money_tendered
         totals[donation.payment_method.description]['total'] += donation.money_tendered
         totals['total real']['total'] += donation.money_tendered
       else
-        @income_data[:donations]['invoiced']['fees'] += donations.reported_required_fee
-        @income_data[:donations]['invoiced']['voluntary'] += donations.reported_suggested_fee
-        @income_data[:donations]['invoiced']['subtotals'] += donations.reported_suggested_fee + donations.reported_required_fee
+        @income_data[:donations]['invoiced']['fees'] += donation.reported_required_fee
+        @income_data[:donations]['invoiced']['voluntary'] += donation.reported_suggested_fee
+        @income_data[:donations]['invoiced']['subtotals'] += donation.reported_suggested_fee + donation.reported_required_fee
       end
     end
     sales.each do |sale|
-      next unless( (sale.money_tendered > 0) and (sale.txn_complete) )
+      next unless( (sale.money_tendered > 0) or (sale.reported_amount_due > 0) )
       if sale.txn_complete
-        column_to_effect = @income_data[:sales][sale.payment_method.description]
-        column_to_effect[sale.bulk ? 'wholesale' : 'retail'] += sale.reported_amount_due
-        @income_data[:sales]['total real'][sale.bulk ? 'wholesale' : 'retail'] += sale.reported_amount_due
-        column_to_effect['subtotals'] += sale.reported_amount_due
-        @income_data[:sales]['total real']['subtotals'] += sale.reported_amount_due
-        totals[sale.payment_method.description]['total'] += sale.reported_amount_due
-        totals['total real']['total'] += sale.reported_amount_due
+        column = @income_data[:sales][sale.payment_method.description]
+        column[sale.discount_schedule.name] += sale.money_tendered
+        @income_data[:sales]['total real'][sale.discount_schedule.name] += sale.money_tendered
+        column['subtotals'] += sale.money_tendered
+        @income_data[:sales]['total real']['subtotals'] += sale.money_tendered
+        totals[sale.payment_method.description]['total'] += sale.money_tendered
+        totals['total real']['total'] += sale.money_tendered
       else
-        @income_data[:sales]['invoiced'][sale.bulk ? 'wholesale' : 'retail'] += sale.reported_amount_due
+        @income_data[:sales]['invoiced'][sale.discount_schedule.name] += sale.reported_amount_due
         @income_data[:sales]['invoiced']['subtotals'] += sale.reported_amount_due
       end
     end
@@ -92,7 +92,8 @@ class ReportsController < ApplicationController
     @width = @columns[nil].length
     @rows = {}
     @rows[:donations] = ['voluntary', 'fees', 'subtotals']
-    @rows[:sales] = ['retail', 'wholesale', 'subtotals']
+    discount_types = DiscountSchedule.find_all.map {|d_s| d_s.name}
+    @rows[:sales] = discount_types << 'subtotals'
     @rows[:grand_totals] = ['total']
     @sections = [:donations, :sales, :grand_totals]
 

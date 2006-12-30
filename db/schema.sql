@@ -444,7 +444,7 @@ COMMENT ON TABLE relationships IS 'actual relationship between two contacts';
 CREATE TABLE sale_txns (
     id serial NOT NULL,
     contact_id integer,
-    payment_method_id integer NOT NULL,
+    payment_method_id integer,
     money_tendered numeric(10,2) DEFAULT 0.0,
     postal_code character varying(25),
     reported_discount_amount numeric(10,2) DEFAULT 0.0,

@@ -194,10 +194,15 @@ class DonationsController < ApplicationController
     when 'invoice'
       @donation.txn_complete = false
       @donation.txn_completed_at = nil
-      @donation.payment_method = PaymentMethod.invoice
+      @donation.payment_method = nil
     when 'receipt'
       @donation.txn_complete = true
       @donation.txn_completed_at = Time.now
+      unless @donation.payment_method
+        flash[:error] = "Please choose a method of payment"
+        @successful = false
+        return @successful
+      end
     end
     @donation.reported_required_fee = @donation.calculated_required_fee
     @donation.reported_suggested_fee = @donation.calculated_suggested_fee

@@ -2,7 +2,7 @@
 <% classAttr = cycle("", " even") %>
 <% @options = params.merge(:controller => '/sale_txns', :action => "view", :id => sale_txn.send("#{SaleTxn.primary_key}")) %>
 
-<tr class="<%= sale_txn.payment_method.description %><%= classAttr %>"
+<tr class="<%= sale_txn.displayed_payment_method %><%= classAttr %>"
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for scaffold_column in scaffold_columns %>
     <% column_value = eval(scaffold_column.eval) rescue nil %>

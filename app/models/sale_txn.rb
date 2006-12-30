@@ -6,8 +6,6 @@ class SaleTxn < ActiveRecord::Base
   belongs_to :discount_schedule
   has_many :gizmo_events
 
-  validates_presence_of :payment_method_id
-
   def to_s
     "$%0.2f from %s on %s (#%i)" % [money_tendered, buyer, created_at.strftime('%Y-%m-%d at %H:%M'), id]
   end
@@ -16,6 +14,18 @@ class SaleTxn < ActiveRecord::Base
     contact ?
       contact.display_name :
       "anonymous(#{postal_code})"
+  end
+
+  def displayed_payment_method
+    payment_method ? payment_method.description : 'invoice'
+  end
+
+  def payment
+    if payment_method
+      "$%0.2f %s" % [ money_tendered, displayed_payment_method ]
+    else
+      "$%0.2f %s" % [ reported_amount_due, displayed_payment_method ]
+    end
   end
 
   def calculated_total

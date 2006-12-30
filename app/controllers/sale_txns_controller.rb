@@ -203,10 +203,15 @@ class SaleTxnsController < ApplicationController
     when 'invoice'
       @sale_txn.txn_complete = false
       @sale_txn.txn_completed_at = nil
-      @sale_txn.payment_method = PaymentMethod.invoice
+      @sale_txn.payment_method = nil
     when 'receipt'
       @sale_txn.txn_complete = true
       @sale_txn.txn_completed_at = Time.now
+      unless @sale_txn.payment_method
+        flash[:error] = "Please choose a method of payment"
+        @successful = false
+        return @successful
+      end
     end
 
     @sale_txn.reported_amount_due = @sale_txn.calculated_total
