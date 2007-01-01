@@ -1,4 +1,9 @@
-#!/usr/bin/ruby18
+#!/usr/bin/ruby
+
+require 'yaml'
+open('/tmp/foo', 'w') {|f|
+  f.puts ENV.to_yaml
+}
 
 require File.dirname(__FILE__) + "/../config/environment" unless defined?(RAILS_ROOT)
 
