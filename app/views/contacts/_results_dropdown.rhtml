@@ -5,10 +5,13 @@
   id="<%= searchbox_select_id(params) %>">
   <%= options_from_collection_for_select @search_results, :id, :display_name %>
 </select>
+<%= loading_indicator_tag(params) %>
 
 <%= observe_field searchbox_select_id(params),
   :on => 'change',
   :with => "'scaffold_id=#{params[:scaffold_id]}&searchbox_value=' + $('#{searchbox_select_id(params)}').value",
+  :loading => "Element.hide('#{searchbox_display_id(params)}'); Element.show('#{loading_indicator_id(params)}')",
+  :complete => "Element.show('#{searchbox_display_id(params)}'); Element.hide('#{loading_indicator_id(params)}')",
   :url  => { :controller => "/contacts",
 	:action => "update_display_area" }
   %>

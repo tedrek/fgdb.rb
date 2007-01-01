@@ -74,8 +74,7 @@ class Contact < ActiveRecord::Base
 
   def display_name
     if is_person?
-      if (self.first_name || self.middle_name || self.surname) &&
-          !(self.first_name + self.middle_name + self.surname).empty?
+      if(self.first_name || self.middle_name || self.surname)
         "%s %s %s" % [self.first_name, self.middle_name, self.surname]
       else
         '(person without name)'

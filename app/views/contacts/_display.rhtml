@@ -19,11 +19,9 @@
     </div>
     <br />
   <% end %>
-  <% unless( @contact.city.empty? or @contact.address.empty? or @contact.postal_code.empty? or @contact.state_or_province.empty? ) %>
-    <div class="address"><%= @contact.address %><br />
-      <%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %></div>
-    <br />
-  <% end %>
+  <div class="address"><%= @contact.address %><br />
+    <%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %></div>
+  <br />
   <%= loading_indicator_tag(@options) %>
   <% edit_options = @options.merge(:action => 'edit') %>
   <%= link_to_remote "Edit",

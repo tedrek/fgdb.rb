@@ -23,7 +23,7 @@
   <label for="volunteer_task_volunteer_task_type">
     <%= top.description %> type
   </label>
-  <% dropdown_list = top.all_instantiable_descendants.sort_by {|type| type.description}
+  <% dropdown_list = top.all_instantiable_descendants.sort_by {|type| type.description.downcase}
       isect = (dropdown_list & @volunteer_task.volunteer_task_types).first %>
   <select id="volunteer_task_volunteer_task_type"
   name="volunteer_task_types[]">

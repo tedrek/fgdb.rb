@@ -121,7 +121,9 @@ class ContactsController < ApplicationController
 
   def do_search( query_str )
     begin
-      if params[:limit_to_type]
+      if query_str.to_i.to_s == query_str
+	@search_results = [Contact.find(query_str)]
+      elsif params[:limit_to_type]
         @search_results = Contact.search_by_type( params[:limit_to_type], query_str, :limit => default_per_page )
       else
         @search_results = Contact.search( query_str, :limit => default_per_page )
@@ -137,6 +139,7 @@ class ContactsController < ApplicationController
           "returned too many results to display.  You may want to " +
           "refine your search."
       end
+      @search_results = @search_results.sort_by {|c| c.display_name.downcase}
       return @search_results
     rescue
       flash[:error] = "Your search for '#{query_str}' failed atrociously."
