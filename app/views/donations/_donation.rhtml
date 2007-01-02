@@ -17,6 +17,11 @@
           <%= loading_indicator_tag(@options) %>
         </td>
         <td>
+          <% print_options = @options %>
+          <% print_options[:action] = donation.txn_complete ? 'receipt' : 'invoice' %>
+          <a onclick="var printWinRef=window.open('<%= url_for(print_options) %>','printme','<%= @print_window_options %>');">Print</a>
+        </td>
+        <td>
           <% edit_options = @options.merge(:action => 'edit') %>
           <% update_options = @options.merge(:action => "update") %>
           <%= link_to_remote "Edit",
