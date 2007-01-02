@@ -50,6 +50,10 @@ class Contact < ActiveRecord::Base
     hours_actual(true)
   end
 
+  def last_ninety_days_of_effective_hours
+    hours_effective(true)
+  end
+
   def last_few_volunteer_tasks
     volunteer_tasks.sort_by {|v_t| v_t.date_performed }[-3..-1]
   end
