@@ -21,6 +21,13 @@ class GizmoEvent < ActiveRecord::Base
     end
   end
 
+  def attry_description
+    gizmo_type.description +
+      gizmo_events_gizmo_typeattrs.map {|bridge|
+        "%s: %s" % [bridge.gizmo_typeattr.gizmo_attr.name, bridge.value]
+      }.join(', ')
+  end
+
   def possible_attrs
     if gizmo_type
       gizmo_type.possible_attrs

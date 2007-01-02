@@ -17,6 +17,10 @@ class GizmoType < ActiveRecord::Base
     description
   end
 
+  def displayed_discounts
+    discount_schedules_gizmo_types.map {|bridge| "%s: %0.2f" % [bridge.discount_schedule.name, bridge.multiplier]}.join(', ')
+  end
+
   def relevant_attrs(context)
     relevant_typeattrs(context).map {|typeattr|
       typeattr.gizmo_attr

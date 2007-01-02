@@ -22,7 +22,7 @@
 
 <% @sale_txn.gizmo_events.each do |event| %>
   <tr>
-    <td> <%= event.gizmo_type.description %> </td>
+    <td> <%= event.attry_description %> </td>
     <td> <%= number_to_currency event.unit_price %> </td>
     <td> <%= event.gizmo_count %> </td>
     <td> <%= number_to_currency event.total_price %> </td>
