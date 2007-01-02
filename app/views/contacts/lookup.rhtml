@@ -1,4 +1,4 @@
-<%= form_tag( { :controller => '/contacts', :action => 'test' }, { :id => 'tasty_test' } ) %>
+<%= form_tag( { :controller => '/contacts' }, { :id => 'tasty_test' } ) %>
   <div class="form-element">
     <%= render_component( :controller => '/contacts', :action => 'search',
       :params => { :field_name => "contact_id", :contact => @contact,

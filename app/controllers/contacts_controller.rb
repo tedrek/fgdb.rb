@@ -27,7 +27,7 @@ class ContactsController < ApplicationController
   end
 
   def index
-    redirect_to :action => 'test'
+    redirect_to :action => 'lookup'
   end
 
   def lookup
@@ -120,6 +120,7 @@ class ContactsController < ApplicationController
   private
 
   def do_search( query_str )
+    default_per_page = 40
     begin
       if query_str.to_i.to_s == query_str
 	@search_results = [Contact.find(query_str)]
@@ -139,10 +140,10 @@ class ContactsController < ApplicationController
           "returned too many results to display.  You may want to " +
           "refine your search."
       end
-      @search_results = @search_results.sort_by {|c| c.display_name.downcase}
+      @search_results = @search_results.sort_by {|c| c.display_name}
       return @search_results
     rescue
-      flash[:error] = "Your search for '#{query_str}' failed atrociously."
+      flash[:error] = "Your search for '#{query_str}' failed atrociously.<br />#{$!.to_s}<br />#{$!.backtrace.join "<br />"}"
       return []
     end
   end
