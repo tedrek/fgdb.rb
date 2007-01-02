@@ -21,8 +21,8 @@ class ContactsController < ApplicationController
 
   def contact_layout_choice
     case action_name
-    when 'test'           then 'contacts.rhtml'
-    else                       'contacts_search'
+    when 'lookup' then 'with_sidebar.rhtml'
+    else               'contacts_search'
     end
   end
 
@@ -30,7 +30,7 @@ class ContactsController < ApplicationController
     redirect_to :action => 'test'
   end
 
-  def test
+  def lookup
     @contact = Contact.find( params[:contact_id] ) if params[:contact_id]
   end
 
