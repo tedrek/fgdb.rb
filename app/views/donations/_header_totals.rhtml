@@ -30,7 +30,7 @@
           <%= number_to_currency(@donation.overunder) %>
         </td>
       </tr> 
-    <% else %>
+    <% elsif @donation.money_tendered > 0 %>
       <tr>
         <td class="above_expect">Bonus Donation!</td>
         <td class="amount above_expect">

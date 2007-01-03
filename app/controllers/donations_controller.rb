@@ -153,7 +153,7 @@ class DonationsController < ApplicationController
       ! gizmo.mostly_empty?
     }
     render :update do |page|
-      page.replace  header_totals_id(params), :partial => 'header_totals'
+      page.replace header_totals_id(params), :partial => 'header_totals'
     end
   end
 
