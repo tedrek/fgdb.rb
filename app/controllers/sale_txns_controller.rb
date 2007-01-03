@@ -187,12 +187,18 @@ class SaleTxnsController < ApplicationController
     else
       # error regarding underpayment
       if @sale_txn.calculated_total > @sale_txn.money_tendered
-        flash[:error] = "Amount tendered is too low"
+        flash[:error] = "Amount tendered ($%0.2f) is too low by $%0.2f" % [
+          @sale_txn.money_tendered,
+          @sale_txn.calculated_total - @sale_txn.money_tendered
+        ]
         @include_invoicing_choice = true
         @successful = false
         return @successful
       elsif @sale_txn.calculated_total < @sale_txn.money_tendered
-        flash[:error] = "Amount tendered is too much"
+        flash[:error] = "Amount tendered ($%0.2f) is too much by $%0.2f" % [
+          @sale_txn.money_tendered,
+          @sale_txn.money_tendered - @sale_txn.calculated_total
+        ]
         @successful = false
         return @successful
       end
