@@ -228,22 +228,6 @@ class SaleTxnsController < ApplicationController
     return @successful
   end
 
-  # figure out total dollar amounts
-  # based on quantities, gizmo types, attributes for each gizmo
-  def calc_totals
-    @discount_schedule = DiscountSchedule.find(params[:sale_txn][:discount_schedule_id])
-    options = { :context => @gizmo_context.name,
-      :donated_discount_rate => @discount_schedule.donated_item_rate,
-      :resale_discount_rate  => @discount_schedule.resale_item_rate
-    }
-    giztypes_list = 
-      create_gizmo_types_detail_list(GizmoEventsTag, options)
-
-    @discount_amount = giztypes_list.total('extended_discount')
-    @amount_due = giztypes_list.total('extended_net_price')
-    @ask_user_setting = 'receipt'
-  end
-
   # setup vars used by receipt, then render
   def display_printable_invoice_receipt(type=nil)
     type ||= 'receipt'
