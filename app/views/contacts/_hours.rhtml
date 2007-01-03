@@ -1,4 +1,6 @@
-<span class="hours"><%= @contact.last_ninety_days_of_actual_hours %></span> hours in the last 90 days
-<% if @contact.last_ninety_days_of_actual_hours != @contact.last_ninety_days_of_effective_hours %>
-  <br /><span class="hours"><%= @contact.last_ninety_days_of_effective_hours %></span> effective towards adoption
+<% last_ninety = @contact.last_ninety_days_of_actual_hours %>
+<% effective = @contact.hours_effective %>
+<span class="hours"><%= last_ninety %></span> hours in the last 90 days
+<% if last_ninety != effective %>
+  <br /><span class="hours"><%= effective %></span> effective towards adoption
 <% end %>

@@ -34,24 +34,31 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def hours_effective(last_ninety = false)
-    tasks = last_ninety ? last_ninety_days_of_volunteer_tasks : volunteer_tasks
-    tasks.inject(0.0) do |total,task|
+  def volunteer_tasks(cutoff = nil)
+    if cutoff
+      conditions = [ "contact_id = ? AND date_performed >= ?", id, cutoff ]
+    else
+      conditions = [ "contact_id = ?", id ]
+    end
+    VolunteerTask.find(:all,
+                       :conditions => conditions,
+                       :include => [
+                         :volunteer_task_types
+                       ])
+  end
+
+  def hours_effective
+    volunteer_tasks(Date.today - 365).inject(0.0) do |total,task|
       total += task.effective_duration
     end
   end
 
   def last_ninety_days_of_volunteer_tasks
-    cutoff = Date.today - 90
-    volunteer_tasks.select {|v_t| v_t.date_performed >= cutoff}
+    volunteer_tasks(Date.today - 90)
   end
 
   def last_ninety_days_of_actual_hours
     hours_actual(true)
-  end
-
-  def last_ninety_days_of_effective_hours
-    hours_effective(true)
   end
 
   def last_few_volunteer_tasks

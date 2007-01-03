@@ -33,7 +33,13 @@ class VolunteerTasksController < ApplicationController
     @sort_by = @sort_sql.nil? ?
       "#{VolunteerTask.table_name}.#{VolunteerTask.primary_key} asc" :
       @sort_sql  + " " + current_sort_direction(params)
-    options = { :order => @sort_by, :per_page => default_per_page }
+    options = {
+      :order => @sort_by,
+      :per_page => default_per_page,
+      :include => [
+        :volunteer_task_types
+      ]
+    }
 
     if params.has_key? :contact_id
       @contact = Contact.find(params[:contact_id])
