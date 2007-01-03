@@ -51,7 +51,15 @@ class GizmoType < ActiveRecord::Base
   end
 
   def multiplier_to_apply(schedule)
-    schedule.multiplier_for(self) or schedule.multiplier_for(parent) or 1.0
+    mult = schedule.multiplier_for(self)
+    if ! mult
+      if parent
+        mult = parent.multiplier_to_apply(schedule)
+      else
+        mult = 1.0
+      end
+    end
+    mult
   end
 
 end
