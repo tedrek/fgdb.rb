@@ -23,7 +23,8 @@ Install
 i did this on a debian etch box; alteration may be needed on other
 distros.
 
- $> apt-get install ruby rubygems postgresql-8.1 build-essential
+ $> apt-get install ruby rubygems postgresql-8.1 build-essential \
+        apache2
  $> gem install -v 1.1.2 rails
  $> gem install ferret # needs build-essential
  $> svn co http://svn.freegeek.org/svn/fgdb.rb/trunk fgdb.rb
