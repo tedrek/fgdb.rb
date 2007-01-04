@@ -206,6 +206,13 @@ class SaleTxnsController < ApplicationController
       receipt_type = 'receipt'
     end
 
+    # :MC: lame!  validation should happen in the model.
+    unless (@sale_txn.postal_code and ! @sale_txn.postal_code.empty?) or
+        (@sale_txn.contact_id)
+      flash[:error], @successful = "Please choose a buyer or enter an anonymous postal code.", false
+      return @successful
+    end
+
     case receipt_type
     when 'invoice'
       @sale_txn.txn_complete = false
@@ -224,14 +231,9 @@ class SaleTxnsController < ApplicationController
     @sale_txn.reported_amount_due = @sale_txn.calculated_total
     @sale_txn.reported_discount_amount = @sale_txn.calculated_discount
 
-    # :MC: lame!  validation should happen in the model.
-    if (@sale_txn.postal_code and ! @sale_txn.postal_code.empty?) or
-        (@sale_txn.contact_id)
-      @successful = @sale_txn.save
-      @printurl = "/sale_txns/%s/%d" % [receipt_type, @sale_txn.id]
-    else
-      flash[:error], @successful = "Please choose a buyer or enter an anonymous postal code.", false
-    end
+    @successful = @sale_txn.save
+    @printurl = "/sale_txns/%s/%d" % [receipt_type, @sale_txn.id]
+
     return @successful
   end
 
