@@ -21,11 +21,22 @@ class GizmoEvent < ActiveRecord::Base
     end
   end
 
-  def attry_description
-    gizmo_type.description + " (" +
-      gizmo_events_gizmo_typeattrs.map {|bridge|
+  def attry_description(options = {})
+    if options[:ignore] and ! options[:ignore].empty?
+      attrs = gizmo_events_gizmo_typeattrs.select {|bridge|
+        ! options[:ignore].include?(bridge.gizmo_typeattr.gizmo_attr.name)
+      }
+    else
+      attrs = gizmo_events_gizmo_typeattrs
+    end
+    if attrs.empty?
+      gizmo_type.description
+    else
+      gizmo_type.description + " (" +
+        attrs.map {|bridge|
         "%s: %s" % [bridge.gizmo_typeattr.gizmo_attr.name, bridge.value]
       }.join(', ') + ")"
+    end
   end
 
   def possible_attrs
