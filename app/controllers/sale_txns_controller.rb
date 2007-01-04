@@ -107,6 +107,7 @@ class SaleTxnsController < ApplicationController
       @sale_txn = SaleTxn.find(params[:sale_txn_id])
     else
       @sale_txn = SaleTxn.new
+      @sale_txn.postal_code = 97214
     end
     render :update do |page|
       page.replace_html sale_txn_contact_searchbox_id(params), :partial => 'anonymous'

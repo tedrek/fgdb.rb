@@ -24,7 +24,7 @@
       <%= render :partial => 'form' %>
 
       <p class="form-footer">
-        <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
+        <%= submit_tag Inflector.titleize('save hours'), :class => "submit" %>
         <% cancel_params = @options.merge(
                 :controller => '/volunteer_tasks', :action => 'cancel',
                 :contact_id => @volunteer_task.contact_id,

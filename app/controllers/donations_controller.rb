@@ -190,6 +190,13 @@ class DonationsController < ApplicationController
       receipt_type = 'receipt'
     end
 
+    # :MC: lame!  validation should happen in the model.
+    unless (@donation.postal_code and ! @donation.postal_code.empty?) or
+        (@donation.contact_id)
+      flash[:error], @successful = "Please choose a donor or enter an anonymous postal code.", false
+      return @successful
+    end
+
     case receipt_type
     when 'invoice'
       @donation.txn_complete = false
@@ -199,21 +206,19 @@ class DonationsController < ApplicationController
       @donation.txn_complete = true
       @donation.txn_completed_at = Time.now
       unless @donation.payment_method
-        flash[:error] = "Please choose a method of payment"
-        @successful = false
-        return @successful
+        if @donation.money_tendered > 0
+          flash[:error] = "Please choose a method of payment"
+          @successful = false
+          return @successful
+        else
+          @donation.payment_method = PaymentMethod.cash
+        end
       end
     end
     @donation.reported_required_fee = @donation.calculated_required_fee
     @donation.reported_suggested_fee = @donation.calculated_suggested_fee
-    # :MC: lame!  validation should happen in the model.
-    if (@donation.postal_code and ! @donation.postal_code.empty?) or
-        (@donation.contact_id)
-      @successful = @donation.save
-      @printurl = "/donations/%s/%d" % [receipt_type, @donation.id]
-    else
-      flash[:error], @successful = "Please choose a donor or enter an anonymous postal code.", false
-    end
+    @successful = @donation.save
+    @printurl = "/donations/%s/%d" % [receipt_type, @donation.id]
     return @successful
   end
 

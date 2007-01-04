@@ -20,7 +20,7 @@
     "%>
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
 
-      <h4><%= Inflector.titleize(@options[:action]) %> Sale Txn</h4>
+      <h4><%= Inflector.titleize(@options[:action]) %> Sale Txn <%= if @sale_txn.id then "##{@sale_txn.id}" end %></h4>
 
       <% if request.xhr? %>
         <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>

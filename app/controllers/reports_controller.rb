@@ -48,6 +48,7 @@ class ReportsController < ApplicationController
         @income_data[:donations]['invoiced']['fees'] += donation.reported_required_fee
         @income_data[:donations]['invoiced']['voluntary'] += donation.reported_suggested_fee
         @income_data[:donations]['invoiced']['subtotals'] += donation.reported_suggested_fee + donation.reported_required_fee
+        totals['invoiced']['total'] += donation.reported_suggested_fee + donation.reported_required_fee
       end
     end
     sales.each do |sale|
@@ -63,6 +64,7 @@ class ReportsController < ApplicationController
       else
         @income_data[:sales]['invoiced'][sale.discount_schedule.name] += sale.reported_amount_due
         @income_data[:sales]['invoiced']['subtotals'] += sale.reported_amount_due
+        totals['invoiced']['total'] += sale.reported_amount_due
       end
     end
   end
@@ -78,7 +80,7 @@ class ReportsController < ApplicationController
       Date.today
     end
     def @defaults.year
-      Date.today
+      Date.today - (256*2)
     end
     def @defaults.method_missing(*args)
       nil
@@ -129,11 +131,10 @@ class ReportsController < ApplicationController
       start_date = Time.local(year, params[:defaults][:month], 1)
       if params[:defaults][:month].to_i == 12
         month = 1
-        year += 1
       else
         month = 1 + params[:defaults][:month].to_i
       end
-      end_date = Time.local(year, month, 1)
+      end_date = Time.local(year + 1, month, 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     end
     return desc, [

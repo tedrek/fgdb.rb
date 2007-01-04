@@ -6,8 +6,8 @@ class PaymentMethod < ActiveRecord::Base
     description
   end
 
-  def PaymentMethod.invoice
-    find( :first, :conditions => ['description = ?', 'invoice'] )
+  def PaymentMethod.cash
+    find( :first, :conditions => ['description = ?', 'cash'] )
   end
 
 end
