@@ -221,6 +221,9 @@ class SaleTxnsController < ApplicationController
     when 'receipt'
       @sale_txn.txn_complete = true
       @sale_txn.txn_completed_at = Time.now
+    end
+
+    if @sale_txn.money_tendered > 0
       unless @sale_txn.payment_method
         flash[:error] = "Please choose a method of payment"
         @successful = false

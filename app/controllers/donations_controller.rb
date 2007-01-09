@@ -205,16 +205,18 @@ class DonationsController < ApplicationController
     when 'receipt'
       @donation.txn_complete = true
       @donation.txn_completed_at = Time.now
-      unless @donation.payment_method
-        if @donation.money_tendered > 0
-          flash[:error] = "Please choose a method of payment"
-          @successful = false
-          return @successful
-        else
-          @donation.payment_method = PaymentMethod.cash
-        end
-      end
     end
+
+    if @donation.money_tendered > 0
+      unless @donation.payment_method
+        flash[:error] = "Please choose a method of payment"
+        @successful = false
+        return @successful
+      end
+    else
+      @donation.payment_method = PaymentMethod.cash
+    end
+
     @donation.reported_required_fee = @donation.calculated_required_fee
     @donation.reported_suggested_fee = @donation.calculated_suggested_fee
     @successful = @donation.save

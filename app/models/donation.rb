@@ -30,14 +30,6 @@ class Donation < ActiveRecord::Base
     end
   end
 
-  def payment
-    if payment_method
-      "$%0.2f %s" % [ money_tendered, displayed_payment_method ]
-    else
-      "$%0.2f %s" % [ reported_total, displayed_payment_method ]
-    end
-  end
-
   def reported_total
     reported_required_fee + reported_suggested_fee
   end

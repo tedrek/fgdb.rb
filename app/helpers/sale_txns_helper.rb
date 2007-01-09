@@ -8,8 +8,8 @@ module SaleTxnsHelper
   def scaffold_columns
     [
       AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'id'),
-      AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'money_tendered',
-                                       :eval => 'sale_txn.payment'),
+      AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'payment',
+                                       :eval => 'sale_txn.payment', :sortable => false),
       AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'buyer', :sortable => false),
       AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'created_at'),
     ]
