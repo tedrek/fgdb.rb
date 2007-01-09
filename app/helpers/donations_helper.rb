@@ -8,8 +8,8 @@ module DonationsHelper
   def scaffold_columns
     [
       AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'id'),
-      AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'money_tendered',
-                                       :eval => 'donation.payment'),
+      AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'payment',
+                                       :eval => 'donation.payment', :sortable => false),
       AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'donor', :sortable => false),
       AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'created_at'),
     ]

@@ -217,7 +217,7 @@ class SaleTxnsController < ApplicationController
     when 'invoice'
       @sale_txn.txn_complete = false
       @sale_txn.txn_completed_at = nil
-      @sale_txn.payment_method = nil
+      @sale_txn.payment_method = nil unless @sale_txn.money_tendered
     when 'receipt'
       @sale_txn.txn_complete = true
       @sale_txn.txn_completed_at = Time.now

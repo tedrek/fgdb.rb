@@ -5,7 +5,14 @@
 <table class="report">
 
 <% for section in @sections %>
-  <tr><th class="section_header" colspan="<%= table_width %>"><%= Inflector.titleize section %></th></tr>
+  <tr>
+    <th class="section_header" colspan="<%= table_width %>"><%= Inflector.titleize section %></th>
+  </tr>
+  <% if @ranges.has_key? section %>
+    <tr>
+      <td>ids: <%= @ranges[section] %></td>
+    </tr>
+  <% end %>
   <tr>
     <td class="spacer"></td>
     <% for method in @columns[section] %>

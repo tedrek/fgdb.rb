@@ -17,14 +17,17 @@ class SaleTxn < ActiveRecord::Base
   end
 
   def displayed_payment_method
-    payment_method ? payment_method.description : 'invoice'
+    txn_complete ? payment_method.description : 'invoice'
   end
 
   def payment
-    if payment_method
-      "$%0.2f %s" % [ money_tendered, displayed_payment_method ]
+    if txn_complete
+      "$%0.2f %s" % [ money_tendered, payment_method.description ]
+    elsif payment_method
+      "$%0.2f invoice ($%0.2f %s)" % [ reported_amount_due - money_tendered,
+        money_tendered, payment_method.description ]
     else
-      "$%0.2f %s" % [ reported_amount_due, displayed_payment_method ]
+      "$%0.2f invoice" % [ reported_amount_due ]
     end
   end
 

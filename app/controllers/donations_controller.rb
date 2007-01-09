@@ -201,7 +201,7 @@ class DonationsController < ApplicationController
     when 'invoice'
       @donation.txn_complete = false
       @donation.txn_completed_at = nil
-      @donation.payment_method = nil
+      @donation.payment_method = nil unless @donation.money_tendered
     when 'receipt'
       @donation.txn_complete = true
       @donation.txn_completed_at = Time.now
