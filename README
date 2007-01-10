@@ -23,16 +23,28 @@ Install
 i did this on a debian etch box; alteration may be needed on other
 distros.
 
+To get the fgdb.rb source, which you probably have, because you're reading this:
+
+ $> svn co http://svn.freegeek.org/svn/fgdb.rb/trunk fgdb.rb
+
+to install a working Ruby on Rails environment:
+
  $> apt-get install ruby rubygems postgresql-8.1 build-essential \
-        apache2
+        apache2 ruby1.8-dev
  $> gem install -v 1.1.2 rails
  $> gem install ferret # needs build-essential
- $> svn co http://svn.freegeek.org/svn/fgdb.rb/trunk fgdb.rb
+
+on Ubuntu Dapper you will need to get gems from the internet.
+
+and now you need to create the database:
+
  $> cd fgdb.rb
  $> su - postgres -c 'createuser -P SOMEUSER'
-   ::: edit config/database.yml to fit :::
+   ::: edit config/database.yml-example to fit and move it (drop -example) :::
+   ::: make sure to edit the settings for production (see next line, too) :::
  $> export RAILS_ENV=production
  $> /var/lib/gems/1.8/bin/rake db:data:load
       # yeah, etch rubygems are broken
  $> ./script/server &
+
 
