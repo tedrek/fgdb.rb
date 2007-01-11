@@ -1,5 +1,163 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+sale_txns_004: 
+  money_tendered: "52.50"
+  updated_at: 2006-12-20 15:35:04-08
+  postal_code: 
+  comments: ""
+  created_by: "1"
+  txn_complete: t
+  reported_amount_due: "52.50"
+  reported_discount_amount: "12.50"
+  lock_version: "1"
+  payment_method_id: "1"
+  contact_id: "18"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "10"
+  txn_completed_at: 2006-12-20 15:35:04-08
+  bulk: 
+  created_at: 2006-12-20 15:27:06-08
+sale_txns_005: 
+  money_tendered: "9.90"
+  updated_at: 2006-12-20 15:48:57-08
+  postal_code: 
+  comments: licens number
+  created_by: "1"
+  txn_complete: t
+  reported_amount_due: "9.90"
+  reported_discount_amount: "1.10"
+  lock_version: "0"
+  payment_method_id: "2"
+  contact_id: "12"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "11"
+  txn_completed_at: 2006-12-20 15:48:57-08
+  bulk: 
+  created_at: 2006-12-20 15:48:57-08
+sale_txns_006: 
+  money_tendered: "0.00"
+  updated_at: 2006-12-22 13:11:34-08
+  postal_code: 
+  comments: ""
+  created_by: "1"
+  txn_complete: f
+  reported_amount_due: "13.50"
+  reported_discount_amount: "1.50"
+  lock_version: "0"
+  payment_method_id: "1"
+  contact_id: "7"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "12"
+  txn_completed_at: 
+  bulk: 
+  created_at: 2006-12-22 13:11:34-08
+sale_txns_007: 
+  money_tendered: "50.00"
+  updated_at: 2006-12-22 13:18:28-08
+  postal_code: "80228"
+  comments: lacked a brain, took him for an extra $20
+  created_by: "1"
+  txn_complete: t
+  reported_amount_due: "50.00"
+  reported_discount_amount: "0.00"
+  lock_version: "0"
+  payment_method_id: "1"
+  contact_id: 
+  updated_by: "1"
+  discount_schedule_id: "9"
+  id: "14"
+  txn_completed_at: 2006-12-22 13:18:28-08
+  bulk: 
+  created_at: 2006-12-22 13:18:28-08
+sale_txns_008: 
+  money_tendered: "108.00"
+  updated_at: 2006-12-26 23:38:00-08
+  postal_code: 
+  comments: murr, commented.
+  created_by: "1"
+  txn_complete: t
+  reported_amount_due: "108.00"
+  reported_discount_amount: "12.00"
+  lock_version: "3"
+  payment_method_id: "2"
+  contact_id: "7"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "5"
+  txn_completed_at: 2006-12-26 23:38:00-08
+  bulk: 
+  created_at: 2006-12-20 09:32:52-08
+sale_txns_009: 
+  money_tendered: "0.00"
+  updated_at: 2006-12-26 23:44:16-08
+  postal_code: 
+  comments: ""
+  created_by: "1"
+  txn_complete: f
+  reported_amount_due: "22.00"
+  reported_discount_amount: "22.00"
+  lock_version: "3"
+  payment_method_id: "4"
+  contact_id: "7"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "6"
+  txn_completed_at: 
+  bulk: 
+  created_at: 2006-12-20 10:17:26-08
+sale_txns_001: 
+  money_tendered: "210.00"
+  updated_at: 2006-12-20 11:27:47-08
+  postal_code: 
+  comments: ""
+  created_by: "1"
+  txn_complete: t
+  reported_amount_due: "0.00"
+  reported_discount_amount: "0.00"
+  lock_version: "0"
+  payment_method_id: "3"
+  contact_id: "7"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "8"
+  txn_completed_at: 2006-12-20 11:27:47-08
+  bulk: 
+  created_at: 2006-12-20 11:27:47-08
+sale_txns_002: 
+  money_tendered: "100.00"
+  updated_at: 2006-12-20 14:08:31-08
+  postal_code: 
+  comments: ""
+  created_by: "1"
+  txn_complete: f
+  reported_amount_due: "0.00"
+  reported_discount_amount: "0.00"
+  lock_version: "2"
+  payment_method_id: "2"
+  contact_id: "7"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "9"
+  txn_completed_at: 
+  bulk: 
+  created_at: 2006-12-20 12:43:55-08
+sale_txns_003: 
+  money_tendered: "154.50"
+  updated_at: 2006-12-20 14:56:38-08
+  postal_code: 
+  comments: ""
+  created_by: "1"
+  txn_complete: t
+  reported_amount_due: "154.50"
+  reported_discount_amount: "30.50"
+  lock_version: "1"
+  payment_method_id: "1"
+  contact_id: "7"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "7"
+  txn_completed_at: 2006-12-20 14:56:37-08
+  bulk: 
+  created_at: 2006-12-20 10:29:06-08

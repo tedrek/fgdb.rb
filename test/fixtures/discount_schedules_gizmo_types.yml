@@ -1,5 +1,211 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+discount_schedules_gizmo_types_014: 
+  updated_at: 2006-12-20 08:57:09-08
+  multiplier: "1.000"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "9"
+  id: "30"
+  gizmo_type_id: "18"
+  created_at: 2006-12-20 08:57:09-08
+discount_schedules_gizmo_types_003: 
+  updated_at: 2006-12-20 08:55:50-08
+  multiplier: "1.000"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "8"
+  id: "19"
+  gizmo_type_id: "17"
+  created_at: 2006-12-20 08:55:50-08
+discount_schedules_gizmo_types_015: 
+  updated_at: 2006-12-20 08:57:09-08
+  multiplier: "0.900"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "31"
+  gizmo_type_id: "18"
+  created_at: 2006-12-20 08:57:09-08
+discount_schedules_gizmo_types_004: 
+  updated_at: 2006-12-20 08:55:50-08
+  multiplier: "1.000"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "9"
+  id: "20"
+  gizmo_type_id: "17"
+  created_at: 2006-12-20 08:55:50-08
+discount_schedules_gizmo_types_016: 
+  updated_at: 2006-12-20 08:57:09-08
+  multiplier: "1.000"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "5"
+  id: "32"
+  gizmo_type_id: "18"
+  created_at: 2006-12-20 08:57:09-08
+discount_schedules_gizmo_types_005: 
+  updated_at: 2006-12-20 08:55:50-08
+  multiplier: "0.900"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "21"
+  gizmo_type_id: "17"
+  created_at: 2006-12-20 08:55:50-08
+discount_schedules_gizmo_types_017: 
+  updated_at: 2006-12-20 08:58:11-08
+  multiplier: 
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "7"
+  id: "33"
+  gizmo_type_id: "5"
+  created_at: 2006-12-20 08:58:11-08
+discount_schedules_gizmo_types_006: 
+  updated_at: 2006-12-20 08:55:50-08
+  multiplier: "0.950"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "5"
+  id: "22"
+  gizmo_type_id: "17"
+  created_at: 2006-12-20 08:55:50-08
+discount_schedules_gizmo_types_018: 
+  updated_at: 2006-12-20 08:58:11-08
+  multiplier: 
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "8"
+  id: "34"
+  gizmo_type_id: "5"
+  created_at: 2006-12-20 08:58:11-08
+discount_schedules_gizmo_types_007: 
+  updated_at: 2006-12-20 08:56:42-08
+  multiplier: "0.750"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "7"
+  id: "23"
+  gizmo_type_id: "13"
+  created_at: 2006-12-20 08:56:42-08
+discount_schedules_gizmo_types_019: 
+  updated_at: 2006-12-20 08:58:11-08
+  multiplier: 
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "9"
+  id: "35"
+  gizmo_type_id: "5"
+  created_at: 2006-12-20 08:58:11-08
+discount_schedules_gizmo_types_008: 
+  updated_at: 2006-12-20 08:56:42-08
+  multiplier: "0.900"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "8"
+  id: "24"
+  gizmo_type_id: "13"
+  created_at: 2006-12-20 08:56:42-08
+discount_schedules_gizmo_types_020: 
+  updated_at: 2006-12-20 08:58:11-08
+  multiplier: 
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "36"
+  gizmo_type_id: "5"
+  created_at: 2006-12-20 08:58:11-08
+discount_schedules_gizmo_types_009: 
+  updated_at: 2006-12-20 08:56:42-08
+  multiplier: "1.000"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "9"
+  id: "25"
+  gizmo_type_id: "13"
+  created_at: 2006-12-20 08:56:42-08
+discount_schedules_gizmo_types_021: 
+  updated_at: 2006-12-20 08:58:11-08
+  multiplier: 
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "5"
+  id: "37"
+  gizmo_type_id: "5"
+  created_at: 2006-12-20 08:58:11-08
+discount_schedules_gizmo_types_010: 
+  updated_at: 2006-12-20 08:56:42-08
+  multiplier: "0.500"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "26"
+  gizmo_type_id: "13"
+  created_at: 2006-12-20 08:56:42-08
+discount_schedules_gizmo_types_011: 
+  updated_at: 2006-12-20 08:56:42-08
+  multiplier: "0.750"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "5"
+  id: "27"
+  gizmo_type_id: "13"
+  created_at: 2006-12-20 08:56:42-08
+discount_schedules_gizmo_types_012: 
+  updated_at: 2006-12-20 08:57:09-08
+  multiplier: "1.000"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "7"
+  id: "28"
+  gizmo_type_id: "18"
+  created_at: 2006-12-20 08:57:09-08
+discount_schedules_gizmo_types_001: 
+  updated_at: 2006-12-19 18:29:37-08
+  multiplier: "0.500"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "2"
+  gizmo_type_id: "6"
+  created_at: 2006-12-19 18:29:37-08
+discount_schedules_gizmo_types_013: 
+  updated_at: 2006-12-20 08:57:09-08
+  multiplier: "1.000"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "8"
+  id: "29"
+  gizmo_type_id: "18"
+  created_at: 2006-12-20 08:57:09-08
+discount_schedules_gizmo_types_002: 
+  updated_at: 2006-12-20 08:55:50-08
+  multiplier: "1.000"
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  discount_schedule_id: "7"
+  id: "18"
+  gizmo_type_id: "17"
+  created_at: 2006-12-20 08:55:50-08

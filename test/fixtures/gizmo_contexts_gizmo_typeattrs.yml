@@ -1,5 +1,25 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+gizmo_contexts_gizmo_typeattrs_001: 
+  updated_at: 2006-10-10 12:11:56-07
+  created_by: "1"
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_context_id: "2"
+  created_at: 2006-10-10 12:11:56-07
+gizmo_contexts_gizmo_typeattrs_002: 
+  updated_at: 2006-10-10 12:11:56-07
+  created_by: "1"
+  gizmo_typeattr_id: "15"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_context_id: "2"
+  created_at: 2006-10-10 12:11:56-07
+gizmo_contexts_gizmo_typeattrs_003: 
+  updated_at: 2006-10-10 12:11:56-07
+  created_by: "1"
+  gizmo_typeattr_id: "17"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_context_id: "2"
+  created_at: 2006-10-10 12:11:56-07

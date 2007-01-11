@@ -1,1 +1,40 @@
---- {}
+--- 
+contact_types_contacts_013: 
+  contact_type_id: "4"
+  contact_id: "23"
+contact_types_contacts_002: 
+  contact_type_id: "4"
+  contact_id: "7"
+contact_types_contacts_003: 
+  contact_type_id: "3"
+  contact_id: "12"
+contact_types_contacts_004: 
+  contact_type_id: "4"
+  contact_id: "12"
+contact_types_contacts_005: 
+  contact_type_id: "4"
+  contact_id: "5"
+contact_types_contacts_006: 
+  contact_type_id: "5"
+  contact_id: "5"
+contact_types_contacts_007: 
+  contact_type_id: "5"
+  contact_id: "4"
+contact_types_contacts_008: 
+  contact_type_id: "4"
+  contact_id: "16"
+contact_types_contacts_009: 
+  contact_type_id: "4"
+  contact_id: "18"
+contact_types_contacts_010: 
+  contact_type_id: "4"
+  contact_id: "19"
+contact_types_contacts_011: 
+  contact_type_id: "4"
+  contact_id: "21"
+contact_types_contacts_012: 
+  contact_type_id: "4"
+  contact_id: "17"
+contact_types_contacts_001: 
+  contact_type_id: "3"
+  contact_id: "3"

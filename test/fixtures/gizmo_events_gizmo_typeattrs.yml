@@ -1,5 +1,248 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+gizmo_events_gizmo_typeattrs_010: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 12:43:55-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "55"
+  id: "31"
+  attr_val_boolean: 
+  attr_val_monetary: "10.00"
+  created_at: 2006-12-20 12:43:55-08
+gizmo_events_gizmo_typeattrs_011: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 12:43:55-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "56"
+  id: "32"
+  attr_val_boolean: 
+  attr_val_monetary: "300.00"
+  created_at: 2006-12-20 12:43:55-08
+gizmo_events_gizmo_typeattrs_012: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 15:27:06-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "57"
+  id: "33"
+  attr_val_boolean: 
+  attr_val_monetary: "5.00"
+  created_at: 2006-12-20 15:27:06-08
+gizmo_events_gizmo_typeattrs_001: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 09:32:52-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "47"
+  id: "22"
+  attr_val_boolean: 
+  attr_val_monetary: "120.00"
+  created_at: 2006-12-20 09:32:52-08
+gizmo_events_gizmo_typeattrs_013: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 15:27:06-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "15"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "58"
+  id: "34"
+  attr_val_boolean: 
+  attr_val_monetary: "10.00"
+  created_at: 2006-12-20 15:27:06-08
+gizmo_events_gizmo_typeattrs_002: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 10:17:26-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "48"
+  id: "23"
+  attr_val_boolean: 
+  attr_val_monetary: "20.00"
+  created_at: 2006-12-20 10:17:26-08
+gizmo_events_gizmo_typeattrs_014: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 15:48:57-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "15"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "59"
+  id: "35"
+  attr_val_boolean: 
+  attr_val_monetary: "11.00"
+  created_at: 2006-12-20 15:48:57-08
+gizmo_events_gizmo_typeattrs_003: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 10:17:27-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "49"
+  id: "24"
+  attr_val_boolean: 
+  attr_val_monetary: "4.00"
+  created_at: 2006-12-20 10:17:27-08
+gizmo_events_gizmo_typeattrs_015: 
+  attr_val_integer: 
+  updated_at: 2006-12-22 13:11:34-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "15"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "60"
+  id: "36"
+  attr_val_boolean: 
+  attr_val_monetary: "15.00"
+  created_at: 2006-12-22 13:11:34-08
+gizmo_events_gizmo_typeattrs_004: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 10:29:06-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "15"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "50"
+  id: "25"
+  attr_val_boolean: 
+  attr_val_monetary: "15.00"
+  created_at: 2006-12-20 10:29:06-08
+gizmo_events_gizmo_typeattrs_016: 
+  attr_val_integer: 
+  updated_at: 2006-12-22 13:18:28-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "61"
+  id: "37"
+  attr_val_boolean: 
+  attr_val_monetary: "20.00"
+  created_at: 2006-12-22 13:18:28-08
+gizmo_events_gizmo_typeattrs_005: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 10:29:06-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "51"
+  id: "26"
+  attr_val_boolean: 
+  attr_val_monetary: "30.00"
+  created_at: 2006-12-20 10:29:06-08
+gizmo_events_gizmo_typeattrs_017: 
+  attr_val_integer: 
+  updated_at: 2006-12-22 13:18:28-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "62"
+  id: "38"
+  attr_val_boolean: 
+  attr_val_monetary: "10.00"
+  created_at: 2006-12-22 13:18:28-08
+gizmo_events_gizmo_typeattrs_006: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 10:29:07-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "52"
+  id: "27"
+  attr_val_boolean: 
+  attr_val_monetary: "140.00"
+  created_at: 2006-12-20 10:29:07-08
+gizmo_events_gizmo_typeattrs_018: 
+  attr_val_integer: "17"
+  updated_at: 2006-12-22 13:18:28-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "17"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "63"
+  id: "39"
+  attr_val_boolean: 
+  attr_val_monetary: 
+  created_at: 2006-12-22 13:18:28-08
+gizmo_events_gizmo_typeattrs_007: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 11:27:47-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "53"
+  id: "28"
+  attr_val_boolean: 
+  attr_val_monetary: "200.00"
+  created_at: 2006-12-20 11:27:47-08
+gizmo_events_gizmo_typeattrs_019: 
+  attr_val_integer: 
+  updated_at: 2006-12-22 13:18:28-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "63"
+  id: "40"
+  attr_val_boolean: 
+  attr_val_monetary: "10.00"
+  created_at: 2006-12-22 13:18:28-08
+gizmo_events_gizmo_typeattrs_008: 
+  attr_val_integer: "17"
+  updated_at: 2006-12-20 11:27:47-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "17"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "54"
+  id: "29"
+  attr_val_boolean: 
+  attr_val_monetary: 
+  created_at: 2006-12-20 11:27:47-08
+gizmo_events_gizmo_typeattrs_009: 
+  attr_val_integer: 
+  updated_at: 2006-12-20 11:27:48-08
+  created_by: "1"
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  updated_by: "1"
+  gizmo_event_id: "54"
+  id: "30"
+  attr_val_boolean: 
+  attr_val_monetary: "30.00"
+  created_at: 2006-12-20 11:27:48-08

@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContactTest < Test::Unit::TestCase
   fixtures :contacts
 
-  NEW_CONTACT = {}  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
-  REQ_ATTR_NAMES        = %w( ) # name of fields that must be present, e.g. %(name description)
+  NEW_CONTACT = {:postal_code => 1 }  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
+  REQ_ATTR_NAMES        = %w( postal_code ) # name of fields that must be present, e.g. %(name description)
   DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup

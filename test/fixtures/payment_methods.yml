@@ -1,5 +1,25 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-another:
-  id: 2
+--- 
+payment_methods_001: 
+  updated_at: 2006-09-25 13:12:18-07
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "1"
+  description: cash
+  created_at: 2006-09-25 13:12:18-07
+payment_methods_002: 
+  updated_at: 2006-09-25 13:12:23-07
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "2"
+  description: check
+  created_at: 2006-09-25 13:12:23-07
+payment_methods_003: 
+  updated_at: 2006-11-21 13:41:18-08
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "3"
+  description: credit
+  created_at: 2006-11-21 13:41:18-08

@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class GizmoEventTest < Test::Unit::TestCase
   fixtures :gizmo_events
 
-	NEW_GIZMO_EVENT = {}	# e.g. {:name => 'Test GizmoEvent', :description => 'Dummy'}
-	REQ_ATTR_NAMES 			 = %w( ) # name of fields that must be present, e.g. %(name description)
+	NEW_GIZMO_EVENT = {:gizmo_count => 2, :gizmo_type_id => 1, :gizmo_context_id => 1}	# e.g. {:name => 'Test GizmoEvent', :description => 'Dummy'}
+	REQ_ATTR_NAMES 			 = %w( gizmo_count gizmo_type_id gizmo_context_id) # name of fields that must be present, e.g. %(name description)
 	DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup

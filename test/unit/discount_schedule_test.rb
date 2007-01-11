@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class DiscountScheduleTest < Test::Unit::TestCase
   fixtures :discount_schedules
 
-	NEW_DISCOUNT_SCHEDULE = {}	# e.g. {:name => 'Test DiscountSchedule', :description => 'Dummy'}
-	REQ_ATTR_NAMES 			 = %w( ) # name of fields that must be present, e.g. %(name description)
+	NEW_DISCOUNT_SCHEDULE = { :name => 'foo'}	# e.g. {:name => 'Test DiscountSchedule', :description => 'Dummy'}
+	REQ_ATTR_NAMES 			 = %w( name ) # name of fields that must be present, e.g. %(name description)
 	DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup
