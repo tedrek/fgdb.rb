@@ -1,8 +1,5 @@
 class RelationshipsController < ApplicationController
   include AjaxScaffold::Controller
-
-  require "lib/search_contact"
-  include SearchContact
   
   after_filter :clear_flashes
   before_filter :update_params_filter
