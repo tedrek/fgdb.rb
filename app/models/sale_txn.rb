@@ -33,9 +33,9 @@ class SaleTxn < ActiveRecord::Base
 
   def calculated_total
     if discount_schedule
-      gizmo_events.inject(0.0) {|tot,gizmo|
+      (gizmo_events.inject(0.0) {|tot,gizmo|
         tot + gizmo.discounted_price(discount_schedule)
-    }
+      } * 100).to_i / 100.0
     else
       calculated_subtotal
     end
