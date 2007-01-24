@@ -68,8 +68,8 @@ class ReportsController < ApplicationController
       end
     end
     @ranges = {}
-    @ranges[:donations] = (donation_ids.min)..(donation_ids.max)
-    @ranges[:sales] = (sale_ids.min)..(sale_ids.max)
+    @ranges[:donations] = donation_ids.empty? ? 'n/a' : (donation_ids.min)..(donation_ids.max)
+    @ranges[:sales] = sale_ids.empty? ?         'n/a' : (sale_ids.min)..(sale_ids.max)
   end
 
   protected
