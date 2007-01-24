@@ -10,4 +10,8 @@ class ContactMethod < ActiveRecord::Base
   def to_s
     description
   end
+
+  def display
+    "%s (%s)" % [description, contact_method_type.description]
+  end
 end

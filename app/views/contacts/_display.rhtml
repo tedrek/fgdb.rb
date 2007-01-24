@@ -20,7 +20,13 @@
     <br />
   <% end %>
   <div class="address"><%= @contact.address %><br />
-    <%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %></div>
+    <%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %>
+  </div>
+  <div class="contact_methods">
+    <% for method in @contact.contact_methods %>
+      <%= method.display %><br />
+    <% end %>
+  </div>
   <br />
   <%= loading_indicator_tag(@options) %>
   <% edit_options = @options.merge(:action => 'edit') %>

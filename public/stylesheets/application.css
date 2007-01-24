@@ -1,3 +1,43 @@
+/* ===================================
+          layout */
+
+div#logo {
+position: absolute;
+top: 0px;
+left: 0px;
+padding: 2px;
+}
+div#sidebar {
+position: absolute;
+top: 140px;
+left: 0px;
+padding: 2px;
+margin: 10px;
+background-color: #49F;
+}
+div#content {
+position: absolute;
+top: 40px;
+left: 120px;
+padding: 10px;
+}
+div#sidebar a {
+color: #333;
+}
+div#sidebar dd:hover {
+background-color: #ACF;
+}
+
+h1.welcome {
+background-color: #005CB8;
+padding: 8px 5px 4px 5px;
+font: normal 17px verdana, sans-serif;
+color: white;
+}
+
+p.welcome {
+width: 65%;
+}
 
 /* ===================================
          Invoice, Receipt */
@@ -164,6 +204,12 @@ margin-left: 10px;
 font-size: 17px;
 }
 
+.contact_display .contact_methods {
+margin-left: 10px;
+padding: 10px;
+font-size: 14px;
+}
+
 .contact_display .hours {
 font-size: 17px;
 margin-left: 10px;
@@ -227,43 +273,3 @@ color: #828;
 color: red;
 }
 
-/* ===================================
-          layout */
-
-div#logo {
-position: absolute;
-top: 0px;
-left: 0px;
-padding: 2px;
-}
-div#sidebar {
-position: absolute;
-top: 140px;
-left: 0px;
-padding: 2px;
-margin: 10px;
-background-color: #49F;
-}
-div#content {
-position: absolute;
-top: 40px;
-left: 120px;
-padding: 10px;
-}
-div#sidebar a {
-color: #333;
-}
-div#sidebar dd:hover {
-background-color: #ACF;
-}
-
-h1.welcome {
-background-color: #005CB8;
-padding: 8px 5px 4px 5px;
-font: normal 17px verdana, sans-serif;
-color: white;
-}
-
-p.welcome {
-width: 65%;
-}
