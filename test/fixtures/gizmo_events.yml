@@ -279,6 +279,20 @@ gizmo_events_010:
   gizmo_type_id: "3"
   created_at: 2006-11-28 14:53:34-08
   recycling_id: 
+gizmo_events_055: 
+  updated_at: 2007-01-24 13:45:33-08
+  grant_id: 
+  created_by: "1"
+  gizmo_count: "3"
+  lock_version: "0"
+  updated_by: "1"
+  id: "69"
+  sale_txn_id: "15"
+  donation_id: 
+  gizmo_context_id: "2"
+  gizmo_type_id: "6"
+  created_at: 2007-01-24 13:45:33-08
+  recycling_id: 
 gizmo_events_044: 
   updated_at: 2006-12-20 15:27:06-08
   grant_id: 

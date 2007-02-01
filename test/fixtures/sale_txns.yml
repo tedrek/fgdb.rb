@@ -107,6 +107,26 @@ sale_txns_009:
   txn_completed_at: 
   bulk: 
   created_at: 2006-12-20 10:17:26-08
+sale_txns_010: 
+  money_tendered: "0.07"
+  updated_at: 2007-01-24 13:46:41-08
+  postal_code: 
+  comments: |
+    meow
+
+  created_by: "1"
+  txn_complete: t
+  reported_amount_due: "0.07"
+  reported_discount_amount: "0.08"
+  lock_version: "1"
+  payment_method_id: "1"
+  contact_id: "7"
+  updated_by: "1"
+  discount_schedule_id: "4"
+  id: "15"
+  txn_completed_at: 2007-01-24 13:46:41-08
+  bulk: 
+  created_at: 2007-01-24 13:45:33-08
 sale_txns_001: 
   money_tendered: "210.00"
   updated_at: 2006-12-20 11:27:47-08
