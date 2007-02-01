@@ -1,13 +1,32 @@
 
 SCHEMADUMPFILE = 'db/schema.sql'
 DATADUMPFILE = 'db/devel_data.sql'
+METADATADIR = 'db/metadata'
+METADATATABLES = %w[
+        contact_method_types contact_types discount_schedules
+        discount_schedules_gizmo_types gizmo_attrs gizmo_contexts
+        gizmo_contexts_gizmo_typeattrs gizmo_contexts_gizmo_types
+        gizmo_typeattrs gizmo_types payment_methods relationship_types
+        volunteer_task_types
+]
+MIGRATIONDIR = 'db/migrate'
 
 def dump_metadata( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
   case abcs[rails_env]["adapter"] 
   when "postgresql"
     print "Dumping the metadata..."
-    print ":TODO:"
+    for table in METADATATABLES do
+      command = 'pg_dump -i -U "%s" --disable-triggers -a -t "%s" -x -O -f %s/%s.sql %s %s'
+      system( command % [
+                         abcs[rails_env]["username"],
+                         table, METADATADIR, table,
+                         search_path,
+                         abcs[rails_env]["database"]
+                        ] )
+      raise "Error dumping metadata" if $?.exitstatus == 1
+      print "."
+    end
     puts "done"
   else 
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
@@ -32,7 +51,7 @@ def dump_data( rails_env = "development" )
   case abcs[rails_env]["adapter"] 
   when "postgresql"
     print "Dumping the data..."
-    `pg_dump -i -U "#{abcs[rails_env]["username"]}" -a -x -O -f #{DATADUMPFILE} #{search_path} #{abcs[rails_env]["database"]}`
+    `pg_dump -i -U "#{abcs[rails_env]["username"]}" --disable-triggers -a -x -O -f #{DATADUMPFILE} #{search_path} #{abcs[rails_env]["database"]}`
     raise "Error dumping database" if $?.exitstatus == 1
     puts "done"
   else 
@@ -42,10 +61,18 @@ end
 
 def load_metadata( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
+  dbname = abcs[rails_env]['database']
   case abcs[rails_env]["adapter"] 
   when "postgresql"
-    print "Loading the meta data..."
-    print ":TODO:"
+    print "Loading the meta-data..."
+    for table in METADATATABLES do
+      `echo "DELETE FROM #{table};" | psql -U "#{abcs[rails_env]["username"]}" #{dbname}`
+      raise "Error cleaning table '#{table}'" if $?.exitstatus == 1
+      print "."
+      `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{METADATADIR}/#{table}.sql`
+      raise "Error loading metadata" if $?.exitstatus == 1
+      print "."
+    end
     puts "done"
   else 
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
