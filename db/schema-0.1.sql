@@ -189,30 +189,6 @@ CREATE TABLE donations (
 );
 
 
---
--- Name: forsale_items; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
---
-
-CREATE TABLE forsale_items (
-    id serial NOT NULL,
-    source_type_id integer,
-    description character varying(100) NOT NULL,
-    price numeric(10,2) DEFAULT 9.99,
-    onhand_qty integer,
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
--- Name: TABLE forsale_items; Type: COMMENT; Schema: public; Owner: stillflame
---
-
-COMMENT ON TABLE forsale_items IS 'items for sale; not intended as inventory';
-
 
 --
 -- Name: gizmo_attrs; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
@@ -352,26 +328,6 @@ CREATE TABLE gizmo_types (
 );
 
 
---
--- Name: gps; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
---
-
-CREATE TABLE gps (
-    money_tendered numeric(10,2),
-    updated_at timestamp with time zone,
-    reported_required_fee numeric(10,2),
-    reported_suggested_fee numeric(10,2),
-    txn_complete boolean,
-    txn_completed_at timestamp with time zone,
-    id integer DEFAULT nextval('public.gps_id_seq'::text) NOT NULL
-);
-
-
---
--- Name: TABLE gps; Type: COMMENT; Schema: public; Owner: stillflame
---
-
-COMMENT ON TABLE gps IS 'development temp table, delete before production use';
 
 
 --
@@ -468,51 +424,6 @@ CREATE TABLE sale_txns (
 
 COMMENT ON TABLE sale_txns IS 'each record represents one sales transaction';
 
-
---
--- Name: source_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
---
-
-CREATE TABLE source_types (
-    id serial NOT NULL,
-    description character varying(100),
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
--- Name: TABLE source_types; Type: COMMENT; Schema: public; Owner: stillflame
---
-
-COMMENT ON TABLE source_types IS 'sources of items for sale: store, other';
-
-
---
--- Name: till_handlers; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
---
-
-CREATE TABLE till_handlers (
-    id serial NOT NULL,
-    description character varying(100) NOT NULL,
-    contact_id integer,
-    can_alter_price boolean DEFAULT false NOT NULL,
-    lock_version integer DEFAULT 0 NOT NULL,
-    updated_at timestamp with time zone DEFAULT now(),
-    created_at timestamp with time zone DEFAULT now(),
-    created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
-);
-
-
---
--- Name: TABLE till_handlers; Type: COMMENT; Schema: public; Owner: stillflame
---
-
-COMMENT ON TABLE till_handlers IS 'identifies those who operate the till';
 
 
 --

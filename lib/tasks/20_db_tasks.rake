@@ -118,6 +118,24 @@ def load_data( rails_env = "development" )
   end
 end
 
+def migrate_from_schema( rails_env = "development" )
+  abcs, search_path = setup_environment(rails_env)
+  case abcs[rails_env]["adapter"] 
+  when "postgresql"
+    dbname = abcs[rails_env]['database']
+    print "Migrating the database..."
+    Dir.open(MIGRATIONDIR).find_all {|name|
+      /sql$/.match(name)
+    }.sort.each {|name|
+      `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{MIGRATIONDIR}/#{name}`
+      raise "Error loading data" if $?.exitstatus == 1
+      print "."
+    }
+    puts "done"
+  else 
+    raise "Task not supported by '#{abcs["test"]["adapter"]}'"
+  end
+end
 
 def setup_environment(rails_env)
   abcs = ActiveRecord::Base.configurations
@@ -131,6 +149,11 @@ end
 
 rails_env = ENV['RAILS_ENV'] || "production"
 namespace :db do
+  desc "Migrate from schema.sql to current"
+  redefine_task :migrate => :environment do
+    migrate_from_schema(rails_env)
+  end
+
   namespace :metadata do
 
     desc "Dump the metadata-related data from devel to SQL"
@@ -163,13 +186,11 @@ namespace :db do
 
     desc "Dump the development database (including data) to a SQL file"
     task :dump => :environment do
-      dump_schema(rails_env)
       dump_data(rails_env)
     end
 
     desc "Fill the database with data from the dumped SQL file"
     task :load => :environment do
-      load_schema(rails_env)
       load_data(rails_env)
     end
 
