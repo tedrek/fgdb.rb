@@ -9,14 +9,14 @@ SET client_min_messages = warning;
 SET search_path = public, pg_catalog;
 
 --
--- Name: gizmo_contexts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: stillflame
+-- Name: gizmo_contexts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: fgdb
 --
 
 SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('gizmo_contexts', 'id'), 4, true);
 
 
 --
--- Data for Name: gizmo_contexts; Type: TABLE DATA; Schema: public; Owner: stillflame
+-- Data for Name: gizmo_contexts; Type: TABLE DATA; Schema: public; Owner: fgdb
 --
 
 ALTER TABLE gizmo_contexts DISABLE TRIGGER ALL;

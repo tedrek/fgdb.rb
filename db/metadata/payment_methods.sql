@@ -9,14 +9,14 @@ SET client_min_messages = warning;
 SET search_path = public, pg_catalog;
 
 --
--- Name: payment_methods_id_seq; Type: SEQUENCE SET; Schema: public; Owner: stillflame
+-- Name: payment_methods_id_seq; Type: SEQUENCE SET; Schema: public; Owner: fgdb
 --
 
 SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('payment_methods', 'id'), 4, true);
 
 
 --
--- Data for Name: payment_methods; Type: TABLE DATA; Schema: public; Owner: stillflame
+-- Data for Name: payment_methods; Type: TABLE DATA; Schema: public; Owner: fgdb
 --
 
 ALTER TABLE payment_methods DISABLE TRIGGER ALL;
