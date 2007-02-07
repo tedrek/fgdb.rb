@@ -5,7 +5,7 @@ relationships_001:
   lock_version: "2"
   updated_by: "1"
   id: "1"
-  relationship_type_id: "5"
+  relationship_type_id: 
   flow: "1"
   sink_id: "3"
   source_id: "5"
@@ -16,30 +16,30 @@ relationships_002:
   lock_version: "0"
   updated_by: "1"
   id: "2"
-  relationship_type_id: "4"
+  relationship_type_id: 
   flow: 
   sink_id: "7"
   source_id: "3"
   created_at: 2006-09-22 08:13:14-07
 relationships_003: 
-  updated_at: 2006-09-22 08:14:48-07
-  created_by: "1"
-  lock_version: "0"
-  updated_by: "1"
-  id: "3"
-  relationship_type_id: "6"
-  flow: 
-  sink_id: "4"
-  source_id: "7"
-  created_at: 2006-09-22 08:14:48-07
-relationships_004: 
   updated_at: 2006-09-22 08:15:33-07
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "4"
-  relationship_type_id: "2"
+  relationship_type_id: 
   flow: 
   sink_id: "3"
   source_id: "5"
   created_at: 2006-09-22 08:15:33-07
+relationships_004: 
+  updated_at: 2006-09-22 08:14:48-07
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "3"
+  relationship_type_id: 
+  flow: 
+  sink_id: "4"
+  source_id: "7"
+  created_at: 2006-09-22 08:14:48-07

@@ -1,13 +1,5 @@
 --- 
 discount_schedules_003: 
-  name: bulk
-  updated_at: 2006-12-19 18:27:48-08
-  created_by: "1"
-  lock_version: "0"
-  updated_by: "1"
-  id: "8"
-  created_at: 2006-12-19 18:27:48-08
-discount_schedules_004: 
   name: friend
   updated_at: 2006-12-20 08:31:02-08
   created_by: "1"
@@ -15,7 +7,7 @@ discount_schedules_004:
   updated_by: "1"
   id: "5"
   created_at: 2006-12-19 17:51:03-08
-discount_schedules_005: 
+discount_schedules_004: 
   name: no discount
   updated_at: 2006-12-20 08:31:27-08
   created_by: "1"
@@ -32,10 +24,10 @@ discount_schedules_001:
   id: "4"
   created_at: 2006-12-19 17:48:31-08
 discount_schedules_002: 
-  name: same-day donor
-  updated_at: 2006-12-19 18:27:15-08
+  name: bulk
+  updated_at: 2006-12-19 18:27:48-08
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
-  id: "7"
-  created_at: 2006-12-19 18:27:15-08
+  id: "8"
+  created_at: 2006-12-19 18:27:48-08
