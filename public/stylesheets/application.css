@@ -264,6 +264,10 @@ background-color: #F0EFEF;
 
 /* ===================================
          money-related stuff */
+
+fieldset.payment {
+background-color: #BCA;
+}
 .check td {
 color: black;
 }
