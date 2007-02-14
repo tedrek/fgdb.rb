@@ -1,53 +1,125 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class DonationTest < Test::Unit::TestCase
-  fixtures :donations
 
-	NEW_DONATION = {}	# e.g. {:name => 'Test Donation', :description => 'Dummy'}
-	REQ_ATTR_NAMES 			 = %w( ) # name of fields that must be present, e.g. %(name description)
-	DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
+  fixtures :donations, :payment_methods, :contacts, :gizmo_contexts,
+    :gizmo_attrs, :gizmo_types, :gizmo_typeattrs,
+    :gizmo_contexts_gizmo_typeattrs, :gizmo_contexts_gizmo_types
+
+  CRT_EVENT = {:gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'CRT']).id,
+    :gizmo_count => 1, :gizmo_context => GizmoContext.donation}
+  SYSTEM_EVENT = {:gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
+    :gizmo_count => 1, :gizmo_context => GizmoContext.donation}
+  NO_INFO = {}
+  WITH_CONTACT_INFO = NO_INFO.merge({:postal_code => '54321'})
+  WITH_GIZMO = NO_INFO.merge({:gizmo_events => [GizmoEvent.new(SYSTEM_EVENT)]})
+  WITH_BOTH = WITH_GIZMO.merge( WITH_CONTACT_INFO )
 
   def setup
     # Retrieve fixtures via their name
     # @first = donations(:first)
   end
 
-  def test_raw_validation
-    donation = Donation.new
-    if REQ_ATTR_NAMES.blank?
-      assert donation.valid?, "Donation should be valid without initialisation parameters"
-    else
-      # If Donation has validation, then use the following:
-      assert !donation.valid?, "Donation should not be valid without initialisation parameters"
-      REQ_ATTR_NAMES.each {|attr_name| assert donation.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
-    end
+  def test_that_should_not_be_valid_without_contact_info
+    donation = Donation.new(NO_INFO)
+    assert ! donation.valid?
+    assert donation.errors.invalid?(:contact_id)
   end
 
-	def test_new
-    donation = Donation.new(NEW_DONATION)
-    assert donation.valid?, "Donation should be valid"
-   	NEW_DONATION.each do |attr_name|
-      assert_equal NEW_DONATION[attr_name], donation.attributes[attr_name], "Donation.@#{attr_name.to_s} incorrect"
-    end
- 	end
+  def test_that_should_be_valid_with_contact_info
+    donation = Donation.new(WITH_GIZMO.merge(:postal_code => '12345'))
+    assert donation.valid?
+    donation = Donation.new(WITH_GIZMO.merge(:contact_id => '1'))
+    assert donation.valid?
+  end
 
-	def test_validates_presence_of
-   	REQ_ATTR_NAMES.each do |attr_name|
-			tmp_donation = NEW_DONATION.clone
-			tmp_donation.delete attr_name.to_sym
-			donation = Donation.new(tmp_donation)
-			assert !donation.valid?, "Donation should be invalid, as @#{attr_name} is invalid"
-    	assert donation.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
-    end
- 	end
+  def test_that_should_be_able_to_get_contact_information_for_anonymous
+    donation = Donation.new(WITH_GIZMO.merge(:postal_code => '12345'))
+    info = nil
+    assert_nothing_raised       {info = donation.contact_information}
+    assert                      info
+    assert_kind_of              Array, info
+    assert                      ! info.empty?
+    assert_kind_of              String, info[0]
+    assert_match                /12345/, info[0]
+  end
 
-	def test_duplicate
-    current_donation = Donation.find_first
-   	DUPLICATE_ATTR_NAMES.each do |attr_name|
-   		donation = Donation.new(NEW_DONATION.merge(attr_name.to_sym => current_donation[attr_name]))
-			assert !donation.valid?, "Donation should be invalid, as @#{attr_name} is a duplicate"
-    	assert donation.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
-		end
-	end
+  def test_that_should_sum_amounts_from_payments
+    donation = Donation.new(WITH_CONTACT_INFO)
+    donation.payments = []
+    donation.payments << Payment.new({ :amount => 2, :payment_method_id => 3 })
+    donation.payments << Payment.new({ :amount => 3.5, :payment_method_id => 2 })
+    donation.payments << Payment.new({ :amount => 1, :payment_method_id => 1 })
+    donation.payments << Payment.new({ :amount => 0, :payment_method_id => 1 })
+    assert_equal 6.5, donation.money_tendered
+  end
+
+  def test_that_real_payments_excludes_invoices
+    donation = Donation.new(WITH_CONTACT_INFO)
+    donation.payments = []
+    donation.payments << Payment.new({ :amount => 2, :payment_method_id => 3 })
+    invoice = Payment.new({ :amount => 3.5 })
+    invoice.payment_method = PaymentMethod.invoice
+    donation.payments << invoice
+    assert ! donation.real_payments.include?( invoice )
+  end
+
+  def test_that_should_not_include_invoices_in_payment_amount
+    donation = Donation.new(WITH_CONTACT_INFO)
+    donation.payments = []
+    donation.payments << Payment.new({ :amount => 2, :payment_method_id => 3 })
+    invoice = Payment.new({ :amount => 3.5 })
+    invoice.payment_method = PaymentMethod.invoice
+    donation.payments << invoice
+    assert_equal 2, donation.money_tendered
+  end
+
+  def test_that_should_total_invoiced_amount
+    donation = Donation.new(WITH_CONTACT_INFO)
+    donation.payments = []
+    donation.payments << Payment.new({ :amount => 2, :payment_method_id => 3 })
+    invoice = Payment.new({ :amount => 3.5 })
+    invoice.payment_method = PaymentMethod.invoice
+    donation.payments << invoice
+    assert_equal 3.5, donation.amount_invoiced
+  end
+
+  def test_that_should_be_able_to_tell_when_to_invoice
+    donation = Donation.new(WITH_CONTACT_INFO)
+    donation.payments = []
+    assert ! donation.invoiced?
+    donation.payments << Payment.new({ :amount => 2, :payment_method_id => 3 })
+    assert ! donation.invoiced?
+    invoice = Payment.new({ :amount => 3.5 })
+    invoice.payment_method = PaymentMethod.invoice
+    donation.payments << invoice
+    assert donation.invoiced?
+  end
+
+  def test_that_required_fees_should_not_be_valid_unpaid
+    donation = Donation.new(WITH_CONTACT_INFO)
+    donation.payments = []
+    donation.gizmo_events << GizmoEvent.new(CRT_EVENT)
+    assert( donation.calculated_required_fee > 0 )
+    assert( ! donation.valid? )
+  end
+
+  def test_that_required_fees_should_be_valid_paid
+    donation = Donation.new(WITH_CONTACT_INFO)
+    donation.gizmo_events << GizmoEvent.new(CRT_EVENT)
+    assert( ! donation.valid? )
+    assert( donation.calculated_required_fee > 0 )
+    donation.payments << Payment.new({ :amount => 10, :payment_method_id => 3 })
+    assert( donation.valid? )
+  end
+
+  def test_that_payments_or_gizmos_are_required
+    donation = Donation.new(WITH_CONTACT_INFO)
+    assert ! donation.valid?
+    donation.payments << Payment.new({ :amount => 10, :payment_method_id => 3 })
+    assert donation.valid?
+    donation.payments = []
+    assert ! donation.valid?
+  end
+
 end
-

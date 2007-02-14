@@ -2,12 +2,17 @@ require 'ajax_scaffold'
 
 class SaleTxn < ActiveRecord::Base
   belongs_to :contact, :order => "surname, first_name"  
-  belongs_to :payment_method
+  has_many :payments
   belongs_to :discount_schedule
   has_many :gizmo_events
 
-  def to_s
-    "$%0.2f from %s on %s (#%i)" % [money_tendered, buyer, created_at.strftime('%Y-%m-%d at %H:%M'), id]
+  def validate
+    errors.add_on_empty("contact_id") unless( postal_code and ! postal_code.empty? )
+    errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
+    errors.add("payments", "are too much") if overpaid?
+    errors.add("payments", "may only have one invoice") if invoices.length > 1
+    errors.add("payments", "should include some reason to call this a sale") if payments.empty?
+    errors.add("gizmos", "should include some reason to call this a sale") if gizmo_events.empty?
   end
 
   def buyer
@@ -16,19 +21,20 @@ class SaleTxn < ActiveRecord::Base
       "anonymous(#{postal_code})"
   end
 
+  def contact_information
+    if contact
+     contact.display_name_address
+    else
+      ["Anonymous (#{postal_code})"]
+    end
+  end
+
   def displayed_payment_method
-    txn_complete ? payment_method.description : 'invoice'
+    payments.map {|payment| payment.payment_method.description}.uniq.join( ' ' )
   end
 
   def payment
-    if txn_complete
-      "$%0.2f %s" % [ money_tendered, payment_method.description ]
-    elsif payment_method
-      "$%0.2f invoice ($%0.2f %s)" % [ reported_amount_due - money_tendered,
-        money_tendered, payment_method.description ]
-    else
-      "$%0.2f invoice" % [ reported_amount_due ]
-    end
+    payments.join( ", " )
   end
 
   def calculated_total
@@ -51,8 +57,32 @@ class SaleTxn < ActiveRecord::Base
     calculated_subtotal - calculated_total
   end
 
+  def real_payments
+    payments.select {|payment| payment.payment_method_id != PaymentMethod.invoice.id}
+  end
+
+  def invoices
+    payments.select {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
+  end
+
+  def money_tendered
+    real_payments.inject(0.0) {|total,payment| total + payment.amount}
+  end
+
+  def amount_invoiced
+    invoices.inject(0.0) {|total,payment| total + payment.amount}
+  end
+
+  def invoiced?
+    payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
+  end
+
   def total_paid?
     money_tendered >= calculated_total
+  end
+
+  def overpaid?
+    calculated_total < money_tendered
   end
 
 end

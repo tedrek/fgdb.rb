@@ -3,6 +3,3 @@
 <% unless @donation.nil? %>
   <%= error_messages_for 'donation' %>
 <% end %>
-<% if @include_invoicing_choice %>
-  <%= render :partial => 'submit_choice_buttons' %>
-<% end %>

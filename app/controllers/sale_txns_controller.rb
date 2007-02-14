@@ -2,10 +2,18 @@ class SaleTxnsController < ApplicationController
   include AjaxScaffold::Controller
   include DatalistFor
   GizmoEventsTag='sale_txns_gizmo_events'
+  PaymentsTag = 'sale_txns_payments'
 
   after_filter :clear_flashes
   before_filter :update_params_filter
-  layout :with_sidebar
+
+  layout :check_for_receipt
+  def check_for_receipt
+    case action_name
+    when /receipt/ then "receipt_invoice.rhtml"
+    else                "with_sidebar.rhtml"
+    end
+  end
 
   def initialize
     @gizmo_context = GizmoContext.sale
@@ -44,7 +52,6 @@ class SaleTxnsController < ApplicationController
     @sale_txn = SaleTxn.new
     @successful = true
     @initial_page_load = true
-    _set_totals_defaults(:new => true)
 
     return render(:action => 'new.rjs')
   end
@@ -65,7 +72,6 @@ class SaleTxnsController < ApplicationController
       @sale_txn = SaleTxn.find(params[:id])
       @successful = !@sale_txn.nil?
       @initial_page_load = true
-      _set_totals_defaults
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -152,11 +158,8 @@ class SaleTxnsController < ApplicationController
   end
 
   def receipt
-    display_printable_invoice_receipt('receipt')
-  end
-
-  def invoice
-    display_printable_invoice_receipt('invoice')
+    @txn = @sale_txn = SaleTxn.find(params[:id])
+    @context = 'sale'
   end
 
   def update_totals
@@ -173,85 +176,32 @@ class SaleTxnsController < ApplicationController
   private
   #######
 
-  def _set_totals_defaults(options = {})
+  def _apply_datalist_data(sale)
+    sale.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
+      ! gizmo.mostly_empty?
+    }
+    sale.payments = datalist_objects(PaymentsTag).find_all {|payment|
+      ! payment.mostly_empty?
+    }
   end
 
   # common save logic
   def _save
-    @sale_txn.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
-      ! gizmo.mostly_empty?
-    }
-    @include_invoicing_choice = false
-    if params.has_key? :user_choice
-      # ignore underpayment at user request
-      receipt_type = params[:user_choice]
-    else
-      # error regarding underpayment
-      if @sale_txn.calculated_total > @sale_txn.money_tendered
-        flash[:error] = "Amount tendered ($%0.2f) is too low by $%0.2f" % [
-          @sale_txn.money_tendered,
-          @sale_txn.calculated_total - @sale_txn.money_tendered
-        ]
-        @include_invoicing_choice = true
-        @successful = false
-        return @successful
-      elsif @sale_txn.calculated_total < @sale_txn.money_tendered
-        flash[:error] = "Amount tendered ($%0.2f) is too much by $%0.2f" % [
-          @sale_txn.money_tendered,
-          @sale_txn.money_tendered - @sale_txn.calculated_total
-        ]
-        @successful = false
-        return @successful
-      end
-      receipt_type = 'receipt'
-    end
+    _apply_datalist_data(@sale_txn)
 
-    # :MC: lame!  validation should happen in the model.
-    unless (@sale_txn.postal_code and ! @sale_txn.postal_code.empty?) or
-        (@sale_txn.contact_id)
-      flash[:error], @successful = "Please choose a buyer or enter an anonymous postal code.", false
-      return @successful
-    end
-
-    case receipt_type
-    when 'invoice'
+    if @sale_txn.invoiced?
       @sale_txn.txn_complete = false
       @sale_txn.txn_completed_at = nil
-      @sale_txn.payment_method = nil unless @sale_txn.money_tendered
-    when 'receipt'
+    else
       @sale_txn.txn_complete = true
       @sale_txn.txn_completed_at = Time.now
-    end
-
-    if @sale_txn.money_tendered > 0
-      unless @sale_txn.payment_method
-        flash[:error] = "Please choose a method of payment"
-        @successful = false
-        return @successful
-      end
     end
 
     @sale_txn.reported_amount_due = @sale_txn.calculated_total
     @sale_txn.reported_discount_amount = @sale_txn.calculated_discount
 
     @successful = @sale_txn.save
-    @printurl = "/sale_txns/%s/%d" % [receipt_type, @sale_txn.id]
-
     return @successful
   end
 
-  # setup vars used by receipt, then render
-  def display_printable_invoice_receipt(type=nil)
-    type ||= 'receipt'
-    @sale_txn = SaleTxn.find(params[:id])
-
-    render :partial => 'sale_txn_detail_totals', 
-      :layout => 'receipt_invoice', 
-      :locals => { 
-        :type => type, 
-        :subtotal => 0,
-        :discount => 0,
-        :amount_due => 0
-      }
-  end
 end

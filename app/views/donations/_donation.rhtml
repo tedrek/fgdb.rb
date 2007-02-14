@@ -17,7 +17,7 @@
           <%= loading_indicator_tag(@options) %>
         </td>
         <td>
-          <% print_options = @options.merge(:action => donation.txn_complete ? 'receipt' : 'invoice') %>
+          <% print_options = @options.merge(:action => 'receipt') %>
           <a onclick="window.open('<%= url_for(print_options) %>','printme','');">Print</a>
         </td>
         <td>

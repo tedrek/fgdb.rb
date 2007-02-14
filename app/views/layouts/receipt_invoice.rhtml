@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <head>
-<title class="banner"><%= @page_title %></title>
+  <title class="banner"><%= @context %></title>
+  <%= stylesheet_link_tag 'application', :media => 'all' %>
 </head>
 <body>
 <table>
@@ -8,7 +9,7 @@
   <td><img src="/images/freegeeklogo.png" alt="freegeeklogo.png" /></td>
   <td><img src="/images/hdr-address.gif" alt="hdr-address.gif" /></td>
   <td>
-    <%= @contact_name_address.join('<br />') %>
+    <%= @txn.contact_information.join('<br />') %>
   </td>
 </tr>
 <tr>
@@ -17,18 +18,12 @@
 
 <tr>
   <td colspan="2">
-    <% if @context == 'donation' %>
-      Tax-Deductible Donation 
-    <% elsif @context == 'sale' %>
-      Sales
-    <% end %>
+    <%= Inflector.titleize( @context ) %>
     <strong>
-    <% if @type == 'receipt' %>
-      Receipt
-    <% elsif @type == 'invoice' %>
+    <% if @txn.invoiced? %>
       <font color="#FF0000" size="+2">Invoice</font>
     <% else %>
-      Record
+      Receipt
     <% end %>
     </strong>
   </td>
@@ -39,10 +34,10 @@
 <tr>
   <td>Date: <%= Time.now.strftime("%m/%d/%Y") %></td>
   <td align="center">
-    Record <strong># <%= @id %></strong>
+    <%= Inflector.titleize( @context ) %> <strong># <%= @txn.id %></strong>
   </td>
   <td align="right">
-    <% if @type == 'invoice' %>
+    <% if @txn.invoiced? %>
       <strong>
       Due: <%= Time.now.+(60*60*24*30).strftime("%m/%d/%Y") %>
       </strong>
@@ -57,9 +52,7 @@
   <INPUT type="button" id="print_button" value="Print" 
     onclick="window.print()" >
   
-  <% value = 'Close' %>
-  <% value = 'Start Over' if @context == 'sale' %>
-  <INPUT type="button" id="restart_button" value="<%= value %>" 
+  <INPUT type="button" id="restart_button" value="Start Over" 
     onclick="window.close()" >
 </span>
 </p>

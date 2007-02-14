@@ -12,9 +12,7 @@ module ApplicationHelper
   def header_totals_id(options)
     "#{options[:scaffold_id]}_header_totals"
   end
-  def submit_choice_buttons_id(options)
-    "#{options[:scaffold_id]}_submit_choice_buttons"
-  end
+
   def anonymize_button_id(options)
     "#{options[:scaffold_id]}_anonymize"
   end

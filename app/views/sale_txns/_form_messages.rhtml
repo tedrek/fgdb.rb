@@ -3,6 +3,3 @@
 <% unless @sale_txn.nil? %>
 <%= error_messages_for 'sale_txn' %>
 <% end %>
-<% if @include_invoicing_choice %>
-  <%= render :partial => 'submit_choice_buttons' %>
-<% end %>

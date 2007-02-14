@@ -96,7 +96,8 @@ function updateTotalsForContext( element, value,  event, context) {
   var controller = '';
   if (context == 'donation') {
     controller = 'donations';
-    patts.push('money_tendered$');
+    patts.push('amount$');
+    patts.push('payment_method_id$');
     patts.push('gizmo_count$');
     patts.push('gizmo_type_id$');
   }

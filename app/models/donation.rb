@@ -2,11 +2,15 @@ require 'ajax_scaffold'
 
 class Donation < ActiveRecord::Base
   belongs_to :contact, :order => "surname, first_name"  
-  belongs_to :payment_method
+  has_many :payments
   has_many :gizmo_events
 
-  def to_s
-    "$%0.2f from %s on %s (#%i)" % [money_tendered, donor, created_at.strftime('%Y-%m-%d at %H:%M'), id]
+  def validate
+    errors.add_on_empty("contact_id") unless( postal_code and ! postal_code.empty? )
+    errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid?)
+    errors.add("payments", "or gizmos should include some reason to call this a donation") if
+      gizmo_events.empty? and payments.empty?
+    errors.add("payments", "may only have one invoice") if invoices.length > 1
   end
 
   def donor
@@ -15,19 +19,20 @@ class Donation < ActiveRecord::Base
       "anonymous(#{postal_code})"
   end
 
+  def contact_information
+    if contact
+     contact.display_name_address
+    else
+      ["Anonymous (#{postal_code})"]
+    end
+  end
+
   def displayed_payment_method
-    txn_complete ? payment_method.description : 'invoice'
+    payments.map {|payment| payment.payment_method.description}.uniq.join( ' ' )
   end
 
   def payment
-    if txn_complete
-      "$%0.2f %s" % [ money_tendered, payment_method.description ]
-    elsif payment_method
-      "$%0.2f invoice ($%0.2f %s)" % [ reported_total - money_tendered,
-        money_tendered, payment_method.description ]
-    else
-      "$%0.2f invoice" % [ reported_total ]
-    end
+    payments.join( ", " )
   end
 
   def reported_total
@@ -50,8 +55,48 @@ class Donation < ActiveRecord::Base
     calculated_suggested_fee + calculated_required_fee
   end
 
+  def real_payments
+    payments.select {|payment| payment.payment_method_id != PaymentMethod.invoice.id}
+  end
+
+  def invoices
+    payments.select {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
+  end
+
+  def money_tendered
+    real_payments.inject(0.0) {|total,payment| total + payment.amount}
+  end
+
+  def amount_invoiced
+    invoices.inject(0.0) {|total,payment| total + payment.amount}
+  end
+
+  def cash_donation_owed
+    [0, (amount_invoiced - reported_required_fee) - cash_donation_paid].max
+  end
+
+  def cash_donation_paid
+    [0, money_tendered - required_fee_paid].max
+  end
+
+  def required_fee_owed
+    if invoiced? and (reported_required_fee > required_fee_paid)
+        [reported_required_fee - required_fee_paid, amount_invoiced].min
+    else
+      0
+    end
+  end
+
+  def required_fee_paid
+    [reported_required_fee, money_tendered].min
+  end
+
   def required_paid?
     money_tendered >= calculated_required_fee
+  end
+
+  def invoiced?
+    payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
   end
 
   def total_paid?

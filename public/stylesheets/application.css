@@ -39,6 +39,10 @@ p.welcome {
 width: 65%;
 }
 
+p.footer {
+width: 65%;
+}
+
 /* ===================================
          Invoice, Receipt */
 #receipt-header-left {

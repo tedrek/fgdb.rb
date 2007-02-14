@@ -2,10 +2,18 @@ class DonationsController < ApplicationController
   include AjaxScaffold::Controller
   include DatalistFor
   GizmoEventsTag='donations_gizmo_events' 
+  PaymentsTag = 'donations_payments'
 
   after_filter :clear_flashes
   before_filter :update_params_filter
-  layout :with_sidebar
+
+  layout :check_for_receipt
+  def check_for_receipt
+    case action_name
+    when /receipt/ then "receipt_invoice.rhtml"
+    else                "with_sidebar.rhtml"
+    end
+  end
 
   def initialize
     @gizmo_context = GizmoContext.donation
@@ -44,7 +52,6 @@ class DonationsController < ApplicationController
     @donation = Donation.new
     @successful = true
     @initial_page_load = true
-    _set_totals_defaults
 
     return render(:action => 'new.rjs')
   end
@@ -53,8 +60,8 @@ class DonationsController < ApplicationController
     begin
       @donation = Donation.new(params[:donation])
       @successful = _save
-    #rescue
-    #  flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
+    rescue
+      flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
 
     render :action => 'create.rjs'
@@ -65,7 +72,6 @@ class DonationsController < ApplicationController
       @donation = Donation.find(params[:id])
       @successful = !@donation.nil?
       @initial_page_load = true
-      _set_totals_defaults
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -107,6 +113,7 @@ class DonationsController < ApplicationController
       @donation = Donation.find(params[:donation_id])
     else
       @donation = Donation.new
+      @donation.postal_code = 97214
     end
     render :update do |page|
       page.replace_html donation_contact_searchbox_id(params), :partial => 'anonymous'
@@ -140,18 +147,13 @@ class DonationsController < ApplicationController
   end
 
   def receipt
-    display_printable_invoice_receipt('receipt')
-  end
-
-  def invoice
-    display_printable_invoice_receipt('invoice')
+    @txn = @donation = Donation.find(params[:id])
+    @context = 'donation'
   end
 
   def update_totals
     @donation = Donation.new(params[:donation])
-    @donation.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
-      ! gizmo.mostly_empty?
-    }
+    _apply_datalist_data(@donation)
     render :update do |page|
       page.replace header_totals_id(params), :partial => 'header_totals'
     end
@@ -161,98 +163,32 @@ class DonationsController < ApplicationController
   private
   #######
 
-  # set some default values used in view by new donation record
-  def _set_totals_defaults
-    @model_required_fee ||= 0
-    @model_suggested_fee ||= 0
-    @money_tendered = @donation.money_tendered || 0
-    @expected_total_amount = @model_required_fee + @model_suggested_fee
-    @overunder = @money_tendered - @expected_total_amount
+  def _apply_datalist_data(donation)
+    donation.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
+      ! gizmo.mostly_empty?
+    }
+    donation.payments = datalist_objects(PaymentsTag).find_all {|payment|
+      ! payment.mostly_empty?
+    }
   end
 
   # common save logic
   def _save
-    @donation.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
-      ! gizmo.mostly_empty?
-    }
-    @include_invoicing_choice = false
-    if params.has_key? :user_choice
-      # ignore underpayment at user request
-      receipt_type = params[:user_choice]
-    else
-      # error regarding underpayment
-      unless @donation.required_paid?
-        flash[:error] = "Amount tendered is too low"
-        @include_invoicing_choice = true
-        @successful = false
-        return @successful
-      end
-      receipt_type = 'receipt'
-    end
+    _apply_datalist_data(@donation)
 
-    # :MC: lame!  validation should happen in the model.
-    unless (@donation.postal_code and ! @donation.postal_code.empty?) or
-        (@donation.contact_id)
-      flash[:error], @successful = "Please choose a donor or enter an anonymous postal code.", false
-      return @successful
-    end
-
-    case receipt_type
-    when 'invoice'
+    if @donation.invoiced?
       @donation.txn_complete = false
       @donation.txn_completed_at = nil
-      @donation.payment_method = nil unless @donation.money_tendered
-    when 'receipt'
+    else
       @donation.txn_complete = true
       @donation.txn_completed_at = Time.now
     end
 
-    if @donation.money_tendered > 0
-      unless @donation.payment_method
-        flash[:error] = "Please choose a method of payment"
-        @successful = false
-        return @successful
-      end
-    else
-      @donation.payment_method = PaymentMethod.cash
-    end
-
     @donation.reported_required_fee = @donation.calculated_required_fee
     @donation.reported_suggested_fee = @donation.calculated_suggested_fee
+
     @successful = @donation.save
-    @printurl = "/donations/%s/%d" % [receipt_type, @donation.id]
     return @successful
-  end
-
-  # setup vars used by donation invoice and receipt, then render
-  def display_printable_invoice_receipt(type=nil)
-    type ||= 'invoice'
-    @donation = Donation.find(params[:id])
-    @donation.reported_suggested_fee ||= 0.0
-    @donation.money_tendered ||= 0.0
-    @total_reported_fees = 
-      @donation.reported_required_fee + @donation.reported_suggested_fee
-    @required_fee_paid = 
-      [@donation.reported_required_fee, @donation.money_tendered].min
-    @required_fee_owed = 
-      [0, @donation.reported_required_fee - @donation.money_tendered].max
-    @cash_donation_paid = 
-      [0, @donation.money_tendered - @donation.reported_required_fee].max
-    @cash_donation_owed = 
-      @donation.reported_suggested_fee - @cash_donation_paid
-
-    render :partial => 'donation_detail_totals', 
-      :layout => 'receipt_invoice', 
-      :locals => {
-        :type => type,
-        :owed => @total_reported_fees - @donation.money_tendered,
-        :cash_donation => @donation.reported_suggested_fee,
-        :required_fee => @donation.reported_required_fee,
-        :cash_donation_paid => @cash_donation_paid,
-        :cash_donation_owed => @cash_donation_owed,
-        :required_fee_paid => @required_fee_paid,
-        :required_fee_owed => @required_fee_owed
-      }
   end
 
 end
