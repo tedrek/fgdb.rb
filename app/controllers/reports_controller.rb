@@ -24,52 +24,21 @@ class ReportsController < ApplicationController
   def income_report
     income_report_init
     @date_range_string, sale_conditions, donation_conditions = determine_date_range
-    donations = Donation.find(:all, :conditions => donation_conditions, :include => [:payment_method])
-    sales = SaleTxn.find(:all, :conditions => sale_conditions, :include => [:payment_method, :discount_schedule])
+    donations = Donation.find(:all, :conditions => donation_conditions, :include => [:payments])
+    sales = SaleTxn.find(:all, :conditions => sale_conditions, :include => [:payments, :discount_schedule])
     sale_ids = []
     donation_ids = []
-    totals = @income_data[:grand_totals]
     donations.each do |donation|
       donation_ids << donation.id
-      if donation.txn_complete
-        add_donation_to_data(donation, totals)
-      elsif donation.money_tendered > 0
-        add_donation_to_data(donation, totals)
-        @income_data[:donations]['invoiced']['fees'] +=
-          donation.reported_required_fee - donation.money_tendered
-        remainder = donation.money_tendered - donation.reported_required_fee
-        remainder = 0 if remainder < 0
-        @income_data[:donations]['invoiced']['voluntary'] +=
-          donation.reported_suggested_fee - remainder
-        @income_data[:donations]['invoiced']['subtotals'] +=
-          donation.reported_suggested_fee + donation.reported_required_fee - donation.money_tendered
-        totals['invoiced']['total'] +=
-          donation.reported_suggested_fee + donation.reported_required_fee - donation.money_tendered
-      else
-        @income_data[:donations]['invoiced']['fees'] += donation.reported_required_fee
-        @income_data[:donations]['invoiced']['voluntary'] += donation.reported_suggested_fee
-        @income_data[:donations]['invoiced']['subtotals'] += donation.reported_suggested_fee + donation.reported_required_fee
-        totals['invoiced']['total'] += donation.reported_suggested_fee + donation.reported_required_fee
-      end
+      add_donation_to_data(donation, @income_data)
     end
     sales.each do |sale|
       sale_ids << sale.id
-      if sale.txn_complete
-        add_sale_to_data(sale, totals)
-      elsif sale.money_tendered > 0
-        add_sale_to_data(sale, totals)
-        @income_data[:sales]['invoiced'][sale.discount_schedule.name] += sale.reported_amount_due - sale.money_tendered
-        @income_data[:sales]['invoiced']['subtotals'] += sale.reported_amount_due - sale.money_tendered
-        totals['invoiced']['total'] += sale.reported_amount_due - sale.money_tendered
-      else
-        @income_data[:sales]['invoiced'][sale.discount_schedule.name] += sale.reported_amount_due
-        @income_data[:sales]['invoiced']['subtotals'] += sale.reported_amount_due
-        totals['invoiced']['total'] += sale.reported_amount_due
-      end
+      add_sale_to_data(sale, @income_data)
     end
     @ranges = {}
     @ranges[:donations] = donation_ids.empty? ? 'n/a' : (donation_ids.min)..(donation_ids.max)
-    @ranges[:sales] = sale_ids.empty? ?         'n/a' : (sale_ids.min)..(sale_ids.max)
+    @ranges[:sales] = sale_ids.empty?         ? 'n/a' : (sale_ids.min)..(sale_ids.max)
   end
 
   protected
@@ -93,7 +62,7 @@ class ReportsController < ApplicationController
   def income_report_init
     methods = PaymentMethod.find_all
     method_names = methods.map {|m| m.description}
-    @columns = Hash.new( method_names + ['total real', 'invoiced'] )
+    @columns = Hash.new( method_names + ['total real'] )
     @width = @columns[nil].length
     @rows = {}
     @rows[:donations] = ['voluntary', 'fees', 'subtotals']
@@ -149,31 +118,53 @@ class ReportsController < ApplicationController
     ]
   end
 
-  def add_donation_to_data(donation, totals)
-    column = @income_data[:donations][donation.payment_method.description]
-    if donation.money_tendered <= donation.reported_required_fee
-      column['fees'] += donation.money_tendered
-      @income_data[:donations]['total real']['fees'] += donation.money_tendered
-    else
-      column['fees'] += donation.reported_required_fee
-      @income_data[:donations]['total real']['fees'] += donation.reported_required_fee
-      column['voluntary'] += (donation.money_tendered - donation.reported_required_fee)
-      @income_data[:donations]['total real']['voluntary'] += (donation.money_tendered - donation.reported_required_fee)
-    end
-    @income_data[:donations]['total real']['subtotals'] += donation.money_tendered
-    column['subtotals'] += donation.money_tendered
-    totals[donation.payment_method.description]['total'] += donation.money_tendered
-    totals['total real']['total'] += donation.money_tendered
+  def add_donation_to_data(donation, income_data)
+    totals = income_data[:grand_totals]
+    required = donation.reported_required_fee
+    #:MC: no business rules for what order to evaluate these?
+    donation.payments.each {|payment|
+      column = income_data[:donations][payment.payment_method.description]
+      fees = 0
+      voluntary = 0
+      if required <= 0
+        voluntary = payment.amount
+      elsif required > payment.amount
+          required -= payment.amount
+          fees = payment.amount
+      else
+        fees = required
+        required = 0
+        voluntary = payment.amount - fees
+      end
+
+      if payment.payment_method != PaymentMethod.invoice
+        income_data[:donations]['total real']['fees'] += fees
+        income_data[:donations]['total real']['voluntary'] += voluntary
+        income_data[:donations]['total real']['subtotals'] += payment.amount
+      end
+
+      column['fees'] += fees
+      column['voluntary'] += voluntary
+      column['subtotals'] += payment.amount
+      totals[payment.payment_method.description]['total'] += payment.amount
+      totals['total real']['total'] += payment.amount
+    }
   end
 
-  def add_sale_to_data(sale, totals)
-    column = @income_data[:sales][sale.payment_method.description]
-    column[sale.discount_schedule.name] += sale.money_tendered
-    @income_data[:sales]['total real'][sale.discount_schedule.name] += sale.money_tendered
-    column['subtotals'] += sale.money_tendered
-    @income_data[:sales]['total real']['subtotals'] += sale.money_tendered
-    totals[sale.payment_method.description]['total'] += sale.money_tendered
-    totals['total real']['total'] += sale.money_tendered
+  def add_sale_to_data(sale, income_data)
+    totals = income_data[:grand_totals]
+    #:MC: no business rules for what order to evaluate these?
+    sale.payments.each {|payment|
+      column = income_data[:sales][payment.payment_method.description]
+      column[sale.discount_schedule.name] += payment.amount
+      column['subtotals'] += payment.amount
+      if payment.payment_method != PaymentMethod.invoice
+        income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount
+        income_data[:sales]['total real']['subtotals'] += sale.money_tendered
+        totals['total real']['total'] += sale.money_tendered
+      end
+      totals[payment.payment_method.description]['total'] += sale.money_tendered
+    }
   end
 
 end
