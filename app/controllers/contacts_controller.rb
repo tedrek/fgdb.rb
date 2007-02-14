@@ -40,10 +40,7 @@ class ContactsController < ApplicationController
 
   def search_results
     @search_results ||= do_search( params[:query] )
-    render :update do |page|
-      page.replace_html searchbox_search_results_div_id(params), :partial => 'search_results'
-      page << "Field.focus('#{searchbox_select_id(params)}');" unless @search_results.empty?
-    end
+    render :action => 'search_results.rjs'
   end
 
   def update_display_area

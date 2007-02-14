@@ -115,14 +115,3 @@ function updateTotals(formId) {
   var value = Form.serialize(formId);
   new Ajax.Request('/donations/update_totals?' + value, {asynchronous:true, evalScripts:true});
 }
-
-var ActivityResponder = {  
-    onCreate: function(request) {  
-        $('global-indicator-small').show();  
-    },  
-    onComplete: function(request) {  
-        $('global-indicator-small').hide();  
-    }  
-}
-
-Ajax.Responders.register(ActivityResponder);
