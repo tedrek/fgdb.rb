@@ -66,7 +66,9 @@ def load_metadata( rails_env = "development" )
   when "postgresql"
     print "Loading the meta-data..."
     for table in METADATATABLES do
-      `echo "DELETE FROM #{table};" | psql -U "#{abcs[rails_env]["username"]}" #{dbname}`
+      `echo "ALTER TABLE #{table} DISABLE TRIGGER ALL;
+             DELETE FROM #{table};
+             ALTER TABLE #{table} ENABLE TRIGGER ALL;" | psql -U "#{abcs[rails_env]["username"]}" #{dbname}`
       raise "Error cleaning table '#{table}'" if $?.exitstatus == 1
       print "."
       `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{METADATADIR}/#{table}.sql`
@@ -151,6 +153,13 @@ rails_env = ENV['RAILS_ENV'] || "production"
 namespace :db do
   desc "Migrate from schema.sql to current"
   redefine_task :migrate => :environment do
+    migrate_from_schema(rails_env)
+  end
+
+  desc "Setup a new database"
+  task :setup => :environment do
+    load_schema(rails_env)
+    load_metadata(rails_env)
     migrate_from_schema(rails_env)
   end
 
