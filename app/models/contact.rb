@@ -2,7 +2,7 @@ require 'ajax_scaffold'
 
 class Contact < ActiveRecord::Base
   has_and_belongs_to_many :contact_types
-  has_many :contact_methods, :dependent => true
+  has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
 
   # many to many self referential relationship (source and sink can be

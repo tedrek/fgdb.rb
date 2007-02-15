@@ -151,7 +151,11 @@ class ContactsController < ApplicationController
 
   def _save
     @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
-    @contact.contact_methods = datalist_objects(ContactMethodsTag, :contact_id => @contact.id)
-    @contact.save
+    success = @contact.save
+    datalist_objects(ContactMethodsTag).each {|method|
+      method.contact = @contact
+      success &&= method.save
+    }
+    return success
   end
 end
