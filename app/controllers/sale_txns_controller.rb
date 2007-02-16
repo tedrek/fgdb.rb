@@ -164,9 +164,7 @@ class SaleTxnsController < ApplicationController
 
   def update_totals
     @sale_txn = SaleTxn.new(params[:sale_txn])
-    @sale_txn.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
-      ! gizmo.mostly_empty?
-    }
+    _apply_datalist_data(@sale_txn)
     render :update do |page|
       page.replace  header_totals_id(params), :partial => 'header_totals'
     end

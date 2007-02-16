@@ -103,7 +103,8 @@ function updateTotalsForContext( element, value,  event, context) {
   }
   else if (context == 'sale') {
     controller = 'sale_txns';
-    patts.push('money_tendered$');
+    patts.push('amount$');
+    patts.push('payment_method_id$');
     patts.push('unit_price$');
     patts.push('gizmo_count$');
     patts.push('discount_schedule_id$');
