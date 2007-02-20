@@ -32,7 +32,7 @@
   <% end %>
 </tr>
 <tr>
-  <td>Date: <%= Time.now.strftime("%m/%d/%Y") %></td>
+  <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
   <td align="center">
     <%= Inflector.titleize( @context ) %> <strong># <%= @txn.id %></strong>
   </td>
