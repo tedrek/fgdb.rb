@@ -2,8 +2,8 @@ require 'ajax_scaffold'
 
 class Donation < ActiveRecord::Base
   belongs_to :contact, :order => "surname, first_name"  
-  has_many :payments
-  has_many :gizmo_events
+  has_many :payments, :dependent => :destroy
+  has_many :gizmo_events, :dependent => :destroy
 
   def validate
     errors.add_on_empty("contact_id") unless( postal_code and ! postal_code.empty? )
