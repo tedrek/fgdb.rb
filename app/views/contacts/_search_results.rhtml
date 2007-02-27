@@ -4,7 +4,7 @@
   <%= render :partial => 'messages' %>
 </div>
 
-<div class="actions">
+<div id="<%= searchbox_search_results_div_id(params) %>" class="actions">
 
   <% if @search_results.length > 0 %>
     <%= render :partial => 'results_dropdown' %>

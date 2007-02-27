@@ -1,5 +1,8 @@
-<% if @search_results %>
-  <%= render :partial => "search_results" %>
-<% else %>
-  <%= render :partial => "searchbox" %>
-<% end %>
+<div id="<%= searchbox_div_id(params) %>">
+  <input type="hidden" id="<%= searchbox_hidden_id(params) %>" />
+  <% if @search_results %>
+    <%= render :partial => "search_results" %>
+  <% else %>
+    <%= render :partial => "searchbox" %>
+  <% end %>
+</div>
