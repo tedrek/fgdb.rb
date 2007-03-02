@@ -6,7 +6,7 @@ class Payment < ActiveRecord::Base
   validates_presence_of :payment_method_id
 
   def mostly_empty?
-    ! ( valid? and amount > 0 )
+    ! ( valid? && amount && (amount > 0) )
   end
 
   def to_s
