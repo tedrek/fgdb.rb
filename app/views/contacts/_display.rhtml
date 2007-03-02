@@ -33,9 +33,11 @@
   <%= link_to_remote "Edit",
     { :url => edit_options,
       :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
-  <% delete_options = @options.merge(:action => 'destroy') %>
-  <%= link_to_remote "Delete",
-    { :url => delete_options,
-      :confirm => 'Are you sure?',
-      :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
+  <% if @delete_enabled %>
+    <% delete_options = @options.merge(:action => 'destroy') %>
+    <%= link_to_remote "Delete",
+      { :url => delete_options,
+        :confirm => 'Are REALLY you sure you want to kill this person?',
+        :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
+  <% end %>
 </div>
