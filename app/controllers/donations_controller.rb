@@ -17,7 +17,7 @@ class DonationsController < ApplicationController
 
   def initialize
     @gizmo_context = GizmoContext.donation
-    @datalist_for_new_defaults = {
+    @event_defaults = {
       :gizmo_context_id => @gizmo_context.id
     }
   end
@@ -85,7 +85,7 @@ class DonationsController < ApplicationController
       @donation.attributes = params[:donation]
       @successful = _save
     rescue
-      flash[:error], @successful  = $!.to_s, false # + "<hr />" + $!.backtrace.join("<br />").to_s, false
+      flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
     end
     
     render :action => 'update.rjs'
@@ -133,7 +133,7 @@ class DonationsController < ApplicationController
   end
 
   def automatic_datalist_row
-    events = datalist_objects( GizmoEventsTag, @datalist_for_new_defaults )
+    events = datalist_objects( GizmoEventsTag, @event_defaults )
     if( events.empty? or
           events.find {|ev| (! ev.valid?) or ev.mostly_empty? } ) # the datalist form is not filled in completely
       render :text => ''
@@ -164,12 +164,10 @@ class DonationsController < ApplicationController
   #######
 
   def _apply_datalist_data(donation)
-    donation.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
-      ! gizmo.mostly_empty?
-    }
-    donation.payments = datalist_objects(PaymentsTag).find_all {|payment|
-      ! payment.mostly_empty?
-    }
+    apply_datalist_to_collection(PaymentsTag, donation.payments)
+    donation.payments.delete_if {|pmt| pmt.mostly_empty?}
+    apply_datalist_to_collection(GizmoEventsTag, donation.gizmo_events, @event_defaults)
+    donation.gizmo_events.delete_if {|gizmo| gizmo.mostly_empty?}
   end
 
   # common save logic
@@ -187,8 +185,12 @@ class DonationsController < ApplicationController
     @donation.reported_required_fee = @donation.calculated_required_fee
     @donation.reported_suggested_fee = @donation.calculated_suggested_fee
 
-    @successful = @donation.save
-    return @successful
+    success = @donation.save
+    if success
+      @donation.payments.each {|payment| payment.save}
+      @donation.gizmo_events.each {|gizmo| gizmo.save}
+    end
+    return success
   end
 
 end

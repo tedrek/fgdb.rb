@@ -17,7 +17,7 @@ class SaleTxnsController < ApplicationController
 
   def initialize
     @gizmo_context = GizmoContext.sale
-    @datalist_for_new_defaults = {
+    @event_defaults = {
       :gizmo_context_id => @gizmo_context.id
     }
   end
@@ -144,7 +144,7 @@ class SaleTxnsController < ApplicationController
   end
 
   def automatic_datalist_row
-    events = datalist_objects( GizmoEventsTag, @datalist_for_new_defaults )
+    events = datalist_objects( GizmoEventsTag, @event_defaults )
     if( events.empty? or
           events.find {|ev| (! ev.valid?) or ev.mostly_empty? } ) # the datalist form is not filled in completely
       render :text => ''
@@ -175,12 +175,10 @@ class SaleTxnsController < ApplicationController
   #######
 
   def _apply_datalist_data(sale)
-    sale.gizmo_events = datalist_objects(GizmoEventsTag, @datalist_for_new_defaults).find_all {|gizmo|
-      ! gizmo.mostly_empty?
-    }
-    sale.payments = datalist_objects(PaymentsTag).find_all {|payment|
-      ! payment.mostly_empty?
-    }
+    apply_datalist_to_collection(PaymentsTag, sale.payments)
+    sale.payments.delete_if {|pmt| pmt.mostly_empty?}
+    apply_datalist_to_collection(GizmoEventsTag, sale.gizmo_events, @event_defaults)
+    sale.gizmo_events.delete_if {|gizmo| gizmo.mostly_empty?}
   end
 
   # common save logic
@@ -198,8 +196,12 @@ class SaleTxnsController < ApplicationController
     @sale_txn.reported_amount_due = @sale_txn.calculated_total
     @sale_txn.reported_discount_amount = @sale_txn.calculated_discount
 
-    @successful = @sale_txn.save
-    return @successful
+    success = @sale_txn.save
+    if success
+      @sale_txn.payments.each {|payment| payment.save}
+      @sale_txn.gizmo_events.each {|gizmo| gizmo.save}
+    end
+    return success
   end
 
 end

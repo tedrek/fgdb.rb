@@ -18,7 +18,7 @@
       @donation.payments, :create_with => { :donation_id => @donation.id },
       :show_header => false, :render_aware => "payment_form",
       :add_text => "More payment methods",
-      :new_defaults => @datalist_for_new_defaults || nil) %>
+      :new_defaults => @event_defaults || {}) %>
   </div>
 
   <div class="form-element">
@@ -35,7 +35,7 @@
     @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
     :show_header => false, :render_aware => "gizmo_event_form",
     :add_text => "More gizmos",
-    :new_defaults => @datalist_for_new_defaults || nil) %>
+    :new_defaults => @event_defaults || {}) %>
 </div>
 
 <%= render :partial => 'header_totals' %>
