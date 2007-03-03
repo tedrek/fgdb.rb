@@ -24,6 +24,7 @@ class ReportsController < ApplicationController
   def income_report
     income_report_init
     @date_range_string, sale_conditions, donation_conditions = determine_date_range
+    #:MC: cannot get payment_methods to be included
     donations = Donation.find(:all, :conditions => donation_conditions, :include => [:payments])
     sales = SaleTxn.find(:all, :conditions => sale_conditions, :include => [:payments, :discount_schedule])
     sale_ids = []
@@ -123,7 +124,7 @@ class ReportsController < ApplicationController
     required = donation.reported_required_fee
     #:MC: no business rules for what order to evaluate these?
     donation.payments.each {|payment|
-      column = income_data[:donations][payment.payment_method.description]
+      column = income_data[:donations][PaymentMethod.descriptions[payment.payment_method_id]]
       fees = 0
       voluntary = 0
       if required <= 0
@@ -137,7 +138,7 @@ class ReportsController < ApplicationController
         voluntary = payment.amount - fees
       end
 
-      if payment.payment_method != PaymentMethod.invoice
+      if payment.payment_method_id != PaymentMethod.invoice.id
         income_data[:donations]['total real']['fees'] += fees
         income_data[:donations]['total real']['voluntary'] += voluntary
         income_data[:donations]['total real']['subtotals'] += payment.amount
@@ -146,7 +147,7 @@ class ReportsController < ApplicationController
       column['fees'] += fees
       column['voluntary'] += voluntary
       column['subtotals'] += payment.amount
-      totals[payment.payment_method.description]['total'] += payment.amount
+      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount
       totals['total real']['total'] += payment.amount
     }
   end
@@ -155,15 +156,15 @@ class ReportsController < ApplicationController
     totals = income_data[:grand_totals]
     #:MC: no business rules for what order to evaluate these?
     sale.payments.each {|payment|
-      column = income_data[:sales][payment.payment_method.description]
+      column = income_data[:sales][PaymentMethod.descriptions[payment.payment_method_id]]
       column[sale.discount_schedule.name] += payment.amount
       column['subtotals'] += payment.amount
-      if payment.payment_method != PaymentMethod.invoice
+      if payment.payment_method_id != PaymentMethod.invoice.id
         income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount
         income_data[:sales]['total real']['subtotals'] += sale.money_tendered
         totals['total real']['total'] += sale.money_tendered
       end
-      totals[payment.payment_method.description]['total'] += sale.money_tendered
+      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += sale.money_tendered
     }
   end
 
