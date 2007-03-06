@@ -56,7 +56,11 @@ module AjaxScaffold # :nodoc:
 
     def update_params(options)
       @scaffold_id = params[:scaffold_id] ||= options[:default_scaffold_id]
-      session[@scaffold_id] ||= {:sort => options[:default_sort], :sort_direction => options[:default_sort_direction], :page => 1}
+      session[@scaffold_id] ||= {
+        :sort => options[:default_sort],
+        :sort_direction => options[:default_sort_direction],
+        :page => 1
+      }
 
       store_or_get_from_session(@scaffold_id, :sort)
       store_or_get_from_session(@scaffold_id, :sort_direction)
