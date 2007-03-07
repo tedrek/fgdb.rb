@@ -10,6 +10,10 @@ class PaymentMethod < ActiveRecord::Base
     @@cash ||= find( :first, :conditions => ['description = ?', 'cash'] )
   end
 
+  def PaymentMethod.check
+    @@check ||= find( :first, :conditions => ['description = ?', 'check'] )
+  end
+
   def PaymentMethod.invoice
     @@invoice ||= find( :first, :conditions => ['description = ?', 'invoice'] )
   end
