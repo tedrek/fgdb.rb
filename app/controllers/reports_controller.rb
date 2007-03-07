@@ -63,7 +63,7 @@ class ReportsController < ApplicationController
   def income_report_init
     methods = PaymentMethod.find_all
     method_names = methods.map {|m| m.description}
-    @columns = Hash.new( method_names + ['total real'] )
+    @columns = Hash.new( method_names.insert(-2, 'total real').insert(-1, 'total') )
     @width = @columns[nil].length
     @rows = {}
     @rows[:donations] = ['voluntary', 'fees', 'subtotals']
@@ -142,13 +142,17 @@ class ReportsController < ApplicationController
         income_data[:donations]['total real']['fees'] += fees
         income_data[:donations]['total real']['voluntary'] += voluntary
         income_data[:donations]['total real']['subtotals'] += payment.amount
+        totals['total real']['total'] += payment.amount
       end
 
+      income_data[:donations]['total']['fees'] += fees
+      income_data[:donations]['total']['voluntary'] += voluntary
+      income_data[:donations]['total']['subtotals'] += payment.amount
       column['fees'] += fees
       column['voluntary'] += voluntary
       column['subtotals'] += payment.amount
       totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount
-      totals['total real']['total'] += payment.amount
+      totals['total']['total'] += payment.amount
     }
   end
 
@@ -161,10 +165,13 @@ class ReportsController < ApplicationController
       column['subtotals'] += payment.amount
       if payment.payment_method_id != PaymentMethod.invoice.id
         income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount
-        income_data[:sales]['total real']['subtotals'] += sale.money_tendered
-        totals['total real']['total'] += sale.money_tendered
+        income_data[:sales]['total real']['subtotals'] += payment.amount
+        totals['total real']['total'] += payment.amount
       end
-      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += sale.money_tendered
+      income_data[:sales]['total'][sale.discount_schedule.name] += payment.amount
+      income_data[:sales]['total']['subtotals'] += payment.amount
+      totals['total']['total'] += payment.amount
+      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount
     }
   end
 
