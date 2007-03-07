@@ -63,7 +63,7 @@ class ReportsController < ApplicationController
   def income_report_init
     methods = PaymentMethod.find_all
     method_names = methods.map {|m| m.description}
-    @columns = Hash.new( method_names.insert(-2, 'total real').insert(-1, 'total') )
+    @columns = Hash.new( method_names.insert(2, 'till total').insert(-2, 'total real').insert(-1, 'total') )
     @width = @columns[nil].length
     @rows = {}
     @rows[:donations] = ['voluntary', 'fees', 'subtotals']
@@ -145,6 +145,14 @@ class ReportsController < ApplicationController
         totals['total real']['total'] += payment.amount
       end
 
+      if( (payment.payment_method_id == PaymentMethod.cash.id) ||
+          (payment.payment_method_id == PaymentMethod.check.id) )
+        income_data[:donations]['till total']['fees'] += fees
+        income_data[:donations]['till total']['voluntary'] += voluntary
+        income_data[:donations]['till total']['subtotals'] += payment.amount
+        totals['till total']['total'] += payment.amount
+      end
+
       income_data[:donations]['total']['fees'] += fees
       income_data[:donations]['total']['voluntary'] += voluntary
       income_data[:donations]['total']['subtotals'] += payment.amount
@@ -167,6 +175,12 @@ class ReportsController < ApplicationController
         income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount
         income_data[:sales]['total real']['subtotals'] += payment.amount
         totals['total real']['total'] += payment.amount
+      end
+      if( (payment.payment_method_id == PaymentMethod.cash.id) ||
+          (payment.payment_method_id == PaymentMethod.check.id) )
+        income_data[:sales]['till total'][sale.discount_schedule.name] += payment.amount
+        income_data[:sales]['till total']['subtotals'] += payment.amount
+        totals['till total']['total'] += payment.amount
       end
       income_data[:sales]['total'][sale.discount_schedule.name] += payment.amount
       income_data[:sales]['total']['subtotals'] += payment.amount
