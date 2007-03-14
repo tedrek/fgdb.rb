@@ -1,9 +1,1 @@
-  <div class="form-element">
-    <%= select "defaults", "date_type", @date_types %>
-  </div>
-  <%= observe_field "defaults_date_type", :url => {
-      :action => 'select_date_type'
-    },
-    :with => 'date_type' %>
-
-  <%= render :partial => 'daily_income' %>
+  <%= date_or_date_range_picker("defaults") %>

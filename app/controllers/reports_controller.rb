@@ -3,30 +3,23 @@ class ReportsController < ApplicationController
   layout :report_layout_choice
   def report_layout_choice
     case action_name
-    when /report$/ then 'with_sidebar.rhtml'
+    when /report$/ then with_sidebar
     else                'reports_form.rhtml'
     end
   end
 
   def income
-    @date_types = ['daily', 'monthly', 'arbitrary']
-    date_choice_init
-  end
-
-  def select_date_type
-    date_choice_init
-    render :update do |page|
-      #:MC: scrub this data first?
-      page.replace_html "date_choice", :partial => params[:date_type] + "_income"
-    end
+    @defaults = Conditions.new
   end
 
   def income_report
+    @defaults = Conditions.new
+    @defaults.apply_conditions(params[:defaults])
     income_report_init
-    @date_range_string, sale_conditions, donation_conditions = determine_date_range
+    @date_range_string = @defaults.to_s
     #:MC: cannot get payment_methods to be included
-    donations = Donation.find(:all, :conditions => donation_conditions, :include => [:payments])
-    sales = SaleTxn.find(:all, :conditions => sale_conditions, :include => [:payments, :discount_schedule])
+    donations = Donation.find(:all, :conditions => @defaults.conditions(Donation), :include => [:payments])
+    sales = SaleTxn.find(:all, :conditions => @defaults.conditions(SaleTxn), :include => [:payments, :discount_schedule])
     sale_ids = []
     donation_ids = []
     donations.each do |donation|
@@ -43,22 +36,6 @@ class ReportsController < ApplicationController
   end
 
   protected
-
-  def date_choice_init
-    @defaults = Object.new
-    def @defaults.date
-      Date.today
-    end
-    def @defaults.month
-      Date.today
-    end
-    def @defaults.year
-      Date.today - (256*2)
-    end
-    def @defaults.method_missing(*args)
-      nil
-    end
-  end
 
   def income_report_init
     methods = PaymentMethod.find_all

@@ -4,7 +4,7 @@
 div#logo {
 position: absolute;
 top: 0px;
-left: 0px;
+left: 5px;
 padding: 2px;
 }
 div#sidebar {
@@ -18,7 +18,7 @@ background-color: #49F;
 div#content {
 position: absolute;
 top: 40px;
-left: 120px;
+left: 130px;
 padding: 10px;
 }
 div#sidebar a {
