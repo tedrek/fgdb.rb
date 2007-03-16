@@ -32,6 +32,11 @@ module AjaxScaffold # :nodoc:
     def current_sort_direction(params)
       session[params[:scaffold_id]][:sort_direction]
     end
+
+    def current_conditions(options)
+      session[@scaffold_id][:conditions]
+    end
+
   end
 
   module Controller

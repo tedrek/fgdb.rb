@@ -38,6 +38,22 @@
 <div class="ajax-scaffold-footer">
   <%= render :partial => 'pagination_links', :locals => { :paginator => @paginator } %>
 </div>
+<div class="list_refinement">
+  <% refine_params = params.merge({ :page => 1, :action => 'component_update' }) %>
+  <%= form_remote_tag :url => { :action => 'component_update' },
+        :loading => "$('#{loading_indicator_id( refine_params )}').show()",
+        :update => scaffold_content_id( refine_params ) %>
+    <%= hidden_field_tag "scaffold_id", params[:scaffold_id] %>
+    <%= hidden_field_tag "page", 1 %>
+
+    <%= date_or_date_range_picker 'conditions' %>
+
+    <p class="form-footer">
+      <%= submit_tag "Refine", :class => "submit" %>
+      <%= loading_indicator_tag refine_params %>
+    </p>
+  <%= end_form_tag %>
+</div>
 <% if @show_wrapper %>
 </div>
 </div>

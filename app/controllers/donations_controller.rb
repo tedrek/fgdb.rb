@@ -202,8 +202,4 @@ class DonationsController < ApplicationController
     return success
   end
 
-  def current_conditions(options)
-    session[@scaffold_id][:conditions]
-  end
-
 end

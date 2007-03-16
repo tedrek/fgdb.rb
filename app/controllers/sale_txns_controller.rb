@@ -23,7 +23,13 @@ class SaleTxnsController < ApplicationController
   end
   
   def update_params_filter
-    update_params :default_scaffold_id => "sale_txn", :default_sort => nil, :default_sort_direction => "asc"
+    update_params( :default_scaffold_id => "sale_txn",
+                   :default_sort => nil,
+                   :default_sort_direction => "asc" )
+    session[@scaffold_id][:conditions] ||= Conditions.new
+    if params[:conditions]
+      session[@scaffold_id][:conditions].apply_conditions(params[:conditions])
+    end
   end
 
   def index
@@ -42,8 +48,11 @@ class SaleTxnsController < ApplicationController
   def component  
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = SaleTxn.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    @conditions = current_conditions(params)
     @sort_by = @sort_sql.nil? ? "#{SaleTxn.table_name}.#{SaleTxn.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
-    @paginator, @sale_txns = paginate(:sale_txns, :order => @sort_by, :per_page => default_per_page)
+    @paginator, @sale_txns = paginate( :sale_txns, :order => @sort_by,
+                                       :per_page => default_per_page,
+                                       :conditions => @conditions.conditions(SaleTxn) )
     
     render :action => "component", :layout => false
   end
