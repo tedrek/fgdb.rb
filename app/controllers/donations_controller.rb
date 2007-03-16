@@ -23,7 +23,13 @@ class DonationsController < ApplicationController
   end
   
   def update_params_filter
-    update_params :default_scaffold_id => "donation", :default_sort => nil, :default_sort_direction => "asc"
+    update_params( :default_scaffold_id => "donation",
+                   :default_sort => nil,
+                   :default_sort_direction => "asc" )
+    session[@scaffold_id][:conditions] ||= Conditions.new
+    if params[:conditions]
+      session[@scaffold_id][:conditions].apply_conditions(params[:conditions])
+    end
   end
 
   def index
@@ -42,8 +48,11 @@ class DonationsController < ApplicationController
   def component  
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = Donation.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    @conditions = current_conditions(params)
     @sort_by = @sort_sql.nil? ? "#{Donation.table_name}.#{Donation.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
-    @paginator, @donations = paginate(:donations, :order => @sort_by, :per_page => default_per_page)
+    @paginator, @donations = paginate( :donations, :order => @sort_by,
+                                       :per_page => default_per_page,
+                                       :conditions => @conditions.conditions(Donation) )
     
     render :action => "component", :layout => false
   end
@@ -191,6 +200,10 @@ class DonationsController < ApplicationController
       @donation.gizmo_events.each {|gizmo| gizmo.save}
     end
     return success
+  end
+
+  def current_conditions(options)
+    session[@scaffold_id][:conditions]
   end
 
 end

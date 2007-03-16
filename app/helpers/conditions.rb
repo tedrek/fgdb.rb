@@ -10,6 +10,7 @@ class Conditions
   def apply_conditions(options)
     begin
       options.each do |name,val|
+        val = val.to_i if( val.to_i.to_s == val )
         self.send(name+"=", val)
       end
     rescue NoMethodError
