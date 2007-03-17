@@ -21,13 +21,8 @@ class Conditions
   def conditions(klass)
     case @date_type
     when 'daily'
-      date = Date.parse(@date.to_s)
-      if date == Date.today
-        start_date = date
-        end_date = date + 1
-      else
-        end_date = date + 1
-      end
+      start_date = Date.parse(@date.to_s)
+      end_date = start_date + 1
     when 'monthly'
       year = (@year || Date.today.year).to_i
       start_date = Time.local(year, @month, 1)
