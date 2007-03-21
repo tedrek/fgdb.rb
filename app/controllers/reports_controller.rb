@@ -61,41 +61,6 @@ class ReportsController < ApplicationController
     end
   end
 
-  def determine_date_range
-    if params[:defaults][:date]
-      date = Date.parse(params[:defaults][:date])
-      if date == Date.today
-        desc = "today (#{date})"
-        start_date = date
-        end_date = date + 1
-      else
-        desc = start_date = date
-        end_date = date + 1
-      end
-    elsif params[:defaults][:start_date] && params[:defaults][:end_date]
-      start_date = Date.parse(params[:defaults][:start_date])
-      end_date = Date.parse(params[:defaults][:end_date])
-      desc = "from #{start_date} to #{end_date}"
-    elsif params[:defaults][:month]
-      year = (params[:defaults][:year] || Date.today.year).to_i
-      start_date = Time.local(year, params[:defaults][:month], 1)
-      if params[:defaults][:month].to_i == 12
-        month = 1
-      else
-        month = 1 + params[:defaults][:month].to_i
-      end
-      end_date = Time.local(year + 1, month, 1)
-      desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
-    end
-    return desc, [
-      "#{SaleTxn.table_name}.created_at >= ? AND #{SaleTxn.table_name}.created_at < ?",
-      start_date, end_date
-    ], [
-      "#{Donation.table_name}.created_at >= ? AND #{Donation.table_name}.created_at < ?",
-      start_date, end_date
-    ]
-  end
-
   def add_donation_to_data(donation, income_data)
     totals = income_data[:grand_totals]
     required = donation.reported_required_fee

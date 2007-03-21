@@ -29,10 +29,12 @@
   </div>
   <br />
   <%= loading_indicator_tag(@options) %>
-  <% edit_options = @options.merge(:action => 'edit') %>
-  <%= link_to_remote "Edit",
-    { :url => edit_options,
-      :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
+  <% if (! params.has_key?(:display_edit)) or (params[:display_edit] == 'true') %>
+    <% edit_options = @options.merge(:action => 'edit') %>
+    <%= link_to_remote "Edit",
+      { :url => edit_options,
+        :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
+  <% end %>
   <% if @delete_enabled %>
     <% delete_options = @options.merge(:action => 'destroy') %>
     <%= link_to_remote "Delete",

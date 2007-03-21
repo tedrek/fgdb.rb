@@ -5,11 +5,11 @@
       %>', event); return contactKeyListener(event);" />
   <button name="contact_searchbox_search" type="button"
     id="<%= searchbox_search_button_id(params) %>"
-    onclick="<%= remote_function :url => {
+    onclick="<%= remote_function :url => params.merge( {
         :action => 'search_results',
         :controller => '/contacts',
         :limit_to_type => params[:limit_to_type],
-        :scaffold_id => @scaffold_id },
+        :scaffold_id => @scaffold_id } ),
       :with => "'query=' + $('#{searchbox_field_id(params)}').value",
       :loading => "Element.show('#{loading_indicator_id(params)}');",
       :complete => "Element.hide('#{loading_indicator_id(params)}');"

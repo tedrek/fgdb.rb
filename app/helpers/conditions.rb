@@ -1,11 +1,28 @@
 class Conditions
   def initialize
+    @limit_type = 'date range'
     @date = Date.today
     @date_type = 'daily'
     @month = Date.today
     @year = Date.today
   end
+  # primary selection
+  attr_accessor :limit_type
+  # date range selections
   attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
+  # contact attrs
+  attr_accessor :contact_id
+
+  def contact
+    if contact_id
+      if( (! @contact) || (contact_id != @contact.id) )
+        @contact = Contact.find(contact_id)
+      end
+    else
+      @contact = nil
+    end
+      return @contact
+  end
 
   def apply_conditions(options)
     begin
@@ -19,6 +36,15 @@ class Conditions
   end
 
   def conditions(klass)
+    case @limit_type
+    when 'date range'
+      date_range_conditions(klass)
+    when 'contact'
+      contact_conditions(klass)
+    end
+  end
+
+  def date_range_conditions(klass)
     case @date_type
     when 'daily'
       start_date = Date.parse(@date.to_s)
@@ -40,7 +66,20 @@ class Conditions
              start_date, end_date ]
   end
 
+  def contact_conditions(klass)
+    return [ "#{klass.table_name}.contact_id = ?", contact_id ]
+  end
+
   def to_s
+    case @limit_type
+    when 'date range'
+      date_range_to_s
+    when 'contact'
+      contact_to_s
+    end
+  end
+
+  def date_range_to_s
     case @date_type
     when 'daily'
       desc = Date.parse(@date.to_s).to_s
@@ -56,5 +95,9 @@ class Conditions
       desc = 'unknown date type'
     end
     return desc
+  end
+
+  def contact_to_s
+    return "belonging to %s" % contact.display_name
   end
 end

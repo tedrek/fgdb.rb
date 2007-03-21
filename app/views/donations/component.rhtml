@@ -46,7 +46,15 @@
     <%= hidden_field_tag "scaffold_id", params[:scaffold_id] %>
     <%= hidden_field_tag "page", 1 %>
 
-    <%= date_or_date_range_picker 'conditions' %>
+    <%= select_visibility( 'conditions', 'limit_type', {
+          'date range' => date_or_date_range_picker('conditions'),
+          'contact' => render_component( :controller => '/contacts', :action => 'search',
+              :params => { :select_name => "conditions[contact_id]", :contact => @conditions.contact,
+                :search_label => "Find the donor:", :select_label => "Select the donor:",
+                :display_searchbox => true, :display_edit => false, :display_create => false
+              }
+            )
+          } ) %>
 
     <p class="form-footer">
       <%= submit_tag "Refine", :class => "submit" %>
