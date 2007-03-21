@@ -14,63 +14,57 @@ module ApplicationHelper
     "#{options[:scaffold_id]}_form_tbody"
   end
 
+  # due to prototype suckness, 'extend' may not be used as a choice name.
+  def select_visibility(obj_name, method_name, choices = {})
+    #:TODO: scrub this first
+    obj = eval( "@#{obj_name}" )
+
+    js_observe_fuct = 'var choices = new Array("%s");' % choices.keys.join('", "')
+    js_observe_fuct += "for( var i = 0; i < choices.length; i++)"
+    js_observe_fuct += "{var choice = choices[i]; if(choice == 'extend') {}"
+    js_observe_fuct += "else if(choice == value) {$('#{obj_name}_' + choice + '_choice').show();}"
+    js_observe_fuct += "else {$('#{obj_name}_' + choice + '_choice').hide();} }"
+
+    # type choice
+    display = %Q{ <div class="form-element"> %s %s </div> } %
+      [ select( obj_name, method_name, choices.keys ),
+        observe_field( "#{obj_name}_#{method_name}",
+                       :function => js_observe_fuct,
+                       :with => method_name )]
+
+    this_choice = obj.send(method_name)
+    choices.each {|choice, content|
+      if this_choice == choice
+        visibility = ''
+      else
+        visibility = 'style="display:none;"'
+      end
+      display += %Q{ <div id="%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, choice, visibility, content ]
+    }
+
+    return display
+  end
+
   # the object named "@#{obj_name}" must be able to respond to all the
   # fields listed below, or you should provide alternate fieldnames.
   def date_or_date_range_picker(obj_name, fields = {})
-    @date_types = ['daily', 'monthly', 'arbitrary']
-    #:TODO: scrub this first
+    date_types = {}
     obj = eval( "@#{obj_name}" )
-    visibility = {}
-    @date_types.each {|type|
-      if obj.date_type == type
-        visibility[type.to_sym] = ''
-      else
-        visibility[type.to_sym] = 'style="display:none;"'
-      end
-    }
     fields = { :date => 'date',
       :start_date => 'start_date', :end_date => 'end_date',
       :month => 'month', :year => 'year',
       :date_type => 'date_type' }.merge(fields)
 
-    # type choice
-    display = %Q{ <div class="form-element"> %s %s </div> } %
-      [ select( obj_name, fields[:date_type], @date_types ),
-        observe_field( "#{obj_name}_#{fields[:date_type]}",
-                       #:TODO: cleanify (and maybe learn js)
-                       :function => "
-if(value == 'monthly') {
-  hide1 = 'arbitrary';
-  hide2 = 'daily';
-} else if(value == 'arbitrary') {
-  hide1 = 'monthly';
-  hide2 = 'daily';
-} else if(value == 'daily') {
-  hide1 = 'arbitrary';
-  hide2 = 'monthly';
-}
-$('#{obj_name}_' + value + '_choice').show();
-$('#{obj_name}_' + hide1 + '_choice').hide();
-$('#{obj_name}_' + hide2 + '_choice').hide();",
-                       :with => 'date_type' )]
     # daily
-    display += %Q{ <div id="%s_daily_choice" class="form-element" %s>%s</div> } %
-      [ obj_name, visibility[:daily],
-        datebocks_field(obj_name, fields[:date]) ]
-    # monthly
-    display += %Q{ <div id="%s_monthly_choice" %s>
-      <div class="form-element">%s</div><div class="form-element">%s</div></div> } %
-      [ obj_name, visibility[:monthly],
-        select_month(obj.send(fields[:month]), :prefix => obj_name),
-        select_year(obj.send(fields[:year]), :prefix => obj_name) ]
+    date_types['daily'] = datebocks_field(obj_name, fields[:date])
+    date_types['monthly'] = select_month(obj.send(fields[:month]), :prefix => obj_name) +
+      select_year(obj.send(fields[:year]), :prefix => obj_name)
     # arbitrary
-    display += %Q{ <div id="%s_arbitrary_choice" %s class="form-element">
-      From: %s To: %s</div> } %
-      [ obj_name, visibility[:arbitrary],
-        datebocks_field(obj_name, fields[:start_date]),
+    date_types['arbitrary'] = "From: %s To: %s" %
+      [ datebocks_field(obj_name, fields[:start_date]),
         datebocks_field(obj_name, fields[:end_date]) ]
 
-    return display
+    return select_visibility(obj_name, fields[:date_type], date_types)
   end
 
   def time_or_time_range_picker(obj_name, fields)
