@@ -4,11 +4,10 @@
     <!--[form:donation]-->
 
 <div id="<%= donation_contact_searchbox_id(@options) %>">
-  <% if @donation.postal_code %>
-    <%= render :partial => 'anonymous' %>
-  <% else %>
-    <%= render :partial => 'contact_search' %>
-  <% end %>
+  <label for="donation_contact_type">What kind of contact?</label>
+  <%= select_visibility( 'donation', 'contact_type',
+        :anonymous => render( :partial => 'anonymous' ),
+        :named => render( :partial => 'contact_search' ) ) %>
 </div>
 
 <div class="form-extras">

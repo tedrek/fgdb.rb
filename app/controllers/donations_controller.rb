@@ -116,31 +116,6 @@ class DonationsController < ApplicationController
     return render(:action => 'cancel.rjs')
   end
 
-  def anonymize
-    @options = params
-    if params[:donation_id]
-      @donation = Donation.find(params[:donation_id])
-    else
-      @donation = Donation.new
-      @donation.postal_code = 97214
-    end
-    render :update do |page|
-      page.replace_html donation_contact_searchbox_id(params), :partial => 'anonymous'
-    end
-  end
-
-  def de_anonymize
-    @options = params
-    if params[:donation_id]
-      @donation = Donation.find(params[:donation_id])
-    else
-      @donation = Donation.new
-    end
-    render :update do |page|
-      page.replace_html donation_contact_searchbox_id(params), :partial => 'contact_search'
-    end
-  end
-
   def automatic_datalist_row
     events = datalist_objects( GizmoEventsTag, @event_defaults )
     if( events.empty? or

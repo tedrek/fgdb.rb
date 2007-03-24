@@ -116,31 +116,6 @@ class SaleTxnsController < ApplicationController
     return render(:action => 'cancel.rjs')
   end
 
-  def anonymize
-    @options = params
-    if params[:sale_txn_id]
-      @sale_txn = SaleTxn.find(params[:sale_txn_id])
-    else
-      @sale_txn = SaleTxn.new
-      @sale_txn.postal_code = 97214
-    end
-    render :update do |page|
-      page.replace_html sale_txn_contact_searchbox_id(params), :partial => 'anonymous'
-    end
-  end
-
-  def de_anonymize
-    @options = params
-    if params[:sale_txn_id]
-      @sale_txn = SaleTxn.find(params[:sale_txn_id])
-    else
-      @sale_txn = SaleTxn.new
-    end
-    render :update do |page|
-      page.replace_html sale_txn_contact_searchbox_id(params), :partial => 'contact_search'
-    end
-  end
-
   def update_discount_schedule
     if params[:sale_txn][:contact_id]
       default_discount_schedule = Contact.find(params[:sale_txn][:contact_id]).default_discount_schedule

@@ -5,11 +5,10 @@
 <div id="<%= sale_txn_contact_searchbox_id(@options) %>"
     onchange="new Ajax.Request('/sale_txns/update_discount_schedule/?' + Form.serialize('<%= element_form_id(@options)
       %>'), {asynchronous:true, evalScripts:true});">
-  <% if @sale_txn.postal_code %>
-    <%= render :partial => 'anonymous' %>
-  <% else %>
-    <%= render :partial => 'contact_search' %>
-  <% end %>
+  <label for="donation_contact_type">What kind of contact?</label>
+  <%= select_visibility( 'sale_txn', 'contact_type',
+        :anonymous => render( :partial => 'anonymous' ),
+        :named => render( :partial => 'contact_search' ) ) %>
 </div>
 
 <div class="datalist"
