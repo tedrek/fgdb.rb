@@ -6,13 +6,24 @@ class SaleTxn < ActiveRecord::Base
   belongs_to :discount_schedule
   has_many :gizmo_events, :dependent => :destroy
 
+  def initialize(*args)
+    @contact_type = 'named'
+    super(*args)
+  end
+
+  attr_accessor :contact_type  #anonymous or named
+
   def validate
-    errors.add_on_empty("contact_id") unless( postal_code and ! postal_code.empty? )
+    if contact_type == 'named'
+      errors.add_on_empty("contact_id")
+    else
+      errors.add_on_empty("postal_code")
+    end
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
     errors.add("payments", "are too much") if overpaid?
     errors.add("payments", "may only have one invoice") if invoices.length > 1
-    errors.add("payments", "should include some reason to call this a sale") if payments.empty?
-    errors.add("gizmos", "should include some reason to call this a sale") if gizmo_events.empty?
+    errors.add("payments", "should include something") if payments.empty?
+    errors.add("gizmos", "should include something") if gizmo_events.empty?
   end
 
   def buyer

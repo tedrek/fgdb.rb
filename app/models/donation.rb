@@ -5,8 +5,19 @@ class Donation < ActiveRecord::Base
   has_many :payments, :dependent => :destroy
   has_many :gizmo_events, :dependent => :destroy
 
+  def initialize(*args)
+    @contact_type = 'named'
+    super(*args)
+  end
+
+  attr_accessor :contact_type  #anonymous or named
+
   def validate
-    errors.add_on_empty("contact_id") unless( postal_code and ! postal_code.empty? )
+    if contact_type == 'named'
+      errors.add_on_empty("contact_id")
+    else
+      errors.add_on_empty("postal_code")
+    end
     errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid?)
     errors.add("payments", "or gizmos should include some reason to call this a donation") if
       gizmo_events.empty? and payments.empty?
