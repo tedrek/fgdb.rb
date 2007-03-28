@@ -1,10 +1,10 @@
 <% # The following is used when the browser doesn't have javascript enabled %>
 <% classAttr = cycle("", " even") %>
-<% @options = params.merge(:controller => '/sale_txns', :action => "view", :id => sale_txn.send("#{SaleTxn.primary_key}")) %>
+<% @options = params.merge(:controller => '/transaction', :action => "view", :id => sale.send("#{SaleTxn.primary_key}"), :transaction_type => @transaction_type) %>
 
-<tr class="<%= sale_txn.displayed_payment_method %><%= classAttr %>"
+<tr class="<%= sale.displayed_payment_method %><%= classAttr %>"
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
-  <% for scaffold_column in scaffold_columns %>
+  <% for scaffold_column in scaffold_columns(@transaction_type) %>
     <% column_value = eval(scaffold_column.eval) rescue nil %>
     <td class="<%= column_class(scaffold_column.name, column_value, current_sort(params), scaffold_column.class_name) %>" >
       <%= format_column(column_value, scaffold_column.sanitize?) %>

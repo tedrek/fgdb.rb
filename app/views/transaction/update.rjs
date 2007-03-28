@@ -4,7 +4,9 @@
 
 if @successful
   page.remove element_row_id(@options)
-  page.insert_html :top, scaffold_tbody_id(@options), :partial => 'donation', :locals => { :hidden => true, :donation => @transaction }
+  page.insert_html( :top, scaffold_tbody_id(@options),
+    :partial => @transaction_type,
+    :locals => { :hidden => true, @transaction_type.to_sym => @transaction } )
   page.remove element_row_id(@update_options)
   page.show element_row_id(@options)
   page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');" 

@@ -32,7 +32,7 @@
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'donation_gizmo_events',
     @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
-    :show_header => false, :render_aware => "gizmo_event_form",
+    :show_header => false, :render_aware => "donation_gizmo_event_form",
     :add_text => "More gizmos",
     :new_defaults => @event_defaults || {}) %>
 </div>

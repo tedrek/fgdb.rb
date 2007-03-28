@@ -38,7 +38,6 @@ class TransactionController < ApplicationController
 
   def sales
     set_transaction_type( 'sale' )
-    redirect_to :action => 'list'
   end
   
   # All posts to change scaffold level variables like sort values or page changes go through this action
@@ -117,6 +116,17 @@ class TransactionController < ApplicationController
     @successful = true
     
     return render(:action => 'cancel.rjs')
+  end
+
+  def update_discount_schedule
+    if params[transaction_type][:contact_id]
+      default_discount_schedule = Contact.find(params[transaction_type][:contact_id]).default_discount_schedule
+    else
+      default_discount_schedule = DiscountSchedule.no_discount
+    end
+    render :update do |page|
+      page["#{transaction_type}_discount_schedule_id"].value = default_discount_schedule.id
+    end
   end
 
   def automatic_datalist_row
@@ -204,8 +214,14 @@ class TransactionController < ApplicationController
       @transaction.txn_completed_at = Time.now
     end
 
-    @transaction.reported_required_fee = @transaction.calculated_required_fee
-    @transaction.reported_suggested_fee = @transaction.calculated_suggested_fee
+    case @transaction_type
+    when 'sale'
+      @transaction.reported_amount_due = @transaction.calculated_total
+      @transaction.reported_discount_amount = @transaction.calculated_discount
+    when 'donation'
+      @transaction.reported_required_fee = @transaction.calculated_required_fee
+      @transaction.reported_suggested_fee = @transaction.calculated_suggested_fee
+    end
 
     success = @transaction.save
     if success

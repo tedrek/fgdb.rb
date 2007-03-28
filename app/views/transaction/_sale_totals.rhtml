@@ -1,0 +1,31 @@
+<div id="<%= totals_id('sale') %>" class="totals">
+  <table cellpadding="0" border="0" cellspacing="0"> 
+    <tr>
+      <td>Subtotal:</td>
+      <td class="amount">
+        <%= number_to_currency(@sale.calculated_subtotal) %></td>
+    </tr> 
+    <tr>
+      <td>minus discount of <%= number_to_currency(@sale.calculated_discount) %>:</td>
+      <td class="amount required">
+        <%= number_to_currency(@sale.calculated_total) %></td>
+      </td>
+    </tr>
+    <% if @sale.money_tendered < @sale.calculated_total %>
+      <tr>
+        <td class="below_req">Due:</td>
+        <td class="amount below_req">
+          <%= number_to_currency(@sale.money_tendered - @sale.calculated_total) %></td>
+        </td>
+      </tr>
+    <% elsif @sale.money_tendered > @sale.calculated_total %>
+      <tr>
+        <td class="below_req">Overpayment:</td>
+        <td class="amount below_req">
+          <%= number_to_currency(@sale.money_tendered - @sale.calculated_total) %></td>
+        </td>
+      </tr>
+    <% else %>
+    <% end %>
+  </table>
+</div>

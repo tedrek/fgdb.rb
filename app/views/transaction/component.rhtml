@@ -12,7 +12,7 @@
   <table cellpadding="0" cellspacing="0">
   <tbody>
     <tr>
-      <td colspan="<%= num_columns %>" class="messages-container">
+      <td colspan="<%= num_columns(@transaction_type) %>" class="messages-container">
         <div id="<%= scaffold_messages_id(params) %>">
           <%= render :partial => 'messages' %>
         </div>
