@@ -29,15 +29,11 @@ class TransactionController < ApplicationController
   end
 
   def index
-    redirect_to :action => 'list'
-  end
-
-  def list
+    redirect_to :action => 'donations'
   end
 
   def donations
     set_transaction_type( 'donation' )
-    redirect_to :action => 'list'
   end
 
   def sales
