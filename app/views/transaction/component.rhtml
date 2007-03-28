@@ -49,8 +49,9 @@
     <%= select_visibility( 'conditions', 'limit_type', {
           'date range' => date_or_date_range_picker('conditions'),
           'contact' => render_component( :controller => '/contacts', :action => 'search',
-              :params => { :select_name => "conditions[contact_id]", :contact => @conditions.contact,
-                :display_searchbox => true, :display_edit => false, :display_create => false
+              :params => {
+                :select_name => "conditions[contact_id]", :contact => @conditions.contact,
+                :display_searchbox => 'true', :display_edit => 'false', :display_create => 'false'
               }
             )
           } ) %>
