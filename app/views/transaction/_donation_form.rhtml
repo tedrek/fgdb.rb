@@ -13,7 +13,7 @@
 <div class="form-extras">
   <div class="datalist">
     <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-    <%= datalist_for( :payment, 'donations_payments',
+    <%= datalist_for( :payment, 'donation_payments',
       @donation.payments, :create_with => { :donation_id => @donation.id },
       :show_header => false, :render_aware => "payment_form",
       :add_text => "More payment methods",
@@ -27,17 +27,17 @@
 </div>
 
 <div class="datalist"
-    onchange="new Ajax.Request('/donations/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
+    onchange="new Ajax.Request('/transaction/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
       %>'), {asynchronous:true, evalScripts:true});">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-  <%= datalist_for( :gizmo_event, 'donations_gizmo_events',
+  <%= datalist_for( :gizmo_event, 'donation_gizmo_events',
     @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
     :show_header => false, :render_aware => "gizmo_event_form",
     :add_text => "More gizmos",
     :new_defaults => @event_defaults || {}) %>
 </div>
 
-<%= render :partial => 'header_totals' %>
+<%= render :partial => 'donation_totals' %>
 
 <!--[eoform:donation]-->
 

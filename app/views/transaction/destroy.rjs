@@ -1,4 +1,4 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => params[:id] }
+@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => params[:id], :transaction_type => @transaction_type }
 
 if @successful
   page.remove element_row_id(@options)

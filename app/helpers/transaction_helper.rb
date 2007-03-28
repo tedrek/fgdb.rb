@@ -1,4 +1,4 @@
-module DonationsHelper
+module TransactionHelper
   include AjaxScaffold::Helper
   
   def num_columns
@@ -19,4 +19,7 @@ module DonationsHelper
     "#{options[:scaffold_id]}_contact_searchbox"
   end
 
+  def totals_id(context)
+    context + "_totals_div"
+  end
 end

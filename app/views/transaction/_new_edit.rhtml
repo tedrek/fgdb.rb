@@ -5,14 +5,14 @@
 <tr id="<%= element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
   <td id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
 
-    <%= form_remote_tag :url => @options.merge(:controller => '/donations'),
+    <%= form_remote_tag :url => @options.merge(:controller => '/transaction'),
           :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
-          :html => { :href => url_for(@options.merge(:controller => '/donations')),
+          :html => { :href => url_for(@options.merge(:controller => '/transaction')),
             :id => element_form_id(@options) } %>
 
     <%= javascript_tag "
       $('#{element_form_id(@options)}').onchange = function (e) {
-        context = 'donation';
+        context = '#{@transaction_type}';
         elem = Event.element(e);
         vals = Form.serialize(this);
         updateTotalsForContext( elem, vals, e, context );
@@ -20,7 +20,7 @@
     "%>
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
 
-      <h4><%= Inflector.titleize(@options[:action]) %> Donation <%= if @donation.id then "##{@donation.id}" end %></h4>
+      <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type) %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
 
       <% if request.xhr? %>
         <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
@@ -28,11 +28,11 @@
         <%= render :partial => 'form_messages' %>
       <% end %>
 
-      <%= render :partial => 'form' %>
+      <%= render :partial => "#{@transaction_type}_form", :locals => { "@#{@transaction_type}".to_sym => @transaction } %>
 
       <p class="form-footer">
         <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
-        <% cancel_params = @options.merge(:controller => '/donations', :action => 'cancel', :referring_action => @options[:action]) %>
+        <% cancel_params = @options.merge(:controller => '/transaction', :action => 'cancel', :referring_action => @options[:action]) %>
         <%= link_to_remote "Cancel",
           { :url => cancel_params,
             :loading => "Element.show('#{loading_indicator_id(@options)}');" },

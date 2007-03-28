@@ -3,9 +3,9 @@
   <div id="<%= scaffold_content_id(params) %>">
 <% end %>
   <div class="ajax-scaffold-header">
-    <h2>Donations</h2>
+    <h2><%= Inflector.titleize(@transaction_type) %></h2>
     <div class="actions">
-      <% new_params = params.merge(:controller => '/donations', :action => 'new') %>
+      <% new_params = params.merge(:controller => '/transaction', :action => 'new', :transaction_type => @transaction_type) %>
       <%= loading_indicator_tag(new_params) %>
     </div>
   </div>
@@ -16,7 +16,7 @@
         <div id="<%= scaffold_messages_id(params) %>">
           <%= render :partial => 'messages' %>
         </div>
-        <p id="<%= empty_message_id(params) %>" class="empty-message" <%= " style=\"display:none;\" " if !@donations.empty? %>>
+        <p id="<%= empty_message_id(params) %>" class="empty-message" <%= " style=\"display:none;\" " if !@transactions.empty? %>>
           No Entries
         </p>
       </td>
@@ -30,8 +30,8 @@
     </tr>
   </tbody>
   <tbody id="<%= scaffold_tbody_id(params) %>">
-    <% if !@donations.empty? %>
-      <%= render :partial => 'donation', :collection => @donations, :locals => { :hidden => false } %>
+    <% if !@transactions.empty? %>
+      <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false } %>
     <% end %>
   </tbody>
 </table>
@@ -39,7 +39,7 @@
   <%= render :partial => 'pagination_links', :locals => { :paginator => @paginator } %>
 </div>
 <div class="list_refinement">
-  <% refine_params = params.merge({ :page => 1, :action => 'component_update' }) %>
+  <% refine_params = params.merge({ :page => 1, :action => 'component_update', :transaction_type => @transaction_type }) %>
   <%= form_remote_tag :url => { :action => 'component_update' },
         :loading => "$('#{loading_indicator_id( refine_params )}').show()",
         :update => scaffold_content_id( refine_params ) %>
@@ -50,7 +50,6 @@
           'date range' => date_or_date_range_picker('conditions'),
           'contact' => render_component( :controller => '/contacts', :action => 'search',
               :params => { :select_name => "conditions[contact_id]", :contact => @conditions.contact,
-                :search_label => "Find the donor:", :select_label => "Select the donor:",
                 :display_searchbox => true, :display_edit => false, :display_create => false
               }
             )

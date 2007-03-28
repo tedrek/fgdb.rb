@@ -93,16 +93,14 @@ function updateTotalsIfMatch( element, value,  event, controller, patterns) {
 
 function updateTotalsForContext( element, value,  event, context) {
   var patts = [];
-  var controller = '';
+  var controller = 'transaction';
   if (context == 'donation') {
-    controller = 'donations';
     patts.push('amount$');
     patts.push('payment_method_id$');
     patts.push('gizmo_count$');
     patts.push('gizmo_type_id$');
   }
   else if (context == 'sale') {
-    controller = 'sale_txns';
     patts.push('amount$');
     patts.push('payment_method_id$');
     patts.push('unit_price$');

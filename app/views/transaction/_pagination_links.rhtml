@@ -1,4 +1,6 @@
-   <% pagination_params = params.merge(:controller => '/donations', :action => 'component_update') %>
+   <% pagination_params = params.merge(:controller => '/transaction',
+                                       :action => 'component_update',
+                                       :transaction_type => @transaction_type) %>
    <% indicator_params = pagination_params.merge(:action => 'pagination') %>
    <%= loading_indicator_tag indicator_params %>
    <%= link_to_remote('Previous',

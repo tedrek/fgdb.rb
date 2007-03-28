@@ -1,0 +1,3 @@
+page.replace( totals_id(@transaction_type),
+              :partial => @transaction_type + '_totals',
+              :locals => {"@#{@transaction_type}" => @transaction} )

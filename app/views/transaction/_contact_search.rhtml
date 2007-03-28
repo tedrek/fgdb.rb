@@ -1,0 +1,4 @@
+<div class="form-element">
+  <%= render_component( :controller => '/contacts', :action => 'search',
+    :params => { :select_name => (@transaction_type + "[contact_id]"), :contact => @transaction.contact } ) %>
+</div>

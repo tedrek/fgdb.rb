@@ -1,6 +1,8 @@
 <% # The following is used when the browser doesn't have javascript enabled %>
 <% classAttr = cycle("", " even") %>
-<% @options = params.merge(:controller => '/donations', :action => "view", :id => donation.send("#{Donation.primary_key}")) %>
+<% @options = params.merge(:controller => '/transaction', :action => "view",
+                           :id => donation.send("#{Donation.primary_key}"),
+                           :transaction_type => @transaction_type) %>
 
 <tr class="<%= donation.displayed_payment_method %><%= classAttr %>"
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
