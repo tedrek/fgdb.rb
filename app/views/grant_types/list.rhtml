@@ -1,0 +1,27 @@
+<h1>Listing grant_types</h1>
+
+<table>
+  <tr>
+  <% for column in GrantType.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for grant_type in @grant_types %>
+  <tr>
+  <% for column in GrantType.content_columns %>
+    <td><%=h grant_type.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => grant_type %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => grant_type %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => grant_type }, :confirm => 'Are you sure?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @grant_type_pages.current.previous } if @grant_type_pages.current.previous %>
+<%= link_to 'Next page', { :page => @grant_type_pages.current.next } if @grant_type_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New grant_type', :action => 'new' %>

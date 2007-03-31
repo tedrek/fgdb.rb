@@ -13,6 +13,10 @@ class GizmoEvent < ActiveRecord::Base
   has_many    :gizmo_events_gizmo_typeattrs,
               :dependent => :destroy
 
+  def display_name
+    "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
+  end
+
   def gizmo_attrs
     if gizmo_type and gizmo_context
       gizmo_type.relevant_attrs(gizmo_context)

@@ -2,6 +2,10 @@ require 'ajax_scaffold'
 
 module GizmoTransaction
 
+  def gizmos
+    gizmo_events.map {|ge| ge.display_name}.join(', ')
+  end
+
   def payment
     payments.join( ", " )
   end

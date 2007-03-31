@@ -1,0 +1,2 @@
+module GrantTypesHelper
+end

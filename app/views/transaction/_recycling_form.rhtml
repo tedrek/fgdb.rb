@@ -1,0 +1,27 @@
+<fieldset>
+
+  <div class="row">
+    <!--[form:recycling]-->
+
+<div class="form-extras">
+  <div class="form-element">
+    <label for="recycling_comments">Comments</label>
+    <%= text_area 'recycling', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+  </div>
+</div>
+
+<div class="datalist"
+    onchange="new Ajax.Request('/transaction/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
+      %>'), {asynchronous:true, evalScripts:true});">
+  <% params[:gizmo_context_id] ||= @gizmo_context.id %>
+  <%= datalist_for( :gizmo_event, 'recycling_gizmo_events',
+    @recycling.gizmo_events, :create_with => { :recycling_id => @recycling.id },
+    :show_header => false, :render_aware => "no_price_gizmo_event_form",
+    :add_text => "More gizmos",
+    :new_defaults => @event_defaults || {}) %>
+</div>
+
+<!--[eoform:recycling]-->
+
+  </div>
+</fieldset>

@@ -2,7 +2,9 @@
 
 <div class="contact_display">
   <% contact_type_names = @contact.contact_types.map {|c_t| c_t.description} %>
-  <div class="id"><%= if @contact.is_organization?
+  <div class="id"><%= if contact_type_names.include? 'recycler'
+      'recycler'
+    elsif @contact.is_organization?
       'organization'
     elsif contact_type_names.include? 'staff'
       'staff'

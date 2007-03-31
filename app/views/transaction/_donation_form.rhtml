@@ -3,7 +3,7 @@
   <div class="row">
     <!--[form:donation]-->
 
-<div id="<%= donation_contact_searchbox_id(@options) %>">
+<div id="<%= contact_searchbox_id(@options) %>">
   <label for="donation_contact_type">What kind of contact?</label>
   <%= select_visibility( 'donation', 'contact_type',
         :anonymous => render( :partial => 'anonymous' ),
@@ -21,7 +21,7 @@
   </div>
 
   <div class="form-element">
-    <label for="sale_txn_comments">Comments</label>
+    <label for="donation_comments">Comments</label>
     <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
   </div>
 </div>
@@ -32,7 +32,7 @@
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'donation_gizmo_events',
     @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
-    :show_header => false, :render_aware => "donation_gizmo_event_form",
+    :show_header => false, :render_aware => "no_price_gizmo_event_form",
     :add_text => "More gizmos",
     :new_defaults => @event_defaults || {}) %>
 </div>

@@ -19,18 +19,27 @@ module TransactionHelper
       [
        AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'id'),
        AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'payment',
-                                        :eval => 'donation.payment', :sortable => false),
+                                        :eval  => 'donation.payment', :sortable => false),
        AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'donor', :sortable => false),
        AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'created_at'),
+      ]
+    when 'grant'
+      [
+       AjaxScaffold::ScaffoldColumn.new(Grant, :name => 'id'),
+       AjaxScaffold::ScaffoldColumn.new(Grant, :name => 'grant_type', :sortable => false),
+       AjaxScaffold::ScaffoldColumn.new(Grant, :name => 'recipient', :sortable => false),
+       AjaxScaffold::ScaffoldColumn.new(Grant, :name => 'gizmos', :sortable => false),
+       AjaxScaffold::ScaffoldColumn.new(Grant, :name => 'created_at'),
+      ]
+    when 'recycling'
+      [
+       AjaxScaffold::ScaffoldColumn.new(Recycling, :name => 'gizmos', :sortable => false),
+       AjaxScaffold::ScaffoldColumn.new(Recycling, :name => 'created_at'),
       ]
     end
   end
 
-  def donation_contact_searchbox_id(options)
-    "#{options[:scaffold_id]}_contact_searchbox"
-  end
-
-  def sale_contact_searchbox_id(options)
+  def contact_searchbox_id(options)
     "#{options[:scaffold_id]}_contact_searchbox"
   end
 

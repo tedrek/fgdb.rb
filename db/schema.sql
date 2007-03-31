@@ -328,6 +328,21 @@ CREATE TABLE gizmo_types (
 SET default_with_oids = false;
 
 --
+-- Name: grant_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE grant_types (
+    id serial NOT NULL,
+    description character varying(48) NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
 -- Name: grants; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
 --
 
@@ -339,7 +354,8 @@ CREATE TABLE grants (
     updated_at timestamp with time zone DEFAULT now(),
     created_at timestamp with time zone DEFAULT now(),
     created_by bigint DEFAULT 1 NOT NULL,
-    updated_by bigint DEFAULT 1 NOT NULL
+    updated_by bigint DEFAULT 1 NOT NULL,
+    grant_type_id integer NOT NULL
 );
 
 
@@ -386,7 +402,6 @@ CREATE TABLE payments (
 
 CREATE TABLE recyclings (
     id serial NOT NULL,
-    contact_id integer,
     comments text,
     lock_version integer DEFAULT 0 NOT NULL,
     updated_at timestamp with time zone DEFAULT now(),
@@ -640,6 +655,14 @@ ALTER TABLE ONLY gizmo_typeattrs
 
 ALTER TABLE ONLY gizmo_types
     ADD CONSTRAINT pk_gizmo_types PRIMARY KEY (id);
+
+
+--
+-- Name: pk_grant_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY grant_types
+    ADD CONSTRAINT pk_grant_types PRIMARY KEY (id);
 
 
 --

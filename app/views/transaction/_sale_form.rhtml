@@ -2,7 +2,7 @@
   <div class="row">
     <!--[form:sale]-->
 
-<div id="<%= sale_contact_searchbox_id(@options) %>"
+<div id="<%= contact_searchbox_id(@options) %>"
     onchange="new Ajax.Request('/transaction/update_discount_schedule/?' + Form.serialize('<%= element_form_id(@options)
       %>'), {asynchronous:true, evalScripts:true});">
   <label for="donation_contact_type">What kind of contact?</label>

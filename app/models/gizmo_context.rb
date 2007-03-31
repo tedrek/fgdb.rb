@@ -17,10 +17,17 @@ class GizmoContext < ActiveRecord::Base
   end
 
   def GizmoContext.donation
-    find(:first, :conditions => ["name = ?", 'donation'])
+    @@donation ||= find(:first, :conditions => ["name = ?", 'donation'])
   end
 
   def GizmoContext.sale
-    find(:first, :conditions => ["name = ?", 'sale'])
+    @@sale ||= find(:first, :conditions => ["name = ?", 'sale'])
+  end
+
+  def GizmoContext.grant
+    @@grant ||= find(:first, :conditions => ["name = ?", 'grant'])
+  end
+  def GizmoContext.recycling
+    @@recycling ||= find(:first, :conditions => ["name = ?", 'recycling'])
   end
 end

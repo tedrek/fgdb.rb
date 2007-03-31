@@ -212,8 +212,10 @@ class TransactionController < ApplicationController
   end
 
   def _apply_datalist_data(transaction)
-    apply_datalist_to_collection(payments_tag, transaction.payments)
-    transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
+    if transaction.respond_to? :payments
+      apply_datalist_to_collection(payments_tag, transaction.payments)
+      transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
+    end
     apply_datalist_to_collection(gizmo_events_tag, transaction.gizmo_events, gizmo_event_defaults)
     transaction.gizmo_events.delete_if {|gizmo| gizmo.mostly_empty?}
   end
@@ -222,12 +224,14 @@ class TransactionController < ApplicationController
   def _save
     _apply_datalist_data(@transaction)
 
-    if @transaction.invoiced?
-      @transaction.txn_complete = false
-      @transaction.txn_completed_at = nil
-    else
-      @transaction.txn_complete = true
-      @transaction.txn_completed_at = Time.now
+    if @transaction.respond_to?(:payments)
+      if @transaction.invoiced?
+        @transaction.txn_complete = false
+        @transaction.txn_completed_at = nil
+      else
+        @transaction.txn_complete = true
+        @transaction.txn_completed_at = Time.now
+      end
     end
 
     case @transaction_type
@@ -241,7 +245,7 @@ class TransactionController < ApplicationController
 
     success = @transaction.save
     if success
-      @transaction.payments.each {|payment| payment.save}
+      @transaction.payments.each {|payment| payment.save} if @transaction.respond_to?( :payments )
       @transaction.gizmo_events.each {|gizmo| gizmo.save}
     end
     return success
