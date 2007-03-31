@@ -1,6 +1,5 @@
-require 'ajax_scaffold'
-
 class Donation < ActiveRecord::Base
+  include GizmoTransaction
   belongs_to :contact, :order => "surname, first_name"  
   has_many :payments, :dependent => :destroy
   has_many :gizmo_events, :dependent => :destroy
@@ -30,22 +29,6 @@ class Donation < ActiveRecord::Base
       "anonymous(#{postal_code})"
   end
 
-  def contact_information
-    if contact
-     contact.display_name_address
-    else
-      ["Anonymous (#{postal_code})"]
-    end
-  end
-
-  def displayed_payment_method
-    payments.map {|payment| payment.payment_method.description}.uniq.join( ' ' )
-  end
-
-  def payment
-    payments.join( ", " )
-  end
-
   def reported_total
     reported_required_fee + reported_suggested_fee
   end
@@ -64,22 +47,6 @@ class Donation < ActiveRecord::Base
 
   def calculated_total
     calculated_suggested_fee + calculated_required_fee
-  end
-
-  def real_payments
-    payments.select {|payment| payment.payment_method_id != PaymentMethod.invoice.id}
-  end
-
-  def invoices
-    payments.select {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
-  end
-
-  def money_tendered
-    real_payments.inject(0.0) {|total,payment| total + payment.amount}
-  end
-
-  def amount_invoiced
-    invoices.inject(0.0) {|total,payment| total + payment.amount}
   end
 
   def cash_donation_owed
@@ -108,10 +75,6 @@ class Donation < ActiveRecord::Base
 
   def invoiced?
     payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
-  end
-
-  def total_paid?
-    money_tendered >= calculated_total
   end
 
   def overunder(only_required = false)

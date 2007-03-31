@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
@@ -173,8 +173,6 @@ CREATE TABLE discount_schedules_gizmo_types (
 CREATE TABLE donations (
     id serial NOT NULL,
     contact_id integer,
-    payment_method_id integer,
-    money_tendered numeric(10,2) DEFAULT 0.0,
     postal_code character varying(25),
     reported_required_fee numeric(10,2) DEFAULT 0.0,
     reported_suggested_fee numeric(10,2) DEFAULT 0.0,
@@ -187,7 +185,6 @@ CREATE TABLE donations (
     created_by bigint DEFAULT 1 NOT NULL,
     updated_by bigint DEFAULT 1 NOT NULL
 );
-
 
 
 --
@@ -328,7 +325,25 @@ CREATE TABLE gizmo_types (
 );
 
 
+SET default_with_oids = false;
 
+--
+-- Name: grants; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE grants (
+    id serial NOT NULL,
+    contact_id integer,
+    comments text,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+SET default_with_oids = true;
 
 --
 -- Name: payment_methods; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
@@ -344,6 +359,44 @@ CREATE TABLE payment_methods (
     updated_by bigint DEFAULT 1 NOT NULL
 );
 
+
+SET default_with_oids = false;
+
+--
+-- Name: payments; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE payments (
+    id serial NOT NULL,
+    donation_id integer,
+    sale_txn_id integer,
+    amount numeric(10,2) DEFAULT 0.0 NOT NULL,
+    payment_method_id integer NOT NULL,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+--
+-- Name: recyclings; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+CREATE TABLE recyclings (
+    id serial NOT NULL,
+    contact_id integer,
+    comments text,
+    lock_version integer DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT now(),
+    created_at timestamp with time zone DEFAULT now(),
+    created_by bigint DEFAULT 1 NOT NULL,
+    updated_by bigint DEFAULT 1 NOT NULL
+);
+
+
+SET default_with_oids = true;
 
 --
 -- Name: relationship_types; Type: TABLE; Schema: public; Owner: stillflame; Tablespace: 
@@ -400,8 +453,6 @@ COMMENT ON TABLE relationships IS 'actual relationship between two contacts';
 CREATE TABLE sale_txns (
     id serial NOT NULL,
     contact_id integer,
-    payment_method_id integer,
-    money_tendered numeric(10,2) DEFAULT 0.0,
     postal_code character varying(25),
     reported_discount_amount numeric(10,2) DEFAULT 0.0,
     reported_amount_due numeric(10,2) DEFAULT 0.0 NOT NULL,
@@ -423,7 +474,6 @@ CREATE TABLE sale_txns (
 --
 
 COMMENT ON TABLE sale_txns IS 'each record represents one sales transaction';
-
 
 
 --
@@ -481,6 +531,14 @@ ALTER TABLE ONLY contact_types_contacts
 
 
 --
+-- Name: payments_pkey; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY payments
+    ADD CONSTRAINT payments_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: pk_contact_method_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
@@ -513,6 +571,102 @@ ALTER TABLE ONLY contacts
 
 
 --
+-- Name: pk_discount_schedules; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY discount_schedules
+    ADD CONSTRAINT pk_discount_schedules PRIMARY KEY (id);
+
+
+--
+-- Name: pk_discount_schedules_gizmo_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY discount_schedules_gizmo_types
+    ADD CONSTRAINT pk_discount_schedules_gizmo_types PRIMARY KEY (id);
+
+
+--
+-- Name: pk_donations; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY donations
+    ADD CONSTRAINT pk_donations PRIMARY KEY (id);
+
+
+--
+-- Name: pk_gizmo_attrs; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY gizmo_attrs
+    ADD CONSTRAINT pk_gizmo_attrs PRIMARY KEY (id);
+
+
+--
+-- Name: pk_gizmo_contexts; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY gizmo_contexts
+    ADD CONSTRAINT pk_gizmo_contexts PRIMARY KEY (id);
+
+
+--
+-- Name: pk_gizmo_events; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY gizmo_events
+    ADD CONSTRAINT pk_gizmo_events PRIMARY KEY (id);
+
+
+--
+-- Name: pk_gizmo_events_gizmo_typeattrs; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY gizmo_events_gizmo_typeattrs
+    ADD CONSTRAINT pk_gizmo_events_gizmo_typeattrs PRIMARY KEY (id);
+
+
+--
+-- Name: pk_gizmo_typeattrs; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY gizmo_typeattrs
+    ADD CONSTRAINT pk_gizmo_typeattrs PRIMARY KEY (id);
+
+
+--
+-- Name: pk_gizmo_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY gizmo_types
+    ADD CONSTRAINT pk_gizmo_types PRIMARY KEY (id);
+
+
+--
+-- Name: pk_grants; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY grants
+    ADD CONSTRAINT pk_grants PRIMARY KEY (id);
+
+
+--
+-- Name: pk_payment_methods; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY payment_methods
+    ADD CONSTRAINT pk_payment_methods PRIMARY KEY (id);
+
+
+--
+-- Name: pk_recyclings; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY recyclings
+    ADD CONSTRAINT pk_recyclings PRIMARY KEY (id);
+
+
+--
 -- Name: pk_relationship_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
 --
 
@@ -529,6 +683,30 @@ ALTER TABLE ONLY relationships
 
 
 --
+-- Name: pk_sale_txns; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY sale_txns
+    ADD CONSTRAINT pk_sale_txns PRIMARY KEY (id);
+
+
+--
+-- Name: pk_volunteer_task_types; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY volunteer_task_types
+    ADD CONSTRAINT pk_volunteer_task_types PRIMARY KEY (id);
+
+
+--
+-- Name: pk_volunteer_tasks; Type: CONSTRAINT; Schema: public; Owner: stillflame; Tablespace: 
+--
+
+ALTER TABLE ONLY volunteer_tasks
+    ADD CONSTRAINT pk_volunteer_tasks PRIMARY KEY (id);
+
+
+--
 -- Name: contact_methods_fk_contact_id; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
 --
 
@@ -542,6 +720,22 @@ ALTER TABLE ONLY contact_methods
 
 ALTER TABLE ONLY contact_methods
     ADD CONSTRAINT contact_methods_fk_contact_method_type FOREIGN KEY (contact_method_type_id) REFERENCES contact_method_types(id) ON DELETE SET NULL;
+
+
+--
+-- Name: payments_donation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY payments
+    ADD CONSTRAINT payments_donation_id_fkey FOREIGN KEY (donation_id) REFERENCES donations(id);
+
+
+--
+-- Name: payments_sale_txn_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: stillflame
+--
+
+ALTER TABLE ONLY payments
+    ADD CONSTRAINT payments_sale_txn_id_fkey FOREIGN KEY (sale_txn_id) REFERENCES sale_txns(id);
 
 
 --

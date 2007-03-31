@@ -1,6 +1,5 @@
-require 'ajax_scaffold'
-
 class SaleTxn < ActiveRecord::Base
+  include GizmoTransaction
   belongs_to :contact, :order => "surname, first_name"  
   has_many :payments, :dependent => :destroy
   belongs_to :discount_schedule
@@ -32,22 +31,6 @@ class SaleTxn < ActiveRecord::Base
       "anonymous(#{postal_code})"
   end
 
-  def contact_information
-    if contact
-     contact.display_name_address
-    else
-      ["Anonymous (#{postal_code})"]
-    end
-  end
-
-  def displayed_payment_method
-    payments.map {|payment| payment.payment_method.description}.uniq.join( ' ' )
-  end
-
-  def payment
-    payments.join( ", " )
-  end
-
   def calculated_total
     if discount_schedule
       (gizmo_events.inject(0.0) {|tot,gizmo|
@@ -66,34 +49,6 @@ class SaleTxn < ActiveRecord::Base
 
   def calculated_discount
     calculated_subtotal - calculated_total
-  end
-
-  def real_payments
-    payments.select {|payment| payment.payment_method_id != PaymentMethod.invoice.id}
-  end
-
-  def invoices
-    payments.select {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
-  end
-
-  def money_tendered
-    real_payments.inject(0.0) {|total,payment| total + payment.amount}
-  end
-
-  def amount_invoiced
-    invoices.inject(0.0) {|total,payment| total + payment.amount}
-  end
-
-  def invoiced?
-    payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
-  end
-
-  def total_paid?
-    money_tendered >= calculated_total
-  end
-
-  def overpaid?
-    calculated_total < money_tendered
   end
 
 end

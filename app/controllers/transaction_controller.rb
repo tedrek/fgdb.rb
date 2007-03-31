@@ -34,10 +34,22 @@ class TransactionController < ApplicationController
 
   def donations
     set_transaction_type( 'donation' )
+    render :action => 'listing'
   end
 
   def sales
     set_transaction_type( 'sale' )
+    render :action => 'listing'
+  end
+
+  def recycling
+    set_transaction_type( 'recycling' )
+    render :action => 'listing'
+  end
+
+  def grants
+    set_transaction_type( 'grant' )
+    render :action => 'listing'
   end
   
   # All posts to change scaffold level variables like sort values or page changes go through this action
@@ -184,6 +196,10 @@ class TransactionController < ApplicationController
       Donation
     when 'sale'
       SaleTxn
+    when 'grant'
+      Grant
+    when 'recycling'
+      Recycling
     end
   end
 
