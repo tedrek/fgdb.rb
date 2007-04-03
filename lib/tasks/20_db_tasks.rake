@@ -7,7 +7,7 @@ METADATATABLES = %w[
         discount_schedules_gizmo_types gizmo_attrs gizmo_contexts
         gizmo_contexts_gizmo_typeattrs gizmo_contexts_gizmo_types
         gizmo_typeattrs gizmo_types payment_methods relationship_types
-        volunteer_task_types grant_types
+        volunteer_task_types dispersement_types
 ]
 MIGRATIONDIR = 'db/migrate'
 
@@ -151,17 +151,17 @@ end
 
 rails_env = ENV['RAILS_ENV'] || "production"
 namespace :db do
-  desc "Migrate from schema.sql to current"
-  redefine_task :migrate => :environment do
-    migrate_from_schema(rails_env)
-  end
+#   desc "Migrate from schema.sql to current"
+#   redefine_task :migrate => :environment do
+#     migrate_from_schema(rails_env)
+#   end
 
-  desc "Setup a new database"
-  task :setup => :environment do
-    load_schema(rails_env)
-    load_metadata(rails_env)
-    migrate_from_schema(rails_env)
-  end
+#   desc "Setup a new database"
+#   task :setup => :environment do
+#     load_schema(rails_env)
+#     load_metadata(rails_env)
+#     migrate_from_schema(rails_env)
+#   end
 
   namespace :metadata do
 
@@ -177,19 +177,19 @@ namespace :db do
 
   end # namespace :metadata
 
-  namespace :schema do
+#   namespace :schema do
 
-    desc "Dump the development database to an SQL file"
-    redefine_task :dump => :environment do
-      dump_schema(rails_env)
-    end
+#     desc "Dump the development database to an SQL file"
+#     redefine_task :dump => :environment do
+#       dump_schema(rails_env)
+#     end
 
-    desc "Load the database schema into the development database"
-    redefine_task :load => :environment do
-      load_schema(rails_env)
-    end
+#     desc "Load the database schema into the development database"
+#     redefine_task :load => :environment do
+#       load_schema(rails_env)
+#     end
 
-  end # namespace :schema
+#   end # namespace :schema
 
   namespace :data do
 
@@ -205,13 +205,13 @@ namespace :db do
 
   end # namespace :data
 
-  namespace :test do
+#   namespace :test do
 
-    desc "Prepare the test database and load the schema"
-    redefine_task :prepare => :environment do
-      load_schema("test")
-    end
+#     desc "Prepare the test database and load the schema"
+#     redefine_task :prepare => :environment do
+#       load_schema("test")
+#     end
 
-  end # namespace :test
+#   end # namespace :test
 
 end # namespace :db

@@ -1,0 +1,9 @@
+<h1>Editing dispersement_type</h1>
+
+<%= start_form_tag :action => 'update', :id => @dispersement_type %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<%= end_form_tag %>
+
+<%= link_to 'Show', :action => 'show', :id => @dispersement_type %> |
+<%= link_to 'Back', :action => 'list' %>

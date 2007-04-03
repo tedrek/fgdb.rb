@@ -1,0 +1,8 @@
+<% for column in DispersementType.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @dispersement_type.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @dispersement_type %> |
+<%= link_to 'Back', :action => 'list' %>

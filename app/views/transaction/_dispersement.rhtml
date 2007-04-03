@@ -1,7 +1,7 @@
 <% # The following is used when the browser doesn't have javascript enabled %>
 <% classAttr = cycle("", " even") %>
 <% @options = params.merge(:controller => '/transaction', :action => "view",
-                           :id => grant.send("#{Grant.primary_key}"),
+                           :id => dispersement.send("#{Dispersement.primary_key}"),
                            :transaction_type => @transaction_type) %>
 
 <tr class="<%= classAttr %>"
@@ -23,7 +23,7 @@
           <% update_options = @options.merge(:action => "update") %>
           <%= link_to_remote "Edit",
                          { :url => edit_options,
-                           :confirm => 'Cancel current grant?',
+                           :confirm => 'Cancel current dispersement?',
                            :loading => "Element.show('#{loading_indicator_id(@options)}');",
                            :complete => "updateTotals('#{element_form_id(update_options)}');"
                          },

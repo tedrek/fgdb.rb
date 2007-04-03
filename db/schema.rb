@@ -2,839 +2,324 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define() do
+ActiveRecord::Schema.define(:version => 1) do
 
-  create_table "allowedstatuses", :force => true do |t|
-    t.column "oldstatus", :string, :limit => 15
-    t.column "newstatus", :string, :limit => 15
-  end
-
-  create_table "borrow", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "gizmoid", :integer, :default => 0, :null => false
-    t.column "borrowdate", :date, :null => false
-    t.column "returndate", :date, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "card", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "slottype", :string, :limit => 10
-  end
-
-  create_table "cddrive", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "interface", :string, :limit => 10, :default => ""
-    t.column "speed", :string, :limit => 10, :default => ""
-    t.column "writemode", :string, :limit => 15, :default => ""
-    t.column "scsi", :string, :limit => 1, :default => "N"
-    t.column "spinrate", :integer
-  end
-
-  create_table "cellphone", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-  end
-
-  create_table "classtree", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "tablename", :string, :limit => 50
-    t.column "level", :integer
-    t.column "instantiable", :string, :limit => 1, :default => "Y", :null => false
-    t.column "intakecode", :string, :limit => 10
-    t.column "intakeadd", :integer
-    t.column "description", :string, :limit => 50
-  end
-
-  create_table "cleanup", :force => true do |t|
-    t.column "waiting", :string, :limit => 1
-    t.column "member", :string, :limit => 1
-    t.column "volunteer", :string, :limit => 1
-    t.column "donor", :string, :limit => 1
-    t.column "buyer", :string, :limit => 1
-    t.column "sourceid", :integer
-    t.column "contacttype", :string, :limit => 1
-    t.column "firstname", :string, :limit => 25
-    t.column "middlename", :string, :limit => 25
-    t.column "lastname", :string, :limit => 50
-    t.column "organization", :string, :limit => 50
-    t.column "address", :string, :limit => 50
-    t.column "address2", :string, :limit => 50
-    t.column "city", :string, :limit => 30
-    t.column "state", :string, :limit => 2
-    t.column "zip", :string, :limit => 10
-    t.column "phone", :string, :limit => 20
-    t.column "fax", :string, :limit => 50
-    t.column "email", :string, :limit => 50
-    t.column "emailok", :string, :limit => 1
-    t.column "mailok", :string, :limit => 1
-    t.column "phoneok", :string, :limit => 1
-    t.column "faxok", :string, :limit => 1
-    t.column "modified", :date
-    t.column "created", :date
-    t.column "sortname", :string, :limit => 25
-    t.column "preferemail", :string, :limit => 1
-    t.column "comp4kids", :string, :limit => 1
-    t.column "recycler", :string, :limit => 1
-    t.column "grantor", :string, :limit => 1
-    t.column "build", :string, :limit => 1
-    t.column "adopter", :string, :limit => 1
-    t.column "dupe_key", :string, :limit => 50
-    t.column "source_table", :string, :limit => 50
-    t.column "add_final", :string, :limit => 64
-    t.column "add_left", :string, :limit => 50
-    t.column "bar_chr", :string, :limit => 14
-    t.column "cr_final", :string, :limit => 4
-    t.column "certified", :string, :limit => 1
-    t.column "city_final", :string, :limit => 39
-    t.column "comp_final", :string, :limit => 40
-    t.column "err_num", :string, :limit => 20
-    t.column "err_mess", :string, :limit => 47
-    t.column "st_final", :string, :limit => 2
-    t.column "zip_final", :string, :limit => 10
-    t.column "lot_seq", :string, :limit => 4
-    t.column "lot_ad", :string, :limit => 1
-    t.column "contactid", :integer
-    t.column "donationid", :integer
-    t.column "salesid", :integer
-  end
-
-  create_table "codedinfo", :force => true do |t|
-    t.column "codetype", :string, :limit => 100
-    t.column "codelength", :integer, :default => 10
-    t.column "code", :string, :limit => 25
-    t.column "description", :text
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "component", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "insysid", :integer, :default => 0, :null => false
-  end
-
-  create_table "contact", :force => true do |t|
-    t.column "waiting", :string, :limit => 1, :default => "N"
-    t.column "member", :string, :limit => 1, :default => "N"
-    t.column "volunteer", :string, :limit => 1, :default => "N"
-    t.column "donor", :string, :limit => 1, :default => "N"
-    t.column "buyer", :string, :limit => 1, :default => "N"
-    t.column "contacttype", :string, :limit => 1, :default => "P", :null => false
-    t.column "firstname", :string, :limit => 25
-    t.column "middlename", :string, :limit => 25
-    t.column "lastname", :string, :limit => 50
-    t.column "organization", :string, :limit => 50
-    t.column "address", :string, :limit => 50
-    t.column "address2", :string, :limit => 50
-    t.column "city", :string, :limit => 30, :default => "Portland", :null => false
-    t.column "state", :string, :limit => 2, :default => "OR"
-    t.column "zip", :string, :limit => 10
-    t.column "phone", :string, :limit => 20
-    t.column "fax", :string, :limit => 20
-    t.column "email", :string, :limit => 50
-    t.column "emailok", :string, :limit => 1
-    t.column "mailok", :string, :limit => 1
-    t.column "phoneok", :string, :limit => 1
-    t.column "faxok", :string, :limit => 1
-    t.column "notes", :text
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "sortname", :string, :limit => 25
-    t.column "preferemail", :string, :limit => 1
-    t.column "comp4kids", :string, :limit => 1
-    t.column "recycler", :string, :limit => 1
-    t.column "grantor", :string, :limit => 1
-    t.column "build", :string, :limit => 1
-    t.column "adopter", :string, :limit => 1
-    t.column "dupe_key", :string, :limit => 50
-    t.column "bar_chr", :string, :limit => 50
-    t.column "err_num", :string, :limit => 50
-    t.column "err_mess", :string, :limit => 50
-    t.column "certified", :string, :limit => 1
-    t.column "countycode", :string, :limit => 3
-    t.column "countyname", :string, :limit => 25
-    t.column "add_left", :string, :limit => 50
-    t.column "nametitle", :string, :limit => 15
-    t.column "namesuffix", :string, :limit => 15
-  end
-
-  add_index "contact", ["sortname"], :name => "contact_sortname"
-
-  create_table "contactlist", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "listname", :string, :limit => 20
-    t.column "putonlist", :date
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "removedfromlist", :date
-    t.column "active", :string, :limit => 1, :default => "Y"
-    t.column "remarks", :text
-  end
-
-  create_table "controllercard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "numserial", :integer, :default => 0, :null => false
-    t.column "numparallel", :integer, :default => 0, :null => false
-    t.column "numide", :integer, :default => 0, :null => false
-    t.column "floppy", :string, :limit => 1, :default => "Y", :null => false
-  end
-
-  create_table "daysoff", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "dayoff", :date
-    t.column "vacation", :string, :limit => 1, :default => "N"
-    t.column "offsitework", :string, :limit => 1, :default => "N"
-    t.column "notes", :text
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "deduper", :force => true do |t|
-    t.column "waiting", :string, :limit => nil
-    t.column "member", :string, :limit => nil
-    t.column "volunteer", :string, :limit => nil
-    t.column "donor", :string, :limit => nil
-    t.column "buyer", :string, :limit => nil
-    t.column "sourceid", :integer
-    t.column "contacttype", :string, :limit => 1
-    t.column "firstname", :string, :limit => 25
-    t.column "middlename", :string, :limit => 25
-    t.column "lastname", :string, :limit => 50
-    t.column "organization", :string, :limit => 50
-    t.column "address", :string, :limit => 50
-    t.column "address2", :string, :limit => 50
-    t.column "city", :string, :limit => 30
-    t.column "state", :string, :limit => 2
-    t.column "zip", :string, :limit => 10
-    t.column "phone", :string, :limit => 20
-    t.column "fax", :string, :limit => nil
-    t.column "email", :string, :limit => 50
-    t.column "emailok", :string, :limit => 1
-    t.column "mailok", :string, :limit => 1
-    t.column "phoneok", :string, :limit => 1
-    t.column "faxok", :string, :limit => nil
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "sortname", :string, :limit => 25
-    t.column "preferemail", :string, :limit => nil
-    t.column "comp4kids", :string, :limit => nil
-    t.column "recycler", :string, :limit => nil
-    t.column "grantor", :string, :limit => nil
-    t.column "build", :string, :limit => nil
-    t.column "adopter", :string, :limit => nil
-    t.column "dupe_key", :text
-    t.column "source_table", :text
-  end
-
-  create_table "defaultvalues", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "fieldname", :string, :limit => 50
-    t.column "defaultvalue", :string, :limit => 50
-  end
-
-  create_table "donation", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "zip", :string, :limit => 10
-    t.column "cashdonation", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "mbrpayment", :string, :limit => 1, :default => "N", :null => false
-    t.column "comp4kids", :string, :limit => 1, :default => "N", :null => false
-    t.column "monitorfee", :float, :limit => 8, :default => 0.0
-  end
-
-  create_table "donationline", :force => true do |t|
-    t.column "donationid", :integer, :default => 0, :null => false
-    t.column "description", :text
-    t.column "quantity", :integer, :default => 1, :null => false
-    t.column "crt", :boolean
-  end
-
-  create_table "drive", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-  end
-
-  create_table "dupe_keys", :force => true do |t|
-    t.column "dupe_key", :string, :limit => 50
-    t.column "count", :integer
-  end
-
-  create_table "dupe_sets", :id => false, :force => true do |t|
-    t.column "keepid", :integer
-    t.column "tossid", :integer
-  end
-
-  create_table "fieldmap", :force => true do |t|
-    t.column "tablename", :string, :limit => 50
-    t.column "fieldname", :string, :limit => 50
-    t.column "displayorder", :integer, :default => 0, :null => false
-    t.column "inputwidget", :string, :limit => 50
-    t.column "inputwidgetparameters", :string, :limit => 100
-    t.column "outputwidget", :string, :limit => 50
-    t.column "outputwidgetparameters", :string, :limit => 100
-    t.column "editable", :string, :limit => 1, :default => "Y"
-    t.column "helplink", :string, :limit => 1, :default => "N"
+  create_table "contact_method_types", :force => true do |t|
     t.column "description", :string, :limit => 100
+    t.column "parent_id", :integer
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "floppydrive", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "disksize", :string, :limit => 10
-    t.column "capacity", :string, :limit => 10
-    t.column "cylinders", :integer, :default => 0
-    t.column "heads", :integer, :default => 0
-    t.column "sectors", :integer, :default => 0
+  create_table "contact_methods", :force => true do |t|
+    t.column "contact_method_type_id", :integer
+    t.column "description", :string, :limit => 100
+    t.column "ok", :boolean
+    t.column "contact_id", :integer
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "gizmo", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "oldstatus", :string, :limit => 15
-    t.column "newstatus", :string, :limit => 15, :default => "Received", :null => false
-    t.column "obsolete", :string, :limit => 1, :default => "N", :null => false
-    t.column "working", :string, :limit => 1, :default => "M", :null => false
-    t.column "architecture", :string, :limit => 10, :default => "PC", :null => false
-    t.column "manufacturer", :string, :limit => 50
-    t.column "modelnumber", :string, :limit => 50
-    t.column "location", :string, :limit => 10, :default => "Free Geek", :null => false
+  create_table "contact_types", :force => true do |t|
+    t.column "description", :string, :limit => 100
+    t.column "for_who", :string, :limit => 3, :default => "any"
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
+  end
+
+  create_table "contact_types_contacts", :id => false, :force => true do |t|
+    t.column "contact_id", :integer, :default => 0, :null => false
+    t.column "contact_type_id", :integer, :default => 0, :null => false
+  end
+
+  add_index "contact_types_contacts", ["contact_id", "contact_type_id"], :name => "contact_types_contacts_contact_id_key", :unique => true
+
+  create_table "contacts", :force => true do |t|
+    t.column "is_organization", :boolean, :default => false
+    t.column "sort_name", :string, :limit => 25
+    t.column "first_name", :string, :limit => 25
+    t.column "middle_name", :string, :limit => 25
+    t.column "surname", :string, :limit => 50
+    t.column "organization", :string, :limit => 100
+    t.column "extra_address", :string, :limit => 52
+    t.column "address", :string, :limit => 52
+    t.column "city", :string, :limit => 30
+    t.column "state_or_province", :string, :limit => 15
+    t.column "postal_code", :string, :limit => 25
+    t.column "country", :string, :limit => 100
     t.column "notes", :text
-    t.column "testdata", :string, :limit => 1, :default => "N"
-    t.column "value", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "inventoried", :datetime
-    t.column "builderid", :integer, :default => 0, :null => false
-    t.column "inspectorid", :integer, :default => 0, :null => false
-    t.column "linuxfund", :string, :limit => 1, :default => "N", :null => false
-    t.column "cashvalue", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "needsexpert", :string, :limit => 1, :default => "N"
-    t.column "gizmotype", :string, :limit => 10, :default => "Other"
-    t.column "adopterid", :integer, :default => 0, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "gizmoclones", :force => true do |t|
-    t.column "parentid", :integer, :default => 0, :null => false
-    t.column "childid", :integer, :default => 0, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "gizmostatuschanges", :primary_key => "change_id", :force => true do |t|
-    t.column "id", :integer, :default => 0, :null => false
-    t.column "oldstatus", :string, :limit => 15
-    t.column "newstatus", :string, :limit => 15
-    t.column "created", :datetime
-  end
-
-  create_table "holidays", :force => true do |t|
-    t.column "name", :string, :limit => 50
-    t.column "holiday", :date
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "ideharddrive", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "cylinders", :integer, :default => 0, :null => false
-    t.column "heads", :integer, :default => 0, :null => false
-    t.column "sectors", :integer, :default => 0, :null => false
-    t.column "ata", :string, :limit => 10
-    t.column "sizemb", :integer, :default => 0, :null => false
-  end
-
-  create_table "income", :force => true do |t|
-    t.column "incometype", :string, :limit => 10
-    t.column "description", :string, :limit => 50
-    t.column "received", :date
-    t.column "amount", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "contactid", :integer, :default => 0, :null => false
-  end
-
-  create_table "issuenotes", :force => true do |t|
-    t.column "issueid", :integer, :default => 0, :null => false
-    t.column "techname", :string, :limit => 25
-    t.column "notes", :text
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "issues", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "gizmoid", :integer, :default => 0, :null => false
-    t.column "issuename", :string, :limit => 100
-    t.column "issuestatus", :string, :limit => 10
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "jobs", :force => true do |t|
-    t.column "job", :string, :limit => 50
-    t.column "schedulename", :string, :limit => 15, :default => "Main", :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "meeting", :string, :limit => 1, :default => "N"
-  end
-
-  create_table "keyboard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "kbtype", :string, :limit => 10
-    t.column "numkeys", :string, :limit => 10
-  end
-
-  create_table "laptop", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "ram", :integer
-    t.column "harddrivesizegb", :float, :limit => 8, :default => 0.0
-    t.column "chipclass", :string, :limit => 15
-    t.column "chipspeed", :integer, :default => 0, :null => false
-  end
-
-  create_table "links", :force => true do |t|
-    t.column "modified", :datetime
-    t.column "url", :string, :limit => 250
-    t.column "helptext", :string, :limit => 100
-    t.column "linktext", :string, :limit => 250
-    t.column "broken", :string, :limit => 1, :default => "N"
-    t.column "howto", :string, :limit => 1, :default => "N"
-    t.column "external", :string, :limit => 1, :default => "N"
-  end
-
-  create_table "mailingpieces", :force => true do |t|
-    t.column "mailingid", :integer, :default => 0, :null => false
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "container", :integer
-    t.column "containertype", :string, :limit => 10
-    t.column "bundle", :integer
-  end
-
-  add_index "mailingpieces", ["id"], :name => "mailingpieces_id_key", :unique => true
-
-  create_table "mailings", :force => true do |t|
-    t.column "mailingname", :string, :limit => 50
-    t.column "maildate", :date, :null => false
-    t.column "class", :string, :limit => 15
-    t.column "piecesize", :string, :limit => 10
-    t.column "piecethickness", :float
-    t.column "pieceweight", :float
-    t.column "pieceheight", :float
-    t.column "piecewidth", :float
-    t.column "whereclause", :string, :limit => 1000
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  add_index "mailings", ["id"], :name => "mailings_id_key", :unique => true
-
-  create_table "materials", :force => true do |t|
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "materialname", :string, :limit => 25
-    t.column "ratebase", :string, :limit => 1, :default => "W"
-    t.column "defaultunit", :string, :limit => 20
-  end
-
-  create_table "member", :force => true do |t|
-    t.column "membertype", :string, :limit => 1, :default => "M"
-    t.column "howfoundout", :text
-    t.column "interestcomputer", :string, :limit => 1, :default => "N", :null => false
-    t.column "interestclasses", :string, :limit => 1, :default => "N", :null => false
-    t.column "interestaccess", :string, :limit => 1, :default => "N", :null => false
-    t.column "skillhardware", :string, :limit => 1, :default => "N", :null => false
-    t.column "texthardware", :text
-    t.column "skillnetwork", :string, :limit => 1, :default => "N", :null => false
-    t.column "textnetwork", :text
-    t.column "skilllinux", :string, :limit => 1, :default => "N", :null => false
-    t.column "textlinux", :text
-    t.column "skillsoftware", :string, :limit => 1, :default => "N", :null => false
-    t.column "textsoftware", :text
-    t.column "skillteaching", :string, :limit => 1, :default => "N", :null => false
-    t.column "textteaching", :text
-    t.column "skillothercomputer", :string, :limit => 1, :default => "N", :null => false
-    t.column "textothercomputer", :text
-    t.column "skilladmin", :string, :limit => 1, :default => "N", :null => false
-    t.column "textadmin", :text
-    t.column "skillconstruction", :string, :limit => 1, :default => "N", :null => false
-    t.column "textconstruction", :text
-    t.column "skillvolunteercoord", :string, :limit => 1, :default => "N", :null => false
-    t.column "textvolunteercoord", :text
-    t.column "skillother", :string, :limit => 1, :default => "N", :null => false
-    t.column "textother", :text
-    t.column "notes", :text
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "memberhour", :force => true do |t|
-    t.column "memberid", :integer, :default => 0, :null => false
-    t.column "workdate", :date
-    t.column "intime", :time
-    t.column "outtime", :time
-    t.column "jobtype", :string, :limit => 15
-    t.column "jobdescription", :text
-    t.column "hours", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "paytype", :string, :limit => 1, :default => "V", :null => false
-  end
-
-  create_table "misccard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "miscnotes", :text
-  end
-
-  create_table "misccomponent", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "miscnotes", :text
-  end
-
-  create_table "miscdrive", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "miscnotes", :text
-  end
-
-  create_table "miscgizmo", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-  end
-
-  create_table "modem", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "speed", :string, :limit => 15
-  end
-
-  create_table "modemcard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "speed", :string, :limit => 15
-  end
-
-  create_table "monitor", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "size", :string, :limit => 10
-    t.column "resolution", :string, :limit => 10
-  end
-
-  create_table "networkcard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "speed", :string, :limit => 10
-    t.column "rj45", :string, :limit => 1, :default => "N", :null => false
-    t.column "aux", :string, :limit => 1, :default => "N", :null => false
-    t.column "bnc", :string, :limit => 1, :default => "N", :null => false
-    t.column "thicknet", :string, :limit => 1, :default => "N", :null => false
-    t.column "module", :string, :limit => 50
-    t.column "io", :string, :limit => 10
-    t.column "irq", :string, :limit => 2
-  end
-
-  create_table "networkingdevice", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "speed", :string, :limit => 10
-    t.column "rj45", :string, :limit => 1, :default => "N", :null => false
-    t.column "aux", :string, :limit => 1, :default => "N", :null => false
-    t.column "bnc", :string, :limit => 1, :default => "N", :null => false
-    t.column "thicknet", :string, :limit => 1, :default => "N", :null => false
-  end
-
-  create_table "organization", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "missionstatement", :text
-    t.column "modified", :datetime
-    t.column "created", :datetime
-  end
-
-  create_table "pagelinks", :force => true do |t|
-    t.column "pageid", :integer, :default => 0, :null => false
-    t.column "linkid", :integer, :default => 0, :null => false
-    t.column "break", :string, :limit => 1, :default => "N"
-    t.column "displayorder", :integer, :default => 0, :null => false
-    t.column "helptext", :string, :limit => 100
-    t.column "linktext", :string, :limit => 250
-  end
-
-  create_table "pages", :force => true do |t|
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "shortname", :string, :limit => 25
-    t.column "longname", :string, :limit => 100
-    t.column "visible", :string, :limit => 1, :default => "Y"
-    t.column "linkid", :integer, :default => 0, :null => false
-    t.column "displayorder", :integer, :default => 0, :null => false
-    t.column "helptext", :string, :limit => 100
-  end
-
-  create_table "pickuplines", :force => true do |t|
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "pickupid", :integer, :default => 0, :null => false
-    t.column "materialid", :integer, :default => 0, :null => false
-    t.column "pickupunittype", :string, :limit => 20
-    t.column "processedunittype", :string, :limit => 20
-    t.column "pickupunitcount", :integer, :default => 1, :null => false
-    t.column "processedunitcount", :integer, :default => 1, :null => false
-    t.column "pickupweight", :float, :limit => 10, :default => 0.0, :null => false
-    t.column "processedweight", :float, :limit => 10, :default => 0.0, :null => false
-    t.column "amountcharged", :float, :limit => 10, :default => 0.0, :null => false
-    t.column "rate", :float, :limit => 10, :default => 0.0, :null => false
-  end
-
-  create_table "pickups", :force => true do |t|
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "vendorid", :integer, :default => 0, :null => false
-    t.column "pickupdate", :date, :null => false
-    t.column "receiptnumber", :string, :limit => 20
-    t.column "settlementnumber", :string, :limit => 20
-  end
-
-  create_table "pointingdevice", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "connector", :string, :limit => 10
-    t.column "pointertype", :string, :limit => 10
-  end
-
-  create_table "powersupply", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "watts", :integer, :default => 0, :null => false
-    t.column "connection", :string, :limit => 10
-  end
-
-  create_table "printer", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "speedppm", :integer, :default => 0, :null => false
-    t.column "printertype", :string, :limit => 10
-    t.column "interface", :string, :limit => 10, :default => "Parallel"
-  end
-
-  create_table "processor", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "chipclass", :string, :limit => 15
-    t.column "interface", :string, :limit => 10
-    t.column "speed", :integer, :default => 0, :null => false
-  end
-
-  create_table "sales", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "zip", :string, :limit => 10
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "subtotal", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "discount", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "total", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "bulk", :boolean
-  end
-
-  create_table "salesline", :force => true do |t|
-    t.column "salesid", :integer, :default => 0, :null => false
-    t.column "gizmoid", :integer, :default => 0, :null => false
-    t.column "description", :text
-    t.column "cashvalue", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "subtotal", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "discount", :float, :limit => 8, :default => 0.0, :null => false
-    t.column "total", :float, :limit => 8, :default => 0.0, :null => false
-  end
-
-  create_table "scanner", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "interface", :string, :limit => 10
-  end
-
-  create_table "scratchpad", :force => true do |t|
-    t.column "pageid", :integer, :default => 0, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "contactid", :integer, :default => 0, :null => false
+  create_table "discount_schedules", :force => true do |t|
     t.column "name", :string, :limit => 25
-    t.column "note", :text
-    t.column "urgent", :string, :limit => 1, :default => "N"
-    t.column "visible", :string, :limit => 1, :default => "Y"
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "scsicard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "internalinterface", :string, :limit => 15
-    t.column "externalinterface", :string, :limit => 15
-    t.column "parms", :text
+  create_table "discount_schedules_gizmo_types", :force => true do |t|
+    t.column "gizmo_type_id", :integer, :null => false
+    t.column "discount_schedule_id", :integer, :null => false
+    t.column "multiplier", :float, :limit => 10
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "scsiharddrive", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "sizemb", :integer, :default => 0, :null => false
-    t.column "scsiversion", :string, :limit => 10
+  create_table "dispersement_types", :force => true do |t|
+    t.column "description", :string, :limit => 100
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "soundcard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "soundtype", :string, :limit => 15
+  create_table "dispersements", :force => true do |t|
+    t.column "comments", :text
+    t.column "contact_id", :integer, :null => false
+    t.column "dispersement_type_id", :integer, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "speaker", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "powered", :string, :limit => 1, :default => "N", :null => false
-    t.column "subwoofer", :string, :limit => 1, :default => "N", :null => false
+  create_table "donations", :force => true do |t|
+    t.column "contact_id", :integer
+    t.column "postal_code", :string, :limit => 25
+    t.column "reported_required_fee", :float, :limit => 10, :default => 0.0
+    t.column "reported_suggested_fee", :float, :limit => 10, :default => 0.0
+    t.column "txn_complete", :boolean, :default => true
+    t.column "txn_completed_at", :datetime
+    t.column "comments", :text
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "stereo", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
+  create_table "gizmo_attrs", :force => true do |t|
+    t.column "name", :string, :limit => 100
+    t.column "datatype", :string, :limit => 10
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "system", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "systemconfiguration", :text
-    t.column "systemboard", :text
-    t.column "adapterinformation", :text
-    t.column "multiprocessorinformation", :text
-    t.column "displaydetails", :text
-    t.column "displayinformation", :text
-    t.column "scsiinformation", :text
-    t.column "pcmciainformation", :text
-    t.column "modeminformation", :text
-    t.column "multimediainformation", :text
-    t.column "plugnplayinformation", :text
-    t.column "physicaldrives", :text
-    t.column "ram", :integer
-    t.column "videoram", :integer
-    t.column "sizemb", :integer
-    t.column "scsi", :string, :limit => 1, :default => "N"
-    t.column "chipclass", :string, :limit => 15
-    t.column "speed", :integer, :default => 0, :null => false
+  create_table "gizmo_contexts", :force => true do |t|
+    t.column "name", :string, :limit => 100
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "systemboard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "pcislots", :integer, :default => 0, :null => false
-    t.column "vesaslots", :integer, :default => 0, :null => false
-    t.column "isaslots", :integer, :default => 0, :null => false
-    t.column "eisaslots", :integer, :default => 0, :null => false
-    t.column "agpslot", :string, :limit => 1, :default => "N"
-    t.column "ram30pin", :integer, :default => 0, :null => false
-    t.column "ram72pin", :integer, :default => 0, :null => false
-    t.column "ram168pin", :integer, :default => 0, :null => false
-    t.column "dimmspeed", :string, :limit => 10
-    t.column "proc386", :integer, :default => 0, :null => false
-    t.column "proc486", :integer, :default => 0, :null => false
-    t.column "proc586", :integer, :default => 0, :null => false
-    t.column "procmmx", :integer, :default => 0, :null => false
-    t.column "procpro", :integer, :default => 0, :null => false
-    t.column "procsocket7", :integer, :default => 0, :null => false
-    t.column "procslot1", :integer, :default => 0, :null => false
+  create_table "gizmo_contexts_gizmo_typeattrs", :id => false, :force => true do |t|
+    t.column "gizmo_context_id", :integer, :null => false
+    t.column "gizmo_typeattr_id", :integer, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "systemcase", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "casetype", :string, :limit => 10
+  create_table "gizmo_contexts_gizmo_types", :id => false, :force => true do |t|
+    t.column "gizmo_context_id", :integer, :null => false
+    t.column "gizmo_type_id", :integer, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "tapedrive", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "interface", :string, :limit => 15
+  create_table "gizmo_events", :force => true do |t|
+    t.column "donation_id", :integer
+    t.column "sale_txn_id", :integer
+    t.column "dispersement_id", :integer
+    t.column "recycling_id", :integer
+    t.column "gizmo_type_id", :integer, :null => false
+    t.column "gizmo_context_id", :integer, :null => false
+    t.column "gizmo_count", :integer, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "unit2material", :force => true do |t|
-    t.column "modified", :datetime
-    t.column "created", :datetime
-    t.column "materialid", :integer, :default => 0, :null => false
-    t.column "unittype", :string, :limit => 20
+  create_table "gizmo_events_gizmo_typeattrs", :force => true do |t|
+    t.column "gizmo_event_id", :integer, :null => false
+    t.column "gizmo_typeattr_id", :integer, :null => false
+    t.column "attr_val_text", :text
+    t.column "attr_val_boolean", :boolean
+    t.column "attr_val_integer", :integer
+    t.column "attr_val_monetary", :float, :limit => 10
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "ups", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "rj11", :string, :limit => 1, :default => "N", :null => false
-    t.column "rj45", :string, :limit => 1, :default => "N", :null => false
-    t.column "usb", :string, :limit => 1, :default => "N", :null => false
-    t.column "serial", :string, :limit => 1, :default => "N", :null => false
-    t.column "va", :string, :limit => 5
-    t.column "supported_outlets", :integer
-    t.column "unsupported_outlets", :integer
+  create_table "gizmo_typeattrs", :force => true do |t|
+    t.column "gizmo_type_id", :integer, :null => false
+    t.column "gizmo_attr_id", :integer, :null => false
+    t.column "is_required", :boolean, :default => true, :null => false
+    t.column "validation_callback", :text
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "users", :force => true do |t|
-    t.column "username", :string, :limit => 50, :null => false
-    t.column "password", :string, :limit => 50
-    t.column "usergroup", :string, :limit => 50
+  create_table "gizmo_types", :force => true do |t|
+    t.column "description", :string, :limit => 100
+    t.column "parent_id", :integer
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
+    t.column "required_fee", :float, :limit => 10, :default => 0.0
+    t.column "suggested_fee", :float, :limit => 10, :default => 0.0
   end
 
-  add_index "users", ["username"], :name => "users_username_key", :unique => true
-
-  create_table "vcr", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
+  create_table "payment_methods", :force => true do |t|
+    t.column "description", :string, :limit => 100
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "videocard", :force => true do |t|
-    t.column "classtree", :string, :limit => 100
-    t.column "videomemory", :string, :limit => 10
-    t.column "resolutions", :text
+  create_table "payments", :force => true do |t|
+    t.column "donation_id", :integer
+    t.column "sale_txn_id", :integer
+    t.column "amount", :float, :limit => 10, :default => 0.0, :null => false
+    t.column "payment_method_id", :integer, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "weeklyshifts", :force => true do |t|
-    t.column "schedulename", :string, :limit => 15, :default => "Main", :null => false
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "jobid", :integer, :default => 0, :null => false
-    t.column "weekday", :integer, :default => 0, :null => false
-    t.column "intime", :time
-    t.column "outtime", :time
-    t.column "meeting", :string, :limit => 1, :default => "N"
-    t.column "effective", :date, :default => #<Date: 4906011/2,0,2299161>, :null => false
-    t.column "ineffective", :date, :default => #<Date: 5636495/2,0,2299161>, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
+  create_table "recyclings", :force => true do |t|
+    t.column "comments", :text
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "workers", :force => true do |t|
-    t.column "sunday", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "monday", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "tuesday", :float, :limit => 5, :default => 8.0, :null => false
-    t.column "wednesday", :float, :limit => 5, :default => 8.0, :null => false
-    t.column "thursday", :float, :limit => 5, :default => 8.0, :null => false
-    t.column "friday", :float, :limit => 5, :default => 8.0, :null => false
-    t.column "saturday", :float, :limit => 5, :default => 8.0, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
+  create_table "relationship_types", :force => true do |t|
+    t.column "description", :string, :limit => 100
+    t.column "direction_matters", :boolean
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "workersqualifyforjobs", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "jobid", :integer, :default => 0, :null => false
-    t.column "injobdescription", :string, :limit => 1, :default => "N"
-    t.column "modified", :datetime
-    t.column "created", :datetime
+  create_table "relationships", :force => true do |t|
+    t.column "source_id", :integer
+    t.column "sink_id", :integer
+    t.column "flow", :integer
+    t.column "relationship_type_id", :integer
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "workmonths", :force => true do |t|
-    t.column "contactid", :integer, :default => 0, :null => false
-    t.column "work_year", :integer, :default => 2004, :null => false
-    t.column "work_month", :integer, :default => 1, :null => false
-    t.column "day_01", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_02", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_03", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_04", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_05", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_06", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_07", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_08", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_09", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_10", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_11", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_12", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_13", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_14", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_15", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_16", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_17", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_18", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_19", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_20", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_21", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_22", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_23", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_24", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_25", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_26", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_27", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_28", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_29", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_30", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "day_31", :float, :limit => 5, :default => 0.0, :null => false
-    t.column "modified", :datetime
-    t.column "created", :datetime
+  create_table "sale_txns", :force => true do |t|
+    t.column "contact_id", :integer
+    t.column "postal_code", :string, :limit => 25
+    t.column "reported_discount_amount", :float, :limit => 10, :default => 0.0
+    t.column "reported_amount_due", :float, :limit => 10, :default => 0.0, :null => false
+    t.column "txn_complete", :boolean, :default => true
+    t.column "txn_completed_at", :datetime
+    t.column "discount_schedule_id", :integer
+    t.column "comments", :text
+    t.column "bulk", :boolean
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
   end
+
+  create_table "volunteer_task_types", :force => true do |t|
+    t.column "description", :string, :limit => 100
+    t.column "parent_id", :integer
+    t.column "hours_multiplier", :float, :limit => 10, :default => 1.0, :null => false
+    t.column "instantiable", :boolean, :default => true, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
+    t.column "required", :boolean, :default => true, :null => false
+  end
+
+  create_table "volunteer_task_types_volunteer_tasks", :id => false, :force => true do |t|
+    t.column "volunteer_task_id", :integer, :null => false
+    t.column "volunteer_task_type_id", :integer, :null => false
+  end
+
+  create_table "volunteer_tasks", :force => true do |t|
+    t.column "contact_id", :integer
+    t.column "date_performed", :date
+    t.column "duration", :float, :limit => 5, :default => 0.0, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
+  end
+
+  add_foreign_key "contact_methods", ["contact_id"], "contacts", ["id"], :on_delete => :set_null
+  add_foreign_key "contact_methods", ["contact_method_type_id"], "contact_method_types", ["id"], :on_delete => :set_null
+
+  add_foreign_key "dispersements", ["contact_id"], "contacts", ["id"], :on_update => :cascade, :on_delete => :set_null
+  add_foreign_key "dispersements", ["dispersement_type_id"], "dispersement_types", ["id"], :on_update => :cascade, :on_delete => :set_null
+
+  add_foreign_key "payments", ["donation_id"], "donations", ["id"]
+  add_foreign_key "payments", ["sale_txn_id"], "sale_txns", ["id"]
+
+  add_foreign_key "relationships", ["relationship_type_id"], "relationship_types", ["id"], :on_delete => :set_null
+  add_foreign_key "relationships", ["sink_id"], "contacts", ["id"], :on_delete => :set_null
+  add_foreign_key "relationships", ["source_id"], "contacts", ["id"], :on_delete => :set_null
 
 end

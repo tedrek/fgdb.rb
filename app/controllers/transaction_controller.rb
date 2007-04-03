@@ -47,8 +47,8 @@ class TransactionController < ApplicationController
     render :action => 'listing'
   end
 
-  def grants
-    set_transaction_type( 'grant' )
+  def dispersements
+    set_transaction_type( 'dispersement' )
     render :action => 'listing'
   end
   
@@ -196,8 +196,8 @@ class TransactionController < ApplicationController
       Donation
     when 'sale'
       SaleTxn
-    when 'grant'
-      Grant
+    when 'dispersement'
+      Dispersement
     when 'recycling'
       Recycling
     end

@@ -24,8 +24,8 @@ class GizmoContext < ActiveRecord::Base
     @@sale ||= find(:first, :conditions => ["name = ?", 'sale'])
   end
 
-  def GizmoContext.grant
-    @@grant ||= find(:first, :conditions => ["name = ?", 'grant'])
+  def GizmoContext.dispersement
+    @@dispersement ||= find(:first, :conditions => ["name = ?", 'dispersement'])
   end
   def GizmoContext.recycling
     @@recycling ||= find(:first, :conditions => ["name = ?", 'recycling'])

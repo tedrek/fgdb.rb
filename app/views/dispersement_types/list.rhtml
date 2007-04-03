@@ -1,0 +1,27 @@
+<h1>Listing dispersement_types</h1>
+
+<table>
+  <tr>
+  <% for column in DispersementType.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for dispersement_type in @dispersement_types %>
+  <tr>
+  <% for column in DispersementType.content_columns %>
+    <td><%=h dispersement_type.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => dispersement_type %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => dispersement_type %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => dispersement_type }, :confirm => 'Are you sure?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @dispersement_type_pages.current.previous } if @dispersement_type_pages.current.previous %>
+<%= link_to 'Next page', { :page => @dispersement_type_pages.current.next } if @dispersement_type_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New dispersement_type', :action => 'new' %>

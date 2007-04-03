@@ -1,14 +1,14 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'grant_types_controller'
+require 'dispersement_types_controller'
 
 # Re-raise errors caught by the controller.
-class GrantTypesController; def rescue_action(e) raise e end; end
+class DispersementTypesController; def rescue_action(e) raise e end; end
 
-class GrantTypesControllerTest < Test::Unit::TestCase
-  fixtures :grant_types
+class DispersementTypesControllerTest < Test::Unit::TestCase
+  fixtures :dispersement_types
 
   def setup
-    @controller = GrantTypesController.new
+    @controller = DispersementTypesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
   end
@@ -25,7 +25,7 @@ class GrantTypesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'list'
 
-    assert_not_nil assigns(:grant_types)
+    assert_not_nil assigns(:dispersement_types)
   end
 
   def test_show
@@ -34,8 +34,8 @@ class GrantTypesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'show'
 
-    assert_not_nil assigns(:grant_type)
-    assert assigns(:grant_type).valid?
+    assert_not_nil assigns(:dispersement_type)
+    assert assigns(:dispersement_type).valid?
   end
 
   def test_new
@@ -44,18 +44,18 @@ class GrantTypesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'new'
 
-    assert_not_nil assigns(:grant_type)
+    assert_not_nil assigns(:dispersement_type)
   end
 
   def test_create
-    num_grant_types = GrantType.count
+    num_dispersement_types = DispersementType.count
 
-    post :create, :grant_type => {}
+    post :create, :dispersement_type => {}
 
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    assert_equal num_grant_types + 1, GrantType.count
+    assert_equal num_dispersement_types + 1, DispersementType.count
   end
 
   def test_edit
@@ -64,8 +64,8 @@ class GrantTypesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'edit'
 
-    assert_not_nil assigns(:grant_type)
-    assert assigns(:grant_type).valid?
+    assert_not_nil assigns(:dispersement_type)
+    assert assigns(:dispersement_type).valid?
   end
 
   def test_update
@@ -75,14 +75,14 @@ class GrantTypesControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy
-    assert_not_nil GrantType.find(1)
+    assert_not_nil DispersementType.find(1)
 
     post :destroy, :id => 1
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
     assert_raise(ActiveRecord::RecordNotFound) {
-      GrantType.find(1)
+      DispersementType.find(1)
     }
   end
 end
