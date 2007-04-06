@@ -12,6 +12,10 @@
     <label for="dispersement_comments">Comments</label>
     <%= text_area 'dispersement', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
   </div>
+  <div class="form-element">
+    <label for="dispersement_dispersed_at">When did this get given away?</label>
+    <%= datebocks_field "dispersement", "dispersed_at" %>
+  </div>
 </div>
 
 <div class="form-element">

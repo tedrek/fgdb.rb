@@ -6,6 +6,7 @@ class Dispersement < ActiveRecord::Base
 
   def validate
     errors.add_on_empty("contact_id")
+    errors.add_on_empty("dispersed_at", "when?")
     errors.add_on_empty("dispersement_type_id")
     errors.add_on_empty("gizmo_events")
   end

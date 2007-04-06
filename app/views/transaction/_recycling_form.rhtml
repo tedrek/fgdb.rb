@@ -8,6 +8,10 @@
     <label for="recycling_comments">Comments</label>
     <%= text_area 'recycling', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
   </div>
+  <div class="form-element">
+    <label for="recycling_recycled_at">When did this get recycled?</label>
+    <%= datebocks_field "recycling", "recycled_at" %>
+  </div>
 </div>
 
 <div class="datalist"

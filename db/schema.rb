@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 1) do
+ActiveRecord::Schema.define(:version => 2) do
 
   create_table "contact_method_types", :force => true do |t|
     t.column "description", :string, :limit => 100
@@ -76,7 +76,7 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table "discount_schedules_gizmo_types", :force => true do |t|
     t.column "gizmo_type_id", :integer, :null => false
     t.column "discount_schedule_id", :integer, :null => false
-    t.column "multiplier", :float, :limit => 10
+    t.column "multiplier", :float
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
     t.column "created_at", :datetime
@@ -102,13 +102,14 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "created_at", :datetime
     t.column "created_by", :integer, :default => 1, :null => false
     t.column "updated_by", :integer, :default => 1, :null => false
+    t.column "dispersed_at", :datetime, :null => false
   end
 
   create_table "donations", :force => true do |t|
     t.column "contact_id", :integer
     t.column "postal_code", :string, :limit => 25
-    t.column "reported_required_fee", :float, :limit => 10, :default => 0.0
-    t.column "reported_suggested_fee", :float, :limit => 10, :default => 0.0
+    t.column "reported_required_fee", :float, :default => 0.0
+    t.column "reported_suggested_fee", :float, :default => 0.0
     t.column "txn_complete", :boolean, :default => true
     t.column "txn_completed_at", :datetime
     t.column "comments", :text
@@ -179,7 +180,7 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "attr_val_text", :text
     t.column "attr_val_boolean", :boolean
     t.column "attr_val_integer", :integer
-    t.column "attr_val_monetary", :float, :limit => 10
+    t.column "attr_val_monetary", :float
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
     t.column "created_at", :datetime
@@ -207,8 +208,8 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "created_at", :datetime
     t.column "created_by", :integer, :default => 1, :null => false
     t.column "updated_by", :integer, :default => 1, :null => false
-    t.column "required_fee", :float, :limit => 10, :default => 0.0
-    t.column "suggested_fee", :float, :limit => 10, :default => 0.0
+    t.column "required_fee", :float, :default => 0.0
+    t.column "suggested_fee", :float, :default => 0.0
   end
 
   create_table "payment_methods", :force => true do |t|
@@ -223,7 +224,7 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table "payments", :force => true do |t|
     t.column "donation_id", :integer
     t.column "sale_txn_id", :integer
-    t.column "amount", :float, :limit => 10, :default => 0.0, :null => false
+    t.column "amount", :float, :default => 0.0, :null => false
     t.column "payment_method_id", :integer, :null => false
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
@@ -239,6 +240,7 @@ ActiveRecord::Schema.define(:version => 1) do
     t.column "created_at", :datetime
     t.column "created_by", :integer, :default => 1, :null => false
     t.column "updated_by", :integer, :default => 1, :null => false
+    t.column "recycled_at", :datetime, :null => false
   end
 
   create_table "relationship_types", :force => true do |t|
@@ -266,8 +268,8 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table "sale_txns", :force => true do |t|
     t.column "contact_id", :integer
     t.column "postal_code", :string, :limit => 25
-    t.column "reported_discount_amount", :float, :limit => 10, :default => 0.0
-    t.column "reported_amount_due", :float, :limit => 10, :default => 0.0, :null => false
+    t.column "reported_discount_amount", :float, :default => 0.0
+    t.column "reported_amount_due", :float, :default => 0.0, :null => false
     t.column "txn_complete", :boolean, :default => true
     t.column "txn_completed_at", :datetime
     t.column "discount_schedule_id", :integer
@@ -283,7 +285,7 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table "volunteer_task_types", :force => true do |t|
     t.column "description", :string, :limit => 100
     t.column "parent_id", :integer
-    t.column "hours_multiplier", :float, :limit => 10, :default => 1.0, :null => false
+    t.column "hours_multiplier", :float, :default => 1.0, :null => false
     t.column "instantiable", :boolean, :default => true, :null => false
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
@@ -301,7 +303,7 @@ ActiveRecord::Schema.define(:version => 1) do
   create_table "volunteer_tasks", :force => true do |t|
     t.column "contact_id", :integer
     t.column "date_performed", :date
-    t.column "duration", :float, :limit => 5, :default => 0.0, :null => false
+    t.column "duration", :float, :default => 0.0, :null => false
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
     t.column "created_at", :datetime

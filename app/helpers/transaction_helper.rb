@@ -29,12 +29,12 @@ module TransactionHelper
        AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'dispersement_type', :sortable => false),
        AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'recipient', :sortable => false),
        AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'gizmos', :sortable => false),
-       AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'created_at'),
+       AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'dispersed_at'),
       ]
     when 'recycling'
       [
        AjaxScaffold::ScaffoldColumn.new(Recycling, :name => 'gizmos', :sortable => false),
-       AjaxScaffold::ScaffoldColumn.new(Recycling, :name => 'created_at'),
+       AjaxScaffold::ScaffoldColumn.new(Recycling, :name => 'recycled_at'),
       ]
     end
   end
