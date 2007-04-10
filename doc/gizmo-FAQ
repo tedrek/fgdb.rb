@@ -41,18 +41,18 @@
   assign the attribute "speed" to the type "system".  This
   relates the gizmo attribute table to gizmo type table.
 
-- How do I create an attribute "runs_palmos" for my gizmo type
+- How do I create an attribute "Runs PalmOS" for my gizmo type
   "pda"?
 
   You've already created a gizmo type called "pda" in the gizmo
   type table, right?
 
-  Now create the attribute "runs_palmos" in the gizmo attr
+  Now create the attribute "Runs PalmOS" in the gizmo attr
   table.  
 
   Finally (??exact method is still unclear, easiest probably a
   simple double dropdown bridge table screen) relate the two by
-  choosing "runs_palmos" attribute to apply to a "pda" type.
+  choosing "Runs PalmOS" attribute to apply to a "pda" type.
 
 - What do we keep track of?
 
@@ -78,9 +78,7 @@
   As of the current design, we will not nor do we intend
   to track particular gizmo instances.  We do not tag this
   particular system with an id and follow that id throughout its
-  lifecycle at Freegeek.  We also do not plan to keep track of
-  such things as circuit boards or power supplies.  Refer to the
-  gizmo types table to learn what we presently (may) track.
+  lifecycle at Freegeek.
 
 - What's a gizmo context?
 
@@ -101,8 +99,9 @@
 - How can I set up or change the master lists of gizmo type /
   context / attribute / [name your table]?  
   
-  Login as administrator and choose the table, then add, edit,
-  delete.  It's that simple.
+  Login as administrator (if that has been implemented) and choose the
+  appropriate controller for the table you want to modify, then add,
+  edit, delete.  It's that simple.
 
 - I'm in the store.  I need to sell a tablet PC, but I only see
   "system" and "laptop" in the dropdown.  What do I do?

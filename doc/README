@@ -7,11 +7,13 @@ this webapp is meant to keep track of two main areas:
  * gizmos and their flow through our organization
 
 the /volunteer_tasks controller tracks volunteers and their hours.
-the /donations and /sale_txns controllers are about gizmo flow.
+the /transaction controller takes care of gizmo flow.
+the /reports controller has some useful numbers.
 
 in the near future i hope to add:
  * classes and who has completed them
- * projects (such as building a computer) and who has worked on them
+ * projects (such as building and testing a computer) and who has
+   worked on them
 
 a bunch of other controllers are scattered around to support these,
 but should not be used by typical users.
@@ -43,8 +45,21 @@ and now you need to create the database:
    ::: edit config/database.yml-example to fit and move it (drop -example) :::
    ::: make sure to edit the settings for production (see next line, too) :::
  $> export RAILS_ENV=production
- $> /var/lib/gems/1.8/bin/rake db:data:load
+ $> alias rake='/var/lib/gems/1.8/bin/rake'
       # yeah, etch rubygems are broken
+ $> rake db:schema:load
+ $> rake db:metadata:load
  $> ./script/server &
 
+----
+TODO
+----
 
+see our trac (http://svn.freegeek.org/projects/fgdb.rb/) for details,
+but some important tasks left unfinished:
+
+ * authentication
+ * non-ajax interface
+ * deb package
+ * howto on working with apache
+ * moving to the latest rails release
