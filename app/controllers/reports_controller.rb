@@ -8,6 +8,66 @@ class ReportsController < ApplicationController
     end
   end
 
+  #####################
+  ### Gizmos report ###
+  #####################
+
+  def gizmos
+    @defaults = Conditions.new
+  end
+
+  def gizmos_report
+    @defaults = Conditions.new
+    @defaults.apply_conditions(params[:defaults])
+    @date_range_string = @defaults.to_s
+    @gizmo_data = gizmos_report_init
+    gizmo_ids = []
+    gizmo_events = GizmoEvent.find(:all, :conditions => @defaults.conditions(GizmoEvent),
+                                   :include => [:gizmo_type, :gizmo_context])
+    gizmo_events.each {|event|
+      gizmo_ids << event.id
+      add_gizmo_to_data(event, @gizmo_data)
+    }
+    @range = gizmo_ids.empty? ? 'n/a' : (gizmo_ids.min)..(gizmo_ids.max)
+  end
+
+  protected
+
+  TotalGizmoRow = 'all gizmos'
+  TotalGizmoCol = 'total flow'
+
+  def gizmos_report_init
+    @contexts = GizmoContext.find_all
+    context_names = @contexts.map {|context| context.name}.sort
+    context_names << TotalGizmoCol
+    @types = GizmoType.find_all
+    type_names = @types.map {|type| type.description}.sort
+    type_names << TotalGizmoRow
+    @columns = context_names
+    @rows = type_names
+    gizmo_data = {}
+    @rows.each {|type| gizmo_data[type] = Hash.new(0)}
+    gizmo_data
+  end
+
+  TotalGizmoModifiers = Hash.new(-1)
+  TotalGizmoModifiers['donation'] = 1
+
+  def add_gizmo_to_data(event, data)
+    # donations come in.  sales, recycling and dispersements go out.
+    modifier = TotalGizmoModifiers[event.gizmo_context.name]
+    data[event.gizmo_type.description][event.gizmo_context.name] += ( modifier * event.gizmo_count )
+    data[TotalGizmoRow][event.gizmo_context.name] += ( modifier * event.gizmo_count )
+    data[event.gizmo_type.description][TotalGizmoCol] += ( modifier * event.gizmo_count )
+    data[TotalGizmoRow][TotalGizmoCol] += ( modifier * event.gizmo_count )
+  end
+
+  #####################
+  ### Income report ###
+  #####################
+
+  public
+
   def income
     @defaults = Conditions.new
   end

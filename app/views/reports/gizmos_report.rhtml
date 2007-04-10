@@ -1,0 +1,33 @@
+<% table_width = @columns.length + 2 %>
+<h1>Gizmo report for <%= @date_range_string %></h1>
+
+<table class="report">
+
+<tr>
+  <th class="section_header" colspan="<%= table_width %>">Gizmo Flow</th>
+</tr>
+<tr>
+  <td>ids: <%= @range %></td>
+</tr>
+<tr>
+  <td class="spacer"></td>
+  <% for context in @columns %>
+    <th class="column_header"><%= Inflector.titleize context %></th>
+  <% end %>
+</tr>
+
+<% for type in @rows %>
+  <tr>
+    <th class="row_header"><%= Inflector.titleize type %></th>
+    <% for context in @columns %>
+      <td><%= @gizmo_data[type][context] %></td>
+    <% end %>
+  </tr>
+<% end %>
+
+<tr><td class="spacer" colspan="<%= table_width %>">&nbsp;</td></tr>
+
+</table>
+
+
+<p class="timestamp"> - generated <%= Time.now %></p>

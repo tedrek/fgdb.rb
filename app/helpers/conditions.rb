@@ -60,7 +60,7 @@ class Conditions
       end_date = Time.local(year + 1, month, 1)
     when 'arbitrary'
       start_date = Date.parse(@start_date.to_s)
-      end_date = Date.parse(@end_date.to_s)
+      end_date = Date.parse(@end_date.to_s) + 1
     end
     return [ "#{klass.table_name}.created_at >= ? AND #{klass.table_name}.created_at < ?",
              start_date, end_date ]
