@@ -1,6 +1,6 @@
 class Payment < ActiveRecord::Base
   belongs_to :donation
-  belongs_to :sale_txn
+  belongs_to :sale
   belongs_to :payment_method
 
   validates_presence_of :payment_method_id

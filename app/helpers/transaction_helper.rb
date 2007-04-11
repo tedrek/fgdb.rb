@@ -9,11 +9,11 @@ module TransactionHelper
     case context
     when 'sale'
       [
-       AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'id', :eval => 'sale.id'),
-       AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'payment',
+       AjaxScaffold::ScaffoldColumn.new(Sale, :name => 'id', :eval => 'sale.id'),
+       AjaxScaffold::ScaffoldColumn.new(Sale, :name => 'payment',
                                         :eval => 'sale.payment', :sortable => false),
-       AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'buyer', :sortable => false, :eval => 'sale.buyer'),
-       AjaxScaffold::ScaffoldColumn.new(SaleTxn, :name => 'created_at', :eval => 'sale.created_at'),
+       AjaxScaffold::ScaffoldColumn.new(Sale, :name => 'buyer', :sortable => false, :eval => 'sale.buyer'),
+       AjaxScaffold::ScaffoldColumn.new(Sale, :name => 'created_at', :eval => 'sale.created_at'),
       ]
     when 'donation'
       [

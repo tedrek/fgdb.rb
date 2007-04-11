@@ -60,13 +60,21 @@ class TransactionController < ApplicationController
 
   def component  
     @show_wrapper = true if @show_wrapper.nil?
+    @model = model
     @sort_sql = model.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
     @conditions = current_conditions(params)
+    search_options = {
+      :order => @sort_by,
+      :per_page => default_per_page,
+      :include => [:gizmo_events],
+      :conditions => @conditions.conditions(model) 
+    }
+    if @model.new.respond_to?( :payments )
+      search_options[:include] << :payments
+      search_options[:joins] = "JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
+    end
     @sort_by = @sort_sql.nil? ? "#{model.table_name}.#{model.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
-    @paginator, @transactions = paginate( model.table_name.to_sym,
-                                          :order => @sort_by,
-                                          :per_page => default_per_page,
-                                          :conditions => @conditions.conditions(model) )
+    @paginator, @transactions = paginate( model.table_name.to_sym, search_options )
     
     render :action => "component", :layout => false
   end
@@ -141,6 +149,22 @@ class TransactionController < ApplicationController
     end
   end
 
+  # For gizmo_events embedded in a form
+  def add_attrs_to_form
+    if params[:gizmo_type_id]
+      @gizmo_context = GizmoContext.find(params[:gizmo_context_id])
+      @gizmo_type = GizmoType.find(params[:gizmo_type_id])
+      if ! @gizmo_type.relevant_attrs(@gizmo_context).empty?
+        render :update do |page|
+          page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+        end
+        return true
+      end
+    end
+    render :update do |page|
+    end
+  end
+
   def automatic_datalist_row
     events = datalist_objects( gizmo_events_tag, gizmo_event_defaults )
     if( events.empty? or
@@ -195,7 +219,7 @@ class TransactionController < ApplicationController
     when 'donation'
       Donation
     when 'sale'
-      SaleTxn
+      Sale
     when 'dispersement'
       Dispersement
     when 'recycling'

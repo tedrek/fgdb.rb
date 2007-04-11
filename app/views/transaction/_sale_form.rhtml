@@ -16,7 +16,7 @@
       %>'), {asynchronous:true, evalScripts:true});">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'sale_gizmo_events',
-    @sale.gizmo_events, :new_defaults => { :sale_txn_id => @sale.id },
+    @sale.gizmo_events, :new_defaults => { :sale_id => @sale.id },
     :show_header => false, :render_aware => "sale_gizmo_event_form",
     :add_text => "More gizmos",
     :new_defaults => @event_defaults || nil) %>
@@ -33,7 +33,7 @@
   <div class="datalist">
     <% params[:gizmo_context_id] ||= @gizmo_context.id %>
     <%= datalist_for( :payment, 'sale_payments',
-      @sale.payments, :new_defaults => { :sale_txn_id => @sale.id },
+      @sale.payments, :new_defaults => { :sale_id => @sale.id },
       :show_header => false, :render_aware => "payment_form",
       :add_text => "More payment methods",
       :new_defaults => @event_defaults || nil) %>

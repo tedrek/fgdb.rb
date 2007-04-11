@@ -1,4 +1,4 @@
-class SaleTxn < ActiveRecord::Base
+class Sale < ActiveRecord::Base
   include GizmoTransaction
   belongs_to :contact, :order => "surname, first_name"  
   has_many :payments, :dependent => :destroy

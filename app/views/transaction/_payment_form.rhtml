@@ -9,12 +9,10 @@
   </div>
 
   <div class="form-element">
-    <label for="<%= @datalist_field_id_prefix %>_payment_method_id">Payment method</label><br/>
-    <select id="<%= @datalist_field_id_prefix %>_payment_method_id"
-        name="<%= @datalist_field_name_prefix %>[payment_method_id]">
-      <option />
-      <%= options_from_collection_for_select PaymentMethod.find_all, "id", "description", @payment.payment_method_id %>
-    </select>
+    <%= render :partial => 'payment_method_select',
+            :locals => {:field_id_prefix => @datalist_field_id_prefix,
+                        :field_name_prefix => @datalist_field_name_prefix,
+                        :paid_object => @payment} %>
   </div>
 
 <!--[eoform:payment]-->

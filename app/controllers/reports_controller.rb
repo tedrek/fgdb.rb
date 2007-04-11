@@ -79,7 +79,7 @@ class ReportsController < ApplicationController
     @date_range_string = @defaults.to_s
     #:MC: cannot get payment_methods to be included
     donations = Donation.find(:all, :conditions => @defaults.conditions(Donation), :include => [:payments])
-    sales = SaleTxn.find(:all, :conditions => @defaults.conditions(SaleTxn), :include => [:payments, :discount_schedule])
+    sales = Sale.find(:all, :conditions => @defaults.conditions(Sale), :include => [:payments, :discount_schedule])
     sale_ids = []
     donation_ids = []
     donations.each do |donation|

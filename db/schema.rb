@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 2) do
+ActiveRecord::Schema.define(:version => 3) do
 
   create_table "contact_method_types", :force => true do |t|
     t.column "description", :string, :limit => 100
@@ -161,7 +161,7 @@ ActiveRecord::Schema.define(:version => 2) do
 
   create_table "gizmo_events", :force => true do |t|
     t.column "donation_id", :integer
-    t.column "sale_txn_id", :integer
+    t.column "sale_id", :integer
     t.column "dispersement_id", :integer
     t.column "recycling_id", :integer
     t.column "gizmo_type_id", :integer, :null => false
@@ -223,7 +223,7 @@ ActiveRecord::Schema.define(:version => 2) do
 
   create_table "payments", :force => true do |t|
     t.column "donation_id", :integer
-    t.column "sale_txn_id", :integer
+    t.column "sale_id", :integer
     t.column "amount", :float, :default => 0.0, :null => false
     t.column "payment_method_id", :integer, :null => false
     t.column "lock_version", :integer, :default => 0, :null => false
@@ -265,7 +265,7 @@ ActiveRecord::Schema.define(:version => 2) do
     t.column "updated_by", :integer, :default => 1, :null => false
   end
 
-  create_table "sale_txns", :force => true do |t|
+  create_table "sales", :force => true do |t|
     t.column "contact_id", :integer
     t.column "postal_code", :string, :limit => 25
     t.column "reported_discount_amount", :float, :default => 0.0
@@ -318,7 +318,7 @@ ActiveRecord::Schema.define(:version => 2) do
   add_foreign_key "dispersements", ["dispersement_type_id"], "dispersement_types", ["id"], :on_update => :cascade, :on_delete => :set_null
 
   add_foreign_key "payments", ["donation_id"], "donations", ["id"]
-  add_foreign_key "payments", ["sale_txn_id"], "sale_txns", ["id"]
+  add_foreign_key "payments", ["sale_id"], "sales", ["id"]
 
   add_foreign_key "relationships", ["relationship_type_id"], "relationship_types", ["id"], :on_delete => :set_null
   add_foreign_key "relationships", ["sink_id"], "contacts", ["id"], :on_delete => :set_null

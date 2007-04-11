@@ -45,8 +45,7 @@
         :update => scaffold_content_id( refine_params ) %>
     <%= hidden_field_tag "scaffold_id", params[:scaffold_id] %>
     <%= hidden_field_tag "page", 1 %>
-
-    <%= select_visibility( 'conditions', 'limit_type', {
+    <% filters = {
           'date range' => date_or_date_range_picker('conditions'),
           'contact' => render_component( :controller => '/contacts', :action => 'search',
               :params => {
@@ -54,7 +53,14 @@
                 :display_searchbox => 'true', :display_edit => 'false', :display_create => 'false'
               }
             )
-          } ) %>
+          } %>
+    <% if @model.new.respond_to?( :payments ) %>
+      <% filters['payment method'] = render( :partial => 'payment_method_select',
+            :locals => {:field_id_prefix => 'conditions',
+                        :field_name_prefix => 'conditions',
+                        :paid_object => @conditions} ) %>
+    <% end %>
+    <%= select_visibility( 'conditions', 'limit_type', filters ) %>
 
     <p class="form-footer">
       <%= submit_tag "Refine", :class => "submit" %>

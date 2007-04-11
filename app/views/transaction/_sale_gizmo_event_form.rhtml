@@ -14,7 +14,8 @@
   <%= observe_field( "#{@datalist_field_id_prefix}_gizmo_type_id",
     :url => {
       :action => 'add_attrs_to_form',
-      :controller => 'sale_txns',
+      :controller => 'transaction',
+      :transaction_type => @transaction_type,
       :div_id => "#{@datalist_field_id_prefix}_event_extras",
       :gizmo_event_id => @gizmo_event.id,
       :gizmo_context_id => @gizmo_context.id,

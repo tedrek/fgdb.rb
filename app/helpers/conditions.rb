@@ -5,6 +5,7 @@ class Conditions
     @date_type = 'daily'
     @month = Date.today
     @year = Date.today
+    @payment_method_id = PaymentMethod.cash.id
   end
   # primary selection
   attr_accessor :limit_type
@@ -12,6 +13,8 @@ class Conditions
   attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
   # contact attrs
   attr_accessor :contact_id
+  # payment method attrs
+  attr_accessor :payment_method_id
 
   def contact
     if contact_id
@@ -41,6 +44,8 @@ class Conditions
       date_range_conditions(klass)
     when 'contact'
       contact_conditions(klass)
+    when 'payment method'
+      payment_method_conditions(klass)
     end
   end
 
@@ -68,6 +73,14 @@ class Conditions
 
   def contact_conditions(klass)
     return [ "#{klass.table_name}.contact_id = ?", contact_id ]
+  end
+
+  def payment_method_conditions(klass)
+    if klass.new.respond_to?(:payments)
+      return [ "payments.payment_method_id = ?", payment_method_id ]
+    else
+      return [ "#{klass.table_name}.id IS NULL" ]
+    end
   end
 
   def to_s
