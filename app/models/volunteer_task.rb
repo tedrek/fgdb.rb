@@ -14,5 +14,10 @@ class VolunteerTask < ActiveRecord::Base
     end
     duration * mult
   end
-  
+
+  def type_of_task?(type)
+    volunteer_task_types.detect {|task_type|
+      task_type.type_of_task?( type )
+    }
+  end
 end

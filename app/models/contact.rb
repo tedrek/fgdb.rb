@@ -49,7 +49,10 @@ class Contact < ActiveRecord::Base
 
   def hours_effective
     volunteer_tasks(Date.today - 365).inject(0.0) do |total,task|
-      total += task.effective_duration
+      unless task.type_of_task?('build')
+        total += task.effective_duration
+      end
+      total
     end
   end
 

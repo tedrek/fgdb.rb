@@ -27,6 +27,12 @@ class VolunteerTaskType < ActiveRecord::Base
     kids
   end
 
+  def type_of_task?(type)
+    (description == type) ||
+      ( parent &&
+        parent.type_of_task?(type) )
+  end
+
   def display_name
     parents = ancestors
     parents.pop # get rid of the root node
