@@ -31,6 +31,12 @@ class Sale < ActiveRecord::Base
       "anonymous(#{postal_code})"
   end
 
+  def contact_type
+    contact ?
+      'named' :
+      'anonymous'
+  end
+
   def calculated_total
     if discount_schedule
       (gizmo_events.inject(0.0) {|tot,gizmo|

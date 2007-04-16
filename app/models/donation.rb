@@ -29,6 +29,12 @@ class Donation < ActiveRecord::Base
       "anonymous(#{postal_code})"
   end
 
+  def contact_type
+    contact ?
+      'named' :
+      'anonymous'
+  end
+
   def reported_total
     reported_required_fee + reported_suggested_fee
   end
