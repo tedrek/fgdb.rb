@@ -1,18 +1,13 @@
 <% @options = params.merge(:controller => '/contacts', :action => "view", :id => @contact.send("#{Contact.primary_key}")) %>
 
 <div class="contact_display">
-  <% contact_type_names = @contact.contact_types.map {|c_t| c_t.description} %>
-  <div class="id"><%= if contact_type_names.include? 'recycler'
-      'recycler'
-    elsif @contact.is_organization?
-      'organization'
-    elsif contact_type_names.include? 'staff'
-      'staff'
-    elsif contact_type_names.include? 'volunteer'
-      'volunteer'
-    else
-      'person'
-    end %> (id: <%= @contact.id %>)</div>
+  <div class="id">
+    <%= ( @contact.contact_types.map {|c_t|
+          c_t.description
+        }.sort << (@contact.is_organization ? 'organization' : 'person')
+      ).join(', ') %>
+    (id: <%= @contact.id %>)
+  </div>
   <div class="name"><%= @contact.display_name %></div>
   <br />
   <% if @contact.is_person? %>
