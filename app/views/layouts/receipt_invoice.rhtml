@@ -7,7 +7,7 @@
 <table>
 <tr>
   <td><img src="/images/freegeeklogo.png" alt="freegeeklogo.png" /></td>
-  <td><img src="/images/hdr-address.gif" alt="hdr-address.gif" /></td>
+  <td><img src="<%= Default['address image'] %>" alt="physical address" /></td>
   <td>
     <%= @txn.contact_information.join('<br />') %>
   </td>
@@ -28,7 +28,9 @@
     </strong>
   </td>
   <% if @context == 'donation' %>
-    <td align="right">Federal Tax I.D.  93-1292010</td>
+    <td align="right"><%= Default['tax id'] %></td>
+  <% else %>
+    <td align="right"><%= Default['business id'] %></td>
   <% end %>
 </tr>
 <tr>

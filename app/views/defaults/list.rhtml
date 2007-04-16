@@ -1,0 +1,25 @@
+<h1>Listing defaults</h1>
+
+<table>
+  <tr>
+    <th>name</th>
+    <th>value</th>
+  </tr>
+  
+<% for default in @defaults %>
+  <tr>
+    <td><%=h default.send('name') %></td>
+    <td><%=h default.send('value') %></td>
+    <td><%= link_to 'Show', :action => 'show', :id => default %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => default %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => default }, :confirm => 'Are you sure?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @default_pages.current.previous } if @default_pages.current.previous %>
+<%= link_to 'Next page', { :page => @default_pages.current.next } if @default_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New default', :action => 'new' %>
