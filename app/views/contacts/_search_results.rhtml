@@ -1,10 +1,9 @@
 <% new_params = params.merge( :controller => '/contacts', :action => 'new', :id => nil ) %>
 
-<div id="<%= scaffold_messages_id(params) %>">
-  <%= render :partial => 'messages' %>
-</div>
-
 <div id="<%= searchbox_search_results_div_id(params) %>" class="actions">
+  <div id="<%= scaffold_messages_id(params) %>">
+    <%= render :partial => 'messages' %>
+  </div>
 
   <% if @search_results.length > 0 %>
     <%= render :partial => 'results_dropdown' %>
