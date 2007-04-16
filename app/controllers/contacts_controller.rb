@@ -54,6 +54,7 @@ class ContactsController < ApplicationController
     @contact = Contact.new
     @contact.state_or_province = Default['state_or_province']
     @contact.city = Default['city']
+    @contact.country = Default['country']
     @successful = true
     render :action => 'new.rjs'
   end
