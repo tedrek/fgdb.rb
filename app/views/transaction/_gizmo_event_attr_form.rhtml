@@ -4,7 +4,9 @@
 <% @gizmo_event.gizmo_type = gizmo_type = @gizmo_type %>
 <% @gizmo_event.gizmo_context = gizmo_context = @gizmo_context %>
 
-<% for attr in gizmo_type.relevant_attrs( gizmo_context ) %>
+<% attr_display = {} %>
+<% gizmo_type.relevant_attrs( gizmo_context ).each {|attr| attr_display[attr.name] = attr} %>
+<% for attr in attr_display.values %>
   <% next if Inflector.humanize(attr.name) == 'Unit price' %>
   <% options = {} %>
   <div class="form-element">
