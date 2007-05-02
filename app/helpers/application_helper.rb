@@ -14,60 +14,16 @@ module ApplicationHelper
     "#{options[:scaffold_id]}_form_tbody"
   end
 
-  def checkbox_visibility(obj_name, method_name, choices = {})
-    #:TODO: scrub this first
-    obj = eval( "@#{obj_name}" )
-    this_choice = obj.send(method_name).to_s
-    js_observe_fuct = visibility_js_fuct(obj_name, choices.keys.map {|k| k.to_s}.join('", "'), false)
-    #method_name += '[]' unless /\[\]$/.match?(method_name)
-
-    display = %Q{}
-    choices.each do |choice,options|
-      choice = choice.to_s
-      select_js = "$('%s_%s_%s').click()" % [obj_name, method_name, choice]
-      checkbox = %Q{<input type="checkbox" id="%s_%s_%s" name="%s[%s][]" value="%s" %s />} % 
-        [obj_name, method_name, choice,
-         obj_name, method_name, choice,
-         choice == this_choice ? 'CHECKED' : '']
-      display += %Q{<div class="checkbox-visibility-choice">%s <span onclick="%s">%s</span>} %
-        [checkbox, select_js, options[:label] || Inflector.titleize(choice)]
-      display += observe_field( "#{obj_name}_#{method_name}_#{choice}",
-                                :function => js_observe_fuct,
-                                :with => method_name )
-      display += hidden_content(obj_name, choice, this_choice, options[:text])
-      display += %Q{</div>}
-    end
-
-    return display
-  end
-
-  def radio_visibility(obj_name, method_name, choices = {})
-    #:TODO: scrub this first
-    obj = eval( "@#{obj_name}" )
-    this_choice = obj.send(method_name).to_s
-    js_observe_fuct = visibility_js_fuct(obj_name, choices.keys.map {|k| k.to_s}.join('", "'))
-    display = ''
-
-    choices.each do |choice,options|
-      choice = choice.to_s
-      select_js = "$('%s_%s_%s').click()" % [obj_name, method_name, choice]
-      display += %Q{<p class="radio-visibility-choice">%s <span onclick="%s">%s</span>} %
-        [radio_button(obj_name, method_name, choice),
-         select_js, options[:label] || Inflector.titleize(choice)]
-      display += observe_field( "#{obj_name}_#{method_name}_#{choice}",
-                                :function => js_observe_fuct,
-                                :with => method_name )
-      display += hidden_content(obj_name, choice, this_choice, options[:text])
-      display += %Q{</p>}
-    end
-    return display
-  end
-
+  # due to prototype suckness, 'extend' may not be used as a choice name.
   def select_visibility(obj_name, method_name, choices = {})
     #:TODO: scrub this first
     obj = eval( "@#{obj_name}" )
 
-    js_observe_fuct = visibility_js_fuct(obj_name, choices.keys.map {|k| k.to_s}.join('", "'))
+    js_observe_fuct = 'var choices = new Array("%s");' % choices.keys.map {|k| k.to_s}.join('", "')
+    js_observe_fuct += "for( var i = 0; i < choices.length; i++)"
+    js_observe_fuct += "{var choice = choices[i]; if(choice == 'extend') {}"
+    js_observe_fuct += "else if(choice == value) {$('#{obj_name}_' + choice + '_choice').show();}"
+    js_observe_fuct += "else {$('#{obj_name}_' + choice + '_choice').hide();} }"
 
     # type choice
     display = %Q{ <div class="form-element"> %s %s </div> } %
@@ -76,9 +32,14 @@ module ApplicationHelper
                        :function => js_observe_fuct,
                        :with => method_name )]
 
-    this_choice = obj.send(method_name).to_s
+    this_choice = obj.send(method_name)
     choices.each {|choice, content|
-      display += hidden_content(obj_name, choice.to_s, this_choice, content)
+      if this_choice.to_s == choice.to_s
+        visibility = ''
+      else
+        visibility = 'style="display:none;"'
+      end
+      display += %Q{ <div id="%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, choice.to_s, visibility, content ]
     }
 
     return display
@@ -106,26 +67,7 @@ module ApplicationHelper
     return select_visibility(obj_name, fields[:date_type], date_types)
   end
 
-  def hidden_content(obj_name, choice, this_choice, text)
-    if this_choice == choice
-      visibility = ''
-    else
-      visibility = 'style="display:none;"'
-    end
-    return %Q{<div id="%s_%s_choice" %s>%s</div>} % [ obj_name, choice,
-                                                      visibility, text ]
+  def time_or_time_range_picker(obj_name, fields)
+    #:TODO: ?
   end
-
-
-  def visibility_js_fuct(obj_name, names, exclusive = true)
-    js_observe_fuct = 'var choices = new Array("%s");' % names
-    js_observe_fuct += "for( var i = 0; i < choices.length; i++)"
-    #:MC: prototype.js namespace clobber if we use 'extend'
-    js_observe_fuct += "{var choice = choices[i]; if(choice == 'extend') {}"
-    js_observe_fuct += "else if(choice == value) {$('#{obj_name}_' + choice + '_choice').show();}"
-    js_observe_fuct += "else {$('#{obj_name}_' + choice + '_choice').hide();}" if exclusive
-    js_observe_fuct += "}"
-    return js_observe_fuct
-  end
-
 end

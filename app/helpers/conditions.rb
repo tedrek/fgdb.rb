@@ -1,6 +1,5 @@
 class Conditions
   def initialize
-    @lookup_type = 'search'
     @limit_type = 'date range'
     @date = Date.today
     @date_type = 'daily'
@@ -8,17 +7,14 @@ class Conditions
     @year = Date.today
     @payment_method_id = PaymentMethod.cash.id
   end
-
   # primary selection
-  attr_accessor :limit_type, :lookup_type
+  attr_accessor :limit_type
   # date range selections
   attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
   # contact attrs
   attr_accessor :contact_id
   # payment method attrs
   attr_accessor :payment_method_id
-  # transaction level
-  attr_accessor :transaction_id
 
   def contact
     if contact_id
@@ -43,28 +39,14 @@ class Conditions
   end
 
   def conditions(klass)
-    case @lookup_type
-    when 'transaction_id'
-      conds = ["#{klass.table_name}.#{klass.primary_key} = ?", @transaction_id]
-    when 'search'
-      @limit_type = [@limit_type] unless @limit_type.kind_of?(Array)
-      conds = []
-      @limit_type.each {|type|
-        case type
-        when 'date range'
-          new_conds = date_range_conditions(klass)
-        when 'contact'
-          new_conds = contact_conditions(klass)
-        when 'payment method'
-          new_conds = payment_method_conditions(klass)
-        end
-        if conds[0]
-          conds[0] += " AND #{new_conds.shift}"
-        end
-        conds += new_conds
-      }
+    case @limit_type
+    when 'date range'
+      date_range_conditions(klass)
+    when 'contact'
+      contact_conditions(klass)
+    when 'payment method'
+      payment_method_conditions(klass)
     end
-    return conds
   end
 
   def date_range_conditions(klass)

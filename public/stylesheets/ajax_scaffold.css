@@ -7,11 +7,11 @@
  For details, see the AjaxScaffoldGenerator web site: http://www.ajaxscaffold.com/
 */
 
-form,
+.ajax-scaffold form,
 .ajax-scaffold table,
 .ajax-scaffold p,
 .ajax-scaffold div,
-fieldset {
+.ajax-scaffold fieldset {
 margin: 0;
 padding: 0;
 }
@@ -248,20 +248,21 @@ border-right: solid 1px #ccc;
 /* Messages
    ========================= */
 
-.messages-container{
+.ajax-scaffold .messages-container,
+.ajax-scaffold .ajax-scaffold .messages-container{
 padding: 0;
 margin: 0 7px;
 border: none;
 }
 
-.empty-message {
+.ajax-scaffold .empty-message {
 background-color: #e8e8e8;
 padding: 4px;
 text-align: center;
 color: #666;
 }
 
-.message {
+.ajax-scaffold .message {
 font-size: 11px;
 font-weight: bold;
 padding: 5px 20px 5px 5px;
@@ -271,7 +272,7 @@ margin: 2px 7px;
 line-height: 12px;
 }
 
-.message a {
+.ajax-scaffold .message a {
 position: absolute;
 right: 10px;
 top: 4px;
@@ -280,21 +281,21 @@ font: bold 11px verdana, sans-serif;
 letter-spacing: -1px;
 }
 
-.messages-container .message {
+.ajax-scaffold .messages-container .message {
 margin: 0;
 }
 
-.error-message {
+.ajax-scaffold .error-message {
 border-left: solid 5px #f66;
 background-color: #fbb;
 }
 
-.warning-message {
+.ajax-scaffold .warning-message {
 border-left: solid 5px #ff6;
 background-color: #ffb;
 }
 
-.info-message {
+.ajax-scaffold .info-message {
 border-left: solid 5px #66f;
 background-color: #bbf;
 }
@@ -309,7 +310,7 @@ border: solid 1px #f66;
 float: left;
 }
 
-fieldset {
+.ajax-scaffold fieldset {
 clear: both;
 }
 
@@ -352,7 +353,7 @@ background-color: #fcc;
 /* Loading Indicators
    ============================== */
 
-.loading-indicator {
+.ajax-scaffold .loading-indicator {
 vertical-align: bottom;
 margin: 0;
 }
@@ -382,7 +383,7 @@ border: solid 1px #DDDF37;
 border-top: none;
 }
 
-.submit {
+.ajax-scaffold .submit {
 font-weight: bold;
 font-size: 14px;
 font-family: Arial, sans-serif;
@@ -391,15 +392,15 @@ margin: 0;
 margin-top: 5px;
 }
 
-fieldset {
+.ajax-scaffold fieldset {
 border: none;
 }
 
-label.required{
+.ajax-scaffold label.required{
 font-weight: bold;
 }
 
-label.example {
+.ajax-scaffold label.example {
 font-size: 11px;
 font-family: arial;
 color: #888;
@@ -414,7 +415,7 @@ letter-spacing: -1px;
 font: bold 16px arial;
 }
 
-p.form-footer a {
+.ajax-scaffold p.form-footer a {
 font: bold 14px arial, sans-serif;
 letter-spacing: 0;
 }
@@ -430,13 +431,13 @@ padding: 2px;
 margin-left: 5px;
 }
 
-div.form-element {
+.ajax-scaffold div.form-element {
 float: left;
 margin-right: 10px;
 margin-bottom: 2px;
 }
 
-label {
+.ajax-scaffold label {
 display: block;
 font-family: Verdana, sans-serif;
 color: #555;
@@ -444,8 +445,8 @@ font-size: 11px;
 padding-bottom: 1px;
 }
 
-input,
-select {
+.ajax-scaffold input.text-input,
+.ajax-scaffold select {
 font-size: 16px;
 font-weight: bold;
 font-family: Arial, sans-serif;
@@ -453,11 +454,11 @@ letter-spacing: -1px;
 border: solid 1px #1F7F00;
 }
 
-.form-element input {
+.ajax-scaffold .form-element input {
 padding: 1px;
 }
 
-textarea {
+.ajax-scaffold textarea {
 height: 65px;
 font-family: Arial, sans-serif;
 font-size: 12px;

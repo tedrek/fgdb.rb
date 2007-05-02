@@ -122,6 +122,7 @@ border: solid 1px #5FAF00;
 }
 span.hours {
 background-color: #0F0;
+font-weight: bold;
 border: black 1px solid;
 padding: 1px;
 margin-left: 10px;
@@ -145,7 +146,7 @@ border-bottom: black 1px solid;
 position: absolute;
 }
 
-.searchbox_form .form-element {
+.searchbox_form div.form-element {
 float: left;
 margin-right: 10px;
 margin-bottom: 2px;
@@ -204,7 +205,7 @@ font-size: 20px;
 .contact_display .address {
 padding: 10px;
 margin-left: 10px;
-font-size: 16px;
+font-size: 17px;
 }
 
 .contact_display .contact_methods {
@@ -278,20 +279,4 @@ color: #828;
 }
 .invoice td {
 color: red;
-n}
-/* ===================================
-         sort form stuff */
-td.sort_form {
-background-color: #FFB;
-}
-p.radio-visibility-choice {
-color: #2A2;
-font-size: 16px;
-}
-#conditions_transaction_id_fields {
-display:none;
-}
-#conditions_conditions_fields {
-display:none;
-
 }

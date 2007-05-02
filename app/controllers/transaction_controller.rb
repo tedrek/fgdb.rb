@@ -62,29 +62,18 @@ class TransactionController < ApplicationController
     @show_wrapper = true if @show_wrapper.nil?
     @model = model
     @sort_sql = model.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
-    @sort_by = @sort_sql.nil? ? "#{model.table_name}.#{model.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
-    # allowable conditions:
-    #   [ XOR( id,
-    #   OPTIONAL_IF_APPLICABLE_SQL_OR(contact, payment method, creation date) ) ]
     @conditions = current_conditions(params)
     search_options = {
-#      :order => @sort_by,
+      :order => @sort_by,
       :per_page => default_per_page,
       :include => [:gizmo_events],
       :conditions => @conditions.conditions(model) 
     }
     if @model.new.respond_to?( :payments )
       search_options[:include] << :payments
-      search_options[:joins] ||= ''
-      search_options[:joins] += " LEFT OUTER JOIN payment_methods ON payments.payment_method_id = payments.id"
+      search_options[:joins] = "JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
     end
-    if search_options[:conditions].include?( 'payment_method_id' )
-      search_options[:joins] ||= ''
-      search_options[:joins] += " JOIN payments ON payments.#{@transaction_type}_id = payments.id"
-    end
-    if @model.new.respond_to?( :contact )
-      search_options[:include] << :contact
-    end
+    @sort_by = @sort_sql.nil? ? "#{model.table_name}.#{model.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
     @paginator, @transactions = paginate( model.table_name.to_sym, search_options )
     
     render :action => "component", :layout => false
