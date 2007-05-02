@@ -25,8 +25,11 @@
   <tbody id="<%= scaffold_form_tbody_id(params) %>">
   </tbody>
   <tbody>
-    <tr>
+    <tr id="column_headings_row" onclick="$('sort_form_row').toggle();">
       <%= render :partial => 'column_headings' %>
+    </tr>
+    <tr id="sort_form_row" style="display:none;">
+      <%= render :partial => 'sort_form' %>
     </tr>
   </tbody>
   <tbody id="<%= scaffold_tbody_id(params) %>">
@@ -37,36 +40,6 @@
 </table>
 <div class="ajax-scaffold-footer">
   <%= render :partial => 'pagination_links', :locals => { :paginator => @paginator } %>
-</div>
-<div class="list_refinement">
-  <% refine_params = params.merge({ :page => 1, :action => 'component_update', :transaction_type => @transaction_type }) %>
-  <%= form_remote_tag :url => { :action => 'component_update' },
-        :loading => "$('#{loading_indicator_id( refine_params )}').show()",
-        :update => scaffold_content_id( refine_params ) %>
-    <%= hidden_field_tag "scaffold_id", params[:scaffold_id] %>
-    <%= hidden_field_tag "page", 1 %>
-    <% filters = {
-          'date range' => date_or_date_range_picker('conditions'),
-          'contact' => render_component( :controller => '/contacts', :action => 'search',
-              :params => {
-                :select_name => "conditions[contact_id]", :contact => @conditions.contact,
-                :display_searchbox => 'true', :display_edit => 'false', :display_create => 'false'
-              }
-            )
-          } %>
-    <% if @model.new.respond_to?( :payments ) %>
-      <% filters['payment method'] = render( :partial => 'payment_method_select',
-            :locals => {:field_id_prefix => 'conditions',
-                        :field_name_prefix => 'conditions',
-                        :paid_object => @conditions} ) %>
-    <% end %>
-    <%= select_visibility( 'conditions', 'limit_type', filters ) %>
-
-    <p class="form-footer">
-      <%= submit_tag "Refine", :class => "submit" %>
-      <%= loading_indicator_tag refine_params %>
-    </p>
-  <%= end_form_tag %>
 </div>
 <% if @show_wrapper %>
 </div>

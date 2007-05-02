@@ -1,0 +1,15 @@
+<% search_choices = {} %>
+<% search_choices[:payment_method] = {:label => "Payment method",
+        :text => render( :partial => 'payment_method_select',
+            :locals => {:field_id_prefix => 'conditions',
+                        :field_name_prefix => 'conditions',
+                        :paid_object => @conditions} )} if @model.new.respond_to?(:payments) %>
+<% search_choices[:contact] = {:label => "Contact",
+        :text => render_component( :controller => '/contacts', :action => 'search',
+            :params => {
+              :select_name => "conditions[contact_id]", :contact => @conditions.contact,
+              :display_searchbox => 'true', :display_edit => 'false', :display_create => 'false'
+            } )} if @model.new.respond_to?(:contact) %>
+<% search_choices['date range'] = {:label => "Date of #{@transaction_type}",
+        :text => date_or_date_range_picker('conditions')} %>
+<%= checkbox_visibility("conditions", "limit_type", search_choices) %>

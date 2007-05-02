@@ -51,6 +51,11 @@ and now you need to create the database:
  $> rake db:metadata:load
  $> ./script/server &
 
+also, feel free to read the notes and listen to an audio log from our
+install at the vancouver freegeek site:
+http://puddle.ca/~joe/freegeek/martin_install.ogg
+http://puddle.ca/~joe/freegeek/fg_database_install-HOWTO
+
 ----
 TODO
 ----

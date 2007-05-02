@@ -1,5 +1,5 @@
-  <h4><%= searchbox_search_label(params) %></h4>
-  <input type="text" name="contact_searchbox_query"
+  <label for="<%= searchbox_field_id(params) %>"><%= searchbox_search_label(params) %></label>
+  <input type="text" class="text-input" name="contact_searchbox_query"
     id="<%= searchbox_field_id(params) %>"
     onKeyPress="magicContactOnlyOnSubmit('<%= searchbox_search_button_id(params)
       %>', event); return contactKeyListener(event);" />
