@@ -32,7 +32,7 @@ To get the fgdb.rb source, which you probably have, because you're reading this:
 to install a working Ruby on Rails environment:
 
  $> apt-get install ruby rubygems postgresql-8.1 build-essential \
-        apache2 ruby1.8-dev
+        apache2 ruby1.8-dev libpgsql-ruby
  $> gem install -v 1.1.2 rails
  $> gem install ferret # needs build-essential
 
