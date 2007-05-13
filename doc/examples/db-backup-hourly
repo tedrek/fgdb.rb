@@ -1,0 +1,6 @@
+#!/bin/bash
+/usr/sbin/logrotate -f /usr/local/backup/database_logrotate.conf
+su - postgres -c "nice pg_dump -X use-set-session-authorization -C fgdb.rb | nice gzip > /usr/local/backup/database.sql.gz"
+#su - postgres -c "nice /usr/bin/rsync -Hqzae \
+#	'ssh -2 -i /var/lib/postgres/.ssh/backup_transfer_key' \
+#	--delete-excluded '/usr/local/backup/' 'postgres@blossom:/usr/local/backup/'"

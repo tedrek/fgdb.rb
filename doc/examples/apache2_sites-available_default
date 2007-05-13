@@ -1,0 +1,39 @@
+NameVirtualHost *
+<VirtualHost *>
+   ServerAdmin ass@freegeek.org
+
+   SetEnv RAILS_ENV production
+   DocumentRoot /var/www/fgdb.rb/public
+
+   <Directory />
+      Options FollowSymLinks
+      AllowOverride None
+   </Directory>
+
+   <Directory /var/www/fgdb.rb/public>
+      Options ExecCGI FollowSymLinks
+      AddHandler cgi-script .cgi
+      AllowOverride all
+      Order allow,deny
+      Allow from all
+   </Directory>
+
+    ErrorLog /var/log/apache2/error.log
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+
+    CustomLog /var/log/apache2/access.log combined
+    ServerSignature On
+
+    Alias /doc/ "/usr/share/doc/"
+    <Directory "/usr/share/doc/">
+        Options Indexes MultiViews FollowSymLinks
+        AllowOverride None
+        Order deny,allow
+        Deny from all
+        Allow from 127.0.0.0/255.0.0.0 ::1/128
+    </Directory>
+
+</VirtualHost>

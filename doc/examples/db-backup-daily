@@ -1,0 +1,4 @@
+#!/bin/bash
+/usr/sbin/logrotate -f /usr/local/backup/database_logrotate_daily.conf
+su - postgres -c "pg_dump -a -D fgdb.rb | gzip > /usr/local/backup/database_daily_data.sql.gz"
+su - postgres -c "pg_dump -s -D fgdb.rb > /usr/local/backup/database_daily_schema.sql"
