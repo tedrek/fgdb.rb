@@ -58,11 +58,13 @@ class Conditions
       year = (@year || Date.today.year).to_i
       start_date = Time.local(year, @month, 1)
       if @month.to_i == 12
-        month = 1
+        end_month = 1
+        end_year = year + 1
       else
-        month = 1 + @month.to_i
+        end_month = 1 + @month.to_i
+        end_year = year
       end
-      end_date = Time.local(year + 1, month, 1)
+      end_date = Time.local(end_year, end_month, 1)
     when 'arbitrary'
       start_date = Date.parse(@start_date.to_s)
       end_date = Date.parse(@end_date.to_s) + 1
