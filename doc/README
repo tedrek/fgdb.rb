@@ -41,7 +41,7 @@ on Ubuntu Dapper you will need to get gems from the internet.
 and now you need to create the database:
 
  $> su - postgres -c 'createuser -P SOMEUSER'
-      # capable of creating tables, but nothing else
+      # capable of creating databases, but nothing else
  $> createdb -h localhost -U SOMEUSER fgdb.rb_production
  $> createdb -h localhost -U SOMEUSER fgdb.rb_test
  $> createdb -h localhost -U SOMEUSER fgdb.rb_development
