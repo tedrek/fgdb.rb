@@ -27,6 +27,10 @@ class GizmoEvent < ActiveRecord::Base
     end
   end
 
+  def valid_gizmo_count?
+     gizmo_count.is_a?(Fixnum) and gizmo_count > 0
+  end
+
   def attry_description(options = {})
     attrs = {}
     gizmo_events_gizmo_typeattrs.each {|bridge|
@@ -78,7 +82,7 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def mostly_empty?
-    ((! gizmo_type_id) and (! gizmo_count))
+    ((! gizmo_type_id) or (! gizmo_count))
   end
 
   def required_fee

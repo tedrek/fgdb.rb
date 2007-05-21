@@ -17,6 +17,9 @@ class Donation < ActiveRecord::Base
     else
       errors.add_on_empty("postal_code")
     end
+    gizmo_events.each do |gizmo|
+       errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
+    end
     errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid?)
     errors.add("payments", "or gizmos should include some reason to call this a donation") if
       gizmo_events.empty? and payments.empty?
@@ -41,6 +44,7 @@ class Donation < ActiveRecord::Base
 
   def calculated_required_fee
     gizmo_events.inject(0.0) {|total, gizmo|
+      next if gizmo.mostly_empty?
       total + gizmo.required_fee
     }
   end
