@@ -90,5 +90,4 @@ but some important tasks left unfinished:
  * authentication
  * non-ajax interface
  * deb package
- * howto on working with apache
- * moving to the latest rails release
+ * moving to the latest stable rails
