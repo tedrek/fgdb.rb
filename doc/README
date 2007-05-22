@@ -52,7 +52,19 @@ and now you need to create the database:
       # yeah, etch rubygems are broken
  $> rake db:schema:load
  $> rake db:metadata:load
+
+run some tests to see if things look okay
+
+ $> rake
+ $> rake db:test:purge
+ $> rake test:units
+
+if you see lots of failures or errors,
+something is wrong.
+then start the server and browse in to see things working
+
  $> ./script/server &
+ $> iceweasel http://localhost:3000
 
 feel free to read the notes and listen to an audio log from our
 install at the vancouver freegeek site:

@@ -4,7 +4,7 @@ class VolunteerTaskTest < Test::Unit::TestCase
   fixtures :volunteer_tasks
 
 	NEW_VOLUNTEER_TASK = { :duration => 1.5, :date_performed => Date.today, :contact_id=>1}	# e.g. {:name => 'Test VolunteerTask', :description => 'Dummy'}
-	REQ_ATTR_NAMES 			 = %w( contact_id duration date_performed) # name of fields that must be present, e.g. %(name description)
+	REQ_ATTR_NAMES 			 = %w( contact_id date_performed) # name of fields that must be present, e.g. %(name description)
 	DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup

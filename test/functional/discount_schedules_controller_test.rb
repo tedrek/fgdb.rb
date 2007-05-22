@@ -7,7 +7,7 @@ class DiscountSchedulesController; def rescue_action(e) raise e end; end
 class DiscountSchedulesControllerTest < Test::Unit::TestCase
   fixtures :discount_schedules
 
-	NEW_DISCOUNT_SCHEDULE = {}	# e.g. {:name => 'Test DiscountSchedule', :description => 'Dummy'}
+	NEW_DISCOUNT_SCHEDULE = {:name => 'foo'}
 	REDIRECT_TO_MAIN = {:action => 'list'} # put hash or string redirection that you normally expect
 
 	def setup
