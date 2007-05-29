@@ -53,15 +53,14 @@ and now you need to create the database:
  $> rake db:schema:load
  $> rake db:metadata:load
 
-run some tests to see if things look okay
+run some tests to see if things look okay:
 
- $> rake
  $> rake db:test:purge
- $> rake test:units
+ $> rake
 
-if you see lots of failures or errors,
-something is wrong.
-then start the server and browse in to see things working
+if you see any failures or errors,
+something is wrong that you should fix or tell me about.
+then start the server and browse in to see things working:
 
  $> ./script/server &
  $> iceweasel http://localhost:3000
