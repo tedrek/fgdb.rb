@@ -1,14 +1,19 @@
 class Conditions
-  def initialize
-    @limit_type = 'date range'
-    @date = Date.today
-    @date_type = 'daily'
-    @month = Date.today
-    @year = Date.today
-    @payment_method_id = PaymentMethod.cash.id
+  def initialize(options = {})
+    options = {
+      :limit_type => 'date range',
+      :date => Date.today,
+      :date_type => 'daily',
+      :month => Date.today,
+      :year => Date.today,
+    } if options.empty?
+
+    self.apply_conditions(options)
   end
-  # primary selection
-  attr_accessor :limit_type
+  # condition selection
+  attr_accessor :limit_type, :use_date_range, :use_payment_method, :use_contact
+  # transaction_id choice
+  attr_accessor :transaction_id
   # date range selections
   attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
   # contact attrs
@@ -28,13 +33,13 @@ class Conditions
   end
 
   def apply_conditions(options)
-    begin
-      options.each do |name,val|
-        val = val.to_i if( val.to_i.to_s == val )
-        self.send(name+"=", val)
-      end
-    rescue NoMethodError
-      nil
+    instance_variables.each do |var|
+      instance_variable_set(var, nil)
+    end
+    options.each do |name,val|
+      next unless self.class.instance_methods.include?( name.to_s )
+      #val = val.to_i if( val.to_i.to_s == val )
+      self.instance_variable_set('@' + name.to_s, val)
     end
   end
 
@@ -46,6 +51,8 @@ class Conditions
       contact_conditions(klass)
     when 'payment method'
       payment_method_conditions(klass)
+    else
+      multi_type_conditions(klass)
     end
   end
 
@@ -112,7 +119,24 @@ class Conditions
     return desc
   end
 
+  def multi_type_conditions(klass)
+    condition_where = []
+    condition_vars = []
+    %w[ date_range payment_method contact ].each do |type|
+      if self.instance_variable_get("@use_#{type}")
+        conds = self.send("#{type}_conditions", klass)
+        condition_where << conds.shift
+        condition_vars += conds
+      end
+    end
+    return condition_vars.unshift( condition_where.join(' AND ') )
+  end
+
   def contact_to_s
     return "belonging to %s" % contact.display_name
   end
-end
+end #class Conditions
+
+class DateRangeConditions
+
+end #class DateRangeConditions
