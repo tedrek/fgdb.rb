@@ -1,4 +1,5 @@
 <div class="form-element">
   <label>What range of income?</label>
   <%= date_or_date_range_picker("defaults") %>
+  <%= hidden_field "defaults", "limit_type" %>
 </div>

@@ -116,7 +116,7 @@ class Conditions
       desc = Date.parse(@date.to_s).to_s
     when 'monthly'
       year = (@year || Date.today.year).to_i
-      start_date = Time.local(year, @month, 1)
+      start_date = Time.local(year, @month.month, 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     when 'arbitrary'
       start_date = Date.parse(@start_date.to_s)
