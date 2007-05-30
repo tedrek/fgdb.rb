@@ -28,6 +28,14 @@ class ConditionsTest < Test::Unit::TestCase
     assert_nil cond.payment_method_id, "should not have a default payment method"
     assert_nil cond.contact_id, "should not have a default contact"
     assert_nil cond.transaction_id
+    assert_nothing_raised {cond.to_s}
+  end
+
+  def test_that_conditions_should_include_reasonable_defaults
+    @conditions.apply_conditions(nil)
+    assert_reasonable_defaults(@conditions)
+    @conditions.apply_conditions({})
+    assert_reasonable_defaults(@conditions)
   end
 
   def test_that_conditions_should_take_payment_method_to_override_defaults
@@ -36,6 +44,7 @@ class ConditionsTest < Test::Unit::TestCase
     assert_nil @conditions.contact_id
     assert_nil @conditions.date_type
     assert_nil @conditions.date
+    assert_nothing_raised {@conditions.to_s}
   end
 
   def test_that_conditions_should_convert_numeric_months_to_dates
@@ -45,6 +54,7 @@ class ConditionsTest < Test::Unit::TestCase
     assert_nothing_raised {retval = @conditions.month}
     assert_kind_of Date, retval
     assert_equal 5, retval.month
+    assert_nothing_raised {@conditions.to_s}
   end
 
   def test_that_default_conditions_should_generate_where_clause
@@ -53,6 +63,7 @@ class ConditionsTest < Test::Unit::TestCase
     assert_kind_of Array, retval
     assert retval.include?(@conditions.date)
     assert retval[0].include?('created_at')
+    assert_nothing_raised {@conditions.to_s}
   end
 
   def test_that_options_generate_appropriate_where_clause
@@ -63,6 +74,7 @@ class ConditionsTest < Test::Unit::TestCase
     assert_kind_of Array, retval
     assert retval[0].include?('created_at')
     assert_equal 5, retval[1].month
+    assert_nothing_raised {@conditions.to_s}
   end
 
   def test_that_conditions_should_generate_compound_where_clause
@@ -85,6 +97,7 @@ class ConditionsTest < Test::Unit::TestCase
     assert retval.include?(options[:payment_method_id]), "Should have the payment method id"
     assert retval[0].include?('payment_method_id')
     assert retval[0].include?('AND')
+    assert_nothing_raised {@conditions.to_s}
   end
 
 end

@@ -1,14 +1,5 @@
 class Conditions
   def initialize(options = {})
-    if( options.nil? || options.empty? )
-      options = {
-        :limit_type => 'date range',
-        :date => Date.today,
-        :date_type => 'daily',
-        :month => Date.today,
-        :year => Date.today,
-      }
-    end
     apply_conditions(options)
   end
 
@@ -41,7 +32,27 @@ class Conditions
     return @contact
   end
 
+  def payment_method
+    if payment_method_id
+      if( (! @payment_method) || (payment_method_id != @payment_method.id) )
+        @payment_method = PaymentMethod.find(payment_method_id)
+      end
+    else
+      @payment_method = nil
+    end
+    return @payment_method
+  end
+
   def apply_conditions(options)
+    if( options.nil? || options.empty? )
+      options = {
+        :limit_type => 'date range',
+        :date => Date.today,
+        :date_type => 'daily',
+        :month => Date.today,
+        :year => Date.today,
+      }
+    end
     instance_variables.each do |var|
       instance_variable_set(var, nil)
     end
@@ -101,33 +112,6 @@ class Conditions
     end
   end
 
-  def to_s
-    case @limit_type
-    when 'date range'
-      date_range_to_s
-    when 'contact'
-      contact_to_s
-    end
-  end
-
-  def date_range_to_s
-    case @date_type
-    when 'daily'
-      desc = Date.parse(@date.to_s).to_s
-    when 'monthly'
-      year = (@year || Date.today.year).to_i
-      start_date = Time.local(year, @month.month, 1)
-      desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
-    when 'arbitrary'
-      start_date = Date.parse(@start_date.to_s)
-      end_date = Date.parse(@end_date.to_s)
-      desc = "from #{start_date} to #{end_date}"
-    else
-      desc = 'unknown date type'
-    end
-    return desc
-  end
-
   def multi_type_conditions(klass)
     condition_where = []
     condition_vars = []
@@ -141,7 +125,48 @@ class Conditions
     return condition_vars.unshift( condition_where.join(' AND ') )
   end
 
+  def to_s
+    case @limit_type
+    when 'date range'
+      date_range_to_s
+    when 'contact'
+      contact_to_s
+    else
+      multi_type_to_s
+    end
+  end
+
+  def date_range_to_s
+    case @date_type
+    when 'daily'
+      desc = Date.parse(@date.to_s).to_s
+    when 'monthly'
+      year = (@year || Date.today.year).to_i
+      start_date = Date.new(year, @month.month, 1)
+      desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
+    when 'arbitrary'
+      start_date = Date.parse(@start_date.to_s)
+      end_date = Date.parse(@end_date.to_s)
+      desc = "from #{start_date} to #{end_date}"
+    else
+      desc = 'unknown date type'
+    end
+    return desc
+  end
+
   def contact_to_s
     return "belonging to %s" % contact.display_name
+  end
+
+  def payment_method_to_s
+    "paid for using %s" % payment_method.description
+  end
+
+  def multi_type_to_s
+    %w[ date_range payment_method contact ].find_all {|type|
+      instance_variable_get("@use_#{type}")
+    }.map {|type|
+      send("#{type}_to_s")
+    }.join(', ')
   end
 end #class Conditions
