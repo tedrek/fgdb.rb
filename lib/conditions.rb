@@ -1,21 +1,30 @@
 class Conditions
   def initialize(options = {})
-    options = {
-      :limit_type => 'date range',
-      :date => Date.today,
-      :date_type => 'daily',
-      :month => Date.today,
-      :year => Date.today,
-    } if options.empty?
-
-    self.apply_conditions(options)
+    if( options.nil? || options.empty? )
+      options = {
+        :limit_type => 'date range',
+        :date => Date.today,
+        :date_type => 'daily',
+        :month => Date.today,
+        :year => Date.today,
+      }
+    end
+    apply_conditions(options)
   end
+
   # condition selection
   attr_accessor :limit_type, :use_date_range, :use_payment_method, :use_contact
   # transaction_id choice
   attr_accessor :transaction_id
   # date range selections
-  attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
+  attr_accessor :date, :date_type, :start_date, :end_date, :year
+  attr_reader :month
+  def month=(mon)
+    unless mon.kind_of?(Date)
+      mon = Date.new(year || Date.today.year, mon, 1)
+    end
+    @month = mon
+  end
   # contact attrs
   attr_accessor :contact_id
   # payment method attrs
@@ -29,7 +38,7 @@ class Conditions
     else
       @contact = nil
     end
-      return @contact
+    return @contact
   end
 
   def apply_conditions(options)
@@ -38,8 +47,8 @@ class Conditions
     end
     options.each do |name,val|
       next unless self.class.instance_methods.include?( name.to_s )
-      #val = val.to_i if( val.to_i.to_s == val )
-      self.instance_variable_set('@' + name.to_s, val)
+      val = val.to_i if( val.respond_to?(:to_i) && (val.to_i.to_s == val) )
+      send(name.to_s + "=", val)
     end
   end
 
@@ -62,13 +71,13 @@ class Conditions
       start_date = Date.parse(@date.to_s)
       end_date = start_date + 1
     when 'monthly'
-      year = (@year || Date.today.year).to_i
-      start_date = Time.local(year, @month, 1)
-      if @month.to_i == 12
+      year = (@year || Date.today.year)
+      start_date = Time.local(year, @month.month, 1)
+      if @month.month == 12
         end_month = 1
         end_year = year + 1
       else
-        end_month = 1 + @month.to_i
+        end_month = 1 + @month.month
         end_year = year
       end
       end_date = Time.local(end_year, end_month, 1)
@@ -136,7 +145,3 @@ class Conditions
     return "belonging to %s" % contact.display_name
   end
 end #class Conditions
-
-class DateRangeConditions
-
-end #class DateRangeConditions
