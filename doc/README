@@ -75,7 +75,7 @@ continue with the following:
 
  $> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8
  $> a2enmod rewrite
- $> chmod -R www-data:www-data tmp lop index
+ $> chmod -R www-data:www-data tmp log index
  $> cp doc/examples/apache2_sites-available_default /etc/apache2/sites-available/default
    ::: modify apache config to taste :::
    ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
