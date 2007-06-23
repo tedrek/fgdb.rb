@@ -52,8 +52,15 @@ class DonationTest < Test::Unit::TestCase
   end
 
   def test_that_should_be_valid_when_dumped
-    donation = Donation.new(NO_INFO.merge({:gizmo => GizmoEvent.new(crt_event), :contact_type => 'dumped'}))
+    donation = Donation.new(NO_INFO.merge({:gizmo_events => [GizmoEvent.new(crt_event)], :contact_type => 'dumped'}))
     assert donation.valid?
+  end
+
+  def test_that_should_dumped_contact_type_should_be_remembered
+    donation = Donation.new(NO_INFO.merge({:gizmo_events => [GizmoEvent.new(crt_event)], :contact_type => 'dumped'}))
+    donation.save
+    donation = Donation.find(donation.id)
+    assert_equal 'dumped', donation.contact_type
   end
 
   def test_that_should_be_able_to_get_contact_information_for_anonymous
