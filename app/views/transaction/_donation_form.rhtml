@@ -7,6 +7,7 @@
   <label for="donation_contact_type">What kind of contact?</label>
   <%= select_visibility( 'donation', 'contact_type',
         :anonymous => render( :partial => 'anonymous' ),
+	:dumped => render( :text => '' ),
         :named => render( :partial => 'contact_search' ) ) %>
 </div>
 

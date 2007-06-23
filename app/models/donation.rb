@@ -5,37 +5,34 @@ class Donation < ActiveRecord::Base
   has_many :gizmo_events, :dependent => :destroy
 
   def initialize(*args)
-    @contact_type = 'named'
     super(*args)
   end
 
-  attr_accessor :contact_type  #anonymous or named
+  attr :contact_type, true  #anonymous, named, or dumped
 
   def validate
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
-    else
+    elsif contact_type == 'anonymous'
       errors.add_on_empty("postal_code")
     end
     gizmo_events.each do |gizmo|
        errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
     end
-    errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid?)
+    errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid? or contact_type == 'dumped')
     errors.add("payments", "or gizmos should include some reason to call this a donation") if
       gizmo_events.empty? and payments.empty?
     errors.add("payments", "may only have one invoice") if invoices.length > 1
   end
 
   def donor
-    contact ?
-      contact.display_name :
+    if contact
+      contact
+    elsif postal_code != ''
       "anonymous(#{postal_code})"
-  end
-
-  def contact_type
-    contact ?
-      'named' :
-      'anonymous'
+    else
+      'dumped'
+    end
   end
 
   def reported_total

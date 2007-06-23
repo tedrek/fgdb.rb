@@ -45,8 +45,10 @@ module GizmoTransaction
   def contact_information
     if contact
      contact.display_name_address
-    else
+    elsif postal_code
       ["Anonymous (#{postal_code})"]
+    else
+      ["Dumped"]
     end
   end
 
