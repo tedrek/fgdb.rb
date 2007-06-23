@@ -8,7 +8,7 @@ class Donation < ActiveRecord::Base
     super(*args)
   end
 
-  attr :contact_type, true  #anonymous, named, or dumped
+  attr_writer :contact_type #anonymous, named, or dumped
 
   def validate
     if contact_type == 'named'
@@ -26,13 +26,26 @@ class Donation < ActiveRecord::Base
   end
 
   def donor
-    if contact
+    if contact_type == 'named'
       contact
-    elsif postal_code != ''
+    elsif contact_type == 'anonymous'
       "anonymous(#{postal_code})"
     else
       'dumped'
     end
+  end
+
+  def contact_type
+    unless @contact_type
+      if contact
+        @contact_type = 'named'
+      elsif postal_code
+        @contact_type = 'anonymous'
+      else
+        @contact_type = 'dumped'
+      end
+    end
+    @contact_type
   end
 
   def reported_total

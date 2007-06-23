@@ -63,6 +63,11 @@ class DonationTest < Test::Unit::TestCase
     assert_equal 'dumped', donation.contact_type
   end
 
+  def test_that_anonymous_contact_without_postal_code_should_be_invalid
+    donation = Donation.new(NO_INFO.merge({:gizmo_events => [GizmoEvent.new(crt_event)], :contact_type => 'anonymous'}))
+    assert !donation.valid?
+  end
+
   def test_that_should_be_able_to_get_contact_information_for_anonymous
     donation = Donation.new(with_gizmo.merge(:postal_code => '12345'))
     info = nil
