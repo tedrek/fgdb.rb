@@ -69,7 +69,7 @@ class TransactionController < ApplicationController
       :include => [:gizmo_events],
       :conditions => @conditions.conditions(model) 
     }
-    if @model.new.respond_to?( :payments )
+    if @model.new.respond_to?( :payments ) and transaction_type != 'donation'
       search_options[:include] << :payments
       search_options[:joins] = "JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
     end
