@@ -2,7 +2,6 @@
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   layout "application"
-  include DatebocksEngine
 
   def with_sidebar
     "with_sidebar.rhtml"
