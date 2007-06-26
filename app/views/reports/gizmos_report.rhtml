@@ -20,7 +20,7 @@
   <tr>
     <th class="row_header"><%= Inflector.titleize type %></th>
     <% for context in @columns %>
-      <td><%= @gizmo_data[type][context] %></td>
+      <td><%= number_with_delimiter(@gizmo_data[type][context]) %></td>
     <% end %>
   </tr>
 <% end %>

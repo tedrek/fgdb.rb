@@ -89,6 +89,20 @@ module AjaxScaffold # :nodoc:
       end
     end
 
+    # This along with the two aliases below, will wrap all calls to
+    # format_column and add commas to any string with a dollar amount
+    # sign ($) in it.
+    def format_column_with_commas(column_value, sanitize = true)
+      if column_value.instance_of? String and column_value.include?('$')
+        number_with_delimiter(column_value).to_s
+      else
+        format_column_without_commas(column_value, sanitize)
+      end
+    end
+
+    alias_method :format_column_without_commas, :format_column
+    alias_method :format_column, :format_column_with_commas
+
     def format_time(time)
       time.strftime("%m/%d/%Y %I:%M %p")
     end

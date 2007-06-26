@@ -24,7 +24,7 @@
     <tr>
       <th class="row_header"><%= Inflector.titleize category %></th>
       <% for method in @columns[section] %>
-        <td><%= '$%0.2f' % @income_data[section][method][category] %></td>
+        <td><%= number_with_delimiter('$%0.2f' % @income_data[section][method][category]) %></td>
       <% end %>
     </tr>
   <% end %>
