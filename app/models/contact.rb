@@ -56,12 +56,27 @@ class Contact < ActiveRecord::Base
     end
   end
 
+  # effective for adoption
+  def adoption_hours
+    hours_effective
+  end
+
+  def effective_discount_hours
+    last_ninety_days_of_effective_hours
+  end
+
   def last_ninety_days_of_volunteer_tasks
     volunteer_tasks(Date.today - 90)
   end
 
   def last_ninety_days_of_actual_hours
     hours_actual(true)
+  end
+
+  def last_ninety_days_of_effective_hours
+    last_ninety_days_of_volunteer_tasks.inject(0.0) {|tot,task|
+      tot + task.effective_duration
+    }
   end
 
   def last_few_volunteer_tasks
@@ -140,12 +155,8 @@ class Contact < ActiveRecord::Base
   end
 
   def default_discount_schedule
-    #:MC: i should move this business logic out to the database itself
-    #(order, condition)
-    if last_ninety_days_of_actual_hours >= 4.0
+    if effective_discount_hours >= 4.0
       DiscountSchedule.volunteer
-    #elsif last_donation.created_at.to_date == Date.today
-    #  DiscountSchedule.same_day_donor
     else
       DiscountSchedule.no_discount
     end

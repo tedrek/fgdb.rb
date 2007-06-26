@@ -11,16 +11,15 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
     'duration' => 3,
     'contact_id' => 12
   }
-  NEW_VOLUNTEER_TASK_TYPES = [ '41' ]
+  NEW_VOLUNTEER_TASK_TYPES = [ '22' ]
 
-	def setup
-		@controller = VolunteerTasksController.new
-		@request    = ActionController::TestRequest.new
-		@response   = ActionController::TestResponse.new
-		# Retrieve fixtures via their name
-		# @first = volunteer_tasks(:first)
-		@first = VolunteerTask.find_first
-	end
+  def setup
+    @controller = VolunteerTasksController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+    @first = VolunteerTask.find_first
+    @first.volunteer_task_types = [VolunteerTaskType.find(46)]
+  end
 
   def test_component
     get :component

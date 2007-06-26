@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContactTest < Test::Unit::TestCase
-  fixtures :contacts
+  fixtures :contacts, :volunteer_task_types
 
   NEW_CONTACT = {:postal_code => 1 }  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
   REQ_ATTR_NAMES        = %w( postal_code ) # name of fields that must be present, e.g. %(name description)
@@ -49,5 +49,65 @@ class ContactTest < Test::Unit::TestCase
       assert contact.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
     end
   end
+
+  def test_that_volunteer_tasks_meet_business_rules
+    contact = Contact.find_first
+    contact.volunteer_tasks = []
+    assert_equal 0, contact.hours_effective
+    assert_equal 0, contact.hours_actual
+    assert_equal 0, contact.last_ninety_days_of_actual_hours
+    assert_kind_of VolunteerTask, an_hour_of_programming
+    contact.volunteer_tasks = [an_hour_of_programming]
+    assert_kind_of VolunteerTask, contact.volunteer_tasks[0]
+  end
+
+  def test_that_adoption_hours_can_be_calculated_appropriately
+    contact = Contact.find_first
+    contact.volunteer_tasks = []
+    assert_equal 0, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_programming]
+    assert_equal 1, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_assembly]
+    assert_equal 0, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_monitors]
+    assert_equal 2, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly]
+    assert_equal 1, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming]
+    assert_equal 3, contact.adoption_hours
+  end
+
+  def test_that_default_discount_can_be_calculated_appropriately
+    contact = Contact.find_first
+    contact.volunteer_tasks = []
+    assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_programming, an_hour_of_programming, an_hour_of_programming]
+    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_monitors]
+    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly, an_hour_of_programming, an_hour_of_assembly]
+    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming]
+    assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
+  end
+
+  def an_hour_of_programming
+    an_hour_of(46)
+  end
+
+  def an_hour_of_assembly
+    an_hour_of(26)
+  end
+
+  def an_hour_of_monitors
+    an_hour_of(22)
+  end
+
+  def an_hour_of(type)
+    VolunteerTask.new({ :duration => 1.0,
+                        :date_performed => Date.today,
+                        :volunteer_task_types => [ VolunteerTaskType.find(type) ] })
+  end
+
 end
 

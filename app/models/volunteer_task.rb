@@ -7,6 +7,7 @@ class VolunteerTask < ActiveRecord::Base
   validates_presence_of :date_performed
   validates_presence_of :contact_id
   validates_presence_of :duration
+  validates_presence_of :volunteer_task_types
 
   def effective_duration
     mult = volunteer_task_types.inject(1) do |mu,type|
