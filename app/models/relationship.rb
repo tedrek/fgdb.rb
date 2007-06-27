@@ -1,4 +1,4 @@
-require 'ajax_scaffold'
+
 
 class Relationship < ActiveRecord::Base
   belongs_to :relationship_type

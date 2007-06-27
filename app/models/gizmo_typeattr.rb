@@ -1,4 +1,4 @@
-require 'ajax_scaffold'
+
 
 class GizmoTypeattr < ActiveRecord::Base
   belongs_to  :gizmo_type

@@ -1,4 +1,4 @@
-require 'ajax_scaffold'
+
 
 class GizmoEvent < ActiveRecord::Base
   has_one :donation

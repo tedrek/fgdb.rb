@@ -1,4 +1,4 @@
-require 'ajax_scaffold'
+
 
 class ContactMethodType < ActiveRecord::Base
   has_many :contact_methods, :dependent => true

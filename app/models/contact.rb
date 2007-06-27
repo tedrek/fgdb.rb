@@ -1,4 +1,4 @@
-require 'ajax_scaffold'
+
 
 class Contact < ActiveRecord::Base
   has_and_belongs_to_many :contact_types
