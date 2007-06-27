@@ -1,6 +1,9 @@
 class DonationTotal < ActiveRecord::Migration
   def self.up
-    create_view :v_donation_totals, "select d.id, sum(p.amount) from donations as d left outer join payments as p on p.donation_id = d.id group by d.id" do |t|
+    create_view( :v_donation_totals,
+                 "select d.id, sum(p.amount) from donations as d" +
+                 "left outer join payments as p on p.donation_id = d.id" +
+                 "group by d.id" ) do |t|
       t.column :id
       t.column :total_paid
     end
