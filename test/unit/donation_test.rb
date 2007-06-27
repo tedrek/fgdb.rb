@@ -60,6 +60,7 @@ class DonationTest < Test::Unit::TestCase
     donation = Donation.new(NO_INFO.merge({:gizmo_events => [GizmoEvent.new(crt_event)], :contact_type => 'dumped'}))
     donation.save
     donation = Donation.find(donation.id)
+    assert_equal 'dumped', donation.donor
     assert_equal 'dumped', donation.contact_type
   end
 
