@@ -402,7 +402,7 @@ ActiveRecord::Schema.define(:version => 6) do
     v.column :total_paid
   end
 
-  create_view "v_donations", "SELECT d.id, d.contact_id, d.postal_code, d.reported_required_fee, d.reported_suggested_fee, d.txn_complete, d.txn_completed_at, d.comments, d.lock_version, d.updated_at, d.created_at, d.created_by, d.updated_by, v.total_paid FROM (donations d JOIN v_donation_totals v ON ((d.id = v.id)));", :force => true do |v|
+  create_view "v_donations", "SELECT d.id, d.contact_id, d.postal_code, d.reported_required_fee, d.reported_suggested_fee, d.txn_complete, d.txn_completed_at, d.comments, d.lock_version, d.updated_at, d.created_at, d.created_by, d.updated_by, v.total_paid, CASE WHEN (v.total_paid > d.reported_required_fee) THEN d.reported_required_fee ELSE v.total_paid END AS fees_paid, CASE WHEN (v.total_paid < d.reported_required_fee) THEN 0.00 ELSE (v.total_paid - d.reported_required_fee) END AS donations_paid FROM (donations d JOIN v_donation_totals v ON ((d.id = v.id)));", :force => true do |v|
     v.column :id
     v.column :contact_id
     v.column :postal_code
@@ -417,6 +417,8 @@ ActiveRecord::Schema.define(:version => 6) do
     v.column :created_by
     v.column :updated_by
     v.column :total_paid
+    v.column :fees_paid
+    v.column :donations_paid
   end
 
 end

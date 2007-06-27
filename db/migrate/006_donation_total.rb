@@ -7,7 +7,12 @@ class DonationTotal < ActiveRecord::Migration
       t.column :id
       t.column :total_paid
     end
-    create_view :v_donations, "select d.*, v.total_paid from donations as d join v_donation_totals as v on d.id = v.id" do |t|
+
+    create_view( :v_donations, "select d.*, v.total_paid, " +
+                 "CASE WHEN (v.total_paid > d.reported_required_fee) THEN d.reported_required_fee ELSE v.total_paid END, " +
+                 "CASE WHEN (v.total_paid < d.reported_required_fee) THEN 0.00 " +
+                 "ELSE (v.total_paid - d.reported_required_fee) END " +
+                 "from donations as d join v_donation_totals as v on d.id = v.id" ) do |t|
       t.column "id"
       t.column "contact_id"
       t.column "postal_code"
@@ -22,6 +27,8 @@ class DonationTotal < ActiveRecord::Migration
       t.column "created_by"
       t.column "updated_by"
       t.column "total_paid"
+      t.column "fees_paid"
+      t.column "donations_paid"
     end
   end
 
