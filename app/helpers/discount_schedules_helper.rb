@@ -1,2 +1,2 @@
-class DiscountSchedulesHelper
+module DiscountSchedulesHelper
 end

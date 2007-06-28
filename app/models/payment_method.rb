@@ -1,5 +1,3 @@
-
-
 class PaymentMethod < ActiveRecord::Base
 
   def to_s

@@ -1,3 +1,0 @@
-class GizmoContextsGizmoTypeattrsController < ApplicationController
-  active_scaffold
-end

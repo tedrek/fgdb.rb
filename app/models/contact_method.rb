@@ -1,5 +1,3 @@
-
-
 class ContactMethod < ActiveRecord::Base
   belongs_to :contact_method_type
   validates_associated :contact_method_type
