@@ -1,2 +1,2 @@
 module GizmoContextsHelper
-module GizmoContextsHelper
+end

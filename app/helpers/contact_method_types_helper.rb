@@ -1,2 +1,2 @@
 module ContactMethodTypesHelper
-module ContactMethodTypesHelper
+end

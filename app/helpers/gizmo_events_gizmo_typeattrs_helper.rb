@@ -1,2 +1,2 @@
 module GizmoEventsGizmoTypeattrsHelper
-module GizmoEventsGizmoTypeattrsHelper
+end
