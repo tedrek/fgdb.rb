@@ -39,7 +39,7 @@ class Donation < ActiveRecord::Base
     unless @contact_type
       if contact
         @contact_type = 'named'
-      elsif postal_code
+      elsif postal_code != ''
         @contact_type = 'anonymous'
       else
         @contact_type = 'dumped'
