@@ -18,6 +18,7 @@ class Contact < ActiveRecord::Base
   # acts_as_userstamp
 
   validates_presence_of :postal_code
+  before_save :remove_empty_contact_methods
 
   def is_organization?
     self.is_organization
@@ -162,6 +163,16 @@ class Contact < ActiveRecord::Base
     end
   end
 
+  private
+
+    def remove_empty_contact_methods
+      for contact_method in contact_methods
+        if contact_method.description.nil? or contact_method.description.empty?
+          contact_method.destroy
+        end
+      end
+    end
+
   class << self
 
     def people
@@ -214,7 +225,7 @@ class Contact < ActiveRecord::Base
       q
     end
 
-  end # class << self
+    end # class << self
 
   acts_as_ferret :fields => {
     'first_name' => {:boost => 2},
