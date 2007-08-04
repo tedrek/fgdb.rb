@@ -5,13 +5,6 @@ class Contact < ActiveRecord::Base
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
 
-  # many to many self referential relationship (source and sink can be
-  # used to determine direction of relationship)
-  has_many :relationships_as_source, :foreign_key => 'source_id', :class_name => 'Relationship'
-  has_many :relationships_as_sink,   :foreign_key => 'sink_id',   :class_name => 'Relationship'
-  has_many :sources,  :through => :relationships_as_sink
-  has_many :sinks,    :through => :relationships_as_source
-
   has_many :donations
   has_many :volunteer_tasks
 
@@ -140,10 +133,6 @@ class Contact < ActiveRecord::Base
     dispaddr.push(country) unless 
       country.nil? or country == '' or country.upcase =~ /^USA*$/
     return dispaddr
-  end
-
-  def relationships
-    (relationships_as_source + relationships_as_sink).uniq
   end
 
   def types
