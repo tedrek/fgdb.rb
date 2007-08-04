@@ -5,19 +5,13 @@ class Contact < ActiveRecord::Base
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
 
-  # many to many self referential relationship (source and sink can be
-  # used to determine direction of relationship)
-  has_many :relationships_as_source, :foreign_key => 'source_id', :class_name => 'Relationship'
-  has_many :relationships_as_sink,   :foreign_key => 'sink_id',   :class_name => 'Relationship'
-  has_many :sources,  :through => :relationships_as_sink
-  has_many :sinks,    :through => :relationships_as_source
-
   has_many :donations
   has_many :volunteer_tasks
 
   # acts_as_userstamp
 
   validates_presence_of :postal_code
+  before_save :remove_empty_contact_methods
 
   def is_organization?
     self.is_organization
@@ -126,10 +120,6 @@ class Contact < ActiveRecord::Base
     return dispaddr
   end
 
-  def relationships
-    (relationships_as_source + relationships_as_sink).uniq
-  end
-
   def types
     contact_types.join(' ')
   end
@@ -150,6 +140,16 @@ class Contact < ActiveRecord::Base
       DiscountSchedule.no_discount
     end
   end
+
+  private
+
+    def remove_empty_contact_methods
+      for contact_method in contact_methods
+        if contact_method.description.nil? or contact_method.description.empty?
+          contact_method.destroy
+        end
+      end
+    end
 
   class << self
 
@@ -203,7 +203,7 @@ class Contact < ActiveRecord::Base
       q
     end
 
-  end # class << self
+    end # class << self
 
   acts_as_ferret :fields => {
     'first_name' => {:boost => 2},

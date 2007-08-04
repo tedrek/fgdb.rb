@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 6) do
+ActiveRecord::Schema.define(:version => 7) do
 
   create_table "contact_method_types", :force => true do |t|
     t.column "description", :string, :limit => 100
@@ -285,28 +285,6 @@ ActiveRecord::Schema.define(:version => 6) do
 
   add_index "recyclings", ["created_at"], :name => "recyclings_created_at_index"
 
-  create_table "relationship_types", :force => true do |t|
-    t.column "description", :string, :limit => 100
-    t.column "direction_matters", :boolean
-    t.column "lock_version", :integer, :default => 0, :null => false
-    t.column "updated_at", :datetime
-    t.column "created_at", :datetime
-    t.column "created_by", :integer, :default => 1, :null => false
-    t.column "updated_by", :integer, :default => 1, :null => false
-  end
-
-  create_table "relationships", :force => true do |t|
-    t.column "source_id", :integer
-    t.column "sink_id", :integer
-    t.column "flow", :integer
-    t.column "relationship_type_id", :integer
-    t.column "lock_version", :integer, :default => 0, :null => false
-    t.column "updated_at", :datetime
-    t.column "created_at", :datetime
-    t.column "created_by", :integer, :default => 1, :null => false
-    t.column "updated_by", :integer, :default => 1, :null => false
-  end
-
   create_table "sales", :force => true do |t|
     t.column "contact_id", :integer
     t.column "postal_code", :string, :limit => 25
@@ -392,10 +370,6 @@ ActiveRecord::Schema.define(:version => 6) do
 
   add_foreign_key "payments", ["donation_id"], "donations", ["id"]
   add_foreign_key "payments", ["sale_id"], "sales", ["id"]
-
-  add_foreign_key "relationships", ["relationship_type_id"], "relationship_types", ["id"], :on_delete => :set_null
-  add_foreign_key "relationships", ["sink_id"], "contacts", ["id"], :on_delete => :set_null
-  add_foreign_key "relationships", ["source_id"], "contacts", ["id"], :on_delete => :set_null
 
   create_view "v_donation_totals", "SELECT d.id, sum(p.amount) AS total_paid FROM (donations d LEFT JOIN payments p ON ((p.donation_id = d.id))) GROUP BY d.id;", :force => true do |v|
     v.column :id

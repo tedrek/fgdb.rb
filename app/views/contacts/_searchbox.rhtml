@@ -3,6 +3,7 @@
     id="<%= searchbox_field_id(params) %>"
     onKeyPress="magicContactOnlyOnSubmit('<%= searchbox_search_button_id(params)
       %>', event); return contactKeyListener(event);" />
+  <%= javascript_tag "$('#{searchbox_field_id(params)}').disabled = false;" %>
   <button name="contact_searchbox_search" type="button"
     id="<%= searchbox_search_button_id(params) %>"
     onclick="<%= remote_function :url => params.merge( {

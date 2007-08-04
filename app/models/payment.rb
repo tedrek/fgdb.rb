@@ -6,7 +6,9 @@ class Payment < ActiveRecord::Base
   validates_presence_of :payment_method_id
 
   def mostly_empty?
-    ! ( valid? && amount && (amount > 0) )
+    # Allow negative payments (e.g. credits)
+    #  http://svn.freegeek.org/projects/fgdb.rb/ticket/224
+    ! ( valid? && amount && (amount != 0) )
   end
 
   def to_s

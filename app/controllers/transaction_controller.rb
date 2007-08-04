@@ -157,6 +157,8 @@ class TransactionController < ApplicationController
       if ! @gizmo_type.relevant_attrs(@gizmo_context).empty?
         render :update do |page|
           page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+          page[params[:datalist_field_id_prefix] + '_gizmo_count'].value = '1';
+          page[params[:datalist_field_id_prefix] + '_gizmo_count'].focus();
         end
         return true
       end
