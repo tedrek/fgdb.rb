@@ -4,6 +4,8 @@ class Donation < ActiveRecord::Base
   has_many :payments, :dependent => :destroy
   has_many :gizmo_events, :dependent => :destroy
 
+  before_save :add_contact_types
+
   def initialize(*args)
     super(*args)
   end
@@ -46,6 +48,10 @@ class Donation < ActiveRecord::Base
       end
     end
     @contact_type
+  end
+
+  def required_contact_type
+    ContactType.find(7)
   end
 
   def reported_total

@@ -1,7 +1,10 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContactTypeTest < Test::Unit::TestCase
-  fixtures :contact_types
+
+  fixtures( :contact_types, :volunteer_task_types, :payment_methods,
+            :gizmo_types, :gizmo_contexts, :gizmo_attrs,
+            :gizmo_typeattrs, :gizmo_contexts_gizmo_typeattrs )
 
   NEW_CONTACT_TYPE = {}    # e.g. {:name => 'Test ContactType', :description => 'Dummy'}
   REQ_ATTR_NAMES              = %w( ) # name of fields that must be present, e.g. %(name description)
@@ -48,6 +51,55 @@ class ContactTypeTest < Test::Unit::TestCase
       assert !contact_type.valid?, "ContactType should be invalid, as @#{attr_name} is a duplicate"
       assert contact_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
     end
+  end
+
+  def test_automatic_type_assignment
+    pairs = {:sale => 'buyer', :donation => 'donor', :build => 'build', :adoption => 'adopter'}
+    pairs.each {|name, type|
+      blank = empty_contact
+      assert blank.contact_types.empty?
+      retval = nil
+      case name
+      when :sale
+        sale = Sale.new({ :contact => blank, :contact_type => 'named',
+                          :payments => [paid_a_dollar],
+                          :gizmo_events => [a_mouse_for_sale]})
+        assert_nothing_raised {retval = sale.save}
+        assert retval, "#{name} should have saved successfully"
+      when :donation
+        don = Donation.new({ :contact => blank, :contact_type => 'named',
+                             :payments => [paid_a_dollar]})
+        assert_nothing_raised {retval = don.save}
+        assert retval
+      when :build
+        v_t = an_hour_of_assembly
+        v_t.contact = blank
+        assert_nothing_raised {retval = v_t.save}
+        assert retval
+      when :adoption
+        v_t = an_hour_of_monitors
+        v_t.contact = blank
+        assert_nothing_raised {retval = v_t.save}
+        assert retval
+      end
+      assert ! blank.contact_types.empty?, "contact_types should not be empty after #{name} is saved"
+      assert blank.contact_types.detect {|c_t| c_t.description == type}, "Contact should be of type '#{type}'"
+    }
+  end
+
+  def empty_contact
+    c = Contact.new({:first_name => 'foo', :postal_code => '1A'})
+    c.save
+    c
+  end
+
+  def paid_a_dollar
+    Payment.new({:payment_method => PaymentMethod.cash, :amount => 1.0})
+  end
+
+  def a_mouse_for_sale
+    GizmoEvent.new({ :gizmo_count => 1, :gizmo_type => GizmoType.find(23),
+                     :gizmo_context => GizmoContext.sale, :unit_price => 1.0})
   end
 end
 

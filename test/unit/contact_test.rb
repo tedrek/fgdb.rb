@@ -91,23 +91,5 @@ class ContactTest < Test::Unit::TestCase
     assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
   end
 
-  def an_hour_of_programming
-    an_hour_of(46)
-  end
-
-  def an_hour_of_assembly
-    an_hour_of(26)
-  end
-
-  def an_hour_of_monitors
-    an_hour_of(22)
-  end
-
-  def an_hour_of(type)
-    VolunteerTask.new({ :duration => 1.0,
-                        :date_performed => Date.today,
-                        :volunteer_task_types => [ VolunteerTaskType.find(type) ] })
-  end
-
 end
 
