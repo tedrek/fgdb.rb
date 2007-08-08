@@ -24,6 +24,11 @@
       <%= method.display %><br />
     <% end %>
   </div>
+  <% if @contact.notes and ( ! @contact.notes.empty?) %>
+    <div class="contact_comments">
+      Note: <%=h @contact.notes %>
+    </div>
+  <% end %>
   <br />
   <%= loading_indicator_tag(@options) %>
   <% if (! params.has_key?(:display_edit)) or (params[:display_edit] == 'true') %>
