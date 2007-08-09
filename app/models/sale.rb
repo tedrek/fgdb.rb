@@ -5,6 +5,8 @@ class Sale < ActiveRecord::Base
   belongs_to :discount_schedule
   has_many :gizmo_events, :dependent => :destroy
 
+  before_save :add_contact_types
+
   def initialize(*args)
     @contact_type = 'named'
     super(*args)
@@ -35,6 +37,10 @@ class Sale < ActiveRecord::Base
     contact ?
       'named' :
       'anonymous'
+  end
+
+  def required_contact_type
+    ContactType.find(14)
   end
 
   def calculated_total
