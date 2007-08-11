@@ -1,4 +1,4 @@
-class DispersementTypesController < ApplicationController
+class DisbursementTypesController < ApplicationController
   def index
     list
     render :action => 'list'
@@ -9,21 +9,21 @@ class DispersementTypesController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @dispersement_type_pages, @dispersement_types = paginate :dispersement_types, :per_page => 10
+    @disbursement_type_pages, @disbursement_types = paginate :disbursement_types, :per_page => 10
   end
 
   def show
-    @dispersement_type = DispersementType.find(params[:id])
+    @disbursement_type = DisbursementType.find(params[:id])
   end
 
   def new
-    @dispersement_type = DispersementType.new
+    @disbursement_type = DisbursementType.new
   end
 
   def create
-    @dispersement_type = DispersementType.new(params[:dispersement_type])
-    if @dispersement_type.save
-      flash[:notice] = 'DispersementType was successfully created.'
+    @disbursement_type = DisbursementType.new(params[:disbursement_type])
+    if @disbursement_type.save
+      flash[:notice] = 'DisbursementType was successfully created.'
       redirect_to :action => 'list'
     else
       render :action => 'new'
@@ -31,21 +31,21 @@ class DispersementTypesController < ApplicationController
   end
 
   def edit
-    @dispersement_type = DispersementType.find(params[:id])
+    @disbursement_type = DisbursementType.find(params[:id])
   end
 
   def update
-    @dispersement_type = DispersementType.find(params[:id])
-    if @dispersement_type.update_attributes(params[:dispersement_type])
-      flash[:notice] = 'DispersementType was successfully updated.'
-      redirect_to :action => 'show', :id => @dispersement_type
+    @disbursement_type = DisbursementType.find(params[:id])
+    if @disbursement_type.update_attributes(params[:disbursement_type])
+      flash[:notice] = 'DisbursementType was successfully updated.'
+      redirect_to :action => 'show', :id => @disbursement_type
     else
       render :action => 'edit'
     end
   end
 
   def destroy
-    DispersementType.find(params[:id]).destroy
+    DisbursementType.find(params[:id]).destroy
     redirect_to :action => 'list'
   end
 end

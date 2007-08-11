@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 7) do
+ActiveRecord::Schema.define(:version => 8) do
 
   create_table "contact_method_types", :force => true do |t|
     t.column "description", :string, :limit => 100
@@ -76,6 +76,29 @@ ActiveRecord::Schema.define(:version => 7) do
     t.column "updated_by", :integer, :default => 1, :null => false
   end
 
+  create_table "disbursement_types", :force => true do |t|
+    t.column "description", :string, :limit => 100
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
+  end
+
+  create_table "disbursements", :force => true do |t|
+    t.column "comments", :text
+    t.column "contact_id", :integer, :null => false
+    t.column "disbursement_type_id", :integer, :null => false
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
+    t.column "disbursed_at", :datetime, :null => false
+  end
+
+  add_index "disbursements", ["created_at"], :name => "disbursements_created_at_index"
+
   create_table "discount_schedules", :force => true do |t|
     t.column "name", :string, :limit => 25
     t.column "lock_version", :integer, :default => 0, :null => false
@@ -88,42 +111,19 @@ ActiveRecord::Schema.define(:version => 7) do
   create_table "discount_schedules_gizmo_types", :force => true do |t|
     t.column "gizmo_type_id", :integer, :null => false
     t.column "discount_schedule_id", :integer, :null => false
-    t.column "multiplier", :float, :limit => 10
+    t.column "multiplier", :float
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
     t.column "created_at", :datetime
     t.column "created_by", :integer, :default => 1, :null => false
     t.column "updated_by", :integer, :default => 1, :null => false
   end
-
-  create_table "dispersement_types", :force => true do |t|
-    t.column "description", :string, :limit => 100
-    t.column "lock_version", :integer, :default => 0, :null => false
-    t.column "updated_at", :datetime
-    t.column "created_at", :datetime
-    t.column "created_by", :integer, :default => 1, :null => false
-    t.column "updated_by", :integer, :default => 1, :null => false
-  end
-
-  create_table "dispersements", :force => true do |t|
-    t.column "comments", :text
-    t.column "contact_id", :integer, :null => false
-    t.column "dispersement_type_id", :integer, :null => false
-    t.column "lock_version", :integer, :default => 0, :null => false
-    t.column "updated_at", :datetime
-    t.column "created_at", :datetime
-    t.column "created_by", :integer, :default => 1, :null => false
-    t.column "updated_by", :integer, :default => 1, :null => false
-    t.column "dispersed_at", :datetime, :null => false
-  end
-
-  add_index "dispersements", ["created_at"], :name => "dispersements_created_at_index"
 
   create_table "donations", :force => true do |t|
     t.column "contact_id", :integer
     t.column "postal_code", :string, :limit => 25
-    t.column "reported_required_fee", :float, :limit => 10, :default => 0.0
-    t.column "reported_suggested_fee", :float, :limit => 10, :default => 0.0
+    t.column "reported_required_fee", :float, :default => 0.0
+    t.column "reported_suggested_fee", :float, :default => 0.0
     t.column "txn_complete", :boolean, :default => true
     t.column "txn_completed_at", :datetime
     t.column "comments", :text
@@ -178,7 +178,7 @@ ActiveRecord::Schema.define(:version => 7) do
   create_table "gizmo_events", :force => true do |t|
     t.column "donation_id", :integer
     t.column "sale_id", :integer
-    t.column "dispersement_id", :integer
+    t.column "disbursement_id", :integer
     t.column "recycling_id", :integer
     t.column "gizmo_type_id", :integer, :null => false
     t.column "gizmo_context_id", :integer, :null => false
@@ -191,7 +191,7 @@ ActiveRecord::Schema.define(:version => 7) do
   end
 
   add_index "gizmo_events", ["created_at"], :name => "gizmo_events_created_at_index"
-  add_index "gizmo_events", ["dispersement_id"], :name => "gizmo_events_dispersement_id_index"
+  add_index "gizmo_events", ["disbursement_id"], :name => "gizmo_events_disbursement_id_index"
   add_index "gizmo_events", ["donation_id"], :name => "gizmo_events_donation_id_index"
   add_index "gizmo_events", ["recycling_id"], :name => "gizmo_events_recycling_id_index"
   add_index "gizmo_events", ["sale_id"], :name => "gizmo_events_sale_id_index"
@@ -202,7 +202,7 @@ ActiveRecord::Schema.define(:version => 7) do
     t.column "attr_val_text", :text
     t.column "attr_val_boolean", :boolean
     t.column "attr_val_integer", :integer
-    t.column "attr_val_monetary", :float, :limit => 10
+    t.column "attr_val_monetary", :float
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
     t.column "created_at", :datetime
@@ -230,13 +230,13 @@ ActiveRecord::Schema.define(:version => 7) do
     t.column "created_at", :datetime
     t.column "created_by", :integer, :default => 1, :null => false
     t.column "updated_by", :integer, :default => 1, :null => false
-    t.column "required_fee", :float, :limit => 10, :default => 0.0
-    t.column "suggested_fee", :float, :limit => 10, :default => 0.0
+    t.column "required_fee", :float, :default => 0.0
+    t.column "suggested_fee", :float, :default => 0.0
   end
 
   create_table "high_sales", :id => false, :force => true do |t|
     t.column "contact_id", :integer
-    t.column "reported_discount_amount", :float, :limit => 10
+    t.column "reported_discount_amount", :float
     t.column "open_window", :date
     t.column "close_window", :date
     t.column "first_name", :string, :limit => 25
@@ -261,7 +261,7 @@ ActiveRecord::Schema.define(:version => 7) do
   create_table "payments", :force => true do |t|
     t.column "donation_id", :integer
     t.column "sale_id", :integer
-    t.column "amount", :float, :limit => 10, :default => 0.0, :null => false
+    t.column "amount", :float, :default => 0.0, :null => false
     t.column "payment_method_id", :integer, :null => false
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
@@ -288,8 +288,8 @@ ActiveRecord::Schema.define(:version => 7) do
   create_table "sales", :force => true do |t|
     t.column "contact_id", :integer
     t.column "postal_code", :string, :limit => 25
-    t.column "reported_discount_amount", :float, :limit => 10, :default => 0.0
-    t.column "reported_amount_due", :float, :limit => 10, :default => 0.0, :null => false
+    t.column "reported_discount_amount", :float, :default => 0.0
+    t.column "reported_amount_due", :float, :default => 0.0, :null => false
     t.column "txn_complete", :boolean, :default => true
     t.column "txn_completed_at", :datetime
     t.column "discount_schedule_id", :integer
@@ -306,7 +306,7 @@ ActiveRecord::Schema.define(:version => 7) do
 
   create_table "sales_violations", :id => false, :force => true do |t|
     t.column "contact_id", :integer
-    t.column "reported_discount_amount", :float, :limit => 10
+    t.column "reported_discount_amount", :float
     t.column "open_window", :date
     t.column "close_window", :date
     t.column "first_name", :string, :limit => 25
@@ -332,7 +332,7 @@ ActiveRecord::Schema.define(:version => 7) do
   create_table "volunteer_task_types", :force => true do |t|
     t.column "description", :string, :limit => 100
     t.column "parent_id", :integer
-    t.column "hours_multiplier", :float, :limit => 10, :default => 1.0, :null => false
+    t.column "hours_multiplier", :float, :default => 1.0, :null => false
     t.column "instantiable", :boolean, :default => true, :null => false
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
@@ -352,7 +352,7 @@ ActiveRecord::Schema.define(:version => 7) do
   create_table "volunteer_tasks", :force => true do |t|
     t.column "contact_id", :integer
     t.column "date_performed", :date
-    t.column "duration", :float, :limit => 5, :default => 0.0, :null => false
+    t.column "duration", :float, :default => 0.0, :null => false
     t.column "lock_version", :integer, :default => 0, :null => false
     t.column "updated_at", :datetime
     t.column "created_at", :datetime
@@ -365,8 +365,8 @@ ActiveRecord::Schema.define(:version => 7) do
   add_foreign_key "contact_methods", ["contact_id"], "contacts", ["id"], :on_delete => :set_null
   add_foreign_key "contact_methods", ["contact_method_type_id"], "contact_method_types", ["id"], :on_delete => :set_null
 
-  add_foreign_key "dispersements", ["contact_id"], "contacts", ["id"], :on_update => :cascade, :on_delete => :set_null
-  add_foreign_key "dispersements", ["dispersement_type_id"], "dispersement_types", ["id"], :on_update => :cascade, :on_delete => :set_null
+  add_foreign_key "disbursements", ["contact_id"], "contacts", ["id"], :on_update => :cascade, :on_delete => :set_null
+  add_foreign_key "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :on_update => :cascade, :on_delete => :set_null
 
   add_foreign_key "payments", ["donation_id"], "donations", ["id"]
   add_foreign_key "payments", ["sale_id"], "sales", ["id"]
@@ -376,7 +376,7 @@ ActiveRecord::Schema.define(:version => 7) do
     v.column :total_paid
   end
 
-  create_view "v_donations", "SELECT d.id, d.contact_id, d.postal_code, d.reported_required_fee, d.reported_suggested_fee, d.txn_complete, d.txn_completed_at, d.comments, d.lock_version, d.updated_at, d.created_at, d.created_by, d.updated_by, v.total_paid, CASE WHEN (v.total_paid > d.reported_required_fee) THEN d.reported_required_fee ELSE v.total_paid END AS fees_paid, CASE WHEN (v.total_paid < d.reported_required_fee) THEN 0.00 ELSE (v.total_paid - d.reported_required_fee) END AS donations_paid FROM (donations d JOIN v_donation_totals v ON ((d.id = v.id)));", :force => true do |v|
+  create_view "v_donations", "SELECT d.id, d.contact_id, d.postal_code, d.reported_required_fee, d.reported_suggested_fee, d.txn_complete, d.txn_completed_at, d.comments, d.lock_version, d.updated_at, d.created_at, d.created_by, d.updated_by, v.total_paid, CASE WHEN (v.total_paid > d.reported_required_fee) THEN d.reported_required_fee ELSE v.total_paid END AS fees_paid, CASE WHEN (v.total_paid < d.reported_required_fee) THEN (0.00)::real ELSE (v.total_paid - d.reported_required_fee) END AS donations_paid FROM (donations d JOIN v_donation_totals v ON ((d.id = v.id)));", :force => true do |v|
     v.column :id
     v.column :contact_id
     v.column :postal_code

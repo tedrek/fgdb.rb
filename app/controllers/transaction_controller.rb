@@ -47,8 +47,8 @@ class TransactionController < ApplicationController
     render :action => 'listing'
   end
 
-  def dispersements
-    set_transaction_type( 'dispersement' )
+  def disbursements
+    set_transaction_type( 'disbursement' )
     render :action => 'listing'
   end
   
@@ -220,8 +220,8 @@ class TransactionController < ApplicationController
       Donation
     when 'sale'
       Sale
-    when 'dispersement'
-      Dispersement
+    when 'disbursement'
+      Disbursement
     when 'recycling'
       Recycling
     end

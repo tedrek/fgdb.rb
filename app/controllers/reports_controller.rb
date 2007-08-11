@@ -54,7 +54,7 @@ class ReportsController < ApplicationController
   TotalGizmoModifiers['donation'] = 1
 
   def add_gizmo_to_data(event, data)
-    # donations come in.  sales, recycling and dispersements go out.
+    # donations come in.  sales, recycling and disbursements go out.
     modifier = TotalGizmoModifiers[event.gizmo_context.name]
     data[event.gizmo_type.description][event.gizmo_context.name] += ( modifier * event.gizmo_count )
     data[TotalGizmoRow][event.gizmo_context.name] += ( modifier * event.gizmo_count )

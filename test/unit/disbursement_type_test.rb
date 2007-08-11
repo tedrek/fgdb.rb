@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class DispersementTypeTest < Test::Unit::TestCase
-  fixtures :dispersement_types
+class DisbursementTypeTest < Test::Unit::TestCase
+  fixtures :disbursement_types
 
   # Replace this with your real tests.
   def test_truth
