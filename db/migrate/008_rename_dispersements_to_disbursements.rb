@@ -5,6 +5,9 @@ class RenameDispersementsToDisbursements < ActiveRecord::Migration
 	rename_column :disbursements, :dispersed_at, :disbursed_at
 	rename_column :gizmo_events, :dispersement_id, :disbursement_id
 	rename_table :dispersement_types, :disbursement_types
+    dis = GizmoContext.find(4)
+    dis.name = 'disbursement'
+    dis.save
   end
 
   def self.down
@@ -13,5 +16,8 @@ class RenameDispersementsToDisbursements < ActiveRecord::Migration
 	rename_column :dispersements, :disbursed_at, :disbursed_at
 	rename_column :gizmo_events, :disbursement_id, :dispersement_id
 	rename_table :disbursement_types, :dispersement_types
+    dis = GizmoContext.find(4)
+    dis.name = 'dispersement'
+    dis.save
   end
 end
