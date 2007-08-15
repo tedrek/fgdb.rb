@@ -1,0 +1,43 @@
+<fieldset>
+
+  <div class="row">
+    <!--[form:disbursement]-->
+
+<div id="<%= contact_searchbox_id(@options) %>">
+  <%= render( :partial => 'contact_search' ) %>
+</div>
+
+<div class="form-extras">
+  <div class="form-element">
+    <label for="disbursement_comments">Comments</label>
+    <%= text_area 'disbursement', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+  </div>
+  <div class="form-element">
+    <label for="disbursement_disbursed_at">When did this get given away?</label>
+    <%= datebocks_field "disbursement", "disbursed_at" %>
+  </div>
+</div>
+
+<div class="form-element">
+    <label for="disbursement_disbursement_type_id">Type of dispersment</label>
+    <select id="disbursement_disbursement_type_id" name="disbursement[disbursement_type_id]">
+      <option></option>
+      <%= options_from_collection_for_select DisbursementType.find_all, "id", "description", @disbursement.disbursement_type_id %>
+    </select>
+</div>
+
+<div class="datalist"
+    onchange="new Ajax.Request('/transaction/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
+      %>'), {asynchronous:true, evalScripts:true});">
+  <% params[:gizmo_context_id] ||= @gizmo_context.id %>
+  <%= datalist_for( :gizmo_event, 'disbursement_gizmo_events',
+    @disbursement.gizmo_events, :create_with => { :disbursement_id => @disbursement.id },
+    :show_header => false, :render_aware => "no_price_gizmo_event_form",
+    :add_text => "More gizmos",
+    :new_defaults => @event_defaults || {}) %>
+</div>
+
+<!--[eoform:disbursement]-->
+
+  </div>
+</fieldset>

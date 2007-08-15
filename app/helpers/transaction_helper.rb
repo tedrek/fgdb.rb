@@ -23,13 +23,13 @@ module TransactionHelper
        AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'donor', :sortable => false),
        AjaxScaffold::ScaffoldColumn.new(Donation, :name => 'created_at'),
       ]
-    when 'dispersement'
+    when 'disbursement'
       [
-       AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'id'),
-       AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'dispersement_type', :sortable => false),
-       AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'recipient', :sortable => false),
-       AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'gizmos', :sortable => false),
-       AjaxScaffold::ScaffoldColumn.new(Dispersement, :name => 'dispersed_at'),
+       AjaxScaffold::ScaffoldColumn.new(Disbursement, :name => 'id'),
+       AjaxScaffold::ScaffoldColumn.new(Disbursement, :name => 'disbursement_type', :sortable => false),
+       AjaxScaffold::ScaffoldColumn.new(Disbursement, :name => 'recipient', :sortable => false),
+       AjaxScaffold::ScaffoldColumn.new(Disbursement, :name => 'gizmos', :sortable => false),
+       AjaxScaffold::ScaffoldColumn.new(Disbursement, :name => 'disbursed_at'),
       ]
     when 'recycling'
       [

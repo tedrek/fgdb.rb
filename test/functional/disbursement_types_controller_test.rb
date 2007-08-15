@@ -1,14 +1,14 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'dispersement_types_controller'
+require 'disbursement_types_controller'
 
 # Re-raise errors caught by the controller.
-class DispersementTypesController; def rescue_action(e) raise e end; end
+class DisbursementTypesController; def rescue_action(e) raise e end; end
 
-class DispersementTypesControllerTest < Test::Unit::TestCase
-  fixtures :dispersement_types
+class DisbursementTypesControllerTest < Test::Unit::TestCase
+  fixtures :disbursement_types
 
   def setup
-    @controller = DispersementTypesController.new
+    @controller = DisbursementTypesController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
   end
@@ -25,7 +25,7 @@ class DispersementTypesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'list'
 
-    assert_not_nil assigns(:dispersement_types)
+    assert_not_nil assigns(:disbursement_types)
   end
 
   def test_show
@@ -34,8 +34,8 @@ class DispersementTypesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'show'
 
-    assert_not_nil assigns(:dispersement_type)
-    assert assigns(:dispersement_type).valid?
+    assert_not_nil assigns(:disbursement_type)
+    assert assigns(:disbursement_type).valid?
   end
 
   def test_new
@@ -44,18 +44,18 @@ class DispersementTypesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'new'
 
-    assert_not_nil assigns(:dispersement_type)
+    assert_not_nil assigns(:disbursement_type)
   end
 
   def test_create
-    num_dispersement_types = DispersementType.count
+    num_disbursement_types = DisbursementType.count
 
-    post :create, :dispersement_type => {}
+    post :create, :disbursement_type => {}
 
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
-    assert_equal num_dispersement_types + 1, DispersementType.count
+    assert_equal num_disbursement_types + 1, DisbursementType.count
   end
 
   def test_edit
@@ -64,8 +64,8 @@ class DispersementTypesControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'edit'
 
-    assert_not_nil assigns(:dispersement_type)
-    assert assigns(:dispersement_type).valid?
+    assert_not_nil assigns(:disbursement_type)
+    assert assigns(:disbursement_type).valid?
   end
 
   def test_update
@@ -75,14 +75,14 @@ class DispersementTypesControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy
-    assert_not_nil DispersementType.find(1)
+    assert_not_nil DisbursementType.find(1)
 
     post :destroy, :id => 1
     assert_response :redirect
     assert_redirected_to :action => 'list'
 
     assert_raise(ActiveRecord::RecordNotFound) {
-      DispersementType.find(1)
+      DisbursementType.find(1)
     }
   end
 end

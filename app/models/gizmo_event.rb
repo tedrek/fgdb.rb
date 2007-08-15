@@ -3,7 +3,7 @@
 class GizmoEvent < ActiveRecord::Base
   has_one :donation
   has_one :sale
-  has_one :dispersement
+  has_one :disbursement
   has_one :recycling
   belongs_to  :gizmo_type
   belongs_to  :gizmo_context

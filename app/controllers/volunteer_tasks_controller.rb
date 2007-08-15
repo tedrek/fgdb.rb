@@ -1,19 +1,39 @@
 class VolunteerTasksController < ApplicationController
-  include AjaxScaffold::Controller
-  
-  after_filter :clear_flashes
-  before_filter :update_params_filter
-  layout :with_sidebar
-  
-  def update_params_filter
-    update_params( :default_scaffold_id => "volunteer_task",
-                   :default_sort => nil,
-                   :default_sort_direction => "asc" )
+  def index
+    redirect_to :action => 'check'
   end
 
-  def index
-    redirect_to :action => 'by_volunteer'
-  end
+  def check
+    if params[:contact] and Contact.exists? params[:contact]
+      @contact = Contact.find params[:contact]
+      if params[:volunteer_task]
+        # replace id numbers with objects
+        p = params[:volunteer_task]
+        p[:volunteer_task_type] = VolunteerTaskType.find(p[:volunteer_task_type])
+
+        unless p[:community_service_type] == '' or p[:community_service_type].nil?:
+          p[:community_service_type] = CommunityServiceType.find(p[:community_service_type])
+        else
+          p.delete(:community_service_type)
+        end
+
+        # do it, and make sure there are no errors
+        @volunteer_task = @contact.check p
+        if @volunteer_task.errors.empty?
+          flash[:thanks] = "Thank you for checking #{@contact.checked_in? ? 'in' : 'out'}"
+        else
+          return render(:partial => 'check')
+        end
+
+      else
+        @volunteer_task = VolunteerTask.new
+        return render(:partial => 'check')
+      end
+    end
+    render(:partial => 'select_contact') if request.xhr?
+  end 
+
+  layout :with_sidebar
 
   def by_volunteer
   end

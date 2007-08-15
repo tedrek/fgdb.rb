@@ -1,12 +1,10 @@
-
-
 class Contact < ActiveRecord::Base
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
 
   has_many :donations
-  has_many :volunteer_tasks
+  has_many :volunteer_tasks, :order => 'start_time DESC'
 
   # acts_as_userstamp
 
@@ -21,6 +19,39 @@ class Contact < ActiveRecord::Base
     ! self.is_organization?
   end
 
+  def uncompleted
+    vt = volunteer_tasks.find_by_duration(nil)
+    if not vt.nil? and vt.start_time < 1.day.ago
+      # evidentally they forgot to check out... make a new handler for this later.
+      vt.destroy
+      return nil
+    else
+      return vt
+    end
+  end
+
+  def checked_in?
+    not uncompleted.nil?
+  end
+
+  def check(options = {})
+    if checked_in?
+      task = uncompleted
+      # since multiparameter attributes won't work w/ aliases, do it manually
+      time_attrs = []
+      for i in 1..5
+        time_attrs << options.delete("end_time(#{i}i)").to_i
+      end
+      options[:end_time] = Time.local(*time_attrs)
+      task.update_attributes(options)
+    else
+      task = VolunteerTask.new(options)
+      volunteer_tasks << task
+      task.save
+    end
+    return task
+  end
+
   def hours_actual(last_ninety = false)
     tasks = last_ninety ? last_ninety_days_of_volunteer_tasks : volunteer_tasks
     tasks.inject(0.0) do |total,task|
@@ -28,17 +59,15 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def volunteer_tasks(cutoff = nil)
+  def find_volunteer_tasks(cutoff = nil)
+    # if it's named volunteer_tasks it breaks everything
     if cutoff
       conditions = [ "contact_id = ? AND date_performed >= ?", id, cutoff ]
     else
       conditions = [ "contact_id = ?", id ]
     end
     VolunteerTask.find(:all,
-                       :conditions => conditions,
-                       :include => [
-                         :volunteer_task_types
-                       ])
+                       :conditions => conditions)
   end
 
   def hours_effective
@@ -62,11 +91,11 @@ class Contact < ActiveRecord::Base
     volunteer_tasks.sort_by {|v_t| v_t.date_performed }[-3..-1]
   end
 
-  def default_volunteer_task_types
+  def default_volunteer_task_type
     last_few = last_few_volunteer_tasks
     if( last_few.length > 1 and
-          last_few.map {|v_t| v_t.volunteer_task_types.sort}.uniq.length == 1 )
-      return last_few.first.volunteer_task_types
+          last_few.map {|v_t| v_t.volunteer_task_type}.uniq.length == 1 )
+      return last_few.first.volunteer_task_type
     else
       return []
     end

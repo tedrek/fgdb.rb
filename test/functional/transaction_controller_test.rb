@@ -27,15 +27,15 @@ class TransactionControllerTest < Test::Unit::TestCase
     assert @response.session['donation'][:conditions], 'should have a donation-specific conditions entry'
     assert_equal 'arbitrary', @response.session['donation'][:conditions].date_type, 'should become arbitrary'
 
-    get :dispersements
+    get :disbursements
     assert_response :success
     assert_template 'transaction/listing'
     assert @response.session['donation'], 'should still have a donation session entry'
     assert_equal 'arbitrary', @response.session['donation'][:conditions].date_type, 'should still be arbitrary'
     # :TODO:
-    #assert @response.session['dispersement'], 'should have a dispersements session entry'
-    #assert @response.session['dispersement'][:conditions], 'should have a dispersements-specific conditions entry'
-    #assert_equal 'daily', @response.session['dispersement'][:conditions].date_type, 'should default to daily'
+    #assert @response.session['disbursement'], 'should have a disbursements session entry'
+    #assert @response.session['disbursement'][:conditions], 'should have a disbursements-specific conditions entry'
+    #assert_equal 'daily', @response.session['disbursement'][:conditions].date_type, 'should default to daily'
     #assert( ! content.include?('syntax error'), "page should not complain of a syntax error" )
   end
 end

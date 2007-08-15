@@ -1,0 +1,7 @@
+<% form_remote_tag( :url => {:action => 'check'},
+                   :condition => '$("contact_search_results").value != ""',
+                   :html => { :id => 'check_in_out_form' },
+                   :update => 'check_in_out_form'
+                  ) do -%>
+  <%= render :partial => 'select_contact' %>
+<% end -%>

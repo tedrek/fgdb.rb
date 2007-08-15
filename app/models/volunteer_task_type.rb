@@ -1,6 +1,7 @@
 
 
 class VolunteerTaskType < ActiveRecord::Base
+  has_many :volunteer_tasks
   acts_as_tree
 
   def self.root_nodes

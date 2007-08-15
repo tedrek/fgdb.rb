@@ -1,6 +1,10 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
+  def contact_search_box
+    render :partial => 'contacts/lookup'
+  end
+
   def header_totals_id(options)
     "#{options[:scaffold_id]}_header_totals"
   end
