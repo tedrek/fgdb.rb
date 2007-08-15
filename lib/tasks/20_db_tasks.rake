@@ -7,7 +7,7 @@ METADATATABLES = %w[
         discount_schedules_gizmo_types gizmo_attrs gizmo_contexts
         gizmo_contexts_gizmo_typeattrs gizmo_contexts_gizmo_types
         gizmo_typeattrs gizmo_types payment_methods
-        volunteer_task_types dispersement_types defaults
+        volunteer_task_types disbursement_types defaults
 ]
 MIGRATIONDIR = 'db/migrate'
 
