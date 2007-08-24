@@ -1,26 +1,21 @@
-=========================
-_F_ree_G_eek _D_ata_B_ase
-=========================
+= _F_ree_G_eek _D_ata_B_ase
 
 this webapp is meant to keep track of two main areas:
- * volunteers and the time they work
- * gizmos and their flow through our organization
+* volunteers and the time they work
+* gizmos and their flow through our organization
 
 the /volunteer_tasks controller tracks volunteers and their hours.
 the /transaction controller takes care of gizmo flow.
 the /reports controller has some useful numbers.
 
 in the near future i hope to add:
- * classes and who has completed them
- * projects (such as building and testing a computer) and who has
-   worked on them
+* classes and who has completed them
+* projects (such as building and testing a computer) and who has worked on them
 
 a bunch of other controllers are scattered around to support these,
 but should not be used by typical users.
 
--------
-Install
--------
+== Install
 
 i did this on a debian etch box; alteration may be needed on other
 distros.
@@ -80,14 +75,12 @@ continue with the following:
    ::: modify apache config to taste :::
    ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
 
-----
-TODO
-----
+== TODO
 
 see our trac (http://svn.freegeek.org/projects/fgdb.rb/) for details,
 but some important tasks left unfinished:
 
- * authentication
- * non-ajax interface
- * deb package
- * moving to the latest stable rails
+* authentication
+* non-ajax interface
+* deb package
+* moving to the latest stable rails
