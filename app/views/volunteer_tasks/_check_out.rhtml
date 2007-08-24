@@ -7,7 +7,7 @@ What time did you finish?
 
 <p>
 What did you do?
-<%= select('volunteer_task', 'volunteer_task_type', VolunteerTaskType.find_all_by_instantiable('t').collect {|t| [t.description, t.id]}) %>
+<%= select('volunteer_task', 'volunteer_task_type', VolunteerTaskType.find(:all)_by_instantiable('t').collect {|t| [t.description, t.id]}) %>
 
 <%= error_message_on 'volunteer_task', 'volunteer_task_type' %>
 </p>

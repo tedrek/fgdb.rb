@@ -54,7 +54,7 @@ class GizmoEvent < ActiveRecord::Base
     if gizmo_type
       gizmo_type.possible_attrs
     else
-      GizmoAttr.find_all
+      GizmoAttr.find(:all)
     end
   end
 

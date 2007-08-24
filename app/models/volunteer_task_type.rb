@@ -21,7 +21,7 @@ class VolunteerTaskType < ActiveRecord::Base
   end
 
   def all_instantiable_descendants
-    kids = self.all_descendants.find_all do |child|
+    kids = self.all_descendants.find(:all) do |child|
       child.instantiable
     end
     kids.unshift(self) if self.instantiable

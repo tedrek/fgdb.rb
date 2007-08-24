@@ -19,7 +19,7 @@ class PaymentMethod < ActiveRecord::Base
   def PaymentMethod.descriptions
     @@descriptions ||= {}
     if @@descriptions.empty?
-      find_all.each {|p_m|
+      find(:all).each {|p_m|
         @@descriptions[p_m.id] = p_m.description
       }
     end

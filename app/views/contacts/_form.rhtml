@@ -16,7 +16,7 @@
       :is_organization => @contact.is_organization
     } ) %>
 
-<% for contact_type in ContactType.find_all %>
+<% for contact_type in ContactType.find(:all) %>
 <div class="<%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
   <input type="checkbox" id="<%= contact_type.description %>"
     name="contact_types[]" 

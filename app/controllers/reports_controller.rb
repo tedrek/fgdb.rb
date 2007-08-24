@@ -37,10 +37,10 @@ class ReportsController < ApplicationController
   TotalGizmoCol = 'total flow'
 
   def gizmos_report_init
-    @contexts = GizmoContext.find_all
+    @contexts = GizmoContext.find(:all)
     context_names = @contexts.map {|context| context.name}.sort
     context_names << TotalGizmoCol
-    @types = GizmoType.find_all
+    @types = GizmoType.find(:all)
     type_names = @types.map {|type| type.description}.sort
     type_names << TotalGizmoRow
     @columns = context_names
@@ -98,13 +98,13 @@ class ReportsController < ApplicationController
   protected
 
   def income_report_init
-    methods = PaymentMethod.find_all
+    methods = PaymentMethod.find(:all)
     method_names = methods.map {|m| m.description}
     @columns = Hash.new( method_names.insert(2, 'till total').insert(-2, 'total real').insert(-1, 'total') )
     @width = @columns[nil].length
     @rows = {}
     @rows[:donations] = ['voluntary', 'fees', 'subtotals']
-    discount_types = DiscountSchedule.find_all.map {|d_s| d_s.name}
+    discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}
     @rows[:sales] = discount_types << 'subtotals'
     @rows[:grand_totals] = ['total']
     @sections = [:donations, :sales, :grand_totals]
