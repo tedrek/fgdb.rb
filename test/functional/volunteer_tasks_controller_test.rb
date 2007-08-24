@@ -19,7 +19,7 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
 		@response   = ActionController::TestResponse.new
 		# Retrieve fixtures via their name
 		# @first = volunteer_tasks(:first)
-		@first = VolunteerTask.find_first
+		@first = VolunteerTask.find(:first)
 	end
 
   def test_component

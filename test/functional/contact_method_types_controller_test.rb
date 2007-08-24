@@ -16,7 +16,7 @@ class ContactMethodTypesControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     # Retrieve fixtures via their name
     # @first = contact_method_types(:first)
-    @first = ContactMethodType.find_first
+    @first = ContactMethodType.find(:first)
   end
 
   def test_component

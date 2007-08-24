@@ -16,7 +16,7 @@ class PaymentMethodsControllerTest < Test::Unit::TestCase
 		@response   = ActionController::TestResponse.new
 		# Retrieve fixtures via their name
 		# @first = payment_methods(:first)
-		@first = PaymentMethod.find_first
+		@first = PaymentMethod.find(:first)
 	end
 
   def test_component

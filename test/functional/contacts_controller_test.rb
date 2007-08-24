@@ -18,7 +18,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     # Retrieve fixtures via their name
     # @first = contacts(:first)
-    @first = Contact.find_first
+    @first = Contact.find(:first)
   end
 
   def test_create_xhr

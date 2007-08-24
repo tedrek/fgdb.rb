@@ -42,7 +42,7 @@ class GizmoContextsGizmoTypeattrTest < Test::Unit::TestCase
  	end
 
 	def test_duplicate
-    current_gizmo_contexts_gizmo_typeattr = GizmoContextsGizmoTypeattr.find_first
+    current_gizmo_contexts_gizmo_typeattr = GizmoContextsGizmoTypeattr.find(:first)
    	DUPLICATE_ATTR_NAMES.each do |attr_name|
    		gizmo_contexts_gizmo_typeattr = GizmoContextsGizmoTypeattr.new(NEW_GIZMO_CONTEXTS_GIZMO_TYPEATTR.merge(attr_name.to_sym => current_gizmo_contexts_gizmo_typeattr[attr_name]))
 			assert !gizmo_contexts_gizmo_typeattr.valid?, "GizmoContextsGizmoTypeattr should be invalid, as @#{attr_name} is a duplicate"

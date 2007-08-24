@@ -42,7 +42,7 @@ class PaymentMethodTest < Test::Unit::TestCase
  	end
 
 	def test_duplicate
-    current_payment_method = PaymentMethod.find_first
+    current_payment_method = PaymentMethod.find(:first)
    	DUPLICATE_ATTR_NAMES.each do |attr_name|
    		payment_method = PaymentMethod.new(NEW_PAYMENT_METHOD.merge(attr_name.to_sym => current_payment_method[attr_name]))
 			assert !payment_method.valid?, "PaymentMethod should be invalid, as @#{attr_name} is a duplicate"

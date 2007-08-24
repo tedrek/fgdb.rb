@@ -42,7 +42,7 @@ class VolunteerTaskTypeTest < Test::Unit::TestCase
  	end
 
 	def test_duplicate
-    current_volunteer_task_type = VolunteerTaskType.find_first
+    current_volunteer_task_type = VolunteerTaskType.find(:first)
    	DUPLICATE_ATTR_NAMES.each do |attr_name|
    		volunteer_task_type = VolunteerTaskType.new(NEW_VOLUNTEER_TASK_TYPE.merge(attr_name.to_sym => current_volunteer_task_type[attr_name]))
 			assert !volunteer_task_type.valid?, "VolunteerTaskType should be invalid, as @#{attr_name} is a duplicate"

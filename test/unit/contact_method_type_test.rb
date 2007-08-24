@@ -42,7 +42,7 @@ class ContactMethodTypeTest < Test::Unit::TestCase
    end
 
   def test_duplicate
-    current_contact_method_type = ContactMethodType.find_first
+    current_contact_method_type = ContactMethodType.find(:first)
      DUPLICATE_ATTR_NAMES.each do |attr_name|
        contact_method_type = ContactMethodType.new(NEW_CONTACT_METHOD_TYPE.merge(attr_name.to_sym => current_contact_method_type[attr_name]))
       assert !contact_method_type.valid?, "ContactMethodType should be invalid, as @#{attr_name} is a duplicate"

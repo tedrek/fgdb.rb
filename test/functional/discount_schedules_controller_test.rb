@@ -16,7 +16,7 @@ class DiscountSchedulesControllerTest < Test::Unit::TestCase
 		@response   = ActionController::TestResponse.new
 		# Retrieve fixtures via their name
 		# @first = discount_schedules(:first)
-		@first = DiscountSchedule.find_first
+		@first = DiscountSchedule.find(:first)
 	end
 
   def test_component
