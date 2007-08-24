@@ -1,6 +1,6 @@
 namespace :doc do
   desc "Generate documentation for the application"
-  Rake::RDocTask.new("apps") { |rdoc|
+  Rake::RDocTask.new("app") { |rdoc|
     rdoc.rdoc_dir = 'doc/app'
     rdoc.title    = "Rails Application Documentation"
     rdoc.options << '--line-numbers' << '--inline-source'
