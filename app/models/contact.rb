@@ -79,12 +79,27 @@ class Contact < ActiveRecord::Base
     end
   end
 
+  # effective for adoption
+  def adoption_hours
+    hours_effective
+  end
+
+  def effective_discount_hours
+    last_ninety_days_of_effective_hours
+  end
+
   def last_ninety_days_of_volunteer_tasks
     volunteer_tasks(Date.today - 90)
   end
 
   def last_ninety_days_of_actual_hours
     hours_actual(true)
+  end
+
+  def last_ninety_days_of_effective_hours
+    last_ninety_days_of_volunteer_tasks.inject(0.0) {|tot,task|
+      tot + task.effective_duration
+    }
   end
 
   def last_few_volunteer_tasks
@@ -133,7 +148,7 @@ class Contact < ActiveRecord::Base
     disp = []
     disp.concat(display_name.to_a) unless
       display_name.nil? or display_name.size == 0
-    disp.concat(display_address.to_a) unless 
+    disp.concat(display_address.to_a) unless
       display_address.nil? or display_address.size == 0
     return disp
   end
@@ -141,10 +156,10 @@ class Contact < ActiveRecord::Base
   def display_address
     dispaddr = []
     dispaddr.push(address)
-    dispaddr.push(extra_address) unless 
+    dispaddr.push(extra_address) unless
       extra_address.nil? or extra_address == ''
     dispaddr.push(csz)
-    dispaddr.push(country) unless 
+    dispaddr.push(country) unless
       country.nil? or country == '' or country.upcase =~ /^USA*$/
     return dispaddr
   end
@@ -159,12 +174,8 @@ class Contact < ActiveRecord::Base
   end
 
   def default_discount_schedule
-    #:MC: i should move this business logic out to the database itself
-    #(order, condition)
-    if last_ninety_days_of_actual_hours >= 4.0
+    if effective_discount_hours >= 4.0
       DiscountSchedule.volunteer
-    #elsif last_donation.created_at.to_date == Date.today
-    #  DiscountSchedule.same_day_donor
     else
       DiscountSchedule.no_discount
     end
@@ -226,7 +237,7 @@ class Contact < ActiveRecord::Base
     def prepare_query(q)
       unless q =~ /\*|\~| AND| OR/
         q = q.split.map do |word|
-          "*#{word}*" 
+          "*#{word}*"
         end.join(' AND ')
       end
       q

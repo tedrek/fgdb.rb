@@ -11,16 +11,15 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
     'duration' => 3,
     'contact_id' => 12
   }
-  NEW_VOLUNTEER_TASK_TYPES = [ '41' ]
+  NEW_VOLUNTEER_TASK_TYPES = [ '22' ]
 
-	def setup
-		@controller = VolunteerTasksController.new
-		@request    = ActionController::TestRequest.new
-		@response   = ActionController::TestResponse.new
-		# Retrieve fixtures via their name
-		# @first = volunteer_tasks(:first)
-		@first = VolunteerTask.find(:first)
-	end
+  def setup
+    @controller = VolunteerTasksController.new
+    @request    = ActionController::TestRequest.new
+    @response   = ActionController::TestResponse.new
+    @first = VolunteerTask.find_first
+    @first.volunteer_task_types = [VolunteerTaskType.find(46)]
+  end
 
   def test_component
     get :component
@@ -47,7 +46,7 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
   end
 
   def test_create_xhr
-  	volunteer_task_count = VolunteerTask.find(:all).length
+        volunteer_task_count = VolunteerTask.find(:all).length
     xhr :post, :create, {:volunteer_task => NEW_VOLUNTEER_TASK, :volunteer_task_types => NEW_VOLUNTEER_TASK_TYPES}
     volunteer_task, successful = check_attrs(%w(volunteer_task successful))
 #    assert successful, "Should be successful"
@@ -57,7 +56,7 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
   end
 
   def test_update_xhr
-  	volunteer_task_count = VolunteerTask.find(:all).length
+        volunteer_task_count = VolunteerTask.find(:all).length
     xhr :post, :update, {:id => @first.id, :volunteer_task => @first.attributes.merge(NEW_VOLUNTEER_TASK)}
     volunteer_task, successful = check_attrs(%w(volunteer_task successful))
     assert successful, "Should be successful"
@@ -71,13 +70,13 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy
-  	volunteer_task_count = VolunteerTask.find(:all).length
+        volunteer_task_count = VolunteerTask.find(:all).length
     post :destroy, {:id => @first.id}
     assert_equal volunteer_task_count - 1, VolunteerTask.find(:all).length, "Number of VolunteerTasks should be one less"
   end
 
   def test_destroy_xhr
-  	volunteer_task_count = VolunteerTask.find(:all).length
+        volunteer_task_count = VolunteerTask.find(:all).length
     xhr :post, :destroy, {:id => @first.id}
     assert_response :success
     assert_equal volunteer_task_count - 1, VolunteerTask.find(:all).length, "Number of VolunteerTasks should be one less"
@@ -85,7 +84,7 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
   end
 
 protected
-	# Could be put in a Helper library and included at top of test class
+        # Could be put in a Helper library and included at top of test class
   def check_attrs(attr_list)
     attrs = []
     attr_list.each do |attr_sym|
