@@ -15,9 +15,13 @@ class VolunteerTask < ActiveRecord::Base
     unless duration.nil? or duration > 0
       errors.add(:end_time, "must be after you started")
     end
-    errors.add(:start_time, "must be in the last hour") if start_time < 1.hour.ago
+    errors.add(:start_time, "must be in the last hour") if start_time.nil? or start_time < 1.hour.ago
     errors.add(:end_time, "must be some time before now") if end_time > Time.now
-    last_completed = contact.volunteer_tasks.find(:first, :order => "start_time + interval '1 hour' * duration DESC", :conditions => 'duration > 0')
+    if contact.nil?
+      errors.add(:contact_id, "must be choosen")
+    else
+      last_completed = contact.volunteer_tasks.find(:first, :order => "start_time + interval '1 hour' * duration DESC", :conditions => 'duration > 0')
+    end
     if not last_completed.nil? and start_time < last_completed.end_time
       errors.add(:start_time, "must be some time after you finished volunteering this time")
     end
