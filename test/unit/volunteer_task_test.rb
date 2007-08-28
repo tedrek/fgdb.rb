@@ -9,7 +9,8 @@ class VolunteerTaskTest < Test::Unit::TestCase
     {
       :duration => 1.5,
       :contact_id => 1,
-      :start_time => Time.now - 30.minutes
+      :start_time => Time.now - 30.minutes,
+      :volunteer_task_type => type
     }
   end
   REQ_ATTR_NAMES                         = %w( contact_id start_time ) # name of fields that must be present, e.g. %(name description)
