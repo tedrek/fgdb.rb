@@ -39,8 +39,8 @@ class Test::Unit::TestCase
 
   def an_hour_of(type)
     VolunteerTask.new({ :duration => 1.0,
-                        :start_time => Date.today,
-                        :volunteer_task_types => [ VolunteerTaskType.find(type) ] })
+                        :start_time => Time.now - 2.hours,
+                        :volunteer_task_type => VolunteerTaskType.find(type) })
   end
 
 end
