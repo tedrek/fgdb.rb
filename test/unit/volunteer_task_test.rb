@@ -9,7 +9,7 @@ class VolunteerTaskTest < Test::Unit::TestCase
     {
       :duration => 1.5,
       :contact_id => 1,
-      :start_time => Time.now - 30.minutes,
+      :start_time => Time.now - 2.hours,
       :volunteer_task_type => type
     }
   end

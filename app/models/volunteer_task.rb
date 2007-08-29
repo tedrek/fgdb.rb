@@ -17,6 +17,8 @@ class VolunteerTask < ActiveRecord::Base
     end
     # Don't try to calculate the end_time if there is no start_time
     unless start_time.nil?
+      # end_time should be entered in the past
+      #  (e.g. you finish a task and then enter time on it later)
       errors.add(:end_time, "must be some time before now") if end_time > Time.now
     end
     if contact.nil?
