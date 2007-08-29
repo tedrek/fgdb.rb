@@ -25,21 +25,25 @@ class Test::Unit::TestCase
   self.use_instantiated_fixtures  = false
 
   # Add more helper methods to be used by all tests here...
-  def an_hour_of_programming
-    an_hour_of(46)
+  # An hour of programming AGO hours in the past
+  def an_hour_of_programming(ago=2)
+    an_hour_of(46,ago)
   end
 
-  def an_hour_of_assembly
-    an_hour_of(26)
+  # An hour of assembly AGO hours in the past
+  def an_hour_of_assembly(ago=2)
+    an_hour_of(26,ago)
   end
 
-  def an_hour_of_monitors
-    an_hour_of(22)
+  # An hour of monitors AGO hours in the past
+  def an_hour_of_monitors(ago=2)
+    an_hour_of(22,ago)
   end
 
-  def an_hour_of(type)
+  # An hour of TYPE, AGO hours in the past
+  def an_hour_of(type,ago=2)
     VolunteerTask.new({ :duration => 1.0,
-                        :start_time => Time.now - 2.hours,
+                        :start_time => Time.now - ago.hours,
                         :volunteer_task_type => VolunteerTaskType.find(type) })
   end
 

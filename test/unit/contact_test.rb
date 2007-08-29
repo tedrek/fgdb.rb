@@ -73,7 +73,9 @@ class ContactTest < Test::Unit::TestCase
     assert_equal 2, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly]
     assert_equal 1, contact.adoption_hours
-    contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming]
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_programming(1)]
+    assert_equal 2, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming(1)]
     assert_equal 3, contact.adoption_hours
   end
 

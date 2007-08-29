@@ -62,7 +62,7 @@ class Contact < ActiveRecord::Base
   def find_volunteer_tasks(cutoff = nil)
     # if it's named volunteer_tasks it breaks everything
     if cutoff
-      conditions = [ "contact_id = ? AND date_performed >= ?", id, cutoff ]
+      conditions = [ "contact_id = ? AND start_time >= ?", id, cutoff ]
     else
       conditions = [ "contact_id = ?", id ]
     end
