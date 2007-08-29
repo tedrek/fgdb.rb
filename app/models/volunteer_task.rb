@@ -15,7 +15,6 @@ class VolunteerTask < ActiveRecord::Base
     unless duration.nil? or duration > 0
       errors.add(:end_time, "must be after you started")
     end
-    errors.add(:start_time, "must be in the last hour") if start_time.nil? or start_time < 1.hour.ago
     # Don't try to calculate the end_time if there is no start_time
     unless start_time.nil?
       errors.add(:end_time, "must be some time before now") if end_time < Time.now
@@ -31,7 +30,7 @@ class VolunteerTask < ActiveRecord::Base
   end
 
   def effective_duration
-    duration * volunteer_task_type * community_service_type
+    duration * volunteer_task_type.hours_multiplier
   end
 
   def type_of_task?(type)
@@ -62,7 +61,9 @@ class VolunteerTask < ActiveRecord::Base
       required << ContactType.find(12) # adopter
     end
     for type in required
-      contact.contact_types << required unless contact.contact_types.include? required
+      unless contact.contact_types.include?(type)
+        contact.contact_types << type
+      end
     end
   end
 end
