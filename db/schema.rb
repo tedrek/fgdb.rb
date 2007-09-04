@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 9) do
+ActiveRecord::Schema.define(:version => 8) do
 
   create_table "contact_method_types", :force => true do |t|
     t.column "description",  :string,   :limit => 100
@@ -376,14 +376,14 @@ ActiveRecord::Schema.define(:version => 9) do
   add_index "volunteer_task_types_volunteer_tasks", ["volunteer_task_id"], :name => "volunteer_task_types_volunteer_tasks_volunteer_task_id_index"
 
   create_table "volunteer_tasks", :force => true do |t|
-    t.column "contact_id",   :integer
-    t.column "duration",     :decimal,  :precision => 5, :scale => 2, :default => 0.0, :null => false
-    t.column "lock_version", :integer,                                :default => 0,   :null => false
-    t.column "updated_at",   :datetime
-    t.column "created_at",   :datetime
-    t.column "created_by",   :integer,                                :default => 1,   :null => false
-    t.column "updated_by",   :integer,                                :default => 1,   :null => false
-    t.column "start_time",   :datetime
+    t.column "contact_id",     :integer
+    t.column "duration",       :decimal,  :precision => 5, :scale => 2, :default => 0.0, :null => false
+    t.column "lock_version",   :integer,                                :default => 0,   :null => false
+    t.column "updated_at",     :datetime
+    t.column "created_at",     :datetime
+    t.column "created_by",     :integer,                                :default => 1,   :null => false
+    t.column "updated_by",     :integer,                                :default => 1,   :null => false
+    t.column "date_performed", :date
   end
 
   add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
