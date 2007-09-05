@@ -16,33 +16,40 @@ class MoveVolunteerTaskCommunityServiceTypesToOwnTable < ActiveRecord::Migration
     add_foreign_key :volunteer_tasks, ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :set_null
 
     new_service_types = {}
-    service_types = VolunteerTaskType.find_all_by_parent_id(18)
+    cs = VolunteerTaskType.find(:first, :conditions => ["description = ?", "community service"])
+    service_types = VolunteerTaskType.find_all_by_parent_id(cs.id)
     for vtt in service_types
       new_service_types[vtt] = CommunityServiceType.create({ :description => vtt.description,
                                                              :hours_multiplier => vtt.hours_multiplier })
     end
 
-    # move many-to-many assoc. over to two one-to-many assocs.
-    old_ids = service_types.map {|st| st.id.to_s}.join(',')
-    sql = "CREATE TABLE temp_volunteer_tasks AS " +
-      "SELECT vt.id, " +
-      "CASE WHEN vttvt.volunteer_task_type_id IN (#{old_ids}) " +
-      "THEN Null ELSE vttvt.volunteer_task_type_id END, " +
-      "CASE "
-    new_service_types.each {|old,new|
-      sql += "WHEN vttvt.volunteer_task_type_id = %d THEN %d " % [old.id, new.id]
-    }
-    sql += "ELSE Null END"
+    sql = "DELETE from volunteer_task_types_volunteer_tasks WHERE volunteer_task_type_id = 0"
     VolunteerTask.connection.execute(sql)
 
+    # move many-to-many assoc. over to two one-to-many assocs.
+    old_ids = service_types.map {|st| st.id.to_s}.join(',')
     sql = "UPDATE volunteer_tasks " +
-      "JOIN volunteer_task_types_volunteer_tasks AS vttvt " +
-      "ON volunteer_tasks.id = vttvt.volunteer_task_id SET " + ""
+      "SET volunteer_task_type_id = volunteer_task_types_volunteer_tasks.volunteer_task_type_id  " +
+      "FROM volunteer_task_types_volunteer_tasks " +
+      "WHERE volunteer_task_types_volunteer_tasks.volunteer_task_id = volunteer_tasks.id " +
+      "AND volunteer_task_types_volunteer_tasks.volunteer_task_type_id NOT IN (#{old_ids}) " +
+      "AND volunteer_tasks.volunteer_task_type_id IS NULL; " +
+      "UPDATE volunteer_tasks " +
+      "SET community_service_type_id = CASE "
+    new_service_types.each {|old,new|
+      sql += "WHEN volunteer_task_types_volunteer_tasks.volunteer_task_type_id = %d THEN %d " % [old.id, new.id]
+    }
+    sql += "ELSE Null END " +
+      "FROM volunteer_task_types_volunteer_tasks " +
+      "WHERE volunteer_task_types_volunteer_tasks.volunteer_task_id = volunteer_tasks.id " +
+      "AND volunteer_task_types_volunteer_tasks.volunteer_task_type_id IN (#{old_ids}) " +
+      "AND volunteer_tasks.community_service_type_id IS NULL; "
 
+    VolunteerTask.connection.execute(sql)
 
     # destroy community service and it's children
     service_types.each {|st| st.destroy}
-    VolunteerTaskType.destroy(18)
+    cs.destroy
 
     change_column :volunteer_tasks, :duration, :float, :limit => 5, :default => nil, :null => true
     drop_table :volunteer_task_types_volunteer_tasks
@@ -53,7 +60,8 @@ class MoveVolunteerTaskCommunityServiceTypesToOwnTable < ActiveRecord::Migration
   def self.down
     add_column :volunteer_task_types, :required, :boolean, :default => true, :null => false
     VolunteerTask.connection.execute("CREATE TABLE volunteer_task_types_volunteer_tasks " +
-                                     "AS SELECT id, volunteer_task_id FROM volunteer_tasks;")
+                                     "(volunteer_task_id, volunteer_task_type_id)" +
+                                     "AS SELECT id, volunteer_task_type_id FROM volunteer_tasks;")
     add_foreign_key( :volunteer_task_types_volunteer_tasks, ["volunteer_task_type_id"],
                      "volunteer_task_types", ["id"], :on_delete => :set_null )
     add_foreign_key( :volunteer_task_types_volunteer_tasks, ["volunteer_task_id"],
@@ -79,7 +87,6 @@ class MoveVolunteerTaskCommunityServiceTypesToOwnTable < ActiveRecord::Migration
                                        "(volunteer_task_type_id, volunteer_task_id) VALUES " +
                                        "(%d, %d)" % [new_service_types[vt.community_service_type].id, vt.id])
     end
-
 
     remove_column :volunteer_tasks, :community_service_type_id
     remove_column :volunteer_tasks, :volunteer_task_type_id

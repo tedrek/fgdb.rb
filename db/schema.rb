@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 9) do
 
   create_table "contact_method_types", :force => true do |t|
     t.column "description",  :string,   :limit => 100
@@ -369,21 +369,21 @@ ActiveRecord::Schema.define(:version => 8) do
   end
 
   create_table "volunteer_task_types_volunteer_tasks", :id => false, :force => true do |t|
-    t.column "volunteer_task_id",      :integer, :null => false
-    t.column "volunteer_task_type_id", :integer, :null => false
+    t.column "volunteer_task_id",      :integer
+    t.column "volunteer_task_type_id", :integer
   end
 
-  add_index "volunteer_task_types_volunteer_tasks", ["volunteer_task_id"], :name => "volunteer_task_types_volunteer_tasks_volunteer_task_id_index"
+  add_index "volunteer_task_types_volunteer_tasks", ["volunteer_task_id"], :name => "index_volunteer_task_types_volunteer_tasks_on_volunteer_task_id"
 
   create_table "volunteer_tasks", :force => true do |t|
-    t.column "contact_id",     :integer
-    t.column "duration",       :decimal,  :precision => 5, :scale => 2, :default => 0.0, :null => false
-    t.column "lock_version",   :integer,                                :default => 0,   :null => false
-    t.column "updated_at",     :datetime
-    t.column "created_at",     :datetime
-    t.column "created_by",     :integer,                                :default => 1,   :null => false
-    t.column "updated_by",     :integer,                                :default => 1,   :null => false
-    t.column "date_performed", :date
+    t.column "contact_id",   :integer
+    t.column "duration",     :decimal,  :precision => 5, :scale => 2, :default => 0.0, :null => false
+    t.column "lock_version", :integer,                                :default => 0,   :null => false
+    t.column "updated_at",   :datetime
+    t.column "created_at",   :datetime
+    t.column "created_by",   :integer,                                :default => 1,   :null => false
+    t.column "updated_by",   :integer,                                :default => 1,   :null => false
+    t.column "start_time",   :datetime
   end
 
   add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
@@ -396,6 +396,9 @@ ActiveRecord::Schema.define(:version => 8) do
 
   add_foreign_key "payments", ["donation_id"], "donations", ["id"], :name => "payments_donation_id_fkey"
   add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fkey"
+
+  add_foreign_key "volunteer_task_types_volunteer_tasks", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :set_null, :name => "volunteer_task_types_volunteer_task_volunteer_task_type_id_fkey"
+  add_foreign_key "volunteer_task_types_volunteer_tasks", ["volunteer_task_id"], "volunteer_tasks", ["id"], :on_delete => :set_null, :name => "volunteer_task_types_volunteer_tasks_volunteer_task_id_fkey"
 
   create_view "v_donation_totals", "SELECT d.id, sum(p.amount) AS total_paid FROM (donations d LEFT JOIN payments p ON ((p.donation_id = d.id))) GROUP BY d.id;", :force => true do |v|
     v.column :id
