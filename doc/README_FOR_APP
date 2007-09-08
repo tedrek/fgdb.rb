@@ -20,20 +20,25 @@ but should not be used by typical users.
 i did this on a debian etch box; alteration may be needed on other
 distros.
 
-To get the fgdb.rb source, which you probably have, because you're reading this:
+To get the fgdb.rb source:
 
+ $> apt-get install subversion
  $> svn co http://dev.freegeek.org/svn/fgdb.rb/trunk fgdb.rb
 
-to install a working Ruby on Rails environment:
+(possibly something in branches?
+ $> svn co http://dev.freegeek.org/svn/fgdb.rb/branches/some_branch fgdb.rb
+only if you know what you're doing.)
+
+to setup a working environment:
 
  $> apt-get install ruby rubygems postgresql-8.1 build-essential \
         apache2 ruby1.8-dev libpgsql-ruby irb
- $> gem install -y -v 1.1.2 rails
- $> gem install ferret # needs build-essential
+ $> gem install -y rails
+ $> gem install ferret # pick the latest version
 
 on Ubuntu Dapper you will need to get gems from the internet.
 
-and now you need to create the database:
+you need to create and configure the databases:
 
  $> su - postgres -c 'createuser -P SOMEDBUSER'
       # capable of creating databases, but nothing else
@@ -81,6 +86,15 @@ continue with the following:
    ::: modify apache config to taste :::
    ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
 
+== UPGRADE
+
+if you are moving from the fgdb.rb that explicitly used rails 1.1.2 to
+this branch,
+you will need to do a bit of work.
+???
+* svn switch to the correct branch? (until it becomes trunk...)
+* manually migrate schema (make a rake task for this?)
+
 == TODO
 
 see our trac (http://dev.freegeek.org/projects/fgdb.rb/) for details,
@@ -91,7 +105,7 @@ but some important tasks left unfinished:
 * deb package
 * moving to the latest stable rails
 
-== Thanks
+== THANKS
 
 in chronological order of svn commits:
 
