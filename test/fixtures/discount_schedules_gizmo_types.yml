@@ -331,8 +331,7 @@ discount_schedules_gizmo_types_021:
   created_at: 2007-01-02 10:11:18
 discount_schedules_gizmo_types_042: 
   updated_at: 2007-01-02 15:35:38
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -392,8 +391,7 @@ discount_schedules_gizmo_types_022:
   created_at: 2007-01-02 10:11:46
 discount_schedules_gizmo_types_043: 
   updated_at: 2007-01-02 15:35:38
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -453,8 +451,7 @@ discount_schedules_gizmo_types_023:
   created_at: 2007-01-02 10:11:46
 discount_schedules_gizmo_types_044: 
   updated_at: 2007-01-02 15:35:38
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -504,8 +501,7 @@ discount_schedules_gizmo_types_024:
   created_at: 2007-01-02 10:11:46
 discount_schedules_gizmo_types_045: 
   updated_at: 2007-01-02 15:35:38
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -575,8 +571,7 @@ discount_schedules_gizmo_types_067:
   created_at: 2007-01-02 15:39:11
 discount_schedules_gizmo_types_046: 
   updated_at: 2007-01-02 15:36:07
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -676,8 +671,7 @@ discount_schedules_gizmo_types_026:
   created_at: 2007-01-02 10:12:04
 discount_schedules_gizmo_types_047: 
   updated_at: 2007-01-02 15:36:07
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -727,8 +721,7 @@ discount_schedules_gizmo_types_069:
   created_at: 2007-01-02 15:39:11
 discount_schedules_gizmo_types_006: 
   updated_at: 2006-12-30 15:01:16
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -758,8 +751,7 @@ discount_schedules_gizmo_types_050:
   created_at: 2007-01-02 15:38:40
 discount_schedules_gizmo_types_048: 
   updated_at: 2007-01-02 15:36:07
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -799,8 +791,7 @@ discount_schedules_gizmo_types_072:
   created_at: 2007-01-02 15:39:39
 discount_schedules_gizmo_types_007: 
   updated_at: 2006-12-30 15:01:16
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -820,8 +811,7 @@ discount_schedules_gizmo_types_028:
   created_at: 2007-01-02 10:12:04
 discount_schedules_gizmo_types_049: 
   updated_at: 2007-01-02 15:36:07
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -841,8 +831,7 @@ discount_schedules_gizmo_types_107:
   created_at: 2007-01-10 15:48:42
 discount_schedules_gizmo_types_094: 
   updated_at: 2007-01-04 19:06:35
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -852,8 +841,7 @@ discount_schedules_gizmo_types_094:
   created_at: 2007-01-04 19:06:35
 discount_schedules_gizmo_types_008: 
   updated_at: 2006-12-30 15:01:16
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -913,8 +901,7 @@ discount_schedules_gizmo_types_073:
   created_at: 2007-01-02 15:39:39
 discount_schedules_gizmo_types_010: 
   updated_at: 2006-12-30 15:02:32
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -924,8 +911,7 @@ discount_schedules_gizmo_types_010:
   created_at: 2006-12-30 15:02:32
 discount_schedules_gizmo_types_009: 
   updated_at: 2006-12-30 15:01:16
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -975,8 +961,7 @@ discount_schedules_gizmo_types_109:
   created_at: 2007-01-10 15:48:42
 discount_schedules_gizmo_types_095: 
   updated_at: 2007-01-04 19:06:35
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -996,8 +981,7 @@ discount_schedules_gizmo_types_074:
   created_at: 2007-01-02 15:39:46
 discount_schedules_gizmo_types_011: 
   updated_at: 2006-12-30 15:02:32
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -1037,8 +1021,7 @@ discount_schedules_gizmo_types_111:
   created_at: 2007-01-17 14:35:51
 discount_schedules_gizmo_types_096: 
   updated_at: 2007-01-04 19:06:35
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -1058,8 +1041,7 @@ discount_schedules_gizmo_types_075:
   created_at: 2007-01-02 15:39:46
 discount_schedules_gizmo_types_012: 
   updated_at: 2006-12-30 15:02:32
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -1099,8 +1081,7 @@ discount_schedules_gizmo_types_112:
   created_at: 2007-01-17 14:35:51
 discount_schedules_gizmo_types_097: 
   updated_at: 2007-01-04 19:06:35
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
@@ -1120,8 +1101,7 @@ discount_schedules_gizmo_types_076:
   created_at: 2007-01-02 15:39:46
 discount_schedules_gizmo_types_013: 
   updated_at: 2006-12-30 15:02:32
-  multiplier: !ruby/object:BigDecimal {}
-
+  multiplier: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"

@@ -1,469 +1,397 @@
 --- 
 gizmo_types_035: 
   updated_at: 2007-01-10 15:48:42
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "37"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Cable
   parent_id: "13"
   created_at: 2007-01-10 15:48:42
 gizmo_types_024: 
   updated_at: 2007-01-02 15:39:02
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "26"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Telephone
   parent_id: "13"
   created_at: 2007-01-02 10:05:31
 gizmo_types_013: 
   updated_at: 2007-01-02 10:11:18
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "14"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: UPS
   parent_id: "13"
   created_at: 2006-11-11 19:18:08
 gizmo_types_002: 
   updated_at: 2006-11-11 19:16:20
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "11"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Scanner
   parent_id: "13"
   created_at: 2006-11-11 19:09:38
 gizmo_types_036: 
   updated_at: 2007-01-17 14:35:51
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "38"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Tuition
   parent_id: "17"
   created_at: 2007-01-17 14:35:51
 gizmo_types_025: 
   updated_at: 2007-01-02 15:39:11
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "27"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Harddrive
   parent_id: "13"
   created_at: 2007-01-02 10:06:08
 gizmo_types_014: 
   updated_at: 2007-01-02 10:11:46
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "3"
   updated_by: "1"
   id: "2"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: LCD
   parent_id: "1"
   created_at: 2006-09-25 11:21:53
 gizmo_types_003: 
   updated_at: 2006-11-11 19:16:33
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "10"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Printer
   parent_id: "13"
   created_at: 2006-11-11 19:09:26
 gizmo_types_026: 
   updated_at: 2007-01-02 15:39:39
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "28"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Modem
   parent_id: "13"
   created_at: 2007-01-02 10:06:36
 gizmo_types_015: 
   updated_at: 2007-01-02 10:12:04
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "2"
   updated_by: "1"
   id: "7"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: VCR
   parent_id: "13"
   created_at: 2006-11-11 19:08:37
 gizmo_types_004: 
   updated_at: 2006-11-11 19:17:12
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "7"
   updated_by: "1"
   id: "1"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Monitor
   parent_id: "13"
   created_at: 2006-09-25 11:21:29
 gizmo_types_027: 
   updated_at: 2007-01-02 15:39:46
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "29"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Speakers
   parent_id: "13"
   created_at: 2007-01-02 10:07:34
 gizmo_types_016: 
   updated_at: 2007-01-02 10:12:10
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "2"
   updated_by: "1"
   id: "8"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: DVD Player
   parent_id: "13"
   created_at: 2006-11-11 19:08:52
 gizmo_types_005: 
   updated_at: 2006-11-11 19:18:18
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "6"
   updated_by: "1"
   id: "4"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: System
   parent_id: "13"
   created_at: 2006-09-25 11:22:30
 gizmo_types_028: 
   updated_at: 2007-01-02 15:39:55
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "30"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Card
   parent_id: "13"
   created_at: 2007-01-02 10:08:06
 gizmo_types_017: 
   updated_at: 2007-01-02 11:34:52
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "31"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Miscellaneous
   parent_id: "13"
   created_at: 2007-01-02 10:09:22
 gizmo_types_006: 
   updated_at: 2006-11-11 19:39:54
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "15"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Sticker
   parent_id: "17"
   created_at: 2006-11-11 19:19:08
 gizmo_types_029: 
   updated_at: 2007-01-02 15:40:01
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "32"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: CD Burner
   parent_id: "13"
   created_at: 2007-01-02 11:36:02
 gizmo_types_018: 
   updated_at: 2007-01-02 15:35:07
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "6"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Laptop
   parent_id: "4"
   created_at: 2006-11-11 19:05:26
 gizmo_types_007: 
   updated_at: 2006-11-11 19:40:03
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "16"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: T-Shirt
   parent_id: "17"
   created_at: 2006-11-11 19:19:26
 gizmo_types_030: 
   updated_at: 2007-01-02 15:40:19
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "2"
   updated_by: "1"
   id: "33"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Video Card
   parent_id: "30"
   created_at: 2007-01-02 11:50:20
 gizmo_types_019: 
   updated_at: 2007-01-02 15:35:38
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "4"
   updated_by: "1"
   id: "17"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Schwag
   parent_id: "0"
   created_at: 2006-11-11 19:39:41
 gizmo_types_008: 
   updated_at: 2006-12-19 18:08:47
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "3"
   updated_by: "1"
   id: "3"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: CRT
   parent_id: "1"
   created_at: 2006-09-25 11:22:11
 gizmo_types_031: 
   updated_at: 2007-01-02 15:40:32
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "34"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Sound Card
   parent_id: "30"
   created_at: 2007-01-02 11:50:48
 gizmo_types_020: 
   updated_at: 2007-01-02 15:36:07
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "2"
   updated_by: "1"
   id: "18"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: 1337 lappy
   parent_id: "6"
   created_at: 2006-12-19 20:16:28
 gizmo_types_009: 
   updated_at: 2006-12-20 08:58:11
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "4"
   updated_by: "1"
   id: "5"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: System w/builtin monitor
   parent_id: "1"
   created_at: 2006-09-29 14:22:28
 gizmo_types_032: 
   updated_at: 2007-01-04 19:06:35
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "4"
   updated_by: "1"
   id: "13"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Gizmo
   parent_id: "0"
   created_at: 2006-11-11 19:16:03
 gizmo_types_021: 
   updated_at: 2007-01-02 15:38:40
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "22"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Keyboard
   parent_id: "13"
   created_at: 2007-01-02 10:03:00
 gizmo_types_010: 
   updated_at: 2006-12-30 15:01:16
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "19"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Old Data Gizmo
   parent_id: "13"
   created_at: 2006-12-30 15:01:16
 gizmo_types_033: 
   updated_at: 2007-01-10 15:47:37
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "35"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Case
   parent_id: "13"
   created_at: 2007-01-10 15:47:37
 gizmo_types_022: 
   updated_at: 2007-01-02 15:38:48
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "23"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Mouse
   parent_id: "13"
   created_at: 2007-01-02 10:03:31
 gizmo_types_011: 
   updated_at: 2006-12-30 15:02:32
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "20"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Old Data Schwag
   parent_id: "17"
   created_at: 2006-12-30 15:02:32
 gizmo_types_034: 
   updated_at: 2007-01-10 15:48:05
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "36"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Networking Device
   parent_id: "13"
   created_at: 2007-01-10 15:48:05
 gizmo_types_023: 
   updated_at: 2007-01-02 15:38:54
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "25"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Stereo System
   parent_id: "13"
   created_at: 2007-01-02 10:04:58
 gizmo_types_012: 
   updated_at: 2006-12-30 18:57:55
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "21"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Old Data CRT
   parent_id: "1"
   created_at: 2006-12-30 18:57:55
 gizmo_types_001: 
   updated_at: 2006-11-11 19:16:11
-  suggested_fee: !ruby/object:BigDecimal {}
-
+  suggested_fee: 0.0
   created_by: "1"
   lock_version: "1"
   updated_by: "1"
   id: "12"
-  required_fee: !ruby/object:BigDecimal {}
-
+  required_fee: 0.0
   description: Fax Machine
   parent_id: "13"
   created_at: 2006-11-11 19:13:34

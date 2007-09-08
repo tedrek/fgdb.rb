@@ -6,8 +6,7 @@ volunteer_task_types_035:
   lock_version: "2"
   updated_by: "1"
   id: "41"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: laptops
   required: t
   parent_id: "24"
@@ -19,8 +18,7 @@ volunteer_task_types_024:
   lock_version: "1"
   updated_by: "1"
   id: "42"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: misc
   required: t
   parent_id: "17"
@@ -32,8 +30,7 @@ volunteer_task_types_013:
   lock_version: "0"
   updated_by: "1"
   id: "30"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: teaching
   required: t
   parent_id: "17"
@@ -45,8 +42,7 @@ volunteer_task_types_002:
   lock_version: "0"
   updated_by: "1"
   id: "18"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: community service
   required: f
   parent_id: "0"
@@ -58,8 +54,7 @@ volunteer_task_types_036:
   lock_version: "1"
   updated_by: "1"
   id: "52"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: testing
   required: t
   parent_id: "27"
@@ -71,8 +66,7 @@ volunteer_task_types_025:
   lock_version: "1"
   updated_by: "1"
   id: "43"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: orientation
   required: t
   parent_id: "17"
@@ -84,8 +78,7 @@ volunteer_task_types_014:
   lock_version: "0"
   updated_by: "1"
   id: "31"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: massage
   required: t
   parent_id: "17"
@@ -97,8 +90,7 @@ volunteer_task_types_003:
   lock_version: "0"
   updated_by: "1"
   id: "19"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: school
   required: t
   parent_id: "18"
@@ -110,8 +102,7 @@ volunteer_task_types_037:
   lock_version: "0"
   updated_by: "1"
   id: "53"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: macintosh
   required: t
   parent_id: "24"
@@ -123,8 +114,7 @@ volunteer_task_types_026:
   lock_version: "1"
   updated_by: "1"
   id: "44"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: outreach
   required: t
   parent_id: "17"
@@ -136,8 +126,7 @@ volunteer_task_types_015:
   lock_version: "1"
   updated_by: "1"
   id: "20"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: punitive
   required: t
   parent_id: "18"
@@ -149,8 +138,7 @@ volunteer_task_types_004:
   lock_version: "0"
   updated_by: "1"
   id: "24"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: build
   required: t
   parent_id: "17"
@@ -162,8 +150,7 @@ volunteer_task_types_027:
   lock_version: "1"
   updated_by: "1"
   id: "45"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: printers
   required: t
   parent_id: "17"
@@ -175,8 +162,7 @@ volunteer_task_types_016:
   lock_version: "0"
   updated_by: "1"
   id: "32"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: slacking
   required: t
   parent_id: "17"
@@ -188,8 +174,7 @@ volunteer_task_types_005:
   lock_version: "0"
   updated_by: "1"
   id: "25"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: system eval
   required: t
   parent_id: "24"
@@ -201,8 +186,7 @@ volunteer_task_types_028:
   lock_version: "1"
   updated_by: "1"
   id: "46"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: programming
   required: t
   parent_id: "17"
@@ -214,8 +198,7 @@ volunteer_task_types_017:
   lock_version: "0"
   updated_by: "1"
   id: "47"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: repair
   required: t
   parent_id: "24"
@@ -227,8 +210,7 @@ volunteer_task_types_006:
   lock_version: "0"
   updated_by: "1"
   id: "26"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: assembly
   required: t
   parent_id: "24"
@@ -240,8 +222,7 @@ volunteer_task_types_029:
   lock_version: "1"
   updated_by: "1"
   id: "48"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: sales
   required: t
   parent_id: "17"
@@ -253,8 +234,7 @@ volunteer_task_types_018:
   lock_version: "0"
   updated_by: "1"
   id: "49"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: sorting
   required: t
   parent_id: "24"
@@ -266,8 +246,7 @@ volunteer_task_types_007:
   lock_version: "0"
   updated_by: "1"
   id: "27"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: adoption
   required: t
   parent_id: "17"
@@ -279,8 +258,7 @@ volunteer_task_types_030:
   lock_version: "1"
   updated_by: "1"
   id: "50"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: support
   required: t
   parent_id: "17"
@@ -292,8 +270,7 @@ volunteer_task_types_019:
   lock_version: "1"
   updated_by: "1"
   id: "33"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: admin
   required: t
   parent_id: "17"
@@ -305,8 +282,7 @@ volunteer_task_types_008:
   lock_version: "1"
   updated_by: "1"
   id: "23"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: cleaning
   required: t
   parent_id: "27"
@@ -318,8 +294,7 @@ volunteer_task_types_031:
   lock_version: "1"
   updated_by: "1"
   id: "51"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: system administration
   required: t
   parent_id: "17"
@@ -331,8 +306,7 @@ volunteer_task_types_020:
   lock_version: "1"
   updated_by: "1"
   id: "35"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: computers for kids
   required: t
   parent_id: "17"
@@ -344,8 +318,7 @@ volunteer_task_types_009:
   lock_version: "1"
   updated_by: "1"
   id: "22"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: monitors
   required: t
   parent_id: "27"
@@ -357,8 +330,7 @@ volunteer_task_types_032:
   lock_version: "2"
   updated_by: "1"
   id: "34"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: advanced testing
   required: t
   parent_id: "24"
@@ -370,8 +342,7 @@ volunteer_task_types_021:
   lock_version: "1"
   updated_by: "1"
   id: "36"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: CREAM
   required: t
   parent_id: "17"
@@ -383,8 +354,7 @@ volunteer_task_types_010:
   lock_version: "0"
   updated_by: "1"
   id: "28"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: receiving
   required: t
   parent_id: "27"
@@ -396,8 +366,7 @@ volunteer_task_types_033:
   lock_version: "1"
   updated_by: "1"
   id: "37"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: data entry
   required: t
   parent_id: "27"
@@ -409,8 +378,7 @@ volunteer_task_types_022:
   lock_version: "1"
   updated_by: "1"
   id: "38"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: education
   required: t
   parent_id: "17"
@@ -422,8 +390,7 @@ volunteer_task_types_011:
   lock_version: "0"
   updated_by: "1"
   id: "29"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: recycling
   required: t
   parent_id: "27"
@@ -435,8 +402,7 @@ volunteer_task_types_034:
   lock_version: "2"
   updated_by: "1"
   id: "39"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: enterprise
   required: t
   parent_id: "24"
@@ -448,8 +414,7 @@ volunteer_task_types_023:
   lock_version: "1"
   updated_by: "1"
   id: "40"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: front desk
   required: t
   parent_id: "17"
@@ -461,8 +426,7 @@ volunteer_task_types_012:
   lock_version: "2"
   updated_by: "1"
   id: "21"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: quality control
   required: t
   parent_id: "24"
@@ -474,8 +438,7 @@ volunteer_task_types_001:
   lock_version: "0"
   updated_by: "1"
   id: "17"
-  hours_multiplier: !ruby/object:BigDecimal {}
-
+  hours_multiplier: 0.0
   description: program
   required: t
   parent_id: "0"
