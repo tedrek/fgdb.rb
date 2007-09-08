@@ -35,19 +35,24 @@ on Ubuntu Dapper you will need to get gems from the internet.
 
 and now you need to create the database:
 
- $> su - postgres -c 'createuser -P SOMEUSER'
+ $> su - postgres -c 'createuser -P SOMEDBUSER'
       # capable of creating databases, but nothing else
- $> createdb -h localhost -U SOMEUSER fgdb.rb_production
- $> createdb -h localhost -U SOMEUSER fgdb.rb_test
- $> createdb -h localhost -U SOMEUSER fgdb.rb_development
+ $> createdb -h localhost -U SOMEDBUSER fgdb_production
+ $> createdb -h localhost -U SOMEDBUSER fgdb_test
+ $> createdb -h localhost -U SOMEDBUSER fgdb_development
  $> cd fgdb.rb
-   ::: edit config/database.yml-example to fit and rename it (drop -example) :::
+   ::: edit config/database.yml-example to match and rename
+   ::: it (drop '-example')
  $> export RAILS_ENV=production
  $> alias rake='/var/lib/gems/1.8/bin/rake'
       # yeah, etch rubygems are broken
- $> rake db:schema:load
  $> rake db:migrate
+
+choose one of the following: skeletal metadata, or full test data:
+
  $> rake db:metadata:load
+   :OR:
+ $> zcat db/version_*_test_data.sql.gz | psql -h localhost -U SOMEUSER fgdb_production
 
 run some tests to see if things look okay:
 
@@ -85,3 +90,14 @@ but some important tasks left unfinished:
 * non-ajax interface
 * deb package
 * moving to the latest stable rails
+
+== Thanks
+
+in chronological order of svn commits:
+
+* Martin Chase <mchase@freegeek.org>
+* Jeff Schwaber
+* Gordon Pederson
+* Richard Seymour <rfs@freegeek.org>
+* Tim Bauman
+* Eric Davis
