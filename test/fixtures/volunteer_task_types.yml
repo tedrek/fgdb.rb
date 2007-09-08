@@ -1,2 +1,482 @@
---- {}
+--- 
+volunteer_task_types_035: 
+  updated_at: 2006-12-30 18:27:45
+  instantiable: t
+  created_by: "1"
+  lock_version: "2"
+  updated_by: "1"
+  id: "41"
+  hours_multiplier: !ruby/object:BigDecimal {}
 
+  description: laptops
+  required: t
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_024: 
+  updated_at: 2006-12-30 18:22:55
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "42"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: misc
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_013: 
+  updated_at: 2006-12-13 11:04:23
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "30"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: teaching
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-13 11:04:23
+volunteer_task_types_002: 
+  updated_at: 2006-12-13 10:45:42
+  instantiable: f
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "18"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: community service
+  required: f
+  parent_id: "0"
+  created_at: 2006-12-13 10:45:42
+volunteer_task_types_036: 
+  updated_at: 2006-12-30 18:28:28
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "52"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: testing
+  required: t
+  parent_id: "27"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_025: 
+  updated_at: 2006-12-30 18:22:56
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "43"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: orientation
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_014: 
+  updated_at: 2006-12-13 11:04:35
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "31"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: massage
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-13 11:04:35
+volunteer_task_types_003: 
+  updated_at: 2006-12-13 10:46:09
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "19"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: school
+  required: t
+  parent_id: "18"
+  created_at: 2006-12-13 10:46:09
+volunteer_task_types_037: 
+  updated_at: 2007-01-05 16:10:33
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "53"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: macintosh
+  required: t
+  parent_id: "24"
+  created_at: 2007-01-05 16:10:33
+volunteer_task_types_026: 
+  updated_at: 2006-12-30 18:22:58
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "44"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: outreach
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_015: 
+  updated_at: 2006-12-13 20:36:30
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "20"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: punitive
+  required: t
+  parent_id: "18"
+  created_at: 2006-12-13 10:46:23
+volunteer_task_types_004: 
+  updated_at: 2006-12-13 10:47:39
+  instantiable: f
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "24"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: build
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-13 10:47:39
+volunteer_task_types_027: 
+  updated_at: 2006-12-30 18:22:59
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "45"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: printers
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_016: 
+  updated_at: 2006-12-13 21:14:14
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "32"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: slacking
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-13 21:14:14
+volunteer_task_types_005: 
+  updated_at: 2006-12-13 10:48:21
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "25"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: system eval
+  required: t
+  parent_id: "24"
+  created_at: 2006-12-13 10:48:21
+volunteer_task_types_028: 
+  updated_at: 2006-12-30 18:23:00
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "46"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: programming
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_017: 
+  updated_at: 2006-12-30 08:40:54.425307
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "47"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: repair
+  required: t
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54.425307
+volunteer_task_types_006: 
+  updated_at: 2006-12-13 10:48:52
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "26"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: assembly
+  required: t
+  parent_id: "24"
+  created_at: 2006-12-13 10:48:52
+volunteer_task_types_029: 
+  updated_at: 2006-12-30 18:23:02
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "48"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: sales
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_018: 
+  updated_at: 2006-12-30 08:40:54.441757
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "49"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: sorting
+  required: t
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54.441757
+volunteer_task_types_007: 
+  updated_at: 2006-12-13 10:49:16
+  instantiable: f
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "27"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: adoption
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-13 10:49:16
+volunteer_task_types_030: 
+  updated_at: 2006-12-30 18:23:03
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "50"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: support
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_019: 
+  updated_at: 2006-12-30 18:21:20
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "33"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: admin
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_008: 
+  updated_at: 2006-12-13 10:49:27
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "23"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: cleaning
+  required: t
+  parent_id: "27"
+  created_at: 2006-12-13 10:47:07
+volunteer_task_types_031: 
+  updated_at: 2006-12-30 18:23:04
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "51"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: system administration
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_020: 
+  updated_at: 2006-12-30 18:22:08
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "35"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: computers for kids
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_009: 
+  updated_at: 2006-12-13 10:49:34
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "22"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: monitors
+  required: t
+  parent_id: "27"
+  created_at: 2006-12-13 10:46:55
+volunteer_task_types_032: 
+  updated_at: 2006-12-30 18:27:25
+  instantiable: t
+  created_by: "1"
+  lock_version: "2"
+  updated_by: "1"
+  id: "34"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: advanced testing
+  required: t
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_021: 
+  updated_at: 2006-12-30 18:22:10
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "36"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: CREAM
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_010: 
+  updated_at: 2006-12-13 10:49:54
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "28"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: receiving
+  required: t
+  parent_id: "27"
+  created_at: 2006-12-13 10:49:54
+volunteer_task_types_033: 
+  updated_at: 2006-12-30 18:27:34
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "37"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: data entry
+  required: t
+  parent_id: "27"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_022: 
+  updated_at: 2006-12-30 18:22:11
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "38"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: education
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_011: 
+  updated_at: 2006-12-13 10:50:04
+  instantiable: t
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "29"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: recycling
+  required: t
+  parent_id: "27"
+  created_at: 2006-12-13 10:50:04
+volunteer_task_types_034: 
+  updated_at: 2006-12-30 18:27:40
+  instantiable: t
+  created_by: "1"
+  lock_version: "2"
+  updated_by: "1"
+  id: "39"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: enterprise
+  required: t
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_023: 
+  updated_at: 2006-12-30 18:22:14
+  instantiable: t
+  created_by: "1"
+  lock_version: "1"
+  updated_by: "1"
+  id: "40"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: front desk
+  required: t
+  parent_id: "17"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_012: 
+  updated_at: 2006-12-13 11:00:21
+  instantiable: t
+  created_by: "1"
+  lock_version: "2"
+  updated_by: "1"
+  id: "21"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: quality control
+  required: t
+  parent_id: "24"
+  created_at: 2006-12-13 10:46:44
+volunteer_task_types_001: 
+  updated_at: 2006-12-13 10:45:23
+  instantiable: f
+  created_by: "1"
+  lock_version: "0"
+  updated_by: "1"
+  id: "17"
+  hours_multiplier: !ruby/object:BigDecimal {}
+
+  description: program
+  required: t
+  parent_id: "0"
+  created_at: 2006-12-13 10:45:23
