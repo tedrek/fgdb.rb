@@ -17,14 +17,15 @@ def dump_metadata( rails_env = "development" )
   when "postgresql"
     print "Dumping the metadata..."
     for table in METADATATABLES do
-      command = 'pg_dump -i -U "%s" --disable-triggers -a -t "%s" -x -O -f %s/%s.sql %s %s'
-      system( command % [
-                         abcs[rails_env]["username"],
-                         table, METADATADIR, table,
-                         search_path,
-                         abcs[rails_env]["database"]
-                        ] )
-      raise "Error dumping metadata" if $?.exitstatus == 1
+      command = 'pg_dump -i -U "%s" --disable-triggers -a -t "%s" -x -O -f %s/%s.sql %s %s' %
+        [
+         abcs[rails_env]["username"],
+         table, METADATADIR, table,
+         search_path,
+         abcs[rails_env]["database"]
+        ] 
+      system( command )
+      raise "Error dumping metadata: '#{command}' " if $?.exitstatus == 1
       print "."
     end
     puts "done"
