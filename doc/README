@@ -25,8 +25,9 @@ Install
 i did this on a debian etch box; alteration may be needed on other
 distros.
 
-To get the fgdb.rb source, which you probably have, because you're reading this:
+To get the fgdb.rb source, which you probably have, because you're reading this, you will need to get subversion:
 
+ $> apt-get install subversion
  $> svn co http://dev.freegeek.org/svn/fgdb.rb/trunk fgdb.rb
 
 to install a working Ruby on Rails environment:
