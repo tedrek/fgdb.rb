@@ -31,10 +31,9 @@ only if you know what you're doing.)
 
 to setup a working environment:
 
- $> apt-get install ruby rubygems postgresql-8.1 build-essential \
-        apache2 ruby1.8-dev libpgsql-ruby irb
+ $> apt-get install ruby rubygems postgresql-8.1 \
+        apache2 libpgsql-ruby irb
  $> gem install -y rails
- $> gem install ferret # pick the latest version
 
 on Ubuntu Dapper you will need to get gems from the internet.
 

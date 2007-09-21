@@ -7,20 +7,6 @@ class ContactsController < ApplicationController
     render :action => 'lookup'
   end
 
-  def results
-    if params['query']
-      q = params['query']
-      if q.to_i > 0 and Contact.exists?(q)
-        @contacts = Contact.find([q])
-      else
-        @contacts = Contact.search(q, :limit => 5)
-      end
-      render :layout => false if request.xhr?
-    else
-      redirect_to :action => 'search'
-    end
-  end
-
   def search_results
     if params['contact_query']
       q = params['contact_query']

@@ -21,6 +21,31 @@ class ContactsControllerTest < Test::Unit::TestCase
     @first = Contact.find(:first)
   end
 
+  def test_that_searching_by_id_works
+    someone = Contact.find(:first)
+    xhr :post, :search_results, {:contact_query => someone.id.to_s}
+    assert_response :success
+    assert_template 'search_results'
+    assert_equal someone, assigns(:search_results)[0]
+    assert_equal 1, assigns(:search_results).length
+  end
+
+  def test_that_searching_by_name_works
+    someone = Contact.find(:first)
+    contacts = Contact.find(:all, :conditions => ["surname = ?", someone.surname], :limit => 5)
+    assert contacts.length <= 5
+    assert contacts.length >= 1
+    xhr :post, :search_results, {:contact_query => someone.surname.to_s}
+    assert_response :success
+    assert_template 'search_results'
+    if contacts.length == 5
+      assert false, "too many results to be sure..."
+    else
+      assert_equal contacts.length, assigns(:search_results).length, "#{contacts.to_yaml} != #{assigns(:search_results).to_yaml}"
+      assert assigns(:search_results).include?(someone), "someone isn't in the results"
+    end
+  end
+
   def test_create_xhr
     contact_count = Contact.find(:all).length
     xhr :post, :create, {:contact => NEW_CONTACT, :contact_types => NEW_CONTACT_TYPES}

@@ -217,8 +217,9 @@ class Contact < ActiveRecord::Base
       # if the user added query wildcards or search metaterms, leave
       # be if not, assume it's better to bracket each word with
       # wildcards and join with ANDs.
-      query = prepare_query(query)
-      find_by_contents( query, options )
+      conditions = prepare_query(query)
+      find(:all, {:limit => 5, :conditions => conditions}.merge(options))
+      
     end
 
     def search_by_type(type, query, options = {})
@@ -235,22 +236,16 @@ class Contact < ActiveRecord::Base
     protected
 
     def prepare_query(q)
-      unless q =~ /\*|\~| AND| OR/
-        q = q.split.map do |word|
-          "*#{word}*"
-        end.join(' AND ')
+      conds = [""]
+      q.split.each do |word|
+        conds[0] += "(surname ILIKE ? OR first_name ILIKE ? OR middle_name ILIKE ? OR organization ILIKE ?)"
+        conds += ["%#{word}%"] * 4
+        conds[0] += ' AND '
       end
-      q
+      conds[0].sub!(/ AND $/, '')
+      return conds
     end
 
     end # class << self
-
-  acts_as_ferret :fields => {
-    'first_name' => {:boost => 2},
-    'middle_name' => {},
-    'surname' => {:boost => 2.5},
-    'organization' => {:boost => 2},
-    'types' => {:boost => 0}
-  }
 
 end
