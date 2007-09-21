@@ -1,3 +1,0 @@
-page.replace_html searchbox_search_results_div_id(params), :partial => 'search_results'
-page << "Field.focus('#{searchbox_select_id(params)}');" unless @search_results.empty?
-#page.hide loading_indicator_id(params)

@@ -1,0 +1,20 @@
+<% new_params = params.merge( :controller => '/contacts', :action => 'new', :id => nil ) %>
+
+  <% if (! params[:display_create]) or (params[:display_create] == 'true') %>
+      <button type="button" onclick="<%= remote_function :url => new_params %>;
+          Element.show('<%= loading_indicator_id(new_params) %>');"
+        >Create a new contact</button> or
+    <% end %>
+
+  <%= loading_indicator_tag(new_params) %>
+
+  <% if @search_results.length > 0 %>
+    <%= render :partial => 'results_dropdown' %>
+    <div id="<%= searchbox_display_id(params) %>">
+      <% if @search_results[0] %>
+        <%= render :partial => "display", :locals => { :@contact => @search_results[0] } %>
+      <% end %>
+    </div>
+  <% end %>
+
+</div>

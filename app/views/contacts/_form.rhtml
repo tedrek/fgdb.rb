@@ -80,15 +80,6 @@
   <%= text_area 'contact', 'notes'  %>
 </div>
 
-<div class="form-element">
-  <%= datalist_for( :contact_method, 'contacts_contact_methods',
-    @contact.contact_methods,
-    :show_header => false, :render => "contact_methods/form",
-    :add_text => "More contact methods" ) %>
-</div>
-
-
-
 <!--[eoform:contact]-->
 
   </div>

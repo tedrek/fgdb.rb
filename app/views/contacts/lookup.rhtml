@@ -1,7 +1,5 @@
 <%= form_tag( { :controller => '/contacts' }, { :id => 'tasty_test' } ) %>
   <div class="form-element">
-    <%= render_component( :controller => '/contacts', :action => 'search',
-      :params => { :field_name => "contact_id", :contact => @contact,
-        :search_label => "Find the contact:", :select_label => "Select the contact:" } ) %>
+    <%= render :partial => 'search', :locals => {:contact => @contact} %>
   </div>
 <%= end_form_tag %>

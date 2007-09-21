@@ -1,7 +1,11 @@
 class ContactsController < ApplicationController
   layout :with_sidebar
 
-  active_scaffold :contact
+  #active_scaffold :contact
+
+  def index
+    render :action => 'lookup'
+  end
 
   def results
     if params['query']
@@ -17,25 +21,26 @@ class ContactsController < ApplicationController
     end
   end
 
-  include DatalistFor
-  ContactMethodsTag = 'contacts_contact_methods'
-
   after_filter :clear_flashes
   
   def search
-    @search_results = [ @contact ] if( @contact = params[:contact] )
   end
 
   def search_results
-    @search_results ||= do_search( params[:query] )
-    render :action => 'search_results.rjs'
+    if params['contact_query']
+      q = params['contact_query']
+      if q.to_i > 0 and Contact.exists?(q)
+        @search_results = Contact.find([q])
+      else
+        @search_results = Contact.search(q, :limit => 5)
+      end
+    end
+    render :layout => false
   end
 
   def update_display_area
     @contact = Contact.find( params[:searchbox_value] )
-    render :update do |page|
-      page.replace_html searchbox_display_id(params), :partial => 'display'
-    end
+    render :partial => 'display'
   end
 
   def new
