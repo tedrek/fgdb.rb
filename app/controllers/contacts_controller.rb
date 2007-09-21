@@ -21,11 +21,6 @@ class ContactsController < ApplicationController
     end
   end
 
-  after_filter :clear_flashes
-  
-  def search
-  end
-
   def search_results
     if params['contact_query']
       q = params['contact_query']
