@@ -2,8 +2,10 @@
 @new_options = @options.merge(:action => "new", :id => nil)
 
 if @successful
+  page << "Form.disable($('contact_query').form.id);"
+  page.replace_html search_results_id(@options), ''
   page.insert_html :bottom, content_id(@options), :partial => 'new_edit', :locals => { :@options => @options }
-  page << "Form.focusFirstElement('#{element_form_id(@options)}');"
+  page << "Form.focusFirstElement('floating_form');"
 else
   # nothing yet
 end

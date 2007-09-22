@@ -28,6 +28,14 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_rjs :remove,"floating_form"
   end
+  
+  def test_new_xhr
+    xhr :post, :new
+    assert_response :success
+    assert_rjs :insert_html, :bottom, 'content'
+    assert_rjs :hide, "loading_indicator_id"
+    assert_rjs :replace_html, "search_results_id", ''
+  end
 
   def test_that_searching_by_id_works
     someone = Contact.find(:first)
