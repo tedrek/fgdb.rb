@@ -2,10 +2,10 @@
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  page[search_results_id(@options)].hide
   page.replace_html contact_messages_id(@options), :partial => 'messages'
   page.replace_html search_results_id(params),
     :partial => 'search_results', :locals => { :@search_results => [@contact] }
+  page.remove 'floating_form'
 else
   page.replace_html contact_messages_id(@create_options), :partial => 'form_messages'
   page << "$('#{contact_messages_id(@create_options)}').scrollTo();"

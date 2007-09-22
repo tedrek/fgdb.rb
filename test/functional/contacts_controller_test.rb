@@ -80,6 +80,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'create.rjs'
     assert_equal contact_count + 1, Contact.find(:all).length, "Expected an additional Contact"
+    assert_rjs :remove, 'floating_form'
   end
 
   def test_update_xhr
@@ -94,6 +95,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_equal contact_count, Contact.find(:all).length, "Number of Contacts should be the same"
     assert_response :success
     assert_template 'update.rjs'
+    assert_rjs :remove, 'floating_form'
   end
 
   def test_destroy_xhr

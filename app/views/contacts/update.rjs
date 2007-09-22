@@ -2,10 +2,10 @@
 @update_options = @options.merge(:action => "update")
 
 if @successful
- # page[form_insertion_search_results_id(@options)].hide
   page.replace_html contact_messages_id(@options), :partial => 'messages'
   page.replace_html search_results_id(params),
     :partial => 'search_results', :locals => { :@search_results => [@contact] }
+  page.remove 'floating_form'
 else
   page.replace_html contact_messages_id(@update_options), :partial => 'form_messages'
   page << "$('#{contact_messages_id(@update_options)}').scrollTo();"
