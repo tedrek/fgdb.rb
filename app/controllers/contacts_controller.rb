@@ -16,7 +16,7 @@ class ContactsController < ApplicationController
         @search_results = Contact.search(q, :limit => 5)
       end
     end
-    render :layout => false
+    render :layout => false, :partial => 'search_results', :locals => { :@search_results => @search_results }
   end
 
   def update_display_area
@@ -40,7 +40,7 @@ class ContactsController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     render :action => 'create.rjs'
   end
 
@@ -51,7 +51,7 @@ class ContactsController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     render :action => 'edit.rjs'
   end
 
@@ -63,7 +63,7 @@ class ContactsController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     render :action => 'update.rjs'
   end
 
@@ -73,7 +73,7 @@ class ContactsController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     render :action => 'destroy.rjs'
   end
 
@@ -95,12 +95,8 @@ class ContactsController < ApplicationController
   #######
 
   def _save
-    @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
+    # TODO: Handle contact methods
     success = @contact.save
-    datalist_objects(ContactMethodsTag).each {|method|
-      method.contact = @contact
-      success &&= method.save
-    }
     return success
   end
 end

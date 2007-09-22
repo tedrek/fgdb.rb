@@ -1,8 +1,8 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "create", :id => generate_temporary_id }
+@options = { :action => "create", :id => generate_temporary_id }
 @new_options = @options.merge(:action => "new", :id => nil)
 
 if @successful
-  page.replace_html search_results_id(@options), :partial => 'new_edit'
+  page.insert_html :bottom, content_id(@options), :partial => 'new_edit', :locals => { :@options => @options }
   page << "Form.focusFirstElement('#{element_form_id(@options)}');"
 else
   # nothing yet

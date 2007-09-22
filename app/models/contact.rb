@@ -217,9 +217,10 @@ class Contact < ActiveRecord::Base
       # if the user added query wildcards or search metaterms, leave
       # be if not, assume it's better to bracket each word with
       # wildcards and join with ANDs.
+      return [] unless query and query.length > 0
       conditions = prepare_query(query)
       find(:all, {:limit => 5, :conditions => conditions}.merge(options))
-      
+
     end
 
     def search_by_type(type, query, options = {})

@@ -8,7 +8,9 @@ class ContactsControllerTest < Test::Unit::TestCase
   fixtures :contacts
 
   NEW_CONTACT = {
-    'postal_code' => '98982'
+    'postal_code' => '98982',
+    'surname' => 'Foo',
+    'first_name' => 'Ninja'
   }
   NEW_CONTACT_TYPES = []
 
@@ -25,7 +27,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     someone = Contact.find(:first)
     xhr :post, :search_results, {:contact_query => someone.id.to_s}
     assert_response :success
-    assert_template 'search_results'
+    assert_template '_search_results'
     assert_equal someone, assigns(:search_results)[0]
     assert_equal 1, assigns(:search_results).length
   end
@@ -37,7 +39,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert contacts.length >= 1
     xhr :post, :search_results, {:contact_query => someone.surname.to_s}
     assert_response :success
-    assert_template 'search_results'
+    assert_template '_search_results'
     if contacts.length == 5
       assert false, "too many results to be sure..."
     else
@@ -53,7 +55,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert contacts.length >= 1
     xhr :post, :search_results, {:contact_query => "%s %s"%[someone.surname.to_s, someone.first_name.to_s]}
     assert_response :success
-    assert_template 'search_results'
+    assert_template '_search_results'
     if contacts.length == 5
       assert false, "too many results to be sure..."
     else
@@ -62,12 +64,19 @@ class ContactsControllerTest < Test::Unit::TestCase
     end
   end
 
+  def test_that_searching_for_nothing_fails
+    xhr :post, :search_results, {:contact_query => ""}
+    assert_response :success
+    assert_template '_search_results'
+    assert_equal 0, assigns(:search_results).length
+  end
+
 
   def test_create_xhr
     contact_count = Contact.find(:all).length
-    xhr :post, :create, {:contact => NEW_CONTACT, :contact_types => NEW_CONTACT_TYPES}
+    xhr :post, :create, {:contact => NEW_CONTACT }
     contact, successful = check_attrs(%w(contact successful))
-#    assert successful, "Should be successful"
+    assert assigns(:successful), "Should be successful"
     assert_response :success
     assert_template 'create.rjs'
     assert_equal contact_count + 1, Contact.find(:all).length, "Expected an additional Contact"

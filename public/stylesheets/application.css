@@ -129,7 +129,11 @@ margin-left: 10px;
 }
 
 /* ===================================
-         Searchbox stuff */
+         Contacts stuff */
+
+form.floating_form {
+position: absolute;
+}
 
 .loading-indicator {
 vertical-align: bottom;

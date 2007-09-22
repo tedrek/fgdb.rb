@@ -13,6 +13,10 @@ module ApplicationHelper
     "#{options[:scaffold_id]}_anonymize"
   end
 
+  def content_id(options)
+    'content'
+  end
+
   def scaffold_form_tbody_id(options)
     "#{options[:scaffold_id]}_form_tbody"
   end
