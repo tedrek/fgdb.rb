@@ -1,8 +1,8 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => params[:referring_action], :id => params[:id] }
+@options = { :action => params[:referring_action], :id => params[:id] }
 
 if @successful
-  page[form_insertion_div_id(@options)].hide
-  page << "Form.enable($('#{searchbox_hidden_id(@options)}').form.id);"
+  page.remove "floating_form"
+#  page << "Form.enable($('#{searchbox_hidden_id(@options)}').form.id);"
 #  page << "Field.focus('#{searchbox_select_id(@options)}');"
 else
   page.hide loading_indicator_id(@options)

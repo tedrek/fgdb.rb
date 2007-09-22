@@ -23,6 +23,12 @@ class ContactsControllerTest < Test::Unit::TestCase
     @first = Contact.find(:first)
   end
 
+  def test_cancel_xhr
+    xhr :post, :cancel
+    assert_response :success
+    assert_rjs :remove,"floating_form"
+  end
+
   def test_that_searching_by_id_works
     someone = Contact.find(:first)
     xhr :post, :search_results, {:contact_query => someone.id.to_s}
