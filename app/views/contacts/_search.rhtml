@@ -1,6 +1,8 @@
 <% @search_results = [ contact ] if( contact ) -%>
 <label for="contact_query">Search for a contact:</label>
-<%= text_field_tag :contact_query, nil, :name => nil -%>
+<input type="text" id="contact_query" 
+	onKeyPress="return contactKeyListener(event);"
+/>
 <div id="<%= search_results_id(params) %>" />
 
 <%= observe_field :contact_query,  :frequency => 0.5,
