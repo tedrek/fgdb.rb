@@ -114,3 +114,19 @@ function updateTotals(formId) {
   var value = Form.serialize(formId);
   new Ajax.Request('/donations/update_totals?' + value, {asynchronous:true, evalScripts:true});
 }
+
+function contact_form_org_toggle() {
+  if( $('contact_is_organization').checked ) {
+    var hide_type = '.person';
+    var show_type = '.organization';
+  } else {
+    var hide_type = '.organization';
+    var show_type = '.person';
+  }
+  $$(hide_type).each(function(elem) { elem.hide(); });
+  $$('input' + hide_type).each(function(elem) {
+    elem.checked = false;
+    elem.value = '';
+  });
+  $$(show_type).each(function(elem) { elem.show(); });
+}

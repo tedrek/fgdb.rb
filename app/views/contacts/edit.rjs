@@ -15,7 +15,7 @@ if @successful
 
 
   page.insert_html :bottom, content_id(@options), :partial => 'new_edit', :locals => { :@options => @options }
-  page << "Form.focusFirstElement('#{element_form_id(@options)}');"
+  page << "Form.focusFirstElement('floating_form');"
 else
   # nothing yet
 end

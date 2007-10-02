@@ -1,8 +1,6 @@
 class ContactsController < ApplicationController
   layout :with_sidebar
 
-  #active_scaffold :contact
-
   def index
     render :action => 'lookup'
   end
@@ -82,15 +80,7 @@ class ContactsController < ApplicationController
     render :action => 'cancel.rjs'
   end
 
-  def contact_formation
-    params[:is_organization] = params[:is_organization] && params[:is_organization] != 'undefined'
-    @show_type = params[:is_organization] ? 'organization' : 'person'
-    @hide_type = params[:is_organization] ? 'person' : 'organization'
-    render :action => "contact_formation.rjs"
-  end
-
-  private
-
+  #######
   private
   #######
 
