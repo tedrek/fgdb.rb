@@ -11,14 +11,13 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
     'duration' => 3,
     'contact_id' => 12
   }
-  NEW_VOLUNTEER_TASK_TYPES = [ '22' ]
 
   def setup
     @controller = VolunteerTasksController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    @first = VolunteerTask.find_first
-    @first.volunteer_task_types = [VolunteerTaskType.find(46)]
+    @first = VolunteerTask.find(:first)
+    @first.volunteer_task_type = VolunteerTaskType.find(46)
   end
 
   def test_component
@@ -47,7 +46,7 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
 
   def test_create_xhr
         volunteer_task_count = VolunteerTask.find(:all).length
-    xhr :post, :create, {:volunteer_task => NEW_VOLUNTEER_TASK, :volunteer_task_types => NEW_VOLUNTEER_TASK_TYPES}
+    xhr :post, :create, {:volunteer_task => NEW_VOLUNTEER_TASK, :volunteer_task_type_id => 22}
     volunteer_task, successful = check_attrs(%w(volunteer_task successful))
 #    assert successful, "Should be successful"
 #    assert_response :success

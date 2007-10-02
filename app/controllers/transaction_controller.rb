@@ -1,5 +1,4 @@
 class TransactionController < ApplicationController
-  include AjaxScaffold::Controller
   include DatalistFor
 
   after_filter :clear_flashes
