@@ -30,6 +30,10 @@ class Test::Unit::TestCase
     an_hour_of(46,ago)
   end
 
+  def an_hour_of_testing(ago=2)
+    an_hour_of(52,ago)
+  end
+
   # An hour of assembly AGO hours in the past
   def an_hour_of_assembly(ago=2)
     an_hour_of(26,ago)

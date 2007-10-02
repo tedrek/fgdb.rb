@@ -9,11 +9,10 @@ class VolunteerTaskTest < Test::Unit::TestCase
     {
       :duration => 1.5,
       :contact_id => 1,
-      :start_time => Time.now - 2.hours,
       :volunteer_task_type => type
     }
   end
-  REQ_ATTR_NAMES                         = %w( contact_id start_time ) # name of fields that must be present, e.g. %(name description)
+  REQ_ATTR_NAMES                         = %w( contact_id ) # name of fields that must be present, e.g. %(name description)
   DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup
@@ -57,6 +56,12 @@ class VolunteerTaskTest < Test::Unit::TestCase
       assert !volunteer_task.valid?, "VolunteerTask should be invalid, as @#{attr_name} is a duplicate"
       assert volunteer_task.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
     end
+  end
+
+  def test_effective_duration
+    assert_equal 1.0, an_hour_of_programming.effective_duration
+    assert_equal 1.0, an_hour_of_testing.effective_duration
+    assert_equal 2.0, an_hour_of_monitors.effective_duration
   end
 end
 

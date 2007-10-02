@@ -65,12 +65,12 @@ class ContactTest < Test::Unit::TestCase
     contact = Contact.find(:first)
     contact.volunteer_tasks = []
     assert_equal 0, contact.adoption_hours
-    contact.volunteer_tasks = [an_hour_of_programming]
+    contact.volunteer_tasks = [an_hour_of_monitors]
+    assert_equal 2, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_testing]
     assert_equal 1, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_assembly]
     assert_equal 0, contact.adoption_hours
-    contact.volunteer_tasks = [an_hour_of_monitors]
-    assert_equal 2, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly]
     assert_equal 1, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_programming(1)]
@@ -83,14 +83,19 @@ class ContactTest < Test::Unit::TestCase
     contact = Contact.find(:first)
     contact.volunteer_tasks = []
     assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
-    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_programming, an_hour_of_programming, an_hour_of_programming]
-    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_monitors]
+    assert_equal 4.0, contact.effective_discount_hours
     assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
-    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly, an_hour_of_programming, an_hour_of_assembly]
+    contact.volunteer_tasks = [an_hour_of_testing, an_hour_of_testing, an_hour_of_testing, an_hour_of_testing]
+    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly, an_hour_of_testing, an_hour_of_assembly]
     assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming]
     assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
+    contact.volunteer_tasks = []
+    4.times {contact.volunteer_tasks << an_hour_of_programming}
+    assert_equal 4.0, contact.effective_discount_hours
+    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
   end
 
 end
