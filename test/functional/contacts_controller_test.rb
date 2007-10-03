@@ -120,6 +120,11 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_template 'destroy.rjs'
   end
 
+  def test_update_display_area
+    xhr :post, :update_display_area, {:contact_id => @first.id}
+    assert_response :success
+  end
+
 protected
   # Could be put in a Helper library and included at top of test class
   def check_attrs(attr_list)

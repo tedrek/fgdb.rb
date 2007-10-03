@@ -9,7 +9,7 @@
 
 <%= observe_field searchbox_select_id(params),
   :on => 'change', :update => searchbox_display_id(params),
-  :with => "'searchbox_value=' + $('#{searchbox_select_id(params)}').value",
+  :with => "'contact_id=' + $('#{searchbox_select_id(params)}').value",
   :loading => "Element.hide('#{searchbox_display_id(params)}'); Element.show('#{loading_indicator_id(params)}')",
   :complete => "Element.show('#{searchbox_display_id(params)}'); Element.hide('#{loading_indicator_id(params)}')",
   :url  => params.merge( { :controller => "/contacts",
