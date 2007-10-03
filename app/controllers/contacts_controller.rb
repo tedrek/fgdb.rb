@@ -86,6 +86,7 @@ class ContactsController < ApplicationController
 
   def _save
     # TODO: Handle contact methods
+    @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
     success = @contact.save
     return success
   end
