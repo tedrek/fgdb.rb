@@ -1,5 +1,9 @@
-<%= form_tag( { :controller => '/contacts' }, { :id => 'tasty_test' } ) %>
+<% if @contact %>
+ <p>You found "<%=h @contact.display_name %>"</p>
+<% end %>
+<%= form_tag( { :controller => '/contacts', :action => 'lookup' }, { :id => 'tasty_test' } ) %>
   <div class="form-element">
     <%= render :partial => 'search', :locals => {:contact => @contact} %>
   </div>
+  <%= submit_tag 'Test' %>
 <%= end_form_tag %>

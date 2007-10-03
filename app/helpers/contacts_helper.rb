@@ -16,7 +16,7 @@ module ContactsHelper
   end
 
   def searchbox_select_name(params)
-    'searchbox_select_name'
+    'contact_id'
   end
 
   def searchbox_select_id(params)

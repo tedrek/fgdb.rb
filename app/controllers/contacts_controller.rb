@@ -5,6 +5,10 @@ class ContactsController < ApplicationController
     render :action => 'lookup'
   end
 
+  def lookup
+    @contact = Contact.find(params[:contact_id]) if params[:contact_id]
+  end
+
   def search_results
     if params['contact_query']
       q = params['contact_query']
@@ -86,7 +90,7 @@ class ContactsController < ApplicationController
 
   def _save
     # TODO: Handle contact methods
-    @contact.contact_types = ContactType.find(@params[:contact_types]) if @params[:contact_types]
+    @contact.contact_types = ContactType.find(params[:contact_types]) if params[:contact_types]
     success = @contact.save
     return success
   end
