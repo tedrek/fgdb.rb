@@ -86,7 +86,11 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def required_fee
-    gizmo_count.to_i * gizmo_type.required_fee
+    if adjusted_fee.to_f > 0
+      gizmo_count.to_i * adjusted_fee.to_f
+    else
+      gizmo_count.to_i * gizmo_type.required_fee
+    end
   end
 
   def suggested_fee

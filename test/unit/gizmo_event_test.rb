@@ -17,5 +17,16 @@ class GizmoEventTest < Test::Unit::TestCase
     assert ! ev.mostly_empty?
   end
 
+  def test_that_adjusted_fees_take_precedence
+    orig = 100
+    gt = GizmoType.new({ :description => 'test', :required_fee => orig })
+    gt.save
+    ge = GizmoEvent.new({ :gizmo_context => GizmoContext.donation, :gizmo_count => 1, :gizmo_type => gt})
+    assert_equal orig, ge.required_fee
+    updated = 1
+    assert_nothing_raised { ge.adjusted_fee = updated }
+    assert_equal updated, ge.required_fee
+  end
+
 end
 

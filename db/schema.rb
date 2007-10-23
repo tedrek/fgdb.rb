@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 9) do
 
   create_table "contact_method_types", :force => true do |t|
     t.column "description", :string, :limit => 100
@@ -190,6 +190,7 @@ ActiveRecord::Schema.define(:version => 8) do
     t.column "created_at", :datetime
     t.column "created_by", :integer, :default => 1, :null => false
     t.column "updated_by", :integer, :default => 1, :null => false
+    t.column "adjusted_fee", :float
   end
 
   add_index "gizmo_events", ["created_at"], :name => "gizmo_events_created_at_index"
