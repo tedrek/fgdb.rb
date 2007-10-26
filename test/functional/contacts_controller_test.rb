@@ -25,7 +25,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     contact_count = Contact.find(:all).length
     xhr :post, :create, {:contact => NEW_CONTACT, :contact_types => NEW_CONTACT_TYPES}
     contact, successful = check_attrs(%w(contact successful))
-#    assert successful, "Should be successful"
+    assert successful, "Should be successful"
     assert_response :success
     assert_template 'create.rjs'
     assert_equal contact_count + 1, Contact.find(:all).length, "Expected an additional Contact"
