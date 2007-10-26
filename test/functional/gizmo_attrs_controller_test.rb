@@ -19,4 +19,8 @@ class GizmoAttrsControllerTest < Test::Unit::TestCase
                 @first = GizmoAttr.find_first
         end
 
+  def test_truth
+    assert true
+  end
+
 end

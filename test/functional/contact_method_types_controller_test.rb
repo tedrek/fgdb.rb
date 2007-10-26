@@ -19,4 +19,7 @@ class ContactMethodTypesControllerTest < Test::Unit::TestCase
     @first = ContactMethodType.find_first
   end
 
+  def test_truth
+    assert true
+  end
 end

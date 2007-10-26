@@ -19,4 +19,8 @@ class PaymentMethodsControllerTest < Test::Unit::TestCase
                 @first = PaymentMethod.find_first
         end
 
+  def test_truth
+    assert true
+  end
+
 end

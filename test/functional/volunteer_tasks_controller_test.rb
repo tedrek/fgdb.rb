@@ -18,7 +18,11 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     @first = VolunteerTask.find_first
-    @first.volunteer_task_types = [VolunteerTaskType.find(46)]
+    @first.volunteer_task_type = VolunteerTaskType.find(46)
+  end
+
+  def test_truth
+    assert true
   end
 
 end

@@ -19,4 +19,8 @@ class DiscountSchedulesControllerTest < Test::Unit::TestCase
                 @first = DiscountSchedule.find_first
         end
 
+  def test_truth
+    assert true
+  end
+
 end
