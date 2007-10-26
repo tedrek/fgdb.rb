@@ -53,6 +53,15 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_template 'destroy.rjs'
   end
 
+  def test_cancel_xhr
+    xhr :get, :cancel
+    assert_response :success
+    assert_template 'cancel.rjs'
+    assert assigns(:successful)
+    assert_rjs :remove, 'floating_form'
+    assert_match /^Form.enable\(\$\('contact_query'\)/, @response.body
+  end
+
 protected
   # Could be put in a Helper library and included at top of test class
   def check_attrs(attr_list)

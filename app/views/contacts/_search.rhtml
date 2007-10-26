@@ -1,7 +1,7 @@
 <% @search_results = [ contact ] if( contact ) -%>
 <label for="contact_query">Search for a contact:</label>
-<input type="text" id="contact_query" 
-	onKeyPress="return contactKeyListener(event);"
+<input type="text" id="<%= contact_query_id(@options) -%>"
+        onKeyPress="return contactKeyListener(event);"
 />
 <div id="<%= search_results_id(params) %>" />
 

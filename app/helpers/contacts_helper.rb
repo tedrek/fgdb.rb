@@ -34,4 +34,8 @@ module ContactsHelper
   def contact_messages_id(options)
     'contact_messages_id'
   end
+
+  def contact_query_id(options)
+    'contact_query'
+  end
 end
