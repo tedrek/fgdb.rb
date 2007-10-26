@@ -1,6 +1,5 @@
 class VolunteerTasksController < ApplicationController
   def index
-    redirect_to :action => 'check'
   end
 
   def check
@@ -31,7 +30,7 @@ class VolunteerTasksController < ApplicationController
       end
     end
     render(:partial => 'select_contact') if request.xhr?
-  end 
+  end
 
   layout :with_sidebar
 
@@ -78,7 +77,7 @@ class VolunteerTasksController < ApplicationController
 
     return render(:action => 'new.rjs')
   end
-  
+
   def create
     begin
       @volunteer_task = VolunteerTask.new(params[:volunteer_task])
@@ -86,7 +85,7 @@ class VolunteerTasksController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     return render(:action => 'create.rjs')
   end
 
@@ -97,7 +96,7 @@ class VolunteerTasksController < ApplicationController
     rescue
       flash[:error], @successful  = "<pre>#{$!.backtrace.to_yaml}</pre>", false
     end
-    
+
     return render(:action => 'edit.rjs')
   end
 
@@ -108,7 +107,7 @@ class VolunteerTasksController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     return render(:action => 'update.rjs')
   end
 
@@ -118,10 +117,10 @@ class VolunteerTasksController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     return render(:action => 'destroy.rjs')
   end
-  
+
   def cancel
     @successful = true
     return render(:action => 'cancel.rjs')

@@ -25,4 +25,11 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
     assert true
   end
 
+  def test_index
+    get :index
+    assert_response :success
+    assert_template 'index'
+
+    assert_tag :tag => 'form', :descendant => { :tag => 'input', :attributes => { :id => 'contact_query'}}
+  end
 end

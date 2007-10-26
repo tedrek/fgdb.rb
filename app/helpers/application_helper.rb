@@ -77,4 +77,13 @@ module ApplicationHelper
   def time_or_time_range_picker(obj_name, fields)
     #:TODO: ?
   end
+
+  def contact_query_id(options)
+    'contact_query'
+  end
+
+  def search_results_id(params)
+    'search_results_id'
+  end
+
 end

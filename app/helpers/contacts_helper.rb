@@ -7,10 +7,6 @@ module ContactsHelper
     "<div id=\"#{loading_indicator_id(params)}\" />"
   end
 
-  def search_results_id(params)
-    'search_results_id'
-  end
-
   def searchbox_display_id(params)
     'searchbox_display_id'
   end
@@ -33,9 +29,5 @@ module ContactsHelper
 
   def contact_messages_id(options)
     'contact_messages_id'
-  end
-
-  def contact_query_id(options)
-    'contact_query'
   end
 end
