@@ -8,8 +8,11 @@ if @successful
   page.remove 'floating_form'
 else
   page.replace_html contact_messages_id(@create_options), :partial => 'form_messages'
+  @contact.errors.each {|field, msg|
+    page["contact_#{field}"].addClassName('fieldWithErrors')
+  }
   page << "$('#{contact_messages_id(@create_options)}').scrollTo();"
-  page << "Form.enable('#{element_form_id(@create_options)}');"
+  page << "Form.enable('floating_form');"
   page.hide loading_indicator_id(@create_options)
 end
 

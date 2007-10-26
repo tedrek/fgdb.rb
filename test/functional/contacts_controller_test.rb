@@ -21,6 +21,13 @@ class ContactsControllerTest < Test::Unit::TestCase
     @first = Contact.find(:first)
   end
 
+  def test_new_xhr
+    xhr :post, :new
+    assert_response :success
+    assert_template 'new.rjs'
+    assert_match /Form.disable/, @response.body
+  end
+
   def test_create_xhr
     contact_count = Contact.find(:all).length
     xhr :post, :create, {:contact => NEW_CONTACT, :contact_types => NEW_CONTACT_TYPES}
@@ -29,6 +36,17 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'create.rjs'
     assert_equal contact_count + 1, Contact.find(:all).length, "Expected an additional Contact"
+  end
+
+  def test_create_xhr_invalid
+    xhr :post, :create, {:contact => { }}
+    contact, successful = check_attrs(%w(contact successful))
+    assert_response :success
+    assert_template 'create.rjs'
+    assert ! successful, "Should not be successful"
+    assert_match /Postal code can't be blank/i, @response.body
+    assert_match /Form.enable/, @response.body
+    assert_match /addClassName[^;]+fieldWithErrors/, @response.body
   end
 
   def test_update_xhr
