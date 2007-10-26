@@ -16,7 +16,7 @@ class GizmoAttrsControllerTest < Test::Unit::TestCase
                 @response   = ActionController::TestResponse.new
                 # Retrieve fixtures via their name
                 # @first = gizmo_attrs(:first)
-                @first = GizmoAttr.find_first
+                @first = GizmoAttr.find(:first)
         end
 
   def test_truth

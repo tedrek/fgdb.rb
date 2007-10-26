@@ -17,7 +17,7 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
     @controller = VolunteerTasksController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    @first = VolunteerTask.find_first
+    @first = VolunteerTask.find(:first)
     @first.volunteer_task_type = VolunteerTaskType.find(46)
   end
 

@@ -16,7 +16,7 @@ class ContactTypesControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
     # Retrieve fixtures via their name
     # @first = contact_types(:first)
-    @first = ContactType.find_first
+    @first = ContactType.find(:first)
   end
 
   def test_truth
