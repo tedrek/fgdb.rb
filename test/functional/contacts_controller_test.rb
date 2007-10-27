@@ -5,7 +5,7 @@ require 'contacts_controller'
 class ContactsController; def rescue_action(e) raise e end; end
 
 class ContactsControllerTest < Test::Unit::TestCase
-  fixtures :contacts
+  fixtures :contacts, :volunteer_task_types
 
   NEW_CONTACT = {
     'postal_code' => '98982'
@@ -19,6 +19,31 @@ class ContactsControllerTest < Test::Unit::TestCase
     # Retrieve fixtures via their name
     # @first = contacts(:first)
     @first = Contact.find(:first)
+  end
+
+  def test_lookup
+    get :lookup
+    assert_response :success
+    assert_template 'lookup'
+    assert_match /alert.+hi/, @response.body
+  end
+
+  def test_search_results
+    martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
+    martin.save
+    assert_nothing_raised { martin.adoption_hours }
+    xhr :post, :search_results, :contact_query => 'martin'
+    assert_response :success
+    assert_template '_search_results'
+  end
+
+  def test_search_results_with_on_search
+    martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
+    martin.save
+    assert_nothing_raised { martin.adoption_hours }
+    xhr :post, :search_results, :on_search => "alert('hi');", :contact_query => 'martin'
+    assert_response :success
+    assert_template '_search_results'
   end
 
   def test_new_xhr

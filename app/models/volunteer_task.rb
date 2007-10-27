@@ -9,7 +9,6 @@ class VolunteerTask < ActiveRecord::Base
 
   before_save :add_contact_types
 
-
   def validate
     if contact.nil?
       errors.add(:contact_id, "must be choosen")

@@ -7,5 +7,5 @@
 
 <%= observe_field :contact_query,  :frequency => 0.5,
                   :update => search_results_id(params),
-                  :url => { :controller => 'contacts', :action => 'search_results' },
+                  :url => { :controller => 'contacts', :action => 'search_results', :on_search => @on_search },
                   :with => "'contact_query=' + escape(value)" -%>

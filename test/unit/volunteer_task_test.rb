@@ -4,12 +4,12 @@ class VolunteerTaskTest < Test::Unit::TestCase
   fixtures :volunteer_task_types, :volunteer_tasks, :contacts
 
   def new_volunteer_task
-    type = VolunteerTaskType.new({:instantiable => true, :description => 'meowing', :hours_multiplier => 1.0})
-    type.save
+    type = VolunteerTaskType.find_by_hours_multiplier(1.0)#new({:instantiable => true, :description => 'meowing', :hours_multiplier => 1.0})
+    #type.save
     {
       :duration => 1.5,
       :contact_id => 1,
-      :volunteer_task_type => type
+      :volunteer_task_type_id => type.id
     }
   end
   REQ_ATTR_NAMES                         = %w( contact_id ) # name of fields that must be present, e.g. %(name description)

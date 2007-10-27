@@ -71,7 +71,7 @@ class Contact < ActiveRecord::Base
   end
 
   def hours_effective
-    volunteer_tasks(Date.today - 365).inject(0.0) do |total,task|
+    find_volunteer_tasks(Date.today - 365).inject(0.0) do |total,task|
       unless task.type_of_task?('build')
         total += task.effective_duration
       end
@@ -89,7 +89,7 @@ class Contact < ActiveRecord::Base
   end
 
   def last_ninety_days_of_volunteer_tasks
-    volunteer_tasks(Date.today - 90)
+    find_volunteer_tasks(Date.today - 90)
   end
 
   def last_ninety_days_of_actual_hours

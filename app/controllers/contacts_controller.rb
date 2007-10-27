@@ -18,7 +18,7 @@ class ContactsController < ApplicationController
         @search_results = Contact.search(q, :limit => 5)
       end
     end
-    render :layout => false, :partial => 'search_results', :locals => { :@search_results => @search_results }
+    render :layout => false, :partial => 'search_results', :locals => { :@search_results => @search_results, :on_search => params['on_search'] }
   end
 
   def update_display_area
