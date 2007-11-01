@@ -38,12 +38,14 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_search_results_with_on_search
+    on_search_js = "alert('hi');"
     martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
     martin.save
     assert_nothing_raised { martin.adoption_hours }
-    xhr :post, :search_results, :on_search => "alert('hi');", :contact_query => 'martin'
+    xhr :post, :search_results, :on_search => on_search_js, :contact_query => 'martin'
     assert_response :success
     assert_template '_search_results'
+    assert_match on_search_js, @response.body
   end
 
   def test_new_xhr
