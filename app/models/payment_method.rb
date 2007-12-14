@@ -18,6 +18,10 @@ class PaymentMethod < ActiveRecord::Base
     @@invoice ||= find( :first, :conditions => ['description = ?', 'invoice'] )
   end
 
+  def PaymentMethod.coupon
+    @@coupon ||= find( :first, :conditions => ['description = ?', 'coupon'] )
+  end
+
   def PaymentMethod.descriptions
     @@descriptions ||= {}
     if @@descriptions.empty?
