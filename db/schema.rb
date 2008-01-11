@@ -120,6 +120,15 @@ ActiveRecord::Schema.define(:version => 9) do
     t.column "updated_by", :integer, :default => 1, :null => false
   end
 
+  create_table "dispersement_types", :force => true do |t|
+    t.column "description", :string, :limit => 100
+    t.column "lock_version", :integer, :default => 0, :null => false
+    t.column "updated_at", :datetime
+    t.column "created_at", :datetime
+    t.column "created_by", :integer, :default => 1, :null => false
+    t.column "updated_by", :integer, :default => 1, :null => false
+  end
+
   create_table "donations", :force => true do |t|
     t.column "contact_id", :integer
     t.column "postal_code", :string, :limit => 25
