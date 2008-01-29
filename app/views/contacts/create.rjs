@@ -15,5 +15,3 @@ else
   page << "Form.enable('floating_form');"
   page.hide loading_indicator_id(@create_options)
 end
-
-
