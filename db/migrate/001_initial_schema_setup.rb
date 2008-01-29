@@ -290,12 +290,10 @@ class InitialSchemaSetup < ActiveRecord::Migration
     add_index "gizmo_events", ["recycling_id"], :name => "gizmo_events_recycling_id_index"
     add_index "gizmo_events", ["sale_txn_id"], :name => "gizmo_events_sale_id_index"
     add_index "payments", ["donation_id"], :name => "payments_donation_id_index"
-    add_index "payments", ["donation_id"], :name => "payments_donations_id"
-    add_index "payments", ["sale_txn_id"], :name => "payments_sale_id"
     add_index "payments", ["sale_txn_id"], :name => "payments_sale_id_index"
-    add_index "sale_txns", ["contact_id"], :name => "sales_contact_id"
+    add_index "sale_txns", ["contact_id"], :name => "sales_contact_id_index"
     add_index "sale_txns", ["created_at"], :name => "sales_created_at_index"
-    add_index "sale_txns", ["reported_discount_amount"], :name => "sales_reported_discount_amount"
+    add_index "sale_txns", ["reported_discount_amount"], :name => "sales_reported_discount_amount_index"
     add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
 
     add_foreign_key( "contact_methods", ["contact_id"], "contacts", ["id"],
