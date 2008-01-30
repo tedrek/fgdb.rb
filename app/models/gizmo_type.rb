@@ -1,5 +1,3 @@
-
-
 class GizmoType < ActiveRecord::Base
   acts_as_tree
   has_many  :gizmo_typeattrs,
