@@ -1,15 +1,15 @@
 --- 
 gizmo_typeattrs_009: 
-  updated_at: 2007-01-24 16:39:50
+  updated_at: 2007-08-08 16:38:21
   created_by: "1"
-  lock_version: "1"
+  lock_version: "2"
   validation_callback: ""
   updated_by: "1"
-  id: "27"
+  id: "25"
   gizmo_attr_id: "10"
   is_required: t
-  gizmo_type_id: "13"
-  created_at: 2007-01-24 16:30:53
+  gizmo_type_id: "31"
+  created_at: 2007-01-02 10:35:40
 gizmo_typeattrs_001: 
   updated_at: 2006-11-11 19:33:27
   created_by: "1"
@@ -77,17 +77,6 @@ gizmo_typeattrs_006:
   gizmo_type_id: "21"
   created_at: 2006-12-30 18:59:43
 gizmo_typeattrs_007: 
-  updated_at: 2007-01-02 11:35:05
-  created_by: "1"
-  lock_version: "1"
-  validation_callback: ""
-  updated_by: "1"
-  id: "25"
-  gizmo_attr_id: "10"
-  is_required: t
-  gizmo_type_id: "31"
-  created_at: 2007-01-02 10:35:40
-gizmo_typeattrs_008: 
   updated_at: 2007-01-17 14:36:37
   created_by: "1"
   lock_version: "0"
@@ -98,3 +87,14 @@ gizmo_typeattrs_008:
   is_required: t
   gizmo_type_id: "38"
   created_at: 2007-01-17 14:36:37
+gizmo_typeattrs_008: 
+  updated_at: 2007-04-04 18:30:24
+  created_by: "1"
+  lock_version: "2"
+  validation_callback: ""
+  updated_by: "1"
+  id: "27"
+  gizmo_attr_id: "10"
+  is_required: t
+  gizmo_type_id: "13"
+  created_at: 2007-01-24 16:30:53

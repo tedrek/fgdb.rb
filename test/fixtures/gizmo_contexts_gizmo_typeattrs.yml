@@ -55,6 +55,14 @@ gizmo_contexts_gizmo_typeattrs_002:
   updated_by: "1"
   gizmo_context_id: "2"
   created_at: 2006-10-10 12:11:56
+gizmo_contexts_gizmo_typeattrs_014: 
+  updated_at: 2007-04-04 18:19:20
+  created_by: "1"
+  gizmo_typeattr_id: "25"
+  lock_version: "1"
+  updated_by: "1"
+  gizmo_context_id: "4"
+  created_at: 2006-10-19 09:45:57
 gizmo_contexts_gizmo_typeattrs_003: 
   updated_at: 2006-10-10 12:11:56
   created_by: "1"
