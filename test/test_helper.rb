@@ -25,6 +25,30 @@ class Test::Unit::TestCase
   self.use_instantiated_fixtures  = false
 
   # Add more helper methods to be used by all tests here...
+
+  ORDERED_TABLES =
+    [
+     %W[defaults],
+     %W[gizmo_contexts gizmo_types gizmo_attrs gizmo_typeattrs
+        gizmo_contexts_gizmo_types gizmo_contexts_gizmo_typeattrs
+        gizmo_events gizmo_events_gizmo_typeattrs],
+     %W[contacts contact_types contact_types_contacts
+        contact_method_types contact_methods],
+     %W[volunteer_task_types community_service_types],
+     %W[disbursement_types disbursements],
+     %W[payment_methods],
+     %W[discount_schedules discount_schedules_gizmo_types sales],
+     %W[donations],
+     %W[payments],
+     %W[recyclings],
+    ]
+
+  def self.load_all_fixtures
+    ORDERED_TABLES.each do |tables|
+      fixtures(*(tables.map {|tbl| tbl.to_sym}))
+    end
+  end
+
   # An hour of programming AGO hours in the past
   def an_hour_of_programming(ago=2)
     an_hour_of(46,ago)
