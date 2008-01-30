@@ -297,27 +297,27 @@ class InitialSchemaSetup < ActiveRecord::Migration
     add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
 
     add_foreign_key( "contact_methods", ["contact_id"], "contacts", ["id"],
-                     :on_delete => :set_null, :name => "contact_methods_fk_contact_id" )
+                     :name => "contact_methods_fk_contact_id" )
     add_foreign_key( "contact_methods", ["contact_method_type_id"], "contact_method_types",
-                     ["id"], :on_delete => :set_null,
+                     ["id"],
                      :name => "contact_methods_fk_contact_method_type" )
 
-    add_foreign_key "payments", ["donation_id"], "donations", ["id"], :name => "payments_donation_id_fkey"
-    add_foreign_key "payments", ["sale_txn_id"], "sale_txns", ["id"], :name => "payments_sale_txn_id_fkey"
+    add_foreign_key "payments", ["donation_id"], "donations", ["id"], :name => "payments_donation_id_fk"
+    add_foreign_key "payments", ["sale_txn_id"], "sale_txns", ["id"], :name => "payments_sale_txn_id_fk"
     add_foreign_key( "relationships", ["relationship_type_id"], "relationship_types",
-                     ["id"], :on_delete => :set_null,
-                     :name => "relationships_relationship_type_id_fkey" )
+                     ["id"],
+                     :name => "relationships_relationship_type_id_fk" )
     add_foreign_key( "relationships", ["sink_id"], "contacts", ["id"],
-                     :on_delete => :set_null, :name => "relationships_sink_id_fkey" )
+                     :name => "relationships_sink_id_fk" )
     add_foreign_key( "relationships", ["source_id"], "contacts", ["id"],
-                     :on_delete => :set_null, :name => "relationships_source_id_fkey" )
+                     :name => "relationships_source_id_fk" )
 
     add_foreign_key( "volunteer_task_types_volunteer_tasks", ["volunteer_task_type_id"],
-                     "volunteer_task_types", ["id"], :on_delete => :set_null,
-                     :name => "volunteer_task_types_volunteer_task_volunteer_task_type_id_fkey" )
+                     "volunteer_task_types", ["id"],
+                     :name => "volunteer_task_types_volunteer_task_volunteer_task_type_id_fk" )
     add_foreign_key( "volunteer_task_types_volunteer_tasks", ["volunteer_task_id"],
-                     "volunteer_tasks", ["id"], :on_delete => :set_null,
-                     :name => "volunteer_task_types_volunteer_tasks_volunteer_task_id_fkey" )
+                     "volunteer_tasks", ["id"],
+                     :name => "volunteer_task_types_volunteer_tasks_volunteer_task_id_fk" )
 
   end
 
