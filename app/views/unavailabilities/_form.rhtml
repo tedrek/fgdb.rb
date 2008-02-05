@@ -1,0 +1,25 @@
+<%= error_messages_for 'unavailability' %>
+
+<!--[form:unavailability]-->
+<p><label for="unavailability_effective_date">Effective date</label><br/>
+<%= date_select 'unavailability', 'effective_date'  %></p>
+
+<p><label for="unavailability_ineffective_date">Ineffective date</label><br/>
+<%= date_select 'unavailability', 'ineffective_date'  %></p>
+
+<p><label for="unavailability_all_day">All day</label><br/>
+<select id="unavailability_all_day" name="unavailability[all_day]"><option value="false">False</option><option value="true">True</option></select></p>
+
+<p><label for="unavailability_start_time">Start time</label><br/>
+<%= time_select 'unavailability', 'start_time'  %></p>
+
+<p><label for="unavailability_end_time">End time</label><br/>
+<%= time_select 'unavailability', 'end_time'  %></p>
+
+<p><label for="unavailability_repeats_every">Repeats every</label><br/>
+<%= text_field 'unavailability', 'repeats_every'  %></p>
+
+<p><label for="unavailability_repeats_on">Repeats on</label><br/>
+<%= text_field 'unavailability', 'repeats_on'  %></p>
+<!--[eoform:unavailability]-->
+

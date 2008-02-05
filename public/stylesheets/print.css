@@ -1,0 +1,15 @@
+div.header {
+    display: none;
+}
+div.footer {
+    display: none;
+}
+div.filter {
+    display: none;
+}
+div.generate {
+    display: none;
+}
+td.shift {
+    background-color: #FFFFFF;
+}

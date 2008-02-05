@@ -1,0 +1,33 @@
+X create basic CRUD interface for outlying tables:
+    X coverage_types
+    X frequency_types
+    X schedules
+    X weekdays
+    X worker_types
+- same for next level:
+    X holidays
+        X weekday
+        X schedule
+        X frequency_type
+    X meetings
+        X weekday
+        X schedule
+        X frequency_type
+    X vacations
+        X worker
+    X jobs
+        X coverage_type
+        X workers (though jobs_workers)
+    X workers
+        X jobs (though jobs_workers)
+        X worker_type
+X flesh out jobs:
+    X tie into workers through jobs_workers
+- flesh out workers:
+    - tie into availabilities
+    X tie into vacations
+    X tie into jobs through jobs_workers
+    X tie into meetings through meetings_workers
+- design open_shifts interface
+- design work_shifts interface, manual
+- design work_shifts interface, automatic

@@ -1,0 +1,106 @@
+class WorkShiftsController < ApplicationController
+  def index
+    list
+    render :action => 'list'
+  end
+
+  # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
+  verify :method => :post, :only => [ :destroy, :create, :update ],
+         :redirect_to => { :action => :list }
+
+  def list
+    if params[:filter_criteria]
+      start = Date.civil(params[:filter_criteria][:"start_date(1i)"].to_i,params[:filter_criteria][:"start_date(2i)"].to_i,params[:filter_criteria][:"start_date(3i)"].to_i)
+      stop = Date.civil(params[:filter_criteria][:"end_date(1i)"].to_i,params[:filter_criteria][:"end_date(2i)"].to_i,params[:filter_criteria][:"end_date(3i)"].to_i)
+
+      @opts = params[:filter_criteria]
+      @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
+      where_clause = "WHERE shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
+      if @opts['limit_to_worker'] and @opts['limit_to_worker'] == '1'
+        where_clause += ' AND work_shifts.worker_id = '
+        where_clause += @opts['worker_id']
+      end
+      if @opts['limit_to_job'] and @opts['limit_to_job'] == '1'
+        where_clause += ' AND work_shifts.job_id = '
+      end
+    else
+      start = Date.today
+      stop = start + 14
+      @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
+      @opts = { :schedule_id => @root_sched.id, :which_way => 'Family', :limit_to_worker => '0', :limit_to_job => '0', :worker_id => 0, :job_id => 0 }
+      where_clause = "WHERE shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
+    end
+
+    sql = <<SQL
+SELECT 
+    work_shifts.shift_date, 
+    workers.name,
+    work_shifts.start_time, 
+    work_shifts.end_time, 
+    work_shifts.id, 
+    work_shifts.splitable, 
+    work_shifts.mergeable, 
+    work_shifts.resizable,
+    work_shifts.coverage_type_id, 
+    work_shifts.job_id, 
+    work_shifts.schedule_id, 
+    work_shifts.weekday_id, 
+    work_shifts.worker_id, 
+    work_shifts.meeting_id 
+    FROM work_shifts
+    LEFT JOIN workers ON work_shifts.worker_id = workers.id 
+    #{where_clause}
+    ORDER BY 1, 2, 3
+SQL
+
+    @work_shifts = WorkShift.find_by_sql( sql )
+    render @list
+  end
+  def show
+    @work_shift = WorkShift.find(params[:id])
+  end
+
+  def new
+    @work_shift = WorkShift.new
+  end
+
+  def create
+    @work_shift = WorkShift.new(params[:work_shift])
+    if @work_shift.save
+      flash[:notice] = 'WorkShift was successfully created.'
+      redirect_to :action => 'list'
+    else
+      render :action => 'new'
+    end
+  end
+
+  def copy
+    @work_shift = WorkShift.find(params[:id])
+    @work_shift2 = @work_shift.clone
+    if @work_shift2.save
+      flash[:notice] = 'WorkShift was successfully copied.'
+      redirect_to :action => 'edit', :id => @work_shift2.id
+    else
+      render :action => 'new'
+    end
+  end
+
+  def edit
+    @work_shift = WorkShift.find(params[:id])
+  end
+
+  def update
+    @work_shift = WorkShift.find(params[:id])
+    if @work_shift.update_attributes(params[:work_shift])
+      flash[:notice] = 'WorkShift was successfully updated.'
+      redirect_to :action => 'show', :id => @work_shift
+    else
+      render :action => 'edit'
+    end
+  end
+
+  def destroy
+    WorkShift.find(params[:id]).destroy
+    redirect_to :action => 'list'
+  end
+end

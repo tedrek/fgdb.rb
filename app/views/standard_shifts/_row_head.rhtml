@@ -1,0 +1,9 @@
+    <tr>
+    <th><%=h shift.worker.name %></th>
+
+    <% # output leading cells as padding %>
+    <% lead_time = ( @shift.start_time - @shift.weekday.start_time ) / (60*15) %>
+    <% for i in (1..lead_time) %>
+      <td>&nbsp;</td>
+    <% end %>
+

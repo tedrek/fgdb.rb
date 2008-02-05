@@ -1,0 +1,27 @@
+<h1>Listing unavailabilities</h1>
+
+<table>
+  <tr>
+  <% for column in Unavailability.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for unavailability in @unavailabilities %>
+  <tr>
+  <% for column in Unavailability.content_columns %>
+    <td><%=h unavailability.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => unavailability %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => unavailability %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => unavailability }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @unavailability_pages.current.previous } if @unavailability_pages.current.previous %>
+<%= link_to 'Next page', { :page => @unavailability_pages.current.next } if @unavailability_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New unavailability', :action => 'new' %>

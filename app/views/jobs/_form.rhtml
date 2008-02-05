@@ -1,0 +1,24 @@
+<%= error_messages_for 'job' %>
+
+<!--[form:job]-->
+<p><label for="job_name">Name</label><br/>
+<%= text_field 'job', 'name'  %></p>
+
+<p><label for="job_description">Description</label><br/>
+<%= text_area 'job', 'description', :cols => 50, :rows => 10 %></p>
+
+<p><label for="job_coverage_type_id">Coverage Type</label><br/>
+<%= select("job", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="workers">Workers:</label><br/>
+<ul>
+<% Worker.find(:all, :order => "name").each do |w| %>
+   <li><input type="checkbox" name="job[worker_ids][]" 
+          value="<%= w.id %>" 
+          <% if @job.workers.include?(w) %> checked="checked" <% end %> />
+<%= w.name %></li>
+<% end %>
+</ul>
+</p>
+<!--[eoform:worker]-->
+

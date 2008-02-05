@@ -1,0 +1,25 @@
+<%= error_messages_for 'meeting' %>
+
+<!--[form:meeting]-->
+<p><label for="meeting_name">Name</label><br/>
+<%= text_field 'meeting', 'name'  %></p>
+
+<p><label for="meeting_meeting_date">Meeting date</label><br/>
+<%= date_select 'meeting', 'meeting_date'  %></p>
+
+<p><label for="meeting_start_time">Start time</label><br/>
+<%= time_select 'meeting', 'start_time', {:minute_step => 15}  %></p>
+
+<p><label for="meeting_end_time">End time</label><br/>
+<%= time_select 'meeting', 'end_time', {:minute_step => 15}  %></p>
+
+<p><label for="meeting_weekday_id">Weekday</label><br/>
+<%= select("meeting", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="meeting_schedule_id">Schedule</label><br/>
+<%= select("meeting", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="meeting_frequency_type_id">Frequency type</label><br/>
+<%= select("meeting", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+<!--[eoform:meeting]-->
+
