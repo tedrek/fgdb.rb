@@ -1,5 +1,5 @@
 SCHEMADUMPFILE = 'db/schema.sql'
-DATADUMPFILE = 'db/devel_data.sql'
+DATADUMPFILE = 'db/devel_data.sql.gz'
 METADATADIR = 'db/metadata'
 METADATATABLES = %w[
         contact_method_types contact_types discount_schedules
@@ -111,13 +111,25 @@ def load_schema( rails_env = "development" )
   end
 end
 
+def wipe( rails_env = "development" )
+  f = open('config/database.yml')
+  config = YAML::load(f.read)
+  f.close()
+
+  `dropdb -U "#{config[rails_env]["username"]}" #{config[rails_env]['database']}`
+  `createdb -U "#{config[rails_env]["username"]}" #{config[rails_env]['database']}`
+  if $?.to_i.nonzero?
+    raise Exception, "failed to create db"
+  end
+end
+
 def load_data( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
   case abcs[rails_env]["adapter"]
   when "postgresql"
     dbname = abcs[rails_env]['database']
     print "Loading the data..."
-    `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{DATADUMPFILE}`
+    `zcat #{DATADUMPFILE} | psql -U "#{abcs[rails_env]["username"]}" #{dbname}`
     raise "Error loading data" if $?.exitstatus == 1
     puts "done"
   else
@@ -203,8 +215,13 @@ namespace :db do
       dump_data(rails_env)
     end
 
+    desc ".."
+    task :wipe do
+      wipe(rails_env)
+    end
+
     desc "Fill the database with data from the dumped SQL file"
-    task :load => :environment do
+    task :load => ['db:data:wipe', :environment, 'db:migrate'] do
       load_data(rails_env)
     end
 
