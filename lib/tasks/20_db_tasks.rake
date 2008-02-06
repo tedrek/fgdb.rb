@@ -1,19 +1,20 @@
-
 SCHEMADUMPFILE = 'db/schema.sql'
 DATADUMPFILE = 'db/devel_data.sql'
 METADATADIR = 'db/metadata'
+TESTMETADATADIR = 'test/fixtures'
 METADATATABLES = %w[
         contact_method_types contact_types discount_schedules
         discount_schedules_gizmo_types gizmo_attrs gizmo_contexts
         gizmo_contexts_gizmo_typeattrs gizmo_contexts_gizmo_types
         gizmo_typeattrs gizmo_types payment_methods
         volunteer_task_types disbursement_types defaults
+        community_service_types
 ]
 MIGRATIONDIR = 'db/migrate'
 
 def dump_metadata( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
-  case abcs[rails_env]["adapter"] 
+  case abcs[rails_env]["adapter"]
   when "postgresql"
     print "Dumping the metadata..."
     for table in METADATATABLES do
@@ -23,39 +24,50 @@ def dump_metadata( rails_env = "development" )
          table, METADATADIR, table,
          search_path,
          abcs[rails_env]["database"]
-        ] 
+        ]
       system( command )
       raise "Error dumping metadata: '#{command}' " if $?.exitstatus == 1
       print "."
     end
     puts "done"
-  else 
+  else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
 end
 
 def dump_schema( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
-  case abcs[rails_env]["adapter"] 
+  case abcs[rails_env]["adapter"]
   when "postgresql"
     print "Dumping the schema..."
     `pg_dump -i -U "#{abcs[rails_env]["username"]}" -s -x -O -f #{SCHEMADUMPFILE} #{search_path} #{abcs[rails_env]["database"]}`
     raise "Error dumping database" if $?.exitstatus == 1
     puts "done"
-  else 
+  else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
 end
 
 def dump_data( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
-  case abcs[rails_env]["adapter"] 
+  case abcs[rails_env]["adapter"]
   when "postgresql"
     print "Dumping the data..."
     `pg_dump -i -U "#{abcs[rails_env]["username"]}" --disable-triggers -a -x -O -f #{DATADUMPFILE} #{search_path} #{abcs[rails_env]["database"]}`
     raise "Error dumping database" if $?.exitstatus == 1
     puts "done"
-  else 
+  else
+    raise "Task not supported by '#{abcs["test"]["adapter"]}'"
+  end
+end
+
+def load_test_metadata(rails_env = "test")
+  abcs, search_path = setup_environment("test")
+  dbname = abcs[rails_env]['database']
+  case abcs[rails_env]["adapter"]
+  when "postgresql"
+    load_data_from(TESTMETADATADIR, abcs)
+  else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
 end
@@ -63,28 +75,32 @@ end
 def load_metadata( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
   dbname = abcs[rails_env]['database']
-  case abcs[rails_env]["adapter"] 
+  case abcs[rails_env]["adapter"]
   when "postgresql"
-    print "Loading the meta-data..."
-    for table in METADATATABLES do
-      `echo "ALTER TABLE #{table} DISABLE TRIGGER ALL;
-             DELETE FROM #{table};
-             ALTER TABLE #{table} ENABLE TRIGGER ALL;" | psql -U "#{abcs[rails_env]["username"]}" #{dbname}`
-      raise "Error cleaning table '#{table}'" if $?.exitstatus == 1
-      print "."
-      `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{METADATADIR}/#{table}.sql`
-      raise "Error loading metadata" if $?.exitstatus == 1
-      print "."
-    end
-    puts "done"
-  else 
+    load_data_from(METADATADIR, abcs)
+  else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
 end
 
+def load_data_from(dir, abcs)
+  print "Loading the meta-data..."
+  for table in METADATATABLES do
+    `echo "ALTER TABLE #{table} DISABLE TRIGGER ALL;
+             DELETE FROM #{table};
+             ALTER TABLE #{table} ENABLE TRIGGER ALL;" | psql -U "#{abcs[rails_env]["username"]}" #{dbname}`
+    raise "Error cleaning table '#{table}'" if $?.exitstatus == 1
+    print "."
+    `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{dir}/#{table}.sql`
+    raise "Error loading metadata" if $?.exitstatus == 1
+    print "."
+  end
+  puts "done"
+end
+
 def load_schema( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
-  case abcs[rails_env]["adapter"] 
+  case abcs[rails_env]["adapter"]
   when "postgresql"
     dbname = abcs[rails_env]['database']
     print "Droping the database..."
@@ -102,28 +118,28 @@ def load_schema( rails_env = "development" )
     `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{SCHEMADUMPFILE}`
     raise "Error loading schema" if $?.exitstatus == 1
     puts "done"
-  else 
+  else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
 end
 
 def load_data( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
-  case abcs[rails_env]["adapter"] 
+  case abcs[rails_env]["adapter"]
   when "postgresql"
     dbname = abcs[rails_env]['database']
     print "Loading the data..."
     `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{DATADUMPFILE}`
     raise "Error loading data" if $?.exitstatus == 1
     puts "done"
-  else 
+  else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
 end
 
 def migrate_from_schema( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
-  case abcs[rails_env]["adapter"] 
+  case abcs[rails_env]["adapter"]
   when "postgresql"
     dbname = abcs[rails_env]['database']
     print "Migrating the database..."
@@ -135,7 +151,7 @@ def migrate_from_schema( rails_env = "development" )
       print "."
     }
     puts "done"
-  else 
+  else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
 end
@@ -206,13 +222,19 @@ namespace :db do
 
   end # namespace :data
 
-#   namespace :test do
+  namespace :test do
+
+    namespace :metadata do
+      desc "make sure the test metadata is the same as the development database's"
+      task :sync => :environment do
+      end
+    end # namespace :metadata
 
 #     desc "Prepare the test database and load the schema"
 #     redefine_task :prepare => :environment do
 #       load_schema("test")
 #     end
 
-#   end # namespace :test
+  end # namespace :test
 
 end # namespace :db

@@ -2,12 +2,13 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class DonationTest < Test::Unit::TestCase
 
-  fixtures :donations, :payment_methods, :contacts, :gizmo_contexts,
-    :gizmo_attrs, :gizmo_types, :gizmo_typeattrs,
-    :gizmo_contexts_gizmo_typeattrs, :gizmo_contexts_gizmo_types
+#   fixtures :contact_types, :contact_method_types, :contacts, :payment_methods, :gizmo_contexts,
+#     :gizmo_attrs, :gizmo_types, :gizmo_typeattrs,
+#     :gizmo_contexts_gizmo_typeattrs, :gizmo_contexts_gizmo_types, :donations
+  load_all_fixtures
 
   NO_INFO = {}
-  WITH_CONTACT_INFO = NO_INFO.merge({:postal_code => '54321'})
+  WITH_CONTACT_INFO = NO_INFO.merge({:postal_code => '54321', :contact_type => 'anonymous'})
 
   def crt_event
     {
@@ -135,17 +136,17 @@ class DonationTest < Test::Unit::TestCase
   def test_that_required_fees_should_not_be_valid_unpaid
     donation = Donation.new(WITH_CONTACT_INFO)
     donation.payments = []
-    donation.gizmo_events << GizmoEvent.new(crt_event)
-    assert( donation.calculated_required_fee > 0 )
+    donation.gizmo_events = [GizmoEvent.new(crt_event)]
+    assert( donation.calculated_required_fee > 0, "a crt should have a required fee" )
     assert( ! donation.valid? )
   end
 
   def test_that_required_fees_should_be_valid_paid
     donation = Donation.new(WITH_CONTACT_INFO)
-    donation.gizmo_events << GizmoEvent.new(crt_event)
+    donation.gizmo_events = [GizmoEvent.new(crt_event)]
     assert( ! donation.valid? )
     assert( donation.calculated_required_fee > 0 )
-    donation.payments << Payment.new({ :amount => 10, :payment_method_id => 3 })
+    donation.payments = [Payment.new({ :amount => 10, :payment_method_id => 3 })]
     assert( donation.valid? )
   end
 
