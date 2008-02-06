@@ -163,12 +163,10 @@ SELECT
     meetings.id, 
     meetings.weekday_id 
     FROM meetings 
-    LEFT JOIN standard_shifts ON meetings.id = standard_shifts.meeting_id
-    LEFT JOIN meetings_workers ON standard_shifts.meeting_id = meetings_workers.meeting_id 
+    LEFT JOIN meetings_workers ON meetings.id = meetings_workers.meeting_id 
     LEFT JOIN workers ON meetings_workers.worker_id = workers.id 
     WHERE meetings.schedule_id IN #{in_clause}
     AND meetings.weekday_id = #{weekday_id}
-    AND standard_shifts.meeting_id IS NOT NULL
 ORDER BY 1, 2, 3
 SQL
             @standard_shifts = StandardShift.find_by_sql( sql )
