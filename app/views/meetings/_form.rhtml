@@ -21,5 +21,16 @@
 
 <p><label for="meeting_frequency_type_id">Frequency type</label><br/>
 <%= select("meeting", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="workers">Workers:</label><br/>
+<ul>
+<% Worker.find(:all, :order => "name").each do |w| %>
+   <li><input type="checkbox" name="meeting[worker_ids][]" 
+          value="<%= w.id %>" 
+          <% if @meeting.workers.include?(w) %> checked="checked" <% end %> />
+<%= w.name %></li>
+<% end %>
+</ul>
+</p>
 <!--[eoform:meeting]-->
 
