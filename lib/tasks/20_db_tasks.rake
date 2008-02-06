@@ -1,7 +1,6 @@
 SCHEMADUMPFILE = 'db/schema.sql'
 DATADUMPFILE = 'db/devel_data.sql'
 METADATADIR = 'db/metadata'
-TESTMETADATADIR = 'test/fixtures'
 METADATATABLES = %w[
         contact_method_types contact_types discount_schedules
         discount_schedules_gizmo_types gizmo_attrs gizmo_contexts
@@ -56,17 +55,6 @@ def dump_data( rails_env = "development" )
     `pg_dump -i -U "#{abcs[rails_env]["username"]}" --disable-triggers -a -x -O -f #{DATADUMPFILE} #{search_path} #{abcs[rails_env]["database"]}`
     raise "Error dumping database" if $?.exitstatus == 1
     puts "done"
-  else
-    raise "Task not supported by '#{abcs["test"]["adapter"]}'"
-  end
-end
-
-def load_test_metadata(rails_env = "test")
-  abcs, search_path = setup_environment("test")
-  dbname = abcs[rails_env]['database']
-  case abcs[rails_env]["adapter"]
-  when "postgresql"
-    load_data_from(TESTMETADATADIR, abcs)
   else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
@@ -221,20 +209,5 @@ namespace :db do
     end
 
   end # namespace :data
-
-  namespace :test do
-
-    namespace :metadata do
-      desc "make sure the test metadata is the same as the development database's"
-      task :sync => :environment do
-      end
-    end # namespace :metadata
-
-#     desc "Prepare the test database and load the schema"
-#     redefine_task :prepare => :environment do
-#       load_schema("test")
-#     end
-
-  end # namespace :test
 
 end # namespace :db
