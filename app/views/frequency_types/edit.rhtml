@@ -1,9 +1,8 @@
-<h1>Editing frequency_type</h1>
 
-<% form_tag :action => 'update', :id => @frequency_type do %>
+<%= form_tag :action => 'update', :id => @frequency_type %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
-<% end %>
+<%= end_form_tag %>
 
 <%= link_to 'Show', :action => 'show', :id => @frequency_type %> |
 <%= link_to 'Back', :action => 'list' %>

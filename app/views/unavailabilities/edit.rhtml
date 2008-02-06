@@ -1,9 +1,9 @@
 <h1>Editing unavailability</h1>
 
-<% form_tag :action => 'update', :id => @unavailability do %>
+<%= form_tag :action => 'update', :id => @unavailability %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
-<% end %>
+<%= end_form_tag %>
 
 <%= link_to 'Show', :action => 'show', :id => @unavailability %> |
 <%= link_to 'Back', :action => 'list' %>
