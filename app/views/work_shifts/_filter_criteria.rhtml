@@ -1,6 +1,6 @@
 <div class='filter'>
 <h3>Filter work shifts:</h3>
-<% form_tag :action => 'list' do %>
+<%= form_tag :action => 'list' %>
   <%= check_box :filter_criteria, :limit_to_worker, :checked => (@opts['limit_to_worker']=='1') %> Limit to worker:
   <%= select(:filter_criteria, :worker_id, Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %><br />
   <%= check_box :filter_criteria, :limit_to_job, :checked => (@opts['limit_to_job']=='1') %> Limit to job
@@ -13,5 +13,5 @@
   <br />
   <br />
   <%= submit_tag "Apply" %><br />
-<% end %>
+<%= end_form_tag %>
 </div>
