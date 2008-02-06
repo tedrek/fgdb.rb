@@ -1,16 +1,14 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => params[:id] }
+@options = { :action => "view", :id => params[:id] }
 @update_options = @options.merge(:action => "update")
 
 if @successful
-  page[form_insertion_div_id(@options)].hide
-  page.replace_html scaffold_messages_id(@options), :partial => 'messages'
-  page.replace_html searchbox_search_results_div_id(params),
+  page.replace_html contact_messages_id(@options), :partial => 'messages'
+  page.replace_html search_results_id(params),
     :partial => 'search_results', :locals => { :@search_results => [@contact] }
-  page << "Form.enable($('#{searchbox_hidden_id(@options)}').form.id);"
-  page << "Field.focus('#{searchbox_select_id(@options)}');"
+  page.remove 'floating_form'
 else
-  page.replace_html element_messages_id(@update_options), :partial => 'form_messages'
-  page << "$('#{element_messages_id(@update_options)}').scrollTo();"
+  page.replace_html contact_messages_id(@update_options), :partial => 'form_messages'
+  page << "$('#{contact_messages_id(@update_options)}').scrollTo();"
   page << "Form.enable('#{element_form_id(@update_options)}');"
   page.hide loading_indicator_id(@update_options)
 end

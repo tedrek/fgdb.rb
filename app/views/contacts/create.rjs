@@ -1,18 +1,17 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => @contact.id }
+@options = { :action => "view", :id => @contact.id }
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  page[form_insertion_div_id(@options)].hide
-  page.replace_html scaffold_messages_id(@options), :partial => 'messages'
-  page.replace_html searchbox_search_results_div_id(params),
+  page.replace_html contact_messages_id(@options), :partial => 'messages'
+  page.replace_html search_results_id(params),
     :partial => 'search_results', :locals => { :@search_results => [@contact] }
-  page << "Form.enable($('#{searchbox_hidden_id(@options)}').form.id);"
-  page << "Field.focus('#{searchbox_select_id(@options)}');"
+  page.remove 'floating_form'
 else
-  page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
-  page << "$('#{element_messages_id(@create_options)}').scrollTo();"
-  page << "Form.enable('#{element_form_id(@create_options)}');"
+  page.replace_html contact_messages_id(@create_options), :partial => 'form_messages'
+  @contact.errors.each {|field, msg|
+    page["contact_#{field}"].addClassName('fieldWithErrors')
+  }
+  page << "$('#{contact_messages_id(@create_options)}').scrollTo();"
+  page << "Form.enable('floating_form');"
   page.hide loading_indicator_id(@create_options)
 end
-
-

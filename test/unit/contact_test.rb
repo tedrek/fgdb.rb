@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContactTest < Test::Unit::TestCase
-  fixtures :contacts, :volunteer_task_types
+  fixtures :contact_types, :contacts, :volunteer_task_types
 
   NEW_CONTACT = {:postal_code => 1 }  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
   REQ_ATTR_NAMES        = %w( postal_code ) # name of fields that must be present, e.g. %(name description)
@@ -42,7 +42,7 @@ class ContactTest < Test::Unit::TestCase
    end
 
   def test_duplicate
-    current_contact = Contact.find_first
+    current_contact = Contact.find(:first)
      DUPLICATE_ATTR_NAMES.each do |attr_name|
        contact = Contact.new(NEW_CONTACT.merge(attr_name.to_sym => current_contact[attr_name]))
       assert !contact.valid?, "Contact should be invalid, as @#{attr_name} is a duplicate"
@@ -51,7 +51,7 @@ class ContactTest < Test::Unit::TestCase
   end
 
   def test_that_volunteer_tasks_meet_business_rules
-    contact = Contact.find_first
+    contact = Contact.find(:first)
     contact.volunteer_tasks = []
     assert_equal 0, contact.hours_effective
     assert_equal 0, contact.hours_actual
@@ -62,33 +62,48 @@ class ContactTest < Test::Unit::TestCase
   end
 
   def test_that_adoption_hours_can_be_calculated_appropriately
-    contact = Contact.find_first
+    contact = Contact.find(:first)
     contact.volunteer_tasks = []
-    assert_equal 0, contact.adoption_hours
-    contact.volunteer_tasks = [an_hour_of_programming]
-    assert_equal 1, contact.adoption_hours
-    contact.volunteer_tasks = [an_hour_of_assembly]
     assert_equal 0, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_monitors]
     assert_equal 2, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_testing]
+    assert_equal 1, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_assembly]
+    assert_equal 0, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly]
     assert_equal 1, contact.adoption_hours
-    contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming]
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_programming(1)]
+    assert_equal 2, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming(1)]
     assert_equal 3, contact.adoption_hours
   end
 
   def test_that_default_discount_can_be_calculated_appropriately
-    contact = Contact.find_first
+    contact = Contact.find(:first)
     contact.volunteer_tasks = []
     assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
-    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_programming, an_hour_of_programming, an_hour_of_programming]
-    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_monitors]
+    assert_equal 4.0, contact.effective_discount_hours
     assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
-    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly, an_hour_of_programming, an_hour_of_assembly]
+    contact.volunteer_tasks = [an_hour_of_testing, an_hour_of_testing, an_hour_of_testing, an_hour_of_testing]
+    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly, an_hour_of_testing, an_hour_of_assembly]
     assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming]
     assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
+    contact.volunteer_tasks = []
+    4.times {contact.volunteer_tasks << an_hour_of_programming}
+    assert_equal 4.0, contact.effective_discount_hours
+    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+  end
+
+  def test_last_ninety_days
+    contact = Contact.find(:first)
+    contact.volunteer_tasks = []
+    assert_equal 0.0, contact.last_ninety_days_of_effective_hours
+    contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_monitors]
+    assert_equal 4.0, contact.last_ninety_days_of_effective_hours
   end
 
 end

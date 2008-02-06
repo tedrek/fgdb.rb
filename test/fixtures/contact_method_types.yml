@@ -1,109 +1,37 @@
 --- 
-contact_method_types_011: 
-  updated_at: 2006-12-05 18:04:11-08
-  created_by: "1"
-  lock_version: "1"
-  updated_by: "1"
-  id: "9"
-  description: home fax
-  parent_id: "8"
-  created_at: 2006-09-20 07:40:22-07
-contact_method_types_012: 
-  updated_at: 2006-12-05 18:04:19-08
-  created_by: "1"
-  lock_version: "1"
-  updated_by: "1"
-  id: "10"
-  description: work fax
-  parent_id: "8"
-  created_at: 2006-09-20 07:40:25-07
 contact_method_types_001: 
-  updated_at: 2006-09-20 07:38:21-07
+  updated_at: 2006-09-20 07:38:21
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "1"
   description: phone
   parent_id: 
-  created_at: 2006-09-20 07:38:21-07
+  created_at: 2006-09-20 07:38:21
 contact_method_types_002: 
-  updated_at: 2006-09-20 07:39:55-07
+  updated_at: 2006-09-20 07:39:55
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "5"
   description: email
   parent_id: 
-  created_at: 2006-09-20 07:39:55-07
+  created_at: 2006-09-20 07:39:55
 contact_method_types_003: 
-  updated_at: 2006-09-20 07:40:14-07
+  updated_at: 2006-09-20 07:40:14
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "8"
   description: fax
   parent_id: 
-  created_at: 2006-09-20 07:40:14-07
+  created_at: 2006-09-20 07:40:14
 contact_method_types_004: 
-  updated_at: 2006-09-21 08:31:45-07
-  created_by: "1"
-  lock_version: "1"
-  updated_by: "1"
-  id: "2"
-  description: home phone
-  parent_id: "1"
-  created_at: 2006-09-20 07:38:40-07
-contact_method_types_005: 
-  updated_at: 2006-09-21 08:37:15-07
-  created_by: "1"
-  lock_version: "1"
-  updated_by: "1"
-  id: "3"
-  description: work phone
-  parent_id: "1"
-  created_at: 2006-09-20 07:38:55-07
-contact_method_types_006: 
-  updated_at: 2006-09-21 08:40:22-07
-  created_by: "1"
-  lock_version: "1"
-  updated_by: "1"
-  id: "6"
-  description: home email
-  parent_id: "5"
-  created_at: 2006-09-20 07:40:03-07
-contact_method_types_007: 
-  updated_at: 2006-11-25 02:31:31-08
+  updated_at: 2006-11-25 02:31:31
   created_by: "1"
   lock_version: "0"
   updated_by: "1"
   id: "13"
   description: liason
   parent_id: 
-  created_at: 2006-11-25 02:31:31-08
-contact_method_types_008: 
-  updated_at: 2006-12-05 18:03:37-08
-  created_by: "1"
-  lock_version: "0"
-  updated_by: "1"
-  id: "14"
-  description: emergency phone
-  parent_id: "1"
-  created_at: 2006-12-05 18:03:37-08
-contact_method_types_009: 
-  updated_at: 2006-12-05 18:03:51-08
-  created_by: "1"
-  lock_version: "1"
-  updated_by: "1"
-  id: "4"
-  description: cell phone
-  parent_id: "1"
-  created_at: 2006-09-20 07:39:43-07
-contact_method_types_010: 
-  updated_at: 2006-12-05 18:04:01-08
-  created_by: "1"
-  lock_version: "1"
-  updated_by: "1"
-  id: "7"
-  description: work email
-  parent_id: "5"
-  created_at: 2006-09-20 07:40:07-07
+  created_at: 2006-11-25 02:31:31

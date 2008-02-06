@@ -4,7 +4,7 @@ class ContactTypeTest < Test::Unit::TestCase
 
   fixtures( :contact_types, :volunteer_task_types, :payment_methods,
             :gizmo_types, :gizmo_contexts, :gizmo_attrs,
-            :gizmo_typeattrs, :gizmo_contexts_gizmo_typeattrs )
+            :gizmo_typeattrs )
 
   NEW_CONTACT_TYPE = {}    # e.g. {:name => 'Test ContactType', :description => 'Dummy'}
   REQ_ATTR_NAMES              = %w( ) # name of fields that must be present, e.g. %(name description)
@@ -45,7 +45,7 @@ class ContactTypeTest < Test::Unit::TestCase
   end
 
   def test_duplicate
-    current_contact_type = ContactType.find_first
+    current_contact_type = ContactType.find(:first)
     DUPLICATE_ATTR_NAMES.each do |attr_name|
       contact_type = ContactType.new(NEW_CONTACT_TYPE.merge(attr_name.to_sym => current_contact_type[attr_name]))
       assert !contact_type.valid?, "ContactType should be invalid, as @#{attr_name} is a duplicate"

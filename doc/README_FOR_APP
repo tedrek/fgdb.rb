@@ -1,0 +1,116 @@
+= _F_ree_G_eek _D_ata_B_ase
+
+this webapp is meant to keep track of two main areas:
+* volunteers and the time they work
+* gizmos and their flow through our organization
+
+the /volunteer_tasks controller tracks volunteers and their hours.
+the /transaction controller takes care of gizmo flow.
+the /reports controller has some useful numbers.
+
+in the near future i hope to add:
+* classes and who has completed them
+* projects (such as building and testing a computer) and who has worked on them
+
+a bunch of other controllers are scattered around to support these,
+but should not be used by typical users.
+
+== Install
+
+i did this on a debian etch box; alteration may be needed on other
+distros.
+
+To get the fgdb.rb source:
+
+ $> apt-get install subversion
+ $> svn co http://dev.freegeek.org/svn/fgdb.rb/trunk fgdb.rb
+
+(possibly something in branches?
+ $> svn co http://dev.freegeek.org/svn/fgdb.rb/branches/some_branch fgdb.rb
+only if you know what you're doing.)
+
+to setup a working environment:
+
+ $> apt-get install ruby rubygems postgresql-8.1 \
+        apache2 libpgsql-ruby irb
+ $> gem install -y rails
+
+on Ubuntu Dapper you will need to get gems from the internet.
+
+you need to create and configure the databases:
+
+ $> su - postgres -c 'createuser -P SOMEDBUSER'
+      # capable of creating databases, but nothing else
+ $> createdb -h localhost -U SOMEDBUSER fgdb_production
+ $> createdb -h localhost -U SOMEDBUSER fgdb_test
+ $> createdb -h localhost -U SOMEDBUSER fgdb_development
+ $> cd fgdb.rb
+   ::: edit config/database.yml-example to match and rename
+   ::: it (drop '-example')
+ $> export RAILS_ENV=production
+ $> alias rake='/var/lib/gems/1.8/bin/rake'
+      # yeah, etch rubygems are broken
+ $> rake db:migrate
+
+choose one of the following: skeletal metadata, or full test data:
+
+ $> rake db:metadata:load
+   :OR:
+ $> zcat db/version_*_test_data.sql.gz | psql -h localhost -U SOMEUSER fgdb_production
+
+run some tests to see if things look okay:
+
+ $> rake db:test:purge
+ $> rake
+
+if you see any failures or errors,
+something is wrong that you should fix or tell me about.
+then start the server and browse in to see things working:
+
+ $> ./script/server &
+ $> iceweasel http://localhost:3000
+
+feel free to read the notes and listen to an audio log from our
+install at the vancouver freegeek site:
+http://puddle.ca/~joe/freegeek/martin_install.ogg
+http://puddle.ca/~joe/freegeek/fg_database_install-HOWTO
+
+for a production server running apache and fcgid,
+continue with the following:
+
+ $> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8
+ $> a2enmod rewrite
+ $> chmod -R www-data:www-data tmp log index
+ $> cp doc/examples/apache2_sites-available_default /etc/apache2/sites-available/default
+   ::: modify apache config to taste :::
+   ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
+
+== UPGRADE
+
+if you are moving from the fgdb.rb that explicitly used rails 1.1.2 to
+this branch,
+you will need to do a bit of work.
+???
+* svn switch to the correct branch? (until it becomes trunk...)
+* manually migrate schema (make a rake task for this?)
+
+== TODO
+
+see our trac (http://dev.freegeek.org/projects/fgdb.rb/) for details,
+but some important tasks left unfinished:
+
+* authentication
+* non-ajax interface
+* deb package
+* moving to the latest stable rails
+
+== THANKS
+
+in chronological order of svn commits:
+
+* Martin Chase <mchase@freegeek.org>
+* Jeff Schwaber
+* Gordon Pederson
+* Richard Seymour <rfs@freegeek.org>
+* Tim Bauman
+* Eric Davis

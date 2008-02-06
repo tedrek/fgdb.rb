@@ -42,7 +42,7 @@ class DiscountScheduleTest < Test::Unit::TestCase
  	end
 
 	def test_duplicate
-    current_discount_schedule = DiscountSchedule.find_first
+    current_discount_schedule = DiscountSchedule.find(:first)
    	DUPLICATE_ATTR_NAMES.each do |attr_name|
    		discount_schedule = DiscountSchedule.new(NEW_DISCOUNT_SCHEDULE.merge(attr_name.to_sym => current_discount_schedule[attr_name]))
 			assert !discount_schedule.valid?, "DiscountSchedule should be invalid, as @#{attr_name} is a duplicate"

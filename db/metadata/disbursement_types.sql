@@ -9,7 +9,7 @@ SET client_min_messages = warning;
 SET search_path = public, pg_catalog;
 
 --
--- Name: disbursement_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: stillflame
+-- Name: dispersement_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: stillflame
 --
 
 SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('disbursement_types', 'id'), 5, true);

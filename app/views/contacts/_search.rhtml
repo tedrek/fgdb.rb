@@ -1,0 +1,11 @@
+<% @search_results = [ contact ] if( defined?(contact) && contact ) -%>
+<label for="contact_query">Search for a contact:</label>
+<input type="text" id="<%= contact_query_id(@options) -%>"
+        onKeyPress="return contactKeyListener(event);"
+/>
+<div id="<%= search_results_id(params) %>" />
+
+<%= observe_field :contact_query,  :frequency => 0.5,
+                  :update => search_results_id(params),
+                  :url => { :controller => 'contacts', :action => 'search_results', :on_search => @on_search },
+                  :with => "'contact_query=' + escape(value)" -%>

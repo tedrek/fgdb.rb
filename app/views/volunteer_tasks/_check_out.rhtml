@@ -1,0 +1,20 @@
+<p>
+What time did you finish?
+<%= time_select 'volunteer_task', 'end_time' %>
+
+<%= error_message_on 'volunteer_task', 'end_time' %>
+</p>
+
+<p>
+What did you do?
+<%= select('volunteer_task', 'volunteer_task_type', VolunteerTaskType.find(:all)_by_instantiable('t').collect {|t| [t.description, t.id]}) %>
+
+<%= error_message_on 'volunteer_task', 'volunteer_task_type' %>
+</p>
+
+<p>
+Is this for community service credit?
+<%= select('volunteer_task', 'community_service_type', [['No', nil]] + CommunityServiceType.find(:all).collect {|t| [t.description, t.id]}) %>
+
+<%= error_message_on 'volunteer_task', 'community_service_type' %>
+</p>

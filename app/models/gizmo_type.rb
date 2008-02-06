@@ -1,10 +1,8 @@
-require 'ajax_scaffold'
-
 class GizmoType < ActiveRecord::Base
   acts_as_tree
   has_many  :gizmo_typeattrs,
             :dependent => :destroy
-  has_many  :gizmo_attrs,  :through => :gizmo_typeattr
+  has_many  :gizmo_attrs,  :through => :gizmo_typeattrs
   has_many  :discount_schedules_gizmo_types,
             :dependent => :destroy
   has_many  :discount_schedules, :through => :discount_schedules_gizmo_types

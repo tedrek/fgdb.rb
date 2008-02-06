@@ -1,12 +1,10 @@
-require 'ajax_scaffold'
-
 class Contact < ActiveRecord::Base
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
 
   has_many :donations
-  has_many :volunteer_tasks
+  has_many :volunteer_tasks, :order => 'start_time DESC'
 
   # acts_as_userstamp
 
@@ -21,6 +19,39 @@ class Contact < ActiveRecord::Base
     ! self.is_organization?
   end
 
+  def uncompleted
+    vt = volunteer_tasks.find_by_duration(nil)
+    if not vt.nil? and vt.start_time < 1.day.ago
+      # evidentally they forgot to check out... make a new handler for this later.
+      vt.destroy
+      return nil
+    else
+      return vt
+    end
+  end
+
+  def checked_in?
+    not uncompleted.nil?
+  end
+
+  def check(options = {})
+    if checked_in?
+      task = uncompleted
+      # since multiparameter attributes won't work w/ aliases, do it manually
+      time_attrs = []
+      for i in 1..5
+        time_attrs << options.delete("end_time(#{i}i)").to_i
+      end
+      options[:end_time] = Time.local(*time_attrs)
+      task.update_attributes(options)
+    else
+      task = VolunteerTask.new(options)
+      volunteer_tasks << task
+      task.save
+    end
+    return task
+  end
+
   def hours_actual(last_ninety = false)
     tasks = last_ninety ? last_ninety_days_of_volunteer_tasks : volunteer_tasks
     tasks.inject(0.0) do |total,task|
@@ -28,21 +59,19 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def volunteer_tasks(cutoff = nil)
+  def find_volunteer_tasks(cutoff = nil)
+    # if it's named volunteer_tasks it breaks everything
     if cutoff
-      conditions = [ "contact_id = ? AND date_performed >= ?", id, cutoff ]
+      conditions = [ "contact_id = ? AND start_time >= ?", id, cutoff ]
     else
       conditions = [ "contact_id = ?", id ]
     end
     VolunteerTask.find(:all,
-                       :conditions => conditions,
-                       :include => [
-                         :volunteer_task_types
-                       ])
+                       :conditions => conditions)
   end
 
   def hours_effective
-    volunteer_tasks(Date.today - 365).inject(0.0) do |total,task|
+    find_volunteer_tasks(Date.today - 365).inject(0.0) do |total,task|
       unless task.type_of_task?('build')
         total += task.effective_duration
       end
@@ -60,7 +89,7 @@ class Contact < ActiveRecord::Base
   end
 
   def last_ninety_days_of_volunteer_tasks
-    volunteer_tasks(Date.today - 90)
+    find_volunteer_tasks(Date.today - 90)
   end
 
   def last_ninety_days_of_actual_hours
@@ -77,11 +106,11 @@ class Contact < ActiveRecord::Base
     volunteer_tasks.sort_by {|v_t| v_t.date_performed }[-3..-1]
   end
 
-  def default_volunteer_task_types
+  def default_volunteer_task_type
     last_few = last_few_volunteer_tasks
     if( last_few.length > 1 and
-          last_few.map {|v_t| v_t.volunteer_task_types.sort}.uniq.length == 1 )
-      return last_few.first.volunteer_task_types
+          last_few.map {|v_t| v_t.volunteer_task_type}.uniq.length == 1 )
+      return last_few.first.volunteer_task_type
     else
       return []
     end
@@ -119,7 +148,7 @@ class Contact < ActiveRecord::Base
     disp = []
     disp.concat(display_name.to_a) unless
       display_name.nil? or display_name.size == 0
-    disp.concat(display_address.to_a) unless 
+    disp.concat(display_address.to_a) unless
       display_address.nil? or display_address.size == 0
     return disp
   end
@@ -127,10 +156,10 @@ class Contact < ActiveRecord::Base
   def display_address
     dispaddr = []
     dispaddr.push(address)
-    dispaddr.push(extra_address) unless 
+    dispaddr.push(extra_address) unless
       extra_address.nil? or extra_address == ''
     dispaddr.push(csz)
-    dispaddr.push(country) unless 
+    dispaddr.push(country) unless
       country.nil? or country == '' or country.upcase =~ /^USA*$/
     return dispaddr
   end
@@ -188,8 +217,10 @@ class Contact < ActiveRecord::Base
       # if the user added query wildcards or search metaterms, leave
       # be if not, assume it's better to bracket each word with
       # wildcards and join with ANDs.
-      query = prepare_query(query)
-      find_by_contents( query, options )
+      return [] unless query and query.length > 0
+      conditions = prepare_query(query)
+      find(:all, {:limit => 5, :conditions => conditions}.merge(options))
+
     end
 
     def search_by_type(type, query, options = {})
@@ -206,22 +237,16 @@ class Contact < ActiveRecord::Base
     protected
 
     def prepare_query(q)
-      unless q =~ /\*|\~| AND| OR/
-        q = q.split.map do |word|
-          "*#{word}*" 
-        end.join(' AND ')
+      conds = [""]
+      q.split.each do |word|
+        conds[0] += "(surname ILIKE ? OR first_name ILIKE ? OR middle_name ILIKE ? OR organization ILIKE ?)"
+        conds += ["%#{word}%"] * 4
+        conds[0] += ' AND '
       end
-      q
+      conds[0].sub!(/ AND $/, '')
+      return conds
     end
 
     end # class << self
-
-  acts_as_ferret :fields => {
-    'first_name' => {:boost => 2},
-    'middle_name' => {},
-    'surname' => {:boost => 2.5},
-    'organization' => {:boost => 2},
-    'types' => {:boost => 0}
-  }
 
 end

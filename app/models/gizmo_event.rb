@@ -1,4 +1,4 @@
-require 'ajax_scaffold'
+
 
 class GizmoEvent < ActiveRecord::Base
   has_one :donation
@@ -54,7 +54,7 @@ class GizmoEvent < ActiveRecord::Base
     if gizmo_type
       gizmo_type.possible_attrs
     else
-      GizmoAttr.find_all
+      GizmoAttr.find(:all)
     end
   end
 
@@ -86,11 +86,7 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def required_fee
-    if adjusted_fee.to_f > 0
-      gizmo_count.to_i * adjusted_fee.to_f
-    else
-      gizmo_count.to_i * gizmo_type.required_fee
-    end
+    gizmo_count.to_i * gizmo_type.required_fee
   end
 
   def suggested_fee

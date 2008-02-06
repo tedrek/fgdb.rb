@@ -1,5 +1,3 @@
-require 'ajax_scaffold'
-
 class ContactMethod < ActiveRecord::Base
   belongs_to :contact_method_type
   belongs_to :contact, :order => "surname, first_name"  

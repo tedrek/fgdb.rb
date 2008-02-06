@@ -20,6 +20,7 @@ position: absolute;
 top: 40px;
 left: 130px;
 padding: 10px;
+width: 83%;
 }
 div#sidebar a {
 color: #333;
@@ -129,30 +130,30 @@ margin-left: 10px;
 }
 
 /* ===================================
-         Searchbox stuff */
+         Contacts stuff */
+
+form.floating_form {
+position: absolute;
+width: 82%;
+background-color: #DED;
+border-right: black 1px solid;
+border-top: black 1px solid;
+border-left: black 1px solid;
+border-bottom: black 1px solid;
+}
 
 .loading-indicator {
 vertical-align: bottom;
 margin: 0;
 }
 
-.searchbox_form {
-width: 82%;
-background-color: white;
-border-right: black 1px solid;
-border-top: black 1px solid;
-border-left: black 1px solid;
-border-bottom: black 1px solid;
-position: absolute;
-}
-
-.searchbox_form div.form-element {
+div.form-element {
 float: left;
 margin-right: 10px;
 margin-bottom: 2px;
 }
 
-.searchbox_form label {
+label {
 display: block;
 font-family: Verdana, sans-serif;
 color: #555;
@@ -160,8 +161,8 @@ font-size: 11px;
 padding-bottom: 1px;
 }
 
-.searchbox_form input.text-input,
-.searchbox_form select {
+input.text-input,
+select {
 font-size: 16px;
 font-weight: bold;
 font-family: Arial, sans-serif;
@@ -169,11 +170,11 @@ letter-spacing: -1px;
 border: solid 1px #1F7F00;
 }
 
-.searchbox_form .form-element input {
+.form-element input {
 padding: 1px;
 }
 
-.searchbox_form textarea {
+textarea {
 height: 65px;
 font-family: Arial, sans-serif;
 font-size: 12px;
@@ -217,10 +218,6 @@ font-size: 14px;
 .contact_display .hours {
 font-size: 17px;
 margin-left: 10px;
-}
-
-.searchbox_form {
-background-color: #DED;
 }
 
 .hours_type {

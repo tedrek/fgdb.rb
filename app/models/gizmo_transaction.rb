@@ -1,4 +1,4 @@
-require 'ajax_scaffold'
+
 
 module GizmoTransaction
 

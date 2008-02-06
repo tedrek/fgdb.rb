@@ -6,17 +6,10 @@
   <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">organization</label>
 </div>
 
-<%= observe_field 'contact_is_organization', :url => {
-      :action => 'contact_formation'
-    },
-    :with => 'is_organization' %>
+<%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" %>
+<%= javascript_tag "contact_form_org_toggle();" %>
 
-<%= javascript_tag( remote_function :url => {
-      :action => 'contact_formation',
-      :is_organization => @contact.is_organization
-    } ) %>
-
-<% for contact_type in ContactType.find_all %>
+<% for contact_type in ContactType.find(:all) %>
 <div class="<%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
   <input type="checkbox" id="<%= contact_type.description %>"
     name="contact_types[]" 
@@ -79,15 +72,6 @@
   <label for="contact_notes">Notes</label>
   <%= text_area 'contact', 'notes'  %>
 </div>
-
-<div class="form-element">
-  <%= datalist_for( :contact_method, 'contacts_contact_methods',
-    @contact.contact_methods,
-    :show_header => false, :render => "contact_methods/form",
-    :add_text => "More contact methods" ) %>
-</div>
-
-
 
 <!--[eoform:contact]-->
 

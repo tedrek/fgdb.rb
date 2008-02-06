@@ -1,0 +1,20 @@
+<p>
+What time will you be starting?
+<%= time_select 'volunteer_task', 'start_time' %>
+
+<%= error_message_on 'volunteer_task', 'start_time' %>
+</p>
+
+<p>
+What will you be doing?
+<%= select('volunteer_task', 'volunteer_task_type', VolunteerTaskType.find_all_by_instantiable.collect {|t| [t.description, t.id]}) %>
+
+<%= error_message_on 'volunteer_task', 'volunteer_task_type' %>
+</p>
+
+<p>
+Is this for community service credit?
+<%= select('volunteer_task', 'community_service_type', [['No', nil]] + CommunityServiceType.find(:all).collect {|t| [t.description, t.id]}) %>
+
+<%= error_message_on 'volunteer_task', 'community_service_type' %>
+</p>

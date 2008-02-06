@@ -1,27 +1,38 @@
-require 'ajax_scaffold'
-
 class VolunteerTask < ActiveRecord::Base
-  has_and_belongs_to_many :volunteer_task_types
-  belongs_to  :contact, :order => "surname, first_name"
+  belongs_to :volunteer_task_type
+  belongs_to :contact, :order => "surname, first_name"
+  belongs_to :community_service_type
 
-  validates_presence_of :date_performed
-  validates_presence_of :contact_id
+  validates_presence_of :contact
+  validates_presence_of :volunteer_task_type
   validates_presence_of :duration
-  validates_presence_of :volunteer_task_types
 
   before_save :add_contact_types
 
-  def effective_duration
-    mult = volunteer_task_types.inject(1) do |mu,type|
-      mu *= type.hours_multiplier
+  def validate
+    if contact.nil?
+      errors.add(:contact_id, "must be choosen")
     end
-    duration * mult
+  end
+
+  def effective_duration
+    duration * volunteer_task_type.hours_multiplier
   end
 
   def type_of_task?(type)
-    volunteer_task_types.detect {|task_type|
-      task_type.type_of_task?( type )
-    }
+    volunteer_task_type.type_of_task? type
+  end
+
+  def end_time
+    unless duration.nil?
+      start_time + duration.hours
+    else
+      Time.now
+    end
+  end
+
+  def end_time=(t)
+    self.duration = (t - start_time) / 1.hour
   end
 
   def add_contact_types
@@ -29,14 +40,16 @@ class VolunteerTask < ActiveRecord::Base
     # the following is commented out because only
     # volunteers can be searched for... but non-volunteers
     # can become volunteers, can't they? See ticket #234
-    # required = [ContactType.find(4)] # volunteer
+    required = [ContactType.find(4)] # volunteer
     if type_of_task?('build')
-      required = ContactType.find(13) # builder
+      required << ContactType.find(13) # builder
     elsif type_of_task?('adoption')
-      required = ContactType.find(12) # adopter
+      required << ContactType.find(12) # adopter
     end
-    if required and not contact.contact_types.include? required
-      contact.contact_types << required
+    for type in required
+      unless contact.contact_types.include?(type)
+        contact.contact_types << type
+      end
     end
   end
 end

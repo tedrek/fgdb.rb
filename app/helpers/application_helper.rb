@@ -1,6 +1,9 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  include DatebocksEngine
+
+  def contact_search_box
+    render :partial => 'contacts/lookup'
+  end
 
   def header_totals_id(options)
     "#{options[:scaffold_id]}_header_totals"
@@ -8,6 +11,10 @@ module ApplicationHelper
 
   def anonymize_button_id(options)
     "#{options[:scaffold_id]}_anonymize"
+  end
+
+  def content_id(options)
+    'content'
   end
 
   def scaffold_form_tbody_id(options)
@@ -56,13 +63,13 @@ module ApplicationHelper
       :date_type => 'date_type' }.merge(fields)
 
     # daily
-    date_types['daily'] = datebocks_field(obj_name, fields[:date])
+    date_types['daily'] = toolbocks_date_select(obj_name, fields[:date])
     date_types['monthly'] = select_month(obj.send(fields[:month]), :prefix => obj_name) +
       select_year(obj.send(fields[:year]), :prefix => obj_name)
     # arbitrary
     date_types['arbitrary'] = "From: %s To: %s" %
-      [ datebocks_field(obj_name, fields[:start_date]),
-        datebocks_field(obj_name, fields[:end_date]) ]
+      [ toolbocks_date_select(obj_name, fields[:start_date]),
+        toolbocks_date_select(obj_name, fields[:end_date]) ]
 
     return select_visibility(obj_name, fields[:date_type], date_types)
   end
@@ -70,4 +77,13 @@ module ApplicationHelper
   def time_or_time_range_picker(obj_name, fields)
     #:TODO: ?
   end
+
+  def contact_query_id(options)
+    'contact_query'
+  end
+
+  def search_results_id(params)
+    'search_results_id'
+  end
+
 end

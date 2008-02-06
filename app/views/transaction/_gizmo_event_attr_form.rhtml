@@ -19,9 +19,3 @@
     <% end %>
   </div>
 <% end %>
-<% if( (gizmo_context == GizmoContext.donation) and (gizmo_type.required_fee.to_f > 0) ) %>
-  <div class="form-element">
-      <label for="<%= @datalist_field_id_prefix %>_adjusted_fee">Adjusted required fee</label>
-      <%= datalist_text_field "gizmo_event", "adjusted_fee", options.merge({:class=>'text-input'}) %> &nbsp;
-  </div>
-<% end %>

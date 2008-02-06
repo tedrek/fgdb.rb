@@ -1,5 +1,3 @@
-require 'ajax_scaffold'
-
 class PaymentMethod < ActiveRecord::Base
 
   def to_s
@@ -18,14 +16,10 @@ class PaymentMethod < ActiveRecord::Base
     @@invoice ||= find( :first, :conditions => ['description = ?', 'invoice'] )
   end
 
-  def PaymentMethod.coupon
-    @@coupon ||= find( :first, :conditions => ['description = ?', 'coupon'] )
-  end
-
   def PaymentMethod.descriptions
     @@descriptions ||= {}
     if @@descriptions.empty?
-      find_all.each {|p_m|
+      find(:all).each {|p_m|
         @@descriptions[p_m.id] = p_m.description
       }
     end

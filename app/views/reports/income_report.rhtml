@@ -1,4 +1,4 @@
-<% methods = PaymentMethod.find_all %>
+<% methods = PaymentMethod.find(:all) %>
 <% table_width = @width + 2 %>
 <h1>Income report for <%= @date_range_string %></h1>
 

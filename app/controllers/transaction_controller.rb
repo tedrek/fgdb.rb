@@ -1,9 +1,8 @@
 class TransactionController < ApplicationController
-  include AjaxScaffold::Controller
   include DatalistFor
 
   after_filter :clear_flashes
-  before_filter :update_params_filter
+
 
   layout :check_for_receipt
   def check_for_receipt
@@ -51,14 +50,14 @@ class TransactionController < ApplicationController
     set_transaction_type( 'disbursement' )
     render :action => 'listing'
   end
-  
+
   # All posts to change scaffold level variables like sort values or page changes go through this action
   def component_update
-    @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold 
+    @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold
     component
   end
 
-  def component  
+  def component
     @show_wrapper = true if @show_wrapper.nil?
     @model = model
     @sort_sql = model.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
@@ -67,7 +66,7 @@ class TransactionController < ApplicationController
       :order => @sort_by,
       :per_page => default_per_page,
       :include => [:gizmo_events],
-      :conditions => @conditions.conditions(model) 
+      :conditions => @conditions.conditions(model)
     }
     if @model.new.respond_to?( :payments ) and transaction_type != 'donation'
       search_options[:include] << :payments
@@ -75,7 +74,7 @@ class TransactionController < ApplicationController
     end
     @sort_by = @sort_sql.nil? ? "#{model.table_name}.#{model.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
     @paginator, @transactions = paginate( model.table_name.to_sym, search_options )
-    
+
     render :action => "component", :layout => false
   end
 
@@ -86,7 +85,7 @@ class TransactionController < ApplicationController
 
     return render(:action => 'new.rjs')
   end
-  
+
   def create
     begin
       @transaction = model.new(params[transaction_type])
@@ -106,7 +105,7 @@ class TransactionController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     return render(:action => 'edit.rjs')
   end
 
@@ -118,7 +117,7 @@ class TransactionController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
     end
-    
+
     render :action => 'update.rjs'
   end
 
@@ -128,13 +127,13 @@ class TransactionController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-    
+
     return render(:action => 'destroy.rjs')
   end
-  
+
   def cancel
     @successful = true
-    
+
     return render(:action => 'cancel.rjs')
   end
 
@@ -188,7 +187,7 @@ class TransactionController < ApplicationController
   def update_totals
     @transaction = model.new(params[transaction_type])
     _apply_datalist_data(@transaction)
-    render :action => 'update_totals.rjs' 
+    render :action => 'update_totals.rjs'
   end
 
   #######

@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '1.1.2'
+RAILS_GEM_VERSION = '1.2.3'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -39,6 +39,7 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   # See Rails::Configuration for more options
+  config.plugins = ["engines", "*"]
 end
 
 # Add new inflection rules using the following format 
@@ -53,4 +54,3 @@ end
 # Include your application configuration below
 require 'model_modifications'
 require 'actionview_modifications'
-Engines.start :datebocks

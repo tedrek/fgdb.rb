@@ -1,6 +1,0 @@
-page << "$$('.#{@hide_type}').each(function(elem) { elem.hide(); });"
-page << "$$('input.#{@hide_type}').each(function(elem) {
-    elem.checked = false;
-    elem.value = '';
-  });"
-page << "$$('.#{@show_type}').each(function(elem) { elem.show(); });"
