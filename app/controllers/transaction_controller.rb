@@ -1,9 +1,6 @@
 class TransactionController < ApplicationController
   include DatalistFor
 
-  after_filter :clear_flashes
-
-
   layout :check_for_receipt
   def check_for_receipt
     case action_name
@@ -194,11 +191,20 @@ class TransactionController < ApplicationController
   private
   #######
 
+  def current_conditions(options)
+    session[@scaffold_id][:conditions] ||= Conditions.new
+  end
+
+  def default_per_page
+    20
+  end
+
   def transaction_type
     @transaction_type || 'donation'
   end
 
   def set_transaction_type(type)
+    session[@scaffold_id] ||= { }
     @transaction_type = session[@scaffold_id][:transaction_type] = type
     @gizmo_context = GizmoContext.send(@transaction_type)
   end
