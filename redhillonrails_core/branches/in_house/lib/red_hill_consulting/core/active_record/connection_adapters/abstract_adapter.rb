@@ -15,6 +15,7 @@ module RedHillConsulting::Core::ActiveRecord::ConnectionAdapters
     end
 
     def add_foreign_key(table_name, column_names, references_table_name, references_column_names, options = {})
+      execute "DELETE FROM #{table_name} WHERE #{column_names[0]} IS NOT Null AND NOT EXISTS (SELECT * FROM #{references_table_name} as rtn WHERE rtn.#{references_column_names[0]} = #{table_name}.#{column_names[0]})"
       foreign_key = ForeignKeyDefinition.new(options[:name], table_name, column_names, ActiveRecord::Migrator.proper_table_name(references_table_name), references_column_names, options[:on_update], options[:on_delete], options[:deferrable])
       execute "ALTER TABLE #{table_name} ADD #{foreign_key}"
     end
