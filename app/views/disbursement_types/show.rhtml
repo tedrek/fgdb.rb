@@ -1,8 +1,0 @@
-<% for column in DisbursementType.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @disbursement_type.send(column.name) %>
-</p>
-<% end %>
-
-<%= link_to 'Edit', :action => 'edit', :id => @disbursement_type %> |
-<%= link_to 'Back', :action => 'list' %>
