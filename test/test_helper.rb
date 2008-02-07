@@ -19,11 +19,11 @@ class Test::Unit::TestCase
      %W[defaults],
      %W[gizmo_contexts gizmo_types gizmo_attrs gizmo_typeattrs
         gizmo_contexts_gizmo_types gizmo_events],
-#     %W[gizmo_contexts_gizmo_typeattrs  gizmo_events_gizmo_typeattrs],
+     #     %W[gizmo_contexts_gizmo_typeattrs  gizmo_events_gizmo_typeattrs],
      %W[contacts contact_types contact_types_contacts
         contact_method_types contact_methods],
      %W[volunteer_task_types community_service_types],
-#     %W[disbursement_types disbursements],
+     #     %W[disbursement_types disbursements],
      %W[payment_methods],
      %W[discount_schedules discount_schedules_gizmo_types sales],
      %W[donations],
