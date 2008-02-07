@@ -9,7 +9,7 @@ if @successful
 else
   page.replace_html contact_messages_id(@update_options), :partial => 'form_messages'
   page << "$('#{contact_messages_id(@update_options)}').scrollTo();"
-  page << "Form.enable('#{element_form_id(@update_options)}');"
+  page << "Form.enable('floating_form');"
   page.hide loading_indicator_id(@update_options)
 end
 
