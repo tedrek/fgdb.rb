@@ -19,6 +19,9 @@
 #  
 
 module DatetimeToolbocks
+  mattr_accessor :version
+  self.version = false
+
   DATE_FORMATS = {
     'dd/mm/yyyy' => "%d/%m/%Y", 
     'dd-mm-yyyy' => "%d-%m-%Y",

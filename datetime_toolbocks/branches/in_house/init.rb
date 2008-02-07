@@ -20,7 +20,8 @@
 
 
 # load up all the required files we need...
-Engines.current.version = Proc.new { File.open(File.join(RAILS_ROOT, 'vendor', 'plugins', 'datetime_toolbocks', 'VERSION'), 'r').readlines[0] }
+#Engines.current.version = Proc.new { File.open(File.join(RAILS_ROOT, 'vendor', 'plugins', 'datetime_toolbocks', 'VERSION'), 'r').readlines[0] }
+DatetimeToolbocks.version = Proc.new {  File.open(File.join(RAILS_ROOT, 'vendor', 'plugins', 'datetime_toolbawks', 'VERSION'), 'r').readlines[0] }
 
 require 'datetime_toolbocks'
 
