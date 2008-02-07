@@ -5,10 +5,10 @@
 <tr id="<%= element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
   <td id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns(@transaction_type) %>">
 
-    <%= form_remote_tag :url => @options.merge(:controller => '/transaction'),
+    <% form_remote_tag :url => @options.merge(:controller => '/transaction'),
           :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
           :html => { :href => url_for(@options.merge(:controller => '/transaction')),
-            :id => element_form_id(@options) } %>
+            :id => element_form_id(@options) } do %>
 
     <%= javascript_tag "
       $('#{element_form_id(@options)}').onchange = function (e) {
@@ -39,7 +39,7 @@
           { :href => url_for(cancel_params) } %>
         <%= loading_indicator_tag @options %>
       </p>
-    <%= end_form_tag %>
+    <% end %>
   </td>
 </tr>
 <% if not request.xhr? %>

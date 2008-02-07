@@ -1,5 +1,5 @@
 <%= render :partial => 'sidebar_links/page_header' %>
-  <%= form_tag( { :controller => '/reports', :action => controller.action_name + "_report" } ) %>
+  <% form_tag( { :controller => '/reports', :action => controller.action_name + "_report" } ) do %>
     <div id="<%= '#element_messages_id(???)' %>" class="messages-container"></div>
 
     <%= @content_for_layout %>
@@ -7,5 +7,5 @@
     <p class="form-footer">
       <input type="submit" value="Generate Report" />
     </p>
-  <%= end_form_tag %>
+  <% end %>
 <%= render :partial => 'sidebar_links/page_footer' %>
