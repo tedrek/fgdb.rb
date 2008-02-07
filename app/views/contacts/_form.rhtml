@@ -12,7 +12,7 @@
 <% for contact_type in ContactType.find(:all) %>
 <div class="<%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
   <input type="checkbox" id="<%= contact_type.description %>"
-    name="contact_types[]" 
+    name="contact_types[]"
     value="<%= contact_type.id %>"
   <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
   >&nbsp;<label for="<%= contact_type.description %>"><%= contact_type.description %></label>
@@ -72,6 +72,14 @@
   <label for="contact_notes">Notes</label>
   <%= text_area 'contact', 'notes'  %>
 </div>
+
+<div class="form-element">
+  <%= datalist_for( :contact_method, 'contacts_contact_methods',
+    @contact.contact_methods,
+    :show_header => false, :render => "contact_methods_form",
+    :add_text => "More contact methods" ) %>
+</div>
+
 
 <!--[eoform:contact]-->
 
