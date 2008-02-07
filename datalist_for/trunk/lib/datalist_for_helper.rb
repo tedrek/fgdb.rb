@@ -1,67 +1,67 @@
 module DatalistFor
   module Helper
-  
+
     def datalist_for(model, tag, collection, options = {})
-    
+
       options[:tag] = tag
-    
+
       #:TODO: scrub this
       options_encoded = Base64.encode64(Marshal.dump(options)).strip
       klass = eval(Inflector.classify(model.to_s))
-      
+
       # options
-      show_header = true 
+      show_header = true
       show_header = options[:show_header] unless options[:show_header].nil?
       add_text = options[:add_text] || "Add #{klass.name.capitalize}"
       exclude = options[:exclude] || []
 
-      html = <<HTML  
+      html = <<HTML
        <div id="datalist_#{tag}">
 HTML
-  
+
       html += hidden_field_tag "datalist_#{tag}_model", klass.name
       html += hidden_field_tag "datalist_#{tag}_options", options_encoded
       html += hidden_field_tag "datalist_#{tag}_id", datalist_table_id(tag)
       html += "<table class=\"datalist\"
         id=\"#{datalist_table_id(tag)}\">"
-      
+
       if show_header
         html += <<HTML
              <thead>
                <tr>
 HTML
-                 
+
         klass.content_columns.each do |col|
           html += "<th>#{col.human_name}</th>" unless exclude.include? col.name.to_sym
         end
-        
+
         html += <<HTML
                  <th>&nbsp;</th>
                </tr>
              </thead>
 HTML
       end
-      
+
       if collection.length == 0
         html += datalist_row(klass, tag, nil, options)
       end
-      
+
       collection.each do |obj|
         html += datalist_row(klass, tag, obj, options)
       end
 
       html += "</td></tr></table><span class=\"datalist\">
-        #{link_to_remote add_text, :url => { :action => 'datalist_add_row', 
-           :model => klass.name, 
+        #{link_to_remote add_text, :url => { :action => 'datalist_add_row',
+           :model => klass.name,
            :datalist_id => datalist_table_id(tag),
            :options => options_encoded }}</span></div>"
       html
     end
 
     def datalist_row(model, tag, obj = nil, options = {})
-    
+
       exclude = options[:exclude] || []
-      
+
       if obj.nil?
         item_mode = 'datalist_new'
         item_id = ( Time.now.to_f * 1000 ).to_i
@@ -69,14 +69,14 @@ HTML
         item_mode = 'datalist_update'
         item_id = obj.id
       end
-      
+
       item_identifier =
         "#{item_mode}_#{tag}_#{item_id}"
-        
+
       delete_content = options[:delete_content] || 'Delete'
-        
+
       html = "<tr id=\"remove_me_#{item_identifier}\" class=\"datalist #{cycle('even', 'odd')}\">"
-      
+
       if options.has_key? :render or options.has_key? :render_aware
         unless obj
           obj = model.new
@@ -102,10 +102,10 @@ HTML
           }
           html += form #alter_fields_for_datalist(form, form_prefix, item_mode, tag, item_id)
         else
-          form = render :partial => options[:render],
-          :locals => {
-            "@#{form_prefix}" => obj
-          }
+          form = render( :partial => options[:render],
+                         :locals => {
+                           "@#{form_prefix}" => obj
+                         } )
           html += alter_fields_for_datalist(form, form_prefix, item_mode, tag, item_id)
         end
       else
@@ -123,16 +123,16 @@ HTML
           end
         end
       end
-      
+
       html += "<td>
           <span id=\"delete_#{item_identifier}\">"
 
       html += link_to_remote delete_content, :url => { :action => 'datalist_delete_row', :model => model, :id => item_identifier }
-      
+
       html += "</span>
         </td>
       </tr>"
-      
+
     end
 
     def datalist_text_field(object_name, field_name, options = {})
