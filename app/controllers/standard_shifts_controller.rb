@@ -134,6 +134,7 @@ SELECT
     workers.name,
     standard_shifts.start_time, 
     standard_shifts.end_time, 
+    standard_shifts.shift_date, 
     standard_shifts.id, 
     standard_shifts.splitable, 
     standard_shifts.mergeable, 
@@ -153,6 +154,7 @@ SELECT
     workers.name,
     meetings.start_time, 
     meetings.end_time, 
+    meetings.meeting_date, 
     meetings.id,
     meetings.splitable, 
     meetings.mergeable, 
@@ -179,7 +181,9 @@ SQL
                 #   create a new work shift from this standard
                 #     shift
                 if @shift.meeting_id and @shift.meeting_id > 0
-                  workshift = WorkShift.create_from_meeting( @shift, day )
+                  if (not @shift.shift_date) or @shift.shift_date == day
+                    workshift = WorkShift.create_from_meeting( @shift, day )
+                  end
                 else
                   workshift = WorkShift.create_from_standard_shift( @shift, day )
                 end
@@ -187,12 +191,12 @@ SQL
                 #     this shift, if so then set worker_id to 0
                 w = @shift.worker 
                 v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])
-                if v
+                if workshift and v
                   workshift.worker = Worker.find(:first, :conditions => 'id = 0')
                 end
                 #   check to see if worker is available for this shift,
                 #     if not then set worker_id to 0
-                if w.is_available? workshift 
+                if workshift and w.is_available? workshift 
                   #   create a new work_shift from the date and
                   #     standard_shift
                   workshift.save
