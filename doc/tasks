@@ -1,33 +1,100 @@
-X create basic CRUD interface for outlying tables:
-    X coverage_types
-    X frequency_types
-    X schedules
-    X weekdays
-    X worker_types
-- same for next level:
-    X holidays
-        X weekday
-        X schedule
-        X frequency_type
-    X meetings
-        X weekday
-        X schedule
-        X frequency_type
-    X vacations
-        X worker
-    X jobs
-        X coverage_type
-        X workers (though jobs_workers)
-    X workers
-        X jobs (though jobs_workers)
-        X worker_type
-X flesh out jobs:
-    X tie into workers through jobs_workers
-- flesh out workers:
-    - tie into availabilities
-    X tie into vacations
-    X tie into jobs through jobs_workers
-    X tie into meetings through meetings_workers
-- design open_shifts interface
-- design work_shifts interface, manual
-- design work_shifts interface, automatic
+Bugs:
+- first unfilled shift is wrong color
+- drop downs on filter criteria, etc. lose values
+- WorkShift.create_from_XXX can't set ceoverage_type_id
+
+Features:
+- "sprinkle" function: copy shift to every day in the week
+  (standard shifts) or date range (work shifts)
+- inventory all FKs to see if they are in the UI. put there if
+  needed
+- show shifts (with workers' names) on the jobs page (like we
+  show shifts (with jobs' names) on the workers page)
+- one stylesheet system so links appear at bottom (or elsewhere
+  but consistently)
+- include unavailabilities as shifts with job 0 in generated
+  work shifts
+- "split" function: copy shift and set end_time of this shift to
+  start_time of new shift (with a default overlap of 15 minutes)
+- "automerge" shifts during generation -- if the same worker (but
+  not worker 0) does the same job and it overlaps slightly just
+  create one shift out of the two
+- on the shift edit pages limit choice of workers to who can do
+  the given job -- this implies that we won't be changing jobs or
+  that the worker list is dynamically generated based on the job
+  value
+- "copy schedule" -- this should ask for a cutoff date, set
+  current schedule family's ineffective dates to that cutoff date
+  minus one, create new family of schedules with effective dates
+  being the cutoff date, then copy all standard shifts and meetings
+  associated with the old schedule family, associating them with
+  the corresponding schedule in the new schedule family
+- when generating shifts, make sure to check to see which
+  schedules are to be used (using schedule's effective and
+  ineffective dates). expect date ranges that use >1 schedule
+  family
+- part day vacation support during shift generation
+- part day holiday support during shift generation
+- ability to filter on >1 worker and/or >1 job, in addition to
+  present UI which allows filtering on 0 or 1 of each
+
+Database changes:
+- add the 'lock_version', 'created_at' and 'updated_at' columns
+  to get optimistic locking and auto-timestamping
+
+- shifts and similar things that print on schedules:
+
+To simplify the shift generation we should consider using
+single class inheritance, which would require merging the
+standard_shifts, meetings, and unavailabilities tables into one,
+with an additional type field.
+
+A new work_shifts table would likely have all the fields of the
+generic table
+
+Let's say that there's a generic shift thingy that has these
+attributes:
+- start_time
+- end_time
+- resizable
+- weekday
+
+A standard_shift would inherit from the generic model and add
+these attributes:
+- mergeable
+- splitable
+
+and these associations:
+- has 1 job
+- has 1 worker
+- has 1 schedule
+- has 1 coverage type 
+
+A meeting would inherit from the generic model and add these
+attributes:
+- date
+- name
+
+and these associations:
+- has MANY workers
+- has 1 schedule
+- has 1 frequency type
+- has 1 coverage type 
+
+An unavailability would inherit from the generic model and add
+these attributes:
+- all day?
+- date
+- effective date*
+- ineffective date*
+- repeats every*
+- repeats on*
+
+and these associations:
+- has 1 worker
+- has 1 frequency type
+
+* note that the attributes marked with an asterisk (*) also are
+  found in the schedule, meetings and standard shifts use their
+  schedule's attributes, but an unavailability is not associated
+  with a schedule and therefore needs its own
