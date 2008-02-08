@@ -30,6 +30,17 @@ class MeetingsController < ApplicationController
     end
   end
 
+  def copy
+    @meeting = Meeting.find(params[:id])
+    @meeting2 = @meeting.clone
+    if @meeting2.save
+      flash[:notice] = 'Meeting was successfully copied.'
+      redirect_to :action => 'edit', :id => @meeting2.id
+    else
+      render :action => 'new'
+    end
+  end
+
   def edit
     @meeting = Meeting.find(params[:id])
   end
