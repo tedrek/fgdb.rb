@@ -1,5 +1,5 @@
     <tr>
-    <th><%=h @shift.worker.name %></th>
+    <th><%= link_to @shift.worker.name, { :action => 'edit', :controller => 'workers', :id => @shift.worker.id }, :title => 'edit', :popup => true %></th>
 
     <% # output leading cells as padding %>
     <% lead_time = ( @shift.start_time - @shift.weekday.start_time ) / (60*15) %>
