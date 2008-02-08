@@ -65,7 +65,8 @@ class VolunteerTasksController < ApplicationController
       options[:conditions] = ["contact_id = ?", @contact.id]
     end
 
-    @paginator, @volunteer_tasks = paginate(:volunteer_tasks, options)
+    options[:page] => params[:page]
+    @volunteer_tasks = VolunteerTask.paginate(options)
     render :action => "component", :layout => false
   end
 
