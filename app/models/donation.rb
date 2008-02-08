@@ -1,6 +1,6 @@
 class Donation < ActiveRecord::Base
   include GizmoTransaction
-  belongs_to :contact, :order => "surname, first_name"  
+  belongs_to :contact, :order => "surname, first_name"
   has_many :payments, :dependent => :destroy
   has_many :gizmo_events, :dependent => :destroy
 
@@ -43,8 +43,10 @@ class Donation < ActiveRecord::Base
         @contact_type = 'named'
       elsif postal_code != '' and not postal_code.nil?
         @contact_type = 'anonymous'
-      else
+      elsif id
         @contact_type = 'dumped'
+      else
+        @contact_type = 'named'
       end
     end
     @contact_type
