@@ -5,7 +5,7 @@
 <%= text_field 'meeting', 'name'  %></p>
 
 <p><label for="meeting_meeting_date">Meeting date</label><br/>
-<%= date_select 'meeting', 'meeting_date'  %></p>
+<%= date_select 'meeting', 'meeting_date', :include_blank => true, :default => nil %></p>
 
 <p><label for="meeting_start_time">Start time</label><br/>
 <%= time_select 'meeting', 'start_time', {:minute_step => 15}  %></p>
