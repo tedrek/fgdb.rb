@@ -1,6 +1,6 @@
 class Sale < ActiveRecord::Base
   include GizmoTransaction
-  belongs_to :contact, :order => "surname, first_name"  
+  belongs_to :contact, :order => "surname, first_name"
   has_many :payments, :dependent => :destroy
   belongs_to :discount_schedule
   has_many :gizmo_events, :dependent => :destroy
@@ -34,9 +34,13 @@ class Sale < ActiveRecord::Base
   end
 
   def contact_type
-    contact ?
-      'named' :
+    if contact
+      'named'
+    elsif id
       'anonymous'
+    else
+      'named'
+    end
   end
 
   def required_contact_type
