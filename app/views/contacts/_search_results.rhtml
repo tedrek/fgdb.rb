@@ -9,7 +9,7 @@
   <%= loading_indicator_tag(new_params) %>
 
   <% if @search_results.length > 0 %>
-    <%= render :partial => 'results_dropdown' %>
+    <%= render :partial => 'results_dropdown', :locals => {:options => options} %>
     <div id="<%= searchbox_display_id(params) %>">
       <% if @search_results[0] %>
         <%= render :partial => "display", :locals => { :@contact => @search_results[0] } %>
@@ -17,6 +17,6 @@
     </div>
   <% end %>
 
-  <%= javascript_tag on_search if defined? on_search and on_search %>
+  <%= javascript_tag(options[:on_search]) if defined? options[:on_search] and options[:on_search] %>
 
 </div>
