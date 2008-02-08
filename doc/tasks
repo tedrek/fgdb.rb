@@ -1,7 +1,8 @@
 Bugs:
 - first unfilled shift is wrong color
 - drop downs on filter criteria, etc. lose values
-- WorkShift.create_from_XXX can't set ceoverage_type_id
+- WorkShift.create_from_XXX can't set coverage_type_id
+- limit shifts to a single worker who has no shifts bombs
 
 Features:
 - "sprinkle" function: copy shift to every day in the week
