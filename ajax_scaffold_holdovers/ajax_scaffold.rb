@@ -134,22 +134,6 @@ module AjaxScaffold # :nodoc:
       end
     end
 
-    def column_sort_direction(column_name, params)
-      if column_name && column_name == current_sort(params)
-        current_sort_direction(params) == "asc" ? "desc" : "asc"
-      else
-        "asc"
-      end
-    end
-
-    def column_class(column_name, column_value, sort_column, class_name = nil)
-      class_attr = String.new
-      class_attr += "empty " if column_empty?(column_value)
-      class_attr += "sorted " if (!sort_column.nil? && column_name == sort_column)
-      class_attr += "#{class_name} " unless class_name.nil?
-      class_attr
-    end
-
     def loading_indicator_tag(options)
       image_tag "indicator.gif", :style => "display:none;", :id => loading_indicator_id(options), :alt => "loading indicator", :class => "loading-indicator"
     end
@@ -158,22 +142,6 @@ module AjaxScaffold # :nodoc:
 
     def scaffold_content_id(options)
       "#{options[:scaffold_id]}-content"
-    end
-
-    def scaffold_column_header_id(options)
-      "#{options[:scaffold_id]}-#{options[:column_name]}-column"
-    end
-
-    def scaffold_tbody_id(options)
-      "#{options[:scaffold_id]}-tbody"
-    end
-
-    def scaffold_messages_id(options)
-      "#{options[:scaffold_id]}-messages"
-    end
-
-    def empty_message_id(options)
-      "#{options[:scaffold_id]}-empty-message"
     end
 
     def element_row_id(options)
