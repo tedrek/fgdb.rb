@@ -1,29 +1,29 @@
 module ContactsHelper
-  def loading_indicator_id(params)
+  def loading_indicator_id(options)
     'loading_indicator_id'
   end
 
-  def loading_indicator_tag(params)
-    "<div id=\"#{loading_indicator_id(params)}\" />"
+  def loading_indicator_tag(options)
+    "<div id=\"#{loading_indicator_id(options)}\" />"
   end
 
-  def searchbox_display_id(params)
+  def searchbox_display_id(options)
     'searchbox_display_id'
   end
 
-  def searchbox_select_name(params)
-    'contact_id'
+  def searchbox_select_name(options)
+    options[:select_name] || 'contact_id'
   end
 
-  def searchbox_select_id(params)
+  def searchbox_select_id(options)
     'searchbox_select_id'
   end
 
-  def searchbox_select_label(params)
+  def searchbox_select_label(options)
     'searchbox_select_label'
   end
 
-  def element_form_id(params)
+  def element_form_id(options)
     'element_form_id'
   end
 

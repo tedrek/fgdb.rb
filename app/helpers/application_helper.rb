@@ -1,5 +1,45 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  class Column
+    def initialize(klass, opts)
+      raise "bad constructor: needs a name" unless opts.has_key? :name
+      @klass = klass
+      @opts = opts
+    end
+
+    def eval
+      @opts[:eval] || "#{Inflector.underscore(klass)}.#{@opts[:name]}"
+    end
+
+    def name
+      @opts[:name]
+    end
+
+    def class_name
+      @klass.to_s
+    end
+
+    def sanitize?
+      true
+    end
+
+    def sortable?
+      @opts[:sortable] || false
+    end
+
+    def label
+      @opts[:label] || @opts[:name]
+    end
+  end
+
+
+  def num_columns(context)
+    scaffold_columns(context).length + 1
+  end
+
+  def contact_searchbox_id(options)
+    "#{options[:scaffold_id]}_contact_searchbox"
+  end
 
   def contact_search_box
     render :partial => 'contacts/lookup'
@@ -84,6 +124,70 @@ module ApplicationHelper
 
   def search_results_id(params)
     'search_results_id'
+  end
+
+  def scaffold_content_id(options)
+    "#{options[:scaffold_id]}-content"
+  end
+
+  def scaffold_messages_id(options)
+    "#{options[:scaffold_id]}-messages"
+  end
+
+  def empty_message_id(options)
+    "#{options[:scaffold_id]}-empty-message"
+  end
+
+  def column_class(column_name, column_value, sort_column, class_name = nil)
+    class_attr = String.new
+    class_attr += "empty " if column_empty?(column_value)
+    class_attr += "sorted " if (!sort_column.nil? && column_name == sort_column)
+    class_attr += "#{class_name} " unless class_name.nil?
+    class_attr
+  end
+
+  def format_column(column_value, sanitize = true)
+    if column_empty?(column_value)
+      empty_column_text
+    elsif column_value.instance_of? Time
+        format_time(column_value)
+    elsif column_value.instance_of? Date
+      format_date(column_value)
+    else
+      sanitize ? h(column_value.to_s) : column_value.to_s
+    end
+  end
+
+    def column_empty?(column_value)
+      column_value.nil? || (column_value.empty? rescue false)
+    end
+
+    def empty_column_text
+      "-"
+    end
+
+  def column_sort_direction(column_name, params)
+    if column_name && column_name == current_sort(params)
+      current_sort_direction(params) == "asc" ? "desc" : "asc"
+    else
+      "asc"
+    end
+  end
+
+  def current_sort(params)
+    if session[params[:scaffold_id]]
+      session[params[:scaffold_id]][:sort]
+    else
+      'asc'
+    end
+  end
+
+  def scaffold_column_header_id(options)
+    "#{options[:scaffold_id]}-#{options[:column_name]}-column"
+  end
+
+  def scaffold_tbody_id(options)
+    "#{options[:scaffold_id]}-tbody"
   end
 
 end
