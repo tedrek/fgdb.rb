@@ -103,13 +103,13 @@ module ApplicationHelper
       :date_type => 'date_type' }.merge(fields)
 
     # daily
-    date_types['daily'] = toolbocks_date_select(obj_name, fields[:date])
+    date_types['daily'] = calendar_box(obj_name, fields[:date])
     date_types['monthly'] = select_month(obj.send(fields[:month]), :prefix => obj_name) +
       select_year(obj.send(fields[:year]), :prefix => obj_name)
     # arbitrary
     date_types['arbitrary'] = "From: %s To: %s" %
-      [ toolbocks_date_select(obj_name, fields[:start_date]),
-        toolbocks_date_select(obj_name, fields[:end_date]) ]
+      [ calendar_box(obj_name, fields[:start_date]),
+        calendar_box(obj_name, fields[:end_date]) ]
 
     return select_visibility(obj_name, fields[:date_type], date_types)
   end
