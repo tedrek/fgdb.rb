@@ -32,6 +32,9 @@ class JobsController < ApplicationController
 
   def edit
     @job = Job.find(params[:id])
+    session["shift_return_to"] = "jobs"
+    session["shift_return_action"] = "edit"
+    session["shift_return_id"] = @job.id 
   end
 
   def update

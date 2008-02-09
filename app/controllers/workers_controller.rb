@@ -32,6 +32,9 @@ class WorkersController < ApplicationController
 
   def edit
     @worker = Worker.find(params[:id])
+    session["shift_return_to"] = "workers"
+    session["shift_return_action"] = "edit"
+    session["shift_return_id"] = @worker.id 
   end
 
   def update

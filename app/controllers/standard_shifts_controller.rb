@@ -8,6 +8,8 @@ class StandardShiftsController < ApplicationController
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
   def list
+    session["shift_return_to"] = "standard_shifts"
+    session["shift_return_action"] = "list"
     if params[:filter_criteria]
       @opts = params[:filter_criteria]
       @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
@@ -241,7 +243,11 @@ SQL
       flash[:notice] = 'StandardShift was successfully updated.'
       # redirect to list view, the id might be useful for
       # positioning us on the page somehow?
-      redirect_to :action => 'list', :id => @standard_shift
+      if session["shift_return_to"] 
+        redirect_to :controller => session["shift_return_to"], :action => session["shift_return_action"], :id => session["shift_return_id"]
+      else
+        redirect_to :action => 'list', :id => @standard_shift
+      end
     else
       render :action => 'edit'
     end

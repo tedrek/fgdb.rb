@@ -9,6 +9,8 @@ class WorkShiftsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
+    session["shift_return_to"] = "work_shifts"
+    session["shift_return_action"] = "list"
     if params[:filter_criteria]
       start = Date.civil(params[:filter_criteria][:"start_date(1i)"].to_i,params[:filter_criteria][:"start_date(2i)"].to_i,params[:filter_criteria][:"start_date(3i)"].to_i)
       stop = Date.civil(params[:filter_criteria][:"end_date(1i)"].to_i,params[:filter_criteria][:"end_date(2i)"].to_i,params[:filter_criteria][:"end_date(3i)"].to_i)
@@ -93,7 +95,11 @@ SQL
     @work_shift = WorkShift.find(params[:id])
     if @work_shift.update_attributes(params[:work_shift])
       flash[:notice] = 'WorkShift was successfully updated.'
-      redirect_to :action => 'show', :id => @work_shift
+      if session["shift_return_to"] 
+        redirect_to :action => session["shift_return_action"], :id => session["shift_return_id"]
+      else
+        redirect_to :action => 'list', :id => @standard_shift
+      end
     else
       render :action => 'edit'
     end
