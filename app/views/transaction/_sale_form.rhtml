@@ -1,14 +1,12 @@
 <fieldset>
   <div class="row">
     <!--[form:sale]-->
-
-<div id="<%= contact_searchbox_id(@options) %>"
-    onchange="new Ajax.Request('/transaction/update_discount_schedule/?' + Form.serialize('<%= element_form_id(@options)
-      %>'), {asynchronous:true, evalScripts:true});">
+<div id="<%= contact_searchbox_id(@options) %>">
   <label for="donation_contact_type">What kind of contact?</label>
   <%= select_visibility( 'sale', 'contact_type',
         :anonymous => render( :partial => 'anonymous' ),
-        :named => render( :partial => 'contact_search' ) ) %>
+        :named => render( :partial => 'contact_search',
+                          :locals => {:options => {:on_display => "if ($('contact__default_discount_schedule')) { $('sale_discount_schedule_id').value = parseInt($('contact__default_discount_schedule').innerHTML)}"}}) ) %>
 </div>
 
 <div class="datalist"
