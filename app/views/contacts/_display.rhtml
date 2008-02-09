@@ -40,3 +40,5 @@
         :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
   <% end %>
 </div>
+
+<%= javascript_tag(options[:on_display]) if options[:on_display] %>

@@ -32,13 +32,16 @@ module ApplicationHelper
     end
   end
 
-
   def num_columns(context)
     scaffold_columns(context).length + 1
   end
 
   def contact_searchbox_id(options)
     "#{options[:scaffold_id]}_contact_searchbox"
+  end
+
+  def searchbox_display_id(options)
+    'searchbox_display_id'
   end
 
   def contact_search_box

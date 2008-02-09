@@ -1,5 +1,9 @@
 <form id="volunteer_tasks_search">
   <div class="form-element">
-    <%= render :partial => 'contacts/search' %>
+    <%= render :partial => 'contacts/search', :locals => {:options => {
+          :on_display => "$('hours_edit_button').show();", :on_no_display => "$('hours_edit_button').hide();"}} %>
+  </div>
+  <div id="hours_edit_button" style="display:none">
+      <button type="submit">Enter Hours</button>
   </div>
 </form>

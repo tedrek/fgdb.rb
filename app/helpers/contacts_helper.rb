@@ -7,10 +7,6 @@ module ContactsHelper
     "<div id=\"#{loading_indicator_id(options)}\" />"
   end
 
-  def searchbox_display_id(options)
-    'searchbox_display_id'
-  end
-
   def searchbox_select_name(options)
     options[:select_name] || 'contact_id'
   end
