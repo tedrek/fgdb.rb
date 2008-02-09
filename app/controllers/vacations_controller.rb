@@ -30,6 +30,17 @@ class VacationsController < ApplicationController
     end
   end
 
+  def copy
+    @vacation = Vacation.find(params[:id])
+    @vacation2 = @vacation.clone
+    if @vacation2.save
+      flash[:notice] = 'Vacation was successfully copied.'
+      redirect_to :action => 'edit', :id => @vacation2.id
+    else
+      render :action => 'new'
+    end
+  end
+
   def edit
     @vacation = Vacation.find(params[:id])
   end
