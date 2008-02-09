@@ -2,141 +2,182 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 1) do
+ActiveRecord::Schema.define(:version => 3) do
 
   create_table "coverage_types", :force => true do |t|
-    t.column "name", :string
+    t.column "name",        :string
     t.column "description", :string
   end
 
   create_table "frequency_types", :force => true do |t|
-    t.column "name", :string
+    t.column "name",        :string
     t.column "description", :string
   end
 
   create_table "holidays", :force => true do |t|
-    t.column "name", :string
-    t.column "holiday_date", :date
-    t.column "is_all_day", :boolean
-    t.column "start_time", :time
-    t.column "end_time", :time
+    t.column "name",              :string
+    t.column "holiday_date",      :date
+    t.column "is_all_day",        :boolean
+    t.column "start_time",        :time
+    t.column "end_time",          :time
     t.column "frequency_type_id", :integer
-    t.column "schedule_id", :integer
-    t.column "weekday_id", :integer
+    t.column "schedule_id",       :integer
+    t.column "weekday_id",        :integer
   end
 
+  add_index "holidays", ["frequency_type_id"], :name => "index_holidays_on_frequency_type_id"
+  add_index "holidays", ["schedule_id"], :name => "index_holidays_on_schedule_id"
+  add_index "holidays", ["weekday_id"], :name => "index_holidays_on_weekday_id"
+
   create_table "jobs", :force => true do |t|
-    t.column "name", :string
-    t.column "description", :string
+    t.column "name",             :string
+    t.column "description",      :string
     t.column "coverage_type_id", :integer
   end
 
+  add_index "jobs", ["coverage_type_id"], :name => "index_jobs_on_coverage_type_id"
+
   create_table "jobs_workers", :id => false, :force => true do |t|
-    t.column "job_id", :integer
+    t.column "job_id",    :integer
     t.column "worker_id", :integer
   end
 
+  add_index "jobs_workers", ["job_id"], :name => "index_jobs_workers_on_job_id"
+  add_index "jobs_workers", ["worker_id"], :name => "index_jobs_workers_on_worker_id"
+
   create_table "meetings", :force => true do |t|
-    t.column "name", :string
-    t.column "meeting_date", :date
-    t.column "start_time", :time
-    t.column "end_time", :time
-    t.column "splitable", :boolean
-    t.column "mergeable", :boolean
-    t.column "resizable", :boolean
-    t.column "coverage_type_id", :integer
+    t.column "name",              :string
+    t.column "meeting_date",      :date
+    t.column "start_time",        :time
+    t.column "end_time",          :time
+    t.column "splitable",         :boolean
+    t.column "mergeable",         :boolean
+    t.column "resizable",         :boolean
+    t.column "coverage_type_id",  :integer
     t.column "frequency_type_id", :integer
-    t.column "schedule_id", :integer
-    t.column "weekday_id", :integer
+    t.column "schedule_id",       :integer
+    t.column "weekday_id",        :integer
   end
+
+  add_index "meetings", ["coverage_type_id"], :name => "index_meetings_on_coverage_type_id"
+  add_index "meetings", ["frequency_type_id"], :name => "index_meetings_on_frequency_type_id"
+  add_index "meetings", ["schedule_id"], :name => "index_meetings_on_schedule_id"
+  add_index "meetings", ["weekday_id"], :name => "index_meetings_on_weekday_id"
 
   create_table "meetings_workers", :id => false, :force => true do |t|
     t.column "meeting_id", :integer
-    t.column "worker_id", :integer
+    t.column "worker_id",  :integer
   end
 
   create_table "schedules", :force => true do |t|
-    t.column "name", :string
-    t.column "description", :string
-    t.column "effective_date", :date
+    t.column "name",             :string
+    t.column "description",      :string
+    t.column "effective_date",   :date
     t.column "ineffective_date", :date
-    t.column "parent_id", :integer
-    t.column "repeats_every", :integer, :default => 1
-    t.column "repeats_on", :integer, :default => 0
-    t.column "lft", :integer
-    t.column "rgt", :integer
+    t.column "parent_id",        :integer
+    t.column "repeats_every",    :integer, :default => 1
+    t.column "repeats_on",       :integer, :default => 0
+    t.column "lft",              :integer
+    t.column "rgt",              :integer
   end
+
+  add_index "schedules", ["lft"], :name => "index_schedules_on_lft"
+  add_index "schedules", ["rgt"], :name => "index_schedules_on_rgt"
 
   create_table "standard_shifts", :force => true do |t|
-    t.column "start_time", :time
-    t.column "end_time", :time
-    t.column "splitable", :boolean
-    t.column "mergeable", :boolean
-    t.column "resizable", :boolean
+    t.column "start_time",       :time
+    t.column "end_time",         :time
+    t.column "splitable",        :boolean
+    t.column "mergeable",        :boolean
+    t.column "resizable",        :boolean
     t.column "coverage_type_id", :integer
-    t.column "job_id", :integer
-    t.column "meeting_id", :integer
-    t.column "schedule_id", :integer
-    t.column "weekday_id", :integer
-    t.column "worker_id", :integer, :default => 0
+    t.column "job_id",           :integer
+    t.column "meeting_id",       :integer
+    t.column "schedule_id",      :integer
+    t.column "weekday_id",       :integer
+    t.column "worker_id",        :integer, :default => 0
+    t.column "shift_date",       :date
   end
+
+  add_index "standard_shifts", ["coverage_type_id"], :name => "index_standard_shifts_on_coverage_type_id"
+  add_index "standard_shifts", ["job_id"], :name => "index_standard_shifts_on_job_id"
+  add_index "standard_shifts", ["meeting_id"], :name => "index_standard_shifts_on_meeting_id"
+  add_index "standard_shifts", ["schedule_id"], :name => "index_standard_shifts_on_schedule_id"
+  add_index "standard_shifts", ["weekday_id"], :name => "index_standard_shifts_on_weekday_id"
+  add_index "standard_shifts", ["worker_id"], :name => "index_standard_shifts_on_worker_id"
 
   create_table "unavailabilities", :force => true do |t|
-    t.column "effective_date", :date
+    t.column "effective_date",   :date
     t.column "ineffective_date", :date
-    t.column "all_day", :boolean
-    t.column "start_time", :time
-    t.column "end_time", :time
-    t.column "repeats_every", :integer, :default => 1
-    t.column "repeats_on", :integer, :default => 0
-    t.column "weekday_id", :integer
-    t.column "worker_id", :integer
+    t.column "all_day",          :boolean
+    t.column "start_time",       :time
+    t.column "end_time",         :time
+    t.column "repeats_every",    :integer, :default => 1
+    t.column "repeats_on",       :integer, :default => 0
+    t.column "weekday_id",       :integer
+    t.column "worker_id",        :integer
   end
+
+  add_index "unavailabilities", ["weekday_id"], :name => "index_unavailabilities_on_weekday_id"
+  add_index "unavailabilities", ["worker_id"], :name => "index_unavailabilities_on_worker_id"
 
   create_table "vacations", :force => true do |t|
-    t.column "effective_date", :date
+    t.column "effective_date",   :date
     t.column "ineffective_date", :date
-    t.column "is_all_day", :boolean
-    t.column "start_time", :time
-    t.column "end_time", :time
-    t.column "worker_id", :integer
+    t.column "is_all_day",       :boolean
+    t.column "start_time",       :time
+    t.column "end_time",         :time
+    t.column "worker_id",        :integer
   end
 
+  add_index "vacations", ["worker_id"], :name => "index_vacations_on_worker_id"
+
   create_table "weekdays", :force => true do |t|
-    t.column "name", :string
+    t.column "name",       :string
     t.column "short_name", :string
-    t.column "is_open", :boolean
+    t.column "is_open",    :boolean
     t.column "start_time", :time
-    t.column "end_time", :time
+    t.column "end_time",   :time
   end
 
   create_table "work_shifts", :force => true do |t|
-    t.column "shift_date", :date
-    t.column "start_time", :time
-    t.column "end_time", :time
-    t.column "splitable", :boolean
-    t.column "mergeable", :boolean
-    t.column "resizable", :boolean
-    t.column "coverage_type_id", :integer
-    t.column "job_id", :integer
-    t.column "meeting_id", :integer
-    t.column "schedule_id", :integer
+    t.column "shift_date",        :date
+    t.column "start_time",        :time
+    t.column "end_time",          :time
+    t.column "splitable",         :boolean
+    t.column "mergeable",         :boolean
+    t.column "resizable",         :boolean
+    t.column "coverage_type_id",  :integer
+    t.column "job_id",            :integer
+    t.column "meeting_id",        :integer
+    t.column "schedule_id",       :integer
     t.column "standard_shift_id", :integer
-    t.column "weekday_id", :integer
-    t.column "worker_id", :integer
+    t.column "weekday_id",        :integer
+    t.column "worker_id",         :integer
   end
 
+  add_index "work_shifts", ["coverage_type_id"], :name => "index_work_shifts_on_coverage_type_id"
+  add_index "work_shifts", ["job_id"], :name => "index_work_shifts_on_job_id"
+  add_index "work_shifts", ["meeting_id"], :name => "index_work_shifts_on_meeting_id"
+  add_index "work_shifts", ["schedule_id"], :name => "index_work_shifts_on_schedule_id"
+  add_index "work_shifts", ["standard_shift_id"], :name => "index_work_shifts_on_standard_shift_id"
+  add_index "work_shifts", ["weekday_id"], :name => "index_work_shifts_on_weekday_id"
+  add_index "work_shifts", ["worker_id"], :name => "index_work_shifts_on_worker_id"
+
   create_table "worker_types", :force => true do |t|
-    t.column "name", :string
+    t.column "name",        :string
     t.column "description", :string
   end
 
   create_table "workers", :force => true do |t|
-    t.column "name", :string
-    t.column "weekly_work_hours", :float
+    t.column "name",               :string
+    t.column "weekly_work_hours",  :float
     t.column "weekly_admin_hours", :float
-    t.column "worker_type_id", :integer
-    t.column "contact_id", :integer
+    t.column "worker_type_id",     :integer
+    t.column "contact_id",         :integer
   end
+
+  add_index "workers", ["contact_id"], :name => "index_workers_on_contact_id"
+  add_index "workers", ["worker_type_id"], :name => "index_workers_on_worker_type_id"
 
 end
