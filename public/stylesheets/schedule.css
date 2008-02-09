@@ -3,7 +3,7 @@ div.filter {
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
-    background-color: #CCCC99;
+    background: #CCCC99;
     float: left;
     width: 45%;
 }
@@ -12,45 +12,42 @@ div.generate {
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 35px;
-    background-color: #CCCC99;
+    background: #CCCC99;
     float: right;
     width: 40%;
 }
-div.content {
-    float: left;
-}
 caption {
-    background-color: #FFFF99;
+    background: #FFFF99;
     font-weight: bold;
-    text-align: right
+    text-align: right;
 }
 th {
-    background-color: #FFCCCC;
-    text-align: left
+    background: #FFCCCC;
+    text-align: left;
 }
 td {
-    background-color: #FFCCCC;
+    background: #FFCCCC;
 }
 td.shift {
-    background-color: #CCFFFF;
+    background: #CCFFFF;
 }
 td.meeting {
-    background-color: #CCCC99;
+    background: #CCCC99;
     font-style: italic;
     font-weight: bold;
 }
 td.unavailable {
-        background-color: #99CCFF;
+        background: #99CCFF;
 }
 td.hardconflict {
-        background-color: #FF0000;
+        background: #FF0000;
 }
 td.mediumconflict {
-        background-color: #FF8800;
+        background: #FF8800;
 }
 td.softconflict {
-        background-color: #FFFF00;
+        background: #FFFF00;
 }
 td.unfilled {
-    background-color: #FFFF33;
+    background: #FFFF33;
 }
