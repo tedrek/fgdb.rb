@@ -39,6 +39,7 @@
         :confirm => 'Are REALLY you sure you want to kill this person?',
         :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
   <% end %>
+  <div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
 </div>
 
 <%= javascript_tag(options[:on_display]) if options[:on_display] %>
