@@ -11,10 +11,18 @@ div.generate {
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 10px;
-    padding-bottom: 35px;
+    padding-bottom: 10px;
     background: #CCCC99;
     float: right;
-    width: 40%;
+    width: 45%;
+}
+div.footer {
+    position: absolute;
+    margin-top: 230px;
+}
+div.content {
+    position: absolute;
+    margin-top: 340px;
 }
 caption {
     background: #FFFF99;
