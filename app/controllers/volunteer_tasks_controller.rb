@@ -1,4 +1,6 @@
 class VolunteerTasksController < ApplicationController
+  layout :with_sidebar
+
   def index
   end
 
@@ -31,8 +33,6 @@ class VolunteerTasksController < ApplicationController
     end
     render(:partial => 'select_contact') if request.xhr?
   end
-
-  layout :with_sidebar
 
   def by_volunteer
   end
