@@ -1,6 +1,0 @@
-<%= hidden_field_tag 'contact', @contact.id, :id => 'contact_search_results' %>
-
-<%= render :partial => "check_#{@contact.checked_in? ? 'out' : 'in'}" %>
-
-<%= submit_tag "Check #{@contact.checked_in? ? 'out' : 'in'}" %>
-<%= link_to_remote 'cancel', :update => 'check_in_out_form', :url => { :action => 'check' } %>

@@ -1,4 +1,5 @@
-<form id="volunteer_tasks_search">
+<% form_tag({:controller => '/volunteer_tasks', :action => 'list'},
+    {:id => "volunteer_tasks_search"}) do %>
   <div class="form-element">
     <%= render :partial => 'contacts/search', :locals => {:options => {
           :on_display => "$('hours_edit_button').show();", :on_no_display => "$('hours_edit_button').hide();"}} %>
@@ -6,4 +7,4 @@
   <div id="hours_edit_button" style="display:none">
       <button type="submit">Enter Hours</button>
   </div>
-</form>
+<% end %>

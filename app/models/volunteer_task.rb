@@ -23,18 +23,6 @@ class VolunteerTask < ActiveRecord::Base
     volunteer_task_type.type_of_task? type
   end
 
-  def end_time
-    unless duration.nil?
-      start_time + duration.hours
-    else
-      Time.now
-    end
-  end
-
-  def end_time=(t)
-    self.duration = (t - start_time) / 1.hour
-  end
-
   def add_contact_types
     # automatically make the person who did this a volunteer
     # the following is commented out because only

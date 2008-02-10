@@ -1,0 +1,52 @@
+<% if @show_wrapper %>
+<div id="<%= params[:scaffold_id] %>" class="ajax-scaffold">
+  <div id="<%= scaffold_content_id(params) %>">
+  <%= link_to "Start Over", { :action => 'index' } %>
+<% end %>
+  <div class="ajax-scaffold-header">
+    <div class="actions">
+      <% new_params = params.merge(:controller => '/volunteer_tasks', :action => 'new') %>
+      <%= loading_indicator_tag(new_params) %>
+    </div>
+    <h2>Volunteer Tasks</h2>
+    <%= render :partial => 'contact_hours', :locals => {'contact' => @contact} %>
+  </div>
+  <table cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td colspan="<%= num_columns %>" class="messages-container">
+        <div id="<%= scaffold_messages_id(params) %>">
+          <%= render :partial => 'messages' %>
+        </div>
+        <p id="<%= empty_message_id(params) %>" class="empty-message" <%= " style=\"display:none;\" " if !@volunteer_tasks.empty? %>>
+          No Entries
+        </p>
+      </td>
+    </tr>
+  </tbody>
+  <tbody id="<%= scaffold_form_tbody_id(params) %>">
+  </tbody>
+  <tbody>
+    <tr>
+      <%= render :partial => 'column_headings' %>
+    </tr>
+  </tbody>
+  <tbody id="<%= scaffold_tbody_id(params) %>">
+    <% if !@volunteer_tasks.empty? %>
+      <%= render :partial => 'volunteer_task', :collection => @volunteer_tasks, :locals => { :hidden => false } %>
+    <% end %>
+  </tbody>
+</table>
+<div class="ajax-scaffold-footer">
+  <%= will_paginate @volunteer_tasks %>
+</div>
+
+<%= link_to "Start Over", { :action => 'index' } %>
+<% if @show_wrapper %>
+</div>
+</div>
+<% end %>
+<%= javascript_tag(
+      "Element.show($('#{loading_indicator_id(new_params)}'));" +
+      remote_function( :url => new_params )
+    ) %>

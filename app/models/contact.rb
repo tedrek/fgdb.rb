@@ -4,7 +4,7 @@ class Contact < ActiveRecord::Base
   has_many :contact_method_types, :through => :contact_methods
 
   has_many :donations
-  has_many :volunteer_tasks, :order => 'start_time DESC'
+  has_many :volunteer_tasks, :order => 'date_performed DESC'
 
   # acts_as_userstamp
 
@@ -21,7 +21,7 @@ class Contact < ActiveRecord::Base
 
   def uncompleted
     vt = volunteer_tasks.find_by_duration(nil)
-    if not vt.nil? and vt.start_time < 1.day.ago
+    if not vt.nil? and vt.date_performed < 1.day.ago
       # evidentally they forgot to check out... make a new handler for this later.
       vt.destroy
       return nil
@@ -62,7 +62,7 @@ class Contact < ActiveRecord::Base
   def find_volunteer_tasks(cutoff = nil)
     # if it's named volunteer_tasks it breaks everything
     if cutoff
-      conditions = [ "contact_id = ? AND start_time >= ?", id, cutoff ]
+      conditions = [ "contact_id = ? AND date_performed >= ?", id, cutoff ]
     else
       conditions = [ "contact_id = ?", id ]
     end

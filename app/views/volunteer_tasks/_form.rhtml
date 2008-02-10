@@ -1,0 +1,45 @@
+<fieldset>
+
+  <div class="row">
+    <!--[form:volunteer_task]-->
+<div class="form-element">
+  <% if @volunteer_task.contact %>
+    <%= hidden_field_tag "volunteer_task[contact_id]", @volunteer_task.contact_id %>
+  <% else %>
+    <%= render_component( :controller => '/contacts', :action => 'search',
+      :params => { :select_name => "volunteer_task[contact_id]", :contact => @volunteer_task.contact,
+        :search_label => "Find a volunteer:", :select_label => "Select the volunteer:" } ) %>
+  <% end %>
+</div>
+
+<div class="form-element">
+  <label for="volunteer_task_duration">duration</label>
+  <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input", :size=>"4"} %>
+</div>
+
+<div class="form-element">
+  <label for="volunteer_task_volunteer_task_type">Task type</label>
+  <% dropdown_list = VolunteerTaskType.find(:all).sort_by {|type| type.description.downcase} %>
+  <select id="volunteer_task_volunteer_task_type" name="volunteer_task[volunteer_task_type]">
+    <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.volunteer_task_type) %>
+  </select>
+</div>
+
+<div class="form-element">
+  <label for="volunteer_task_community_service_type">Task type</label>
+  <% dropdown_list = CommunityServiceType.find(:all).sort_by {|type| type.description.downcase} %>
+  <select id="volunteer_task_community_service_type" name="volunteer_task[community_service_type]">
+    <option value="0">---</option>
+    <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.community_service_type) %>
+  </select>
+</div>
+
+<div class="form-element">
+  <label for="volunteer_task_date_performed">what day?</label>
+  <%= calendar_box 'volunteer_task', 'date_performed'  %>
+</div>
+
+<!--[eoform:volunteer_task]-->
+
+  </div>
+</fieldset>

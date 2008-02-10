@@ -1,4 +1,5 @@
 module VolunteerTasksHelper
+  include ApplicationHelper
 
   def num_columns
     scaffold_columns.length + 1
