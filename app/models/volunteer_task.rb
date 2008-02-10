@@ -5,6 +5,7 @@ class VolunteerTask < ActiveRecord::Base
 
   validates_presence_of :contact
   validates_presence_of :volunteer_task_type
+  validates_presence_of :date_performed
   validates_presence_of :duration
 
   before_save :add_contact_types

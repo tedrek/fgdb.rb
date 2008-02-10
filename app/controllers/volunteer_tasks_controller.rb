@@ -52,6 +52,7 @@ class VolunteerTasksController < ApplicationController
   def create
     begin
       @volunteer_task = VolunteerTask.new(params[:volunteer_task])
+      @volunteer_task.community_service_type = nil unless CommunityServiceType.exists?(@volunteer_task.community_service_type_id)
       @successful = @volunteer_task.save
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -74,6 +75,7 @@ class VolunteerTasksController < ApplicationController
   def update
     begin
       @volunteer_task = VolunteerTask.find(params[:id])
+      @volunteer_task.community_service_type = nil unless CommunityServiceType.exists?(@volunteer_task.community_service_type_id)
       @successful = @volunteer_task.update_attributes(params[:volunteer_task])
     rescue
       flash[:error], @successful  = $!.to_s, false

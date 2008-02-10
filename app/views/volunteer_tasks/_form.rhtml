@@ -20,17 +20,17 @@
 <div class="form-element">
   <label for="volunteer_task_volunteer_task_type">Task type</label>
   <% dropdown_list = VolunteerTaskType.find(:all).sort_by {|type| type.description.downcase} %>
-  <select id="volunteer_task_volunteer_task_type" name="volunteer_task[volunteer_task_type]">
-    <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.volunteer_task_type) %>
+  <select id="volunteer_task_volunteer_task_type" name="volunteer_task[volunteer_task_type_id]">
+    <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.volunteer_task_type_id) %>
   </select>
 </div>
 
 <div class="form-element">
   <label for="volunteer_task_community_service_type">Task type</label>
   <% dropdown_list = CommunityServiceType.find(:all).sort_by {|type| type.description.downcase} %>
-  <select id="volunteer_task_community_service_type" name="volunteer_task[community_service_type]">
-    <option value="0">---</option>
-    <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.community_service_type) %>
+  <select id="volunteer_task_community_service_type" name="volunteer_task[community_service_type_id]">
+    <option value="">---</option>
+    <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.community_service_type_id) %>
   </select>
 </div>
 
