@@ -14,9 +14,11 @@
     @width = 90 / @day_length
     if start_schedule
       # first time through
-      %> <%= render :partial => 'filter_criteria' %>
-      <%= render :partial => 'gen_sched_form' %> <%
-      %> <br /> <div class='content'> <hr/> <%
+      if @opts['presentation_mode']!='Preview'
+        %> <%= render :partial => 'filter_criteria'
+        %> <%= render :partial => 'gen_sched_form' %> 
+        <div class='content'> <% 
+      end
     else
       # now previous shift should be defined, figure out what
       # needs to happen:
@@ -109,4 +111,6 @@
 %>
 <%= render :partial => 'row_footer', :locals => { :shift => @shift } %>
 <%= render :partial => 'table_footer' %>
-</div>
+<% if @opts['presentation_mode']!='Preview' %>
+  </div>
+<% end %>
