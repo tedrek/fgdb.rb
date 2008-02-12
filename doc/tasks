@@ -5,6 +5,8 @@ Bugs:
 - limit shifts to a single worker who has no shifts bombs
 
 Features:
+- preview mode (or printer friendly) that uses no links, shows
+  no filter or generate controls and opens in a popup window
 - "sprinkle" function: copy shift to every day in the week
   (standard shifts) or date range (work shifts)
 - inventory all FKs to see if they are in the UI. put there if
