@@ -82,19 +82,19 @@ class GoToUuid < ActiveRecord::Migration
   def self.fix_up_fks(conn, p_table, pk, fkeys)
     [
      "ALTER TABLE #{p_table} DROP CONSTRAINT #{p_table}_pkey",
-     "DROP index #{p_table}_pkey",
+     "DROP INDEX #{p_table}_pkey",
      "ALTER TABLE #{p_table} DROP COLUMN id",
      "ALTER TABLE #{p_table} RENAME COLUMN temporary_id_field TO id",
      "ALTER TABLE #{p_table} ADD CONSTRAINT #{p_table}_pkey PRIMARY KEY (#{pk})"
     ].each {|stmt|
       begin
-        conn.execute
+        conn.execute(stmt)
       rescue Exception => e
         puts e
       end
     }
     fkeys.each {|x|
-      f_table, fkey = x.split(".")
+      f_table, fk = x.split(".")
       add_foreign_key(f_table, [fk], p_table, [pk], :name => "#{f_table}_#{p_table}_fk")
     }
   end
