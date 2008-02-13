@@ -11,8 +11,6 @@ Features:
   (standard shifts) or date range (work shifts)
 - inventory all FKs to see if they are in the UI. put there if
   needed
-- show shifts (with workers' names) on the jobs page (like we
-  show shifts (with jobs' names) on the workers page)
 - one stylesheet system so links appear at bottom (or elsewhere
   but consistently)
 - include unavailabilities as shifts with job 0 in generated
@@ -45,7 +43,8 @@ Database changes:
 - add the 'lock_version', 'created_at' and 'updated_at' columns
   to get optimistic locking and auto-timestamping
 
-- shifts and similar things that print on schedules:
+- shifts and similar things that print on schedules should use
+  inheritance:
 
 To simplify the shift generation we should consider using
 single class inheritance, which would require merging the
@@ -55,12 +54,12 @@ with an additional type field.
 A new work_shifts table would likely have all the fields of the
 generic table
 
-Let's say that there's a generic shift thingy that has these
+Let's pretend that there's a generic shift thingy that has these
 attributes:
 - start_time
 - end_time
 - resizable
-- weekday
+- has 1 weekday
 
 A standard_shift would inherit from the generic model and add
 these attributes:
