@@ -29,7 +29,14 @@ class WorkShiftsController < ApplicationController
       start = Date.today
       stop = start + 14
       @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
-      @opts = { :schedule_id => @root_sched.id, :which_way => 'Family', :limit_to_worker => '0', :limit_to_job => '0', :worker_id => 0, :job_id => 0 }
+      @opts = {
+        'schedule_id' => @root_sched.id, 
+        'which_way' => 'Family', 
+        'limit_to_worker' => '0', 
+        'limit_to_job' => '0', 
+        'worker_id' => 0, 
+        'job_id' => 0,
+        'presentation_mode' => 'Edit' }
       where_clause = "WHERE shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
     end
 

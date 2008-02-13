@@ -37,7 +37,14 @@ class StandardShiftsController < ApplicationController
       end
     else
       @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
-      @opts = { :schedule_id => @root_sched.id, :which_way => 'Family', :limit_to_worker => '0', :limit_to_job => '0', :worker_id => 0, :job_id => 0, :presentation_mode => 'Edit' }
+      @opts = { 
+        'schedule_id' => @root_sched.id, 
+        'which_way' => 'Family', 
+        'limit_to_worker' => '0', 
+        'limit_to_job' => '0', 
+        'worker_id' => 0, 
+        'job_id' => 0, 
+        'presentation_mode' => 'Edit' }
       in_clause = @root_sched.in_clause_root_plus
       where_clause1 = ''
       where_clause2 = ''
