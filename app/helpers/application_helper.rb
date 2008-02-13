@@ -8,7 +8,7 @@ module ApplicationHelper
     end
 
     def eval
-      @opts[:eval] || "#{Inflector.underscore(klass)}.#{@opts[:name]}"
+      @opts[:eval] || "#{Inflector.underscore(@klass)}.#{@opts[:name]}"
     end
 
     def name
@@ -28,7 +28,7 @@ module ApplicationHelper
     end
 
     def label
-      @opts[:label] || @opts[:name]
+      @opts[:label] || Inflector.titleize(@opts[:name])
     end
   end
 

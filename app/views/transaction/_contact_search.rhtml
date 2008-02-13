@@ -1,8 +1,9 @@
+<% options ||= {} %>
 <div class="form-element">
   <%= render :partial => 'contacts/search',
         :locals => {:options =>
-            {:select_name => @transaction_type + '[contact_id]'}.merge(options), 
+            {:select_name => @transaction_type + '[contact_id]'}.merge(options),
         :contact => @transaction.contact}
-             
+
   %>
 </div>

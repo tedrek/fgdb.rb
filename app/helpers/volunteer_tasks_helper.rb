@@ -11,8 +11,10 @@ module VolunteerTasksHelper
                 :eval => 'volunteer_task.contact', :sortable => false),
      Column.new(VolunteerTask, :name => 'duration'),
      Column.new(VolunteerTask, :name => 'date_performed'),
-     Column.new(ContactType, :name => 'type', :label => 'Task Types',
-                :eval => 'volunteer_task.volunteer_task_types.map {|t| t.description}.join(", ")', :sortable => false),
+     Column.new(ContactType, :name => 'task_type', :label => 'Task Type',
+                :eval => 'volunteer_task.volunteer_task_type.display_name', :sortable => false),
+     Column.new(ContactType, :name => 'service_type', :label => 'Community Service Type',
+                :eval => 'volunteer_task.community_service_type.display_name', :sortable => false),
     ]
   end
 
