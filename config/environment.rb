@@ -10,7 +10,6 @@ RAILS_GEM_VERSION = '2.0.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
-require File.join(File.dirname(__FILE__), '../vendor/plugins/engines/boot')
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
@@ -46,7 +45,7 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
 
   # See Rails::Configuration for more options
-  config.plugins = [:engines, :all]
+  config.plugins = [:all]
 end
 
 # Add new inflection rules using the following format
