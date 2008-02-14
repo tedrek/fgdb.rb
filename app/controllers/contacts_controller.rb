@@ -25,7 +25,7 @@ class ContactsController < ApplicationController
 
   def update_display_area
     @contact = Contact.find( params[:contact_id] )
-    render :partial => 'display', :locals => { :@contact => @contact }
+    render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] }
   end
 
   def new

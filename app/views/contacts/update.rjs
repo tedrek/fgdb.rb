@@ -4,7 +4,7 @@
 if @successful
   page.replace_html contact_messages_id(@options), :partial => 'messages'
   page.replace_html search_results_id(params),
-    :partial => 'search_results', :locals => { :@search_results => [@contact] }
+    :partial => 'search_results', :locals => { :@search_results => [@contact], :options => @options }
   page.remove 'floating_form'
 else
   page.replace_html contact_messages_id(@update_options), :partial => 'form_messages'
