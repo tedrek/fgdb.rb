@@ -1,4 +1,6 @@
 class ContactMethodType < ActiveRecord::Base
+  usesguid
+
   acts_as_tree
   # acts_as_userstamp
 

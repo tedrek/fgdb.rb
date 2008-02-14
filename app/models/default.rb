@@ -1,4 +1,6 @@
 class Default < ActiveRecord::Base
+  usesguid
+
   class << self
     def [](name)
       return find(:first, :conditions => ["name = ?", name]).value

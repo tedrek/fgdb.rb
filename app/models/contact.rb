@@ -1,4 +1,6 @@
 class Contact < ActiveRecord::Base
+  usesguid
+
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods

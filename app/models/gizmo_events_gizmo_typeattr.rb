@@ -1,6 +1,8 @@
 
 
 class GizmoEventsGizmoTypeattr < ActiveRecord::Base
+  usesguid
+
   belongs_to  :gizmo_typeattr
   belongs_to  :gizmo_event
 

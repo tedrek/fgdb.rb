@@ -1,4 +1,6 @@
 class GizmoType < ActiveRecord::Base
+  usesguid
+
   acts_as_tree
   has_many  :gizmo_typeattrs,
             :dependent => :destroy

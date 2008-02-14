@@ -1,4 +1,6 @@
 class ContactMethod < ActiveRecord::Base
+  usesguid
+
   belongs_to :contact_method_type
   belongs_to :contact, :order => "surname, first_name"  
   validates_associated :contact, :contact_method_type

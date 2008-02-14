@@ -1,4 +1,6 @@
 class GizmoContext < ActiveRecord::Base
+  usesguid
+
   has_and_belongs_to_many  :gizmo_types
   has_and_belongs_to_many  :gizmo_typeattrs
 

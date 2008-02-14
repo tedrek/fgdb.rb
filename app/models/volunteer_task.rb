@@ -1,4 +1,6 @@
 class VolunteerTask < ActiveRecord::Base
+  usesguid
+
   belongs_to :volunteer_task_type
   belongs_to :contact, :order => "surname, first_name"
   belongs_to :community_service_type
@@ -29,11 +31,11 @@ class VolunteerTask < ActiveRecord::Base
     # the following is commented out because only
     # volunteers can be searched for... but non-volunteers
     # can become volunteers, can't they? See ticket #234
-    required = [ContactType.find(4)] # volunteer
+    required = [ContactType.volunteer] # volunteer
     if type_of_task?('build')
-      required << ContactType.find(13) # builder
+      required << ContactType.builder # builder
     elsif type_of_task?('adoption')
-      required << ContactType.find(12) # adopter
+      required << ContactType.adoption # adopter
     end
     for type in required
       unless contact.contact_types.include?(type)

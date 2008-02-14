@@ -1,4 +1,6 @@
 class Payment < ActiveRecord::Base
+  usesguid
+
   belongs_to :donation
   belongs_to :sale
   belongs_to :payment_method

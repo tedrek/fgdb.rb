@@ -1,4 +1,6 @@
 class Disbursement < ActiveRecord::Base
+  usesguid
+
   include GizmoTransaction
   belongs_to :contact, :order => "surname, first_name"
   belongs_to :disbursement_type

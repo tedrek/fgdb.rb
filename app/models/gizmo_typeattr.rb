@@ -1,4 +1,6 @@
 class GizmoTypeattr < ActiveRecord::Base
+  usesguid
+
   belongs_to  :gizmo_type
   belongs_to  :gizmo_attr
 
