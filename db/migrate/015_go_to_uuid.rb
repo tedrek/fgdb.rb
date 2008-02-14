@@ -3,12 +3,16 @@ class GoToUuid < ActiveRecord::Migration
   @@counted_tables = {}
 
   def self.fix_specials(conn)
+    add_column("contacts", "user_id", "bigserial", :unique => true)
+    max_id = conn.execute("SELECT max(id) FROM contacts")[0]
     ["ALTER INDEX dispersements_pkey RENAME TO disbursements_pkey",
      "ALTER TABLE disbursements DROP CONSTRAINT dispersements_pkey CASCADE",
      "ALTER INDEX dispersement_types_pkey RENAME TO disbursements_types_pkey",
      "DROP INDEX contact_types_contacts_contact_id_key",
      "DROP VIEW v_donations",
      "DROP VIEW v_donation_totals",
+     "UPDATE contacts SET user_id = id"
+     "SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('contacts', 'user_id'), #{max_id}, true);"
     ].each {|stmt|
       begin
         conn.execute(stmt)
