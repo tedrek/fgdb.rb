@@ -13,12 +13,7 @@ class ContactsController < ApplicationController
 
   def search_results
     if params['contact_query']
-      q = params['contact_query']
-      if q.to_i > 0 and Contact.exists?(q)
-        @search_results = Contact.find([q])
-      else
-        @search_results = Contact.search(q, :limit => 5)
-      end
+      @search_results = Contact.search(params['contact_query'], :limit => 5)
     end
     render :layout => false, :partial => 'search_results', :locals => { :@search_results => @search_results, :options => params['options'] || { } }
   end

@@ -222,12 +222,11 @@ class Contact < ActiveRecord::Base
       return [] unless query and query.length > 0
       conditions = prepare_query(query)
       find(:all, {:limit => 5, :conditions => conditions}.merge(options))
-
     end
 
     def search_by_type(type, query, options = {})
       if query.to_i.to_s == query
-        # allow searches by id
+        # allow searches by user_id
         search(query, options)
       else
         query = prepare_query(query)
@@ -239,6 +238,9 @@ class Contact < ActiveRecord::Base
     protected
 
     def prepare_query(q)
+      if q.to_i.to_s == q
+        return ["user_id = ?", q]
+      end
       conds = [""]
       q.split.each do |word|
         conds[0] += "(surname ILIKE ? OR first_name ILIKE ? OR middle_name ILIKE ? OR organization ILIKE ?)"
