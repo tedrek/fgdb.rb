@@ -11,8 +11,8 @@ class GoToUuid < ActiveRecord::Migration
      "DROP INDEX contact_types_contacts_contact_id_key",
      "DROP VIEW v_donations",
      "DROP VIEW v_donation_totals",
-     "UPDATE contacts SET user_id = id"
-     "SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('contacts', 'user_id'), #{max_id}, true);"
+     "UPDATE contacts SET user_id = id",
+     "SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('contacts', 'user_id'), #{max_id}, true)"
     ].each {|stmt|
       begin
         conn.execute(stmt)
