@@ -69,7 +69,16 @@ class Conditions
       start_date = Date.parse(@start_date.to_s)
       end_date = Date.parse(@end_date.to_s) + 1
     end
-    return [ "#{klass.table_name}.created_at >= ? AND #{klass.table_name}.created_at < ?",
+    case klass
+    when Disbursement
+      column_name = 'disbursed_at'
+    when Recycling
+      column_name = 'recycled_at'
+    else
+      column_name = 'created_at'
+    end  
+    $stderr.puts("#{klass} #{column_name}\n")
+    return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
              start_date, end_date ]
   end
 
