@@ -45,15 +45,13 @@
         :loading => "$('#{loading_indicator_id( refine_params )}').show()",
         :update => scaffold_content_id( refine_params ) do %>
     <%= hidden_field_tag "scaffold_id", params[:scaffold_id] %>
-    <% filters = {
-          'date range' => date_or_date_range_picker('conditions'),
-          'contact' => render_component( :controller => '/contacts', :action => 'search',
-              :params => {
-                :select_name => "conditions[contact_id]", :contact => @conditions.contact,
-                :display_searchbox => 'true', :display_edit => 'false', :display_create => 'false'
-              }
-            )
-          } %>
+    <% filters = {} %>
+    <% filters['date range'] = date_or_date_range_picker('conditions') %>
+    <% filters['contact'] =
+         render(:partial => 'contacts/search', :locals => {:options =>
+             {:select_name => 'conditions[contact_id]',
+               :display_edit => false, :display_create => false},
+             :contact => @conditions.contact} ) %>
     <% if @model.new.respond_to?( :payments ) %>
       <% filters['payment method'] = render( :partial => 'payment_method_select',
             :locals => {:field_id_prefix => 'conditions',
