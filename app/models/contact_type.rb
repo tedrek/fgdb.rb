@@ -16,11 +16,11 @@ class ContactType < ActiveRecord::Base
     def volunteer
       lookup_by_description("volunteer")
     end
-    def builder
-      lookup_by_description("builder")
+    def build
+      lookup_by_description("build")
     end
-    def adoption
-      lookup_by_description("adoption")
+    def adopter
+      lookup_by_description("adopter")
     end
 
   end

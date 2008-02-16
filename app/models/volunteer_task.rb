@@ -33,9 +33,9 @@ class VolunteerTask < ActiveRecord::Base
     # can become volunteers, can't they? See ticket #234
     required = [ContactType.volunteer] # volunteer
     if type_of_task?('build')
-      required << ContactType.builder # builder
+      required << ContactType.build # builder
     elsif type_of_task?('adoption')
-      required << ContactType.adoption # adopter
+      required << ContactType.adopter # adopter
     end
     for type in required
       unless contact.contact_types.include?(type)

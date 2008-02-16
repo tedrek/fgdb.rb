@@ -193,4 +193,12 @@ module ApplicationHelper
     "#{options[:scaffold_id]}-tbody"
   end
 
+  def loading_indicator_id(options)
+    "#{options.values.map {|v| v.to_s}.sort.join('').gsub(/\w+/, '')}_loading_indicator_id"
+  end
+
+  def loading_indicator_tag(options)
+    "<div id=\"#{loading_indicator_id(options)}\"><img src=\"/images/indicator.gif\"></img></div>"
+  end
+
 end

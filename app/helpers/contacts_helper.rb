@@ -1,12 +1,4 @@
 module ContactsHelper
-  def loading_indicator_id(options)
-    'loading_indicator_id'
-  end
-
-  def loading_indicator_tag(options)
-    "<div id=\"#{loading_indicator_id(options)}\" />"
-  end
-
   def searchbox_select_name(options)
     options[:select_name] || 'contact_id'
   end

@@ -2,9 +2,7 @@ class VolunteerTasksController < ApplicationController
   layout :with_sidebar
 
   def index
-  end
-
-  def by_volunteer
+    redirect_to :action => 'list'
   end
 
   def list
@@ -30,11 +28,6 @@ class VolunteerTasksController < ApplicationController
       ]
     }
 
-    if params.has_key? :contact_id
-      @contact = Contact.find(params[:contact_id])
-      options[:conditions] = ["contact_id = ?", @contact.id]
-    end
-
     options[:page] = params[:page]
     @volunteer_tasks = VolunteerTask.paginate(options)
     render :action => "component", :layout => false
@@ -43,7 +36,6 @@ class VolunteerTasksController < ApplicationController
   def new
     @volunteer_task = VolunteerTask.new
     @volunteer_task.date_performed = Date.today
-    @volunteer_task.contact_id = params[:contact_id]
     @successful = true
 
     return render(:action => 'new.rjs')

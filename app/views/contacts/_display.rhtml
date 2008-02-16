@@ -42,4 +42,4 @@
   <div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
 </div>
 
-<%= javascript_tag(options[:on_display]) if options[:on_display] %>
+<%= javascript_tag(@options[:options][:on_display]) if @options.has_key? :options and @options[:options].has_key? :on_display %>
