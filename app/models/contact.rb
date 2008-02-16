@@ -226,7 +226,7 @@ class Contact < ActiveRecord::Base
 
     def search_by_type(type, query, options = {})
       if query.to_i.to_s == query
-        # allow searches by user_id
+        # allow searches by id
         search(query, options)
       else
         query = prepare_query(query)
@@ -239,7 +239,7 @@ class Contact < ActiveRecord::Base
 
     def prepare_query(q)
       if q.to_i.to_s == q
-        return ["user_id = ?", q]
+        return ["id = ?", q]
       end
       conds = [""]
       q.split.each do |word|
