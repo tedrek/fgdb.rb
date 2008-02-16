@@ -52,7 +52,7 @@ def dump_data( rails_env = "development" )
   case abcs[rails_env]["adapter"]
   when "postgresql"
     print "Dumping the data..."
-    `pg_dump -i -U "#{abcs[rails_env]["username"]}" --disable-triggers -a -x -O -f #{DATADUMPFILE} #{search_path} #{abcs[rails_env]["database"]}`
+    `pg_dump -i -U "#{abcs[rails_env]["username"]}" --disable-triggers -a -x -O #{search_path} #{abcs[rails_env]["database"]} | gzip -v > #{DATADUMPFILE}`
     raise "Error dumping database" if $?.exitstatus == 1
     puts "done"
   else
