@@ -1,4 +1,4 @@
-class GoToUuid < ActiveRecord::Migration
+class RenameDispersements < ActiveRecord::Migration
   def self.up
     conn = Contact.connection
 
