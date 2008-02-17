@@ -1,5 +1,4 @@
 class Default < ActiveRecord::Base
-  usesguid
 
   class << self
     def [](name)

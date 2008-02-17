@@ -1,5 +1,4 @@
 class Payment < ActiveRecord::Base
-  usesguid
 
   belongs_to :donation
   belongs_to :sale

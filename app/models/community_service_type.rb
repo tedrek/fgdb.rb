@@ -1,5 +1,4 @@
 class CommunityServiceType < ActiveRecord::Base
-  usesguid
 
   has_many :volunteer_tasks
 

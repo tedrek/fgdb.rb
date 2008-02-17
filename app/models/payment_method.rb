@@ -1,5 +1,4 @@
 class PaymentMethod < ActiveRecord::Base
-  usesguid
 
 
   def to_s

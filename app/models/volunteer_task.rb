@@ -1,5 +1,4 @@
 class VolunteerTask < ActiveRecord::Base
-  usesguid
 
   belongs_to :volunteer_task_type
   belongs_to :contact, :order => "surname, first_name"

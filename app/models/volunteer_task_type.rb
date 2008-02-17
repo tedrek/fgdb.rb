@@ -1,5 +1,4 @@
 class VolunteerTaskType < ActiveRecord::Base
-  usesguid
 
   has_many :volunteer_tasks
   acts_as_tree

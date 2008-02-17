@@ -1,7 +1,6 @@
 
 
 class GizmoContextsGizmoTypeattr < ActiveRecord::Base
-  usesguid
 
   belongs_to  :gizmo_context
   belongs_to  :gizmo_typeattr

@@ -1,5 +1,4 @@
 class ContactType < ActiveRecord::Base
-  usesguid
 
   validates_uniqueness_of :description, :message => "already exists"
   # acts_as_userstamp

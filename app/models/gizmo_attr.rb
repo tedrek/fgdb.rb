@@ -1,5 +1,4 @@
 class GizmoAttr < ActiveRecord::Base
-  usesguid
 
   has_many  :gizmo_typeattrs,
               :dependent => :destroy

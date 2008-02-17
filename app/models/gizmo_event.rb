@@ -1,7 +1,6 @@
 
 
 class GizmoEvent < ActiveRecord::Base
-  usesguid
 
   has_one :donation
   has_one :sale

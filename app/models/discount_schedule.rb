@@ -1,5 +1,4 @@
 class DiscountSchedule < ActiveRecord::Base
-  usesguid
 
   validates_uniqueness_of :name
   validates_presence_of :name

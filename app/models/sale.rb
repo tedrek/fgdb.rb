@@ -1,5 +1,4 @@
 class Sale < ActiveRecord::Base
-  usesguid
 
   include GizmoTransaction
   belongs_to :contact, :order => "surname, first_name"

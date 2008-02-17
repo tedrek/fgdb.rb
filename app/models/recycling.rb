@@ -1,5 +1,4 @@
 class Recycling < ActiveRecord::Base
-  usesguid
 
   include GizmoTransaction
   has_many :gizmo_events, :dependent => :destroy
