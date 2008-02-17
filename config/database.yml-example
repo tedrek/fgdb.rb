@@ -1,6 +1,6 @@
 development:
   adapter: postgresql
-  database: fgdb.rb_development
+  database: fgdb_development
   username: fgdb
   password:
   host: localhost
@@ -10,14 +10,14 @@ development:
 # Do not set this db to the same as development or production.
 test:
   adapter: postgresql
-  database: fgdb.rb_test
+  database: fgdb_test
   username: fgdb
   password:
   host: localhost
 
 production:
   adapter: postgresql
-  database: fgdb.rb_production
+  database: fgdb_production
   username: fgdb
-  password: 
+  password:
   host: localhost
