@@ -9,9 +9,11 @@ class TransactionController < ApplicationController
     end
   end
 
-  before_filter :update_params_filter
+  before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements]
   def update_params(options)
-    @scaffold_id = params[:scaffold_id] ||= options[:default_scaffold_id]
+    @scaffold_id ||= params[:scaffold_id]
+    raise RuntimeError.new("no scaffold id!") unless @scaffold_id
+
     session[@scaffold_id] ||= {
       :sort => options[:default_sort],
         :sort_direction => options[:default_sort_direction],
@@ -29,7 +31,7 @@ class TransactionController < ApplicationController
   end
 
   def update_params_filter
-    update_params( :default_scaffold_id => transaction_type,
+    update_params( #:default_scaffold_id => transaction_type,
                    :default_sort => nil,
                    :default_sort_direction => "asc" )
     #@scaffold_id = transaction_type
@@ -51,21 +53,25 @@ class TransactionController < ApplicationController
 
   def donations
     set_transaction_type( 'donation' )
+    update_params_filter()
     render :action => 'listing'
   end
 
   def sales
     set_transaction_type( 'sale' )
+    update_params_filter()
     render :action => 'listing'
   end
 
   def recycling
     set_transaction_type( 'recycling' )
+    update_params_filter()
     render :action => 'listing'
   end
 
   def disbursements
     set_transaction_type( 'disbursement' )
+    update_params_filter()
     render :action => 'listing'
   end
 
@@ -226,6 +232,7 @@ class TransactionController < ApplicationController
   end
 
   def set_transaction_type(type)
+    @scaffold_id = type
     session[@scaffold_id] ||= { }
     @transaction_type = session[@scaffold_id][:transaction_type] = type
     @gizmo_context = GizmoContext.send(@transaction_type)
