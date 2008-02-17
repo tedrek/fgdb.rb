@@ -198,7 +198,7 @@ module ApplicationHelper
   end
 
   def loading_indicator_id(options)
-    "#{options.values.map {|v| v.to_s}.sort.join('').gsub(/\w+/, '')}_loading_indicator_id"
+    "#{options[:loading_indicator_prefix]}_loading_indicator_id"
   end
 
   def loading_indicator_tag(options)
