@@ -8,5 +8,5 @@
                   :url => { :controller => 'contacts', :action => 'search_results', :options => options },
                   :with => "'contact_query=' + escape(value)" -%>
 <% if( defined?(contact) && contact ) %>
-  <%= javascript_tag "$('#{contact_query_id(@options)}').setValue('#{contact.id}');" %>
+  <%= javascript_tag "$('#{contact_query_id(options)}').setValue('#{contact.id}');" %>
 <% end %>
