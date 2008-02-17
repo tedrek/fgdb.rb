@@ -87,7 +87,6 @@ if you are moving from the fgdb.rb that explicitly used rails 1.1.2 to
 this branch,
 you will need to do a bit of work.
 ???
-* svn switch to the correct branch? (until it becomes trunk...)
 * manually migrate schema (make a rake task for this?)
 
 == TODO
