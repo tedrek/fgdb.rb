@@ -41,7 +41,7 @@ module ApplicationHelper
   end
 
   def searchbox_display_id(options)
-    'searchbox_display_id'
+    contact_element_prefix(options) + '_searchbox_display_id'
   end
 
   def contact_search_box
@@ -121,12 +121,16 @@ module ApplicationHelper
     #:TODO: ?
   end
 
-  def contact_query_id(options)
-    'contact_query'
+  def contact_element_prefix(options)
+    options[:element_prefix] or 'contact'
   end
 
-  def search_results_id(params)
-    'search_results_id'
+  def contact_query_id(options)
+    contact_element_prefix(options) + '_contact_query'
+  end
+
+  def search_results_id(options)
+    contact_element_prefix(options) + '_search_results_id'
   end
 
   def scaffold_content_id(options)

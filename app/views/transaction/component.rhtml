@@ -50,6 +50,7 @@
     <% filters['contact'] =
          render(:partial => 'contacts/search', :locals => {:options =>
              {:select_name => 'conditions[contact_id]',
+              :element_prefix => 'filter_contact',
                :display_edit => false, :display_create => false},
              :contact => @conditions.contact} ) %>
     <% if @model.new.respond_to?( :payments ) %>

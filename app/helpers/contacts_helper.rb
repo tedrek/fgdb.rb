@@ -4,7 +4,7 @@ module ContactsHelper
   end
 
   def searchbox_select_id(options)
-    options[:select_id] || 'searchbox_select_id'
+    options[:select_id] || contact_element_prefix(options) + '_searchbox_select_id'
   end
 
   def searchbox_select_label(options)
@@ -16,6 +16,6 @@ module ContactsHelper
   end
 
   def contact_messages_id(options)
-    'contact_messages_id'
+    contact_element_prefix(options) + '_contact_messages_id'
   end
 end
