@@ -4,7 +4,7 @@ module ContactsHelper
   end
 
   def searchbox_select_id(options)
-    'searchbox_select_id'
+    options[:select_id] || 'searchbox_select_id'
   end
 
   def searchbox_select_label(options)

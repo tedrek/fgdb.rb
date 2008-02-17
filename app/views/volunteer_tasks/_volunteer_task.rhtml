@@ -17,11 +17,12 @@
         </td>
         <td>
           <% edit_options = @options.merge(:action => 'edit') %>
-          <%= link_to_remote "Edit",
-                         { :url => edit_options,
-                           :confirm => 'Cancel current hours entry?',
-                           :loading => "Element.show('#{loading_indicator_id(@options)}');" },
-                         { :href => url_for(edit_options) } %>
+          <a href="/volunteer_tasks/edit/<%= volunteer_task.id %>"
+            onclick="if(task_form_has_not_been_edited() ||
+                        confirm('Current task will be lost.  Continue?'))
+              { new Ajax.Request('/volunteer_tasks/edit/7_1',
+                {asynchronous:true, evalScripts:true}); };
+              return false;">Edit</a>
         </td>
         <td>
           <% delete_options = @options.merge(:action => 'destroy') %>

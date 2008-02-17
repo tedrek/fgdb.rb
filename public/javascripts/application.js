@@ -169,3 +169,13 @@ function contact_form_org_toggle() {
   });
   $$(show_type).each(function(elem) { elem.show(); });
 }
+
+function task_form_has_not_been_edited() {
+  return(
+    ($('volunteer_task_duration').value == '') &&
+    (
+      (! $('volunteer_task_contact_id')) ||
+      ($('volunteer_task_contact_id').value == '')
+    )
+  );
+}

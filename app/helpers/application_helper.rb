@@ -198,7 +198,7 @@ module ApplicationHelper
   end
 
   def loading_indicator_tag(options)
-    "<div id=\"#{loading_indicator_id(options)}\"><img src=\"/images/indicator.gif\"></img></div>"
+    %Q[<div id="#{loading_indicator_id(options)}"><img src="/images/indicator-foo.gif" alt="loading..."></img></div>]
   end
 
 end

@@ -3,7 +3,12 @@
   <div class="row">
     <!--[form:volunteer_task]-->
 <div class="form-element">
-  <%= render :partial => 'contacts/search', :locals => {:options => {:select_name => 'volunteer_task[contact_id]'}} %>
+  <% if @volunteer_task.contact %>
+    <%= hidden_field_tag "volunteer_task[contact_id]", @volunteer_task.contact_id %>
+    <%= render :partial => "contact_hours", :locals => {:contact => @volunteer_task.contact} %>
+  <% else %>
+    <%= render :partial => 'contacts/search', :locals => {:options => {:select_name => 'volunteer_task[contact_id]', :select_id => 'volunteer_task_contact_id'}} %>
+  <% end %>
 </div>
 
 <div class="form-element">
