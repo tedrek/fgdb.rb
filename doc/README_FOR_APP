@@ -23,11 +23,7 @@ distros.
 To get the fgdb.rb source:
 
  $> apt-get install subversion
- $> svn co http://dev.freegeek.org/svn/fgdb.rb/trunk fgdb.rb
-
-(possibly something in branches?
- $> svn co http://dev.freegeek.org/svn/fgdb.rb/branches/some_branch fgdb.rb
-only if you know what you're doing.)
+ $> svn co http://dev.freegeek.org/svn/fgdb.rb
 
 to setup a working environment:
 
@@ -44,7 +40,7 @@ you need to create and configure the databases:
  $> createdb -h localhost -U SOMEDBUSER fgdb_production
  $> createdb -h localhost -U SOMEDBUSER fgdb_test
  $> createdb -h localhost -U SOMEDBUSER fgdb_development
- $> cd fgdb.rb
+ $> cd fgdb.rb/trunk
    ::: edit config/database.yml-example to match and rename
    ::: it (drop '-example')
  $> export RAILS_ENV=production
