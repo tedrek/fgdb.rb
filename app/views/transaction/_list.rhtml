@@ -1,1 +1,1 @@
-<%= render_component :controller => '/transaction', :action => 'component', :params => params, :transaction_type => @transaction_type %>
+<%= render_component :controller => '/transaction', :action => 'component', :params => params.merge({:scaffold_id => @scaffold_id}), :transaction_type => @transaction_type %>
