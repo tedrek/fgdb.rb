@@ -3,7 +3,7 @@
 <% end %>
 <% form_tag( { :controller => '/contacts', :action => 'lookup' }, { :id => 'tasty_test' } ) do %>
   <div class="form-element">
-    <%= render :partial => 'search', :locals => {:contact => @contact} %>
+    <%= render :partial => 'search', :locals => {:contact => @contact, :options => {}} %>
   </div>
   <%= submit_tag 'Test' %>
 <% end -%>
