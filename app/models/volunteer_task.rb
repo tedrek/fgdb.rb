@@ -15,6 +15,9 @@ class VolunteerTask < ActiveRecord::Base
     if contact.nil?
       errors.add(:contact_id, "must be choosen")
     end
+    if duration.to_f <= 0.0
+      errors.add(:duration, "must be greater than zero")
+    end
   end
 
   def effective_duration
