@@ -277,3 +277,21 @@ color: #828;
 .invoice td {
 color: red;
 }
+
+/* ====================================
+        volunteer report */
+#volunteer_task_type_report {
+  width: 300px;
+}
+#community_service_type_report {
+  width: 300px;
+}
+.task {
+  width: 100%;
+  border-bottom: solid 1px black;
+}
+.task_name {}
+.task_data {
+  float: right;
+  margin-top: -18px; /* GAH! */
+}
