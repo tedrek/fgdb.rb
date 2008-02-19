@@ -76,7 +76,7 @@ class Conditions
       column_name = 'recycled_at'
     else
       column_name = 'created_at'
-    end  
+    end
     $stderr.puts("#{klass} #{column_name}\n")
     return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
              start_date, end_date ]
@@ -121,7 +121,7 @@ class Conditions
     return desc
   end
 
-  def contact_to_s
-    return "belonging to %s" % contact.display_name
+  def contact_to_s # "Report of hours worked for ..."
+    return contact.display_name
   end
 end

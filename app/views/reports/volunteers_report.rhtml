@@ -1,0 +1,19 @@
+<% table_width = 2 %>
+<h1>Report of hours worked for <%= @date_range_string %></h1>
+
+<% for section,types in @data %>
+  <div id="<%= section -%>_report"><p><%= Inflector.titleize(section) %></p>
+  <% for type in types.keys.sort {|a,b|
+          if /total/i.match(a)
+            1
+          elsif /total/i.match(b)
+            -1
+          else
+           a.downcase <=> b.downcase
+          end } %>
+    <div class="task"><span class="task_name"><%= type %></span> <span class="task_data"><%= @data[section][type] %></span></div>
+  <% end %>
+  </div>
+<% end %>
+
+<p class="timestamp"> - generated <%= Time.now %></p>

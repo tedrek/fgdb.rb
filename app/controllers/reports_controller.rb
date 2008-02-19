@@ -191,4 +191,60 @@ class ReportsController < ApplicationController
     }
   end
 
+  ########################
+  ### Volunteer report ###
+  ########################
+
+  public
+
+  def volunteers
+    @defaults = Conditions.new
+  end
+
+  def volunteers_report
+    @defaults = Conditions.new
+    @defaults.apply_conditions(params[:defaults])
+    @date_range_string = @defaults.to_s
+    @tasks = VolunteerTask.find(:all, :conditions => @defaults.conditions(VolunteerTask),
+                                :include => [:volunteer_task_type, :community_service_type])
+    @sections = [:volunteer_task_type, :community_service_type]
+    @data = volunteer_report_for(@tasks, @sections)
+  end
+
+  protected
+
+  def volunteer_report_for(tasks, sections)
+    data = {}
+    sections.each {|section|
+      data[section] = {}
+      eval(Inflector.classify(section)).find(:all).each {|type|
+        data[section][type.display_name] = 0.0
+      }
+      data[section]['Total'] = 0.0
+      data[section]['(none)'] = 0.0
+    }
+    tasks.each {|task|
+      sections.each {|section|
+        add_task_to_data(task, section, data)
+      }
+    }
+    return data
+  end
+
+  def add_task_to_data(task, section, data)
+    type = task.send(section)
+    if type
+      type = type.display_name
+    else
+      type = '(none)'
+    end
+    data[section][type] += task.duration
+    while type.respond_to?(:parent) do
+      type = type.parent
+      data[section][type] += task.duration
+    end
+    data[section]["Total"] ||= 0.0
+    data[section]["Total"] += task.duration
+  end
+
 end
