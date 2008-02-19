@@ -8,7 +8,7 @@ module ContactsHelper
   end
 
   def searchbox_select_label(options)
-    'searchbox_select_label'
+    'choose a matching contact'
   end
 
   def element_form_id(options)

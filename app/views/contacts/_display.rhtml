@@ -1,4 +1,4 @@
-<% @options = params.merge(:controller => '/contacts', :action => "view", :id => @contact.send("#{Contact.primary_key}")) %>
+<% options.merge!(:controller => '/contacts', :action => "view", :id => @contact.send("#{Contact.primary_key}")) %>
 
 <div class="contact_display">
   <div class="id">
@@ -25,21 +25,21 @@
     <% end %>
   </div>
   <br />
-  <%= loading_indicator_tag(@options) %>
-  <% if (! params.has_key?(:display_edit)) or (params[:display_edit] == 'true') %>
-    <% edit_options = @options.merge(:action => 'edit') %>
+  <% if (! options.has_key?(:display_edit)) or (options[:display_edit] == 'true') %>
+    <% edit_options = options.merge(:action => 'edit') %>
+    <%= loading_indicator_tag(edit_options) %>
     <%= link_to_remote "Edit",
       { :url => edit_options,
-        :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
+        :loading => "Element.show('#{loading_indicator_id(edit_options)}');" } %>
   <% end %>
   <% if @delete_enabled %>
-    <% delete_options = @options.merge(:action => 'destroy') %>
+    <% delete_options = options.merge(:action => 'destroy') %>
     <%= link_to_remote "Delete",
       { :url => delete_options,
         :confirm => 'Are REALLY you sure you want to kill this person?',
-        :loading => "Element.show('#{loading_indicator_id(@options)}');" } %>
+        :loading => "Element.show('#{loading_indicator_id(delete_options)}');" } %>
   <% end %>
   <div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
 </div>
 
-<%= javascript_tag(@options[:options][:on_display]) if @options.has_key? :options and @options[:options].has_key? :on_display %>
+<%= javascript_tag(options[:on_display]) if options.has_key? :on_display %>
