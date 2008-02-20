@@ -77,7 +77,7 @@ class Conditions
     else
       column_name = 'created_at'
     end
-    $stderr.puts("#{klass} #{column_name}\n")
+    # $stderr.puts("#{klass} #{column_name}\n")
     return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
              start_date, end_date ]
   end
