@@ -5,7 +5,7 @@ require 'contacts_controller'
 class ContactsController; def rescue_action(e) raise e end; end
 
 class ContactsControllerTest < Test::Unit::TestCase
-  fixtures :contacts, :volunteer_task_types
+  fixtures :contacts, :volunteer_task_types, :discount_schedules
 
   NEW_CONTACT = {
     'postal_code' => '98982'
@@ -25,27 +25,26 @@ class ContactsControllerTest < Test::Unit::TestCase
     get :lookup
     assert_response :success
     assert_template 'lookup'
-    assert_match /alert.+hi/, @response.body
   end
 
   def test_search_results
     martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
-    martin.save
+    assert martin.save
     assert_nothing_raised { martin.adoption_hours }
     xhr :post, :search_results, :contact_query => 'martin'
     assert_response :success
     assert_template '_search_results'
   end
 
-  def test_search_results_with_on_search
-    on_search_js = "alert('hi');"
+  def test_search_results_with_on_display
+    on_display_js = "alert('test');"
     martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
     martin.save
     assert_nothing_raised { martin.adoption_hours }
-    xhr :post, :search_results, :on_search => on_search_js, :contact_query => 'martin'
+    xhr :post, :search_results, :options => {:on_display => on_display_js}, :contact_query => 'martin'
     assert_response :success
     assert_template '_search_results'
-    assert_match on_search_js, @response.body
+    assert_match on_display_js, @response.body
   end
 
   def test_new_xhr
@@ -57,12 +56,12 @@ class ContactsControllerTest < Test::Unit::TestCase
 
   def test_create_xhr
     contact_count = Contact.find(:all).length
-    xhr :post, :create, {:contact => NEW_CONTACT, :contact_types => NEW_CONTACT_TYPES}
-    contact, successful = check_attrs(%w(contact successful))
-    assert successful, "Should be successful"
+    xhr :post, :create, {:contact => NEW_CONTACT}
     assert_response :success
     assert_template 'create.rjs'
     assert_equal contact_count + 1, Contact.find(:all).length, "Expected an additional Contact"
+    contact, successful = check_attrs(%w(contact successful))
+    assert contact.id, "Should have a contact id"
   end
 
   def test_create_xhr_invalid
@@ -104,7 +103,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_template 'cancel.rjs'
     assert assigns(:successful)
     assert_rjs :remove, 'floating_form'
-    assert_match /^Form.enable\(\$\('contact_query'\)/, @response.body
+    assert_match /^Form.enable\(\$\('\w*contact_query'\)/, @response.body
   end
 
 protected

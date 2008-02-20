@@ -17,5 +17,14 @@ class GizmoEventTest < Test::Unit::TestCase
     assert ! ev.mostly_empty?
   end
 
+  def test_required_fee
+    ge = GizmoEvent.new(crt_event)
+    assert ge.valid?
+    assert_kind_of GizmoType, ge.gizmo_type
+    assert ge.gizmo_type.required_fee
+    assert ge.gizmo_type.required_fee > 0
+    assert ge.required_fee > 0
+  end
+
 end
 

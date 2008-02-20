@@ -358,7 +358,7 @@ gizmo_types_056:
   lock_version: "3"
   updated_by: "1"
   id: "3"
-  required_fee: 0.0
+  required_fee: 10.0
 
   description: CRT
   parent_id: "1"
@@ -397,7 +397,7 @@ gizmo_types_009:
   lock_version: "4"
   updated_by: "1"
   id: "5"
-  required_fee: 0.0
+  required_fee: 10.0
 
   description: System w/builtin monitor
   parent_id: "1"
@@ -514,7 +514,7 @@ gizmo_types_012:
   lock_version: "0"
   updated_by: "1"
   id: "21"
-  required_fee: 0.0
+  required_fee: 10.0
 
   description: Old Data CRT
   parent_id: "1"

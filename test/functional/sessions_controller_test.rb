@@ -9,7 +9,7 @@ class SessionsControllerTest < Test::Unit::TestCase
   # Then, you can remove it from this and the units test.
   include AuthenticatedTestHelper
 
-  fixtures :users
+  fixtures :users, :roles, :roles_users
 
   def setup
     @controller = SessionsController.new
@@ -17,13 +17,16 @@ class SessionsControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
   end
 
-  def test_should_login_and_redirect
+  def test_should_login
     post :create, :login => 'quentin', :password => 'test'
     assert session[:user_id]
-    assert_response :redirect
+    assert_response :success
+    assert_rjs :replace, 'sidebar', /donation/
+    assert_rjs :replace, 'sidebar', /sale/
+    assert_rjs :replace, 'login_box'
   end
 
-  def test_should_fail_login_and_not_redirect
+  def test_should_fail_login
     post :create, :login => 'quentin', :password => 'bad password'
     assert_nil session[:user_id]
     assert_response :success
@@ -33,19 +36,11 @@ class SessionsControllerTest < Test::Unit::TestCase
     login_as :quentin
     get :destroy
     assert_nil session[:user_id]
-    assert_response :redirect
+    assert_response :success
+    assert_rjs :replace, 'sidebar'
+    assert_rjs :replace, 'login_box'
   end
 
-  def test_should_remember_me
-    post :create, :login => 'quentin', :password => 'test', :remember_me => "1"
-    assert_not_nil @response.cookies["auth_token"]
-  end
-
-  def test_should_not_remember_me
-    post :create, :login => 'quentin', :password => 'test', :remember_me => "0"
-    assert_nil @response.cookies["auth_token"]
-  end
-  
   def test_should_delete_token_on_logout
     login_as :quentin
     get :destroy
@@ -78,7 +73,7 @@ class SessionsControllerTest < Test::Unit::TestCase
     def auth_token(token)
       CGI::Cookie.new('name' => 'auth_token', 'value' => token)
     end
-    
+
     def cookie_for(user)
       auth_token users(user).remember_token
     end

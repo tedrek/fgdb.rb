@@ -10,22 +10,6 @@ class DonationTest < Test::Unit::TestCase
   NO_INFO = {}
   WITH_CONTACT_INFO = NO_INFO.merge({:postal_code => '54321', :contact_type => 'anonymous'})
 
-  def crt_event
-    {
-      :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'CRT']).id,
-      :gizmo_count => 1,
-      :gizmo_context => GizmoContext.donation
-    }
-  end
-
-  def system_event
-    {
-      :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
-      :gizmo_count => 1,
-      :gizmo_context => GizmoContext.donation
-    }
-  end
-
   def with_gizmo
     NO_INFO.merge({:gizmo_events => [GizmoEvent.new(system_event)]})
   end
@@ -59,7 +43,7 @@ class DonationTest < Test::Unit::TestCase
 
   def test_that_should_dumped_contact_type_should_be_remembered
     donation = Donation.new(NO_INFO.merge({:gizmo_events => [GizmoEvent.new(crt_event)], :contact_type => 'dumped'}))
-    donation.save
+    assert donation.save
     donation = Donation.find(donation.id)
     assert_equal 'dumped', donation.donor
     assert_equal 'dumped', donation.contact_type
@@ -144,8 +128,10 @@ class DonationTest < Test::Unit::TestCase
   def test_that_required_fees_should_be_valid_paid
     donation = Donation.new(WITH_CONTACT_INFO)
     donation.gizmo_events = [GizmoEvent.new(crt_event)]
+    assert ! donation.gizmo_events.empty?
+    assert donation.gizmo_events[0].gizmo_type.required_fee > 0
+    assert( donation.calculated_required_fee > 0, "a crt should have a required fee" )
     assert( ! donation.valid? )
-    assert( donation.calculated_required_fee > 0 )
     donation.payments = [Payment.new({ :amount => 10, :payment_method_id => 3 })]
     assert( donation.valid? )
   end

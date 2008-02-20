@@ -65,7 +65,7 @@ class Test::Unit::TestCase
   end
   alias_method_chain :load_fixtures, :trigger_disabling
 
-  # An hour of programming AGO hours in the past
+  # An hour of programming AGO days in the past
   def an_hour_of_programming(ago=2)
     an_hour_of(46,ago)
   end
@@ -74,21 +74,37 @@ class Test::Unit::TestCase
     an_hour_of(52,ago)
   end
 
-  # An hour of assembly AGO hours in the past
+  # An hour of assembly AGO days in the past
   def an_hour_of_assembly(ago=2)
     an_hour_of(26,ago)
   end
 
-  # An hour of monitors AGO hours in the past
+  # An hour of monitors AGO days in the past
   def an_hour_of_monitors(ago=2)
     an_hour_of(22,ago)
   end
 
-  # An hour of TYPE, AGO hours in the past
+  # An hour of TYPE, AGO days in the past
   def an_hour_of(type,ago=2)
     VolunteerTask.new({ :duration => 1.0,
-                        :start_time => Time.now - ago.hours,
+                        :date_performed => Date.today - ago,
                         :volunteer_task_type => VolunteerTaskType.find(type) })
+  end
+
+  def crt_event
+    {
+      :gizmo_type => GizmoType.find(:first, :conditions => ['description = ?', 'CRT']),
+      :gizmo_count => 1,
+      :gizmo_context => GizmoContext.donation
+    }
+  end
+
+  def system_event
+    {
+      :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
+      :gizmo_count => 1,
+      :gizmo_context => GizmoContext.donation
+    }
   end
 
 end

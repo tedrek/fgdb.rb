@@ -9,7 +9,8 @@ class VolunteerTaskTest < Test::Unit::TestCase
     {
       :duration => 1.5,
       :contact_id => 1,
-      :volunteer_task_type_id => type.id
+      :date_performed => Date.today,
+      :volunteer_task_type_id => 46
     }
   end
   REQ_ATTR_NAMES                         = %w( contact_id ) # name of fields that must be present, e.g. %(name description)
@@ -59,9 +60,9 @@ class VolunteerTaskTest < Test::Unit::TestCase
   end
 
   def test_effective_duration
-    assert_equal 1.0, an_hour_of_programming.effective_duration
-    assert_equal 1.0, an_hour_of_testing.effective_duration
     assert_equal 2.0, an_hour_of_monitors.effective_duration
+    assert_equal 1.0, an_hour_of_assembly.effective_duration
+    assert_equal 1.0, an_hour_of_testing.effective_duration
   end
 end
 
