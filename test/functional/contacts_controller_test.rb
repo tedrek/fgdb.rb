@@ -16,8 +16,6 @@ class ContactsControllerTest < Test::Unit::TestCase
     @controller = ContactsController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
-    # Retrieve fixtures via their name
-    # @first = contacts(:first)
     @first = Contact.find(:first)
   end
 
@@ -70,7 +68,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'create.rjs'
     assert ! successful, "Should not be successful"
-    assert_match /Postal code can't be blank/i, @response.body
+    assert_match /Postal code can't be blank/i, @response.body #'
     assert_match /Form.enable/, @response.body
     assert_match /addClassName[^;]+fieldWithErrors/, @response.body
   end
