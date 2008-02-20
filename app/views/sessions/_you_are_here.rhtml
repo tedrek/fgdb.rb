@@ -1,0 +1,7 @@
+<div id="login_box">
+  <% if @current_user and @current_user != :false -%>
+    Hi! <%= @current_user.login %> <%= link_to_remote "logout", :url => "/sessions/destroy" %>
+  <% else -%>
+    <%= render :partial => "sessions/form" %>
+  <% end -%>
+</div>

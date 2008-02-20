@@ -17,8 +17,14 @@
   <div id="logo">
     <img src="/images/freegeeklogo.png" alt="freegeeklogo.png" />
   </div>
+
+  <%= render :partial => "sessions/you_are_here" %>
+
   <div id="sidebar">
     <%= render :partial => 'sidebar_links/sidebar' %>
   </div>
 
+  
+
   <div id="<%= content_id({}) %>">
+

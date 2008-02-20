@@ -1,5 +1,9 @@
 /* ===================================
           layout */
+div#login_box { 
+  float:right;
+  clear:left;
+}
 
 div#logo {
 position: absolute;

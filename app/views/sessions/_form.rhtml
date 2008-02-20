@@ -1,0 +1,15 @@
+<% form_remote_tag :url => "/sessions/create" do -%>
+<div class="form-element">
+  <label for="login">Login</label>
+  <%= text_field_tag 'login' %>
+</div>
+
+<div class="form-element">
+  <label for="password">Password</label>
+  <%= password_field_tag 'password' %>
+</div>
+
+<div class="form-element">
+  <%= submit_tag 'Log in' %>
+</div>
+<% end -%>
