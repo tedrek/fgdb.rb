@@ -64,6 +64,10 @@ class User < ActiveRecord::Base
     save(false)
   end
 
+  def has_role?(role)
+    roles.detect {|r| r.name == role}
+  end
+
   protected
     # before filter 
     def encrypt_password
@@ -75,6 +79,5 @@ class User < ActiveRecord::Base
     def password_required?
       crypted_password.blank? || !password.blank?
     end
-    
-    
+
 end
