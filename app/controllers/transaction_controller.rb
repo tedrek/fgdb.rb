@@ -1,6 +1,8 @@
 class TransactionController < ApplicationController
   include DatalistFor
 
+  protected
+
   layout :check_for_receipt
   def check_for_receipt
     case action_name
@@ -10,6 +12,8 @@ class TransactionController < ApplicationController
   end
 
   before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements]
+  before_filter :authorize_for_money
+
   def update_params(options)
     @scaffold_id ||= params[:scaffold_id]
     raise RuntimeError.new("no scaffold id!") unless @scaffold_id
@@ -25,17 +29,29 @@ class TransactionController < ApplicationController
     store_or_get_from_session(@scaffold_id, :page)
   end
 
+  def authorize_for_money
+    if %w[donations sales].include?(action_name) or
+        %w[donation sale].include?(@scaffold_id)
+      if logged_in? && current_user.has_role?('ROLE_ADMIN')
+        return true
+      else
+        flash[:error] = "Unauthorized action!"
+        redirect_to :controller => 'sidebar_links'
+        return false
+      end
+    else
+      return true
+    end
+  end
+
   def store_or_get_from_session(id_key, value_key)
     session[id_key][value_key] = params[value_key] if !params[value_key].nil?
     params[value_key] ||= session[id_key][value_key]
   end
 
   def update_params_filter
-    update_params( #:default_scaffold_id => transaction_type,
-                   :default_sort => nil,
+    update_params( :default_sort => nil,
                    :default_sort_direction => "asc" )
-    #@scaffold_id = transaction_type
-    #session[@scaffold_id] ||= { }
     session[@scaffold_id][:conditions] ||= Conditions.new
     if params[:conditions]
       session[@scaffold_id][:conditions].apply_conditions(params[:conditions])
@@ -46,6 +62,8 @@ class TransactionController < ApplicationController
       set_transaction_type( session[@scaffold_id][:transaction_type] )
     end
   end
+
+  public
 
   def index
     redirect_to :action => 'donations'

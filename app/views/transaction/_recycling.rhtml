@@ -1,6 +1,6 @@
 <% # The following is used when the browser doesn't have javascript enabled %>
 <% classAttr = cycle("", " even") %>
-<% @options = params.merge(:controller => '/transaction', :action => "view",
+<% @options = params.merge(:controller => base_controller, :action => "view",
                            :id => recycling.send("#{Recycling.primary_key}"),
                            :transaction_type => @transaction_type) %>
 

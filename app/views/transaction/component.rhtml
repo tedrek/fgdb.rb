@@ -5,7 +5,7 @@
   <div class="ajax-scaffold-header">
     <h2><%= Inflector.titleize(@transaction_type) %></h2>
     <div class="actions">
-      <% new_params = params.merge(:controller => '/transaction', :action => 'new', :transaction_type => @transaction_type) %>
+      <% new_params = params.merge(:controller => base_controller, :action => 'new', :transaction_type => @transaction_type) %>
       <%= loading_indicator_tag(new_params) %>
     </div>
   </div>

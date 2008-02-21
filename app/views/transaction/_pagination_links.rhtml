@@ -1,4 +1,4 @@
-   <% pagination_params = params.merge(:controller => '/transaction',
+   <% pagination_params = params.merge(:controller => base_controller,
                                        :action => 'component_update',
                                        :transaction_type => @transaction_type) %>
    <% indicator_params = pagination_params.merge(:action => 'pagination') %>

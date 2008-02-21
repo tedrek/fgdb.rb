@@ -10,7 +10,7 @@
 </div>
 
 <div class="datalist"
-    onchange="new Ajax.Request('/transaction/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
+    onchange="new Ajax.Request('/<%= base_controller -%>/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
       %>'), {asynchronous:true, evalScripts:true});">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'sale_gizmo_events',

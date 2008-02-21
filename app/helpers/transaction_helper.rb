@@ -1,6 +1,10 @@
 module TransactionHelper
   include ApplicationHelper
 
+  def base_controller
+    return '/transaction'
+  end
+
   def scaffold_columns(context)
     case context
     when 'sale'

@@ -1,6 +1,6 @@
       <% for scaffold_column in scaffold_columns(@transaction_type) %>
         <% column_sort_direction = column_sort_direction(scaffold_column.name, params) %>  
-        <% sort_params = params.merge(:controller => '/transaction',
+        <% sort_params = params.merge(:controller => base_controller,
                                       :transaction_type => @transaction_type,
                                       :action => 'component_update',
                                       :sort => scaffold_column.name,
