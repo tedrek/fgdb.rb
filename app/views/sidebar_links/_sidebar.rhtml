@@ -5,15 +5,15 @@
 
   <% if has_role?("ROLE_ADMIN") %>
     </dd><dd>
-      <%= link_to "donations", :controller => 'transaction', :action => 'donations' %>
+      <%= link_to "donations", :controller => 'donations' %>
     </dd><dd>
-      <%= link_to "sales", :controller => 'transaction', :action => 'sales' %>
+      <%= link_to "sales", :controller => 'sales' %>
   <% end %>
 
   </dd><dd>
-    <%= link_to "recycling", :controller => 'transaction', :action => 'recycling' %>
+    <%= link_to "recycling", :controller => 'recyclings' %>
   </dd><dd>
-    <%= link_to "disburse", :controller => 'transaction', :action => 'disbursements' %>
+    <%= link_to "disburse", :controller => 'disbursements' %>
   </dd><dd>
     <%= link_to "income", :controller => 'reports', :action => 'income' %>
   </dd><dd>

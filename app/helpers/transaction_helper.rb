@@ -2,7 +2,7 @@ module TransactionHelper
   include ApplicationHelper
 
   def base_controller
-    return '/transaction'
+    raise RuntimeError.new 'You best stop using /transactions'
   end
 
   def scaffold_columns(context)
