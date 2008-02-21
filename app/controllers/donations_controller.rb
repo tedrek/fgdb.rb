@@ -1,5 +1,7 @@
 class DonationsController < TransactionController
   before_filter :be_a_donation
+  before_filter :authorized_only
+
   def index
     donations
   end

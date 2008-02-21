@@ -1,5 +1,7 @@
 class SalesController < TransactionController
   before_filter :be_a_sale
+  before_filter :authorized_only
+
   def index
     sales
   end

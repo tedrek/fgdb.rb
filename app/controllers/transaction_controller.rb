@@ -1,9 +1,11 @@
 class TransactionController < ApplicationController
   include DatalistFor
 
+  layout :check_for_receipt
+  before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements]
+
   protected
 
-  layout :check_for_receipt
   def check_for_receipt
     case action_name
     when /receipt/ then "receipt_invoice.rhtml"
@@ -11,8 +13,15 @@ class TransactionController < ApplicationController
     end
   end
 
-  before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements]
-  before_filter :authorize_for_money
+  def authorized_only
+    if logged_in? and current_user.has_role?('ROLE_ADMIN')
+      return true
+    else
+      flash[:error] = "Unauthorized!"
+      redirect_to :controller => 'sidebar_links'
+      return false
+    end
+  end
 
   def update_params(options)
     @scaffold_id ||= params[:scaffold_id]
@@ -27,21 +36,6 @@ class TransactionController < ApplicationController
     store_or_get_from_session(@scaffold_id, :sort)
     store_or_get_from_session(@scaffold_id, :sort_direction)
     store_or_get_from_session(@scaffold_id, :page)
-  end
-
-  def authorize_for_money
-    if %w[donations sales].include?(action_name) or
-        %w[donation sale].include?(@scaffold_id)
-      if logged_in? && current_user.has_role?('ROLE_ADMIN')
-        return true
-      else
-        flash[:error] = "Unauthorized action!"
-        redirect_to :controller => 'sidebar_links'
-        return false
-      end
-    else
-      return true
-    end
   end
 
   def store_or_get_from_session(id_key, value_key)
