@@ -178,6 +178,7 @@ SELECT
     LEFT JOIN workers ON meetings_workers.worker_id = workers.id 
     WHERE meetings.schedule_id IN #{in_clause}
     AND meetings.weekday_id = #{weekday_id}
+    AND '#{day}' BETWEEN meetings.effective_date AND meetings.ineffective_date 
 ORDER BY 1, 2, 3
 SQL
             @standard_shifts = StandardShift.find_by_sql( sql )
