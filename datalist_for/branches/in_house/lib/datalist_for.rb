@@ -11,11 +11,13 @@ module DatalistFor
 
   def datalist_delete_row
     eval(params[:model]).delete(params[:id].split('_').last) if params[:id]['datalist_update']
-    
+
     render :update do |page|
       div_id = "remove_me_#{params[:id]}"
-      page.visual_effect :fade, div_id, :duration => 0.5
-      page.delay(0.5) { page.remove div_id }
+      #:MC: this cas giving us infinite recusion in js...
+#      page.visual_effect :fade, div_id, :duration => 0.5
+      #page.delay(0.5) {
+      page.remove div_id # }
     end
   end
 
@@ -71,7 +73,7 @@ module DatalistFor
     }
   end
 
-  
+
   #########
   protected
   #########
@@ -99,7 +101,7 @@ module DatalistFor
     end
     existing_objects.empty? or (successful_objects.length == existing_objects.length)
   end
-  
+
   def save_new(tag, model, create_with_new)
     new_data = new_datalist_data(tag)
     create_with = create_with_new || Marshal.load(Base64.decode64(params["datalist_#{tag}_options".to_sym]))[:create_with]
@@ -128,7 +130,7 @@ module DatalistFor
     end
     obj
   end
-  
+
   def new_datalist_objects(tag, model, create_with_new)
     new_data = new_datalist_data(tag)
     new_data.keys.map do |id|
@@ -137,7 +139,7 @@ module DatalistFor
         obj.send(col+'=', val)
       end
       obj
-    end 
+    end
   end
 
   def existing_datalist_objects(tag, model)
