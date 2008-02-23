@@ -8,6 +8,10 @@ class DonationsController < TransactionController
 
   protected
 
+  def authorized_only
+    has_role?(:ROLE_FRONT_DESK)
+  end
+
   def update_params_filter
   end
 

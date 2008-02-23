@@ -15,4 +15,7 @@ class SalesController < TransactionController
     set_transaction_type( 'sale' )
   end
 
+  def authorized_only
+    has_role?('ROLE_STORE')
+  end
 end

@@ -3,3 +3,11 @@
 admin:
   name: ROLE_ADMIN
   id: 1
+
+front_desk:
+  name: ROLE_FRONT_DESK
+  id: 2
+
+store:
+  name: ROLE_STORE
+  id: 3

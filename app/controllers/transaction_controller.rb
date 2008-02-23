@@ -14,13 +14,7 @@ class TransactionController < ApplicationController
   end
 
   def authorized_only
-    if logged_in? and current_user.has_role?('ROLE_ADMIN')
-      return true
-    else
-      flash[:error] = "Unauthorized!"
-      redirect_to :controller => 'sidebar_links'
-      return false
-    end
+    has_role?(:ROLE_ADMIN)
   end
 
   def update_params(options)

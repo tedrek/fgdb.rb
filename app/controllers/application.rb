@@ -23,4 +23,14 @@ class ApplicationController < ActionController::Base
       @current_user = nil
     end
   end
+
+  def has_role?(*roles)
+    if logged_in? and current_user.has_role?(roles)
+      return true
+    else
+      flash[:error] = "Unauthorized!"
+      redirect_to :controller => 'sidebar_links'
+      return false
+    end
+  end
 end
