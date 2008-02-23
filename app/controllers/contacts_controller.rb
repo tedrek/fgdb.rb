@@ -3,6 +3,19 @@ class ContactsController < ApplicationController
   ContactMethodsTag = 'contacts_contact_methods'
   layout :with_sidebar
 
+  around_filter :transaction_wrapper
+
+  class ForceRollback < RuntimeError
+  end
+
+  def transaction_wrapper
+    Contact.transaction do |trans|
+      yield
+      raise ForceRollback.new if flash[:error]
+    end
+    rescue ForceRollback
+  end
+  
   def index
     render :action => 'lookup'
   end
@@ -35,6 +48,8 @@ class ContactsController < ApplicationController
   def create
     begin
       @contact = Contact.new(params[:contact])
+      @contact.user = User.new(params[:user]) if params[:contact][:is_user]
+      @user = @contact.user
       @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -46,6 +61,7 @@ class ContactsController < ApplicationController
   def edit
     begin
       @contact = Contact.find(params[:id])
+      @user = @contact.user or User.new
       @successful = !@contact.nil?
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -58,6 +74,14 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
+      if (params[:contact][:is_user])
+        @contact.user = User.new if !@contact.user
+        @contact.user.attributes = params[:user]
+      elsif (@contact.user)
+        @contact.user.destroy
+        @contact.user = nil
+      end
+      @user = @contact.user
       @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s, false
@@ -92,6 +116,9 @@ class ContactsController < ApplicationController
       method.contact = @contact
       success &&= method.save
     }
+    if @contact.user
+      success &&= @contact.user.save
+    end
     return success
   end
 end

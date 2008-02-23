@@ -7,6 +7,8 @@ class Contact < ActiveRecord::Base
   has_many :donations
   has_many :volunteer_tasks, :order => 'date_performed DESC'
 
+  has_one :user
+
   # acts_as_userstamp
 
   validates_presence_of :postal_code
@@ -181,6 +183,15 @@ class Contact < ActiveRecord::Base
       DiscountSchedule.no_discount
     end
   end
+
+  def is_user?
+    !!user
+  end
+
+  def is_user=(x)
+  end
+  
+  alias :is_user :is_user?
 
   private
 
