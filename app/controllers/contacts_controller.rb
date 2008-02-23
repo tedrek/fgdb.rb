@@ -48,7 +48,13 @@ class ContactsController < ApplicationController
   def create
     begin
       @contact = Contact.new(params[:contact])
-      @contact.user = User.new(params[:user]) if params[:contact][:is_user]
+
+      if params[:contact][:is_user].to_i != 0
+        if !has_role?(:ROLE_ADMIN)
+          raise RuntimeError.new("You are not authorized to create a user login")
+        end
+        @contact.user = User.new(params[:user])
+      end
       @user = @contact.user
       @successful = _save
     rescue

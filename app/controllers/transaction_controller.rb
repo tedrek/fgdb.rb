@@ -14,7 +14,7 @@ class TransactionController < ApplicationController
   end
 
   def authorized_only
-    has_role?(:ROLE_ADMIN)
+    requires_role(:ROLE_ADMIN)
   end
 
   def update_params(options)

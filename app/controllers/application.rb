@@ -25,7 +25,11 @@ class ApplicationController < ActionController::Base
   end
 
   def has_role?(*roles)
-    if logged_in? and current_user.has_role?(roles)
+    !!(logged_in? and current_user.requires_role(roles))
+  end
+
+  def requires_role(*roles)
+    if has_role?(roles)
       return true
     else
       flash[:error] = "Unauthorized!"

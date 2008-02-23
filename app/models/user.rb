@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
     save(false)
   end
 
-  def has_role?(*roles)
+  def requires_role(*roles)
     not (self.roles.map {|x| x.name } & (roles + ['ROLE_ADMIN'])).empty?
   end
 

@@ -205,7 +205,7 @@ module ApplicationHelper
     %Q[<div id="#{loading_indicator_id(options)}"><img src="/images/indicator-foo.gif" alt="loading..."></img></div>]
   end
 
-  def has_role?(role)
-    @current_user and @current_user.has_role?(role)
+  def requires_role(role)
+    @current_user and @current_user.requires_role(role)
   end
 end

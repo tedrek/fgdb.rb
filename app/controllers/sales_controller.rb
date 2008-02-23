@@ -16,6 +16,6 @@ class SalesController < TransactionController
   end
 
   def authorized_only
-    has_role?('ROLE_STORE')
+    requires_role('ROLE_STORE')
   end
 end

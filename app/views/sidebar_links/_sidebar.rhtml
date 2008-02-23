@@ -3,7 +3,7 @@
   <dd>
     <%= link_to "hours", :controller => 'volunteer_tasks' %>
 
-  <% if has_role?("ROLE_ADMIN") %>
+  <% if requires_role("ROLE_ADMIN") %>
     </dd><dd>
       <%= link_to "donations", :controller => 'donations' %>
     </dd><dd>
