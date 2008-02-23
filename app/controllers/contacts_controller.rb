@@ -74,7 +74,7 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if (params[:contact][:is_user])
+      if (params[:contact][:is_user].to_i != 0)
         @contact.user = User.new if !@contact.user
         @contact.user.attributes = params[:user]
       elsif (@contact.user)
