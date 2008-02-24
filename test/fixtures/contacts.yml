@@ -6,10 +6,8 @@ contacts_003:
   state_or_province: OR
   sort_name: _FreeGeek
   is_organization: t
-  created_by: "1"
   lock_version: "5"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "4"
@@ -26,10 +24,8 @@ contacts_004:
   state_or_province: OO
   sort_name: admin the
   is_organization: f
-  created_by: "1"
   lock_version: "6"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "3"
@@ -46,10 +42,8 @@ contacts_005:
   state_or_province: ""
   sort_name:
   is_organization: f
-  created_by: "1"
   lock_version: "0"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "16"
@@ -66,10 +60,8 @@ contacts_006:
   state_or_province: ""
   sort_name:
   is_organization: f
-  created_by: "1"
   lock_version: "0"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "18"
@@ -86,10 +78,8 @@ contacts_007:
   state_or_province: ""
   sort_name:
   is_organization: f
-  created_by: "1"
   lock_version: "0"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "19"
@@ -106,10 +96,8 @@ contacts_008:
   state_or_province: OR
   sort_name:
   is_organization: f
-  created_by: "1"
   lock_version: "3"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "21"
@@ -126,10 +114,8 @@ contacts_009:
   state_or_province: ""
   sort_name:
   is_organization: f
-  created_by: "1"
   lock_version: "0"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "22"
@@ -146,10 +132,8 @@ contacts_010:
   state_or_province: or
   sort_name:
   is_organization: f
-  created_by: "1"
   lock_version: "1"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "17"
@@ -166,10 +150,8 @@ contacts_011:
   state_or_province: OR
   sort_name:
   is_organization: f
-  created_by: "1"
   lock_version: "0"
   country: United States
-  updated_by: "1"
   notes: "awesome "
   extra_address: "# 30"
   id: "23"
@@ -186,10 +168,8 @@ contacts_012:
   state_or_province: OR
   sort_name:
   is_organization: f
-  created_by: "1"
   lock_version: "10"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "12"
@@ -206,10 +186,8 @@ contacts_001:
   state_or_province: GR
   sort_name: cyrano de bergerac
   is_organization: t
-  created_by: "1"
   lock_version: "10"
   country: France
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "6"
@@ -226,10 +204,8 @@ contacts_013:
   state_or_province: my
   sort_name: myl, myf
   is_organization: f
-  created_by: "1"
   lock_version: "13"
   country: United States
-  updated_by: "1"
   notes: |-
     my notes
     more notes
@@ -248,10 +224,8 @@ contacts_002:
   state_or_province: NS
   sort_name: loon lorna
   is_organization: f
-  created_by: "1"
   lock_version: "4"
   country: Canada
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "5"
@@ -268,10 +242,8 @@ contacts_001:
   state_or_province: OR
   sort_name: _FreeGeek Test
   is_organization: t
-  created_by: "1"
   lock_version: "5"
   country: United States
-  updated_by: "1"
   notes: ""
   extra_address: ""
   id: "1"

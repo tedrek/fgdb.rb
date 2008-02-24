@@ -2,32 +2,24 @@
 discount_schedules_003: 
   name: friend
   updated_at: 2006-12-20 08:31:02
-  created_by: "1"
   lock_version: "1"
-  updated_by: "1"
   id: "5"
   created_at: 2006-12-19 17:51:03
 discount_schedules_004: 
   name: no discount
   updated_at: 2006-12-20 08:31:27
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "9"
   created_at: 2006-12-20 08:31:27
 discount_schedules_001: 
   name: volunteer
   updated_at: 2006-12-19 17:48:31
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "4"
   created_at: 2006-12-19 17:48:31
 discount_schedules_002: 
   name: bulk
   updated_at: 2006-12-19 18:27:48
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "8"
   created_at: 2006-12-19 18:27:48

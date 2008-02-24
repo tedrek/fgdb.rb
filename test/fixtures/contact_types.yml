@@ -2,126 +2,98 @@
 contact_types_007: 
   updated_at: 2006-12-29 17:07:36.516211
   for_who: per
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "15"
   description: certified
   created_at: 2006-12-29 17:07:36.516211
 contact_types_008: 
   updated_at: 2006-12-29 17:07:36.575575
   for_who: per
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "25"
   description: waiting
   created_at: 2006-12-29 17:07:36.575575
 contact_types_009: 
   updated_at: 2006-12-29 17:07:36.513717
   for_who: any
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "14"
   description: buyer
   created_at: 2006-12-29 17:07:36.513717
 contact_types_010: 
   updated_at: 2006-12-29 17:07:36.518681
   for_who: any
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "16"
   description: comp4kids
   created_at: 2006-12-29 17:07:36.518681
 contact_types_011: 
   updated_at: 2006-12-29 17:07:36.526178
   for_who: any
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "19"
   description: grantor
   created_at: 2006-12-29 17:07:36.526178
 contact_types_012: 
   updated_at: 2006-12-29 17:07:36.542696
   for_who: any
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "21"
   description: member
   created_at: 2006-12-29 17:07:36.542696
 contact_types_001: 
   updated_at: 2006-09-20 07:45:14
   for_who: any
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "7"
   description: donor
   created_at: 2006-09-20 07:45:14
 contact_types_013: 
   updated_at: 2006-12-29 17:07:36.559139
   for_who: any
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "23"
   description: preferemail
   created_at: 2006-12-29 17:07:36.559139
 contact_types_002: 
   updated_at: 2006-11-25 00:48:56
   for_who: per
-  created_by: "1"
   lock_version: "1"
-  updated_by: "1"
   id: "4"
   description: volunteer
   created_at: 2006-09-20 07:44:25
 contact_types_014: 
   updated_at: 2006-12-29 17:07:36.567347
   for_who: any
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "24"
   description: recycler
   created_at: 2006-12-29 17:07:36.567347
 contact_types_003: 
   updated_at: 2006-11-25 00:49:18
   for_who: org
-  created_by: "1"
   lock_version: "2"
-  updated_by: "1"
   id: "5"
   description: nonprofit
   created_at: 2006-09-20 07:44:41
 contact_types_004: 
   updated_at: 2006-11-25 00:49:27
   for_who: per
-  created_by: "1"
   lock_version: "1"
-  updated_by: "1"
   id: "3"
   description: staff
   created_at: 2006-09-20 07:44:20
 contact_types_005: 
   updated_at: 2006-12-29 17:07:36.465725
   for_who: per
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "12"
   description: adopter
   created_at: 2006-12-29 17:07:36.465725
 contact_types_006: 
   updated_at: 2006-12-29 17:07:36.511086
   for_who: per
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "13"
   description: build
   created_at: 2006-12-29 17:07:36.511086

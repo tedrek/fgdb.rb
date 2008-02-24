@@ -2,54 +2,42 @@
 gizmo_attrs_001: 
   name: suggested_price
   updated_at: 2006-11-07 13:28:31
-  created_by: "1"
   lock_version: "1"
-  updated_by: "1"
   id: "1"
   datatype: monetary
   created_at: 2006-10-10 12:10:04
 gizmo_attrs_002: 
   name: size
   updated_at: 2006-11-07 13:28:37
-  created_by: "1"
   lock_version: "1"
-  updated_by: "1"
   id: "2"
   datatype: integer
   created_at: 2006-10-10 12:10:33
 gizmo_attrs_003: 
   name: unit_price
   updated_at: 2006-11-07 13:28:46
-  created_by: "1"
   lock_version: "1"
-  updated_by: "1"
   id: "3"
   datatype: monetary
   created_at: 2006-10-18 18:04:44
 gizmo_attrs_004: 
   name: presumed_functional
   updated_at: 2006-11-07 13:29:15
-  created_by: "1"
   lock_version: "1"
-  updated_by: "1"
   id: "8"
   datatype: boolean
   created_at: 2006-11-01 13:05:01
 gizmo_attrs_005: 
   name: extended_price
   updated_at: 2006-11-18 13:34:57
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "9"
   datatype: monetary
   created_at: 2006-11-18 13:34:57
 gizmo_attrs_006: 
   name: description
   updated_at: 2006-12-30 15:03:20
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "10"
   datatype: text
   created_at: 2006-12-30 15:03:20

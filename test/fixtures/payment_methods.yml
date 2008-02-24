@@ -1,33 +1,25 @@
 --- 
 payment_methods_001: 
   updated_at: 2006-09-25 13:12:18
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "1"
   description: cash
   created_at: 2006-09-25 13:12:18
 payment_methods_002: 
   updated_at: 2006-09-25 13:12:23
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "2"
   description: check
   created_at: 2006-09-25 13:12:23
 payment_methods_003: 
   updated_at: 2006-11-21 13:41:18
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "3"
   description: credit
   created_at: 2006-11-21 13:41:18
 payment_methods_004: 
   updated_at: 2007-01-31 21:16:39
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "5"
   description: invoice
   created_at: 2007-01-31 21:16:39

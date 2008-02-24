@@ -1,36 +1,28 @@
 --- 
 contact_method_types_001: 
   updated_at: 2006-09-20 07:38:21
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "1"
   description: phone
   parent_id: 
   created_at: 2006-09-20 07:38:21
 contact_method_types_002: 
   updated_at: 2006-09-20 07:39:55
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "5"
   description: email
   parent_id: 
   created_at: 2006-09-20 07:39:55
 contact_method_types_003: 
   updated_at: 2006-09-20 07:40:14
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "8"
   description: fax
   parent_id: 
   created_at: 2006-09-20 07:40:14
 contact_method_types_004: 
   updated_at: 2006-11-25 02:31:31
-  created_by: "1"
   lock_version: "0"
-  updated_by: "1"
   id: "13"
   description: liason
   parent_id: 
