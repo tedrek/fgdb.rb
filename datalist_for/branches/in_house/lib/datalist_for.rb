@@ -38,6 +38,7 @@ module DatalistFor
   end
 
   def datalist_objects(tag, create_with_new = nil)
+    return [] unless params.has_key?("datalist_#{tag}_model".to_sym)
     model = eval(params["datalist_#{tag}_model".to_sym])
     objs = []
     if params[:datalist_update]
@@ -47,6 +48,8 @@ module DatalistFor
       objs += new_datalist_objects(tag, model, create_with_new)
     end
     return objs
+  rescue Exception => e
+    $stderr.puts(e.to_s, e.backtrace)   
   end
 
   def apply_datalist_to_collection(tag, collection, create_with_new = nil)
