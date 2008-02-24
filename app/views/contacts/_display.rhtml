@@ -6,7 +6,7 @@
           c_t.description
         }.sort << (@contact.is_organization ? 'organization' : 'person')
       ).join(', ') %>
-    (id: <%= @contact.id %>)
+    (id: <%= @contact.id %><%= ", login: #{@contact.user.login}" if @contact.user %>)
   </div>
   <div class="name"><%= @contact.display_name %></div>
   <br />

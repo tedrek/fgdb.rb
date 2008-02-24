@@ -28,12 +28,12 @@ class ContactsController < ApplicationController
     if params['contact_query']
       @search_results = Contact.search(params['contact_query'], :limit => 5)
     end
-    render :layout => false, :partial => 'search_results', :locals => { :@search_results => @search_results, :options => params['options'] || { } }
+    render :layout => false, :partial => 'search_results', :locals => { :@search_results => @search_results, :options => params['options'] || {} }
   end
 
   def update_display_area
     @contact = Contact.find( params[:contact_id] )
-    render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] }
+    render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] || {}}
   end
 
   def new
