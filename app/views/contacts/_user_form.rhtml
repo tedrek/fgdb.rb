@@ -1,0 +1,29 @@
+<div class="user">
+  <div class='form-element' <%= "style='display:none'" if is_me?(@contact.id) %>>
+    <%= check_box "contact", "is_user" %>
+    <%= observe_field "contact_is_user", :function => "{var x = $('contact_user'); if ($('contact_is_user').checked) { x.show() } else { x.hide() }}" %>
+    <label for="contact_is_user">can login?</label>
+  </div>
+
+  <div id="contact_user" <%= @contact.is_user? or "style='display:none'"%>>
+    <div class='login form-element'>
+      <label for="user_login">Login</label>
+      <%= text_field :user, :login %>
+    </div>
+
+    <div class='form-element'>
+      <label for="user_email">Email</label>
+      <%= text_field :user, :email %>
+    </div>
+
+    <div class='password form-element'>
+      <label for="user_password">Password</label>
+      <%= password_field :user, :password %>
+    </div>
+
+    <div class='form-element'>
+      <label for="user_password_confirmation">Confirm Password</label>
+      <%= password_field :user, :password_confirmation %>
+    </div>
+  </div>
+</div>

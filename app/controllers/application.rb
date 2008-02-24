@@ -24,8 +24,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def is_me?(contact_id)
+    current_user and current_user.contact_id == contact_id
+  end
+
+  def has_role_or_is_me?(contact_id, *roles)
+    has_role?(roles) or is_me?(contact_id)
+  end
+
   def has_role?(*roles)
-    !!(logged_in? and current_user.requires_role(roles))
+    logged_in? and current_user.has_role?(roles)
   end
 
   def requires_role(*roles)

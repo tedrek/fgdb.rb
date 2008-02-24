@@ -80,12 +80,14 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if (params[:contact][:is_user].to_i != 0)
-        @contact.user = User.new if !@contact.user
-        @contact.user.attributes = params[:user]
-      elsif (@contact.user)
-        @contact.user.destroy
-        @contact.user = nil
+      if has_role_or_is_me?(@contact.id, :ROLE_ADMIN)
+        if (params[:contact][:is_user].to_i != 0)
+          @contact.user = User.new if !@contact.user
+          @contact.user.attributes = params[:user]
+        elsif (@contact.user)
+          @contact.user.destroy
+          @contact.user = nil
+        end
       end
       @user = @contact.user
       @successful = _save
