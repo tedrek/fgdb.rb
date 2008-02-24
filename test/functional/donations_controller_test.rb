@@ -41,4 +41,22 @@ class DonationsControllerTest < ActionController::TestCase
     }
   end
 
+  def test_userstamp
+    donation = nil
+    assert_raises(ActiveRecord::StatementInvalid) {
+      donation = create_a_new_donation
+    }
+
+    q = users(:quentin)
+    assert q
+    login_as :quentin
+    donation = create_a_new_donation
+    assert_equal q, donation.created_by
+    assert !donation.updated_by
+
+    donation.postal_code = "zzz"
+    donation.save
+    assert_equal q, donation.created_by
+    assert_equal q, donation.updated_by
+  end
 end

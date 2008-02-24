@@ -5,7 +5,7 @@ require 'contacts_controller'
 class ContactsController; def rescue_action(e) raise e end; end
 
 class ContactsControllerTest < Test::Unit::TestCase
-  fixtures :contacts, :volunteer_task_types, :discount_schedules
+  fixtures :contacts, :volunteer_task_types, :discount_schedules, :users, :roles, :roles_users
 
   NEW_CONTACT = {
     'postal_code' => '98982'
@@ -53,9 +53,12 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_create_xhr
+    login_as :quentin
     contact_count = Contact.find(:all).length
     xhr :post, :create, {:contact => NEW_CONTACT}
     assert_response :success
+    assert assigns(:contact)
+    assert assigns(:successful)
     assert_template 'create.rjs'
     assert_equal contact_count + 1, Contact.find(:all).length, "Expected an additional Contact"
     contact, successful = check_attrs(%w(contact successful))

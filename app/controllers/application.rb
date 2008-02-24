@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
     else
       @current_user = nil
     end
+    Thread.current['user'] = @current_user
   end
 
   def is_me?(contact_id)

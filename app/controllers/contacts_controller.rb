@@ -9,7 +9,7 @@ class ContactsController < ApplicationController
   end
 
   def transaction_wrapper
-    Contact.transaction do |trans|
+    Contact.transaction do
       yield
       raise ForceRollback.new if flash[:error]
     end
