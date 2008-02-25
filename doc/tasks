@@ -1,12 +1,17 @@
 Bugs:
-- first unfilled shift is wrong color
+- first shift generated is often wrong color
 - drop downs on filter criteria, etc. lose values
 - WorkShift.create_from_XXX can't set coverage_type_id
 - limit shifts to a single worker who has no shifts bombs
 
 Features:
-- preview mode (or printer friendly) that uses no links, shows
-  no filter or generate controls and opens in a popup window
+- effective and ineffective date UI components for meetings
+- effective and ineffective date UI components for workers
+- make all effective and ineffective dates generate SQL that
+  assumes a NULL ineffective is way in the future and a NULL
+  effective date is way in the past
+- when editing work shifts, log what changes happen so that a log
+  can be displayed if those days are re-generated
 - "sprinkle" function: copy shift to every day in the week
   (standard shifts) or date range (work shifts)
 - inventory all FKs to see if they are in the UI. put there if
@@ -38,6 +43,10 @@ Features:
 - part day holiday support during shift generation
 - ability to filter on >1 worker and/or >1 job, in addition to
   present UI which allows filtering on 0 or 1 of each
+- ability to present shifts by worker (showing job name on shift)
+  OR by job (showing worker name on shift). note that meetings
+  would only show up once in the job view (with many worker
+  names) but would show up many times in the worker view
 
 Database changes:
 - add the 'lock_version', 'created_at' and 'updated_at' columns
