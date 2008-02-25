@@ -2,21 +2,20 @@
 
 <table>
   <tr>
-  <th>Start</th>
-  <th>End</th>
-  <th>Worker</th>
-  <th colspan="4">&nbsp;</th>
+  <% for column in Vacation.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  <th colspan="3">&nbsp;</th>
   </tr>
   
 <% for vacation in @vacations %>
   <tr>
-    <td><%=h vacation.effective_date %></td>
-    <td><%=h vacation.ineffective_date %></td>
-    <td><%=h vacation.worker.name %></td>
+  <% for column in Vacation.content_columns %>
+    <td><%=h vacation.send(column.name) %></td>
+  <% end %>
     <td><%= link_to 'Show', :action => 'show', :id => vacation %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => vacation %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => vacation }, :confirm => 'Are you sure?', :method => :post %></td>
-    <td><%= link_to 'Copy', { :action => 'copy', :id => vacation.id }, :title => 'copy', :method => :post %></td>
   </tr>
 <% end %>
 </table>
@@ -26,5 +25,5 @@
 
 <br />
 
-<%= link_to 'Full list', :action => 'full_list' %>
+<%= link_to 'Basic list', :action => 'list' %>
 <%= link_to 'New vacation', :action => 'new' %>

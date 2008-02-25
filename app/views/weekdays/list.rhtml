@@ -15,7 +15,6 @@
   <% end %>
     <td><%= link_to 'Show', :action => 'show', :id => weekday %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => weekday %></td>
-    <td><%= link_to 'Destroy', { :action => 'destroy', :id => weekday }, :confirm => 'Are you sure?', :method => :post %></td>
   </tr>
 <% end %>
 </table>
@@ -24,5 +23,3 @@
 <%= link_to 'Next page', { :page => @weekday_pages.current.next } if @weekday_pages.current.next %> 
 
 <br />
-
-<%= link_to 'New weekday', :action => 'new' %>

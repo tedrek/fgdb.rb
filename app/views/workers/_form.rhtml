@@ -39,7 +39,7 @@
   <div id="meetings" class="topright">
   <p><label for="meetings">Meetings:</label><br/>
   <ul>
-  <% Meeting.find(:all, :order => "name").each do |m| %>
+  <% Meeting.find(:all, :order => "meeting_name", :conditions => ["shift_date IS NULL OR shift_date > ?", Date.today ]).each do |m| %>
      <li><input type="checkbox" name="worker[shift_ids][]" 
             value="<%= m.id %>" 
             <% if @worker.meetings.include?(m) %> checked="checked" <% end %> />
@@ -61,11 +61,11 @@
   <div id="workerexceptions" class="bottomright">
   <p><label for="unavailabilities">Unavailabilities:</label><br/>
   <ul>
-  <% Unavailability.find(:all, :order => "effective_date, ineffective_date").each do |a| %>
-    <li><%= link_to a.name, { :action => "edit", :controller => "unavailabilities", :id => a.id } %>:
-    <%= link_to "s", { :action => "show", :controller => "unavailabilities", :id => a.id }, :title => "show" %>,
-    <%= link_to "e", { :action => "edit", :controller => "unavailabilities", :id => a.id }, :title => "edit" %>,
-    <%= link_to "d", { :action => "destroy", :controller => "unavailabilities", :id => a.id }, :title => "destroy" %>
+  <% Unavailability.find(:all, :order => "effective_date, ineffective_date", :conditions => ["shift_date IS NULL OR shift_date > ?", Date.today ]).each do |u| %>
+    <li><%= link_to u.name, { :action => "edit", :controller => "unavailabilities", :id => u.id } %>:
+    <%= link_to "s", { :action => "show", :controller => "unavailabilities", :id => u.id }, :title => "show" %>,
+    <%= link_to "e", { :action => "edit", :controller => "unavailabilities", :id => u.id }, :title => "edit" %>,
+    <%= link_to "d", { :action => "destroy", :controller => "unavailabilities", :id => u.id }, :title => "destroy" %>
   </li>
   <% end %>
   </ul>
@@ -74,7 +74,7 @@
   
   <p><label for="vacations">Vacations:</label><br/>
   <ul>
-  <% Vacation.find(:all, :order => "effective_date, ineffective_date", :conditions => ["worker_id = ?", @worker.id]).each do |v| %>
+  <% Vacation.find(:all, :order => "effective_date, ineffective_date", :conditions => ["worker_id = ? AND (ineffective_date IS NULL OR ineffective_date > ?)", @worker.id, Date.today ]).each do |v| %>
     <li><%= link_to v.name, { :action => "edit", :controller => "vacations", :id => v.id } %>:
     <%= link_to "s", { :action => "show", :controller => "vacations", :id => v.id }, :title => "show" %>,
     <%= link_to "e", { :action => "edit", :controller => "vacations", :id => v.id }, :title => "edit" %>,
