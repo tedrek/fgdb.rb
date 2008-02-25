@@ -17,7 +17,7 @@ class WorkShiftsController < ApplicationController
 
       @opts = params[:filter_criteria]
       @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
-      where_clause = "WHERE shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
+      where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
       if @opts['limit_to_worker'] and @opts['limit_to_worker'] == '1'
         where_clause += ' AND work_shifts.worker_id = '
         where_clause += @opts['worker_id']
@@ -37,34 +37,13 @@ class WorkShiftsController < ApplicationController
         'worker_id' => 0, 
         'job_id' => 0,
         'presentation_mode' => 'Edit' }
-      where_clause = "WHERE shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
+      where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
     end
 
-    sql = <<SQL
-SELECT 
-    work_shifts.shift_date, 
-    workers.name,
-    work_shifts.start_time, 
-    work_shifts.end_time, 
-    work_shifts.id, 
-    work_shifts.splitable, 
-    work_shifts.mergeable, 
-    work_shifts.resizable,
-    work_shifts.coverage_type_id, 
-    work_shifts.job_id, 
-    work_shifts.schedule_id, 
-    work_shifts.weekday_id, 
-    work_shifts.worker_id, 
-    work_shifts.meeting_id 
-    FROM work_shifts
-    LEFT JOIN workers ON work_shifts.worker_id = workers.id 
-    #{where_clause}
-    ORDER BY 1, 2, 3
-SQL
-
-    @work_shifts = WorkShift.find_by_sql( sql )
+    @work_shifts = WorkShift.find( :all, :conditions => where_clause, :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time', :joins => 'LEFT JOIN workers ON work_shifts.worker_id = workers.id' )
     render @list
   end
+
   def show
     @work_shift = WorkShift.find(params[:id])
   end

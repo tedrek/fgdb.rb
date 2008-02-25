@@ -28,13 +28,19 @@
   <p><label for="worker_weekly_admin_hours">Weekly admin hours</label><br/>
   <%= text_field 'worker', 'weekly_admin_hours'  %></p>
   
+  <p><label for="worker_effective_date">Effective date</label><br/>
+  <%= date_select 'worker', 'effective_date'  %></p>
+  
+  <p><label for="worker_ineffective_date">Ineffective date</label><br/>
+  <%= date_select 'worker', 'ineffective_date'  %></p>
+ 
   </div>
   
   <div id="meetings" class="topright">
   <p><label for="meetings">Meetings:</label><br/>
   <ul>
   <% Meeting.find(:all, :order => "name").each do |m| %>
-     <li><input type="checkbox" name="worker[meeting_ids][]" 
+     <li><input type="checkbox" name="worker[shift_ids][]" 
             value="<%= m.id %>" 
             <% if @worker.meetings.include?(m) %> checked="checked" <% end %> />
   <%= m.name %></li>

@@ -1,4 +1,5 @@
 class MeetingsController < ApplicationController
+  require_dependency 'shift'
   def index
     list
     render :action => 'list'
@@ -9,7 +10,7 @@ class MeetingsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @meeting_pages, @meetings = paginate :meetings, :order => 'name', :per_page => 20
+    @meeting_pages, @meetings = paginate :meetings, :order => 'meeting_name', :per_page => 20
   end
 
   def show

@@ -2,10 +2,10 @@
 
 <!--[form:meeting]-->
 <p><label for="meeting_name">Name</label><br/>
-<%= text_field 'meeting', 'name'  %></p>
+<%= text_field 'meeting', 'meeting_name'  %></p>
 
-<p><label for="meeting_meeting_date">Meeting date</label><br/>
-<%= date_select 'meeting', 'meeting_date', :include_blank => true, :default => nil %></p>
+<p><label for="meeting_shift_date">Meeting date</label><br/>
+<%= date_select 'meeting', 'shift_date', :include_blank => true, :default => nil %></p>
 
 <p><label for="meeting_start_time">Start time</label><br/>
 <%= time_select 'meeting', 'start_time', {:minute_step => 15}  %></p>
@@ -21,6 +21,12 @@
 
 <p><label for="meeting_frequency_type_id">Frequency type</label><br/>
 <%= select("meeting", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+
+<p><label for="meeting_effective_date">Effective date</label><br/>
+<%= date_select 'meeting', 'effective_date'  %></p>
+
+<p><label for="meeting_ineffective_date">Ineffective date</label><br/>
+<%= date_select 'meeting', 'ineffective_date'  %></p>
 
 <p><label for="workers">Workers:</label><br/>
 <ul>

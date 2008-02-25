@@ -1,4 +1,4 @@
-class StandardShift < ActiveRecord::Base
+class StandardShift < Shift
   belongs_to :coverage_type
   belongs_to :job
   belongs_to :meeting

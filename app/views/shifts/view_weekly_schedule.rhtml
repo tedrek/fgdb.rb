@@ -1,22 +1,22 @@
-<h2>Listing work shifts</h2>
+<h2>Listing standard shifts</h2>
 
 <% 
-  # set up control variables and loop through all work shifts
+  # set up control variables and loop through all standard shifts
   #  in proper order (weekday, worker.name, start_time)
   start_schedule = true
   start_weekday = true
   start_worker = true
   shift_style = 'shift'
  
-  for @shift in @work_shifts 
+  for @shift in @shifts 
     @day_length = (( @shift.weekday.end_time - @shift.weekday.start_time ) / ( 60 * 30 )).to_int
     @sched_start_time = @shift.weekday.start_time
     @width = 90 / @day_length
-
     if start_schedule
       # first time through
       if @opts['presentation_mode']!='Preview'
-        %> <%= render :partial => 'filter_criteria' %>
+        %> <%= render :partial => 'filter_criteria'
+        %> <%= render :partial => 'gen_sched_form' %> 
         <div class='content'> <% 
       end
     else
@@ -36,7 +36,7 @@
         overlap = true
       end
 
-      if @shift[:type] == 'Meeting'
+      if @shift.meeting
         shift_style = 'meeting'
       elsif @shift.worker_id == 0
         shift_style = 'unfilled'
@@ -100,7 +100,7 @@
       :start_time => @shift.start_time, 
       :weekday_id => @shift.weekday_id, 
       :worker_id => @shift.worker_id }
-    if @shift.coverage_type
+    if @shift[:type] == 'StandardShift' and @shift.coverage_type
       @prev_shift[:coverage_type_name] = @shift.coverage_type.name
     else
       @prev_shift[:coverage_type_name] = 'anchored'

@@ -1,4 +1,5 @@
 class UnavailabilitiesController < ApplicationController
+  require_dependency 'shift'
   def index
     list
     render :action => 'list'
