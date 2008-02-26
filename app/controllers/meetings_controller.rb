@@ -10,7 +10,11 @@ class MeetingsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @meeting_pages, @meetings = paginate :meetings, :order => 'meeting_name', :per_page => 20
+    @meeting_pages, @meetings = paginate :meetings, :order => 'shift_date, weekday_id', :conditions => ["(shift_date IS NULL OR shift_date >= ?) AND ineffective_date >= ?", Date.today, Date.today], :per_page => 20
+  end
+
+  def full_list
+    @meeting_pages, @meetings = paginate :meetings, :order => 'effective_date, ineffective_date', :per_page => 20
   end
 
   def show

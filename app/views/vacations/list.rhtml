@@ -2,17 +2,17 @@
 
 <table>
   <tr>
+  <th>Worker</th>
   <th>Start</th>
   <th>End</th>
-  <th>Worker</th>
   <th colspan="4">&nbsp;</th>
   </tr>
   
 <% for vacation in @vacations %>
   <tr>
+    <td><%=h vacation.worker.name %></td>
     <td><%=h vacation.effective_date %></td>
     <td><%=h vacation.ineffective_date %></td>
-    <td><%=h vacation.worker.name %></td>
     <td><%= link_to 'Show', :action => 'show', :id => vacation %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => vacation %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => vacation }, :confirm => 'Are you sure?', :method => :post %></td>
