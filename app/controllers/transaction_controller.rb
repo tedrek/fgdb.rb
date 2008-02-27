@@ -198,7 +198,9 @@ class TransactionController < ApplicationController
   #######
 
   def current_conditions(options)
-    session[@scaffold_id][:conditions] ||= Conditions.new
+    conds = session[@scaffold_id][:conditions] ||= Conditions.new
+    conds.apply_conditions(options[:conditions])
+    conds
   end
 
   def default_per_page
