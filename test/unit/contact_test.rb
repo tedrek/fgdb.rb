@@ -106,5 +106,13 @@ class ContactTest < Test::Unit::TestCase
     assert_equal 4.0, contact.last_ninety_days_of_effective_hours
   end
 
+  def test_contact_types_includes_volunteer
+    contact = Contact.find(:first)
+    contact.contact_types = []
+    contact.contact_types << ContactType.build
+    contact.save
+    assert contact.contact_types.include?(ContactType.volunteer)
+  end
+
 end
 

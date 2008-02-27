@@ -13,6 +13,7 @@ class Contact < ActiveRecord::Base
 
   validates_presence_of :postal_code
   before_save :remove_empty_contact_methods
+  before_save :ensure_consistent_contact_types
 
   def is_organization?
     self.is_organization
@@ -190,18 +191,26 @@ class Contact < ActiveRecord::Base
 
   def is_user=(x)
   end
-  
+
   alias :is_user :is_user?
 
   private
 
-    def remove_empty_contact_methods
-      for contact_method in contact_methods
-        if contact_method.description.nil? or contact_method.description.empty?
-          contact_method.destroy
-        end
+  def remove_empty_contact_methods
+    for contact_method in contact_methods
+      if contact_method.description.nil? or contact_method.description.empty?
+        contact_method.destroy
       end
     end
+  end
+
+  def ensure_consistent_contact_types
+    types = contact_types.map {|ct| ct.description}
+    if((types.include?("build") or types.include?("adopter")) and
+       (! types.include?("volunteer")))
+      contact_types << ContactType.volunteer
+    end
+  end
 
   class << self
 
