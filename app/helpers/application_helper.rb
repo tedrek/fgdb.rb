@@ -216,4 +216,14 @@ module ApplicationHelper
   def has_role_or_is_me?(contact_id, *roles)
     has_role?(roles) or is_me?(contact_id)
   end
+
+  def custom_change_observer(element, handler)
+    javascript_tag "
+      element = $('#{element}');
+      handler = function(event) {
+        Event.extend(event);
+        #{handler}
+      };
+      element.addEventListener('change', handler, false);"
+  end
 end

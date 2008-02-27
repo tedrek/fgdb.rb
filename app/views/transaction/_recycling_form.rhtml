@@ -14,9 +14,7 @@
   </div>
 </div>
 
-<div class="datalist"
-    onchange="new Ajax.Request('/<%= base_controller -%>/automatic_datalist_row?' + Form.serialize('<%= element_form_id(@options)
-      %>'), {asynchronous:true, evalScripts:true});">
+<div class="datalist" id="recycling_gizmo_datalist_div">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'recycling_gizmo_events',
     @recycling.gizmo_events, :create_with => { :recycling_id => @recycling.id },
@@ -24,6 +22,10 @@
     :add_text => "More gizmos",
     :new_defaults => @event_defaults || {}) %>
 </div>
+
+<%= custom_change_observer("recycling_gizmo_datalist_div",
+      remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
+        :with => "Form.serialize('#{element_form_id(@options)}')")) %>
 
 <!--[eoform:recycling]-->
 

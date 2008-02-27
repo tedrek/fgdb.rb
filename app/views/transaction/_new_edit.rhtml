@@ -10,17 +10,10 @@
           :html => { :href => url_for(@options.merge(:controller => base_controller)),
             :id => element_form_id(@options) } do %>
 
-    <%= javascript_tag "
-      $('#{element_form_id(@options)}').onchange = function (e) {
-        context = '#{@transaction_type}';
-        elem = Event.element(e);
-        vals = Form.serialize(this);
-        updateTotalsForContext( elem, vals, e, context );
-      };
-    "%>
       <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
 
-      <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type) %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
+      <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type)
+        %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
 
       <% if request.xhr? %>
         <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
@@ -40,6 +33,10 @@
         <%= loading_indicator_tag @options %>
       </p>
     <% end %>
+
+    <%= custom_change_observer(element_form_id(@options),
+          "updateTotalsForContext(element, Form.serialize(element), event, '#{@transaction_type}');") %>
+
   </td>
 </tr>
 <% if not request.xhr? %>
