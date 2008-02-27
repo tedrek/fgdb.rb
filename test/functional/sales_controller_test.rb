@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SalesControllerTest < ActionController::TestCase
-  fixtures :discount_schedules, :payment_methods, :users, :roles, :roles_users, :contacts
+  load_all_fixtures()
 
   def cash_payment(amt)
     pmt = Payment.new
