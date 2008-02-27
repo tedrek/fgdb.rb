@@ -2,7 +2,7 @@ class TransactionController < ApplicationController
   include DatalistFor
 
   layout :check_for_receipt
-  before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements]
+  before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements, :add_attrs_to_form]
 
   protected
 
@@ -175,8 +175,6 @@ class TransactionController < ApplicationController
     else
       # :MC: doctor the params for datalist_add_row
       # :TODO: rewrite datalist
-      params[:model] = params["datalist_#{gizmo_events_tag}_model"]
-      params[:options] = params["datalist_#{gizmo_events_tag}_options"]
       params[:datalist_id] = params["datalist_#{gizmo_events_tag}_id"]
       datalist_add_row
     end
