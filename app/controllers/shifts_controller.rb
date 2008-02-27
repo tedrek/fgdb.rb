@@ -30,6 +30,17 @@ class ShiftsController < ApplicationController
     end
   end
 
+  def copy
+    @shift = Shift.find(params[:id])
+    @shift2 = @shift.clone
+    if @shift2.save
+      flash[:notice] = 'Shift was successfully copied.'
+      redirect_to :action => 'edit', :id => @shift2.id
+    else
+      render :action => 'new'
+    end
+  end
+
   def edit
     @shift = Shift.find(params[:id])
   end
