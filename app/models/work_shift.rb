@@ -62,6 +62,7 @@ class WorkShift < ActiveRecord::Base
     logger.info 'xxx: in create_from_meeting'
     ret = WorkShift.new
     ret.type = 'Meeting'
+    ret.meeting_id = shift.id 
     ret.shift_date = date
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
