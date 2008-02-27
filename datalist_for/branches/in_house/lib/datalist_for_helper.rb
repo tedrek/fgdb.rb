@@ -6,8 +6,9 @@ module DatalistFor
       options[:tag] = tag
 
       #:TODO: scrub this
-      options_encoded = Base64.encode64(Marshal.dump(options)).strip
       klass = eval(Inflector.classify(model.to_s))
+
+      session[tag] = {:model => klass, :options => options}
 
       # options
       show_header = true
@@ -19,8 +20,6 @@ module DatalistFor
        <div id="datalist_#{tag}">
 HTML
 
-      html += hidden_field_tag "datalist_#{tag}_model", klass.name
-      html += hidden_field_tag "datalist_#{tag}_options", options_encoded
       html += hidden_field_tag "datalist_#{tag}_id", datalist_table_id(tag)
       html += "<table class=\"datalist\"
         id=\"#{datalist_table_id(tag)}\">"
@@ -52,9 +51,8 @@ HTML
 
       html += "</td></tr></table><span class=\"datalist\">
         #{link_to_remote add_text, :url => { :action => 'datalist_add_row',
-           :model => klass.name,
-           :datalist_id => datalist_table_id(tag),
-           :options => options_encoded }}</span></div>"
+           :tag => tag,
+           :datalist_id => datalist_table_id(tag)}}</span></div>"
       html
     end
 
@@ -100,7 +98,7 @@ HTML
             "@datalist_field_name_prefix" => "#{item_mode}[#{tag}][#{item_id}]",
             "@datalist_field_id_prefix" => "#{item_mode}_#{tag}_#{item_id}"
           }
-          html += form #alter_fields_for_datalist(form, form_prefix, item_mode, tag, item_id)
+          html += form
         else
           form = render( :partial => options[:render],
                          :locals => {
@@ -127,7 +125,7 @@ HTML
       html += "<td>
           <span id=\"delete_#{item_identifier}\">"
 
-      html += link_to_remote delete_content, :url => { :action => 'datalist_delete_row', :model => model, :id => item_identifier }
+      html += link_to_remote delete_content, :url => { :action => 'datalist_delete_row', :tag => tag, :id => item_identifier }
 
       html += "</span>
         </td>

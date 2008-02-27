@@ -1,8 +1,9 @@
 module DatalistFor
 
   def datalist_add_row
-    klass = eval(params[:model])
-    options = Marshal.load(Base64.decode64(params[:options]))
+    tag = params[:tag]
+    klass = session[tag][:model]
+    options = session[tag][:options]
     render :update do |page|
       page.insert_html :bottom, params[:datalist_id], datalist_row(klass, options[:tag], nil, options)
       # :MC: how/when would i focus on this new row?
@@ -10,19 +11,18 @@ module DatalistFor
   end
 
   def datalist_delete_row
-    eval(params[:model]).delete(params[:id].split('_').last) if params[:id]['datalist_update']
+    tag = params[:tag]
+    klass = session[tag][:model]
+    klass.delete(params[:id].split('_').last) if params[:id]['datalist_update']
 
     render :update do |page|
       div_id = "remove_me_#{params[:id]}"
-      #:MC: this cas giving us infinite recusion in js...
-#      page.visual_effect :fade, div_id, :duration => 0.5
-      #page.delay(0.5) {
-      page.remove div_id # }
+      page.remove div_id
     end
   end
 
   def save_datalist(tag, create_with_new = nil)
-    model = eval(params["datalist_#{tag}_model".to_sym])
+    model = session[tag][:model]
     existing_okay = save_existing(tag, model) if params[:datalist_update]
     new_okay = save_new(tag, model, create_with_new) if params[:datalist_new]
     (existing_okay or ! params[:datalist_update]) && (new_okay or ! params[:datalist_new])
@@ -38,8 +38,8 @@ module DatalistFor
   end
 
   def datalist_objects(tag, create_with_new = nil)
-    return [] unless params.has_key?("datalist_#{tag}_model".to_sym)
-    model = eval(params["datalist_#{tag}_model".to_sym])
+    return [] unless session[tag]
+    model = session[tag][:model]
     objs = []
     if params[:datalist_update]
       objs += existing_datalist_objects_to_keep(tag, model)
@@ -49,7 +49,7 @@ module DatalistFor
     end
     return objs
   rescue Exception => e
-    $stderr.puts(e.to_s, e.backtrace)   
+    $stderr.puts(e.to_s, e.backtrace)
   end
 
   def apply_datalist_to_collection(tag, collection, create_with_new = nil)
@@ -107,7 +107,7 @@ module DatalistFor
 
   def save_new(tag, model, create_with_new)
     new_data = new_datalist_data(tag)
-    create_with = create_with_new || Marshal.load(Base64.decode64(params["datalist_#{tag}_options".to_sym]))[:create_with]
+    create_with = create_with_new || session[tag][:options][:create_with]
     successful_actions = new_data.find_all do |fake_id, vals|
       if keeper?(new_data, fake_id)
         obj = create_new_obj(vals, model, create_with)
