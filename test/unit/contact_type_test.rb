@@ -4,7 +4,7 @@ class ContactTypeTest < Test::Unit::TestCase
 
   fixtures( :contact_types, :volunteer_task_types, :payment_methods,
             :gizmo_types, :gizmo_contexts, :gizmo_attrs,
-            :gizmo_typeattrs )
+            :gizmo_typeattrs, :users, :roles, :roles_users )
 
   NEW_CONTACT_TYPE = {}    # e.g. {:name => 'Test ContactType', :description => 'Dummy'}
   REQ_ATTR_NAMES              = %w( ) # name of fields that must be present, e.g. %(name description)
@@ -63,11 +63,13 @@ class ContactTypeTest < Test::Unit::TestCase
       when :sale
         sale = Sale.new({ :contact => blank, :contact_type => 'named',
                           :payments => [paid_a_dollar],
+                          :created_by => 1,
                           :gizmo_events => [a_mouse_for_sale]})
         assert_nothing_raised {retval = sale.save}
         assert retval, "#{name} should have saved successfully"
       when :donation
         don = Donation.new({ :contact => blank, :contact_type => 'named',
+                             :created_by => 1,
                              :payments => [paid_a_dollar]})
         assert_nothing_raised {retval = don.save}
         assert retval
