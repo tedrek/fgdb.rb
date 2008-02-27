@@ -11,20 +11,20 @@ class DonationsControllerTest < ActionController::TestCase
   end
 
   def test_basic_unauthorized_actions_redirect
-    get :donations
+    get :index
     assert :redirect
   end
 
   def test_basic_authorized_actions_succeed
     login_as :quentin
-    get :donations
+    get :index
     assert :success
   end
 
   def test_specific_unauthorized_actions_redirect
     donation = create_a_new_donation
     assert donation.id
-    get :donations
+    get :index
     get :destroy, :id => donation.id, :scaffold_id => 'donations'
     assert_nothing_raised("donation shouldn't have been deleted") {Donation.find(donation.id)}
     assert_response :redirect
@@ -34,7 +34,7 @@ class DonationsControllerTest < ActionController::TestCase
     [:quentin, :aaron].each { |user|
       login_as user
       donation = create_a_new_donation
-      get :donations
+      get :index
       get :destroy, :id => donation.id, :scaffold_id => 'donations'
       assert_raises(ActiveRecord::RecordNotFound) { Donation.find(donation.id) }
       assert_response :success

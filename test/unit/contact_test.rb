@@ -112,6 +112,10 @@ class ContactTest < Test::Unit::TestCase
     contact.contact_types << ContactType.build
     contact.save
     assert contact.contact_types.include?(ContactType.volunteer)
+    contact.contact_types = []
+    contact.contact_types << ContactType.adopter
+    contact.save
+    assert contact.contact_types.include?(ContactType.volunteer)
   end
 
 end
