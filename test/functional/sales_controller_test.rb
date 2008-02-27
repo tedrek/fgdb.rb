@@ -50,11 +50,11 @@ class SalesControllerTest < ActionController::TestCase
 
   def test_filter_by_date
     login_as :quentin
-    post :component_update, { "commit"=>"Refine", "conditions"=>{ "month"=>"2", "start_date"=>"", "end_date"=>"", "date"=>"2007-02-20", "date_type"=>"daily", "payment_method_id"=>"1", "year"=>"2008", "limit_type"=>"date range"}, "action"=>"component_update", "controller"=>"sales", "scaffold_id"=>"sale"}
+    date = "2007-02-20"
+    post :component_update, { "commit"=>"Refine", "conditions"=>{ "month"=>"2", "start_date"=>"", "end_date"=>"", "date"=>date, "date_type"=>"daily", "payment_method_id"=>"1", "year"=>"2008", "limit_type"=>"date range"}, "action"=>"component_update", "controller"=>"sales", "scaffold_id"=>"sale"}
     assert_response :success
     conditions = assigns(:conditions)
-    assert_equal 2007, conditions.date.year
-    assert_equal 2, conditions.date.month
+    assert_equal date, conditions.date
   end
 
 end
