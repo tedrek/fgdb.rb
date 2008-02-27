@@ -104,7 +104,7 @@ class DonationTest < Test::Unit::TestCase
     invoice = Payment.new({ :amount => 3.5 })
     invoice.payment_method = PaymentMethod.invoice
     donation.payments << invoice
-    assert_equal 3.5, donation.amount_invoiced
+    assert (3.5 - donation.amount_invoiced).abs() < 0.001
   end
 
   def test_that_should_be_able_to_tell_when_to_invoice
