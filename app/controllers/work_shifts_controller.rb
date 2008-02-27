@@ -40,7 +40,12 @@ class WorkShiftsController < ApplicationController
       where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
     end
 
-    @work_shifts = WorkShift.find( :all, :conditions => where_clause, :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time', :joins => 'LEFT JOIN workers ON work_shifts.worker_id = workers.id' )
+    @work_shifts = WorkShift.find( :all, {
+      :select => 'work_shifts.*', 
+      :conditions => where_clause, 
+      :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time', 
+      :joins => 'LEFT JOIN workers ON work_shifts.worker_id = workers.id' }
+    )
     render @list
   end
 
