@@ -21,19 +21,19 @@ class SalesControllerTest < ActionController::TestCase
   end
 
   def test_basic_unauthorized_actions_redirect
-    get :sales
+    get :index
     assert :redirect
   end
 
   def test_basic_authorized_actions_succeed
     login_as :quentin
-    get :sales
+    get :index
     assert :success
   end
 
   def test_specific_unauthorized_actions_redirect
     sale = create_a_new_sale
-    get :sales
+    get :index
     get :destroy, :id => sale.id, :scaffold_id => 'sales'
     assert Sale.find(sale.id)
     assert_response :redirect
@@ -42,7 +42,7 @@ class SalesControllerTest < ActionController::TestCase
   def test_specific_authorized_actions_succeed
     login_as :quentin
     sale = create_a_new_sale
-    get :sales
+    get :index
     get :destroy, :id => sale.id, :scaffold_id => 'sales'
     assert_raises(ActiveRecord::RecordNotFound) { Sale.find(sale.id) }
     assert_response :success
