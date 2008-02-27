@@ -18,6 +18,9 @@
   >&nbsp;<label for="<%= contact_type.description %>"><%= contact_type.description %></label>
 </div>
 <% end %>
+<% check_vol = "if($('%s').checked) {$('volunteer').checked = true}" %>
+<%= observe_field 'build', :function => check_vol % 'build' %>
+<%= observe_field 'adopter', :function => check_vol % 'adopter' %>
 
 <div class="organization form-element">
   <label for="contact_organization">Name</label>
