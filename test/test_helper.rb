@@ -24,6 +24,7 @@ class Test::Unit::TestCase
      #     %W[gizmo_contexts_gizmo_typeattrs  gizmo_events_gizmo_typeattrs],
      %W[contacts contact_types contact_types_contacts
         contact_method_types contact_methods],
+     %W[users roles roles_users], 
      %W[volunteer_task_types community_service_types],
      #     %W[disbursement_types disbursements],
      %W[payment_methods],
