@@ -3,7 +3,8 @@ class DonationsController < TransactionController
   before_filter :authorized_only
 
   def index
-    donations
+    update_params_filter()
+    render :action => 'listing'
   end
 
   protected

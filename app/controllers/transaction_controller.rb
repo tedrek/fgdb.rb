@@ -53,34 +53,6 @@ class TransactionController < ApplicationController
 
   public
 
-  def index
-    redirect_to :action => 'donations'
-  end
-
-  def donations
-    set_transaction_type( 'donation' )
-    update_params_filter()
-    render :action => 'listing'
-  end
-
-  def sales
-    set_transaction_type( 'sale' )
-    update_params_filter()
-    render :action => 'listing'
-  end
-
-  def recycling
-    set_transaction_type( 'recycling' )
-    update_params_filter()
-    render :action => 'listing'
-  end
-
-  def disbursements
-    set_transaction_type( 'disbursement' )
-    update_params_filter()
-    render :action => 'listing'
-  end
-
   # All posts to change scaffold level variables like sort values or page changes go through this action
   def component_update
     @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold

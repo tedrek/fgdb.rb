@@ -1,7 +1,9 @@
 class RecyclingsController < TransactionController
   before_filter :be_a_recycling
+
   def index
-    recycling
+    update_params_filter()
+    render :action => 'listing'
   end
 
   protected

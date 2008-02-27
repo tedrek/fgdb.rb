@@ -3,7 +3,8 @@ class SalesController < TransactionController
   before_filter :authorized_only
 
   def index
-    sales
+    update_params_filter()
+    render :action => 'listing'
   end
 
   protected

@@ -1,7 +1,9 @@
 class DisbursementsController < TransactionController
   before_filter :be_a_disbursement
+
   def index
-    disbursements
+    update_params_filter()
+    render :action => 'listing'
   end
 
   protected
