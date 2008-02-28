@@ -24,7 +24,7 @@ class ShiftsController < ApplicationController
     @shift = Shift.new(params[:shift])
     if @shift.save
       flash[:notice] = 'Shift was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to :action => 'view_weekly_schedule'
     else
       render :action => 'new'
     end
@@ -57,7 +57,7 @@ class ShiftsController < ApplicationController
 
   def destroy
     Shift.find(params[:id]).destroy
-    redirect_to :action => 'list'
+    redirect_to :action => 'view_weekly_schedule'
   end
 
   def view_weekly_schedule
