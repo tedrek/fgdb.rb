@@ -26,7 +26,7 @@
   <div class="form-element">
     <label for="sale_discount_schedule_id">Discount schedule</label><br/>
     <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]">
-      <%= options_from_collection_for_select DiscountSchedule.find(:all), "id", "name", @sale.discount_schedule_id %>
+      <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "name", @sale.discount_schedule_id || DiscountSchedule.no_discount.id)%>
     </select>
   </div>
 

@@ -37,10 +37,8 @@ class Sale < ActiveRecord::Base
   def contact_type
     if contact
       'named'
-    elsif id
-      'anonymous'
     else
-      'named'
+      'anonymous'
     end
   end
 
