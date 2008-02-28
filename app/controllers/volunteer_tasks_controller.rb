@@ -35,6 +35,7 @@ class VolunteerTasksController < ApplicationController
 
   def new
     @volunteer_task = VolunteerTask.new
+    @volunteer_task.duration = nil
     @volunteer_task.date_performed = Date.today
     @successful = true
 
