@@ -147,7 +147,7 @@ class TransactionController < ApplicationController
       default_discount_schedule = DiscountSchedule.no_discount
     end
     render :update do |page|
-      page["#{transaction_type}_discount_schedule_id"].value = default_discount_schedule.id
+      page << "set_new_val($('#{transaction_type}_discount_schedule_id'), '#{default_discount_schedule.id}');"
     end
   end
 
@@ -159,6 +159,7 @@ class TransactionController < ApplicationController
       if ! @gizmo_type.relevant_attrs(@gizmo_context).empty?
         render :update do |page|
           page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+          page << "trigger_change_on($('#{params[:div_id]}'));"
         end
         return true
       end

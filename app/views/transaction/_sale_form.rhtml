@@ -6,7 +6,10 @@
   <%= select_visibility( 'sale', 'contact_type',
         :anonymous => render( :partial => 'anonymous' ),
         :named => render( :partial => 'contact_search',
-                          :locals => {:options => {:on_display => "if ($('contact__default_discount_schedule')) { $('sale_discount_schedule_id').value = parseInt($('contact__default_discount_schedule').innerHTML)}"}}) ) %>
+                          :locals => {:options => {
+                            :on_display => "if ($('contact__default_discount_schedule')) {
+                                              set_new_val($('sale_discount_schedule_id'),
+                                                parseInt($('contact__default_discount_schedule').innerHTML))}"}}) ) %>
 </div>
 
 <div id="sales_gizmo_datalist_div" class="datalist"

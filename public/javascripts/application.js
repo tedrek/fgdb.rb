@@ -174,3 +174,14 @@ function task_form_has_not_been_edited() {
     )
   );
 }
+
+function set_new_val(element, new_val) {
+  element.value = new_val;
+  trigger_change_on(element);
+}
+
+function trigger_change_on(element) {
+  var event = document.createEvent('HTMLEvents');
+  event.initEvent('change',true,true);
+  element.dispatchEvent(event);
+}
