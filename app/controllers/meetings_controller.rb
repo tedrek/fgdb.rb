@@ -10,11 +10,11 @@ class MeetingsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @meeting_pages, @meetings = paginate :meetings, :order => 'shift_date, weekday_id', :conditions => ["(shift_date IS NULL OR shift_date >= ?) AND ineffective_date >= ?", Date.today, Date.today], :per_page => 20
+    @meeting_pages, @meetings = paginate :meetings, :order => 'shift_date DESC, weekday_id', :conditions => ["(shift_date IS NULL OR shift_date >= ?) AND ineffective_date >= ?", Date.today, Date.today], :per_page => 20
   end
 
   def full_list
-    @meeting_pages, @meetings = paginate :meetings, :order => 'effective_date, ineffective_date', :per_page => 20
+    @meeting_pages, @meetings = paginate :meetings, :order => 'shift_date DESC, weekday_id', :per_page => 20
   end
 
   def show
@@ -74,11 +74,11 @@ class MeetingsController < ApplicationController
         if weekday.is_open
           # get a list of all workers attending this
           # meeting and loop through it
-          @shift.workers.each do |w|
+          @meeting.workers.each do |w|
           # if worker is on vacation, don't save shift
           v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])
           if not v
-            workshift = WorkShift.create_from_meeting( @shift, w, day )
+            workshift = WorkShift.create_from_meeting( @meeting, w, day )
             workshift.save
           end
         end
