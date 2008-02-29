@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 9) do
+ActiveRecord::Schema.define(:version => 10) do
 
   create_table "coverage_types", :force => true do |t|
     t.column "name",        :string
@@ -44,6 +44,22 @@ ActiveRecord::Schema.define(:version => 9) do
 
   add_index "jobs_workers", ["job_id"], :name => "index_jobs_workers_on_job_id"
   add_index "jobs_workers", ["worker_id"], :name => "index_jobs_workers_on_worker_id"
+
+  create_table "meetings", :force => true do |t|
+    t.column "name",              :string
+    t.column "meeting_date",      :date
+    t.column "start_time",        :time
+    t.column "end_time",          :time
+    t.column "splitable",         :boolean
+    t.column "mergeable",         :boolean
+    t.column "resizable",         :boolean
+    t.column "coverage_type_id",  :integer
+    t.column "frequency_type_id", :integer
+    t.column "schedule_id",       :integer
+    t.column "weekday_id",        :integer
+    t.column "effective_date",    :date
+    t.column "ineffective_date",  :date
+  end
 
   create_table "meetings_workers", :id => false, :force => true do |t|
     t.column "meeting_id", :integer
@@ -88,6 +104,33 @@ ActiveRecord::Schema.define(:version => 9) do
     t.column "worker_id",         :integer, :default => 0
   end
 
+  create_table "standard_shifts", :force => true do |t|
+    t.column "start_time",       :time
+    t.column "end_time",         :time
+    t.column "splitable",        :boolean
+    t.column "mergeable",        :boolean
+    t.column "resizable",        :boolean
+    t.column "coverage_type_id", :integer
+    t.column "job_id",           :integer
+    t.column "meeting_id",       :integer
+    t.column "schedule_id",      :integer
+    t.column "weekday_id",       :integer
+    t.column "worker_id",        :integer, :default => 0
+    t.column "shift_date",       :date
+  end
+
+  create_table "unavailabilities", :force => true do |t|
+    t.column "effective_date",   :date
+    t.column "ineffective_date", :date
+    t.column "all_day",          :boolean
+    t.column "start_time",       :time
+    t.column "end_time",         :time
+    t.column "repeats_every",    :integer, :default => 1
+    t.column "repeats_on",       :integer, :default => 0
+    t.column "weekday_id",       :integer
+    t.column "worker_id",        :integer
+  end
+
   create_table "vacations", :force => true do |t|
     t.column "effective_date",   :date
     t.column "ineffective_date", :date
@@ -108,7 +151,7 @@ ActiveRecord::Schema.define(:version => 9) do
   end
 
   create_table "work_shifts", :force => true do |t|
-    t.column "type",              :string
+    t.column "kind",              :string
     t.column "start_time",        :time
     t.column "end_time",          :time
     t.column "splitable",         :boolean

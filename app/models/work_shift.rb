@@ -6,7 +6,6 @@ class WorkShift < ActiveRecord::Base
   belongs_to :standard_shift
   belongs_to :weekday
   belongs_to :worker
-  has_many :work_shifts
 
   def name
     ret = Job.find(:first, :conditions => "id = #{job_id}").name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
@@ -16,7 +15,7 @@ class WorkShift < ActiveRecord::Base
   def WorkShift::create_from_shift( shift = Shift.new, date = Date.new )
 
     ret = WorkShift.new
-    ret.type = shift.type
+    ret.kind = shift.type
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
     ret.splitable = shift.splitable
@@ -42,7 +41,7 @@ class WorkShift < ActiveRecord::Base
   def WorkShift::create_from_standard_shift( shift = StandardShift.new, date = Date.new )
     logger.info 'xxx: in create_from_standard_shift'
     ret = WorkShift.new
-    ret.type = 'StandardShift'
+    ret.kind = 'StandardShift'
     ret.shift_date = date
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
@@ -61,7 +60,7 @@ class WorkShift < ActiveRecord::Base
   def WorkShift::create_from_meeting( shift = Meeting.new, worker = Worker.new, date = Date.new )
     logger.info 'xxx: in create_from_meeting'
     ret = WorkShift.new
-    ret.type = 'Meeting'
+    ret.kind = 'Meeting'
     ret.meeting_id = shift.id 
     ret.shift_date = date
     ret.start_time = shift.start_time
@@ -82,7 +81,7 @@ class WorkShift < ActiveRecord::Base
   def WorkShift::create_from_unavailability( shift = Unavailability.new, date = Date.new )
     logger.info 'xxx: in create_from_unavailability'
     ret = WorkShift.new
-    ret.type = 'Unavailability'
+    ret.kind = 'Unavailability'
     ret.shift_date = date
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time

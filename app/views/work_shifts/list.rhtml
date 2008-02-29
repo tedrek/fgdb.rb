@@ -36,7 +36,7 @@
         overlap = true
       end
 
-      if @shift[:type] == 'Meeting'
+      if @shift[:kind] == 'Meeting'
         shift_style = 'meeting'
       elsif @shift.worker_id == 0
         shift_style = 'unfilled'

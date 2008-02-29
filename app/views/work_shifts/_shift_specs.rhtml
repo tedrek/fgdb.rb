@@ -3,7 +3,7 @@
 <% if @opts['presentation_mode']=='Edit' %>
   [<%=h shift.id %>]
 <% end %>
-<% if shift[:type]=='Meeting' %>
+<% if shift[:kind]=='Meeting' %>
   <%=h shift.meeting_name %>
 <% else %>
   <%=h shift.name %>
