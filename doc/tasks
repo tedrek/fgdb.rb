@@ -6,6 +6,11 @@ Bugs:
 - version 47 can't edit work shifts. most likely breakage between
   33 and 35? problem is that SQL refers to shifts, not
   work_shifts table 
+- meetings_workers table allows duplicates. fix with a constraint
+  in db
+- check all tables for FK constraints, there are some missing:
+  (work_shifts.meeting_id, shifts.meeting_id,
+  work_shifts.shift_id)
 
 Features:
 - effective and ineffective date UI components for meetings
