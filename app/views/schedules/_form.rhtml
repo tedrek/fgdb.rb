@@ -8,10 +8,10 @@
 <%= text_field 'schedule', 'description'  %></p>
 
 <p><label for="schedule_effective_date">Effective date</label><br/>
-<%= date_select 'schedule', 'effective_date'  %></p>
+<%= toolbocks_date_select 'schedule', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><label for="schedule_ineffective_date">Ineffective date</label><br/>
-<%= date_select 'schedule', 'ineffective_date'  %></p>
+<%= toolbocks_date_select 'schedule', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><label for="schedule_repeats_every">Repeats every</label><br/>
 <%= text_field 'schedule', 'repeats_every'  %></p>

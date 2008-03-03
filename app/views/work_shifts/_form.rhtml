@@ -2,7 +2,7 @@
 
 <!--[form:work_shift]-->
 <p><label for="work_shift_shift_date">Shift date</label><br/>
-<%= date_select 'work_shift', 'shift_date'  %></p>
+<%= toolbocks_date_select 'work_shift', 'shift_date', { :format => 'us' }  %></p>
 
 <p><label for="work_shift_start_time">Start time</label><br/>
 <%= time_select 'work_shift', 'start_time', {:minute_step => 15}  %></p>

@@ -2,10 +2,10 @@
 
 <!--[form:vacation]-->
 <p><label for="vacation_effective_date">Effective date</label><br/>
-<%= date_select 'vacation', 'effective_date'  %></p>
+<%= toolbocks_date_select 'vacation', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><label for="vacation_ineffective_date">Ineffective date</label><br/>
-<%= date_select 'vacation', 'ineffective_date'  %></p>
+<%= toolbocks_date_select 'vacation', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><%= check_box "vacation", "is_all_day" %>
 <label for="vacation_is_all_day">Is all day</label></p>

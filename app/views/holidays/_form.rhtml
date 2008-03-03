@@ -5,7 +5,7 @@
 <%= text_field 'holiday', 'name'  %></p>
 
 <p><label for="holiday_holiday_date">Holiday date</label><br/>
-<%= date_select 'holiday', 'holiday_date'  %></p>
+<%= toolbocks_date_select 'holiday', 'holiday_date', { :format => 'us' }  %></p>
 
 <p><%= check_box "holiday", "is_all_day" %>
 <label for="holiday_is_all_day">Is all day</label></p>

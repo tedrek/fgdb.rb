@@ -9,8 +9,10 @@
   <%= radio_button :filter_criteria, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
   <%= radio_button :filter_criteria, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
   <br />
-  <label for="start_start_date">Start date:</label> <%= date_select 'filter_criteria', 'start_date'  %><br />
-  <label for="end_end_date">End date:</label> <%= date_select 'filter_criteria', 'end_date'  %><br />
+  <label for="start_start_date">Start date:</label> 
+    <%= toolbocks_date_select 'filter_criteria', 'start_date', { :include_blank => true, :default => nil, :format => 'us' }  %><br />
+  <label for="end_end_date">End date:</label> 
+    <%= toolbocks_date_select 'filter_criteria', 'end_date', { :include_blank => true, :default => nil, :format => 'us' }  %><br />
   <br />
   <%= submit_tag "Apply" %><br />
 <%= end_form_tag %>
