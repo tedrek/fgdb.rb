@@ -45,16 +45,16 @@ td.meeting {
     font-weight: bold;
 }
 td.unavailable {
-        background: #99CCFF;
+    background: #99CCFF;
 }
 td.hardconflict {
-        background: #FF0000;
+    background: #FF0000;
 }
 td.mediumconflict {
-        background: #FF8800;
+    background: #FF8800;
 }
 td.softconflict {
-        background: #FFFF00;
+    background: #FFFF00;
 }
 td.unfilled {
     background: #FFFF33;
