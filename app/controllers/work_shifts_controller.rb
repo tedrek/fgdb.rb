@@ -89,7 +89,7 @@ class WorkShiftsController < ApplicationController
       if session["shift_return_to"] 
         redirect_to :action => session["shift_return_action"], :id => session["shift_return_id"]
       else
-        redirect_to :action => 'list', :id => @standard_shift
+        redirect_to :action => 'list', :id => @work_shift
       end
     else
       render :action => 'edit'

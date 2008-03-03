@@ -31,6 +31,17 @@ class UnavailabilitiesController < ApplicationController
     end
   end
 
+  def copy
+    @unavailability = Unavailability.find(params[:id])
+    @unavailability2 = @unavailability.clone
+    if @unavailability2.save
+      flash[:notice] = 'Unavailability was successfully copied.'
+      redirect_to :action => 'edit', :id => @unavailability2.id
+    else
+      render :action => 'new'
+    end
+  end
+
   def edit
     @unavailability = Unavailability.find(params[:id])
   end

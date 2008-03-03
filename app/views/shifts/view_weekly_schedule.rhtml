@@ -36,8 +36,10 @@
         overlap = true
       end
 
-      if @shift.meeting
+      if @shift[:type] == 'Meeting'
         shift_style = 'meeting'
+      elsif @shift[:type] == 'Unavailability'
+        shift_style = 'unavailable'
       elsif @shift.worker_id == 0
         shift_style = 'unfilled'
       elsif overlap
