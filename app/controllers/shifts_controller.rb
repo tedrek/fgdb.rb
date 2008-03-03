@@ -63,7 +63,7 @@ class ShiftsController < ApplicationController
   def view_weekly_schedule
     session["shift_return_to"] = "shifts"
     session["shift_return_action"] = "view_weekly_schedule"
-    where_clause = "type IN ('StandardShift', 'Unavailability')"
+    where_clause = "(NOT actual) AND (type IN ('StandardShift', 'Unavailability'))"
     if params[:filter_criteria]
       @opts = params[:filter_criteria]
       @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
@@ -94,7 +94,7 @@ class ShiftsController < ApplicationController
         'worker_id' => 0, 
         'job_id' => 0, 
         'presentation_mode' => 'Edit' }
-      in_clause = @root_sched.in_clause_root_plus
+      in_clause = @root_sched.in_clause_family
     end
     where_clause += ' AND schedule_id IN ' + in_clause
 
@@ -112,7 +112,7 @@ class ShiftsController < ApplicationController
     stop = Date.civil(params[:generate_schedule][:"end_date(1i)"].to_i,params[:generate_schedule][:"end_date(2i)"].to_i,params[:generate_schedule][:"end_date(3i)"].to_i)
 
       # check to see what we will be overwriting:
-      sql = "SELECT id FROM work_shifts WHERE shift_date BETWEEN '#{start.to_s}' AND '#{stop.to_s}'"
+      sql = "SELECT id FROM work_shifts WHERE shift_date BETWEEN '#{start.to_s}' AND '#{stop.to_s}' AND actual"
       remove = WorkShift.find_by_sql( sql )
       if remove.size > 0
         warning = 'Delete all shifts between #{start.to_s} and #{stop.to_s} (#{remove.size} shifts)?'
@@ -141,7 +141,7 @@ class ShiftsController < ApplicationController
             @root_sched = Schedule.find( :first, :conditions => ["? BETWEEN effective_date AND ineffective_date AND parent_id IS NULL", day] )
             in_clause = @root_sched.in_clause_family
             where_clause = <<WHERE
-        shifts.type IN ('StandardShift', 'Meeting', 'Unavailability') AND 
+        (NOT actual) AND (shifts.type IN ('StandardShift', 'Meeting', 'Unavailability')) AND 
         ( 
           ( shifts.shift_date = #{day} ) 
             OR
