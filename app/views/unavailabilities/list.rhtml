@@ -2,6 +2,8 @@
 
 <table>
   <tr>
+  <th>Worker</th>
+  <th>Weekday</th>
   <% for column in Unavailability.content_columns %>
     <th><%= column.human_name %></th>
   <% end %>
@@ -10,6 +12,8 @@
   
 <% for unavailability in @unavailabilities %>
   <tr>
+    <td><%=h unavailability.worker.name %></td>
+    <td><%=h unavailability.weekday.name %></td>
   <% for column in Unavailability.content_columns %>
     <td><%=h unavailability.send(column.name) %></td>
   <% end %>
