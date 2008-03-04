@@ -1,8 +1,8 @@
 <div class='generate'>
 <h3>Generate work shifts:</h3>
 <%= form_tag :action => 'generate' %>
-  <label for="start_start_date">Start date:</label> <%= toolbocks_date_select :work_shift, :start_date, { :format => 'us', :value => (Date.today + 1).strftime('%m/%d/%Y')} %>
-  <label for="end_end_date">End date:</label> <%= toolbocks_date_select :work_shift, :end_date, { :format => 'us', :value => (Date.today + 14).strftime('%m/%d/%Y') } %>
+  <label for="start_start_date">Start date:</label> <%= toolbocks_date_select :date_range, :start_date, { :format => 'us', :value => (Date.today + 1).strftime('%m/%d/%Y')} %>
+  <label for="end_end_date">End date:</label> <%= toolbocks_date_select :date_range, :end_date, { :format => 'us', :value => (Date.today + 14).strftime('%m/%d/%Y') } %>
   <%= submit_tag "Generate" %><br />
 <%= end_form_tag %>
 </div>

@@ -108,8 +108,12 @@ class ShiftsController < ApplicationController
   end
 
   def generate
-    start = Date.civil(params[:generate_schedule][:"start_date(1i)"].to_i,params[:generate_schedule][:"start_date(2i)"].to_i,params[:generate_schedule][:"start_date(3i)"].to_i)
-    stop = Date.civil(params[:generate_schedule][:"end_date(1i)"].to_i,params[:generate_schedule][:"end_date(2i)"].to_i,params[:generate_schedule][:"end_date(3i)"].to_i)
+    
+    start_date = params[:date_range]['start_date']
+    end_date = params[:date_range]['end_date']
+    date_format='%m/%d/%Y'
+    start = Date.strptime(start_date, date_format) 
+    stop = Date.strptime(end_date, date_format) 
 
       # check to see what we will be overwriting:
       sql = "SELECT id FROM work_shifts WHERE shift_date BETWEEN '#{start.to_s}' AND '#{stop.to_s}' AND actual"

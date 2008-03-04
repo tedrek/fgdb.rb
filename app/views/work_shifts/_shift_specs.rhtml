@@ -12,6 +12,7 @@
   <%= link_to 'c', { :action => 'copy', :id => shift.id }, :title => 'copy', :method => :post %> |
   <%= link_to 'e', { :action => 'edit', :id => shift }, :popup => true, :title => 'edit' %> |
   <%= link_to 'd', { :action => 'destroy', :id => shift }, :title => 'delete', :confirm => 'Are you sure?', :method => :post %>
+  <!--
   <% if shift.splitable %> 
     | <%= link_to 's', { :action => 'edit', :id => shift }, :popup => true, :title => 'split' %>
   <% end %>
@@ -21,5 +22,6 @@
   <% if shift.resizable %> 
     | <%= link_to 'r', { :action => 'edit', :id => shift }, :popup => true, :title => 'resize' %>
   <% end %> 
+  -->
 <% end %>
 </td>

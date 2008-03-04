@@ -8,12 +8,10 @@
   <%= radio_button :filter_criteria, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
   <%= radio_button :filter_criteria, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
   <%= radio_button :filter_criteria, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
-  <br />
   <label for="start_start_date">Start date:</label> 
-    <%= toolbocks_date_select 'filter_criteria', 'start_date', { :include_blank => true, :default => nil, :format => 'us' }  %><br />
+    <%= toolbocks_date_select 'filter_criteria', 'start_date', { :include_blank => true, :default => nil, :format => 'us', :value => Date.today.strftime('%m/%d/%Y') } %>
   <label for="end_end_date">End date:</label> 
-    <%= toolbocks_date_select 'filter_criteria', 'end_date', { :include_blank => true, :default => nil, :format => 'us' }  %><br />
-  <br />
+    <%= toolbocks_date_select 'filter_criteria', 'end_date', { :include_blank => true, :default => nil, :format => 'us', :value => (Date.today + 7).strftime('%m/%d/%Y')  }  %>
   <%= submit_tag "Apply" %><br />
 <%= end_form_tag %>
 </div>
