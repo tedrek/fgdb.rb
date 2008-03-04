@@ -63,7 +63,7 @@ class ShiftsController < ApplicationController
   def view_weekly_schedule
     session["shift_return_to"] = "shifts"
     session["shift_return_action"] = "view_weekly_schedule"
-    where_clause = "(NOT actual) AND (type IN ('StandardShift', 'Unavailability'))"
+    where_clause = "(NOT actual) AND (type IN ('StandardShift', 'Unavailability') OR (type = 'Meeting' AND shift_date IS NULL))"
     if params[:filter_criteria]
       @opts = params[:filter_criteria]
       @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
