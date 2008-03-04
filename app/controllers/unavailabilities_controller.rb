@@ -10,7 +10,7 @@ class UnavailabilitiesController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @unavailability_pages, @unavailabilities = paginate :unavailabilities, :per_page => 20
+    @unavailability_pages, @unavailabilities = paginate :unavailabilities, :order => 'weekday_id, ineffective_date, end_time', :conditions => ["ineffective_date IS NULL OR ineffective_date >= ?", Date.today], :per_page => 20
   end
 
   def show
@@ -50,7 +50,7 @@ class UnavailabilitiesController < ApplicationController
     @unavailability = Unavailability.find(params[:id])
     if @unavailability.update_attributes(params[:unavailability])
       flash[:notice] = 'Unavailability was successfully updated.'
-      redirect_to :action => 'show', :id => @unavailability
+      redirect_to :action => 'list', :id => @unavailability
     else
       render :action => 'edit'
     end
