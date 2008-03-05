@@ -8,6 +8,12 @@ class Unavailability < Shift
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
   end
 
+  def long_name
+    weekday = Weekday.find(:first, :conditions => "id = #{weekday_id}").short_name + ', ' 
+    ret = weekday + '(unavailable) ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
+    ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
+  end
+
   def which_week( date = Date.today.to_date )
     if self.repeats_every > 1
       long_time_ago = Date.new(1901, 12, 22)
