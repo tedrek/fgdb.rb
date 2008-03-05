@@ -33,6 +33,14 @@ to setup a working environment:
 
 on Ubuntu Dapper you will need to get gems from the internet.
 
+if you want to use the rails package from Debian enstead of using gem (it has to be the same version as this was developed for): 
+
+1. replace rubygems with rails in the apt-get install part above
+2. tell it where to find rails:
+   $> rails temp
+   $> cp -a temp/vendor/* fgdb.rb/trunk/vendor/
+   $> rm -fr temp
+
 you need to create and configure the databases:
 
  $> su - postgres -c 'createuser -P SOMEDBUSER'
@@ -53,6 +61,12 @@ choose one of the following: skeletal metadata, or full test data:
  $> rake db:metadata:load
    :OR:
  $> zcat db/version_*_test_data.sql.gz | psql -h localhost -U SOMEUSER fgdb_production
+
+if you get errors when you try to load the test data, it might be because our test data using an older database schema. if db/version_xxx_test_data.sql.gz has a different number than the highest script in db/migrate/ then it is out of date. To fix it:
+
+ $> VERSION=xxx rake db:migrate # xxx is the number of db/version_xxx_test_data.sql.gz
+ $> zcat db/version_*_test_data.sql.gz | psql -h localhost -U SOMEUSER fgdb_production
+ $> rake db:migrate
 
 run some tests to see if things look okay:
 
