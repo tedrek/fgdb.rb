@@ -12,8 +12,12 @@ class WorkShiftsController < ApplicationController
     session["shift_return_to"] = "work_shifts"
     session["shift_return_action"] = "list"
     if params[:filter_criteria]
-      start = Date.civil(params[:filter_criteria][:"start_date(1i)"].to_i,params[:filter_criteria][:"start_date(2i)"].to_i,params[:filter_criteria][:"start_date(3i)"].to_i)
-      stop = Date.civil(params[:filter_criteria][:"end_date(1i)"].to_i,params[:filter_criteria][:"end_date(2i)"].to_i,params[:filter_criteria][:"end_date(3i)"].to_i)
+
+      start_date = params[:filter_criteria]['start_date']
+      end_date = params[:filter_criteria]['end_date']
+      date_format='%m/%d/%Y'
+      start = Date.strptime(start_date, date_format) 
+      stop = Date.strptime(end_date, date_format) 
 
       @opts = params[:filter_criteria]
       @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
