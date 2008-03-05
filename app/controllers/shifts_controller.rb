@@ -63,7 +63,9 @@ class ShiftsController < ApplicationController
   def view_weekly_schedule
     session["shift_return_to"] = "shifts"
     session["shift_return_action"] = "view_weekly_schedule"
-    where_clause = "(NOT actual) AND (type IN ('StandardShift', 'Unavailability') OR (type = 'Meeting' AND shift_date IS NULL AND (shifts.ineffective_date IS NULL OR shifts.ineffective_date >= '#{Date.today}')))"
+    where_clause = "(NOT actual) AND "
+    where_clause += "(shift_date IS NULL) AND "
+    where_clause += "('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)"
     if params[:filter_criteria]
       @opts = params[:filter_criteria]
       @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
@@ -145,19 +147,18 @@ class ShiftsController < ApplicationController
             @root_sched = Schedule.find( :first, :conditions => ["? BETWEEN effective_date AND ineffective_date AND parent_id IS NULL", day] )
             in_clause = @root_sched.in_clause_family
             where_clause = <<WHERE
-        (NOT actual) AND (shifts.type IN ('StandardShift', 'Meeting', 'Unavailability')) AND 
+        (NOT actual) AND 
+        ('#{day}' BETWEEN shifts.effective_date AND shifts.ineffective_date) AND
         ( 
           ( shifts.shift_date = #{day} ) 
             OR
-          ( shifts.type = 'StandardShift' AND shifts.schedule_id IN #{in_clause} AND shifts.weekday_id = #{weekday_id} ) 
+          ( shifts.type IN ('StandardShift','Meeting') AND shifts.schedule_id IN #{in_clause} AND shifts.weekday_id = #{weekday_id} ) 
             OR
-          ( shifts.type = 'Meeting' AND shifts.schedule_id IN #{in_clause} AND shifts.weekday_id = #{weekday_id} AND '#{day}' BETWEEN shifts.effective_date AND shifts.ineffective_date ) 
-            OR
-          ( shifts.type = 'Unavailability' AND #{day} BETWEEN shifts.effective_date AND shifts.ineffective_date AND shifts.weekday_id = #{weekday_id} ) 
+          ( shifts.type = 'Unavailability' AND shifts.weekday_id = #{weekday_id} ) 
         )
     
 WHERE
-            # logger.info 'xxx where_clause: ' + where_clause
+            #logger.info 'qqq where_clause: ' + where_clause
             @shifts = Shift.find(:all, {
               :conditions => where_clause, 
               :select => 'shifts.*, workers.name', 
@@ -223,7 +224,7 @@ WHERE
                     w = @shift.worker 
                     v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])
                     if not v
-                      workshift = WorkShift.create_from_shift( @shift, day )
+                      workshift = WorkShift.create_from_unavailability( @shift, day )
                       workshift.save
                     end
                   end

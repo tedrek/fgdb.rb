@@ -5,6 +5,8 @@
 <% end %>
 <% if shift[:kind]=='Meeting' %>
   <%=h shift.meeting_name %>
+<% elsif shift[:kind]=='Unavailability' %>
+  <%=h '(unavailable)' %>
 <% else %>
   <%=h shift.name %>
 <% end %>

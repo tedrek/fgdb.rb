@@ -14,6 +14,7 @@ class WorkShift < ActiveRecord::Base
 
   def WorkShift::create_from_shift( shift = Shift.new, date = Date.new )
 
+    #logger.info 'xxx: in create_from_shift'
     ret = WorkShift.new
     ret.actual = true
     ret.kind = shift.type
