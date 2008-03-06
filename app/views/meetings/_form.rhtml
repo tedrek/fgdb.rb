@@ -5,7 +5,12 @@
 <%= text_field 'meeting', 'meeting_name'  %></p>
 
 <p><label for="meeting_shift_date">Meeting date</label><br/>
-<%= calendar_box 'meeting', 'shift_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+ <%= calendar_box 'meeting', 'shift_date', 
+    { },
+    { :range => [2000, 2010], :showOthers => true }
+    # TODO: mess with the above to try to get date format to change
+    # TODO: http://dry.4thebusiness.com/doc/dhtml_calendar/index.html 
+ %></p>
 
 <p><label for="meeting_start_time">Start time</label><br/>
 <%= time_select 'meeting', 'start_time', {:minute_step => 15}  %></p>
