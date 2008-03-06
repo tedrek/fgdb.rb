@@ -2,11 +2,16 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 11) do
+ActiveRecord::Schema.define(:version => 12) do
 
   create_table "coverage_types", :force => true do |t|
     t.column "name",        :string
     t.column "description", :string
+  end
+
+  create_table "customizations", :force => true do |t|
+    t.column "key",   :string
+    t.column "value", :string
   end
 
   create_table "frequency_types", :force => true do |t|
