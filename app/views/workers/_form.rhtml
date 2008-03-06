@@ -29,10 +29,10 @@
   <%= text_field 'worker', 'weekly_admin_hours'  %></p>
   
   <p><label for="worker_effective_date">Effective date</label><br/>
-  <%= toolbocks_date_select 'worker', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+  <%= calendar_box 'worker', 'effective_date' %></p>
   
   <p><label for="worker_ineffective_date">Ineffective date</label><br/>
-  <%= toolbocks_date_select 'worker', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+  <%= calendar_box 'worker', 'ineffective_date' %></p>
  
   </div>
   

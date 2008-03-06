@@ -2,10 +2,10 @@
 
 <!--[form:unavailability]-->
 <p><label for="unavailability_effective_date">Effective date</label><br/>
-<%= toolbocks_date_select 'unavailability', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+<%= calendar_box 'unavailability', 'effective_date' %></p>
 
 <p><label for="unavailability_ineffective_date">Ineffective date</label><br/>
-<%= toolbocks_date_select 'unavailability', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+<%= calendar_box :unavailability, :ineffective_date %></p>
 
 <p><label for="unavailability_all_day">All day</label><br/>
 <select id="unavailability_all_day" name="unavailability[all_day]"><option value="false">False</option><option value="true">True</option></select></p>

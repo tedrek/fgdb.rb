@@ -5,7 +5,7 @@
 <%= text_field 'meeting', 'meeting_name'  %></p>
 
 <p><label for="meeting_shift_date">Meeting date</label><br/>
-<%= toolbocks_date_select 'meeting', 'shift_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+<%= calendar_box 'meeting', 'shift_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><label for="meeting_start_time">Start time</label><br/>
 <%= time_select 'meeting', 'start_time', {:minute_step => 15}  %></p>
@@ -23,10 +23,10 @@
 <%= select("meeting", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
 <p><label for="meeting_effective_date">Effective date</label><br/>
-<%= toolbocks_date_select 'meeting', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+<%= calendar_box 'meeting', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><label for="meeting_ineffective_date">Ineffective date</label><br/>
-<%= toolbocks_date_select 'meeting', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+<%= calendar_box 'meeting', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><label for="workers">Workers:</label><br/>
 <ul>

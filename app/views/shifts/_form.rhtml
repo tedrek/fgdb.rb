@@ -20,7 +20,7 @@
 <%= text_field 'shift', 'meeting_name'  %></p>
 
 <p><label for="shift_shift_date">Shift date</label><br/>
-<%= toolbocks_date_select 'shift', 'shift_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+<%= calendar_box 'shift', 'shift_date' %></p>
 
 <p><label for="shift_coverage_type_id">Coverage Type</label><br/>
 <%= select("shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
@@ -38,10 +38,10 @@
 <%= select("shift", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
 <p><label for="shift_effective_date">Effective date</label><br/>
-<%= toolbocks_date_select 'shift', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+<%= calendar_box 'shift', 'effective_date' %></p>
 
 <p><label for="shift_ineffective_date">Ineffective date</label><br/>
-<%= toolbocks_date_select 'shift', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+<%= calendar_box 'shift', 'ineffective_date' %></p>
 
 <p><label for="shift_all_day">All day</label><br/>
 <select id="shift_all_day" name="shift[all_day]"><option value="false">False</option><option value="true">True</option></select></p>

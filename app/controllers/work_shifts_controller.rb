@@ -15,7 +15,7 @@ class WorkShiftsController < ApplicationController
 
       start_date = params[:filter_criteria]['start_date']
       end_date = params[:filter_criteria]['end_date']
-      date_format='%m/%d/%Y'
+      date_format='%Y-%m-%d'
       start = Date.strptime(start_date, date_format) 
       stop = Date.strptime(end_date, date_format) 
 

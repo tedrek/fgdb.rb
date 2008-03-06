@@ -113,7 +113,7 @@ class ShiftsController < ApplicationController
     
     start_date = params[:date_range]['start_date']
     end_date = params[:date_range]['end_date']
-    date_format='%m/%d/%Y'
+    date_format='%Y-%m-%d'
     start = Date.strptime(start_date, date_format) 
     stop = Date.strptime(end_date, date_format) 
 
