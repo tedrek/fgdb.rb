@@ -2,11 +2,18 @@
 <input type="text" id="<%= contact_query_id(options) -%>"
         onKeyPress="return contactKeyListener(event);"></input>
 <div id="<%= search_results_id(options) %>"></div>
-
-<%= observe_field contact_query_id(options),  :frequency => 0.5,
-                  :update => search_results_id(options),
-                  :url => { :controller => 'contacts', :action => 'search_results', :options => options },
-                  :with => "'contact_query=' + escape(value)" -%>
+<%= javascript_tag "function do_search() {
+    var x = $('#{contact_query_id(options)}').value;
+    if (x.length > 3) {
+      #{remote_function :update => search_results_id(options),
+                  :url => { :controller => 'contacts', 
+                            :action => 'search_results', 
+                            :options => options },
+                  :with => "'contact_query=' + escape($('#{contact_query_id(options)}').value)"}
+    }
+  }
+" %>
+<%= observe_field contact_query_id(options), :frequency => 0.5, :function => "do_search()" -%>
 <% if( defined?(contact) && contact ) %>
   <%= javascript_tag "set_new_val($('#{contact_query_id(options)}'), '#{contact.id}');" %>
 <% end %>
