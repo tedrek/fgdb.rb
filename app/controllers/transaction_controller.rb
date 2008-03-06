@@ -2,7 +2,6 @@ class TransactionController < ApplicationController
   include DatalistFor
 
   layout :check_for_receipt
-  #before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements, :add_attrs_to_form]
 
   protected
 
@@ -17,38 +16,9 @@ class TransactionController < ApplicationController
     requires_role(:ROLE_ADMIN)
   end
 
-  def update_params(options)
-    @scaffold_id ||= params[:scaffold_id]
-    raise RuntimeError.new("no scaffold id!") unless @scaffold_id
-
-    session[@scaffold_id] ||= {
-      :sort => options[:default_sort],
-        :sort_direction => options[:default_sort_direction],
-      :page => 1
-    }
-
-    store_or_get_from_session(@scaffold_id, :sort)
-    store_or_get_from_session(@scaffold_id, :sort_direction)
-    store_or_get_from_session(@scaffold_id, :page)
-  end
-
   def store_or_get_from_session(id_key, value_key)
     session[id_key][value_key] = params[value_key] if !params[value_key].nil?
     params[value_key] ||= session[id_key][value_key]
-  end
-
-  def update_params_filter
-    update_params( :default_sort => nil,
-                   :default_sort_direction => "asc" )
-    session[@scaffold_id][:conditions] ||= Conditions.new
-    if params[:conditions]
-      session[@scaffold_id][:conditions].apply_conditions(params[:conditions])
-    end
-    if params.has_key?(:transaction_type)
-      set_transaction_type( params[:transaction_type] )
-    elsif session[@scaffold_id].has_key?(:transaction_type)
-      set_transaction_type( session[@transaction_type][:transaction_type] )
-    end
   end
 
   public
