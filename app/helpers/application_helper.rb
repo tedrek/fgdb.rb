@@ -37,7 +37,7 @@ module ApplicationHelper
   end
 
   def contact_searchbox_id(options)
-    "#{options[:scaffold_id]}_contact_searchbox"
+    "#{@transaction_type}_contact_searchbox"
   end
 
   def searchbox_display_id(options)
@@ -49,11 +49,11 @@ module ApplicationHelper
   end
 
   def header_totals_id(options)
-    "#{options[:scaffold_id]}_header_totals"
+    "#{@transaction_type}_header_totals"
   end
 
   def anonymize_button_id(options)
-    "#{options[:scaffold_id]}_anonymize"
+    "#{@transaction_type}_anonymize"
   end
 
   def content_id(options)
@@ -61,7 +61,7 @@ module ApplicationHelper
   end
 
   def scaffold_form_tbody_id(options)
-    "#{options[:scaffold_id]}_form_tbody"
+    "#{@transaction_type}_form_tbody"
   end
 
   # due to prototype suckness, 'extend' may not be used as a choice name.
@@ -134,15 +134,15 @@ module ApplicationHelper
   end
 
   def scaffold_content_id(options)
-    "#{options[:scaffold_id]}-content"
+    "#{@transaction_type}-content"
   end
 
   def scaffold_messages_id(options)
-    "#{options[:scaffold_id]}-messages"
+    "#{@transaction_type}-messages"
   end
 
   def empty_message_id(options)
-    "#{options[:scaffold_id]}-empty-message"
+    "#{@transaction_type}-empty-message"
   end
 
   def column_class(column_name, column_value, sort_column, class_name = nil)
@@ -190,11 +190,11 @@ module ApplicationHelper
   end
 
   def scaffold_column_header_id(options)
-    "#{options[:scaffold_id]}-#{options[:column_name]}-column"
+    "#{@transaction_type}-#{options[:column_name]}-column"
   end
 
   def scaffold_tbody_id(options)
-    "#{options[:scaffold_id]}-tbody"
+    "#{@transaction_type}-tbody"
   end
 
   def loading_indicator_id(options)

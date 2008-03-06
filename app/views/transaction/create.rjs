@@ -1,4 +1,4 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => @transaction.id, :transaction_type => @transaction_type }
+@options = { :action => "view", :id => @transaction.id, :transaction_type => @transaction_type }
 @create_options = @options.merge(:action => "create", :id => params[:id])
 @print_options = @options.merge(:action => "receipt")
 
@@ -9,7 +9,7 @@ if @successful
   page.remove element_row_id(@create_options)
   page.show element_row_id(@options)
   page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');" 
-  page << "AjaxScaffold.removeSortClasses('#{@options[:scaffold_id]}');"
+  page << "AjaxScaffold.removeSortClasses('#{@transaction_type}');"
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
   page << remote_function( :url => params.merge( { :action => 'new', :transaction_type => @transaction_type } ) )
   if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped") 

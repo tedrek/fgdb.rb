@@ -2,7 +2,7 @@ class TransactionController < ApplicationController
   include DatalistFor
 
   layout :check_for_receipt
-  before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements, :add_attrs_to_form]
+  #before_filter :update_params_filter, :except => [:index, :donations, :sales, :recycling, :disbursements, :add_attrs_to_form]
 
   protected
 
@@ -47,7 +47,7 @@ class TransactionController < ApplicationController
     if params.has_key?(:transaction_type)
       set_transaction_type( params[:transaction_type] )
     elsif session[@scaffold_id].has_key?(:transaction_type)
-      set_transaction_type( session[@scaffold_id][:transaction_type] )
+      set_transaction_type( session[@transaction_type][:transaction_type] )
     end
   end
 
@@ -70,7 +70,7 @@ class TransactionController < ApplicationController
       :include => [:gizmo_events],
       :conditions => @conditions.conditions(model)
     }
-    if @model.new.respond_to?( :payments ) and transaction_type != 'donation'
+    if @model.new.respond_to?( :payments ) and @transaction_type != 'donation'
       search_options[:include] << :payments
       search_options[:joins] = "JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
     end
@@ -91,7 +91,7 @@ class TransactionController < ApplicationController
 
   def create
     begin
-      @transaction = model.new(params[transaction_type])
+      @transaction = model.new(params[@transaction_type])
       @successful = _save
     rescue
       flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
@@ -115,7 +115,7 @@ class TransactionController < ApplicationController
   def update
     begin
       @transaction = model.find(params[:id])
-      @transaction.attributes = params[transaction_type]
+      @transaction.attributes = params[@transaction_type]
       @successful = _save
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
@@ -141,13 +141,13 @@ class TransactionController < ApplicationController
   end
 
   def update_discount_schedule
-    if params[transaction_type][:contact_id]
-      default_discount_schedule = Contact.find(params[transaction_type][:contact_id]).default_discount_schedule
+    if params[@transaction_type][:contact_id]
+      default_discount_schedule = Contact.find(params[@transaction_type][:contact_id]).default_discount_schedule
     else
       default_discount_schedule = DiscountSchedule.no_discount
     end
     render :update do |page|
-      page << "set_new_val($('#{transaction_type}_discount_schedule_id'), '#{default_discount_schedule.id}');"
+      page << "set_new_val($('#{@transaction_type}_discount_schedule_id'), '#{default_discount_schedule.id}');"
     end
   end
 
@@ -184,11 +184,11 @@ class TransactionController < ApplicationController
 
   def receipt
     @txn = @transaction = model.find(params[:id])
-    @context = transaction_type
+    @context = @transaction_type
   end
 
   def update_totals
-    @transaction = model.new(params[transaction_type])
+    @transaction = model.new(params[@transaction_type])
     _apply_datalist_data(@transaction)
     render :action => 'update_totals.rjs'
   end
@@ -198,7 +198,7 @@ class TransactionController < ApplicationController
   #######
 
   def current_conditions(options)
-    conds = session[@scaffold_id][:conditions] ||= Conditions.new
+    conds = session[@transaction_type][:conditions] ||= Conditions.new
     conds.apply_conditions(options[:conditions])
     conds
   end
@@ -207,14 +207,9 @@ class TransactionController < ApplicationController
     20
   end
 
-  def transaction_type
-    @transaction_type || 'donation'
-  end
-
   def set_transaction_type(type)
-    @scaffold_id = type
-    session[@scaffold_id] ||= { }
-    @transaction_type = session[@scaffold_id][:transaction_type] = type
+    session[type] ||= {}
+    @transaction_type = session[type][:transaction_type] = type
     @gizmo_context = GizmoContext.send(@transaction_type)
   end
 
@@ -229,7 +224,7 @@ class TransactionController < ApplicationController
   end
 
   def model
-    case transaction_type
+    case @transaction_type
     when 'donation'
       Donation
     when 'sale'
@@ -238,15 +233,17 @@ class TransactionController < ApplicationController
       Disbursement
     when 'recycling'
       Recycling
+    else
+      raise "SHIT #{@transaction_type}"
     end
   end
 
   def gizmo_events_tag
-    transaction_type + '_gizmo_events'
+    @transaction_type + '_gizmo_events'
   end
 
   def payments_tag
-    transaction_type + '_payments'
+    @transaction_type + '_payments'
   end
 
   def _apply_datalist_data(transaction)

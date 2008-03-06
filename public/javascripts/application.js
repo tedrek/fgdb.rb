@@ -132,7 +132,7 @@ function updateTotalsIfMatch( element, value,  event, controller, patterns) {
 
 function updateTotalsForContext( element, value,  event, context) {
   var patts = [];
-  var controller = 'transaction';
+  var controller = context + 's';
   if (context == 'sale') {
     patts.push('unit_price$');
     patts.push('gizmo_count$');

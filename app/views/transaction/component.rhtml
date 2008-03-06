@@ -1,5 +1,5 @@
 <% if @show_wrapper %>
-<div id="<%= params[:scaffold_id] %>" class="ajax-scaffold">
+<div id="<%= @transaction_type %>" class="ajax-scaffold">
   <div id="<%= scaffold_content_id(params) %>">
 <% end %>
   <div class="ajax-scaffold-header">
@@ -44,7 +44,6 @@
   <% form_remote_tag :url => { :action => 'component_update' },
         :loading => "$('#{loading_indicator_id( refine_params )}').show()",
         :update => scaffold_content_id( refine_params ) do %>
-    <%= hidden_field_tag "scaffold_id", params[:scaffold_id] %>
     <% filters = {} %>
     <% filters['date range'] = date_or_date_range_picker('conditions') %>
     <% filters['contact'] =

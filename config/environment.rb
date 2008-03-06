@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
 
   # Use the database for sessions instead of the file system
   # (create the session table with 'rake db:sessions:create')
-  # config.action_controller.session_store = :active_record_store
+   config.action_controller.session_store = :p_store
   config.action_controller.session = {
     :session_key => 'fgdb-trunk_session',
     :secret      => 'e9678dba1f1b301b7b26dfeb94519a1cd0d1648ffca9c09e6581dc9955ab272fd27ef0840c55fadcdb77d7ca1369ba6e6458c6ae6ac0f07fea79b1132f8f5b06'

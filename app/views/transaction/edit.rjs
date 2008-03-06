@@ -1,4 +1,4 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "update", :id => params[:id], :transaction_type => @transaction_type }
+@options = { :action => "update", :id => params[:id], :transaction_type => @transaction_type }
 @view_options = @options.merge(:action => "view")
 
 if @successful
