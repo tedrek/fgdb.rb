@@ -178,7 +178,7 @@ class TransactionController < ApplicationController
 
   def set_transaction_type(type)
     session[type] ||= {}
-    @transaction_type = session[type][:transaction_type] = type
+    @transaction_type = type
     @gizmo_context = GizmoContext.send(@transaction_type)
   end
 
