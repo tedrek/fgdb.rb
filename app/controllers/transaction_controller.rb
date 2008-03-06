@@ -23,7 +23,6 @@ class TransactionController < ApplicationController
 
   public
 
-  # All posts to change scaffold level variables like sort values or page changes go through this action
   def component_update
     @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold
     component
