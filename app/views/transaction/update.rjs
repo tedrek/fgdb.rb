@@ -14,7 +14,7 @@ if @successful
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
   page << remote_function( :url => params.merge( { :action => 'new', :transaction_type => @transaction_type } ) )
   if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
-    page << "window.open('#{url_for(@print_options)}','printme','#{@print_window_options}');"
+    page << "window.open('#{url_for(@print_options)}','Receipt_#{@transaction.id}','#{@print_window_options}');"
   end
 else
   page.replace_html element_messages_id(@update_options), :partial => 'form_messages'

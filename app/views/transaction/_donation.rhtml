@@ -20,7 +20,7 @@
         </td>
         <td>
           <% print_options = @options.merge(:action => 'receipt') %>
-          <a onclick="window.open('<%= url_for(print_options) %>','printme','');">Print</a>
+          <a onclick="window.open('<%= url_for(print_options) %>','Receipt_<%= donation.id %>','');">Print</a>
         </td>
         <td>
           <% edit_options = @options.merge(:action => 'edit') %>
