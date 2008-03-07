@@ -18,12 +18,11 @@
     @sale.gizmo_events, :new_defaults => { :sale_id => @sale.id },
     :show_header => false, :render_aware => "sale_gizmo_event_form",
     :add_text => "More gizmos",
+    :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');" +
+      remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
+        :with => "Form.serialize('#{element_form_id(@options)}')"),
     :new_defaults => @event_defaults || nil) %>
 </div>
-
-<%= custom_change_observer("sales_gizmo_datalist_div",
-      remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
-        :with => "Form.serialize('#{element_form_id(@options)}')")) %>
 
 <div class="form-extras">
   <div class="form-element">
@@ -32,12 +31,17 @@
       <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "name", @sale.discount_schedule_id || DiscountSchedule.no_discount.id)%>
     </select>
   </div>
+  <%= custom_change_observer('sale_discount_schedule_id',
+          "updateTotalsForContext(element, Form.serialize($('#{element_form_id(@options)}')), event, '#{@transaction_type}');") %>
+
+
 
   <div class="datalist">
     <% params[:gizmo_context_id] ||= @gizmo_context.id %>
     <%= datalist_for( :payment, 'sale_payments',
       @sale.payments, :new_defaults => { :sale_id => @sale.id },
       :show_header => false, :render_aware => "payment_form",
+      :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');",
       :add_text => "More payment methods",
       :new_defaults => @event_defaults || nil) %>
   </div>

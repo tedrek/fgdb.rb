@@ -1,11 +1,18 @@
 module DatalistFor
   module Helper
 
+    # options can contain:
+    #   * onchange: js to be executed every time a field changes, or a
+    #       datalist row is removed.  row removal will not otherwise
+    #       trigger an 'onchange' event, so any containers hoping to
+    #       catch this event should hook in through this option
+    # also:
+    # create_with, show_header, add_text, exclude, delete_content,
+    # render, render_aware, new_defaults
     def datalist_for(model, tag, collection, options = {})
-
       options[:tag] = tag
 
-      #:TODO: scrub this
+      #:TODO: scrub this?
       klass = eval(Inflector.classify(model.to_s))
 
       session[tag] = {:model => klass, :options => options}
@@ -16,9 +23,7 @@ module DatalistFor
       add_text = options[:add_text] || "Add #{klass.name.capitalize}"
       exclude = options[:exclude] || []
 
-      html = <<HTML
-       <div id="datalist_#{tag}">
-HTML
+      html = "<div id='datalist_#{tag}'>"
 
       html += hidden_field_tag "datalist_#{tag}_id", datalist_table_id(tag)
       html += "<table class=\"datalist\"
@@ -53,6 +58,7 @@ HTML
         #{link_to_remote add_text, :url => { :action => 'datalist_add_row',
            :tag => tag,
            :datalist_id => datalist_table_id(tag)}}</span></div>"
+      html += custom_change_observer("datalist_#{tag}", options[:onchange]) if options[:onchange]
       html
     end
 

@@ -122,11 +122,8 @@ function matchValueVsManyPatterns(value, patts) {
 }
 // request only if trigger element id matches one of given patterns
 function updateTotalsIfMatch( element, value,  event, controller, patterns) {
-  var trigElementId = Event.element(event).id;
-  if (patterns.length > 0) {
-    if (matchValueVsManyPatterns(trigElementId, patterns)) {
-      new Ajax.Request('/' + controller + '/update_totals?' + value, {asynchronous:true, evalScripts:true});
-    }
+  if((event == null) || (patterns.length > 0 && matchValueVsManyPatterns(Event.element(event).id, patterns))) {
+    new Ajax.Request('/' + controller + '/update_totals?' + value, {asynchronous:true, evalScripts:true});
   }
 }
 

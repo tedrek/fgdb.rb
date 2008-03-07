@@ -18,6 +18,7 @@ module DatalistFor
     render :update do |page|
       div_id = "remove_me_#{params[:id]}"
       page.remove div_id
+      page << session[tag][:options][:onchange] if session[tag][:options][:onchange]
     end
   end
 

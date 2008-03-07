@@ -18,6 +18,7 @@
       @donation.payments, :create_with => { :donation_id => @donation.id },
       :show_header => false, :render_aware => "payment_form",
       :add_text => "More payment methods",
+      :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');",
       :new_defaults => @event_defaults || {}) %>
   </div>
 
@@ -33,12 +34,12 @@
     @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
     :show_header => false, :render_aware => "no_price_gizmo_event_form",
     :add_text => "More gizmos",
+    :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');" +
+      remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
+        :with => "Form.serialize('#{element_form_id(@options)}')"),
     :new_defaults => @event_defaults || {}) %>
 </div>
 
-<%= custom_change_observer("donation_gizmo_datalist_div",
-      remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
-        :with => "Form.serialize('#{element_form_id(@options)}')")) %>
 
 <%= render :partial => 'donation_totals' %>
 

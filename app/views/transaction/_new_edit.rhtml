@@ -32,9 +32,6 @@
       </p>
     <% end %>
 
-    <%= custom_change_observer(element_form_id(@options),
-          "updateTotalsForContext(element, Form.serialize(element), event, '#{@transaction_type}');") %>
-
   </td>
 </tr>
 <% if not request.xhr? %>
