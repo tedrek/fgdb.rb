@@ -35,11 +35,10 @@ on Ubuntu Dapper you will need to get gems from the internet.
 
 if you want to use the rails package from Debian enstead of using gem (it has to be the same version as this was developed for): 
 
-1. replace rubygems with rails in the apt-get install part above
+1. replace rubygems with rails in the apt-get install part above and skip the gem install step
 2. tell it where to find rails:
-   $> rails temp
-   $> cp -a temp/vendor/* fgdb.rb/trunk/vendor/
-   $> rm -fr temp
+ $> ln -s /usr/share/rails/* vendor/
+ $> ln -s /usr/share/rails vendor/rails
 
 you need to create and configure the databases:
 
