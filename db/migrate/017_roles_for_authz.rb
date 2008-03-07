@@ -16,11 +16,6 @@ class RolesForAuthz < ActiveRecord::Migration
     add_foreign_key("roles_users", [:user_id], "users", [:id], name => "roles_users_users_fk")
     add_foreign_key("roles_users", [:role_id], "roles", [:id], name => "roles_users_roles_fk")
     User.connection.execute("ALTER TABLE roles_users ADD CONSTRAINT roles_users_uk UNIQUE (user_id, role_id)")
-
-    r = Role.new({:name => "ROLE_ADMIN"})
-    r.save()
-    u = User.find(:first, :conditions => ["login='admin'"])
-    u.roles << r
   end
 
   def self.down

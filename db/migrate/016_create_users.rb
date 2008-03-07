@@ -13,12 +13,6 @@ class CreateUsers < ActiveRecord::Migration
 
     add_column "contacts", :user_id, :bigint
     add_foreign_key "contacts", [:user_id], "users", [:id], :name => "contacts_users_fk"
-
-    user = User.new({:login => "admin"})
-    user.email = "admin@example.com"
-    user.password_confirmation = "secret"
-    user.password = "secret"
-    user.save()
   end
 
   def self.down
