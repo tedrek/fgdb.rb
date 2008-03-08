@@ -40,7 +40,7 @@
   <p><label for="meetings">Meetings:</label><br/>
   <ul>
   <% Meeting.find(:all, :order => "meeting_name", :conditions => ["shift_date IS NULL OR shift_date > ?", Date.today ]).each do |m| %>
-     <li><input type="checkbox" name="worker[shift_ids][]" 
+     <li><input type="checkbox" name="worker[meeting_ids][]" 
             value="<%= m.id %>" 
             <% if @worker.meetings.include?(m) %> checked="checked" <% end %> />
   <%= m.name %></li>
