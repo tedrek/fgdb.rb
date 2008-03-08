@@ -16,14 +16,20 @@ class ApplicationController < ActionController::Base
       end
     end
     if params[:meeting]
-      if params[:meeting][:meeting_date].empty?
-        params[:meeting][:meeting_date] = nil
+      if params[:meeting][:meeting_date]
+        if params[:meeting][:meeting_date].empty?
+          params[:meeting][:meeting_date] = nil
+        end
       end
-      if params[:meeting][:effective_date].empty?
-        params[:meeting][:effective_date] = nil
+      if params[:meeting][:effective_date]
+        if params[:meeting][:effective_date].empty?
+          params[:meeting][:effective_date] = nil
+        end
       end
-      if params[:meeting][:ineffective_date].empty?
-        params[:meeting][:ineffective_date] = nil
+      if params[:meeting][:ineffective_date]
+        if params[:meeting][:ineffective_date].empty?
+          params[:meeting][:ineffective_date] = nil
+        end
       end
     end
     if params[:schedule]
@@ -70,11 +76,15 @@ class ApplicationController < ActionController::Base
       if params[:work_shift][:shift_date].empty?
         params[:work_shift][:shift_date] = nil
       end
-      if params[:work_shift][:effective_date].empty?
-        params[:work_shift][:effective_date] = nil
+      if params[:work_shift][:effective_date]
+        if params[:work_shift][:effective_date].empty?
+          params[:work_shift][:effective_date] = nil
+        end
       end
-      if params[:work_shift][:ineffective_date].empty?
-        params[:work_shift][:ineffective_date] = nil
+      if params[:work_shift][:ineffective_date]
+        if params[:work_shift][:ineffective_date].empty?
+          params[:work_shift][:ineffective_date] = nil
+        end
       end
     end
     if params[:worker]
