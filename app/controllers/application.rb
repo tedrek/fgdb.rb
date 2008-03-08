@@ -9,8 +9,10 @@ class ApplicationController < ActionController::Base
 
   def fix_this_null_date (c1, c2)
     if params[c1]
-      if params[c1][c2].empty?
-        params[c1][c2] = nil
+      if params[c1][c2]
+        if params[c1][c2].empty?
+          params[c1][c2] = nil
+        end
       end
     end
   end
