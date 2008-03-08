@@ -16,9 +16,12 @@ class ApplicationController < ActionController::Base
   end
 
   def fix_null_date
-    # go ahead and laugh at this martin. i know there's a much
-    # better way to do it
-    fix_this_null_date(:holliday, :holliday_date)
+    # fields to check. these are date fields that allow NULL
+    # values in the database. the dhtml-calendar plugin passes an
+    # empty string when the date is left blank, this turns into
+    # an arbitrary and unwanted date rather than a NULL. fix
+    # these by explicitly setting these values to nil. 
+    fix_this_null_date(:holiday, :holiday_date)
     fix_this_null_date(:meeting, :meeting_date)
     fix_this_null_date(:meeting, :effective_date)
     fix_this_null_date(:meeting, :ineffective_date)
