@@ -1,13 +1,13 @@
 <label for="<%= contact_query_id(options) -%>">Search for a contact:</label>
 <input type="text" id="<%= contact_query_id(options) -%>"
-        onKeyPress="return contactKeyListener(event);"></input>
+        onkeypress="return contactKeyListener(event);"></input>
 <div id="<%= search_results_id(options) %>"></div>
 <%= javascript_tag "function do_search() {
     var x = $('#{contact_query_id(options)}').value;
     if (x.length > 3) {
       #{remote_function :update => search_results_id(options),
-                  :url => { :controller => 'contacts', 
-                            :action => 'search_results', 
+                  :url => { :controller => 'contacts',
+                            :action => 'search_results',
                             :options => options },
                   :with => "'contact_query=' + escape($('#{contact_query_id(options)}').value)"}
     }
