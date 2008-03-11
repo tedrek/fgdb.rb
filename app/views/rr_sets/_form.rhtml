@@ -25,6 +25,6 @@
 <% end %>
 </ul>
 </p>
-<p><%= link_to "new rr_item", { :action => "new", :controller => "rr_items"} %></p>
+<p><%= link_to 'new rr_item', :controller => 'rr_items', :action => 'new', 'rr_set_id' => @rr_set.id %></p>
 <!--[eoform:rr_set]-->
 

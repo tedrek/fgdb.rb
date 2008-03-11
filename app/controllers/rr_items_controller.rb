@@ -17,14 +17,14 @@ class RrItemsController < ApplicationController
   end
 
   def new
-    @rr_item = RrItem.new
+    @rr_item = RrItem.new(:rr_set_id => params[:rr_set_id])
   end
 
   def create
     @rr_item = RrItem.new(params[:rr_item])
     if @rr_item.save
       flash[:notice] = 'RrItem was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to :action => 'list', :controller => 'rr_sets'
     else
       render :action => 'new'
     end

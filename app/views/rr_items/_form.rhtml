@@ -24,7 +24,7 @@ Can happen during:<br/>
 <%= check_box "rr_item", "week_of_month_3" %> <label for="rr_item_week_of_month_3">3rd week of month (15-21st)</label><br/>
 <%= check_box "rr_item", "week_of_month_4" %> <label for="rr_item_week_of_month_4">4th week of month (22-28th)</label><br/>
 <%= check_box "rr_item", "week_of_month_5" %> <label for="rr_item_week_of_month_5">5th week of month (29-end)</label><br/>
-<%= check_box "rr_item", "week_of_month_flip" %> <label for="rr_item_week_of_month_flip">Start from last week of month instead of first</label>
+<%= check_box "rr_item", "week_of_month_final" %> <label for="rr_item_week_of_month_final">Final week of month (last 7 days)</label>
 </p>
 
 <p>
@@ -46,7 +46,7 @@ Can happen during month of:<br/>
 <p>
 <label for="rr_item_min_day_of_month">Would start on day of month #</label> <%= text_field 'rr_item', 'min_day_of_month' %><br/>
 and would end on day #<label for="rr_item_max_day_of_month"> <%= text_field 'rr_item', 'max_day_of_month' %><br/>
-<%= check_box "rr_item", "day_of_month_flip" %> <label for="rr_item_day_of_month_flip">Start from last day of month instead of first</label>
+<%= check_box "rr_item", "day_of_month_final" %> <label for="rr_item_day_of_month_final">Final day of month</label>
 </p>
 
 <p>To indicate that an event may only happen on alternating weeks, 
