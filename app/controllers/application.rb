@@ -27,6 +27,8 @@ class ApplicationController < ActionController::Base
     fix_this_null_date(:meeting, :meeting_date)
     fix_this_null_date(:meeting, :effective_date)
     fix_this_null_date(:meeting, :ineffective_date)
+    fix_this_null_date(:rr_set, :effective_date)
+    fix_this_null_date(:rr_set, :ineffective_date)
     fix_this_null_date(:schedule, :effective_date)
     fix_this_null_date(:schedule, :ineffective_date)
     fix_this_null_date(:shift, :shift_date)
