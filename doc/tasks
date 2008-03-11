@@ -1,11 +1,10 @@
 Bugs:
+- how to get a new rr_item to set its rr_set_id properly when 
+  being created from views/rr_sets/_form.rhtml
 - first shift generated is often wrong color
 - drop downs on filter criteria, etc. lose values
 - WorkShift.create_from_XXX can't set coverage_type_id
 - limit shifts to a single worker who has no shifts bombs
-- version 47 can't edit work shifts. most likely breakage between
-  33 and 35? problem is that SQL refers to shifts, not
-  work_shifts table 
 - meetings_workers table allows duplicates. fix with a constraint
   in db
 - check all tables for FK constraints, there are some missing:
