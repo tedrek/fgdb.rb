@@ -36,16 +36,6 @@ module ApplicationHelper
     scaffold_columns(context).length + 1
   end
 
-  def contact_field(obj_name, field_name, options = {})
-    options[:locals] ||= {}
-    options[:locals][:options] ||= {}
-    obj = instance_variable_get(obj_name)
-    if(obj && obj.respond_to?(field_name))
-      options[:locals][:contact] = obj.send(field_name)
-    end
-    render(options.merge({:partial => 'contacts/search'}))
-  end
-
   def contact_searchbox_id(options)
     "#{@transaction_type}_contact_searchbox"
   end

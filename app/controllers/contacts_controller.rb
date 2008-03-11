@@ -15,19 +15,13 @@ class ContactsController < ApplicationController
     end
     rescue ForceRollback
   end
-
+  
   def index
     render :action => 'lookup'
   end
 
   def lookup
-    #:MC: simulate a form-filling object that has a contact
-    @thing = "thing"
-    @thing.instance_eval "
-      def contact
-        Contact.find(#{params[:contact_id]}) if #{params[:contact_id] or 'nil'}
-      end
-    "
+    @contact = Contact.find(params[:contact_id]) if params[:contact_id]
   end
 
   def search_results
@@ -48,8 +42,7 @@ class ContactsController < ApplicationController
     @contact.city = Default['city']
     @contact.country = Default['country']
     @successful = true
-    #render :action => 'new.rjs'
-    render :partial => 'new_edit', :locals => { :@options => @options || {} }
+    render :action => 'new.rjs'
   end
 
   def create

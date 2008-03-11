@@ -17,6 +17,3 @@
 <% if( defined?(contact) && contact ) %>
   <%= javascript_tag "set_new_val($('#{contact_query_id(options)}'), '#{contact.id}');" %>
 <% end %>
-<% if (! options[:display_create]) or (options[:display_create] == 'true') %>
-  <%= link_to_remote_redbox("create new contact", :url => options.merge(:controller => 'contacts', :action => 'new', :id => nil)) %>
-<% end %>
