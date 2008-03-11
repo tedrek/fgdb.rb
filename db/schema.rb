@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 14) do
+ActiveRecord::Schema.define(:version => 15) do
 
   create_table "coverage_types", :force => true do |t|
     t.column "name",        :string
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(:version => 14) do
 
   add_index "jobs_workers", ["job_id"], :name => "index_jobs_workers_on_job_id"
   add_index "jobs_workers", ["worker_id"], :name => "index_jobs_workers_on_worker_id"
+  add_index "jobs_workers", ["job_id", "worker_id"], :name => "jobs_workers_link", :unique => true
 
   create_table "meetings", :force => true do |t|
     t.column "name",              :string
@@ -70,6 +71,8 @@ ActiveRecord::Schema.define(:version => 14) do
     t.column "meeting_id", :integer
     t.column "worker_id",  :integer
   end
+
+  add_index "meetings_workers", ["meeting_id", "worker_id"], :name => "meetings_workers_link", :unique => true
 
   create_table "plugin_schema_info", :id => false, :force => true do |t|
     t.column "plugin_name", :string

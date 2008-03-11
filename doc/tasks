@@ -5,8 +5,6 @@ Bugs:
 - drop downs on filter criteria, etc. lose values
 - WorkShift.create_from_XXX can't set coverage_type_id
 - limit shifts to a single worker who has no shifts bombs
-- meetings_workers table allows duplicates. fix with a constraint
-  in db
 - check all tables for FK constraints, there are some missing:
   (work_shifts.meeting_id, shifts.meeting_id,
   work_shifts.shift_id)
