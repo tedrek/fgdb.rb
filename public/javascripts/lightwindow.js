@@ -78,7 +78,7 @@ lightwindow.prototype = {
         //
         initialize : function(options) {
                 this.options = Object.extend({
-                        resizeSpeed : 8,
+                        resizeSpeed : 10,
                         contentOffset : {
                                 height : 20,
                                 width : 20
@@ -529,7 +529,7 @@ lightwindow.prototype = {
                         Event.observe(window, 'DOMMouseScroll', this._stopScrolling.bindAsEventListener(this), false);
                 }
 
-                Event.observe(overlay, 'click', this.deactivate.bindAsEventListener(this), false);
+                //Event.observe(overlay, 'click', this.deactivate.bindAsEventListener(this), false);
                 overlay.onclick = function() {return false;};
         },
         //
