@@ -53,7 +53,7 @@ class ContactsController < ApplicationController
     @contact.country = Default['country']
     @successful = true
     #render :action => 'new.rjs'
-    render :partial => 'new_edit', :locals => { :@options => @options || {} }
+    render :partial => 'new_edit', :locals => { :@options => @options || params }
   end
 
   def create
