@@ -42,13 +42,18 @@ class ContactsController < ApplicationController
     render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] || {}}
   end
 
+  def boxtest
+    render :text => %Q[<p>meow<a href="#" class="lightwindow_action" rel="deactivate">Cancel</a></p>]
+  end
+
   def new
     @contact = Contact.new
     @contact.state_or_province = Default['state_or_province']
     @contact.city = Default['city']
     @contact.country = Default['country']
     @successful = true
-    render :action => 'new.rjs'
+    #render :action => 'new.rjs'
+    render :partial => 'new_edit', :locals => { :@options => @options || {} }
   end
 
   def create

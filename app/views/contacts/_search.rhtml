@@ -17,3 +17,4 @@
 <% if( defined?(contact) && contact ) %>
   <%= javascript_tag "set_new_val($('#{contact_query_id(options)}'), '#{contact.id}');" %>
 <% end %>
+<a href="/contacts/new" params="lightwindow_type=page" class="lightwindow">test box</a>
