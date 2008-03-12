@@ -20,7 +20,7 @@
   <%= link_to i.name, { :action => "edit", :controller => "rr_items", :id => i.id } %>:
   <%= link_to "s", { :action => "show", :controller => "rr_items", :id => i.id }, :title => "show" %>,
   <%= link_to "e", { :action => "edit", :controller => "rr_items", :id => i.id }, :title => "edit" %>,
-  <%= link_to "d", { :action => "destroy", :controller => "rr_items", :id => i.id }, :title => "destroy" %>
+  <%= link_to 'd', { :action => 'destroy', :controller => "rr_items", :id => i.id }, :confirm => 'Are you sure?', :method => :post %>
   </li>
 <% end %>
 </ul>

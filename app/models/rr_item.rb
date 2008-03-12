@@ -1,5 +1,6 @@
 class RrItem < ActiveRecord::Base
   belongs_to :rr_set
+  validates_presence_of :rr_set_id
   
   def name
     range = ''

@@ -5,8 +5,8 @@ class WorkShiftsController < ApplicationController
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  #verify :method => :post, :only => [ :destroy, :create, :update ],
-  #       :redirect_to => { :action => :list }
+  verify :method => :post, :only => [ :destroy, :create, :update ],
+         :redirect_to => { :action => :list }
 
   def list
     session["shift_return_to"] = "work_shifts"
@@ -50,7 +50,6 @@ class WorkShiftsController < ApplicationController
       :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time', 
       :joins => 'LEFT JOIN workers ON work_shifts.worker_id = workers.id' }
     )
-    render @list
   end
 
   def show

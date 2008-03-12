@@ -1,6 +1,8 @@
 <%= error_messages_for 'rr_item' %>
 
 <!--[form:rr_item]-->
+<%= hidden_field "rr_item", "rr_set_id" %>
+
 <p>Select when the event can happen. Select the days of the week, the weeks of the month, and the months of the year when the event might occur. 
 When a date matches all these criteria together, that is when it will happen. For instance, to indicate the third wednesday in March, 
 select only Wednesday in the weekday section, only the third week in the week of month section, and only March in the month section.
