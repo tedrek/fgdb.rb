@@ -15,13 +15,19 @@ class ContactsController < ApplicationController
     end
     rescue ForceRollback
   end
-  
+
   def index
     render :action => 'lookup'
   end
 
   def lookup
-    @contact = Contact.find(params[:contact_id]) if params[:contact_id]
+    #:MC: simulate a form-filling object that has a contact
+    @thing = "thing"
+    @thing.instance_eval "
+      def contact
+        Contact.find(#{params[:contact_id]}) if #{params[:contact_id] or 'nil'}
+      end
+    "
   end
 
   def search_results
