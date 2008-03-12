@@ -1,19 +1,6 @@
 <label for="<%= contact_query_id(options) -%>">Search for a contact:</label>
 <input type="text" id="<%= contact_query_id(options) -%>"
         onkeypress="return contactKeyListener(event);"></input>
-<% if (! options[:display_create]) or (options[:display_create] == 'true') %>
-  <div id="contacts_new_div" style="display:none;">
-    <%= render :partial => "contacts/new_edit",
-          :locals => {
-            :@options => options.merge(:action => 'create'),
-            :@contact => Contact.new
-          } %>
-  </div>
-  <a href="#contacts_new_div" class="lightwindow" params="lightwindow_type=inline" id="lightwindow_new">
-    <img src="/images/add.gif" alt="create a new contact" title="create a new contact" />
-  </a>
-  <%= custom_change_observer 'lightwindow_new', "Form.disable($('#{contact_query_id(options)}').form);" %>
-<% end %>
 <div id="<%= search_results_id(options) %>"></div>
 <%= javascript_tag "function do_search() {
     var x = $('#{contact_query_id(options)}').value;
@@ -30,3 +17,4 @@
 <% if( defined?(contact) && contact ) %>
   <%= javascript_tag "set_new_val($('#{contact_query_id(options)}'), '#{contact.id}');" %>
 <% end %>
+<a href="/contacts/new" params="lightwindow_type=page" class="lightwindow">test box</a>
