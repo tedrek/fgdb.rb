@@ -2,19 +2,26 @@
 <input type="text" id="<%= contact_query_id(options) -%>"
         onkeypress="return contactKeyListener(event);"></input>
 <div id="<%= search_results_id(options) %>"></div>
-<%= javascript_tag "function do_search() {
-    var x = $('#{contact_query_id(options)}').value;
-    if (x.length > 3) {
-      #{remote_function :update => search_results_id(options),
-                  :url => { :controller => 'contacts',
-                            :action => 'search_results',
-                            :options => options },
-                  :with => "'contact_query=' + escape($('#{contact_query_id(options)}').value)"}
-    }
-  }
-" %>
-<%= observe_field contact_query_id(options), :frequency => 0.5, :function => "do_search()" -%>
+<% do_tag = remote_function :update => search_results_id(options),
+         :url => {:controller => 'contacts',
+                  :action => 'search_results',
+                  :options => options },
+         :with => "'contact_query=' +
+           escape($('#{contact_query_id(options)}').value)"
+   try_tag = "
+     var x = $('#{contact_query_id(options)}').value;
+     if (x.length > 3) {
+       #{do_tag};
+     }
+   " %>
+<%= observe_field contact_query_id(options), :frequency => 0.5, :function => try_tag -%>
+<%= custom_observer contact_query_id(options),
+      "var key_code = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+      if (key_code == 13 || key_code == 10) {
+        #{do_tag};
+        return false;
+      }",
+      "keypress" %>
 <% if( defined?(contact) && contact ) %>
   <%= javascript_tag "set_new_val($('#{contact_query_id(options)}'), '#{contact.id}');" %>
 <% end %>
-<a href="/contacts/new" params="lightwindow_type=page" class="lightwindow">test box</a>
