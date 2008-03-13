@@ -9,8 +9,6 @@ class Contact < ActiveRecord::Base
 
   has_one :user
 
-  # acts_as_userstamp
-
   validates_presence_of :postal_code
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
@@ -142,6 +140,10 @@ class Contact < ActiveRecord::Base
         '(organization without name)'
       end
     end
+  end
+
+  def short_address
+    [address, extra_address, postal_code].join(', ')
   end
 
   def csz
