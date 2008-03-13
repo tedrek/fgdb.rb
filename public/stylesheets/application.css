@@ -242,6 +242,14 @@ width: 240px;
  margin-left: 20px;
 }
 
+.search_result_name {
+}
+
+.search_result_address {
+font-size: 8;
+foreground: green;
+}
+
 /* ===================================
          Report stuff */
 
