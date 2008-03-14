@@ -231,13 +231,16 @@ module ApplicationHelper
     custom_observer(element, handler, 'change')
   end
 
-  def custom_observer(element, handler, event_type)
-    javascript_tag "
+  def custom_observer(element, handler, *event_types)
+    js = "
       element = $('#{element}');
       handler = function(event) {
         Event.extend(event);
         #{handler}
-      };
-      element.addEventListener('#{event_type}', handler, false);"
+      };"
+    event_types.each {|event_type|
+      js += "element.addEventListener('#{event_type}', handler, false);"
+    }
+    javascript_tag(js)
   end
 end

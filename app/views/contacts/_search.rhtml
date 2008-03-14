@@ -1,27 +1,16 @@
 <label for="<%= contact_query_id(options) -%>">Search for a contact:</label>
-<input type="text" id="<%= contact_query_id(options) -%>"
-        onkeypress="return contactKeyListener(event);"></input>
-<div id="<%= search_results_id(options) %>"></div>
-<% do_tag = remote_function :update => search_results_id(options),
-         :url => {:controller => 'contacts',
-                  :action => 'search_results',
-                  :options => options },
-         :with => "'contact_query=' +
-           escape($('#{contact_query_id(options)}').value)"
-   try_tag = "
-     var x = $('#{contact_query_id(options)}').value;
-     if (x.length > 3) {
-       #{do_tag};
-     }
-   " %>
-<%= observe_field contact_query_id(options), :frequency => 0.5, :function => try_tag -%>
-<%= custom_observer contact_query_id(options),
-      "var key_code = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-      if (key_code == 13 || key_code == 10) {
-        #{do_tag};
-        return false;
-      }",
-      "keypress" %>
+<%= text_field_with_auto_complete contact_element_prefix(options), 'query', {},
+      :after_update_element => "
+        function(field, choice) {
+          #{remote_function(
+              :update => searchbox_display_id(options),
+              :url => {:action => 'update_display_area', :controller => 'contacts'},
+              :with => "'contact_id=' + $('#{contact_element_prefix(options)}_query').value"
+            )};
+        }",
+      :skip_style => true %>
+<div id="<%= searchbox_display_id(options) %>"></div>
+
 <% if( defined?(contact) && contact ) %>
-  <%= javascript_tag "set_new_val($('#{contact_query_id(options)}'), '#{contact.id}');" %>
+  <%# javascript_tag "set_new_val($('#{contact_query_id(options)}'), '#{h(contact.display_name)}');" %>
 <% end %>

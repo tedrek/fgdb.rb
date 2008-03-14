@@ -32,13 +32,13 @@ class ContactsController < ApplicationController
 
   def search_results
     if params['contact_query']
-      @search_results = Contact.search(params['contact_query'], :limit => 5)
+      @search_results = Contact.search(params['contact_query'], :limit => 10)
     end
     render :layout => false, :partial => 'search_results', :locals => { :@search_results => @search_results, :options => params['options'] || {} }
   end
 
   def update_display_area
-    @contact = Contact.find( params[:contact_id] )
+    @contact = Contact.find( params[:contact_id].strip )
     render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] || {}}
   end
 
@@ -124,9 +124,24 @@ class ContactsController < ApplicationController
     render :action => 'cancel.rjs'
   end
 
+  def auto_complete_for_contact_query(name=nil)
+    name ||= 'contact'
+    @contacts = Contact.search(params[name][:query].strip, :limit => 10)
+    render :partial => 'auto_complete_list'
+  end
+
   #######
   private
   #######
+
+  def method_missing(symbol, *args)
+    if /auto_complete_for_(.*)_query/.match(symbol.to_s)
+      auto_complete_for_contact_query($1)
+      render :action => :auto_complete_for_contact_query
+    else
+      super
+    end
+  end
 
   def _save
     @contact.contact_types = ContactType.find(params[:contact_types]) if params[:contact_types]

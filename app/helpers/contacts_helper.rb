@@ -1,4 +1,5 @@
 module ContactsHelper
+  include AutoCompleteMacrosHelper
   def searchbox_select_name(options)
     options[:select_name] || 'contact_id'
   end
