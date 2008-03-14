@@ -70,7 +70,7 @@ module AutoCompleteMacrosHelper
     js_options[:frequency]  = "#{options[:frequency]}" if options[:frequency]
     js_options[:method]     = "'#{options[:method].to_s}'" if options[:method]
 
-    { :after_update_element => :afterUpdateElement,
+    { :after_update_element => :afterUpdateElement, :update_element => :updateElement,
       :on_show => :onShow, :on_hide => :onHide, :min_chars => :minChars }.each do |k,v|
       js_options[v] = options[k] if options[k]
     end
