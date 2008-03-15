@@ -2,6 +2,9 @@ class RrItem < ActiveRecord::Base
   belongs_to :rr_set
   validates_presence_of :rr_set_id
   
+  def occurs? (date = Date.today )
+  end
+
   def name
     range = ''
     if min_day_of_month and max_day_of_month
