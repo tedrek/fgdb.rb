@@ -22,6 +22,19 @@
       },
       :controller => 'contacts'
     ) %>
+<% if (! options[:display_create]) or (options[:display_create] == 'true') %>
+  <% new_options = options.merge(
+       :controller => 'contacts',
+       :action => 'new',
+       :id => nil,
+       :loading_indicator_prefix => contact_element_prefix(options) + '_new'
+     ) %>
+  <a href="<%= url_for(new_options) %>" id="<%= contact_new_contact_link(options) %>" class="lightwindow"
+       params="lightwindow_type=page" onclick="return false">
+     <%= image_tag "add.gif", :alt => "Create a new contact" %>
+  </a>
+  <%= loading_indicator_tag(new_options) %>
+<% end %>
 <div id="<%= searchbox_display_id(options) %>"></div>
 
 <% if instance_variable_get("@" + contact_element_prefix(options)) %>
