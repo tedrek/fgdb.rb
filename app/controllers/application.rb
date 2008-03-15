@@ -41,8 +41,7 @@ class ApplicationController < ActionController::Base
     if has_role?(roles)
       return true
     else
-      flash[:error] = "Unauthorized!"
-      redirect_to :controller => 'sidebar_links'
+      redirect_to :controller => 'sidebar_links', 'unauthorized_error' => true
       return false
     end
   end
