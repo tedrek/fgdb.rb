@@ -11,9 +11,9 @@
 </ul>
 </p>
 
-<% form_tag :action => 'test', :id => @rr_set do %>
+<% form_tag :action => 'check_date', :id => @rr_set do %>
   <%= calendar_box 'tester', 'test_date' %></p>
-  <%= submit_tag 'Test' %>
+  <%= submit_tag 'Check date' %>
 <% end %>
 
 <%= link_to 'Edit', :action => 'edit', :id => @rr_set %> |

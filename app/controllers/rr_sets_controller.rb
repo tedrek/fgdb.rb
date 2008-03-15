@@ -44,6 +44,17 @@ class RrSetsController < ApplicationController
     end
   end
 
+  def check_date
+    @rr_set = RrSet.find(params[:id])
+    if @rr_set.occurs? params[:check_date]
+      flash[:notice] = 'Event occurs on this date.'
+      redirect_to :action => 'show', :id => @rr_set
+    else
+      flash[:notice] = 'Event does not occur on this date.'
+      render :action => 'edit'
+    end
+  end
+
   def destroy
     RrSet.find(params[:id]).destroy
     redirect_to :action => 'list'
