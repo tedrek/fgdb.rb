@@ -11,8 +11,8 @@ module TransactionHelper
       [
 #       Column.new(Sale, :name => 'id', :eval => 'sale.id'),
        Column.new(Sale, :name => 'payment',
-                                        :eval => 'sale.payment', :sortable => false),
-       Column.new(Sale, :name => 'buyer', :sortable => false, :eval => 'sale.buyer'),
+                  :eval => 'sale.payment', :sortable => false),
+       Column.new(Sale, :name => 'buyer', :sortable => false, :eval => 'sale.buyer.display_name'),
        Column.new(Sale, :name => 'gizmos', :sortable => false),
        Column.new(Sale, :name => 'created_at', :eval => 'sale.created_at'),
       ]
@@ -20,8 +20,9 @@ module TransactionHelper
       [
 #       Column.new(Donation, :name => 'id'),
        Column.new(Donation, :name => 'payment',
-                                        :eval  => 'donation.payment', :sortable => false),
-       Column.new(Donation, :name => 'donor', :sortable => false),
+                  :eval  => 'donation.payment', :sortable => false),
+       Column.new(Donation, :name => 'donor', :sortable => false,
+                  :eval => 'donation.donor.display_name'),
        Column.new(Donation, :name => 'gizmos', :sortable => false),
        Column.new(Donation, :name => 'created_at'),
       ]
@@ -29,7 +30,8 @@ module TransactionHelper
       [
 #       Column.new(Disbursement, :name => 'id'),
        Column.new(Disbursement, :name => 'disbursement_type', :sortable => false),
-       Column.new(Disbursement, :name => 'recipient', :sortable => false),
+       Column.new(Disbursement, :name => 'recipient', :sortable => false,
+                  :eval => 'disbursement.recipient.display_name'),
        Column.new(Disbursement, :name => 'gizmos', :sortable => false),
        Column.new(Disbursement, :name => 'disbursed_at'),
       ]

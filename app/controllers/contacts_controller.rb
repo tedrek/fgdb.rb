@@ -56,9 +56,11 @@ class ContactsController < ApplicationController
     @contact.state_or_province = Default['state_or_province']
     @contact.city = Default['city']
     @contact.country = Default['country']
+    @options = params.merge({:action => "create", :id => rand(1000).to_s * 10})
+    @new_options = @options.merge(:action => "new", :id => nil)
     @successful = true
     #render :action => 'new.rjs'
-    render :partial => 'new_edit', :locals => { :@options => @options || params }
+    render :partial => 'new_edit', :locals => { :@options => @options }
   end
 
   def create

@@ -46,6 +46,10 @@ module ApplicationHelper
     render(options.merge({:partial => 'contacts/search'}))
   end
 
+  def contact_new_contact_link(options)
+    contact_element_prefix(options) + "_new_contact_link"
+  end
+
   def contact_searchbox_id(options)
     "#{@transaction_type}_contact_searchbox"
   end

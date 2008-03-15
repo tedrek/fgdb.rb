@@ -48,7 +48,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   def test_new_xhr
     xhr :post, :new
     assert_response :success
-    assert_template 'new.rjs'
+    assert_template '_new_edit'
     assert_match /Form.disable/, @response.body
   end
 
