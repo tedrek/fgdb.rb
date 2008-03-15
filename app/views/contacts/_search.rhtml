@@ -9,9 +9,10 @@
      }" %>
 <%= hidden_field_tag "contact_element_prefix", contact_element_prefix(options) %>
 <label for="<%= contact_element_prefix(options) -%>_query">Search for a contact:</label>
-<%= text_field_with_auto_complete contact_element_prefix(options), 'query', {},
-      :after_update_element => update_display_function,
-      :skip_style => true %>
+<%= text_field_with_auto_complete contact_element_prefix(options), 'query', {}, {
+        :after_update_element => update_display_function,
+        :skip_style => true
+      }, :controller => 'contacts' %>
 <div id="<%= searchbox_display_id(options) %>"></div>
 
 <% if instance_variable_get("@" + contact_element_prefix(options)) %>
