@@ -242,6 +242,11 @@ width: 240px;
  margin-left: 20px;
 }
 
+li.contact div.address {
+color:#888888;
+font-size:10px;
+}
+
 .search_result_name {
 }
 

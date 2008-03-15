@@ -21,13 +21,18 @@ class ContactsController < ApplicationController
   end
 
   def lookup
-    #:MC: simulate a form-filling object that has a contact
+    test = params[params[:contact_element_prefix]] ? 'true' : 'false'
+    query = params[params[:contact_element_prefix]] ? params[params[:contact_element_prefix]][:query] : ''
     @thing = "thing"
     @thing.instance_eval "
-      def contact
-        Contact.find(#{params[:contact_id]}) if #{params[:contact_id] or 'nil'}
+      def query
+        if #{test}
+          Contact.find('#{query.gsub(/[^0-9]/, '')}')
+        end
       end
+      alias :contact :query
     "
+    instance_variable_set("@" + params[:contact_element_prefix], @thing) if params[:contact_element_prefix]
   end
 
   def search_results

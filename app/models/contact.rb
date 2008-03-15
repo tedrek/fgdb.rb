@@ -118,10 +118,6 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def to_s
-    display_name
-  end
-
   def screen_sortby
     display_name
   end

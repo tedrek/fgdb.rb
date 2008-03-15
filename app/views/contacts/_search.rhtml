@@ -1,16 +1,20 @@
-<label for="<%= contact_query_id(options) -%>">Search for a contact:</label>
+<% update_display = remote_function(
+     :update => searchbox_display_id(options),
+     :url => {:action => 'update_display_area', :controller => 'contacts'},
+     :with => "'contact_id=' + $('#{contact_element_prefix(options)}_query').value"
+   ) %>
+<% update_display_function = "
+     function(field, choice) {
+       #{update_display};
+     }" %>
+<%= hidden_field_tag "contact_element_prefix", contact_element_prefix(options) %>
+<label for="<%= contact_element_prefix(options) -%>_query">Search for a contact:</label>
 <%= text_field_with_auto_complete contact_element_prefix(options), 'query', {},
-      :after_update_element => "
-        function(field, choice) {
-          #{remote_function(
-              :update => searchbox_display_id(options),
-              :url => {:action => 'update_display_area', :controller => 'contacts'},
-              :with => "'contact_id=' + $('#{contact_element_prefix(options)}_query').value"
-            )};
-        }",
+      :after_update_element => update_display_function,
       :skip_style => true %>
 <div id="<%= searchbox_display_id(options) %>"></div>
 
-<% if( defined?(contact) && contact ) %>
-  <%# javascript_tag "set_new_val($('#{contact_query_id(options)}'), '#{h(contact.display_name)}');" %>
+<% if instance_variable_get("@" + contact_element_prefix(options)) %>
+  <%= javascript_tag "set_new_val($('#{contact_element_prefix(options)}_query'), '#{instance_variable_get("@" + contact_element_prefix(options)).contact.id}');" %>
+  <%= javascript_tag update_display %>
 <% end %>
