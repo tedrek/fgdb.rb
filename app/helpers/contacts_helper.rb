@@ -16,7 +16,4 @@ module ContactsHelper
     'element_form_id'
   end
 
-  def contact_messages_id(options)
-    contact_element_prefix(options) + '_contact_messages_id'
-  end
 end

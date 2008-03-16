@@ -2,11 +2,17 @@
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  page.replace_html contact_messages_id(@options), :partial => 'messages'
-  page.replace_html search_results_id(params),
-    :partial => 'search_results', :locals => { :@search_results => [@contact], :options => @options }
-  page.remove 'floating_form'
-  page << "Form.enable($('#{contact_query_id(@options)}').form.id);"
+  query_field = "$('#{contact_element_prefix(@options)}_query')"
+  page << "myLightWindow.deactivate();"
+  page << "#{query_field}.value = '#{@contact.id}';"
+  page << remote_function(
+            :update => searchbox_display_id(@options),
+            :url => {
+              :action => 'update_display_area',
+              :controller => 'contacts'
+            },
+            :with => "'contact_id=' + #{query_field}.value")
+  page << "Form.enable(#{query_field}.form.id);"
 else
   page.replace_html contact_messages_id(@create_options), :partial => 'form_messages'
   @contact.errors.each {|field, msg|
