@@ -31,7 +31,7 @@
      ) %>
   <a href="<%= url_for(new_options) %>" id="<%= contact_new_contact_link(options) %>" class="lightwindow"
        params="lightwindow_type=page" onclick="return false">
-     <%= image_tag "add.gif", :alt => "Create a new contact" %>
+     <%= image_tag "add.gif", :alt => "Create a new contact", :title => "Create a new contact" %>
   </a>
   <%= loading_indicator_tag(new_options) %>
 <% end %>
