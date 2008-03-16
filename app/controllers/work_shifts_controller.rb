@@ -28,6 +28,7 @@ class WorkShiftsController < ApplicationController
       end
       if @opts['limit_to_job'] and @opts['limit_to_job'] == '1'
         where_clause += ' AND work_shifts.job_id = '
+        where_clause += @opts['job_id']
       end
     else
       start = Date.today
