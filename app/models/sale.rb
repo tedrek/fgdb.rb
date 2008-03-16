@@ -16,6 +16,9 @@ class Sale < ActiveRecord::Base
 
   attr_accessor :contact_type  #anonymous or named
 
+  define_amount_methods_on("reported_discount_amount")
+  define_amount_methods_on("reported_amount_due")
+
   def validate
     if contact_type == 'named'
       errors.add_on_empty("contact_id")

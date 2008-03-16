@@ -47,6 +47,20 @@ class ActiveRecord::Base
   def self.acts_as_userstamp
     include ActiveRecord::UserMonitor
   end
+
+  def self.define_amount_methods_on(method_name)
+    code = "def #{method_name}
+        (read_attribute(:#{method_name}_dollars) || 0)+((read_attribute(:#{method_name}_cents) || 0)/100.0)
+      end
+    
+      def #{method_name}=(value)
+        temp = value.to_f.divmod(1) 
+        write_attribute(:#{method_name}_dollars, temp[0])
+        write_attribute(:#{method_name}_cents, temp[1]*100)
+        return value
+      end"
+    self.module_eval(code)
+  end
   
   def self.find_all_except(*recs)
     return find_all - recs

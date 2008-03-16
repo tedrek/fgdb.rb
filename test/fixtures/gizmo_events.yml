@@ -1,0 +1,61 @@
+--- 
+gizmo_events_001: 
+  updated_at: 2008-03-15 13:58:24.386612
+  sale_id: "209108"
+  gizmo_count: "1"
+  lock_version: "1"
+  id: "2046368"
+  disbursement_id: 
+  donation_id: 
+  gizmo_context_id: "2"
+  gizmo_type_id: "3"
+  created_at: 2008-03-15 13:58:24.307307
+  recycling_id: 
+gizmo_events_002: 
+  updated_at: 2008-03-15 13:58:24.403711
+  sale_id: "209108"
+  gizmo_count: "1"
+  lock_version: "1"
+  id: "2046369"
+  disbursement_id: 
+  donation_id: 
+  gizmo_context_id: "2"
+  gizmo_type_id: "23"
+  created_at: 2008-03-15 13:58:24.349981
+  recycling_id: 
+gizmo_events_003: 
+  updated_at: 2008-03-15 22:25:48.718076
+  sale_id: "209109"
+  gizmo_count: "2"
+  lock_version: "1"
+  id: "2046370"
+  disbursement_id: 
+  donation_id: 
+  gizmo_context_id: "2"
+  gizmo_type_id: "27"
+  created_at: 2008-03-15 22:25:48.674547
+  recycling_id: 
+gizmo_events_004: 
+  updated_at: 2008-03-15 22:26:33.170754
+  sale_id: "209110"
+  gizmo_count: "9"
+  lock_version: "1"
+  id: "2046371"
+  disbursement_id: 
+  donation_id: 
+  gizmo_context_id: "2"
+  gizmo_type_id: "3"
+  created_at: 2008-03-15 22:26:33.120218
+  recycling_id: 
+gizmo_events_005: 
+  updated_at: 2008-03-15 22:30:08.257453
+  sale_id: 
+  gizmo_count: "1"
+  lock_version: "1"
+  id: "2046372"
+  disbursement_id: 
+  donation_id: "109042"
+  gizmo_context_id: "1"
+  gizmo_type_id: "21"
+  created_at: 2008-03-15 22:30:08.215574
+  recycling_id: 

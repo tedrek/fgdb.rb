@@ -8,6 +8,9 @@ class Donation < ActiveRecord::Base
 
   before_save :add_contact_types
 
+  define_amount_methods_on("reported_required_fee")
+  define_amount_methods_on("reported_suggested_fee")
+
   def initialize(*args)
     super(*args)
   end

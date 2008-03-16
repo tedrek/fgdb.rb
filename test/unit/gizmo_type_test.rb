@@ -49,5 +49,25 @@ class GizmoTypeTest < Test::Unit::TestCase
     	assert gizmo_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
 		end
 	end
+
+  def test_that_donations_use_integer_math
+    pmnt = GizmoType.new
+    assert pmnt.respond_to?(:required_fee)
+    assert pmnt.respond_to?(:suggested_fee)
+    pmnt.required_fee = 2.54
+
+    assert_equal 2, pmnt.required_fee_dollars
+    assert_equal 54, pmnt.required_fee_cents
+    pmnt.required_fee_dollars = 5
+    pmnt.required_fee_cents = 14
+    assert_equal 5.14, pmnt.required_fee
+
+    pmnt.suggested_fee = 2.54
+    assert_equal 2, pmnt.suggested_fee_dollars
+    assert_equal 54, pmnt.suggested_fee_cents
+    pmnt.suggested_fee_dollars = 5
+    pmnt.suggested_fee_cents = 14
+    assert_equal 5.14, pmnt.suggested_fee
+  end
 end
 

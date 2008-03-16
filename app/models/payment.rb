@@ -6,6 +6,8 @@ class Payment < ActiveRecord::Base
 
   validates_presence_of :payment_method_id
 
+  define_amount_methods_on("amount")
+
   def mostly_empty?
     # Allow negative payments (e.g. credits)
     #  http://svn.freegeek.org/projects/fgdb.rb/ticket/224

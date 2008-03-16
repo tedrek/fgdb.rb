@@ -12,6 +12,9 @@ class GizmoType < ActiveRecord::Base
 
   validates_numericality_of :required_fee, :suggested_fee
 
+  define_amount_methods_on("required_fee")
+  define_amount_methods_on("suggested_fee")
+
   def to_s
     description
   end

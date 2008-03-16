@@ -146,5 +146,24 @@ class DonationTest < Test::Unit::TestCase
     donation.payments = []
     assert ! donation.valid?
   end
+  def test_that_donations_use_integer_math
+    pmnt = Donation.new
+    assert pmnt.respond_to?(:reported_required_fee)
+    assert pmnt.respond_to?(:reported_suggested_fee)
+    pmnt.reported_required_fee = 2.54
+
+    assert_equal 2, pmnt.reported_required_fee_dollars
+    assert_equal 54, pmnt.reported_required_fee_cents
+    pmnt.reported_required_fee_dollars = 5
+    pmnt.reported_required_fee_cents = 14
+    assert_equal 5.14, pmnt.reported_required_fee
+
+    pmnt.reported_suggested_fee = 2.54
+    assert_equal 2, pmnt.reported_suggested_fee_dollars
+    assert_equal 54, pmnt.reported_suggested_fee_cents
+    pmnt.reported_suggested_fee_dollars = 5
+    pmnt.reported_suggested_fee_cents = 14
+    assert_equal 5.14, pmnt.reported_suggested_fee
+  end
 
 end
