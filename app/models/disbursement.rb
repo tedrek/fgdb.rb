@@ -13,6 +13,6 @@ class Disbursement < ActiveRecord::Base
   end
 
   def recipient
-    contact.display_name
+    contact
   end
 end
