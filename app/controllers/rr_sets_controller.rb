@@ -45,18 +45,27 @@ class RrSetsController < ApplicationController
   end
 
   def check_date
-    if params[:check_date]
-      check_date = params[:check_date]
+    if params[:checker]
+      string_date = params[:checker]["check_date"]
+      if string_date
+        check_date = Date.strptime( string_date, '%Y-%m-%d' )
+      else
+        check_date = Date.today
+      end
     else
       check_date = Date.today
     end
-    logger.info 'xxx' + check_date.to_s
+    if check_date == Date.today
+      datestring = 'today (' + check_date.strftime( '%b %d, %Y' ) + ')' 
+    else
+      datestring = 'on ' + check_date.strftime( '%b %d, %Y' ) 
+    end
     @rr_set = RrSet.find(params[:id])
     if @rr_set.occurs? check_date 
-      flash[:notice] = 'Event occurs on ' + check_date.to_s
-      redirect_to :action => 'show', :id => @rr_set
+      flash[:notice] = @rr_set.name + ' occurs ' + datestring
+      redirect_to :action => 'list', :id => @rr_set
     else
-      flash[:notice] = 'Event does not occur on ' + check_date.to_s
+      flash[:notice] = 'Event does not occur ' + datestring
       render :action => 'check_date'
     end
   end

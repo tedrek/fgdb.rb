@@ -15,6 +15,7 @@
     <td><%= link_to 'Show', :action => 'show', :id => rr_set %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => rr_set %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => rr_set }, :confirm => 'Are you sure?', :method => :post %></td>
+    <td><%= link_to 'Check', { :action => 'check_date', :id => rr_set }, :method => :post %></td>
   </tr>
 <% end %>
 </table>

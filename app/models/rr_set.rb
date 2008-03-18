@@ -4,7 +4,7 @@ class RrSet < ActiveRecord::Base
   def occurs? (date = Date.today )
     ret = false
     rr_items.each do |i|
-      if i.occurs?
+      if i.occurs? date
         ret = true
       end
     end
