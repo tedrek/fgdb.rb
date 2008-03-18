@@ -8,7 +8,7 @@ module VolunteerTasksHelper
   def scaffold_columns
     [
      Column.new(VolunteerTask, :name => 'contact', :label => 'Volunteer Name',
-                :eval => 'volunteer_task.contact', :sortable => false),
+                :eval => 'volunteer_task.contact.display_name', :sortable => false),
      Column.new(VolunteerTask, :name => 'duration'),
      Column.new(VolunteerTask, :name => 'date_performed'),
      Column.new(ContactType, :name => 'task_type', :label => 'Task Type',
