@@ -7,7 +7,7 @@
     <%= Inflector.titleize(controller.class.name).sub(/ Controller/, '') %>:
     <%= Inflector.titleize(controller.action_name) %>
   </title>
-  <%= stylesheet_link_tag  'fgdb', 'scaffold', 'lightwindow', 'application', :media => 'all' %>
+  <%= stylesheet_link_tag 'scaffold', 'lightwindow', 'application', :media => 'all' %>
   <%= javascript_include_tag :defaults %>
   <%= javascript_include_tag 'lightwindow' %>
   <%= dhtml_calendar_includes %>
