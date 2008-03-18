@@ -12,7 +12,7 @@ module TransactionHelper
 #       Column.new(Sale, :name => 'id', :eval => 'sale.id'),
        Column.new(Sale, :name => 'payment',
                   :eval => 'sale.payment', :sortable => false),
-       Column.new(Sale, :name => 'buyer', :sortable => false, :eval => 'sale.buyer.display_name'),
+       Column.new(Sale, :name => 'buyer', :sortable => false, :eval => 'sale.buyer'),
        Column.new(Sale, :name => 'gizmos', :sortable => false),
        Column.new(Sale, :name => 'created_at', :eval => 'sale.created_at'),
       ]
