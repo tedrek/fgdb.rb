@@ -7,7 +7,7 @@ class DonationTest < Test::Unit::TestCase
 #     :gizmo_contexts_gizmo_typeattrs, :gizmo_contexts_gizmo_types, :donations
   load_all_fixtures
 
-  NO_INFO = {}
+  NO_INFO = {:created_by => 1}
   WITH_CONTACT_INFO = NO_INFO.merge({:postal_code => '54321', :contact_type => 'anonymous'})
 
   def with_gizmo
@@ -15,7 +15,11 @@ class DonationTest < Test::Unit::TestCase
   end
 
   def with_both
-    with_gizmo.merge( WITH_CONTACT_INFO )
+    with_gizmo().merge( WITH_CONTACT_INFO )
+  end
+
+  def with_too_much_contact_info
+    with_both().merge({:contact_id => 1})
   end
 
   def setup
@@ -43,7 +47,6 @@ class DonationTest < Test::Unit::TestCase
 
   def test_that_should_dumped_contact_type_should_be_remembered
     donation = Donation.new(NO_INFO.merge({:gizmo_events => [GizmoEvent.new(crt_event)],
-                                           :created_by => 1,
                                            :contact_type => 'dumped'}))
     assert donation.save
     donation = Donation.find(donation.id)
@@ -146,6 +149,7 @@ class DonationTest < Test::Unit::TestCase
     donation.payments = []
     assert ! donation.valid?
   end
+
   def test_that_donations_use_integer_math
     pmnt = Donation.new
     assert pmnt.respond_to?(:reported_required_fee)
@@ -164,6 +168,13 @@ class DonationTest < Test::Unit::TestCase
     pmnt.reported_suggested_fee_dollars = 5
     pmnt.reported_suggested_fee_cents = 14
     assert_equal 5.14, pmnt.reported_suggested_fee
+  end
+
+  def test_that_donations_use_contact_type_first
+    donation = Donation.new(with_too_much_contact_info)
+    assert_equal with_too_much_contact_info[:contact_type], donation.contact_type
+    assert donation.save
+    assert_equal with_too_much_contact_info[:contact_type], Donation.find(donation.id).contact_type
   end
 
 end

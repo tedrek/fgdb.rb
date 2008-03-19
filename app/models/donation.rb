@@ -17,11 +17,15 @@ class Donation < ActiveRecord::Base
 
   attr_writer :contact_type #anonymous, named, or dumped
 
+  before_save :cleanup_for_contact_type
+
   def validate
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
     elsif contact_type == 'anonymous'
       errors.add_on_empty("postal_code")
+    elsif contact_type != 'dumped'
+      errors.add("contact_type", "should be one of 'named', 'anonymous', or 'dumped'")
     end
     gizmo_events.each do |gizmo|
        errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
@@ -115,6 +119,21 @@ class Donation < ActiveRecord::Base
       money_tendered - calculated_required_fee
     else
       money_tendered - calculated_total
+    end
+  end
+
+  #######
+  private
+  #######
+
+  def cleanup_for_contact_type
+    case contact_type
+    when 'named'
+      self.postal_code = nil
+    when 'anonymous'
+      self.contact_id = nil
+    when 'dumped'
+      self.postal_code = self.contact_id = nil
     end
   end
 
