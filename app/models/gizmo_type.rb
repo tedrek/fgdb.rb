@@ -10,7 +10,11 @@ class GizmoType < ActiveRecord::Base
 
   has_and_belongs_to_many    :gizmo_contexts
 
-  validates_numericality_of :required_fee, :suggested_fee
+  validates_numericality_of(:required_fee_dollars,
+                            :required_fee_cents,
+                            :suggested_fee_dollars,
+                            :suggested_fee_cents,
+                            :allow_nil => true)
 
   define_amount_methods_on("required_fee")
   define_amount_methods_on("suggested_fee")
