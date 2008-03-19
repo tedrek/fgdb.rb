@@ -1,4 +1,4 @@
-class DonationTotal < ActiveRecord::Migration
+class NewDonationTotal < ActiveRecord::Migration
   def self.up
     create_view( :v_donation_totals,
                  "select d.id, sum(p.amount_dollars + (p.amount_cents/100.0)) from donations as d " +

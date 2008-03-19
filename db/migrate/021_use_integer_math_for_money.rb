@@ -1,8 +1,7 @@
 class UseIntegerMathForMoney < ActiveRecord::Migration
   def self.up
-#They should exist...but they don't!
-#    drop_view :v_donations
-#    drop_view :v_donation_totals
+    drop_view :v_donations
+    drop_view :v_donation_totals
 
     add_column "donations", :reported_required_fee_dollars, :int
     add_column "donations", :reported_required_fee_cents, :int
@@ -93,5 +92,35 @@ class UseIntegerMathForMoney < ActiveRecord::Migration
     execute "UPDATE sales SET reported_amount_due = reported_amount_due_dollars + (reported_amount_due_cents/100.0)"
     remove_column "sales", :reported_amount_due_dollars
     remove_column "sales", :reported_amount_due_cents
+    create_view( :v_donation_totals,
+                 "select d.id, sum(p.amount) from donations as d " +
+                 "left outer join payments as p on p.donation_id = d.id " +
+                 "group by d.id" ) do |t|
+      t.column :id
+      t.column :total_paid
+    end
+
+    create_view( :v_donations, "select d.*, v.total_paid, " +
+                 "CASE WHEN (v.total_paid > d.reported_required_fee) THEN d.reported_required_fee ELSE v.total_paid END, " +
+                 "CASE WHEN (v.total_paid < d.reported_required_fee) THEN 0.00 " +
+                 "ELSE (v.total_paid - d.reported_required_fee) END " +
+                 "from donations as d join v_donation_totals as v on d.id = v.id" ) do |t|
+      t.column "id"
+      t.column "contact_id"
+      t.column "postal_code"
+      t.column "reported_required_fee"
+      t.column "reported_suggested_fee"
+      t.column "txn_complete"
+      t.column "txn_completed_at"
+      t.column "comments"
+      t.column "lock_version"
+      t.column "updated_at"
+      t.column "created_at"
+      t.column "created_by"
+      t.column "updated_by"
+      t.column "total_paid"
+      t.column "fees_paid"
+      t.column "donations_paid"
+    end
   end
 end
