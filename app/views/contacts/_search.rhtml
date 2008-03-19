@@ -4,14 +4,14 @@
        :action => 'update_display_area',
        :controller => 'contacts',
      }),
-     :with => "'contact_id=' + $('#{contact_element_prefix(options)}_query').value"
+     :with => "'contact_id=' + $('#{contact_query_id(options)}').value"
    ) %>
 <% update_display_function = "
      function(field, choice) {
        #{update_display};
      }" %>
 <%= hidden_field_tag "contact_element_prefix", contact_element_prefix(options) %>
-<label for="<%= contact_element_prefix(options) -%>_query">Search for a contact:</label>
+<label for="<%= contact_query_id(options) %>">Search for a contact:</label>
 <%= text_field_with_auto_complete(
       contact_element_prefix(options),
       'query',
@@ -29,15 +29,19 @@
        :id => nil,
        :loading_indicator_prefix => contact_element_prefix(options) + '_new'
      ) %>
-  <a href="<%= url_for(new_options) %>" id="<%= contact_new_contact_link(options) %>" class="lightwindow"
-       params="lightwindow_type=page" onclick="return false">
-     <%= image_tag "add.gif", :alt => "Create a new contact", :title => "Create a new contact" %>
-  </a>
+  <%= my_lightwindow_tag(
+        :url => new_options,
+        :content => image_tag("add.gif", :alt => "Create a new contact", :title => "Create a new contact"),
+        :id => contact_new_contact_link(options)
+      )
+  %>
   <%= loading_indicator_tag(new_options) %>
 <% end %>
 <div id="<%= searchbox_display_id(options) %>"></div>
 
 <% if instance_variable_get("@" + contact_element_prefix(options)) %>
-  <%= javascript_tag "set_new_val($('#{contact_element_prefix(options)}_query'), '#{instance_variable_get("@" + contact_element_prefix(options)).contact.id}');" %>
-  <%= javascript_tag update_display %>
+  <%= javascript_tag "
+        set_new_val($('#{contact_query_id(options)}'),
+        '#{instance_variable_get("@" + contact_element_prefix(options)).contact.id}');
+      " + update_display %>
 <% end %>

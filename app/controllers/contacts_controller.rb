@@ -91,7 +91,10 @@ class ContactsController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
 
-    render :action => 'edit.rjs'
+    @options = params.merge({ :action => "update", :id => params[:id] })
+    @view_options = @options.merge(:action => "view")
+    render :partial => 'new_edit', :locals => { :@options => @options }
+    #render :action => 'edit.rjs'
   end
 
   def update

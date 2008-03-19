@@ -139,12 +139,24 @@ module ApplicationHelper
     #:TODO: ?
   end
 
+  def my_lightwindow_tag(options)
+    %Q[<a href="#{url_for(options[:url])}" class="lightwindow" onclick="return false"
+          id="#{options[:id]}" params="lightwindow_type=#{options[:type] || 'page'}">
+         #{options[:content]}
+       </a>] +
+      javascript_tag("myLightWindow._processLink($('#{options[:id]}'));")
+  end
+
   def contact_element_prefix(options)
     options[:element_prefix] or 'contact'
   end
 
   def contact_query_id(options)
-    contact_element_prefix(options) + '_contact_query'
+    contact_element_prefix(options) + '_query'
+  end
+
+  def contact_edit_link_id(options)
+    contact_element_prefix(options) + "_edit_link"
   end
 
   def search_results_id(options)

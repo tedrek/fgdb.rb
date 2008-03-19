@@ -3,9 +3,10 @@
 
 if @successful
   page << "Form.disable($('#{contact_query_id(@options)}').form.id);"
-  page.replace_html search_results_id(@options), ''
+  #page.replace_html search_results_id(@options), ''
   page.insert_html :bottom, content_id(@options), :partial => 'new_edit', :locals => { :@options => @options }
   page << "Form.focusFirstElement('floating_form');"
+  page << "$('contact_first_name').value = $('#{contact_query_id(@options)}').value;"
 else
   # nothing yet
 end

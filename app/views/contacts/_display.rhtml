@@ -29,9 +29,15 @@
   <% if (! options.has_key?(:display_edit)) or (options[:display_edit] == 'true') %>
     <% edit_options = options.merge(:action => 'edit') %>
     <%= loading_indicator_tag(edit_options) %>
-    <%= link_to_remote "Edit",
-      { :url => edit_options,
-        :loading => "Element.show('#{loading_indicator_id(edit_options)}');" } %>
+    <%= my_lightwindow_tag(
+          :content => image_tag(
+                                "edit.png",
+                                :title => "Edit this contact",
+                                :alt => "Edit"
+          ),
+          :id => contact_edit_link_id(options),
+          :url => edit_options)
+    %>
   <% end %>
   <% if @delete_enabled %>
     <% delete_options = options.merge(:action => 'destroy') %>

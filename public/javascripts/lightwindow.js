@@ -1332,11 +1332,13 @@ lightwindow.prototype = {
                                 this.contentToFetch, {
                                         method: 'get',
                                         parameters: '',
+                                        evalScripts: true,
                                         onComplete: function(response) {
                                                 $('lightwindow_contents').innerHTML += response.responseText;
                                                 this.resizeTo.height = $('lightwindow_contents').scrollHeight+(this.options.contentOffset.height);
                                                 this.resizeTo.width = $('lightwindow_contents').scrollWidth+(this.options.contentOffset.width);
                                                 this._processWindow();
+                                                response.responseText.evalScripts();
                                         }.bind(this)
                                 }
                         );
