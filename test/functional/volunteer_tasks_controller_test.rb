@@ -19,13 +19,25 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
     @response   = ActionController::TestResponse.new
   end
 
-  def test_truth
-    assert true
-  end
-
   def test_list
     get :list
     assert_response :success
     assert_template 'list'
+  end
+
+  def test_component_with_contact
+    first = Contact.find(:first)
+    first.volunteer_tasks << an_hour_of_programming
+    post :component, :contact_id => first.id
+    assert_response :success
+    assert_template 'component'
+    contact = assigns(:contact)
+    assert_kind_of Contact, contact
+    assert_equal first.id, contact.id
+    tasks = assigns(:volunteer_tasks)
+    assert ! tasks.empty?
+    tasks.each {|task|
+      assert_equal first.id, task.contact_id
+    }
   end
 end

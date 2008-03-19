@@ -2,12 +2,10 @@
 
 if @successful
   page.remove element_row_id(@options)
-  if @options[:action] == "update"
-    page.show element_row_id(@options.merge(:action => "view"))
-  elsif @options[:action] == "create"
+  if @options[:action] == "create"
     page << "AjaxScaffold.displayMessageIfEmpty('#{scaffold_tbody_id(@options)}','#{empty_message_id(@options)}');"
   end
-  new_params = @options.merge( { :action => 'new', :id => nil, :contact_id => params[:contact_id] } )
+  new_params = @options.merge( { :action => 'new', :id => nil } ) #, :contact_id => params[:contact_id] } )
   page << remote_function( :url => new_params )
 else
   page.hide loading_indicator_id(@options)
