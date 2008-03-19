@@ -15,4 +15,15 @@ class Disbursement < ActiveRecord::Base
   def recipient
     contact
   end
+
+  before_save :set_occurred_at_on_gizmo_events
+
+  #######
+  private
+  #######
+
+  def set_occurred_at_on_gizmo_events
+    self.gizmo_events.each {|event| event.occurred_at = self.disbursed_at}
+  end
+
 end

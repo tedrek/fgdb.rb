@@ -24,7 +24,7 @@ class Test::Unit::TestCase
      #     %W[gizmo_contexts_gizmo_typeattrs  gizmo_events_gizmo_typeattrs],
      %W[contacts contact_types contact_types_contacts
         contact_method_types contact_methods],
-     %W[users roles roles_users], 
+     %W[users roles roles_users],
      %W[volunteer_task_types community_service_types],
      #     %W[disbursement_types disbursements],
      %W[payment_methods],
@@ -107,6 +107,14 @@ class Test::Unit::TestCase
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 1,
       :gizmo_context => GizmoContext.donation
+    }
+  end
+
+  def recycled_system_event
+    {
+      :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
+      :gizmo_count => 10,
+      :gizmo_context => GizmoContext.recycling
     }
   end
 

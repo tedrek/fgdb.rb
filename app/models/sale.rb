@@ -8,6 +8,7 @@ class Sale < ActiveRecord::Base
   has_many :gizmo_events, :dependent => :destroy
 
   before_save :add_contact_types
+  before_save :set_occurred_at_on_gizmo_events
 
   def initialize(*args)
     @contact_type = 'named'
@@ -68,6 +69,14 @@ class Sale < ActiveRecord::Base
 
   def calculated_discount
     calculated_subtotal - calculated_total
+  end
+
+  #######
+  private
+  #######
+
+  def set_occurred_at_on_gizmo_events
+    self.gizmo_events.each {|event| event.occurred_at = self.created_at}
   end
 
 end

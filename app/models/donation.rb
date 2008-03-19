@@ -18,6 +18,7 @@ class Donation < ActiveRecord::Base
   attr_writer :contact_type #anonymous, named, or dumped
 
   before_save :cleanup_for_contact_type
+  before_save :set_occurred_at_on_gizmo_events
 
   def validate
     if contact_type == 'named'
@@ -135,6 +136,10 @@ class Donation < ActiveRecord::Base
     when 'dumped'
       self.postal_code = self.contact_id = nil
     end
+  end
+
+  def set_occurred_at_on_gizmo_events
+    self.gizmo_events.each {|event| event.occurred_at = self.created_at}
   end
 
 end

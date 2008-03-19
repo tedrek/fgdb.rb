@@ -177,4 +177,16 @@ class DonationTest < Test::Unit::TestCase
     assert_equal with_too_much_contact_info[:contact_type], Donation.find(donation.id).contact_type
   end
 
+  def test_that_gizmo_events_occurred_when_donated
+    donation = Donation.new(WITH_CONTACT_INFO)
+    yesterday = Date.today - 1
+    donation.created_at = yesterday
+    donation.gizmo_events = [GizmoEvent.new(recycled_system_event)]
+    assert donation.save
+    donation = Donation.find(donation.id)
+    event = donation.gizmo_events[0]
+    assert_equal donation.created_at, event.occurred_at
+    assert_not_equal event.created_at, event.occurred_at
+  end
+
 end
