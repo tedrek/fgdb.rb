@@ -1,8 +1,12 @@
 <div id="sidebar">
 <dl>
-  <dd>
-    <%= link_to "hours", :controller => 'volunteer_tasks' %>
-
+    <% if has_role?("ROLE_VOLUNTEER_MANAGER") %>
+      <dd>
+        <%= link_to "hours", :controller => 'volunteer_tasks' %>
+    <% elsif current_user %>
+      <dd>
+        <%= link_to "hours", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
+    <% end %>
   <% if has_role?("ROLE_ADMIN") %>
     </dd><dd>
       <%= link_to "donations", :controller => 'donations' %>

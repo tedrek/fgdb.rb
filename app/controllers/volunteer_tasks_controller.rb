@@ -1,8 +1,27 @@
 class VolunteerTasksController < ApplicationController
   layout :with_sidebar
+  before_filter :authorized_only
+
+  #########
+  protected
+
+  def authorized_only
+    if params[:contact_id]
+      contact_id = params[:contact_id].to_i
+    elsif params[:volunteer_task] and params[:volunteer_task][:contact_id]
+      contact_id = params[:volunteer_task][:contact_id].to_i
+    else
+      contact_id = nil
+    end
+    requires_role_or_me(contact_id, 'ROLE_VOLUNTEER_MANAGER')
+  end
+
+  ######
+  public
 
   def index
-    redirect_to :action => 'list'
+    list
+    render :action => 'list'
   end
 
   def list
@@ -95,4 +114,5 @@ class VolunteerTasksController < ApplicationController
     @successful = true
     return render(:action => 'cancel.rjs')
   end
+
 end
