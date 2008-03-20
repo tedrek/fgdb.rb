@@ -18,8 +18,10 @@
 
   </dd><dd>
     <%= link_to "recycling", :controller => 'recyclings' %>
-  </dd><dd>
-    <%= link_to "disburse", :controller => 'disbursements' %>
+  <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
+    </dd><dd>
+      <%= link_to "disburse", :controller => 'disbursements' %>
+  <% end %>
   </dd><dd>
     <%= link_to "income", :controller => 'reports', :action => 'income' %>
   </dd><dd>
