@@ -7,9 +7,11 @@
       <dd>
         <%= link_to "hours", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
     <% end %>
-  <% if has_role?("ROLE_ADMIN") %>
+  <% if has_role?("ROLE_FRONT_DESK") %>
     </dd><dd>
       <%= link_to "donations", :controller => 'donations' %>
+  <% end %>
+  <% if has_role?("ROLE_STORE") %>
     </dd><dd>
       <%= link_to "sales", :controller => 'sales' %>
   <% end %>
@@ -24,8 +26,10 @@
     <%= link_to "gizmos", :controller => 'reports', :action => 'gizmos' %>
   </dd><dd>
     <%= link_to "volunteers", :controller => 'reports', :action => 'volunteers' %>
-  </dd><dd>
-    <%= link_to "contacts", :controller => 'contacts' %>
+  <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
+    </dd><dd>
+      <%= link_to "contacts", :controller => 'contacts' %>
+  <% end %>
   </dd>
 </dl>
 </div>

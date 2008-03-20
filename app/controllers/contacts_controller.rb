@@ -4,9 +4,13 @@ class ContactsController < ApplicationController
   layout :with_sidebar
 
   around_filter :transaction_wrapper
+  before_filter :authorized_only
 
   class ForceRollback < RuntimeError
   end
+
+  #########
+  protected
 
   def transaction_wrapper
     Contact.transaction do
@@ -15,6 +19,21 @@ class ContactsController < ApplicationController
     end
     rescue ForceRollback
   end
+
+  def authorized_only
+    #     if params[:id]
+    #       contact_id = params[:id].to_i
+    #     elsif params[:contact_id]
+    #       contact_id = params[:id].to_i
+    #     else
+    #       contact_id = nil
+    #     end
+    #     requires_role_or_me(contact_id, 'ROLE_CONTACT_MANAGER')
+    requires_role('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER')
+  end
+
+  ######
+  public
 
   def index
     render :action => 'lookup'
