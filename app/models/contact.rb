@@ -1,4 +1,5 @@
 class Contact < ActiveRecord::Base
+  acts_as_userstamp
 
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
