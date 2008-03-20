@@ -25,6 +25,9 @@ class VolunteerTasksController < ApplicationController
   end
 
   def list
+    if params[:contact_id]
+      params[:limit_by_contact_id] = true
+    end
   end
 
   # All posts to change scaffold level variables like sort values or page changes go through this action
@@ -46,7 +49,7 @@ class VolunteerTasksController < ApplicationController
         :volunteer_task_type
       ]
     }
-    if params[:contact_id]
+    if params[:limit_by_contact_id]
       options[:conditions] = ['contact_id = ?', params[:contact_id]]
       @contact = Contact.find(params[:contact_id])
     end
@@ -59,7 +62,7 @@ class VolunteerTasksController < ApplicationController
     @volunteer_task = VolunteerTask.new
     @volunteer_task.duration = nil
     @volunteer_task.date_performed = Date.today
-    @volunteer_task.contact_id = params[:contact_id]
+    @volunteer_task.contact_id = params[:contact_id] if params[:limit_by_contact_id]
     @successful = true
 
     return render(:action => 'new.rjs')

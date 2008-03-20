@@ -2,7 +2,8 @@
   :scaffold_id => params[:scaffold_id],
   :action => "create",
   :id => generate_temporary_id,
-#  :contact_id => params[:contact_id]
+  :contact_id => params[:contact_id],
+  :limit_by_contact_id => params[:limit_by_contact_id],
 }
 @new_options = @options.merge(:action => "new", :id => nil)
 

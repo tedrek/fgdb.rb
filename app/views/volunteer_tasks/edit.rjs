@@ -1,4 +1,10 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "update", :id => params[:id] }
+@options = {
+  :scaffold_id => params[:scaffold_id],
+  :action => "update",
+  :id => params[:id],
+  :contact_id => params[:contact_id],
+  :limit_by_contact_id => params[:limit_by_contact_id]
+}
 @view_options = @options.merge(:action => "view")
 
 if @successful

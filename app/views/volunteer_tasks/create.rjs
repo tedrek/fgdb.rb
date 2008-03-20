@@ -1,4 +1,9 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => @volunteer_task.id }
+@options = {
+  :scaffold_id => params[:scaffold_id],
+  :action => "view",
+  :id => @volunteer_task.id,
+  :limit_by_contact_id => params[:limit_by_contact_id],
+}
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
