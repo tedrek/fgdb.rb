@@ -1,4 +1,8 @@
 class ContactsController < ApplicationController
+  def list_reports
+    @contact = Contact.find(params[:id])
+    @reports = Report.find_all_by_contact_id(params[:id])
+  end
   # GET /contacts
   # GET /contacts.xml
   def index
