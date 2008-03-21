@@ -1,18 +1,20 @@
 PRE_LSHW_STUFF_GOES_HERE
-new_dir = where_ever_we_put_it # /home/root/.freegeek/printme...IDK
+new_dir = where_ever_we_put_it # somewhere
 old_place = '/tmp/lshw.xml' # I think...
+# do you mean last_place?
 if exists(old_place) 
-{ #this system has been run b4 the new printme
-mkdir new_dir
-mv old_place new_dir/lshw.old
-sysid=ask_for_system_id_as_normal
-wget #{server}/systems/show.xml/#{sysid} -O new_dir/system #do it a ruby way
-} else if (new_exists) { #elsif? all of the programming languages have mushed together in my brain! :D
-#the new printme has been run before
-nop #we're not in assembly!
-} else { #brand new system...never been printme'd
-wget #{server}/systems/new.xml -O new_dir/system #use a ruby way!
-}
+  #this system has been run b4 the new printme
+  mkdir new_dir
+  mv old_place new_dir/lshw.old
+  sysid=ask_for_system_id_as_normal
+  wget #{server}/systems/show.xml/#{sysid} -O new_dir/system #do it a ruby way
+elsif (new_exists)
+  #elsif? all of the programming languages have mushed together in my brain! :D
+  #the new printme has been run before
+  nop #we're not in assembly!
+else #brand new system...never been printme'd
+  wget #{server}/systems/new.xml -O new_dir/system #use a ruby way!
+end
 NORMAL_STUFF #ask_questions, post the lshw, etc
 
 #replace the system("lshw") part with:
@@ -22,7 +24,7 @@ if (!new_dir/lshw.xml exists) system("lshw")
 
 #add to the if/else that checks whether it worked or not:
 if success
-mv new_dir/lshw.xml new_dir/lshw.report_id
+  mv new_dir/lshw.xml new_dir/lshw.report_id
 end 
 #leave it if it failed so somebody can edit it then re-run printme
 
