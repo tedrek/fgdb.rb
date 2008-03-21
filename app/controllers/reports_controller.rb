@@ -68,7 +68,7 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render :layout => 'fgss' } # show.html.erb
       format.xml  { render :xml => @report }
     end
   end
