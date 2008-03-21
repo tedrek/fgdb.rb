@@ -1,11 +1,51 @@
-<b>TAKE OUT THE SCAFFOLD.CSS AND USE YOUR OWN STUFF...ITS CONFLICTING</b><br />
-<%= load_xml %>
-<% xpath_foreach("//node[@class='processor']") do %>
-<% if xpath_if("product | size") %>
-<%= xpath_value_of("product", "CPU: ", "<br \>") %>
-<%= xpath_value_of("size", "Speed: ", "<br \>") %>
-<% end %>
-<% end %>
+<% load_xml %>
 
-<%= link_to 'Edit', {:action=>"edit", :id=>@report.id} %> |
-<%= link_to 'Back', {:action=>"index"} %>
+<h2>PCI Bus</h2>
+<% xpath_foreach("//node[contains(@id, 'pci')]") do %>
+  <h3><%= xpath_value_of("product") %></h3>
+  <% xpath_foreach("node[
+                        contains(@handle, 'PCI:')
+                        and not(@class='bus')
+                        and not(@class='bridge')
+                        and not(@class='storage')
+                        and not(@class='system')
+                        ]") do %>
+    <table>
+      <% if xpath_if("@class") %>
+        <tr>
+          <td>Type: </td>
+          <td>
+            <%= xpath_value_of("@class") %>
+          </td>
+        </tr>
+      <% end %>
+      <% if xpath_if("vendor|businfo") %>
+        <tr>
+          <td>Description: </td>
+          <td>
+            <%= xpath_value_of("description") %>
+            (
+            <%= xpath_value_of("businfo") %>
+            )
+          </td>
+        </tr>
+      <% end %>
+      <% if xpath_if("vendor") %>
+        <tr>
+          <td>Vendor: </td>
+          <td>
+            <%= xpath_value_of("vendor") %>
+          </td>
+        </tr>
+      <% end %>
+      <% if xpath_if("product") %>
+        <tr>
+          <td>Product: </td>
+          <td>
+            <%= xpath_value_of("product") %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+<% end %>
