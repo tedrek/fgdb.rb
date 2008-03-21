@@ -1,14 +1,4 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :reports
-
-  map.resources :systems
-
-  map.resources :roles
-
-  map.resources :types
-
-  map.resources :contacts
-
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
