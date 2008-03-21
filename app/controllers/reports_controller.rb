@@ -77,7 +77,7 @@ class ReportsController < ApplicationController
     @defaults.apply_conditions(params[:defaults])
     income_report_init
     @date_range_string = @defaults.to_s
-    #:MC: cannot get payment_methods to be included
+    #:MC: cannot get payment_methods to be :include'd do i need to make a :has_many :through => ?
     donations = Donation.find(:all, :conditions => @defaults.conditions(Donation), :include => [:payments])
     sales = Sale.find(:all, :conditions => @defaults.conditions(Sale), :include => [:payments, :discount_schedule])
     sale_ids = []
@@ -103,8 +103,8 @@ class ReportsController < ApplicationController
     @columns = Hash.new( method_names.insert(2, 'till total').insert(-2, 'total real').insert(-1, 'total') )
     @width = @columns[nil].length
     @rows = {}
-    @rows[:donations] = ['voluntary', 'fees', 'subtotals']
-    discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}
+    @rows[:donations] = ['fees', 'voluntary', 'subtotals']
+    discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}.sort
     @rows[:sales] = discount_types << 'subtotals'
     @rows[:grand_totals] = ['total']
     @sections = [:donations, :sales, :grand_totals]
