@@ -25,3 +25,7 @@ if success
 mv new_dir/lshw.xml new_dir/lshw.report_id
 end 
 #leave it if it failed so somebody can edit it then re-run printme
+
+#also don't use a hard coded has for the jobs and types...get is at server/types.xml
+
+#and if you forgot...use xmlsimple to convert the types and reports and roles to hashes
