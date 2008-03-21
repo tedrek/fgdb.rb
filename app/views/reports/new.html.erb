@@ -4,6 +4,14 @@
 
 <% form_for(@report) do |f| %>
   <p>
+    File: <%= f.file_field(:my_file) %>
+    <br />
+    System ID: <%= f.text_field(:system_id) %>
+    <br />
+    Job: <%= select("post", "role_id", Role.find(:all).collect {|p| p.name }) %>
+    <br />
+    Type: <%= select("post", "type_id", Type.find(:all).collect {|p| p.name }) %>
+    <br />
     <%= f.submit "Create" %>
   </p>
 <% end %>
