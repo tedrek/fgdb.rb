@@ -35,7 +35,10 @@
   </tbody>
 </table>
 <div class="ajax-scaffold-footer">
-  <%= will_paginate @volunteer_tasks %>
+  <%= will_paginate @volunteer_tasks, :remote_options => {
+        :method => :get, :update => scaffold_content_id(params)
+      }
+  %>
 </div>
 
 <% if @show_wrapper %>

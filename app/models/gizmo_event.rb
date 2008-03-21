@@ -1,20 +1,15 @@
-
-
 class GizmoEvent < ActiveRecord::Base
-
   has_one :donation
   has_one :sale
   has_one :disbursement
   has_one :recycling
   belongs_to  :gizmo_type
   belongs_to  :gizmo_context
+  has_many :gizmo_events_gizmo_typeattrs, :dependent => :destroy
 
   validates_presence_of :gizmo_count
   validates_presence_of :gizmo_type_id
   validates_presence_of :gizmo_context_id
-
-  has_many    :gizmo_events_gizmo_typeattrs,
-              :dependent => :destroy
 
   def display_name
     "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']

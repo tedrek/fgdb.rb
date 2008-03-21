@@ -46,7 +46,8 @@ class VolunteerTasksController < ApplicationController
       :order => @sort_by,
       :per_page => 20,
       :include => [
-        :volunteer_task_type
+        :volunteer_task_type,
+        :contact
       ]
     }
     if params[:limit_by_contact_id]

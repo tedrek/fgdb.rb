@@ -36,7 +36,10 @@
   </tbody>
 </table>
 <div class="ajax-scaffold-footer">
-  <%= will_paginate @transactions %>
+  <%= will_paginate @transactions, :remote_options => {
+        :method => :get, :update => scaffold_content_id(params)
+      }
+  %>
   <%# render :partial => 'pagination_links', :locals => { :paginator => @paginator } %>
 </div>
 <div class="list_refinement">
