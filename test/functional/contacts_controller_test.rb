@@ -20,12 +20,14 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_lookup
+    login_as :quentin
     get :lookup
     assert_response :success
     assert_template 'lookup'
   end
 
   def test_search_results
+    login_as :quentin
     martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
     assert martin.save
     assert_nothing_raised { martin.adoption_hours }
@@ -35,6 +37,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_search_results_with_on_display
+    login_as :quentin
     on_display_js = "alert('test');"
     martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
     martin.save
@@ -46,6 +49,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_new_xhr
+    login_as :quentin
     xhr :post, :new
     assert_response :success
     assert_template '_new_edit'
@@ -66,6 +70,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_create_xhr_invalid
+    login_as :quentin
     xhr :post, :create, {:contact => { }}
     contact, successful = check_attrs(%w(contact successful))
     assert_response :success
@@ -77,6 +82,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_update_xhr
+    login_as :quentin
     contact_count = Contact.find(:all).length
     xhr :post, :update, {:id => @first.id, :contact => @first.attributes.merge(NEW_CONTACT), :contact_types => NEW_CONTACT_TYPES}
     contact, successful = check_attrs(%w(contact successful))
@@ -91,6 +97,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy_xhr
+    login_as :quentin
     contact_count = Contact.find(:all).length
     xhr :post, :destroy, {:id => @first.id}
     assert_response :success
@@ -99,6 +106,7 @@ class ContactsControllerTest < Test::Unit::TestCase
   end
 
   def test_cancel_xhr
+    login_as :quentin
     xhr :get, :cancel
     assert_response :success
     assert_template 'cancel.rjs'
@@ -118,5 +126,18 @@ protected
       attrs << attr
     end
     attrs.length > 1 ? attrs : attrs[0]
+  end
+
+  def test_create_with_roles
+    login_as :quentin
+    post :create, "roles"=>["2", "3", "5"], "user"=>{"password_confirmation"=>"secret", "login"=>"foo", "password"=>"secret", "email"=>"foo@default.com"}, "commit"=>"Create", "contact"=>{"city"=>"Portland", "is_user"=>"1", "is_organization"=>"0", "state_or_province"=>"OR", "postal_code"=>"97232", "country"=>"United States", "extra_address"=>"", "notes"=>"", "organization"=>"", "first_name"=>"martin", "surname"=>"chase", "address"=>"", "middle_name"=>""}, "action"=>"create", "controller"=>"contacts", "contact_types"=>["7", "4", "12", "13"], "datalist_new"=>{"contacts_contact_methods"=>{}}, "datalist_contacts_contact_methods_id"=>"datalist-contacts_contact_methods-table"
+    assert_response :success
+    contact = assigns(:contact)
+    assert_kind_of Contact, contact
+    assert contact.save
+    contact = Contact.find(contact.id)
+    [2, 3, 5].each {|role_id|
+      assert contact.user.roles.map {|role| role.id.to_i}.include?(role_id), "roles should include #{role_id}"
+    }
   end
 end

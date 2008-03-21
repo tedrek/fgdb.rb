@@ -25,5 +25,15 @@
       <label for="user_password_confirmation">Confirm Password</label>
       <%= password_field :user, :password_confirmation %>
     </div>
+
+    <% for role in Role.find(:all) %>
+      <div class="form-element">
+        <input type="checkbox" id="<%= role.name %>"
+               name="roles[]" value="<%= role.id %>"
+               <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
+        />
+        <label for="<%= role.name %>"><%= role.name %>?</label>
+      </div>
+    <% end %>
   </div>
 </div>

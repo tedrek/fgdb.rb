@@ -91,6 +91,7 @@ class ContactsController < ApplicationController
           raise RuntimeError.new("You are not authorized to create a user login")
         end
         @contact.user = User.new(params[:user])
+        @contact.user.roles = Role.find(params[:roles]) if params[:roles]
       end
       @user = @contact.user
       @successful = _save
@@ -124,6 +125,7 @@ class ContactsController < ApplicationController
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
           @contact.user.attributes = params[:user]
+          @contact.user.roles = Role.find(params[:roles]) if params[:roles]
         elsif (@contact.user)
           @contact.user.destroy
           @contact.user = nil

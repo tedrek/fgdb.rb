@@ -15,7 +15,7 @@
     name="contact_types[]"
     value="<%= contact_type.id %>"
   <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
-  >&nbsp;<label for="<%= contact_type.description %>"><%= contact_type.description %></label>
+  />&nbsp;<label for="<%= contact_type.description %>"><%= contact_type.description %></label>
 </div>
 <% end %>
 <% check_vol = "if($('%s').checked) {$('volunteer').checked = true}" %>
