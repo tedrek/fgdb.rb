@@ -1,0 +1,21 @@
+<table>
+  <tr>
+    <th>Person</th>
+    <th>System</th>
+    <th>Type</th>
+    <th>Role</th>
+    <th></th>
+  </tr>
+
+<% for report in @reports %>
+  <tr>
+    <td><%= (report.contact_id && report.contact.display_name) || "Unknown" %></td>
+    <td><%= report.system_id %></td>
+    <td><%= (report.type_id && report.type.name) || "Unknown" %></td>
+    <td><%= (report.role_id && report.role.name)||"Unknown" %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => report.id} %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />

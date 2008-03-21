@@ -1,4 +1,0 @@
-<h1>Listing reports for System #<%= @system.id %></h1>
-<% for report in @reports %>
-<%= link_to report.id, { :controller => "reports", :action => "show", :id => report.id } %><br>
-<% end %>

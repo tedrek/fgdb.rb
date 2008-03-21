@@ -2,10 +2,36 @@ class ReportsController < ApplicationController
   # GET /reports
   # GET /reports.xml
   def index
+    respond_to do |format|
+      format.html # index.html.erb
+    end
+  end
+
+  def list_all
     @reports = Report.find(:all)
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html # list_all.html.erb
+      format.xml  { render :xml => @reports }
+    end
+  end
+
+  def list_for_contact
+    @reports = Report.find_all_by_contact_id(params[:id])
+    @contact = Contact.find_by_id(params[:id])
+
+    respond_to do |format|
+      format.html # list_for_contact.html.erb
+      format.xml  { render :xml => @reports }
+    end
+  end
+
+  def list_for_system
+    @reports = Report.find_all_by_system_id(params[:id])
+    @system = System.find_by_id(params[:id])
+
+    respond_to do |format|
+      format.html # list_for_system.html.erb
       format.xml  { render :xml => @reports }
     end
   end

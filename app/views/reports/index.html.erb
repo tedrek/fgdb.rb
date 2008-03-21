@@ -1,21 +1,23 @@
-<h1>Listing reports</h1>
-<b>#note to self...make it so even after you 'destroy' a type/role, it is still there...just not selectable</b>
+<h1>Go to report:</h1>
+
 <table>
-  <tr>
-  </tr>
-
-<% for report in @reports %>
-  <tr>
-    <td><%= (report.contact_id && Contact.find(report.contact_id).display_name)||"Unknown" %></td>
-    <td><%= (report.type_id && Type.find(report.type_id).name)||"Unknown" %></td>
-    <td><%= (report.role_id && Role.find(report.role_id).name)||"Unknown" %></td>
-    <td><%= link_to 'Show', report %></td>
-    <td><%= link_to 'Edit', edit_report_path(report) %></td>
-    <td><%= link_to 'Destroy', report, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
+<tr><td colspan=2>
+<%= link_to "List all", :action => "list_all" %>
+</td></tr>
+<tr><td>
+List for one contact:
+</td><td>
+<% form_tag ({:action => "list_for_contact"}) do |f| %>
+<%= text_field("id", nil) %><%= submit_tag "Get Report" %>
 <% end %>
-</table>
-
-<br />
-
-<%= link_to 'New report', new_report_path %>
+</td></tr>
+<tr><td>
+List for one system:
+</td><td>
+<% form_tag ({:action => "list_for_system"}) do |f| %>
+<%= text_field("id", nil) %><%= submit_tag "Get Report" %>
+<% end %>
+</td></tr>
+<tr><td colspan=2>
+<%= link_to 'New report', {:action => "new"} %>
+</td></tr>
