@@ -111,6 +111,19 @@ Steps to make an awesome bug report:
 Here is an example of a great bug report and patch:
 http://err.lighthouseapp.com/projects/466/tickets/172-total_entries-ignored-in-paginate_by_sql
 
+Here is an example for will paginate with ajax calls
+ 
+    <%= will_paginate @posts, {
+          :param_name => 'page_posts',
+          :remote_options => {
+            :method => :get,
+            :update => "div_posts",
+            :before => "Element.show('busy_paginate')",
+            :success => "Element.hide('busy_paginate')"
+          }
+        }
+    %>
+
 == Authors, credits, contact
 
 Want to discuss, request features, ask questions? Join the Google group:

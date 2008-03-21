@@ -28,6 +28,8 @@ module WillPaginate
       :outer_window => 1, # links around beginning and end
       :separator    => ' ', # single space is friendly to spiders and non-graphic browsers
       :param_name   => :page,
+      :remote_options => {},
+      :remote_html_options => {},
       :params       => nil,
       :renderer     => 'WillPaginate::LinkRenderer',
       :page_links   => true,
@@ -47,6 +49,9 @@ module WillPaginate
     # * <tt>:outer_window</tt> -- how many links are around the first and the last page (default: 1)
     # * <tt>:separator</tt> -- string separator for page HTML elements (default: single space)
     # * <tt>:param_name</tt> -- parameter name for page number in URLs (default: <tt>:page</tt>)
+    # * <tt>:remote_options</tt> -- options for link_to_remote. If not empty you get a
+    #   link_to_remote with these options instead of the classic link. default is empty.
+    # * <tt>:remote_html_options</tt> -- html_options for link_to_remote, default is empty.
     # * <tt>:params</tt> -- additional parameters when generating pagination links
     #   (eg. <tt>:controller => "foo", :action => nil</tt>)
     # * <tt>:renderer</tt> -- class name of the link renderer (default: WillPaginate::LinkRenderer)
@@ -168,7 +173,15 @@ module WillPaginate
     def page_link_or_span(page, span_class = 'current', text = nil)
       text ||= page.to_s
       if page and page != current_page
-        @template.link_to text, url_options(page)
+        if @options[:remote_options]
+          @template.link_to_remote(
+                                   text,
+                                   @options[:remote_options].merge({:url => url_options(page)}),
+                                   @options[:remote_html_options]
+                                   )
+        else
+          @template.link_to text, url_options(page)
+        end
       else
         @template.content_tag :span, text, :class => span_class
       end
