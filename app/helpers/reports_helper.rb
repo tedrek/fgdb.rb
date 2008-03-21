@@ -3,8 +3,8 @@ module ReportsHelper
 # it needs a little work done on it...
   def load_xml
     require 'rexml/document'
-    @this_thing = REXML::Document.new(@report.lshw_output) #use a file based on id or from db
-    stylesheet_link_tag "fgss"
+    @this_thing = REXML::Document.new(@report.lshw_output)
+    nil
   end
   def remove_tag(s, tag)#needs a new name...replace all 'tag's with the right word
     s.to_s.gsub(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/, '\1')
