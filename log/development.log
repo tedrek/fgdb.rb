@@ -1,0 +1,1035 @@
+
+
+Processing InfoController#properties (for 10.0.0.10 at 2008-03-20 21:50:08) [GET]
+  Session ID: 9a3b2b6915f03f75ba23736139a091f8
+  Parameters: {"action"=>"properties", "controller"=>"rails/info"}
+WARNING: You're using the Ruby-based MySQL library that ships with Rails. This library is not suited for production. Please install the C-based MySQL library instead (gem install mysql).
+
+
+Processing InfoController#properties (for 10.0.0.10 at 2008-03-20 21:50:08) [GET]
+  Session ID: 9a3b2b6915f03f75ba23736139a091f8
+  Parameters: {"action"=>"properties", "controller"=>"rails/info"}
+
+
+Mysql::Error (#42000Incorrect database name 'fgss.rb_development'):
+    /vendor/rails/activerecord/lib/active_record/vendor/mysql.rb:523:in `read'
+    /vendor/rails/activerecord/lib/active_record/vendor/mysql.rb:153:in `real_connect'
+    /vendor/rails/activerecord/lib/active_record/connection_adapters/mysql_adapter.rb:471:in `connect'
+    /vendor/rails/activerecord/lib/active_record/connection_adapters/mysql_adapter.rb:165:in `initialize'
+    /vendor/rails/activerecord/lib/active_record/connection_adapters/mysql_adapter.rb:88:in `new'
+    /vendor/rails/activerecord/lib/active_record/connection_adapters/mysql_adapter.rb:88:in `mysql_connection'
+    /vendor/rails/activerecord/lib/active_record/connection_adapters/abstract/connection_specification.rb:291:in `send'
+    /vendor/rails/activerecord/lib/active_record/connection_adapters/abstract/connection_specification.rb:291:in `connection='
+    /vendor/rails/activerecord/lib/active_record/connection_adapters/abstract/connection_specification.rb:259:in `retrieve_connection'
+    /vendor/rails/activerecord/lib/active_record/connection_adapters/abstract/connection_specification.rb:78:in `connection'
+    /vendor/rails/activerecord/lib/active_record/query_cache.rb:8:in `cache'
+    /vendor/rails/actionpack/lib/action_controller/caching.rb:677:in `perform_action'
+    /vendor/rails/actionpack/lib/action_controller/base.rb:524:in `send'
+    /vendor/rails/actionpack/lib/action_controller/base.rb:524:in `process_without_filters'
+    /vendor/rails/actionpack/lib/action_controller/filters.rb:685:in `process_without_session_management_support'
+    /vendor/rails/actionpack/lib/action_controller/session_management.rb:123:in `process'
+    /vendor/rails/actionpack/lib/action_controller/base.rb:388:in `process'
+    /vendor/rails/actionpack/lib/action_controller/dispatcher.rb:171:in `handle_request'
+    /vendor/rails/actionpack/lib/action_controller/dispatcher.rb:115:in `dispatch'
+    /vendor/rails/actionpack/lib/action_controller/dispatcher.rb:126:in `dispatch_cgi'
+    /vendor/rails/actionpack/lib/action_controller/dispatcher.rb:9:in `dispatch'
+    /usr/lib/ruby/1.8/mongrel/rails.rb:76:in `process'
+    /usr/lib/ruby/1.8/mongrel/rails.rb:74:in `synchronize'
+    /usr/lib/ruby/1.8/mongrel/rails.rb:74:in `process'
+    /usr/lib/ruby/1.8/mongrel.rb:159:in `process_client'
+    /usr/lib/ruby/1.8/mongrel.rb:158:in `each'
+    /usr/lib/ruby/1.8/mongrel.rb:158:in `process_client'
+    /usr/lib/ruby/1.8/mongrel.rb:285:in `run'
+    /usr/lib/ruby/1.8/mongrel.rb:285:in `initialize'
+    /usr/lib/ruby/1.8/mongrel.rb:285:in `new'
+    /usr/lib/ruby/1.8/mongrel.rb:285:in `run'
+    /usr/lib/ruby/1.8/mongrel.rb:268:in `initialize'
+    /usr/lib/ruby/1.8/mongrel.rb:268:in `new'
+    /usr/lib/ruby/1.8/mongrel.rb:268:in `run'
+    /usr/lib/ruby/1.8/mongrel/configurator.rb:282:in `run'
+    /usr/lib/ruby/1.8/mongrel/configurator.rb:281:in `each'
+    /usr/lib/ruby/1.8/mongrel/configurator.rb:281:in `run'
+    /usr/lib/ruby/1.8/mongrel_rails:129:in `run'
+    /usr/lib/ruby/1.8/mongrel/command.rb:212:in `run'
+    /usr/lib/ruby/1.8/mongrel_rails:282
+    /vendor/rails/activesupport/lib/active_support/dependencies.rb:489:in `load'
+    /vendor/rails/activesupport/lib/active_support/dependencies.rb:489:in `load'
+    /vendor/rails/activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+    /vendor/rails/activesupport/lib/active_support/dependencies.rb:489:in `load'
+    /vendor/rails/railties/lib/commands/servers/mongrel.rb:64
+    /usr/lib/ruby/1.8/rubygems/custom_require.rb:27:in `gem_original_require'
+    /usr/lib/ruby/1.8/rubygems/custom_require.rb:27:in `require'
+    /vendor/rails/activesupport/lib/active_support/dependencies.rb:496:in `require'
+    /vendor/rails/activesupport/lib/active_support/dependencies.rb:342:in `new_constants_in'
+    /vendor/rails/activesupport/lib/active_support/dependencies.rb:496:in `require'
+    /vendor/rails/railties/lib/commands/server.rb:39
+    ./script/server:3:in `require'
+    ./script/server:3
+
+Rendering /server/home/ryan52/fgss.rb/vendor/rails/actionpack/lib/action_controller/templates/rescues/layout.erb (internal_server_error)
+
+
+Processing InfoController#properties (for 10.0.0.10 at 2008-03-20 21:53:18) [GET]
+  Session ID: BAh7BiIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNo%0ASGFzaHsABjoKQHVzZWR7AA%3D%3D--94bcf0b205230ad25a8e43f8c34c6fb560366b74
+  Parameters: {"action"=>"properties", "controller"=>"rails/info"}
+  [4;36;1mSQL (0.000444)[0m   [0;1mSHOW client_min_messages[0m
+  [4;35;1mSQL (0.000159)[0m   [0mSET client_min_messages TO 'panic'[0m
+  [4;36;1mSQL (0.000121)[0m   [0;1mSHOW standard_conforming_strings[0m
+  [4;35;1mSQL (0.000100)[0m   [0mSET client_min_messages TO 'notice'[0m
+  [4;36;1mSQL (0.000569)[0m   [0;1mSELECT version()[0m
+Completed in 0.00406 (246 reqs/sec) | Rendering: 0.00011 (2%) | DB: 0.00139 (34%) | 500 Internal Server Error [http://jetty/rails/info/properties]
+  [4;36;1mSQL (0.000426)[0m   [0;1mSHOW client_min_messages[0m
+  [4;35;1mSQL (0.000144)[0m   [0mSET client_min_messages TO 'panic'[0m
+  [4;36;1mSQL (0.000120)[0m   [0;1mSHOW standard_conforming_strings[0m
+  [4;35;1mSQL (0.000098)[0m   [0mSET client_min_messages TO 'notice'[0m
+  [4;36;1mSQL (0.000544)[0m   [0;1mSELECT version()[0m
+  [4;36;1mSQL (0.000435)[0m   [0;1mSHOW client_min_messages[0m
+  [4;35;1mSQL (0.000155)[0m   [0mSET client_min_messages TO 'panic'[0m
+  [4;36;1mSQL (0.000121)[0m   [0;1mSHOW standard_conforming_strings[0m
+  [4;35;1mSQL (0.000099)[0m   [0mSET client_min_messages TO 'notice'[0m
+  [4;36;1mSQL (0.000739)[0m   [0;1mSELECT version()[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: relation "schema_info" does not exist
+: SELECT * FROM schema_info[0m
+  [4;36;1mSQL (0.000181)[0m   [0;1mSHOW search_path[0m
+  [4;35;1mSQL (0.004991)[0m   [0m SELECT tablename
+ FROM pg_tables
+ WHERE schemaname IN (E'"$user"',E'public')
+[0m
+  [4;36;1mSQL (0.004308)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'contacts'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.006328)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'contacts'::regclass
+[0m
+  [4;36;1mSQL (0.003517)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'contacts'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001196)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'reports'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.004100)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'reports'::regclass
+[0m
+  [4;35;1mPK and custom sequence (0.002257)[0m   [0m SELECT attr.attname, split_part(def.adsrc, '''', 2)
+ FROM pg_class t
+ JOIN pg_attribute attr ON (t.oid = attrelid)
+ JOIN pg_attrdef def ON (adrelid = attrelid AND adnum = attnum)
+ JOIN pg_constraint cons ON (conrelid = adrelid AND adnum = conkey[1])
+ WHERE t.oid = 'reports'::regclass
+ AND cons.contype = 'p'
+ AND def.adsrc ~* 'nextval'
+[0m
+  [4;36;1mSQL (0.002972)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'reports'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001197)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'roles'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.004067)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'roles'::regclass
+[0m
+  [4;35;1mPK and custom sequence (0.001979)[0m   [0m SELECT attr.attname, split_part(def.adsrc, '''', 2)
+ FROM pg_class t
+ JOIN pg_attribute attr ON (t.oid = attrelid)
+ JOIN pg_attrdef def ON (adrelid = attrelid AND adnum = attnum)
+ JOIN pg_constraint cons ON (conrelid = adrelid AND adnum = conkey[1])
+ WHERE t.oid = 'roles'::regclass
+ AND cons.contype = 'p'
+ AND def.adsrc ~* 'nextval'
+[0m
+  [4;36;1mSQL (0.002762)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'roles'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001190)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'systems'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.004058)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'systems'::regclass
+[0m
+  [4;35;1mPK and custom sequence (0.001995)[0m   [0m SELECT attr.attname, split_part(def.adsrc, '''', 2)
+ FROM pg_class t
+ JOIN pg_attribute attr ON (t.oid = attrelid)
+ JOIN pg_attrdef def ON (adrelid = attrelid AND adnum = attnum)
+ JOIN pg_constraint cons ON (conrelid = adrelid AND adnum = conkey[1])
+ WHERE t.oid = 'systems'::regclass
+ AND cons.contype = 'p'
+ AND def.adsrc ~* 'nextval'
+[0m
+  [4;36;1mSQL (0.002957)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'systems'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001153)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'types'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.004079)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'types'::regclass
+[0m
+  [4;35;1mPK and custom sequence (0.001995)[0m   [0m SELECT attr.attname, split_part(def.adsrc, '''', 2)
+ FROM pg_class t
+ JOIN pg_attribute attr ON (t.oid = attrelid)
+ JOIN pg_attrdef def ON (adrelid = attrelid AND adnum = attnum)
+ JOIN pg_constraint cons ON (conrelid = adrelid AND adnum = conkey[1])
+ WHERE t.oid = 'types'::regclass
+ AND cons.contype = 'p'
+ AND def.adsrc ~* 'nextval'
+[0m
+  [4;36;1mSQL (0.002791)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'types'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.000562)[0m   [0;1mSHOW client_min_messages[0m
+  [4;35;1mSQL (0.000155)[0m   [0mSET client_min_messages TO 'panic'[0m
+  [4;36;1mSQL (0.000117)[0m   [0;1mSHOW standard_conforming_strings[0m
+  [4;35;1mSQL (0.000090)[0m   [0mSET client_min_messages TO 'notice'[0m
+  [4;36;1mSQL (0.000807)[0m   [0;1mSELECT version()[0m
+  [4;35;1mSQL (0.013387)[0m   [0mCREATE TABLE schema_info (version integer)[0m
+  [4;36;1mSQL (0.001117)[0m   [0;1mINSERT INTO schema_info (version) VALUES(0)[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: relation "schema_info" already exists
+: CREATE TABLE schema_info (version integer)[0m
+  [4;36;1mSQL (0.000688)[0m   [0;1mSELECT version FROM schema_info[0m
+Migrating to Initial (1)
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: table "contacts" does not exist
+: DROP TABLE contacts[0m
+  [4;36;1mSQL (0.019495)[0m   [0;1mCREATE TABLE contacts ("id" serial primary key, "is_organization" boolean DEFAULT 'f', "sort_name" character varying(25) DEFAULT NULL, "first_name" character varying(25) DEFAULT NULL, "middle_name" character varying(25) DEFAULT NULL, "surname" character varying(50) DEFAULT NULL, "organization" character varying(100) DEFAULT NULL, "extra_address" character varying(52) DEFAULT NULL, "address" character varying(52) DEFAULT NULL, "city" character varying(30) DEFAULT NULL, "state_or_province" character varying(15) DEFAULT NULL, "postal_code" character varying(25) DEFAULT NULL, "country" character varying(100) DEFAULT NULL, "notes" text DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: table "reports" does not exist
+: DROP TABLE reports[0m
+  [4;36;1mSQL (0.013003)[0m   [0;1mCREATE TABLE reports ("id" serial primary key, "system_id" integer DEFAULT NULL, "contact_id" integer DEFAULT NULL, "role_id" integer DEFAULT NULL, "lshw_output" text DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL, "old_id" integer DEFAULT NULL, "notes" text DEFAULT NULL, "type_id" integer DEFAULT NULL, "os" character varying(255) DEFAULT NULL) [0m
+  [4;35;1mSQL (0.003038)[0m   [0mCREATE INDEX "reports_contact_id_index" ON reports ("contact_id")[0m
+  [4;36;1mSQL (0.002754)[0m   [0;1mCREATE INDEX "reports_role_id_index" ON reports ("role_id")[0m
+  [4;35;1mSQL (0.002737)[0m   [0mCREATE INDEX "reports_system_id_index" ON reports ("system_id")[0m
+  [4;36;1mSQL (0.002734)[0m   [0;1mCREATE INDEX "reports_type_id_index" ON reports ("type_id")[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: table "roles" does not exist
+: DROP TABLE roles[0m
+  [4;36;1mSQL (0.008721)[0m   [0;1mCREATE TABLE roles ("id" serial primary key, "name" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;35;1mSQL (0.003330)[0m   [0mCREATE INDEX "roles_name_index" ON roles ("name")[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "systems" does not exist
+: DROP TABLE systems[0m
+  [4;35;1mSQL (0.014516)[0m   [0mCREATE TABLE systems ("id" serial primary key, "system_vendor" character varying(255) DEFAULT NULL, "system_model" character varying(255) DEFAULT NULL, "system_serial_number" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL, "mobo_vendor" character varying(255) DEFAULT NULL, "mobo_model" character varying(255) DEFAULT NULL, "mobo_serial_number" character varying(255) DEFAULT NULL, "serial_number" character varying(255) DEFAULT NULL, "vendor" character varying(255) DEFAULT NULL, "model" character varying(255) DEFAULT NULL) [0m
+  [4;36;1mSQL (0.003160)[0m   [0;1mCREATE INDEX "systems_model_index" ON systems ("system_model")[0m
+  [4;35;1mSQL (0.002915)[0m   [0mCREATE INDEX "systems_serial_number_index" ON systems ("system_serial_number")[0m
+  [4;36;1mSQL (0.003353)[0m   [0;1mCREATE INDEX "systems_vendor_index" ON systems ("system_vendor")[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: table "types" does not exist
+: DROP TABLE types[0m
+  [4;36;1mSQL (0.009723)[0m   [0;1mCREATE TABLE types ("id" serial primary key, "name" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;35;1mSQL (0.003187)[0m   [0mCREATE INDEX "types_name_index" ON types ("name")[0m
+  [4;36;1mSQL (0.001551)[0m   [0;1mUPDATE schema_info SET version = 1[0m
+  [4;35;1mSQL (0.000385)[0m   [0mSELECT * FROM schema_info[0m
+  [4;36;1mSQL (0.000152)[0m   [0;1mSHOW search_path[0m
+  [4;35;1mSQL (0.004150)[0m   [0m SELECT tablename
+ FROM pg_tables
+ WHERE schemaname IN (E'"$user"',E'public')
+[0m
+  [4;36;1mSQL (0.004300)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'contacts'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.005775)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'contacts'::regclass
+[0m
+  [4;36;1mSQL (0.003373)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'contacts'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001177)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'reports'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.004039)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'reports'::regclass
+[0m
+  [4;35;1mSQL (0.002982)[0m   [0m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'reports'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.001175)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'roles'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.004010)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'roles'::regclass
+[0m
+  [4;36;1mSQL (0.002766)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'roles'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001236)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'systems'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.004061)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'systems'::regclass
+[0m
+  [4;35;1mSQL (0.002920)[0m   [0m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'systems'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.001144)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'types'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.004013)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'types'::regclass
+[0m
+  [4;36;1mSQL (0.002771)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'types'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.000448)[0m   [0;1mSHOW client_min_messages[0m
+  [4;35;1mSQL (0.000154)[0m   [0mSET client_min_messages TO 'panic'[0m
+  [4;36;1mSQL (0.000116)[0m   [0;1mSHOW standard_conforming_strings[0m
+  [4;35;1mSQL (0.000100)[0m   [0mSET client_min_messages TO 'notice'[0m
+  [4;36;1mSQL (0.000528)[0m   [0;1mSELECT version()[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: relation "schema_info" already exists
+: CREATE TABLE schema_info (version integer)[0m
+  [4;36;1mSQL (0.000653)[0m   [0;1mSELECT version FROM schema_info[0m
+  [4;35;1mSQL (0.000245)[0m   [0mSELECT version FROM schema_info[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: relation "schema_info" already exists
+: CREATE TABLE schema_info (version integer)[0m
+  [4;35;1mSQL (0.000419)[0m   [0mSELECT version FROM schema_info[0m
+Migrating to Initial (1)
+  [4;36;1mSQL (0.009091)[0m   [0;1mDROP TABLE types[0m
+  [4;35;1mSQL (0.006815)[0m   [0mDROP TABLE reports[0m
+  [4;36;1mSQL (0.007973)[0m   [0;1mDROP TABLE contacts[0m
+  [4;35;1mSQL (0.008341)[0m   [0mDROP TABLE systems[0m
+  [4;36;1mSQL (0.004391)[0m   [0;1mDROP TABLE roles[0m
+  [4;35;1mSQL (0.000939)[0m   [0mUPDATE schema_info SET version = 0[0m
+  [4;36;1mSQL (0.000393)[0m   [0;1mSELECT * FROM schema_info[0m
+  [4;35;1mSQL (0.000152)[0m   [0mSHOW search_path[0m
+  [4;36;1mSQL (0.003685)[0m   [0;1m SELECT tablename
+ FROM pg_tables
+ WHERE schemaname IN (E'"$user"',E'public')
+[0m
+  [4;36;1mSQL (0.000422)[0m   [0;1mSHOW client_min_messages[0m
+  [4;35;1mSQL (0.000146)[0m   [0mSET client_min_messages TO 'panic'[0m
+  [4;36;1mSQL (0.000111)[0m   [0;1mSHOW standard_conforming_strings[0m
+  [4;35;1mSQL (0.000111)[0m   [0mSET client_min_messages TO 'notice'[0m
+  [4;36;1mSQL (0.000493)[0m   [0;1mSELECT version()[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: relation "schema_info" already exists
+: CREATE TABLE schema_info (version integer)[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: relation "schema_info" already exists
+: CREATE TABLE schema_info (version integer)[0m
+  [4;35;1mSQL (0.000694)[0m   [0mSELECT version FROM schema_info[0m
+Migrating to Initial (1)
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "contacts" does not exist
+: DROP TABLE contacts[0m
+  [4;35;1mSQL (0.025289)[0m   [0mCREATE TABLE contacts ("id" serial primary key, "is_organization" boolean DEFAULT 'f', "sort_name" character varying(25) DEFAULT NULL, "first_name" character varying(25) DEFAULT NULL, "middle_name" character varying(25) DEFAULT NULL, "surname" character varying(50) DEFAULT NULL, "organization" character varying(100) DEFAULT NULL, "extra_address" character varying(52) DEFAULT NULL, "address" character varying(52) DEFAULT NULL, "city" character varying(30) DEFAULT NULL, "state_or_province" character varying(15) DEFAULT NULL, "postal_code" character varying(25) DEFAULT NULL, "country" character varying(100) DEFAULT NULL, "notes" text DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "reports" does not exist
+: DROP TABLE reports[0m
+  [4;35;1mSQL (0.011977)[0m   [0mCREATE TABLE reports ("id" serial primary key, "system_id" integer DEFAULT NULL, "contact_id" integer DEFAULT NULL, "role_id" integer DEFAULT NULL, "lshw_output" text DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL, "old_id" integer DEFAULT NULL, "notes" text DEFAULT NULL, "type_id" integer DEFAULT NULL, "os" character varying(255) DEFAULT NULL) [0m
+  [4;36;1mSQL (0.003116)[0m   [0;1mCREATE INDEX "reports_contact_id_index" ON reports ("contact_id")[0m
+  [4;35;1mSQL (0.002915)[0m   [0mCREATE INDEX "reports_role_id_index" ON reports ("role_id")[0m
+  [4;36;1mSQL (0.002924)[0m   [0;1mCREATE INDEX "reports_system_id_index" ON reports ("system_id")[0m
+  [4;35;1mSQL (0.002954)[0m   [0mCREATE INDEX "reports_type_id_index" ON reports ("type_id")[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "roles" does not exist
+: DROP TABLE roles[0m
+  [4;35;1mSQL (0.008102)[0m   [0mCREATE TABLE roles ("id" serial primary key, "name" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;36;1mSQL (0.003711)[0m   [0;1mCREATE INDEX "roles_name_index" ON roles ("name")[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: table "systems" does not exist
+: DROP TABLE systems[0m
+  [4;36;1mSQL (0.013658)[0m   [0;1mCREATE TABLE systems ("id" serial primary key, "system_vendor" character varying(255) DEFAULT NULL, "system_model" character varying(255) DEFAULT NULL, "system_serial_number" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL, "mobo_vendor" character varying(255) DEFAULT NULL, "mobo_model" character varying(255) DEFAULT NULL, "mobo_serial_number" character varying(255) DEFAULT NULL, "serial_number" character varying(255) DEFAULT NULL, "vendor" character varying(255) DEFAULT NULL, "model" character varying(255) DEFAULT NULL) [0m
+  [4;35;1mSQL (0.003169)[0m   [0mCREATE INDEX "systems_model_index" ON systems ("system_model")[0m
+  [4;36;1mSQL (0.002981)[0m   [0;1mCREATE INDEX "systems_serial_number_index" ON systems ("system_serial_number")[0m
+  [4;35;1mSQL (0.003025)[0m   [0mCREATE INDEX "systems_vendor_index" ON systems ("system_vendor")[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "types" does not exist
+: DROP TABLE types[0m
+  [4;35;1mSQL (0.009304)[0m   [0mCREATE TABLE types ("id" serial primary key, "name" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;36;1mSQL (0.002922)[0m   [0;1mCREATE INDEX "types_name_index" ON types ("name")[0m
+  [4;35;1mSQL (0.001182)[0m   [0mUPDATE schema_info SET version = 1[0m
+  [4;36;1mSQL (0.000383)[0m   [0;1mSELECT * FROM schema_info[0m
+  [4;35;1mSQL (0.000153)[0m   [0mSHOW search_path[0m
+  [4;36;1mSQL (0.003498)[0m   [0;1m SELECT tablename
+ FROM pg_tables
+ WHERE schemaname IN (E'"$user"',E'public')
+[0m
+  [4;35;1mSQL (0.003543)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'contacts'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.005286)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'contacts'::regclass
+[0m
+  [4;35;1mSQL (0.003387)[0m   [0m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'contacts'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.001265)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'reports'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.004016)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'reports'::regclass
+[0m
+  [4;36;1mSQL (0.002942)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'reports'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001139)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'roles'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.003939)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'roles'::regclass
+[0m
+  [4;35;1mSQL (0.002719)[0m   [0m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'roles'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.001267)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'systems'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.004032)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'systems'::regclass
+[0m
+  [4;36;1mSQL (0.002886)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'systems'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001114)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'types'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.003935)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'types'::regclass
+[0m
+  [4;35;1mSQL (0.002731)[0m   [0m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'types'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.000460)[0m   [0;1mSHOW client_min_messages[0m
+  [4;35;1mSQL (0.000153)[0m   [0mSET client_min_messages TO 'panic'[0m
+  [4;36;1mSQL (0.000123)[0m   [0;1mSHOW standard_conforming_strings[0m
+  [4;35;1mSQL (0.000092)[0m   [0mSET client_min_messages TO 'notice'[0m
+  [4;36;1mSQL (0.000548)[0m   [0;1mSELECT version()[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: relation "schema_info" already exists
+: CREATE TABLE schema_info (version integer)[0m
+  [4;36;1mSQL (0.000782)[0m   [0;1mSELECT version FROM schema_info[0m
+  [4;35;1mSQL (0.000384)[0m   [0mSELECT * FROM schema_info[0m
+  [4;36;1mSQL (0.000148)[0m   [0;1mSHOW search_path[0m
+  [4;35;1mSQL (0.004718)[0m   [0m SELECT tablename
+ FROM pg_tables
+ WHERE schemaname IN (E'"$user"',E'public')
+[0m
+  [4;36;1mSQL (0.010019)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'contacts'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.005572)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'contacts'::regclass
+[0m
+  [4;36;1mSQL (0.003446)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'contacts'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001216)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'reports'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.004009)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'reports'::regclass
+[0m
+  [4;35;1mSQL (0.017012)[0m   [0m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'reports'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.001588)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'roles'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.006074)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'roles'::regclass
+[0m
+  [4;36;1mSQL (0.002857)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'roles'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.001549)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'systems'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mPK and serial sequence (0.005129)[0m   [0;1m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'systems'::regclass
+[0m
+  [4;35;1mSQL (0.004282)[0m   [0m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'systems'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;36;1mSQL (0.001576)[0m   [0;1m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'types'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;35;1mPK and serial sequence (0.006525)[0m   [0m SELECT attr.attname, seq.relname
+ FROM pg_class seq,
+ pg_attribute attr,
+ pg_depend dep,
+ pg_namespace name,
+ pg_constraint cons
+ WHERE seq.oid = dep.objid
+ AND seq.relkind = 'S'
+ AND attr.attrelid = dep.refobjid
+ AND attr.attnum = dep.refobjsubid
+ AND attr.attrelid = cons.conrelid
+ AND attr.attnum = cons.conkey[1]
+ AND cons.contype = 'p'
+ AND dep.refobjid = 'types'::regclass
+[0m
+  [4;36;1mSQL (0.003422)[0m   [0;1m SELECT i.relname, d.indisunique, a.attname
+ FROM pg_class t, pg_class i, pg_index d, pg_attribute a
+ WHERE i.relkind = 'i'
+ AND d.indexrelid = i.oid
+ AND d.indisprimary = 'f'
+ AND t.oid = d.indrelid
+ AND t.relname = 'types'
+ AND a.attrelid = t.oid
+ AND ( d.indkey[0]=a.attnum OR d.indkey[1]=a.attnum
+ OR d.indkey[2]=a.attnum OR d.indkey[3]=a.attnum
+ OR d.indkey[4]=a.attnum OR d.indkey[5]=a.attnum
+ OR d.indkey[6]=a.attnum OR d.indkey[7]=a.attnum
+ OR d.indkey[8]=a.attnum OR d.indkey[9]=a.attnum )
+ ORDER BY i.relname
+[0m
+  [4;35;1mSQL (0.000499)[0m   [0mSHOW client_min_messages[0m
+  [4;36;1mSQL (0.000149)[0m   [0;1mSET client_min_messages TO 'panic'[0m
+  [4;35;1mSQL (0.000117)[0m   [0mSHOW standard_conforming_strings[0m
+  [4;36;1mSQL (0.000094)[0m   [0;1mSET client_min_messages TO 'notice'[0m
+  [4;35;1mSQL (0.000846)[0m   [0mSELECT version()[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "contacts" does not exist
+: DROP TABLE contacts[0m
+  [4;35;1mSQL (0.027456)[0m   [0mCREATE TABLE contacts ("id" serial primary key, "is_organization" boolean DEFAULT 'f', "sort_name" character varying(25) DEFAULT NULL, "first_name" character varying(25) DEFAULT NULL, "middle_name" character varying(25) DEFAULT NULL, "surname" character varying(50) DEFAULT NULL, "organization" character varying(100) DEFAULT NULL, "extra_address" character varying(52) DEFAULT NULL, "address" character varying(52) DEFAULT NULL, "city" character varying(30) DEFAULT NULL, "state_or_province" character varying(15) DEFAULT NULL, "postal_code" character varying(25) DEFAULT NULL, "country" character varying(100) DEFAULT NULL, "notes" text DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "reports" does not exist
+: DROP TABLE reports[0m
+  [4;35;1mSQL (0.022432)[0m   [0mCREATE TABLE reports ("id" serial primary key, "system_id" integer DEFAULT NULL, "contact_id" integer DEFAULT NULL, "role_id" integer DEFAULT NULL, "lshw_output" text DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL, "old_id" integer DEFAULT NULL, "notes" text DEFAULT NULL, "type_id" integer DEFAULT NULL, "os" character varying(255) DEFAULT NULL) [0m
+  [4;36;1mSQL (0.003210)[0m   [0;1mCREATE INDEX "reports_contact_id_index" ON reports ("contact_id")[0m
+  [4;35;1mSQL (0.002901)[0m   [0mCREATE INDEX "reports_role_id_index" ON reports ("role_id")[0m
+  [4;36;1mSQL (0.002872)[0m   [0;1mCREATE INDEX "reports_system_id_index" ON reports ("system_id")[0m
+  [4;35;1mSQL (0.002819)[0m   [0mCREATE INDEX "reports_type_id_index" ON reports ("type_id")[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "roles" does not exist
+: DROP TABLE roles[0m
+  [4;35;1mSQL (0.008955)[0m   [0mCREATE TABLE roles ("id" serial primary key, "name" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;36;1mSQL (0.003414)[0m   [0;1mCREATE INDEX "roles_name_index" ON roles ("name")[0m
+  [4;35;1mSQL (0.000000)[0m   [0mPGError: ERROR: table "systems" does not exist
+: DROP TABLE systems[0m
+  [4;36;1mSQL (0.045091)[0m   [0;1mCREATE TABLE systems ("id" serial primary key, "system_vendor" character varying(255) DEFAULT NULL, "system_model" character varying(255) DEFAULT NULL, "system_serial_number" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL, "mobo_vendor" character varying(255) DEFAULT NULL, "mobo_model" character varying(255) DEFAULT NULL, "mobo_serial_number" character varying(255) DEFAULT NULL, "serial_number" character varying(255) DEFAULT NULL, "vendor" character varying(255) DEFAULT NULL, "model" character varying(255) DEFAULT NULL) [0m
+  [4;35;1mSQL (0.003311)[0m   [0mCREATE INDEX "systems_model_index" ON systems ("system_model")[0m
+  [4;36;1mSQL (0.003017)[0m   [0;1mCREATE INDEX "systems_serial_number_index" ON systems ("system_serial_number")[0m
+  [4;35;1mSQL (0.003009)[0m   [0mCREATE INDEX "systems_vendor_index" ON systems ("system_vendor")[0m
+  [4;36;1mSQL (0.000000)[0m   [0;1mPGError: ERROR: table "types" does not exist
+: DROP TABLE types[0m
+  [4;35;1mSQL (0.009482)[0m   [0mCREATE TABLE types ("id" serial primary key, "name" character varying(255) DEFAULT NULL, "lock_version" integer DEFAULT 0 NOT NULL, "updated_at" timestamp DEFAULT NULL, "created_at" timestamp DEFAULT NULL, "created_by" integer DEFAULT 1 NOT NULL, "updated_by" integer DEFAULT 1 NOT NULL) [0m
+  [4;36;1mSQL (0.002996)[0m   [0;1mCREATE INDEX "types_name_index" ON types ("name")[0m
+  [4;35;1mSQL (0.002375)[0m   [0mCREATE TABLE schema_info (version integer)[0m
+  [4;36;1mSQL (0.001375)[0m   [0;1mINSERT INTO schema_info (version) VALUES(0)[0m
+  [4;35;1mSQL (0.004543)[0m   [0m SELECT a.attname, format_type(a.atttypid, a.atttypmod), d.adsrc, a.attnotnull
+ FROM pg_attribute a LEFT JOIN pg_attrdef d
+ ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+ WHERE a.attrelid = 'schema_info'::regclass
+ AND a.attnum > 0 AND NOT a.attisdropped
+ ORDER BY a.attnum
+[0m
+  [4;36;1mSQL (0.001926)[0m   [0;1mUPDATE schema_info SET version = 1[0m
