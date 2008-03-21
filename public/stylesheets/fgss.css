@@ -1,0 +1,22 @@
+<style type='text/css'>
+    body {font-family: sans-serif; margin-left: 1%; font-size: 10pt}
+    td {padding-right: 5px}
+    td:first-child {text-align: right; vertical-align: top; font-weight: bold; padding-right: 8px}
+    table {font-size: 10pt; margin-bottom: 10px}
+    h1 {font-size: 20pt;  margin-bottom: 0.7em}
+    h2 {font-size: 15pt;  margin-bottom: 0.5em}
+    h3 {font-size: 10pt; margin-bottom: 10px }
+
+    #pci table {font-size: 8pt}
+    #pci h3 {font-size: 8pt }
+
+    div.sect2 {margin-left: 0.1in}
+    table table {margin-top: -2px}
+    table table td:first-child {text-align: right; font-weight: normal; padding-right: 8px}
+    div.header {width: 100% }
+    div.left {position: absolute; width: 47%; left: 1%; border-right: 1px solid black }
+    div.right {position: absolute; width: 47%; right: 1%;}
+    @media print {
+      .noprint { display: none; }
+    }
+</style>
