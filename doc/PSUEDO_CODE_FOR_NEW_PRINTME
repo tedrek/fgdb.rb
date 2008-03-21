@@ -1,0 +1,27 @@
+PRE_LSHW_STUFF_GOES_HERE
+new_dir = where_ever_we_put_it # /home/root/.freegeek/printme...IDK
+old_place = '/tmp/lshw.xml' # I think...
+if exists(old_place) 
+{ #this system has been run b4 the new printme
+mkdir new_dir
+mv old_place new_dir/lshw.old
+sysid=ask_for_system_id_as_normal
+wget #{server}/systems/show.xml/#{sysid} -O new_dir/system #do it a ruby way
+} else if (new_exists) { #elsif? all of the programming languages have mushed together in my brain! :D
+#the new printme has been run before
+nop #we're not in assembly!
+} else { #brand new system...never been printme'd
+wget #{server}/systems/new.xml -O new_dir/system #use a ruby way!
+}
+NORMAL_STUFF #ask_questions, post the lshw, etc
+
+#replace the system("lshw") part with:
+if (!new_dir/lshw.xml exists) system("lshw")
+
+#when wget-ing the report, also wget the report.xml and save it to new_dir/report.report_id; which should have the entire lshw file, but also other info (includ-ing sysid if it changed, so actually put this one at system and move system to report.its_id or do symlinks or something)
+
+#add to the if/else that checks whether it worked or not:
+if success
+mv new_dir/lshw.xml new_dir/lshw.report_id
+end 
+#leave it if it failed so somebody can edit it then re-run printme
