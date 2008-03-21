@@ -3,7 +3,7 @@ module ReportsHelper
 # it needs a little work done on it...
   def load_xml
     require 'rexml/document'
-    @this_thing = REXML::Document.new(File.open('/home/ryan52/my_xml').read) #use a file based on id or from db
+    @this_thing = REXML::Document.new(@report.lshw_output) #use a file based on id or from db
     stylesheet_link_tag "fgss"
   end
   def remove_tag(s, tag)#needs a new name...replace all 'tag's with the right word

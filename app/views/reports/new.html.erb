@@ -2,18 +2,17 @@
 
 <%= error_messages_for :report %>
 
-<% form_for(@report) do |f| %>
-  <p>
-    File: <%= f.file_field(:my_file) %>
-    <br />
-    System ID: <%= f.text_field(:system_id) %>
-    <br />
-    Job: <%= select("post", "role_id", Role.find(:all).collect {|p| p.name }) %>
-    <br />
-    Type: <%= select("post", "type_id", Type.find(:all).collect {|p| p.name }) %>
-    <br />
-    <%= f.submit "Create" %>
-  </p>
+<% form_tag ({:action => "create"}, {:multipart => true}) do |f| %>
+  <table>
+    <tr><td>Volunteer ID:</td><td><%= text_field("report", :contact_id) %></td></tr>
+    <tr><td>Job:</td><td><%= select("report", "role_id", Role.find(:all).collect {|p| p.name }) %></td></tr>
+    <tr><td>System ID:</td><td><%= text_field("report", :system_id) %></td></tr>
+    <tr><td>Type:</td><td><%= select("report", "type_id", Type.find(:all).collect {|p| p.name }) %></td></tr>
+    <tr><td>Notes:</td><td><%= text_area("report", :notes) %></td></tr>
+    <tr><td>File:</td><td><%= file_field("report", :my_file) %></td></tr>
+    <tr><td colspan=2><%= submit_tag "Create" %></td></tr>
+  </table>
+BEWARE! THE ROLE AND TYPE ARE NOT BEING SAVED RIGHT...GRRRR!!!!
 <% end %>
 
 <%= link_to 'Back', reports_path %>
