@@ -1,11 +1,14 @@
 <h1>Listing reports</h1>
-
+<b>#note to self...make it so even after you 'destroy' a type/role, it is still there...just not selectable</b>
 <table>
   <tr>
   </tr>
 
 <% for report in @reports %>
   <tr>
+    <td><%= (report.contact_id && Contact.find(report.contact_id).display_name)||"Unknown" %></td>
+    <td><%= (report.type_id && Type.find(report.type_id).name)||"Unknown" %></td>
+    <td><%= (report.role_id && Role.find(report.role_id).name)||"Unknown" %></td>
     <td><%= link_to 'Show', report %></td>
     <td><%= link_to 'Edit', edit_report_path(report) %></td>
     <td><%= link_to 'Destroy', report, :confirm => 'Are you sure?', :method => :delete %></td>
