@@ -1,5 +1,9 @@
 <h1>Go to report:</h1>
 
+<% if @error!=nil %>
+<div style="color: red">ERROR: <%= @error %></div>
+<% end %>
+
 <table>
 <tr><td colspan=2>
 <%= link_to "List all", :action => "list_all" %>

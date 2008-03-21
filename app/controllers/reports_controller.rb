@@ -2,6 +2,10 @@ class ReportsController < ApplicationController
   # GET /reports
   # GET /reports.xml
   def index
+    @error=nil
+    if params[:error]
+      @error=params[:error]
+    end
     respond_to do |format|
       format.html # index.html.erb
     end
@@ -17,25 +21,47 @@ class ReportsController < ApplicationController
   end
 
   def list_for_contact
-    @reports = Report.find_all_by_contact_id(params[:id])
-    @contact = Contact.find_by_id(params[:id])
-
-    respond_to do |format|
-      format.html # list_for_contact.html.erb
-      format.xml  { render :xml => @reports }
+    if params[:id]!=nil&&params[:id]!=[""]
+      @contact = Contact.find_by_id(params[:id])
+      if @contact
+        @reports = Report.find_all_by_contact_id(params[:id])
+        if @reports.length > 0
+          respond_to do |format|
+            format.html # list_for_contact.html.erb
+            format.xml  { render :xml => @reports }
+          end
+        else
+          redirect_to (:action => "index", :error => "That contact has no reports")
+        end        
+      else
+        redirect_to (:action => "index", :error => "That contact does not exist")
+      end
+    else
+      redirect_to (:action => "index", :error => "Please enter something")
     end
   end
 
   def list_for_system
-    @reports = Report.find_all_by_system_id(params[:id])
-    @system = System.find_by_id(params[:id])
-
-    respond_to do |format|
-      format.html # list_for_system.html.erb
-      format.xml  { render :xml => @reports }
+    if params[:id]!=[""]
+      @system = System.find_by_id(params[:id])
+      if @system
+        @reports = Report.find_all_by_system_id(params[:id])
+        if @reports.length > 0
+          respond_to do |format|
+            format.html # list_for_system.html.erb
+            format.xml  { render :xml => @reports }
+          end
+        else
+          redirect_to (:action => "index", :error => "That system has no reports")
+        end
+      else
+        redirect_to (:action => "index", :error => "That system does not exist")
+      end
+    else 
+      redirect_to (:action => "index", :error => "Please enter something")
     end
   end
-
+  
   # GET /reports/1
   # GET /reports/1.xml
   def show
@@ -71,7 +97,7 @@ class ReportsController < ApplicationController
     respond_to do |format|
       if @report.save
         flash[:notice] = 'Report was successfully created.'
-        format.html { redirect_to(@report) }
+        format.html { redirect_to(:action=>"show", :id=>@report.id) }
         format.xml  { render :xml => @report, :status => :created, :location => @report }
       else
         format.html { render :action => "new" }
