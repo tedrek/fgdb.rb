@@ -40,7 +40,7 @@ class VolunteerTasksController < ApplicationController
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = VolunteerTask.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_by = @sort_sql.nil? ?
-      "#{VolunteerTask.table_name}.#{VolunteerTask.primary_key} asc" :
+      "#{VolunteerTask.table_name}.date_performed DESC" :
       @sort_sql  + " " + current_sort_direction(params)
     options = {
       :order => @sort_by,
