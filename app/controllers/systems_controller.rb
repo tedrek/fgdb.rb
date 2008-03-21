@@ -1,9 +1,4 @@
 class SystemsController < ApplicationController
-  def list_reports
-    @system = System.find(params[:id])
-    @reports = Report.find_all_by_system_id(params[:id])
-  end
-
   # GET /systems
   # GET /systems.xml
   def index
