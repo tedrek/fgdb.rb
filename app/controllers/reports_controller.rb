@@ -33,13 +33,13 @@ class ReportsController < ApplicationController
             format.xml  { render :xml => @reports }
           end
         else
-          redirect_to (:action => "index", :error => "That contact has no reports")
+          redirect_to(:action => "index", :error => "That contact has no reports")
         end        
       else
-        redirect_to (:action => "index", :error => "That contact does not exist")
+        redirect_to(:action => "index", :error => "That contact does not exist")
       end
     else
-      redirect_to (:action => "index", :error => "Please enter something")
+      redirect_to(:action => "index", :error => "Please enter something")
     end
   end
 
@@ -54,13 +54,13 @@ class ReportsController < ApplicationController
             format.xml  { render :xml => @reports }
           end
         else
-          redirect_to (:action => "index", :error => "That system has no reports")
+          redirect_to(:action => "index", :error => "That system has no reports")
         end
       else
-        redirect_to (:action => "index", :error => "That system does not exist")
+        redirect_to(:action => "index", :error => "That system does not exist")
       end
     else 
-      redirect_to (:action => "index", :error => "Please enter something")
+      redirect_to(:action => "index", :error => "Please enter something")
     end
   end
   
