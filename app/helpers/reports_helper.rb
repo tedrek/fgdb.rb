@@ -11,19 +11,27 @@ module ReportsHelper
     #   s.to_s.match(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/)[1] #might be better...
   end
   def xpath_if(what_to_look_for)
-    @this_thing.elements.to_a(what_to_look_for)[0]
+    REXML::XPath.match(@this_thing, what_to_look_for)[0]
   end
   def xpath_foreach(xpath_thing)
-    @this_thing.each_element(xpath_thing) { |this_thing|
+    @this_thing.each_element(xpath_thing) {|this_thing|
       old_value=@this_thing
       @this_thing=this_thing
       yield
       @this_thing=old_value #use a better variable name for this too...replace this_thing with something better
     }
   end
+  def whats_in_this_thing(what_to_get)
+    string=REXML::XPath.match(@this_thing, what_to_get)[0]
+    if what_to_get[0]=='@'
+      string #we are good with just this
+    else
+      remove_tag(string, what_to_get) #theres a tag around it...remove it please!
+    end
+  end
   def xpath_value_of(what_to_get, put_me_before = nil, put_me_after = nil)
       if xpath_if(what_to_get)
-        "#{put_me_before}#{remove_tag(@this_thing.elements.to_a(what_to_get)[0], what_to_get)}#{put_me_after}"
+        "#{put_me_before}#{whats_in_this_thing(what_to_get)}#{put_me_after}"
       else
         nil
       end
