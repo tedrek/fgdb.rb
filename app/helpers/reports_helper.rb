@@ -29,11 +29,12 @@ module ReportsHelper
       remove_tag(string, what_to_get) #theres a tag around it...remove it please!
     end
   end
+  #TODO: make a xpath_numerical or something like that
   def xpath_value_of(what_to_get, put_me_before = nil, put_me_after = nil)
       if xpath_if(what_to_get)
         "#{put_me_before}#{whats_in_this_thing(what_to_get)}#{put_me_after}"
       else
-        nil
+        "Unknown"
       end
   end
 end
