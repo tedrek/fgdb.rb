@@ -1,51 +1,208 @@
 <% load_xml %>
 
-<h2>PCI Bus</h2>
-<% xpath_foreach("//node[contains(@id, 'pci')]") do %>
-  <h3><%= xpath_value_of("product") %></h3>
-  <% xpath_foreach("node[
-                        contains(@handle, 'PCI:')
-                        and not(@class='bus')
-                        and not(@class='bridge')
-                        and not(@class='storage')
-                        and not(@class='system')
-                        ]") do %>
+<div id="left" class="left">
+  <div id="computer">
+    <h2>Computer</h2>
+    <table>
+      <tr>
+        <td>
+          Vendor:
+        </td>
+        <td>
+          <%= xpath_value_of("/node/vendor") %>
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          Model:
+        </td>
+        <td>
+          <%= xpath_value_of("/node/product") %>
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          Serial Number:
+        </td>
+        <td>
+          <%= xpath_value_of("/node/serial") %>
+        </td>
+      </tr>
+
+      <% xpath_foreach("//node[@class='processor']") do %>
+      <% if xpath_if("product") %>
+      <tr>
+        <td>
+          Processor:
+        </td>
+        <td>
+          <%= xpath_value_of("product") %>
+        </td>
+      </tr>
+      
+      <% if xpath_if("size") %>
+      <tr>
+        <td>
+          Speed:
+        </td>
+        <td>
+          <%= sprintf("%.2f", (xpath_value_of("size").to_d/1000000.0)) %> MHz
+        </td>
+      </tr>
+      <% end %>
+      <% end %>
+      <% end %>
+
+      <tr>
+        <td>
+          BIOS Version:
+        </td>
+        <td>
+          <%= xpath_value_of("//node[@id='firmware']/version") %>
+        </td>
+      </tr>
+    </table>
+  </div> <% #computer %>
+  Gizmo info and Disbursement info need to go here!
+  <div id="hard_drives">
+    <h2>Hard Drives</h2>
+    <% xpath_foreach("//node[contains(@id, 'disk')]") do %>
+    <table>
+      <tr>
+        <td>
+          Drive:
+        </td>
+        <td>
+          <%= xpath_value_of("logicalname") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Vendor:
+        </td>
+        <td>
+          <%= xpath_value_of("vendor") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Model:
+        </td>
+        <td>
+          <%= xpath_value_of("product") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Capacity:
+        </td>
+        <td>
+          <%= sprintf("%.2f", (xpath_value_of("size").to_d/1073741824.0)) %> Gb
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">Volumes: </td>
+        <td>
+          <table>
+            <% xpath_foreach("node[contains(@id, 'volume')]") do %>
+            <tr>
+              <td>
+                <%= xpath_value_of("logicalname") %>
+              </td>
+              <td>
+                <%= xpath_value_of("description") %>
+              </td>
+              <td>
+                <%= sprintf("%.2f", (xpath_value_of("capacity").to_d/1048576)) %> Mb
+              </td>
+            </tr>
+            <% end %>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <% end %>
+  </div> <% #hard_drives %>
+</div> <% #left %>
+<div id="right" class="right">
+  <div id="optical_drives">
+    <h2>Optical Drives</h2>
+    <% xpath_foreach("//node[contains(@id, 'cdrom')]") do %>
+    <table>
+      <tr>
+        <td>Drive:</td>
+        <td>
+          <%= xpath_value_of("logicalname") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Description:
+        </td>
+        <td>
+          <%= xpath_value_of("description") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Model:
+        </td>
+        <td>
+          <%= xpath_value_of("product") %>
+        </td>
+      </tr>
+    </table>
+    <% end %>
+  </div> <% #optical_drives %>
+  <div id="pci">
+    <h2>PCI Bus</h2>
+    <% xpath_foreach("//node[contains(@id, 'pci')]") do %>
+    <h3><%= xpath_value_of("product") %></h3>
+    <% xpath_foreach("node[
+                      contains(@handle, 'PCI:')
+                      and not(@class='bus')
+                      and not(@class='bridge')
+                      and not(@class='storage')
+                      and not(@class='system')
+                      ]") do %>
     <table>
       <% if xpath_if("@class") %>
-        <tr>
-          <td>Type: </td>
-          <td>
-            <%= xpath_value_of("@class") %>
-          </td>
-        </tr>
+      <tr>
+        <td>Type: </td>
+        <td>
+          <%= xpath_value_of("@class") %>
+        </td>
+      </tr>
       <% end %>
       <% if xpath_if("vendor|businfo") %>
-        <tr>
-          <td>Description: </td>
-          <td>
-            <%= xpath_value_of("description") %>
-            (
-            <%= xpath_value_of("businfo") %>
-            )
-          </td>
-        </tr>
+      <tr>
+        <td>Description: </td>
+        <td>
+          <%= xpath_value_of("description") %>
+          (<%= xpath_value_of("businfo") %>)
+        </td>
+      </tr>
       <% end %>
       <% if xpath_if("vendor") %>
-        <tr>
-          <td>Vendor: </td>
-          <td>
-            <%= xpath_value_of("vendor") %>
-          </td>
-        </tr>
+      <tr>
+        <td>Vendor: </td>
+        <td>
+          <%= xpath_value_of("vendor") %>
+        </td>
+      </tr>
       <% end %>
       <% if xpath_if("product") %>
-        <tr>
-          <td>Product: </td>
-          <td>
-            <%= xpath_value_of("product") %>
-          </td>
-        </tr>
+      <tr>
+        <td>Product: </td>
+        <td>
+          <%= xpath_value_of("product") %>
+        </td>
+      </tr>
       <% end %>
     </table>
-  <% end %>
-<% end %>
+    <% end %>
+    <% end %>
+  </div> <% #pci %>
+</div> <% #right %>
