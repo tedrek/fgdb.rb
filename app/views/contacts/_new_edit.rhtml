@@ -12,8 +12,8 @@
   <%= render :partial => 'form' %>
 
   <p class="form-footer">
-    <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
     <%= loading_indicator_tag("form_for_contact_loading") %>
+    <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
   </p>
 <% end %>
 <%= javascript_tag "Form.focusFirstElement('floating_form');" %>
