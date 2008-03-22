@@ -12,4 +12,4 @@ else
   page << "$('#{scaffold_messages_id(@options)}').scrollTo();"
 end
 
-page.hide loading_indicator_id(@new_options), empty_message_id(@options)
+page.hide loading_indicator_id("new_#{@transaction_type}_loading"), empty_message_id(@options)

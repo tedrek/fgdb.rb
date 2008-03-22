@@ -3,7 +3,7 @@
 if @successful
   page.replace_html search_results_id(params), "<p>Pbbbppt!</p>"
 else
-  page.hide loading_indicator_id(@options)
+  page.hide loading_indicator_id("contact_#{params[:id]}_loading")
 end
 
 

@@ -1,5 +1,4 @@
 @options = { :action => "update", :id => params[:id] }
-@view_options = @options.merge(:action => "view")
 
 if @successful
 
@@ -20,4 +19,4 @@ else
   # nothing yet
 end
 
-page.hide loading_indicator_id(@view_options)
+page.hide loading_indicator_id("contact_#{params[:id]}_loading")

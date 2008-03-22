@@ -17,7 +17,7 @@ if @successful
 else
   page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
   page << "Form.enable('#{element_form_id(@create_options)}');"
-  page.hide loading_indicator_id(@create_options)
+  page.hide loading_indicator_id("form_for_volunteer_task_loading")
 end
 
 

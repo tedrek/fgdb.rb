@@ -11,4 +11,4 @@ else
   # nothing yet
 end
 
-page.hide loading_indicator_id(@new_options)
+page.hide loading_indicator_id("new_contact_loading")

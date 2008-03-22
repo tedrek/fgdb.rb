@@ -1,6 +1,6 @@
 <% form_remote_tag(
      :url => @options.merge(:controller => 'contacts'),
-     :loading => "Element.show('#{loading_indicator_id(@options)}');
+     :loading => "Element.show('#{loading_indicator_id("form_for_contact_loading)}');
                   Form.disable('floating_form');",
      :html => {:id => 'floating_form', :class => 'floating_form'}
    ) do %>
@@ -13,7 +13,7 @@
 
   <p class="form-footer">
     <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
-    <%= loading_indicator_tag @options %>
+    <%= loading_indicator_tag "form_for_contact_loading" %>
   </p>
 <% end %>
 <%= javascript_tag "Form.focusFirstElement('floating_form');" %>

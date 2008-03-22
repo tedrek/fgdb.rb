@@ -5,7 +5,7 @@
   <div class="ajax-scaffold-header">
     <div class="actions">
       <% new_params = params.merge(:controller => '/volunteer_tasks', :action => 'new') %>
-      <%= loading_indicator_tag(new_params) %>
+      <%= loading_indicator_tag("new_volunteer_task_loading") %>
     </div>
   </div>
   <table cellpadding="0" cellspacing="0">
@@ -46,6 +46,6 @@
 </div>
 <% end %>
 <%= javascript_tag(
-      "Element.show($('#{loading_indicator_id(new_params)}'));" +
+      "Element.show($('#{loading_indicator_id("new_volunteer_task_loading")}'));" +
       remote_function( :url => new_params )
     ) %>

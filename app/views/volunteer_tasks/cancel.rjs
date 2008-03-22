@@ -14,5 +14,5 @@ if @successful
   new_params = @options.merge( { :action => 'new', :id => nil } )
   page << remote_function( :url => new_params )
 else
-  page.hide loading_indicator_id(@options)
+  page.hide loading_indicator_id("form_for_volunteer_task_loading")
 end

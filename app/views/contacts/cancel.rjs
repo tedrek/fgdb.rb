@@ -5,5 +5,5 @@ if @successful
   page << "Form.enable($('#{contact_query_id(@options)}').form.id);"
   page << "Field.focus('#{contact_query_id(@options)}');"
 else
-  page.hide loading_indicator_id(@options)
+  page.hide loading_indicator_id("form_for_contacts_loading")
 end

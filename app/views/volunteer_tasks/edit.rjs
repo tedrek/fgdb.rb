@@ -17,4 +17,4 @@ else
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
 end
 
-page.hide loading_indicator_id(@view_options)
+page.hide loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")

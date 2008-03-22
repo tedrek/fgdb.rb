@@ -6,7 +6,7 @@
   <td id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns(@transaction_type) %>">
 
     <% form_remote_tag :url => @options.merge(:controller => base_controller),
-          :loading => "Element.show('#{loading_indicator_id(@options)}'); Form.disable('#{element_form_id(@options)}');",
+          :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}'); Form.disable('#{element_form_id(@options)}');",
           :html => { :href => url_for(@options.merge(:controller => base_controller)),
             :id => element_form_id(@options) } do %>
 
@@ -26,9 +26,9 @@
         <% cancel_params = @options.merge(:controller => base_controller, :action => 'cancel', :referring_action => @options[:action]) %>
         <%= link_to_remote "Cancel",
           { :url => cancel_params,
-            :loading => "Element.show('#{loading_indicator_id(@options)}');" },
+            :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}');" },
           { :href => url_for(cancel_params) } %>
-        <%= loading_indicator_tag @options %>
+        <%= loading_indicator_tag "form_for_#{@transaction_type}_loading" %>
       </p>
     <% end %>
 

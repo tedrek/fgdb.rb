@@ -227,12 +227,12 @@ module ApplicationHelper
     "#{@transaction_type}-tbody"
   end
 
-  def loading_indicator_id(options)
-    "#{options[:loading_indicator_prefix]}_loading_indicator_id"
+  def loading_indicator_id(prefix)
+    "#{prefix}_loading_indicator_id"
   end
 
-  def loading_indicator_tag(options)
-    %Q[<div id="#{loading_indicator_id(options)}"><img src="/images/indicator-foo.gif" alt="loading..."></img></div>]
+  def loading_indicator_tag(prefix)
+    %Q[<div style="display:none" id="#{loading_indicator_id(prefix)}"><img src="/images/indicator.gif" alt="loading..."></img></div>]
   end
 
   def is_me?(contact_id)

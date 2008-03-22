@@ -20,5 +20,5 @@ else
   }
   page << "$('#{contact_messages_id(@create_options)}').scrollTo();"
   page << "Form.enable('floating_form');"
-  page.hide loading_indicator_id(@create_options)
+  page.hide loading_indicator_id("form_for_contact_loading")
 end

@@ -6,7 +6,7 @@
     <h2><%= Inflector.titleize(@transaction_type) %></h2>
     <div class="actions">
       <% new_params = params.merge(:controller => base_controller, :action => 'new', :transaction_type => @transaction_type) %>
-      <%= loading_indicator_tag(new_params) %>
+      <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
     </div>
   </div>
   <table cellpadding="0" cellspacing="0">
@@ -45,7 +45,7 @@
 <div class="list_refinement">
   <% refine_params = params.merge({:action => 'component_update', :transaction_type => @transaction_type }) %>
   <% form_remote_tag :url => { :action => 'component_update' },
-        :loading => "$('#{loading_indicator_id( refine_params )}').show()",
+        :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
         :update => scaffold_content_id( refine_params ) do %>
     <% filters = {} %>
     <% filters['date range'] = date_or_date_range_picker('conditions') %>
@@ -65,7 +65,7 @@
 
     <p class="form-footer">
       <%= submit_tag "Refine", :class => "submit" %>
-      <%= loading_indicator_tag refine_params %>
+      <%= loading_indicator_tag("refine_#{@transaction_type}_loading" %>
     </p>
   <% end %>
 </div>
@@ -74,7 +74,6 @@
 </div>
 <% end %>
 <%= javascript_tag(
-      "Element.show($('#{loading_indicator_id(new_params)}'));" +
-      #render(:action => 'new.rjs')
+      "Element.show($('#{loading_indicator_id("new_#{@transaction_type}_loading")}'));" +
       remote_function( :url => new_params )
     ) %>

@@ -27,7 +27,6 @@
        :controller => 'contacts',
        :action => 'new',
        :id => nil,
-       :loading_indicator_prefix => contact_element_prefix(options) + '_new'
      ) %>
   <%= my_lightwindow_tag(
         :url => new_options,
@@ -35,7 +34,7 @@
         :id => contact_new_contact_link(options)
       )
   %>
-  <%= loading_indicator_tag(new_options) %>
+  <%= loading_indicator_tag("new_contact_loading") %>
 <% end %>
 <div id="<%= searchbox_display_id(options) %>"></div>
 

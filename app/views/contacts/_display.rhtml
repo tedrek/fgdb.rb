@@ -28,7 +28,7 @@
   <br />
   <% if (! options.has_key?(:display_edit)) or (options[:display_edit] == 'true') %>
     <% edit_options = options.merge(:action => 'edit') %>
-    <%= loading_indicator_tag(edit_options) %>
+    <%= loading_indicator_tag("contact_#{contact.id}_loading") %>
     <%= my_lightwindow_tag(
           :content => image_tag(
                                 "edit.png",
@@ -44,7 +44,7 @@
     <%= link_to_remote "Delete",
       { :url => delete_options,
         :confirm => 'Are REALLY you sure you want to kill this person?',
-        :loading => "Element.show('#{loading_indicator_id(delete_options)}');" } %>
+        :loading => "Element.show('#{loading_indicator_id("contact_#{contact.id}_loading")}');" } %>
   <% end %>
   <div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
 </div>

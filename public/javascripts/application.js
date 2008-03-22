@@ -141,9 +141,9 @@ function updateTotalsForContext( element, value,  event, context) {
   updateTotalsIfMatch( element, value, event, controller, patts);
 }
 
-function updateTotals(formId) {
+function updateTotals(context, formId) {
   var value = Form.serialize(formId);
-  new Ajax.Request('/donations/update_totals?' + value, {asynchronous:true, evalScripts:true});
+  new Ajax.Request('/' + context + 's/update_totals?' + value, {asynchronous:true, evalScripts:true});
 }
 
 function contact_form_org_toggle() {

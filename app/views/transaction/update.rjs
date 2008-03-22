@@ -9,7 +9,7 @@ if @successful
     :locals => { :hidden => true, @transaction_type.to_sym => @transaction } )
   page.remove element_row_id(@update_options)
   page.show element_row_id(@options)
-  page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');" 
+  page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');"
   page << "AjaxScaffold.removeSortClasses('#{@transaction_type}');"
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
   page << remote_function( :url => params.merge( { :action => 'new', :transaction_type => @transaction_type } ) )
@@ -20,5 +20,5 @@ else
   page.replace_html element_messages_id(@update_options), :partial => 'form_messages'
   page << "Form.enable('#{element_form_id(@update_options)}');"
   page << "$('#{element_messages_id(@update_options)}').scrollTo();"
-  page.hide loading_indicator_id(@update_options)
+  page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")
 end

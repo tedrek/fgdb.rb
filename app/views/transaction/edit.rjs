@@ -13,4 +13,4 @@ else
 end
 
 page << "Form.enable('#{element_form_id(@options)}');"
-page.hide loading_indicator_id(@view_options)
+page.hide loading_indicator_id("#{@transaction_type}_#{params[:id]}_loading")

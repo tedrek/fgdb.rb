@@ -8,8 +8,8 @@ if @successful
     page << "AjaxScaffold.displayMessageIfEmpty('#{scaffold_tbody_id(@options)}','#{empty_message_id(@options)}');"
   end
   new_params = @options.merge( { :action => 'new', :id => nil } )
-  page[loading_indicator_id(new_params)].show
+  page[loading_indicator_id("new_#{@transaction_type}_loading")].show
   page << remote_function( :url => new_params )
 else
-  page.hide loading_indicator_id(@options)
+  page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")
 end

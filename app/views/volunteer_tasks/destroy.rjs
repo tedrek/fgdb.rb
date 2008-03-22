@@ -2,12 +2,12 @@
 
 if @successful
   page.remove element_row_id(@options)
-  page << "AjaxScaffold.displayMessageIfEmpty('#{scaffold_tbody_id(@options)}','#{empty_message_id(@options)}');"   
-  page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');" 
+  page << "AjaxScaffold.displayMessageIfEmpty('#{scaffold_tbody_id(@options)}','#{empty_message_id(@options)}');"
+  page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');"
   page.replace_html( "hours_report", :partial => 'contact_hours', :locals => {"contact" => Contact.find(params[:contact_id])} ) if
-	params.has_key? :contact_id
+        params.has_key? :contact_id
 else
-  page.hide loading_indicator_id(@options)
+  page.hide loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")
 end
 
 page.replace_html scaffold_messages_id(@options), :partial => 'messages'
