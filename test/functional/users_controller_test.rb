@@ -15,6 +15,7 @@ class UsersControllerTest < Test::Unit::TestCase
     @controller = UsersController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
+    login_as :quentin
   end
 
   def test_should_allow_signup
@@ -55,7 +56,7 @@ class UsersControllerTest < Test::Unit::TestCase
       assert_response :success
     end
   end
-  
+
 
   protected
     def create_user(options = {})

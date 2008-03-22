@@ -26,28 +26,6 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_template 'lookup'
   end
 
-  def test_search_results
-    login_as :quentin
-    martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
-    assert martin.save
-    assert_nothing_raised { martin.adoption_hours }
-    xhr :post, :search_results, :contact_query => 'martin'
-    assert_response :success
-    assert_template '_search_results'
-  end
-
-  def test_search_results_with_on_display
-    login_as :quentin
-    on_display_js = "alert('test');"
-    martin = Contact.new({ :first_name => 'martin', :postal_code => 'meow' })
-    martin.save
-    assert_nothing_raised { martin.adoption_hours }
-    xhr :post, :search_results, :options => {:on_display => on_display_js}, :contact_query => 'martin'
-    assert_response :success
-    assert_template '_search_results'
-    assert_match on_display_js, @response.body
-  end
-
   def test_new_xhr
     login_as :quentin
     xhr :post, :new

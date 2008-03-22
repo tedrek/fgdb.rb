@@ -5,7 +5,7 @@ require 'volunteer_tasks_controller'
 class VolunteerTasksController; def rescue_action(e) raise e end; end
 
 class VolunteerTasksControllerTest < Test::Unit::TestCase
-  fixtures :contacts, :volunteer_task_types, :volunteer_tasks
+  fixtures :contacts, :volunteer_task_types, :volunteer_tasks, :users, :roles, :roles_users
 
   NEW_VOLUNTEER_TASK = {
     'duration' => 3,
@@ -17,6 +17,7 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
     @controller = VolunteerTasksController.new
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
+    login_as :quentin
   end
 
   def test_list
@@ -28,7 +29,7 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
   def test_component_with_contact
     first = Contact.find(:first)
     first.volunteer_tasks << an_hour_of_programming
-    post :component, :contact_id => first.id
+    post :component, :contact_id => first.id, :limit_by_contact_id => true
     assert_response :success
     assert_template 'component'
     contact = assigns(:contact)
