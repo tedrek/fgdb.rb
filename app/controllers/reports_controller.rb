@@ -95,6 +95,9 @@ class ReportsController < ApplicationController
   # POST /reports.xml
   def create
     @report = Report.new(params[:report])
+    if @report.system == nil
+      @report.system = System.new
+    end
 
     respond_to do |format|
       if @report.save
