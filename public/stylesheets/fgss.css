@@ -8,7 +8,7 @@ h3 {font-size: 10pt; margin-bottom: 10px }
 
 #pci table {font-size: 8pt}
 #pci h3 {font-size: 8pt }
-div.sect2 {margin-left: 0.1in}
+div.indent {margin-left: 0.1in}
 table table {margin-top: -2px}
 table table td:first-child {text-align: right; font-weight: normal; padding-right: 8px}
 div.header {width: 100% }
