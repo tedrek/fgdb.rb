@@ -1,4 +1,6 @@
 class ReportsController < ApplicationController
+  include ReportsHelper
+
   # GET /reports
   # GET /reports.xml
   def index
