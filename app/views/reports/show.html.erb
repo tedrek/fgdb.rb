@@ -68,32 +68,64 @@
   <div id="posted_info">
     <h2>Gizmo Info</h2>
     <table>
-      <tr><td>Date:</td><td>
-          $nowadays  <br>
-      </td></tr><tr><td>System ID:</td><td>
-          $db_system_id  <br>
-      </td></tr><tr><td>Type:</td><td>
-          $db_type_name  <br>
-      </td></tr><tr><td>Report ID:</td><td>
-          $db_report_id  <br>
-      </td></tr><tr><td>Model:</td><td>
-          $model  <br>
-      </td></tr><tr><td>Serial No:</td><td>
-          $sernum  <br>
+      <tr>
+        <td>
+          Date:
+        </td>
+        <td>
+          <%= @report.created_at %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          System ID:
+        </td>
+        <td>
+          <%= @report.system_id %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Type:
+        </td>
+        <td>
+          <%= @report.type.name %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Report ID:
+        </td>
+        <td>
+          <%= @report.id %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Model:
+        </td>
+        <td>
+          <%= @report.system.model %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Serial No:</td><td>
+          <%= @report.system.serial_number %>
       </td></tr><tr><td>Vendor:</td><td>
-          $vendor  <br>
+          <%= @report.system.vendor %>
       </td></tr><tr><td>OS:</td><td>
-          $_POST["os"]  <br>
+          <%= @report.os %>
       </td></tr><tr><td>Job:</td><td>
-          $_POST["job"]  ,   $db_job_name  <br>
+          <%= @report.role.name %>
       </td></tr><tr><td>Technician:</td><td>
-          $_POST["technician"]  <br>
+          <%= @report.contact_id %>
       </td></tr><tr><td>Old ID:</td><td>
-          $_POST["old_id"] <br>
+          <%= @report.old_id %>
       </td></tr><tr><td style="vertical-align:bottom;">Instructor Initials:</td><td>
           <br>_________________________
       </td></tr><tr><td>Notes:</td><td>
-          $_POST["notes"] <br>
+          <%= @report.notes %>
     </table>
   </div><% #posted_info %>
   <div id="disburse">
