@@ -36,6 +36,9 @@ class GizmoEvent < ActiveRecord::Base
       attrs[bridge.gizmo_typeattr.gizmo_attr.name] = bridge.value
     }
 
+    attrs.delete_if {|attr,value|
+      ! value or (value.respond_to?(:empty?) and value.empty?)
+    }
     if attrs.empty?
       gizmo_type.description
     else
