@@ -28,7 +28,7 @@
   <br />
   <% if (! options.has_key?(:display_edit)) or (options[:display_edit] == 'true') %>
     <% edit_options = options.merge(:action => 'edit') %>
-    <%= loading_indicator_tag("contact_#{contact.id}_loading") %>
+    <%= loading_indicator_tag("contact_#{@contact.id}_loading") %>
     <%= my_lightwindow_tag(
           :content => image_tag(
                                 "edit.png",
