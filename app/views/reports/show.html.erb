@@ -65,7 +65,72 @@
       </tr>
     </table>
   </div> <% #computer %>
-  Gizmo info and Disbursement info need to go here!
+  <div id="posted_info">
+    <h2>Gizmo Info</h2>
+    <table>
+      <tr><td>Date:</td><td>
+          $nowadays  <br>
+      </td></tr><tr><td>System ID:</td><td>
+          $db_system_id  <br>
+      </td></tr><tr><td>Type:</td><td>
+          $db_type_name  <br>
+      </td></tr><tr><td>Report ID:</td><td>
+          $db_report_id  <br>
+      </td></tr><tr><td>Model:</td><td>
+          $model  <br>
+      </td></tr><tr><td>Serial No:</td><td>
+          $sernum  <br>
+      </td></tr><tr><td>Vendor:</td><td>
+          $vendor  <br>
+      </td></tr><tr><td>OS:</td><td>
+          $_POST["os"]  <br>
+      </td></tr><tr><td>Job:</td><td>
+          $_POST["job"]  ,   $db_job_name  <br>
+      </td></tr><tr><td>Technician:</td><td>
+          $_POST["technician"]  <br>
+      </td></tr><tr><td>Old ID:</td><td>
+          $_POST["old_id"] <br>
+      </td></tr><tr><td style="vertical-align:bottom;">Instructor Initials:</td><td>
+          <br>_________________________
+      </td></tr><tr><td>Notes:</td><td>
+          $_POST["notes"] <br>
+    </table>
+  </div><% #posted_info %>
+  <div id="disburse">
+    <h2>Disbursement Info</h2>
+    <table summary="" width="100%">
+      <!--
+          <tr>
+            <th colspan="8">Disbursement Info: CLASSROOM USE ONLY</th>
+          </tr>
+          -->
+      <tr>
+        <td colspan="2">Type of Disbursement:</td>
+        <td colspan="2">[ &nbsp; ]<br>Grant</td>
+        <td colspan="2">[ &nbsp; ]<br>24-hour</td>
+        <td colspan="2">[ &nbsp; ]<br>Build</td>
+
+      </tr>
+      <tr>
+        <td style="vertical-align:bottom;" colspan="2">Recipient Name:</td>
+        <td colspan="6"><br>_________________________</td>
+      </tr>
+      <tr>
+        <td style="vertical-align:bottom;" colspan="2">Date of dispersement:</td>
+        <td colspan="6"><br>_________________________</td>
+      </tr>
+      <tr>
+        <td style="vertical-align:bottom;" colspan="2">Recipient ID:</td>
+        <td colspan="6"><br>_________________________</td>
+      </tr>
+      <tr>
+        <td colspan="2">Type of Gizmo:</td>
+
+        <td colspan="3">[ &nbsp; ]<br>CRT Monitor</td>
+        <td colspan="3">[ &nbsp; ]<br>System</td>
+      </tr>
+    </table>
+  </div> <% #disburse %>
   <div id="hard_drives">
     <h2>Hard Drives</h2>
     <% xpath_foreach("//node[contains(@id, 'disk')]") do %>
