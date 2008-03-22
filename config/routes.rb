@@ -1,4 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
+  #TODO:Get rid of all RESTful-ness
   map.resources :systems
   map.resources :roles
   map.resources :types
