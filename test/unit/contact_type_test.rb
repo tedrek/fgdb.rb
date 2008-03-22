@@ -90,7 +90,7 @@ class ContactTypeTest < Test::Unit::TestCase
   end
 
   def empty_contact
-    c = Contact.new({:first_name => 'foo', :postal_code => '1A'})
+    c = Contact.new({:first_name => 'foo', :postal_code => '1A', :created_by => 1})
     c.save
     c
   end

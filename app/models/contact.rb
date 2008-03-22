@@ -4,13 +4,12 @@ class Contact < ActiveRecord::Base
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
-
   has_many :donations
   has_many :volunteer_tasks, :order => 'date_performed DESC'
-
   has_one :user
 
   validates_presence_of :postal_code
+  #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
 

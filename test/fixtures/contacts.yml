@@ -10,6 +10,7 @@ contacts_003:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "4"
   organization: FreeGeek
   first_name: ""
@@ -28,6 +29,7 @@ contacts_004:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "3"
   organization: ""
   first_name: the
@@ -46,6 +48,7 @@ contacts_005:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "16"
   organization: ""
   first_name: z
@@ -64,6 +67,7 @@ contacts_006:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "18"
   organization: ""
   first_name: foo
@@ -82,6 +86,7 @@ contacts_007:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "19"
   organization: ""
   first_name: z
@@ -100,6 +105,7 @@ contacts_008:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "21"
   organization: ""
   first_name: myparrentsgave
@@ -118,6 +124,7 @@ contacts_009:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "22"
   organization: ""
   first_name: n
@@ -136,6 +143,7 @@ contacts_010:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "17"
   organization: ""
   first_name: Charles
@@ -154,6 +162,7 @@ contacts_011:
   country: United States
   notes: "awesome "
   extra_address: "# 30"
+  created_by: "1"
   id: "23"
   organization: ""
   first_name: jane
@@ -172,6 +181,7 @@ contacts_012:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "12"
   organization: ""
   first_name: Martin
@@ -190,6 +200,7 @@ contacts_001:
   country: France
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "6"
   organization: cyrano de bergerac
   first_name: ""
@@ -210,6 +221,7 @@ contacts_013:
     my notes
     more notes
   extra_address: ""
+  created_by: "1"
   id: "7"
   organization: ""
   first_name: matteo
@@ -228,6 +240,7 @@ contacts_002:
   country: Canada
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "5"
   organization: ""
   first_name: lorna
@@ -246,6 +259,7 @@ contacts_001:
   country: United States
   notes: ""
   extra_address: ""
+  created_by: "1"
   id: "1"
   organization: FreeGeek Test
   first_name: ""

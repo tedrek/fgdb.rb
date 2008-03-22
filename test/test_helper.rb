@@ -90,6 +90,7 @@ class Test::Unit::TestCase
   # An hour of TYPE, AGO days in the past
   def an_hour_of(type,ago=2)
     VolunteerTask.new({ :duration => 1.0,
+                        :created_by => 1,
                         :date_performed => Date.today - ago,
                         :volunteer_task_type => VolunteerTaskType.find(type) })
   end

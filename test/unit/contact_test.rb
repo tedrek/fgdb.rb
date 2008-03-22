@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContactTest < Test::Unit::TestCase
-  fixtures :contact_types, :contacts, :volunteer_task_types
+  fixtures :contact_types, :contacts, :volunteer_task_types, :users, :roles, :roles_users
 
-  NEW_CONTACT = {:postal_code => 1 }  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
+  NEW_CONTACT = {:postal_code => 1, :created_by => 1}  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
   REQ_ATTR_NAMES        = %w( postal_code ) # name of fields that must be present, e.g. %(name description)
   DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
 
@@ -25,21 +25,21 @@ class ContactTest < Test::Unit::TestCase
 
   def test_new
     contact = Contact.new(NEW_CONTACT)
-    assert contact.valid?, "Contact should be valid"
+    assert contact.valid?, "Contact should be valid '#{contact.errors.to_yaml}'"
      NEW_CONTACT.each do |attr_name|
       assert_equal NEW_CONTACT[attr_name], contact.attributes[attr_name], "Contact.@#{attr_name.to_s} incorrect"
     end
    end
 
   def test_validates_presence_of
-     REQ_ATTR_NAMES.each do |attr_name|
+    REQ_ATTR_NAMES.each do |attr_name|
       tmp_contact = NEW_CONTACT.clone
       tmp_contact.delete attr_name.to_sym
       contact = Contact.new(tmp_contact)
       assert !contact.valid?, "Contact should be invalid, as @#{attr_name} is invalid"
       assert contact.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
     end
-   end
+  end
 
   def test_duplicate
     current_contact = Contact.find(:first)
