@@ -2,23 +2,23 @@ module ReportsHelper
   # I can describe this file in one word: ugly
   # it needs a little work done on it...
   def get_matches(what_to_match)
-    REXML::XPath.match(@this_thing, what_to_match)
+    @this_thing.find(what_to_match).to_a
   end
   def load_xml
-    require 'rexml/document'
-    @this_thing = REXML::Document.new(@report.lshw_output)
+    require 'xml/libxml'
+    @this_thing = XML::Parser.string(@report.lshw_output).parse
     nil
   end
   def remove_tag(s, tag)#needs a new name...replace all 'tag's with the right word
     s.to_s.gsub(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/, '\1')
     #   s.to_s.match(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/)[1] #might be better...
   end
+  def remove_attribute(s, tag)#needs a new name...replace all 'tag's with the right word
+    s.to_s.gsub(/#{tag}="([^"]*)"/, '\1')
+    #   s.to_s.match(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/)[1] #might be better...
+  end
   def xpath_if(what_to_look_for)
-    if get_matches(what_to_look_for)[0]
-      true
-    else
-      false
-    end
+    get_matches(what_to_look_for)[0]
   end
   def xpath_foreach(xpath_thing)
     for this_thing in get_matches(xpath_thing) 
@@ -29,11 +29,11 @@ module ReportsHelper
     end
   end
   def whats_in_this_thing(what_to_get)
-    string=get_matches(what_to_get)[0]
-    if what_to_get[0]=='@'
-      string #we are good with just this
+    nodes=get_matches(what_to_get)
+    if what_to_get[0]=='@'[0]
+      remove_attribute(nodes, what_to_get.gsub(/@/, '')) #we are good with just this
     else
-      remove_tag(string, what_to_get) #theres a tag around it...remove it please!
+      remove_tag(nodes, what_to_get) #theres a tag around it...remove it please!
     end
   end
   #TODO: make a xpath_numerical or something like that
