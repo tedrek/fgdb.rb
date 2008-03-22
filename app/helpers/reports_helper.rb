@@ -1,6 +1,9 @@
 module ReportsHelper
-# I can describe this file in one word: ugly
-# it needs a little work done on it...
+  # I can describe this file in one word: ugly
+  # it needs a little work done on it...
+  def get_matches(what_to_match)
+    REXML::XPath.match(@this_thing, what_to_match)
+  end
   def load_xml
     require 'rexml/document'
     @this_thing = REXML::Document.new(@report.lshw_output)
@@ -11,18 +14,22 @@ module ReportsHelper
     #   s.to_s.match(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/)[1] #might be better...
   end
   def xpath_if(what_to_look_for)
-    REXML::XPath.match(@this_thing, what_to_look_for)[0]
+    if get_matches(what_to_look_for)[0]
+      true
+    else
+      false
+    end
   end
   def xpath_foreach(xpath_thing)
-    @this_thing.each_element(xpath_thing) {|this_thing|
+    for this_thing in get_matches(xpath_thing) 
       old_value=@this_thing
       @this_thing=this_thing
       yield
       @this_thing=old_value #use a better variable name for this too...replace this_thing with something better
-    }
+    end
   end
   def whats_in_this_thing(what_to_get)
-    string=REXML::XPath.match(@this_thing, what_to_get)[0]
+    string=get_matches(what_to_get)[0]
     if what_to_get[0]=='@'
       string #we are good with just this
     else
@@ -31,10 +38,10 @@ module ReportsHelper
   end
   #TODO: make a xpath_numerical or something like that
   def xpath_value_of(what_to_get, put_me_before = nil, put_me_after = nil)
-      if xpath_if(what_to_get)
-        "#{put_me_before}#{whats_in_this_thing(what_to_get)}#{put_me_after}"
-      else
-        "Unknown"
-      end
+    if xpath_if(what_to_get)
+      "#{put_me_before}#{whats_in_this_thing(what_to_get)}#{put_me_after}"
+    else
+      "Unknown"
+    end
   end
 end
