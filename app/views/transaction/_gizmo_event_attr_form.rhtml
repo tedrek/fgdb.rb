@@ -7,7 +7,7 @@
 <% attr_display = {} %>
 <% gizmo_type.relevant_attrs( gizmo_context ).each {|attr| attr_display[attr.name] = attr} %>
 <% for attr in attr_display.values %>
-  <% next if Inflector.humanize(attr.name) == 'Unit price' %>
+  <% next if ['Unit price', 'Description'].include?(Inflector.humanize(attr.name)) %>
   <% options = {} %>
   <div class="form-element">
     <% if attr.datatype == 'boolean' %>
