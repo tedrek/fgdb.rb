@@ -182,7 +182,7 @@ lightwindow.prototype = {
                         finalAnimationHandler : false,
                         formHandler : false,
                 }, options || {});
-                this.duration = ((11-this.options.resizeSpeed)*0.15);
+                this.duration = 0.05; //((11-this.options.resizeSpeed)*0.15);
                 this._setupLinks();
                 this._getScroll();
                 this._getPageDimensions();
@@ -1135,7 +1135,6 @@ lightwindow.prototype = {
                                         new Effect.Scale('lightwindow_container', 100*(ratio/(this.dimensions.container.width)), {sync: true, scaleY: false, scaleFromCenter: true, scaleContent: false})
                                 ], {
                                         duration: this.duration,
-                                        delay: 0.25,
                                         queue: {position: 'end', scope: 'lightwindowAnimation'}
                                 }
                         );
@@ -1189,8 +1188,7 @@ lightwindow.prototype = {
         //
         _defaultfinalWindowAnimationHandler : function(delay) {
           Effect.Fade('lightwindow_loading', {
-            duration: 0.75,
-            delay: 1.0,
+            duration: 0.05,
             afterFinish: function() {
               // Just in case we need some scroll goodness (this also avoids the swiss cheese effect)
               if (this.windowType != 'image' && this.windowType != 'media' && this.windowType != 'external') {
@@ -1252,7 +1250,7 @@ lightwindow.prototype = {
                 if (this.windowType == 'external') {
                         // We set the externals source here because it allows for a much smoother animation
                         $('lightwindow_iframe').setAttribute('src', this.element.href);
-                        this._handleFinalWindowAnimation(1);
+                        this._handleFinalWindowAnimation(0);
                 } else {
                         this._handleFinalWindowAnimation(0);
                 }
