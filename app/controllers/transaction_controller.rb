@@ -127,7 +127,9 @@ class TransactionController < ApplicationController
       @gizmo_type = GizmoType.find(params[:gizmo_type_id])
       if ! @gizmo_type.relevant_attrs(@gizmo_context).empty?
         render :update do |page|
-          page.replace_html params[:div_id], :partial => 'gizmo_event_attr_form', :locals => { :params => params }
+          page.replace_html(params[:div_id], 
+                            :partial => 'gizmo_event_attr_form', 
+                            :locals => { :params => params })
           page << "trigger_change_on($('#{params[:div_id]}'));"
         end
         return true
