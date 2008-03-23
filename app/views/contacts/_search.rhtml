@@ -15,7 +15,7 @@
 <%= text_field_with_auto_complete(
       contact_element_prefix(options),
       'query',
-      {},
+      {:size=>15},
       {
         :after_update_element => update_display_function,
         :skip_style => true

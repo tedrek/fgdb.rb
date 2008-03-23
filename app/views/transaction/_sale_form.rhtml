@@ -1,6 +1,7 @@
 <fieldset>
   <div class="row">
     <!--[form:sale]-->
+<div id="transaction_info">
 <div id="<%= contact_searchbox_id(@options) %>">
   <label for="donation_contact_type">What kind of contact?</label>
   <%= select_visibility( 'sale', 'contact_type',
@@ -12,7 +13,25 @@
                                                 parseInt($('contact__default_discount_schedule').innerHTML))}"}}) ) %>
 </div>
 
-<div id="sales_gizmo_datalist_div" class="datalist"
+<div class="form-extras">
+  <div class="form-element">
+    <label for="sale_discount_schedule_id">Discount schedule</label>
+    <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]">
+      <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "name", @sale.discount_schedule_id || DiscountSchedule.no_discount.id)%>
+    </select>
+  </div>
+  <%= custom_change_observer('sale_discount_schedule_id',
+          "updateTotalsForContext(element, Form.serialize($('#{element_form_id(@options)}')), event, '#{@transaction_type}');") %>
+
+  <div class="form-element">
+    <label for="sale_comments">Comments</label>
+    <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+  </div>
+</div>
+</div>
+
+<div id="transaction_line_items_div">
+<div id="gizmo_datalist_div" class="datalist">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'sale_gizmo_events',
     @sale.gizmo_events, :new_defaults => { :sale_id => @sale.id },
@@ -24,17 +43,7 @@
     :new_defaults => @event_defaults || nil) %>
 </div>
 
-<div class="form-extras">
-  <div class="form-element">
-    <label for="sale_discount_schedule_id">Discount schedule</label><br/>
-    <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]">
-      <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "name", @sale.discount_schedule_id || DiscountSchedule.no_discount.id)%>
-    </select>
-  </div>
-  <%= custom_change_observer('sale_discount_schedule_id',
-          "updateTotalsForContext(element, Form.serialize($('#{element_form_id(@options)}')), event, '#{@transaction_type}');") %>
-
-  <div class="datalist">
+  <div id="payments_div" class="datalist">
     <% params[:gizmo_context_id] ||= @gizmo_context.id %>
     <%= datalist_for( :payment, 'sale_payments',
       @sale.payments, :new_defaults => { :sale_id => @sale.id },
@@ -44,13 +53,8 @@
       :new_defaults => @event_defaults || nil) %>
   </div>
 
-  <div class="form-element">
-    <label for="sale_comments">Comments</label>
-    <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
-  </div>
-</div>
-
 <%= render :partial => 'sale_totals' %>
+</div>
 
 <!--[eoform:sale]-->
 

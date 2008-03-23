@@ -9,32 +9,27 @@
       <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
     </div>
   </div>
-  <table cellpadding="0" cellspacing="0">
-  <tbody>
-    <tr>
-      <td colspan="<%= num_columns(@transaction_type) %>" class="messages-container">
+      <div class="messages-container">
         <div id="<%= scaffold_messages_id(params) %>">
           <%= render :partial => 'messages' %>
         </div>
         <p id="<%= empty_message_id(params) %>" class="empty-message" <%= " style=\"display:none;\" " if !@transactions.empty? %>>
           No Entries
         </p>
-      </td>
-    </tr>
-  </tbody>
-  <tbody id="<%= scaffold_form_tbody_id(params) %>">
-  </tbody>
-  <tbody>
-    <tr>
+      </div>
+  <div id="<%= scaffold_form_tbody_id(params) %>">
+  </div>
+  <table>
+    <tbody>
       <%= render :partial => 'column_headings' %>
-    </tr>
-  </tbody>
-  <tbody id="<%= scaffold_tbody_id(params) %>">
-    <% if !@transactions.empty? %>
-      <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false } %>
+    </tbody>
+    <tbody id="<%= scaffold_tbody_id(params) %>">
+      <% if !@transactions.empty? %>
+        <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false } %>
+    </tbody>
     <% end %>
-  </tbody>
-</table>
+  </div>
+
 <div class="ajax-scaffold-footer">
   <%= will_paginate @transactions, :remote_options => {
         :method => :get, :update => scaffold_content_id(params)

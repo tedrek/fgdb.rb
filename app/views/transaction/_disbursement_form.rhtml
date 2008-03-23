@@ -3,19 +3,14 @@
   <div class="row">
     <!--[form:disbursement]-->
 
+<div id="transaction_info">
 <div id="<%= contact_searchbox_id(@options) %>">
   <%= render( :partial => 'contact_search' ) %>
 </div>
 
-<div class="form-extras">
-  <div class="form-element">
-    <label for="disbursement_comments">Comments</label>
-    <%= text_area 'disbursement', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
-  </div>
-  <div class="form-element">
-    <label for="disbursement_disbursed_at">When did this get given away?</label>
-    <%= calendar_box "disbursement", "disbursed_at" %>
-  </div>
+<div class="form-element">
+  <label for="disbursement_disbursed_at">When did this get given away?</label>
+  <%= calendar_box "disbursement", "disbursed_at" %>
 </div>
 
 <div class="form-element">
@@ -26,7 +21,14 @@
     </select>
 </div>
 
-<div class="datalist" id="disbursement_gizmo_datalist_div">
+<div class="form-element">
+  <label for="disbursement_comments">Comments</label>
+  <%= text_area 'disbursement', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+</div>
+</div>
+
+<div id="transaction_line_items_div">
+<div id="gizmo_datalist_div" class="datalist line_item">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'disbursement_gizmo_events',
     @disbursement.gizmo_events, :create_with => { :disbursement_id => @disbursement.id },
@@ -39,6 +41,7 @@
       remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
         :with => "Form.serialize('#{element_form_id(@options)}')")) %>
 
+</div>
 <!--[eoform:disbursement]-->
 
   </div>

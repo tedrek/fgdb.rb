@@ -44,7 +44,7 @@ module TransactionHelper
   end
 
   def totals_id(context)
-    context + "_totals_div"
+    "totals_div"
   end
 
 end

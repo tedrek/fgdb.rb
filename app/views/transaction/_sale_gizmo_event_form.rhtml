@@ -3,7 +3,7 @@
     <!--[form:gizmo_event]-->
 
 <div class="form-element">
-  <label for="<%= @datalist_field_id_prefix %>_gizmo_type_id">Type of Gizmo</label><br/>
+  <label for="<%= @datalist_field_id_prefix %>_gizmo_type_id">Type of Gizmo</label>
   <select id="<%= @datalist_field_id_prefix %>_gizmo_type_id"
     name="<%= @datalist_field_name_prefix %>[gizmo_type_id]" >
     <option value=""></option>
@@ -41,7 +41,13 @@
     {:class=>"text-input", :size=>"5"} %>
 </div>
 
-<div id="<%= @datalist_field_id_prefix %>_event_extras">
+<div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_description">Description</label>
+  <%= datalist_text_field 'gizmo_event', 'description',
+    {:class=>"text-input", :size=>"20"} %>
+</div>
+
+<div id="<%= @datalist_field_id_prefix %>_event_extras" class="gizmo_event_extras">
   <% @gizmo_type = @gizmo_event.gizmo_type %>
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
     <%= render :partial => 'gizmo_event_attr_form', 

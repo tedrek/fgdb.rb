@@ -3,6 +3,7 @@
   <div class="row">
     <!--[form:donation]-->
 
+<div id="transaction_info">
 <div id="<%= contact_searchbox_id(@options) %>">
   <label for="donation_contact_type">What kind of contact?</label>
   <%= select_visibility( 'donation', 'contact_type',
@@ -12,23 +13,15 @@
 </div>
 
 <div class="form-extras">
-  <div class="datalist">
-    <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-    <%= datalist_for( :payment, 'donation_payments',
-      @donation.payments, :create_with => { :donation_id => @donation.id },
-      :show_header => false, :render_aware => "payment_form",
-      :add_text => "More payment methods",
-      :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');",
-      :new_defaults => @event_defaults || {}) %>
-  </div>
-
   <div class="form-element">
     <label for="donation_comments">Comments</label>
     <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
   </div>
 </div>
+</div>
 
-<div class="datalist" id="donation_gizmo_datalist_div">
+<div id="transaction_line_items_div">
+<div id="gizmo_datalist_div" class="datalist line_item">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'donation_gizmo_events',
     @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
@@ -39,6 +32,16 @@
         :with => "Form.serialize('#{element_form_id(@options)}')"),
     :new_defaults => @event_defaults || {}) %>
 </div>
+
+  <div id="payments_div" class="datalist line_item">
+    <% params[:gizmo_context_id] ||= @gizmo_context.id %>
+    <%= datalist_for( :payment, 'donation_payments',
+      @donation.payments, :create_with => { :donation_id => @donation.id },
+      :show_header => false, :render_aware => "payment_form",
+      :add_text => "More payment methods",
+      :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');",
+      :new_defaults => @event_defaults || {}) %>
+  </div>
 
 
 <%= render :partial => 'donation_totals' %>
