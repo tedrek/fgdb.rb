@@ -2,6 +2,7 @@
 
   <div class="row">
     <!--[form:volunteer_task]-->
+<div class="contact_info">
 <div class="form-element">
   <% if @volunteer_task.contact %>
     <%= hidden_field_tag "volunteer_task[contact_id]", @volunteer_task.contact_id %>
@@ -10,7 +11,9 @@
     <%= render :partial => 'contacts/search', :locals => {:options => {:select_name => 'volunteer_task[contact_id]', :select_id => 'volunteer_task_contact_id'}} %>
   <% end %>
 </div>
+</div>
 
+<div class="task_info">
 <div class="form-element">
   <label for="volunteer_task_duration">duration</label>
   <%= text_field 'volunteer_task', 'duration' , {:class=>"text-input", :size=>"4"} %>
@@ -36,6 +39,7 @@
 <div class="form-element">
   <label for="volunteer_task_date_performed">what day?</label>
   <%= calendar_box 'volunteer_task', 'date_performed'  %>
+</div>
 </div>
 
 <!--[eoform:volunteer_task]-->

@@ -1,9 +1,5 @@
-<% if not request.xhr? %>
-<table class="ajax-scaffold" cellpadding="0" cellspacing="0">
-  <tbody>
-<% end %>
-<tr id="<%= element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
-  <td id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
+<div id="<%= element_row_id(@options) %>">
+  <div id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
 
     <% form_remote_tag :url => @options.merge(:controller => '/volunteer_tasks'),
           :loading => "Element.show('#{loading_indicator_id("form_for_volunteer_task_loading")}'); Form.disable('#{element_form_id(@options)}');",
@@ -36,9 +32,5 @@
         <%= loading_indicator_tag "form_for_volunteer_task_loading" %>
       </p>
     <% end %>
-  </td>
-</tr>
-<% if not request.xhr? %>
-  </tbody>
-</table>
-<% end %>
+  </div>
+</div>

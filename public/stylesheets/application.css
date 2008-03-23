@@ -330,6 +330,20 @@ color: red;
 
 /* ====================================
         volunteer report */
+/*
+.contact_info { 
+  float:left;
+  clear: none;
+}
+*/
+.task_info { 
+  float:right;
+}
+.task_info .form-element { 
+  float: left;
+  clear: left;
+}
+
 #volunteer_task_type_report {
   width: 300px;
 }
