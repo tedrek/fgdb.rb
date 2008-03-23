@@ -16,11 +16,6 @@
 if(typeof Effect == 'undefined')
   throw("lightwindow.js requires including script.aculo.us' effects.js library!");
 
-// This will stop image flickering in IE6 when elements with images are moved
-try {
-        document.execCommand("BackgroundImageCache", false, true);
-} catch(e) {}
-
 var lightwindow = Class.create();
 lightwindow.prototype = {
         //
@@ -48,9 +43,6 @@ lightwindow.prototype = {
                 width : null,
                 height : null
         },
-        preloadImage : [],
-        preloadedImage : [],
-        galleries : [],
         resizeTo : {
                 height : null,
                 heightPercent : null,
@@ -68,11 +60,6 @@ lightwindow.prototype = {
                 height : 0,
                 width : 0
         },
-        activeGallery : false,
-        galleryLocation : {
-                current : 0,
-                total : 0
-        },
         //
         //      Initialize the lightwindow.
         //
@@ -84,10 +71,8 @@ lightwindow.prototype = {
                                 width : 20
                         },
                         dimensions : {
-                                image : {height : 250, width : 250},
                                 page : {height : 250, width : 250},
                                 inline : {height : 250, width : 250},
-                                media : {height : 250, width : 250},
                                 external : {height : 250, width : 250},
                                 titleHeight : 25
                         },
@@ -97,8 +82,6 @@ lightwindow.prototype = {
                         },
                         fileTypes : {
                                 page : ['asp', 'aspx', 'cgi', 'cfm', 'htm', 'html', 'pl', 'php4', 'php3', 'php', 'php5', 'phtml', 'rhtml', 'shtml', 'txt', 'vbs', 'rb'],
-                                media : ['aif', 'aiff', 'asf', 'avi', 'divx', 'm1v', 'm2a', 'm2v', 'm3u', 'mid', 'midi', 'mov', 'moov', 'movie', 'mp2', 'mp3', 'mpa', 'mpa', 'mpe', 'mpeg', 'mpg', 'mpg', 'mpga', 'pps', 'qt', 'rm', 'ram', 'swf', 'viv', 'vivo', 'wav'],
-                                image : ['bmp', 'gif', 'jpg', 'png', 'tiff']
                         },
                         mimeTypes : {
                                 avi : 'video/avi',
@@ -176,31 +159,6 @@ lightwindow.prototype = {
                                                                         '</a>'+
                                                                         '<iframe name="lightwindow_navigation_shim" id="lightwindow_navigation_shim" src="javascript:false;" frameBorder="0" scrolling="no"></iframe>'+
                                                                 '</div>'+
-                                                                '<div id="lightwindow_galleries">'+
-                                                                        '<div id="lightwindow_galleries_tab_container" >'+
-                                                                                '<a href="#" id="lightwindow_galleries_tab" >'+
-                                                                                        '<span id="lightwindow_galleries_tab_span" class="up" >Galleries</span>'+
-                                                                                '</a>'+
-                                                                        '</div>'+
-                                                                        '<div id="lightwindow_galleries_list" >'+
-                                                                        '</div>'+
-                                                                '</div>'+
-                                                        '</div>'+
-                                                        '<div id="lightwindow_data_slide" >'+
-                                                                '<div id="lightwindow_data_slide_inner" >'+
-                                                                        '<div id="lightwindow_data_details" >'+
-                                                                                '<div id="lightwindow_data_gallery_container" >'+
-                                                                                        '<span id="lightwindow_data_gallery_current"></span>'+
-                                                                                        ' of '+
-                                                                                        '<span id="lightwindow_data_gallery_total"></span>'+
-                                                                                '</div>'+
-                                                                                '<div id="lightwindow_data_author_container" >'+
-                                                                                        'by <span id="lightwindow_data_author"></span>'+
-                                                                                '</div>'+
-                                                                        '</div>'+
-                                                                        '<div id="lightwindow_data_caption" >'+
-                                                                        '</div>'+
-                                                                '</div>'+
                                                         '</div>'+
                                                 '</div>',
                                 loading :       '<div id="lightwindow_loading" >'+
@@ -214,28 +172,15 @@ lightwindow.prototype = {
                                                                         '{body_replace}'+
                                                                 '</body>'+
                                                         '</html>',
-                                gallery : {
-                                        top :           '<div class="lightwindow_galleries_list">'+
-                                                                        '<h1>{gallery_title_replace}</h1>'+
-                                                                        '<ul>',
-                                        middle :                        '<li>'+
-                                                                                        '{gallery_link_replace}'+
-                                                                                '</li>',
-                                        bottom :                '</ul>'+
-                                                                '</div>'
-                                }
                         },
                         formMethod : 'get',
                         hideFlash : false,
-                        hideGalleryTab : false,
                         showTitleBar : true,
                         animationHandler : false,
                         navigationHandler : false,
                         transitionHandler : false,
                         finalAnimationHandler : false,
                         formHandler : false,
-                        galleryAnimationHandler : false,
-                        showGalleryCount : true
                 }, options || {});
                 this.duration = ((11-this.options.resizeSpeed)*0.15);
                 this._setupLinks();
@@ -244,7 +189,6 @@ lightwindow.prototype = {
                 this._browserDimensions();
                 this._addLightWindowMarkup(false);
                 this._setupDimensions();
-                this.buildGalleryList();
         },
         //
         //      Activate the lightwindow.
@@ -267,7 +211,6 @@ lightwindow.prototype = {
                 this._displayLightWindow('block', 'hidden');
                 this._setStatus(true);
                 this._monitorKeyboard(true);
-                this._prepareIE(true);
                 this._loadWindow();
         },
         //
@@ -276,12 +219,6 @@ lightwindow.prototype = {
         deactivate : function(){
                 // The window is not active
                 this.windowActive = false;
-
-                // There is no longer a gallery active
-                this.activeGallery = false;
-                if (!this.options.hideGalleryTab) {
-                        this._handleGalleryAnimation(false);
-                }
 
                 // Kill the animation
                 this.animating = false;
@@ -299,7 +236,6 @@ lightwindow.prototype = {
                 var queue = Effect.Queues.get('lightwindowAnimation').each(function(e){e.cancel();});
 
                 // Undo the setup
-                this._prepareIE(false);
                 this._setupDimensions();
                 this._toggleTroubleElements('visible', false);
                 this._monitorKeyboard(false);
@@ -317,8 +253,6 @@ lightwindow.prototype = {
                 this.element = Object.extend({
                         href : null,
                         title : null,
-                        author : null,
-                        caption : null,
                         rel : null,
                         top : null,
                         left : null,
@@ -349,7 +283,6 @@ lightwindow.prototype = {
                 this._displayLightWindow('block', 'hidden');
                 this._setStatus(true);
                 this._monitorKeyboard(true);
-                this._prepareIE(true);
                 this._loadWindow();
         },
         //
@@ -395,38 +328,6 @@ lightwindow.prototype = {
                 }
         },
         //
-        //  Build the Gallery List and Load it
-        //
-        buildGalleryList : function() {
-                var output = '';
-                var galleryLink;
-                for (i in this.galleries) {
-                        if (typeof this.galleries[i] == 'object') {
-                                output += (this.options.skin.gallery.top).replace('{gallery_title_replace}', unescape(i));
-                                for (j in this.galleries[i]) {
-                                        if (typeof this.galleries[i][j] == 'object') {
-                                                galleryLink = '<a href="#" id="lightwindow_gallery_'+i+'_'+j+'" >'+unescape(j)+'</a>';
-                                                output += (this.options.skin.gallery.middle).replace('{gallery_link_replace}', galleryLink);
-                                        }
-                                }
-                                output += this.options.skin.gallery.bottom;
-                        }
-                }
-                new Insertion.Top('lightwindow_galleries_list', output);
-
-                // Attach Events
-                for (i in this.galleries) {
-                        if (typeof this.galleries[i] == 'object') {
-                                for (j in this.galleries[i]) {
-                                        if (typeof this.galleries[i][j] == 'object') {
-                                                Event.observe($('lightwindow_gallery_'+i+'_'+j), 'click', this.openWindow.bind(this, this.galleries[i][j][0]), false);
-                                                $('lightwindow_gallery_'+i+'_'+j).onclick = function() {return false;};
-                                        }
-                                }
-                        }
-                }
-        },
-        //
         //  Set Links Up
         //
         _setupLinks : function() {
@@ -439,18 +340,6 @@ lightwindow.prototype = {
         //  Process a Link
         //
         _processLink : function(link) {
-                if ((this._fileType(link.getAttribute('href')) == 'image' || this._fileType(link.getAttribute('href')) == 'media')) {
-                        if (gallery = this._getGalleryInfo(link.rel)) {
-                                if (!this.galleries[gallery[0]]) {
-                                        this.galleries[gallery[0]] = new Array();
-                                }
-                                if (!this.galleries[gallery[0]][gallery[1]]) {
-                                        this.galleries[gallery[0]][gallery[1]] = new Array();
-                                }
-                                this.galleries[gallery[0]][gallery[1]].push(link);
-                        }
-                }
-
                 // Take care of our inline content
                 var url = link.getAttribute('href');
                 if (url.indexOf('?') > -1) {
@@ -517,17 +406,9 @@ lightwindow.prototype = {
                 Event.observe($('lightwindow_next'), 'click', this.navigateWindow.bind(this, 'next'), false);
                 $('lightwindow_next').onclick = function() {return false;};
 
-                if (!this.options.hideGalleryTab) {
-                        Event.observe($('lightwindow_galleries_tab'), 'click', this._handleGalleryAnimation.bind(this, true), false);
-                        $('lightwindow_galleries_tab').onclick = function() {return false;};
-                }
 
                 // Because we use position absolute, kill the scroll Wheel on animations
-                if (Prototype.Browser.IE) {
-                        Event.observe(document, 'mousewheel', this._stopScrolling.bindAsEventListener(this), false);
-                } else {
-                        Event.observe(window, 'DOMMouseScroll', this._stopScrolling.bindAsEventListener(this), false);
-                }
+                Event.observe(window, 'DOMMouseScroll', this._stopScrolling.bindAsEventListener(this), false);
 
                 //Event.observe(overlay, 'click', this.deactivate.bindAsEventListener(this), false);
                 overlay.onclick = function() {return false;};
@@ -544,8 +425,6 @@ lightwindow.prototype = {
         _setupWindowElements : function(link) {
                 this.element = link;
                 this.element.title = null ? '' : link.getAttribute('title');
-                this.element.author = null ? '' : link.getAttribute('author');
-                this.element.caption = null ? '' : link.getAttribute('caption');
                 this.element.rel = null ? '' : link.getAttribute('rel');
                 this.element.params = null ? '' : link.getAttribute('params');
 
@@ -562,25 +441,6 @@ lightwindow.prototype = {
                         Element.remove($('lightwindow_iframe'));
                 }
 
-                // Stop playing an object if its still around
-                if ($('lightwindow_media_primary')) {
-                        try {
-                                $('lightwindow_media_primary').Stop();
-                        } catch(e) {}
-                        Element.remove($('lightwindow_media_primary'));
-                }
-
-                // Stop playing an object if its still around
-                if ($('lightwindow_media_secondary')) {
-                        try {
-                                $('lightwindow_media_secondary').Stop();
-                        } catch(e) {}
-                        Element.remove($('lightwindow_media_secondary'));
-                }
-
-                this.activeGallery = false;
-                this._handleNavigation(this.activeGallery);
-
                 if (contents) {
                         // Empty the contents
                         $('lightwindow_contents').innerHTML = '';
@@ -591,17 +451,10 @@ lightwindow.prototype = {
                         });
 
                         if (!this.windowActive) {
-                                $('lightwindow_data_slide_inner').setStyle({
-                                        display: 'none'
-                                });
-
                                 $('lightwindow_title_bar_title').innerHTML = '';
                         }
 
                         // Because of browser differences and to maintain flexible captions we need to reset this height at close
-                        $('lightwindow_data_slide').setStyle({
-                                height: 'auto'
-                        });
                 }
 
                 this.resizeTo.height = null;
@@ -614,9 +467,6 @@ lightwindow.prototype = {
                 this.animating = status;
                 if (status) {
                         Element.show('lightwindow_loading');
-                }
-                if (!(/MSIE 6./i.test(navigator.userAgent))) {
-                        this._fixedWindow(status);
                 }
         },
         //
@@ -655,22 +505,6 @@ lightwindow.prototype = {
                                         left: (parseFloat(this._getParameter('lightwindow_left')) ? parseFloat(this._getParameter('lightwindow_left'))+'px' : this.dimensions.viewport.width/2+'px')
                                 });
                         }
-                }
-        },
-        //
-        //      Prepare the window for IE.
-        //
-        _prepareIE : function(setup) {
-                if (Prototype.Browser.IE) {
-                        var height, overflowX, overflowY;
-                        if (setup) {
-                                var height = '100%';
-                        } else {
-                                var height = 'auto';
-                        }
-                        var body = document.getElementsByTagName('body')[0];
-                        var html = document.getElementsByTagName('html')[0];
-                        html.style.height = body.style.height = height;
                 }
         },
         _stopScrolling : function(e) {
@@ -796,16 +630,6 @@ lightwindow.prototype = {
                                 originalWidth = this.options.dimensions.page.width;
                                 break;
 
-                        case 'image' :
-                                originalHeight = this.options.dimensions.image.height;
-                                originalWidth = this.options.dimensions.image.width;
-                                break;
-
-                        case 'media' :
-                                originalHeight = this.options.dimensions.media.height;
-                                originalWidth = this.options.dimensions.media.width;
-                                break;
-
                         case 'external' :
                                 originalHeight = this.options.dimensions.external.height;
                                 originalWidth = this.options.dimensions.external.width;
@@ -848,16 +672,12 @@ lightwindow.prototype = {
         //      Get the type of file.
         //
         _fileType : function(url) {
-                var image = new RegExp("[^\.]\.("+this.options.fileTypes.image.join('|')+")\s*$", "i");
-                if (image.test(url)) return 'image';
                 if (url.indexOf('#') > -1 && (document.domain == this._getDomain(url))) return 'inline';
                 if (url.indexOf('?') > -1) url = url.substring(0, url.indexOf('?'));
                 var type = 'unknown';
                 var page = new RegExp("[^\.]\.("+this.options.fileTypes.page.join('|')+")\s*$", "i");
-                var media = new RegExp("[^\.]\.("+this.options.fileTypes.media.join('|')+")\s*$", "i");
                 if (document.domain != this._getDomain(url)) type = 'external';
-                if (media.test(url)) type = 'media';
-                if (type == 'external' || type == 'media') return type;
+                if (type == 'external') return type;
                 if (page.test(url) || url.substr((url.length-1), url.length) == '/') type = 'page';
                 return type;
         },
@@ -928,17 +748,6 @@ lightwindow.prototype = {
                 }
         },
         //
-        //      Get Gallery Information
-        //
-        _getGalleryInfo : function(rel) {
-                if (!rel) return false;
-                if (rel.indexOf('[') > -1) {
-                        return new Array(escape(rel.substring(0, rel.indexOf('['))), escape(rel.substring(rel.indexOf('[')+1, rel.indexOf(']'))));
-                } else {
-                        return false;
-                }
-        },
-        //
         //      Get the domain from a string.
         //
         _getDomain : function(url) {
@@ -1000,13 +809,8 @@ lightwindow.prototype = {
         //  Get the Browser Viewport Dimensions
         //
         _browserDimensions : function() {
-                if (Prototype.Browser.IE) {
-            this.dimensions.viewport.height = document.documentElement.clientHeight;
-            this.dimensions.viewport.width = document.documentElement.clientWidth;
-        } else {
-            this.dimensions.viewport.height = window.innerHeight;
-            this.dimensions.viewport.width = document.width || document.body.offsetWidth;
-        }
+          this.dimensions.viewport.height = window.innerHeight;
+          this.dimensions.viewport.width = document.width || document.body.offsetWidth;
         },
         //
         //  Get the scrollbar offset, I don't like this method but there is really no other way I can find.
@@ -1064,47 +868,23 @@ lightwindow.prototype = {
         //  Get the outer HTML of an object CROSS BROWSER
         //
         _outerHTML : function(object) {
-                if (Prototype.Browser.IE) {
-                        return object.outerHTML;
-                } else {
-                        var clone = object.cloneNode(true);
-                        var cloneDiv = document.createElement('div');
-                        cloneDiv.appendChild(clone);
-                        return cloneDiv.innerHTML;
-                }
+                    var clone = object.cloneNode(true);
+                    var cloneDiv = document.createElement('div');
+                    cloneDiv.appendChild(clone);
+                    return cloneDiv.innerHTML;
         },
         //
         //  Convert an object to markup
         //
         _convertToMarkup : function(object, closeTag) {
                 var markup = this._outerHTML(object).replace('</'+closeTag+'>', '');
-                if (Prototype.Browser.IE) {
-                        for (var i = 0; i < object.childNodes.length; i++){
-                                markup += this._outerHTML(object.childNodes[i]);
-                        }
-                        markup += '</'+closeTag+'>';
-                }
                 return markup;
         },
         //
         //  Depending what type of browser it is we have to append the object differently... DAMN YOU IE!!
         //
         _appendObject : function(object, closeTag, appendTo) {
-                if (Prototype.Browser.IE) {
-                        appendTo.innerHTML += this._convertToMarkup(object, closeTag);
-
-                        // Fix the Eolas activate thing but only for specified media, for example doing this to a quicktime film breaks it.
-                        if (this.options.EOLASFix.indexOf(this._fileType(this.element.href)) > -1) {
-                                var objectElements = document.getElementsByTagName('object');
-                                for (var i = 0; i < objectElements.length; i++) {
-                                        if (objectElements[i].getAttribute("data")) objectElements[i].removeAttribute('data');
-                                        objectElements[i].outerHTML = objectElements[i].outerHTML;
-                                        objectElements[i].style.visibility = "visible";
-                                }
-                        }
-                } else {
-                        appendTo.appendChild(object);
-                }
+                    appendTo.appendChild(object);
         },
         //
         //  Add in iframe
@@ -1144,177 +924,6 @@ lightwindow.prototype = {
         //
         _loadWindow : function() {
                 switch (this.windowType) {
-                        case 'image' :
-
-                                var current = 0;
-                                var images = [];
-                                this.checkImage = [];
-                                this.resizeTo.height = this.resizeTo.width = 0;
-                                this.imageCount = this._getParameter('lightwindow_show_images') ? parseInt(this._getParameter('lightwindow_show_images')) : 1;
-
-                                // If there is a gallery get it
-                                if (gallery = this._getGalleryInfo(this.element.rel)) {
-                                        for (current = 0; current < this.galleries[gallery[0]][gallery[1]].length; current++) {
-                                                if (this.contentToFetch.indexOf(this.galleries[gallery[0]][gallery[1]][current].href) > -1) {
-                                                        break;
-                                                }
-                                        }
-                                        if (this.galleries[gallery[0]][gallery[1]][current-this.imageCount]) {
-                                                this.navigationObservers.previous = this.galleries[gallery[0]][gallery[1]][current-this.imageCount];
-                                        } else {
-                                                this.navigationObservers.previous = false;
-                                        }
-                                        if (this.galleries[gallery[0]][gallery[1]][current+this.imageCount]) {
-                                                this.navigationObservers.next = this.galleries[gallery[0]][gallery[1]][current+this.imageCount];
-                                        } else {
-                                                this.navigationObservers.next = false;
-                                        }
-
-                                        this.activeGallery = true;
-                                } else {
-                                        this.navigationObservers.previous = false;
-                                        this.navigationObservers.next = false;
-
-                                        this.activeGallery = false;
-                                }
-
-                                for (var i = current; i < (current+this.imageCount); i++) {
-
-                                        if (gallery && this.galleries[gallery[0]][gallery[1]][i]) {
-                                                this.contentToFetch = this.galleries[gallery[0]][gallery[1]][i].href;
-
-                                                this.galleryLocation = {current: (i+1)/this.imageCount, total: (this.galleries[gallery[0]][gallery[1]].length)/this.imageCount};
-
-                                                if (!this.galleries[gallery[0]][gallery[1]][i+this.imageCount]) {
-                                                        $('lightwindow_next').setStyle({
-                                                                display: 'none'
-                                                        });
-                                                } else {
-                                                        $('lightwindow_next').setStyle({
-                                                                display: 'block'
-                                                        });
-                                                        $('lightwindow_next_title').innerHTML = this.galleries[gallery[0]][gallery[1]][i+this.imageCount].title;
-                                                }
-
-                                                if (!this.galleries[gallery[0]][gallery[1]][i-this.imageCount]) {
-                                                        $('lightwindow_previous').setStyle({
-                                                                display: 'none'
-                                                        });
-                                                } else {
-                                                        $('lightwindow_previous').setStyle({
-                                                                display: 'block'
-                                                        });
-                                                        $('lightwindow_previous_title').innerHTML = this.galleries[gallery[0]][gallery[1]][i-this.imageCount].title;
-                                                }
-                                        }
-
-                                        images[i] = document.createElement('img');
-                                        images[i].setAttribute('id', 'lightwindow_image_'+i);
-                                        images[i].setAttribute('border', '0');
-                                        images[i].setAttribute('src', this.contentToFetch);
-                                        $('lightwindow_contents').appendChild(images[i]);
-
-                                        // We have to do this instead of .onload
-                                        this.checkImage[i] = new PeriodicalExecuter(function(i) {
-                                                if (!(typeof $('lightwindow_image_'+i).naturalWidth != "undefined" && $('lightwindow_image_'+i).naturalWidth == 0)) {
-
-                                                        this.checkImage[i].stop();
-
-                                                        var imageHeight = $('lightwindow_image_'+i).getHeight();
-                                                        if (imageHeight > this.resizeTo.height) {
-                                                                this.resizeTo.height = imageHeight;
-                                                        }
-                                                        this.resizeTo.width += $('lightwindow_image_'+i).getWidth();
-                                                        this.imageCount--;
-
-                                                        $('lightwindow_image_'+i).setStyle({
-                                                                height: '100%'
-                                                        });
-
-                                                        if (this.imageCount == 0) {
-                                                                this._processWindow();
-                                                        }
-                                                }
-
-                                        }.bind(this, i), 1);
-                                }
-
-
-                        break;
-
-                case 'media' :
-
-                        var current = 0;
-                        this.resizeTo.height = this.resizeTo.width = 0;
-
-                        // If there is a gallery get it
-                        if (gallery = this._getGalleryInfo(this.element.rel)) {
-                                for (current = 0; current < this.galleries[gallery[0]][gallery[1]].length; current++) {
-                                        if (this.contentToFetch.indexOf(this.galleries[gallery[0]][gallery[1]][current].href) > -1) {
-                                                break;
-                                        }
-                                }
-
-                                if (this.galleries[gallery[0]][gallery[1]][current-1]) {
-                                        this.navigationObservers.previous = this.galleries[gallery[0]][gallery[1]][current-1];
-                                } else {
-                                        this.navigationObservers.previous = false;
-                                }
-                                if (this.galleries[gallery[0]][gallery[1]][current+1]) {
-                                        this.navigationObservers.next = this.galleries[gallery[0]][gallery[1]][current+1];
-                                } else {
-                                        this.navigationObservers.next = false;
-                                }
-
-                                this.activeGallery = true;
-                        } else {
-                                this.navigationObservers.previous = false;
-                                this.navigationObservers.next = false;
-
-                                this.activeGallery = false;
-                        }
-
-
-                        if (gallery && this.galleries[gallery[0]][gallery[1]][current]) {
-                                this.contentToFetch = this.galleries[gallery[0]][gallery[1]][current].href;
-
-                                this.galleryLocation = {current: current+1, total: this.galleries[gallery[0]][gallery[1]].length};
-
-                                if (!this.galleries[gallery[0]][gallery[1]][current+1]) {
-                                        $('lightwindow_next').setStyle({
-                                                display: 'none'
-                                        });
-                                } else {
-                                        $('lightwindow_next').setStyle({
-                                                display: 'block'
-                                        });
-                                        $('lightwindow_next_title').innerHTML = this.galleries[gallery[0]][gallery[1]][current+1].title;
-                                }
-
-                                if (!this.galleries[gallery[0]][gallery[1]][current-1]) {
-                                        $('lightwindow_previous').setStyle({
-                                                display: 'none'
-                                        });
-                                } else {
-                                        $('lightwindow_previous').setStyle({
-                                                display: 'block'
-                                        });
-                                        $('lightwindow_previous_title').innerHTML = this.galleries[gallery[0]][gallery[1]][current-1].title;
-                                }
-                        }
-
-                        if (this._getParameter('lightwindow_iframe_embed')) {
-                                this.resizeTo.height = this.dimensions.viewport.height;
-                                this.resizeTo.width = this.dimensions.viewport.width;
-                        } else {
-                                this.resizeTo.height = this._getParameter('lightwindow_height');
-                                this.resizeTo.width = this._getParameter('lightwindow_width');
-                        }
-
-                        this._processWindow();
-
-                        break;
-
                 case 'external' :
 
                         this._appendIframe('auto');
@@ -1375,24 +984,10 @@ lightwindow.prototype = {
                 if (this.resizeTo.height+this.dimensions.cruft.height > this.dimensions.viewport.height) {
                         var heightRatio = this.resizeTo.height/this.resizeTo.width;
                         this.resizeTo.height = this.dimensions.viewport.height-this.dimensions.cruft.height-(2*this.options.viewportPadding);
-                        // We only care about ratio's with this window type
-                        if (this.windowType == 'image' || (this.windowType == 'media' && !this._getParameter('lightwindow_iframe_embed'))) {
-                                this.resizeTo.width = this.resizeTo.height/heightRatio;
-                                $('lightwindow_data_slide_inner').setStyle({
-                                        width: this.resizeTo.width+'px'
-                                });
-                        }
                 }
                 if (this.resizeTo.width+this.dimensions.cruft.width > this.dimensions.viewport.width) {
                         var widthRatio = this.resizeTo.width/this.resizeTo.height;
                         this.resizeTo.width = this.dimensions.viewport.width-2*this.dimensions.cruft.width-(2*this.options.viewportPadding);
-                        // We only care about ratio's with this window type
-                        if (this.windowType == 'image' || (this.windowType == 'media' && !this._getParameter('lightwindow_iframe_embed'))) {
-                                this.resizeTo.height = this.resizeTo.width/widthRatio;
-                                $('lightwindow_data_slide_inner').setStyle({
-                                        height: this.resizeTo.height+'px'
-                                });
-                        }
                 }
 
         },
@@ -1413,65 +1008,6 @@ lightwindow.prototype = {
         _processWindow : function() {
                 // Clean out our effects
                 this.dimensions.dataEffects = [];
-
-                // Set up the data-slide if we have caption information
-                if (this.element.caption || this.element.author || (this.activeGallery && this.options.showGalleryCount)) {
-                        if (this.element.caption) {
-                                $('lightwindow_data_caption').innerHTML = this.element.caption;
-                                $('lightwindow_data_caption').setStyle({
-                                        display: 'block'
-                                });
-                        } else {
-                                $('lightwindow_data_caption').setStyle({
-                                        display: 'none'
-                                });
-                        }
-                        if (this.element.author) {
-                                $('lightwindow_data_author').innerHTML = this.element.author;
-                                $('lightwindow_data_author_container').setStyle({
-                                        display: 'block'
-                                });
-                        } else {
-                                $('lightwindow_data_author_container').setStyle({
-                                        display: 'none'
-                                });
-                        }
-                        if (this.activeGallery && this.options.showGalleryCount) {
-                                $('lightwindow_data_gallery_current').innerHTML = this.galleryLocation.current;
-                                $('lightwindow_data_gallery_total').innerHTML = this.galleryLocation.total;
-                                $('lightwindow_data_gallery_container').setStyle({
-                                        display: 'block'
-                                });
-                        } else {
-                                $('lightwindow_data_gallery_container').setStyle({
-                                        display: 'none'
-                                });
-                        }
-
-                        $('lightwindow_data_slide_inner').setStyle({
-                                width: this.resizeTo.width+'px',
-                                height: 'auto',
-                                visibility: 'visible',
-                                display: 'block'
-                        });
-                        $('lightwindow_data_slide').setStyle({
-                                height: $('lightwindow_data_slide').getHeight()+'px',
-                                width: '1px',
-                                overflow: 'hidden',
-                                display: 'block'
-                        });
-                } else {
-                        $('lightwindow_data_slide').setStyle({
-                                display: 'none',
-                                width: 'auto'
-                        });
-                        $('lightwindow_data_slide_inner').setStyle({
-                                display: 'none',
-                                visibility: 'hidden',
-                                width: this.resizeTo.width+'px',
-                                height: '0px'
-                        });
-                }
 
                 if (this.element.title != 'null') {
                         $('lightwindow_title_bar_title').innerHTML = this.element.title;
@@ -1556,16 +1092,6 @@ lightwindow.prototype = {
                 }
         },
         //
-        //  Handle the gallery Animation
-        //
-        _handleGalleryAnimation : function(list) {
-                if (this.options.galleryAnimationHandler) {
-                        this.options.galleryAnimationHandler().bind(this, list);
-                } else {
-                        this._defaultGalleryAnimationHandler(list);
-                }
-        },
-        //
         //  Display the navigation
         //
         _defaultDisplayNavigation : function(display) {
@@ -1589,17 +1115,6 @@ lightwindow.prototype = {
         //
         _defaultAnimationHandler : function() {
                 // Now that we have figures out the cruft lets make the caption go away and add its effects
-                if (this.element.caption || this.element.author || (this.activeGallery && this.options.showGalleryCount)) {
-                        $('lightwindow_data_slide').setStyle({
-                                display: 'none',
-                                width: 'auto'
-                        });
-                        this.dimensions.dataEffects.push(
-                                new Effect.SlideDown('lightwindow_data_slide', {sync: true}),
-                                new Effect.Appear('lightwindow_data_slide', {sync: true, from: 0.0, to: 1.0})
-                        );
-                }
-
                 // Set up the Title if we have one
                 $('lightwindow_title_bar_inner').setStyle({
                         height: '0px',
@@ -1611,18 +1126,6 @@ lightwindow.prototype = {
                         new Effect.Morph('lightwindow_title_bar_inner', {sync: true, style: {height: this.options.dimensions.titleHeight+'px', marginTop: '0px'}}),
                         new Effect.Appear('lightwindow_title_bar_inner', {sync: true, from: 0.0, to: 1.0})
                 );
-
-                if (!this.options.hideGalleryTab) {
-                        this._handleGalleryAnimation(false);
-                        if ($('lightwindow_galleries_tab_container').getHeight() == 0) {
-                                this.dimensions.dataEffects.push(
-                                        new Effect.Morph('lightwindow_galleries_tab_container', {sync: true, style: {height: '20px', marginTop: '0px'}})
-                                );
-                                $('lightwindow_galleries').setStyle({
-                                        width: '0px'
-                                });
-                        }
-                }
 
                 var resized = false;
                 var ratio = this.dimensions.container.width-$('lightwindow_contents').getWidth()+this.resizeTo.width+this.options.contentOffset.width;
@@ -1647,11 +1150,6 @@ lightwindow.prototype = {
                                         duration: this.duration,
                                         afterFinish: function() {
                                                 if (this.dimensions.dataEffects.length > 0) {
-                                                        if (!this.options.hideGalleryTab) {
-                                                                $('lightwindow_galleries').setStyle({
-                                                                        width: this.resizeTo.width+'px'
-                                                                });
-                                                        }
                                                         new Effect.Parallel(this.dimensions.dataEffects, {
                                                                         duration: this.duration,
                                                                         afterFinish: function() {
@@ -1673,11 +1171,6 @@ lightwindow.prototype = {
                         new Effect.Parallel(this.dimensions.dataEffects, {
                                         duration: this.duration,
                                         beforeStart: function() {
-                                                if (!this.options.hideGalleryTab) {
-                                                        $('lightwindow_galleries').setStyle({
-                                                                width: this.resizeTo.width+'px'
-                                                        });
-                                                }
                                                 if (this.containerChange.height != 0 || this.containerChange.width != 0) {
                                                         new Effect.MoveBy('lightwindow_container', this.containerChange.height, this.containerChange.width, {transition: Effect.Transitions.sinoidal});
                                                 }
@@ -1695,84 +1188,20 @@ lightwindow.prototype = {
         //  Finish up Window Animation
         //
         _defaultfinalWindowAnimationHandler : function(delay) {
-                if (this.windowType == 'media' || this._getParameter('lightwindow_loading_animation')) {
-                        // Because of major flickering with the overlay we just hide it in this case
-                        Element.hide('lightwindow_loading');
-                        this._handleNavigation(this.activeGallery);
-                        this._setStatus(false);
-                } else {
-                        Effect.Fade('lightwindow_loading', {
-                                duration: 0.75,
-                                delay: 1.0,
-                                afterFinish: function() {
-                                        // Just in case we need some scroll goodness (this also avoids the swiss cheese effect)
-                                        if (this.windowType != 'image' && this.windowType != 'media' && this.windowType != 'external') {
-                                                $('lightwindow_contents').setStyle({
-                                                        overflow: 'auto'
-                                                });
-                                        }
-                                        this._handleNavigation(this.activeGallery);
-                                        this._defaultGalleryAnimationHandler();
-                                        this._setStatus(false);
-                                }.bind(this),
-                                queue: {position: 'end', scope: 'lightwindowAnimation'}
-                        });
-                }
-        },
-        //
-        //  Handle the gallery Animation
-        //
-        _defaultGalleryAnimationHandler : function(list) {
-                if (this.activeGallery) {
-                        $('lightwindow_galleries').setStyle({
-                                display: 'block',
-                                marginBottom: $('lightwindow_data_slide').getHeight()+this.options.contentOffset.height/2+'px'
-                        });
-                        $('lightwindow_navigation').setStyle({
-                                height: $('lightwindow_contents').getHeight()-20+'px'
-                        });
-                } else {
-                        $('lightwindow_galleries').setStyle({
-                                display: 'none'
-                        });
-                        $('lightwindow_galleries_tab_container').setStyle({
-                                height: '0px',
-                                marginTop: '20px'
-                        });
-                        $('lightwindow_galleries_list').setStyle({
-                                height: '0px'
-                        });
-                        return false;
-                }
-
-                if (list) {
-                        if ($('lightwindow_galleries_list').getHeight() == 0) {
-                                var height = $('lightwindow_contents').getHeight()*0.80;
-                                $('lightwindow_galleries_tab_span').className = 'down';
-                        } else {
-                                var height = 0;
-                                $('lightwindow_galleries_tab_span').className = 'up';
-                        }
-
-                        new Effect.Morph('lightwindow_galleries_list', {
-                                duration: this.duration,
-                                transition: Effect.Transitions.sinoidal,
-                                style: {height: height+'px'},
-                                beforeStart: function() {
-                                        $('lightwindow_galleries_list').setStyle({
-                                                overflow: 'hidden'
-                                        });
-                                },
-                                afterFinish: function() {
-                                        $('lightwindow_galleries_list').setStyle({
-                                                overflow: 'auto'
-                                        });
-                                },
-                                queue: {position: 'end', scope: 'lightwindowAnimation'}
-                        });
-                }
-
-
+          Effect.Fade('lightwindow_loading', {
+            duration: 0.75,
+            delay: 1.0,
+            afterFinish: function() {
+              // Just in case we need some scroll goodness (this also avoids the swiss cheese effect)
+              if (this.windowType != 'image' && this.windowType != 'media' && this.windowType != 'external') {
+                $('lightwindow_contents').setStyle({
+                  overflow: 'auto'
+                });
+              }
+              this._setStatus(false);
+            }.bind(this),
+            queue: {position: 'end', scope: 'lightwindowAnimation'}
+          });
         },
         //
         //  Default Transition Handler
@@ -1780,43 +1209,6 @@ lightwindow.prototype = {
         _defaultTransitionHandler : function() {
                 // Clean out our effects
                 this.dimensions.dataEffects = [];
-
-                // Now that we have figures out the cruft lets make the caption go away and add its effects
-                if ($('lightwindow_data_slide').getStyle('display') != 'none') {
-                        this.dimensions.dataEffects.push(
-                                new Effect.SlideUp('lightwindow_data_slide', {sync: true}),
-                                new Effect.Fade('lightwindow_data_slide', {sync: true, from: 1.0, to: 0.0})
-                        );
-                }
-
-                if (!this.options.hideGalleryTab) {
-                        if ($('lightwindow_galleries').getHeight() != 0 && !this.options.hideGalleryTab) {
-                                this.dimensions.dataEffects.push(
-                                        new Effect.Morph('lightwindow_galleries_tab_container', {sync: true, style: {height: '0px', marginTop: '20px'}})
-                                );
-                        }
-
-                        if ($('lightwindow_galleries_list').getHeight() != 0) {
-                                $('lightwindow_galleries_tab_span').className = 'up';
-                                this.dimensions.dataEffects.push(
-                                        new Effect.Morph('lightwindow_galleries_list', {
-                                                sync: true,
-                                                style: {height: '0px'},
-                                                transition: Effect.Transitions.sinoidal,
-                                                beforeStart: function() {
-                                                        $('lightwindow_galleries_list').setStyle({
-                                                                overflow: 'hidden'
-                                                        });
-                                                },
-                                                afterFinish: function() {
-                                                        $('lightwindow_galleries_list').setStyle({
-                                                                overflow: 'auto'
-                                                        });
-                                                }
-                                        })
-                                );
-                        }
-                }
 
                 // We always want the title bar as well
                 this.dimensions.dataEffects.push(
@@ -1861,46 +1253,6 @@ lightwindow.prototype = {
                         // We set the externals source here because it allows for a much smoother animation
                         $('lightwindow_iframe').setAttribute('src', this.element.href);
                         this._handleFinalWindowAnimation(1);
-                } else if (this.windowType == 'media') {
-
-                        var outerObject = document.createElement('object');
-                        outerObject.setAttribute('classid', this.options.classids[this._fileExtension(this.contentToFetch)]);
-                        outerObject.setAttribute('codebase', this.options.codebases[this._fileExtension(this.contentToFetch)]);
-                        outerObject.setAttribute('id', 'lightwindow_media_primary');
-                        outerObject.setAttribute('name', 'lightwindow_media_primary');
-                        outerObject.setAttribute('width', this.resizeTo.width);
-                        outerObject.setAttribute('height', this.resizeTo.height);
-                        outerObject = this._addParamToObject('movie', this.contentToFetch, outerObject);
-                        outerObject = this._addParamToObject('src', this.contentToFetch, outerObject);
-                        outerObject = this._addParamToObject('controller', 'true', outerObject);
-                        outerObject = this._addParamToObject('wmode', 'transparent', outerObject);
-                        outerObject = this._addParamToObject('cache', 'false', outerObject);
-                        outerObject = this._addParamToObject('quality', 'high', outerObject);
-
-                        if (!Prototype.Browser.IE) {
-                                var innerObject = document.createElement('object');
-                                innerObject.setAttribute('type', this.options.mimeTypes[this._fileExtension(this.contentToFetch)]);
-                                innerObject.setAttribute('data', this.contentToFetch);
-                                innerObject.setAttribute('id', 'lightwindow_media_secondary');
-                                innerObject.setAttribute('name', 'lightwindow_media_secondary');
-                                innerObject.setAttribute('width', this.resizeTo.width);
-                                innerObject.setAttribute('height', this.resizeTo.height);
-                                innerObject = this._addParamToObject('controller', 'true', innerObject);
-                                innerObject = this._addParamToObject('wmode', 'transparent', innerObject);
-                                innerObject = this._addParamToObject('cache', 'false', innerObject);
-                                innerObject = this._addParamToObject('quality', 'high', innerObject);
-
-                                outerObject.appendChild(innerObject);
-                        }
-
-                        if (this._getParameter('lightwindow_iframe_embed')) {
-                                this._appendIframe('no');
-                                this._writeToIframe(this._convertToMarkup(outerObject, 'object'));
-                        } else {
-                                this._appendObject(outerObject, 'object', $('lightwindow_contents'));
-                        }
-
-                        this._handleFinalWindowAnimation(0);
                 } else {
                         this._handleFinalWindowAnimation(0);
                 }
