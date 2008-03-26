@@ -1,4 +1,6 @@
-= _F_ree_G_eek _D_ata_B_ase
+= _F_ree_G_eek _D_ata_B_ase in _R_u_B_y
+
+== How stuff works
 
 this webapp is meant to keep track of two main areas:
 * volunteers and the time they work
@@ -17,8 +19,7 @@ but should not be used by typical users.
 
 == Install
 
-i did this on a debian etch box; alteration may be needed on other
-distros.
+we made this on debian etch and lenny systems. alteration may be needed on other distros.
 
 To get the fgdb.rb source:
 
@@ -27,16 +28,9 @@ To get the fgdb.rb source:
 
 to setup a working environment:
 
- $> apt-get install ruby rubygems postgresql-8.1 \
+ $> apt-get install ruby postgresql-8.1 \ 
         apache2 libpgsql-ruby irb
- $> gem install -y rails
-
-on Ubuntu Dapper you will need to get gems from the internet.
-
-if you want to use the rails package from Debian enstead of using gem (it has to be the same version as this was developed for): 
-
-1. replace rubygems with rails in the apt-get install part above and skip the gem install step
-2. tell it where to find rails:
+ $> apt-get install rails #If you are on lenny/sid and rails is at version 2.0.2, install from here; if not download from the debian archive and "dpkg -i downloaded_file; apt-get install -f" it
  $> ln -s /usr/share/rails/* vendor/
  $> ln -s /usr/share/rails vendor/rails
 
@@ -51,20 +45,14 @@ you need to create and configure the databases:
    ::: edit config/database.yml-example to match and rename
    ::: it (drop '-example')
  $> export RAILS_ENV=production
- $> alias rake='/var/lib/gems/1.8/bin/rake'
-      # yeah, etch rubygems are broken
  $> rake db:migrate
 
 choose one of the following: skeletal metadata, or full test data:
 
  $> rake db:metadata:load
    :OR:
- $> zcat db/version_*_test_data.sql.gz | psql -h localhost -U SOMEUSER fgdb_production
-
-if you get errors when you try to load the test data, it might be because our test data using an older database schema. if db/version_xxx_test_data.sql.gz has a different number than the highest script in db/migrate/ then it is out of date. To fix it:
-
- $> VERSION=xxx rake db:migrate # xxx is the number of db/version_xxx_test_data.sql.gz
- $> zcat db/version_*_test_data.sql.gz | psql -h localhost -U SOMEUSER fgdb_production
+ $> VERSION=`ls db/version_*_test_data.sql.gz | tail -n 1 | sed s*db/version_**g | sed s*_test_data.sql.gz**g ` rake db:migrate
+ $> zcat `ls db/version_*_test_data.sql.gz | tail -n 1` | psql -h localhost -U SOMEUSER fgdb_production
  $> rake db:migrate
 
 run some tests to see if things look okay:
@@ -73,7 +61,7 @@ run some tests to see if things look okay:
  $> rake
 
 if you see any failures or errors,
-something is wrong that you should fix or tell me about.
+something is wrong that you should fix or tell us about.
 then start the server and browse in to see things working:
 
  $> ./script/server &
@@ -96,21 +84,16 @@ continue with the following:
 
 == UPGRADE
 
-if you are moving from the fgdb.rb that explicitly used rails 1.1.2 to
-this branch,
-you will need to do a bit of work.
-???
-* manually migrate schema (make a rake task for this?)
+The path from the 1.1.2 can be a little bit difficult. We added some foreign keys to keep data integrity...but it will blow up if you have some bad data (including data with the old anonymous method)
+SQL code to fix this is on the way!
 
 == TODO
 
 see our trac (http://dev.freegeek.org/projects/fgdb.rb/) for details,
 but some important tasks left unfinished:
 
-* authentication
 * non-ajax interface
 * deb package
-* moving to the latest stable rails
 
 == THANKS
 
@@ -122,3 +105,5 @@ in chronological order of svn commits:
 * Richard Seymour <rfs@freegeek.org>
 * Tim Bauman
 * Eric Davis
+* Lantz Moore
+* Ryan Niebur <RyanRyan52@gmail.com>
