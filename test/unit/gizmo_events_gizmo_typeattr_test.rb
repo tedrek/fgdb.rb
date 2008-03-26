@@ -7,16 +7,7 @@ class GizmoEventsGizmoTypeattrTest < Test::Unit::TestCase
 	REQ_ATTR_NAMES 			 = %w( ) # name of fields that must be present, e.g. %(name description)
 	DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
 
-  def test_that_payments_should_use_integer_math
-    pmnt = GizmoEventsGizmoTypeattr.new
-    assert pmnt.respond_to?(:attr_val_monetary)
-    pmnt.attr_val_monetary = 2.54
-    assert_equal 2, pmnt.attr_val_monetary_dollars
-    assert_equal 54, pmnt.attr_val_monetary_cents
-    pmnt.attr_val_monetary_dollars = 5
-    pmnt.attr_val_monetary_cents = 14
-    assert_equal 5.14, pmnt.attr_val_monetary
-  end
+  Test::Unit::TestCase.integer_math_test(self, "GizmoEventsGizmoTypeattr", "attr_val_monetary")
 
   def setup
     # Retrieve fixtures via their name

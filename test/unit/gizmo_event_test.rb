@@ -8,6 +8,8 @@ class GizmoEventTest < Test::Unit::TestCase
     # @first = gizmo_events(:first)
   end
 
+  Test::Unit::TestCase.integer_math_test(self, "GizmoEvent", "adjusted_fee")
+
   def test_that_empty_events_are_mostly_empty
     ev = GizmoEvent.new
     assert ev.mostly_empty?

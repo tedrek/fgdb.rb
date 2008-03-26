@@ -48,6 +48,17 @@ class Test::Unit::TestCase
     # then set this back to true.
     use_instantiated_fixtures  = false
 
+    def integer_math_test(my_test, class_name, field_name)
+      code= "def test_that_#{class_name}_uses_integer_math_for_#{field_name}
+      pmnt = #{class_name}.new
+      pmnt.#{field_name} = 2.54
+      assert_equal 254, pmnt.#{field_name}_cents
+      pmnt.#{field_name}_cents = 514
+      assert_equal 5.14, pmnt.#{field_name}
+      end"
+      my_test.class_eval(code)
+    end
+
     def load_all_fixtures
       ORDERED_TABLES.each do |tables|
         fixtures(*(tables.map {|tbl| tbl.to_sym}))

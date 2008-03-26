@@ -10,9 +10,7 @@ class GizmoType < ActiveRecord::Base
 
   has_and_belongs_to_many    :gizmo_contexts
 
-  validates_numericality_of(:required_fee_dollars,
-                            :required_fee_cents,
-                            :suggested_fee_dollars,
+  validates_numericality_of(:required_fee_cents,
                             :suggested_fee_cents,
                             :allow_nil => true)
 

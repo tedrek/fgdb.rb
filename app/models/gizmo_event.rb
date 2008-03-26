@@ -11,6 +11,8 @@ class GizmoEvent < ActiveRecord::Base
   validates_presence_of :gizmo_type_id
   validates_presence_of :gizmo_context_id
 
+  define_amount_methods_on("adjusted_fee")
+
   def display_name
     "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
   end

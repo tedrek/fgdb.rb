@@ -150,25 +150,8 @@ class DonationTest < Test::Unit::TestCase
     assert ! donation.valid?
   end
 
-  def test_that_donations_use_integer_math
-    pmnt = Donation.new
-    assert pmnt.respond_to?(:reported_required_fee)
-    assert pmnt.respond_to?(:reported_suggested_fee)
-    pmnt.reported_required_fee = 2.54
-
-    assert_equal 2, pmnt.reported_required_fee_dollars
-    assert_equal 54, pmnt.reported_required_fee_cents
-    pmnt.reported_required_fee_dollars = 5
-    pmnt.reported_required_fee_cents = 14
-    assert_equal 5.14, pmnt.reported_required_fee
-
-    pmnt.reported_suggested_fee = 2.54
-    assert_equal 2, pmnt.reported_suggested_fee_dollars
-    assert_equal 54, pmnt.reported_suggested_fee_cents
-    pmnt.reported_suggested_fee_dollars = 5
-    pmnt.reported_suggested_fee_cents = 14
-    assert_equal 5.14, pmnt.reported_suggested_fee
-  end
+    Test::Unit::TestCase.integer_math_test(self, "Donation", "reported_suggested_fee")
+    Test::Unit::TestCase.integer_math_test(self, "Donation", "reported_required_fee")
 
   def test_that_donations_use_contact_type_first
     donation = Donation.new(with_too_much_contact_info)

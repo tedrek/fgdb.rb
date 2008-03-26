@@ -2,50 +2,45 @@
 payments_001: 
   updated_at: 2008-03-15 13:58:24.364586
   sale_id: "209108"
-  amount_cents: "0"
+  amount_cents: "1100"
   lock_version: "1"
   payment_method_id: "2"
-  amount_dollars: "11"
   id: "97371"
   donation_id: 
   created_at: 2008-03-15 13:58:24.261836
 payments_002: 
   updated_at: 2008-03-15 22:25:48.700562
   sale_id: "209109"
-  amount_cents: "0"
+  amount_cents: "700"
   lock_version: "1"
   payment_method_id: "1"
-  amount_dollars: "7"
   id: "97372"
   donation_id: 
   created_at: 2008-03-15 22:25:48.643137
 payments_003: 
   updated_at: 2008-03-15 22:26:33.148473
   sale_id: "209110"
-  amount_cents: "0"
+  amount_cents: "4500"
   lock_version: "1"
   payment_method_id: "3"
-  amount_dollars: "45"
   id: "97373"
   donation_id: 
   created_at: 2008-03-15 22:26:33.084706
 payments_004: 
   updated_at: 2008-03-15 22:27:53.341517
   sale_id: 
-  amount_cents: "0"
+  amount_cents: "90000"
   lock_version: "1"
   payment_method_id: "2"
-  amount_dollars: "900"
   id: "97374"
   donation_id: "109041"
   created_at: 2008-03-15 22:27:53.324359
 payments_005: 
   updated_at: 2008-03-15 22:30:08.240514
   sale_id: 
-  amount_cents: "0"
+  amount_cents: "1000"
   lock_version: "1"
   payment_method_id: "1"
-  amount_dollars: "10"
   id: "97375"
   donation_id: "109042"
   created_at: 2008-03-15 22:30:08.15133

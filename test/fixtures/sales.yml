@@ -1,9 +1,8 @@
 --- 
 sales_001: 
-  reported_discount_amount_cents: "0"
+  reported_discount_amount_cents: "1100"
   updated_at: 2008-03-15 13:58:24.199857
   postal_code: "97552"
-  reported_discount_amount_dollars: "11"
   comments: ""
   created_by: "1"
   txn_complete: t
@@ -14,14 +13,12 @@ sales_001:
   id: "209108"
   txn_completed_at: 2008-03-15 13:58:24.100428
   bulk: 
-  reported_amount_due_cents: "0"
-  reported_amount_due_dollars: "11"
+  reported_amount_due_cents: "1100"
   created_at: 2008-03-15 13:58:24.199857
 sales_002: 
-  reported_discount_amount_cents: "0"
+  reported_discount_amount_cents: "700"
   updated_at: 2008-03-15 22:25:48.632596
   postal_code: ""
-  reported_discount_amount_dollars: "7"
   comments: ""
   created_by: "1"
   txn_complete: t
@@ -32,14 +29,12 @@ sales_002:
   id: "209109"
   txn_completed_at: 2008-03-15 22:25:48.487526
   bulk: 
-  reported_amount_due_cents: "0"
-  reported_amount_due_dollars: "7"
+  reported_amount_due_cents: "700"
   created_at: 2008-03-15 22:25:48.632596
 sales_003: 
-  reported_discount_amount_cents: "0"
+  reported_discount_amount_cents: "4500"
   updated_at: 2008-03-15 22:26:33.074483
   postal_code: ""
-  reported_discount_amount_dollars: "45"
   comments: ""
   created_by: "1"
   txn_complete: t
@@ -50,6 +45,5 @@ sales_003:
   id: "209110"
   txn_completed_at: 2008-03-15 22:26:32.915401
   bulk: 
-  reported_amount_due_cents: "0"
-  reported_amount_due_dollars: "45"
+  reported_amount_due_cents: "4500"
   created_at: 2008-03-15 22:26:33.074483
