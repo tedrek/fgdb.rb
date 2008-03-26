@@ -151,6 +151,7 @@ class InitialSchemaSetup < ActiveRecord::Migration
       t.column "created_at",       :datetime
       t.column "created_by",       :integer,  :default => 1, :null => false
       t.column "updated_by",       :integer,  :default => 1, :null => false
+      t.column "adjusted_fee",     :float
     end
 
     create_table "gizmo_events_gizmo_typeattrs", :force => true do |t|
