@@ -9,7 +9,7 @@ url_options = params_for(:action => :list, :id => record.id)
   <% active_scaffold_config.list.columns.each do |column| %>
     <% column_value = get_column_value(record, column) -%>
 
-    <td class="<%= column_class(column, column_value) %>" >
+    <td class="<%= column_class(column.name, column_value, column.class) %>" >
       <%= render_list_column(column_value, column, record) %>
     </td>
   <% end -%>
