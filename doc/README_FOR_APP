@@ -30,7 +30,8 @@ to setup a working environment:
 
  $> apt-get install ruby postgresql-8.1 \ 
         apache2 libpgsql-ruby irb
- $> apt-get install rails #If you are on lenny/sid and rails is at version 2.0.2, install from here; if not download from the debian archive and "dpkg -i downloaded_file; apt-get install -f" it
+ $> apt-get install rails=2.0.2-1.1 # you might have to download it from the archive and run "dpkg -i downloaded_file && apt-get install -f"
+ $> aptitude hold rails # so we don't upgrade to a bad version
  $> ln -s /usr/share/rails/* vendor/
  $> ln -s /usr/share/rails vendor/rails
 
