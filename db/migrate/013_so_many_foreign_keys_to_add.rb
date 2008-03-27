@@ -14,19 +14,19 @@ class SoManyForeignKeysToAdd < ActiveRecord::Migration
     add_foreign_key( "gizmo_events", ["gizmo_context_id"], "gizmo_contexts", ["id"], :name => "gizmo_events_gizmo_contexts_fk" )
     add_foreign_key( "gizmo_contexts_gizmo_typeattrs", ["gizmo_context_id"], "gizmo_contexts", ["id"], :name => "gizmo_contexts_gizmo_typeattrs_gizmo_contexts_fk" )
     add_foreign_key( "gizmo_contexts_gizmo_typeattrs", ["gizmo_typeattr_id"], "gizmo_typeattrs", ["id"], :name => "gizmo_contexts_gizmo_typeattrs_gizmo_typeattrs_fk" )
-
+    add_foreign_key "disbursements", ["contact_id"], "contacts", ["id"], :on_update => :cascade, :on_delete => :set_null
     add_foreign_key( "gizmo_contexts_gizmo_types", ["gizmo_context_id"], "gizmo_contexts", ["id"], :name => "gizmo_contexts_gizmo_types_gizmo_contexts_fk" )
     add_foreign_key( "gizmo_contexts_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :name => "gizmo_contexts_gizmo_types_gizmo_types_fk" )
     add_foreign_key( "gizmo_events_gizmo_typeattrs", ["gizmo_event_id"], "gizmo_events", ["id"], :name => "gizmo_events_gizmo_typeattrs_gizmo_events_fk" )
     add_foreign_key( "gizmo_events_gizmo_typeattrs", ["gizmo_typeattr_id"], "gizmo_typeattrs", ["id"], :name => "gizmo_events_gizmo_typeattrs_gizmo_typeattrs_fk" )
     add_foreign_key( "gizmo_typeattrs", ["gizmo_type_id"], "gizmo_types", ["id"], :name => "gizmo_typeattrs_gizmo_types_fk" )
     add_foreign_key( "gizmo_typeattrs", ["gizmo_attr_id"], "gizmo_attrs", ["id"], :name => "gizmo_typeattrs_gizmo_attrs_fk" )
-    add_foreign_key( "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :name => "gizmo_types_parent_fk" )
+    add_foreign_key( "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :name => "gizmo_types_parent_fk", :on_delete => :restrict )
     add_foreign_key( "payments", ["payment_method_id"], "payment_methods", ["id"], :name => "payments_payment_methods_fk" )
     add_foreign_key( "sales", ["contact_id"], "contacts", ["id"], :name => "sales_contacts_fk", :on_delete => :set_null )
     add_foreign_key( "sales", ["discount_schedule_id"], "discount_schedules", ["id"], :name => "sales_discount_schedules_fk" )
-    add_foreign_key( "volunteer_task_types", ["parent_id"], "volunteer_task_types", ["id"], :name => "volunteer_task_types_parent_fk" )
-    add_foreign_key( "volunteer_tasks", ["contact_id"], "contacts", ["id"], :name => "volunteer_tasks_contacts_fk" )
+    add_foreign_key( "volunteer_task_types", ["parent_id"], "volunteer_task_types", ["id"], :name => "volunteer_task_types_parent_fk", :on_delete => :restrict )
+    add_foreign_key( "volunteer_tasks", ["contact_id"], "contacts", ["id"], :name => "volunteer_tasks_contacts_fk", :on_delete => :set_null )
   end
 
   def self.down
