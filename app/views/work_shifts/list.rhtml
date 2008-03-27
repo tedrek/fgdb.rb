@@ -4,7 +4,7 @@
   # set up control variables and loop through all work shifts
   #  in proper order (weekday, worker.name, start_time)
   start_schedule = true
-  start_weekday = true
+  start_day = true
   start_worker = true
   shift_style = 'shift'
  
@@ -22,11 +22,11 @@
     else
       # now previous shift should be defined, figure out what
       # needs to happen:
-      if (@prev_shift[:weekday_id] != @shift.weekday_id)
-        start_weekday = true
-        end_weekday = true
+      if (@prev_shift[:shift_date] != @shift.shift_date)
+        start_day = true
+        end_day = true
       end
-      if (@prev_shift[:weekday_id] != @shift.weekday_id)
+      if (@prev_shift[:shift_date] != @shift.shift_date)
         overlap = false
       elsif (@prev_shift[:worker_id] != @shift.worker_id)
         overlap = false
@@ -69,11 +69,11 @@
       else
         shift_style = 'shift'
       end
-      if (@prev_shift[:worker_id] != @shift.worker_id) or overlap or start_weekday
+      if (@prev_shift[:worker_id] != @shift.worker_id) or overlap or start_day
         start_worker = true
       end
     end
-    if start_weekday
+    if start_day
       if not start_schedule
         %> <%= render :partial => 'row_footer', :locals => { :shift => @shift } %>
         <%= render :partial => 'table_footer' %> <%
@@ -81,7 +81,7 @@
       %> <%= render :partial => 'table_head', :locals => { :shift => @shift } %> <%
     end
     if start_worker
-      if not start_weekday
+      if not start_day
         %> <%= render :partial => 'row_footer', :locals => { :shift => @shift } %> <%
       end
     end
@@ -98,14 +98,14 @@
     @prev_shift = { 
       :end_time => @shift.end_time, 
       :start_time => @shift.start_time, 
-      :weekday_id => @shift.weekday_id, 
+      :shift_date => @shift.shift_date, 
       :worker_id => @shift.worker_id }
     if @shift.coverage_type
       @prev_shift[:coverage_type_name] = @shift.coverage_type.name
     else
       @prev_shift[:coverage_type_name] = 'anchored'
     end
-    start_weekday = false
+    start_day = false
     start_schedule = false
   end
 %>

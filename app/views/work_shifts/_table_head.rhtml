@@ -1,6 +1,6 @@
 <table border="0" width="100%" summary="<%=h shift.weekday.name %>">
 <% day_length = (( @shift.weekday.end_time - @shift.weekday.start_time ) / ( 60 * 30 )).to_int %>
-    <caption><%=h shift.weekday.name %>, <%=h shift.shift_date.strftime('%B %d, %Y').gsub( ' 0', ' ' ) %> (work shifts, <%=h shift.schedule.name %>)</caption>
+    <caption><%=h shift.weekday.name %>, <%=h shift.shift_date.strftime('%B %d, %Y').gsub( ' 0', ' ' ) %> (work shifts)</caption>
     <tr>
     <th width="10%">&nbsp;</th>
     <% for i in (0..(@day_length-1)) %>
