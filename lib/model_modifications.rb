@@ -50,11 +50,11 @@ class ActiveRecord::Base
 
   def self.define_amount_methods_on(method_name)
     code = "def #{method_name}
-        (read_attribute(:#{method_name}_cents)||0)/100.0
+        read_attribute(:#{method_name}_cents)/100.0
       end
     
       def #{method_name}=(value)
-        write_attribute(:#{method_name}_cents, (value*100).to_i)
+        write_attribute(:#{method_name}_cents, value.to_f*100)
       end"
     self.module_eval(code)
   end
