@@ -14,13 +14,13 @@ class SaleTest < Test::Unit::TestCase
     {
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 1,
-      :unit_price => 1,
+      :unit_price => "1",
       :gizmo_context => GizmoContext.sale
     }
   end
 
   def pay_a_dollar
-    Payment.new({:amount => 1, :payment_method_id => 1})
+    Payment.new({:amount => "1", :payment_method_id => 1})
   end
 
   Test::Unit::TestCase.integer_math_test(self, "Sale", "reported_amount_due")

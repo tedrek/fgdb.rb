@@ -72,30 +72,38 @@ class GizmoEvent < ActiveRecord::Base
     ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule) ) * 100 ).ceil
   end
 
-  def total_price
-    return 0 unless unit_price and gizmo_count
-    unit_price.to_f * gizmo_count
+  def total_price_cents
+    return 0 unless unit_price_cents and gizmo_count
+    unit_price_cents * gizmo_count
   end
 
   def discounted_price(schedule)
     return total_price unless schedule && gizmo_type
-    total_price * gizmo_type.multiplier_to_apply(schedule)
+    total_price_cents * gizmo_type.multiplier_to_apply(schedule)
   end
 
   def mostly_empty?
     ((! gizmo_type_id) or (! gizmo_count))
   end
 
-  def required_fee
-    gizmo_count.to_i * gizmo_type.required_fee
+  def required_fee_cents
+    if (adjusted_fee_cents||0) > 0
+      gizmo_count.to_i * adjusted_fee_cents
+    else
+      gizmo_count.to_i * gizmo_type.required_fee_cents
+    end
   end
 
-  def suggested_fee
-    gizmo_count.to_i * gizmo_type.suggested_fee
+  def suggested_fee_cents
+    gizmo_count.to_i * gizmo_type.suggested_fee_cents
   end
 
   def to_s
     "id[#{id}]; type[#{gizmo_type_id}]; context[#{gizmo_context_id}]; count[#{gizmo_count}]"
+  end
+
+  def unit_price_cents
+    unit_price.to_cents
   end
 
   def initialize_gizmo_attrs

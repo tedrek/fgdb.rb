@@ -1,5 +1,3 @@
-
-
 module GizmoTransaction
 
   def gizmos
@@ -22,12 +20,12 @@ module GizmoTransaction
     payments.select {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
   end
 
-  def money_tendered
-    real_payments.inject(0.0) {|total,payment| total + payment.amount}
+  def money_tendered_cents
+    real_payments.inject(0) {|total,payment| total + payment.amount_cents}
   end
 
-  def amount_invoiced
-    invoices.inject(0.0) {|total,payment| total + payment.amount}
+  def amount_invoiced_cents
+    invoices.inject(0) {|total,payment| total + payment.amount_cents}
   end
 
   def invoiced?
@@ -35,11 +33,11 @@ module GizmoTransaction
   end
 
   def total_paid?
-    money_tendered >= calculated_total
+    money_tendered_cents >= calculated_total_cents
   end
 
   def overpaid?
-    calculated_total < money_tendered
+    calculated_total_cents < money_tendered_cents
   end
 
   def contact_information

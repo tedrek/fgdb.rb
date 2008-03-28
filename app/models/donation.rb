@@ -66,60 +66,60 @@ class Donation < ActiveRecord::Base
     ContactType.find(7)
   end
 
-  def reported_total
-    reported_required_fee + reported_suggested_fee
+  def reported_total_cents
+    reported_required_fee_cents + reported_suggested_fee_cents
   end
 
-  def calculated_required_fee
-    gizmo_events.inject(0.0) {|total, gizmo|
+  def calculated_required_fee_cents
+    gizmo_events.inject(0) {|total, gizmo|
       next if gizmo.mostly_empty?
-      total + gizmo.required_fee
+      total + gizmo.required_fee_cents
     }
   end
 
-  def calculated_suggested_fee
-    gizmo_events.inject(0.0) {|total, gizmo|
-      total + gizmo.suggested_fee
+  def calculated_suggested_fee_cents
+    gizmo_events.inject(0) {|total, gizmo|
+      total + gizmo.suggested_fee_cents
     }
   end
 
-  def calculated_total
-    calculated_suggested_fee + calculated_required_fee
+  def calculated_total_cents
+    calculated_suggested_fee_cents + calculated_required_fee_cents
   end
 
   def cash_donation_owed
     [0, (amount_invoiced - reported_required_fee) - cash_donation_paid].max
   end
 
-  def cash_donation_paid
-    [0, money_tendered - required_fee_paid].max
+  def cash_donation_paid_cents
+    [0, money_tendered_cents - required_fee_paid_cents].max
   end
 
-  def required_fee_owed
-    if invoiced? and (reported_required_fee > required_fee_paid)
-        [reported_required_fee - required_fee_paid, amount_invoiced].min
+  def required_fee_owed_cents
+    if invoiced? and (reported_required_fee_cents > required_fee_paid_cents)
+        [reported_required_fee_cents - required_fee_paid_cents, amount_invoiced_cents].min
     else
       0
     end
   end
 
-  def required_fee_paid
-    [reported_required_fee, money_tendered].min
+  def required_fee_paid_cents
+    [reported_required_fee_cents, money_tendered_cents].min
   end
 
   def required_paid?
-    money_tendered >= calculated_required_fee
+    money_tendered_cents >= calculated_required_fee_cents
   end
 
   def invoiced?
     payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
   end
 
-  def overunder(only_required = false)
+  def overunder_cents(only_required = false)
     if only_required
-      money_tendered - calculated_required_fee
+      money_tendered_cents - calculated_required_fee_cents
     else
-      money_tendered - calculated_total
+      money_tendered_cents - calculated_total_cents
     end
   end
 

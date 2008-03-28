@@ -1,5 +1,4 @@
 class GizmoEventsGizmoTypeattr < ActiveRecord::Base
-
   belongs_to  :gizmo_typeattr
   belongs_to  :gizmo_event
 

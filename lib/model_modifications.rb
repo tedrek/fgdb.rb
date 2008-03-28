@@ -43,6 +43,14 @@ module ActiveRecord
   end
 end
 
+class String
+  def to_cents
+    temp = self.split('.')
+    temp[1]=((temp[1]||"0")+"0")[0..1]
+    temp[0].to_i*100 + temp[1].to_i
+  end
+end
+
 class ActiveRecord::Base
   def self.acts_as_userstamp
     include ActiveRecord::UserMonitor
@@ -50,11 +58,15 @@ class ActiveRecord::Base
 
   def self.define_amount_methods_on(method_name)
     code = "def #{method_name}
-        (read_attribute(:#{method_name}_cents)||0)/100.0
+        ((read_attribute(:#{method_name}_cents)||0)/100.0).to_s
       end
     
       def #{method_name}=(value)
-        write_attribute(:#{method_name}_cents, value.to_f*100)
+        if value.kind_of? String
+          write_attribute(:#{method_name}_cents, value.to_cents)
+        else
+          raise TypeError.new(\"Integer math only. Use strings.\")
+        end
       end"
     self.module_eval(code)
   end

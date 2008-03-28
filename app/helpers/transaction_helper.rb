@@ -1,8 +1,13 @@
 module TransactionHelper
   include ApplicationHelper
+ 
 
   def base_controller
     raise RuntimeError.new('You best stop using /transactions')
+  end
+
+  def my_number_to_currency(value)
+    number_to_currency(value.to_f/100.0)
   end
 
   def scaffold_columns(context)

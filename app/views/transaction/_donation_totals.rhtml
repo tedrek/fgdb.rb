@@ -4,38 +4,38 @@
     <tr>
       <td class="required">Required:</td>
       <td class="amount required">
-        <%= number_to_currency(@donation.calculated_required_fee) %>
+        <%= my_number_to_currency(@donation.calculated_required_fee_cents) %>
       </td>
     </tr>
     <tr>
       <td>Plus suggested of
-        <%= number_to_currency(@donation.calculated_suggested_fee) %>: </td>
+        <%= my_number_to_currency(@donation.calculated_suggested_fee_cents) %>: </td>
       <td class="amount">
-        <%= number_to_currency(@donation.calculated_total) %></td>
+        <%= my_number_to_currency(@donation.calculated_total_cents) %></td>
     </tr>
     <tr>
       <td >Amount tendered:</td>
-      <td class="amount"><%= number_to_currency(@donation.money_tendered) %></td>
+      <td class="amount"><%= my_number_to_currency(@donation.money_tendered_cents) %></td>
     </tr>
     <% if ! @donation.required_paid? %>
       <tr>
         <td class="below_req">Below Required:</td>
         <td class="amount below_req">
-          <%= number_to_currency(@donation.overunder(true)) %>
+          <%= my_number_to_currency(@donation.overunder_cents(true)) %>
         </td>
       </tr>
     <% elsif ! @donation.total_paid? %>
       <tr>
         <td>Below Suggested: </td>
         <td class="amount">
-          <%= number_to_currency(@donation.overunder) %>
+          <%= my_number_to_currency(@donation.overunder_cents) %>
         </td>
       </tr>
-    <% elsif @donation.overunder > 0 %>
+    <% elsif @donation.overunder_cents > 0 %>
       <tr>
         <td class="above_expect">Bonus Donation!</td>
         <td class="amount above_expect">
-          <%= number_to_currency(@donation.overunder) %>
+          <%= my_number_to_currency(@donation.overunder_cents) %>
         </td>
       </tr>
     <% end %>

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class GizmoEventsGizmoTypeattrTest < Test::Unit::TestCase
-  fixtures :gizmo_events_gizmo_typeattrs
+  fixtures :gizmo_events_gizmo_typeattrs, :gizmo_types, :gizmo_attrs, :gizmo_typeattrs, :gizmo_contexts
 
 	NEW_GIZMO_EVENTS_GIZMO_TYPEATTR = {}	# e.g. {:name => 'Test GizmoEventsGizmoTypeattr', :description => 'Dummy'}
 	REQ_ATTR_NAMES 			 = %w( ) # name of fields that must be present, e.g. %(name description)
@@ -51,5 +51,21 @@ class GizmoEventsGizmoTypeattrTest < Test::Unit::TestCase
     	assert gizmo_events_gizmo_typeattr.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
 		end
 	end
+
+    def test_that_to_cents_works
+      assert_equal 230, "2.3".to_cents
+      assert_equal 240, "2.40".to_cents
+      assert_equal 253, "2.53".to_cents
+      assert_equal 281, "2.810002".to_cents
+      assert_nothing_raised {"meow".to_cents}
+      assert_equal 0, "meow".to_cents
+    end
+
+    def test_that_price_can_come_in_cents
+      ge = GizmoEvent.new({:gizmo_type => GizmoType.find(:first), :gizmo_context => GizmoContext.sale})
+      ge.unit_price = "3.23"
+      assert_nothing_raised {ge.unit_price_cents}
+      assert_equal 323, ge.unit_price_cents
+    end
 end
 

@@ -13,11 +13,11 @@
 <% @sale.gizmo_events.each do |event| %>
   <tr>
     <td> <%= event.attry_description( :ignore => ['unit_price'] ) %> </td>
-    <td> <%= number_to_currency event.unit_price %> </td>
+    <td> <%= my_number_to_currency event.unit_price_cents %> </td>
     <td> <%= event.gizmo_count %> </td>
-    <td> <%= number_to_currency event.total_price %> </td>
-    <td> <%= event.percent_discount(@sale.discount_schedule) %>% </td>
-    <td> <%= number_to_currency event.discounted_price(@sale.discount_schedule) %> </td>
+    <td> <%= my_number_to_currency event.total_price_cents %> </td>
+    <td> <%= number_to_percentage(event.percent_discount(@sale.discount_schedule), :precision => 0) %></td>
+    <td> <%= my_number_to_currency event.discounted_price(@sale.discount_schedule) %> </td>
   </tr>
 <% end %>
 
@@ -26,32 +26,32 @@
 <tr>
     <td colspan="4">&nbsp;</td>
     <td align="right" colspan="2">Subtotal:</td>
-    <td><%= number_to_currency(@sale.calculated_subtotal) %></td>
+    <td><%= my_number_to_currency(@sale.calculated_subtotal_cents) %></td>
 </tr>
 
 <tr>
     <td colspan="4">&nbsp;</td>
     <td align="right" colspan="2">Discounted:</td>
-    <td><%= number_to_currency(@sale.calculated_discount) %></td>
+    <td><%= my_number_to_currency(@sale.calculated_discount_cents) %></td>
 </tr>
 
 <tr>
     <td colspan="4">&nbsp;</td>
     <td align="right" colspan="2"><strong>Total:</strong></td>
-    <td><strong><%= number_to_currency(@sale.calculated_total) %></strong></td>
+    <td><strong><%= my_number_to_currency(@sale.calculated_total_cents) %></strong></td>
 </tr>
 
-<% if @sale.calculated_total > @sale.money_tendered %>
+<% if @sale.calculated_total_cents > @sale.money_tendered_cents %>
   <tr>
     <td colspan="4">&nbsp;</td>
     <td align="right" colspan="2">Paid:</td>
-    <td><%= number_to_currency(@sale.money_tendered) %></td>
+    <td><%= my_number_to_currency(@sale.money_tendered_cents) %></td>
   </tr>
 
   <tr>
     <td colspan="4">&nbsp;</td>
     <td align="right" colspan="2"><strong>Due by <%= Date.today + 30 %>:</strong></td>
-    <td><strong><%= number_to_currency(@sale.calculated_total - @sale.money_tendered) %></strong></td>
+    <td><strong><%= my_number_to_currency(@sale.calculated_total_cents - @sale.money_tendered_cents) %></strong></td>
   </tr>
 <% end %>
 

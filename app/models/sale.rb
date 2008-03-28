@@ -51,24 +51,24 @@ class Sale < ActiveRecord::Base
     ContactType.find(14)
   end
 
-  def calculated_total
+  def calculated_total_cents
     if discount_schedule
-      (gizmo_events.inject(0.0) {|tot,gizmo|
+      (gizmo_events.inject(0) {|tot,gizmo|
         tot + gizmo.discounted_price(discount_schedule)
-      } * 100).to_i / 100.0
+      } * 100).to_i / 100
     else
-      calculated_subtotal
+      calculated_subtotal_cents
     end
   end
 
-  def calculated_subtotal
-    gizmo_events.inject(0.0) {|tot,gizmo|
-      tot + gizmo.total_price.to_f
+  def calculated_subtotal_cents
+    gizmo_events.inject(0) {|tot,gizmo|
+      tot + gizmo.total_price_cents
     }
   end
 
-  def calculated_discount
-    calculated_subtotal - calculated_total
+  def calculated_discount_cents
+    calculated_subtotal_cents - calculated_total_cents
   end
 
   #######

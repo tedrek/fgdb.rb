@@ -96,12 +96,12 @@ class ContactTypeTest < Test::Unit::TestCase
   end
 
   def paid_a_dollar
-    Payment.new({:payment_method => PaymentMethod.cash, :amount => 1.0})
+    Payment.new({:payment_method => PaymentMethod.cash, :amount => "1.0"})
   end
 
   def a_mouse_for_sale
     GizmoEvent.new({ :gizmo_count => 1, :gizmo_type => GizmoType.find(23),
-                     :gizmo_context => GizmoContext.sale, :unit_price => 1.0})
+                     :gizmo_context => GizmoContext.sale, :unit_price => "1.0"})
   end
 end
 

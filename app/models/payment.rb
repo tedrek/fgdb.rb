@@ -11,10 +11,10 @@ class Payment < ActiveRecord::Base
   def mostly_empty?
     # Allow negative payments (e.g. credits)
     #  http://svn.freegeek.org/projects/fgdb.rb/ticket/224
-    ! ( valid? && amount && (amount != 0) )
+    ! ( valid? && amount_cents && (amount_cents != 0) )
   end
 
   def to_s
-    "$%0.2f %s" % [amount, payment_method.description]
+    "$%0.2f %s" % [amount_cents/100.0, payment_method.description]
   end
 end

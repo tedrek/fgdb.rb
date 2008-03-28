@@ -49,12 +49,12 @@ class Test::Unit::TestCase
     use_instantiated_fixtures  = false
 
     def integer_math_test(my_test, class_name, field_name)
-      code= "def test_that_#{class_name}_uses_integer_math_for_#{field_name}
+      code= "def test_that_#{class_name}s_use_integer_math_for_#{field_name}
       pmnt = #{class_name}.new
-      pmnt.#{field_name} = 2.54
+      pmnt.#{field_name} = \"2.54\"
       assert_equal 254, pmnt.#{field_name}_cents
       pmnt.#{field_name}_cents = 514
-      assert_equal 5.14, pmnt.#{field_name}
+      assert_equal \"5.14\", (pmnt.#{field_name}_cents.to_f/100.0).to_s
       end"
       my_test.class_eval(code)
     end

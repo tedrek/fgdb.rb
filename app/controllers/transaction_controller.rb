@@ -242,11 +242,11 @@ class TransactionController < ApplicationController
 
     case @transaction_type
     when 'sale'
-      @transaction.reported_amount_due = @transaction.calculated_total
-      @transaction.reported_discount_amount = @transaction.calculated_discount
+      @transaction.reported_amount_due_cents = @transaction.calculated_total_cents
+      @transaction.reported_discount_amount_cents = @transaction.calculated_discount_cents
     when 'donation'
-      @transaction.reported_required_fee = @transaction.calculated_required_fee
-      @transaction.reported_suggested_fee = @transaction.calculated_suggested_fee
+      @transaction.reported_required_fee_cents = @transaction.calculated_required_fee_cents
+      @transaction.reported_suggested_fee_cents = @transaction.calculated_suggested_fee_cents
     end
 
     success = @transaction.save
