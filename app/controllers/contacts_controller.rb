@@ -155,24 +155,18 @@ class ContactsController < ApplicationController
     render :action => 'cancel.rjs'
   end
 
-  def auto_complete_for_contact_query(name=nil)
-    name ||= 'contact'
-    @contacts = Contact.search(params[name][:query].strip, :limit => 10)
-    render :partial => 'auto_complete_list'
+  def method_missing(symbol, *args)
+    if /auto_complete_for_(.*)_query/.match(symbol.to_s)
+      @contacts = Contact.search(params[$1][:query].strip, :limit => 10)
+      render :partial => 'auto_complete_list'
+    else
+      super
+    end
   end
 
   #######
   private
   #######
-
-  def method_missing(symbol, *args)
-    if /auto_complete_for_(.*)_query/.match(symbol.to_s)
-      auto_complete_for_contact_query($1)
-      render :action => :auto_complete_for_contact_query
-    else
-      super
-    end
-  end
 
   def _save
     @contact.contact_types = ContactType.find(params[:contact_types]) if params[:contact_types]

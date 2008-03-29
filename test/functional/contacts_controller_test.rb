@@ -19,6 +19,13 @@ class ContactsControllerTest < Test::Unit::TestCase
     @first = Contact.find(:first)
   end
 
+  def test_arbitrary_auto_complete_calls
+    login_as :quentin
+    post :auto_complete_for_filter_contact_query, 'filter_contact' => {'query' => 'foo'}
+    assert_response :success
+    assert_template '_auto_complete_list'
+  end
+
   def test_lookup
     login_as :quentin
     get :lookup
