@@ -17,19 +17,19 @@
           No Entries
         </p>
       </div>
-  <div id="<%= scaffold_form_tbody_id(params) %>">
-  </div>
+  <div id="<%= scaffold_form_tbody_id(params) %>"></div>
   <hr />
   <table>
     <tbody>
       <%= render :partial => 'column_headings' %>
     </tbody>
     <tbody id="<%= scaffold_tbody_id(params) %>">
+      <tr></tr>
       <% if !@transactions.empty? %>
         <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false } %>
+      <% end %>
     </tbody>
-    <% end %>
-  </div>
+  </table>
 
 <div class="ajax-scaffold-footer">
   <%= will_paginate @transactions, :remote_options => {
@@ -44,15 +44,18 @@
         :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
         :update => scaffold_content_id( refine_params ) do %>
     <% filters = {} %>
-    <% filters['date range'] = date_or_date_range_picker('conditions') %>
+    <% filters['date_range'] = date_or_date_range_picker('conditions') %>
     <% filters['contact'] =
          render(:partial => 'contacts/search', :locals => {:options =>
-             {:select_name => 'conditions[contact_id]',
-              :element_prefix => 'filter_contact',
-               :display_edit => false, :display_create => false},
+             {
+               :select_name => 'conditions[contact_id]',
+               :element_prefix => 'filter_contact',
+               :display_edit => false, :display_create => false,
+               :show_label => false,
+             },
              :contact => @conditions.contact} ) %>
     <% if @model.new.respond_to?( :payments ) %>
-      <% filters['payment method'] = render( :partial => 'payment_method_select',
+      <% filters['payment_method'] = render( :partial => 'payment_method_select',
             :locals => {:field_id_prefix => 'conditions',
                         :field_name_prefix => 'conditions',
                         :paid_object => @conditions} ) %>

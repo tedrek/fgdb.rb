@@ -1,6 +1,6 @@
 class Conditions
   def initialize
-    @limit_type = 'date range'
+    @limit_type = 'date_range'
     @date = Date.today
     @date_type = 'daily'
     @month = Date.today
@@ -40,11 +40,11 @@ class Conditions
 
   def conditions(klass)
     case @limit_type
-    when 'date range'
+    when /date[ _]range/
       date_range_conditions(klass)
     when 'contact'
       contact_conditions(klass)
-    when 'payment method'
+    when /payment[ _]method/
       payment_method_conditions(klass)
     end
   end
@@ -97,7 +97,7 @@ class Conditions
 
   def to_s
     case @limit_type
-    when 'date range'
+    when /date[ _]range/
       date_range_to_s
     when 'contact'
       contact_to_s

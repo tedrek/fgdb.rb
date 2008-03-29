@@ -95,7 +95,7 @@ module ApplicationHelper
 
     # type choice
     display = %Q{ <div class="form-element"> %s %s </div> } %
-      [ select( obj_name, method_name, choices.keys.map {|k| k.to_s} ),
+      [ select( obj_name, method_name, choices.keys.map {|k| [k.to_s.gsub(/_/, ' '), k.to_s]} ),
         observe_field( "#{obj_name}_#{method_name}",
                        :function => js_observe_fuct,
                        :with => method_name )]
