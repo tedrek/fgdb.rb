@@ -139,8 +139,8 @@ module ApplicationHelper
     #:TODO: ?
   end
 
-  def my_lightwindow_tag(options)
-    %Q[<a href="#{url_for(options[:url])}" class="lightwindow" onclick="return false"
+  def my_lightwindow_tag(options, html_options = {})
+    %Q[<a href="#{url_for(options[:url])}" class="#{html_options[:class]} lightwindow" onclick="return false"
           id="#{options[:id]}" params="lightwindow_type=#{options[:type] || 'page'}">
          #{options[:content]}
        </a>] +

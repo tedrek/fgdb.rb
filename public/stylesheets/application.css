@@ -111,17 +111,17 @@ font-size: 11px;
 padding-bottom: 1px;
 }
 
-.gizmo_event_extras { 
+.gizmo_event_extras {
   float: left;
   clear: left;
   border: none;
 }
 
-div#transaction_info { 
+div#transaction_info {
   float: left;
 }
 
-div#transaction_info .form-element { 
+div#transaction_info .form-element {
   float: left;
   clear: left;
 }
@@ -194,11 +194,20 @@ font-size: 11px;
 padding-bottom: 1px;
 }
 
-input.text-input,
+.image-link {
+border:none;
+}
+
+input,
 select {
 font-size: 16px;
 font-weight: bold;
 font-family: Arial, sans-serif;
+font-variant: normal;
+font-style: normal;
+font-stretch: normal;
+line-height: normal;
+font-size-adjust: none;
 letter-spacing: -1px;
 border: solid 1px #1F7F00;
 }
@@ -331,15 +340,15 @@ color: red;
 /* ====================================
         volunteer report */
 /*
-.contact_info { 
+.contact_info {
   float:left;
   clear: none;
 }
 */
-.task_info { 
+.task_info {
   float:right;
 }
-.task_info .form-element { 
+.task_info .form-element {
   float: left;
   clear: left;
 }
@@ -384,7 +393,7 @@ margin:0;
 padding:0;
 }
 
-span.error { 
+span.error {
     color: #FF0000;
     size: +2;
 }
