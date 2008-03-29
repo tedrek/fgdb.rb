@@ -123,46 +123,46 @@ class ReportsController < ApplicationController
 
   def add_donation_to_data(donation, income_data)
     totals = income_data[:grand_totals]
-    required = donation.reported_required_fee
+    required_cents = donation.reported_required_fee_cents
     #:MC: no business rules for what order to evaluate these?
     donation.payments.each {|payment|
       column = income_data[:donations][PaymentMethod.descriptions[payment.payment_method_id]]
-      fees = 0
-      voluntary = 0
-      if required <= 0
-        voluntary = payment.amount
-      elsif required > payment.amount
-          required -= payment.amount
-          fees = payment.amount
+      fees_cents = 0
+      voluntary_cents = 0
+      if required_cents <= 0
+        voluntary_cents = payment.amount_cents
+      elsif required_cents > payment.amount_cents
+          required_cents -= payment.amount_cents
+          fees_cents = payment.amount_cents
       else
-        fees = required
-        required = 0
-        voluntary = payment.amount - fees
+        fees_cents = required_cents
+        required_cents = 0
+        voluntary_cents = payment.amount_cents - fees_cents
       end
 
       if payment.payment_method_id != PaymentMethod.invoice.id
-        income_data[:donations]['total real']['fees'] += fees
-        income_data[:donations]['total real']['voluntary'] += voluntary
-        income_data[:donations]['total real']['subtotals'] += payment.amount
-        totals['total real']['total'] += payment.amount
+        income_data[:donations]['total real']['fees'] += fees_cents
+        income_data[:donations]['total real']['voluntary'] += voluntary_cents
+        income_data[:donations]['total real']['subtotals'] += payment.amount_cents
+        totals['total real']['total'] += payment.amount_cents
       end
 
       if( (payment.payment_method_id == PaymentMethod.cash.id) ||
           (payment.payment_method_id == PaymentMethod.check.id) )
-        income_data[:donations]['till total']['fees'] += fees
-        income_data[:donations]['till total']['voluntary'] += voluntary
-        income_data[:donations]['till total']['subtotals'] += payment.amount
-        totals['till total']['total'] += payment.amount
+        income_data[:donations]['till total']['fees'] += fees_cents
+        income_data[:donations]['till total']['voluntary'] += voluntary_cents
+        income_data[:donations]['till total']['subtotals'] += payment.amount_cents
+        totals['till total']['total'] += payment.amount_cents
       end
 
-      income_data[:donations]['total']['fees'] += fees
-      income_data[:donations]['total']['voluntary'] += voluntary
-      income_data[:donations]['total']['subtotals'] += payment.amount
-      column['fees'] += fees
-      column['voluntary'] += voluntary
-      column['subtotals'] += payment.amount
-      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount
-      totals['total']['total'] += payment.amount
+      income_data[:donations]['total']['fees'] += fees_cents
+      income_data[:donations]['total']['voluntary'] += voluntary_cents
+      income_data[:donations]['total']['subtotals'] += payment.amount_cents
+      column['fees'] += fees_cents
+      column['voluntary'] += voluntary_cents
+      column['subtotals'] += payment.amount_cents
+      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount_cents
+      totals['total']['total'] += payment.amount_cents
     }
   end
 
@@ -171,23 +171,23 @@ class ReportsController < ApplicationController
     #:MC: no business rules for what order to evaluate these?
     sale.payments.each {|payment|
       column = income_data[:sales][PaymentMethod.descriptions[payment.payment_method_id]]
-      column[sale.discount_schedule.name] += payment.amount
-      column['subtotals'] += payment.amount
+      column[sale.discount_schedule.name] += payment.amount_cents
+      column['subtotals'] += payment.amount_cents
       if payment.payment_method_id != PaymentMethod.invoice.id
-        income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount
-        income_data[:sales]['total real']['subtotals'] += payment.amount
-        totals['total real']['total'] += payment.amount
+        income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount_cents
+        income_data[:sales]['total real']['subtotals'] += payment.amount_cents
+        totals['total real']['total'] += payment.amount_cents
       end
       if( (payment.payment_method_id == PaymentMethod.cash.id) ||
           (payment.payment_method_id == PaymentMethod.check.id) )
-        income_data[:sales]['till total'][sale.discount_schedule.name] += payment.amount
-        income_data[:sales]['till total']['subtotals'] += payment.amount
-        totals['till total']['total'] += payment.amount
+        income_data[:sales]['till total'][sale.discount_schedule.name] += payment.amount_cents
+        income_data[:sales]['till total']['subtotals'] += payment.amount_cents
+        totals['till total']['total'] += payment.amount_cents
       end
-      income_data[:sales]['total'][sale.discount_schedule.name] += payment.amount
-      income_data[:sales]['total']['subtotals'] += payment.amount
-      totals['total']['total'] += payment.amount
-      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount
+      income_data[:sales]['total'][sale.discount_schedule.name] += payment.amount_cents
+      income_data[:sales]['total']['subtotals'] += payment.amount_cents
+      totals['total']['total'] += payment.amount_cents
+      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount_cents
     }
   end
 
