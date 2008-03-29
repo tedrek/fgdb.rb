@@ -126,6 +126,11 @@ div#transaction_info .form-element {
   clear: left;
 }
 
+div.gizmo_event_extras fieldset { 
+  border: none;
+  padding: 0px 0px 0px 0px;
+}
+
 /*div#gizmo_datalist_div, div#payments_div, div#totals_div,*/ div#transaction_line_items_div div.line_item {
   float: right;
   clear: right;
