@@ -1,12 +1,17 @@
 <% last_ninety = @contact.last_ninety_days_of_effective_hours %>
 <% adoption = @contact.adoption_hours %>
 <span class="hours"><%= last_ninety %></span>
-<%= link_to('hours', :action=>"volunteers_report",
-            :controller=>'reports',
-            :defaults => {
-              :contact_id=>@contact.id,
-              :limit_type => 'contact',
-            }
+<%= link_to('hours', {
+              :action=>"volunteers_report",
+              :controller=>'reports',
+              :defaults => {
+                :contact_id=>@contact.id,
+                :limit_type => 'contact',
+             },
+           },
+           {
+             :title => 'A report of hours worked',
+           }
     ) %> in the last 90 days
 <% if last_ninety != adoption %>
   <br /><span class="hours"><%= adoption %></span> effective towards adoption
