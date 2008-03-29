@@ -40,6 +40,9 @@
     :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');" +
       remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
         :with => "Form.serialize('#{element_form_id(@options)}')"),
+    :delete_content => image_tag('delete.png', 
+                                :alt => 'delete', 
+                                :title => 'delete'),
     :new_defaults => @event_defaults || nil) %>
 </div>
 
@@ -50,6 +53,9 @@
       :show_header => false, :render_aware => "payment_form",
       :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');",
       :add_text => "More payment methods",
+      :delete_content => image_tag('delete.png',
+                                   :alt => 'delete',
+                                   :title => 'delete'),
       :new_defaults => @event_defaults || nil) %>
   </div>
 
