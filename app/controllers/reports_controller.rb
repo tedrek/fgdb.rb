@@ -202,7 +202,10 @@ class ReportsController < ApplicationController
   end
 
   def volunteers_report
-    @defaults = Conditions.new
+    @defaults = Conditions.new 
+    if params[:filter_contact][:query]
+      params[:defaults][:contact_id] = params[:filter_contact][:query]
+    end
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
     @tasks = VolunteerTask.find(:all, :conditions => @defaults.conditions(VolunteerTask),
