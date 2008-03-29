@@ -1,9 +1,5 @@
-<% if @thing && @thing.contact %>
- <p>You found "<%=h @thing.contact.display_name %>"</p>
-<% end %>
 <% form_tag( { :controller => '/contacts', :action => 'lookup' }, { :id => 'tasty_test' } ) do %>
   <div class="form-element">
     <%= contact_field('@thing', 'contact') %>
   </div>
-  <%= submit_tag 'Test' %>
 <% end -%>

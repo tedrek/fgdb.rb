@@ -40,18 +40,6 @@ class ContactsController < ApplicationController
   end
 
   def lookup
-    test = params[params[:contact_element_prefix]] ? 'true' : 'false'
-    query = params[params[:contact_element_prefix]] ? params[params[:contact_element_prefix]][:query] : ''
-    @thing = "thing"
-    @thing.instance_eval "
-      def query
-        if #{test}
-          Contact.find('#{query.gsub(/[^0-9]/, '')}')
-        end
-      end
-      alias :contact :query
-    "
-    instance_variable_set("@" + params[:contact_element_prefix], @thing) if params[:contact_element_prefix]
   end
 
   def search_results
@@ -64,10 +52,6 @@ class ContactsController < ApplicationController
   def update_display_area
     @contact = Contact.find( params[:contact_id].strip )
     render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] || params}
-  end
-
-  def boxtest
-    render :text => %Q[<p>meow<a href="#" class="lightwindow_action" rel="deactivate">Cancel</a></p>]
   end
 
   def new
