@@ -15,13 +15,17 @@
 <%= text_field_with_auto_complete(
       contact_element_prefix(options),
       'query',
-      {:size=>15},
+      {
+        :size=>15,
+      },
       {
         :after_update_element => update_display_function,
         :skip_style => true
       },
       :controller => 'contacts'
     ) %>
+<%= javascript_tag "$('#{contact_query_id(options)}').onkeypress = contactKeyListener;" %>
+
 <% if (! options[:display_create]) or (options[:display_create] == 'true') %>
   <% new_options = options.merge(
        :controller => 'contacts',
