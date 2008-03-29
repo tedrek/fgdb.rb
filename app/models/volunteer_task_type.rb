@@ -2,6 +2,10 @@ class VolunteerTaskType < ActiveRecord::Base
 
   acts_as_tree
 
+  def to_s
+    description
+  end
+
   def self.root_nodes
     find(:all, :conditions => [ 'parent_id = ?', 0 ])
   end
