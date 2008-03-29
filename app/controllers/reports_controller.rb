@@ -202,8 +202,8 @@ class ReportsController < ApplicationController
   end
 
   def volunteers_report
-    @defaults = Conditions.new 
-    if params[:filter_contact][:query]
+    @defaults = Conditions.new
+    if params[:filter_contact] and params[:filter_contact][:query]
       params[:defaults][:contact_id] = params[:filter_contact][:query]
     end
     @defaults.apply_conditions(params[:defaults])
