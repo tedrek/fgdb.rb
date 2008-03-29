@@ -205,6 +205,7 @@ lightwindow.prototype = {
 
                 // Setup everything
                 this._getScroll();
+                this._getPageDimensions();
                 this._browserDimensions();
                 this._setupDimensions();
                 this._toggleTroubleElements('hidden', false);
@@ -644,11 +645,14 @@ lightwindow.prototype = {
                                 originalHeight = this.options.dimensions.page.height;
                                 originalWidth = this.options.dimensions.page.width;
                                 break;
-
                 }
 
                 var offsetHeight = this._getParameter('lightwindow_top') ? parseFloat(this._getParameter('lightwindow_top'))+this.pagePosition.y : this.dimensions.viewport.height/2+this.pagePosition.y;
                 var offsetWidth = this._getParameter('lightwindow_left') ? parseFloat(this._getParameter('lightwindow_left'))+this.pagePosition.x : this.dimensions.viewport.width/2+this.pagePosition.x;
+
+                $('lightwindow_overlay').setStyle({
+                        height: this.pageDimensions.height+'px'
+                });
 
                 // So if a theme has say shadowed edges, they should be consistant and take care of in the contentOffset
                 $('lightwindow').setStyle({
