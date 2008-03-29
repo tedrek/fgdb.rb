@@ -14,7 +14,6 @@ class SoManyForeignKeysToAdd < ActiveRecord::Migration
     add_foreign_key( "gizmo_events", ["gizmo_context_id"], "gizmo_contexts", ["id"], :name => "gizmo_events_gizmo_contexts_fk", :on_delete => :restrict )
     add_foreign_key( "gizmo_contexts_gizmo_typeattrs", ["gizmo_context_id"], "gizmo_contexts", ["id"], :name => "gizmo_contexts_gizmo_typeattrs_gizmo_contexts_fk", :on_delete => :cascade )
     add_foreign_key( "gizmo_contexts_gizmo_typeattrs", ["gizmo_typeattr_id"], "gizmo_typeattrs", ["id"], :name => "gizmo_contexts_gizmo_typeattrs_gizmo_typeattrs_fk", :on_delete => :cascade )
-    add_foreign_key( "disbursements", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "disbursements_contacts_fk" )
     add_foreign_key( "gizmo_contexts_gizmo_types", ["gizmo_context_id"], "gizmo_contexts", ["id"], :name => "gizmo_contexts_gizmo_types_gizmo_contexts_fk", :on_delete => :cascade )
     add_foreign_key( "gizmo_contexts_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :name => "gizmo_contexts_gizmo_types_gizmo_types_fk", :on_delete => :cascade )
     add_foreign_key( "gizmo_events_gizmo_typeattrs", ["gizmo_event_id"], "gizmo_events", ["id"], :name => "gizmo_events_gizmo_typeattrs_gizmo_events_fk", :on_delte => :cascade )
@@ -25,8 +24,23 @@ class SoManyForeignKeysToAdd < ActiveRecord::Migration
     add_foreign_key( "payments", ["payment_method_id"], "payment_methods", ["id"], :name => "payments_payment_methods_fk", :on_delete => :restrict )
     add_foreign_key( "sales", ["contact_id"], "contacts", ["id"], :name => "sales_contacts_fk", :on_delete => :set_null )
     add_foreign_key( "sales", ["discount_schedule_id"], "discount_schedules", ["id"], :name => "sales_discount_schedules_fk", :on_delete => :restrict )
-    add_foreign_key( "volunteer_task_types", ["parent_id"], "volunteer_task_types", ["id"], :name => "volunteer_task_types_parent_fk", :on_delete => :set_null )
+    add_foreign_key( "volunteer_task_types", ["parent_id"], "volunteer_task_types", ["id"], :name => "volunteer_task_types_parent_fk", :on_delete => :restrict )
     add_foreign_key( "volunteer_tasks", ["contact_id"], "contacts", ["id"], :name => "volunteer_tasks_contacts_fk", :on_delete => :set_null )
+
+    remove_foreign_key( "contact_methods", "contact_methods_fk_contact_id" )
+    add_foreign_key( "contact_methods", ["contact_id"], "contacts", ["id"], :name => "contact_methods_contact_id_fk", :on_delete => :cascade )
+    remove_foreign_key( "contact_methods", "contact_methods_fk_contact_method_type" )
+    add_foreign_key( "contact_methods", ["contact_method_type_id"], "contact_method_types", ["id"], :name => "contact_methods_contact_method_type_fk", :on_delete => :restrict )
+    remove_foreign_key( "disbursements", "dispersements_contact_id_fkey" )
+    add_foreign_key( "disbursements", ["contact_id"], "contacts", ["id"], :name => "disbursements_contacts_fk", :on_delete => :set_null )
+    remove_foreign_key( "disbursements", "dispersements_dispersement_type_id_fkey")
+    add_foreign_key( "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :name => "disbursements_disbursements_type_id_fk", :on_delete => :restrict)
+    remove_foreign_key( "payments", "payments_donation_id_fk" )
+    add_foreign_key( "payments", ["donation_id"], "donations", ["id"], :name => "payments_donation_id_fk", :on_delete => :cascade )
+    remove_foreign_key( "payments", "payments_sale_txn_id_fk" )
+    add_foreign_key( "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_id_fk", :on_delete => :cascade )
+    remove_foreign_key("volunteer_tasks", "volunteer_tasks_volunteer_task_type_id_fkey")
+    add_foreign_key( "volunteer_tasks", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :name => "volunteer_tasks_volunteer_task_type_id_fk", :on_delete => :restrict )
   end
 
   def self.down
@@ -44,7 +58,6 @@ class SoManyForeignKeysToAdd < ActiveRecord::Migration
     remove_foreign_key( "gizmo_events", "gizmo_events_gizmo_contexts_fk" )
     remove_foreign_key( "gizmo_contexts_gizmo_typeattrs", "gizmo_contexts_gizmo_typeattrs_gizmo_contexts_fk" )
     remove_foreign_key( "gizmo_contexts_gizmo_typeattrs", "gizmo_contexts_gizmo_typeattrs_gizmo_typeattrs_fk" )
-    remove_foreign_key( "disbursements", "disbursements_contacts_fk" )
     remove_foreign_key( "gizmo_contexts_gizmo_types", "gizmo_contexts_gizmo_types_gizmo_contexts_fk" )
     remove_foreign_key( "gizmo_contexts_gizmo_types", "gizmo_contexts_gizmo_types_gizmo_types_fk" )
     remove_foreign_key( "gizmo_events_gizmo_typeattrs", "gizmo_events_gizmo_typeattrs_gizmo_events_fk" )
@@ -57,5 +70,12 @@ class SoManyForeignKeysToAdd < ActiveRecord::Migration
     remove_foreign_key( "sales", "sales_discount_schedules_fk" )
     remove_foreign_key( "volunteer_task_types", "volunteer_task_types_parent_fk" )
     remove_foreign_key( "volunteer_tasks", "volunteer_tasks_contacts_fk" )
+    remove_foreign_key( "contact_methods", "contact_methods_contact_id_fk" )
+    remove_foreign_key( "contact_methods", "contact_methods_contact_method_type_fk" )
+    remove_foreign_key( "disbursements", "disbursements_contacts_fk" )
+    remove_foreign_key( "disbursements", "disbursements_disbursements_type_id_fk" )
+    remove_foreign_key( "payments", "payments_donation_id_fk" )
+    remove_foreign_key( "payments", "payments_sale_id_fk" )
+    remove_foreign_key( "volunteer_tasks", "volunteer_tasks_volunteer_task_type_id_fk" )
   end
 end
