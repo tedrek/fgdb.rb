@@ -1,7 +1,10 @@
 <div class="user">
   <div class='form-element'>
-    <%= check_box "contact", "is_user" %>
-    <%= observe_field "contact_is_user", :function => "{var x = $('contact_user'); if ($('contact_is_user').checked) { x.show() } else { x.hide() }}" %>
+    <%= check_box "contact", "is_user", {:class => 'person'} %>
+    <%= observe_field(
+          "contact_is_user",
+          :function => "{var x = $('contact_user'); if ($('contact_is_user').checked) { x.show() } else { x.hide() }}"
+        ) %>
     <label for="contact_is_user">can login?</label>
   </div>
 

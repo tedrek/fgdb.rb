@@ -10,7 +10,7 @@
 <%= javascript_tag "contact_form_org_toggle();" %>
 
 <% for contact_type in ContactType.find(:all) %>
-<div class="<%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
+<div class="form-element <%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
   <input type="checkbox" id="<%= contact_type.description %>"
     name="contact_types[]"
     value="<%= contact_type.id %>"
@@ -83,7 +83,9 @@
     :add_text => "More contact methods" ) %>
 </div>
 
-<%= render(:partial => "user_form") if has_role_or_is_me?(@contact.id, :ROLE_ADMIN) %>
+<div class="form-element person">
+  <%= render(:partial => "user_form") if has_role_or_is_me?(@contact.id, :ROLE_ADMIN) %>
+</div>
 
 <!--[eoform:contact]-->
 
