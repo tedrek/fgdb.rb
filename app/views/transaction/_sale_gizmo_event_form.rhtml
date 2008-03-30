@@ -30,7 +30,7 @@
     name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= @gizmo_context.id %>" />
 
 <div class="form-element">
-  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Quantity</label>
+  <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Qty</label>
   <%= datalist_text_field 'gizmo_event', 'gizmo_count',
     {:class=>"text-input", :size=>"2"} %>
 </div>
@@ -59,6 +59,9 @@
   <% end %>
 </div>
 
+<div>
+  <%= link_to_function "x", delete_url, :title => 'delete' %>
+</div>
 <!--[eoform:gizmo_event]-->
 
   </div>

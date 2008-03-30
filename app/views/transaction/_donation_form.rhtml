@@ -30,6 +30,7 @@
     :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');" +
       remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
         :with => "Form.serialize('#{element_form_id(@options)}')"),
+    :inhibit_delete => true,
     :new_defaults => @event_defaults || {}) %>
 </div>
 
@@ -40,6 +41,7 @@
       :show_header => false, :render_aware => "payment_form",
       :add_text => "More payment methods",
       :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');",
+      :inhibit_delete => true,
       :new_defaults => @event_defaults || {}) %>
   </div>
 

@@ -100,6 +100,7 @@ HTML
         if options.has_key? :render_aware
           form = render :partial => options[:render_aware],
           :locals => {
+            :delete_url => get_delete_action(delete_content, tag, item_identifier),
             "@#{form_prefix}" => obj,
             "@datalist_field_name_prefix" => "#{item_mode}[#{tag}][#{item_id}]",
             "@datalist_field_id_prefix" => "#{item_mode}_#{tag}_#{item_id}"
@@ -128,15 +129,24 @@ HTML
         end
       end
 
-      html += "<td>
+      if !options[:inhibit_delete]
+        html += "<td>
           <span id=\"delete_#{item_identifier}\">"
+        html += link_to_function(delete_content, 
+                                 get_delete_action(delete_content,
+                                                   tag,
+                                                   item_identifier))
+        html += "</span>
+        </td>"
+      end
 
-      html += link_to_remote delete_content, :url => { :action => 'datalist_delete_row', :tag => tag, :id => item_identifier }
+      html += "</tr>"
+    end
 
-      html += "</span>
-        </td>
-      </tr>"
-
+    def get_delete_action(delete_content, tag, item_identifier)
+      remote_function(:url => {:action => 'datalist_delete_row', 
+                               :tag => tag, 
+                               :id => item_identifier})
     end
 
     def datalist_text_field(object_name, field_name, options = {})

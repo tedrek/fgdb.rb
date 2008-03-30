@@ -34,6 +34,7 @@
     @disbursement.gizmo_events, :create_with => { :disbursement_id => @disbursement.id },
     :show_header => false, :render_aware => "no_price_gizmo_event_form",
     :add_text => "More gizmos",
+    :inhibit_delete => true,
     :new_defaults => @event_defaults || {}) %>
 </div>
 
