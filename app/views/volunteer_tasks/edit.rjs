@@ -13,7 +13,7 @@ if @successful
   page << "Form.focusFirstElement('#{element_form_id(@options)}');"
   page.visual_effect :highlight, element_cell_id(@options)
   page.replace_html element_messages_id(@options), :partial => 'form_messages'
+  page << "Element.hide('#{loading_indicator_id("volunteer_task_#{params[:id]}_loading")}');"
 else
   page.replace_html scaffold_messages_id(@options), :partial => 'messages'
 end
-
