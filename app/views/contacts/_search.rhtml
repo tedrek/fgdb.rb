@@ -26,7 +26,10 @@
       },
       :controller => 'contacts'
     ) %>
-<%= javascript_tag "$('#{contact_query_id(options)}').onkeypress = contactKeyListener;" %>
+<%= javascript_tag "
+$('#{contact_query_id(options)}').onkeypress = contactKeyListener;
+set_new_val($('#{contact_query_id(options)}'), #{contact})
+" %>
 
 <% if (! options[:display_create]) or (options[:display_create] == 'true') %>
   <% new_options = options.merge(

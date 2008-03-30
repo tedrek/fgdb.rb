@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   end
 
   def is_me?(contact_id)
-    current_user and current_user.contact_id == contact_id
+    current_user and current_user.contact_id == contact_id.to_i
   end
 
   def has_role_or_is_me?(contact_id, *roles)

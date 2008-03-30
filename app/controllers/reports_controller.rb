@@ -197,8 +197,17 @@ class ReportsController < ApplicationController
 
   public
 
+  before_filter :authorized_only, :only => :volunteers_report
+  def authorized_only 
+    requires_role_or_me(params[:filter_contact][:query].to_i, 'ROLE_VOLUNTEER_MANAGER')
+  end
+
   def volunteers
     @defaults = Conditions.new
+    if params[:contact_id] 
+      @defaults.contact_id=params[:contact_id]
+      @defaults.limit_type="contact"
+    end
   end
 
   def volunteers_report
