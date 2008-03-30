@@ -32,8 +32,12 @@
   </tbody>
 </table>
 <div class="ajax-scaffold-footer">
+  <td class="indicator-container">
+    <%= loading_indicator_tag("volunteer_task_footer_loading") %>
+  </td>
+
   <%= will_paginate @volunteer_tasks, :remote_options => {
-        :method => :get, :update => scaffold_content_id(params)
+        :method => :get, :update => scaffold_content_id(params), :loading => "Element.show('#{loading_indicator_id("volunteer_task_footer_loading")}');"
       }
   %>
 </div>
