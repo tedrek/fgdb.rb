@@ -1,7 +1,5 @@
 <% load_xml %>
 
-<h1>Printing is broked...stupid rails</h1>
-
 <div id="left" class="left">
   <div id="computer">
     <h2>Computer</h2>
@@ -44,7 +42,7 @@
         </td>
       </tr>
       
-      <% if xpath_if("size") %>
+      <% if xpath_if("size") %> 
       <tr>
         <td>
           Speed:
@@ -193,6 +191,7 @@
           <%= xpath_value_of("product") %>
         </td>
       </tr>
+      <% if xpath_if("size") %>
       <tr>
         <td>
           Capacity:
@@ -201,6 +200,8 @@
           <%= sprintf("%.2f", (xpath_value_of("size").to_d/1073741824.0)) %> Gb
         </td>
       </tr>
+      <% end %>
+      <% if xpath_if("node[contains(@id, 'volume')]") %>
       <tr>
         <td valign="top">Volumes: </td>
         <td>
@@ -221,6 +222,7 @@
           </table>
         </td>
       </tr>
+      <% end %>
     </table>
     <% end %>
   </div> <% #hard_drives %>
@@ -256,7 +258,7 @@
 			<%= xpath_value_of("description") %>
 		  </td>
 		</tr>
-		<% xpath_if("size") %>
+		<% if xpath_if("size") %>
 		<tr>
 		  <td>
 			Size:
@@ -265,6 +267,7 @@
             <%= (xpath_value_of("size").to_d/1048576.0).to_i.to_s %> Mb
 		  </td>
 		</tr>
+        <% end %>
 	  </table>
     </div>
 	<% end %>
@@ -309,6 +312,7 @@
                       and not(@class='bridge')
                       and not(@class='storage')
                       and not(@class='system')
+                      and not(@class='memory')
                       ]") do %>
     <table>
       <% if xpath_if("@class") %>
