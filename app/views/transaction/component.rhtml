@@ -62,6 +62,7 @@
       <% filters['payment_method'] = render( :partial => 'payment_method_select',
             :locals => {:field_id_prefix => 'conditions',
                         :field_name_prefix => 'conditions',
+			:show_label => false,
                         :paid_object => @conditions} ) %>
     <% end %>
     <%= select_visibility( 'conditions', 'limit_type', filters ) %>
