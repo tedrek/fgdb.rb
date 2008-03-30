@@ -18,7 +18,7 @@ module ReportsHelper
     #   s.to_s.match(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/)[1] #might be better...
   end
   def xpath_if(what_to_look_for)
-    get_matches(what_to_look_for)[0]
+    get_matches(what_to_look_for).first
   end
   def xpath_foreach(xpath_thing)
     for this_thing in get_matches(xpath_thing) 
@@ -29,9 +29,9 @@ module ReportsHelper
     end
   end
   def whats_in_this_thing(what_to_get)
-    nodes=get_matches(what_to_get)
+    nodes=get_matches(what_to_get).first
     if what_to_get[0]=='@'[0]
-      remove_attribute(nodes, what_to_get.gsub(/@/, '')) #we are good with just this
+      remove_attribute(nodes, what_to_get.gsub(/@/, '')) #it will say class="value"
     else
       remove_tag(nodes, what_to_get) #theres a tag around it...remove it please!
     end
