@@ -217,6 +217,10 @@ letter-spacing: -1px;
 border: solid 1px #1F7F00;
 }
 
+input.money {
+text-align: right;
+}
+
 .form-element input {
 padding: 1px;
 }

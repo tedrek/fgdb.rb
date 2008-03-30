@@ -30,6 +30,12 @@
     name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= @gizmo_context.id %>" />
 
 <div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_description">Description</label>
+  <%= datalist_text_field 'gizmo_event', 'description',
+    {:class=>"text-input", :size=>"20"} %>
+</div>
+
+<div class="form-element">
   <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Qty</label>
   <%= datalist_text_field 'gizmo_event', 'gizmo_count',
     {:class=>"text-input", :size=>"2"} %>
@@ -38,19 +44,13 @@
 <div class="form-element">
   <label for="<%= @datalist_field_id_prefix %>_unit_price">Unit Price</label>
   <%= datalist_text_field 'gizmo_event', 'unit_price',
-    {:class=>"text-input", :size=>"5"} %>
-</div>
-
-<div class="form-element">
-  <label for="<%= @datalist_field_id_prefix %>_description">Description</label>
-  <%= datalist_text_field 'gizmo_event', 'description',
-    {:class=>"text-input", :size=>"20"} %>
+    {:class=>"text-input money", :size=>"5"} %>
 </div>
 
 <div id="<%= @datalist_field_id_prefix %>_event_extras" class="gizmo_event_extras">
   <% @gizmo_type = @gizmo_event.gizmo_type %>
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
-    <%= render :partial => 'gizmo_event_attr_form', 
+    <%= render :partial => 'gizmo_event_attr_form',
         :locals => { :params => params.merge( {
           :gizmo_event_id => @gizmo_event.id,
           :datalist_field_id_prefix => @datalist_field_id_prefix,

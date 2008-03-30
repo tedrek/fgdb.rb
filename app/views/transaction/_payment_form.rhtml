@@ -3,16 +3,16 @@
     <!--[form:payment]-->
 
   <div class="form-element">
-    <label for="<%= @datalist_field_id_prefix %>_amount">Amount</label>
-    <%= datalist_text_field 'payment', 'amount' ,
-      {:class=>"text-input", :size=>"6"}  %>
-  </div>
-
-  <div class="form-element">
     <%= render :partial => 'payment_method_select',
             :locals => {:field_id_prefix => @datalist_field_id_prefix,
                         :field_name_prefix => @datalist_field_name_prefix,
                         :paid_object => @payment} %>
+  </div>
+
+  <div class="form-element">
+    <label for="<%= @datalist_field_id_prefix %>_amount">Amount</label>
+    <%= datalist_text_field 'payment', 'amount' ,
+      {:class=>"text-input money", :size=>"5"}  %>
   </div>
 
   <div>
