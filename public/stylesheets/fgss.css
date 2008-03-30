@@ -6,6 +6,7 @@ h1 {font-size: 20pt;  margin-bottom: 0.7em}
 h2 {font-size: 15pt;  margin-bottom: 0.5em}
 h3 {font-size: 10pt; margin-bottom: 10px }
 
+td.line_label {vertical-align:bottom;}
 #pci table {font-size: 8pt}
 #pci h3 {font-size: 8pt }
 div.indent {margin-left: 0.1in}
@@ -15,5 +16,5 @@ div.header {width: 100% }
 div.left {position: absolute; width: 47%; left: 1%; border-right: 1px solid black }
 div.right {position: absolute; width: 47%; right: 1%;}
 @media print {
-  .noprint { display: none; }
+.noprint { display: none; }
 }
