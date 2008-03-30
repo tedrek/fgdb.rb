@@ -197,19 +197,8 @@ class ReportsController < ApplicationController
 
   public
 
-  before_filter :authorized_only, :only => :volunteers_report
-  def authorized_only 
-    if params[:limit_type]=="contact"
-      requires_role_or_me((params[:filter_contact][:query]||0), 'ROLE_VOLUNTEER_MANAGER')
-    end
-  end
-
   def volunteers
     @defaults = Conditions.new
-    if params[:contact_id] 
-      @defaults.contact_id=params[:contact_id]
-      @defaults.limit_type="contact"
-    end
   end
 
   def volunteers_report
@@ -218,7 +207,7 @@ class ReportsController < ApplicationController
       params[:defaults][:contact_id] = params[:filter_contact][:query]
     end
     @defaults.apply_conditions(params[:defaults])
-    @date_range_string = @defaults.to_s
+    @date_range_string = @defaults.to_s(has_role_or_is_me?((params[:defaults][:contact_id]||0), "ROLE_VOLUNTEER_MANAGER"))
     @tasks = VolunteerTask.find(:all, :conditions => @defaults.conditions(VolunteerTask),
                                 :include => [:volunteer_task_type, :community_service_type])
     @sections = [:volunteer_task_type, :community_service_type]

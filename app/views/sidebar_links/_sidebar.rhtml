@@ -26,13 +26,8 @@
     <%= link_to "income", :controller => 'reports', :action => 'income' %>
   </dd><dd>
     <%= link_to "gizmos", :controller => 'reports', :action => 'gizmos' %>
-  <% if has_role?('ROLE_VOLUNTEER_MANAGER') %>
   </dd><dd>
     <%= link_to "volunteers", :controller => 'reports', :action => 'volunteers' %>
-  <% elsif current_user %>
-  </dd><dd>
-    <%= link_to "volunteers", :controller => 'reports', :action => 'volunteers', :contact_id => current_user.contact_id %>
-  <% end %>
   <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
     </dd><dd>
       <%= link_to "contacts", :controller => 'contacts' %>

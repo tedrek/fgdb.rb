@@ -95,12 +95,12 @@ class Conditions
     end
   end
 
-  def to_s
+  def to_s(show_contact_name=true)
     case @limit_type
     when /date[ _]range/
       date_range_to_s
     when 'contact'
-      contact_to_s
+      contact_to_s(show_contact_name)
     end
   end
 
@@ -122,7 +122,11 @@ class Conditions
     return desc
   end
 
-  def contact_to_s # "Report of hours worked for ..."
-    return contact.display_name
+  def contact_to_s(show_contact_name) # "Report of hours worked for ..."
+    if show_contact_name
+      return contact.display_name
+    else
+      return contact.id
+    end
   end
 end
