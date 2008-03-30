@@ -1,10 +1,4 @@
 ActionController::Routing::Routes.draw do |map|
-  #TODO:Get rid of all RESTful-ness
-  map.resources :systems
-  map.resources :roles
-  map.resources :types
-  map.resources :reports
-
   # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:
