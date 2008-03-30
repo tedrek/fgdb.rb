@@ -35,7 +35,7 @@
     {:class=>"text-input", :size=>"2"} %>
 </div>
 
-<div id="<%= @datalist_field_id_prefix %>_event_extras">
+<div id="<%= @datalist_field_id_prefix %>_event_extras" class="gizmo_event_extras">
   <% @gizmo_type = @gizmo_event.gizmo_type %>
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
     <%= render :partial => 'gizmo_event_attr_form', 
