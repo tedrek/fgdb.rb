@@ -1,0 +1,29 @@
+  <div id="optical_drives">
+    <h2>Optical Drives</h2>
+    <% xpath_foreach("//node[contains(@id, 'cdrom')]") do %>
+    <table>
+      <tr>
+        <td>Drive:</td>
+        <td>
+          <%= xpath_value_of("logicalname") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Description:
+        </td>
+        <td>
+          <%= xpath_value_of("description") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Model:
+        </td>
+        <td>
+          <%= xpath_value_of("product") %>
+        </td>
+      </tr>
+    </table>
+    <% end %>
+  </div> <% #optical_drives %>

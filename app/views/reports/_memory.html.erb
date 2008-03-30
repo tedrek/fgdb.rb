@@ -1,0 +1,45 @@
+  <div id="memory">
+	<h2>Memory</h2>
+	<% xpath_foreach("//node[@id='memory'] | //node[@id='memory:0']") do %>
+	<% if xpath_if("size") %>
+	<table>
+	  <tr>
+		<td>
+		  Size:
+		</td>
+		<td>
+          <%= (xpath_value_of("size").to_d/1048576.0).to_i.to_s %> Mb
+		</td>
+	  </tr>
+	</table>
+	<% end %>
+	<% xpath_foreach("node[contains(@id, 'bank')]") do %>
+	
+	<h3>
+	  <%= xpath_value_of("@id") %>
+	</h3>
+	<div class="indent">
+	  <table>
+		<tr>
+		  <td>
+			Description:
+		  </td>
+		  <td>
+			<%= xpath_value_of("description") %>
+		  </td>
+		</tr>
+		<% if xpath_if("size") %>
+		<tr>
+		  <td>
+			Size:
+		  </td>
+		  <td>
+            <%= (xpath_value_of("size").to_d/1048576.0).to_i.to_s %> Mb
+		  </td>
+		</tr>
+        <% end %>
+	  </table>
+    </div>
+	<% end %>
+	<% end %>
+  </div>

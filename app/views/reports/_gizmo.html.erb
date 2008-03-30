@@ -1,0 +1,63 @@
+  <div id="posted_info">
+    <h2>Gizmo Info</h2>
+    <table>
+      <tr>
+        <td>
+          Date:
+        </td>
+        <td>
+          <%= @report.created_at %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          System ID:
+        </td>
+        <td>
+          <%= @report.system_id %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Type:
+        </td>
+        <td>
+          <%= @report.type.name %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Report ID:
+        </td>
+        <td>
+          <%= @report.id %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Model:
+        </td>
+        <td>
+          <%= @report.system.model %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Serial No:</td><td>
+          <%= @report.system.serial_number %>
+      </td></tr><tr><td>Vendor:</td><td>
+          <%= @report.system.vendor %>
+      </td></tr><tr><td>OS:</td><td>
+          <%= @report.os %>
+      </td></tr><tr><td>Job:</td><td>
+          <%= @report.role.name %>
+      </td></tr><tr><td>Technician:</td><td>
+          <%= @report.contact_id %>
+      </td></tr><tr><td>Old ID:</td><td>
+          <%= @report.old_id %>
+      </td></tr><tr><td style="vertical-align:bottom;">Instructor Initials:</td><td>
+          <br>_________________________
+      </td></tr><tr><td>Notes:</td><td>
+          <%= @report.notes %>
+    </table>
+  </div>

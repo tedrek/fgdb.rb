@@ -1,0 +1,59 @@
+<div id="computer">
+  <h2>Computer</h2>
+  <table>
+    <tr>
+      <td>
+        Vendor:
+      </td>
+      <td>
+        <%= xpath_value_of("/node/vendor") %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Model:
+      </td>
+      <td>
+        <%= xpath_value_of("/node/product") %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Serial Number:
+      </td>
+      <td>
+        <%= xpath_value_of("/node/serial") %>
+      </td>
+    </tr>
+    <% xpath_foreach("//node[@class='processor']") do %>
+      <% if xpath_if("product") %>
+        <tr>
+          <td>
+            Processor:
+          </td>
+          <td>
+            <%= xpath_value_of("product") %>
+          </td>
+        </tr>
+        <% if xpath_if("size") %> 
+          <tr>
+            <td>
+              Speed:
+            </td>
+            <td>
+              <%= sprintf("%.2f", (xpath_value_of("size").to_d/1000000.0)) %> MHz
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    <% end %>
+    <tr>
+      <td>
+        BIOS Version:
+      </td>
+      <td>
+        <%= xpath_value_of("//node[@id='firmware']/version") %>
+      </td>
+    </tr>
+  </table>
+</div>

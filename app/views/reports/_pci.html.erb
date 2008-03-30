@@ -1,0 +1,52 @@
+
+  <div id="pci">
+    <h2>PCI Bus</h2>
+    <% xpath_foreach("//node[contains(@id, 'pci')]") do %>
+    <h3><%= xpath_value_of("product") %></h3>
+    <% xpath_foreach("node[
+                      contains(@handle, 'PCI:')
+                      and not(@class='bus')
+                      and not(@class='bridge')
+                      and not(@class='storage')
+                      and not(@class='system')
+                      and not(@class='memory')
+                      ]") do %>
+    <table>
+      <% if xpath_if("@class") %>
+      <tr>
+        <td>Type: </td>
+        <td>
+          <%= xpath_value_of("@class") %>
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_if("vendor|businfo") %>
+      <tr>
+        <td>Description: </td>
+        <td>
+          <%= xpath_value_of("description") %>
+          (<%= xpath_value_of("businfo") %>)
+
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_if("vendor") %>
+      <tr>
+        <td>Vendor: </td>
+        <td>
+          <%= xpath_value_of("vendor") %>
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_if("product") %>
+      <tr>
+        <td>Product: </td>
+        <td>
+          <%= xpath_value_of("product") %>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+    <% end %>
+    <% end %>
+  </div>
