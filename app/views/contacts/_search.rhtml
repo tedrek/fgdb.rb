@@ -43,9 +43,9 @@
 <% end %>
 <div id="<%= searchbox_display_id(options) %>"></div>
 
-<% if contact && contact.kind_of?(Contact)
+<% if defined?(contact) && contact.kind_of?(Contact)
      contact_id = contact.id
-   elsif contact
+   elsif defined?(contact)
      contact_id = contact
    elsif instance_variable_get("@" + contact_element_prefix(options))
      contact_id = instance_variable_get("@" + contact_element_prefix(options)).contact.id
