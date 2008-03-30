@@ -26,10 +26,6 @@
       },
       :controller => 'contacts'
     ) %>
-<%= javascript_tag "
-$('#{contact_query_id(options)}').onkeypress = contactKeyListener;
-set_new_val($('#{contact_query_id(options)}'), #{contact})
-" %>
 
 <% if (! options[:display_create]) or (options[:display_create] == 'true') %>
   <% new_options = options.merge(
@@ -47,9 +43,17 @@ set_new_val($('#{contact_query_id(options)}'), #{contact})
 <% end %>
 <div id="<%= searchbox_display_id(options) %>"></div>
 
-<% if instance_variable_get("@" + contact_element_prefix(options)) %>
-  <%= javascript_tag "
-        set_new_val($('#{contact_query_id(options)}'),
-        '#{instance_variable_get("@" + contact_element_prefix(options)).contact.id}');
-      " + update_display %>
-<% end %>
+<% if contact && contact.kind_of?(Contact)
+     contact_id = contact.id
+   elsif contact
+     contact_id = contact
+   elsif instance_variable_get("@" + contact_element_prefix(options))
+     contact_id = instance_variable_get("@" + contact_element_prefix(options)).contact.id
+   else
+     contact_id = nil
+   end
+%>
+<%= javascript_tag "$('#{contact_query_id(options)}').onkeypress = contactKeyListener;" %>
+<%= javascript_tag("
+      set_new_val($('#{contact_query_id(options)}'), #{contact_id});
+    " + update_display) if contact_id %>
