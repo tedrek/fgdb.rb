@@ -199,6 +199,7 @@ class ReportsController < ApplicationController
 
   def volunteers
     @defaults = Conditions.new
+    @defaults.limit_type = "contact"
   end
 
   def volunteers_report
