@@ -28,18 +28,17 @@ class SoManyForeignKeysToAdd < ActiveRecord::Migration
     add_foreign_key( "volunteer_tasks", ["contact_id"], "contacts", ["id"], :name => "volunteer_tasks_contacts_fk", :on_delete => :set_null )
 
     remove_foreign_key( "contact_methods", "contact_methods_fk_contact_id" )
-    add_foreign_key( "contact_methods", ["contact_id"], "contacts", ["id"], :name => "contact_methods_contact_id_fk", :on_delete => :cascade )
     remove_foreign_key( "contact_methods", "contact_methods_fk_contact_method_type" )
-    add_foreign_key( "contact_methods", ["contact_method_type_id"], "contact_method_types", ["id"], :name => "contact_methods_contact_method_type_fk", :on_delete => :restrict )
     remove_foreign_key( "disbursements", "dispersements_contact_id_fkey" )
-    add_foreign_key( "disbursements", ["contact_id"], "contacts", ["id"], :name => "disbursements_contacts_fk", :on_delete => :set_null )
     remove_foreign_key( "disbursements", "dispersements_dispersement_type_id_fkey")
-    add_foreign_key( "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :name => "disbursements_disbursements_type_id_fk", :on_delete => :restrict)
-    remove_foreign_key( "payments", "payments_donation_id_fk" )
-    add_foreign_key( "payments", ["donation_id"], "donations", ["id"], :name => "payments_donation_id_fk", :on_delete => :cascade )
-    remove_foreign_key( "payments", "payments_sale_txn_id_fk" )
-    add_foreign_key( "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_id_fk", :on_delete => :cascade )
     remove_foreign_key("volunteer_tasks", "volunteer_tasks_volunteer_task_type_id_fkey")
+
+    add_foreign_key( "contact_methods", ["contact_id"], "contacts", ["id"], :name => "contact_methods_contact_id_fk", :on_delete => :cascade )
+    add_foreign_key( "contact_methods", ["contact_method_type_id"], "contact_method_types", ["id"], :name => "contact_methods_contact_method_type_fk", :on_delete => :restrict )
+    add_foreign_key( "disbursements", ["contact_id"], "contacts", ["id"], :name => "disbursements_contacts_fk", :on_delete => :set_null )
+    add_foreign_key( "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :name => "disbursements_disbursements_type_id_fk", :on_delete => :restrict)
+    add_foreign_key( "payments", ["donation_id"], "donations", ["id"], :name => "payments_donation_id_fk", :on_delete => :cascade )
+    add_foreign_key( "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_id_fk", :on_delete => :cascade )
     add_foreign_key( "volunteer_tasks", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :name => "volunteer_tasks_volunteer_task_type_id_fk", :on_delete => :restrict )
   end
 
