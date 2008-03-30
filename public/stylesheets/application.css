@@ -98,10 +98,10 @@ table.datalist {
 display: block;
 }
 div.datalist {
-display: inline;
-float: right;
-margin-right: 10px;
-margin-bottom: 2px;
+  display: inline;
+  float: right;
+  /*margin-right: 10px;*/
+  margin-bottom: 2px;
 }
 span.datalist {
 float: none;
