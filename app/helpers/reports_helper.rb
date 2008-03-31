@@ -11,11 +11,9 @@ module ReportsHelper
   end
   def remove_tag(s, tag)#needs a new name...replace all 'tag's with the right word
     s.to_s.gsub(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/, '\1')
-    #   s.to_s.match(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/)[1] #might be better...
   end
   def remove_attribute(s, tag)#needs a new name...replace all 'tag's with the right word
     s.to_s.gsub(/#{tag}="([^"]*)"/, '\1')
-    #   s.to_s.match(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/)[1] #might be better...
   end
   def xpath_if(what_to_look_for)
     get_matches(what_to_look_for).first
@@ -31,9 +29,9 @@ module ReportsHelper
   def whats_in_this_thing(what_to_get)
     nodes=get_matches(what_to_get).first
     if what_to_get[0]=='@'[0]
-      remove_attribute(nodes, what_to_get.gsub(/@/, '')) #it will say class="value"
+      remove_attribute(nodes, what_to_get.gsub(/@/, ''))
     else
-      remove_tag(nodes, what_to_get) #theres a tag around it...remove it please!
+      remove_tag(nodes, File.basename(what_to_get)) #So very hackish! if only I knew regular expressions... 
     end
   end
   #TODO: make a xpath_numerical or something like that
