@@ -2,9 +2,86 @@
 
 require '/usr/lib/ruby/1.8/lib/xmlsimple.rb'
 require 'net/http'
+require 'cgi'
 require 'uri'
-require 'pp'
+require 'rubytui'
+require 'fileutils'
+include FileUtils
+include RubyTUI
 
+trap( "SIGINT" ) {
+    `reset -Q`
+    errorMessage "\n\nUser interrupt caught.  Exiting.\n\n"
+    exit!( 1 )
+}
+
+server="printme.fglan"
+
+module Multipart
+  # From: http://kfahlgren.com/code/multipart.rb
+  class Param
+    attr_accessor :k, :v
+    def initialize( k, v )
+      @k = k
+      @v = v
+    end
+
+    def to_multipart
+      return "Content-Disposition: form-data; name=\"#{CGI::escape k}\"\r\n\r\n#{v}\r\n"
+    end
+  end
+  class FileParam
+    attr_accessor :k, :filename, :content
+    def initialize( k, filename, content )
+      @k = k
+      @filename = filename
+      @content = content
+    end
+
+    def to_multipart
+      # Don't escape mine
+      return "Content-Disposition: form-data; name=\"#{k}\"; filename=\"#{filename}\"\r\n" + "Content-Transfer-Encoding: binary\r\n" + "Content-Type: application/xml\r\n\r\n" + content + "\r\n"
+    end
+  end
+  class MultipartPost
+    BOUNDARY = 'tarsiers-rule0000'
+    HEADER = {"Content-type" => "multipart/form-data, boundary=" + BOUNDARY + " "}
+
+    def prepare_query (params)
+      fp = []
+      params.each {|k,v|
+        if v.respond_to?(:read)
+          fp.push(FileParam.new(k, v.path, v.read))
+        else
+          fp.push(Param.new(k,v))
+        end
+      }
+      query = fp.collect {|p| "--" + BOUNDARY + "\r\n" + p.to_multipart }.join("") + "--" + BOUNDARY + "--"
+      return query, HEADER
+    end
+  end  
+end
+
+TIMEOUT_SECONDS = 30
+def post_form(url, query, headers)
+  Net::HTTP.start(url.host, url.port) { |con|
+    con.read_timeout = TIMEOUT_SECONDS
+    begin
+      return con.post(url.path, query, headers)
+    rescue => e
+      puts "POSTING Failed #{ e}... #{Time.now}"
+    end
+  }
+end
+
+def check_stuff
+  retval = system("ping -c 1 " + server + " 1>&2 >/dev/null")
+  if retval != true
+    errorMessage "I could not connect to the server.\nMake sure you are connected to the network and try again.\n\n"
+    exit retval
+  end
+
+end
 response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_new"))
 
 system = XmlSimple.xml_in(response.body)
