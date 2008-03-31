@@ -1,0 +1,12 @@
+#!/usr/bin/ruby
+
+require '/usr/lib/ruby/1.8/lib/xmlsimple.rb'
+require 'net/http'
+require 'uri'
+require 'pp'
+
+response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_new"))
+
+system = XmlSimple.xml_in(response.body)
+system_id = system["id"][0]["content"].to_i
+puts system_id
