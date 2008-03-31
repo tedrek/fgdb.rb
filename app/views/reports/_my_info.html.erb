@@ -1,0 +1,64 @@
+<fieldset style="background-color: Lime;" width="100%">
+  <h1>
+    Summary of this report:
+  </h1>
+  <table style="font-size: 15pt;">
+      <tr>
+        <td>
+          Technician: 
+        </td>
+        <td>
+          <%= @contact.display_name %>
+        </td>
+      <tr>
+      </tr>
+        <td>
+          Technician's Job: 
+        </td>
+        <td>
+          <%= @role.name %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          System ID: 
+        </td>
+        <td>
+          <%= @system.id %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Type of System: 
+        </td>
+        <td>
+          <%= @type.name %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Do something: 
+        <td>
+          <%= link_to "Print", "#", {:onclick=>"window.print();"} %>
+          <%= link_to "Edit", { :action=>"edit", :id=>@report.id } %>
+        </td>
+      </tr>
+  </table>
+</fieldset>
+<% #this would be really cool to do...but I would have to make a interface to add/remove mistake conditions, which I don't want to bother with right now...and I don't know how accurate it would be able to be...so for now it does nothing %>
+<% if defined?(@mistakes) && @mistakes != [] %>
+<fieldset style="background-color: Red;" width="100%">
+  <h1>
+    Things you might have done wrong:
+  </h1>
+  <ul>
+  <span style="font-size: 15pt;">
+    <% for mistake in @mistakes %>
+      <li>
+        <%= mistake %>
+      </li>
+    <% end %>
+  </span>
+  </ul>
+</fieldset>
+<% end %>
