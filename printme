@@ -74,16 +74,74 @@ def post_form(url, query, headers)
   }
 end
 
-def check_stuff
+def run_lshw_and_test_stuff
   retval = system("ping -c 1 " + server + " 1>&2 >/dev/null")
   if retval != true
     errorMessage "I could not connect to the server.\nMake sure you are connected to the network and try again.\n\n"
     exit retval
   end
-
+  lshwname = '/var/lib/freegeek-extras/printme/lshw.xml'
+  if(!File.exist?(lshwname))
+    system("sudo lshw -xml>#{lshwname}") 
+    retval = system("xmlstarlet val " + lshwname + " >& /dev/null")
+    if retval != true
+      system("cat " + lshwname + " | tr -dc [:print:] | xmlstarlet fo > " + lshwname + ".clean")
+      mv(lshwname + ".clean", lshwname)
+      newretval = system("xmlstarlet val " + lshwname + " >& /dev/null")
+      if newretval != true
+        errorMessage "The xml file is not valid and I could not fix it!\n"
+        errorMessage "Ask a build instructor for help.\n"
+        exit 1
+      end
+    end
+  end
 end
-response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_new"))
 
-system = XmlSimple.xml_in(response.body)
-system_id = system["id"][0]["content"].to_i
-puts system_id
+def get_id_and_stuff
+if File.exist?('/tmp/lshw.xml') #old printme has been ran
+  if ! File.exists?('/var/lib/freegeek-extras/')
+    mkdir('/var/lib/freegeek-extras/')
+  end
+  mkdir('/var/lib/freegeek-extras/printme/')
+  mv('/tmp/lshw.xml', '/var/lib/freegeek-extras/printme/lshw.xml.old')
+  old_id = prompt('If the system had an id on it already, enter that here',
+                  'Please supply a number or nothing at all') {|num| num.empty? or (num.to_i.to_s == num)}
+  response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_show?id=#{old_id}"))
+  system=File.open('/var/lib/freegeek-extras/printme/system.xml.old', 'w')
+  system.puts(response.body)
+  ###TODO: GET ALL REPORTS FOR THIS SYSTEM, FIGURE OUT WHICH IS THE NEWEST AND THEN MOVE LSHW AND SYSTEM TO REPLACE OLD WITH THE REPORT ID
+elsif File.exist?('/var/lib/freegeek-extras/printme/') #new printme has been ran
+  system = File.open(Dir.new('/var/lib/freegeek-extras/').entries.sort.delete_if{ |x| ! (x =~ /^system\.xml\.(.*)$/) }.first, 'r')
+else #no printme has been ran
+  if ! File.exists?('/var/lib/freegeek-extras/printme/')
+    mkdir('/var/lib/freegeek-extras/')
+  end
+  mkdir('/var/lib/freegeek-extras/printme')
+  response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_new"))
+  system=File.open('/var/lib/freegeek-extras/printme/system.xml.new', 'w')
+  system.puts(response.body)
+end
+###TODO: process the hashes for jobs and types (not to mention make the thing that spits it out)
+jobs = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/roles/xml_list")).response)
+types = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/types/xml_list")).response)
+system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
+system.close
+end
+
+require 'pp' ###################REMOVE ME####################
+
+def ask_and_send_stuff
+  ###COPY AND PASTE FROM THE OLD ONE (YOU NEED LOTS OF MODIFICATIONS TOO THOUGH, LIKE GET AND MOVE SYSTEM AND REPORT AND LSHW, AND ENSTEAD OF SAVING THE RESPONE, POINT THERE BROWSER AT THE SHOW ACTION)
+  pp jobs
+  pp types
+  puts system_id
+end
+
+#I know its strange to make a main in a script...but it just feels normal to me! 
+def main
+get_id_and_stuff
+run_lshw_and_test_stuff
+ask_and_send_stuff
+end
+
+main
