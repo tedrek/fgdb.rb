@@ -4,6 +4,7 @@
     <th>System</th>
     <th>Type</th>
     <th>Role</th>
+    <th>Created at</th>
     <th></th>
   </tr>
 <% for report in @reports %>
@@ -18,6 +19,7 @@
     <td><%= link_to report.system_id.to_s, {:action => "list_for_system", :id => report.system_id} %></td>
     <td><%= (report.type_id && report.type.name) || "Unknown" %></td>
     <td><%= (report.role_id && report.role.name) || "Unknown" %></td>
+    <td><%= report.created_at %></td>
     <td><%= link_to 'Show', {:action => "show", :id => report.id} %></td>
   </tr>
 <% end %>
