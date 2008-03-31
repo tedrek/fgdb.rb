@@ -2,11 +2,11 @@
 
 <%= error_messages_for :report %>
 
-<% form_for(@report) do |f| %>
+<% form_tag({:action => "update"}) do |f| %>
   <p>
-    <%= f.submit "Update" %>
+    <%= submit_tag "Update" %>
   </p>
 <% end %>
 
-<%= link_to 'Show', @report %> |
-<%= link_to 'Back', reports_path %>
+<%= link_to 'Show', {:action => "show", :id => @report.id} %> |
+<%= link_to 'Back', {:action => "index"} %>
