@@ -9,7 +9,7 @@
 <% for report in @reports %>
   <tr>
     <td>
-<% if report.contact_id %>
+<% if report.contact_id && report.contact  && report.contact.display_name %>
 <%= link_to report.contact.display_name, {:action => "list_for_contact", :id => report.contact_id} %>
 <% else %>
 <%= "Unknown" %>
