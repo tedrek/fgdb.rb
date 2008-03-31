@@ -6,9 +6,6 @@ class Report < ActiveRecord::Base
   belongs_to :system
   belongs_to :type
 
-  def save
-#    something
-  end
   def my_file=(file)
       write_attribute(:lshw_output, file.read)
   end
