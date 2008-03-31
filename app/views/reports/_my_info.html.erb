@@ -8,7 +8,7 @@
           Technician: 
         </td>
         <td>
-          <%= (@contact && @contact.display_name) || "Unknown" %>
+          <%= (@report.contact_id && @report.contact && @report.contact.display_name) || "Unknown" %>
         </td>
       <tr>
       </tr>
@@ -16,7 +16,7 @@
           Technician's Job: 
         </td>
         <td>
-          <%= @role.name %>
+          <%= @report.role.name %>
         </td>
       </tr>
       <tr>
@@ -24,7 +24,7 @@
           System ID: 
         </td>
         <td>
-          <%= @system.id %>
+          <%= @report.system.id %>
         </td>
       </tr>
       <tr>
@@ -32,7 +32,7 @@
           Type of System: 
         </td>
         <td>
-          <%= @type.name %>
+          <%= @report.type.name %>
         </td>
       </tr>
       <tr>
