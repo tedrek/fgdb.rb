@@ -8,7 +8,7 @@
           Technician: 
         </td>
         <td>
-          <%= @contact.display_name %>
+          <%= (@contact && @contact.display_name) || "Unknown" %>
         </td>
       <tr>
       </tr>
@@ -33,6 +33,14 @@
         </td>
         <td>
           <%= @type.name %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Notes: 
+        </td>
+        <td>
+          <%= @report.notes %>
         </td>
       </tr>
       <tr>
