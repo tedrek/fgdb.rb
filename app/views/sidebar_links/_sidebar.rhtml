@@ -3,7 +3,7 @@
     <% if has_role?("ROLE_VOLUNTEER_MANAGER") %>
       <dd>
         <%= link_to "hours", :controller => 'volunteer_tasks' %>
-    <% elsif current_user %>
+    <% elsif current_user and current_user.contact_id %>
       <dd>
         <%= link_to "hours", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
     <% end %>
