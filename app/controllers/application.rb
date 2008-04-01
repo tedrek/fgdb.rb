@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   def requires_role_or_me(contact_id, *roles)
-    if has_role_or_is_me?(contact_id.to_i, roles)
+    if has_role_or_is_me?(contact_id.to_i, *roles)
       return true
     else
       redirect_to :controller => 'sidebar_links', 'unauthorized_error' => true
