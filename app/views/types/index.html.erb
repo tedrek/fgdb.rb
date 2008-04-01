@@ -8,7 +8,6 @@
 <% for type in @types %>
   <tr>
     <td><%= type.name %></td>
-    <td><%= link_to 'Show', :action=>"show", :id=>type.id %></td>
     <td><%= link_to 'Edit', :action=>"edit", :id=>type.id %></td>
   </tr>
 <% end %>

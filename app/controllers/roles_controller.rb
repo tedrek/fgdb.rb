@@ -3,10 +3,6 @@ class RolesController < ApplicationController
     @roles = Role.find(:all)
   end
 
-  def show
-    @role = Role.find(params[:id])
-  end
-
   def new
     @role = Role.new
   end
@@ -20,7 +16,7 @@ class RolesController < ApplicationController
 
     if @role.save
       flash[:notice] = 'Role was successfully created.'
-      redirect_to(:action=>"show", :id=>@role.id)
+      redirect_to(:action=>"index")
     else
       render :action => "new", :error => "Could not save the database record"
     end
@@ -31,7 +27,7 @@ class RolesController < ApplicationController
 
     if @role.update_attributes(params[:role])
       flash[:notice] = 'Role was successfully created.'
-      redirect_to(:action=>"show", :id=>@role.id)
+      redirect_to(:action=>"index")
     else
       render :action => "new", :error => "Could not save the database record"
     end
