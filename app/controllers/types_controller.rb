@@ -3,6 +3,11 @@ class TypesController < ApplicationController
     redirect_to :controller => "types", :action => "index"
   end
 
+  def xml_index
+    @types=Type.find(:all)
+    render :xml => @types
+  end
+
   def index
     @types = Type.find(:all)
   end

@@ -3,6 +3,11 @@ class RolesController < ApplicationController
     redirect_to :controller => "roles", :action => "index"
   end
 
+  def xml_index
+    @types=Type.find(:all)
+    render :xml => @types
+  end
+
   def index
     @roles = Role.find(:all)
   end
