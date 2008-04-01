@@ -1,6 +1,18 @@
 <div id="login_box">
   <% if @current_user and @current_user != false -%>
-    Hi! <%= @current_user.login %> <%= link_to_remote "logout", :url => "/sessions/destroy" %>
+    Hi! <%= @current_user.login %>
+    <%= link_to_remote "logout", :url => "/sessions/destroy" %>
+    <% if @current_user.contact %>
+      <%# my_lightwindow_tag(
+            :content => "user info",
+            :id => 'contact_edit_link_id(params)',
+            :url => {
+              :controller => 'contacts',
+              :action => 'edit',
+              :id => @current_user.contact.id,
+            })
+      %>
+    <% end %>
   <% else -%>
     <%= render :partial => "sessions/form" %>
   <% end -%>

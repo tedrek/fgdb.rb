@@ -1,4 +1,4 @@
-# This controller handles the login/logout function of the site.  
+# This controller handles the login/logout function of the site.
 class SessionsController < ApplicationController
   # render new.rhtml
   def new
@@ -16,10 +16,6 @@ class SessionsController < ApplicationController
     reset_session
     @current_user = nil
     rerender()
-  end
-
-  def dump
-    render :text => "<pre>#{session.to_yaml}</pre>"
   end
 
   protected

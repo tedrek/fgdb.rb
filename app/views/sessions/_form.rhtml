@@ -1,3 +1,6 @@
+<% if flash[:error] %>
+  <div class="error"><%= flash[:error] %></div>
+<% end %>
 <% form_remote_tag :url => "/sessions/create" do -%>
 <div class="form-element">
   <label for="login">Login</label>
