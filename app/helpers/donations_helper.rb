@@ -4,4 +4,16 @@ module DonationsHelper
   def base_controller
     return '/donations'
   end
+
+  def scaffold_columns
+    [
+      Column.new(Donation, :name => 'id'),
+      Column.new(Donation, :name => 'payment',
+                 :eval  => 'donation.payment', :sortable => false),
+      Column.new(Donation, :name => 'donor', :sortable => false,
+                 :eval => 'donation.donor.display_name'),
+      Column.new(Donation, :name => 'gizmos', :sortable => false),
+      Column.new(Donation, :name => 'created_at'),
+    ]
+  end
 end

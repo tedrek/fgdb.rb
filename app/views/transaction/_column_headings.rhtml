@@ -1,5 +1,5 @@
 <tr>
-      <% for scaffold_column in scaffold_columns(@transaction_type) %>
+      <% for scaffold_column in scaffold_columns %>
         <% column_sort_direction = column_sort_direction(scaffold_column.name, params) %>  
         <% sort_params = params.merge(:controller => base_controller,
                                       :transaction_type => @transaction_type,

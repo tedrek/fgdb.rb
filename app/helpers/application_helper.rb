@@ -32,8 +32,8 @@ module ApplicationHelper
     end
   end
 
-  def num_columns(context)
-    scaffold_columns(context).length + 1
+  def num_columns
+    scaffold_columns.length + 1
   end
 
   def contact_field(obj_name, field_name, options = {})
