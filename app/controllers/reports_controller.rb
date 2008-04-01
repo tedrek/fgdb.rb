@@ -1,6 +1,10 @@
 class ReportsController < ApplicationController
   include ReportsHelper
 
+  def xml_index
+    render :xml => {:error => params[:error]}
+  end
+
   def index
     if params[:error]
       @error=params[:error]
@@ -58,8 +62,14 @@ class ReportsController < ApplicationController
     render :layout => 'fgss'
   end
 
+  def xml_show
+    @report = Report.find(params[:id])
+    render :xml => @report
+  end
+
   def new
     @report = Report.new
+    @error=params[:error]
   end
 
   def edit
@@ -76,7 +86,20 @@ class ReportsController < ApplicationController
       flash[:notice] = 'Report was successfully created.'
       redirect_to(:action=>"show", :id=>@report.id)
     else
-      render :action => "new" 
+      render :action => "new", :error => "Could not save the database record"
+    end
+  end
+
+  def xml_create
+    @report = Report.new(params[:report])
+    if @report.system == nil
+      @report.system = System.new
+    end
+
+    if @report.save
+      redirect_to(:action=>"xml_show", :id=>@report.id)
+    else
+      redirect_to(:action=>"xml_index", :error=>"Could not save the database record")
     end
   end
 
