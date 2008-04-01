@@ -240,7 +240,7 @@ module ApplicationHelper
   end
 
   def has_role?(*roles)
-    @current_user and @current_user.has_role?(roles)
+    @current_user and @current_user.has_role?(*roles)
   end
 
   def has_role_or_is_me?(contact_id, *roles)
