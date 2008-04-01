@@ -1,4 +1,8 @@
 class RolesController < ApplicationController
+  def method_missing(symbol, *args)
+    redirect_to :controller => "roles", :action => "index"
+  end
+
   def index
     @roles = Role.find(:all)
   end

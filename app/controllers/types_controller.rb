@@ -1,4 +1,8 @@
 class TypesController < ApplicationController
+  def method_missing(symbol, *args)
+    redirect_to :controller => "types", :action => "index"
+  end
+
   def index
     @types = Type.find(:all)
   end
