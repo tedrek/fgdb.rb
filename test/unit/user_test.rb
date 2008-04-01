@@ -4,7 +4,7 @@ class UserTest < Test::Unit::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead.
   # Then, you can remove it from this and the functional test.
   include AuthenticatedTestHelper
-  fixtures :users
+  fixtures :users, :roles, :roles_users
 
   #:MC: broken with userstamps required
 #  def test_should_create_user
@@ -13,6 +13,15 @@ class UserTest < Test::Unit::TestCase
 #      assert !user.new_record?, "#{user.errors.full_messages.to_sentence}"
 #    end
 #  end
+
+  def test_has_role
+    aaron = users(:aaron)
+    assert_equal 1, aaron.roles.length
+    assert aaron.has_role?("ROLE_FRONT_DESK")
+    assert ! aaron.has_role?("ROLE_STORE"), 'should not have store role yet'
+    aaron.roles << Role.find(:first, :conditions => {:name => 'ROLE_STORE'})
+    assert aaron.has_role?("ROLE_STORE")
+  end
 
   def test_should_require_login
     assert_no_difference 'User.count' do
