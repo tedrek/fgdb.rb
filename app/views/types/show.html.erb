@@ -1,8 +1,8 @@
 <p>
   <b>Name:</b>
-  <%=h @type.name %>
+  <%= @type.name %>
 </p>
 
 
-<%= link_to 'Edit', edit_type_path(@type) %> |
-<%= link_to 'Back', types_path %>
+<%= link_to 'Edit', :action=>"edit", :id=>@type.id %> |
+<%= link_to 'Back', :action=>"index" %>

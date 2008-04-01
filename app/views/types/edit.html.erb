@@ -1,17 +1,15 @@
 <h1>Editing type</h1>
 
-<%= error_messages_for :type %>
-
-<% form_for(@type) do |f| %>
+<% form_tag({:action => "update", :id => @type.id}) do |f| %>
   <p>
     <b>Name</b><br />
-    <%= f.text_field :name %>
+    <%= text_field "type", :name %>
   </p>
 
   <p>
-    <%= f.submit "Update" %>
+    <%= submit_tag "Update" %>
   </p>
 <% end %>
 
-<%= link_to 'Show', @type %> |
-<%= link_to 'Back', types_path %>
+<%= link_to 'Show', :action => "show", :id=>@type.id %> |
+<%= link_to 'Back', :action=>"index" %>
