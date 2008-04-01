@@ -109,7 +109,7 @@ class ContactsController < ApplicationController
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
           @contact.user.attributes = params[:user]
-          if has_role(:ROLE_ADMIN)
+          if has_role?(:ROLE_ADMIN)
             if params[:roles]
               @contact.user.roles = Role.find(params[:roles])
             else
