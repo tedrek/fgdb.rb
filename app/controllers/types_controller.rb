@@ -16,11 +16,11 @@ class TypesController < ApplicationController
   end
 
   def create
-    @type = type.new(params[:report])
+    @type = type.new(params[:type])
 
     if @type.save
       flash[:notice] = 'Type was successfully created.'
-      redirect_to(:action=>"show", :id=>@report.id)
+      redirect_to(:action=>"show", :id=>@type.id)
     else
       render :action => "new", :error => "Could not save the database record"
     end
@@ -31,7 +31,7 @@ class TypesController < ApplicationController
 
     if @type.update_attributes(params[:type])
       flash[:notice] = 'Type was successfully created.'
-      redirect_to(:action=>"show", :id=>@report.id)
+      redirect_to(:action=>"show", :id=>@type.id)
     else
       render :action => "new", :error => "Could not save the database record"
     end
