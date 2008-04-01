@@ -1,17 +1,15 @@
 <h1>Editing role</h1>
 
-<%= error_messages_for :role %>
-
-<% form_for(@role) do |f| %>
+<% form_tag({:action => "update", :id => @role.id}) do |f| %>
   <p>
     <b>Name</b><br />
-    <%= f.text_field :name %>
+    <%= text_field "role", :name %>
   </p>
 
   <p>
-    <%= f.submit "Update" %>
+    <%= submit_tag "Update" %>
   </p>
 <% end %>
 
-<%= link_to 'Show', @role %> |
-<%= link_to 'Back', roles_path %>
+<%= link_to 'Show', :action => "show", :id=>@role.id %> |
+<%= link_to 'Back', :action=>"index" %>
