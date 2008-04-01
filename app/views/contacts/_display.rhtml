@@ -25,6 +25,11 @@
       <%= method.display %><br />
     <% end %>
   </div>
+  <% if @contact.notes %>
+  <div class="contact_comments">
+    <%=h @contact.notes %>
+  </div>
+  <% end %>
   <br />
   <% if (! options.has_key?(:display_edit)) or (options[:display_edit] == 'true') %>
     <% edit_options = options.merge(:action => 'edit') %>
