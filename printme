@@ -122,8 +122,8 @@ else #no printme has been ran
   system.puts(response.body)
 end
 ###TODO: process the hashes for jobs and types (not to mention make the thing that spits it out)
-jobs = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/roles/xml_list")).response)
-types = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/types/xml_list")).response)
+jobs = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/roles/xml_index")).body)
+types = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/types/xml_index")).body)
 system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
 system.close
 end
