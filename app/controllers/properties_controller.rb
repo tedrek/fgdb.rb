@@ -15,6 +15,8 @@ class PropertiesController < ApplicationController
         Role
       when "type"
         Type
+      else
+        raise "I don't know about that kind of property"
     end
   end
 
