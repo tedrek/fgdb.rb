@@ -21,7 +21,7 @@
 
 <div class="form-element">
   <label for="volunteer_task_volunteer_task_type">Task type</label>
-  <% dropdown_list = VolunteerTaskType.find(:all).sort_by {|type| type.description.downcase} %>
+  <% dropdown_list = VolunteerTaskType.instantiable_nodes %>
   <select id="volunteer_task_volunteer_task_type" name="volunteer_task[volunteer_task_type_id]">
     <%= options_from_collection_for_select(dropdown_list, "id", "display_name", @volunteer_task.volunteer_task_type_id) %>
   </select>

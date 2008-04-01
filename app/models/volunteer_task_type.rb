@@ -10,6 +10,12 @@ class VolunteerTaskType < ActiveRecord::Base
     find(:all, :conditions => [ 'parent_id = ?', 0 ])
   end
 
+  def self.instantiable_nodes
+    find(:all,
+         :conditions => {'instantiable' => true},
+         :order => ['description ASC'])
+  end
+
   def self.find_actual(*ids)
     ids.delete_if {|id| id == 0 }
     find(*ids)
@@ -39,6 +45,7 @@ class VolunteerTaskType < ActiveRecord::Base
   def display_name
     parents = ancestors
     parents.pop # get rid of the root node
+    parents.pop # get rid of the assumed program type
     if parents.empty?
       description
     else
