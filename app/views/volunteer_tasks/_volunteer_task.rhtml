@@ -17,12 +17,16 @@
         </td>
         <td>
           <% edit_options = @options.merge(:action => 'edit') %>
-          <%= link_to_remote "Edit",
-                         { :url => edit_options,
-                           :confirm => 'Current task will be lost.  Continue?',
-                           :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}');",
-                         },
-                         { :href => url_for(edit_options) } %>
+          <a href="<%= url_for(edit_options) %>"
+            id="edit_<%= volunteer_task.id %>_link"
+            onclick="return false">Edit</a>
+          <%= custom_observer("edit_#{volunteer_task.id}_link",
+                "if(task_form_has_not_been_edited() ||
+                      confirm('Current task will be lost.  Continue?')) {
+                   Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}');
+                   #{remote_function(:url => edit_options)};
+                 };",
+                 'click') %>
         </td>
         <td>
           <% delete_options = @options.merge(:action => 'destroy') %>
