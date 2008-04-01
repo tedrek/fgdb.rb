@@ -1,10 +1,12 @@
 class PropertiesController < ApplicationController
-  def set_property_type(type)
-    @property_type=type
+  before_filter :set_my_property_type
+
+  def set_my_property_type
+    @property_type=controller_name().gsub(/s$/, '')
   end
 
   def method_missing(symbol, *args)
-    redirect_to :controller => @property_type, :action => "index"
+    redirect_to :action => "index"
   end
 
   def model
