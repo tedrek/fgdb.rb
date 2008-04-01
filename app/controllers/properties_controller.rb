@@ -34,10 +34,9 @@ class PropertiesController < ApplicationController
   end
 
   def create
-    @property = model.new(params[:role])
+    @property = model.new(params[:property])
 
     if @property.save
-      flash[:notice] = 'Role was successfully created.'
       redirect_to(:action=>"index")
     else
       render :action => "new", :error => "Could not save the database record"
@@ -47,8 +46,7 @@ class PropertiesController < ApplicationController
   def update
     @property = model.find(params[:id])
 
-    if @property.update_attributes(params[:role])
-      flash[:notice] = 'Role was successfully created.'
+    if @property.update_attributes(params[:property])
       redirect_to(:action=>"index")
     else
       render :action => "new", :error => "Could not save the database record"

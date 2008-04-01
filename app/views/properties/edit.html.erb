@@ -3,7 +3,7 @@
 <% form_tag({:action => "update", :id => @property.id}) do |f| %>
   <p>
     <b>Name</b><br />
-    <%= text_field @property_type, :name %>
+    <%= text_field "property", :name %>
   </p>
 
   <p>
