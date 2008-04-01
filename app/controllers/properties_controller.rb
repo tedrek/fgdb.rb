@@ -21,12 +21,12 @@ class PropertiesController < ApplicationController
   end
 
   def xml_index
-    @properties=model.find(:all)
+    @properties=model.find(:all, :order => "id")
     render :xml => @properties
   end
 
   def index
-    @properties = model.find(:all)
+    @properties = model.find(:all, :order => "id")
   end
 
   def new

@@ -14,7 +14,7 @@ class ReportsController < ApplicationController
   end
 
   def list_all
-    @reports = Report.find(:all)
+    @reports = Report.find(:all, :order => "id")
     if @reports.length == 0
       redirect_to(:action => "index", :error => "There are no reports")
       return
@@ -30,7 +30,7 @@ class ReportsController < ApplicationController
       redirect_to(:action => "index", :error => "That contact does not exist") 
       return
     end
-    @reports = Report.find_all_by_contact_id(params[:id])
+    @reports = Report.find_all_by_contact_id(params[:id], :order => "id")
     if @reports.length == 0
       redirect_to(:action => "index", :error => "That contact has no reports") 
       return
@@ -46,7 +46,7 @@ class ReportsController < ApplicationController
       redirect_to(:action => "index", :error => "That system does not exist")
       return
     end
-    @reports = Report.find_all_by_system_id(params[:id])
+    @reports = Report.find_all_by_system_id(params[:id], :order => "id")
     if @reports.length == 0
       redirect_to(:action => "index", :error => "That system has no reports") 
       return
