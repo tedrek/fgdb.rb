@@ -244,7 +244,7 @@ module ApplicationHelper
   end
 
   def has_role_or_is_me?(contact_id, *roles)
-    has_role?(roles) or is_me?(contact_id)
+    has_role?(*roles) or is_me?(contact_id)
   end
 
   def custom_change_observer(element, handler)

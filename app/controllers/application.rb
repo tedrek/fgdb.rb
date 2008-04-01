@@ -30,15 +30,15 @@ class ApplicationController < ActionController::Base
   end
 
   def has_role_or_is_me?(contact_id, *roles)
-     (contact_id and is_me?(contact_id)) or has_role?(roles)
+     (contact_id and is_me?(contact_id)) or has_role?(*roles)
   end
 
   def has_role?(*roles)
-    logged_in? and current_user.has_role?(roles)
+    logged_in? and current_user.has_role?(*roles)
   end
 
   def requires_role(*roles)
-    if has_role?(roles)
+    if has_role?(*roles)
       return true
     else
       redirect_to :controller => 'sidebar_links', 'unauthorized_error' => true
