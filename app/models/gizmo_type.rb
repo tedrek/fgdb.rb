@@ -1,5 +1,4 @@
 class GizmoType < ActiveRecord::Base
-
   acts_as_tree
   has_many  :gizmo_typeattrs,
             :dependent => :destroy
@@ -7,7 +6,6 @@ class GizmoType < ActiveRecord::Base
   has_many  :discount_schedules_gizmo_types,
             :dependent => :destroy
   has_many  :discount_schedules, :through => :discount_schedules_gizmo_types
-
   has_and_belongs_to_many    :gizmo_contexts
 
   validates_numericality_of(:required_fee_cents,
@@ -65,5 +63,4 @@ class GizmoType < ActiveRecord::Base
     end
     mult
   end
-
 end

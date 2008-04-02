@@ -1,6 +1,4 @@
 class PaymentMethod < ActiveRecord::Base
-
-
   def to_s
     description
   end
@@ -42,5 +40,4 @@ class PaymentMethod < ActiveRecord::Base
     end
     @@descriptions
   end
-
 end

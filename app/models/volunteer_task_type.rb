@@ -1,5 +1,4 @@
 class VolunteerTaskType < ActiveRecord::Base
-
   acts_as_tree
 
   def to_s
@@ -53,5 +52,4 @@ class VolunteerTaskType < ActiveRecord::Base
       "%s (%s)" % [description, parents.map {|type| type.description}.join(":")]
     end
   end
-
 end

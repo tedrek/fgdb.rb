@@ -1,5 +1,4 @@
 class Payment < ActiveRecord::Base
-
   belongs_to :donation
   belongs_to :sale
   belongs_to :payment_method

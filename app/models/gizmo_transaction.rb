@@ -1,5 +1,4 @@
 module GizmoTransaction
-
   def gizmos
     gizmo_events.map {|ge| ge.display_name}.join(', ')
   end
@@ -50,19 +49,21 @@ module GizmoTransaction
     end
   end
 
+  #######
   private
-    def required_contact_type
-      # the contact type to actually apply to a named contact who did the txn
-      # used in add_contact_types
-      # overridden in each class which mixes this in (not dispersments, recycling)
-    end
+  #######
 
-    def add_contact_types
-      unless contact_type != 'named' or
-             required_contact_type == nil or
-             contact.contact_types.include? required_contact_type
-        contact.contact_types << required_contact_type
-      end
-    end
+  def required_contact_type
+    # the contact type to actually apply to a named contact who did the txn
+    # used in add_contact_types
+    # overridden in each class which mixes this in (not dispersments, recycling)
+  end
 
+  def add_contact_types
+    unless(contact_type != 'named' or
+           required_contact_type == nil or
+           contact.contact_types.include? required_contact_type)
+      contact.contact_types << required_contact_type
+    end
+  end
 end

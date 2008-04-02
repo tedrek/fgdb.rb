@@ -1,5 +1,4 @@
 class Recycling < ActiveRecord::Base
-
   include GizmoTransaction
   has_many :gizmo_events, :dependent => :destroy
 
@@ -17,5 +16,4 @@ class Recycling < ActiveRecord::Base
   def set_occurred_at_on_gizmo_events
     self.gizmo_events.each {|event| event.occurred_at = self.recycled_at}
   end
-
 end

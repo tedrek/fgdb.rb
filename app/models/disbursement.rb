@@ -1,5 +1,4 @@
 class Disbursement < ActiveRecord::Base
-
   include GizmoTransaction
   belongs_to :contact, :order => "surname, first_name"
   belongs_to :disbursement_type
@@ -25,5 +24,4 @@ class Disbursement < ActiveRecord::Base
   def set_occurred_at_on_gizmo_events
     self.gizmo_events.each {|event| event.occurred_at = self.disbursed_at}
   end
-
 end

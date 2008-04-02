@@ -11,5 +11,4 @@ class GizmoEventsGizmoTypeattr < ActiveRecord::Base
   def value=( val )
     self.send "attr_val_#{gizmo_typeattr.gizmo_attr.datatype}=", val
   end
-
 end
