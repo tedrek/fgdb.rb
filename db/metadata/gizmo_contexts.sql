@@ -21,11 +21,11 @@ SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('gizmo_contexts', 'id
 
 ALTER TABLE gizmo_contexts DISABLE TRIGGER ALL;
 
-COPY gizmo_contexts (id, name, lock_version, updated_at, created_at, created_by, updated_by) FROM stdin;
-1	donation	0	2006-10-10 12:11:44	2006-10-10 12:11:44	1	1
-2	sale	0	2006-10-10 12:11:56	2006-10-10 12:11:56	1	1
-3	recycling	0	2006-10-19 09:45:49	2006-10-19 09:45:49	1	1
-4	disbursement	2	2007-08-10 18:26:17	2006-10-19 09:45:57	1	1
+COPY gizmo_contexts (id, name, lock_version, updated_at, created_at) FROM stdin;
+1	donation	0	2006-10-10 12:11:44	2006-10-10 12:11:44
+2	sale	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+3	recycling	0	2006-10-19 09:45:49	2006-10-19 09:45:49
+4	disbursement	2	2007-08-10 18:26:17	2006-10-19 09:45:57
 \.
 
 

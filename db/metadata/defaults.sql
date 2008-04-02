@@ -21,14 +21,14 @@ SELECT pg_catalog.setval(pg_catalog.pg_get_serial_sequence('"defaults"', 'id'), 
 
 ALTER TABLE "defaults" DISABLE TRIGGER ALL;
 
-COPY "defaults" (id, name, value, lock_version, updated_at, created_at, created_by, updated_by) FROM stdin;
-3	tax id	Federal Tax I.D.  93-1292010	0	2007-04-16 14:16:07	2007-04-16 14:16:07	1	1
-6	country	United States	0	2007-04-16 14:16:42	2007-04-16 14:16:42	1	1
-4	address image	/images/hdr-address.gif	0	2007-04-16 14:16:41	2007-04-16 14:16:41	1	1
-5	business id		0	2007-04-16 14:22:06	2007-04-16 14:22:06	1	1
-7	contact info	addr: 1731 SE 10th Portland, OR 97214 tele: 503.232.9350 email: info@freegeek.org	0	2007-04-16 14:22:16	2007-04-16 14:22:16	1	1
-2	state_or_province	OR	1	2007-04-16 14:33:55	2007-04-16 14:15:25	1	1
-1	city	Portland	1	2007-04-16 14:34:29	2007-04-16 14:15:10	1	1
+COPY "defaults" (id, name, value, lock_version, updated_at, created_at) FROM stdin;
+3	tax id	Federal Tax I.D.  93-1292010	0	2007-04-16 14:16:07	2007-04-16 14:16:07
+6	country	United States	0	2007-04-16 14:16:42	2007-04-16 14:16:42
+4	address image	/images/hdr-address.gif	0	2007-04-16 14:16:41	2007-04-16 14:16:41
+5	business id		0	2007-04-16 14:22:06	2007-04-16 14:22:06
+7	contact info	addr: 1731 SE 10th Portland, OR 97214 tele: 503.232.9350 email: info@freegeek.org	0	2007-04-16 14:22:16	2007-04-16 14:22:16
+2	state_or_province	OR	1	2007-04-16 14:33:55	2007-04-16 14:15:25
+1	city	Portland	1	2007-04-16 14:34:29	2007-04-16 14:15:10
 \.
 
 
