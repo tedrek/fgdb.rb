@@ -100,7 +100,7 @@ class ReportsController < ApplicationController
   def income_report_init
     methods = PaymentMethod.find(:all)
     method_names = methods.map {|m| m.description}
-    @columns = Hash.new( method_names.insert(2, 'till total').insert(-2, 'total real').insert(-1, 'total') )
+    @columns = Hash.new( method_names.insert(2, 'till total').insert(-3, 'total real').insert(-1, 'total') )
     @width = @columns[nil].length
     @rows = {}
     @rows[:donations] = ['fees', 'voluntary', 'subtotals']
@@ -173,13 +173,12 @@ class ReportsController < ApplicationController
       column = income_data[:sales][PaymentMethod.descriptions[payment.payment_method_id]]
       column[sale.discount_schedule.name] += payment.amount_cents
       column['subtotals'] += payment.amount_cents
-      if payment.payment_method_id != PaymentMethod.invoice.id
+      if PaymentMethod.is_money_method?(payment.payment_method)
         income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount_cents
         income_data[:sales]['total real']['subtotals'] += payment.amount_cents
         totals['total real']['total'] += payment.amount_cents
       end
-      if( (payment.payment_method_id == PaymentMethod.cash.id) ||
-          (payment.payment_method_id == PaymentMethod.check.id) )
+      if PaymentMethod.is_till_method?(payment.payment_method)
         income_data[:sales]['till total'][sale.discount_schedule.name] += payment.amount_cents
         income_data[:sales]['till total']['subtotals'] += payment.amount_cents
         totals['till total']['total'] += payment.amount_cents
