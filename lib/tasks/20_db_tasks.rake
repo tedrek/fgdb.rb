@@ -62,16 +62,16 @@ end
 
 def load_metadata( rails_env = "development" )
   abcs, search_path = setup_environment(rails_env)
-  dbname = abcs[rails_env]['database']
   case abcs[rails_env]["adapter"]
   when "postgresql"
-    load_data_from(METADATADIR, abcs)
+    load_data_from(METADATADIR, abcs, rails_env)
   else
     raise "Task not supported by '#{abcs["test"]["adapter"]}'"
   end
 end
 
-def load_data_from(dir, abcs)
+def load_data_from(dir, abcs, rails_env)
+  dbname = abcs[rails_env]['database']
   print "Loading the meta-data..."
   for table in METADATATABLES do
     `echo "ALTER TABLE #{table} DISABLE TRIGGER ALL;
