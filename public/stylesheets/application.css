@@ -170,6 +170,14 @@ div.user div.login, div.password {
   clear: left;
 }
 
+div.user div.role-check-box {
+  clear: left;
+}
+
+div.user div.role-check-box label { 
+  display: inline;
+}
+
 form.floating_form {
 position: absolute;
 width: 82%;

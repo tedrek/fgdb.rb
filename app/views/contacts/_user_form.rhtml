@@ -30,12 +30,12 @@
     </div>
 
     <% for role in Role.find(:all) %>
-      <div class="form-element">
+      <div class="form-element role-check-box">
         <input type="checkbox" id="<%= role.name %>"
                name="roles[]" value="<%= role.id %>"
                <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
         />
-        <label for="<%= role.name %>"><%= role.name %>?</label>
+        <label for="<%= role.name %>"><%= (xx = /ROLE_(.+)/.match(role.name)) ? xx[1] : role.name %></label>
       </div>
     <% end %>
   </div>
