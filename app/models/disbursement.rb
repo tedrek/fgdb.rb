@@ -11,11 +11,17 @@ class Disbursement < ActiveRecord::Base
     errors.add_on_empty("gizmo_events")
   end
 
+  before_save :set_occurred_at_on_gizmo_events
+
+  class << self
+    def default_sort_sql
+      "disbursements.disbursed_at DESC"
+    end
+  end
+
   def recipient
     contact
   end
-
-  before_save :set_occurred_at_on_gizmo_events
 
   #######
   private

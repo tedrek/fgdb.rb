@@ -31,10 +31,11 @@ class TransactionController < ApplicationController
   def component
     @show_wrapper = true if @show_wrapper.nil?
     @model = model
-    @sort_sql = model.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    # @sort_sql = model.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    @sort_sql = model.default_sort_sql
     @conditions = current_conditions(params)
     search_options = {
-      :order => @sort_by,
+      :order => @sort_sql,
       :per_page => default_per_page,
       :include => [:gizmo_events],
       :conditions => @conditions.conditions(model)
@@ -43,7 +44,7 @@ class TransactionController < ApplicationController
       search_options[:include] << :payments
       search_options[:joins] = "JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
     end
-    @sort_by = @sort_sql.nil? ? "#{model.table_name}.#{model.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
+    # @sort_by = @sort_sql.nil? ? "#{model.table_name}.#{model.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
     search_options[:page] = params[:page]
     @transactions = model.paginate( search_options )
 

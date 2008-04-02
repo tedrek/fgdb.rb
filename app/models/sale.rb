@@ -33,6 +33,12 @@ class Sale < ActiveRecord::Base
     errors.add("gizmos", "should include something") if gizmo_events.empty?
   end
 
+  class << self
+    def default_sort_sql
+      "sales.created_at DESC"
+    end
+  end
+
   def buyer
     contact ?
       contact.display_name :

@@ -35,6 +35,12 @@ class Donation < ActiveRecord::Base
     errors.add("payments", "may only have one invoice") if invoices.length > 1
   end
 
+  class << self
+    def default_sort_sql
+      "donations.created_at DESC"
+    end
+  end
+
   def donor
     if contact_type == 'named'
       contact

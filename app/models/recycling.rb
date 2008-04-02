@@ -9,6 +9,12 @@ class Recycling < ActiveRecord::Base
 
   before_save :set_occurred_at_on_gizmo_events
 
+  class << self
+    def default_sort_sql
+      "recycled_at DESC"
+    end
+  end
+
   #######
   private
   #######
