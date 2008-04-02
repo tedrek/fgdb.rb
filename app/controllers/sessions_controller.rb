@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
     cookies.delete :auth_token
     reset_session
     @current_user = nil
-    rerender()
+    redirect_to :controller => "sidebar_links", :action => "index", :logout_message => true
   end
 
   protected

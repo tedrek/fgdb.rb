@@ -4,6 +4,10 @@
 <span class="error">You have insufficient privilages to access that!</span>
 <% end %>
 
+<% if params[:logout_message] %>
+<span class="info">You have been logged out!</span>
+<% end %>
+
 <p class="welcome">This is the release 1.0, so be rough and report all
 your problems.  You will need authorization to do much more than get
 reports; please talk to a staff member to acquire the necessary

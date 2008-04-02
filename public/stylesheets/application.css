@@ -414,3 +414,8 @@ span.error {
     color: #FF0000;
     size: +2;
 }
+
+span.info {
+    color: #00FF00;
+    size: +2;
+}
