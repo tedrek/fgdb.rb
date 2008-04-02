@@ -13,10 +13,6 @@ class Donation < ActiveRecord::Base
   define_amount_methods_on("cash_donation_owed")
   define_amount_methods_on("reported_suggested_fee")
 
-  def initialize(*args)
-    super(*args)
-  end
-
   attr_writer :contact_type #anonymous, named, or dumped
 
   before_save :cleanup_for_contact_type
