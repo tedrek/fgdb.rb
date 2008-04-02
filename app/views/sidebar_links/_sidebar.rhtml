@@ -22,7 +22,7 @@
       <%= link_to "disburse", :controller => 'disbursements' %>
   <% end %>
   </div><div>
-    <span id="toggle_report_links">reports</span>
+    <a href="#" id="toggle_report_links">reports</span>
     <%= custom_observer("toggle_report_links", "$('report_links').toggle()", "click") %>
   </div><div id="report_links" style="display:none;">
     <div>
