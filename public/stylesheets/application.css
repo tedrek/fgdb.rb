@@ -29,8 +29,15 @@ width: 83%;
 div#sidebar a {
 color: #333;
 }
-div#sidebar dd:hover {
+div#sidebar div {
+padding-left: 2px;
+padding-right: 20px;
 background-color: #ACF;
+}
+
+div#sidebar div#report_links {
+padding-left: 10px;
+padding-right: 2px;
 }
 
 h1.welcome {

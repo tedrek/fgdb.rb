@@ -1,37 +1,40 @@
 <div id="sidebar">
-<dl>
-    <% if has_role?("ROLE_VOLUNTEER_MANAGER") %>
-      <dd>
-        <%= link_to "hours", :controller => 'volunteer_tasks' %>
-    <% elsif current_user and current_user.contact_id %>
-      <dd>
-        <%= link_to "hours", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
-    <% end %>
+  <% if has_role?("ROLE_VOLUNTEER_MANAGER") %>
+    <div>
+      <%= link_to "hours", :controller => 'volunteer_tasks' %>
+  <% elsif current_user and current_user.contact_id %>
+    <div>
+      <%= link_to "hours", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
+  <% end %>
   <% if has_role?("ROLE_FRONT_DESK") %>
-    </dd><dd>
+    </div><div>
       <%= link_to "donations", :controller => 'donations' %>
   <% end %>
   <% if has_role?("ROLE_STORE") %>
-    </dd><dd>
+    </div><div>
       <%= link_to "sales", :controller => 'sales' %>
   <% end %>
 
-  </dd><dd>
+  </div><div>
     <%= link_to "recycling", :controller => 'recyclings' %>
   <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
-    </dd><dd>
+    </div><div>
       <%= link_to "disburse", :controller => 'disbursements' %>
   <% end %>
-  </dd><dd>
-    <%= link_to "income", :controller => 'reports', :action => 'income' %>
-  </dd><dd>
-    <%= link_to "gizmos", :controller => 'reports', :action => 'gizmos' %>
-  </dd><dd>
-    <%= link_to "volunteers", :controller => 'reports', :action => 'volunteers' %>
-  <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
-    </dd><dd>
+  </div><div>
+    <span id="toggle_report_links">reports</span>
+    <%= custom_observer("toggle_report_links", "$('report_links').toggle()", "click") %>
+  </div><div id="report_links" style="display:none;">
+    <div>
+      <%= link_to "income", :controller => 'reports', :action => 'income' %>
+    </div><div>
+      <%= link_to "gizmos", :controller => 'reports', :action => 'gizmos' %>
+    </div><div>
+      <%= link_to "volunteers", :controller => 'reports', :action => 'volunteers' %>
+    <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
+    </div><div>
       <%= link_to "contacts", :controller => 'contacts' %>
-  <% end %>
-  </dd>
-</dl>
+    <% end %>
+    </div>
+  </div>
 </div>
