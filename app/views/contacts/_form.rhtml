@@ -1,9 +1,9 @@
-<div class="active-scaffold">
 <fieldset>
     <!--[form:contact]-->
 
 <div class="form-element">
-  <%= check_box "contact","is_organization" %>&nbsp;<label for="contact_is_organization">organization</label>
+  <%= check_box "contact","is_organization"
+  %>&nbsp;<label class="checkbox" for="contact_is_organization">organization</label>
 </div>
 
 <%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" %>
@@ -15,7 +15,7 @@
     name="contact_types[]"
     value="<%= contact_type.id %>"
   <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
-  />&nbsp;<label for="<%= contact_type.description %>"><%= contact_type.description %></label>
+  />&nbsp;<label class="checkbox" for="<%= contact_type.description %>"><%= contact_type.description %></label>
 </div>
 <% end %>
 <% check_vol = "if($('%s').checked) {$('volunteer').checked = true}" %>
@@ -90,4 +90,3 @@
 <!--[eoform:contact]-->
 
 </fieldset>
-</div>
