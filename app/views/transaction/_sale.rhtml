@@ -25,13 +25,16 @@
         <td>
           <% edit_options = @options.merge(:action => 'edit') %>
           <% update_options = @options.merge(:action => "update") %>
-          <%= link_to_remote "Edit",
-                         { :url => edit_options,
-                           :confirm => 'Cancel current transaction?',
-                           :loading => "Element.show('#{loading_indicator_id("sale_#{sale.id}_loading")}');",
-                           :complete => "updateTotals('#{@transaction_type}', '#{element_form_id(update_options)}');"
-                         },
-                         { :href => url_for(edit_options) } %>
+          <a href="<%= url_for(edit_options) %>"
+             id="edit_<%= sale.id %>_link"
+             onclick="return false">Edit</a>
+          <%= custom_observer("edit_#{sale.id}_link",
+                "if(transaction_form_has_not_been_edited() ||
+                      confirm('Current transaction will be lost.  Continue?')) {
+                   #{remote_function(:url => edit_options, :loading => "Element.show('#{loading_indicator_id("sale_#{sale.id}_loading")}');", :complete => "updateTotals('#{@transaction_type}', '#{element_form_id(update_options)}');")};
+                 };",
+                 'click') %>
+
         </td>
         <td>
           <% delete_options = @options.merge(:action => 'destroy') %>
