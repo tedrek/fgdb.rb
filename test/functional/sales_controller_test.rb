@@ -14,8 +14,8 @@ class SalesControllerTest < ActionController::TestCase
     s = Sale.new({:contact_type => 'named', :created_by => 1})
     s.contact = Contact.find(:first)
     s.gizmo_events = [GizmoEvent.new(system_event)]
-    s.gizmo_events[0].unit_price = 20
-    s.payments = [cash_payment(20)]
+    s.gizmo_events[0].unit_price = "20"
+    s.payments = [cash_payment("20")]
     s.save
     return s
   end
