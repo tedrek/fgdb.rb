@@ -5,7 +5,7 @@ module DonationsHelper
     return '/donations'
   end
 
-  def scaffold_columns
+  def columns
     [
       Column.new(Donation, :name => 'id'),
       Column.new(Donation, :name => 'payment',

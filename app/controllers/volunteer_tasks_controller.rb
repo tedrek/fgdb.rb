@@ -30,15 +30,15 @@ class VolunteerTasksController < ApplicationController
     end
   end
 
-  # All posts to change scaffold level variables like sort values or page changes go through this action
+  # All posts to change variables like sort values or page changes go through this action
   def component_update
-    @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold
+    @show_wrapper = false # don't show the outer wrapper elements if we are just updating
     component
   end
 
   def component
     @show_wrapper = true if @show_wrapper.nil?
-    @sort_sql = VolunteerTask.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    @sort_sql = VolunteerTask.columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_by = @sort_sql.nil? ?
       "#{VolunteerTask.table_name}.date_performed DESC" :
       @sort_sql  + " " + current_sort_direction(params)

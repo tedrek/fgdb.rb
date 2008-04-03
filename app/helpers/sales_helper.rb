@@ -5,7 +5,7 @@ module SalesHelper
     return '/sales'
   end
 
-  def scaffold_columns
+  def columns
     [
       Column.new(Sale, :name => 'id'),
       Column.new(Sale, :name => 'payment',

@@ -6,8 +6,6 @@
           :html => { :href => url_for(@options.merge(:controller => '/volunteer_tasks')),
           :id => element_form_id(@options) } do %>
 
-      <%= hidden_field_tag "scaffold_id", @options[:scaffold_id] %>
-
       <h4><%= Inflector.titleize(@options[:action]) %> Volunteer Task
         <%= "for " + @volunteer_task.contact.display_name if @volunteer_task.contact %></h4>
 

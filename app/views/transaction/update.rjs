@@ -4,14 +4,12 @@
 
 if @successful
   page.remove element_row_id(@options)
-  page.insert_html( :top, scaffold_tbody_id(@options),
+  page.insert_html( :top, tbody_id(@options),
     :partial => @transaction_type,
     :locals => { :hidden => true, @transaction_type.to_sym => @transaction } )
   page.remove element_row_id(@update_options)
   page.show element_row_id(@options)
-  page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');"
-  page << "AjaxScaffold.removeSortClasses('#{@transaction_type}');"
-  page.replace_html scaffold_messages_id(@options), :partial => 'messages'
+  page.replace_html messages_id(@options), :partial => 'messages'
   page << remote_function( :url => params.merge( { :action => 'new', :transaction_type => @transaction_type } ) )
   if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
     page << "window.open('#{url_for(@print_options)}','Receipt_#{@transaction.id}','#{@print_window_options}');"

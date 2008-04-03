@@ -33,7 +33,7 @@ module ApplicationHelper
   end
 
   def num_columns
-    scaffold_columns.length + 1
+    columns.length + 1
   end
 
   def contact_field(obj_name, field_name, options = {})
@@ -55,31 +55,23 @@ module ApplicationHelper
   end
 
   def contact_searchbox_id(options)
-    "#{@transaction_type}_contact_searchbox"
+    "#{@transaction_type||'foo'}_contact_searchbox"
   end
 
   def searchbox_display_id(options)
     contact_element_prefix(options) + '_searchbox_display_id'
   end
 
-  def contact_search_box
-    render :partial => 'contacts/lookup'
-  end
-
-  def header_totals_id(options)
-    "#{@transaction_type}_header_totals"
-  end
-
-  def anonymize_button_id(options)
-    "#{@transaction_type}_anonymize"
-  end
-
-  def content_id(options)
+  def content_id(o = {})
     'content'
   end
 
-  def scaffold_form_tbody_id(options)
-    "#{@transaction_type}_form_tbody"
+  def component_id(o = {})
+    'component'
+  end
+
+  def form_tbody_id(options)
+    "#{@transaction_type||'foo'}_form_tbody"
   end
 
   # due to prototype suckness, 'extend' may not be used as a choice name.
@@ -163,16 +155,12 @@ module ApplicationHelper
     contact_element_prefix(options) + '_search_results_id'
   end
 
-  def scaffold_content_id(options)
-    "#{@transaction_type}-content"
-  end
-
-  def scaffold_messages_id(options)
-    "#{@transaction_type}-messages"
+  def messages_id(options)
+    "#{@transaction_type||'foo'}-messages"
   end
 
   def empty_message_id(options)
-    "#{@transaction_type}-empty-message"
+    "#{@transaction_type||'foo'}-empty-message"
   end
 
   def column_class(column_name, column_value, sort_column, class_name = nil)
@@ -212,23 +200,19 @@ module ApplicationHelper
   end
 
   def current_sort(params)
-    if session[params[:scaffold_id]]
-      session[params[:scaffold_id]][:sort]
-    else
-      'asc'
-    end
+    'asc'
   end
 
-  def scaffold_column_header_id(options)
-    "#{@transaction_type}-#{options[:column_name]}-column"
+  def column_header_id(options)
+    "#{@transaction_type||'foo'}-#{options[:column_name]}-column"
   end
 
-  def scaffold_tbody_id(options)
-    "#{@transaction_type}-tbody"
+  def tbody_id(options)
+    "#{@transaction_type||'foo'}-tbody"
   end
 
   def loading_indicator_id(prefix)
-    "#{prefix}_loading_indicator_id"
+    "#{prefix||'foo'}_loading_indicator_id"
   end
 
   def loading_indicator_tag(prefix)

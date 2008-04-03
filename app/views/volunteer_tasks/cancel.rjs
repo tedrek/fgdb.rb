@@ -1,5 +1,4 @@
 @options = {
-  :scaffold_id => params[:scaffold_id],
   :action => params[:referring_action],
   :id => params[:id],
   :contact_id => params[:contact_id],
@@ -8,9 +7,6 @@
 
 if @successful
   page.remove element_row_id(@options)
-  if @options[:action] == "create"
-    page << "AjaxScaffold.displayMessageIfEmpty('#{scaffold_tbody_id(@options)}','#{empty_message_id(@options)}');"
-  end
   new_params = @options.merge( { :action => 'new', :id => nil } )
   page << remote_function( :url => new_params )
 else

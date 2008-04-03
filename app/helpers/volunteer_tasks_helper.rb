@@ -1,11 +1,7 @@
 module VolunteerTasksHelper
   include ApplicationHelper
 
-  def num_columns
-    scaffold_columns.length + 1
-  end
-
-  def scaffold_columns
+  def columns
     [
      Column.new(VolunteerTask, :name => 'contact', :label => 'Volunteer Name',
                 :eval => 'volunteer_task.contact.display_name', :sortable => false),

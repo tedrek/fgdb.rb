@@ -5,7 +5,7 @@ module DisbursementsHelper
     return '/disbursements'
   end
 
-  def scaffold_columns
+  def columns
     [
       Column.new(Disbursement, :name => 'disbursement_type', :sortable => false),
       Column.new(Disbursement, :name => 'recipient', :sortable => false,

@@ -24,14 +24,14 @@ class TransactionController < ApplicationController
   public
 
   def component_update
-    @show_wrapper = false # don't show the outer wrapper elements if we are just updating an existing scaffold
+    @show_wrapper = false # don't show the outer wrapper elements if we are just updating
     component
   end
 
   def component
     @show_wrapper = true if @show_wrapper.nil?
     @model = model
-    # @sort_sql = model.scaffold_columns_hash[current_sort(params)].sort_sql rescue nil
+    # @sort_sql = model.columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_sql = model.default_sort_sql
     @conditions = current_conditions(params)
     search_options = {

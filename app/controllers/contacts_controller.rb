@@ -62,7 +62,6 @@ class ContactsController < ApplicationController
     @options = params.merge({:action => "create", :id => rand(1000).to_s * 10})
     @new_options = @options.merge(:action => "new", :id => nil)
     @successful = true
-    #render :action => 'new.rjs'
     render :partial => 'new_edit', :locals => { :@options => @options }
   end
 
@@ -98,7 +97,6 @@ class ContactsController < ApplicationController
     @options = params.merge({ :action => "update", :id => params[:id] })
     @view_options = @options.merge(:action => "view")
     render :partial => 'new_edit', :locals => { :@options => @options }
-    #render :action => 'edit.rjs'
   end
 
   def update

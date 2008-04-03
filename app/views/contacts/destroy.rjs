@@ -1,4 +1,4 @@
-@options = { :scaffold_id => params[:scaffold_id], :action => "view", :id => params[:id] }
+@options = {:action => "view", :id => params[:id]}
 
 if @successful
   page.replace_html search_results_id(params), "<p>Pbbbppt!</p>"

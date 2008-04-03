@@ -1,15 +1,15 @@
 <% if @show_wrapper %>
-<div id="<%= params[:scaffold_id] %>" class="ajax-scaffold">
-  <div id="<%= scaffold_content_id(params) %>">
+<div>
+  <div id="<%= component_id(params) %>">
 <% end %>
-  <div class="ajax-scaffold-header">
+  <div class="header">
     <div class="actions">
       <% new_params = params.merge(:controller => '/volunteer_tasks', :action => 'new') %>
       <%= loading_indicator_tag("new_volunteer_task_loading") %>
     </div>
   </div>
       <div class="messages-container">
-        <div id="<%= scaffold_messages_id(params) %>">
+        <div id="<%= messages_id(params) %>">
           <%= render :partial => 'messages' %>
         </div>
         <p id="<%= empty_message_id(params) %>" class="empty-message" <%= " style=\"display:none;\" " if !@volunteer_tasks.empty? %>>
@@ -17,7 +17,7 @@
         </p>
       </div>
 
-  <div id="<%= scaffold_form_tbody_id(params) %>">
+  <div id="<%= form_tbody_id(params) %>">
   </div>
   <table>
   <tbody>
@@ -25,19 +25,19 @@
       <%= render :partial => 'column_headings' %>
     </tr>
   </tbody>
-  <tbody id="<%= scaffold_tbody_id(params) %>">
+  <tbody id="<%= tbody_id(params) %>">
     <% if !@volunteer_tasks.empty? %>
       <%= render :partial => 'volunteer_task', :collection => @volunteer_tasks, :locals => { :hidden => false } %>
     <% end %>
   </tbody>
 </table>
-<div class="ajax-scaffold-footer">
+<div class="footer">
   <td class="indicator-container">
     <%= loading_indicator_tag("volunteer_task_footer_loading") %>
   </td>
 
   <%= will_paginate @volunteer_tasks, :remote_options => {
-        :method => :get, :update => scaffold_content_id(params), :loading => "Element.show('#{loading_indicator_id("volunteer_task_footer_loading")}');"
+        :method => :get, :update => component_id(params), :loading => "Element.show('#{loading_indicator_id("volunteer_task_footer_loading")}');"
       }
   %>
 </div>

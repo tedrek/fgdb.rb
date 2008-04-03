@@ -2,10 +2,8 @@
 
 if @successful
   page.remove element_row_id(@options)
-  page << "AjaxScaffold.displayMessageIfEmpty('#{scaffold_tbody_id(@options)}','#{empty_message_id(@options)}');"
-  page << "AjaxScaffold.stripe('#{scaffold_tbody_id(@options)}');"
 else
   page.hide loading_indicator_id("#{@transaction_type}_#{params[:id]}_loading")
 end
 
-page.replace_html scaffold_messages_id(@options), :partial => 'messages'
+page.replace_html messages_id(@options), :partial => 'messages'

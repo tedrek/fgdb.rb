@@ -1,8 +1,8 @@
 <% if @show_wrapper %>
-<div id="<%= @transaction_type %>" class="ajax-scaffold">
-  <div id="<%= scaffold_content_id(params) %>">
+<div id="<%= @transaction_type %>">
+  <div id="<%= component_id(params) %>">
 <% end %>
-  <div class="ajax-scaffold-header">
+  <div class="header">
     <h2><%= Inflector.titleize(@transaction_type) %></h2>
     <div class="actions">
       <% new_params = params.merge(:controller => base_controller, :action => 'new', :transaction_type => @transaction_type) %>
@@ -10,20 +10,20 @@
     </div>
   </div>
       <div class="messages-container">
-        <div id="<%= scaffold_messages_id(params) %>">
+        <div id="<%= messages_id(params) %>">
           <%= render :partial => 'messages' %>
         </div>
         <p id="<%= empty_message_id(params) %>" class="empty-message" <%= " style=\"display:none;\" " if !@transactions.empty? %>>
           No Entries
         </p>
       </div>
-  <div id="<%= scaffold_form_tbody_id(params) %>"></div>
+  <div id="<%= form_tbody_id(params) %>"></div>
   <hr />
   <table>
     <tbody>
       <%= render :partial => 'column_headings' %>
     </tbody>
-    <tbody id="<%= scaffold_tbody_id(params) %>">
+    <tbody id="<%= tbody_id(params) %>">
       <tr></tr>
       <% if !@transactions.empty? %>
         <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false } %>
@@ -31,13 +31,13 @@
     </tbody>
   </table>
 
-<div class="ajax-scaffold-footer">
+<div class="footer">
   <td class="indicator-container">
     <%= loading_indicator_tag("#{@transaction_type}_footer_loading") %>
   </td>
 
   <%= will_paginate @transactions, :remote_options => {
-        :method => :get, :update => scaffold_content_id(params),  :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_footer_loading")}');"
+        :method => :get, :update => component_id(params),  :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_footer_loading")}');"
       }
   %>
   <%# render :partial => 'pagination_links', :locals => { :paginator => @paginator } %>
@@ -46,7 +46,7 @@
   <% refine_params = params.merge({:action => 'component_update', :transaction_type => @transaction_type }) %>
   <% form_remote_tag :url => { :action => 'component_update' },
         :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
-        :update => scaffold_content_id( refine_params ) do %>
+        :update => component_id( refine_params ) do %>
     <% filters = {} %>
     <% filters['date_range'] = date_or_date_range_picker('conditions') %>
     <% filters['contact'] =
@@ -62,7 +62,7 @@
       <% filters['payment_method'] = render( :partial => 'payment_method_select',
             :locals => {:field_id_prefix => 'conditions',
                         :field_name_prefix => 'conditions',
-			:show_label => false,
+                        :show_label => false,
                         :paid_object => @conditions} ) %>
     <% end %>
     <%= select_visibility( 'conditions', 'limit_type', filters ) %>

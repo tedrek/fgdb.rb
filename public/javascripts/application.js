@@ -1,45 +1,6 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-var AjaxScaffold = {
-  stripe: function(tableBody) {
-    var even = false;
-    var tableBody = $(tableBody);
-    var tableRows = tableBody.getElementsByTagName("tr");
-    var length = tableBody.rows.length;
-
-    for (var i = 0; i < length; i++) {
-      var tableRow = tableBody.rows[i];
-      //Make sure to skip rows that are create or edit rows or messages
-      if (!Element.hasClassName(tableRow, "create")
-        && !Element.hasClassName(tableRow, "update")) {
-
-        if (even) {
-          Element.addClassName(tableRow, "even");
-        } else {
-          Element.removeClassName(tableRow, "even");
-        }
-        even = !even;
-      }
-    }
-  },
-  displayMessageIfEmpty: function(tableBody, emptyMessageElement) {
-    // Check to see if this was the last element in the list
-    if ($(tableBody).rows.length == 0) {
-      Element.show($(emptyMessageElement));
-    }
-  },
-  removeSortClasses: function(scaffoldId) {
-    $$('#' + scaffoldId + ' td.sorted').each(function(element) {
-      Element.removeClassName(element, "sorted");
-    });
-    $$('#' + scaffoldId + ' th.sorted').each(function(element) {
-      Element.removeClassName(element, "sorted");
-      Element.removeClassName(element, "asc");
-      Element.removeClassName(element, "desc");
-    });
-  }
-}
 // Called as:
 // confirmReplaceElementValue(elem_id, new_elem_value, confirm_message)
 function confirmReplaceElementValue(id, val, msg){
@@ -241,14 +202,14 @@ function transaction_form_has_not_been_edited() {
             return true;
         else
             return false;
-    } 
+    }
     if($('sale_contact_type'))
     {
         if($('sale_contact_type').value=="anonymous" && $("sale_discount_schedule_id").value=="9" && $("sale_postal_code").value=="" && $("sale_comments").value=="")
             return true;
         else
             return false;
-    } 
+    }
     return false;
 }
 

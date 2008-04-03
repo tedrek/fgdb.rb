@@ -5,7 +5,7 @@ module RecyclingsHelper
     return '/recyclings'
   end
 
-  def scaffold_columns
+  def columns
     [
       Column.new(Recycling, :name => 'gizmos', :sortable => false),
       Column.new(Recycling, :name => 'recycled_at'),

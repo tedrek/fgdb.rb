@@ -2,14 +2,14 @@
 @view_options = @options.merge(:action => "view")
 
 if @successful
-  page.replace_html scaffold_form_tbody_id(@options), :partial => 'new_edit'
+  page.replace_html form_tbody_id(@options), :partial => 'new_edit'
   page.show element_row_id(@options)
   page << "Form.focusFirstElement('#{element_form_id(@options)}');"
   page.visual_effect :highlight, element_cell_id(@options)
   page.replace_html element_messages_id(@options), :partial => 'form_messages'
 else
-  page.replace_html scaffold_messages_id(@options), :partial => 'messages'
-  page << "$('#{scaffold_messages_id(@options)}').scrollTo();"
+  page.replace_html messages_id(@options), :partial => 'messages'
+  page << "$('#{messages_id(@options)}').scrollTo();"
 end
 
 page << "Form.enable('#{element_form_id(@options)}');"

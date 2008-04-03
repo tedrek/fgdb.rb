@@ -3,10 +3,10 @@
 <% @options = params.merge(:controller => '/volunteer_tasks', :action => "view", :id => volunteer_task.send("#{VolunteerTask.primary_key}")) %>
 
 <tr <%= classAttr %> id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
-  <% for scaffold_column in scaffold_columns %>
-    <% column_value = eval(scaffold_column.eval) rescue nil %>
-    <td class="<%= column_class(scaffold_column.name, column_value, current_sort(params), scaffold_column.class_name) %>" >
-      <%= format_column(column_value, scaffold_column.sanitize?) %>
+  <% for column in columns %>
+    <% column_value = eval(column.eval) rescue nil %>
+    <td class="<%= column_class(column.name, column_value, current_sort(params), column.class_name) %>" >
+      <%= format_column(column_value, column.sanitize?) %>
     </td>
   <% end %>
   <td class="actions">
