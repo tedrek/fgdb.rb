@@ -33,14 +33,17 @@
   <%= datalist_for( :gizmo_event, 'disbursement_gizmo_events',
     @disbursement.gizmo_events, :create_with => { :disbursement_id => @disbursement.id },
     :show_header => false, :render_aware => "no_price_gizmo_event_form",
+    :onchange => remote_function(:url =>
+                   {
+                     :controller => base_controller,
+                     :action => 'automatic_datalist_row'
+                   },
+                   :with => "Form.serialize('#{element_form_id(@options)}')"
+                 ),
     :add_text => "More gizmos",
     :inhibit_delete => true,
     :new_defaults => @event_defaults || {}) %>
 </div>
-
-<%= custom_change_observer("disbursement_gizmo_datalist_div",
-      remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
-        :with => "Form.serialize('#{element_form_id(@options)}')")) %>
 
 </div>
 <!--[eoform:disbursement]-->
