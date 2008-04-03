@@ -35,7 +35,7 @@ class SessionsControllerTest < Test::Unit::TestCase
     login_as :quentin
     get :destroy
     assert_nil session[:user_id]
-    assert_response :success
+    assert_response :redirect
     assert_rjs :replace, 'sidebar'
     assert_rjs :replace, 'login_box'
   end
