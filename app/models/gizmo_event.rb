@@ -103,29 +103,9 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def unit_price_cents
-    @gizmo_attrs ||= initialize_gizmo_attrs
-    @gizmo_attrs["unit_price"]
+    unit_price.to_cents
   end
-  
-  def unit_price_cents=(value)
-    @gizmo_attrs ||= initialize_gizmo_attrs
-    @gizmo_attrs["unit_price"]=value
-  end
-  
-  def unit_price
-    @gizmo_attrs ||= initialize_gizmo_attrs
-    ((@gizmo_attrs["unit_price"]||0)/100.0).to_s
-  end
-  
-  def unit_price=(value)
-    @gizmo_attrs ||= initialize_gizmo_attrs
-    if value.kind_of? String
-      @gizmo_attrs["unit_price"] = value.to_cents
-    else
-      raise TypeError.new("Integer math only. Use strings.")
-    end
- end
-  
+
   def initialize_gizmo_attrs
     attrs = {}
     gizmo_events_gizmo_typeattrs.each {|attr|
