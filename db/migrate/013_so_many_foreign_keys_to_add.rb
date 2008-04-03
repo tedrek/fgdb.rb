@@ -27,6 +27,7 @@ class SoManyForeignKeysToAdd < ActiveRecord::Migration
     add_foreign_key( "volunteer_task_types", ["parent_id"], "volunteer_task_types", ["id"], :name => "volunteer_task_types_parent_fk", :on_delete => :restrict )
     add_foreign_key( "volunteer_tasks", ["contact_id"], "contacts", ["id"], :name => "volunteer_tasks_contacts_fk", :on_delete => :set_null )
 
+    remove_foreign_key( "payments", "payments_donation_id_fk" )
     remove_foreign_key( "contact_methods", "contact_methods_fk_contact_id" )
     remove_foreign_key( "contact_methods", "contact_methods_fk_contact_method_type" )
     remove_foreign_key( "disbursements", "dispersements_contact_id_fkey" )
