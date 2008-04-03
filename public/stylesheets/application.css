@@ -181,7 +181,7 @@ div.user div.role-check-box {
   clear: left;
 }
 
-div.user div.role-check-box label { 
+div.user div.role-check-box label {
   display: inline;
 }
 
@@ -202,16 +202,21 @@ margin: 0;
 
 div.form-element {
 float: left;
+line-height: 11px;
 margin-right: 10px;
 margin-bottom: 2px;
 }
 
 label {
-display: block;
 font-family: Verdana, sans-serif;
+display: block;
 color: #555;
 font-size: 11px;
 padding-bottom: 1px;
+}
+
+label.checkbox {
+display: normal;
 }
 
 .image-link {
