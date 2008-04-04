@@ -43,7 +43,7 @@ class Donation < ActiveRecord::Base
 
   def donor
     if contact_type == 'named'
-      contact
+      contact.display_name
     elsif contact_type == 'anonymous'
       "anonymous(#{postal_code})"
     else

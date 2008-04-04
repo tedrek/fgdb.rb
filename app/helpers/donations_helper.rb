@@ -11,7 +11,7 @@ module DonationsHelper
       Column.new(Donation, :name => 'payment',
                  :eval  => 'donation.payment', :sortable => false),
       Column.new(Donation, :name => 'donor', :sortable => false,
-                 :eval => 'donation.donor.display_name'),
+                 :eval => 'donation.donor'),
       Column.new(Donation, :name => 'gizmos', :sortable => false),
       Column.new(Donation, :name => 'created_at'),
     ]
