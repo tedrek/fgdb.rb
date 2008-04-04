@@ -163,31 +163,23 @@ module ApplicationHelper
     "#{@transaction_type||'foo'}-empty-message"
   end
 
-  def column_class(column_name, column_value, sort_column, class_name = nil)
-    class_attr = String.new
-    class_attr += "empty " if column_empty?(column_value)
-    class_attr += "sorted " if (!sort_column.nil? && column_name == sort_column)
-    class_attr += "#{class_name} " unless class_name.nil?
-    class_attr
-  end
-
-  def format_column(column_value, sanitize = true)
-    if column_empty?(column_value)
-      empty_column_text
-    elsif column_value.instance_of? Time
-        format_time(column_value)
-    elsif column_value.instance_of? Date
-      format_date(column_value)
+  def formated_value(value, sanitize = true)
+    if value_empty?(value)
+      empty_text
+    elsif value.instance_of? Time
+        format_time(value)
+    elsif value.instance_of? Date
+      format_date(value)
     else
-      sanitize ? h(column_value.to_s) : column_value.to_s
+      sanitize ? h(value.to_s) : value.to_s
     end
   end
 
-    def column_empty?(column_value)
-      column_value.nil? || (column_value.empty? rescue false)
+    def value_empty?(value)
+      value.nil? || (value.empty? rescue false)
     end
 
-    def empty_column_text
+    def empty_text
       "-"
     end
 

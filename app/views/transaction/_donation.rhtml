@@ -8,8 +8,8 @@
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for column in columns %>
     <% column_value = eval(column.eval) rescue nil %>
-    <td class="<%= column_class(column.name, column_value, current_sort(params), column.class_name) %>" >
-      <%= format_column(column_value, column.sanitize?) %>
+    <td>
+      <%= formated_value(column_value, column.sanitize?) %>
     </td>
   <% end %>
   <td class="actions">
