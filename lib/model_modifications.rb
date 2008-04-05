@@ -51,6 +51,12 @@ class String
   end
 end
 
+class Fixnum
+  def to_dollars
+    "%0d.%02d" % self.divmod(100)
+  end
+end
+
 class ActiveRecord::Base
   def self.acts_as_userstamp
     include ActiveRecord::UserMonitor
@@ -58,9 +64,9 @@ class ActiveRecord::Base
 
   def self.define_amount_methods_on(method_name)
     code = "def #{method_name}
-        ((read_attribute(:#{method_name}_cents)||0)/100.0).to_s
+        (read_attribute(:#{method_name}_cents)||0).to_dollars
       end
-    
+
       def #{method_name}=(value)
         if value.kind_of? String
           write_attribute(:#{method_name}_cents, value.to_cents)
@@ -70,7 +76,7 @@ class ActiveRecord::Base
       end"
     self.module_eval(code)
   end
-  
+
   def self.find_all_except(*recs)
     return find_all - recs
   end
