@@ -83,11 +83,6 @@ continue with the following:
    ::: modify apache config to taste :::
    ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
 
-== UPGRADE
-
-The path from the 1.1.2 can be a little bit difficult. We added some foreign keys to keep data integrity...but it will blow up if you have some bad data (including data with the old anonymous method)
-SQL code to fix this is on the way!
-
 == TODO
 
 see our trac (http://dev.freegeek.org/projects/fgdb.rb/) for details,
