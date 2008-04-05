@@ -28,7 +28,7 @@
     ) %>
 
 <%# :MC: the following sorta works.  see #360 %>
-<%= observe_field(contact_query_id(options),
+<%# observe_field(contact_query_id(options),
                   :frequency => 0.6,
                   :on => 'input',
                   :function => "#{contact_query_id(options)}_auto_completer.activate()"
