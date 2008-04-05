@@ -135,19 +135,29 @@ function form_has_not_been_edited(form_name) {
         for(var i2 = 0; i2 < children.length; i2++){
             child=children[i2];
             if(defined(child.tagName)){
-                if(child.tagName == "INPUT" || child.tagName == "TEXTAREA") {
+                if((child.tagName == "INPUT" && child.type != "checkbox") || child.tagName == "TEXTAREA") {
                     if(child.value != child.defaultValue) {
                         return false;
                     }
                 }
-                if(child.tagName == "SELECT") {
+                else if(child.tagName == "INPUT" && child.type == "checkbox")
+                {
+                    if(child.defaultChecked != child.checked) {
+                        return false;
+                    }
+                }
+                else if(child.tagName == "SELECT") {
                     options = child.childNodes;
+                    var i4 = 0;
                     for (var i3 = 0; i3 < options.length; i3++)
                     {
-                        if(options[i3].defaultSelected){
-                            if(i3 != child.selectedIndex) {
-                                //return false;
+                        if(options[i3].tagName=="OPTION") {
+                            if(options[i3].defaultSelected){
+                                if(i4 != child.selectedIndex) {
+                                    return false;
+                                }
                             }
+                            i4++;
                         }
                     }
                 }
