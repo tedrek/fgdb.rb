@@ -31,7 +31,7 @@
              id="edit_<%= donation.id %>_link"
              onclick="return false">Edit</a>
           <%= custom_observer("edit_#{donation.id}_link",
-                "if(transaction_form_has_not_been_edited() ||
+                "if(form_has_not_been_edited('donation_form_tbody') ||
                       confirm('Current transaction will be lost.  Continue?')) {
                    #{remote_function(:url => edit_options, :loading => "Element.show('#{loading_indicator_id("donation_#{donation.id}_loading")}');", :complete => "updateTotals('#{@transaction_type}', '#{element_form_id(update_options)}');")};
                  };",

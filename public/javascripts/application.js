@@ -123,33 +123,31 @@ function contact_form_org_toggle() {
   $$(show_type).each(function(elem) { elem.show(); });
 }
 
-function task_form_has_not_been_edited() {
-  return(
-    ($('volunteer_task_duration').value == '') &&
-    (
-      (! $('volunteer_task_contact_id')) ||
-      ($('volunteer_task_contact_id').value == '')
-    )
-  );
+function defined(variable)
+{
+    return (typeof(variable) != 'undefined');
 }
 
-function check_this_gizmo_event(table_name)
-{
-    table=$(table_name);
-    if(table) {
-        var gizmo_events = table.childNodes;
-        if (gizmo_events) {
-            for (var i = 0; i < gizmo_events.length; i++)
-            {
-                var children = gizmo_events[i].firstChild.firstChild.childNodes[1].childNodes;
-                if(children) {
-                    for (var i2 = 0; i2 < children.length; i2++)
+function form_has_not_been_edited(form_name) {
+    var myarray=$(form_name).getElementsByClassName('form-element');
+    for (var i = 0; i < myarray.length; i++){
+        children=myarray[i].childNodes;
+        for(var i2 = 0; i2 < children.length; i2++){
+            child=children[i2];
+            if(defined(child.tagName)){
+                if(child.tagName == "INPUT" || child.tagName == "TEXTAREA") {
+                    if(child.value != child.defaultValue) {
+                        return false;
+                    }
+                }
+                if(child.tagName == "SELECT") {
+                    options = child.childNodes;
+                    for (var i3 = 0; i3 < options.length; i3++)
                     {
-                        var this_child = children[i2];
-                        if (this_child.className=="form-element")
-                        {
-                            if(this_child.childNodes[3].value)
-                                return false;
+                        if(options[i3].defaultSelected){
+                            if(i3 != child.selectedIndex) {
+                                //return false;
+                            }
                         }
                     }
                 }
@@ -157,60 +155,6 @@ function check_this_gizmo_event(table_name)
         }
     }
     return true;
-}
-
-function check_this_payment(table_name)
-{
-    table=$(table_name);
-    if(table) {
-        var gizmo_events = table.childNodes;
-        if (gizmo_events) {
-            for (var i = 0; i < gizmo_events.length; i++)
-            {
-                var children = gizmo_events[i].firstChild.firstChild.childNodes[1].childNodes;
-                if(children) {
-                    for (var i2 = 0; i2 < children.length; i2++)
-                    {
-                        var this_child = children[i2];
-                        if (this_child.className=="form-element")
-                        {
-                            if (this_child.childNodes[1].className=="form-element")
-                                this_child=this_child.childNodes[1];
-                            if(this_child.childNodes[3].value && this_child.childNodes[3].value!="0.0")
-                                return false;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return true;
-}
-
-function transaction_form_has_not_been_edited() {
-    if(check_this_gizmo_event('datalist-donation_gizmo_events-table')==false)
-        return false;
-    if(check_this_gizmo_event('datalist-sale_gizmo_events-table')==false)
-        return false;
-    if(check_this_payment('datalist-sale_payments-table')==false)
-        return false;
-    if(check_this_payment('datalist-donation_payments-table')==false)
-        return false;
-    if($('donation_contact_type'))
-    {
-        if($('donation_contact_type').value=="named" && $("donation_comments").value=="" && ! $("donation[contact_id]"))
-            return true;
-        else
-            return false;
-    }
-    if($('sale_contact_type'))
-    {
-        if($('sale_contact_type').value=="anonymous" && $("sale_discount_schedule_id").value=="9" && $("sale_postal_code").value=="" && $("sale_comments").value=="")
-            return true;
-        else
-            return false;
-    }
-    return false;
 }
 
 function set_new_val(element, new_val) {

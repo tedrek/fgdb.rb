@@ -29,7 +29,7 @@
              id="edit_<%= sale.id %>_link"
              onclick="return false">Edit</a>
           <%= custom_observer("edit_#{sale.id}_link",
-                "if(transaction_form_has_not_been_edited() ||
+                "if(form_has_not_been_edited('sale_form_tbody') ||
                       confirm('Current transaction will be lost.  Continue?')) {
                    #{remote_function(:url => edit_options, :loading => "Element.show('#{loading_indicator_id("sale_#{sale.id}_loading")}');", :complete => "updateTotals('#{@transaction_type}', '#{element_form_id(update_options)}');")};
                  };",
