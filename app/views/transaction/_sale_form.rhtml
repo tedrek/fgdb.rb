@@ -2,54 +2,54 @@
   <div class="row">
     <!--[form:sale]-->
 <div id="transaction_info">
-<div id="<%= contact_searchbox_id(@options) %>">
-  <label for="donation_contact_type">What kind of contact?</label>
-  <%= select_visibility( 'sale', 'contact_type',
-        :anonymous => render( :partial => 'anonymous' ),
-        :named => render( :partial => 'contact_search',
-                          :locals => {:options => {
-                            :on_display => "if($('contact__default_discount_schedule')) {
+  <div id="<%= contact_searchbox_id(@options) %>">
+    <label for="donation_contact_type">What kind of contact?</label>
+    <%= select_visibility( 'sale', 'contact_type',
+          :anonymous => render( :partial => 'anonymous' ),
+          :named => render( :partial => 'contact_search',
+                            :locals => {:options => {
+                              :on_display => "if($('contact__default_discount_schedule')) {
                                               set_new_val($('sale_discount_schedule_id'),
                                                           parseInt($('contact__default_discount_schedule').innerHTML));
                                             }",
-                            }}
-                         )
-      ) %>
-</div>
-
-<div class="form-extras">
-  <div class="form-element">
-    <label for="sale_discount_schedule_id">Discount schedule</label>
-    <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]">
-      <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "name", @sale.discount_schedule_id || DiscountSchedule.no_discount.id)%>
-    </select>
+                              }}
+                           )
+        ) %>
   </div>
-  <%= custom_change_observer('sale_discount_schedule_id',
+
+  <div class="form-extras">
+    <div class="form-element">
+      <label for="sale_discount_schedule_id">Discount schedule</label>
+      <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]">
+        <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "name", @sale.discount_schedule_id || DiscountSchedule.no_discount.id)%>
+      </select>
+    </div>
+    <%= custom_change_observer('sale_discount_schedule_id',
           "updateTotalsForContext(element, Form.serialize($('#{element_form_id(@options)}')), event, '#{@transaction_type}');") %>
 
-  <div class="form-element">
-    <label for="sale_comments">Comments</label>
-    <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+    <div class="form-element">
+      <label for="sale_comments">Comments</label>
+      <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+    </div>
   </div>
-</div>
 </div>
 
 <div id="transaction_line_items_div">
-<div id="gizmo_datalist_div" class="datalist line_item">
-  <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-  <%= datalist_for( :gizmo_event, 'sale_gizmo_events',
-    @sale.gizmo_events, :new_defaults => { :sale_id => @sale.id },
-    :show_header => false, :render_aware => "sale_gizmo_event_form",
-    :add_text => "More gizmos",
-    :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');" +
-      remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
-        :with => "Form.serialize('#{element_form_id(@options)}')"),
-    :delete_content => image_tag('delete.png', 
-                                :alt => 'delete', 
-                                :title => 'delete'),
-    :inhibit_delete => true,
-    :new_defaults => @event_defaults || nil) %>
-</div>
+  <div id="gizmo_datalist_div" class="datalist line_item">
+    <% params[:gizmo_context_id] ||= @gizmo_context.id %>
+    <%= datalist_for( :gizmo_event, 'sale_gizmo_events',
+      @sale.gizmo_events, :new_defaults => { :sale_id => @sale.id },
+      :show_header => false, :render_aware => "sale_gizmo_event_form",
+      :add_text => "More gizmos",
+      :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');" +
+        remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
+          :with => "Form.serialize('#{element_form_id(@options)}')"),
+      :delete_content => image_tag('delete.png',
+                                  :alt => 'delete',
+                                  :title => 'delete'),
+      :inhibit_delete => true,
+      :new_defaults => @event_defaults || nil) %>
+  </div>
 
   <div id="payments_div" class="datalist line_item">
     <% params[:gizmo_context_id] ||= @gizmo_context.id %>
@@ -62,7 +62,7 @@
       :new_defaults => @event_defaults || nil) %>
   </div>
 
-<%= render :partial => 'sale_totals' %>
+  <%= render :partial => 'sale_totals' %>
 </div>
 
 <!--[eoform:sale]-->
