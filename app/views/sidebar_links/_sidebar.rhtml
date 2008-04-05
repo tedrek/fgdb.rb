@@ -2,39 +2,49 @@
   <% if has_role?("ROLE_VOLUNTEER_MANAGER") %>
     <div>
       <%= link_to "hours", :controller => 'volunteer_tasks' %>
+    </div>
   <% elsif current_user and current_user.contact_id %>
     <div>
       <%= link_to "hours", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
+    </div>
   <% end %>
   <% if has_role?("ROLE_FRONT_DESK") %>
-    </div><div>
+    <div>
       <%= link_to "donations", :controller => 'donations' %>
+    </div>
   <% end %>
   <% if has_role?("ROLE_STORE") %>
-    </div><div>
+    <div>
       <%= link_to "sales", :controller => 'sales' %>
+    </div>
   <% end %>
 
-  </div><div>
+  <div>
     <%= link_to "recycling", :controller => 'recyclings' %>
+  </div>
   <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
-    </div><div>
+  <div>
       <%= link_to "disburse", :controller => 'disbursements' %>
+  </div>
   <% end %>
-  </div><div>
+  <div>
     <a href="#" id="toggle_report_links">reports</a>
     <%= custom_observer("toggle_report_links", "$('report_links').toggle()", "click") %>
-  </div><div id="report_links" style="display:none;">
+  </div>
+  <div id="report_links" style="display:none;">
     <div>
       <%= link_to "income", :controller => 'reports', :action => 'income' %>
-    </div><div>
-      <%= link_to "gizmos", :controller => 'reports', :action => 'gizmos' %>
-    </div><div>
-      <%= link_to "volunteering", :controller => 'reports', :action => 'volunteers' %>
-    <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
-    </div><div>
-      <%= link_to "contacts", :controller => 'contacts' %>
-    <% end %>
     </div>
+    <div>
+      <%= link_to "gizmos", :controller => 'reports', :action => 'gizmos' %>
+    </div>
+    <div>
+      <%= link_to "volunteering", :controller => 'reports', :action => 'volunteers' %>
+    </div>
+    <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
+    <div>
+      <%= link_to "contacts", :controller => 'contacts' %>
+    </div>
+    <% end %>
   </div>
 </div>
