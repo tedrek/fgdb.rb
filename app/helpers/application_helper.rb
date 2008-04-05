@@ -208,7 +208,7 @@ module ApplicationHelper
   end
 
   def loading_indicator_tag(prefix)
-    %Q[<div style="display:none" id="#{loading_indicator_id(prefix)}"><img src="/images/indicator.gif" alt="loading..."></img></div>]
+    %Q[<span style="display:none" id="#{loading_indicator_id(prefix)}"><img src="/images/indicator.gif" alt="loading..."></img></span>]
   end
 
   def is_me?(contact_id)
