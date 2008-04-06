@@ -12,6 +12,17 @@
   <%= javascript_include_tag 'lightwindow' %>
   <%= dhtml_calendar_includes %>
   <%= active_scaffold_includes %>
+  <% if params[:controller] == "sales" -%>
+    <% js = "var discount_schedules = new Array;" -%>
+    <% gizmo_types = GizmoType.find(:all) %>
+    <% for discount_schedule in DiscountSchedule.find(:all) -%>
+      <% js += "discount_schedules[#{discount_schedule.id}] = new Array;" -%>
+      <% for gizmo_type in gizmo_types -%>
+        <% js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule)};" -%>
+      <% end -%>
+    <% end -%>
+    <%= javascript_tag js %>
+  <% end -%>
 </head>
 <body>
 

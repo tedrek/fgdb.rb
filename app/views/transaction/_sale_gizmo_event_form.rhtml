@@ -47,6 +47,13 @@
     {:class=>"text-input money", :size=>"5"} %>
 </div>
 
+<div class="form-element total_price_div">
+  <label for="<%= @datalist_field_id_prefix %>_total_price">Total Price</label>
+  <input disabled="" id="<%= @datalist_field_id_prefix %>_total_price" style="background: transparent; color: #000000;" readonly="true" class="text-input money" size="5" onchange="update_gizmo_totals('#{@datalist_field_id_prefix}')" />
+</div>
+
+<%= javascript_tag "update_all_gizmo_totals();" %>
+
 <div id="<%= @datalist_field_id_prefix %>_event_extras" class="gizmo_event_extras">
   <% @gizmo_type = @gizmo_event.gizmo_type %>
   <% if @gizmo_event.gizmo_type_id and @gizmo_event.gizmo_context_id %>
