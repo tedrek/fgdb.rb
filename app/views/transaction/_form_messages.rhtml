@@ -1,5 +1,6 @@
 <%= render :partial => 'messages' %>
 
 <% unless @transaction.nil? %>
-  <%= error_messages_for 'transaction' %>
+  <% instance_variable_set('@' + @transaction_type, @transaction) %>
+  <%= error_messages_for @transaction_type %>
 <% end %>
