@@ -4,14 +4,15 @@
 if @successful
   page << "myLightWindow.deactivate();"
   page.replace_html contact_messages_id(@options), :partial => 'messages'
-#   page.replace_html search_results_id(params),
-#     :partial => 'search_results', :locals => { :@search_results => [@contact], :options => @options }
   page.remove 'floating_form'
   page << "Form.enable($('#{contact_query_id(@options)}').form.id);"
 else
   page.replace_html contact_messages_id(@update_options), :partial => 'form_messages'
-  page << "$('#{contact_messages_id(@update_options)}').scrollTo();"
+  @contact.errors.each {|field, msg|
+    page["contact_#{field}"].addClassName('fieldWithErrors')
+  }
   page << "Form.enable('floating_form');"
   page.hide loading_indicator_id("form_for_contact_loading")
+  page << "$('lightwindow_contents').scrollTop = 0;"
 end
 
