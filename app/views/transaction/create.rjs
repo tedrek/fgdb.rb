@@ -15,6 +15,9 @@ if @successful
   end
 else
   page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
+  @transaction.errors.each {|field, msg|
+    page << "if($('#{@transaction_type}_#{field}')) {$('#{@transaction_type}_#{field}').addClassName('fieldWithErrors')}"
+  }
   page << "Form.enable('#{element_form_id(@create_options)}');"
   page << "$('#{element_messages_id(@create_options)}').scrollTo();"
   page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")

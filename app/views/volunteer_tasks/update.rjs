@@ -15,6 +15,9 @@ if @successful
   #page.replace_html "hours_report", :partial => 'contact_hours', :locals => {"contact" => @volunteer_task.contact}
 else
   page.replace_html element_messages_id(@update_options), :partial => 'form_messages'
+  @volunteer_task.errors.each {|field, msg|
+    page << "if($('volunteer_task_#{field}')) {$('volunteer_task_#{field}').addClassName('fieldWithErrors')}"
+  }
   page << "Form.enable('#{element_form_id(@update_options)}');"
   page.hide loading_indicator_id("form_for_volunteer_task_loading")
 end

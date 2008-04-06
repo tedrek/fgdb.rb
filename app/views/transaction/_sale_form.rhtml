@@ -35,7 +35,7 @@
 </div>
 
 <div id="transaction_line_items_div">
-  <div id="gizmo_datalist_div" class="datalist line_item">
+  <div id="sale_gizmos" class="datalist line_item">
     <% params[:gizmo_context_id] ||= @gizmo_context.id %>
     <%= datalist_for( :gizmo_event, 'sale_gizmo_events',
       @sale.gizmo_events, :new_defaults => { :sale_id => @sale.id },
@@ -51,7 +51,7 @@
       :new_defaults => @event_defaults || nil) %>
   </div>
 
-  <div id="payments_div" class="datalist line_item">
+  <div id="sale_payments" class="datalist line_item">
     <% params[:gizmo_context_id] ||= @gizmo_context.id %>
     <%= datalist_for( :payment, 'sale_payments',
       @sale.payments, :new_defaults => { :sale_id => @sale.id },

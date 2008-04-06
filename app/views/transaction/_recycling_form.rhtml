@@ -17,7 +17,7 @@
 </div>
 
 <div id="transaction_line_items_div">
-<div id="gizmo_datalist_div" class="datalist line_item">
+<div id="recycling_gizmo_events" class="datalist line_item">
   <% params[:gizmo_context_id] ||= @gizmo_context.id %>
   <%= datalist_for( :gizmo_event, 'recycling_gizmo_events',
     @recycling.gizmo_events, :create_with => { :recycling_id => @recycling.id },
