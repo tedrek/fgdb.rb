@@ -169,6 +169,7 @@ function form_has_not_been_edited(form_name) {
 
 function set_new_val(element, new_val) {
   element.value = new_val;
+  element.defaultValue = new_val;
   trigger_change_on(element);
 }
 
