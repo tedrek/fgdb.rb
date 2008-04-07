@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+#MINE!
+
 require '/usr/lib/ruby/1.8/lib/xmlsimple.rb'
 require 'net/http'
 require 'cgi'
@@ -14,8 +16,6 @@ trap( "SIGINT" ) {
     errorMessage "\n\nUser interrupt caught.  Exiting.\n\n"
     exit!( 1 )
 }
-
-server="printme.fglan"
 
 module Multipart
   # From: http://kfahlgren.com/code/multipart.rb
@@ -75,12 +75,13 @@ def post_form(url, query, headers)
 end
 
 def run_lshw_and_test_stuff
+  server="printme.fglan"
   retval = system("ping -c 1 " + server + " 1>&2 >/dev/null")
   if retval != true
     errorMessage "I could not connect to the server.\nMake sure you are connected to the network and try again.\n\n"
     exit retval
   end
-  lshwname = '/var/lib/freegeek-extras/printme/lshw.xml'
+  lshwname = @lshwname = '/var/lib/freegeek-extras/printme/lshw.xml'
   if(!File.exist?(lshwname))
     system("sudo lshw -xml>#{lshwname}") 
     retval = system("xmlstarlet val " + lshwname + " >& /dev/null")
@@ -111,7 +112,9 @@ def get_id_and_stuff
     system.puts(response.body)
     ###TODO: GET ALL REPORTS FOR THIS SYSTEM, FIGURE OUT WHICH IS THE NEWEST AND THEN MOVE LSHW AND SYSTEM TO REPLACE OLD WITH THE REPORT ID
   elsif File.exist?('/var/lib/freegeek-extras/printme/') #new printme has been ran
-    system = File.open(Dir.new('/var/lib/freegeek-extras/').entries.sort.delete_if{ |x| ! (x =~ /^system\.xml\.(.*)$/) }.first, 'r')
+####################OOOOOOOOOOOOOOOOOOOOOOOOOOPPPPPPPPPPPPPPPPPPSSSSSSSSSSSSSSSSSS!!!!!!!!!!!
+#    system = File.open(Dir.new('/var/lib/freegeek-extras/').entries.sort.delete_if{ |x| ! (x =~ /^system\.xml\.(.*)$/) }.first, 'r')
+system = File.open('/var/lib/freegeek-extras/printme/system.xml.old', 'r')
   else #no printme has been ran
     if ! File.exists?('/var/lib/freegeek-extras/printme/')
       mkdir('/var/lib/freegeek-extras/')
@@ -121,23 +124,55 @@ def get_id_and_stuff
     system=File.open('/var/lib/freegeek-extras/printme/system.xml.new', 'w')
     system.puts(response.body)
   end
-  ###TODO: process the hashes for jobs and types (not to mention make the thing that spits it out)
-  jobs = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/roles/xml_index")).body)
-  types = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/types/xml_index")).body)
-  system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
+  jobs_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/roles/xml_index")).body)
+  types_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/types/xml_index")).body)
+
+  @jobs=jobs_xml
+  @types=types_xml
+  @system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
   system.close
 end
 
 require 'pp' ###################REMOVE ME####################
 
 def ask_and_send_stuff
+  server="printme.fglan:3000"
   ###COPY AND PASTE FROM THE OLD ONE (YOU NEED LOTS OF MODIFICATIONS TOO THOUGH, LIKE GET AND MOVE SYSTEM AND REPORT AND LSHW, AND ENSTEAD OF SAVING THE RESPONE, POINT THERE BROWSER AT THE SHOW ACTION)
-  pp jobs
-  pp types
-  puts system_id
+job = menuWithDefault('Work Tasks', 'Which job did you perform?', "Quality Control", *@jobs.keys)
+type = menuWithDefault('System Type', 'What kind of system is this intended to be?', 'Low End', *@types.keys)
+uid = prompt('What is your volunteer id?', 'Please enter a number.') {|num| num.to_i.to_s == num}
+notes = prompt('What, if anything, is notable about this system?')
+
+
+lshw = File.open(@lshwname, "rb")
+codename = `lsb_release --description --short`
+data = {
+  "contact_id" => uid,
+  "role_id" => @jobs[job],
+  "type_id" => @types[type],
+  "system_id" => @system_id,
+  "notes" => notes,
+  "my_file" => lshw,
+  "os" => codename
+}
+
+url = "http://" + server + "/reports/create"
+uri = URI.parse(url)
+
+mp = Multipart::MultipartPost.new
+query, headers = mp.prepare_query(data)
+lshw.close
+
+response = post_form(uri, query, headers)
+printme = '/tmp/printthis.html'
+
+#f = open('|html2ps |lpr','w') #:MC: no css styling...                                                                                                                                                                                         
+f = open(printme,'w')
+f.write(response.body)
+f.close()
+
 end
 
-#I know its strange to make a main in a script...but it just feels normal to me! 
 def main
 get_id_and_stuff
 run_lshw_and_test_stuff
