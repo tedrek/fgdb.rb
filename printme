@@ -127,8 +127,12 @@ system = File.open('/var/lib/freegeek-extras/printme/system.xml.old', 'r')
   jobs_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/roles/xml_index")).body)
   types_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/types/xml_index")).body)
 
-  @jobs=jobs_xml
-  @types=types_xml
+  @jobs={}
+  @types={}
+
+  jobs_xml["role"].each { |x| @jobs[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
+  types_xml["type"].each { |x| @types[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
+
   @system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
   system.close
 end
@@ -156,7 +160,7 @@ data = {
   "os" => codename
 }
 
-url = "http://" + server + "/reports/create"
+url = "http://" + server + "/reports/xml_create"
 uri = URI.parse(url)
 
 mp = Multipart::MultipartPost.new
