@@ -1,4 +1,5 @@
 <div id="login_box">
+  <%= javascript_tag "if($('content')){ $('content').style.top='20px';} else { var pixelsize='20px';}" %>
   <% if @current_user and @current_user != false -%>
     Hi! <%= @current_user.login %>
     <%= link_to "logout", "/sessions/destroy" %>

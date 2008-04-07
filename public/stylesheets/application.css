@@ -422,12 +422,12 @@ margin:0;
 padding:0;
 }
 
-span.error {
+.error {
     color: #FF0000;
     size: +2;
 }
 
-span.info {
+.info {
     color: #00FF00;
     size: +2;
 }
