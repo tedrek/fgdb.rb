@@ -20,10 +20,8 @@
       <p class="form-footer">
         <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit" %>
         <% cancel_params = @options.merge(:controller => base_controller, :action => 'cancel', :referring_action => @options[:action]) %>
-        <%= link_to_remote "Cancel",
-          { :url => cancel_params,
-            :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}');" },
-          { :href => url_for(cancel_params) } %>
+        <%= submit_to_remote "cancel", "Cancel", { :url => cancel_params, :html => {:class => "cancel"}, :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}');" } %>
+
         <%= loading_indicator_tag "form_for_#{@transaction_type}_loading" %>
       </p>
     <% end %>
