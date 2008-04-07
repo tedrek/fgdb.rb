@@ -6,7 +6,7 @@ class VolunteerTaskType < ActiveRecord::Base
   end
 
   def self.root_nodes
-    find(:all, :conditions => [ 'parent_id = ?', 0 ])
+    find_all_by_parent_id(0)
   end
 
   def self.instantiable_nodes
