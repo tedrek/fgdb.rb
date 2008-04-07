@@ -8,19 +8,4 @@ class DiscountSchedule < ActiveRecord::Base
     data = discount_schedules_gizmo_types.detect {|bridge| bridge.gizmo_type_id == type.id}
     data ? data.multiplier : nil
   end
-
-  class << self
-    #:MC: these are all lame
-    def volunteer
-      find(:first, :conditions => ['name = ?', 'volunteer'])
-    end
-
-    def same_day_donor
-      find(:first, :conditions => ['name = ?', 'same-day donor'])
-    end
-
-    def no_discount
-      find(:first, :conditions => ['name = ?', 'no discount'])
-    end
-  end # class << self
 end

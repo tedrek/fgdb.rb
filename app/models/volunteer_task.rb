@@ -34,11 +34,11 @@ class VolunteerTask < ActiveRecord::Base
     # the following is commented out because only
     # volunteers can be searched for... but non-volunteers
     # can become volunteers, can't they? See ticket #234
-    required = [ContactType.volunteer] # volunteer
+    required = [ContactType.find_by_description("volunteer")] # volunteer
     if type_of_task?('build')
-      required << ContactType.build # builder
+      required << ContactType.find_by_description("build") # builder
     elsif type_of_task?('adoption')
-      required << ContactType.adopter # adopter
+      required << ContactType.find_by_description("adopter") # adopter
     end
     for type in required
       unless contact.contact_types.include?(type)

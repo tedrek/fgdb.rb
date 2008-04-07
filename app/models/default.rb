@@ -1,7 +1,7 @@
 class Default < ActiveRecord::Base
   class << self
     def [](name)
-      return find(:first, :conditions => ["name = ?", name]).value
+      return find_by_name(name).value
     rescue
       return nil
     end

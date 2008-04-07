@@ -177,9 +177,9 @@ class Contact < ActiveRecord::Base
 
   def default_discount_schedule
     if effective_discount_hours >= 4.0
-      DiscountSchedule.volunteer
+      DiscountSchedule.find_by_name("volunteer")
     else
-      DiscountSchedule.no_discount
+      DiscountSchedule.find_by_name("no discount")
     end
   end
 
@@ -206,30 +206,18 @@ class Contact < ActiveRecord::Base
     types = contact_types.map {|ct| ct.description}
     if((types.include?("build") or types.include?("adopter")) and
        (! types.include?("volunteer")))
-      contact_types << ContactType.volunteer
+      contact_types << ContactType.find_by_description("volunteer")
     end
   end
 
   class << self
-
-    def people
-      find(:all, :conditions => ["is_organization = ?", false])
-    end
-
-    def volunteers
-      find_by_type('volunteer')
-    end
-
+    # not ever used...but could be useful so I'm leaving it
     def find_by_type(type)
       sql = "SELECT contacts.* FROM contacts
                  LEFT JOIN contact_types_contacts AS j ON j.contact_id = contacts.id
                  LEFT JOIN contact_types AS c_t ON j.contact_type_id = c_t.id
                WHERE c_t.description = ? "
       find_by_sql([sql, type])
-    end
-
-    def organizations
-      find(:all, :conditions => ["is_organization = ?", true])
     end
 
     def search(query, options = {})
