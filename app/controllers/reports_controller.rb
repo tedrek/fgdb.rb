@@ -5,7 +5,7 @@ class ReportsController < ApplicationController
     render :xml => {:error => params[:error]}
   end
 
-  def index
+  def index #couldn't we just do @error=params[:error]
     if params[:error]
       @error=params[:error]
     else
@@ -91,15 +91,19 @@ class ReportsController < ApplicationController
   end
 
   def xml_create
+    #stupid!
+    @report_params={:system_id => params[:system_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :my_file => params[:my_file], :os => params[:os]}
     @report = Report.new(params[:report])
     if @report.system == nil
       @report.system = System.new
     end
 
     if @report.save
-      redirect_to(:action=>"xml_show", :id=>@report.id)
+      params[:id]=@report.id
+      xml_show
     else
-      redirect_to(:action=>"xml_index", :error=>"Could not save the database record")
+      params[:error]="Could not save the database record"
+      xml_index
     end
   end
 
