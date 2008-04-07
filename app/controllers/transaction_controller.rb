@@ -37,7 +37,7 @@ class TransactionController < ApplicationController
     search_options = {
       :order => @sort_sql,
       :per_page => default_per_page,
-      :include => [:gizmo_events],
+      :include => [:gizmo_events, :payments],
       :conditions => @conditions.conditions(model)
     }
     if @model.new.respond_to?( :payments ) and @transaction_type != 'donation'
