@@ -50,7 +50,7 @@
 
   <tr>
     <td colspan="4">&nbsp;</td>
-    <td align="right" colspan="2"><strong>Due by <%= Date.today + 30 %>:</strong></td>
+    <td align="right" colspan="2"><strong>Due by <%= @sale.created_at.to_date + 30 %>:</strong></td>
     <td><strong><%= my_number_to_currency(@sale.calculated_total_cents - @sale.money_tendered_cents) %></strong></td>
   </tr>
 <% end %>

@@ -41,7 +41,7 @@
   <td align="right">
     <% if @txn.invoiced? %>
       <strong>
-      Due: <%= Time.now.+(60*60*24*30).strftime("%m/%d/%Y") %>
+      Due: <%= @transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y") %>
       </strong>
     <% end %>
   </td>
