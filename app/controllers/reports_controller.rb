@@ -91,9 +91,9 @@ class ReportsController < ApplicationController
   end
 
   def xml_create
-    #stupid!
-    @report_params={:system_id => params[:system_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :my_file => params[:my_file], :os => params[:os]}
-    @report = Report.new(params[:report])
+    #stupid! Is there a better way to do that:
+    report_params={:contact_id => params[:contact_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :my_file => params[:my_file], :os => params[:os]}
+    @report = Report.new(report_params)
     if @report.system == nil
       @report.system = System.new
     end
