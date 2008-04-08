@@ -100,7 +100,7 @@ end
 
 def get_id_and_stuff
   if File.exist?('/tmp/lshw.xml') #old printme has been ran
-    if ! File.exists?('/var/lib/freegeek-extras/')
+    if ! File.exist?('/var/lib/freegeek-extras/')
       mkdir('/var/lib/freegeek-extras/')
     end
     mkdir('/var/lib/freegeek-extras/printme/')
@@ -108,13 +108,20 @@ def get_id_and_stuff
     old_id = prompt('If the system had an id on it already, enter that here',
                   'Please supply a number or nothing at all') {|num| num.empty? or (num.to_i.to_s == num)}
     response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_show?id=#{old_id}"))
-    system=File.open('/var/lib/freegeek-extras/printme/system.xml.old', 'w')
+    system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
     system.puts(response.body)
-    ###TODO: GET ALL REPORTS FOR THIS SYSTEM, FIGURE OUT WHICH IS THE NEWEST AND THEN MOVE LSHW AND SYSTEM TO REPLACE OLD WITH THE REPORT ID
+    puts "Downloading old information..."
+    @system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
+    list_of_reports = []
+    XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/reports/xml_list_for_system?id=#{@system_id}")).body)["report"].each { |x| list_of_reports << x["id"][0]["content"] }
+    for report in list_of_reports
+      this_report = open('/var/lib/freegeek-extras/printme/report.#{report}.xml', 'w')
+      this_report.write(Net::HTTP.get_response(URI.parse("http://jetty:3000/reports/xml_show/#{report}")).body)
+      this_report.close
+    end
+    puts "Done!"
   elsif File.exist?('/var/lib/freegeek-extras/printme/') #new printme has been ran
-####################OOOOOOOOOOOOOOOOOOOOOOOOOOPPPPPPPPPPPPPPPPPPSSSSSSSSSSSSSSSSSS!!!!!!!!!!!
-#    system = File.open(Dir.new('/var/lib/freegeek-extras/').entries.sort.delete_if{ |x| ! (x =~ /^system\.xml\.(.*)$/) }.first, 'r')
-system = File.open('/var/lib/freegeek-extras/printme/system.xml.old', 'r')
+    system = File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
   else #no printme has been ran
     if ! File.exists?('/var/lib/freegeek-extras/printme/')
       mkdir('/var/lib/freegeek-extras/')
@@ -133,7 +140,7 @@ system = File.open('/var/lib/freegeek-extras/printme/system.xml.old', 'r')
   jobs_xml["role"].each { |x| @jobs[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
   types_xml["type"].each { |x| @types[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
 
-  @system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
+  @system_id ||= XmlSimple.xml_in(system)["id"][0]["content"].to_i
   system.close
 end
 
@@ -168,9 +175,9 @@ query, headers = mp.prepare_query(data)
 lshw.close
 
 response = post_form(uri, query, headers)
-printme = '/tmp/printthis.html'
+  @report_id=XmlSimple.xml_in(response.body)["id"][0]["content"]
+printme = "/var/lib/freegeek-extras/printme/report.#{@report_id}.xml"
 
-#f = open('|html2ps |lpr','w') #:MC: no css styling...                                                                                                                                                                                         
 f = open(printme,'w')
 f.write(response.body)
 f.close()
@@ -178,9 +185,10 @@ f.close()
 end
 
 def main
-get_id_and_stuff
-run_lshw_and_test_stuff
-ask_and_send_stuff
+  get_id_and_stuff
+  run_lshw_and_test_stuff
+  ask_and_send_stuff
+  puts "firefox http://jetty:3000/reports/show/#{@report_id}"
 end
 
 main
