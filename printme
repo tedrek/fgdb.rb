@@ -175,13 +175,17 @@ query, headers = mp.prepare_query(data)
 lshw.close
 
 response = post_form(uri, query, headers)
-  @report_id=XmlSimple.xml_in(response.body)["id"][0]["content"]
+@report_id=XmlSimple.xml_in(response.body)["id"][0]["content"]
+@system_id=XmlSimple.xml_in(response.body)["system_id"][0]["content"]
 printme = "/var/lib/freegeek-extras/printme/report.#{@report_id}.xml"
-
 f = open(printme,'w')
 f.write(response.body)
 f.close()
 
+  response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_show?id=#{system_id}"))
+  system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
+  system.puts(response.body)
+  system.close
 end
 
 def main
