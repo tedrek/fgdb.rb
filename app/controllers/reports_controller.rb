@@ -52,6 +52,11 @@ class ReportsController < ApplicationController
       return
     end
   end
+
+  def xml_list_for_system
+    @reports = Report.find_all_by_system_id(params[:id], :order => "id")
+    render :xml => @reports
+  end
   
   def show
     @report = Report.find(params[:id])
