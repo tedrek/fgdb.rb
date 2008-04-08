@@ -1,0 +1,42 @@
+<% if has_role?(allowed_roles) %>
+  <td>
+    <% edit_options = @options.merge(:action => 'edit') %>
+    <% update_options = @options.merge(:action => "update") %>
+    <a href="<%= url_for(edit_options) %>"
+       id="edit_<%= transaction.id %>_link"
+       onclick="return false">Edit</a>
+    <%= custom_observer("edit_#{transaction.id}_link",
+          "if(form_has_not_been_edited('#{@transaction_type}_form_tbody') ||
+                confirm('Current transaction will be lost.  Continue?')) {
+             #{remote_function(:url => edit_options, :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_#{transaction.id}_loading")}');", :complete => "updateTotals('#{@transaction_type}', '#{element_form_id(update_options)}');")};
+           };",
+           'click') %>
+
+  </td>
+  <td>
+    <% delete_options = @options.merge(:action => 'destroy') %>
+    <%= link_to_remote "Delete",
+                   { :url => delete_options,
+                     :confirm => 'Are you sure?',
+                     :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_#{transaction.id}_loading")}');" },
+                   { :href => url_for( delete_options ) } %>
+  </td>
+<% else %>
+  <td>
+    <div id="<%= @transaction_type %>_<%= transaction.id %>_needs_attention_div">
+      <% if (transaction.needs_attention) %>
+        <%= render :partial => "getting_attention" %>
+      <% else %>
+        <% attention_options = {:id => transaction.id, :action => 'needs_attention'} -%>
+        <%= link_to_remote "?", 
+              { :url => attention_options,
+                :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_#{transaction.id}_loading")}');",
+              },
+              { :href => url_for(attention_options),
+                :title => "set the needs attention flag",
+                :alt => "set the needs attention flag",
+              } %>
+      <% end %> 
+    </td>
+  </div>
+<% end %>

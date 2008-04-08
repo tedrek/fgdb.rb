@@ -18,29 +18,9 @@
         <td class="indicator-container">
           <%= loading_indicator_tag("recycling_#{recycling.id}_loading") %>
         </td>
-        <td>
-          <% edit_options = @options.merge(:action => 'edit') %>
-          <% update_options = @options.merge(:action => "update") %>
-          <a href="<%= url_for(edit_options) %>"
-             id="edit_<%= recycling.id %>_link"
-             onclick="return false">Edit</a>
-          <%= custom_observer("edit_#{recycling.id}_link",
-                "if(form_has_not_been_edited('recycling_form_tbody') ||                                                                                                                                          
-                      confirm('Current transaction will be lost.  Continue?')) {                                                                                                                                    
-                   #{remote_function(:url => edit_options, :loading => "Element.show('#{loading_indicator_id("recycling_#{recycling.id}_loading")}');", :complete => "updateTotals('#{@transaction_type}', '#\
-{element_form_id\
-(update_options)}');")};                                                                                                                                                                                            
-                 };",
-                 'click') %>
-        </td>
-        <td>
-          <% delete_options = @options.merge(:action => 'destroy') %>
-          <%= link_to_remote "Delete",
-                         { :url => delete_options,
-                           :confirm => 'Are you sure?',
-                           :loading => "Element.show('#{loading_indicator_id("recycling_#{recycling.id}_loading")}');" },
-                         { :href => url_for( delete_options ) } %>
-        </td>
+        <%= render :partial => "edit_update_transaction",
+                   :locals => {:transaction => recycling,
+                               :allowed_roles => ["ROLE_BEAN_COUNTERS"]}%>
       </tr>
     </table>
   </td>

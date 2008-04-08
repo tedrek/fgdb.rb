@@ -1,6 +1,7 @@
 class DonationsController < TransactionController
   before_filter :be_a_donation
-  before_filter :authorized_only
+  before_filter :authorized_only, :except => ["destroy", "edit", "update"]
+  before_filter :management_only, :only => ["destroy", "edit", "update"]
 
   def index
     update_params_filter()
@@ -11,6 +12,10 @@ class DonationsController < TransactionController
 
   def authorized_only
     requires_role(:ROLE_FRONT_DESK)
+  end
+
+  def management_only
+    requires_role(:ROLE_DONATION_ADMIN, :ROLE_BEAN_COUNTER)
   end
 
   def update_params_filter
