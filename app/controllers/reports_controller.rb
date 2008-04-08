@@ -64,7 +64,12 @@ class ReportsController < ApplicationController
       redirect_to(:action => "index", :error => "There is no lshw output for that report!")
       return
     end
-    render :layout => 'fgss'
+    @output = @report.lshw_output #only talk to the db once
+    if XML::Reader.new(@output)
+      render :layout => 'fgss'
+    else
+      redirect_to(:action => "index", :error => "Invalid XML!")
+    end
   end
 
   def xml_show

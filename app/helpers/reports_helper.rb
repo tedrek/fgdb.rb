@@ -6,7 +6,7 @@ module ReportsHelper
   end
   def load_xml
     require 'xml/libxml'
-    @this_thing = XML::Parser.string(@report.lshw_output).parse
+    @this_thing = XML::Parser.string(@output).parse
     nil
   end
   def remove_tag(s, tag)#needs a new name...replace all 'tag's with the right word
