@@ -104,6 +104,16 @@ class TransactionController < ApplicationController
     return render(:action => 'destroy.rjs')
   end
 
+  def needs_attention
+    begin
+      @transaction = model.find(params[:id])
+      @transaction.needs_attention = true
+      @successful = @transaction.save
+    rescue
+      flash[:error], @successful = $!.to_s, false
+    end
+  end
+
   def cancel
     @successful = true
 
