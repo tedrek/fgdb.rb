@@ -206,7 +206,7 @@ class TransactionController < ApplicationController
     when 'recycling'
       Recycling
     else
-      raise "SHIT #{@transaction_type}"
+      raise "UNKNOWN TX-TYPE #{@transaction_type}"
     end
   end
 
