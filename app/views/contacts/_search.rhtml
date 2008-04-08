@@ -22,10 +22,12 @@
       },
       {
         :after_update_element => update_display_function,
-        :skip_style => true
+        :skip_style => true,
+        :indicator => loading_indicator_id("contact_autocomplete_loading"),
       },
       :controller => 'contacts'
     ) %>
+  <%= loading_indicator_tag("contact_autocomplete_loading") %>
 
 <% if (! options[:display_create]) or (options[:display_create] == 'true') %>
   <% new_options = options.merge(
