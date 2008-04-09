@@ -44,7 +44,6 @@ class TransactionController < ApplicationController
       search_options[:include] << :payments
       search_options[:joins] = "JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
     end
-    # @sort_by = @sort_sql.nil? ? "#{model.table_name}.#{model.primary_key} asc" : @sort_sql  + " " + current_sort_direction(params)
     search_options[:page] = params[:page]
     @transactions = model.paginate( search_options )
 
@@ -182,6 +181,10 @@ class TransactionController < ApplicationController
   def current_conditions(options)
     conds = session[@transaction_type][:conditions] ||= Conditions.new
     conds.apply_conditions(options[:conditions])
+    if options[:contact_id]
+      conds.contact_id = options[:contact_id]
+      conds.limit_type = 'contact'
+    end
     conds
   end
 
