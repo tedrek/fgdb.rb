@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+$COLOR = true #make things cool
+
 #configuration
 $server="jetty:3000"
 #make these singular
@@ -117,7 +119,7 @@ def get_id_and_stuff
     system.puts(response.body)
     system.close
     system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
-    puts "Downloading old information..."
+    display "Downloading old information..."
     @system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
     list_of_reports = []
     XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$reports_controller}s/xml_list_for_system?id=#{@system_id}")).body)[$reports_controller].each { |x| list_of_reports << x["id"][0]["content"] }
@@ -126,7 +128,7 @@ def get_id_and_stuff
       this_report.write(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$reports_controller}s/xml_show/#{report}")).body)
       this_report.close
     end
-    puts "Done!"
+    display "Done!"
   elsif File.exist?('/var/lib/freegeek-extras/printme/') #new printme has been ran
     system = File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
   else #no printme has been ran
