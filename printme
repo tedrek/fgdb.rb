@@ -2,13 +2,10 @@
 
 #configuration
 $server="jetty:3000"
-
 #make these singular
 $types_controller = "type"
 $jobs_controller = "role"
 $reports_controller = "report"
-
-#MINE!
 
 require '/usr/lib/ruby/1.8/lib/xmlsimple.rb'
 require 'net/http'
@@ -20,9 +17,9 @@ include FileUtils
 include RubyTUI
 
 trap( "SIGINT" ) {
-    `reset -Q`
-    errorMessage "\n\nUser interrupt caught.  Exiting.\n\n"
-    exit!( 1 )
+  `reset -Q`
+  errorMessage "\n\nUser interrupt caught.  Exiting.\n\n"
+  exit!( 1 )
 }
 
 module Multipart
@@ -92,18 +89,18 @@ def run_lshw_and_test_stuff
     exit retval
   end
   $lshwname =  '/var/lib/freegeek-extras/printme/lshw.xml'
-    system("sudo lshw -xml>#{$lshwname}") 
-    retval = system("xmlstarlet val #{$lshwname} >& /dev/null")
-    if retval != true
-      system("cat #{$lshwname} | tr -dc [:print:] | xmlstarlet fo > #{$lshwname}.clean")
-      mv($lshwname + ".clean", $lshwname)
-      newretval = system("xmlstarlet val #{$lshwname} >& /dev/null")
-      if newretval != true
-        errorMessage "The xml file is not valid and I could not fix it!\n"
-        errorMessage "Ask a build instructor for help.\n"
-        exit 1
-      end
+  system("sudo lshw -xml>#{$lshwname}") 
+  retval = system("xmlstarlet val #{$lshwname} >& /dev/null")
+  if retval != true
+    system("cat #{$lshwname} | tr -dc [:print:] | xmlstarlet fo > #{$lshwname}.clean")
+    mv($lshwname + ".clean", $lshwname)
+    newretval = system("xmlstarlet val #{$lshwname} >& /dev/null")
+    if newretval != true
+      errorMessage "The xml file is not valid and I could not fix it!\n"
+      errorMessage "Ask a build instructor for help.\n"
+      exit 1
     end
+  end
 end
 
 def get_id_and_stuff
@@ -114,7 +111,7 @@ def get_id_and_stuff
     mkdir('/var/lib/freegeek-extras/printme/')
     mv('/tmp/lshw.xml', '/var/lib/freegeek-extras/printme/lshw.xml.old')
     old_id = prompt('If the system had an id on it already, enter that here',
-                  'Please supply a number or nothing at all') {|num| num.empty? or (num.to_i.to_s == num)}
+                    'Please supply a number or nothing at all') {|num| num.empty? or (num.to_i.to_s == num)}
     response = Net::HTTP.get_response(URI.parse("http://#{$server}/systems/xml_show?id=#{old_id}"))
     system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
     system.puts(response.body)
@@ -134,7 +131,7 @@ def get_id_and_stuff
     system = File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
   else #no printme has been ran
     if ! File.exists?('/var/lib/freegeek-extras/')
-        mkdir('/var/lib/freegeek-extras/')
+      mkdir('/var/lib/freegeek-extras/')
     end
     mkdir('/var/lib/freegeek-extras/printme')
     response = Net::HTTP.get_response(URI.parse("http://#{$server}/systems/xml_new"))
@@ -144,6 +141,7 @@ def get_id_and_stuff
     mv('/var/lib/freegeek-extras/printme/system.xml.new', '/var/lib/freegeek-extras/printme/system.xml')
     system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
   end
+
   jobs_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$jobs_controller}s/xml_index")).body)
   types_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$types_controller}s/xml_index")).body)
 
@@ -154,47 +152,42 @@ def get_id_and_stuff
   types_xml[$types_controller].each { |x| @types[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
 
   @system_id ||= XmlSimple.xml_in(system)["id"][0]["content"]
-
   system.close if system
 end
 
-require 'pp' ###################REMOVE ME####################
-
 def ask_and_send_stuff
+  job = menuWithDefault('Work Tasks', 'Which job did you perform?', "Quality Control", *@jobs.keys)
+  type = menuWithDefault('System Type', 'What kind of system is this intended to be?', 'Low End', *@types.keys)
+  uid = prompt('What is your volunteer id?', 'Please enter a number.') {|num| num.to_i.to_s == num}
+  notes = prompt('What, if anything, is notable about this system?')
 
-job = menuWithDefault('Work Tasks', 'Which job did you perform?', "Quality Control", *@jobs.keys)
-type = menuWithDefault('System Type', 'What kind of system is this intended to be?', 'Low End', *@types.keys)
-uid = prompt('What is your volunteer id?', 'Please enter a number.') {|num| num.to_i.to_s == num}
-notes = prompt('What, if anything, is notable about this system?')
+  lshw = File.open($lshwname, "rb")
+  codename = `lsb_release --description --short`
+  data = {
+    "contact_id" => uid,
+    "role_id" => @jobs[job],
+    "type_id" => @types[type],
+    "system_id" => @system_id,
+    "notes" => notes,
+    "my_file" => lshw,
+    "os" => codename
+  }
 
+  url = "http://#{$server}/#{$reports_controller}s/xml_create"
+  uri = URI.parse(url)
 
-lshw = File.open($lshwname, "rb")
-codename = `lsb_release --description --short`
-data = {
-  "contact_id" => uid,
-  "role_id" => @jobs[job],
-  "type_id" => @types[type],
-  "system_id" => @system_id,
-  "notes" => notes,
-  "my_file" => lshw,
-  "os" => codename
-}
+  mp = Multipart::MultipartPost.new
+  query, headers = mp.prepare_query(data)
+  lshw.close
 
-url = "http://#{$server}/#{$reports_controller}s/xml_create"
-uri = URI.parse(url)
-
-mp = Multipart::MultipartPost.new
-query, headers = mp.prepare_query(data)
-lshw.close
-
-response = post_form(uri, query, headers)
-response_xml = XmlSimple.xml_in(response.body)
-@report_id=response_xml["id"][0]["content"]
-@system_id=response_xml["system-id"][0]["content"]
-printme = "/var/lib/freegeek-extras/printme/report.#{@report_id}.xml"
-f = open(printme,'w')
-f.write(response.body)
-f.close()
+  response = post_form(uri, query, headers)
+  response_xml = XmlSimple.xml_in(response.body)
+  @report_id=response_xml["id"][0]["content"]
+  @system_id=response_xml["system-id"][0]["content"]
+  printme = "/var/lib/freegeek-extras/printme/report.#{@report_id}.xml"
+  f = open(printme,'w')
+  f.write(response.body)
+  f.close()
 
   response = Net::HTTP.get_response(URI.parse("http://#{$server}/systems/xml_show?id=#{@system_id}"))
   system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
