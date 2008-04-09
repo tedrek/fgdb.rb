@@ -128,7 +128,7 @@ def get_id_and_stuff
       this_report.write(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$reports_controller}s/xml_show/#{report}")).body)
       this_report.close
     end
-    display "Done!"
+    display "Done!\n\n"
   elsif File.exist?('/var/lib/freegeek-extras/printme/') #new printme has been ran
     system = File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
   else #no printme has been ran
@@ -158,8 +158,8 @@ def get_id_and_stuff
 end
 
 def ask_and_send_stuff
-  job = menuWithDefault('Work Tasks', 'Which job did you perform?', "Quality Control", *@jobs.keys)
-  type = menuWithDefault('System Type', 'What kind of system is this intended to be?', 'Low End', *@types.keys)
+  job = menuWithDefault('Work Tasks', 'Which job did you perform?', "quality checker", *@jobs.keys)
+  type = menuWithDefault('System Type', 'What kind of system is this intended to be?', 'regular', *@types.keys)
   uid = prompt('What is your volunteer id?', 'Please enter a number.') {|num| num.to_i.to_s == num}
   notes = prompt('What, if anything, is notable about this system?')
 
