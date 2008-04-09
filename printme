@@ -1,6 +1,12 @@
 #!/usr/bin/ruby
 
+#configuration
 $server="jetty:3000"
+
+#make these singular
+$types_controller = "type"
+$jobs_controller = "role"
+$reports_controller = "report"
 
 #MINE!
 
@@ -85,21 +91,19 @@ def run_lshw_and_test_stuff
     errorMessage "I could not connect to the server.\nMake sure you are connected to the network and try again.\n\n"
     exit retval
   end
-  lshwname = @lshwname = '/var/lib/freegeek-extras/printme/lshw.xml'
-  if(!File.exist?(lshwname))
-    system("sudo lshw -xml>#{lshwname}") 
-    retval = system("xmlstarlet val " + lshwname + " >& /dev/null")
+  $lshwname =  '/var/lib/freegeek-extras/printme/lshw.xml'
+    system("sudo lshw -xml>#{$lshwname}") 
+    retval = system("xmlstarlet val #{$lshwname} >& /dev/null")
     if retval != true
-      system("cat " + lshwname + " | tr -dc [:print:] | xmlstarlet fo > " + lshwname + ".clean")
-      mv(lshwname + ".clean", lshwname)
-      newretval = system("xmlstarlet val " + lshwname + " >& /dev/null")
+      system("cat #{$lshwname} | tr -dc [:print:] | xmlstarlet fo > #{$lshwname}.clean")
+      mv($lshwname + ".clean", $lshwname)
+      newretval = system("xmlstarlet val #{$lshwname} >& /dev/null")
       if newretval != true
         errorMessage "The xml file is not valid and I could not fix it!\n"
         errorMessage "Ask a build instructor for help.\n"
         exit 1
       end
     end
-  end
 end
 
 def get_id_and_stuff
@@ -119,10 +123,10 @@ def get_id_and_stuff
     puts "Downloading old information..."
     @system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
     list_of_reports = []
-    XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/reports/xml_list_for_system?id=#{@system_id}")).body)["report"].each { |x| list_of_reports << x["id"][0]["content"] }
+    XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$reports_controller}s/xml_list_for_system?id=#{@system_id}")).body)[$reports_controller].each { |x| list_of_reports << x["id"][0]["content"] }
     for report in list_of_reports
-      this_report = open("/var/lib/freegeek-extras/printme/report.#{report}.xml", 'w')
-      this_report.write(Net::HTTP.get_response(URI.parse("http://#{$server}/reports/xml_show/#{report}")).body)
+      this_report = open("/var/lib/freegeek-extras/printme/#{$reports_controller}.#{report}.xml", 'w')
+      this_report.write(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$reports_controller}s/xml_show/#{report}")).body)
       this_report.close
     end
     puts "Done!"
@@ -140,14 +144,14 @@ def get_id_and_stuff
     mv('/var/lib/freegeek-extras/printme/system.xml.new', '/var/lib/freegeek-extras/printme/system.xml')
     system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
   end
-  jobs_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/roles/xml_index")).body)
-  types_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/types/xml_index")).body)
+  jobs_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$jobs_controller}s/xml_index")).body)
+  types_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$types_controller}s/xml_index")).body)
 
   @jobs={}
   @types={}
 
-  jobs_xml["role"].each { |x| @jobs[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
-  types_xml["type"].each { |x| @types[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
+  jobs_xml[$jobs_controller].each { |x| @jobs[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
+  types_xml[$types_controller].each { |x| @types[x["name"][0]] = x["id"][0]["content"].to_i if x.class == Hash }
 
   @system_id ||= XmlSimple.xml_in(system)["id"][0]["content"]
 
@@ -157,14 +161,14 @@ end
 require 'pp' ###################REMOVE ME####################
 
 def ask_and_send_stuff
-  ###COPY AND PASTE FROM THE OLD ONE (YOU NEED LOTS OF MODIFICATIONS TOO THOUGH, LIKE GET AND MOVE SYSTEM AND REPORT AND LSHW, AND ENSTEAD OF SAVING THE RESPONE, POINT THERE BROWSER AT THE SHOW ACTION)
+
 job = menuWithDefault('Work Tasks', 'Which job did you perform?', "Quality Control", *@jobs.keys)
 type = menuWithDefault('System Type', 'What kind of system is this intended to be?', 'Low End', *@types.keys)
 uid = prompt('What is your volunteer id?', 'Please enter a number.') {|num| num.to_i.to_s == num}
 notes = prompt('What, if anything, is notable about this system?')
 
 
-lshw = File.open(@lshwname, "rb")
+lshw = File.open($lshwname, "rb")
 codename = `lsb_release --description --short`
 data = {
   "contact_id" => uid,
@@ -176,7 +180,7 @@ data = {
   "os" => codename
 }
 
-url = "http://#{$server}/reports/xml_create"
+url = "http://#{$server}/#{$reports_controller}s/xml_create"
 uri = URI.parse(url)
 
 mp = Multipart::MultipartPost.new
@@ -202,7 +206,7 @@ def main
   get_id_and_stuff
   run_lshw_and_test_stuff
   ask_and_send_stuff
-  puts "firefox http://#{$server}/reports/show/#{@report_id}"
+  puts "firefox http://#{$server}/#{$reports_controller}s/show/#{@report_id}"
 end
 
 main
