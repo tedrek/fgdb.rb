@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+$server="jetty:3000"
+
 #MINE!
 
 require '/usr/lib/ruby/1.8/lib/xmlsimple.rb'
@@ -78,8 +80,7 @@ def run_lshw_and_test_stuff
   if File.exist?("/var/lib/freegeek-extras/printme/lshw.xml")
     mv('/var/lib/freegeek-extras/printme/lshw.xml', '/var/lib/freegeek-extras/printme/lshw.xml.old')
   end
-  server="printme.fglan"
-  retval = system("ping -c 1 " + server + " 1>&2 >/dev/null")
+  retval = system("ping -c 1 #{$server.gsub(/:.*$/, '')} 1>&2 >/dev/null")
   if retval != true
     errorMessage "I could not connect to the server.\nMake sure you are connected to the network and try again.\n\n"
     exit retval
@@ -110,7 +111,7 @@ def get_id_and_stuff
     mv('/tmp/lshw.xml', '/var/lib/freegeek-extras/printme/lshw.xml.old')
     old_id = prompt('If the system had an id on it already, enter that here',
                   'Please supply a number or nothing at all') {|num| num.empty? or (num.to_i.to_s == num)}
-    response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_show?id=#{old_id}"))
+    response = Net::HTTP.get_response(URI.parse("http://#{$server}/systems/xml_show?id=#{old_id}"))
     system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
     system.puts(response.body)
     system.close
@@ -118,10 +119,10 @@ def get_id_and_stuff
     puts "Downloading old information..."
     @system_id=XmlSimple.xml_in(system)["id"][0]["content"].to_i
     list_of_reports = []
-    XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/reports/xml_list_for_system?id=#{@system_id}")).body)["report"].each { |x| list_of_reports << x["id"][0]["content"] }
+    XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/reports/xml_list_for_system?id=#{@system_id}")).body)["report"].each { |x| list_of_reports << x["id"][0]["content"] }
     for report in list_of_reports
       this_report = open("/var/lib/freegeek-extras/printme/report.#{report}.xml", 'w')
-      this_report.write(Net::HTTP.get_response(URI.parse("http://jetty:3000/reports/xml_show/#{report}")).body)
+      this_report.write(Net::HTTP.get_response(URI.parse("http://#{$server}/reports/xml_show/#{report}")).body)
       this_report.close
     end
     puts "Done!"
@@ -132,15 +133,15 @@ def get_id_and_stuff
         mkdir('/var/lib/freegeek-extras/')
     end
     mkdir('/var/lib/freegeek-extras/printme')
-    response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_new"))
+    response = Net::HTTP.get_response(URI.parse("http://#{$server}/systems/xml_new"))
     system=File.open('/var/lib/freegeek-extras/printme/system.xml.new', 'w')
     system.puts(response.body)
     system.close
     mv('/var/lib/freegeek-extras/printme/system.xml.new', '/var/lib/freegeek-extras/printme/system.xml')
     system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
   end
-  jobs_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/roles/xml_index")).body)
-  types_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://jetty:3000/types/xml_index")).body)
+  jobs_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/roles/xml_index")).body)
+  types_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/types/xml_index")).body)
 
   @jobs={}
   @types={}
@@ -156,7 +157,6 @@ end
 require 'pp' ###################REMOVE ME####################
 
 def ask_and_send_stuff
-  server="printme.fglan:3000"
   ###COPY AND PASTE FROM THE OLD ONE (YOU NEED LOTS OF MODIFICATIONS TOO THOUGH, LIKE GET AND MOVE SYSTEM AND REPORT AND LSHW, AND ENSTEAD OF SAVING THE RESPONE, POINT THERE BROWSER AT THE SHOW ACTION)
 job = menuWithDefault('Work Tasks', 'Which job did you perform?', "Quality Control", *@jobs.keys)
 type = menuWithDefault('System Type', 'What kind of system is this intended to be?', 'Low End', *@types.keys)
@@ -176,7 +176,7 @@ data = {
   "os" => codename
 }
 
-url = "http://" + server + "/reports/xml_create"
+url = "http://#{$server}/reports/xml_create"
 uri = URI.parse(url)
 
 mp = Multipart::MultipartPost.new
@@ -192,7 +192,7 @@ f = open(printme,'w')
 f.write(response.body)
 f.close()
 
-  response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_show?id=#{@system_id}"))
+  response = Net::HTTP.get_response(URI.parse("http://#{$server}/systems/xml_show?id=#{@system_id}"))
   system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
   system.puts(response.body)
   system.close
@@ -202,7 +202,7 @@ def main
   get_id_and_stuff
   run_lshw_and_test_stuff
   ask_and_send_stuff
-  puts "firefox http://jetty:3000/reports/show/#{@report_id}"
+  puts "firefox http://#{$server}/reports/show/#{@report_id}"
 end
 
 main
