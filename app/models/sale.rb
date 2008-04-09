@@ -39,6 +39,10 @@ class Sale < ActiveRecord::Base
     end
   end
 
+  def occurred_at
+    created_at
+  end
+
   def buyer
     contact ?
       contact.display_name :

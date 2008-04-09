@@ -30,8 +30,26 @@
     <%=h @contact.notes %>
   </div>
   <% end %>
+  <% if options.fetch(:display_associations, true) %>
+    <div class="associations">
+      <% for txn,intro in {"disbursement" => "received",
+                           "sale" => "purchased",
+                           "donation" => "given"} %>
+        <% last_one = @contact.send("last_#{txn}") %>
+        <% if last_one %>
+          <div class="<%= txn %>">
+            last <%= link_to(intro,
+                       :controller => Inflector.pluralize(txn),
+                       :contact_id => @contact.id
+                     ) %>
+            on <%= last_one.occurred_at.to_date %>: <%= last_one.gizmos %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
   <br />
-  <% if (! options.has_key?(:display_edit)) or (options[:display_edit] == 'true') %>
+  <% if options.fetch(:display_edit, true) %>
     <% edit_options = options.merge(:action => 'edit') %>
     <%= loading_indicator_tag("contact_#{@contact.id}_loading") %>
     <%= my_lightwindow_tag(

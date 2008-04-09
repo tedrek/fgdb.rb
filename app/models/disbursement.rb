@@ -19,6 +19,10 @@ class Disbursement < ActiveRecord::Base
     end
   end
 
+  def occurred_at
+    disbursed_at
+  end
+
   def recipient
     contact
   end

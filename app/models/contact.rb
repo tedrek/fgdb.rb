@@ -4,8 +4,10 @@ class Contact < ActiveRecord::Base
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
-  has_many :donations
   has_many :volunteer_tasks, :order => 'date_performed DESC'
+  has_many :disbursements
+  has_many :sales
+  has_many :donations
   has_one :user
 
   validates_presence_of :postal_code
@@ -170,17 +172,24 @@ class Contact < ActiveRecord::Base
     contact_types.join(' ')
   end
 
-  def last_donation
-    #:MC: optimize this into sql
-    donations.sort_by {|don| don.created_at}.last
-  end
-
   def default_discount_schedule
     if effective_discount_hours >= 4.0
       DiscountSchedule.find_by_name("volunteer")
     else
       DiscountSchedule.find_by_name("no discount")
     end
+  end
+
+  def last_disbursement
+    last_of_an_association('disbursements')
+  end
+
+  def last_sale
+    last_of_an_association('sales')
+  end
+
+  def last_donation
+    last_of_an_association('donations')
   end
 
   def is_user?
@@ -193,6 +202,11 @@ class Contact < ActiveRecord::Base
   alias :is_user :is_user?
 
   private
+
+  def last_of_an_association(assoc)
+    #:MC: optimize this into sql
+    self.send(assoc).sort_by {|rec| rec.created_at}.last
+  end
 
   def remove_empty_contact_methods
     for contact_method in contact_methods

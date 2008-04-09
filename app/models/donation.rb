@@ -70,6 +70,10 @@ class Donation < ActiveRecord::Base
     ContactType.find(7)
   end
 
+  def occurred_at
+    created_at
+  end
+
   def reported_total_cents
     reported_required_fee_cents + reported_suggested_fee_cents
   end
