@@ -8,3 +8,6 @@
     </p>
   <% end %>
 <% end %>
+<% if @contact -%>
+  <%= render :partial => 'contact_hours', :locals => {:contact => @contact} %>
+<% end -%>

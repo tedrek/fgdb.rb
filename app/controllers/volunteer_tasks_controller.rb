@@ -74,6 +74,7 @@ class VolunteerTasksController < ApplicationController
       @volunteer_task = VolunteerTask.new(params[:volunteer_task])
       @volunteer_task.community_service_type = nil unless CommunityServiceType.exists?(@volunteer_task.community_service_type_id)
       @successful = @volunteer_task.save
+      @contact = @volunteer_task.contact
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -97,6 +98,7 @@ class VolunteerTasksController < ApplicationController
       @volunteer_task = VolunteerTask.find(params[:id])
       @volunteer_task.community_service_type = nil unless CommunityServiceType.exists?(@volunteer_task.community_service_type_id)
       @successful = @volunteer_task.update_attributes(params[:volunteer_task])
+      @contact = @volunteer_task.contact
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
@@ -106,7 +108,9 @@ class VolunteerTasksController < ApplicationController
 
   def destroy
     begin
-      @successful = VolunteerTask.find(params[:id]).destroy
+      task = VolunteerTask.find(params[:id])
+      @contact = task.contact
+      @successful = task.destroy
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
