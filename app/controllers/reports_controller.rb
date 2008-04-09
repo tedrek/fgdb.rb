@@ -102,7 +102,7 @@ class ReportsController < ApplicationController
     if @report.save
       redirect_to(:action=>"show", :id=>@report.id)
     else
-      render :action => "new", :error => "Could not save the database record"
+      redirect_to(:action => "new", :error => "Could not save the database record")
     end
   end
 
