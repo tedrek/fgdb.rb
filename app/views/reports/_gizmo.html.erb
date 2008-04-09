@@ -58,6 +58,6 @@
       </td></tr><tr><td class="line_label">Instructor Initials:</td><td>
           <br>_________________________
       </td></tr><tr><td>Notes:</td><td>
-          <%= @report.notes %>
+          <%= @report.notes.gsub("\n", "<br>") %>
     </table>
   </div>

@@ -48,7 +48,7 @@
           Notes: 
         </td>
         <td>
-          <%= @report.notes %>
+          <%= @report.notes.gsub("\n", "<br>") %>
         </td>
       </tr>
       <tr>
@@ -65,7 +65,7 @@
 <% if defined?(@mistakes) && @mistakes != [] %>
 <fieldset style="background-color: Red;" width="100%">
   <h1>
-    Things you might have done wrong:
+    <%= @mistake_title || "Possible Mistakes:" %>
   </h1>
   <ul>
   <span style="font-size: 15pt;">

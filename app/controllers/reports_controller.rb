@@ -65,6 +65,11 @@ class ReportsController < ApplicationController
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
+    @mistake_title = "Things you might have done wrong: "
+    @mistakes = []
+    if !@report.notes || @report.notes == ""
+      @mistakes << "You should include something in the notes<br>(anything out of the ordinary, the key to enter BIOS, etc)<br>Click Edit to add to the notes"
+    end
     render :layout => 'fgss'
   end
 
