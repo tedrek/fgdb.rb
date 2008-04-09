@@ -75,6 +75,9 @@ def post_form(url, query, headers)
 end
 
 def run_lshw_and_test_stuff
+  if File.exist?("/var/lib/freegeek-extras/printme/lshw.xml")
+    mv('/var/lib/freegeek-extras/printme/lshw.xml', '/var/lib/freegeek-extras/printme/lshw.xml.old')
+  end
   server="printme.fglan"
   retval = system("ping -c 1 " + server + " 1>&2 >/dev/null")
   if retval != true
@@ -175,14 +178,15 @@ query, headers = mp.prepare_query(data)
 lshw.close
 
 response = post_form(uri, query, headers)
-@report_id=XmlSimple.xml_in(response.body)["id"][0]["content"]
-@system_id=XmlSimple.xml_in(response.body)["system_id"][0]["content"]
+response_xml = XmlSimple.xml_in(response.body)
+@report_id=response_xml["id"][0]["content"]
+@system_id=response_xml["system-id"][0]["content"]
 printme = "/var/lib/freegeek-extras/printme/report.#{@report_id}.xml"
 f = open(printme,'w')
 f.write(response.body)
 f.close()
 
-  response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_show?id=#{system_id}"))
+  response = Net::HTTP.get_response(URI.parse("http://jetty:3000/systems/xml_show?id=#{@system_id}"))
   system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
   system.puts(response.body)
   system.close
