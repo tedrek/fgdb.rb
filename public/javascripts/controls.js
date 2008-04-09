@@ -123,6 +123,7 @@ Autocompleter.Base.prototype = {
   },
 
   onInput: function(event) {
+    this.element.removeClassName("fieldWithErrors");
     if(this.observer) clearTimeout(this.observer);
       this.observer =
         setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
@@ -160,6 +161,7 @@ Autocompleter.Base.prototype = {
 
     this.changed = true;
     this.hasFocus = true;
+    this.element.removeClassName("fieldWithErrors");
 
     if(this.observer) clearTimeout(this.observer);
       this.observer =
@@ -273,6 +275,7 @@ Autocompleter.Base.prototype = {
       Element.cleanWhitespace(this.update.down());
 
       if(this.update.firstChild && this.update.down().childNodes) {
+        this.element.removeClassName("fieldWithErrors");
         this.entryCount =
           this.update.down().childNodes.length;
         for (var i = 0; i < this.entryCount; i++) {
@@ -290,6 +293,8 @@ Autocompleter.Base.prototype = {
       if(this.entryCount==1 && this.options.autoSelect) {
         this.selectEntry();
         this.hide();
+      } else if(this.entryCount==0) {
+        this.element.addClassName("fieldWithErrors");
       } else {
         this.render();
       }
