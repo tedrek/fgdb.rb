@@ -1,5 +1,5 @@
 class Report < ActiveRecord::Base
-  include ReportsHelper
+  include XmlHelper
 
   belongs_to :contact
   belongs_to :role

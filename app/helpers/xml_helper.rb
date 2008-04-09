@@ -1,4 +1,4 @@
-module ReportsHelper
+module XmlHelper
   # I can describe this file in one word: ugly
   # it needs a little work done on it...
   def get_matches(what_to_match)

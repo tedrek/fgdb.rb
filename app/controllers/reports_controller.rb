@@ -1,5 +1,5 @@
 class ReportsController < ApplicationController
-  include ReportsHelper
+  include XmlHelper
 
   def xml_index
     render :xml => {:error => params[:error]}
