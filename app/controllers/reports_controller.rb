@@ -5,12 +5,8 @@ class ReportsController < ApplicationController
     render :xml => {:error => params[:error]}
   end
 
-  def index #couldn't we just do @error=params[:error]
-    if params[:error]
-      @error=params[:error]
-    else
-      @error=nil
-    end
+  def index
+    @error=params[:error]
   end
 
   def list_all
@@ -60,11 +56,12 @@ class ReportsController < ApplicationController
   
   def show
     @report = Report.find(params[:id])
-    if !(@report.lshw_output)
+    output=@report.lshw_output #only call db once
+    if !(output) || output == ""
       redirect_to(:action => "index", :error => "There is no lshw output for that report!")
       return
     end
-    if !load_xml
+    if !load_xml(output)
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
@@ -86,13 +83,23 @@ class ReportsController < ApplicationController
   end
 
   def create
+    if params[:report][:my_file] == nil || params[:report][:my_file] == ""
+      redirect_to(:action => "new", :error => "There is no lshw output for that report!")
+      return
+    end
+    output = params[:report][:my_file].read
+    if !load_xml(output)
+      redirect_to(:action => "new", :error => "Invalid XML!")
+      return
+    end
+    # If we pass in the file descriptor to ActiveRecord, the file is already at the end so it will read an empty string
+    params[:report].delete(:my_file)
+    params[:report][:lshw_output] = output
     @report = Report.new(params[:report])
     if @report.system == nil
       @report.system = System.new
     end
-
     if @report.save
-      flash[:notice] = 'Report was successfully created.'
       redirect_to(:action=>"show", :id=>@report.id)
     else
       render :action => "new", :error => "Could not save the database record"
@@ -100,8 +107,17 @@ class ReportsController < ApplicationController
   end
 
   def xml_create
+    if params[:my_file] == nil || params[:my_file] == ""
+      redirect_to(:action => "xml_index", :error => "There is no lshw output for that report!")
+      return
+    end
+    output = params[:my_file].read
+    if !load_xml(output)
+      redirect_to(:action => "xml_index", :error => "Invalid XML!")
+      return
+    end
     #stupid! Is there a better way to do that:
-    report_params={:contact_id => params[:contact_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :my_file => params[:my_file], :os => params[:os]}
+    report_params={:contact_id => params[:contact_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :lshw_output => output, :os => params[:os]}
     @report = Report.new(report_params)
     if @report.system == nil
       @report.system = System.new
@@ -120,7 +136,6 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
 
     if @report.update_attributes(params[:report])
-      flash[:notice] = 'Report was successfully updated.'
       redirect_to(:action=>"show", :id=>@report.id)
     else
       render :action => "edit"

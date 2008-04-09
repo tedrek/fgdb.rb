@@ -4,12 +4,11 @@ module ReportsHelper
   def get_matches(what_to_match)
     @this_thing.find(what_to_match).to_a
   end
-  def load_xml
+  def load_xml(xml)
     require 'xml/libxml'
-    output = @report.lshw_output #only talk to the db once
     begin
-      XML::Reader.new(output)
-      @this_thing = XML::Parser.string(output).parse
+      XML::Reader.new(xml)
+      @this_thing = XML::Parser.string(xml).parse
       return true
     rescue
       return false
