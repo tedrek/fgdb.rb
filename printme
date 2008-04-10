@@ -105,15 +105,17 @@ def run_lshw_and_test_stuff
   end
 end
 
-def get_id_and_stuff
-  if File.exist?('/tmp/lshw.xml') #old printme has been ran
-    if ! File.exist?('/var/lib/freegeek-extras/')
-      mkdir('/var/lib/freegeek-extras/')
-    end
+def do_setup
+  if ! File.exist?('/var/lib/freegeek-extras/')
+    system 'sudo mkdir /var/lib/freegeek-extras/'
+  end
+  system "sudo chown -R #{ENV['USER']}:#{ENV['USER']} /var/lib/freegeek-extras/"
+  if ! File.exist?('/var/lib/freegeek-extras/printme')
     mkdir('/var/lib/freegeek-extras/printme/')
-    mv('/tmp/lshw.xml', '/var/lib/freegeek-extras/printme/lshw.xml.old')
-    old_id = prompt('If the system had an id on it already, enter that here',
-                    'Please supply a number or nothing at all') {|num| num.empty? or (num.to_i.to_s == num)}
+  end
+  old_id = prompt('If the system had an id on it already, enter that here',
+                  'Please supply a number or nothing at all') {|num| num.empty? or (num.to_i.to_s == num)}
+  if old_id && old_id.to_i != 0  && old_id != ""
     response = Net::HTTP.get_response(URI.parse("http://#{$server}/systems/xml_show?id=#{old_id}"))
     system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
     system.puts(response.body)
@@ -130,19 +132,25 @@ def get_id_and_stuff
       message "."
     end
     message "Done!\n\n"
-  elsif File.exist?('/var/lib/freegeek-extras/printme/') #new printme has been ran
-    system = File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
-  else #no printme has been ran
-    if ! File.exists?('/var/lib/freegeek-extras/')
-      mkdir('/var/lib/freegeek-extras/')
-    end
-    mkdir('/var/lib/freegeek-extras/printme')
+  else
     response = Net::HTTP.get_response(URI.parse("http://#{$server}/systems/xml_new"))
-    system=File.open('/var/lib/freegeek-extras/printme/system.xml.new', 'w')
+    system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'w')
     system.puts(response.body)
     system.close
-    mv('/var/lib/freegeek-extras/printme/system.xml.new', '/var/lib/freegeek-extras/printme/system.xml')
     system=File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
+  end
+  @system_id ||= XmlSimple.xml_in(system)["id"][0]["content"]
+end
+
+def get_id_and_stuff
+  if File.exist?('/var/lib/freegeek-extras/printme/system.xml') #new printme has been ran
+    system "sudo chown -R #{ENV['USER']}:#{ENV['USER']} /var/lib/freegeek-extras/"
+    system = File.open('/var/lib/freegeek-extras/printme/system.xml', 'r')
+  else #the old/no printme has been ran
+    do_setup
+    if File.exist?('/tmp/lshw.xml') #old printme has been ran  
+      mv('/tmp/lshw.xml', '/var/lib/freegeek-extras/printme/lshw.xml.old')
+    end
   end
 
   jobs_xml = XmlSimple.xml_in(Net::HTTP.get_response(URI.parse("http://#{$server}/#{$jobs_controller}s/xml_index")).body)
