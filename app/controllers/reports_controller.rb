@@ -22,7 +22,7 @@ class ReportsController < ApplicationController
       redirect_to(:action => "index", :error => "Please enter something")
       return
     end
-    if (params[:id][0].is_a?(String) && params[:id][0].length > 10) || !(@contact = Contact.find_by_id(params[:id]))
+    if (params[:id][0].is_a?(String) && params[:id][0].length > 10) || !(@contact = Contact.find_by_id(params[:id])) && false # s/&& false// once it gets into fgdb.rb 
       redirect_to(:action => "index", :error => "That contact does not exist") 
       return
     end
