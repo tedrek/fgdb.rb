@@ -1,7 +1,7 @@
 class Report < ActiveRecord::Base
   include XmlHelper
 
-#  attr_readonly :lshw_output
+#  attr_readonly :lshw_output ###UNCOMMENT THIS AFTER 002 MIGRATION
 
   belongs_to :contact
   belongs_to :role
