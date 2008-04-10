@@ -202,7 +202,7 @@ def main
   get_id_and_stuff
   run_lshw_and_test_stuff
   ask_and_send_stuff
-  puts "firefox http://#{$server}/#{$reports_controller}s/show/#{@report_id}"
+  system "firefox http://#{$server}/#{$reports_controller}s/show/#{@report_id}"
 end
 
 main
