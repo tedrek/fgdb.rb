@@ -1,7 +1,7 @@
 class Report < ActiveRecord::Base
   include XmlHelper
 
-  attr_readonly :lshw_output
+#  attr_readonly :lshw_output
 
   belongs_to :contact
   belongs_to :role
@@ -10,7 +10,9 @@ class Report < ActiveRecord::Base
 
   def save
     if super
-      load_xml(lshw_output)
+      if !load_xml(lshw_output)
+        return false
+      end
 
       system.system_model = get_from_xml("/node/product")
       system.system_serial_number = get_from_xml("/node/serial")
