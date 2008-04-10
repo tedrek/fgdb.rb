@@ -22,7 +22,7 @@
           Type:
         </td>
         <td>
-          <%= @report.type.name %>
+          <%= @report.type && @report.type.name || "Unknown" %>
         </td>
       </tr>
       <tr>
@@ -50,7 +50,7 @@
       </td></tr><tr><td>OS:</td><td>
           <%= @report.os %>
       </td></tr><tr><td>Job:</td><td>
-          <%= @report.role.name %>
+          <%= @report.role && @report.role.name || "Unknown" %>
       </td></tr><tr><td>Technician:</td><td>
           <%= @report.contact_id %>
       </td></tr><tr><td>Old ID:</td><td>

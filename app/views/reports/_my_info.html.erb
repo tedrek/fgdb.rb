@@ -8,7 +8,7 @@
           Technician: 
         </td>
         <td>
-          <%= (@report.contact_id && @report.contact && @report.contact.display_name) || "Unknown" %>
+          <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || @report.contact_id || "Unknown" %> <!-- s/|| @report.contact_id ||/|| once it gets into fgdb.rb -->
         </td>
       <tr>
       </tr>
@@ -16,7 +16,7 @@
           Technician's Job: 
         </td>
         <td>
-          <%= @report.role.name %>
+          <%= @report.role && @report.role.name || "Unknown" %>
         </td>
       </tr>
       <tr>
@@ -32,7 +32,7 @@
           Type of System: 
         </td>
         <td>
-          <%= @report.type.name %>
+          <%= @report.type && @report.type.name || "Unknown" %>
         </td>
       </tr>
       <tr>
