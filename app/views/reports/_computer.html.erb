@@ -45,16 +45,6 @@
             </td>
           </tr>
         <% end %>
-        <% if xpath_if("clock") %> 
-          <tr>
-            <td>
-              FSB:
-            </td>
-            <td>
-              <%= sprintf("%.0f", (xpath_value_of("clock").to_d/1000000.0)) %>MHz
-            </td>
-          </tr>
-        <% end %>
       <% end %>
     <% end %>
     <tr>
