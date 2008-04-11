@@ -32,7 +32,7 @@
           Capacity:
         </td>
         <td>
-          <%= sprintf("%.2f", (xpath_value_of("size").to_d/1073741824.0)) %> Gb
+          <%= sprintf("%.0f", (xpath_value_of("size").to_d/1073741824.0)) %>GB
         </td>
       </tr>
       <% end %>
@@ -50,7 +50,11 @@
                 <%= xpath_value_of("description") %>
               </td>
               <td>
-                <%= sprintf("%.2f", (xpath_value_of("capacity").to_d/1048576)) %> Mb
+                <% if xpath_value_of("capacity").to_d/1048576 >= 1024 %>
+                <%= sprintf("%.0f", (xpath_value_of("capacity").to_d/1073741824.0)) %>GB
+                <% else %>
+                <%= sprintf("%.0f", (xpath_value_of("capacity").to_d/1048576.0)) %>MB
+                <% end %>
               </td>
             </tr>
             <% end %>

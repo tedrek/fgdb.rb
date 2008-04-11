@@ -41,7 +41,7 @@
               Speed:
             </td>
             <td>
-              <%= sprintf("%.2f", (xpath_value_of("size").to_d/1000000.0)) %> MHz
+              <%= sprintf("%.0f", (xpath_value_of("size").to_d/1000000.0)) %>MHz
             </td>
           </tr>
         <% end %>
