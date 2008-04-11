@@ -15,8 +15,11 @@ if @successful
   end
 else
   page.replace_html element_messages_id(@create_options), :partial => 'form_messages'
-  @transaction.errors.each {|field, msg|
-    page << "if($('#{@transaction_type}_#{field}')) {$('#{@transaction_type}_#{field}').addClassName('fieldWithErrors')}"
+  @transaction.attributes.each {|field,value|
+    page << "if($('#{@transaction_type}_#{field}')) {$('#{@transaction_type}_#{field}').removeClassName('fieldWithErrors')}"
+    if @transaction.errors[field]
+      page << "if($('#{@transaction_type}_#{field}')) {$('#{@transaction_type}_#{field}').addClassName('fieldWithErrors')}"
+    end
   }
   page << "Form.enable('#{element_form_id(@create_options)}');"
   page << "$('#{element_messages_id(@create_options)}').scrollTo();"

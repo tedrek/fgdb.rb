@@ -14,8 +14,11 @@ if @successful
   page << remote_function( :url => params.merge( { :action => 'new' } ) ) #, :contact_id => @volunteer_task.contact_id } ) )
 else
   page.replace_html element_messages_id(@update_options), :partial => 'form_messages'
-  @volunteer_task.errors.each {|field, msg|
-    page << "if($('volunteer_task_#{field}')) {$('volunteer_task_#{field}').addClassName('fieldWithErrors')}"
+  @volunteer_task.attributes.each {|field,value|
+    page << "if($('volunteer_task_#{field}')) {$('volunteer_task_#{field}').removeClassName('fieldWithErrors')}"
+    if @volunteer_task.errors[field]
+      page << "if($('volunteer_task_#{field}')) {$('volunteer_task_#{field}').addClassName('fieldWithErrors')}"
+    end
   }
   page << "Form.enable('#{element_form_id(@update_options)}');"
   page.hide loading_indicator_id("form_for_volunteer_task_loading")
