@@ -1,6 +1,10 @@
 class ReportsController < ApplicationController
   include XmlHelper
 
+  def dump
+    render :text => Report.find(params[:id]).lshw_output
+  end
+
   def xml_index
     render :xml => {:error => params[:error]}
   end
