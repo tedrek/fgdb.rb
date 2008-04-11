@@ -3,7 +3,7 @@
 $COLOR = true #make things cool
 
 #configuration
-$server="jetty:3000"
+$server="rocky.fglan:80"
 #make these singular
 $types_controller = "type"
 $jobs_controller = "role"
