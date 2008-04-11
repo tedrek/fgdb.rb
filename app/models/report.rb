@@ -65,7 +65,7 @@ class Report < ActiveRecord::Base
   end
 
   def is_usable(value)
-    list_of_generics = ['0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'To Be Filled By O.E.M.', 'System Manufacturer', 'System Name', 'EVAL']
+    list_of_generics = ['0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'To Be Filled By O.E.M.', 'System Manufacturer', 'System Name', 'EVAL', 'Serial number xxxxxx', 'To Be Filled By O.E.M. by More String', 'To Be Filled By O.E.M.', 'System Manufacturer', 'System Name', '00000000', 'XXXXXXXXXX', '$', 'xxxxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'None', 'DELL', 'none'] ###Make a separate for serial numbers, vendors, and models before integrated into fgdb.rb
     return (value != nil && value != "" && list_of_generics.delete(value) == nil)
   end
 
