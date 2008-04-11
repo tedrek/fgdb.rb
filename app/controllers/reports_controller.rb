@@ -2,6 +2,7 @@ class ReportsController < ApplicationController
   include XmlHelper
 
   def dump
+    response.headers['content-type'] = "application/xml; charset=utf-8"
     render :text => Report.find(params[:id]).lshw_output
   end
 
