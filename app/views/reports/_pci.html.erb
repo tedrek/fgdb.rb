@@ -46,6 +46,22 @@
         </td>
       </tr>
       <% end %>
+      <% if xpath_value_of("@class")==" display" && xpath_if("size") %>
+      <tr>
+        <td>Video Ram: </td>
+        <td>
+          <%= sprintf("%.0f", (xpath_value_of("size").to_d/1048576.0)) %>MB
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_value_of("@class")==" network" && xpath_if("size") %>
+      <tr>
+        <td>Speed: </td>
+        <td>
+          <%= sprintf("%.0f", (xpath_value_of("size").to_d/1000000.0)) %>Mbps
+        </td>
+      </tr>
+      <% end %>
     </table>
     <% end %>
     <% end %>
