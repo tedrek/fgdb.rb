@@ -23,17 +23,17 @@ class Report < ActiveRecord::Base
 
       macaddr = get_from_xml("//node[@class='network']/serial")
 
-      if system.system_vendor
+      if is_usable(system.system_vendor)
         system.vendor = system.system_vendor
-      elsif system.mobo_vendor 
+      elsif is_usable(system.mobo_vendor)
         system.vendor = system.mobo_vendor
       else
         system.vendor = "(no vendor)"
       end
 
-      if system.system_model
+      if is_usable(system.system_model)
         system.model = system.system_model
-      elsif system.mobo_model
+      elsif is_usable(system.mobo_model)
         system.model = system.mobo_model
       else
         system.model = "(no model)"
@@ -65,7 +65,7 @@ class Report < ActiveRecord::Base
   end
 
   def is_usable(value)
-    list_of_generics = []
+    list_of_generics = ['0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'To Be Filled By O.E.M.', 'System Manufacturer', 'System Name', 'EVAL']
     return (value != nil && value != "" && list_of_generics.delete(value) == nil)
   end
 
