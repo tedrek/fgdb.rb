@@ -19,7 +19,11 @@ module XmlHelper
     s.to_s.gsub(/#{attr}=(["'])([^\1]*)\1/, '\2')
   end
   def xpath_if(what_to_look_for)
-    get_matches(what_to_look_for).first
+    if get_matches(what_to_look_for).first
+      true
+    else
+      false
+    end    
   end
   def xpath_foreach(xpath_thing)
     for this_thing in get_matches(xpath_thing) 
@@ -28,6 +32,7 @@ module XmlHelper
       yield
       @this_thing=old_value
     end
+    nil
   end
   def whats_in_this_thing(what_to_get)
     nodes=get_matches(what_to_get).first
