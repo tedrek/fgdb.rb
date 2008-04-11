@@ -1,6 +1,11 @@
 class SystemsController < ApplicationController
   def xml_show
+begin
     @system = System.find(params[:id])
+rescue
+    @system = System.new
+@system.save
+end
     render :xml => @system 
   end
 
