@@ -6,7 +6,7 @@
         Vendor:
       </td>
       <td>
-        <%= xpath_value_of("/node/vendor") %>
+        <%= @report.system.vendor %>
       </td>
     </tr>
     <tr>
@@ -14,7 +14,7 @@
         Model:
       </td>
       <td>
-        <%= xpath_value_of("/node/product") %>
+        <%= @report.system.model %>
       </td>
     </tr>
     <tr>
@@ -22,7 +22,7 @@
         Serial Number:
       </td>
       <td>
-        <%= xpath_value_of("/node/serial") %>
+        <%= @report.system.serial_number %>
       </td>
     </tr>
     <% xpath_foreach("//node[@class='processor']") do %>

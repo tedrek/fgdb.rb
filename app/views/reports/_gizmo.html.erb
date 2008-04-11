@@ -35,29 +35,50 @@
       </tr>
       <tr>
         <td>
-          Model:
+          OS:
         </td>
         <td>
-          <%= @report.system.model %>
+          <%= @report.os %>
+      </td>
+      </tr>
+      <tr>
+        <td>
+          Job:
+        </td>
+        <td>
+          <%= @report.role && @report.role.name || "Unknown" %>
         </td>
       </tr>
       <tr>
         <td>
-          Serial No:</td><td>
-          <%= @report.system.serial_number %>
-      </td></tr><tr><td>Vendor:</td><td>
-          <%= @report.system.vendor %>
-      </td></tr><tr><td>OS:</td><td>
-          <%= @report.os %>
-      </td></tr><tr><td>Job:</td><td>
-          <%= @report.role && @report.role.name || "Unknown" %>
-      </td></tr><tr><td>Technician:</td><td>
+          Technician:
+        </td>
+        <td>
           <%= @report.contact_id %>
-      </td></tr><tr><td>Old ID:</td><td>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Old ID:
+        </td>
+        <td>
           <%= @report.old_id %>
-      </td></tr><tr><td class="line_label">Instructor Initials:</td><td>
-          <br>_________________________
-      </td></tr><tr><td>Notes:</td><td>
+        </td>
+      </tr>
+      <tr>
+        <td class="line_label">
+          Instructor Initials:
+        </td>
+        <td>
+          <br>
+          _________________________
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Notes:
+        </td>
+        <td>
           <%= @report.notes.gsub("\n", "<br>") %>
     </table>
   </div>
