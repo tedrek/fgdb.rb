@@ -98,7 +98,7 @@ class ReportsController < ApplicationController
   end
 
 def new_common_create_stuff
-    sys_id=params[:report][:system_id]
+    params[:report][:old_id]=params[:report][:system_id]
     params[:report][:system_id] = 0
     @report = Report.new(params[:report])
     @report.init
@@ -110,7 +110,7 @@ def new_common_create_stuff
     end
     if @report.system == nil
       begin
-      @report.system = System.find(sys_id) 
+      @report.system = System.find(params[:report][:old_id]) 
         rescue
         @report.system = nil
       end
