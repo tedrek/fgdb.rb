@@ -65,4 +65,4 @@
 <%= javascript_tag "$('#{contact_query_id(options)}').onkeypress = contactKeyListener;" %>
 <%= javascript_tag("
       set_new_val($('#{contact_query_id(options)}'), '#{contact_id}');
-    " + update_display) if contact_id and !contact_id.empty? %>
+    " + update_display) if contact_id and !contact_id.to_s.empty? %>
