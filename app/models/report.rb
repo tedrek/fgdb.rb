@@ -1,4 +1,3 @@
-
 class Report < ActiveRecord::Base
   include XmlHelper
 
@@ -9,50 +8,74 @@ class Report < ActiveRecord::Base
   belongs_to :system
   belongs_to :type
 
-  def save
-    if super
+  def get_model
+      if is_usable(@system_model)
+        @model = @system_model
+      elsif is_usable(@mobo_model)
+        @model = @mobo_model
+      else
+        @model = "(no model)"
+      end
+    return @model
+  end
+
+  def get_vendor
+      if is_usable(@system_vendor)
+        @vendor = @system_vendor
+      elsif is_usable(@mobo_vendor)
+        @vendor = @mobo_vendor
+      else
+        @vendor = "(no vendor)"
+      end
+    return @vendor
+  end
+
+  def get_serial
+      if is_usable(@system_serial_number)
+        @serial_number = @system_serial_number
+      elsif is_usable(@mobo_serial_number)
+        @serial_number = @mobo_serial_number
+      elsif is_usable(@macaddr)
+        @serial_number = @macaddr
+      else
+        @serial_number = "(no serial number)"
+      end
+    return @serial_number
+  end
+
+  def init
       if !load_xml(lshw_output)
         return false
       end
 
-      system.system_model = get_from_xml("/node/product")
-      system.system_serial_number = get_from_xml("/node/serial")
-      system.system_vendor = get_from_xml("/node/vendor")
-      system.mobo_model = get_from_xml("/node/node[@id='core']/product")
-      system.mobo_serial_number = get_from_xml("/node/node[@id='core']/serial")
-      system.mobo_vendor = get_from_xml("/node/node[@id='core']/vendor")
+    @system_model = get_from_xml("/node/product")
+    @system_serial_number = get_from_xml("/node/serial")
+    @system_vendor = get_from_xml("/node/vendor")
+    @mobo_model = get_from_xml("/node/node[@id='core']/product")
+    @mobo_serial_number = get_from_xml("/node/node[@id='core']/serial")
+    @mobo_vendor = get_from_xml("/node/node[@id='core']/vendor")
+    @macaddr = get_from_xml("//node[@class='network']/serial")
+  end
 
-      macaddr = get_from_xml("//node[@class='network']/serial")
-
-      if is_usable(system.system_vendor)
-        system.vendor = system.system_vendor
-      elsif is_usable(system.mobo_vendor)
-        system.vendor = system.mobo_vendor
-      else
-        system.vendor = "(no vendor)"
-      end
-
-      if is_usable(system.system_model)
-        system.model = system.system_model
-      elsif is_usable(system.mobo_model)
-        system.model = system.mobo_model
-      else
-        system.model = "(no model)"
-      end
-
-      if is_usable(system.system_serial_number)
-        system.serial_number = system.system_serial_number
-      elsif is_usable(system.mobo_serial_number)
-        system.serial_number = system.mobo_serial_number
-      elsif is_usable(macaddr)
-        system.serial_number = macaddr
-      else
-        system.serial_number = "(no serial number)"
-      end
+  def save
+    if super
+    init
+    get_vendor
+    get_serial
+    get_model
+      system.system_model  = @system_model 
+      system.system_serial_number  = @system_serial_number 
+      system.system_vendor  = @system_vendor 
+      system.mobo_model  = @mobo_model 
+      system.mobo_serial_number  = @mobo_serial_number 
+      system.mobo_vendor  = @mobo_vendor 
+      system.model  = @model 
+      system.serial_number  = @serial_number 
+      system.vendor  = @vendor 
+      return system.save
     else
       return false
     end
-    return system.save
   end
 
   private

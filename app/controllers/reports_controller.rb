@@ -97,6 +97,30 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
   end
 
+def new_common_create_stuff
+    sys_id=params[:report][:system_id]
+    params[:report][:system_id] = 0
+    @report = Report.new(params[:report])
+    @report.init
+    if @report.get_serial != "(no serial number)"
+      @report.system = System.find_by_serial_number(@report.get_serial)
+      if @report.system && !(@report.system.vendor == @report.get_vendor && @report.system.model == @report.get_model)
+        @report.system = nil
+      end
+    end
+    if @report.system == nil
+      begin
+      @report.system = System.find(sys_id) 
+        rescue
+        @report.system = nil
+      end
+      if @report.system == nil
+        @report.system = System.new
+      end
+    end
+    params[:report][:system_id] = @report.system.id
+end
+
   def create
     if params[:report][:my_file] == nil || params[:report][:my_file] == ""
       redirect_to(:action => "new", :error => "There is no lshw output for that report!")
@@ -110,10 +134,13 @@ class ReportsController < ApplicationController
     # If we pass in the file descriptor to ActiveRecord, the file is already at the end so it will read an empty string
     params[:report].delete(:my_file)
     params[:report][:lshw_output] = output
-    @report = Report.new(params[:report])
-    if @report.system == nil
-      @report.system = System.new
-    end
+
+#    @report = Report.new(params[:report]) 
+
+  
+new_common_create_stuff
+
+    
     if @report.save
       redirect_to(:action=>"show", :id=>@report.id)
     else
@@ -131,12 +158,9 @@ class ReportsController < ApplicationController
       redirect_to(:action => "xml_index", :error => "Invalid XML!")
       return
     end
-    #stupid! Is there a better way to do that:
-    report_params={:contact_id => params[:contact_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :lshw_output => output, :os => params[:os]}
-    @report = Report.new(report_params)
-    if @report.system == nil
-      @report.system = System.new
-    end
+    params[:report]={:contact_id => params[:contact_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :lshw_output => output, :os => params[:os]}
+
+new_common_create_stuff
 
     if @report.save
       params[:id]=@report.id
