@@ -22,6 +22,14 @@ class ReportsController < ApplicationController
     end
   end
 
+  def list_flagged
+    @reports = Report.find_all_by_flag(true, :order => "id")
+    if @reports.length == 0
+      redirect_to(:action => "index", :error => "There are no flagged reports")
+      return
+    end
+  end
+
   def list_for_contact
     if params[:id]==nil || params[:id]==[""]
       redirect_to(:action => "index", :error => "Please enter something")
