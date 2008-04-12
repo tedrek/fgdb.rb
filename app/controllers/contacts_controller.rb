@@ -138,6 +138,7 @@ class ContactsController < ApplicationController
 
   def method_missing(symbol, *args)
     if /^auto_complete_for/.match(symbol.to_s)
+    #:MC: gah!  the auto_complete_field method screws up the arguments with that "amp;".
       @contacts = Contact.search(params[params["amp;object_name"]][params[:field_name]].strip, :limit => 10)
       render :partial => 'auto_complete_list'
     else

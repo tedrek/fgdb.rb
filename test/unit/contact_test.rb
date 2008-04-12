@@ -82,20 +82,20 @@ class ContactTest < Test::Unit::TestCase
   def test_that_default_discount_can_be_calculated_appropriately
     contact = Contact.find(:first)
     contact.volunteer_tasks = []
-    assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
+    assert_equal DiscountSchedule.find_by_name('no discount'), contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_monitors]
     assert_equal 4.0, contact.effective_discount_hours
-    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    assert_equal DiscountSchedule.find_by_name('volunteer'), contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_testing, an_hour_of_testing, an_hour_of_testing, an_hour_of_testing]
-    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    assert_equal DiscountSchedule.find_by_name('volunteer'), contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly, an_hour_of_testing, an_hour_of_assembly]
-    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    assert_equal DiscountSchedule.find_by_name('volunteer'), contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming]
-    assert_equal DiscountSchedule.no_discount, contact.default_discount_schedule
+    assert_equal DiscountSchedule.find_by_name('no discount'), contact.default_discount_schedule
     contact.volunteer_tasks = []
     4.times {contact.volunteer_tasks << an_hour_of_programming}
     assert_equal 4.0, contact.effective_discount_hours
-    assert_equal DiscountSchedule.volunteer, contact.default_discount_schedule
+    assert_equal DiscountSchedule.find_by_name('volunteer'), contact.default_discount_schedule
   end
 
   def test_last_ninety_days
@@ -109,13 +109,13 @@ class ContactTest < Test::Unit::TestCase
   def test_contact_types_includes_volunteer
     contact = Contact.find(:first)
     contact.contact_types = []
-    contact.contact_types << ContactType.build
+    contact.contact_types << ContactType.find_by_description('build')
     contact.save
-    assert contact.contact_types.include?(ContactType.volunteer)
+    assert contact.contact_types.include?(ContactType.find_by_description('volunteer'))
     contact.contact_types = []
-    contact.contact_types << ContactType.adopter
+    contact.contact_types << ContactType.find_by_description('adopter')
     contact.save
-    assert contact.contact_types.include?(ContactType.volunteer)
+    assert contact.contact_types.include?(ContactType.find_by_description('volunteer'))
   end
 
 end

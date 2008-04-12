@@ -21,7 +21,11 @@ class ContactsControllerTest < Test::Unit::TestCase
 
   def test_arbitrary_auto_complete_calls
     login_as :quentin
-    post :auto_complete_for_filter_contact_query, 'filter_contact' => {'query' => 'foo'}
+    post(:auto_complete_for_filter_contact_query,
+         'filter_contact' => {'query' => 'foo'},
+         "amp;object_name" => 'filter_contact',
+         :field_name => 'query'
+         )
     assert_response :success
     assert_template '_auto_complete_list'
   end
@@ -97,7 +101,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_template 'cancel.rjs'
     assert assigns(:successful)
     assert_rjs :remove, 'floating_form'
-    assert_match /^Form.enable\(\$\('\w*contact_query'\)/, @response.body
+    assert_match /^Form.enable\(\$\('\w*contact_id'\)/, @response.body
   end
 
 protected
