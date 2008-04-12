@@ -103,7 +103,7 @@ def new_common_create_stuff
     @report = Report.new(params[:report])
     @report.init
     if @report.get_serial != "(no serial number)"
-      @report.system = System.find_by_serial_number(@report.get_serial)
+      @report.system = System.find_all_by_serial_number(@report.get_serial).last
       if @report.system && !(@report.system.vendor == @report.get_vendor && @report.system.model == @report.get_model)
         @report.system = nil
       end
