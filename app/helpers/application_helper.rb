@@ -46,6 +46,14 @@ module ApplicationHelper
     render(options.merge({:partial => 'contacts/search'}))
   end
 
+  def contact_object_name(options)
+    options[:object_name] || "contact"
+  end
+
+  def contact_field_name(options)
+    options[:field_name] || "id"
+  end
+
   def contact_messages_id(options)
     contact_element_prefix(options) + '_contact_messages_id'
   end
@@ -144,7 +152,7 @@ module ApplicationHelper
   end
 
   def contact_query_id(options)
-    contact_element_prefix(options) + '_query'
+    contact_object_name(options) + "_" + contact_field_name(options)
   end
 
   def contact_edit_link_id(options)

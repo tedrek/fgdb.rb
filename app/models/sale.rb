@@ -23,6 +23,9 @@ class Sale < ActiveRecord::Base
   def validate
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
+      if contact_id.to_i == 0
+        errors.add("contact_id", "does not refer to a single, unique contact")
+      end
     else
       errors.add_on_empty("postal_code")
     end
@@ -50,11 +53,7 @@ class Sale < ActiveRecord::Base
   end
 
   def contact_type
-    if contact
-      'named'
-    else
-      'anonymous'
-    end
+    @contact_type ||= contact ? 'named' : 'anonymous'
   end
 
   def required_contact_type

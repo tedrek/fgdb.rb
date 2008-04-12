@@ -1,7 +1,6 @@
 <% options.merge!(:controller => '/contacts', :action => "view", :id => @contact.send("#{Contact.primary_key}")) %>
 
 <div class="contact_display">
-  <%= hidden_field_tag searchbox_select_name(options), @contact.id %>
   <div class="id">
     <%= ( @contact.contact_types.map {|c_t|
           c_t.description

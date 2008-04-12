@@ -6,6 +6,9 @@ class Disbursement < ActiveRecord::Base
 
   def validate
     errors.add_on_empty("contact_id")
+    if contact_id.to_i == 0
+      errors.add("contact_id", "does not refer to a single, unique contact")
+    end
     errors.add_on_empty("disbursed_at", "when?")
     errors.add_on_empty("disbursement_type_id")
     errors.add_on_empty("gizmo_events")

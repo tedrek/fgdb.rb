@@ -15,8 +15,8 @@
   <label for="<%= contact_query_id(options) %>">Search for a contact:</label>
 <% end %>
 <%= text_field_with_auto_complete(
-      contact_element_prefix(options),
-      'query',
+      contact_object_name(options),
+      contact_field_name(options),
       {
         :size=>15,
       },
@@ -25,8 +25,11 @@
         :skip_style => true,
         :indicator => loading_indicator_id("contact_autocomplete_loading"),
         :auto_select => true,
+        :method => 'GET'
       },
-      :controller => 'contacts'
+        :object_name => contact_object_name(options),
+        :controller => 'contacts',
+        :field_name => contact_field_name(options)
     ) %>
   <%= loading_indicator_tag("contact_autocomplete_loading") %>
 

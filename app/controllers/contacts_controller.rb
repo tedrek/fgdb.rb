@@ -42,13 +42,6 @@ class ContactsController < ApplicationController
   def lookup
   end
 
-  def search_results
-    if params['contact_query']
-      @search_results = Contact.search(params['contact_query'], :limit => 10)
-    end
-    render :layout => false, :partial => 'search_results', :locals => { :@search_results => @search_results, :options => params['options'] || {} }
-  end
-
   def update_display_area
     @contact = Contact.find( params.fetch(:contact_id, '').strip )
     render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] || params}
@@ -144,8 +137,8 @@ class ContactsController < ApplicationController
   end
 
   def method_missing(symbol, *args)
-    if /auto_complete_for_(.*)_query/.match(symbol.to_s)
-      @contacts = Contact.search(params[$1][:query].strip, :limit => 10)
+    if /^auto_complete_for/.match(symbol.to_s)
+      @contacts = Contact.search(params[params["amp;object_name"]][params[:field_name]].strip, :limit => 10)
       render :partial => 'auto_complete_list'
     else
       super
