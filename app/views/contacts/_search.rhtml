@@ -23,6 +23,7 @@
       },
       {
         :after_update_element => update_display_function,
+        :after_input => "function(e) {Element.update($('#{searchbox_display_id(options)}'), '')}",
         :skip_style => true,
         :indicator => loading_indicator_id("contact_autocomplete_loading"),
         :auto_select => true,

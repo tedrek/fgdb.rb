@@ -73,7 +73,7 @@ module AutoCompleteMacrosHelper
     {
       :after_update_element => :afterUpdateElement, :update_element => :updateElement,
       :on_show => :onShow, :on_hide => :onHide, :min_chars => :minChars,
-      :auto_select => :autoSelect
+      :after_input => :afterInput, :auto_select => :autoSelect
     }.each do |k,v|
       js_options[v] = options[k] if options[k]
     end

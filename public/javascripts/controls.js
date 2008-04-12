@@ -124,8 +124,10 @@ Autocompleter.Base.prototype = {
 
   onInput: function(event) {
     if(this.observer) clearTimeout(this.observer);
-      this.observer =
-        setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
+    this.observer = setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
+    if(this.options.afterInput) {
+        this.options.afterInput();
+    }
   },
 
   onKeyPress: function(event) {
