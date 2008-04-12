@@ -50,14 +50,18 @@
     <% filters = {} %>
     <% filters['date_range'] = date_or_date_range_picker('conditions') %>
     <% filters['contact'] =
-         render(:partial => 'contacts/search', :locals => {:options =>
+         contact_field('@conditions', 'contact_id',
+           :locals => {:options =>
              {
-               :select_name => 'conditions[contact_id]',
+               :object_name => 'conditions',
+               :field_name => 'contact_id',
                :element_prefix => 'filter_contact',
-               :display_edit => false, :display_create => false,
+               :display_edit => false,
+               :display_create => false,
                :show_label => false,
              },
-             :contact => @conditions.contact} ) %>
+             :contact => @conditions.contact
+           } ) %>
     <% if @model.new.respond_to?( :payments ) %>
       <% filters['payment_method'] = render( :partial => 'payment_method_select',
             :locals => {:field_id_prefix => 'conditions',

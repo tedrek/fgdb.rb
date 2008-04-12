@@ -2,13 +2,8 @@
 <div class="form-element">
   <%= contact_field("@transaction", "contact",
         :locals => {:options => {
-            :object_name => @transaction_type, 
+            :object_name => @transaction_type,
             :field_name => 'contact_id'
           }.merge(options)
         }) %>
-  <%# render :partial => 'contacts/search',
-        :locals => {:options =>
-            {:select_name => @transaction_type + '[contact_id]'}.merge(options),
-        :contact => @transaction.contact}
-  %>
 </div>
