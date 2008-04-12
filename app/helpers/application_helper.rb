@@ -152,7 +152,10 @@ module ApplicationHelper
   end
 
   def contact_query_id(options)
-    contact_object_name(options) + "_" + contact_field_name(options)
+    options[:contact_query_id] ||
+      (
+        contact_object_name(options) + "_" + contact_field_name(options)
+      )
   end
 
   def contact_edit_link_id(options)

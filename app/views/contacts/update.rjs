@@ -1,10 +1,20 @@
-@options = { :action => "view", :id => params[:id] }
+@options = {
+  :action => "view",
+  :id => params[:id],
+  :contact_query_id => params[:contact_query_id]
+}
 @update_options = @options.merge(:action => "update")
 
 if @successful
   page << "myLightWindow.deactivate();"
   page.replace_html contact_messages_id(@options), :partial => 'messages'
   page.remove 'floating_form'
+  page.replace_html(searchbox_display_id(@options),
+                    :partial => 'display',
+                    :locals => {
+                      :@contact => @contact,
+                      :options => @options
+                    })
   page << "Form.enable($('#{contact_query_id(@options)}').form.id);"
 else
   page.replace_html contact_messages_id(@update_options), :partial => 'form_messages'

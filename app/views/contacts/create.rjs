@@ -1,8 +1,12 @@
-@options = { :action => "view", :id => @contact.id }
+@options = {
+  :action => "view",
+  :id => @contact.id,
+  :contact_query_id => params[:contact_query_id]
+}
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  query_field = "$('#{contact_element_prefix(@options)}_query')"
+  query_field = "$('#{contact_query_id(@options)}')"
   page << "myLightWindow.deactivate();"
   page << "#{query_field}.value = '#{@contact.id}';"
   page << remote_function(

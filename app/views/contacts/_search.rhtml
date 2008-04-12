@@ -4,7 +4,8 @@
        :action => 'update_display_area',
        :controller => 'contacts',
      }),
-     :with => "'contact_id=' + $('#{contact_query_id(options)}').value"
+     :with => "'contact_id=' + $('#{contact_query_id(options)}').value",
+     :contact_query_id => contact_query_id(options)
    ) %>
 <% update_display_function = "
      function(field, choice) {
@@ -27,9 +28,9 @@
         :auto_select => true,
         :method => 'GET'
       },
-        :object_name => contact_object_name(options),
-        :controller => 'contacts',
-        :field_name => contact_field_name(options)
+      :object_name => contact_object_name(options),
+      :controller => 'contacts',
+      :field_name => contact_field_name(options)
     ) %>
   <%= loading_indicator_tag("contact_autocomplete_loading") %>
 
@@ -37,7 +38,8 @@
   <% new_options = options.merge(
        :controller => 'contacts',
        :action => 'new',
-       :id => nil
+       :id => nil,
+       :contact_query_id => contact_query_id(options)
      ) %>
   <%= my_lightwindow_tag(
         :url => new_options,
