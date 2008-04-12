@@ -4,7 +4,9 @@
     <th>System</th>
     <th>Type</th>
     <th>Role</th>
+    <th>OS</th>
     <th>Created at</th>
+    <th>Flag</th>
     <th>Go Somewhere</th>
     <th>Notes</th>
   </tr>
@@ -21,7 +23,9 @@
     <td><%= link_to report.system_id.to_s, {:action => "list_for_system", :id => report.system_id} %></td>
     <td><%= (report.type && report.type.name) || "Unknown" %></td>
     <td><%= (report.role && report.role.name) || "Unknown" %></td>
+    <td><%= report.os %></td>
     <td><%= report.created_at.strftime("%D %I:%M%p") %></td>
+    <td style="color: red;"><%= if report.flag; "FLAGGED"; else; ""; end %></td>
     <td><%= link_to 'Show', {:action => "show", :id => report.id} %>
     <%= link_to 'XML', {:action => "dump", :id => report.id} %></td>
     <td><%= report.notes %></td>
