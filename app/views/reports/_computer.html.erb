@@ -55,5 +55,15 @@
         <%= xpath_value_of("//node[@id='firmware']/version") %>
       </td>
     </tr>
+<% usbver = 0.0; xpath_foreach("//node[contains(@id, 'usbhost')]") do; if (this_usbver = xpath_value_of("capabilities/capability").gsub("USB ", "").to_f) > usbver; usbver = this_usbver; end; end %>
+<% if usbver != 0.0 %>
+<tr>
+<td>
+USB Version:
+</td>
+<td>
+<%= usbver %>
+</td>
+<% end %>
   </table>
 </div>
