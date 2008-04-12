@@ -16,7 +16,7 @@ class NewTest < Test::Unit::SeleniumTestCase
     type "donation_contact_id", "martin"
     key_press "donation_contact_id", " "
     assert !60.times{ break if (is_element_present("contact_edit_link") rescue false); sleep 1 }
-    assert is_text_present("martin pamplemousse chase")
+    assert is_text_present("martin chase")
     click "donation_contact_id"
     type "donation_contact_id", "zzzzzz"
     set_speed "3000"

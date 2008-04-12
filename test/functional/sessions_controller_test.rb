@@ -36,8 +36,6 @@ class SessionsControllerTest < Test::Unit::TestCase
     get :destroy
     assert_nil session[:user_id]
     assert_response :redirect
-    assert_rjs :replace, 'sidebar'
-    assert_rjs :replace, 'login_box'
   end
 
   def test_should_delete_token_on_logout
