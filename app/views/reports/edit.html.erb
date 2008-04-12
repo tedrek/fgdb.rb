@@ -6,6 +6,7 @@
     <tr><td>Job:</td><td><%= select("report", "role_id", Role.find(:all).collect {|p| [p.name, p.id] }) %></td></tr>
     <tr><td>Type:</td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.name, p.id] }) %></td></tr>
     <tr><td>Notes:</td><td><%= text_area("report", :notes) %></td></tr>
+    <tr><td>Flag:</td><td><%= check_box("report", :flag) %></td></tr>
     <tr><td colspan=2><%= submit_tag "Update" %></td></tr>
   </table>
 <% end %>
