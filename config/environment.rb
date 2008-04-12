@@ -48,6 +48,10 @@ Rails::Initializer.run do |config|
   config.plugins = [:all]
 end
 
+Selenium::configure do |config|
+  config.browser 'firefox'
+end
+
 # Add new inflection rules using the following format
 # (all these examples are active by default):
 # Inflector.inflections do |inflect|
