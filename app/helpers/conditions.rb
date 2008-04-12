@@ -17,7 +17,7 @@ class Conditions
   attr_accessor :payment_method_id
 
   def contact
-    if contact_id
+    if contact_id && !contact_id.empty?
       if( (! @contact) || (contact_id != @contact.id) )
         @contact = Contact.find(contact_id)
       end
