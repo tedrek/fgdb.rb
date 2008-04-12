@@ -1,6 +1,6 @@
   <div id="memory">
 	<h2>Memory</h2>
-	<% xpath_foreach("//node[@id='memory'] | //node[@id='memory:0']") do %>
+	<% xpath_foreach("//node[contains(@id, 'memory')]") do %>
 	<% if xpath_if("size") %>
 	<table>
 	  <tr>
