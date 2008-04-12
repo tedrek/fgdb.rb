@@ -16,8 +16,10 @@ class Conditions
   # payment method attrs
   attr_accessor :payment_method_id
 
+  attr_accessor :transaction_id
+
   def contact
-    if contact_id && !contact_id.empty?
+    if contact_id && !contact_id.to_s.empty?
       if( (! @contact) || (contact_id != @contact.id) )
         @contact = Contact.find(contact_id)
       end
@@ -40,6 +42,8 @@ class Conditions
 
   def conditions(klass)
     case @limit_type
+    when /transaction[ _]id/
+      transaction_id_conditions(klass)
     when /date[ _]range/
       date_range_conditions(klass)
     when 'contact'
@@ -47,6 +51,10 @@ class Conditions
     when /payment[ _]method/
       payment_method_conditions(klass)
     end
+  end
+
+  def transaction_id_conditions(klass)
+    return ["#{klass.table_name}.id = ?", @transaction_id]
   end
 
   def date_range_conditions(klass)
