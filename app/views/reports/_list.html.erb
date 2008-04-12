@@ -1,11 +1,12 @@
-<table>
+<table style="white-space:nowrap;">
   <tr>
     <th>Person</th>
     <th>System</th>
     <th>Type</th>
     <th>Role</th>
     <th>Created at</th>
-    <th></th>
+    <th>Go Somewhere</th>
+    <th>Notes</th>
   </tr>
 <% for report in @reports %>
   <tr>
@@ -21,7 +22,9 @@
     <td><%= (report.type && report.type.name) || "Unknown" %></td>
     <td><%= (report.role && report.role.name) || "Unknown" %></td>
     <td><%= report.created_at.strftime("%D %I:%M%p") %></td>
-    <td><%= link_to 'Show', {:action => "show", :id => report.id} %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => report.id} %>
+    <%= link_to 'XML', {:action => "dump", :id => report.id} %></td>
+    <td><%= report.notes %></td>
   </tr>
 <% end %>
 </table>
