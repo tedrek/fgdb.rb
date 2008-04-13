@@ -30,26 +30,20 @@
     name="<%= @datalist_field_name_prefix %>[gizmo_context_id]" value="<%= @gizmo_context.id %>" />
 
 <div class="form-element">
-  <label for="<%= @datalist_field_id_prefix %>_description">Description</label>
-  <%= datalist_text_field 'gizmo_event', 'description',
-    {:class=>"text-input", :size=>"10"} %>
-</div>
-
-<div class="form-element">
   <label for="<%= @datalist_field_id_prefix %>_gizmo_count">Qty</label>
   <%= datalist_text_field 'gizmo_event', 'gizmo_count',
-    {:class=>"text-input", :size=>"2"} %>
+    {:class=>"text-input", :size=>"1"} %>
 </div>
 
 <div class="form-element">
   <label for="<%= @datalist_field_id_prefix %>_unit_price">Unit Price</label>
   <%= datalist_text_field 'gizmo_event', 'unit_price',
-    {:class=>"text-input money", :size=>"5"} %>
+    {:class=>"text-input money", :size=>"3"} %>
 </div>
 
 <div class="form-element total_price_div">
   <label for="<%= @datalist_field_id_prefix %>_total_price">Total Price</label>
-  <input disabled="" id="<%= @datalist_field_id_prefix %>_total_price" style="background: transparent; color: #000000;" readonly="true" class="text-input money" size="5" onchange="update_gizmo_totals('#{@datalist_field_id_prefix}')" />
+  <input disabled="" id="<%= @datalist_field_id_prefix %>_total_price" style="background: transparent; color: #000000;" readonly="true" class="text-input money" size="4" onchange="update_gizmo_totals('#{@datalist_field_id_prefix}')" />
 </div>
 
 <%= javascript_tag "update_all_gizmo_totals();" %>
@@ -64,6 +58,12 @@
           :datalist_field_name_prefix => @datalist_field_name_prefix
       } ) } %>
   <% end %>
+</div>
+
+<div class="form-element">
+  <label for="<%= @datalist_field_id_prefix %>_description">Description</label>
+  <%= datalist_text_field 'gizmo_event', 'description',
+    {:class=>"text-input", :size=>"8"} %>
 </div>
 
 <div>

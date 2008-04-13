@@ -306,11 +306,15 @@ border: solid 1px #1F7F00;
 
 .contact_display {
 background-color: #A5C5C5;
-border: solid 1px #799;
+border: solid 1px #9BB;
 text-align: left;
 line-height: normal;
 font-size: 10px;
 width: 200px;
+}
+
+.contact_display {
+padding: 5px;
 }
 
 .contact_display a {
