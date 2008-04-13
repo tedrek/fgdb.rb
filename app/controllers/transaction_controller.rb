@@ -106,6 +106,7 @@ class TransactionController < ApplicationController
   def needs_attention
     begin
       @transaction = model.find(params[:id])
+      @transaction.comments += "\nATTN: #{params[:comment]}"
       @transaction.needs_attention = true
       @successful = @transaction.save
     rescue
