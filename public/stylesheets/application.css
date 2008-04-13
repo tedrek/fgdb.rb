@@ -310,7 +310,7 @@ border: solid 1px #799;
 text-align: left;
 line-height: normal;
 font-size: 10px;
-width: 240px;
+width: 200px;
 }
 
 .contact_display a {
@@ -346,7 +346,7 @@ margin-left: 10px;
 .hours_type {
 font-size: 12px;
 background-color: #7C5;
-width: 240px;
+width: 100%;
 }
 
 li.contact div.address {
