@@ -1,4 +1,4 @@
-        <% t_id = "#{@transaction_type}_#{transaction.id}" -%>
+<% t_id = "#{@transaction_type}_#{transaction.id}" -%>
 <% if has_role?(allowed_roles) %>
     <% edit_options = @options.merge(:action => 'edit') %>
     <% update_options = @options.merge(:action => "update") %>
@@ -27,7 +27,7 @@
         <%= render :partial => "getting_attention" %>
       <% else %>
         <% attention_options = {:id => transaction.id, :action => 'needs_attention'} -%>
-        <a id="<%= t_id %>_attention_open" href="#" onclick="return false;">?</a>
+        <a id="<%= t_id %>_attention_open" onclick="return false;"><img src="/images/stock_unknown.png" alt="flag as needing attention" title="flag as needing attention"></a>
         <%= custom_observer("#{t_id}_attention_open",
               "Element.show('#{t_id}_attention_div');",
               "click"); %>
