@@ -77,6 +77,35 @@ input.save {
     size: +2;
 }
 
+table {
+width: 100%;
+}
+
+table th {
+padding: 2px 5px;
+}
+
+table th, table th p {
+margin: 0px;
+background-color: #555;
+color: #EEE;
+text-align: left;
+font-family: arial,sans-serif;
+font-size: 11px;
+font-weight: bold;
+line-height: normal;
+}
+
+table tr td {
+border-bottom: 1px solid #C5DBF7;
+font-size: 11px;
+border-left: 1px solid #DDD;
+}
+
+tr.even td {
+background-color: #E2F2FF;
+}
+
 /* ===================================
          Invoice, Receipt */
 #receipt-header-left {

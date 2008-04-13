@@ -1,6 +1,5 @@
         <% t_id = "#{@transaction_type}_#{transaction.id}" -%>
 <% if has_role?(allowed_roles) %>
-  <td>
     <% edit_options = @options.merge(:action => 'edit') %>
     <% update_options = @options.merge(:action => "update") %>
     <a href="<%= url_for(edit_options) %>"
@@ -9,21 +8,20 @@
     <%= custom_observer("edit_#{transaction.id}_link",
           "if(form_has_not_been_edited('#{@transaction_type}_form_tbody') ||
                 confirm('Current transaction will be lost.  Continue?')) {
-             #{remote_function(:url => edit_options, :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');", :complete => "updateTotals('#{@transaction_type}', '#{element_form_id(update_options)}');")};
+             #{remote_function(:url => edit_options,
+                 :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');",
+                 :complete => "updateTotals('#{@transaction_type}',
+                 '#{element_form_id(update_options)}');")};
            };",
            'click') %>
 
-  </td>
-  <td>
     <% delete_options = @options.merge(:action => 'destroy') %>
     <%= link_to_remote "Delete",
                    { :url => delete_options,
                      :confirm => 'Are you sure?',
                      :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');" },
                    { :href => url_for( delete_options ) } %>
-  </td>
 <% else %>
-  <td>
     <div id="<%= t_id %>_needs_attention_div">
       <% if (transaction.needs_attention) %>
         <%= render :partial => "getting_attention" %>
@@ -35,7 +33,7 @@
               "click"); %>
         <div id="<%= t_id %>_attention_div" style="display: none">
           <textarea id="<%= t_id %>_attention_comment"></textarea>
-          <%= link_to_remote "ok", 
+          <%= link_to_remote "ok",
                 { :url => attention_options,
                   :with => "'comment='+$('#{t_id}_attention_comment').value",
                   :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');",
@@ -49,7 +47,6 @@
               "Element.hide('#{t_id}_attention_div');",
               "click"); %>
         </div>
-      <% end %> 
-    </td>
+      <% end %>
   </div>
 <% end %>

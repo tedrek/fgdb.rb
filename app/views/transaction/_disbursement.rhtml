@@ -13,15 +13,9 @@
     </td>
   <% end %>
   <td class="actions">
-    <table cellpadding="0" cellspacing="0">
-      <tr>
-        <td class="indicator-container">
-          <%= loading_indicator_tag("disbursement_#{disbursement.id}_loading") %>
-        </td>
-        <%= render :partial => "edit_update_transaction",
-                   :locals => {:transaction => disbursement,
-                               :allowed_roles => ["ROLE_BEAN_COUNTERS"]}%>
-      </tr>
-    </table>
+    <%= loading_indicator_tag("disbursement_#{disbursement.id}_loading") %>
+    <%= render :partial => "edit_update_transaction",
+               :locals => {:transaction => disbursement,
+                           :allowed_roles => ["ROLE_BEAN_COUNTERS"]}%>
   </td>
 </tr>

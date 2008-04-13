@@ -10,33 +10,23 @@
     </td>
   <% end %>
   <td class="actions">
-    <table cellpadding="0" cellspacing="0">
-      <tr>
-        <td class="indicator-container">
-          <%= loading_indicator_tag("volunteer_task_#{volunteer_task.id}_loading") %>
-        </td>
-        <td>
-          <% edit_options = @options.merge(:action => 'edit') %>
-          <a href="<%= url_for(edit_options) %>"
-            id="edit_<%= volunteer_task.id %>_link"
-            onclick="return false">Edit</a>
-          <%= custom_observer("edit_#{volunteer_task.id}_link",
+    <%= loading_indicator_tag("volunteer_task_#{volunteer_task.id}_loading") %>
+    <% edit_options = @options.merge(:action => 'edit') %>
+    <a href="<%= url_for(edit_options) %>"
+       id="edit_<%= volunteer_task.id %>_link"
+       onclick="return false">Edit</a>
+    <%= custom_observer("edit_#{volunteer_task.id}_link",
                 "if(form_has_not_been_edited('foo_form_tbody') ||
                       confirm('Current task will be lost.  Continue?')) {
                    Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}');
                    #{remote_function(:url => edit_options)};
                  };",
                  'click') %>
-        </td>
-        <td>
-          <% delete_options = @options.merge(:action => 'destroy') %>
-          <%= link_to_remote "Delete",
-                         { :url => delete_options,
-                           :confirm => 'Are you sure?',
-                           :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}');" },
-                         { :href => url_for( delete_options ) } %>
-        </td>
-      </tr>
-    </table>
+    <% delete_options = @options.merge(:action => 'destroy') %>
+    <%= link_to_remote "Delete",
+          { :url => delete_options,
+            :confirm => 'Are you sure?',
+            :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}');" },
+          { :href => url_for( delete_options ) } %>
   </td>
 </tr>

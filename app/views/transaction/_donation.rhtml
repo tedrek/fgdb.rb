@@ -13,21 +13,13 @@
     </td>
   <% end %>
   <td class="actions">
-    <table cellpadding="0" cellspacing="0">
-      <tr>
-        <td class="indicator-container">
-          <%= loading_indicator_tag("donation_#{donation.id}_loading") %>
-        </td>
-        <td>
-          <% print_options = @options.merge(:action => 'receipt') %>
-          <a onclick="window.open('<%= url_for(print_options) %>','Receipt_<%= donation.id %>','');" title="Print">
-            <%= image_tag "print.png", :alt => "Print", :title => "Print" %>
-          </a>
-        </td>
-        <%= render :partial => "edit_update_transaction",
-                   :locals => {:transaction => donation,
-                               :allowed_roles => ["ROLE_DONATION_ADMIN", "ROLE_BEAN_COUNTERS"]}%>
-      </tr>
-    </table>
+    <%= loading_indicator_tag("donation_#{donation.id}_loading") %>
+    <% print_options = @options.merge(:action => 'receipt') %>
+    <a onclick="window.open('<%= url_for(print_options) %>','Receipt_<%= donation.id %>','');" title="Print">
+      <%= image_tag "print.png", :alt => "Print", :title => "Print" %>
+    </a>
+    <%= render :partial => "edit_update_transaction",
+               :locals => {:transaction => donation,
+                           :allowed_roles => ["ROLE_DONATION_ADMIN", "ROLE_BEAN_COUNTERS"]}%>
   </td>
 </tr>
