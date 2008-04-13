@@ -18,6 +18,8 @@ class Conditions
 
   attr_accessor :transaction_id
 
+  attr_accessor :needs_attention
+
   def contact
     if contact_id && !contact_id.to_s.empty?
       if( (! @contact) || (contact_id != @contact.id) )
@@ -44,6 +46,8 @@ class Conditions
     case @limit_type
     when /transaction[ _]id/
       transaction_id_conditions(klass)
+    when /needs[ _]attention/
+      transaction_needs_attention_conditions(klass)
     when /date[ _]range/
       date_range_conditions(klass)
     when 'contact'
@@ -55,6 +59,10 @@ class Conditions
 
   def transaction_id_conditions(klass)
     return ["#{klass.table_name}.id = ?", @transaction_id]
+  end
+
+  def transaction_needs_attention_conditions(klass)
+    return ["#{klass.table_name}.needs_attention = 't'"]
   end
 
   def date_range_conditions(klass)

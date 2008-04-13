@@ -70,6 +70,7 @@
                         :paid_object => @conditions} ) %>
     <% end %>
     <% filters['transaction_id'] = text_field('conditions', 'transaction_id') %>
+    <% filters['needs_attention'] = nil %>
     <%= select_visibility( 'conditions', 'limit_type', filters ) %>
 
     <p class="form-footer">
