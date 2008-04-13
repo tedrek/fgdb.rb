@@ -105,29 +105,21 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
   end
 
-def new_common_create_stuff
+  def new_common_create_stuff
     params[:report][:old_id]=params[:report][:system_id]
     params[:report][:system_id] = 0
     @report = Report.new(params[:report])
     @report.init
     if @report.get_serial != "(no serial number)"
-      @report.system = System.find_all_by_serial_number(@report.get_serial).last
-      if @report.system && !(@report.system.vendor == @report.get_vendor && @report.system.model == @report.get_model)
-        @report.system = nil
-      end
-    end
-    if @report.system == nil
-      begin
-      @report.system = System.find(params[:report][:old_id]) 
-        rescue
-        @report.system = nil
-      end
-      if @report.system == nil
+      system = System.find_all_by_serial_number(@report.get_serial, :order => :id).last
+      if system && (system.vendor == @report.get_vendor and system.model == @report.get_model)
+	@report.system = system
+      else
         @report.system = System.new
       end
     end
     params[:report][:system_id] = @report.system.id
-end
+  end
 
   def create
     if params[:report][:my_file] == nil || params[:report][:my_file] == ""
