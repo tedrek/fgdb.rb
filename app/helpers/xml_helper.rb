@@ -5,6 +5,7 @@ module XmlHelper
   def load_xml(xml)
     require 'xml/libxml'
     begin
+      raise if xml.empty?
       @this_thing = XML::Parser.string(xml).parse
       return true
     rescue
