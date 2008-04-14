@@ -1,5 +1,14 @@
 class ReportsController < ApplicationController
   include XmlHelper
+  MINIMUM_COMPAT_VERSION=1
+
+  def check_compat
+    if !params[:version] || params[:version].empty? || params[:version].to_i < MINIMUM_COMPAT_VERSION  
+      render :xml => {:compat => false, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
+    else
+      render :xml => {:compat => true}
+    end
+  end
 
   def dump
     response.headers['content-type'] = "application/xml; charset=utf-8"
@@ -105,7 +114,19 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
   end
 
-  def new_common_create_stuff
+  def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
+    output = params[:report][:my_file].read
+    if output == nil || output.empty?
+      redirect_to(:action => redirect_where_on_error, :error => "The posted lshw output was empty!")
+      return
+    end
+    if !load_xml(output)
+      redirect_to(:action => redirect_where_on_error, :error => "Invalid XML!")
+      return
+    end
+    # If we pass in the file descriptor to ActiveRecord, the file is already at the end so it will read an empty string
+    params[:report].delete(:my_file)
+    params[:report][:lshw_output] = output
     params[:report][:old_id]=params[:report][:system_id]
     params[:report][:system_id] = 0
     @report = Report.new(params[:report])
@@ -119,56 +140,20 @@ class ReportsController < ApplicationController
       end
     end
     params[:report][:system_id] = @report.system.id
+    if @report.save
+      redirect_to(:action=>redirect_where_on_success, :id=>@report.id)
+    else
+      redirect_to(:action => redirect_where_on_error, :error => "Could not save the database record")
+    end
   end
 
   def create
-    if params[:report][:my_file] == nil || params[:report][:my_file] == ""
-      redirect_to(:action => "new", :error => "There is no lshw output for that report!")
-      return
-    end
-    output = params[:report][:my_file].read
-    if !load_xml(output)
-      redirect_to(:action => "new", :error => "Invalid XML!")
-      return
-    end
-    # If we pass in the file descriptor to ActiveRecord, the file is already at the end so it will read an empty string
-    params[:report].delete(:my_file)
-    params[:report][:lshw_output] = output
-
-#    @report = Report.new(params[:report]) 
-
-  
-new_common_create_stuff
-
-    
-    if @report.save
-      redirect_to(:action=>"show", :id=>@report.id)
-    else
-      redirect_to(:action => "new", :error => "Could not save the database record")
-    end
+    new_common_create_stuff("new", "show") 
   end
 
   def xml_create
-    if params[:my_file] == nil || params[:my_file] == ""
-      redirect_to(:action => "xml_index", :error => "There is no lshw output for that report!")
-      return
-    end
-    output = params[:my_file].read
-    if !load_xml(output)
-      redirect_to(:action => "xml_index", :error => "Invalid XML!")
-      return
-    end
-    params[:report]={:contact_id => params[:contact_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :lshw_output => output, :os => params[:os]}
-
-new_common_create_stuff
-
-    if @report.save
-      params[:id]=@report.id
-      xml_show
-    else
-      params[:error]="Could not save the database record"
-      xml_index
-    end
+    params[:report]={:contact_id => params[:contact_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :my_file => params[:my_file], :os => params[:os]}
+    new_common_create_stuff("xml_index", "xml_show") 
   end
 
   def update
