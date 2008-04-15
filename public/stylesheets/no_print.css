@@ -1,0 +1,9 @@
+div#logo, div#sidebar, div#login_box { 
+  display: none;
+}
+
+div#content { 
+  left: 0px;
+  position: relative;
+  width: 95%;
+}
