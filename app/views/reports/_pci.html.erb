@@ -54,18 +54,14 @@
       </tr>
       <% end %>
       <% if xpath_value_of("@class")==" network" && xpath_if("capabilities") %>
+      <% find_the_biggest("capabilities/capability", "@id") do |value| %>
       <tr>
         <td>Speed: </td>
         <td>
-	<% speed = 0 %>
-	<% xpath_foreach("capabilities/capability") do %>
-	<% if (this_speed=xpath_value_of("@id").to_i) > speed; speed=this_speed; end %>
-	<% end %>
-	<% if speed != 0 %>
-	<%= speed.to_s.to_bitspersecond %>
-	<% end %>
+	      <%= value.to_i.to_s.to_bitspersecond %>
         </td>
       </tr>
+	  <% end %>
       <% end %>
     </table>
     <% end %>

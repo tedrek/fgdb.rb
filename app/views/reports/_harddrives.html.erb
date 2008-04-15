@@ -32,7 +32,7 @@
           Capacity:
         </td>
         <td>
-          <%= xpath_value_of("size").to_bytes %>
+          <%= xpath_value_of("size").to_bytes(0, false, false) %>
         </td>
       </tr>
       <% end %>
@@ -50,7 +50,7 @@
                 <%= xpath_value_of("description") %>
               </td>
               <td>
-                <%= xpath_value_of("capacity").to_bytes %>
+                <%= xpath_value_of("capacity").to_bytes(0, false, false) %>
               </td>
             </tr>
             <% end %>

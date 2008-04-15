@@ -1,9 +1,9 @@
 class String
-  def to_bytes(precision = 0)
-    if self.to_f/1048576 >= 1024
-      sprintf("%.#{precision}f", self.to_f/1073741824) + "GB"
+  def to_bytes(precision = 0, exact = true, truncate = true)
+    if self.to_f/(exact ? 1048576 : 1000000) >= (exact ? 1024 : 1000)
+      sprintf("%.#{precision}f", truncate ? yikes((exact ? 1073741824 : 1000000000), precision) : self.to_f/(exact ? 1073741824 : 1000000000)) + "GB"
     else
-      sprintf("%.0f", self.to_f/1048576) + "MB"
+      sprintf("%.0f", self.to_f/(exact ? 1048576 : 1000000)) + "MB"
     end
   end
 
@@ -17,12 +17,21 @@ class String
   
   def to_hertz
     if self.to_f/1000000 >= 1000
-      sprintf("%.2f", self.to_f/1000000000) + "GHz"
+      sprintf("%.2f", yikes(1000000000, 2)) + "GHz" #truncate...
     else
       sprintf("%.0f", self.to_f/1000000) + "MHz"
     end
   end
+
+  #######
+  private
+  #######
+
+  def yikes(divide_by, precision) #divides and then truncates.
+    return ((((self.to_f/divide_by)*(10**precision)).to_i).to_f)/(10**precision)
+  end
 end
+
 
 
 module XmlHelper
@@ -64,8 +73,18 @@ module XmlHelper
       "Unknown"
     end
   end
-  def find_the_biggest()
-    
+  def find_the_biggest(foreach_xpath, value_xpath, get_rid_of = "", &block)
+    value = 0.0
+    xpath_foreach(foreach_xpath) do
+      if (this_value = xpath_value_of(value_xpath).gsub(get_rid_of, "").to_f) > value
+        value = this_value
+      end
+    end
+    if value != 0.0
+      return yield(value)
+    else
+      return nil
+    end
   end
 
   #######
