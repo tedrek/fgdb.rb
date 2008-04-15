@@ -253,19 +253,34 @@ module ApplicationHelper
     javascript_tag(js)
   end
 
-  def edit_link(object, options, form_id = nil)
+  def edit_link(link_id, options, form_id = nil)
+    make_link(link_id, 
+              image_tag("edit.png", :alt => "edit", :title => "edit"), 
+              options, 
+              form_id)
+  end
+
+  def delete_link(link_id, options, form_id = nill)
+    make_link(link_id, 
+              image_tag("remove.png", :alt => "delete", :title => "delete"), 
+              options, 
+              form_id)
+  end
+
+  def make_link(link_id, image_tag, options, form_id = nil)
     html = %Q[
-      <a id="edit_#{object.id}_link"
+      <a id="#{link_id}"
          onclick="return false">
-        #{image_tag "edit.png", :alt => 'edit', :title => 'edit this'}
+        #{image_tag}
       </a>
     ]
     ify = form_id ? "form_has_not_been_edited('#{form_id}') ||" : ""
-    html += custom_observer("edit_#{object.id}_link",
+    html += custom_observer(link_id,
                             "if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
                                  #{remote_function(options)}
                              }",
                             'click')
-    return(html)
+    return html
   end
+
 end
