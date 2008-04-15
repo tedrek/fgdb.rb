@@ -8,7 +8,7 @@
 		  Size:
 		</td>
 		<td>
-          <%= (xpath_value_of("size").to_d/1048576.0).to_i.to_s %> Mb
+          <%= xpath_value_of("size").to_bytes(1) %>
 		</td>
 	  </tr>
 	</table>
@@ -34,7 +34,7 @@
 			Size:
 		  </td>
 		  <td>
-            <%= (xpath_value_of("size").to_d/1048576.0).to_i.to_s %> Mb
+            <%= xpath_value_of("size").to_bytes %>
 		  </td>
 		</tr>
         <% end %>

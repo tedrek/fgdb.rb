@@ -41,7 +41,7 @@
               Speed:
             </td>
             <td>
-              <%= sprintf("%.0f", (xpath_value_of("size").to_d/1000000.0)) %>MHz
+              <%= xpath_value_of("size").to_hertz %>
             </td>
           </tr>
         <% end %>
@@ -55,15 +55,16 @@
         <%= xpath_value_of("//node[@id='firmware']/version") %>
       </td>
     </tr>
-<% usbver = 0.0; xpath_foreach("//node[contains(@id, 'usbhost')]") do; if (this_usbver = xpath_value_of("capabilities/capability").gsub("USB ", "").to_f) > usbver; usbver = this_usbver; end; end %>
-<% if usbver != 0.0 %>
-<tr>
-<td>
-USB Version:
-</td>
-<td>
-<%= usbver %>
-</td>
-<% end %>
+    <% usbver = 0.0; xpath_foreach("//node[contains(@id, 'usbhost')]") do; if (this_usbver = xpath_value_of("capabilities/capability").gsub("USB ", "").to_f) > usbver; usbver = this_usbver; end; end %>
+    <% if usbver != 0.0 %>
+    <tr>
+      <td>
+        USB Version:
+      </td>
+      <td>
+        <%= usbver %>
+      </td>
+    </tr>  
+    <% end %>
   </table>
 </div>

@@ -39,7 +39,7 @@
         </td>
         <td>
           <%= @report.os %>
-      </td>
+        </td>
       </tr>
       <tr>
         <td>
@@ -70,7 +70,7 @@
           Instructor Initials:
         </td>
         <td>
-          <br>
+          <br />
           _________________________
         </td>
       </tr>
@@ -79,6 +79,8 @@
           Notes:
         </td>
         <td>
-          <%= @report.notes.gsub("\n", "<br>") %>
+          <%= @report.notes.gsub("\n", "<br />") %>
+        </td>
+      </tr>
     </table>
   </div>

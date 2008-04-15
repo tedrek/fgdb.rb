@@ -1,2 +1,0 @@
-class TypesController < PropertiesController
-end

@@ -1,5 +1,6 @@
 <table style="white-space:nowrap;">
   <tr>
+    <th>Report ID</th>
     <th>Person</th>
     <th>System</th>
     <th>Type</th>
@@ -12,6 +13,7 @@
   </tr>
 <% for report in @reports %>
   <tr>
+    <td><%= link_to report.id.to_s, {:action => "list_for_report", :id => report.id} %></td>
     <td>
 <!-- s/|| report.contact_id/ once it gets into fgdb.rb -->
 <% if thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) || report.contact_id %>

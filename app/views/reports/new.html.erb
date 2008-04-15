@@ -1,9 +1,11 @@
+<div id="form-header">
 <h1>New report</h1>
 
 <% if @error!=nil %>
-<div style="color: red">ERROR: <%= @error %></div>
+<span style="color: red">ERROR: <%= @error %></span>
 <% end %>
 
+<div id="form-body">
 <% form_tag ({:action => "create"}, {:multipart => true}) do |f| %>
   <table>
     <tr><td>Volunteer ID:</td><td><%= text_field("report", :contact_id) %></td></tr>
@@ -12,8 +14,11 @@
     <tr><td>Type:</td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.name, p.id] }) %></td></tr>
     <tr><td>Notes:</td><td><%= text_area("report", :notes) %></td></tr>
     <tr><td>File:</td><td><%= file_field("report", :my_file) %></td></tr>
-    <tr><td colspan=2><%= submit_tag "Create" %></td></tr>
+    <tr><td colspan="2"><%= submit_tag "Create" %></td></tr>
   </table>
 <% end %>
+</div>
 
+<div id="form-footer">
 <%= link_to 'Back', {:action => "index"} %>
+</div>

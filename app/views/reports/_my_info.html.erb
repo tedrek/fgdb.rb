@@ -1,4 +1,4 @@
-<fieldset style="background-color: Lime;" width="100%">
+<fieldset style="background-color: Lime; width: auto">
   <h1>
     Summary of this report:
   </h1>
@@ -10,8 +10,8 @@
         <td>
           <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || @report.contact_id || "Unknown" %> <!-- s/|| @report.contact_id ||/|| once it gets into fgdb.rb -->
         </td>
-      <tr>
       </tr>
+      <tr>
         <td>
           Technician's Job: 
         </td>
@@ -48,12 +48,13 @@
           Notes: 
         </td>
         <td>
-          <%= @report.notes.gsub("\n", "<br>") %>
+          <%= @report.notes.gsub("\n", "<br />") %>
         </td>
       </tr>
       <tr>
         <td>
           Do something: 
+        </td>
         <td>
           <%= link_to "Print", "#", {:onclick=>"window.print();"} %>
           <%= link_to "Edit", { :action=>"edit", :id=>@report.id } %>
@@ -78,3 +79,4 @@
   </ul>
 </fieldset>
 <% end %>
+

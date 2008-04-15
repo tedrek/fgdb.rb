@@ -49,7 +49,7 @@
       <tr>
         <td>Video Ram: </td>
         <td>
-          <%= sprintf("%.0f", (xpath_value_of("size").to_d/1048576.0)) %>MB
+          <%= xpath_value_of("size").to_bytes %>
         </td>
       </tr>
       <% end %>
@@ -62,7 +62,7 @@
 	<% if (this_speed=xpath_value_of("@id").to_i) > speed; speed=this_speed; end %>
 	<% end %>
 	<% if speed != 0 %>
-	<%= speed %>Mbps
+	<%= speed.to_s.to_bitspersecond %>
 	<% end %>
         </td>
       </tr>

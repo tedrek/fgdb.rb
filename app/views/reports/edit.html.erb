@@ -1,5 +1,8 @@
+<div id="form-header">
 <h1>Editing report</h1>
+</div>
 
+<div id="form-body">
 <% form_tag({:action => "update", :id => @report.id}) do |f| %>
   <table>
     <tr><td>Volunteer ID:</td><td><%= text_field("report", :contact_id) %></td></tr>
@@ -7,9 +10,12 @@
     <tr><td>Type:</td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.name, p.id] }) %></td></tr>
     <tr><td>Notes:</td><td><%= text_area("report", :notes) %></td></tr>
     <tr><td>Flag:</td><td><%= check_box("report", :flag) %></td></tr>
-    <tr><td colspan=2><%= submit_tag "Update" %></td></tr>
+    <tr><td colspan="2"><%= submit_tag "Update" %></td></tr>
   </table>
 <% end %>
+</div>
 
+<div id="form-footer">
 <%= link_to 'Show', {:action => "show", :id => @report.id} %> |
 <%= link_to 'Back', {:action => "index"} %>
+</div>

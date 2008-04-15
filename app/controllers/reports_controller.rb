@@ -71,11 +71,23 @@ class ReportsController < ApplicationController
     end
   end
 
+  def list_for_report
+    if params[:id]==nil||params[:id]==[""]
+      redirect_to(:action => "index", :error => "Please enter something") 
+      return
+    end
+    if (params[:id][0].is_a?(String) && params[:id][0].length > 10)
+      redirect_to(:action => "index", :error => "That report does not exist")
+      return
+    end
+    @reports = Report.find_all_by_id(params[:id], :order => "id")
+  end
+
   def xml_list_for_system
     @reports = Report.find_all_by_system_id(params[:id], :order => "id")
     render :xml => @reports
   end
-  
+
   def show
     @report = Report.find(params[:id])
     output=@report.lshw_output #only call db once
@@ -90,11 +102,11 @@ class ReportsController < ApplicationController
     @mistake_title = "Things you might have done wrong: "
     @mistakes = []
     if !@report.notes || @report.notes == ""
-      @mistakes << "You should include something in the notes<br>(anything out of the ordinary, the key to enter BIOS, etc)<br>Click Edit to add to the notes"
+      @mistakes << "You should include something in the notes<br />(anything out of the ordinary, the key to enter BIOS, etc)<br />Click Edit to add to the notes"
     end
     if @report.contact
       if @report.contact.is_organization==true
-        @mistakes << "The technician that you entered is an organization<br>(an organization cannot be a technician)<br>Click Edit to change the technician"
+        @mistakes << "The technician that you entered is an organization<br />(an organization cannot be a technician)<br />Click Edit to change the technician"
       end
     end
     render :layout => 'fgss'
@@ -163,6 +175,69 @@ class ReportsController < ApplicationController
       redirect_to(:action=>"show", :id=>@report.id)
     else
       render :action => "edit"
+    end
+  end
+
+  def xml_system_show
+    system = System.find_by_id(params[:id])
+    if system
+      render :xml => system
+    else
+      redirect_to(:action => "xml_index", :error => "That system does not exist!")
+    end
+  end
+
+  def method_missing(symbol, *args)
+    if (result = symbol.to_s.match(/(roles|types)_(new|edit|index|create|update|xml_index)/))
+      @property_type=result[1]
+      @action=result[2]
+      eval "self." + "properties_" + @action
+    else
+      super
+    end
+  end
+  
+  def model
+    @property_type.classify.constantize
+  end
+
+  def properties_xml_index
+    @properties=model.find(:all, :order => "id")
+    render :xml => @properties
+  end
+
+  def properties_index
+    @properties = model.find(:all, :order => "id")
+    render :action => "properties_" + @action
+  end
+
+  def properties_new
+    @property = model.new
+    render :action => "properties_" + @action
+  end
+
+  def properties_edit
+    @property = model.find(params[:id])
+    render :action  => "properties_" + @action
+  end
+
+  def properties_create
+    @property = model.new(params[:property])
+
+    if @property.save
+      redirect_to(:action=>(@property_type + "_index"))
+    else
+      redirect_to(:action => (@property_type + "_new"), :error => "Could not save the database record")
+    end
+  end
+
+  def properties_update
+    @property = model.find(params[:id])
+
+    if @property.update_attributes(params[:property])
+      redirect_to(:action=>(@property_type + "_index"))
+    else
+      redirect_to(:action => (@property_type + "_new"), :error => "Could not save the database record")
     end
   end
 end

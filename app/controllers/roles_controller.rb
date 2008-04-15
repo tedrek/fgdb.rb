@@ -1,2 +1,0 @@
-class RolesController < PropertiesController
-end
