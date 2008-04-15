@@ -16,6 +16,7 @@ class Donation < ActiveRecord::Base
   attr_writer :contact_type #anonymous, named, or dumped
 
   before_save :cleanup_for_contact_type
+  before_save :unzero_contact_id
   before_save :set_occurred_at_on_gizmo_events
 
   def validate

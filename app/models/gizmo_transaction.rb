@@ -49,9 +49,15 @@ module GizmoTransaction
     end
   end
 
-  #######
-  private
-  #######
+  #########
+  protected
+  #########
+
+  def unzero_contact_id
+    if contact_type != 'named'
+      self.contact_id = nil
+    end
+  end
 
   def required_contact_type
     # the contact type to actually apply to a named contact who did the txn

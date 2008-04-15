@@ -89,10 +89,4 @@ class Sale < ActiveRecord::Base
     self.gizmo_events.each {|event| event.occurred_at = self.created_at}
   end
 
-  def unzero_contact_id
-    if contact_type != 'named'
-      self.contact_id = nil
-    end
-  end
-
 end
