@@ -1,4 +1,4 @@
-div#logo, div#sidebar, div#login_box { 
+div#logo, div#sidebar, div#login_box, td.actions, div.create { 
   display: none;
 }
 
