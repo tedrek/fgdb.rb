@@ -62,20 +62,17 @@
       </tr>
   </table>
 </fieldset>
-<% #this would be really cool to do...but I would have to make a interface to add/remove mistake conditions, which I don't want to bother with right now...and I don't know how accurate it would be able to be...so for now it does nothing %>
 <% if defined?(@mistakes) && @mistakes != [] %>
-<fieldset style="background-color: Red;" width="100%">
+<fieldset style="background-color: Red; font-size: 15pt; width: auto;">
   <h1>
     <%= @mistake_title || "Possible Mistakes:" %>
   </h1>
   <ul>
-  <span style="font-size: 15pt;">
     <% for mistake in @mistakes %>
       <li>
         <%= mistake %>
       </li>
     <% end %>
-  </span>
   </ul>
 </fieldset>
 <% end %>

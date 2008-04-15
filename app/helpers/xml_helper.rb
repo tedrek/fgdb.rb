@@ -102,10 +102,11 @@ module XmlHelper
   end
   def whats_in_this_thing(what_to_get)
     nodes=get_matches(what_to_get).first
-    if what_to_get[0]=='@'[0]
-      remove_attribute(nodes, what_to_get.gsub(/@/, ''))
+    what_was_got = File.basename(what_to_get)
+    if what_was_got[0] == '@'[0]
+      remove_attribute(nodes, what_was_got.sub(/@/, ""))
     else
-      remove_tag(nodes, what_to_get.gsub(/(.*)\//, ''))
+      remove_tag(nodes, what_was_got)
     end
   end
 end

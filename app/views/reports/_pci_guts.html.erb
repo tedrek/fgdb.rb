@@ -1,0 +1,69 @@
+    <table>
+      <% if xpath_if("@class") %>
+      <tr>
+        <td>Type: </td>
+        <td>
+          <%= xpath_value_of("@class") %>
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_if("description") %>
+      <tr>
+        <td>Description: </td>
+        <td>
+          <%= xpath_value_of("description") %>
+          (<%= xpath_value_of("@handle").sub(" ", "") %>)
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_if("vendor") %>
+      <tr>
+        <td>Vendor: </td>
+        <td>
+          <%= xpath_value_of("vendor") %>
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_if("product") %>
+      <tr>
+        <td>Product: </td>
+        <td>
+          <%= xpath_value_of("product") %>
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_value_of("@class")==" display" && xpath_if("size") %>
+      <tr>
+        <td>Video Ram: </td>
+        <td>
+          <%= xpath_value_of("size").to_bytes %>
+        </td>
+      </tr>
+      <% end %>
+      <% if false && xpath_value_of("@class")==" network" && xpath_if("configuration/setting[@id='wireless']") %>
+      <tr>
+        <td>Wireless Capabilities: </td>
+        <td>
+          <%= xpath_value_of("configuration/setting[@id='wireless']/@value") %>
+        </td>
+      </tr>
+      <% end %>
+      <% if false && xpath_value_of("@class")==" network" && xpath_if("logicalname") %>
+      <tr>
+        <td>Ethernet Interface: </td>
+        <td>
+          <%= xpath_value_of("logicalname") %>
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_value_of("@class")==" network" && xpath_if("capabilities") %>
+      <% find_the_biggest("capabilities/capability", "@id") do |value| %>
+      <tr>
+        <td>Speed: </td>
+        <td>
+	      <%= value.to_i.to_s.to_bitspersecond %>
+        </td>
+      </tr>
+	  <% end %>
+      <% end %>
+    </table>
