@@ -22,7 +22,7 @@
                      :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');" },
                    { :href => url_for( delete_options ) } %>
 <% else %>
-    <div id="<%= t_id %>_needs_attention_div">
+    <span id="<%= t_id %>_needs_attention_div" class="needs_attention>
       <% if (transaction.needs_attention) %>
         <%= render :partial => "getting_attention" %>
       <% else %>
@@ -31,7 +31,7 @@
         <%= custom_observer("#{t_id}_attention_open",
               "Element.show('#{t_id}_attention_div');",
               "click"); %>
-        <div id="<%= t_id %>_attention_div" style="display: none">
+        <span id="<%= t_id %>_attention_div" style="display: none">
           <textarea id="<%= t_id %>_attention_comment"></textarea>
           <%= link_to_remote "ok",
                 { :url => attention_options,
@@ -46,7 +46,7 @@
         <%= custom_observer("#{t_id}_attention_cancel",
               "Element.hide('#{t_id}_attention_div');",
               "click"); %>
-        </div>
+        </span>
       <% end %>
-  </div>
+  </span>
 <% end %>
