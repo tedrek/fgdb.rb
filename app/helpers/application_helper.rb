@@ -252,4 +252,20 @@ module ApplicationHelper
     }
     javascript_tag(js)
   end
+
+  def edit_link(object, options, form_id = nil)
+    html = %Q[
+      <a id="edit_#{object.id}_link"
+         onclick="return false">
+        #{image_tag "edit.png", :alt => 'edit', :title => 'edit this'}
+      </a>
+    ]
+    ify = form_id ? "form_has_not_been_edited('#{form_id}') ||" : ""
+    html += custom_observer("edit_#{object.id}_link",
+                            "if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
+                                 #{remote_function(options)}
+                             }",
+                            'click')
+    return(html)
+  end
 end

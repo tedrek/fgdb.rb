@@ -106,6 +106,10 @@ tr.even td {
 background-color: #E2F2FF;
 }
 
+td.actions {
+width: 80px;
+}
+
 /* ===================================
          Invoice, Receipt */
 #receipt-header-left {
