@@ -239,14 +239,16 @@ module ApplicationHelper
   end
 
   def custom_observer(element, handler, *event_types)
+    ident = Time.now.to_f.to_s.gsub(/[^0-9]/, '')
     js = "
-      element = $('#{element}');
+      var elem_#{ident} = $('#{element}');
       handler = function(event) {
+        var element = elem_#{ident};
         Event.extend(event);
         #{handler}
       };"
     event_types.each {|event_type|
-      js += "element.addEventListener('#{event_type}', handler, false);"
+      js += "if(elem_#{ident}) {elem_#{ident}.addEventListener('#{event_type}', handler, false);} else {alert('#{element} not found!')}"
     }
     javascript_tag(js)
   end
