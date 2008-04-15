@@ -1,14 +1,18 @@
 <div class="form-element">
   <% filters = {} %>
   <% filters['date range'] = date_or_date_range_picker('defaults') %>
-  <% filters['contact'] =
-       contact_field('@defaults', 'contact_id',
-         :locals => { :options => {
-           :element_prefix => 'filter_contact',
-           :display_edit => false, :display_create => false,
-           :show_label => false
-         } }
-       )
+  <% if (is_logged_in())
+       filters['contact'] =
+         contact_field('@defaults', 'contact_id',
+           :locals => { :options => {
+             :element_prefix => 'filter_contact',
+             :display_edit => false, :display_create => false,
+             :show_label => false
+           } }
+         )
+     else
+       @defaults.limit_type = 'date range'
+     end
   %>
 
   <label>Volunteering report for who or what period of time?</label>

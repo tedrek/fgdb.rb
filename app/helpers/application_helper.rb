@@ -222,6 +222,10 @@ module ApplicationHelper
     %Q[<span style="display:none" id="#{loading_indicator_id(prefix)}"><img src="/images/indicator.gif" alt="loading..."></img></span>]
   end
 
+  def is_logged_in()
+    @current_user
+  end
+
   def is_me?(contact_id)
     @current_user and @current_user.contact_id == contact_id
   end
