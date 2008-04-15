@@ -31,7 +31,11 @@
     <a href="#" id="toggle_report_links">reports</a>
     <%= custom_observer("toggle_report_links", "$('report_links').toggle()", "click") %>
   </div>
+  <% if params[:controller] == "reports" %>
+  <div id="report_links">
+  <% else %>
   <div id="report_links" style="display:none;">
+  <% end %>
     <div>
       <%= link_to "income", :controller => 'reports', :action => 'income' %>
     </div>
@@ -41,10 +45,10 @@
     <div>
       <%= link_to "volunteering", :controller => 'reports', :action => 'volunteers' %>
     </div>
-    <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
-    <div>
-      <%= link_to "contacts", :controller => 'contacts' %>
-    </div>
-    <% end %>
   </div>
+  <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
+  <div>
+    <%= link_to "contacts", :controller => 'contacts' %>
+  </div>
+  <% end %>
 </div>
