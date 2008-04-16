@@ -17,6 +17,12 @@
     <label for="donation_comments">Comments</label>
     <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
   </div>
+  <% if @donation.id and @donation.invoiced? %>
+    <div class="form-element">
+      <label for="donation_invoice_resolved_at">When was this invoice resolved?</label>
+      <%= calendar_box 'donation', 'invoice_resolved_at' %>
+    </div>
+  <% end %>
 </div>
 </div>
 
