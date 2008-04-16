@@ -43,6 +43,20 @@ class Donation < ActiveRecord::Base
     def default_sort_sql
       "donations.created_at DESC"
     end
+
+    def totals(conditions)
+      self.connection.execute(
+        "SELECT payments.payment_method_id,
+                sum(payments.amount_cents) as amount,
+                sum(donations.reported_required_fee_cents) as required,
+                sum(reported_suggested_fee_cents) as suggested,
+                count(*)
+         FROM donations
+         LEFT OUTER JOIN payments ON payments.donation_id = donations.id
+         WHERE #{sanitize_sql_for_conditions(conditions)}
+         GROUP BY payments.payment_method_id"
+      )
+    end
   end
 
   def donor

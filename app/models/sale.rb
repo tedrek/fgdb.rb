@@ -41,6 +41,19 @@ class Sale < ActiveRecord::Base
     def default_sort_sql
       "sales.created_at DESC"
     end
+
+    def totals(conditions)
+      connection.execute(
+        "SELECT payments.payment_method_id,
+                sales.discount_schedule_id,
+                sum(payments.amount_cents) as amount,
+                count(*)
+         FROM sales
+         LEFT OUTER JOIN payments ON payments.sale_id = sales.id
+         WHERE #{sanitize_sql_for_conditions(conditions)}
+         GROUP BY payments.payment_method_id, sales.discount_schedule_id"
+      )
+    end
   end
 
   def occurred_at

@@ -75,24 +75,16 @@ class ReportsController < ApplicationController
   def income_report
     @defaults = Conditions.new
     @defaults.apply_conditions(params[:defaults])
-    income_report_init
+    @income_data = {}
+    income_report_init #:MC: modifies @income_data
     @date_range_string = @defaults.to_s
-    #:MC: cannot get payment_methods to be :include'd do i need to make a :has_many :through => ?
-    donations = Donation.find(:all, :conditions => @defaults.conditions(Donation), :include => [:payments])
-    sales = Sale.find(:all, :conditions => @defaults.conditions(Sale), :include => [:payments, :discount_schedule])
-    sale_ids = []
-    donation_ids = []
-    donations.each do |donation|
-      donation_ids << donation.id
-      add_donation_to_data(donation, @income_data)
-    end
-    sales.each do |sale|
-      sale_ids << sale.id
-      add_sale_to_data(sale, @income_data)
-    end
     @ranges = {}
-    @ranges[:donations] = donation_ids.empty? ? 'n/a' : (donation_ids.min)..(donation_ids.max)
-    @ranges[:sales] = sale_ids.empty?         ? 'n/a' : (sale_ids.min)..(sale_ids.max)
+    Donation.totals(@defaults.conditions(Donation)).each do |summation|
+      add_donation_to_data(summation, @income_data)
+    end
+    Sale.totals(@defaults.conditions(Sale)).each do |summation|
+      add_sale_to_data(summation, @income_data)
+    end
   end
 
   protected
@@ -103,7 +95,7 @@ class ReportsController < ApplicationController
     @columns = Hash.new( method_names.insert(2, 'till total').insert(-3, 'total real').insert(-1, 'total') )
     @width = @columns[nil].length
     @rows = {}
-    @rows[:donations] = ['fees', 'voluntary', 'subtotals']
+    @rows[:donations] = ['fees', 'suggested', 'subtotals']
     discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}.sort
     @rows[:sales] = discount_types << 'subtotals'
     @rows[:grand_totals] = ['total']
@@ -121,73 +113,76 @@ class ReportsController < ApplicationController
     end
   end
 
-  def add_donation_to_data(donation, income_data)
+  def add_donation_to_data(summation, income_data)
+    payment_method_id, amount_cents, required_cents, suggested_cents, count =
+      summation[0..4].map {|c| c.to_i}
+    return unless payment_method_id and payment_method_id != 0
+
     totals = income_data[:grand_totals]
-    required_cents = donation.reported_required_fee_cents
-    #:MC: no business rules for what order to evaluate these?
-    donation.payments.each {|payment|
-      column = income_data[:donations][PaymentMethod.descriptions[payment.payment_method_id]]
-      fees_cents = 0
-      voluntary_cents = 0
-      if required_cents <= 0
-        voluntary_cents = payment.amount_cents
-      elsif required_cents > payment.amount_cents
-          required_cents -= payment.amount_cents
-          fees_cents = payment.amount_cents
-      else
-        fees_cents = required_cents
-        required_cents = 0
-        voluntary_cents = payment.amount_cents - fees_cents
-      end
 
-      if payment.payment_method_id != PaymentMethod.invoice.id
-        income_data[:donations]['total real']['fees'] += fees_cents
-        income_data[:donations]['total real']['voluntary'] += voluntary_cents
-        income_data[:donations]['total real']['subtotals'] += payment.amount_cents
-        totals['total real']['total'] += payment.amount_cents
-      end
+    column = income_data[:donations][PaymentMethod.descriptions[payment_method_id]]
+    fees_cents = 0
+    suggested_cents = 0
+    if required_cents <= 0
+      suggested_cents = amount_cents
+    elsif required_cents > amount_cents
+      required_cents -= amount_cents
+      fees_cents = amount_cents
+    else
+      fees_cents = required_cents
+      required_cents = 0
+      suggested_cents = amount_cents - fees_cents
+    end
 
-      if( (payment.payment_method_id == PaymentMethod.cash.id) ||
-          (payment.payment_method_id == PaymentMethod.check.id) )
-        income_data[:donations]['till total']['fees'] += fees_cents
-        income_data[:donations]['till total']['voluntary'] += voluntary_cents
-        income_data[:donations]['till total']['subtotals'] += payment.amount_cents
-        totals['till total']['total'] += payment.amount_cents
-      end
+    if payment_method_id != PaymentMethod.invoice.id
+      income_data[:donations]['total real']['fees'] += fees_cents
+      income_data[:donations]['total real']['suggested'] += suggested_cents
+      income_data[:donations]['total real']['subtotals'] += amount_cents
+      totals['total real']['total'] += amount_cents
+    end
 
-      income_data[:donations]['total']['fees'] += fees_cents
-      income_data[:donations]['total']['voluntary'] += voluntary_cents
-      income_data[:donations]['total']['subtotals'] += payment.amount_cents
-      column['fees'] += fees_cents
-      column['voluntary'] += voluntary_cents
-      column['subtotals'] += payment.amount_cents
-      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount_cents
-      totals['total']['total'] += payment.amount_cents
-    }
+    if( (payment_method_id == PaymentMethod.cash.id) ||
+        (payment_method_id == PaymentMethod.check.id) )
+      income_data[:donations]['till total']['fees'] += fees_cents
+      income_data[:donations]['till total']['suggested'] += suggested_cents
+      income_data[:donations]['till total']['subtotals'] += amount_cents
+      totals['till total']['total'] += amount_cents
+    end
+
+    income_data[:donations]['total']['fees'] += fees_cents
+    income_data[:donations]['total']['suggested'] += suggested_cents
+    income_data[:donations]['total']['subtotals'] += amount_cents
+    column['fees'] += fees_cents
+    column['suggested'] += suggested_cents
+    column['subtotals'] += amount_cents
+    totals[PaymentMethod.descriptions[payment_method_id]]['total'] += amount_cents
+    totals['total']['total'] += amount_cents
   end
 
-  def add_sale_to_data(sale, income_data)
+  def add_sale_to_data(summation, income_data)
+    payment_method_id, discount_schedule_id, amount_cents, count =
+      summation[0..3].map {|c| c.to_i}
+    return unless payment_method_id and payment_method_id != 0
+    discount_schedule = DiscountSchedule.find(discount_schedule_id)
+
     totals = income_data[:grand_totals]
-    #:MC: no business rules for what order to evaluate these?
-    sale.payments.each {|payment|
-      column = income_data[:sales][PaymentMethod.descriptions[payment.payment_method_id]]
-      column[sale.discount_schedule.name] += payment.amount_cents
-      column['subtotals'] += payment.amount_cents
-      if PaymentMethod.is_money_method?(payment.payment_method_id)
-        income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount_cents
-        income_data[:sales]['total real']['subtotals'] += payment.amount_cents
-        totals['total real']['total'] += payment.amount_cents
-      end
-      if PaymentMethod.is_till_method?(payment.payment_method_id)
-        income_data[:sales]['till total'][sale.discount_schedule.name] += payment.amount_cents
-        income_data[:sales]['till total']['subtotals'] += payment.amount_cents
-        totals['till total']['total'] += payment.amount_cents
-      end
-      income_data[:sales]['total'][sale.discount_schedule.name] += payment.amount_cents
-      income_data[:sales]['total']['subtotals'] += payment.amount_cents
-      totals['total']['total'] += payment.amount_cents
-      totals[PaymentMethod.descriptions[payment.payment_method_id]]['total'] += payment.amount_cents
-    }
+    column = income_data[:sales][PaymentMethod.descriptions[payment_method_id]]
+    column[discount_schedule.name] += amount_cents
+    column['subtotals'] += amount_cents
+    if PaymentMethod.is_money_method?(payment_method_id)
+      income_data[:sales]['total real'][discount_schedule.name] += amount_cents
+      income_data[:sales]['total real']['subtotals'] += amount_cents
+      totals['total real']['total'] += amount_cents
+    end
+    if PaymentMethod.is_till_method?(payment_method_id)
+      income_data[:sales]['till total'][discount_schedule.name] += amount_cents
+      income_data[:sales]['till total']['subtotals'] += amount_cents
+      totals['till total']['total'] += amount_cents
+    end
+    income_data[:sales]['total'][discount_schedule.name] += amount_cents
+    income_data[:sales]['total']['subtotals'] += amount_cents
+    totals['total']['total'] += amount_cents
+    totals[PaymentMethod.descriptions[payment_method_id]]['total'] += amount_cents
   end
 
   ########################
