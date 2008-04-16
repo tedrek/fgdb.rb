@@ -68,6 +68,7 @@
                         :field_name_prefix => 'conditions',
                         :show_label => false,
                         :paid_object => @conditions} ) %>
+      <% filters['unresolved_invoices'] = nil %>
     <% end %>
     <% filters['transaction_id'] = text_field('conditions', 'transaction_id') %>
     <% filters['needs_attention'] = nil %>
