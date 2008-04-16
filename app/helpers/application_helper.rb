@@ -124,13 +124,13 @@ module ApplicationHelper
       :date_type => 'date_type' }.merge(fields)
 
     # daily
-    date_types['daily'] = calendar_box(obj_name, fields[:date])
+    date_types['daily'] = calendar_box(obj_name, fields[:date],{},{:showOthers => true})
     date_types['monthly'] = select_month(obj.send(fields[:month]), :prefix => obj_name) +
       select_year(obj.send(fields[:year]), :prefix => obj_name)
     # arbitrary
     date_types['arbitrary'] = "From: %s To: %s" %
-      [ calendar_box(obj_name, fields[:start_date]),
-        calendar_box(obj_name, fields[:end_date]) ]
+      [ calendar_box(obj_name, fields[:start_date],{},{:showOthers => true}),
+        calendar_box(obj_name, fields[:end_date],{},{:showOthers => true}) ]
 
     return select_visibility(obj_name, fields[:date_type], date_types)
   end
@@ -258,16 +258,16 @@ module ApplicationHelper
   end
 
   def edit_link(link_id, options, form_id = nil)
-    make_link(link_id, 
-              image_tag("edit.png", :alt => "edit", :title => "edit"), 
-              options, 
+    make_link(link_id,
+              image_tag("edit.png", :alt => "edit", :title => "edit"),
+              options,
               form_id)
   end
 
   def delete_link(link_id, options, form_id = nill)
-    make_link(link_id, 
-              image_tag("remove.png", :alt => "delete", :title => "delete"), 
-              options, 
+    make_link(link_id,
+              image_tag("remove.png", :alt => "delete", :title => "delete"),
+              options,
               form_id)
   end
 
