@@ -173,12 +173,12 @@ class ReportsController < ApplicationController
       column = income_data[:sales][PaymentMethod.descriptions[payment.payment_method_id]]
       column[sale.discount_schedule.name] += payment.amount_cents
       column['subtotals'] += payment.amount_cents
-      if PaymentMethod.is_money_method?(payment.payment_method)
+      if PaymentMethod.is_money_method?(payment.payment_method_id)
         income_data[:sales]['total real'][sale.discount_schedule.name] += payment.amount_cents
         income_data[:sales]['total real']['subtotals'] += payment.amount_cents
         totals['total real']['total'] += payment.amount_cents
       end
-      if PaymentMethod.is_till_method?(payment.payment_method)
+      if PaymentMethod.is_till_method?(payment.payment_method_id)
         income_data[:sales]['till total'][sale.discount_schedule.name] += payment.amount_cents
         income_data[:sales]['till total']['subtotals'] += payment.amount_cents
         totals['till total']['total'] += payment.amount_cents

@@ -23,12 +23,12 @@ class PaymentMethod < ActiveRecord::Base
     @@credit ||= find_by_description('credit')
   end
 
-  def PaymentMethod.is_till_method?(method)
-    return [cash, check].map{|x|x.id}.include?(method.id)
+  def PaymentMethod.is_till_method?(id)
+    return [cash, check].map{|x|x.id}.include?(id)
   end
 
-  def PaymentMethod.is_money_method?(method)
-    return [cash, check, credit].map{|x|x.id}.include?(method.id)
+  def PaymentMethod.is_money_method?(id)
+    return [cash, check, credit].map{|x|x.id}.include?(id)
   end
 
   def PaymentMethod.descriptions
