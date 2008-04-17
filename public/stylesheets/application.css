@@ -77,15 +77,17 @@ input.save {
     size: +2;
 }
 
-table {
+/* ===================================
+          conditions */
+table.list {
 width: 100%;
 }
 
-table th {
+table.list th {
 padding: 2px 5px;
 }
 
-table th, table th p {
+table.list th, table.list th p {
 margin: 0px;
 background-color: #555;
 color: #EEE;
@@ -96,40 +98,31 @@ font-weight: bold;
 line-height: normal;
 }
 
-table tr td {
+table.list tr td {
 border-bottom: 1px solid #C5DBF7;
 font-size: 11px;
 border-left: 1px solid #DDD;
 }
 
-tr.even td {
+table.list tr.even td {
 background-color: #E2F2FF;
 }
 
-td.actions {
+table.list td.actions {
 width: 90px;
 }
 
-/* ===================================
-          conditions */
 div.conditions {
-width: auto;
+width: 100%;
 }
-th.conditions {
-border-bottom: 0px;
-border-left: 0px;
-background-color: #FFFFFF;
+table.conditions th {
 width: 100px;
-color: #000000;
 }
-td.conditions {
-border-bottom: 0px;
-border-left: 0px;
-background-color: #FFFFFF;
+table.conditions td:last-child {
+width 100px;
 }
 table.conditions {
-border-bottom: 0px;
-border-left: 0px;
+width: 100%;
 }
 select.conditions {
 width: 200px;
