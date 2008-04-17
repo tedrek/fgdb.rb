@@ -287,4 +287,14 @@ module ApplicationHelper
     return html
   end
 
+  def show_errors_for(name, object, page)
+    object.attributes.each {|field,value|
+      unless object.errors[field]
+        page << "if($('#{name}_#{field}')) {$('#{name}_#{field}').removeClassName('fieldWithErrors')}"
+      end
+    }
+    object.errors.each {|field, msg|
+      page << "if($('#{name}_#{field}')) {$('#{name}_#{field}').addClassName('fieldWithErrors')}"
+    }
+  end
 end

@@ -156,11 +156,11 @@ class ContactsController < ApplicationController
     if datalist_objects(ContactMethodsTag)
       datalist_objects(ContactMethodsTag).each {|method|
         method.contact = @contact
-        success &&= method.save
+        success = method.save and success
       }
     end
     if @contact.user
-      success &&= @contact.user.save
+      success = @contact.user.save and success
     end
     return success
   end

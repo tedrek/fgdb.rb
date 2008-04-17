@@ -18,9 +18,10 @@ if @successful
   page << "Form.enable($('#{contact_query_id(@options)}').form.id);"
 else
   page.replace_html contact_messages_id(@update_options), :partial => 'form_messages'
-  @contact.errors.each {|field, msg|
-    page["contact_#{field}"].addClassName('fieldWithErrors')
-  }
+  show_errors_for('contact', @contact, page)
+  if @user
+    show_errors_for('user', @user, page)
+  end
   page << "Form.enable('floating_form');"
   page.hide loading_indicator_id("form_for_contact_loading")
   page << "$('lightwindow_contents').scrollTop = 0;"
