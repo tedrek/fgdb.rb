@@ -33,7 +33,9 @@ class TransactionController < ApplicationController
     @model = model
     # @sort_sql = model.columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_sql = model.default_sort_sql
-    @conditions = current_conditions(params)
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    @conditions
     search_options = {
       :order => @sort_sql,
       :per_page => default_per_page,
@@ -179,22 +181,11 @@ class TransactionController < ApplicationController
   private
   #######
 
-  def current_conditions(options)
-    conds = session[@transaction_type][:conditions] ||= Conditions.new
-    conds.apply_conditions(options[:conditions])
-    if options[:contact_id]
-      conds.contact_id = options[:contact_id]
-      conds.limit_type = 'contact'
-    end
-    conds
-  end
-
   def default_per_page
     20
   end
 
   def set_transaction_type(type)
-    session[type] ||= {}
     @transaction_type = type
     @gizmo_context = GizmoContext.send(@transaction_type)
   end

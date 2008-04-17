@@ -1,5 +1,5 @@
 <% table_width = 2 %>
-<h1>Report of hours worked for <%= @date_range_string %></h1>
+<h1>Report of hours worked <%= @date_range_string %></h1>
 
 <% for section,types in @data %>
   <div id="<%= section -%>_report"><p><%= Inflector.titleize(section) %></p>

@@ -1,5 +1,3 @@
 <div class="form-element">
-  <label>What range of gizmos?</label>
-  <%= date_or_date_range_picker("defaults") %>
-  <%= hidden_field "defaults", "limit_type" %>
+     <%= multiple_conditions_form('defaults', {"date_range" => "<label>What range of gizmos?</label>" + date_or_date_range_picker("defaults")} ) %>
 </div>

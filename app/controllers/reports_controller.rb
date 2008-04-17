@@ -193,14 +193,13 @@ class ReportsController < ApplicationController
 
   def volunteers
     @defaults = Conditions.new
-    @defaults.limit_type = "contact"
+    @defaults.date_range_enabled = "false"
+    @defaults.contact_enabled = "true"
   end
 
   def volunteers_report
     @defaults = Conditions.new
-    if params[:filter_contact] and params[:filter_contact][:query]
-      params[:defaults][:contact_id] = params[:filter_contact][:query]
-    end
+    params[:defaults][:contact_id] = params[:contact][:id] if params[:contact]
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s(has_role_or_is_me?((params[:defaults][:contact_id]||0), "ROLE_VOLUNTEER_MANAGER"))
     @tasks = VolunteerTask.find(:all, :conditions => @defaults.conditions(VolunteerTask),

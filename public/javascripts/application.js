@@ -201,3 +201,20 @@ function update_gizmo_totals (id_thing) {
   $(id_thing + '_total_price').defaultValue = mystring;
 }
 
+function remove_condition(id, value)
+{
+  Element.remove(id + "_tbody_for_" + value);
+  Element.show($(value));
+  $(id + '_' + value + '_enabled').value = false;
+}
+
+function add_condition(id, value)
+{
+  if(value != ''){
+    Insertion.Bottom(id + "_table", '<tbody id="' + id + '_tbody_for_' + value + '"><tr><th class="conditions"><span  style="float: right">' + value + ':</span></td><td class="conditions">' + list_of_conditions.get(value) + '</td><td class="conditions" style="width: 100px;"><span style="float: right"><input value="-" type="button" id="' + id + '_delete_"' + value + '" onclick="remove_condition(\'' + id + '\', \'' + value + '\')"/></span></td></tr></tbody>');
+    Element.hide($(value));
+    $(id + '_' + value + '_enabled').value = true;
+    $(id + '_adder').value = "";
+  }
+}
+

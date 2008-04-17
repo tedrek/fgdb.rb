@@ -70,16 +70,16 @@
                         :field_name_prefix => 'conditions',
                         :show_label => false,
                         :paid_object => @conditions} ) %>
-      <% filters['unresolved_invoices'] = nil %>
+      <% filters['unresolved_invoices'] = "" %>
     <% end %>
     <% filters['transaction_id'] = text_field('conditions', 'transaction_id') %>
-    <% filters['needs_attention'] = nil %>
-    <%= select_visibility( 'conditions', 'limit_type', filters ) %>
+    <% filters['needs_attention'] = "" %>
+    <%= multiple_conditions_form('conditions', filters ) %>
 
-    <p class="form-footer">
+    <div class="form-footer">
       <%= submit_tag "Refine", :class => "submit" %>
       <%= loading_indicator_tag("refine_#{@transaction_type}_loading") %>
-    </p>
+    </div>
   <% end %>
 </div>
 <% if @show_wrapper %>

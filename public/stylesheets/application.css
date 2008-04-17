@@ -111,6 +111,31 @@ width: 90px;
 }
 
 /* ===================================
+          conditions */
+div.conditions {
+width: auto;
+}
+th.conditions {
+border-bottom: 0px;
+border-left: 0px;
+background-color: #FFFFFF;
+width: 100px;
+color: #000000;
+}
+td.conditions {
+border-bottom: 0px;
+border-left: 0px;
+background-color: #FFFFFF;
+}
+table.conditions {
+border-bottom: 0px;
+border-left: 0px;
+}
+select.conditions {
+width: 200px;
+}
+
+/* ===================================
          Invoice, Receipt */
 #receipt-header-left {
   float: left

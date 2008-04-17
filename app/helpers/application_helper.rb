@@ -113,6 +113,28 @@ module ApplicationHelper
     return display
   end
 
+  def multiple_conditions_form(id, choices = {})
+    html = "<div id='#{id}_container' class='conditions'>"
+    for condition in choices.keys do
+      html += hidden_field(id, condition + "_enabled")
+    end
+    if choices.length > 1
+    js = javascript_tag(update_page do |page|
+      page << "list_of_conditions=$H(#{choices.to_json});"
+      page.insert_html(:bottom, id + "_container", '<div id="' + id + '" class="conditions"><table id="' + id + '_table" class="conditions"></table></div><span style="float: right"><table style="width: 325px;;"><tr><th style="width: 125px;" class="conditions">Add a condition:</th><td style="width: 200px;" class="conditions"><select class="conditions" id="' + id + '_adder" onchange="add_condition(\'' + id + '\', value);" value=""><option id="nil"></option></select></td></tr></table></span>')
+      for condition in choices.keys do
+        page.insert_html(:bottom, id + "_adder", '<option id="' + condition + '">' + condition + '</option>')
+        page << "if($('#{id}_#{condition}_enabled').value == 'true'){add_condition('#{id}', '#{condition}');}"
+      end
+    end)
+    else
+      html += choices.values.first
+      js=javascript_tag("$('#{id}_#{choices.keys.first}_enabled').value = 'true'")
+    end
+    html += "</div>"
+    return html + js
+  end
+
   # the object named "@#{obj_name}" must be able to respond to all the
   # fields listed below, or you should provide alternate fieldnames.
   def date_or_date_range_picker(obj_name, fields = {})

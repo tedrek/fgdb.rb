@@ -1,19 +1,17 @@
 class Conditions
   def initialize
-    @limit_type = 'date_range'
+    @date_range_enabled = "true"
     @date = Date.today
     @date_type = 'daily'
     @month = Date.today
     @year = Date.today
     @payment_method_id = PaymentMethod.cash.id
   end
-  # primary selection
-  attr_accessor :limit_type
-  # date range selections
+
   attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
-  # contact attrs
+
   attr_accessor :contact_id
-  # payment method attrs
+
   attr_accessor :payment_method_id
 
   attr_accessor :transaction_id
@@ -21,6 +19,8 @@ class Conditions
   attr_accessor :needs_attention
 
   attr_accessor :unresolved_invoices
+
+  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :transaction_id_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -30,7 +30,7 @@ class Conditions
     else
       @contact = nil
     end
-      return @contact
+    return @contact
   end
 
   def apply_conditions(options)
@@ -42,23 +42,44 @@ class Conditions
     rescue NoMethodError
       nil
     end
+    return options
   end
 
   def conditions(klass)
-    case @limit_type
-    when /transaction[ _]id/
-      transaction_id_conditions(klass)
-    when /needs[ _]attention/
-      needs_attention_conditions(klass)
-    when /unresolved[ _]invoices/
-      unresolved_invoices_conditions(klass)
-    when /date[ _]range/
-      date_range_conditions(klass)
-    when 'contact'
-      contact_conditions(klass)
-    when /payment[ _]method/
-      payment_method_conditions(klass)
+    myarray = [""]
+    if @transaction_id_enabled=="true"
+      add_a_condition(myarray, transaction_id_conditions(klass))
     end
+    if @needs_attention_enabled=="true"
+      add_a_condition(myarray, needs_attention_conditions(klass))
+    end
+    if @unresolved_invoices_enabled=="true"
+      add_a_condition(myarray, unresolved_invoices_conditions(klass))
+    end
+    if @date_range_enabled=="true"
+      add_a_condition(myarray, date_range_conditions(klass))
+    end
+    if @contact_enabled=="true"
+      add_a_condition(myarray, contact_conditions(klass))
+    end
+    if @payment_method_enabled=="true"
+      add_a_condition(myarray, payment_method_conditions(klass))
+    end
+    if myarray[0].empty?
+      myarray[0]="#{klass.name.tableize}.id = -1"
+    end
+    return myarray
+  end
+
+  def add_a_condition(myarray, thisarray)
+    myarray[0] += " AND " if !myarray[0].empty?
+    myarray[0] += thisarray[0]
+    i = 1
+    while i < thisarray.length
+      myarray << thisarray[i]
+      i += 1
+    end
+    nil
   end
 
   def transaction_id_conditions(klass)
@@ -123,11 +144,14 @@ class Conditions
   end
 
   def to_s(show_contact_name=true)
-    case @limit_type
-    when /date[ _]range/
-      date_range_to_s
-    when 'contact'
-      contact_to_s(show_contact_name)
+    if @date_range_enabled=="true" && @contact_enabled=="true"
+      " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
+    elsif(@date_range_enabled=="true")
+      ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
+    elsif(@contact_enabled=="true") 
+      " by " + contact_to_s(show_contact_name)
+    else
+      ""
     end
   end
 
@@ -142,7 +166,7 @@ class Conditions
     when 'arbitrary'
       start_date = Date.parse(@start_date.to_s)
       end_date = Date.parse(@end_date.to_s)
-      desc = "from #{start_date} to #{end_date}"
+      desc = "#{start_date} to #{end_date}"
     else
       desc = 'unknown date type'
     end
