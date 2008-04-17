@@ -121,11 +121,17 @@ width: 100px;
 table.conditions td:last-child {
 width 100px;
 }
+table.conditions th span {
+float: right;
+}
 table.conditions {
 width: 100%;
 }
 select.conditions {
 width: 200px;
+}
+table.conditions td:last-child span {
+float: right;
 }
 
 /* ===================================
