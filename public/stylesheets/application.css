@@ -118,6 +118,7 @@ width: 90px;
 
 div.conditions {
 width: 100%;
+border: 1px solid #DDD;
 }
 table.conditions th {
 width: 100px;

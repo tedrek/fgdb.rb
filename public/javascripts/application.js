@@ -201,20 +201,20 @@ function update_gizmo_totals (id_thing) {
   $(id_thing + '_total_price').defaultValue = mystring;
 }
 
-function remove_condition(id, value)
+function remove_condition(obj_name, value)
 {
-  Element.remove(id + "_tbody_for_" + value);
+  Element.remove(obj_name + "_tbody_for_" + value);
   Element.show($(value));
-  $(id + '_' + value + '_enabled').value = false;
+  $(obj_name + '_' + value + '_enabled').value = false;
 }
 
-function add_condition(id, value)
+function add_condition(obj_name, value)
 {
   if(value != ''){
-    Insertion.Bottom(id + "_table", '<tbody id="' + id + '_tbody_for_' + value + '"><tr><th class="conditions"><span>' + value + ':</span></td><td>' + list_of_conditions.get(value) + '</td><td><span><input value="-" type="button" id="' + id + '_delete_"' + value + '" onclick="remove_condition(\'' + id + '\', \'' + value + '\')"/></span></td></tr></tbody>');
-    Element.hide($(value));
-    $(id + '_' + value + '_enabled').value = true;
-    $(id + '_adder').value = "";
+    Insertion.Bottom(obj_name + "_table", '<tbody id="' + obj_name + '_tbody_for_' + value + '"><tr><th class="conditions"><span>' + condition_display_names.get(value) + ':</span></td><td>' + list_of_conditions.get(value) + '</td><td><span><input value="-" type="button" id="' + obj_name + '_delete_"' + value + '" onclick="remove_condition(\'' + obj_name + '\', \'' + value + '\')"/></span></td></tr></tbody>');
+    Element.hide($(obj_name + '_' + value + '_option'));
+    $(obj_name + '_' + value + '_enabled').value = true;
+    $(obj_name + '_adder').value = "";
   }
 }
 

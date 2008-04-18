@@ -1,0 +1,16 @@
+<div id="<%= obj_name %>" class="conditions">
+  <table id="<%= obj_name %>_table" class="conditions"></table>
+</div>
+<span style="float: right">
+  <table>
+    <tr>
+      <th>Add a condition:</th>
+      <td>
+        <select class="conditions" id="<%= obj_name %>_adder"
+                onchange="add_condition('<%= obj_name %>', value);" value="">
+          <option id="nil"></option>
+        </select>
+      </td>
+    </tr>
+  </table>
+</span>

@@ -113,26 +113,33 @@ module ApplicationHelper
     return display
   end
 
-  def multiple_conditions_form(id, choices = {})
-    html = "<div id='#{id}_container' class='conditions'>"
+  def multiselect_of_form_elements(obj_name, choices = {})
+    html = "<div id='#{obj_name}_container' class='conditions'>"
     for condition in choices.keys do
-      html += hidden_field(id, condition + "_enabled")
+      html += hidden_field(obj_name, condition + "_enabled")
     end
     if choices.length > 1
-      js = javascript_tag(update_page do |page|
-        page << "list_of_conditions=$H(#{choices.to_json});"
-        page.insert_html(:bottom, id + "_container", '<div id="' + id + '" class="conditions"><table id="' + id + '_table" class="conditions"></table></div><span style="float: right"><table><tr><th>Add a condition:</th><td><select class="conditions" id="' + id + '_adder" onchange="add_condition(\'' + id + '\', value);" value=""><option id="nil"></option></select></td></tr></table></span>')
+      choice_names = { }
+      choices.each {|k,v| choice_names[k] = Inflector.titleize(k)}
+      js = update_page do |page|
+        page << "var list_of_conditions = $H(#{choices.to_json});"
+        page << "var condition_display_names = $H(#{choice_names.to_json});"
+        page.insert_html(:bottom, obj_name + "_container",
+                         :partial => 'helpers/multiselection_header',
+                         :locals => {:obj_name => obj_name})
         for condition in choices.keys do
-          page.insert_html(:bottom, id + "_adder", '<option id="' + condition + '">' + condition + '</option>')
-          page << "if($('#{id}_#{condition}_enabled').value == 'true'){add_condition('#{id}', '#{condition}');}"
+          page.insert_html(:bottom, obj_name + "_adder",
+                           '<option id="%s_%s_option" value="%s">%s</option>' %
+                             [obj_name, condition, condition, Inflector.titleize(condition)])
+          page << "if($('#{obj_name}_#{condition}_enabled').value == 'true'){add_condition('#{obj_name}', '#{condition}');}"
         end
-      end)
+      end
     else
       html += choices.values.first
-      js=javascript_tag("$('#{id}_#{choices.keys.first}_enabled').value = 'true'")
+      js = "$('#{obj_name}_#{choices.keys.first}_enabled').value = 'true'"
     end
     html += "</div>"
-    return html + js
+    return html + javascript_tag(js)
   end
 
   # the object named "@#{obj_name}" must be able to respond to all the

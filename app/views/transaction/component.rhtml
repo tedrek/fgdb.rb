@@ -74,7 +74,7 @@
     <% end %>
     <% filters['transaction_id'] = text_field('conditions', 'transaction_id') %>
     <% filters['needs_attention'] = "" %>
-    <%= multiple_conditions_form('conditions', filters ) %>
+    <%= multiselect_of_form_elements('conditions', filters ) %>
 
     <div class="form-footer">
       <%= submit_tag "Refine", :class => "submit" %>
