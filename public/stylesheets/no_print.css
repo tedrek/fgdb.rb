@@ -1,3 +1,7 @@
+span.print_only {
+  display: inline;
+}
+
 div#logo, div#sidebar, div#login_box, td.actions, div.create { 
   display: none;
 }

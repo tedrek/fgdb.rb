@@ -58,6 +58,10 @@ width: 65%;
 /* ===================================
          General Stuff */
 
+span.print_only {
+display: none;
+}
+
 input.cancel {
  margin-left: 20px;
  color: red;
