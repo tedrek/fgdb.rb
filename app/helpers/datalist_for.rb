@@ -2,7 +2,7 @@ module DatalistFor
 
   def datalist_add_row
     tag = params[:tag]
-    klass = session[tag][:model]
+    klass = params[tag][:model]
     options = session[tag][:options]
     render :update do |page|
       page.insert_html :bottom, params[:datalist_id], datalist_row(klass, options[:tag], nil, options)
@@ -12,18 +12,18 @@ module DatalistFor
 
   def datalist_delete_row
     tag = params[:tag]
-    klass = session[tag][:model]
+    klass = params[tag][:model]
     klass.delete(params[:id].split('_').last) if params[:id]['datalist_update']
 
     render :update do |page|
       div_id = "remove_me_#{params[:id]}"
       page.remove div_id
-      page << session[tag][:options][:onchange] if session[tag][:options][:onchange]
+      page << params[tag][:options][:onchange] if params[tag][:options][:onchange]
     end
   end
 
   def save_datalist(tag, create_with_new = nil)
-    model = session[tag][:model]
+    model = params[tag][:model]
     existing_okay = save_existing(tag, model) if params[:datalist_update]
     new_okay = save_new(tag, model, create_with_new) if params[:datalist_new]
     (existing_okay or ! params[:datalist_update]) && (new_okay or ! params[:datalist_new])
@@ -39,8 +39,8 @@ module DatalistFor
   end
 
   def datalist_objects(tag, create_with_new = nil)
-    return [] unless session[tag]
-    model = session[tag][:model]
+    return [] unless params[tag]
+    model = params[tag][:model]
     objs = []
     if params[:datalist_update]
       objs += existing_datalist_objects_to_keep(tag, model)
@@ -108,7 +108,7 @@ module DatalistFor
 
   def save_new(tag, model, create_with_new)
     new_data = new_datalist_data(tag)
-    create_with = create_with_new || session[tag][:options][:create_with]
+    create_with = create_with_new || params[tag][:options][:create_with]
     successful_actions = new_data.find_all do |fake_id, vals|
       if keeper?(new_data, fake_id)
         obj = create_new_obj(vals, model, create_with)
