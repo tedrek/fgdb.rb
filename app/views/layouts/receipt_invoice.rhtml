@@ -34,6 +34,9 @@
   <% end %>
 </tr>
 <tr>
+  <td colspan="3">Printed by <%= @current_user.login %><%= if @current_user.contact; " ( " + @current_user.contact.display_name + ")"; end %></td>
+</tr>
+<tr>
   <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
   <td align="center">
     <%= Inflector.titleize( @context ) %> <strong># <%= @txn.id %></strong>
