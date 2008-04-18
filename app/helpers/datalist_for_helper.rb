@@ -15,7 +15,7 @@ module DatalistFor
       #:TODO: scrub this?
       klass = eval(Inflector.classify(model.to_s))
 
-      options[tag] = {:model => klass, :options => options}
+      session[tag] = {:model => klass, :options => options}
 
       # options
       show_header = true
