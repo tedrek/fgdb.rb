@@ -16,11 +16,6 @@ class TransactionController < ApplicationController
     requires_role(:ROLE_ADMIN)
   end
 
-  def store_or_get_from_session(id_key, value_key)
-    session[id_key][value_key] = params[value_key] if !params[value_key].nil?
-    params[value_key] ||= session[id_key][value_key]
-  end
-
   public
 
   def component_update

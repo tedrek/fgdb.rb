@@ -3,7 +3,7 @@ module DatalistFor
   def datalist_add_row
     tag = params[:tag]
     klass = params[tag][:model]
-    options = session[tag][:options]
+    options = params[tag][:options]
     render :update do |page|
       page.insert_html :bottom, params[:datalist_id], datalist_row(klass, options[:tag], nil, options)
       # :MC: how/when would i focus on this new row?
