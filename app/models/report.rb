@@ -9,9 +9,9 @@ class Report < ActiveRecord::Base
   belongs_to :type
 
   def get_model
-      if model_is_usable(@system_model)
+      if is_usable(@system_model)
         @model = @system_model
-      elsif model_is_usable(@mobo_model)
+      elsif is_usable(@mobo_model)
         @model = @mobo_model
       else
         @model = "(no model)"
@@ -20,9 +20,9 @@ class Report < ActiveRecord::Base
   end
 
   def get_vendor
-      if vendor_is_usable(@system_vendor)
+      if is_usable(@system_vendor)
         @vendor = @system_vendor
-      elsif vendor_is_usable(@mobo_vendor)
+      elsif is_usable(@mobo_vendor)
         @vendor = @mobo_vendor
       else
         @vendor = "(no vendor)"
@@ -31,11 +31,11 @@ class Report < ActiveRecord::Base
   end
 
   def get_serial
-      if serial_is_usable(@system_serial_number)
+      if is_usable(@system_serial_number)
         @serial_number = @system_serial_number
-      elsif serial_is_usable(@mobo_serial_number)
+      elsif is_usable(@mobo_serial_number)
         @serial_number = @mobo_serial_number
-      elsif mac_is_usable(@macaddr)
+      elsif is_usable(@macaddr)
         @serial_number = @macaddr
       else
         @serial_number = "(no serial number)"
@@ -88,28 +88,12 @@ class Report < ActiveRecord::Base
     return value
   end
 
-  COMMON_GENERICS=['System Name', 'Product Name', 'System Manufacturer', 'none', 'None', 'To Be Filled By O.E.M.', 'To Be Filled By O.E.M. by More String']
-
-  def is_usable(value, list_of_generics = [])
+  def is_usable(value)
+    list_of_generics = ['0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'To Be Filled By O.E.M.', 'System Manufacturer', 'System Name', 'EVAL', 'Serial number xxxxxx', 'To Be Filled By O.E.M. by More String', 'To Be Filled By O.E.M.', 'System Manufacturer', 'System Name', '00000000', 'XXXXXXXXXX', '$', 'xxxxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'None', 'DELL', 'none'] ###Make a separate for serial numbers, vendors, and models before integrated into fgdb.rb
     return (value != nil && value != "" && list_of_generics.delete(value) == nil)
   end
 
-  def mac_is_usable(value)
-    return is_usable(value)
-  end
-
-  def serial_is_usable(value)
-    list_of_generics = ['0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'EVAL', 'Serial number xxxxxx', '00000000', 'XXXXXXXXXX', '$', 'xxxxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'DELL', *COMMON_GENERICS] 
-    return is_usable(value, list_of_generics)
-  end
-
-  def vendor_is_usable(value)
-    list_of_generics = COMMON_GENERICS
-    return is_usable(value, list_of_generics)
-  end
-
-  def model_is_usable(value)
-    list_of_generics = COMMON_GENERICS
-    return is_usable(value, list_of_generics)
+  def future_is_usable(value)
+    return (value != nil && value != "" && GenericSerialNumber.find_by_name(value) == ActiveRecord::RecordNotFound)
   end
 end
