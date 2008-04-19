@@ -144,12 +144,14 @@ class ReportsController < ApplicationController
     @report = Report.new(params[:report])
     @report.init
     if @report.get_serial != "(no serial number)"
-      system = System.find_all_by_serial_number(@report.get_serial, :order => :id).last
-      if system && (system.vendor == @report.get_vendor and system.model == @report.get_model)
-	@report.system = system
+      system = System.find_all_by_serial_number(@report.get_serial, :order => :id).first
+      if system
+        @report.system = system
       else
         @report.system = System.new
       end
+    else
+      @report.system = System.new
     end
     params[:report][:system_id] = @report.system.id
     if @report.save
