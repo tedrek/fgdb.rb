@@ -46,40 +46,32 @@ class Conditions
   end
 
   def conditions(klass)
-    myarray = [""]
-    if @transaction_id_enabled=="true"
-      add_a_condition(myarray, transaction_id_conditions(klass))
+    conds = %w[
+      transaction_id needs_attention contact
+      unresolved_invoices date_range payment_method
+    ].inject([""]) {|condition_array,this_condition|
+      if instance_variable_get("@#{this_condition}_enabled") == "true"
+        join_conditions(condition_array,
+                        self.send("#{this_condition}_conditions",
+                                  klass))
+      else
+        condition_array
+      end
+    }
+    if conds[0].empty?
+      conds[0]="#{klass.table_name}.id = -1"
     end
-    if @needs_attention_enabled=="true"
-      add_a_condition(myarray, needs_attention_conditions(klass))
-    end
-    if @unresolved_invoices_enabled=="true"
-      add_a_condition(myarray, unresolved_invoices_conditions(klass))
-    end
-    if @date_range_enabled=="true"
-      add_a_condition(myarray, date_range_conditions(klass))
-    end
-    if @contact_enabled=="true"
-      add_a_condition(myarray, contact_conditions(klass))
-    end
-    if @payment_method_enabled=="true"
-      add_a_condition(myarray, payment_method_conditions(klass))
-    end
-    if myarray[0].empty?
-      myarray[0]="#{klass.name.tableize}.id = -1"
-    end
-    return myarray
+    return conds
   end
 
-  def add_a_condition(myarray, thisarray)
-    myarray[0] += " AND " if !myarray[0].empty?
-    myarray[0] += thisarray[0]
-    i = 1
-    while i < thisarray.length
-      myarray << thisarray[i]
-      i += 1
-    end
-    nil
+  def join_conditions(conds_a, conds_b)
+    raise ArgumentError.new("'#{conds_a}' is empty") if conds_a.empty?
+    raise ArgumentError.new("'#{conds_b}' is empty") if conds_b.empty?
+    return [
+     conds_a[0].to_s +
+     (conds_a[0].empty? ? '' : ' AND ') +
+     conds_b[0].to_s
+    ] + conds_a[1..-1] + conds_b[1..-1]
   end
 
   def transaction_id_conditions(klass)
@@ -117,12 +109,12 @@ class Conditions
       start_date = Date.parse(@start_date.to_s)
       end_date = Date.parse(@end_date.to_s) + 1
     end
-    case klass
-    when Disbursement
+    case klass.to_s
+    when 'Disbursement'
       column_name = 'disbursed_at'
-    when Recycling
+    when 'Recycling'
       column_name = 'recycled_at'
-    when GizmoEvent
+    when 'GizmoEvent'
       column_name = 'occurred_at'
     else
       column_name = 'created_at'
@@ -148,7 +140,7 @@ class Conditions
       " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
     elsif(@date_range_enabled=="true")
       ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
-    elsif(@contact_enabled=="true") 
+    elsif(@contact_enabled=="true")
       " by " + contact_to_s(show_contact_name)
     else
       ""
