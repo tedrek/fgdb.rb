@@ -1,8 +1,8 @@
 class GizmoEvent < ActiveRecord::Base
-  has_one :donation
-  has_one :sale
-  has_one :disbursement
-  has_one :recycling
+  belongs_to :donation
+  belongs_to :sale
+  belongs_to :disbursement
+  belongs_to :recycling
   belongs_to  :gizmo_type
   belongs_to  :gizmo_context
   has_many :gizmo_events_gizmo_typeattrs, :dependent => :destroy
