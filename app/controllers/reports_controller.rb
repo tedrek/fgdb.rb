@@ -38,8 +38,11 @@ class ReportsController < ApplicationController
 
   def gizmos_report_init
     @contexts = GizmoContext.find(:all)
-    context_names = @contexts.map {|context| context.name}.sort
+    context_names = DisbursementType.find(:all).map {|type| type.description}.sort
+    context_names << @contexts.map {|context| context.name}.sort
+    context_names = context_names.flatten
     context_names << TotalGizmoCol
+    context_names.delete("disbursement")
     @types = GizmoType.find(:all)
     type_names = @types.map {|type| type.description}.sort
     type_names << TotalGizmoRow
@@ -56,8 +59,13 @@ class ReportsController < ApplicationController
   def add_gizmo_to_data(event, data)
     # donations come in.  sales, recycling and disbursements go out.
     modifier = TotalGizmoModifiers[event.gizmo_context.name]
-    data[event.gizmo_type.description][event.gizmo_context.name] += ( modifier * event.gizmo_count )
-    data[TotalGizmoRow][event.gizmo_context.name] += ( modifier * event.gizmo_count )
+    if event.gizmo_context.name == "disbursement"
+      data[event.gizmo_type.description][event.disbursement.disbursement_type.description] += (modifier * event.gizmo_count)
+      data[TotalGizmoRow][event.disbursement.disbursement_type.description] += ( modifier * event.gizmo_count )
+    else
+      data[event.gizmo_type.description][event.gizmo_context.name] += ( modifier * event.gizmo_count )
+      data[TotalGizmoRow][event.gizmo_context.name] += ( modifier * event.gizmo_count )
+    end
     data[event.gizmo_type.description][TotalGizmoCol] += ( modifier * event.gizmo_count )
     data[TotalGizmoRow][TotalGizmoCol] += ( modifier * event.gizmo_count )
   end
