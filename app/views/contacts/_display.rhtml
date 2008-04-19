@@ -39,7 +39,9 @@
           <div class="<%= txn %>">
             last <%= link_to(intro,
                        :controller => Inflector.pluralize(txn),
-                       :contact_id => @contact.id
+                       "conditions[contact_id]" => @contact.id,
+                       "conditions[date_range_enabled]" => "false",
+                       "conditions[contact_enabled]" => "true"
                      ) %>
             on <%= last_one.occurred_at.to_date %>: <%= last_one.gizmos %>
           </div>
