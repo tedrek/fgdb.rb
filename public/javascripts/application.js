@@ -204,7 +204,7 @@ function update_gizmo_totals (id_thing) {
 function remove_condition(obj_name, value)
 {
   Element.remove(obj_name + "_tbody_for_" + value);
-  Element.show($(value));
+  Element.show($(obj_name + "_" + value + "_option"));
   $(obj_name + '_' + value + '_enabled').value = false;
 }
 
@@ -215,6 +215,7 @@ function add_condition(obj_name, value)
     Element.hide($(obj_name + '_' + value + '_option'));
     $(obj_name + '_' + value + '_enabled').value = true;
     $(obj_name + '_adder').value = "";
+    $(obj_name + '_adder').focus();
   }
 }
 
