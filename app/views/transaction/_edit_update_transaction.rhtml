@@ -1,5 +1,5 @@
 <% t_id = "#{@transaction_type}_#{transaction.id}" -%>
-<% if has_role?(allowed_roles) %>
+<% if has_role?(*allowed_roles) %>
     <% update_options = @options.merge(:action => "update") %>
     <%= edit_link("edit_#{transaction.id}_link",
           {
