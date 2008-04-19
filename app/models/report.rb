@@ -98,7 +98,7 @@ class Report < ActiveRecord::Base
   COMMON_GENERICS=['System Name', 'Product Name', 'System Manufacturer', 'none', 'None', 'To Be Filled By O.E.M.', 'To Be Filled By O.E.M. by More String']
 
   def is_usable(value, list_of_generics = [])
-    return (value != nil && value != "" && list_of_generics.delete(value) == nil)
+    return (value != nil && value != "" && !list_of_generics.include?(value))
   end
 
   def mac_is_usable(value)
