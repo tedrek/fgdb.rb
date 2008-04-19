@@ -142,18 +142,6 @@ class ReportsController < ApplicationController
     params[:report][:old_id]=params[:report][:system_id]
     params[:report][:system_id] = 0
     @report = Report.new(params[:report])
-    @report.init
-    if @report.get_serial != "(no serial number)"
-      system = System.find_all_by_serial_number(@report.get_serial, :order => :id).first
-      if system
-        @report.system = system
-      else
-        @report.system = System.new
-      end
-    else
-      @report.system = System.new
-    end
-    params[:report][:system_id] = @report.system.id
     if @report.save
       redirect_to(:action=>redirect_where_on_success, :id=>@report.id)
     else
@@ -166,7 +154,15 @@ class ReportsController < ApplicationController
   end
 
   def xml_create
-    params[:report]={:contact_id => params[:contact_id], :role_id => params[:role_id], :type_id => params[:type_id], :system_id => params[:system_id], :notes => params[:notes], :my_file => params[:my_file], :os => params[:os]}
+    params[:report]={
+      :contact_id => params[:contact_id],
+      :role_id => params[:role_id],
+      :type_id => params[:type_id],
+      :system_id => params[:system_id],
+      :notes => params[:notes],
+      :my_file => params[:my_file],
+      :os => params[:os]
+    }
     new_common_create_stuff("xml_index", "xml_show") 
   end
 

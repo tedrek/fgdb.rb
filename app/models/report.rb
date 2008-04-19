@@ -9,9 +9,9 @@ class Report < ActiveRecord::Base
   belongs_to :type
 
   def get_model
-      if is_usable(@system_model)
+      if model_is_usable(@system_model)
         @model = @system_model
-      elsif is_usable(@mobo_model)
+      elsif model_is_usable(@mobo_model)
         @model = @mobo_model
       else
         @model = "(no model)"
@@ -20,9 +20,9 @@ class Report < ActiveRecord::Base
   end
 
   def get_vendor
-      if is_usable(@system_vendor)
+      if vendor_is_usable(@system_vendor)
         @vendor = @system_vendor
-      elsif is_usable(@mobo_vendor)
+      elsif vendor_is_usable(@mobo_vendor)
         @vendor = @mobo_vendor
       else
         @vendor = "(no vendor)"
@@ -31,11 +31,11 @@ class Report < ActiveRecord::Base
   end
 
   def get_serial
-      if is_usable(@system_serial_number)
+      if serial_is_usable(@system_serial_number)
         @serial_number = @system_serial_number
-      elsif is_usable(@mobo_serial_number)
+      elsif serial_is_usable(@mobo_serial_number)
         @serial_number = @mobo_serial_number
-      elsif is_usable(@macaddr)
+      elsif mac_is_usable(@macaddr)
         @serial_number = @macaddr
       else
         @serial_number = "(no serial number)"
@@ -43,7 +43,19 @@ class Report < ActiveRecord::Base
     return @serial_number
   end
 
-  def init
+  def initialize(*args)
+    super(*args)
+    if self.get_serial != "(no serial number)"
+      found_system = System.find_all_by_serial_number(self.get_serial, :order => :id).first
+      if found_system
+        self.system = found_system
+      else
+        self.system = System.new
+      end
+    else
+      self.system = System.new
+    end
+
       if !load_xml(lshw_output)
         return false
       end
@@ -55,14 +67,12 @@ class Report < ActiveRecord::Base
     @mobo_serial_number = get_from_xml("/node/node[@id='core']/serial")
     @mobo_vendor = get_from_xml("/node/node[@id='core']/vendor")
     @macaddr = get_from_xml("//node[@class='network']/serial")
-  end
+      get_vendor
+      get_serial
+      get_model
 
-  def save
-    if super
-    init
-    get_vendor
-    get_serial
-    get_model
+
+
       system.system_model  = @system_model 
       system.system_serial_number  = @system_serial_number 
       system.system_vendor  = @system_vendor 
@@ -72,10 +82,7 @@ class Report < ActiveRecord::Base
       system.model  = @model 
       system.serial_number  = @serial_number 
       system.vendor  = @vendor 
-      return system.save
-    else
-      return false
-    end
+
   end
 
   private
@@ -88,12 +95,28 @@ class Report < ActiveRecord::Base
     return value
   end
 
-  def is_usable(value)
-    list_of_generics = ['0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'To Be Filled By O.E.M.', 'System Manufacturer', 'System Name', 'EVAL', 'Serial number xxxxxx', 'To Be Filled By O.E.M. by More String', 'To Be Filled By O.E.M.', 'System Manufacturer', 'System Name', '00000000', 'XXXXXXXXXX', '$', 'xxxxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'None', 'DELL', 'none'] ###Make a separate for serial numbers, vendors, and models before integrated into fgdb.rb
+  COMMON_GENERICS=['System Name', 'Product Name', 'System Manufacturer', 'none', 'None', 'To Be Filled By O.E.M.', 'To Be Filled By O.E.M. by More String']
+
+  def is_usable(value, list_of_generics = [])
     return (value != nil && value != "" && list_of_generics.delete(value) == nil)
   end
 
-  def future_is_usable(value)
-    return (value != nil && value != "" && GenericSerialNumber.find_by_name(value) == ActiveRecord::RecordNotFound)
+  def mac_is_usable(value)
+    return is_usable(value)
+  end
+
+  def serial_is_usable(value)
+    list_of_generics = ['0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'EVAL', 'Serial number xxxxxx', '00000000', 'XXXXXXXXXX', '$', 'xxxxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'DELL', *COMMON_GENERICS] 
+    return is_usable(value, list_of_generics)
+  end
+
+  def vendor_is_usable(value)
+    list_of_generics = COMMON_GENERICS
+    return is_usable(value, list_of_generics)
+  end
+
+  def model_is_usable(value)
+    list_of_generics = COMMON_GENERICS
+    return is_usable(value, list_of_generics)
   end
 end
