@@ -52,7 +52,7 @@ class Donation < ActiveRecord::Base
                 sum(reported_suggested_fee_cents) as suggested,
                 count(*)
          FROM donations
-         LEFT OUTER JOIN payments ON payments.donation_id = donations.id
+         JOIN payments ON payments.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY payments.payment_method_id"
       )

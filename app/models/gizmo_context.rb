@@ -10,6 +10,10 @@ class GizmoContext < ActiveRecord::Base
     name[0..2].capitalize
   end
 
+  def description
+    name
+  end
+
   def GizmoContext.find_all_for_select
     find(:all).map {|context| [context.name, context.id]}
   end

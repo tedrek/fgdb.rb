@@ -11,16 +11,18 @@
 </tr>
 <tr>
   <td class="spacer"></td>
-  <% for context in @columns %>
+  <% for klass,id in @columns %>
+    <% context = klass ? klass.find(id).description : 'gizmo total' %>
     <th class="column_header"><%= Inflector.titleize context %></th>
   <% end %>
 </tr>
 
 <% for type in @rows %>
+  <% description = type.kind_of?(Fixnum) ? GizmoType.find(type).description : 'total flow' %>
   <tr>
-    <th class="row_header"><%= Inflector.titleize type %></th>
-    <% for context in @columns %>
-      <td><%= number_with_delimiter(@gizmo_data[type][context]) %></td>
+    <th class="row_header"><%= Inflector.titleize description %></th>
+    <% for col in @columns %>
+      <td><%= number_with_delimiter(@gizmo_data[type][col]) %></td>
     <% end %>
   </tr>
 <% end %>

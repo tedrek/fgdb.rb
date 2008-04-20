@@ -22,52 +22,50 @@ class ReportsController < ApplicationController
     @date_range_string = @defaults.to_s
     @gizmo_data = gizmos_report_init
     gizmo_ids = []
-    gizmo_events = GizmoEvent.find(:all, :conditions => @defaults.conditions(GizmoEvent),
-                                   :include => [:gizmo_type, :gizmo_context])
-    gizmo_events.each {|event|
-      gizmo_ids << event.id
-      add_gizmo_to_data(event, @gizmo_data)
-    }
-    @range = gizmo_ids.empty? ? 'n/a' : (gizmo_ids.min)..(gizmo_ids.max)
+    GizmoEvent.totals(@defaults.conditions(GizmoEvent)).each do |summation|
+      add_gizmo_to_data(summation, @gizmo_data)
+    end
   end
 
   protected
 
-  TotalGizmoRow = 'all gizmos'
-  TotalGizmoCol = 'total flow'
-
   def gizmos_report_init
-    @contexts = GizmoContext.find(:all)
-    context_names = DisbursementType.find(:all).map {|type| type.description}.sort
-    context_names << @contexts.map {|context| context.name}.sort
-    context_names = context_names.flatten
-    context_names << TotalGizmoCol
-    context_names.delete("disbursement")
-    @types = GizmoType.find(:all)
-    type_names = @types.map {|type| type.description}.sort
-    type_names << TotalGizmoRow
-    @columns = context_names
-    @rows = type_names
+    @columns = DisbursementType.find(:all).map {|type| [DisbursementType, type.id]}
+    @columns += GizmoContext.find(:all).map {|context| [GizmoContext, context.id]}
+    @columns << [nil,:total]
+    @rows = GizmoType.find(:all).map {|type| type.id}
+    @rows << :total
     gizmo_data = {}
     @rows.each {|type| gizmo_data[type] = Hash.new(0)}
     gizmo_data
   end
 
-  TotalGizmoModifiers = Hash.new(-1)
-  TotalGizmoModifiers['donation'] = 1
+  def context_tuple(id)
+    [GizmoContext, id]
+  end
 
-  def add_gizmo_to_data(event, data)
+  def disbursement_tuple(id)
+    [DisbursementType, id]
+  end
+
+  def plus_or_minus(id)
     # donations come in.  sales, recycling and disbursements go out.
-    modifier = TotalGizmoModifiers[event.gizmo_context.name]
-    if event.gizmo_context.name == "disbursement"
-      data[event.gizmo_type.description][event.disbursement.disbursement_type.description] += (modifier * event.gizmo_count)
-      data[TotalGizmoRow][event.disbursement.disbursement_type.description] += ( modifier * event.gizmo_count )
-    else
-      data[event.gizmo_type.description][event.gizmo_context.name] += ( modifier * event.gizmo_count )
-      data[TotalGizmoRow][event.gizmo_context.name] += ( modifier * event.gizmo_count )
+    id == GizmoContext.donation.id ? 1 : -1
+  end
+
+  def add_gizmo_to_data(summation, data)
+    type_id, context_id, disbursement_type_id, count = summation.map {|x| x.to_i}
+    count *= plus_or_minus(context_id)
+    if context_id == GizmoContext.disbursement.id
+      tuple = disbursement_tuple(disbursement_type_id)
+      data[type_id][tuple] += count
+      data[:total][tuple] += count
     end
-    data[event.gizmo_type.description][TotalGizmoCol] += ( modifier * event.gizmo_count )
-    data[TotalGizmoRow][TotalGizmoCol] += ( modifier * event.gizmo_count )
+    tuple = context_tuple(context_id)
+    data[type_id][tuple] += count
+    data[:total][tuple] += count
+    data[type_id][[nil, :total]] += count
+    data[:total][[nil, :total]] += count
   end
 
   #####################

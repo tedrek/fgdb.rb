@@ -49,7 +49,7 @@ class Sale < ActiveRecord::Base
                 sum(payments.amount_cents) as amount,
                 count(*)
          FROM sales
-         LEFT OUTER JOIN payments ON payments.sale_id = sales.id
+         JOIN payments ON payments.sale_id = sales.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY payments.payment_method_id, sales.discount_schedule_id"
       )
