@@ -17,12 +17,13 @@
   <% end %>
 </tr>
 
-<% for type in @rows %>
-  <% description = type.kind_of?(Fixnum) ? GizmoType.find(type).description : 'total flow' %>
+<% gizmo_types = GizmoType.find(:all).sort_by{|type| type.description} %>
+<% gizmo_types << "total flow" %>
+<% for type in gizmo_types %>
   <tr>
-    <th class="row_header"><%= Inflector.titleize description %></th>
+    <th class="row_header"><%= Inflector.titleize type.kind_of?(GizmoType) ? type.description : type %></th>
     <% for col in @columns %>
-      <td><%= number_with_delimiter(@gizmo_data[type][col]) %></td>
+      <td><%= number_with_delimiter(@gizmo_data[type.kind_of?(GizmoType) ? type.id : :total ][col]) %></td>
     <% end %>
   </tr>
 <% end %>
