@@ -58,8 +58,8 @@ class Report < ActiveRecord::Base
     @macaddr = get_from_xml("//node[@class='network']/serial")
 
     if self.get_serial != "(no serial number)"
-      found_system = System.find_all_by_serial_number(self.get_serial, :order => :id).first
-      if found_system
+      found_system = System.find(:first, :conditions => {:serial_number => self.get_serial, :vendor => self.get_vendor, :model => self.get_model}, :order => :id)
+      if found_system 
         self.system = found_system
       else
         self.system = System.new
@@ -67,9 +67,6 @@ class Report < ActiveRecord::Base
     else
       self.system = System.new
     end
-
-    get_vendor
-    get_model
 
     system.system_model  = @system_model 
     system.system_serial_number  = @system_serial_number 
