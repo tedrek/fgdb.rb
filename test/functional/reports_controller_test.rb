@@ -36,6 +36,14 @@ class ReportsControllerTest < ActionController::TestCase
     assert_redirected_to :controller => 'reports', :action => "xml_show"
   end
 
+  def test_good_but_not_containing_any_information_xml_files_succeed
+    file = File.open(File.dirname(__FILE__) + "/../fixtures/good_but_bad.xml")
+    get :xml_create, :my_file => file
+    file.close
+    assert_response :redirect
+    assert_redirected_to :controller => 'reports', :action => "xml_show"
+  end
+
   def test_that_version_compat_fails
     get :check_compat, { :version => 1000 }
     assert_tag :tag => "compat", :child => { :content => "true" }

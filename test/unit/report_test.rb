@@ -64,4 +64,14 @@ class ReportTest < ActiveSupport::TestCase
     assert_not_equal report1.system.id, report4.system.id
     assert_not_equal report2.system.id, report3.system.id
   end
+
+  def test_good_but_not_containing_any_information_xml_files_succeed
+    file = File.open(File.dirname(__FILE__) + "/../fixtures/good_but_bad.xml")
+    report = Report.new(:lshw_output => file.read)
+    file.close
+    report.save
+    assert_equal "(no serial number)", report.system.serial_number
+    assert_equal "(no vendor)", report.system.vendor
+    assert_equal "(no model)", report.system.model
+  end
 end
