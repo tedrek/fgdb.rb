@@ -1,6 +1,14 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ReportsControllerTest < ActionController::TestCase
+  def test_that_things_fail_if_xml_output_is_empty
+    file = File.open(File.dirname(__FILE__) + "/../fixtures/empty.xml")
+    get :xml_create, :my_file => file
+    file.close
+    assert_response :redirect
+    assert_redirected_to :controller => 'reports', :action => "xml_index", :error => "The posted lshw output was empty!"
+  end
+
   def test_that_xml_system_show_does_not_show_a_nonexistant_system
     get :xml_system_show, {:id => "50"}
     assert_response :redirect
