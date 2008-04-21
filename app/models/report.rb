@@ -8,6 +8,50 @@ class Report < ActiveRecord::Base
   belongs_to :system
   belongs_to :type
 
+  def initialize(*args)
+    super(*args)
+    if !load_xml(lshw_output)
+      return false
+    end
+    
+    @system_model = get_from_xml("/node/product")
+    @system_serial_number = get_from_xml("/node/serial")
+    @system_vendor = get_from_xml("/node/vendor")
+    @mobo_model = get_from_xml("/node/node[@id='core']/product")
+    @mobo_serial_number = get_from_xml("/node/node[@id='core']/serial")
+    @mobo_vendor = get_from_xml("/node/node[@id='core']/vendor")
+    @macaddr = get_from_xml("//node[@class='network']/serial")
+
+    get_vendor
+    get_serial
+    get_model
+    
+    if @serial_number != "(no serial number)"
+      found_system = System.find(:first, :conditions => {:serial_number => @serial_number, :vendor => @vendor, :model => @model}, :order => :id)
+      if found_system 
+        self.system = found_system
+      else
+        self.system = System.new
+      end
+    else
+      self.system = System.new
+    end
+
+    system.system_model  = @system_model 
+    system.system_serial_number  = @system_serial_number 
+    system.system_vendor  = @system_vendor 
+    system.mobo_model  = @mobo_model 
+    system.mobo_serial_number  = @mobo_serial_number 
+    system.mobo_vendor  = @mobo_vendor 
+    system.model  = @model 
+    system.serial_number  = @serial_number 
+    system.vendor  = @vendor 
+  end
+
+  #######
+  private
+  #######
+  
   def get_model
       if model_is_usable(@system_model)
         @model = @system_model
@@ -42,45 +86,7 @@ class Report < ActiveRecord::Base
       end
     return @serial_number
   end
-
-  def initialize(*args)
-    super(*args)
-    if !load_xml(lshw_output)
-      return false
-    end
-    
-    @system_model = get_from_xml("/node/product")
-    @system_serial_number = get_from_xml("/node/serial")
-    @system_vendor = get_from_xml("/node/vendor")
-    @mobo_model = get_from_xml("/node/node[@id='core']/product")
-    @mobo_serial_number = get_from_xml("/node/node[@id='core']/serial")
-    @mobo_vendor = get_from_xml("/node/node[@id='core']/vendor")
-    @macaddr = get_from_xml("//node[@class='network']/serial")
-
-    if self.get_serial != "(no serial number)"
-      found_system = System.find(:first, :conditions => {:serial_number => self.get_serial, :vendor => self.get_vendor, :model => self.get_model}, :order => :id)
-      if found_system 
-        self.system = found_system
-      else
-        self.system = System.new
-      end
-    else
-      self.system = System.new
-    end
-
-    system.system_model  = @system_model 
-    system.system_serial_number  = @system_serial_number 
-    system.system_vendor  = @system_vendor 
-    system.mobo_model  = @mobo_model 
-    system.mobo_serial_number  = @mobo_serial_number 
-    system.mobo_vendor  = @mobo_vendor 
-    system.model  = @model 
-    system.serial_number  = @serial_number 
-    system.vendor  = @vendor 
-  end
-
-  private
-
+  
   def get_from_xml(xpath)
     value = xpath_value_of(xpath)
     if value == "Unknown"
