@@ -49,7 +49,7 @@ class Donation < ActiveRecord::Base
         "SELECT payments.payment_method_id,
                 sum(payments.amount_cents) as amount,
                 sum(donations.reported_required_fee_cents) as required,
-                sum(reported_suggested_fee_cents) as suggested,
+                sum(donations.reported_suggested_fee_cents) as suggested,
                 count(*)
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
