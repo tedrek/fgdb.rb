@@ -1,7 +1,10 @@
 #!/bin/bash
+# rotate logs before dumping
 /usr/sbin/logrotate -f /usr/local/backup/database_logrotate.conf
+# dump the database
 su - postgres -c "nice pg_dump -X use-set-session-authorization -C fgdb.rb | nice gzip > /usr/local/backup/database.sql.gz"
 #:?: maybe you mirror you db like this:
+# rsync to another server. this should catch the whole directory
 #su - postgres -c "nice /usr/bin/rsync -Hqzae \
 #       'ssh -2 -i /var/lib/postgres/.ssh/backup_transfer_key' \
 #       --delete-excluded '/usr/local/backup/' 'postgres@blossom:/usr/local/backup/'"
