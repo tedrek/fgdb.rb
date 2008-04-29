@@ -106,6 +106,9 @@ class Test::Unit::TestCase
                         :volunteer_task_type => VolunteerTaskType.find(type) })
   end
 
+  NO_INFO = {:created_by => 1}
+  WITH_CONTACT_INFO = NO_INFO.merge({:postal_code => '54321', :contact_type => 'anonymous'})
+
   def crt_event
     {
       :gizmo_type => GizmoType.find(:first, :conditions => ['description = ?', 'CRT']),
@@ -128,6 +131,17 @@ class Test::Unit::TestCase
       :gizmo_count => 10,
       :gizmo_context => GizmoContext.recycling
     }
+  end
+
+  def some_cash(amnt)
+    some_payment(amnt, PaymentMethod.cash)
+  end
+  def some_check(amnt)
+    some_payment(amnt, PaymentMethod.check)
+  end
+
+  def some_payment(amnt, method)
+    Payment.new(:payment_method_id => method.id, :amount_cents => amnt)
   end
 
 end

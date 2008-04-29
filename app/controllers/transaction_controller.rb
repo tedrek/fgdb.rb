@@ -235,25 +235,6 @@ class TransactionController < ApplicationController
   def _save
     _apply_datalist_data(@transaction)
 
-    if @transaction.respond_to?(:payments)
-      if @transaction.invoiced?
-        @transaction.txn_complete = false
-        @transaction.txn_completed_at = nil
-      else
-        @transaction.txn_complete = true
-        @transaction.txn_completed_at = Time.now
-      end
-    end
-
-    case @transaction_type
-    when 'sale'
-      @transaction.reported_amount_due_cents = @transaction.calculated_total_cents
-      @transaction.reported_discount_amount_cents = @transaction.calculated_discount_cents
-    when 'donation'
-      @transaction.reported_required_fee_cents = @transaction.calculated_required_fee_cents
-      @transaction.reported_suggested_fee_cents = @transaction.calculated_suggested_fee_cents
-    end
-
     success = @transaction.save
     if success
       @transaction.payments.each {|payment| payment.save} if @transaction.respond_to?( :payments )

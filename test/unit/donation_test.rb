@@ -7,9 +7,6 @@ class DonationTest < Test::Unit::TestCase
 #     :gizmo_contexts_gizmo_typeattrs, :gizmo_contexts_gizmo_types, :donations
   load_all_fixtures
 
-  NO_INFO = {:created_by => 1}
-  WITH_CONTACT_INFO = NO_INFO.merge({:postal_code => '54321', :contact_type => 'anonymous'})
-
   def with_gizmo
     NO_INFO.merge({:gizmo_events => [GizmoEvent.new(system_event)]})
   end

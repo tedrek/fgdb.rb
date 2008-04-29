@@ -86,10 +86,10 @@ class ReportsController < ApplicationController
     @date_range_string = @defaults.to_s
     @ranges = {}
     Donation.totals(@defaults.conditions(Donation)).each do |summation|
-      add_donation_to_data(summation, @income_data)
+      add_donation_summation_to_data(summation, @income_data)
     end
     Sale.totals(@defaults.conditions(Sale)).each do |summation|
-      add_sale_to_data(summation, @income_data)
+      add_sale_summation_to_data(summation, @income_data)
     end
   end
 
@@ -119,7 +119,7 @@ class ReportsController < ApplicationController
     end
   end
 
-  def add_donation_to_data(summation, income_data)
+  def add_donation_summation_to_data(summation, income_data)
     payment_method_id, amount_cents, required_cents, suggested_cents, count =
       summation[0..4].map {|c| c.to_i}
     return unless payment_method_id and payment_method_id != 0
@@ -165,7 +165,7 @@ class ReportsController < ApplicationController
     totals['total']['total'] += amount_cents
   end
 
-  def add_sale_to_data(summation, income_data)
+  def add_sale_summation_to_data(summation, income_data)
     payment_method_id, discount_schedule_id, amount_cents, count =
       summation[0..3].map {|c| c.to_i}
     return unless payment_method_id and payment_method_id != 0

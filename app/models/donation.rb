@@ -18,6 +18,8 @@ class Donation < ActiveRecord::Base
   before_save :cleanup_for_contact_type
   before_save :unzero_contact_id
   before_save :set_occurred_at_on_gizmo_events
+  before_save :set_txn_as_complete
+  before_save :compute_fee_totals
 
   def validate
     if contact_type == 'named'
@@ -45,6 +47,11 @@ class Donation < ActiveRecord::Base
     end
 
     def totals(conditions)
+      total_data = {}
+      methods = PaymentMethod.find(:all)
+      methods.each {|method|
+        total_data[method.id] = [0, 0, 0, 0]
+      }
       self.connection.execute(
         "SELECT payments.payment_method_id,
                 sum(payments.amount_cents) as amount,
@@ -54,8 +61,42 @@ class Donation < ActiveRecord::Base
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
+         AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          GROUP BY payments.payment_method_id"
-      )
+      ).each {|summation|
+        total_data[summation[0].to_i] = summation[1..-1] #.map {|x| x.to_i}
+      }
+      Donation.paid_by_multiple_payments(conditions).each {|donation|
+        required_to_be_paid = donation.reported_required_fee_cents
+        donation.payments.sort_by {|payment| payment.payment_method_id}.each {|payment|
+          #total paid
+          total_data[payment.payment_method_id][0] += payment.amount_cents
+
+          if required_to_be_paid > 0
+            if required_to_be_paid > payment.amount_cents
+              #required
+              total_data[payment.payment_method_id][1] += payment.amount_cents
+            else
+              #required
+              total_data[payment.payment_method_id][1] += required_to_be_paid
+              #suggested
+              total_data[payment.payment_method_id][2] += (payment.amount_cents - required_to_be_paid)
+            end
+            required_to_be_paid -= payment.amount_cents
+          else
+            #suggested
+            total_data[payment.payment_method_id][2] += payment.amount_cents
+          end
+        }
+      }
+      return total_data.map {|method_id,sums|
+        [method_id] + sums
+      }
+    end
+
+    def paid_by_multiple_payments(conditions)
+      conditions[0] += " AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) > 1 "
+      self.find(:all, :conditions => conditions, :include => [:payments])
     end
   end
 
@@ -149,9 +190,14 @@ class Donation < ActiveRecord::Base
     end
   end
 
-  #######
-  private
-  #######
+  #########
+  protected
+  #########
+
+  def compute_fee_totals
+    self.reported_required_fee_cents = self.calculated_required_fee_cents
+    self.reported_suggested_fee_cents = self.calculated_suggested_fee_cents
+  end
 
   def cleanup_for_contact_type
     case contact_type

@@ -10,6 +10,7 @@ class Sale < ActiveRecord::Base
   before_save :add_contact_types
   before_save :unzero_contact_id
   before_save :set_occurred_at_on_gizmo_events
+  before_save :compute_fee_totals
 
   def initialize(*args)
     @contact_type = 'named'
@@ -51,8 +52,12 @@ class Sale < ActiveRecord::Base
          FROM sales
          JOIN payments ON payments.sale_id = sales.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
+         AND (SELECT count(*) FROM payments WHERE payments.sale_id = sales.id) = 1
          GROUP BY payments.payment_method_id, sales.discount_schedule_id"
       )
+#      Sale.paid_by_multiple_payments(@defaults.conditions(Sale)).each do |sale|
+#        add_sale_to_data(sale, @income_data)
+#      end
     end
   end
 
@@ -94,9 +99,14 @@ class Sale < ActiveRecord::Base
     calculated_subtotal_cents - calculated_total_cents
   end
 
-  #######
-  private
-  #######
+  #########
+  protected
+  #########
+
+  def compute_fee_totals
+    self.reported_amount_due_cents = self.calculated_total_cents
+    self.reported_discount_amount_cents = self.calculated_discount_cents
+  end
 
   def set_occurred_at_on_gizmo_events
     self.gizmo_events.each {|event| event.occurred_at = self.created_at}

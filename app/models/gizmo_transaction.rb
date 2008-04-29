@@ -65,6 +65,16 @@ module GizmoTransaction
     # overridden in each class which mixes this in (not dispersments, recycling)
   end
 
+  def set_txn_as_complete
+    if invoiced?
+      self.txn_complete = false
+      self.txn_completed_at = nil
+    else
+      self.txn_complete = true
+      self.txn_completed_at = Time.now
+    end
+  end
+
   def add_contact_types
     if(contact and
         (
