@@ -4,7 +4,7 @@ class ReportsController < ApplicationController
   def report_layout_choice
     case action_name
     when /report$/ then with_sidebar
-    else                'reports_form.html.erb'
+    else                'reports_form.rhtml'
     end
   end
 

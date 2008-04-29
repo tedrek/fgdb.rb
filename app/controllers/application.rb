@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   end
 
   def with_sidebar
-    "with_sidebar.html.erb"
+    "with_sidebar.rhtml"
   end
 
   before_filter :authorize

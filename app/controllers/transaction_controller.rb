@@ -7,8 +7,8 @@ class TransactionController < ApplicationController
 
   def check_for_receipt
     case action_name
-    when /receipt/ then "receipt_invoice.html.erb"
-    else                "with_sidebar.html.erb"
+    when /receipt/ then "receipt_invoice.rhtml"
+    else                "with_sidebar.rhtml"
     end
   end
 
