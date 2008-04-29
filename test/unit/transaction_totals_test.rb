@@ -26,6 +26,18 @@ class TransactionTotalsTest < Test::Unit::TestCase
     assert_cash_amount [1000, 200], totals
   end
 
+  def test_totals_across_multiple_cash_payments
+    don = donate_a_crt
+    don.payments = [some_cash(700), some_check(700), some_cash(1000)]
+    assert don.save
+    assert_equal 1000, don.reported_required_fee_cents
+    totals = nil
+    assert_nothing_raised { totals = Donation.totals(["donations.id = ?", don.id]) }
+    assert totals
+    assert_cash_amount [1000,700], totals
+    assert_check_amount [0, 700], totals
+  end
+
   def test_totals_across_multiple_payments
     don = donate_a_crt
     don.payments = [some_cash(700), some_check(700)]
