@@ -43,7 +43,7 @@ class TransactionController < ApplicationController
     }
     if @model.new.respond_to?( :payments )
       search_options[:include] << :payments
-      search_options[:joins] = "JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
+      search_options[:joins] = "LEFT OUTER JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
     end
     search_options[:page] = params[:page]
     @transactions = @model.paginate( search_options )
