@@ -34,7 +34,7 @@
   <% end %>
 </tr>
 <tr>
-  <td colspan="3">Printed by <%= @current_user.login %><%= if @current_user.contact; " ( " + @current_user.contact.display_name + ")"; end %></td>
+  <td colspan="3">Created by #<%=h User.find_by_id(@transaction.created_by).contact_id %></td>
 </tr>
 <tr>
   <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
