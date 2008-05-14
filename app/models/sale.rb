@@ -34,7 +34,6 @@ class Sale < ActiveRecord::Base
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
     errors.add("payments", "are too much") if overpaid?
     errors.add("payments", "may only have one invoice") if invoices.length > 1
-    errors.add("payments", "should include something") if payments.empty?
     errors.add("gizmos", "should include something") if gizmo_events.empty?
   end
 

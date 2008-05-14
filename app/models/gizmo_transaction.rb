@@ -4,7 +4,11 @@ module GizmoTransaction
   end
 
   def payment
-    payments.join( ", " )
+    if payments.empty?
+      "free"
+    else
+      payments.join( ", " )
+    end
   end
 
   def real_payments
