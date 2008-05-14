@@ -81,6 +81,16 @@ input.save {
     size: +2;
 }
 
+.tooltip_header {
+  width:300;
+  background:#C4D5E3;
+  padding:10px;
+}
+         
+.tooltip_body {
+  width:300;
+  background:#FFFFFF;
+}
 /* ===================================
           conditions */
 table.list {
