@@ -1,0 +1,17 @@
+<div class="item_list">
+<table bgcolor="#cccccc" width="100%" align="center" border="1">
+<tbody><tr>
+    <td width="31%"><strong>Description:</strong></td>
+    <td width="11%"><strong>Quantity:</strong></td>
+</tr>
+
+<% @disbursement.gizmo_events.each do |event| %>
+  <tr>
+    <td> <%= event.attry_description( :ignore => ['unit_price'] ) %> </td>
+    <td> <%= event.gizmo_count %> </td>
+  </tr>
+<% end %>
+
+</tbody></table>
+<p><%= @disbursement.comments %></p>
+</div>

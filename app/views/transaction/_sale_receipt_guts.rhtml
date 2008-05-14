@@ -1,0 +1,60 @@
+<div class="item_list">
+<table bgcolor="#cccccc" width="100%" align="center" border="1">
+<tbody><tr>
+    <td width="31%"><strong>Description:</strong></td>
+    <td width="11%"><strong>Unit Price:</strong></td>
+    <td width="11%"><strong>Quantity:</strong></td>
+    <td width="11%"><strong>Subtotal:</strong></td>
+    <td width="11%"><strong>Discount:</strong></td>
+    <td width="12%"><strong>Total:</strong></td>
+    <td width="12%"></td>
+</tr>
+
+<% @sale.gizmo_events.each do |event| %>
+  <tr>
+    <td> <%= event.attry_description( :ignore => ['unit_price'] ) %> </td>
+    <td> <%= my_number_to_currency event.unit_price_cents %> </td>
+    <td> <%= event.gizmo_count %> </td>
+    <td> <%= my_number_to_currency event.total_price_cents %> </td>
+    <td> <%= number_to_percentage(event.percent_discount(@sale.discount_schedule), :precision => 0) %></td>
+    <td> <%= my_number_to_currency event.discounted_price(@sale.discount_schedule) %> </td>
+  </tr>
+<% end %>
+
+<tr><td colspan="7">&nbsp;</td></tr>
+
+<tr>
+    <td colspan="4">&nbsp;</td>
+    <td align="right" colspan="2">Subtotal:</td>
+    <td><%= my_number_to_currency(@sale.calculated_subtotal_cents) %></td>
+</tr>
+
+<tr>
+    <td colspan="4">&nbsp;</td>
+    <td align="right" colspan="2">Discounted:</td>
+    <td><%= my_number_to_currency(@sale.calculated_discount_cents) %></td>
+</tr>
+
+<tr>
+    <td colspan="4">&nbsp;</td>
+    <td align="right" colspan="2"><strong>Total:</strong></td>
+    <td><strong><%= my_number_to_currency(@sale.calculated_total_cents) %></strong></td>
+</tr>
+
+<% if @sale.calculated_total_cents > @sale.money_tendered_cents %>
+  <tr>
+    <td colspan="4">&nbsp;</td>
+    <td align="right" colspan="2">Paid:</td>
+    <td><%= my_number_to_currency(@sale.money_tendered_cents) %></td>
+  </tr>
+
+  <tr>
+    <td colspan="4">&nbsp;</td>
+    <td align="right" colspan="2"><strong>Due by <%= @sale.created_at.to_date + 30 %>:</strong></td>
+    <td><strong><%= my_number_to_currency(@sale.calculated_total_cents - @sale.money_tendered_cents) %></strong></td>
+  </tr>
+<% end %>
+
+</tbody></table>
+<p><%= @sale.comments %></p>
+</div>
