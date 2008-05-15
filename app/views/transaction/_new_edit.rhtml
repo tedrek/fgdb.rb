@@ -8,6 +8,8 @@
 
       <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type)
         %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
+      <%= if @transaction.created_by then "<span>created by #{User.find_by_id(@transaction.created_by).login} at #{@transaction.created_at}</span>" end %>
+      <%= if @transaction.updated_by then "<br><span>updated by #{User.find_by_id(@transaction.updated_by).login} at #{@transaction.updated_at}</span>" end %>
 
       <% if request.xhr? %>
         <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
