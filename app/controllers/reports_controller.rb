@@ -113,7 +113,9 @@ class ReportsController < ApplicationController
 
     @income_data = {}
     @income_data[:donations] = {}
+    @income_data[:donations][:range] = {:min=>1<<64, :max=>0}
     @income_data[:sales] = {}
+    @income_data[:sales][:range] = {:min=>1<<64, :max=>0}
     @income_data[:grand_totals] = {}
 
     @sections.each do |section|
@@ -129,12 +131,8 @@ class ReportsController < ApplicationController
     return unless payment_method_id and payment_method_id != 0
 
     
-    if income_data[:donations].has_key?(:range)
-      income_data[:donations][:range][:min] = [income_data[:donations][:range][:min], mn].min
-      income_data[:donations][:range][:max] = [income_data[:donations][:range][:max], mx].max
-    else
-      income_data[:donations][:range] = {:min=>mn, :max=>mx}
-    end
+    income_data[:donations][:range][:min] = [income_data[:donations][:range][:min], mn].min
+    income_data[:donations][:range][:max] = [income_data[:donations][:range][:max], mx].max
 
     totals = income_data[:grand_totals]
 
@@ -181,14 +179,11 @@ class ReportsController < ApplicationController
     payment_method_id, discount_schedule_id, amount_cents, count, mn, mx =
       summation[0..5].map {|c| c.to_i}
     return unless payment_method_id and payment_method_id != 0
+
     discount_schedule = DiscountSchedule.find(discount_schedule_id)
 
-    if income_data[:sales].has_key?(:range)
-      income_data[:sales][:range][:min] = [income_data[:sales][:range][:min], mn].min
-      income_data[:sales][:range][:max] = [income_data[:sales][:range][:max], mx].max
-    else
-      income_data[:sales][:range] = {:min=>mn, :max=>mx}
-    end
+    income_data[:sales][:range][:min] = [income_data[:sales][:range][:min], mn].min
+    income_data[:sales][:range][:max] = [income_data[:sales][:range][:max], mx].max
       
     totals = income_data[:grand_totals]
     column = income_data[:sales][PaymentMethod.descriptions[payment_method_id]]
