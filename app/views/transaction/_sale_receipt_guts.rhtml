@@ -41,13 +41,15 @@
     <td><strong><%= my_number_to_currency(@sale.calculated_total_cents) %></strong></td>
 </tr>
 
-<% if @sale.calculated_total_cents > @sale.money_tendered_cents %>
+<% @sale.payments.each do |payment| %>
   <tr>
     <td colspan="4">&nbsp;</td>
-    <td align="right" colspan="2">Paid:</td>
-    <td><%= my_number_to_currency(@sale.money_tendered_cents) %></td>
+    <td align="right" colspan="2"><%= payment.payment_method.description %>:</td>
+    <td><%= my_number_to_currency(payment.amount_cents) %></td>
   </tr>
+<% end %>
 
+<% if @sale.calculated_total_cents > @sale.money_tendered_cents %>
   <tr>
     <td colspan="4">&nbsp;</td>
     <td align="right" colspan="2"><strong>Due by <%= @sale.created_at.to_date + 30 %>:</strong></td>
