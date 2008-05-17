@@ -89,6 +89,11 @@ class Donation < ActiveRecord::Base
             #suggested
             total_data[payment.payment_method_id][2] += payment.amount_cents
           end
+
+          total_data[payment.payment_method_id][4] = [total_data[payment.payment_method_id][4],
+                                                      donation.id].min
+          total_data[payment.payment_method_id][5] = [total_data[payment.payment_method_id][5],
+                                                      donation.id].max
         }
       }
       return total_data.map {|method_id,sums|
