@@ -50,14 +50,16 @@ class Donation < ActiveRecord::Base
       total_data = {}
       methods = PaymentMethod.find(:all)
       methods.each {|method|
-        total_data[method.id] = [0, 0, 0, 0]
+        total_data[method.id] = [0, 0, 0, 0, 1<<64, 0]
       }
       self.connection.execute(
         "SELECT payments.payment_method_id,
                 sum(payments.amount_cents) as amount,
                 sum(donations.reported_required_fee_cents) as required,
                 sum(donations.reported_suggested_fee_cents) as suggested,
-                count(*)
+                count(*),
+                min(donations.id),
+                max(donations.id)
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}

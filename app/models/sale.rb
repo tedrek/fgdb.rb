@@ -47,7 +47,9 @@ class Sale < ActiveRecord::Base
         "SELECT payments.payment_method_id,
                 sales.discount_schedule_id,
                 sum(payments.amount_cents) as amount,
-                count(*)
+                count(*),
+                min(sales.id),
+                max(sales.id)
          FROM sales
          JOIN payments ON payments.sale_id = sales.id
          WHERE #{sanitize_sql_for_conditions(conditions)}

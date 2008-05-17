@@ -91,6 +91,10 @@ class ReportsController < ApplicationController
     Sale.totals(@defaults.conditions(Sale)).each do |summation|
       add_sale_summation_to_data(summation, @income_data)
     end
+
+    [:sales, :donations].each do |x|
+      @ranges[x] = "#{@income_data[x][:range][:min]}..#{@income_data[x][:range][:max]}"
+    end
   end
 
   protected
@@ -120,9 +124,17 @@ class ReportsController < ApplicationController
   end
 
   def add_donation_summation_to_data(summation, income_data)
-    payment_method_id, amount_cents, required_cents, suggested_cents, count =
-      summation[0..4].map {|c| c.to_i}
+    payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx =
+      summation[0..6].map {|c| c.to_i}
     return unless payment_method_id and payment_method_id != 0
+
+    
+    if income_data[:donations].has_key?(:range)
+      income_data[:donations][:range][:min] = [income_data[:donations][:range][:min], mn].min
+      income_data[:donations][:range][:max] = [income_data[:donations][:range][:max], mx].max
+    else
+      income_data[:donations][:range] = {:min=>mn, :max=>mx}
+    end
 
     totals = income_data[:grand_totals]
 
@@ -166,11 +178,18 @@ class ReportsController < ApplicationController
   end
 
   def add_sale_summation_to_data(summation, income_data)
-    payment_method_id, discount_schedule_id, amount_cents, count =
-      summation[0..3].map {|c| c.to_i}
+    payment_method_id, discount_schedule_id, amount_cents, count, mn, mx =
+      summation[0..5].map {|c| c.to_i}
     return unless payment_method_id and payment_method_id != 0
     discount_schedule = DiscountSchedule.find(discount_schedule_id)
 
+    if income_data[:sales].has_key?(:range)
+      income_data[:sales][:range][:min] = [income_data[:sales][:range][:min], mn].min
+      income_data[:sales][:range][:max] = [income_data[:sales][:range][:max], mx].max
+    else
+      income_data[:sales][:range] = {:min=>mn, :max=>mx}
+    end
+      
     totals = income_data[:grand_totals]
     column = income_data[:sales][PaymentMethod.descriptions[payment_method_id]]
     column[discount_schedule.name] += amount_cents
