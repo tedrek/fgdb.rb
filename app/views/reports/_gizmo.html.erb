@@ -73,7 +73,36 @@
           <br />
           _________________________
         </td>
+      </tr> 
+      <% if @report.type == Type.find_by_name("laptop") %>
+      <tr>
+        <td class="line_label">
+          Battery Life:
+        </td>
+        <td>
+          <br />
+          _________________________
+        </td>
       </tr>
+      <tr>
+        <td class="line_label">
+          Suspend States:
+        </td>
+        <td>
+          <br />
+          _________________________
+        </td>
+      </tr>
+      <tr>
+        <td class="line_label">
+          Wireless Capabilities:
+        </td>
+        <td>
+          <br />
+          _________________________
+        </td>
+      </tr>
+      <% end %>
       <tr>
         <td>
           Notes:
