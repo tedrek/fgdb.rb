@@ -53,12 +53,8 @@ class Sale < ActiveRecord::Base
          FROM sales
          JOIN payments ON payments.sale_id = sales.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
-         AND (SELECT count(*) FROM payments WHERE payments.sale_id = sales.id) = 1
          GROUP BY payments.payment_method_id, sales.discount_schedule_id"
       )
-#      Sale.paid_by_multiple_payments(@defaults.conditions(Sale)).each do |sale|
-#        add_sale_to_data(sale, @income_data)
-#      end
     end
   end
 
@@ -112,5 +108,4 @@ class Sale < ActiveRecord::Base
   def set_occurred_at_on_gizmo_events
     self.gizmo_events.each {|event| event.occurred_at = self.created_at}
   end
-
 end
