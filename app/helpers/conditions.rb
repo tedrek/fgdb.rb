@@ -135,13 +135,13 @@ class Conditions
     end
   end
 
-  def to_s(show_contact_name=true)
+  def to_s
     if @date_range_enabled=="true" && @contact_enabled=="true"
       " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
     elsif(@date_range_enabled=="true")
       ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
     elsif(@contact_enabled=="true")
-      " by " + contact_to_s(show_contact_name)
+      " by " + contact_to_s
     else
       ""
     end
@@ -165,11 +165,7 @@ class Conditions
     return desc
   end
 
-  def contact_to_s(show_contact_name) # "Report of hours worked for ..."
-    if show_contact_name
-      return contact.display_name
-    else
-      return contact.id
-    end
+  def contact_to_s # "Report of hours worked for ..."
+    return contact.display_name
   end
 end

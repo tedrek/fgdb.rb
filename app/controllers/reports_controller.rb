@@ -207,7 +207,7 @@ class ReportsController < ApplicationController
     @defaults = Conditions.new
     params[:defaults][:contact_id] = params[:contact][:id] if params[:contact]
     @defaults.apply_conditions(params[:defaults])
-    @date_range_string = @defaults.to_s(has_role_or_is_me?((params[:defaults][:contact_id]||0), "ROLE_VOLUNTEER_MANAGER"))
+    @date_range_string = @defaults.to_s
     @tasks = VolunteerTask.find_by_conditions(@defaults.conditions(VolunteerTask))
     @sections = [:community_service_type, :volunteer_task_type]
     @data = volunteer_report_for(@tasks, @sections)
