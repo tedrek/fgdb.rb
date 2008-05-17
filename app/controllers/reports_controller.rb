@@ -208,9 +208,8 @@ class ReportsController < ApplicationController
     params[:defaults][:contact_id] = params[:contact][:id] if params[:contact]
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s(has_role_or_is_me?((params[:defaults][:contact_id]||0), "ROLE_VOLUNTEER_MANAGER"))
-    @tasks = VolunteerTask.find(:all, :conditions => @defaults.conditions(VolunteerTask),
-                                :include => [:volunteer_task_type, :community_service_type])
-    @sections = [:volunteer_task_type, :community_service_type]
+    @tasks = VolunteerTask.find_by_conditions(@defaults.conditions(VolunteerTask))
+    @sections = [:community_service_type, :volunteer_task_type]
     @data = volunteer_report_for(@tasks, @sections)
   end
 
@@ -221,33 +220,25 @@ class ReportsController < ApplicationController
     sections.each {|section|
       data[section] = {}
       eval(Inflector.classify(section)).find(:all).each {|type|
-        data[section][type.display_name] = 0.0
+        data[section][type.description] = 0.0
       }
       data[section]['Total'] = 0.0
       data[section]['(none)'] = 0.0
     }
     tasks.each {|task|
-      sections.each {|section|
-        add_task_to_data(task, section, data)
-      }
+      add_task_to_data(task, sections, data)
     }
     return data
   end
 
-  def add_task_to_data(task, section, data)
-    type = task.send(section)
-    if type
-      type = type.display_name
-    else
-      type = '(none)'
+  def add_task_to_data(task, sections, data)
+    i=1
+    sections.each do |section|
+      data[section][(task[i] || '(none)')] += task[0].to_f
+      data[section]["Total"] ||= 0.0
+      data[section]["Total"] += task[0].to_f
+      i += 1
     end
-    data[section][type] += task.duration
-    while type.respond_to?(:parent) do
-      type = type.parent
-      data[section][type] += task.duration
-    end
-    data[section]["Total"] ||= 0.0
-    data[section]["Total"] += task.duration
   end
 
 end
