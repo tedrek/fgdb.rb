@@ -84,16 +84,19 @@ class ReportsController < ApplicationController
     @income_data = {}
     income_report_init #:MC: modifies @income_data
     @date_range_string = @defaults.to_s
-    @ranges = {}
+    ranges = {:sales => {:min => 1<<64, :max => 0},
+               :donations => {:min => 1<<64, :max => 0}
+    }
     Donation.totals(@defaults.conditions(Donation)).each do |summation|
-      add_donation_summation_to_data(summation, @income_data)
+      add_donation_summation_to_data(summation, @income_data, ranges)
     end
     Sale.totals(@defaults.conditions(Sale)).each do |summation|
-      add_sale_summation_to_data(summation, @income_data)
+      add_sale_summation_to_data(summation, @income_data, ranges)
     end
 
+    @ranges = {}
     [:sales, :donations].each do |x|
-      @ranges[x] = "#{@income_data[x][:range][:min]}..#{@income_data[x][:range][:max]}"
+      @ranges[x] = "#{ranges[x][:min]}..#{ranges[x][:max]}"
     end
   end
 
@@ -125,14 +128,13 @@ class ReportsController < ApplicationController
     end
   end
 
-  def add_donation_summation_to_data(summation, income_data)
+  def add_donation_summation_to_data(summation, income_data, ranges)
     payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx =
       summation[0..6].map {|c| c.to_i}
     return unless payment_method_id and payment_method_id != 0
 
-    
-    income_data[:donations][:range][:min] = [income_data[:donations][:range][:min], mn].min
-    income_data[:donations][:range][:max] = [income_data[:donations][:range][:max], mx].max
+    ranges[:donations][:min] = [ranges[:donations][:min], mn].min
+    ranges[:donations][:max] = [ranges[:donations][:max], mx].max
 
     totals = income_data[:grand_totals]
 
@@ -175,15 +177,15 @@ class ReportsController < ApplicationController
     totals['total']['total'] += amount_cents
   end
 
-  def add_sale_summation_to_data(summation, income_data)
+  def add_sale_summation_to_data(summation, income_data, ranges)
     payment_method_id, discount_schedule_id, amount_cents, count, mn, mx =
       summation[0..5].map {|c| c.to_i}
     return unless payment_method_id and payment_method_id != 0
 
     discount_schedule = DiscountSchedule.find(discount_schedule_id)
 
-    income_data[:sales][:range][:min] = [income_data[:sales][:range][:min], mn].min
-    income_data[:sales][:range][:max] = [income_data[:sales][:range][:max], mx].max
+    ranges[:sales][:min] = [ranges[:sales][:min], mn].min
+    ranges[:sales][:max] = [ranges[:sales][:max], mx].max
       
     totals = income_data[:grand_totals]
     column = income_data[:sales][PaymentMethod.descriptions[payment_method_id]]
