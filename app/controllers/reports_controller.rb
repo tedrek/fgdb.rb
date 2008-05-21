@@ -116,14 +116,15 @@ class ReportsController < ApplicationController
 
     @income_data = {}
     @income_data[:donations] = {}
-    @income_data[:donations][:range] = {:min=>1<<64, :max=>0}
     @income_data[:sales] = {}
-    @income_data[:sales][:range] = {:min=>1<<64, :max=>0}
     @income_data[:grand_totals] = {}
 
     @sections.each do |section|
-     @columns[section].each do |method|
-        @income_data[section][method] ||= Hash.new(0.0)
+      @columns[section].each do |method|
+        @income_data[section][method] = {}
+        @rows[section].each do |row|
+          @income_data[section][method][row] = {:total => 0.0, :count => 0}
+        end
       end
     end
   end
@@ -136,9 +137,10 @@ class ReportsController < ApplicationController
     ranges[:donations][:min] = [ranges[:donations][:min], mn].min
     ranges[:donations][:max] = [ranges[:donations][:max], mx].max
 
-    totals = income_data[:grand_totals]
+    payment_method = PaymentMethod.descriptions[payment_method_id]
+    grand_totals = income_data[:grand_totals]
 
-    column = income_data[:donations][PaymentMethod.descriptions[payment_method_id]]
+    column = income_data[:donations][payment_method]
     fees_cents = 0
     suggested_cents = 0
     if required_cents <= 0
@@ -153,28 +155,34 @@ class ReportsController < ApplicationController
     end
 
     if payment_method_id != PaymentMethod.invoice.id
-      income_data[:donations]['total real']['fees'] += fees_cents
-      income_data[:donations]['total real']['suggested'] += suggested_cents
-      income_data[:donations]['total real']['subtotals'] += amount_cents
-      totals['total real']['total'] += amount_cents
+      total_real = income_data[:donations]['total real']
+
+      update_totals(total_real['fees'], fees_cents, count)
+      update_totals(total_real['suggested'], suggested_cents, count)
+      update_totals(total_real['subtotals'], amount_cents, count)
+      update_totals(grand_totals['total real']['total'], amount_cents, count)
     end
 
     if( (payment_method_id == PaymentMethod.cash.id) ||
         (payment_method_id == PaymentMethod.check.id) )
-      income_data[:donations]['till total']['fees'] += fees_cents
-      income_data[:donations]['till total']['suggested'] += suggested_cents
-      income_data[:donations]['till total']['subtotals'] += amount_cents
-      totals['till total']['total'] += amount_cents
+      till_total = income_data[:donations]['till total']
+
+      update_totals(till_total['fees'], fees_cents, count)
+      update_totals(till_total['suggested'], suggested_cents, count)
+      update_totals(till_total['subtotals'], amount_cents, count)
+      update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
 
-    income_data[:donations]['total']['fees'] += fees_cents
-    income_data[:donations]['total']['suggested'] += suggested_cents
-    income_data[:donations]['total']['subtotals'] += amount_cents
-    column['fees'] += fees_cents
-    column['suggested'] += suggested_cents
-    column['subtotals'] += amount_cents
-    totals[PaymentMethod.descriptions[payment_method_id]]['total'] += amount_cents
-    totals['total']['total'] += amount_cents
+    totals = income_data[:donations]['total']
+
+    update_totals(totals['fees'], fees_cents, count)
+    update_totals(totals['suggested'], suggested_cents, count)
+    update_totals(totals['subtotals'], amount_cents, count)
+    update_totals(column['fees'], fees_cents, count)
+    update_totals(column['suggested'], suggested_cents, count)
+    update_totals(column['subtotals'], amount_cents, count)
+    update_totals(grand_totals[payment_method]['total'], amount_cents, count)
+    update_totals(grand_totals['total']['total'], amount_cents, count)
   end
 
   def add_sale_summation_to_data(summation, income_data, ranges)
@@ -187,24 +195,34 @@ class ReportsController < ApplicationController
     ranges[:sales][:min] = [ranges[:sales][:min], mn].min
     ranges[:sales][:max] = [ranges[:sales][:max], mx].max
       
-    totals = income_data[:grand_totals]
-    column = income_data[:sales][PaymentMethod.descriptions[payment_method_id]]
-    column[discount_schedule.name] += amount_cents
-    column['subtotals'] += amount_cents
+    payment_method = PaymentMethod.descriptions[payment_method_id]
+
+    grand_totals = income_data[:grand_totals]
+    column = income_data[:sales][payment_method]
+    update_totals(column[discount_schedule.name], amount_cents, count)
+    update_totals(column['subtotals'], amount_cents, count)
     if PaymentMethod.is_money_method?(payment_method_id)
-      income_data[:sales]['total real'][discount_schedule.name] += amount_cents
-      income_data[:sales]['total real']['subtotals'] += amount_cents
-      totals['total real']['total'] += amount_cents
+      total_real = income_data[:sales]['total real']
+      update_totals(total_real[discount_schedule.name], amount_cents, count)
+      update_totals(total_real['subtotals'], amount_cents, count)
+      update_totals(grand_totals['total real']['total'], amount_cents, count)
     end
     if PaymentMethod.is_till_method?(payment_method_id)
-      income_data[:sales]['till total'][discount_schedule.name] += amount_cents
-      income_data[:sales]['till total']['subtotals'] += amount_cents
-      totals['till total']['total'] += amount_cents
+      till_total = income_data[:sales]['till total']
+      update_totals(till_total[discount_schedule.name], amount_cents, count)
+      update_totals(till_total['subtotals'], amount_cents, count)
+      update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
-    income_data[:sales]['total'][discount_schedule.name] += amount_cents
-    income_data[:sales]['total']['subtotals'] += amount_cents
-    totals['total']['total'] += amount_cents
-    totals[PaymentMethod.descriptions[payment_method_id]]['total'] += amount_cents
+    totals = income_data[:sales]['total']
+    update_totals(totals[discount_schedule.name], amount_cents, count)
+    update_totals(totals['subtotals'], amount_cents, count)
+    update_totals(grand_totals['total']['total'], amount_cents, count)
+    update_totals(grand_totals[payment_method]['total'], amount_cents, count)
+  end
+
+  def update_totals(totals, amount, count)
+    totals[:total] += amount
+    totals[:count] += count
   end
 
   ########################

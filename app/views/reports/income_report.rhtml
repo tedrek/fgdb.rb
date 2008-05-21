@@ -27,8 +27,8 @@ Printed by <%= @current_user.login %><%= if @current_user.contact; " ( " + @curr
   <% for category in @rows[section] %>
     <tr>
       <th class="row_header"><%= Inflector.titleize category %></th>
-      <% for method in @columns[section] %>
-        <td><%= number_with_delimiter('$%0.2f' % (@income_data[section][method][category]/100.0)) %></td>
+      <% for method in @columns[section]; income = @income_data[section][method][category] %>
+        <td title="<%= income[:count]%> transactions"><%= number_with_delimiter('$%0.2f' % (income[:total]/100.0)) %><span class="print_only">, <%= income[:count] %></span></td>
       <% end %>
     </tr>
   <% end %>

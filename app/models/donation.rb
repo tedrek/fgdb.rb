@@ -73,7 +73,7 @@ class Donation < ActiveRecord::Base
         donation.payments.sort_by {|payment| payment.payment_method_id}.each {|payment|
           #total paid
           total_data[payment.payment_method_id][0] += payment.amount_cents
-
+          total_data[payment.payment_method_id][3] += 1
           if required_to_be_paid > 0
             if required_to_be_paid > payment.amount_cents
               #required
