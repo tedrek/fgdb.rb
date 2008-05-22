@@ -19,11 +19,18 @@
 
 <% gizmo_types = GizmoType.find(:all).sort_by{|type| type.description} %>
 <% gizmo_types << "total flow" %>
+<% xSALE = [GizmoContext, GizmoContext.sale.id] %>
 <% for type in gizmo_types %>
   <tr>
     <th class="row_header"><%= Inflector.titleize type.kind_of?(GizmoType) ? type.description : type %></th>
     <% for col in @columns %>
-      <td><%= number_with_delimiter(@gizmo_data[type.kind_of?(GizmoType) ? type.id : :total ][col]) %></td>
+      <% if col == xSALE; amt = @gizmo_income_data[type.id].to_f()/100 %>
+        <td <%= " title='$#{number_with_delimiter(amt)}'" %>>
+        <span class="print_only">$<%= number_with_delimiter(amt) %>,</span>
+      <%else%>
+      <td>
+      <%end%>
+      <%= number_with_delimiter(@gizmo_data[type.kind_of?(GizmoType) ? type.id : :total ][col]) %></td>
     <% end %>
   </tr>
 <% end %>

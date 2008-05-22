@@ -20,11 +20,14 @@ class ReportsController < ApplicationController
     @defaults = Conditions.new
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
-    @gizmo_data = gizmos_report_init
+    gizmos_report_init
     gizmo_ids = []
     GizmoEvent.totals(@defaults.conditions(GizmoEvent)).each do |summation|
       add_gizmo_to_data(summation, @gizmo_data)
     end
+    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|k,v|
+      @gizmo_income_data[k.to_i] = v 
+    }
   end
 
   protected
@@ -35,9 +38,9 @@ class ReportsController < ApplicationController
     @columns << [nil,:total]
     @rows = GizmoType.find(:all).map {|type| type.id}
     @rows << :total
-    gizmo_data = {}
-    @rows.each {|type| gizmo_data[type] = Hash.new(0)}
-    gizmo_data
+    @gizmo_data = {}
+    @rows.each {|type| @gizmo_data[type] = Hash.new(0)}
+    @gizmo_income_data = {}
   end
 
   def context_tuple(id)
