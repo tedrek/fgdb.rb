@@ -13,20 +13,21 @@
   <td class="spacer"></td>
   <% for klass,id in @columns %>
     <% context = klass ? klass.find(id).description : 'gizmo total' %>
-    <th class="column_header"><%= Inflector.titleize context %></th>
+    <th class="column_header <%= klass == DisbursementType ? "disbursement-breakout-column" : ""%>"><%= Inflector.titleize context %></th>
   <% end %>
 </tr>
 
 <% gizmo_types = GizmoType.find(:all).sort_by{|type| type.description} %>
 <% gizmo_types << "total flow" %>
-<% xSALE = [GizmoContext, GizmoContext.sale.id] %>
 <% for type in gizmo_types %>
   <tr>
     <th class="row_header"><%= Inflector.titleize type.kind_of?(GizmoType) ? type.description : type %></th>
     <% for col in @columns %>
-      <% if col == xSALE; amt = @gizmo_income_data[type.id].to_f()/100 %>
+      <% if col == [GizmoContext, GizmoContext.sale.id]; amt = @gizmo_income_data[type.id].to_f()/100 %>
         <td <%= " title='$#{number_with_delimiter(amt)}'" %>>
         <span class="print_only">$<%= number_with_delimiter(amt) %>,</span>
+      <% elsif col[0] == DisbursementType %>
+      <td class="disbursement-breakout-column">
       <%else%>
       <td>
       <%end%>
