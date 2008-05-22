@@ -34,7 +34,10 @@ class ReportsController < ApplicationController
 
   def gizmos_report_init
     @columns = DisbursementType.find(:all).map {|type| [DisbursementType, type.id]}
-    @columns += GizmoContext.find(:all).map {|context| [GizmoContext, context.id]}
+    ctxs = GizmoContext.find(:all).map {|context| [GizmoContext, context.id]}
+    ctxs.insert(0, ctxs.delete([GizmoContext, GizmoContext.disbursement.id]))
+    @columns += ctxs
+    @columns.insert(0, @columns.delete([GizmoContext, GizmoContext.donation.id]))
     @columns << [nil,:total]
     @rows = GizmoType.find(:all).map {|type| type.id}
     @rows << :total
