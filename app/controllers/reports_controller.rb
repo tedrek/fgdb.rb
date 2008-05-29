@@ -25,6 +25,9 @@ class ReportsController < ApplicationController
     GizmoEvent.totals(@defaults.conditions(GizmoEvent)).each do |summation|
       add_gizmo_to_data(summation, @gizmo_data)
     end
+    GizmoEvent.category_totals(@defaults.conditions(GizmoEvent)).each do |summation|
+      add_gizmo_category_to_data(summation, @gizmo_data)
+    end
     GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|k,v|
       @gizmo_income_data[k.to_i] = v 
     }
@@ -39,11 +42,25 @@ class ReportsController < ApplicationController
     @columns += ctxs
     @columns.insert(0, @columns.delete([GizmoContext, GizmoContext.donation.id]))
     @columns << [nil,:total]
-    @rows = GizmoType.find(:all).map {|type| type.id}
+
+    @rows = []
+    GizmoCategory.find(:all).sort_by{|gc|gc.description}.each do |gc|
+      @rows << gc
+      GizmoType.find(:all, :conditions => ["gizmo_category_id=?", gc.id]).sort_by{|gt|gt.description}.each do |gt|
+        @rows << gt
+      end
+    end
     @rows << :total
     @gizmo_data = {}
     @rows.each {|type| @gizmo_data[type] = Hash.new(0)}
     @gizmo_income_data = {}
+
+    @row_types = GizmoType.find(:all).sort_by{|type| type.description}
+    @row_types << "total flow"
+  end
+
+  def category_tuple(id)
+    [GizmoCategory, id]
   end
 
   def context_tuple(id)
@@ -61,17 +78,27 @@ class ReportsController < ApplicationController
 
   def add_gizmo_to_data(summation, data)
     type_id, context_id, disbursement_type_id, count = summation.map {|x| x.to_i}
+    type = GizmoType.find(type_id)
     count *= plus_or_minus(context_id)
     if context_id == GizmoContext.disbursement.id
       tuple = disbursement_tuple(disbursement_type_id)
-      data[type_id][tuple] += count
+      data[type][tuple] += count
       data[:total][tuple] += count
     end
     tuple = context_tuple(context_id)
-    data[type_id][tuple] += count
+    data[type][tuple] += count
     data[:total][tuple] += count
-    data[type_id][[nil, :total]] += count
+    data[type][[nil, :total]] += count
     data[:total][[nil, :total]] += count
+  end
+
+  def add_gizmo_category_to_data(summation, data)
+    category_id, context_id, count = summation.map {|x| x.to_i}
+    category = GizmoCategory.find(category_id)
+    count *= plus_or_minus(context_id)
+    tuple = context_tuple(context_id)
+    data[category][tuple] += count
+    data[category][[nil, :total]] += count
   end
 
   #####################

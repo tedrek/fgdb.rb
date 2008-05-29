@@ -3,7 +3,8 @@ class GizmoEvent < ActiveRecord::Base
   belongs_to :sale
   belongs_to :disbursement
   belongs_to :recycling
-  belongs_to  :gizmo_type
+  belongs_to :gizmo_type
+  belongs_to :gizmo_category
   belongs_to  :gizmo_context
   has_many :gizmo_events_gizmo_typeattrs, :dependent => :destroy
 
@@ -21,10 +22,22 @@ class GizmoEvent < ActiveRecord::Base
                 d.disbursement_type_id,
                 sum(gizmo_events.gizmo_count)
          FROM gizmo_events
-         LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
+              LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY 2,1,3"
       )
+    end
+
+    def category_totals(conditions)
+      connection.execute(
+        "SELECT gizmo_types.gizmo_category_id,
+                gizmo_events.gizmo_context_id,
+                sum(gizmo_events.gizmo_count)
+         FROM gizmo_events
+              LEFT JOIN gizmo_types ON gizmo_types.id=gizmo_events.gizmo_type_id
+         WHERE #{sanitize_sql_for_conditions(conditions)}
+         GROUP BY 1,2"
+                         )
     end
 
     def income_totals(conditions)

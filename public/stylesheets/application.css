@@ -442,8 +442,12 @@ font-size: 18px;
 background-color: #F0EFEF;
 }
 
+.report .type-row { 
+  background-color: #FF9900
+}
+
 .report .disbursement-breakout-column { 
-  background-color: #0099FF
+  background-color: #0099FF;
 }
 /* ===================================
          money-related stuff */
