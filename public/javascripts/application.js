@@ -107,6 +107,16 @@ function updateTotals(context, formId) {
   new Ajax.Request('/' + context + 's/update_totals?' + value, {asynchronous:true, evalScripts:true});
 }
 
+function set_display_mode(type, mode) {
+  $$(type).each(function(elem) {
+                  if (mode == 0) {
+                    elem.hide();
+                  } else {
+                    elem.show();
+                  }
+                });
+}
+
 function contact_form_org_toggle() {
   if( $('contact_is_organization').checked ) {
     var hide_type = '.person';
