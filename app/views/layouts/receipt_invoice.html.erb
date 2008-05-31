@@ -4,13 +4,10 @@
   <%= stylesheet_link_tag 'application', :media => 'all' %>
 </head>
 <body>
-<table>
+<table  width="75%">
 <tr>
-  <td><img src="/images/freegeeklogo.png" alt="freegeeklogo.png" /></td>
-  <td><img src="<%= Default['address image'] %>" alt="<%= Default['contact info'] %>" /></td>
-  <td>
-    <%= @txn.contact_information.join('<br />') %>
-  </td>
+  <td colspan="3"><%= render :partial=>"helpers/letter_head",
+                             :locals=> {:contact_information => @txn.contact_information}%></td>
 </tr>
 <tr>
   <td colspan="3"><hr /></td>

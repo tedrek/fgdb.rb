@@ -2,6 +2,8 @@ span.print_only {
   display: inline;
 }
 
+span.no_print { display: none; }
+
 div#logo, div#sidebar, div#login_box, td.actions, div.create { 
   display: none;
 }

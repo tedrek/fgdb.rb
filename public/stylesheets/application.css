@@ -524,3 +524,12 @@ margin:0;
 padding:0;
 }
 
+.letter_head .logos { 
+  float: left;
+}
+.letter_head img { 
+  vertical-align: top;
+}
+.letter_head .contact-info { 
+  float: left;
+}
