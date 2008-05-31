@@ -218,6 +218,9 @@ class Donation < ActiveRecord::Base
   end
 
   def set_occurred_at_on_gizmo_events
+    if self.created_at == nil
+      self.created_at = Time.now
+    end
     self.gizmo_events.each {|event| event.occurred_at = self.created_at}
   end
 end

@@ -26,6 +26,17 @@ class SaleTest < Test::Unit::TestCase
   Test::Unit::TestCase.integer_math_test(self, "Sale", "reported_amount_due")
   Test::Unit::TestCase.integer_math_test(self, "Sale", "reported_discount_amount")
 
+  def test_that_gizmo_events_will_have_occurred_at
+    sale = Sale.new(WITH_CONTACT_INFO)
+    sale.payments = [pay_a_dollar()]
+    sale.gizmo_events = [GizmoEvent.new(sold_system_event)]
+    assert sale.save
+    sale = Sale.find(sale.id)
+    event = sale.gizmo_events[0]
+    assert_not_nil event.occurred_at
+    assert_equal sale.created_at, event.occurred_at
+  end
+  
   def test_that_gizmo_events_occurred_when_sold
     sale = Sale.new(WITH_CONTACT_INFO)
     sale.payments = [pay_a_dollar()]
