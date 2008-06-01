@@ -1,6 +1,6 @@
-class ReportsController < ApplicationController
+class SpecSheetsController < ApplicationController
   include XmlHelper
-  MINIMUM_COMPAT_VERSION=1
+  MINIMUM_COMPAT_VERSION=2
 
   def check_compat
     if !params[:version] || params[:version].empty? || params[:version].to_i < MINIMUM_COMPAT_VERSION  
@@ -12,7 +12,7 @@ class ReportsController < ApplicationController
 
   def dump
     response.headers['content-type'] = "application/xml; charset=utf-8"
-    render :text => Report.find(params[:id]).lshw_output
+    render :text => SpecSheet.find(params[:id]).lshw_output
   end
 
   def xml_index
@@ -24,7 +24,7 @@ class ReportsController < ApplicationController
   end
 
   def list_all
-    @reports = Report.find(:all, :order => "id")
+    @reports = SpecSheet.find(:all, :order => "id")
     if @reports.length == 0
       redirect_to(:action => "index", :error => "There are no reports")
       return
@@ -32,7 +32,7 @@ class ReportsController < ApplicationController
   end
 
   def list_flagged
-    @reports = Report.find_all_by_flag(true, :order => "id")
+    @reports = SpecSheet.find_all_by_flag(true, :order => "id")
     if @reports.length == 0
       redirect_to(:action => "index", :error => "There are no flagged reports")
       return
@@ -48,7 +48,7 @@ class ReportsController < ApplicationController
       redirect_to(:action => "index", :error => "That contact does not exist") 
       return
     end
-    @reports = Report.find_all_by_contact_id(params[:id], :order => "id")
+    @reports = SpecSheet.find_all_by_contact_id(params[:id], :order => "id")
     if @reports.length == 0
       redirect_to(:action => "index", :error => "That contact has no reports") 
       return
@@ -64,7 +64,7 @@ class ReportsController < ApplicationController
       redirect_to(:action => "index", :error => "That system does not exist")
       return
     end
-    @reports = Report.find_all_by_system_id(params[:id], :order => "id")
+    @reports = SpecSheet.find_all_by_system_id(params[:id], :order => "id")
     if @reports.length == 0
       redirect_to(:action => "index", :error => "That system has no reports") 
       return
@@ -80,16 +80,16 @@ class ReportsController < ApplicationController
       redirect_to(:action => "index", :error => "That report does not exist")
       return
     end
-    @reports = Report.find_all_by_id(params[:id], :order => "id")
+    @reports = SpecSheet.find_all_by_id(params[:id], :order => "id")
   end
 
   def xml_list_for_system
-    @reports = Report.find_all_by_system_id(params[:id], :order => "id")
+    @reports = SpecSheet.find_all_by_system_id(params[:id], :order => "id")
     render :xml => @reports
   end
 
   def show
-    @report = Report.find(params[:id])
+    @report = SpecSheet.find(params[:id])
     output=@report.lshw_output #only call db once
     if !(output) || output == ""
       redirect_to(:action => "index", :error => "There is no lshw output for that report!")
@@ -113,17 +113,17 @@ class ReportsController < ApplicationController
   end
 
   def xml_show
-    @report = Report.find(params[:id])
+    @report = SpecSheet.find(params[:id])
     render :xml => @report
   end
 
   def new
-    @report = Report.new
+    @report = SpecSheet.new
     @error=params[:error]
   end
 
   def edit
-    @report = Report.find(params[:id])
+    @report = SpecSheet.find(params[:id])
   end
 
   def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
@@ -141,7 +141,7 @@ class ReportsController < ApplicationController
     params[:report][:lshw_output] = output
     params[:report][:old_id]=params[:report][:system_id]
     params[:report][:system_id] = 0
-    @report = Report.new(params[:report])
+    @report = SpecSheet.new(params[:report])
     if @report.save
       redirect_to(:action=>redirect_where_on_success, :id=>@report.id)
     else
@@ -156,7 +156,7 @@ class ReportsController < ApplicationController
   def xml_create
     params[:report]={
       :contact_id => params[:contact_id],
-      :role_id => params[:role_id],
+      :action_id => params[:action_id],
       :type_id => params[:type_id],
       :system_id => params[:system_id],
       :notes => params[:notes],
@@ -167,7 +167,7 @@ class ReportsController < ApplicationController
   end
 
   def update
-    @report = Report.find(params[:id])
+    @report = SpecSheet.find(params[:id])
 
     if @report.update_attributes(params[:report])
       redirect_to(:action=>"show", :id=>@report.id)
@@ -186,7 +186,7 @@ class ReportsController < ApplicationController
   end
 
   def method_missing(symbol, *args)
-    if (result = symbol.to_s.match(/(roles|types)_(new|edit|index|create|update|xml_index)/))
+    if (result = symbol.to_s.match(/(actions|types)_(new|edit|index|create|update|xml_index)/))
       @property_type=result[1]
       @action=result[2]
       eval "self." + "properties_" + @action

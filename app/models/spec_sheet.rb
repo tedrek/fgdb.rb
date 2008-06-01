@@ -1,10 +1,10 @@
-class Report < ActiveRecord::Base
+class SpecSheet < ActiveRecord::Base
   include XmlHelper
 
   attr_readonly :lshw_output
 
   belongs_to :contact
-  belongs_to :role
+  belongs_to :action
   belongs_to :system
   belongs_to :type
 

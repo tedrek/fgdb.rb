@@ -9,7 +9,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 4) do
+ActiveRecord::Schema.define(:version => 5) do
+
+  create_table "actions", :force => true do |t|
+    t.string   "name"
+    t.integer  "lock_version", :default => 0, :null => false
+    t.datetime "updated_at"
+    t.datetime "created_at"
+    t.integer  "created_by",   :default => 1, :null => false
+    t.integer  "updated_by",   :default => 1, :null => false
+  end
+
+  add_index "actions", ["name"], :name => "roles_name_index"
 
   create_table "contacts", :force => true do |t|
     t.boolean  "is_organization",                  :default => false
@@ -33,10 +44,10 @@ ActiveRecord::Schema.define(:version => 4) do
     t.integer  "updated_by"
   end
 
-  create_table "reports", :force => true do |t|
+  create_table "spec_sheets", :force => true do |t|
     t.integer  "system_id"
     t.integer  "contact_id"
-    t.integer  "role_id"
+    t.integer  "action_id"
     t.text     "lshw_output"
     t.integer  "lock_version", :default => 0, :null => false
     t.datetime "updated_at"
@@ -50,21 +61,10 @@ ActiveRecord::Schema.define(:version => 4) do
     t.boolean  "flag"
   end
 
-  add_index "reports", ["contact_id"], :name => "reports_contact_id_index"
-  add_index "reports", ["role_id"], :name => "reports_role_id_index"
-  add_index "reports", ["system_id"], :name => "reports_system_id_index"
-  add_index "reports", ["type_id"], :name => "reports_type_id_index"
-
-  create_table "roles", :force => true do |t|
-    t.string   "name"
-    t.integer  "lock_version", :default => 0, :null => false
-    t.datetime "updated_at"
-    t.datetime "created_at"
-    t.integer  "created_by",   :default => 1, :null => false
-    t.integer  "updated_by",   :default => 1, :null => false
-  end
-
-  add_index "roles", ["name"], :name => "roles_name_index"
+  add_index "spec_sheets", ["contact_id"], :name => "reports_contact_id_index"
+  add_index "spec_sheets", ["action_id"], :name => "reports_role_id_index"
+  add_index "spec_sheets", ["system_id"], :name => "reports_system_id_index"
+  add_index "spec_sheets", ["type_id"], :name => "reports_type_id_index"
 
   create_table "systems", :force => true do |t|
     t.string   "system_vendor"
