@@ -5,7 +5,7 @@ class WorkShiftsController < ApplicationController
   end
 
   def staffsched
-params[:filter_criteria] = {:end_date => (Date.today + 14).to_s, :start_date => Date.today.to_s, :presentation_mode => "Preview"}
+params[:filter_criteria] = {:end_date => (Date.today + 60).to_s, :start_date => Date.today.to_s, :presentation_mode => "Preview"}
     list
     render :action => 'list'
 #http://bullwinkle/work_shifts/list?filter_criteria[end_date]=2008-05-06&filter_criteria[start_date]=2008-05-06&filter_criteria[presentation_mode]=Preview
