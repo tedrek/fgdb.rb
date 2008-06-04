@@ -7,15 +7,15 @@
 </span>
 
 <div class="hours_detail_report">
-  <table>
+  <table class="list">
     <tr>
       <th>date</th>
       <th>hours</th>
       <th>task</th>
       <th>community service</th>
     </tr>
-  <% for t in @tasks %>
-    <tr>
+  <% line=0; for t in @tasks %>
+    <tr <%= (line+=1) % 2 == 0 ? 'class="even"' : ''%>>
       <td><%= t.date_performed %></td>
       <td><%= t.duration %></td>
       <td><%= t.volunteer_task_type && t.volunteer_task_type.description %></td>
