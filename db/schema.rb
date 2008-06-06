@@ -49,15 +49,15 @@ ActiveRecord::Schema.define(:version => 5) do
     t.integer  "contact_id"
     t.integer  "action_id"
     t.text     "lshw_output"
-    t.integer  "lock_version", :default => 0, :null => false
+    t.integer  "lock_version",                :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",   :default => 1, :null => false
-    t.integer  "updated_by",   :default => 1, :null => false
+    t.integer  "created_by",                  :default => 1, :null => false
+    t.integer  "updated_by",                  :default => 1, :null => false
     t.integer  "old_id"
     t.text     "notes"
     t.integer  "type_id"
-    t.string   "os"
+    t.string   "os",           :limit => nil
     t.boolean  "flag"
   end
 
@@ -67,20 +67,20 @@ ActiveRecord::Schema.define(:version => 5) do
   add_index "spec_sheets", ["type_id"], :name => "reports_type_id_index"
 
   create_table "systems", :force => true do |t|
-    t.string   "system_vendor"
-    t.string   "system_model"
-    t.string   "system_serial_number"
-    t.integer  "lock_version",         :default => 0, :null => false
+    t.string   "system_vendor",        :limit => nil
+    t.string   "system_model",         :limit => nil
+    t.string   "system_serial_number", :limit => nil
+    t.integer  "lock_version",                        :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",           :default => 1, :null => false
-    t.integer  "updated_by",           :default => 1, :null => false
-    t.string   "mobo_vendor"
-    t.string   "mobo_model"
-    t.string   "mobo_serial_number"
-    t.string   "serial_number"
-    t.string   "vendor"
-    t.string   "model"
+    t.integer  "created_by",                          :default => 1, :null => false
+    t.integer  "updated_by",                          :default => 1, :null => false
+    t.string   "mobo_vendor",          :limit => nil
+    t.string   "mobo_model",           :limit => nil
+    t.string   "mobo_serial_number",   :limit => nil
+    t.string   "serial_number",        :limit => nil
+    t.string   "vendor",               :limit => nil
+    t.string   "model",                :limit => nil
   end
 
   add_index "systems", ["system_model"], :name => "systems_model_index"
