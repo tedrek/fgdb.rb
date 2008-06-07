@@ -19,7 +19,7 @@ but should not be used by typical users.
 
 == Install
 
-we made this on debian etch and lenny systems. alteration may be needed on other distros.
+we made this on debian etch systems. alteration may be needed on other distros.
 
 To get the fgdb.rb source:
 
@@ -46,7 +46,7 @@ you need to create and configure the databases:
    ::: edit config/database.yml-example to match and rename
    ::: it (drop '-example')
  $> export RAILS_ENV=production
- $> rake db:migrate
+ $> rake db:schema:load
 
 choose one of the following: skeletal metadata, or full test data:
 
