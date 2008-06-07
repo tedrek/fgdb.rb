@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 28) do
+ActiveRecord::Schema.define(:version => 32) do
 
   create_table "community_service_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -155,6 +155,10 @@ ActiveRecord::Schema.define(:version => 28) do
     t.datetime "created_at"
   end
 
+  create_table "gizmo_categories", :force => true do |t|
+    t.string "description"
+  end
+
   create_table "gizmo_contexts", :force => true do |t|
     t.string   "name",         :limit => 100
     t.integer  "lock_version",                :default => 0, :null => false
@@ -169,6 +173,8 @@ ActiveRecord::Schema.define(:version => 28) do
     t.datetime "updated_at"
     t.datetime "created_at"
   end
+
+  add_index "gizmo_contexts_gizmo_typeattrs", ["gizmo_context_id", "gizmo_typeattr_id"], :name => "gizmo_contexts_gizmo_typeattrs_uk", :unique => true
 
   create_table "gizmo_contexts_gizmo_types", :id => false, :force => true do |t|
     t.integer  "gizmo_context_id",                :null => false
@@ -229,6 +235,7 @@ ActiveRecord::Schema.define(:version => 28) do
     t.datetime "created_at"
     t.integer  "required_fee_cents"
     t.integer  "suggested_fee_cents"
+    t.integer  "gizmo_category_id"
   end
 
   create_table "payment_methods", :force => true do |t|
@@ -395,6 +402,7 @@ ActiveRecord::Schema.define(:version => 28) do
   add_foreign_key "gizmo_typeattrs", ["gizmo_attr_id"], "gizmo_attrs", ["id"], :on_delete => :cascade, :name => "gizmo_typeattrs_gizmo_attrs_fk"
 
   add_foreign_key "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :on_delete => :set_null, :name => "gizmo_types_parent_fk"
+  add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
 
   add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fk"
   add_foreign_key "payments", ["payment_method_id"], "payment_methods", ["id"], :on_delete => :restrict, :name => "payments_payment_methods_fk"
