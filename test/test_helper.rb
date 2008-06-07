@@ -21,7 +21,7 @@ class Test::Unit::TestCase
      %W[defaults],
      %W[gizmo_contexts gizmo_types gizmo_attrs gizmo_typeattrs
         gizmo_contexts_gizmo_types gizmo_events],
-     #     %W[gizmo_contexts_gizmo_typeattrs  gizmo_events_gizmo_typeattrs],
+     #%W[gizmo_contexts_gizmo_typeattrs  gizmo_events_gizmo_typeattrs],
      %W[contacts contact_types contact_types_contacts
         contact_method_types contact_methods],
      %W[users roles roles_users],
@@ -117,11 +117,19 @@ class Test::Unit::TestCase
     }
   end
 
-  def system_event
+  def donated_system_event
     {
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 1,
       :gizmo_context => GizmoContext.donation
+    }
+  end
+
+  def sold_system_event
+    {
+      :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
+      :gizmo_count => 1,
+      :gizmo_context => GizmoContext.sale
     }
   end
 

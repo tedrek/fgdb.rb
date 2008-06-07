@@ -8,7 +8,7 @@ class DonationTest < Test::Unit::TestCase
   load_all_fixtures
 
   def with_gizmo
-    NO_INFO.merge({:gizmo_events => [GizmoEvent.new(system_event)]})
+    NO_INFO.merge({:gizmo_events => [GizmoEvent.new(donated_system_event)]})
   end
 
   def with_both

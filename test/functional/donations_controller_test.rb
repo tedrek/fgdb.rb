@@ -5,7 +5,7 @@ class DonationsControllerTest < ActionController::TestCase
 
   def create_a_new_donation
     d = Donation.new({:contact_type => 'anonymous', :postal_code => '12435'})
-    d.gizmo_events = [GizmoEvent.new(system_event)]
+    d.gizmo_events = [GizmoEvent.new(donated_system_event)]
     assert d.save
     return d
   end

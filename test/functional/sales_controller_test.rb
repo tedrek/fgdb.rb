@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class SalesControllerTest < ActionController::TestCase
   load_all_fixtures()
-
+  #fixtures(:gizmo_contexts_gizmo_typeattrs)
   def cash_payment(amt)
     pmt = Payment.new
     pmt.amount = amt
@@ -13,7 +13,7 @@ class SalesControllerTest < ActionController::TestCase
   def create_a_new_sale
     s = Sale.new({:contact_type => 'named', :created_by => 1})
     s.contact = Contact.find(:first)
-    s.gizmo_events = [GizmoEvent.new(system_event)]
+    s.gizmo_events = [GizmoEvent.new(sold_system_event)]
     s.gizmo_events[0].unit_price = "20"
     s.payments = [cash_payment("20")]
     s.save
@@ -42,6 +42,8 @@ class SalesControllerTest < ActionController::TestCase
   def test_specific_authorized_actions_succeed
     login_as :quentin
     sale = create_a_new_sale
+    sale = Sale.find(sale.id)
+    assert_equal sale.gizmo_events[0].unit_price, "20.00"
     get :index
     get :destroy, :id => sale.id, :scaffold_id => 'sales'
     assert_raises(ActiveRecord::RecordNotFound) { Sale.find(sale.id) }

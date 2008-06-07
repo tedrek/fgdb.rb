@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 31) do
+ActiveRecord::Schema.define(:version => 32) do
 
   create_table "community_service_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -173,6 +173,8 @@ ActiveRecord::Schema.define(:version => 31) do
     t.datetime "updated_at"
     t.datetime "created_at"
   end
+
+  add_index "gizmo_contexts_gizmo_typeattrs", ["gizmo_context_id", "gizmo_typeattr_id"], :name => "gizmo_contexts_gizmo_typeattrs_uk", :unique => true
 
   create_table "gizmo_contexts_gizmo_types", :id => false, :force => true do |t|
     t.integer  "gizmo_context_id",                :null => false
