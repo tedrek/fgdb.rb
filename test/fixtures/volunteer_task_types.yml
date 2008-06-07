@@ -1,298 +1,298 @@
---- 
-volunteer_task_types_024: 
-  updated_at: 2006-12-30 18:23:03
-  instantiable: t
-  lock_version: "1"
-  id: "50"
-  hours_multiplier: "1.000"
-  description: support
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_013: 
-  updated_at: 2006-12-30 08:40:54.425307
-  instantiable: t
-  lock_version: "0"
-  id: "47"
-  hours_multiplier: "1.000"
-  description: repair
-  parent_id: "24"
-  created_at: 2006-12-30 08:40:54.425307
-volunteer_task_types_002: 
-  updated_at: 2007-01-05 16:10:33
-  instantiable: t
-  lock_version: "0"
-  id: "53"
-  hours_multiplier: "1.000"
-  description: macintosh
-  parent_id: "24"
-  created_at: 2007-01-05 16:10:33
-volunteer_task_types_025: 
-  updated_at: 2006-12-30 18:27:40
-  instantiable: t
-  lock_version: "2"
-  id: "39"
-  hours_multiplier: "1.000"
-  description: enterprise
-  parent_id: "24"
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_014: 
-  updated_at: 2006-12-13 11:04:23
-  instantiable: t
-  lock_version: "0"
-  id: "30"
-  hours_multiplier: "1.000"
-  description: teaching
-  parent_id: 
-  created_at: 2006-12-13 11:04:23
-volunteer_task_types_003: 
+---
+volunteer_task_types_024:
   updated_at: 2006-12-30 18:22:14
   instantiable: t
   lock_version: "1"
   id: "40"
-  hours_multiplier: "1.000"
+  hours_multiplier: 1.0
   description: front desk
-  parent_id: 
+  parent_id:
   created_at: 2006-12-30 08:40:54
-volunteer_task_types_026: 
-  updated_at: 2006-12-30 18:22:08
-  instantiable: t
-  lock_version: "1"
-  id: "35"
-  hours_multiplier: "1.000"
-  description: computers for kids
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_015: 
-  updated_at: 2006-12-30 18:22:59
-  instantiable: t
-  lock_version: "1"
-  id: "45"
-  hours_multiplier: "1.000"
-  description: printers
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_004: 
-  updated_at: 2006-12-13 10:49:54
+volunteer_task_types_013:
+  updated_at: 2007-01-05 16:10:33
   instantiable: t
   lock_version: "0"
-  id: "28"
-  hours_multiplier: "1.000"
-  description: receiving
-  parent_id: "27"
-  created_at: 2006-12-13 10:49:54
-volunteer_task_types_027: 
-  updated_at: 2006-12-30 18:23:04
-  instantiable: t
-  lock_version: "1"
-  id: "51"
-  hours_multiplier: "1.000"
-  description: system administration
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_016: 
-  updated_at: 2006-12-30 08:40:54.441757
-  instantiable: t
-  lock_version: "0"
-  id: "49"
-  hours_multiplier: "1.000"
-  description: sorting
+  id: "53"
+  hours_multiplier: 1.0
+  description: macintosh
   parent_id: "24"
-  created_at: 2006-12-30 08:40:54.441757
-volunteer_task_types_005: 
-  updated_at: 2006-12-13 10:48:21
-  instantiable: t
-  lock_version: "0"
-  id: "25"
-  hours_multiplier: "1.000"
-  description: evaluation
-  parent_id: "24"
-  created_at: 2006-12-13 10:48:21
-volunteer_task_types_028: 
-  updated_at: 2006-12-30 18:27:45
-  instantiable: t
-  lock_version: "2"
-  id: "41"
-  hours_multiplier: "1.000"
-  description: laptops
-  parent_id: "24"
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_017: 
-  updated_at: 2006-12-13 11:04:35
-  instantiable: t
-  lock_version: "0"
-  id: "31"
-  hours_multiplier: "4.000"
-  description: massage
-  parent_id: 
-  created_at: 2006-12-13 11:04:35
-volunteer_task_types_006: 
-  updated_at: 2006-12-30 18:22:55
-  instantiable: t
-  lock_version: "1"
-  id: "42"
-  hours_multiplier: "1.000"
-  description: misc
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_029: 
-  updated_at: 2006-12-30 18:22:10
-  instantiable: t
-  lock_version: "1"
-  id: "36"
-  hours_multiplier: "1.000"
-  description: CREAM
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_018: 
-  updated_at: 2006-12-30 18:23:00
-  instantiable: t
-  lock_version: "1"
-  id: "46"
-  hours_multiplier: "1.000"
-  description: programming
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_007: 
-  updated_at: 2006-12-13 10:50:04
-  instantiable: t
-  lock_version: "0"
-  id: "29"
-  hours_multiplier: "1.000"
-  description: recycling
-  parent_id: "27"
-  created_at: 2006-12-13 10:50:04
-volunteer_task_types_030: 
-  updated_at: 2006-12-13 10:47:39
-  instantiable: f
-  lock_version: "0"
-  id: "24"
-  hours_multiplier: "1.000"
-  description: build
-  parent_id: 
-  created_at: 2006-12-13 10:47:39
-volunteer_task_types_019: 
-  updated_at: 2006-12-30 18:27:25
-  instantiable: t
-  lock_version: "2"
-  id: "34"
-  hours_multiplier: "1.000"
-  description: advanced testing
-  parent_id: "24"
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_008: 
-  updated_at: 2006-12-13 10:48:52
-  instantiable: t
-  lock_version: "0"
-  id: "26"
-  hours_multiplier: "1.000"
-  description: build, assembly
-  parent_id: "24"
-  created_at: 2006-12-13 10:48:52
-volunteer_task_types_031: 
-  updated_at: 2006-12-13 10:49:27
-  instantiable: t
-  lock_version: "1"
-  id: "23"
-  hours_multiplier: "2.000"
-  description: cleaning
-  parent_id: "27"
-  created_at: 2006-12-13 10:47:07
-volunteer_task_types_020: 
-  updated_at: 2006-12-13 21:14:14
-  instantiable: t
-  lock_version: "0"
-  id: "32"
-  hours_multiplier: "0.000"
-  description: slacking
-  parent_id: 
-  created_at: 2006-12-13 21:14:14
-volunteer_task_types_009: 
-  updated_at: 2006-12-30 18:22:56
-  instantiable: t
-  lock_version: "1"
-  id: "43"
-  hours_multiplier: "1.000"
-  description: orientation
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_032: 
-  updated_at: 2006-12-30 18:28:28
-  instantiable: t
-  lock_version: "1"
-  id: "52"
-  hours_multiplier: "1.000"
-  description: testing
-  parent_id: "27"
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_021: 
-  updated_at: 2006-12-30 18:23:02
-  instantiable: t
-  lock_version: "1"
-  id: "48"
-  hours_multiplier: "1.000"
-  description: sales
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_010: 
-  updated_at: 2006-12-13 11:00:21
-  instantiable: t
-  lock_version: "2"
-  id: "21"
-  hours_multiplier: "1.000"
-  description: quality control
-  parent_id: "24"
-  created_at: 2006-12-13 10:46:44
-volunteer_task_types_033: 
-  updated_at: 2006-12-30 18:22:11
-  instantiable: t
-  lock_version: "1"
-  id: "38"
-  hours_multiplier: "1.000"
-  description: education
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_022: 
-  updated_at: 2006-12-30 18:27:34
-  instantiable: t
-  lock_version: "1"
-  id: "37"
-  hours_multiplier: "1.000"
-  description: data entry
-  parent_id: "27"
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_011: 
-  updated_at: 2006-12-13 10:49:16
-  instantiable: f
-  lock_version: "0"
-  id: "27"
-  hours_multiplier: "1.000"
-  description: adoption
-  parent_id: 
-  created_at: 2006-12-13 10:49:16
-volunteer_task_types_023: 
-  updated_at: 2006-12-30 18:21:20
-  instantiable: t
-  lock_version: "1"
-  id: "33"
-  hours_multiplier: "1.000"
-  description: admin
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_012: 
-  updated_at: 2006-12-30 18:22:58
-  instantiable: t
-  lock_version: "1"
-  id: "44"
-  hours_multiplier: "1.000"
-  description: outreach
-  parent_id: 
-  created_at: 2006-12-30 08:40:54
-volunteer_task_types_001: 
+  created_at: 2007-01-05 16:10:33
+volunteer_task_types_002:
   updated_at: 2006-12-13 10:49:34
   instantiable: t
   lock_version: "1"
   id: "22"
-  hours_multiplier: "2.000"
+  hours_multiplier: 2.0
   description: monitors
   parent_id: "27"
   created_at: 2006-12-13 10:46:55
+volunteer_task_types_025:
+  updated_at: 2006-12-30 18:22:55
+  instantiable: t
+  lock_version: "1"
+  id: "42"
+  hours_multiplier: 1.0
+  description: misc
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_014:
+  updated_at: 2006-12-13 10:48:21
+  instantiable: t
+  lock_version: "0"
+  id: "25"
+  hours_multiplier: 1.0
+  description: evaluation
+  parent_id: "24"
+  created_at: 2006-12-13 10:48:21
+volunteer_task_types_003:
+  updated_at: 2006-12-13 10:49:54
+  instantiable: t
+  lock_version: "0"
+  id: "28"
+  hours_multiplier: 1.0
+  description: receiving
+  parent_id: "27"
+  created_at: 2006-12-13 10:49:54
+volunteer_task_types_026:
+  updated_at: 2006-12-30 18:22:56
+  instantiable: t
+  lock_version: "1"
+  id: "43"
+  hours_multiplier: 1.0
+  description: orientation
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_015:
+  updated_at: 2006-12-13 10:48:52
+  instantiable: t
+  lock_version: "0"
+  id: "26"
+  hours_multiplier: 1.0
+  description: build, assembly
+  parent_id: "24"
+  created_at: 2006-12-13 10:48:52
+volunteer_task_types_004:
+  updated_at: 2006-12-13 10:50:04
+  instantiable: t
+  lock_version: "0"
+  id: "29"
+  hours_multiplier: 1.0
+  description: recycling
+  parent_id: "27"
+  created_at: 2006-12-13 10:50:04
+volunteer_task_types_027:
+  updated_at: 2006-12-30 18:22:58
+  instantiable: t
+  lock_version: "1"
+  id: "44"
+  hours_multiplier: 1.0
+  description: outreach
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_016:
+  updated_at: 2006-12-13 10:49:16
+  instantiable: f
+  lock_version: "0"
+  id: "27"
+  hours_multiplier: 1.0
+  description: adoption
+  parent_id:
+  created_at: 2006-12-13 10:49:16
+volunteer_task_types_005:
+  updated_at: 2006-12-13 11:00:21
+  instantiable: t
+  lock_version: "2"
+  id: "21"
+  hours_multiplier: 1.0
+  description: quality control
+  parent_id: "24"
+  created_at: 2006-12-13 10:46:44
+volunteer_task_types_028:
+  updated_at: 2006-12-30 18:22:59
+  instantiable: t
+  lock_version: "1"
+  id: "45"
+  hours_multiplier: 1.0
+  description: printers
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_017:
+  updated_at: 2006-12-13 11:04:23
+  instantiable: t
+  lock_version: "0"
+  id: "30"
+  hours_multiplier: 1.0
+  description: teaching
+  parent_id:
+  created_at: 2006-12-13 11:04:23
+volunteer_task_types_006:
+  updated_at: 2006-12-30 08:40:54.425307
+  instantiable: t
+  lock_version: "0"
+  id: "47"
+  hours_multiplier: 1.0
+  description: repair
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54.425307
+volunteer_task_types_029:
+  updated_at: 2006-12-30 18:23:00
+  instantiable: t
+  lock_version: "1"
+  id: "46"
+  hours_multiplier: 1.0
+  description: programming
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_018:
+  updated_at: 2006-12-13 11:04:35
+  instantiable: t
+  lock_version: "0"
+  id: "31"
+  hours_multiplier: 4.0
+  description: massage
+  parent_id:
+  created_at: 2006-12-13 11:04:35
+volunteer_task_types_007:
+  updated_at: 2006-12-30 08:40:54.441757
+  instantiable: t
+  lock_version: "0"
+  id: "49"
+  hours_multiplier: 1.0
+  description: sorting
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54.441757
+volunteer_task_types_030:
+  updated_at: 2006-12-30 18:23:02
+  instantiable: t
+  lock_version: "1"
+  id: "48"
+  hours_multiplier: 1.0
+  description: sales
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_019:
+  updated_at: 2006-12-13 21:14:14
+  instantiable: t
+  lock_version: "0"
+  id: "32"
+  hours_multiplier: 0.0
+  description: slacking
+  parent_id:
+  created_at: 2006-12-13 21:14:14
+volunteer_task_types_008:
+  updated_at: 2006-12-30 18:27:25
+  instantiable: t
+  lock_version: "2"
+  id: "34"
+  hours_multiplier: 1.0
+  description: advanced testing
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_031:
+  updated_at: 2006-12-30 18:23:03
+  instantiable: t
+  lock_version: "1"
+  id: "50"
+  hours_multiplier: 1.0
+  description: support
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_020:
+  updated_at: 2006-12-30 18:21:20
+  instantiable: t
+  lock_version: "1"
+  id: "33"
+  hours_multiplier: 1.0
+  description: admin
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_009:
+  updated_at: 2006-12-30 18:27:34
+  instantiable: t
+  lock_version: "1"
+  id: "37"
+  hours_multiplier: 1.0
+  description: data entry
+  parent_id: "27"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_032:
+  updated_at: 2006-12-30 18:23:04
+  instantiable: t
+  lock_version: "1"
+  id: "51"
+  hours_multiplier: 1.0
+  description: system administration
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_021:
+  updated_at: 2006-12-30 18:22:08
+  instantiable: t
+  lock_version: "1"
+  id: "35"
+  hours_multiplier: 1.0
+  description: computers for kids
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_010:
+  updated_at: 2006-12-30 18:27:40
+  instantiable: t
+  lock_version: "2"
+  id: "39"
+  hours_multiplier: 1.0
+  description: enterprise
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_033:
+  updated_at: 2006-12-13 10:47:39
+  instantiable: f
+  lock_version: "0"
+  id: "24"
+  hours_multiplier: 1.0
+  description: build
+  parent_id:
+  created_at: 2006-12-13 10:47:39
+volunteer_task_types_022:
+  updated_at: 2006-12-30 18:22:10
+  instantiable: t
+  lock_version: "1"
+  id: "36"
+  hours_multiplier: 1.0
+  description: CREAM
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_011:
+  updated_at: 2006-12-30 18:27:45
+  instantiable: t
+  lock_version: "2"
+  id: "41"
+  hours_multiplier: 1.0
+  description: laptops
+  parent_id: "24"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_023:
+  updated_at: 2006-12-30 18:22:11
+  instantiable: t
+  lock_version: "1"
+  id: "38"
+  hours_multiplier: 1.0
+  description: education
+  parent_id:
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_012:
+  updated_at: 2006-12-30 18:28:28
+  instantiable: t
+  lock_version: "1"
+  id: "52"
+  hours_multiplier: 1.0
+  description: testing
+  parent_id: "27"
+  created_at: 2006-12-30 08:40:54
+volunteer_task_types_001:
+  updated_at: 2006-12-13 10:49:27
+  instantiable: t
+  lock_version: "1"
+  id: "23"
+  hours_multiplier: 2.0
+  description: cleaning
+  parent_id: "27"
+  created_at: 2006-12-13 10:47:07

@@ -1,2 +1,31 @@
---- {}
-
+--- 
+disbursement_types_001: 
+  updated_at: 2007-04-04 17:26:09
+  lock_version: "0"
+  id: "1"
+  description: Adoption
+  created_at: 2007-04-04 17:25:00
+disbursement_types_002: 
+  updated_at: 2007-04-04 17:26:16
+  lock_version: "0"
+  id: "2"
+  description: Build
+  created_at: 2007-04-04 17:26:00
+disbursement_types_003: 
+  updated_at: 2007-04-04 17:26:28
+  lock_version: "0"
+  id: "3"
+  description: Hardware Grants
+  created_at: 2007-04-04 17:26:00
+disbursement_types_004: 
+  updated_at: 2007-04-04 17:26:37
+  lock_version: "0"
+  id: "4"
+  description: GAP
+  created_at: 2007-04-04 17:26:00
+disbursement_types_005: 
+  updated_at: 2007-04-04 17:26:45
+  lock_version: "0"
+  id: "5"
+  description: Staff
+  created_at: 2007-04-04 17:26:00

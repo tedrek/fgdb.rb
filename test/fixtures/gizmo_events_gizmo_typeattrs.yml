@@ -1,2 +1,133 @@
---- {}
-
+--- 
+gizmo_events_gizmo_typeattrs_010: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 22:26:33.167182
+  attr_val_text: ""
+  gizmo_typeattr_id: "27"
+  lock_version: "0"
+  attr_val_monetary_cents: 
+  gizmo_event_id: "2046371"
+  id: "3125294"
+  attr_val_boolean: 
+  created_at: 2008-03-15 22:26:33.167182
+gizmo_events_gizmo_typeattrs_011: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 22:30:08.250058
+  attr_val_text: ""
+  gizmo_typeattr_id: "24"
+  lock_version: "0"
+  attr_val_monetary_cents: 
+  gizmo_event_id: "2046372"
+  id: "3125297"
+  attr_val_boolean: 
+  created_at: 2008-03-15 22:30:08.250058
+gizmo_events_gizmo_typeattrs_012: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 22:30:08.254122
+  attr_val_text: ""
+  gizmo_typeattr_id: "27"
+  lock_version: "0"
+  attr_val_monetary_cents: 
+  gizmo_event_id: "2046372"
+  id: "3125298"
+  attr_val_boolean: 
+  created_at: 2008-03-15 22:30:08.254122
+gizmo_events_gizmo_typeattrs_001: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 13:58:24.375775
+  attr_val_text: 
+  gizmo_typeattr_id: "17"
+  lock_version: "0"
+  attr_val_monetary_cents: 
+  gizmo_event_id: "2046368"
+  id: "3125280"
+  attr_val_boolean: 
+  created_at: 2008-03-15 13:58:24.375775
+gizmo_events_gizmo_typeattrs_002: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 13:58:24.379569
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  attr_val_monetary_cents: "2000"
+  gizmo_event_id: "2046368"
+  id: "3125281"
+  attr_val_boolean: 
+  created_at: 2008-03-15 13:58:24.379569
+gizmo_events_gizmo_typeattrs_003: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 13:58:24.383368
+  attr_val_text: ""
+  gizmo_typeattr_id: "27"
+  lock_version: "0"
+  attr_val_monetary_cents: 
+  gizmo_event_id: "2046368"
+  id: "3125282"
+  attr_val_boolean: 
+  created_at: 2008-03-15 13:58:24.383368
+gizmo_events_gizmo_typeattrs_004: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 13:58:24.396531
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  attr_val_monetary_cents: "200"
+  gizmo_event_id: "2046369"
+  id: "3125283"
+  attr_val_boolean: 
+  created_at: 2008-03-15 13:58:24.396531
+gizmo_events_gizmo_typeattrs_005: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 13:58:24.400441
+  attr_val_text: ""
+  gizmo_typeattr_id: "27"
+  lock_version: "0"
+  attr_val_monetary_cents: 
+  gizmo_event_id: "2046369"
+  id: "3125284"
+  attr_val_boolean: 
+  created_at: 2008-03-15 13:58:24.400441
+gizmo_events_gizmo_typeattrs_006: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 22:25:48.710853
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  attr_val_monetary_cents: "700"
+  gizmo_event_id: "2046370"
+  id: "3125287"
+  attr_val_boolean: 
+  created_at: 2008-03-15 22:25:48.710853
+gizmo_events_gizmo_typeattrs_007: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 22:25:48.71479
+  attr_val_text: ""
+  gizmo_typeattr_id: "27"
+  lock_version: "0"
+  attr_val_monetary_cents: 
+  gizmo_event_id: "2046370"
+  id: "3125288"
+  attr_val_boolean: 
+  created_at: 2008-03-15 22:25:48.71479
+gizmo_events_gizmo_typeattrs_008: 
+  attr_val_integer: "13"
+  updated_at: 2008-03-15 22:26:33.159395
+  attr_val_text: 
+  gizmo_typeattr_id: "17"
+  lock_version: "0"
+  attr_val_monetary_cents: 
+  gizmo_event_id: "2046371"
+  id: "3125292"
+  attr_val_boolean: 
+  created_at: 2008-03-15 22:26:33.159395
+gizmo_events_gizmo_typeattrs_009: 
+  attr_val_integer: 
+  updated_at: 2008-03-15 22:26:33.163314
+  attr_val_text: 
+  gizmo_typeattr_id: "14"
+  lock_version: "0"
+  attr_val_monetary_cents: "1000"
+  gizmo_event_id: "2046371"
+  id: "3125293"
+  attr_val_boolean: 
+  created_at: 2008-03-15 22:26:33.163314
