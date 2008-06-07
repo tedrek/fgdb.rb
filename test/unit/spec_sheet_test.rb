@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ReportTest < ActiveSupport::TestCase
+class SpecSheetTest < ActiveSupport::TestCase
   def test_that_generics_are_detected(stop = 0)
     file = File.open(File.dirname(__FILE__) + "/../fixtures/1967.xml")
-    report = Report.new(:lshw_output => file.read)
+    report = SpecSheet.new(:lshw_output => file.read)
     file.close
     report.save
     assert_kind_of System, report.system
@@ -20,9 +20,9 @@ class ReportTest < ActiveSupport::TestCase
     file = File.open(File.dirname(__FILE__) + "/../fixtures/1967.xml")
     data = file.read
     file.close
-    report1 = Report.new(:lshw_output => data)
+    report1 = SpecSheet.new(:lshw_output => data)
     report1.save
-    report2 = Report.new(:lshw_output => data)
+    report2 = SpecSheet.new(:lshw_output => data)
     report2.save
     assert_nothing_raised {report1.system.id}
     assert_nothing_raised {report2.system.id}
@@ -42,13 +42,13 @@ class ReportTest < ActiveSupport::TestCase
     file4 = File.open(File.dirname(__FILE__) + "/../fixtures/1967_different_serial.xml")
     data4 = file4.read
     file4.close
-    report1 = Report.new(:lshw_output => data1)
+    report1 = SpecSheet.new(:lshw_output => data1)
     report1.save
-    report2 = Report.new(:lshw_output => data2)
+    report2 = SpecSheet.new(:lshw_output => data2)
     report2.save
-    report3 = Report.new(:lshw_output => data3)
+    report3 = SpecSheet.new(:lshw_output => data3)
     report3.save
-    report4 = Report.new(:lshw_output => data4)
+    report4 = SpecSheet.new(:lshw_output => data4)
     report4.save
     assert_equal report1.system.id, report3.system.id
     assert_not_equal report1.system.id, report2.system.id
@@ -60,7 +60,7 @@ class ReportTest < ActiveSupport::TestCase
 
   def test_good_but_not_containing_any_information_xml_files_succeed
     file = File.open(File.dirname(__FILE__) + "/../fixtures/good_but_bad.xml")
-    report = Report.new(:lshw_output => file.read)
+    report = SpecSheet.new(:lshw_output => file.read)
     file.close
     report.save
     assert_equal "(no serial number)", report.system.serial_number
