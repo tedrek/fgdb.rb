@@ -4,6 +4,6 @@ class AddConstraintGcgt < ActiveRecord::Migration
   end
 
   def self.down
-    User.connection.execute("ALTER TABLE gizmo_contexts_gizmo_typeattrs DROP CONSTRAINT gizmo_contexts_gizmo_typeattrs_uk")
+    User.connection.execute("DROP INDEX gizmo_contexts_gizmo_typeattrs_uk")
   end
 end
