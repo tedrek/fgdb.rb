@@ -1,269 +1,276 @@
----
-contacts_003:
-  city: Portland
-  updated_at: 2006-11-26 23:23:24-08
-  postal_code: "97212"
-  state_or_province: OR
-  sort_name: _FreeGeek
-  is_organization: t
-  lock_version: "5"
-  country: United States
-  notes: ""
-  extra_address: ""
-  created_by: "1"
-  id: "4"
-  organization: FreeGeek
-  first_name: ""
-  address: 1731 SE 10th Ave
-  surname: "nooneelsehasthisname"
-  created_at: 2006-09-20 13:18:06-07
-  middle_name: ""
-contacts_004:
-  city: ciity
-  updated_at: 2006-11-29 18:26:17-08
-  postal_code: "99999"
-  state_or_province: OO
-  sort_name: admin the
-  is_organization: f
-  lock_version: "6"
-  country: United States
-  notes: ""
-  extra_address: ""
-  created_by: "1"
-  id: "3"
-  organization: ""
-  first_name: the
-  address: 123 any st
-  surname: minusmin
-  created_at: 2006-09-20 13:12:23-07
-  middle_name: ""
-contacts_005:
+--- 
+contacts_003: 
   city: ""
-  updated_at: 2006-12-01 14:02:28-08
+  updated_at: 2006-12-01 14:02:28
   postal_code: ""
   state_or_province: ""
-  sort_name:
+  sort_name: 
   is_organization: f
+  created_by: "1"
   lock_version: "0"
   country: United States
+  updated_by: 
   notes: ""
   extra_address: ""
-  created_by: "1"
   id: "16"
+  user_id: 
   organization: ""
   first_name: z
   address: ""
   surname: z
-  created_at: 2006-12-01 14:02:28-08
+  created_at: 2006-12-01 14:02:28
   middle_name: z
-contacts_006:
+contacts_004: 
   city: ""
-  updated_at: 2006-12-13 12:42:35-08
+  updated_at: 2006-12-13 12:42:35
   postal_code: ""
   state_or_province: ""
-  sort_name:
+  sort_name: 
   is_organization: f
+  created_by: "1"
   lock_version: "0"
   country: United States
+  updated_by: 
   notes: ""
   extra_address: ""
-  created_by: "1"
   id: "18"
+  user_id: 
   organization: ""
   first_name: foo
   address: ""
   surname: baz
-  created_at: 2006-12-13 12:42:35-08
+  created_at: 2006-12-13 12:42:35
   middle_name: b
-contacts_007:
+contacts_005: 
   city: ""
-  updated_at: 2006-12-13 13:19:41-08
+  updated_at: 2006-12-13 13:19:41
   postal_code: "11111"
   state_or_province: ""
-  sort_name:
+  sort_name: 
   is_organization: f
+  created_by: "1"
   lock_version: "0"
   country: United States
+  updated_by: 
   notes: ""
   extra_address: ""
-  created_by: "1"
   id: "19"
+  user_id: 
   organization: ""
   first_name: z
   address: ""
   surname: z
-  created_at: 2006-12-13 13:19:41-08
+  created_at: 2006-12-13 13:19:41
   middle_name: z
-contacts_008:
+contacts_006: 
   city: portland
-  updated_at: 2006-12-15 12:09:37-08
+  updated_at: 2006-12-15 12:09:37
   postal_code: "97214"
   state_or_province: OR
-  sort_name:
+  sort_name: 
   is_organization: f
+  created_by: "1"
   lock_version: "3"
   country: United States
+  updated_by: 
   notes: ""
   extra_address: ""
-  created_by: "1"
   id: "21"
+  user_id: 
   organization: ""
   first_name: myparrentsgave
   address: 200 first ave.
   surname: averylongnamethesuck
-  created_at: 2006-12-15 11:44:58-08
+  created_at: 2006-12-15 11:44:58
   middle_name: me
-contacts_009:
+contacts_007: 
   city: ""
-  updated_at: 2006-12-15 12:29:54-08
+  updated_at: 2006-12-15 12:29:54
   postal_code: "1"
   state_or_province: ""
-  sort_name:
+  sort_name: 
   is_organization: f
+  created_by: "1"
   lock_version: "0"
   country: United States
+  updated_by: 
   notes: ""
   extra_address: ""
-  created_by: "1"
   id: "22"
+  user_id: 
   organization: ""
   first_name: n
   address: ""
   surname: n
-  created_at: 2006-12-15 12:29:54-08
+  created_at: 2006-12-15 12:29:54
   middle_name: n
-contacts_010:
+contacts_008: 
   city: Portland
-  updated_at: 2006-12-15 12:30:35-08
+  updated_at: 2006-12-15 12:30:35
   postal_code: "97214"
   state_or_province: or
-  sort_name:
+  sort_name: 
   is_organization: f
+  created_by: "1"
   lock_version: "1"
   country: United States
+  updated_by: 
   notes: ""
   extra_address: ""
-  created_by: "1"
   id: "17"
+  user_id: 
   organization: ""
   first_name: Charles
   address: 1731 SE 10th
   surname: McGeneneen
-  created_at: 2006-12-06 13:53:33-08
+  created_at: 2006-12-06 13:53:33
   middle_name: ""
-contacts_011:
+contacts_009: 
   city: Portland
-  updated_at: 2006-12-20 15:55:27-08
+  updated_at: 2006-12-20 15:55:27
   postal_code: "97232"
   state_or_province: OR
-  sort_name:
+  sort_name: 
   is_organization: f
+  created_by: "1"
   lock_version: "0"
   country: United States
+  updated_by: 
   notes: "awesome "
   extra_address: "# 30"
-  created_by: "1"
   id: "23"
+  user_id: 
   organization: ""
   first_name: jane
   address: 1234 asdf street
   surname: doe
-  created_at: 2006-12-20 15:55:27-08
+  created_at: 2006-12-20 15:55:27
   middle_name: j
-contacts_012:
+contacts_010: 
   city: Portland
-  updated_at: 2006-12-22 19:50:36-08
-  postal_code: "97202"
-  state_or_province: OR
-  sort_name:
-  is_organization: f
-  lock_version: "10"
-  country: United States
-  notes: ""
-  extra_address: ""
-  created_by: "1"
-  id: "12"
-  organization: ""
-  first_name: Martin
-  address: 4032 SE Long
-  surname: Chase
-  created_at: 2006-11-21 13:22:51-08
-  middle_name: ""
-contacts_001:
-  city: marseilles
-  updated_at: 2006-10-20 17:31:49-07
-  postal_code: "55103"
-  state_or_province: GR
-  sort_name: cyrano de bergerac
-  is_organization: t
-  lock_version: "10"
-  country: France
-  notes: ""
-  extra_address: ""
-  created_by: "1"
-  id: "6"
-  organization: cyrano de bergerac
-  first_name: ""
-  address: 310 n first st
-  surname: ""
-  created_at: 2006-09-21 10:18:13-07
-  middle_name: ""
-contacts_013:
-  city: mytown
-  updated_at: 2006-12-26 10:09:23-08
-  postal_code: "78787"
-  state_or_province: my
-  sort_name: myl, myf
-  is_organization: f
-  lock_version: "13"
-  country: United States
-  notes: |-
-    my notes
-    more notes
-  extra_address: ""
-  created_by: "1"
-  id: "7"
-  organization: ""
-  first_name: matteo
-  address: 876 my ln
-  surname: mousieaur
-  created_at: 2006-09-22 08:03:12-07
-  middle_name: ""
-contacts_002:
-  city: lunaville
-  updated_at: 2006-11-25 01:26:38-08
-  postal_code: 8r4 g7l
-  state_or_province: NS
-  sort_name: loon lorna
-  is_organization: f
-  lock_version: "4"
-  country: Canada
-  notes: ""
-  extra_address: ""
-  created_by: "1"
-  id: "5"
-  organization: ""
-  first_name: lorna
-  address: 44 loon ln
-  surname: loon
-  created_at: 2006-09-20 20:35:00-07
-  middle_name: ""
-contacts_001:
-  city: Portland
-  updated_at: 2006-11-26 23:23:24-08
+  updated_at: 2006-11-26 23:23:24
   postal_code: "97212"
   state_or_province: OR
   sort_name: _FreeGeek Test
   is_organization: t
+  created_by: "1"
   lock_version: "5"
   country: United States
+  updated_by: 
   notes: ""
   extra_address: ""
-  created_by: "1"
   id: "1"
+  user_id: 
   organization: FreeGeek Test
   first_name: ""
   address: 1731 SE 10th Ave
   surname: ""
-  created_at: 2006-09-20 13:18:06-07
+  created_at: 2006-09-20 13:18:06
+  middle_name: ""
+contacts_011: 
+  city: Portland
+  updated_at: 2006-12-22 19:50:36
+  postal_code: "97202"
+  state_or_province: OR
+  sort_name: 
+  is_organization: f
+  created_by: "1"
+  lock_version: "10"
+  country: United States
+  updated_by: 
+  notes: ""
+  extra_address: ""
+  id: "12"
+  user_id: 
+  organization: ""
+  first_name: Martin
+  address: 4032 SE Long
+  surname: Chase
+  created_at: 2006-11-21 13:22:51
+  middle_name: ""
+contacts_012: 
+  city: lunaville
+  updated_at: 2006-11-25 01:26:38
+  postal_code: 8r4 g7l
+  state_or_province: NS
+  sort_name: loon lorna
+  is_organization: f
+  created_by: "1"
+  lock_version: "4"
+  country: Canada
+  updated_by: 
+  notes: ""
+  extra_address: ""
+  id: "5"
+  user_id: 
+  organization: ""
+  first_name: lorna
+  address: 44 loon ln
+  surname: loon
+  created_at: 2006-09-20 20:35:00
+  middle_name: ""
+contacts_001: 
+  city: Portland
+  updated_at: 2006-11-26 23:23:24
+  postal_code: "97212"
+  state_or_province: OR
+  sort_name: _FreeGeek
+  is_organization: t
+  created_by: "1"
+  lock_version: "5"
+  country: United States
+  updated_by: 
+  notes: ""
+  extra_address: ""
+  id: "4"
+  user_id: 
+  organization: FreeGeek
+  first_name: ""
+  address: 1731 SE 10th Ave
+  surname: nooneelsehasthisname
+  created_at: 2006-09-20 13:18:06
+  middle_name: ""
+contacts_013: 
+  city: mytown
+  updated_at: 2006-12-26 10:09:23
+  postal_code: "78787"
+  state_or_province: my
+  sort_name: myl, myf
+  is_organization: f
+  created_by: "1"
+  lock_version: "13"
+  country: United States
+  updated_by: 
+  notes: |-
+    my notes
+    more notes
+  extra_address: ""
+  id: "7"
+  user_id: 
+  organization: ""
+  first_name: matteo
+  address: 876 my ln
+  surname: mousieaur
+  created_at: 2006-09-22 08:03:12
+  middle_name: ""
+contacts_002: 
+  city: ciity
+  updated_at: 2006-11-29 18:26:17
+  postal_code: "99999"
+  state_or_province: OO
+  sort_name: admin the
+  is_organization: f
+  created_by: "1"
+  lock_version: "6"
+  country: United States
+  updated_by: 
+  notes: ""
+  extra_address: ""
+  id: "3"
+  user_id: 
+  organization: ""
+  first_name: the
+  address: 123 any st
+  surname: minusmin
+  created_at: 2006-09-20 13:12:23
   middle_name: ""

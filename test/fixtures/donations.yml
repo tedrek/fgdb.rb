@@ -1,5 +1,6 @@
 --- 
 donations_001: 
+  invoice_resolved_at: 
   updated_at: 2008-03-15 22:27:53.301118
   postal_code: ""
   comments: ""
@@ -12,8 +13,10 @@ donations_001:
   id: "109041"
   txn_completed_at: 2008-03-15 22:27:53.258512
   reported_required_fee_cents: "0"
+  needs_attention: f
   created_at: 2008-03-15 22:27:53.301118
 donations_002: 
+  invoice_resolved_at: 
   updated_at: 2008-03-15 22:30:08.141246
   postal_code: "88776"
   comments: ""
@@ -26,4 +29,5 @@ donations_002:
   id: "109042"
   txn_completed_at: 2008-03-15 22:30:08.117559
   reported_required_fee_cents: "1000"
+  needs_attention: f
   created_at: 2008-03-15 22:30:08.141246

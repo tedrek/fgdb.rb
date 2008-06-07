@@ -1,6 +1,7 @@
 --- 
 sales_001: 
   reported_discount_amount_cents: "1100"
+  invoice_resolved_at: 
   updated_at: 2008-03-15 13:58:24.199857
   postal_code: "97552"
   comments: ""
@@ -14,9 +15,11 @@ sales_001:
   txn_completed_at: 2008-03-15 13:58:24.100428
   bulk: 
   reported_amount_due_cents: "1100"
+  needs_attention: f
   created_at: 2008-03-15 13:58:24.199857
 sales_002: 
   reported_discount_amount_cents: "700"
+  invoice_resolved_at: 
   updated_at: 2008-03-15 22:25:48.632596
   postal_code: ""
   comments: ""
@@ -30,9 +33,11 @@ sales_002:
   txn_completed_at: 2008-03-15 22:25:48.487526
   bulk: 
   reported_amount_due_cents: "700"
+  needs_attention: f
   created_at: 2008-03-15 22:25:48.632596
 sales_003: 
   reported_discount_amount_cents: "4500"
+  invoice_resolved_at: 
   updated_at: 2008-03-15 22:26:33.074483
   postal_code: ""
   comments: ""
@@ -46,4 +51,5 @@ sales_003:
   txn_completed_at: 2008-03-15 22:26:32.915401
   bulk: 
   reported_amount_due_cents: "4500"
+  needs_attention: f
   created_at: 2008-03-15 22:26:33.074483
