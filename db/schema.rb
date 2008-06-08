@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 32) do
+ActiveRecord::Schema.define(:version => 33) do
 
   create_table "community_service_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(:version => 32) do
   end
 
   create_table "contact_methods", :force => true do |t|
-    t.integer  "contact_method_type_id"
+    t.integer  "contact_method_type_id",                               :null => false
     t.string   "description",            :limit => 100
     t.boolean  "ok"
     t.integer  "contact_id"
