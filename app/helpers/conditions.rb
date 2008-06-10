@@ -18,9 +18,11 @@ class Conditions
 
   attr_accessor :needs_attention
 
+  attr_accessor :anonymous
+
   attr_accessor :unresolved_invoices
 
-  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :transaction_id_enabled
+  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :transaction_id_enabled, :anonymous_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -47,7 +49,7 @@ class Conditions
 
   def conditions(klass)
     conds = %w[
-      transaction_id needs_attention contact
+      transaction_id needs_attention anonymous contact
       unresolved_invoices date_range payment_method
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
@@ -80,6 +82,10 @@ class Conditions
 
   def needs_attention_conditions(klass)
     return ["#{klass.table_name}.needs_attention = 't'"]
+  end
+
+  def anonymous_conditions(klass)
+    return ["#{klass.table_name}.postal_code IS NOT NULL AND #{klass.table_name}.contact_id IS NULL"]
   end
 
   def unresolved_invoices_conditions(klass)

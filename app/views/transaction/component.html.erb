@@ -68,6 +68,9 @@
                :contact => @conditions.contact
              } ) %>
     <% end %>
+    <% if @model.new.respond_to?( :postal_code ) %>
+      <% filters['anonymous'] = "" %>
+    <% end %>
     <% if @model.new.respond_to?( :payments ) %>
       <% filters['payment_method'] = render( :partial => 'payment_method_select',
             :locals => {:field_id_prefix => 'conditions',
