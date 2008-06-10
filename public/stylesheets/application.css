@@ -385,6 +385,12 @@ padding: 10px;
 font-size: 14px;
 }
 
+.contact_display .contact_comments {
+margin-left: 10px;
+padding: 10px;
+font-size: 14px;
+}
+
 .contact_display .hours {
 font-size: 17px;
 margin-left: 10px;

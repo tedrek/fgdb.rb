@@ -24,8 +24,9 @@
       <%= method.display %><br />
     <% end %>
   </div>
-  <% if @contact.notes %>
+  <% if @contact.notes && @contact.notes != '' %>
   <div class="contact_comments">
+    Notes:<br />
     <%=h @contact.notes %>
   </div>
   <% end %>
