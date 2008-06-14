@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 33) do
+ActiveRecord::Schema.define(:version => 34) do
 
   create_table "community_service_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(:version => 33) do
     t.integer  "user_id"
     t.integer  "created_by",                                          :null => false
     t.integer  "updated_by"
+    t.integer  "next_milestone",                   :default => 100
   end
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"

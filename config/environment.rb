@@ -66,3 +66,6 @@ require 'model_modifications'
 require 'datalist_for'
 require 'datalist_for_helper'
 ActionView::Base.send(:include, DatalistFor::Helper)
+ActionMailer::Base.delivery_method = :smtp
+ActionMailer::Base.smtp_settings['address'] = 'localhost'
+
