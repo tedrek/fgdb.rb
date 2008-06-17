@@ -4,7 +4,7 @@
                            :id => disbursement.send("#{Disbursement.primary_key}"),
                            :transaction_type => @transaction_type) %>
 
-<tr title="header=[Disbursement #<%=h disbursement.id %>] delay=[1000] cssbody=[tooltip_body] cssheader=[tooltip_header] body=[<%=h render :partial => 'disbursement_receipt_guts', :locals => {:@disbursement => disbursement} %>]" class="<%= classAttr %>"
+<tr class="<%= classAttr %>"
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for column in columns %>
     <% column_value = eval(column.eval) rescue nil %>
