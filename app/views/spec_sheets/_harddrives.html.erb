@@ -1,0 +1,63 @@
+  <div id="hard_drives">
+    <h2>Hard Drives</h2>
+    <% xpath_foreach("//node[contains(@id, 'disk')]") do %>
+    <table>
+      <tr>
+        <td>
+          Drive:
+        </td>
+        <td>
+          <%= xpath_value_of("logicalname") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Vendor:
+        </td>
+        <td>
+          <%= xpath_value_of("vendor") %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Model:
+        </td>
+        <td>
+          <%= xpath_value_of("product") %>
+        </td>
+      </tr>
+      <% if xpath_if("size") %>
+      <tr>
+        <td>
+          Capacity:
+        </td>
+        <td>
+          <%= xpath_value_of("size").to_bytes(0, false, false) %>
+        </td>
+      </tr>
+      <% end %>
+      <% if xpath_if("node[contains(@id, 'volume')]") %>
+      <tr>
+        <td valign="top">Volumes: </td>
+        <td>
+          <table>
+            <% xpath_foreach("node[contains(@id, 'volume')]") do %>
+            <tr>
+              <td>
+                <%= xpath_value_of("logicalname") %>
+              </td>
+              <td>
+                <%= xpath_value_of("description") %>
+              </td>
+              <td>
+                <%= xpath_value_of("capacity").to_bytes(0, false, false) %>
+              </td>
+            </tr>
+            <% end %>
+          </table>
+        </td>
+      </tr>
+      <% end %>
+    </table>
+    <% end %>
+  </div> <% #hard_drives %>

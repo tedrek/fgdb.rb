@@ -1,0 +1,5 @@
+<h1>Editing <%= @property_type.sub(/s$/, "") %></h1>
+
+<%= render :partial => "properties_form", :locals => {:action => "update"} %>
+
+<%= link_to 'Back', :action=>(@property_type + "_index") %>

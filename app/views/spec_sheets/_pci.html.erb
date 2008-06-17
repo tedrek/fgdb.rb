@@ -1,0 +1,27 @@
+  <div id="pci">
+    <h2>PCI Bus</h2>
+    <% xpath_foreach("//node[contains(@id, 'pci') or contains(@id, 'pcmcia')]") do %>
+    <h3><%= xpath_value_of("product") %></h3>
+    <% xpath_foreach("node[
+                      (contains(@handle, 'PCI:')
+                      or contains(@handle, 'PCMCIA:'))
+                      and not(@class='bus')
+                      and not(@class='bridge')
+                      and not(@class='storage')
+                      and not(@class='system')
+                      and not(@class='memory')
+                      ]") do %>
+    <%= render :partial => "pci_guts" %>
+    <% end %>
+    <% end %>
+    <% if false %>
+    <h3>Unknown</h3>
+    <% xpath_foreach("node[not(@class='bus')
+                      and not(@class='bridge')
+                      and not(@class='storage')
+                      and not(@class='system')
+                      and not(@class='memory')]") do %>
+    <%= render :partial => "pci_guts" %>
+    <% end %>
+    <% end %>
+  </div>

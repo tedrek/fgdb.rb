@@ -9,7 +9,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 34) do
+ActiveRecord::Schema.define(:version => 35) do
+
+  create_table "actions", :force => true do |t|
+    t.string   "name"
+    t.integer  "lock_version", :default => 0, :null => false
+    t.datetime "updated_at"
+    t.datetime "created_at"
+    t.integer  "created_by",   :default => 1, :null => false
+    t.integer  "updated_by",   :default => 1, :null => false
+  end
+
+  add_index "actions", ["name"], :name => "roles_name_index"
 
   create_table "community_service_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -314,6 +325,49 @@ ActiveRecord::Schema.define(:version => 34) do
   add_index "sales", ["contact_id"], :name => "sales_contact_id_index"
   add_index "sales", ["created_at"], :name => "sales_created_at_index"
 
+  create_table "spec_sheets", :force => true do |t|
+    t.integer  "system_id"
+    t.integer  "contact_id"
+    t.integer  "action_id"
+    t.text     "lshw_output"
+    t.integer  "lock_version", :default => 0, :null => false
+    t.datetime "updated_at"
+    t.datetime "created_at"
+    t.integer  "created_by",   :default => 1, :null => false
+    t.integer  "updated_by",   :default => 1, :null => false
+    t.integer  "old_id"
+    t.text     "notes"
+    t.integer  "type_id"
+    t.string   "os"
+    t.boolean  "flag"
+  end
+
+  add_index "spec_sheets", ["contact_id"], :name => "reports_contact_id_index"
+  add_index "spec_sheets", ["action_id"], :name => "reports_role_id_index"
+  add_index "spec_sheets", ["system_id"], :name => "reports_system_id_index"
+  add_index "spec_sheets", ["type_id"], :name => "reports_type_id_index"
+
+  create_table "systems", :force => true do |t|
+    t.string   "system_vendor"
+    t.string   "system_model"
+    t.string   "system_serial_number"
+    t.integer  "lock_version",         :default => 0, :null => false
+    t.datetime "updated_at"
+    t.datetime "created_at"
+    t.integer  "created_by",           :default => 1, :null => false
+    t.integer  "updated_by",           :default => 1, :null => false
+    t.string   "mobo_vendor"
+    t.string   "mobo_model"
+    t.string   "mobo_serial_number"
+    t.string   "serial_number"
+    t.string   "vendor"
+    t.string   "model"
+  end
+
+  add_index "systems", ["system_model"], :name => "systems_model_index"
+  add_index "systems", ["system_serial_number"], :name => "systems_serial_number_index"
+  add_index "systems", ["system_vendor"], :name => "systems_vendor_index"
+
   create_table "trash_records", :force => true do |t|
     t.string   "trashable_type"
     t.integer  "trashable_id"
@@ -323,6 +377,17 @@ ActiveRecord::Schema.define(:version => 34) do
 
   add_index "trash_records", ["trashable_type", "created_at"], :name => "index_trash_records_on_created_at_and_trashable_type"
   add_index "trash_records", ["trashable_type", "trashable_id"], :name => "index_trash_records_on_trashable_type_and_trashable_id"
+
+  create_table "types", :force => true do |t|
+    t.string   "name"
+    t.integer  "lock_version", :default => 0, :null => false
+    t.datetime "updated_at"
+    t.datetime "created_at"
+    t.integer  "created_by",   :default => 1, :null => false
+    t.integer  "updated_by",   :default => 1, :null => false
+  end
+
+  add_index "types", ["name"], :name => "types_name_index"
 
   create_table "users", :force => true do |t|
     t.string   "login"
