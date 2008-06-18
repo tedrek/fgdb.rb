@@ -15,15 +15,15 @@ class SessionsController < ApplicationController
     cookies.delete :auth_token
     reset_session
     @current_user = nil
-    redirect_to :controller => "sidebar_links", :action => "index", :logout_message => true
+    session[:logout_message] = true
+    redirect_to :controller => "sidebar_links", :action => "index"
   end
 
   protected
 
   def rerender
     render :update do |page|
-      page.replace("login_box", :partial => "you_are_here")
-      page.replace("sidebar", :partial => "sidebar_links/sidebar")
+      page.redirect_to("")
     end
   end
 end

@@ -1,11 +1,13 @@
 <h1 class="welcome">Welcome to the Free Geek Database</h1>
 
-<% if params[:unauthorized_error] %>
+<% if session[:unauthorized_error] %>
 <span class="error">You have insufficient privilages to access that!</span>
+<% session[:unauthorized_error] = false %>
 <% end %>
 
-<% if params[:logout_message] %>
+<% if session[:logout_message] %>
 <span class="info">You have been logged out!</span>
+<% session[:logout_message] = false %>
 <% end %>
 
 <p class="welcome">This is the release 1.0, so be rough and report all

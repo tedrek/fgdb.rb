@@ -41,7 +41,8 @@ class ApplicationController < ActionController::Base
     if has_role?(*roles)
       return true
     else
-      redirect_to :controller => 'sidebar_links', 'unauthorized_error' => true
+      session[:unauthorized_error] = true
+      redirect_to :controller => 'sidebar_links'
       return false
     end
   end
@@ -50,7 +51,8 @@ class ApplicationController < ActionController::Base
     if has_role_or_is_me?(contact_id.to_i, *roles)
       return true
     else
-      redirect_to :controller => 'sidebar_links', 'unauthorized_error' => true
+      session[:unauthorized_error] = true
+      redirect_to :controller => 'sidebar_links'
       return false
     end
   end
