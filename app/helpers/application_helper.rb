@@ -87,19 +87,13 @@ module ApplicationHelper
     #:TODO: scrub this first
     obj = eval( "@#{obj_name}" )
 
-    js_observe_fuct = 'var choices = new Array("%s");' % choices.keys.map {|k| k.to_s}.join('", "')
-    js_observe_fuct += "for( var i = 0; i < choices.length; i++)"
-    js_observe_fuct += "{var choice = choices[i]; if(choice == 'extend') {}"
-    js_observe_fuct += "else if(choice == value) {$('#{obj_name}_' + choice + '_choice').show();}"
-    js_observe_fuct += "else {$('#{obj_name}_' + choice + '_choice').hide();} }"
-
     # type choice
     display = %Q{ <div class="form-element"> %s %s </div> } %
       [ select( obj_name, method_name, choices.keys.map {|k| [k.to_s.gsub(/_/, ' '), k.to_s]} ),
         observe_field( "#{obj_name}_#{method_name}",
-                       :function => js_observe_fuct,
+                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.keys.map do |k| k.to_s end.join('", "')}\"), value);",
                        :with => method_name )]
-
+    
     this_choice = obj.send(method_name)
     choices.each {|choice, content|
       if this_choice.to_s == choice.to_s
@@ -110,6 +104,7 @@ module ApplicationHelper
       display += %Q{ <div id="%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, choice.to_s, visibility, content ]
     }
 
+    display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.keys.map do |k| k.to_s end.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")
     return display
   end
 

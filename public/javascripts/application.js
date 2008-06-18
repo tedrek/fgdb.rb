@@ -1,6 +1,13 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function select_visibility(obj_name, method_name, choices, value) {
+    for( var i = 0; i < choices.length; i++)
+    {var choice = choices[i]; if(choice == 'extend') {}
+        else if(choice == value) {$(obj_name + '_' + choice + '_choice').show();}
+        else {$(obj_name + '_' + choice + '_choice').hide();} }
+}
+
 // Called as:
 // confirmReplaceElementValue(elem_id, new_elem_value, confirm_message)
 function confirmReplaceElementValue(id, val, msg){
