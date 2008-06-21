@@ -199,6 +199,18 @@ class Contact < ActiveRecord::Base
     last_of_an_association('donations')
   end
 
+  def last_disbursements
+    return last_gizmos("disbursements")
+  end
+
+  def last_sales
+    return last_gizmos("sales")
+  end
+
+  def last_donations
+    return last_gizmos("donations")
+  end
+
   def is_user?
     !!user
   end
@@ -210,6 +222,20 @@ class Contact < ActiveRecord::Base
 
   private
 
+  # returns the last gizmos associated with the given table
+  # over the last month
+  def last_gizmos(table)
+    # figure out how to use a prepared statement here
+    return self.connection.execute(
+      "select gt.id, gt.description, sum(ge.gizmo_count) 
+       from gizmo_types gt 
+            join gizmo_events ge on ge.gizmo_type_id=gt.id 
+            join #{table} t on ge.#{Inflector.singularize(table)}_id=t.id 
+       where t.contact_id=#{self.id}
+             and t.created_at > now()-'1@month'::interval 
+       group by 1,2").map{|id,desc,count|[desc,count]}
+  end
+    
   def last_of_an_association(assoc)
     #:MC: optimize this into sql
     self.send(assoc).sort_by {|rec| rec.created_at}.last

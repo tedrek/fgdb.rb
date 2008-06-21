@@ -32,19 +32,19 @@
   <% end %>
   <% if options.fetch(:display_associations, true) %>
     <div class="associations">
-      <% for txn,intro in {"disbursement" => "received",
-                           "sale" => "purchased",
-                           "donation" => "given"} %>
-        <% last_one = @contact.send("last_#{txn}") %>
-        <% if last_one %>
+      <% for txn,intro in [["sale", "purchases"],
+                           ["disbursement", "disbursements"],
+                           ["donation", "donations"]] %>
+        <% last_one = @contact.send("last_#{Inflector.pluralize(txn)}") %>
+        <% unless last_one.empty?() %>
           <div class="<%= txn %>">
-            last <%= link_to(intro,
+            recent <%= link_to(intro,
                        :controller => Inflector.pluralize(txn),
                        "conditions[contact_id]" => @contact.id,
                        "conditions[date_range_enabled]" => "false",
                        "conditions[contact_enabled]" => "true"
                      ) %>
-            on <%= last_one.occurred_at.to_date %>: <%= last_one.gizmos %>
+            : <%= last_one.map{|d,c| "#{c} #{d} "}.join(", ") %>
           </div>
         <% end %>
       <% end %>
