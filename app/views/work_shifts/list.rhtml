@@ -1,3 +1,7 @@
+<% if @readonly %>
+  <%= render :partial => "vacations/list" %>
+<% end %>
+
 <h2>Listing work shifts</h2>
 
 <% 
@@ -19,6 +23,13 @@
         %> <%= render :partial => 'filter_criteria' %>
         <div class='content'> <% 
       end
+      if @shift[:kind] == 'Meeting'
+        shift_style = 'meeting'
+      elsif @shift[:kind] == 'Unavailability'
+        shift_style = 'unavailable'
+      elsif @shift.worker_id == 0
+        shift_style = 'unfilled'
+      end
     else
       # now previous shift should be defined, figure out what
       # needs to happen:
@@ -38,6 +49,8 @@
 
       if @shift[:kind] == 'Meeting'
         shift_style = 'meeting'
+      elsif @shift[:kind] == 'Unavailability'
+        shift_style = 'unavailable'
       elsif @shift.worker_id == 0
         shift_style = 'unfilled'
       elsif overlap

@@ -5,11 +5,12 @@ class WorkShiftsController < ApplicationController
   end
 
   def staffsched
-params[:filter_criteria] = {:end_date => (Date.today + 60).to_s, :start_date => Date.today.to_s, :presentation_mode => "Preview"}
+    @readonly = true
+    @vacations = Vacation.find(:all, :order => 'effective_date, ineffective_date', :conditions => ["ineffective_date >= ?", Date.today])
+    params[:filter_criteria] = {:end_date => (Date.today + 60).to_s, :start_date => Date.today.to_s, :presentation_mode => "Preview"}
     list
     render :action => 'list'
-#http://bullwinkle/work_shifts/list?filter_criteria[end_date]=2008-05-06&filter_criteria[start_date]=2008-05-06&filter_criteria[presentation_mode]=Preview
-end
+  end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
