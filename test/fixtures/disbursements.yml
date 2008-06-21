@@ -1,5 +1,12 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first:
   id: 1
+  contact_id: 1
+  disbursement_type: 1
+  disbursed_at: 2007-05-01
 another:
   id: 2
+  contact_id: 1
+  disbursement_type: 2
+  disbursed_at: 2008-01-01
+
