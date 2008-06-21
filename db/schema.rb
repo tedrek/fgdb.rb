@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 35) do
+ActiveRecord::Schema.define(:version => 36) do
 
   create_table "actions", :force => true do |t|
     t.string   "name"
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(:version => 35) do
     t.boolean  "needs_attention",      :default => false, :null => false
   end
 
+  add_index "disbursements", ["created_at"], :name => "disbursements_created_at_index"
   add_index "disbursements", ["contact_id"], :name => "index_disbursements_on_contact_id"
 
   create_table "discount_schedules", :force => true do |t|
@@ -229,6 +230,9 @@ ActiveRecord::Schema.define(:version => 35) do
     t.integer  "attr_val_monetary_cents"
   end
 
+  add_index "gizmo_events_gizmo_typeattrs", ["gizmo_event_id"], :name => "gizmo_events_gizmo_typeattrs_gizmo_event_id"
+  add_index "gizmo_events_gizmo_typeattrs", ["gizmo_typeattr_id"], :name => "gizmo_events_gizmo_typeattrs_gizmo_typeattr_id"
+
   create_table "gizmo_typeattrs", :force => true do |t|
     t.integer  "gizmo_type_id",                         :null => false
     t.integer  "gizmo_attr_id",                         :null => false
@@ -279,6 +283,8 @@ ActiveRecord::Schema.define(:version => 35) do
     t.boolean  "needs_attention", :default => false, :null => false
   end
 
+  add_index "recyclings", ["created_at"], :name => "recyclings_created_at_index"
+
   create_table "revision_records", :force => true do |t|
     t.string   "revisionable_type", :limit => 100
     t.integer  "revisionable_id"
@@ -321,8 +327,7 @@ ActiveRecord::Schema.define(:version => 35) do
     t.datetime "invoice_resolved_at"
   end
 
-  add_index "sales", ["contact_id"], :name => "index_sales_on_contact_id"
-  add_index "sales", ["contact_id"], :name => "sales_contact_id_index"
+  add_index "sales", ["contact_id"], :name => "sales_contact_id"
   add_index "sales", ["created_at"], :name => "sales_created_at_index"
 
   create_table "spec_sheets", :force => true do |t|
@@ -470,10 +475,10 @@ ActiveRecord::Schema.define(:version => 35) do
   add_foreign_key "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :on_delete => :set_null, :name => "gizmo_types_parent_fk"
   add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
 
-  add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fk"
   add_foreign_key "payments", ["payment_method_id"], "payment_methods", ["id"], :on_delete => :restrict, :name => "payments_payment_methods_fk"
   add_foreign_key "payments", ["donation_id"], "donations", ["id"], :on_delete => :cascade, :name => "payments_donation_id_fk"
   add_foreign_key "payments", ["sale_id"], "sales", ["id"], :on_delete => :cascade, :name => "payments_sale_id_fk"
+  add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fkey"
 
   add_foreign_key "roles_users", ["user_id"], "users", ["id"], :name => "roles_users_user_id_fkey"
   add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :name => "roles_users_role_id_fkey"
