@@ -20,9 +20,7 @@ class SessionsControllerTest < Test::Unit::TestCase
     post :create, :login => 'quentin', :password => 'test'
     assert session[:user_id]
     assert_response :success
-    assert_rjs :replace, 'sidebar', /donation/
-    assert_rjs :replace, 'sidebar', /sale/
-    assert_rjs :replace, 'login_box'
+    assert_rjs :redirect_to, ''
   end
 
   def test_should_fail_login
