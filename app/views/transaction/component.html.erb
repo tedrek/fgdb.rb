@@ -78,6 +78,16 @@
                         :show_label => false,
                         :paid_object => @conditions} ) %>
       <% filters['unresolved_invoices'] = "" %>
+      <% filters['payment_amount'] = select_visibility(
+        'conditions',
+        'payment_amount_type',
+        [['exact', text_field('conditions', 'payment_amount_exact')],
+         ['between', "%s to %s" % [text_field('conditions', 'payment_amount_low'),
+                                    text_field('conditions', 'payment_amount_high')]],
+         ['>=', text_field('conditions', 'payment_amount_ge')],
+         ['<=', text_field('conditions', 'payment_amount_le')],
+        ])
+      %>
     <% end %>
     <% filters['transaction_id'] = text_field('conditions', 'transaction_id') %>
     <% filters['needs_attention'] = "" %>

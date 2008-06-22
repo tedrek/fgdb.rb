@@ -83,15 +83,15 @@ module ApplicationHelper
   end
 
   # due to prototype suckness, 'extend' may not be used as a choice name.
-  def select_visibility(obj_name, method_name, choices = {})
+  def select_visibility(obj_name, method_name, choices = [])
     #:TODO: scrub this first
     obj = eval( "@#{obj_name}" )
 
     # type choice
     display = %Q{ <div class="form-element"> %s %s </div> } %
-      [ select( obj_name, method_name, choices.keys.map {|k| [k.to_s.gsub(/_/, ' '), k.to_s]} ),
+      [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]} ),
         observe_field( "#{obj_name}_#{method_name}",
-                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.keys.map do |k| k.to_s end.join('", "')}\"), value);",
+                      :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value);",
                        :with => method_name )]
     
     this_choice = obj.send(method_name)
@@ -104,7 +104,7 @@ module ApplicationHelper
       display += %Q{ <div id="%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, choice.to_s, visibility, content ]
     }
 
-    display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.keys.map do |k| k.to_s end.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")
+    display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s}.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")
     return display
   end
 
@@ -140,7 +140,7 @@ module ApplicationHelper
   # the object named "@#{obj_name}" must be able to respond to all the
   # fields listed below, or you should provide alternate fieldnames.
   def date_or_date_range_picker(obj_name, fields = {})
-    date_types = {}
+    date_types = []
     obj = eval( "@#{obj_name}" )
     fields = { :date => 'date',
       :start_date => 'start_date', :end_date => 'end_date',
@@ -148,13 +148,13 @@ module ApplicationHelper
       :date_type => 'date_type' }.merge(fields)
 
     # daily
-    date_types['daily'] = calendar_box(obj_name, fields[:date],{},{:showOthers => true})
-    date_types['monthly'] = select_month(obj.send(fields[:month]), :prefix => obj_name) +
-      select_year(obj.send(fields[:year]), :prefix => obj_name, :start_year => 2000, :end_year => Date.today.year)
+    date_types << ['daily', calendar_box(obj_name, fields[:date],{},{:showOthers => true})]
+    date_types << ['monthly', select_month(obj.send(fields[:month]), :prefix => obj_name) +
+      select_year(obj.send(fields[:year]), :prefix => obj_name, :start_year => 2000, :end_year => Date.today.year)]
     # arbitrary
-    date_types['arbitrary'] = "From: %s To: %s" %
+    date_types << ['arbitrary', "From: %s To: %s" %
       [ calendar_box(obj_name, fields[:start_date],{},{:showOthers => true}),
-        calendar_box(obj_name, fields[:end_date],{},{:showOthers => true}) ]
+        calendar_box(obj_name, fields[:end_date],{},{:showOthers => true}) ]]
 
     return select_visibility(obj_name, fields[:date_type], date_types)
   end

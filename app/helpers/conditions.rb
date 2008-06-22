@@ -22,7 +22,9 @@ class Conditions
 
   attr_accessor :unresolved_invoices
 
-  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :transaction_id_enabled, :anonymous_enabled
+  attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
+
+  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :transaction_id_enabled, :anonymous_enabled, :payment_amount_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -51,6 +53,7 @@ class Conditions
     conds = %w[
       transaction_id needs_attention anonymous contact
       unresolved_invoices date_range payment_method
+      payment_amount
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -76,10 +79,28 @@ class Conditions
     ] + conds_a[1..-1] + conds_b[1..-1]
   end
 
+  def payment_amount_conditions(klass)
+    # the to_s is required below because when a value of "6" is passed in
+    # it is magically made into a Fixnum so the to_cents blows up
+    # not sure where this magic comes from
+    case @payment_amount_type
+    when 'between'
+      return ["payments.amount_cents BETWEEN ? AND ?",
+               @payment_amount_low.to_s.to_cents, 
+               @payment_amount_high.to_s.to_cents]
+    when '>='
+      return ["payments.amount_cents >= ?", @payment_amount_ge.to_s.to_cents]
+    when '<='
+      return ["payments.amount_cents <= ?", @payment_amount_le.to_s.to_cents]
+    when 'exact'
+      return ["payments.amount_cents = ?", @payment_amount_exact.to_s.to_cents]
+    end
+  end
+
   def transaction_id_conditions(klass)
     return ["#{klass.table_name}.id = ?", @transaction_id]
   end
-
+  
   def needs_attention_conditions(klass)
     return ["#{klass.table_name}.needs_attention = 't'"]
   end
