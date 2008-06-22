@@ -22,6 +22,8 @@ class Conditions
 
   attr_accessor :unresolved_invoices
 
+  attr_accessor :gizmo_type_id_enabled, :gizmo_type_id
+
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
 
   attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :transaction_id_enabled, :anonymous_enabled, :payment_amount_enabled
@@ -53,7 +55,7 @@ class Conditions
     conds = %w[
       transaction_id needs_attention anonymous contact
       unresolved_invoices date_range payment_method
-      payment_amount
+      payment_amount gizmo_type_id
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -160,6 +162,10 @@ class Conditions
     else
       return [ "#{klass.table_name}.id IS NULL" ]
     end
+  end
+
+  def gizmo_type_id_conditions(klass)
+    return ["gizmo_events.gizmo_type_id=?", gizmo_type_id]
   end
 
   def to_s
