@@ -1,7 +1,3 @@
-<% if @readonly %>
-  <%= render :partial => "vacations/list" %>
-<% end %>
-
 <h2>Listing work shifts</h2>
 
 <% 
@@ -126,4 +122,8 @@
 <%= render :partial => 'table_footer' %>
 <% if @opts['presentation_mode']!='Preview' %>
   </div>
+<% end %>
+
+<% if @readonly %>
+  <%= render :partial => "vacations/list" %>
 <% end %>
