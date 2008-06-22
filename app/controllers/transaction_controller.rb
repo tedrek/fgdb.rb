@@ -41,10 +41,11 @@ class TransactionController < ApplicationController
       :include => [:gizmo_events],
       :conditions => @conditions.conditions(@model)
     }
+
     if @model.new.respond_to?( :payments )
       search_options[:include] << :payments
-      search_options[:joins] = "LEFT OUTER JOIN payments ON payments.#{@transaction_type}_id = #{@model.table_name}.id"
     end
+
     search_options[:page] = params[:page]
     @transactions = @model.paginate( search_options )
 
