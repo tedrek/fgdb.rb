@@ -213,7 +213,7 @@ namespace :db do
   namespace :data do
 
     desc "Dump the development database (including data) to a SQL file"
-    task :dump => :environment do
+    task :dump => [:environment, 'db:schema:dump'] do
       dump_data(rails_env)
     end
 
