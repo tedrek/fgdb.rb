@@ -1,3 +1,5 @@
+require 'yaml'
+
 SCHEMADUMPFILE = 'db/schema.sql'
 DATADUMPFILE = 'db/devel_data.sql.gz'
 METADATADIR = 'db/metadata'
@@ -221,7 +223,7 @@ namespace :db do
     end
 
     desc "Fill the database with data from the dumped SQL file"
-    task :load => ['db:data:wipe', :environment, 'db:migrate'] do
+    task :load => ['db:data:wipe', :environment, 'db:schema:load'] do
       load_data(rails_env)
     end
 
