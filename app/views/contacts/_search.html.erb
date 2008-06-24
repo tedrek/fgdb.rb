@@ -65,4 +65,13 @@
 <%= javascript_tag "$('#{contact_query_id(options)}').onkeypress = contactKeyListener;" %>
 <%= javascript_tag("
       set_new_val($('#{contact_query_id(options)}'), '#{contact_id}');
-    " + update_display) if contact_id and !contact_id.to_s.empty? %>
+    " + remote_function(
+     :update => searchbox_display_id(options),
+     :url => options.merge({
+       :action => 'update_display_area',
+       :controller => 'contacts',
+       :on_display => nil
+     }),
+     :with => "'contact_id=' + $('#{contact_query_id(options)}').value",
+     :contact_query_id => contact_query_id(options)
+   )) if contact_id and !contact_id.to_s.empty? %>
