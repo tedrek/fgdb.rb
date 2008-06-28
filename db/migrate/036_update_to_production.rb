@@ -22,8 +22,8 @@ class UpdateToProduction < ActiveRecord::Migration
       end
     end
 
-    remove_foreign_key "payments", "payments_sale_txn_id_fk"
-    add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fkey"
+    remove_foreign_key "payments", "payments_sale_id_fk"
+#    add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fkey"
   end 
 
   def self.down
