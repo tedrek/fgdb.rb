@@ -187,7 +187,7 @@ class SpecSheetsController < ApplicationController
   end
 
   def method_missing(symbol, *args)
-    if (result = symbol.to_s.match(/(actions|types)_(new|edit|index|create|update|xml_index)/))
+    if (result = symbol.to_s.match(/(actions|types)_(xml_index)/))
       @property_type=result[1]
       @action=result[2]
       eval "self." + "properties_" + @action
