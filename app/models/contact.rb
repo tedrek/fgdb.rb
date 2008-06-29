@@ -81,12 +81,18 @@ class Contact < ActiveRecord::Base
                        :conditions => conditions)
   end
 
+  def date_of_last_adoption
+    last_adoption = Disbursement.find(:first, :conditions => [ "disbursement_type_id = ? AND contact_id = ?", DisbursementType.find_by_description("Adoption").id, id], :order => "disbursed_at DESC")
+    if last_adoption
+      return Date.parse(last_adoption.disbursed_at.to_s)
+    else
+      return nil
+    end
+  end
+
   def hours_effective
-    find_volunteer_tasks(Date.today - 365).inject(0.0) do |total,task|
-      unless task.type_of_task?('build')
-        total += task.effective_duration
-      end
-      total
+    find_volunteer_tasks(date_of_last_adoption).inject(0.0) do |total,task|
+      total += task.effective_duration
     end
   end
 

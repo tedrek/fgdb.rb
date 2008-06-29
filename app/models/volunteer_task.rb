@@ -26,7 +26,11 @@ class VolunteerTask < ActiveRecord::Base
   end
 
   def effective_duration
-    duration * volunteer_task_type.hours_multiplier
+    if volunteer_task_type
+      return (duration * volunteer_task_type.hours_multiplier)
+    else
+      return duration
+    end
   end
 
   def type_of_task?(type)
