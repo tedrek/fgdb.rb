@@ -5,6 +5,7 @@
   <div class="form-element">
     <% filters = {} %>
     <% filters['date_range'] = date_or_date_range_picker('defaults') %>
+    <% filters['id'] = text_field('defaults', 'id') %>
     <% filters['contact_type'] = collection_select("defaults", "contact_type", ContactType.find(:all), "id", "description") %>
     <%= multiselect_of_form_elements( 'defaults', filters ) %>
   </div>
@@ -13,6 +14,6 @@
       <input type="submit" value="Find Contacts" />
     </p>
   <% end %>
-  <h3>Lookup a Contact</h3>
+  <h3>Look up a Contact</h3>
   <%= contact_field('@contact', 'id') %>
 
