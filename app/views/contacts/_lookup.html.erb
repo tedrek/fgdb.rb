@@ -1,8 +1,7 @@
   <h3>Search for a Contact</h3>
   <% form_tag( { :controller => '/contacts', :action => 'lookup_results' } ) do %>
-    <div id="<%= '#element_messages_id(???)' %>" class="messages-container"></div>
 
-  <div class="form-element">
+  <div class="form-element" style="width: 100%;">
     <% filters = {} %>
     <% filters['date_range'] = date_or_date_range_picker('defaults') %>
     <% filters['id'] = text_field('defaults', 'id') %>
@@ -14,6 +13,6 @@
       <input type="submit" value="Find Contacts" />
     </p>
   <% end %>
+
   <h3>Look up a Contact</h3>
   <%= contact_field('@contact', 'id') %>
-
