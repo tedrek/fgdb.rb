@@ -1,0 +1,16 @@
+  <table class="list">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Date Created</th>
+    </tr>
+  <% line=0; for c in @contacts %>
+    <tr <%= (line+=1) % 2 == 0 ? 'class="even"' : ''%>>
+      <td><%= link_to c.id, :action => "lookup", :controller => "contacts", :contact_id => c.id %></td>
+      <td><%= c.display_name %></td>
+      <td><%= c.created_at %></td>
+    </tr>
+  <% end %>
+  </table>
+
+<%= render :partial => "lookup" %>

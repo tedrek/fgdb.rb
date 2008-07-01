@@ -1,5 +1,1 @@
-<% form_tag( { :controller => '/contacts', :action => 'lookup' }, { :id => 'tasty_test' } ) do %>
-  <div class="form-element">
-    <%= contact_field('@thing', 'contact') %>
-  </div>
-<% end -%>
+<%= render :partial => "lookup" %>

@@ -36,10 +36,29 @@ class ContactsController < ApplicationController
   public
 
   def index
+    lookup
     render :action => 'lookup'
   end
 
   def lookup
+    @defaults = Conditions.new
+    @defaults.date_range_enabled = "false"
+    @defaults.id_enabled = "true"
+
+    if params[:contact_id]
+      @contact = Contact.find_by_id(params[:contact_id])
+    end
+  end
+
+  def lookup_results
+    @defaults = Conditions.new
+
+    if params[:contact]
+      params[:defaults][:id] = params[:contact][:id]
+    end
+
+    @defaults.apply_conditions(params[:defaults])
+    @contacts = Contact.find(:all, :conditions => @defaults.conditions(Contact), :order => "id ASC")
   end
 
   def update_display_area
