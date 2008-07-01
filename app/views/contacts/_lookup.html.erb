@@ -7,12 +7,12 @@
     <% filters['id'] = text_field('defaults', 'id') %>
     <% filters['contact_type'] = collection_select("defaults", "contact_type", ContactType.find(:all), "id", "description") %>
     <%= multiselect_of_form_elements( 'defaults', filters ) %>
-  </div>
-
-    <p class="form-footer">
+    <div class="form-footer">
       <input type="submit" value="Find Contacts" />
-    </p>
+    </div>
+  </div>
   <% end %>
 
   <h3>Look up a Contact</h3>
   <%= contact_field('@contact', 'id') %>
+
