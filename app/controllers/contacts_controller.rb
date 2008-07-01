@@ -42,8 +42,6 @@ class ContactsController < ApplicationController
 
   def lookup
     @defaults = Conditions.new
-    @defaults.date_range_enabled = "false"
-    @defaults.id_enabled = "true"
 
     if params[:contact_id]
       @contact = Contact.find_by_id(params[:contact_id])
