@@ -14,7 +14,7 @@ class Conditions
 
   attr_accessor :payment_method_id
 
-  attr_accessor :transaction_id
+  attr_accessor :id
 
   attr_accessor :needs_attention
 
@@ -26,7 +26,7 @@ class Conditions
 
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
 
-  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :transaction_id_enabled, :anonymous_enabled, :payment_amount_enabled
+  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -53,7 +53,7 @@ class Conditions
 
   def conditions(klass)
     conds = %w[
-      transaction_id needs_attention anonymous contact
+      id needs_attention anonymous contact
       unresolved_invoices date_range payment_method
       payment_amount gizmo_type_id
     ].inject([""]) {|condition_array,this_condition|
@@ -99,8 +99,8 @@ class Conditions
     end
   end
 
-  def transaction_id_conditions(klass)
-    return ["#{klass.table_name}.id = ?", @transaction_id]
+  def id_conditions(klass)
+    return ["#{klass.table_name}.id = ?", @id]
   end
   
   def needs_attention_conditions(klass)

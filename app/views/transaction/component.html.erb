@@ -91,7 +91,7 @@
     <% end %>
     <% filters['gizmo_type_id'] = select('conditions', 'gizmo_type_id',
          GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}) %>
-    <% filters['transaction_id'] = text_field('conditions', 'transaction_id') %>
+    <% filters['id'] = text_field('conditions', 'id') %>
     <% filters['needs_attention'] = "" %>
     <%= multiselect_of_form_elements('conditions', filters ) %>
 
