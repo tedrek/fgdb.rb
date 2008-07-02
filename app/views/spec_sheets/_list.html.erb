@@ -15,8 +15,7 @@
   <tr>
     <td><%= link_to report.id.to_s, {:action => "list_for_report", :id => report.id} %></td>
     <td>
-<!-- s/|| report.contact_id/ once it gets into fgdb.rb -->
-<% if thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) || report.contact_id %>
+<% if thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) %>
 <%= link_to thing, {:action => "list_for_contact", :id => report.contact_id} %>
 <% else %>
 <%= "Unknown" %>

@@ -1,2 +1,2 @@
-<h1>Listing all reports for <%= @contact && @contact.display_name || @reports[0].contact_id %> <!-- s/all_of_that/@contact.display_name/ once it gets into fgdb.rb --></h1>
+<h1>Listing all reports for <%= @contact.display_name %></h1>
 <%= render :partial => 'list', 'reports' => @reports %>

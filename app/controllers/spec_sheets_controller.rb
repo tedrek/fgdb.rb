@@ -4,7 +4,7 @@ class SpecSheetsController < ApplicationController
   MINIMUM_COMPAT_VERSION=2
 
   def check_compat
-    if !params[:version] || params[:version].empty? || params[:version].to_i < MINIMUM_COMPAT_VERSION  
+    if !params[:version] || params[:version].empty? || params[:version].to_i < MINIMUM_COMPAT_VERSION
       render :xml => {:compat => false, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
     else
       render :xml => {:compat => true}
@@ -45,20 +45,20 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => "index", :error => "Please enter something")
       return
     end
-    if (params[:id][0].is_a?(String) && params[:id][0].length > 10) || !(@contact = Contact.find_by_id(params[:id])) && false # s/&& false// once it gets into fgdb.rb 
-      redirect_to(:action => "index", :error => "That contact does not exist") 
+    if (params[:id][0].is_a?(String) && params[:id][0].length > 10) || !(@contact = Contact.find_by_id(params[:id]))
+      redirect_to(:action => "index", :error => "That contact does not exist")
       return
     end
     @reports = SpecSheet.find_all_by_contact_id(params[:id], :order => "id")
     if @reports.length == 0
-      redirect_to(:action => "index", :error => "That contact has no reports") 
+      redirect_to(:action => "index", :error => "That contact has no reports")
       return
-    end   
+    end
   end
 
   def list_for_system
     if params[:id]==nil||params[:id]==[""]
-      redirect_to(:action => "index", :error => "Please enter something") 
+      redirect_to(:action => "index", :error => "Please enter something")
       return
     end
     if (params[:id][0].is_a?(String) && params[:id][0].length > 10) || !(@system = System.find_by_id(params[:id]))
@@ -67,14 +67,14 @@ class SpecSheetsController < ApplicationController
     end
     @reports = SpecSheet.find_all_by_system_id(params[:id], :order => "id")
     if @reports.length == 0
-      redirect_to(:action => "index", :error => "That system has no reports") 
+      redirect_to(:action => "index", :error => "That system has no reports")
       return
     end
   end
 
   def list_for_report
     if params[:id]==nil||params[:id]==[""]
-      redirect_to(:action => "index", :error => "Please enter something") 
+      redirect_to(:action => "index", :error => "Please enter something")
       return
     end
     if (params[:id][0].is_a?(String) && params[:id][0].length > 10)
@@ -151,7 +151,7 @@ class SpecSheetsController < ApplicationController
   end
 
   def create
-    new_common_create_stuff("new", "show") 
+    new_common_create_stuff("new", "show")
   end
 
   def xml_create
@@ -164,7 +164,7 @@ class SpecSheetsController < ApplicationController
       :my_file => params[:my_file],
       :os => params[:os]
     }
-    new_common_create_stuff("xml_index", "xml_show") 
+    new_common_create_stuff("xml_index", "xml_show")
   end
 
   def update
@@ -195,7 +195,7 @@ class SpecSheetsController < ApplicationController
       super
     end
   end
-  
+
   def model
     @property_type.classify.constantize
   end

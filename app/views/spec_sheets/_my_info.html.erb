@@ -16,7 +16,7 @@
           Technician: 
         </td>
         <td>
-          <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || @report.contact_id || "Unknown" %> <!-- s/|| @report.contact_id ||/|| once it gets into fgdb.rb -->
+          <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
         </td>
       </tr>
       <tr>
