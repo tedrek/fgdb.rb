@@ -1,4 +1,8 @@
-  <h3>Search for a Contact</h3>
+  <h3>Search for a contact</h3>
+  <%= contact_field('@contact', 'id') %>
+
+  <h3>Search by conditions</h3>
+
   <% form_tag( { :controller => '/contacts', :action => 'lookup_results' } ) do %>
 
   <div class="form-element" style="width: 100%;">
@@ -13,6 +17,4 @@
   </div>
   <% end %>
 
-  <h3>Look up a Contact</h3>
-  <%= contact_field('@contact', 'id') %>
 
