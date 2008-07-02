@@ -9,6 +9,8 @@
     <% filters = {} %>
     <% filters['date_range'] = date_or_date_range_picker('defaults') %>
     <% filters['id'] = text_field('defaults', 'id') %>
+    <% filters['city'] = text_field('defaults', 'city') %>
+    <% filters['postal_code'] = text_field('defaults', 'postal_code') %>
     <% filters['contact_type'] = collection_select("defaults", "contact_type", ContactType.find(:all), "id", "description") %>
     <%= multiselect_of_form_elements( 'defaults', filters ) %>
     <div class="form-footer">

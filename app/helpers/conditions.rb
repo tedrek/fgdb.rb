@@ -28,7 +28,9 @@ class Conditions
 
   attr_accessor :contact_type
 
-  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled
+  attr_accessor :city, :postal_code
+
+  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -57,7 +59,7 @@ class Conditions
     conds = %w[
       id contact_type needs_attention anonymous contact
       unresolved_invoices date_range payment_method
-      payment_amount gizmo_type_id
+      payment_amount gizmo_type_id postal_code city
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -103,6 +105,14 @@ class Conditions
 
   def id_conditions(klass)
     return ["#{klass.table_name}.id = ?", @id]
+  end
+
+  def postal_code_conditions(klass)
+    return ["#{klass.table_name}.postal_code ILIKE '?%'", @postal_code]
+  end
+
+  def city_conditions(klass)
+    return ["#{klass.table_name}.city ILIKE ?", @city]
   end
 
   def contact_type_conditions(klass)
