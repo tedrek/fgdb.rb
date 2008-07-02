@@ -11,6 +11,7 @@
     <% filters['id'] = text_field('defaults', 'id') %>
     <% filters['city'] = text_field('defaults', 'city') %>
     <% filters['postal_code'] = text_field('defaults', 'postal_code') %>
+    <% filters['phone_number'] = text_field('defaults', 'phone_number') %>
     <% filters['contact_type'] = collection_select("defaults", "contact_type", ContactType.find(:all), "id", "description") %>
     <%= multiselect_of_form_elements( 'defaults', filters ) %>
     <div class="form-footer">

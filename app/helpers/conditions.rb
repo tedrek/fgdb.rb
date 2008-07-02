@@ -28,9 +28,9 @@ class Conditions
 
   attr_accessor :contact_type
 
-  attr_accessor :city, :postal_code
+  attr_accessor :city, :postal_code, :phone_number
 
-  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled
+  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled, :phone_number_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -59,7 +59,7 @@ class Conditions
     conds = %w[
       id contact_type needs_attention anonymous contact
       unresolved_invoices date_range payment_method
-      payment_amount gizmo_type_id postal_code city
+      payment_amount gizmo_type_id postal_code city phone_number
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -113,6 +113,11 @@ class Conditions
 
   def city_conditions(klass)
     return ["#{klass.table_name}.city ILIKE ?", @city]
+  end
+
+  def phone_number_conditions(klass)
+    phone_number = @phone_number.to_s.gsub(/[^[:digit:]]/, "").sub(/^(.{3})(.{3})(.{4})$/, "%\\1%\\2%\\3%")
+    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE description ILIKE '%phone%') AND description ILIKE ?)", phone_number]
   end
 
   def contact_type_conditions(klass)
