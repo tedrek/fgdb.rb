@@ -15,11 +15,16 @@ class Contact < ActiveRecord::Base
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
 
-  def phone_number
-    contact_methods.each {|x|
-      return x.description if (x.contact_method_type.description =~ /phone/ and x.ok == true)
+  def phone_numbers
+    a = []
+    contact_methods.map {|x|
+      a << x.description if (x.contact_method_type.description =~ /phone/ and x.ok == true)
     }
-    return nil
+    a
+  end
+
+  def phone_number
+    phone_numbers.first
   end
 
   def is_organization?
