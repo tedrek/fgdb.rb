@@ -18,7 +18,7 @@ class Contact < ActiveRecord::Base
   def phone_numbers
     a = []
     contact_methods.map {|x|
-      a << x.description if (x.contact_method_type.description =~ /phone/ and x.ok == true)
+      a << x.description if (x.contact_method_type.description =~ /phone|fax/ and x.ok == true)
     }
     a
   end

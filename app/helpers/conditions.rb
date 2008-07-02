@@ -116,8 +116,12 @@ class Conditions
   end
 
   def phone_number_conditions(klass)
-    phone_number = @phone_number.to_s.gsub(/[^[:digit:]]/, "").sub(/^(.{3})(.{3})(.{4})$/, "%\\1%\\2%\\3%")
-    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE description ILIKE '%phone%') AND description ILIKE ?)", phone_number]
+    phone_number = @phone_number.to_s.gsub(/[^[:digit:]]/, "")
+    if phone_number.length != 10
+      return [""]
+    end
+    phone_number = phone_number.sub(/^(.{3})(.{3})(.{4})$/, "%\\1%\\2%\\3%")
+    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE (description ILIKE '%phone%') OR (description ILIKE '%fax%')) AND description ILIKE ?)", phone_number]
   end
 
   def contact_type_conditions(klass)
