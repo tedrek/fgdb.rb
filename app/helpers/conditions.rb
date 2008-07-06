@@ -30,7 +30,9 @@ class Conditions
 
   attr_accessor :city, :postal_code, :phone_number
 
-  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled, :phone_number_enabled
+  attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
+
+  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled, :phone_number_enabled, :volunteer_hours_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -57,9 +59,10 @@ class Conditions
 
   def conditions(klass)
     conds = %w[
-      id contact_type needs_attention anonymous contact
+      id contact_type needs_attention anonymous
       unresolved_invoices date_range payment_method
-      payment_amount gizmo_type_id postal_code city phone_number
+      payment_amount gizmo_type_id postal_code
+      city phone_number contact volunteer_hours
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -100,6 +103,22 @@ class Conditions
       return ["payments.amount_cents <= ?", @payment_amount_le.to_s.to_cents]
     when 'exact'
       return ["payments.amount_cents = ?", @payment_amount_exact.to_s.to_cents]
+    end
+  end
+
+  def volunteer_hours_conditions(klass)
+    first_part = "id IN (SELECT contact_id FROM volunteer_tasks vt JOIN contacts c ON c.id=vt.contact_id GROUP BY 1,c.next_milestone HAVING"
+    case @volunteer_hours_type
+    when 'between'
+      return ["#{first_part} sum(duration) BETWEEN ? AND ?)",
+               @volunteer_hours_low,
+               @payment_amount_high]
+    when '>='
+      return ["#{first_part} sum(duration) >= ?)", @volunteer_hours_ge]
+    when '<='
+      return ["#{first_part} sum(duration) <= ?)", @volunteer_hours_le]
+    when 'exact'
+      return ["#{first_part} sum(duration) = ?)", @volunteer_hours_exact]
     end
   end
 
