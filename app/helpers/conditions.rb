@@ -28,11 +28,11 @@ class Conditions
 
   attr_accessor :contact_type
 
-  attr_accessor :city, :postal_code, :phone_number
+  attr_accessor :city, :postal_code, :phone_number, :email
 
   attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
 
-  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled, :phone_number_enabled, :volunteer_hours_enabled
+  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled, :phone_number_enabled, :volunteer_hours_enabled, :email_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -63,6 +63,7 @@ class Conditions
       unresolved_invoices date_range payment_method
       payment_amount gizmo_type_id postal_code
       city phone_number contact volunteer_hours
+      email
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -134,9 +135,14 @@ class Conditions
     return ["#{klass.table_name}.city ILIKE ?", @city]
   end
 
+  def email_conditions(klass)
+    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE description ILIKE '%email%') AND description ILIKE ?)", @email]
+  end
+
   def phone_number_conditions(klass)
     phone_number = @phone_number.to_s.gsub(/[^[:digit:]]/, "")
     if phone_number.length != 10
+      @phone_number = "INVALID PHONE NUMBER(MUST BE 10 DIGITS LONG)...IGNORED"
       return [""]
     end
     phone_number = phone_number.sub(/^(.{3})(.{3})(.{4})$/, "%\\1%\\2%\\3%")
@@ -146,7 +152,7 @@ class Conditions
   def contact_type_conditions(klass)
     return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type]
   end
-  
+
   def needs_attention_conditions(klass)
     return ["#{klass.table_name}.needs_attention = 't'"]
   end

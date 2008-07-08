@@ -14,6 +14,7 @@
     <% filters['city'] = text_field('defaults', 'city') %>
     <% filters['postal_code'] = text_field('defaults', 'postal_code') %>
     <% filters['phone_number'] = text_field('defaults', 'phone_number') %>
+    <% filters['email'] = text_field('defaults', 'email') %>
     <% filters['contact_type'] = collection_select("defaults", "contact_type", ContactType.find(:all), "id", "description") %>
     <% filters['volunteer_hours'] = select_visibility(
       'defaults',
