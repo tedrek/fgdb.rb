@@ -52,8 +52,7 @@ choose one of the following: skeletal metadata, or full test data:
 
  $> rake db:metadata:load
    :OR:
- $> VERSION=`ls db/version_*_test_data.sql.gz | tail -n 1 | sed s*db/version_**g | sed s*_test_data.sql.gz**g ` rake db:migrate
- $> zcat `ls db/version_*_test_data.sql.gz | tail -n 1` | psql -h localhost -U SOMEUSER fgdb_production
+ $> zcat db/devel_data.sql.gz | psql -h localhost -U SOMEUSER fgdb_production
  $> rake db:migrate
 
 run some tests to see if things look okay:
