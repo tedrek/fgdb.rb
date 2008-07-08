@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+def add(list, val)
+  list << val if val
+end
+
+i=0
+names = {}
+Contact.find(:all).each do |c|
+  if c.first_name || c.surname
+    address = "#{c.extra_address} #{c.address} #{c.postal_code}".downcase().gsub(/\b(st|ave|av|rd|road)\b/, "")
+    #name = "#{c.first_name} #{c.surname} #{c.organization} #{address}".downcase().gsub(/[aeiou]|[^a-z0-9\s]/, "")
+    name = "#{c.first_name} #{c.surname} #{c.organization} #{address}".downcase().gsub(/[^a-z0-9\s]/, "")
+    rv = names[name]
+    if rv == nil
+      names[name] = [c.id]
+    else
+      names[name] << c.id
+    end
+  end
+  i+=1
+  puts "loaded #{c.id}" if i%1000==0
+end
+
+names = names.select {|k,v|v.size()>1}
+names.each do |k,v|
+  v.each do |id|
+    c = Contact.find(id)
+    puts "#{c.id} #{c.first_name} #{c.surname} --#{c.extra_address}-- --#{c.address}-- #{c.city} #{c.postal_code} #{c.contact_methods.map(&:description).join(",")}"
+    puts
+  end
+end
+
+puts "there are #{names.size} potential matches"
+
