@@ -1,0 +1,104 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+def add(list, val)
+  list << val if val
+end
+
+def dump(contact)
+  puts "#{contact.id}"
+  puts " #{contact.first_name} #{contact.middle_name} #{contact.surname}"
+  puts " #{contact.organization}" if contact.organization
+  puts " " + contact.contact_methods.map(&:description).join(",")
+end
+
+first_names = []
+middle_names = []
+last_names = []
+organizations = []
+extra_addresses = []
+addresses = []
+cities = []
+states = []
+zips = []
+countries = []
+
+contact_methods = {}
+ContactMethodType.find(:all).each {|x| contact_methods[x.id] = []}
+
+all = Contact.find(:all)
+
+i = 0
+size = all.size()
+all.each do |contact|
+  if (i%1000==0)
+    puts "loading #{i}/#{size}"
+  end
+  add(first_names, contact.first_name)
+  add(middle_names, contact.middle_name)
+  add(last_names, contact.surname)
+  add(organizations, contact.organization)
+  add(extra_addresses, contact.extra_address)
+  add(addresses, contact.address)
+  add(cities, contact.city)
+  add(states, contact.state_or_province)
+  add(zips, contact.postal_code)
+  add(countries, contact.country)
+  contact.contact_methods.each do |method|
+    add(contact_methods[method.contact_method_type_id], method.description)
+  end
+  i += 1
+end
+
+first_names = first_names.sort_by {rand}
+middle_names = middle_names.sort_by {rand}
+last_names = last_names.sort_by {rand}
+organizations = organizations.sort_by {rand}
+extra_addresses = extra_addresses.sort_by {rand}
+addresses = addresses.sort_by {rand}
+cities = cities.sort_by {rand}
+states = states.sort_by {rand}
+zips = zips.sort_by {rand}
+countries = countries.sort_by {rand}
+
+contact_methods.each {|x,y| contact_methods[x] = contact_methods[x].sort_by{rand}}
+
+digits = "0123456789".split("")
+chars = "abcdefghijklmnopqrstuvwxyz".split("")
+
+i = 0
+Contact.find(:all, :order => "id").each do |contact|
+  
+  if (i % 1000 == 0)
+    puts "Contact: #{contact.id}"
+    dump(contact)
+  end
+
+  contact.first_name = first_names.pop() if contact.first_name
+  contact.middle_name = middle_names.pop() if contact.middle_name
+  contact.surname = last_names.pop() if contact.surname
+  contact.organization = organizations.pop() if contact.organization
+  contact.extra_address = extra_addresses.pop() if contact.extra_address
+  contact.address = addresses.pop() if contact.address
+  contact.city = cities.pop() if contact.city
+  contact.state_or_province = states.pop() if contact.state_or_province
+  contact.postal_code = zips.pop() if contact.postal_code
+  contact.country = countries.pop() if contact.country
+  contact.contact_methods.each do |method|
+    if method.description
+      x = contact_methods[method.contact_method_type_id].pop()
+      x = x.gsub(/\d/) {digits[rand(digits.size)]}
+      x = x.gsub(/@(.*)\.([^.]+)/) {"@"+("x"*$1.size)+"."+$2}
+      method.description = x
+    end
+  end
+  contact.notes = contact.notes.gsub(/[a-zA-Z]/) {chars[rand(chars.size)]} if contact.notes
+
+  if (i % 1000 == 0)
+    dump(contact)
+  end
+
+  i += 1
+  contact.save()
+end
