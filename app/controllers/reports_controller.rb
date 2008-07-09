@@ -266,7 +266,6 @@ class ReportsController < ApplicationController
 
   def volunteers
     @defaults = Conditions.new
-    @defaults.date_range_enabled = "false"
     @defaults.contact_enabled = "true"
   end
 
@@ -318,7 +317,6 @@ class ReportsController < ApplicationController
 
   def hours
     @defaults = Conditions.new
-    @defaults.date_range_enabled = "false"
     @defaults.contact_enabled = "true"
   end
 
