@@ -20,6 +20,21 @@ class Conditions
     @occured_at_month = Date.today
     @occured_at_year = Date.today
 
+    @worked_at_date = Date.today
+    @worked_at_date_type = 'daily'
+    @worked_at_month = Date.today
+    @worked_at_year = Date.today
+
+    @bought_at_date = Date.today
+    @bought_at_date_type = 'daily'
+    @bought_at_month = Date.today
+    @bought_at_year = Date.today
+
+    @donated_at_date = Date.today
+    @donated_at_date_type = 'daily'
+    @donated_at_month = Date.today
+    @donated_at_year = Date.today
+
     @payment_method_id = PaymentMethod.cash.id
   end
 
@@ -27,7 +42,9 @@ class Conditions
   attr_accessor :recycled_at_date, :recycled_at_date_type, :recycled_at_start_date, :recycled_at_end_date, :recycled_at_month, :recycled_at_year, :recycled_at_enabled
   attr_accessor :disbursed_at_date, :disbursed_at_date_type, :disbursed_at_start_date, :disbursed_at_end_date, :disbursed_at_month, :disbursed_at_year, :disbursed_at_enabled
   attr_accessor :occured_at_date, :occured_at_date_type, :occured_at_start_date, :occured_at_end_date, :occured_at_month, :occured_at_year, :occured_at_enabled
-#  attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
+  attr_accessor :worked_at_date, :worked_at_date_type, :worked_at_start_date, :worked_at_end_date, :worked_at_month, :worked_at_year, :worked_at_enabled
+  attr_accessor :bought_at_date, :bought_at_date_type, :bought_at_start_date, :bought_at_end_date, :bought_at_month, :bought_at_year, :bought_at_enabled
+  attr_accessor :donated_at_date, :donated_at_date_type, :donated_at_start_date, :donated_at_end_date, :donated_at_month, :donated_at_year, :donated_at_enabled
 
   attr_accessor :contact_id, :contact_enabled
 
@@ -63,13 +80,9 @@ class Conditions
   end
 
   def apply_conditions(options)
-    begin
-      options.each do |name,val|
-        val = val.to_i if( val.to_i.to_s == val )
-        self.send(name+"=", val)
-      end
-    rescue NoMethodError
-      nil
+    options.each do |name,val|
+      val = val.to_i if( val.to_i.to_s == val )
+      self.send(name+"=", val)
     end
     return options
   end
@@ -81,6 +94,7 @@ class Conditions
       payment_amount gizmo_type_id postal_code
       city phone_number contact volunteer_hours
       email disbursed_at donated_at occured_at
+      worked_at donated_at bought_at
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -183,6 +197,24 @@ class Conditions
             " AND payments.payment_method_id = ?",
             PaymentMethod.find_by_description('invoice')
            ]
+  end
+
+  def worked_at_conditions(klass)
+    a = date_range(klass, 'worked_at')
+    b = a[0]
+    a[0] = "id IN (SELECT contact_id FROM volunteer_tasks WHERE #{b})"
+  end
+
+  def bought_at_conditions(klass)
+    a = date_range(klass, 'worked_at')
+    b = a[0]
+    a[0] = "id IN (SELECT contact_id FROM sales WHERE #{b})"
+  end
+
+  def donated_at_conditions(klass)
+    a = date_range(klass, 'worked_at')
+    b = a[0]
+    a[0] = "id IN (SELECT contact_id FROM donations WHERE #{b})"
   end
 
   def created_at_conditions(klass)
