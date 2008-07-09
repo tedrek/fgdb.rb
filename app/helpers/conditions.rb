@@ -210,7 +210,7 @@ class Conditions
       end_date = Time.local(end_year, end_month, 1)
     when 'arbitrary'
       start_date = Date.parse(eval("@#{field}_start_date").to_s)
-      end_date = Date.parse(@end_date.to_s) + 1
+      end_date = Date.parse(eval("@#{field}_end_date").to_s) + 1
     end
     column_name = field
     return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
