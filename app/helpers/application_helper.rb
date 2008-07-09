@@ -139,24 +139,21 @@ module ApplicationHelper
 
   # the object named "@#{obj_name}" must be able to respond to all the
   # fields listed below, or you should provide alternate fieldnames.
-  def date_or_date_range_picker(obj_name, fields = {})
+  def date_or_date_range_picker(obj_name, field_name)
     date_types = []
     obj = eval( "@#{obj_name}" )
-    fields = { :date => 'date',
-      :start_date => 'start_date', :end_date => 'end_date',
-      :month => 'month', :year => 'year',
-      :date_type => 'date_type' }.merge(fields)
 
     # daily
-    date_types << ['daily', calendar_box(obj_name, fields[:date],{},{:showOthers => true})]
-    date_types << ['monthly', select_month(obj.send(fields[:month]), :prefix => obj_name) +
-      select_year(obj.send(fields[:year]), :prefix => obj_name, :start_year => 2000, :end_year => Date.today.year)]
+    date_types << ['daily', calendar_box(obj_name, field_name + '_date',{},{:showOthers => true})]
+    # monthly
+    date_types << ['monthly', select_month(obj.send(field_name + '_month'), :prefix => obj_name) +
+      select_year(obj.send(field_name + '_year'), :prefix => obj_name, :start_year => 2000, :end_year => Date.today.year)]
     # arbitrary
     date_types << ['arbitrary', "From: %s To: %s" %
-      [ calendar_box(obj_name, fields[:start_date],{},{:showOthers => true}),
-        calendar_box(obj_name, fields[:end_date],{},{:showOthers => true}) ]]
+      [ calendar_box(obj_name, field_name + '_start_date',{},{:showOthers => true}),
+        calendar_box(obj_name, field_name + '_end_date',{},{:showOthers => true}) ]]
 
-    return select_visibility(obj_name, fields[:date_type], date_types)
+    return select_visibility(obj_name, field_name + '_date_type', date_types)
   end
 
   def time_or_time_range_picker(obj_name, fields)

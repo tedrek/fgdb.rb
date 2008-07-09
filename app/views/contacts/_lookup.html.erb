@@ -9,7 +9,7 @@
 
   <div class="form-element" style="width: 100%;">
     <% filters = {} %>
-    <% filters['date_range'] = date_or_date_range_picker('defaults') %>
+    <% filters['created_at'] = date_or_date_range_picker('defaults', 'created_at') %>
     <% filters['id'] = text_field('defaults', 'id') %>
     <% filters['city'] = text_field('defaults', 'city') %>
     <% filters['postal_code'] = text_field('defaults', 'postal_code') %>

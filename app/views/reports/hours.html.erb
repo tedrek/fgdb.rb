@@ -1,6 +1,6 @@
 <div class="form-element">
   <% filters = {} %>
-  <% filters['date_range'] = date_or_date_range_picker('defaults') %>
+  <% filters['created_at'] = date_or_date_range_picker('defaults', 'created_at') %>
   <% if (has_role?('CONTACT_MANAGER'))
        filters['contact'] =
          contact_field('@defaults', 'contact_id',

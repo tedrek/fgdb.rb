@@ -1,14 +1,15 @@
 class Conditions
   def initialize
-    @date_range_enabled = "true"
-    @date = Date.today
-    @date_type = 'daily'
-    @month = Date.today
-    @year = Date.today
+    @created_at_enabled = "true"
+    @created_at_date = Date.today
+    @created_at_date_type = 'daily'
+    @created_at_month = Date.today
+    @created_at_year = Date.today
     @payment_method_id = PaymentMethod.cash.id
   end
 
-  attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
+  attr_accessor :created_at_date, :created_at_date_type, :created_at_start_date, :created_at_end_date, :created_at_month, :created_at_year
+#  attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
 
   attr_accessor :contact_id
 
@@ -32,7 +33,7 @@ class Conditions
 
   attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
 
-  attr_accessor :date_range_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled, :phone_number_enabled, :volunteer_hours_enabled, :email_enabled
+  attr_accessor :created_at_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled, :phone_number_enabled, :volunteer_hours_enabled, :email_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -60,7 +61,7 @@ class Conditions
   def conditions(klass)
     conds = %w[
       id contact_type needs_attention anonymous
-      unresolved_invoices date_range payment_method
+      unresolved_invoices created_at payment_method
       payment_amount gizmo_type_id postal_code
       city phone_number contact volunteer_hours
       email
@@ -168,35 +169,42 @@ class Conditions
            ]
   end
 
-  def date_range_conditions(klass)
-    case @date_type
+  def created_at_conditions(klass)
+    date_range_conditions(klass)
+  end
+
+  def date_range_conditions(klass, field = 'created_at')
+    case eval("@#{field}_date_type")
     when 'daily'
-      start_date = Date.parse(@date.to_s)
+      start_date = Date.parse(eval("@#{field}_date").to_s)
       end_date = start_date + 1
     when 'monthly'
-      year = (@year || Date.today.year).to_i
-      start_date = Time.local(year, @month, 1)
-      if @month.to_i == 12
+      year = (eval("@#{field}_year") || Date.today.year).to_i
+      start_date = Time.local(year, eval("@#{field}_month"), 1)
+      if eval("@#{field}_month").to_i == 12
         end_month = 1
         end_year = year + 1
       else
-        end_month = 1 + @month.to_i
+        end_month = 1 + eval("@#{field}_month").to_i
         end_year = year
       end
       end_date = Time.local(end_year, end_month, 1)
     when 'arbitrary'
-      start_date = Date.parse(@start_date.to_s)
+      start_date = Date.parse(eval("@#{field}_start_date").to_s)
       end_date = Date.parse(@end_date.to_s) + 1
     end
-    case klass.to_s
-    when 'Disbursement'
-      column_name = 'disbursed_at'
-    when 'Recycling'
-      column_name = 'recycled_at'
-    when 'GizmoEvent'
-      column_name = 'occurred_at'
-    else
-      column_name = 'created_at'
+    column_name = field
+    if field=='created_at'
+      case klass.to_s
+      when 'Disbursement'
+        column_name = 'disbursed_at'
+      when 'Recycling'
+        column_name = 'recycled_at'
+      when 'GizmoEvent'
+        column_name = 'occurred_at'
+      else
+        column_name = 'created_at'
+      end
     end
     return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
              start_date, end_date ]
