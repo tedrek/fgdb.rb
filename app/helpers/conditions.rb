@@ -200,21 +200,24 @@ class Conditions
   end
 
   def worked_at_conditions(klass)
-    a = date_range(klass, 'worked_at')
+    a = date_range(VolunteerTask, 'date_performed')
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM volunteer_tasks WHERE #{b})"
+    a
   end
 
   def bought_at_conditions(klass)
-    a = date_range(klass, 'worked_at')
+    a = date_range(Sale, 'created_at')
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM sales WHERE #{b})"
+    a
   end
 
   def donated_at_conditions(klass)
-    a = date_range(klass, 'worked_at')
+    a = date_range(Donation, 'created_at')
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM donations WHERE #{b})"
+    a
   end
 
   def created_at_conditions(klass)
