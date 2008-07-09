@@ -2,6 +2,10 @@ class RecyclingsController < TransactionController
   before_filter :be_a_recycling
   before_filter :management_only, :only => ["destroy", "edit", "update"]
 
+  def default_condition
+    "recycled_at"
+  end
+
   def index
     update_params_filter()
     render :action => 'listing'

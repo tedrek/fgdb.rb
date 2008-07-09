@@ -29,6 +29,12 @@ class TransactionController < ApplicationController
   end
 
   def component
+    if @show_wrapper != false
+      params[:conditions] = {}
+      params[:conditions][(default_condition + "_enabled").to_sym] = "true"
+    end
+    @default_condition = default_condition
+    @controller_name = controller_name
     @show_wrapper = true if @show_wrapper.nil?
     @model = model
     @sort_sql = @model.default_sort_sql

@@ -52,7 +52,7 @@
         :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
         :update => component_id( refine_params ) do %>
     <% filters = {} %>
-    <% filters['created_at'] = date_or_date_range_picker('conditions', 'created_at') %>
+    <% filters[@default_condition] = date_or_date_range_picker('conditions', 'created_at') %>
     <% if @model.new.respond_to?( :contact_id ) %>
       <% filters['contact'] =
            contact_field('@conditions', 'contact_id',

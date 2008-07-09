@@ -1,39 +1,49 @@
 class Conditions
   def initialize
-    @created_at_enabled = "true"
     @created_at_date = Date.today
     @created_at_date_type = 'daily'
     @created_at_month = Date.today
     @created_at_year = Date.today
+
+    @recycled_at_date = Date.today
+    @recycled_at_date_type = 'daily'
+    @recycled_at_month = Date.today
+    @recycled_at_year = Date.today
+
+    @disbursed_at_date = Date.today
+    @disbursed_at_date_type = 'daily'
+    @disbursed_at_month = Date.today
+    @disbursed_at_year = Date.today
+
     @payment_method_id = PaymentMethod.cash.id
   end
 
-  attr_accessor :created_at_date, :created_at_date_type, :created_at_start_date, :created_at_end_date, :created_at_month, :created_at_year
+  attr_accessor :created_at_date, :created_at_date_type, :created_at_start_date, :created_at_end_date, :created_at_month, :created_at_year, :created_at_enabled
+  attr_accessor :recycled_at_date, :recycled_at_date_type, :recycled_at_start_date, :recycled_at_end_date, :recycled_at_month, :recycled_at_year, :recycled_at_enabled
+  attr_accessor :disbursed_at_date, :disbursed_at_date_type, :disbursed_at_start_date, :disbursed_at_end_date, :disbursed_at_month, :disbursed_at_year, :disbursed_at_enabled
 #  attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
 
-  attr_accessor :contact_id
+  attr_accessor :contact_id, :contact_enabled
 
-  attr_accessor :payment_method_id
+  attr_accessor :payment_method_id, :payment_method_enabled
 
-  attr_accessor :id
+  attr_accessor :id, :id_enabled
 
-  attr_accessor :needs_attention
+  attr_accessor :needs_attention, :needs_attention_enabled
 
-  attr_accessor :anonymous
+  attr_accessor :anonymous, :anonymous_enabled
 
-  attr_accessor :unresolved_invoices
+  attr_accessor :unresolved_invoices, :unresolved_invoices_enabled
 
-  attr_accessor :gizmo_type_id_enabled, :gizmo_type_id
+  attr_accessor :gizmo_type_id, :gizmo_type_id_enabled
 
-  attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
+  attr_accessor :payment_amount_enabled, :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
 
-  attr_accessor :contact_type
+  attr_accessor :contact_type, :contact_type_enabled
 
-  attr_accessor :city, :postal_code, :phone_number, :email
+  attr_accessor :city, :postal_code, :phone_number, :email, :city_enabled, :postal_code_enabled, :phone_number_enabled, :email_enabled
 
-  attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
-
-  attr_accessor :created_at_enabled, :needs_attention_enabled, :unresolved_invoices_enabled, :contact_enabled, :payment_method_enabled, :id_enabled, :anonymous_enabled, :payment_amount_enabled, :contact_type_enabled, :city_enabled, :postal_code_enabled, :phone_number_enabled, :volunteer_hours_enabled, :email_enabled
+  attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le, :volunteer_hours_enabled
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -64,7 +74,7 @@ class Conditions
       unresolved_invoices created_at payment_method
       payment_amount gizmo_type_id postal_code
       city phone_number contact volunteer_hours
-      email
+      email disbursed_at donated_at
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -170,10 +180,18 @@ class Conditions
   end
 
   def created_at_conditions(klass)
-    date_range_conditions(klass)
+    date_range(klass, 'created_at')
   end
 
-  def date_range_conditions(klass, field = 'created_at')
+  def recycled_at_conditions(klass)
+    date_range(klass, 'recycled_at')
+  end
+
+  def disbursed_at_conditions(klass)
+    date_range(klass, 'disbursed_at')
+  end
+
+  def date_range(klass, field)
     case eval("@#{field}_date_type")
     when 'daily'
       start_date = Date.parse(eval("@#{field}_date").to_s)
@@ -194,18 +212,6 @@ class Conditions
       end_date = Date.parse(@end_date.to_s) + 1
     end
     column_name = field
-    if field=='created_at'
-      case klass.to_s
-      when 'Disbursement'
-        column_name = 'disbursed_at'
-      when 'Recycling'
-        column_name = 'recycled_at'
-      when 'GizmoEvent'
-        column_name = 'occurred_at'
-      else
-        column_name = 'created_at'
-      end
-    end
     return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
              start_date, end_date ]
   end

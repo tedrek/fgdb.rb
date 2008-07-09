@@ -4,6 +4,10 @@ class DisbursementsController < TransactionController
   before_filter :authorized_only, :except => ["destroy", "edit", "update"]
   before_filter :management_only, :only => ["destroy", "edit", "update"]
 
+  def default_condition
+    "disbursed_at"
+  end
+
   def index
     update_params_filter()
     render :action => 'listing'
