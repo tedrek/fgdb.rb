@@ -146,8 +146,8 @@ module ApplicationHelper
     # daily
     date_types << ['daily', calendar_box(obj_name, field_name + '_date',{},{:showOthers => true})]
     # monthly
-    date_types << ['monthly', select_month(obj.send(field_name + '_month'), :prefix => obj_name) +
-      select_year(obj.send(field_name + '_year'), :prefix => obj_name, :start_year => 2000, :end_year => Date.today.year)]
+    date_types << ['monthly', select_month(obj.send(field_name + '_month'), :field_name => field_name + '_month', :prefix => obj_name) +
+      select_year(obj.send(field_name + '_year'), :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year)]
     # arbitrary
     date_types << ['arbitrary', "From: %s To: %s" %
       [ calendar_box(obj_name, field_name + '_start_date',{},{:showOthers => true}),
