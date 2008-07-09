@@ -42,6 +42,7 @@ class ContactsController < ApplicationController
 
   def lookup
     @defaults = Conditions.new
+    @defaults.created_at_enabled = true
 
     if params[:contact_id]
       @contact = Contact.find_by_id(params[:contact_id])
