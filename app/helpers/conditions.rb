@@ -15,12 +15,18 @@ class Conditions
     @disbursed_at_month = Date.today
     @disbursed_at_year = Date.today
 
+    @occured_at_date = Date.today
+    @occured_at_date_type = 'daily'
+    @occured_at_month = Date.today
+    @occured_at_year = Date.today
+
     @payment_method_id = PaymentMethod.cash.id
   end
 
   attr_accessor :created_at_date, :created_at_date_type, :created_at_start_date, :created_at_end_date, :created_at_month, :created_at_year, :created_at_enabled
   attr_accessor :recycled_at_date, :recycled_at_date_type, :recycled_at_start_date, :recycled_at_end_date, :recycled_at_month, :recycled_at_year, :recycled_at_enabled
   attr_accessor :disbursed_at_date, :disbursed_at_date_type, :disbursed_at_start_date, :disbursed_at_end_date, :disbursed_at_month, :disbursed_at_year, :disbursed_at_enabled
+  attr_accessor :occured_at_date, :occured_at_date_type, :occured_at_start_date, :occured_at_end_date, :occured_at_month, :occured_at_year, :occured_at_enabled
 #  attr_accessor :date, :date_type, :start_date, :end_date, :month, :year
 
   attr_accessor :contact_id, :contact_enabled
@@ -74,7 +80,7 @@ class Conditions
       unresolved_invoices created_at payment_method
       payment_amount gizmo_type_id postal_code
       city phone_number contact volunteer_hours
-      email disbursed_at donated_at
+      email disbursed_at donated_at occured_at
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
