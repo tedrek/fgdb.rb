@@ -200,43 +200,44 @@ class Conditions
   end
 
   def worked_at_conditions(klass)
-    a = date_range(VolunteerTask, 'date_performed')
+    a = date_range(VolunteerTask, 'date_performed', 'worked_at')
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM volunteer_tasks WHERE #{b})"
     a
   end
 
   def bought_at_conditions(klass)
-    a = date_range(Sale, 'created_at')
+    a = date_range(Sale, 'created_at', 'bought_at')
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM sales WHERE #{b})"
     a
   end
 
   def donated_at_conditions(klass)
-    a = date_range(Donation, 'created_at')
+    a = date_range(Donation, 'created_at', 'donated_at')
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM donations WHERE #{b})"
     a
   end
 
   def occurred_at_conditions(klass)
-    date_range(klass, 'occurred_at')
+    date_range(klass, 'occurred_at', 'occurred_at')
   end
 
   def created_at_conditions(klass)
-    date_range(klass, 'created_at')
+    date_range(klass, 'created_at', 'created_at')
   end
 
   def recycled_at_conditions(klass)
-    date_range(klass, 'recycled_at')
+    date_range(klass, 'recycled_at', 'recycled_at')
   end
 
   def disbursed_at_conditions(klass)
-    date_range(klass, 'disbursed_at')
+    date_range(klass, 'disbursed_at', 'disbursed_at')
   end
 
-  def date_range(klass, field)
+  def date_range(klass, db_field, condition_name)
+    field = condition_name
     case eval("@#{field}_date_type")
     when 'daily'
       start_date = Date.parse(eval("@#{field}_date").to_s)
@@ -256,7 +257,7 @@ class Conditions
       start_date = Date.parse(eval("@#{field}_start_date").to_s)
       end_date = Date.parse(eval("@#{field}_end_date").to_s) + 1
     end
-    column_name = field
+    column_name = db_field
     return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
              start_date, end_date ]
   end
