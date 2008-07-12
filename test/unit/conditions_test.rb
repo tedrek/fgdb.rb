@@ -15,9 +15,9 @@ class ConditionsTest < Test::Unit::TestCase
   def test_generating_month_conditions
     c = Conditions.new
     c.apply_conditions({
-                         "month"=>"4", "start_date"=>"", "end_date"=>"",
-                         "date"=>"2008-04-17", "date_type"=>"daily",
-                         "date_range_enabled"=>"true", "year"=>"2008"
+                         "occurred_at_month"=>"4", "occurred_at_start_date"=>"", "occurred_at_end_date"=>"",
+                         "occurred_at_date"=>"2008-04-17", "occurred_at_date_type"=>"daily",
+                         "occurred_at_enabled"=>"true", "occurred_at_year"=>"2008"
                        })
     assert_nothing_raised {c.conditions(GizmoEvent)}
     assert(/occurred_at/.match(c.conditions(GizmoEvent)[0]))
