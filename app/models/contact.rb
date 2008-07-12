@@ -15,6 +15,10 @@ class Contact < ActiveRecord::Base
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
 
+  def contact
+    self
+  end
+
   def phone_numbers
     a = []
     contact_methods.map {|x|
