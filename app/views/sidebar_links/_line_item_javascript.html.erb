@@ -2,6 +2,7 @@
 var line_item_id = <%= defined?(@lines) ? @lines.length : 0 %>;
 function do_it(type_id, price, qty){
 tr = document.createElement("tr");
+tr.className = "line";
 tr.appendChild(make_hidden("gizmo_type_id", gizmo_types[type_id], type_id));
 tr.appendChild(make_hidden("gizmo_count", qty, qty));
 tr.appendChild(make_hidden("unit_price", price, price));
@@ -14,6 +15,7 @@ td = document.createElement("td");
   amount = Math.floor(amount)/100.0;
   var mystring = "$" + amount;
 td.appendChild(document.createTextNode(mystring));
+td.className = "total_price";
 tr.appendChild(td);
 //$('line_items').appendChild(tr);
 $('line_items').lastChild.insertBefore(tr, $('line_items').lastChild.lastChild.previousSibling);
@@ -21,6 +23,7 @@ line_item_id += 1;
 }
 function make_hidden(name, display_value, value){
 hidden = document.createElement("input");
+hidden.class = name;
 hidden.name = 'line[-' + line_item_id + '][' + name + ']';
 hidden.value = value;
 hidden.type = 'hidden';
@@ -32,6 +35,14 @@ return td;
 function do_it2()
 {
 do_it($('gizmo_type_id').value, $('price').value, $('gizmo_count').value);
+}
+function get_total_price(){
+var total = 0;
+var arr = $('line_items').getElementsBySelector("tr.line");
+for (var x = 0; x < arr.length; x++) {
+total += parseInt(arr[x].getElementsBySelector("td.total_price").first().lastChild.data.replace(/\$/, ''));
+}
+return total;
 }
 </script>
   <% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) %>
