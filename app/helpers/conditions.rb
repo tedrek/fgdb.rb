@@ -15,6 +15,11 @@ class Conditions
     @disbursed_at_month = Date.today
     @disbursed_at_year = Date.today
 
+    @received_at_date = Date.today
+    @received_at_date_type = 'daily'
+    @received_at_month = Date.today
+    @received_at_year = Date.today
+
     @occurred_at_date = Date.today
     @occurred_at_date_type = 'daily'
     @occurred_at_month = Date.today
@@ -44,6 +49,7 @@ class Conditions
   attr_accessor :occurred_at_date, :occurred_at_date_type, :occurred_at_start_date, :occurred_at_end_date, :occurred_at_month, :occurred_at_year, :occurred_at_enabled
   attr_accessor :worked_at_date, :worked_at_date_type, :worked_at_start_date, :worked_at_end_date, :worked_at_month, :worked_at_year, :worked_at_enabled
   attr_accessor :bought_at_date, :bought_at_date_type, :bought_at_start_date, :bought_at_end_date, :bought_at_month, :bought_at_year, :bought_at_enabled
+  attr_accessor :received_at_date, :received_at_date_type, :received_at_start_date, :received_at_end_date, :received_at_month, :received_at_year, :received_at_enabled
   attr_accessor :donated_at_date, :donated_at_date_type, :donated_at_start_date, :donated_at_end_date, :donated_at_month, :donated_at_year, :donated_at_enabled
 
   attr_accessor :contact_id, :contact_enabled
@@ -94,7 +100,7 @@ class Conditions
       payment_amount gizmo_type_id postal_code
       city phone_number contact volunteer_hours
       email disbursed_at donated_at occurred_at
-      worked_at bought_at
+      worked_at bought_at received_at
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -203,6 +209,13 @@ class Conditions
     a = date_range(VolunteerTask, 'date_performed', 'worked_at')
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM volunteer_tasks WHERE #{b})"
+    a
+  end
+
+  def received_at_conditions(klass)
+    a = date_range(Disbursement, 'disbursed_at', 'received_at')
+    b = a[0]
+    a[0] = "id IN (SELECT contact_id FROM disbursements WHERE #{b})"
     a
   end
 
