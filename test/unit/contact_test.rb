@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContactTest < Test::Unit::TestCase
-  fixtures :contact_types, :contacts, :volunteer_task_types, :users, :roles, :roles_users
+  load_all_fixtures
 
   NEW_CONTACT = {:postal_code => 1, :created_by => 1}  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
   REQ_ATTR_NAMES        = %w( postal_code ) # name of fields that must be present, e.g. %(name description)
@@ -70,9 +70,9 @@ class ContactTest < Test::Unit::TestCase
     contact.volunteer_tasks = [an_hour_of_testing]
     assert_equal 1, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_assembly]
-    assert_equal 0, contact.adoption_hours
-    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly]
     assert_equal 1, contact.adoption_hours
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly]
+    assert_equal 2, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_programming(1)]
     assert_equal 2, contact.adoption_hours
     contact.volunteer_tasks = [an_hour_of_monitors, an_hour_of_programming(1)]
