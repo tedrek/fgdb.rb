@@ -26,7 +26,7 @@ class Test::Unit::TestCase
         contact_method_types contact_methods],
      %W[users roles roles_users],
      %W[volunteer_task_types community_service_types],
-     %W[disbursement_types disbursements],
+     # %W[disbursement_types disbursements],
      %W[payment_methods],
      %W[discount_schedules discount_schedules_gizmo_types sales],
      %W[donations],

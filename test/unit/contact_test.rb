@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContactTest < Test::Unit::TestCase
-  load_all_fixtures
+  fixtures :contact_types, :contacts, :volunteer_task_types, :users, :roles, :roles_users, :disbursement_types
 
   NEW_CONTACT = {:postal_code => 1, :created_by => 1}  # e.g. {:name => 'Test Contact', :description => 'Dummy'}
   REQ_ATTR_NAMES        = %w( postal_code ) # name of fields that must be present, e.g. %(name description)
