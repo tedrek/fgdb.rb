@@ -1,0 +1,22 @@
+<table id="line_items" style="width: 100%;">
+<tr>
+<th>type</th>
+<th>qty</th>
+<th>unit price</th>
+<th>total price</th>
+<th></th>
+<% if @lines %>
+<% for line in @lines %>
+<%= render :partial => 'thing', :locals => {:line => line} %>
+<% end %>
+<% end %>
+
+<tr id="form">
+<td><select id="gizmo_type_id">
+<%= options_from_collection_for_select(@gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
+</select></td>
+<td><input name="gizmo_count" id="gizmo_count"></td>
+<td><input name="price" id="price"></td>
+<td><a onClick="do_it2();">Click</a></td>
+</tr>
+</table>

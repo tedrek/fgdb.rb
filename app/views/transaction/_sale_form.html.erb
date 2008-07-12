@@ -44,18 +44,7 @@
 <div id="transaction_line_items_div">
   <div id="sale_gizmos" class="datalist line_item">
     <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-    <%= datalist_for( :gizmo_event, 'sale_gizmo_events',
-      @sale.gizmo_events, :new_defaults => { :sale_id => @sale.id },
-      :show_header => false, :render_aware => "sale_gizmo_event_form",
-      :add_text => "More gizmos",
-      :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');" +
-        remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
-          :with => "Form.serialize('#{element_form_id(@options)}')"),
-      :delete_content => image_tag('delete.png',
-                                  :alt => 'delete',
-                                  :title => 'delete'),
-      :inhibit_delete => true,
-      :new_defaults => @event_defaults || nil) %>
+    <%= render :partial => 'sale_gizmo_events' %>
   </div>
 
   <div id="sale_payments" class="datalist line_item">

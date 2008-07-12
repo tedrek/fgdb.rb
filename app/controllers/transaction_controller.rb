@@ -228,18 +228,26 @@ class TransactionController < ApplicationController
     @transaction_type + '_payments'
   end
 
-  def _apply_datalist_data(transaction)
+  def _apply_line_item_data(transaction)
     if transaction.respond_to? :payments
       apply_datalist_to_collection(payments_tag, transaction.payments)
       transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
     end
-    apply_datalist_to_collection(gizmo_events_tag, transaction.gizmo_events, gizmo_event_defaults)
+    if params[:line]
+      lines = params[:line]
+      @lines = []
+      for line in lines.values
+        ge = GizmoEvent.new(line.merge({:gizmo_context => @gizmo_context}))
+        @transaction.gizmo_events << ge
+        @lines << ge
+      end
+    end
     transaction.gizmo_events.delete_if {|gizmo| gizmo.mostly_empty?}
   end
 
   # common save logic
   def _save
-    _apply_datalist_data(@transaction)
+    _apply_line_item_data(@transaction)
 
     success = @transaction.save
     if success

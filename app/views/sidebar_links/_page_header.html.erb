@@ -25,6 +25,7 @@
     <% end -%>
     <%= javascript_tag js %>
   <% end -%>
+  <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>
 </head>
 <body>
 

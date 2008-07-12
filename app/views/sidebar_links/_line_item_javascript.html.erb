@@ -1,0 +1,43 @@
+<script>
+var line_item_id = <%= defined?(@lines) ? @lines.length : 0 %>;
+function do_it(type_id, price, qty){
+tr = document.createElement("tr");
+tr.appendChild(make_hidden("gizmo_type_id", gizmo_types[type_id], type_id));
+tr.appendChild(make_hidden("gizmo_count", qty, qty));
+tr.appendChild(make_hidden("unit_price", price, price));
+td = document.createElement("td");
+  var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][type_id]) || 0;
+  var amount_b4_discount = (Math.floor(price*100) * Math.floor(qty)) || 0;
+  var amount = multiplier * amount_b4_discount;
+  if (isNaN(amount))
+      amount = 0;
+  amount = Math.floor(amount)/100.0;
+  var mystring = "$" + amount;
+td.innerHTML += mystring;
+//$('line_items').appendChild(tr);
+$('line_items').lastChild.insertBefore(tr, $('line_items').lastChild.lastChild.previousSibling);
+line_item_id += 1;
+}
+function make_hidden(name, display_value, value){
+hidden = document.createElement("input");
+hidden.name = 'line[-' + line_item_id + '][' + name + ']';
+hidden.value = value;
+hidden.type = 'hidden';
+td = document.createElement("td");
+td.appendChild(hidden);
+td.innerHTML += display_value;
+return td;
+}
+function do_it2()
+{
+do_it($('gizmo_type_id').value, $('price').value, $('gizmo_count').value);
+}
+</script>
+  <% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) %>
+    <% js = "var gizmo_types = new Array;" %>
+    <% for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description) %>
+      <% js += "gizmo_types[#{gizmo_type.id}] = '#{gizmo_type.description}';" %>
+    <% end %>
+    <%= javascript_tag js %>
+  <% end %>
+
