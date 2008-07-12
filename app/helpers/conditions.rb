@@ -94,7 +94,7 @@ class Conditions
       payment_amount gizmo_type_id postal_code
       city phone_number contact volunteer_hours
       email disbursed_at donated_at occurred_at
-      worked_at donated_at bought_at
+      worked_at bought_at
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
