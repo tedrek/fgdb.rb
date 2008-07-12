@@ -32,7 +32,6 @@ to setup a working environment:
         apache2 libpgsql-ruby irb
  $> apt-get install rails=2.0.2-1.1 # you might have to download it from the archive and run "dpkg -i downloaded_file && apt-get install -f"
  $> aptitude hold rails # so we don't upgrade to a bad version
- $> ln -s /usr/share/rails/* vendor/
  $> ln -s /usr/share/rails vendor/rails
 
 you need to create and configure the databases:
