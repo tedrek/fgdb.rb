@@ -3,9 +3,9 @@ var gizmo_line_item_id = <%= defined?(@lines) ? @lines.length : 0 %>;
 function do_it(type_id, price, qty){
 tr = document.createElement("tr");
 tr.className = "line";
-tr.appendChild(make_hidden("gizmo_type_id", gizmo_types[type_id], type_id, gizmo_line_item_id));
-tr.appendChild(make_hidden("gizmo_count", qty, qty, gizmo_line_item_id));
-tr.appendChild(make_hidden("unit_price", price, price, gizmo_line_item_id));
+tr.appendChild(make_hidden("line", "gizmo_type_id", gizmo_types[type_id], type_id, gizmo_line_item_id));
+tr.appendChild(make_hidden("line", "gizmo_count", qty, qty, gizmo_line_item_id));
+tr.appendChild(make_hidden("line", "unit_price", price, price, gizmo_line_item_id));
 td = document.createElement("td");
   var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][type_id]) || 0;
   var amount_b4_discount = (Math.floor(price*100) * Math.floor(qty)) || 0;
@@ -21,10 +21,10 @@ tr.appendChild(td);
 $('line_items').lastChild.insertBefore(tr, $('line_items').lastChild.lastChild.previousSibling);
 gizmo_line_item_id += 1;
 }
-function make_hidden(name, display_value, value, line_id){
+function make_hidden(container, name, display_value, value, line_id){
 hidden = document.createElement("input");
 hidden.class = name;
-hidden.name = 'line[-' + line_id + '][' + name + ']';
+hidden.name = container + '[-' + line_id + '][' + name + ']';
 hidden.value = value;
 hidden.type = 'hidden';
 td = document.createElement("td");
@@ -60,8 +60,8 @@ var payment_line_id = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %
 function add_payment(payment_method_id, payment_amount) {
   tr = document.createElement("tr");
   tr.className = "line";
-  tr.appendChild(make_hidden("payment_method_id", payment_methods[payment_method_id], payment_method_id, payment_method_id));
-  tr.appendChild(make_hidden("payment_amount", payment_amount, payment_amount, payment_method_id));
+  tr.appendChild(make_hidden("payments", "payment_method_id", payment_methods[payment_method_id], payment_method_id, payment_method_id));
+  tr.appendChild(make_hidden("payments", "amount", payment_amount, payment_amount, payment_method_id));
   $('payment_lines').lastChild.insertBefore(tr, $('payment_lines').lastChild.lastChild.previousSibling);
   payment_line_id++;
 }

@@ -229,10 +229,16 @@ class TransactionController < ApplicationController
   end
 
   def _apply_line_item_data(transaction)
-    if transaction.respond_to? :payments
-      apply_datalist_to_collection(payments_tag, transaction.payments)
+    if transaction.respond_to?(:payments) && params[:payments]
+      @payments = []
+      for payment in params[:payments].values
+        p = Payment.new(payment)
+        @transaction.payments << p
+        @payments << p
+      end
       transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
     end
+
     if params[:line]
       lines = params[:line]
       @lines = []
