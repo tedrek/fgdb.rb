@@ -14,7 +14,7 @@ td = document.createElement("td");
       amount = 0;
   amount = Math.floor(amount)/100.0;
   var mystring = "$" + amount;
-td.appendChild(document.createTextNode(mystring));
+td.appendChild(make_hidden("line", "total_price", mystring, mystring, gizmo_line_item_id));
 td.className = "total_price";
 tr.appendChild(td);
 //$('line_items').appendChild(tr);
@@ -23,27 +23,70 @@ gizmo_line_item_id += 1;
 }
 function make_hidden(container, name, display_value, value, line_id){
 hidden = document.createElement("input");
-hidden.class = name;
 hidden.name = container + '[-' + line_id + '][' + name + ']';
 hidden.value = value;
 hidden.type = 'hidden';
 td = document.createElement("td");
+td.className = name;
 td.appendChild(hidden);
 td.appendChild(document.createTextNode(display_value));
 return td;
 }
 function do_it2()
 {
-do_it($('gizmo_type_id').value, $('price').value, $('gizmo_count').value);
+  do_it($('gizmo_type_id').value, $('price').value, $('gizmo_count').value);
 }
+
+function node_value(node, id) {
+  return parseInt(node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, ''));
+}
+
 function get_total_price(){
-var total = 0;
-var arr = $('line_items').getElementsBySelector("tr.line");
-for (var x = 0; x < arr.length; x++) {
-total += parseInt(arr[x].getElementsBySelector("td.total_price").first().lastChild.data.replace(/\$/, ''));
+  var total = 0;
+  var arr = $('line_items').getElementsBySelector("tr.line");
+  for (var x = 0; x < arr.length; x++) {
+    total += node_value(arr[x], "td.total_price");
+  }
+  return total;
 }
-return total;
+
+function get_subtotal() {
+  var total = 0;
+  var arr = $('line_items').getElementsBySelector("tr.line");
+  for (var x = 0; x < arr.length; x++) {
+    total += (node_value(arr[x], "td.gizmo_count") * node_value(arr[x], "td.unit_price"));
+  }
+  return total;
 }
+
+function get_total_payment() {
+  var total = 0;
+  var arr = $('payment_lines').getElementsBySelector("tr.line");
+  for (var x = 0; x < arr.length; x++) {
+    total += node_value(arr[x], "td.amount");
+  }
+  return total;
+}
+
+function compute_total_price_and_payment() {
+  var subtotal = get_subtotal();
+  var total_price = get_total_price();
+  var discount = subtotal - total_price;
+  var payment = get_total_payment();
+  var overpayment = payment - total_price;
+  
+  $('subtotal').innerHTML = price;
+  $('discount').innerHTML = discount;
+  $('grand_total').innerHTML = payment;
+  if (overpayment > 0) {
+    $('overpayment').innerHTML = overpayment;
+    $('overpayment').parentNode.style.display = "normal";
+  }
+  else {
+    $('overpayment').parentNode.style.display = "none";
+  }
+}
+
 </script>
 
 <% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) %>
@@ -61,7 +104,9 @@ function add_payment(payment_method_id, payment_amount) {
   tr = document.createElement("tr");
   tr.className = "line";
   tr.appendChild(make_hidden("payments", "payment_method_id", payment_methods[payment_method_id], payment_method_id, payment_method_id));
-  tr.appendChild(make_hidden("payments", "amount", payment_amount, payment_amount, payment_method_id));
+  amount_node = make_hidden("payments", "amount", payment_amount, payment_amount, payment_method_id);
+  amount_node.className = "amount";
+  tr.appendChild(amount_node);
   $('payment_lines').lastChild.insertBefore(tr, $('payment_lines').lastChild.lastChild.previousSibling);
   payment_line_id++;
 }

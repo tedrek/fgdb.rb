@@ -1,32 +1,8 @@
-<% @sale ||= Sale.new -%>
 <div id="<%= totals_id('sale') %>" class="totals line_item">
-  <table cellpadding="0" border="0" cellspacing="0">
-    <tr>
-      <td>Subtotal:</td>
-      <td class="amount">
-        <%= my_number_to_currency(@sale.calculated_subtotal_cents) %></td>
-    </tr>
-    <tr>
-      <td>minus discount of <%= my_number_to_currency(@sale.calculated_discount_cents) %>:</td>
-      <td class="amount required">
-        <%= my_number_to_currency(@sale.calculated_total_cents) %></td>
-      </td>
-    </tr>
-    <% if @sale.money_tendered_cents < @sale.calculated_total_cents %>
-      <tr>
-        <td class="below_req">Due:</td>
-        <td class="amount below_req">
-          <%= my_number_to_currency(@sale.money_tendered_cents - @sale.calculated_total_cents) %></td>
-        </td>
-      </tr>
-    <% elsif @sale.money_tendered_cents > @sale.calculated_total_cents %>
-      <tr>
-        <td class="below_req">Overpayment:</td>
-        <td class="amount below_req">
-          <%= my_number_to_currency(@sale.money_tendered_cents - @sale.calculated_total_cents) %></td>
-        </td>
-      </tr>
-    <% else %>
-    <% end %>
+  <table>
+    <tr><td>Subtotal:</td><td id="subtotal">0.00</td></tr>
+    <tr><td>Discount:</td><td id="discount">0.00</td></tr>
+    <tr><td>Grand Total:</td><td id="grand_total">0.00</td></tr>
+    <tr style="display:none"><td>Overpayment:</td><td id="overpayment">0.00</td></tr>
   </table>
 </div>
