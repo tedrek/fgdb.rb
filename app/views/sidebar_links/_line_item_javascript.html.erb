@@ -41,7 +41,7 @@ function node_value(node, id) {
   return parseInt(node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, ''));
 }
 
-function get_total_price(){
+function get_grand_total(){
   var total = 0;
   var arr = $('line_items').getElementsBySelector("tr.line");
   for (var x = 0; x < arr.length; x++) {
@@ -70,14 +70,14 @@ function get_total_payment() {
 
 function compute_total_price_and_payment() {
   var subtotal = get_subtotal();
-  var total_price = get_total_price();
-  var discount = subtotal - total_price;
+  var grand_total = get_grand_total();
+  var discount = subtotal - grand_total;
   var payment = get_total_payment();
-  var overpayment = payment - total_price;
-  
-  $('subtotal').innerHTML = price;
+  var overpayment = payment - grand_total;
+
+  $('subtotal').innerHTML = subtotal;
   $('discount').innerHTML = discount;
-  $('grand_total').innerHTML = payment;
+  $('grand_total').innerHTML = grand_total;
   if (overpayment > 0) {
     $('overpayment').innerHTML = overpayment;
     $('overpayment').parentNode.style.display = "normal";
