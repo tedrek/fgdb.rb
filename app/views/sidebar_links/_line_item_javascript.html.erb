@@ -170,10 +170,17 @@ var payment_line_id = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %
 function add_payment(payment_method_id, payment_amount) {
   tr = document.createElement("tr");
   tr.className = "line";
+  tr.id = 'payment_' + payment_line_id + '_line';
   tr.appendChild(make_hidden("payments", "payment_method_id", payment_methods[payment_method_id], payment_method_id, payment_method_id));
   amount_node = make_hidden("payments", "amount", payment_amount, payment_amount, payment_method_id);
   amount_node.className = "amount";
   tr.appendChild(amount_node);
+  td = document.createElement("td");
+  a = document.createElement("a");
+  a.onclick = new Function('Element.remove(\'payment_' + payment_line_id + '_line\');')
+  a.appendChild(document.createTextNode('x'));
+  td.appendChild(a);
+  tr.appendChild(td);
   $('payment_lines').lastChild.insertBefore(tr, $('payment_lines').lastChild.lastChild.previousSibling);
   payment_line_id++;
 compute_total_price_and_payment();
