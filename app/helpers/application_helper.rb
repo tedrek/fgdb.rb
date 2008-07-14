@@ -1,5 +1,39 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  #<ajax_crap> <!-- copied from ajax/active scaffold while in the process of getting rid of active scaffold -->
+
+  def generate_temporary_id
+    (Time.now.to_f*1000).to_i.to_s
+  end
+
+  def element_row_id(options)
+    "#{options[:scaffold_id]}-#{options[:action]}-#{options[:id]}-row"
+  end
+
+  def element_cell_id(options)
+    "#{options[:scaffold_id]}-#{options[:action]}-#{options[:id]}-cell"
+  end
+
+  def element_form_id(options)
+    "#{options[:scaffold_id]}-#{options[:action]}-#{options[:id]}-form"
+  end
+
+  def element_messages_id(options)
+    "#{options[:scaffold_id]}-#{options[:action]}-#{options[:id]}-messages"
+  end
+
+  def format_date(date)
+    format = ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS[:default] || "%m/%d/%Y"
+    date.strftime(format)
+  end
+
+  def format_time(time)
+    format = ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS[:default] || "%m/%d/%Y %I:%M %p"
+    time.strftime(format)
+  end
+
+  #</ajax_crap>
+
   class Column
     def initialize(klass, opts)
       raise "bad constructor: needs a name" unless opts.has_key? :name
