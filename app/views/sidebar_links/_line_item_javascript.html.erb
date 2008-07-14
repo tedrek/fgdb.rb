@@ -3,6 +3,7 @@ var gizmo_line_item_id = <%= defined?(@lines) ? @lines.length : 0 %>;
 function do_it(type_id, price, qty){
 tr = document.createElement("tr");
 tr.className = "line";
+tr.id = 'line_' + gizmo_line_item_id + '_line';
 tr.appendChild(make_hidden("line", "gizmo_type_id", gizmo_types[type_id], type_id, gizmo_line_item_id));
 tr.appendChild(make_hidden("line", "gizmo_count", qty, qty, gizmo_line_item_id));
 tr.appendChild(make_hidden("line", "unit_price", price, price, gizmo_line_item_id));
@@ -16,6 +17,12 @@ td = document.createElement("td");
   var mystring = "$" + amount;
 td.appendChild(make_hidden("line", "total_price", mystring, mystring, gizmo_line_item_id));
 td.className = "total_price";
+tr.appendChild(td);
+td = document.createElement("td");
+a = document.createElement("a");
+a.onclick = new Function('Element.remove(\'line_' + gizmo_line_item_id + '_line\');')
+a.appendChild(document.createTextNode('x'));
+td.appendChild(a);
 tr.appendChild(td);
 //$('line_items').appendChild(tr);
 $('line_items').lastChild.insertBefore(tr, $('line_items').lastChild.lastChild.previousSibling);
