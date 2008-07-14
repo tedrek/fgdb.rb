@@ -233,9 +233,9 @@ class TransactionController < ApplicationController
       @payments = []
       for payment in params[:payments].values
         p = Payment.new(payment)
-        @transaction.payments << p
         @payments << p
       end
+      @transaction.payments = @payments
       transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
     end
 
@@ -244,9 +244,9 @@ class TransactionController < ApplicationController
       @lines = []
       for line in lines.values
         ge = GizmoEvent.new(line.merge({:gizmo_context => @gizmo_context}))
-        @transaction.gizmo_events << ge
         @lines << ge
       end
+      @transaction.gizmo_events = @lines
     end
     transaction.gizmo_events.delete_if {|gizmo| gizmo.mostly_empty?}
   end
