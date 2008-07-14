@@ -5,10 +5,6 @@ class ApplicationController < ActionController::Base
 
   layout "application"
 
-  ActiveScaffold.set_defaults do |config|
-    config.ignore_columns.add [:created_at, :updated_at, :created_by, :updated_by, :lock_version]
-  end
-
   def with_sidebar
     "with_sidebar.html.erb"
   end

@@ -13,7 +13,6 @@
   <%= javascript_include_tag 'lightwindow' %>
   <%= javascript_include_tag 'boxover' %>
   <%= dhtml_calendar_includes %>
-  <%= active_scaffold_includes %>
   <% if params[:controller] == "sales" -%>
     <% js = "var discount_schedules = new Array;" -%>
     <% gizmo_types = GizmoType.find(:all) %>
