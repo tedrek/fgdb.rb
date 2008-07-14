@@ -5,9 +5,9 @@
 <th>unit price</th>
 <th>total price</th>
 <th></th>
-<% if @lines %>
-<% for line in @lines %>
-<%= render :partial => 'thing', :locals => {:line => line} %>
+<% if @transaction.gizmo_events %>
+<% for line in @transaction.gizmo_events %>
+<%= javascript_tag "do_it(#{line.gizmo_type_id}, #{line.unit_price}, #{line.gizmo_count})" %>
 <% end %>
 <% end %>
 

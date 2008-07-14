@@ -4,6 +4,11 @@
   <th>Amount</th>
   <th></th>
 <tr>
+<% if @transaction.payments %>
+<% for line in @transaction.payments %>
+<%= javascript_tag "add_payment(#{line.payment_method_id}, #{line.amount})" %>
+<% end %>
+<% end %>
 
 <tr>
   <td><select id="payment_method_id">
