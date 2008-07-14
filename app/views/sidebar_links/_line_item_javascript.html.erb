@@ -34,7 +34,16 @@ return td;
 }
 function do_it2()
 {
+//That is intentional:
+  if($('price').value == '' || $('gizmo_count').value == '') {
+    return true;
+  }
   do_it($('gizmo_type_id').value, $('price').value, $('gizmo_count').value);
+  $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
+  $('price').value = $('price').defaultValue;
+  $('gizmo_count').value = $('gizmo_count').defaultValue;
+  $('gizmo_type_id').focus();
+    return false;
 }
 
 function cent_value(node, id) {
@@ -145,7 +154,15 @@ function add_payment(payment_method_id, payment_amount) {
 }
 
 function add_payment_from_form() {
+//That is intentional:
+  if($('payment_amount').value == '') {
+    return true;
+  }
 add_payment($('payment_method_id').value, $('payment_amount').value);
+$('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
+$('payment_amount').value = $('payment_amount').defaultValue;
+$('payment_method_id').focus();
+return false;
 }
 </script>
 

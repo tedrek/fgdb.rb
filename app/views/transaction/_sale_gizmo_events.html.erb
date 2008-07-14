@@ -16,7 +16,7 @@
 <%= options_from_collection_for_select(@gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
 </select></td>
 <td><input name="gizmo_count" id="gizmo_count"></td>
-<td><input name="price" id="price"></td>
+<td><input name="price" id="price" onkeydown="if(event.keyCode==9) {return do_it2();}"></td>
 <td></td>
 <td><a onClick="do_it2();">Click</a></td>
 </tr>
