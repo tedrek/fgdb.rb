@@ -2,7 +2,7 @@ class Sale < ActiveRecord::Base
   acts_as_userstamp
 
   include GizmoTransaction
-  belongs_to :contact, :order => "surname, first_name"
+  belongs_to :contact
   has_many :payments, :dependent => :destroy
   belongs_to :discount_schedule
   has_many :gizmo_events, :dependent => :destroy

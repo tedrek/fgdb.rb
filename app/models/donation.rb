@@ -2,7 +2,7 @@ class Donation < ActiveRecord::Base
   acts_as_userstamp
 
   include GizmoTransaction
-  belongs_to :contact, :order => "surname, first_name"
+  belongs_to :contact
   has_many :payments, :dependent => :destroy
   has_many :gizmo_events, :dependent => :destroy
 

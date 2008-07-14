@@ -1,6 +1,6 @@
 class Disbursement < ActiveRecord::Base
   include GizmoTransaction
-  belongs_to :contact, :order => "surname, first_name"
+  belongs_to :contact
   belongs_to :disbursement_type
   has_many :gizmo_events, :dependent => :destroy
 
