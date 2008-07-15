@@ -1,7 +1,7 @@
 Index: app/models/gizmo_event.rb
 ===================================================================
 --- app/models/gizmo_event.rb	(revision 1505)
-+++ app/models/gizmo_event.rb	(revision 1504)
++++ app/models/gizmo_event.rb	(working copy)
 @@ -20,7 +20,7 @@
          "SELECT gizmo_events.gizmo_type_id,
                  gizmo_events.gizmo_context_id,
@@ -23,13 +23,13 @@ Index: app/models/gizmo_event.rb
 Index: app/models/donation.rb
 ===================================================================
 --- app/models/donation.rb	(revision 1505)
-+++ app/models/donation.rb	(revision 1504)
++++ app/models/donation.rb	(working copy)
 @@ -50,7 +50,7 @@
        total_data = {}
        methods = PaymentMethod.find(:all)
        methods.each {|method|
 -        total_data[method.id] = [0, 0, 0, 0, 1<<64, 0]
-+        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 1<<64, 'count' => 0, 'min' => 0, 'max' => 0}
++        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
        }
        self.connection.execute(
          "SELECT payments.payment_method_id,
@@ -47,7 +47,7 @@ Index: app/models/donation.rb
 -          total_data[payment.payment_method_id][0] += payment.amount_cents
 -          total_data[payment.payment_method_id][3] += 1
 +          total_data[payment.payment_method_id]['payment_method_id'] += payment.amount_cents
-+          total_data[payment.payment_method_id]['suggested'] += 1 #wtf?!?!?!
++          total_data[payment.payment_method_id]['count'] += 1
            if required_to_be_paid > 0
              if required_to_be_paid > payment.amount_cents
                #required
@@ -65,14 +65,14 @@ Index: app/models/donation.rb
            else
              #suggested
 -            total_data[payment.payment_method_id][2] += payment.amount_cents
-+            total_data[payment.payment_method_id]['required'] += payment.amount_cents #wtf!?!?!
++            total_data[payment.payment_method_id]['amount'] += payment.amount_cents 
            end
  
 -          total_data[payment.payment_method_id][4] = [total_data[payment.payment_method_id][4],
-+          total_data[payment.payment_method_id]['count'] = [total_data[payment.payment_method_id]['count'], #wtf!?!?
++          total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'], 
                                                        donation.id].min
 -          total_data[payment.payment_method_id][5] = [total_data[payment.payment_method_id][5],
-+          total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'], #wtf!?!
++          total_data[payment.payment_method_id]['max'] = [total_data[payment.payment_method_id]['max'], #wtf!?!
                                                        donation.id].max
          }
        }
@@ -85,7 +85,7 @@ Index: app/models/donation.rb
 Index: app/controllers/reports_controller.rb
 ===================================================================
 --- app/controllers/reports_controller.rb	(revision 1505)
-+++ app/controllers/reports_controller.rb	(revision 1504)
++++ app/controllers/reports_controller.rb	(working copy)
 @@ -28,8 +28,8 @@
      GizmoEvent.category_totals(@defaults.conditions(GizmoEvent)).each do |summation|
        add_gizmo_category_to_data(summation, @gizmo_data)
@@ -138,7 +138,7 @@ Index: app/controllers/reports_controller.rb
 Index: app/views/contacts/lookup_results.html.erb
 ===================================================================
 --- app/views/contacts/lookup_results.html.erb	(revision 1505)
-+++ app/views/contacts/lookup_results.html.erb	(revision 1504)
++++ app/views/contacts/lookup_results.html.erb	(working copy)
 @@ -12,7 +12,7 @@
      <tr <%= (line+=1) % 2 == 0 ? 'class="even"' : ''%>>
        <td><%= link_to c.id, :action => "lookup", :controller => "contacts", :contact_id => c.id %></td>
@@ -148,3 +148,77 @@ Index: app/views/contacts/lookup_results.html.erb
        <td><%= c.phone_numbers.join(", ") %></td>
        <td><%= "#{c.city}, #{c.state_or_province}, #{c.postal_code}" %></td>
        <td><%= c.created_at %></td>
+Index: doc/work_with_lenny
+===================================================================
+--- doc/work_with_lenny	(revision 1506)
++++ doc/work_with_lenny	(working copy)
+@@ -1,7 +1,7 @@
+ Index: app/models/gizmo_event.rb
+ ===================================================================
+ --- app/models/gizmo_event.rb	(revision 1505)
+-+++ app/models/gizmo_event.rb	(revision 1504)
+++++ app/models/gizmo_event.rb	(working copy)
+ @@ -20,7 +20,7 @@
+          "SELECT gizmo_events.gizmo_type_id,
+                  gizmo_events.gizmo_context_id,
+@@ -23,13 +23,13 @@
+ Index: app/models/donation.rb
+ ===================================================================
+ --- app/models/donation.rb	(revision 1505)
+-+++ app/models/donation.rb	(revision 1504)
+++++ app/models/donation.rb	(working copy)
+ @@ -50,7 +50,7 @@
+        total_data = {}
+        methods = PaymentMethod.find(:all)
+        methods.each {|method|
+ -        total_data[method.id] = [0, 0, 0, 0, 1<<64, 0]
+-+        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 1<<64, 'count' => 0, 'min' => 0, 'max' => 0}
+++        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
+        }
+        self.connection.execute(
+          "SELECT payments.payment_method_id,
+@@ -47,7 +47,7 @@
+ -          total_data[payment.payment_method_id][0] += payment.amount_cents
+ -          total_data[payment.payment_method_id][3] += 1
+ +          total_data[payment.payment_method_id]['payment_method_id'] += payment.amount_cents
+-+          total_data[payment.payment_method_id]['suggested'] += 1 #wtf?!?!?!
+++          total_data[payment.payment_method_id]['count'] += 1
+            if required_to_be_paid > 0
+              if required_to_be_paid > payment.amount_cents
+                #required
+@@ -65,14 +65,14 @@
+            else
+              #suggested
+ -            total_data[payment.payment_method_id][2] += payment.amount_cents
+-+            total_data[payment.payment_method_id]['required'] += payment.amount_cents #wtf!?!?!
+++            total_data[payment.payment_method_id]['amount'] += payment.amount_cents 
+            end
+  
+ -          total_data[payment.payment_method_id][4] = [total_data[payment.payment_method_id][4],
+-+          total_data[payment.payment_method_id]['count'] = [total_data[payment.payment_method_id]['count'], #wtf!?!?
+++          total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'], 
+                                                        donation.id].min
+ -          total_data[payment.payment_method_id][5] = [total_data[payment.payment_method_id][5],
+-+          total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'], #wtf!?!
+++          total_data[payment.payment_method_id]['max'] = [total_data[payment.payment_method_id]['max'], #wtf!?!
+                                                        donation.id].max
+          }
+        }
+@@ -85,7 +85,7 @@
+ Index: app/controllers/reports_controller.rb
+ ===================================================================
+ --- app/controllers/reports_controller.rb	(revision 1505)
+-+++ app/controllers/reports_controller.rb	(revision 1504)
+++++ app/controllers/reports_controller.rb	(working copy)
+ @@ -28,8 +28,8 @@
+      GizmoEvent.category_totals(@defaults.conditions(GizmoEvent)).each do |summation|
+        add_gizmo_category_to_data(summation, @gizmo_data)
+@@ -138,7 +138,7 @@
+ Index: app/views/contacts/lookup_results.html.erb
+ ===================================================================
+ --- app/views/contacts/lookup_results.html.erb	(revision 1505)
+-+++ app/views/contacts/lookup_results.html.erb	(revision 1504)
+++++ app/views/contacts/lookup_results.html.erb	(working copy)
+ @@ -12,7 +12,7 @@
+      <tr <%= (line+=1) % 2 == 0 ? 'class="even"' : ''%>>
+        <td><%= link_to c.id, :action => "lookup", :controller => "contacts", :contact_id => c.id %></td>
