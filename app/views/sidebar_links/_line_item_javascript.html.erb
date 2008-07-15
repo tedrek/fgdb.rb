@@ -1,167 +1,165 @@
 <script>
-var gizmo_line_item_id = <%= defined?(@lines) ? @lines.length : 0 %>;
-function do_it(type_id, price, qty){
-tr = document.createElement("tr");
-tr.className = "line";
-tr.id = 'line_' + gizmo_line_item_id + '_line';
-tr.appendChild(make_hidden("line", "gizmo_type_id", gizmo_types[type_id], type_id, gizmo_line_item_id));
-tr.appendChild(make_hidden("line", "gizmo_count", qty, qty, gizmo_line_item_id));
-tr.appendChild(make_hidden("line", "unit_price", price, price, gizmo_line_item_id));
-td = document.createElement("td");
-  if(gizmo_context == 'sale') {
-  var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][type_id]) || 0;
-  }  else {
-    var multiplier = 0;
-  }
-  var amount_b4_discount = (Math.floor(price*100) * Math.floor(qty)) || 0;
-  var amount = multiplier * amount_b4_discount;
-  if (isNaN(amount))
+  var gizmo_line_item_id = <%= defined?(@lines) ? @lines.length : 0 %>;
+  function do_it(type_id, price, qty){
+    tr = document.createElement("tr");
+    tr.className = "line";
+    tr.id = 'line_' + gizmo_line_item_id + '_line';
+    tr.appendChild(make_hidden("line", "gizmo_type_id", gizmo_types[type_id], type_id, gizmo_line_item_id));
+    tr.appendChild(make_hidden("line", "gizmo_count", qty, qty, gizmo_line_item_id));
+    tr.appendChild(make_hidden("line", "unit_price", price, price, gizmo_line_item_id));
+    td = document.createElement("td");
+    if(gizmo_context == 'sale') {
+      var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][type_id]) || 0;
+    }  else {
+      var multiplier = 0;
+    }
+    var amount_b4_discount = (Math.floor(price*100) * Math.floor(qty)) || 0;
+    var amount = multiplier * amount_b4_discount;
+    if (isNaN(amount))
       amount = 0;
-  amount = Math.floor(amount)/100.0;
-  var mystring = "$" + amount;
-td.appendChild(make_hidden("line", "total_price", mystring, mystring, gizmo_line_item_id));
-td.className = "total_price";
-tr.appendChild(td);
-td = document.createElement("td");
-a = document.createElement("a");
-a.onclick = new Function('Element.remove(\'line_' + gizmo_line_item_id + '_line\');')
-a.appendChild(document.createTextNode('x'));
-td.appendChild(a);
-tr.appendChild(td);
-//$('line_items').appendChild(tr);
-$('line_items').lastChild.insertBefore(tr, $('line_items').lastChild.lastChild.previousSibling);
-gizmo_line_item_id += 1;
-compute_total_price_and_payment();
-}
-function make_hidden(container, name, display_value, value, line_id){
-hidden = document.createElement("input");
-hidden.name = container + '[-' + line_id + '][' + name + ']';
-hidden.value = value;
-hidden.type = 'hidden';
-td = document.createElement("td");
-td.className = name;
-td.appendChild(hidden);
-td.appendChild(document.createTextNode(display_value));
-return td;
-}
-function do_it2()
-{
-//That is intentional:
-  if($('price').value == '' || $('gizmo_count').value == '') {
-    return true;
+    amount = Math.floor(amount)/100.0;
+    var mystring = "$" + amount;
+    td.appendChild(make_hidden("line", "total_price", mystring, mystring, gizmo_line_item_id));
+    td.className = "total_price";
+    tr.appendChild(td);
+    td = document.createElement("td");
+    a = document.createElement("a");
+    a.onclick = new Function('Element.remove(\'line_' + gizmo_line_item_id + '_line\');')
+    a.appendChild(document.createTextNode('x'));
+    td.appendChild(a);
+    tr.appendChild(td);
+    $('line_items').lastChild.insertBefore(tr, $('line_items').lastChild.lastChild.previousSibling);
+    gizmo_line_item_id += 1;
+    compute_total_price_and_payment();
   }
-  do_it($('gizmo_type_id').value, $('price').value, $('gizmo_count').value);
-  $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
-  $('price').value = $('price').defaultValue;
-  $('gizmo_count').value = $('gizmo_count').defaultValue;
-  $('gizmo_type_id').focus();
+  function make_hidden(container, name, display_value, value, line_id){
+    hidden = document.createElement("input");
+    hidden.name = container + '[-' + line_id + '][' + name + ']';
+    hidden.value = value;
+    hidden.type = 'hidden';
+    td = document.createElement("td");
+    td.className = name;
+    td.appendChild(hidden);
+    td.appendChild(document.createTextNode(display_value));
+    return td;
+  }
+  function do_it2()
+  {
+    //That is intentional:
+    if($('price').value == '' || $('gizmo_count').value == '') {
+      return true;
+    }
+    do_it($('gizmo_type_id').value, $('price').value, $('gizmo_count').value);
+    $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
+    $('price').value = $('price').defaultValue;
+    $('gizmo_count').value = $('gizmo_count').defaultValue;
+    $('gizmo_type_id').focus();
     return false;
-}
+  }
 
-function cent_value(node, id) {
-  var value = node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, '');
-  var arr = value.split(".");
-  if (arr.length > 0) {
-    value = parseInt(arr[0]) * 100;
-    if (arr.length > 1) {
-      if (arr[1].length == 1) {
-        value += parseInt(arr[1]) * 10;
-      }
-      else {
-        value += parseInt(arr[1]);
+  function cent_value(node, id) {
+    var value = node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, '');
+    var arr = value.split(".");
+    if (arr.length > 0) {
+      value = parseInt(arr[0]) * 100;
+      if (arr.length > 1) {
+        if (arr[1].length == 1) {
+          value += parseInt(arr[1]) * 10;
+        }
+        else {
+          value += parseInt(arr[1]);
+        }
       }
     }
+    return value;
   }
-  return value;
-}
 
-function dollar_value(cents) {
-  cents = "" + cents;
-  if (cents.length == 0) {
-    return "0.00";
+  function dollar_value(cents) {
+    cents = "" + cents;
+    if (cents.length == 0) {
+      return "0.00";
+    }
+    else if (cents.length == 1) {
+      return "0.0" + cents;
+    } 
+    else if (cents.length == 2) {
+      return "0." + cents;
+    }
+    else {
+      return cents.replace(/(\d\d)$/, ".$1");
+    }
   }
-  else if (cents.length == 1) {
-    return "0.0" + cents;
-  } 
-  else if (cents.length == 2) {
-    return "0." + cents;
-  }
-  else {
-    return cents.replace(/(\d\d)$/, ".$1");
-  }
-}
 
-function node_value(node, id) {
-  return parseInt(node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, ''));
-}
-
-function get_grand_total(){
-  var total = 0;
-  var arr = $('line_items').getElementsBySelector("tr.line");
-  for (var x = 0; x < arr.length; x++) {
-    total += cent_value(arr[x], "td.total_price");
+  function node_value(node, id) {
+    return parseInt(node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, ''));
   }
-  return total;
-}
 
-function get_subtotal() {
-  var total = 0;
-  var arr = $('line_items').getElementsBySelector("tr.line");
-  for (var x = 0; x < arr.length; x++) {
-    total += (cent_value(arr[x], "td.gizmo_count") * node_value(arr[x], "td.unit_price"));
+  function get_grand_total(){
+    var total = 0;
+    var arr = $('line_items').getElementsBySelector("tr.line");
+    for (var x = 0; x < arr.length; x++) {
+      total += cent_value(arr[x], "td.total_price");
+    }
+    return total;
   }
-  return total;
-}
 
-function get_total_payment() {
-  var total = 0;
-  var arr = $('payment_lines').getElementsBySelector("tr.line");
-  for (var x = 0; x < arr.length; x++) {
-    total += cent_value(arr[x], "td.amount");
+  function get_subtotal() {
+    var total = 0;
+    var arr = $('line_items').getElementsBySelector("tr.line");
+    for (var x = 0; x < arr.length; x++) {
+      total += (cent_value(arr[x], "td.gizmo_count") * node_value(arr[x], "td.unit_price"));
+    }
+    return total;
   }
-  return total;
-}
 
-function update_gizmo_events_totals() {
-  gizmo_events = $('line_items').getElementsBySelector(".line");
-  for (var i = 0; i < gizmo_events.length; i++)
-  {
-  thing = gizmo_events[i];
-  if(gizmo_context == 'sale') {
-    var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][parseInt(thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value)]) || 0;
-  }  else {
-    var multiplier = 0;
+  function get_total_payment() {
+    var total = 0;
+    var arr = $('payment_lines').getElementsBySelector("tr.line");
+    for (var x = 0; x < arr.length; x++) {
+      total += cent_value(arr[x], "td.amount");
+    }
+    return total;
   }
-  var amount_b4_discount = (Math.floor(parseInt(thing.getElementsBySelector(".unit_price").first().firstChild.value)*100) * Math.floor(thing.getElementsBySelector(".gizmo_count").first().firstChild.value)) || 0;
-  var amount = multiplier * amount_b4_discount;
-  if (isNaN(amount))
-      amount = 0;
-  amount = Math.floor(amount)/100.0;
-  var mystring = "$" + amount;
-  thing.getElementsBySelector(".total_price").first().innerHTML = mystring;
-  }
-}
 
-function compute_total_price_and_payment() {
-  update_gizmo_events_totals();
-  var subtotal = get_subtotal();
-  var grand_total = get_grand_total();
-  var discount = subtotal - grand_total;
-  var payment = get_total_payment();
-  var overpayment = payment - grand_total;
-
-  $('subtotal').innerHTML = dollar_value(subtotal);
-  $('discount').innerHTML = dollar_value(discount);
-  $('grand_total').innerHTML = dollar_value(grand_total);
-  if (overpayment > 0) {
-    $('overpayment').innerHTML = dollar_value(overpayment);
-    $('overpayment').parentNode.style.display = "normal";
+  function update_gizmo_events_totals() {
+    gizmo_events = $('line_items').getElementsBySelector(".line");
+    for (var i = 0; i < gizmo_events.length; i++)
+    {
+    thing = gizmo_events[i];
+    if(gizmo_context == 'sale') {
+      var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][parseInt(thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value)]) || 0;
+    }  else {
+      var multiplier = 0;
+    }
+    var amount_b4_discount = (Math.floor(parseInt(thing.getElementsBySelector(".unit_price").first().firstChild.value)*100) * Math.floor(thing.getElementsBySelector(".gizmo_count").first().firstChild.value)) || 0;
+    var amount = multiplier * amount_b4_discount;
+    if (isNaN(amount))
+        amount = 0;
+    amount = Math.floor(amount)/100.0;
+    var mystring = "$" + amount;
+    thing.getElementsBySelector(".total_price").first().innerHTML = mystring;
+    }
   }
-  else {
-    $('overpayment').parentNode.style.display = "none";
-  }
-}
 
+  function compute_total_price_and_payment() {
+    update_gizmo_events_totals();
+    var subtotal = get_subtotal();
+    var grand_total = get_grand_total();
+    var discount = subtotal - grand_total;
+    var payment = get_total_payment();
+    var overpayment = payment - grand_total;
+
+    $('subtotal').innerHTML = dollar_value(subtotal);
+    $('discount').innerHTML = dollar_value(discount);
+    $('grand_total').innerHTML = dollar_value(grand_total);
+    if (overpayment > 0) {
+      $('overpayment').innerHTML = dollar_value(overpayment);
+      $('overpayment').parentNode.style.display = "normal";
+    }
+    else {
+      $('overpayment').parentNode.style.display = "none";
+    }
+  }
 </script>
 
 <% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) %>
@@ -172,39 +170,37 @@ function compute_total_price_and_payment() {
   <%= javascript_tag js %>
 <% end %>
 
-
 <script>
-var payment_line_id = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
-function add_payment(payment_method_id, payment_amount) {
-  tr = document.createElement("tr");
-  tr.className = "line";
-  tr.id = 'payment_' + payment_line_id + '_line';
-  tr.appendChild(make_hidden("payments", "payment_method_id", payment_methods[payment_method_id], payment_method_id, payment_method_id));
-  amount_node = make_hidden("payments", "amount", payment_amount, payment_amount, payment_method_id);
-  amount_node.className = "amount";
-  tr.appendChild(amount_node);
-  td = document.createElement("td");
-  a = document.createElement("a");
-  a.onclick = new Function('Element.remove(\'payment_' + payment_line_id + '_line\');')
-  a.appendChild(document.createTextNode('x'));
-  td.appendChild(a);
-  tr.appendChild(td);
-  $('payment_lines').lastChild.insertBefore(tr, $('payment_lines').lastChild.lastChild.previousSibling);
-  payment_line_id++;
-compute_total_price_and_payment();
-}
-
-function add_payment_from_form() {
-//That is intentional:
-  if($('payment_amount').value == '') {
-    return true;
+  var payment_line_id = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
+  function add_payment(payment_method_id, payment_amount) {
+    tr = document.createElement("tr");
+    tr.className = "line";
+    tr.id = 'payment_' + payment_line_id + '_line';
+    tr.appendChild(make_hidden("payments", "payment_method_id", payment_methods[payment_method_id], payment_method_id, payment_method_id));
+    amount_node = make_hidden("payments", "amount", payment_amount, payment_amount, payment_method_id);
+    amount_node.className = "amount";
+    tr.appendChild(amount_node);
+    td = document.createElement("td");
+    a = document.createElement("a");
+    a.onclick = new Function('Element.remove(\'payment_' + payment_line_id + '_line\');')
+    a.appendChild(document.createTextNode('x'));
+    td.appendChild(a);
+    tr.appendChild(td);
+    $('payment_lines').lastChild.insertBefore(tr, $('payment_lines').lastChild.lastChild.previousSibling);
+    payment_line_id++;
+    compute_total_price_and_payment();
   }
-add_payment($('payment_method_id').value, $('payment_amount').value);
-$('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
-$('payment_amount').value = $('payment_amount').defaultValue;
-$('payment_method_id').focus();
-return false;
-}
+
+  function add_payment_from_form() {
+    if($('payment_amount').value == '') {
+      return true;
+    }
+    add_payment($('payment_method_id').value, $('payment_amount').value);
+    $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
+    $('payment_amount').value = $('payment_amount').defaultValue;
+    $('payment_method_id').focus();
+    return false;
+  }
 </script>
 
 <% if ["sales", "donations"].include?(params[:controller]) %>
