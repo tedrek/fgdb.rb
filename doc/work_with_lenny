@@ -1,0 +1,99 @@
+Index: app/models/gizmo_event.rb
+===================================================================
+--- app/models/gizmo_event.rb	(revision 1499)
++++ app/models/gizmo_event.rb	(working copy)
+@@ -20,7 +20,7 @@
+         "SELECT gizmo_events.gizmo_type_id,
+                 gizmo_events.gizmo_context_id,
+                 d.disbursement_type_id,
+-                sum(gizmo_events.gizmo_count)
++                sum(gizmo_events.gizmo_count) AS count
+          FROM gizmo_events
+               LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
+          WHERE #{sanitize_sql_for_conditions(conditions)}
+Index: app/models/donation.rb
+===================================================================
+--- app/models/donation.rb	(revision 1499)
++++ app/models/donation.rb	(working copy)
+@@ -50,7 +50,7 @@
+       total_data = {}
+       methods = PaymentMethod.find(:all)
+       methods.each {|method|
+-        total_data[method.id] = [0, 0, 0, 0, 1<<64, 0]
++        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 1<<64, 'count' => 0, 'min' => 0, 'max' => 0}
+       }
+       self.connection.execute(
+         "SELECT payments.payment_method_id,
+@@ -66,7 +66,7 @@
+          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
+          GROUP BY payments.payment_method_id"
+       ).each {|summation|
+-        total_data[summation[0].to_i] = summation[1..-1] .map {|x| x.to_i}
++        total_data[summation['payment_method_id'].to_i] = summation
+       }
+       Donation.paid_by_multiple_payments(conditions).each {|donation|
+         required_to_be_paid = donation.reported_required_fee_cents
+@@ -97,7 +97,7 @@
+         }
+       }
+       return total_data.map {|method_id,sums|
+-        [method_id] + sums
++        {'payment_method_id' => method_id}.merge(sums)
+       }
+     end
+ 
+Index: app/controllers/reports_controller.rb
+===================================================================
+--- app/controllers/reports_controller.rb	(revision 1499)
++++ app/controllers/reports_controller.rb	(working copy)
+@@ -77,7 +77,7 @@
+   end
+ 
+   def add_gizmo_to_data(summation, data)
+-    type_id, context_id, disbursement_type_id, count = summation.map {|x| x.to_i}
++    type_id, context_id, disbursement_type_id, count = summation['gizmo_type_id'].to_i, summation['gizmo_context_id'].to_i, summation['disbursement_type_id'].to_i, summation['count'].to_i
+     type = GizmoType.find(type_id)
+     count *= plus_or_minus(context_id)
+     if context_id == GizmoContext.disbursement.id
+@@ -93,7 +93,7 @@
+   end
+ 
+   def add_gizmo_category_to_data(summation, data)
+-    category_id, context_id, count = summation.map {|x| x.to_i}
++    category_id, context_id, count = summation['gizmo_category_id'].to_i, summation['gizmo_context_id'].to_i, summation['count'].to_i
+     category = GizmoCategory.find(category_id)
+     count *= plus_or_minus(context_id)
+     tuple = context_tuple(context_id)
+@@ -163,8 +163,7 @@
+   end
+ 
+   def add_donation_summation_to_data(summation, income_data, ranges)
+-    payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx =
+-      summation[0..6].map {|c| c.to_i}
++    payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['amount'].to_i, summation['required'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+     return unless payment_method_id and payment_method_id != 0
+ 
+     ranges[:donations][:min] = [ranges[:donations][:min], mn].min
+@@ -219,8 +218,7 @@
+   end
+ 
+   def add_sale_summation_to_data(summation, income_data, ranges)
+-    payment_method_id, discount_schedule_id, amount_cents, count, mn, mx =
+-      summation[0..5].map {|c| c.to_i}
++    payment_method_id, discount_schedule_id, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['discount_schedule_id'].to_i, summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+     return unless payment_method_id and payment_method_id != 0
+ 
+     discount_schedule = DiscountSchedule.find(discount_schedule_id)
+Index: app/views/contacts/lookup_results.html.erb
+===================================================================
+--- app/views/contacts/lookup_results.html.erb	(revision 1499)
++++ app/views/contacts/lookup_results.html.erb	(working copy)
+@@ -12,7 +12,7 @@
+     <tr <%= (line+=1) % 2 == 0 ? 'class="even"' : ''%>>
+       <td><%= link_to c.id, :action => "lookup", :controller => "contacts", :contact_id => c.id %></td>
+       <td><%= c.display_name %></td>
+-      <td><%= Contact.connection.execute("SELECT description FROM contact_types_contacts AS ctc JOIN contact_types AS ct ON ctc.contact_type_id = ct.id WHERE contact_id = #{c.id} ORDER BY description;").map{|x| x}.join(", ") %></td>
++      <td><%= Contact.connection.execute("SELECT description FROM contact_types_contacts AS ctc JOIN contact_types AS ct ON ctc.contact_type_id = ct.id WHERE contact_id = #{c.id} ORDER BY description;").map{|x| x.values}.join(", ") %></td>
+       <td><%= c.phone_numbers.join(", ") %></td>
+       <td><%= "#{c.city}, #{c.state_or_province}, #{c.postal_code}" %></td>
+       <td><%= c.created_at %></td>
