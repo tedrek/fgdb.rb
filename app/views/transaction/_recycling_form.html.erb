@@ -18,20 +18,7 @@
 
 <div id="transaction_line_items_div">
 <div id="recycling_gizmo_events" class="datalist line_item">
-  <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-  <%= datalist_for( :gizmo_event, 'recycling_gizmo_events',
-    @recycling.gizmo_events, :create_with => { :recycling_id => @recycling.id },
-    :show_header => false, :render_aware => "no_price_gizmo_event_form",
-    :onchange => remote_function(:url =>
-                   {
-                     :controller => base_controller,
-                     :action => 'automatic_datalist_row'
-                   },
-                   :with => "Form.serialize('#{element_form_id(@options)}')"
-                 ),
-    :add_text => "More gizmos",
-    :inhibit_delete => true,
-    :new_defaults => @event_defaults || {}) %>
+    <%= render :partial => 'sale_gizmo_events' %>
 </div>
 
 </div>
