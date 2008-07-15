@@ -24,8 +24,6 @@
         <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "name", @sale.discount_schedule_id || DiscountSchedule.find_by_name("no discount").id) %>
       </select>
     </div>
-    <%= custom_change_observer('sale_discount_schedule_id',
-          "updateTotalsForContext(element, Form.serialize($('#{element_form_id(@options)}')), event, '#{@transaction_type}');") %>
 
     <div class="form-element">
       <label for="sale_comments">Comments</label>
