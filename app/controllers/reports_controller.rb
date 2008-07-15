@@ -28,8 +28,8 @@ class ReportsController < ApplicationController
     GizmoEvent.category_totals(@defaults.conditions(GizmoEvent)).each do |summation|
       add_gizmo_category_to_data(summation, @gizmo_data)
     end
-    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|k,v|
-      @gizmo_income_data[k.to_i] = v 
+    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|x|
+      @gizmo_income_data[x['gt'].to_s] = x['sum']
     }
   end
 
@@ -77,7 +77,7 @@ class ReportsController < ApplicationController
   end
 
   def add_gizmo_to_data(summation, data)
-    type_id, context_id, disbursement_type_id, count = summation.map {|x| x.to_i}
+    type_id, context_id, disbursement_type_id, count = summation['gizmo_type_id'].to_i, summation['gizmo_context_id'].to_i, summation['disbursement_type_id'].to_i, summation['count'].to_i
     type = GizmoType.find(type_id)
     count *= plus_or_minus(context_id)
     if context_id == GizmoContext.disbursement.id
@@ -93,7 +93,7 @@ class ReportsController < ApplicationController
   end
 
   def add_gizmo_category_to_data(summation, data)
-    category_id, context_id, count = summation.map {|x| x.to_i}
+    category_id, context_id, count = summation['gizmo_category_id'].to_i, summation['gizmo_context_id'].to_i, summation['sum'].to_i
     category = GizmoCategory.find(category_id)
     count *= plus_or_minus(context_id)
     tuple = context_tuple(context_id)
@@ -163,8 +163,7 @@ class ReportsController < ApplicationController
   end
 
   def add_donation_summation_to_data(summation, income_data, ranges)
-    payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx =
-      summation[0..6].map {|c| c.to_i}
+    payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['amount'].to_i, summation['required'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
     ranges[:donations][:min] = [ranges[:donations][:min], mn].min
@@ -219,8 +218,7 @@ class ReportsController < ApplicationController
   end
 
   def add_sale_summation_to_data(summation, income_data, ranges)
-    payment_method_id, discount_schedule_id, amount_cents, count, mn, mx =
-      summation[0..5].map {|c| c.to_i}
+    payment_method_id, discount_schedule_id, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['discount_schedule_id'].to_i, summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
     discount_schedule = DiscountSchedule.find(discount_schedule_id)
