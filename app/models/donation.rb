@@ -50,7 +50,7 @@ class Donation < ActiveRecord::Base
       total_data = {}
       methods = PaymentMethod.find(:all)
       methods.each {|method|
-        total_data[method.id] = [0, 0, 0, 0, 1<<64, 0]
+        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 1<<64, 'count' => 0, 'min' => 0, 'max' => 0}
       }
       self.connection.execute(
         "SELECT payments.payment_method_id,
@@ -66,38 +66,38 @@ class Donation < ActiveRecord::Base
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          GROUP BY payments.payment_method_id"
       ).each {|summation|
-        total_data[summation[0].to_i] = summation[1..-1] .map {|x| x.to_i}
+        total_data[summation['payment_method_id'].to_i] = summation
       }
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
         donation.payments.sort_by {|payment| payment.payment_method_id}.each {|payment|
           #total paid
-          total_data[payment.payment_method_id][0] += payment.amount_cents
-          total_data[payment.payment_method_id][3] += 1
+          total_data[payment.payment_method_id]['payment_method_id'] += payment.amount_cents
+          total_data[payment.payment_method_id]['suggested'] += 1 #wtf?!?!?!
           if required_to_be_paid > 0
             if required_to_be_paid > payment.amount_cents
               #required
-              total_data[payment.payment_method_id][1] += payment.amount_cents
+              total_data[payment.payment_method_id]['amount'] += payment.amount_cents
             else
               #required
-              total_data[payment.payment_method_id][1] += required_to_be_paid
+              total_data[payment.payment_method_id]['required'] += required_to_be_paid
               #suggested
-              total_data[payment.payment_method_id][2] += (payment.amount_cents - required_to_be_paid)
+              total_data[payment.payment_method_id]['suggested'] += (payment.amount_cents - required_to_be_paid)
             end
             required_to_be_paid -= payment.amount_cents
           else
             #suggested
-            total_data[payment.payment_method_id][2] += payment.amount_cents
+            total_data[payment.payment_method_id]['required'] += payment.amount_cents #wtf!?!?!
           end
 
-          total_data[payment.payment_method_id][4] = [total_data[payment.payment_method_id][4],
+          total_data[payment.payment_method_id]['count'] = [total_data[payment.payment_method_id]['count'], #wtf!?!?
                                                       donation.id].min
-          total_data[payment.payment_method_id][5] = [total_data[payment.payment_method_id][5],
+          total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'], #wtf!?!
                                                       donation.id].max
         }
       }
       return total_data.map {|method_id,sums|
-        [method_id] + sums
+        {'payment_method_id' => method_id}.merge(sums)
       }
     end
 
