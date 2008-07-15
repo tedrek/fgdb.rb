@@ -1,6 +1,6 @@
 Index: app/models/gizmo_event.rb
 ===================================================================
---- app/models/gizmo_event.rb	(revision 1499)
+--- app/models/gizmo_event.rb	(revision 1497)
 +++ app/models/gizmo_event.rb	(working copy)
 @@ -20,7 +20,7 @@
          "SELECT gizmo_events.gizmo_type_id,
@@ -11,9 +11,18 @@ Index: app/models/gizmo_event.rb
           FROM gizmo_events
                LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
           WHERE #{sanitize_sql_for_conditions(conditions)}
+@@ -44,7 +44,7 @@
+       conditions = conditions.dup()
+       conditions[0] += " AND gegt.gizmo_typeattr_id=14"
+       connection.execute(
+-        "SELECT gt.id, 
++        "SELECT gt.id AS gt, 
+                 sum(gizmo_events.gizmo_count 
+                     * gegt.attr_val_monetary_cents)
+          FROM gizmo_events 
 Index: app/models/donation.rb
 ===================================================================
---- app/models/donation.rb	(revision 1499)
+--- app/models/donation.rb	(revision 1497)
 +++ app/models/donation.rb	(working copy)
 @@ -50,7 +50,7 @@
        total_data = {}
@@ -44,8 +53,19 @@ Index: app/models/donation.rb
  
 Index: app/controllers/reports_controller.rb
 ===================================================================
---- app/controllers/reports_controller.rb	(revision 1499)
+--- app/controllers/reports_controller.rb	(revision 1497)
 +++ app/controllers/reports_controller.rb	(working copy)
+@@ -28,8 +28,8 @@
+     GizmoEvent.category_totals(@defaults.conditions(GizmoEvent)).each do |summation|
+       add_gizmo_category_to_data(summation, @gizmo_data)
+     end
+-    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|k,v|
+-      @gizmo_income_data[k.to_i] = v 
++    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|x|
++      @gizmo_income_data[x['gt'].to_s] = x['sum']
+     }
+   end
+ 
 @@ -77,7 +77,7 @@
    end
  
@@ -86,7 +106,7 @@ Index: app/controllers/reports_controller.rb
      discount_schedule = DiscountSchedule.find(discount_schedule_id)
 Index: app/views/contacts/lookup_results.html.erb
 ===================================================================
---- app/views/contacts/lookup_results.html.erb	(revision 1499)
+--- app/views/contacts/lookup_results.html.erb	(revision 1497)
 +++ app/views/contacts/lookup_results.html.erb	(working copy)
 @@ -12,7 +12,7 @@
      <tr <%= (line+=1) % 2 == 0 ? 'class="even"' : ''%>>
