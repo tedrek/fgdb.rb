@@ -26,29 +26,16 @@
 </div>
 </div>
 
+<% params[:gizmo_context_id] ||= @gizmo_context.id %>
+<%= javascript_tag "gizmo_context = '#{@gizmo_context.to_s}';"%>
+
 <div id="transaction_line_items_div">
 <div id="donation_gizmos" class="datalist line_item">
-  <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-  <%= datalist_for( :gizmo_event, 'donation_gizmo_events',
-    @donation.gizmo_events, :create_with => { :donation_id => @donation.id },
-    :show_header => false, :render_aware => "no_price_gizmo_event_form",
-    :add_text => "More gizmos",
-    :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');" +
-      remote_function(:url => {:controller => base_controller, :action => 'automatic_datalist_row'},
-        :with => "Form.serialize('#{element_form_id(@options)}')"),
-    :inhibit_delete => true,
-    :new_defaults => @event_defaults || {}) %>
+    <%= render :partial => 'sale_gizmo_events' %>
 </div>
 
   <div id="donation_payments" class="datalist line_item">
-    <% params[:gizmo_context_id] ||= @gizmo_context.id %>
-    <%= datalist_for( :payment, 'donation_payments',
-      @donation.payments, :create_with => { :donation_id => @donation.id },
-      :show_header => false, :render_aware => "payment_form",
-      :add_text => "More payment methods",
-      :onchange => "updateTotalsForContext($('#{element_form_id(@options)}'), Form.serialize($('#{element_form_id(@options)}')), null, '#{@transaction_type}');",
-      :inhibit_delete => true,
-      :new_defaults => @event_defaults || {}) %>
+    <%= render :partial => 'sale_payments' %>
   </div>
 
 
