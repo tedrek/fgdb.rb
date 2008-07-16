@@ -6,12 +6,7 @@
 <tr>
 <% if @transaction.payments %>
 <% for line in @transaction.payments %>
-<% js = "" %>
-<% js += "var args = new Array();" %>
-<% js += "args['payment_method_id'] = #{line.payment_method_id};" %>
-<% js += "args['payment_amount'] = #{line.amount};" %>
-<% js += "add_payment(args);" %>
-<%= javascript_tag js %>
+<%= javascript_tag "add_payment(#{line.payment_method_id}, #{line.amount});" %>
 <% end %>
 <% end %>
 

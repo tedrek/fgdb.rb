@@ -10,13 +10,7 @@
 <th></th>
 <% if @transaction.gizmo_events %>
 <% for line in @transaction.gizmo_events %>
-<% js = "" %>
-<% js += "var args = new Array();" %>
-<% js += "args['gizmo_type_id'] = #{line.gizmo_type_id};" %>
-<% js += "args['unit_price'] = #{line.unit_price};" %>
-<% js += "args['gizmo_count'] = #{line.gizmo_count};" %>
-<% js += "do_it(args, gizmo_events_stuff, sales_stuff);" %>
-<%= javascript_tag js %>
+<%= javascript_tag "add_sale_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{line.unit_price})"%>
 <% end %>
 <% end %>
 
@@ -25,8 +19,8 @@
 <%= options_from_collection_for_select(@gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
 </select></td>
 <td><input name="gizmo_count" id="gizmo_count"></td>
-<td><input name="unit_price" id="unit_price" onkeydown="if(event.keyCode==9) {return add_sale_gizmo_event();}"></td>
+<td><input name="unit_price" id="unit_price" onkeydown="if(event.keyCode==9) {return add_sale_gizmo_event_from_form();}"></td>
 <td></td>
-<td><a onClick="add_sale_gizmo_event();">Click</a></td>
+<td><a onClick="add_sale_gizmo_event_from_form();">Click</a></td>
 </tr>
 </table>

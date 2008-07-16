@@ -88,17 +88,21 @@
     tr.appendChild(make_hidden("line", "gizmo_count", gizmo_count, gizmo_count, line_id));
   }
 
-  function add_sale_gizmo_event()
+  function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
+    args = new Array();
+    args['gizmo_type_id'] = gizmo_type_id;
+    args['unit_price'] = unit_price;
+    args['gizmo_count'] = gizmo_count;
+    args['prefix'] = 'gizmo_event';
+    add_line_item(args, gizmo_events_stuff, sales_stuff, compute_total_price_and_payment);
+  }
+
+  function add_sale_gizmo_event_from_form()
   {
     if($('unit_price').value == '' || $('gizmo_count').value == '') {
       return true;
     }
-    args = new Array();
-    args['gizmo_type_id'] = $('gizmo_type_id').value;
-    args['unit_price'] = $('unit_price').value;
-    args['gizmo_count'] = $('gizmo_count').value;
-    args['prefix'] = 'gizmo_event';
-    add_line_item(args, gizmo_events_stuff, sales_stuff, compute_total_price_and_payment);
+    add_sale_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value);
     $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
     $('unit_price').value = $('unit_price').defaultValue;
     $('gizmo_count').value = $('gizmo_count').defaultValue;
@@ -180,15 +184,19 @@
     tr.appendChild(amount_node);
   }
 
+  function add_payment(payment_method_id, payment_amount) {
+    args = new Array();
+    args['payment_method_id'] = payment_method_id;
+    args['payment_amount'] = payment_amount;
+    args['prefix'] = 'payment';
+    add_line_item(args, payment_stuff, function () {}, compute_total_price_and_payment);
+  }
+
   function add_payment_from_form() {
     if($('payment_amount').value == '') {
       return true;
     }
-    args = new Array();
-    args['payment_method_id'] = $('payment_method_id').value;
-    args['payment_amount'] = $('payment_amount').value;
-    args['prefix'] = 'payment';
-    add_line_item(args, payment_stuff, function () {}, compute_total_price_and_payment);
+    add_payment($('payment_method_id').value, $('payment_amount').value)
     $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
     $('payment_amount').value = $('payment_amount').defaultValue;
     $('payment_method_id').focus();
