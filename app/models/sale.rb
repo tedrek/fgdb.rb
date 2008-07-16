@@ -11,6 +11,7 @@ class Sale < ActiveRecord::Base
   before_save :unzero_contact_id
   before_save :set_occurred_at_on_gizmo_events
   before_save :compute_fee_totals
+  before_save :add_change_line_item
 
   def initialize(*args)
     @contact_type = 'named'
@@ -32,7 +33,7 @@ class Sale < ActiveRecord::Base
       errors.add_on_empty("postal_code")
     end
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
-    errors.add("payments", "are too much") if overpaid?
+    #errors.add("payments", "are too much") if overpaid?
     errors.add("payments", "may only have one invoice") if invoices.length > 1
     errors.add("gizmos", "should include something") if gizmo_events.empty?
   end
@@ -110,5 +111,13 @@ class Sale < ActiveRecord::Base
       self.created_at = Time.now
     end
     self.gizmo_events.each {|event| event.occurred_at = self.created_at}
+  end
+
+  def add_change_line_item()
+    change_due = money_tendered_cents - calculated_total_cents
+    if change_due > 0
+      payments << Payment.new({:amount_cents => -change_due,
+                               :payment_method => PaymentMethod.cash})
+    end
   end
 end

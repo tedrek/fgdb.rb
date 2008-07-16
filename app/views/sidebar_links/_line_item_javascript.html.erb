@@ -160,18 +160,12 @@
     var grand_total = get_grand_total();
     var discount = subtotal - grand_total;
     var payment = get_total_payment();
-    var overpayment = payment - grand_total;
 
     $('subtotal').innerHTML = dollar_value(subtotal);
     $('discount').innerHTML = dollar_value(discount);
     $('grand_total').innerHTML = dollar_value(grand_total);
-    if (overpayment > 0) {
-      $('overpayment').innerHTML = dollar_value(overpayment);
-      $('overpayment').parentNode.style.display = "normal";
-    }
-    else {
-      $('overpayment').parentNode.style.display = "none";
-    }
+    $('total_payments').innerHTML = dollar_value(payment);
+    $('change_due').innerHTML = dollar_value(payment - grand_total);
   }
 
   function payment_stuff(args, tr){
