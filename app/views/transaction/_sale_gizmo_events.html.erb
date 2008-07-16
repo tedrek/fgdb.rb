@@ -9,9 +9,12 @@
 <th>total price</th>
 <th></th>
 <% if @transaction.gizmo_events %>
-<% for line in @transaction.gizmo_events %>
-<%= javascript_tag "add_sale_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{line.unit_price})"%>
-<% end %>
+  <%= js = ""
+      for line in @transaction.gizmo_events 
+        js += "add_sale_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{line.unit_price});"
+      end
+      javascript_tag js
+  %>
 <% end %>
 
 <tr id="form">

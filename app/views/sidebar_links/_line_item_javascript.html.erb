@@ -198,18 +198,23 @@
   }
 </script>
 
-<% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) %>
-  <% js = "var gizmo_types = new Array;" %>
-  <% for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description) %>
-    <% js += "gizmo_types[#{gizmo_type.id}] = '#{gizmo_type.description}';" %>
-  <% end %>
-  <%= javascript_tag js %>
-<% end %>
+<% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) -%>
+  <%= js = "var gizmo_types = new Array;" 
+      for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description) 
+        js += "gizmo_types[#{gizmo_type.id}] = '#{gizmo_type.description}';"
+      end 
+      javascript_tag js %>
+<% end -%>
 
-<% if ["sales", "donations"].include?(params[:controller]) %>
-  <% js = "var payment_methods = new Array;" %>
-  <% for payment_method in PaymentMethod.find(:all).sort_by(&:description) %>
-    <% js += "payment_methods[#{payment_method.id}] = '#{payment_method.description}';" %>
-  <% end %>
-  <%= javascript_tag js %>
-<% end %>
+<% if ["sales", "donations"].include?(params[:controller]) -%>
+  <%= js = "var payment_methods = new Array;" 
+      for payment_method in PaymentMethod.find(:all).sort_by(&:description) 
+        js += "payment_methods[#{payment_method.id}] = '#{payment_method.description}';" 
+      end 
+      javascript_tag js %>
+  <%= js = "var required_fees = new Array();"
+      fees = GizmoType.find(:all).map(){|x| "required_fees[#{x.id}]=#{x.required_fee_cents};"}
+      js += fees.join()
+      javascript_tag js %>
+<% end -%>
+
