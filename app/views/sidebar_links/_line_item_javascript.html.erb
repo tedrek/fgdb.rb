@@ -1,4 +1,5 @@
 <script>
+  var discount_schedules;
   var counters = new Array();
   counters['gizmo_event_line_id'] = <%= defined?(@lines) ? @lines.length : 0 %>;
   counters['payment_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
@@ -88,21 +89,30 @@
     tr.appendChild(make_hidden("line", "gizmo_count", gizmo_count, gizmo_count, line_id));
   }
 
-  function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
+  function add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
     args = new Array();
     args['gizmo_type_id'] = gizmo_type_id;
     args['unit_price'] = unit_price;
     args['gizmo_count'] = gizmo_count;
     args['prefix'] = 'gizmo_event';
-    add_line_item(args, gizmo_events_stuff, sales_stuff, compute_total_price_and_payment);
   }
 
-  function add_sale_gizmo_event_from_form()
+  function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
+    add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price);
+    add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals);
+  }
+
+  function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
+    add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price);
+    add_line_item(args, gizmo_events_stuff, sales_stuff, donation_compute_totals);
+  }
+
+  function add_priced_gizmo_event_from_form()
   {
     if($('unit_price').value == '' || $('gizmo_count').value == '') {
       return true;
     }
-    add_sale_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value);
+    add_<%= @gizmo_context.name %>_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value);
     $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
     $('unit_price').value = $('unit_price').defaultValue;
     $('gizmo_count').value = $('gizmo_count').defaultValue;
@@ -143,7 +153,9 @@
     {
       thing = gizmo_events[i];
 
-      var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][parseInt(thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value)]);
+      var multiplier = defined(discount_schedules)
+        ? (discount_schedules[$('sale_discount_schedule_id').value][parseInt(thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value)])
+        : 1;
       var amount_b4_discount = (Math.floor(parseInt(thing.getElementsBySelector(".unit_price").first().firstChild.value)*100) * Math.floor(thing.getElementsBySelector(".gizmo_count").first().firstChild.value));
       var amount = multiplier * amount_b4_discount;
       if (isNaN(amount))
@@ -154,7 +166,11 @@
     }
   }
 
-  function compute_total_price_and_payment() {
+  function donation_compute_totals() {
+    update_gizmo_events_totals();
+  }
+
+  function sale_compute_totals() {
     update_gizmo_events_totals();
     var subtotal = get_subtotal();
     var grand_total = get_grand_total();
@@ -183,7 +199,7 @@
     args['payment_method_id'] = payment_method_id;
     args['payment_amount'] = payment_amount;
     args['prefix'] = 'payment';
-    add_line_item(args, payment_stuff, function () {}, compute_total_price_and_payment);
+    add_line_item(args, payment_stuff, function () {}, sale_compute_totals);
   }
 
   function add_payment_from_form() {
@@ -196,6 +212,19 @@
     $('payment_method_id').focus();
     return false;
   }
+
+  function max(a,b) { return a>b ? a : b; }
+
+  function sale_gizmo_type_selected() {
+  }
+  function donation_gizmo_type_selected() {
+    $('unit_price').value = dollar_value(max(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']))
+  }
+  function recycling_gizmo_type_selected() {
+  }
+  function disbursement_gizmo_type_selected() {
+  }
+
 </script>
 
 <% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) -%>
@@ -212,9 +241,28 @@
         js += "payment_methods[#{payment_method.id}] = '#{payment_method.description}';" 
       end 
       javascript_tag js %>
-  <%= js = "var required_fees = new Array();"
-      fees = GizmoType.find(:all).map(){|x| "required_fees[#{x.id}]=#{x.required_fee_cents};"}
-      js += fees.join()
-      javascript_tag js %>
 <% end -%>
 
+<%=
+  case params[:controller]
+    when 'sales'
+      js = "var discount_schedules = new Array;"
+      gizmo_types = GizmoType.find(:all)
+      for discount_schedule in DiscountSchedule.find(:all)
+        js += "discount_schedules[#{discount_schedule.id}] = new Array;"
+        for gizmo_type in gizmo_types
+          js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule)};"
+        end
+      end
+      javascript_tag js
+    when 'donations'
+      js = "var fees = new Array();"
+      fees = GizmoType.find(:all).map(){|x| 
+        "fees[#{x.id}]= new Array();" +
+          "fees[#{x.id}]['required'] = #{x.required_fee_cents};" +
+          "fees[#{x.id}]['suggested'] = #{x.suggested_fee_cents};"
+      }
+      js += fees.join()
+      javascript_tag js
+  end
+%>
