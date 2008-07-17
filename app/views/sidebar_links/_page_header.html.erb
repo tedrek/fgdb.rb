@@ -13,7 +13,9 @@
   <%= javascript_include_tag 'lightwindow' %>
   <%= javascript_include_tag 'boxover' %>
   <%= dhtml_calendar_includes %>
-  <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>
+  <% if defined?(@gizmo_context) %>
+    <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>
+  <% end %>
 </head>
 <body>
 
