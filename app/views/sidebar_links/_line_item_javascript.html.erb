@@ -97,9 +97,21 @@
     args['prefix'] = 'gizmo_event';
   }
 
+  function add_unpriced_gizmo_event(gizmo_type_id, gizmo_count) {
+    args = new Array();
+    args['gizmo_type_id'] = gizmo_type_id;
+    args['gizmo_count'] = gizmo_count;
+    args['prefix'] = 'gizmo_event';
+  }
+
   function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
     add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price);
     add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals);
+  }
+
+  function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count) {
+    add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
+    add_line_item(args, gizmo_events_stuff, function(){}, function(){});
   }
 
   function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
@@ -109,12 +121,24 @@
 
   function add_priced_gizmo_event_from_form()
   {
-    if($('unit_price').value == '' || $('gizmo_count').value == '') {
+    if($('gizmo_type_id').selectedIndex == 0 || $('unit_price').value == '' || $('gizmo_count').value == '') {
       return true;
     }
     add_<%= @gizmo_context.name %>_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value);
     $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
     $('unit_price').value = $('unit_price').defaultValue;
+    $('gizmo_count').value = $('gizmo_count').defaultValue;
+    $('gizmo_type_id').focus();
+    return false;
+  }
+
+  function add_disbursement_gizmo_event_from_form()
+  {
+    if($('gizmo_type_id').selectedIndex == 0 || $('gizmo_count').value == '') {
+      return true;
+    }
+    add_<%= @gizmo_context.name %>_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value);
+    $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
     $('gizmo_count').value = $('gizmo_count').defaultValue;
     $('gizmo_type_id').focus();
     return false;
