@@ -15,6 +15,5 @@
     <%= options_from_collection_for_select(PaymentMethod.find(:all).sort_by(&:description), "id", "description") %>
   </select></td>
   <td><input id="payment_amount" name="payment_amount" onkeydown="if(event.keyCode==9) {return add_payment_from_form();}"/></td>
-  <td><a onClick="add_payment_from_form();">Click</a></td>
 </tr>
 </table>
