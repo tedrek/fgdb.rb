@@ -130,6 +130,10 @@ class GizmoEvent < ActiveRecord::Base
     ((! gizmo_type_id) or (! gizmo_count))
   end
 
+  def fee_cents
+    adjusted_fee_cents || gizmo_type.fee_cents
+  end
+
   def required_fee_cents
     if (adjusted_fee_cents||0) > 0
       gizmo_count.to_i * adjusted_fee_cents

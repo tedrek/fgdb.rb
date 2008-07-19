@@ -15,6 +15,16 @@ class GizmoType < ActiveRecord::Base
   define_amount_methods_on("required_fee")
   define_amount_methods_on("suggested_fee")
 
+  def fee_cents
+    if (required_fee_cents && required_fee_cents > 0)
+      return required_fee_cents
+    elsif (suggested_fee_cents && suggested_fee_cents > 0)
+      return suggested_fee_cents
+    else
+      return -1
+    end
+  end
+
   def to_s
     description
   end

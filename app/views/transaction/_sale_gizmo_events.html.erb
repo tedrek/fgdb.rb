@@ -11,7 +11,12 @@
 <% if @transaction.gizmo_events %>
   <%= js = ""
       for line in @transaction.gizmo_events 
-        js += "add_sale_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{line.unit_price}, #{@gizmo_context}_compute_totals);"
+        if @gizmo_context.name == "sale"
+          price = line.unit_price
+        else
+          price = line.fee_cents.to_dollars
+        end
+        js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, #{@gizmo_context}_compute_totals);"
       end
       javascript_tag js
   %>
