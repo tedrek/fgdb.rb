@@ -6,7 +6,7 @@
 <tr>
 <% if @transaction.payments %>
 <% for line in @transaction.payments %>
-<%= javascript_tag "add_payment(#{line.payment_method_id}, #{line.amount});" %>
+<%= javascript_tag "add_payment(#{line.payment_method_id}, #{line.amount}, #{@gizmo_context}_compute_totals);" %>
 <% end %>
 <% end %>
 
@@ -14,6 +14,6 @@
   <td><select id="payment_method_id">
     <%= options_from_collection_for_select(PaymentMethod.find(:all).sort_by(&:description), "id", "description") %>
   </select></td>
-  <td><input id="payment_amount" name="payment_amount" onkeydown="if(event.keyCode==9) {return add_payment_from_form();}"/></td>
+  <td><input id="payment_amount" name="payment_amount" onkeydown="if(event.keyCode==9) {return add_payment_from_form(<%= @gizmo_context %>_compute_totals);}"/></td>
 </tr>
 </table>

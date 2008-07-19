@@ -14,7 +14,10 @@
     hook2(args, tr);
     td = document.createElement("td");
     a = document.createElement("a");
-    a.onclick = new Function('Element.remove(\'' + id + '\');')
+    a.onclick = function () {
+      Element.remove(id);
+      update_hook();
+    };
     a.appendChild(document.createTextNode('x'));
     td.appendChild(a);
     tr.appendChild(td);
@@ -194,8 +197,46 @@
     }
   }
 
+  function set_visibility(node, visibility) {
+    if (node.visible() != visibility) {
+      node.toggle();
+    }
+  }
+
+  function get_donation_totals() {
+    var totals = new Array();
+    totals['required'] = 0;
+    totals['suggested'] = 0;
+    var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
+    for (var x = 0; x < arr.length; x++) {
+      var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
+      var type;
+      type = (fees[type_id]['required'] > 0) ? 'required' : 'suggested';
+      
+      totals[type] += cent_value(arr[x], "td.total_price");
+    }
+    return totals;
+  }
+
   function donation_compute_totals() {
     update_gizmo_events_totals();
+
+    var totals = get_donation_totals();
+    var required = totals['required'];
+    var suggested = totals['suggested'];
+    var total = required + suggested;
+    var payment = get_total_payment();
+    var short = payment - required;
+    var bonus = payment - total;
+
+    $('required').innerHTML = dollar_value(required);
+    $('suggested').innerHTML = dollar_value(suggested);
+    $('total').innerHTML = dollar_value(total);
+    $('received').innerHTML = dollar_value(payment);
+    $('short').innerHTML = dollar_value(short);
+    set_visibility($('short_row'), short < 0);
+    $('bonus').innerHTML = dollar_value(bonus);
+    set_visibility($('bonus_row'), bonus > 0);
   }
 
   function sale_compute_totals() {
@@ -222,19 +263,19 @@
     tr.appendChild(amount_node);
   }
 
-  function add_payment(payment_method_id, payment_amount) {
+  function add_payment(payment_method_id, payment_amount, compute_totals) {
     args = new Array();
     args['payment_method_id'] = payment_method_id;
     args['payment_amount'] = payment_amount;
     args['prefix'] = 'payment';
-    add_line_item(args, payment_stuff, function () {}, sale_compute_totals);
+    add_line_item(args, payment_stuff, function () {}, compute_totals);
   }
 
-  function add_payment_from_form() {
+  function add_payment_from_form(compute_totals) {
     if($('payment_amount').value == '') {
       return true;
     }
-    add_payment($('payment_method_id').value, $('payment_amount').value)
+    add_payment($('payment_method_id').value, $('payment_amount').value, compute_totals)
     $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
     $('payment_amount').value = $('payment_amount').defaultValue;
     $('payment_method_id').focus();

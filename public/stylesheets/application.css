@@ -544,3 +544,13 @@ padding:0;
 .hours_detail_report { 
   float: left;
 }
+
+
+
+#short_row { 
+  color: red;
+}
+
+#bonus_row {
+  color: blue;
+}
