@@ -1,1 +1,25 @@
-asdf
+<table id="contact_method_lines">
+<tr>
+<th>type</th>
+<th>is usable</th>
+<th>description</th>
+<th></th>
+<% if @contact.contact_methods %>
+  <%= js = ""
+      for line in @contact.contact_methods
+        js += "add_contact_method(#{line.contact_method_type_id}, #{line.is_usable}, #{line.description});"
+      end
+      javascript_tag js
+  %>
+<% end %>
+
+<tr id="form">
+<td><select id="contact_method_id" onchange="contact_contact_method_selected()">
+<%= options_from_collection_for_select([ContactMethodType.new(:id=>1, :description=>"pick a type")] + ContactMethodType.find(:all).sort_by(&:description), "id", "description") %>
+</select></td>
+<td><input name="is_usable" id="is_usable" type="checkbox"></td>
+<td><input name="description" id="description" onkeydown="if(event.keyCode==9) {return add_priced_gizmo_event_from_form();}"></td>
+<td></td>
+</tr>
+</table>
+
