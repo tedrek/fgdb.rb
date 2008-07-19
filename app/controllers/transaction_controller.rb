@@ -1,6 +1,4 @@
 class TransactionController < ApplicationController
-  include DatalistFor
-
   layout :check_for_receipt
 
   protected
