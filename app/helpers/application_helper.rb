@@ -343,7 +343,7 @@ module ApplicationHelper
   end
 
   def show_errors_for(name, object, page)
-    page << "array = document.getElementsByClassName('fieldWithErrors'); for (var count = 0; count < array.size(); count++) {array[count].removeClassName('fieldWithErrors')}"
+    page << "array = document.getElementsByClassName('fieldWithErrors'); for (var count = 0; count < array.length; count++) {array[count].removeClassName('fieldWithErrors')}"
     object.errors.each {|field, msg|
       page << "if($('#{name}_#{field}')) {$('#{name}_#{field}').addClassName('fieldWithErrors')}"
     }
