@@ -107,10 +107,6 @@ class Donation < ActiveRecord::Base
     end
   end
 
-  def unit_price
-    adjusted_fee_cents
-  end
-
   def donor
     if contact_type == 'named'
       contact.display_name
