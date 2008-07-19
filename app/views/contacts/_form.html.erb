@@ -78,10 +78,7 @@
 </div>
 
 <div class="form-element">
-  <%= datalist_for( :contact_method, 'contacts_contact_methods',
-    @contact.contact_methods,
-    :show_header => false, :render => "contact_methods_form",
-    :add_text => "More contact methods" ) %>
+  <%= render :partial => 'contact_methods' %>
 </div>
 
 <div class="form-element person">

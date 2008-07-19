@@ -1,5 +1,4 @@
 class ContactsController < ApplicationController
-  include DatalistFor
   ContactMethodsTag = 'contacts_contact_methods'
   layout :with_sidebar
 
