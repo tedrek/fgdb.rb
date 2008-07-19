@@ -8,6 +8,10 @@ class ContactMethod < ActiveRecord::Base
     description
   end
 
+  def is_usable
+    ok
+  end
+
   def display
     "%s (%s)" % [description, contact_method_type.description]
   end
