@@ -282,6 +282,41 @@
     return false;
   }
 
+  function contact_method_stuff(args, tr){
+    var contact_method_description = args['contact_method_description'];
+    var contact_method_type_id = args['contact_method_type_id'];
+    var contact_method_usable = args['contact_method_usable'];
+    var line_id = counters[args['prefix'] + '_line_id'];
+    tr.appendChild(make_hidden("contacts", "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
+    usable_node = make_hidden("contacts", "usable", contact_method_usable, contact_method_usable, line_id);
+    usable_node.className = "usable";
+    tr.appendChild(usable_node);
+    description_node = make_hidden("contacts", "description", contact_method_description, contact_method_description, line_id);
+    description_node.className = "description";
+    tr.appendChild(description_node);
+  }
+
+  function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_description) {
+    args = new Array();
+    args['contact_method_type_id'] = contact_method_type_id;
+    args['contact_method_usable'] = contact_method_usable;
+    args['contact_method_description'] = contact_method_description;
+    args['prefix'] = 'contact_method';
+    add_line_item(args, contact_method_stuff, function () {}, function () {});
+  }
+
+  function add_contact_method_from_form() {
+    if($('contact_method_description').value == '' || $('contact_method_type_id').selectedIndex == 0) {
+      return true;
+    }
+    add_contact_method($('contact_method_type_id').value, $('is_usable').checked, $('contact_method_description').value)
+    $('contact_method_type_id').selectedIndex = 0; //should be default, but it's yucky
+    $('contact_method_description').value = $('contact_method_description').defaultValue;
+    $('is_usable').checked = false;
+    $('contact_method_type_id').focus();
+    return false;
+  }
+
   function max(a,b) { return a>b ? a : b; }
 
   function sale_gizmo_type_selected() {
@@ -308,6 +343,14 @@
   <%= js = "var payment_methods = new Array;" 
       for payment_method in PaymentMethod.find(:all).sort_by(&:description) 
         js += "payment_methods[#{payment_method.id}] = '#{payment_method.description}';" 
+      end 
+      javascript_tag js %>
+<% end -%>
+
+<% if ["contacts"].include?(params[:controller]) -%>
+  <%= js = "var contact_method_types = new Array;" 
+      for contact_method_type in ContactMethodType.find(:all).sort_by(&:description) 
+        js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';" 
       end 
       javascript_tag js %>
 <% end -%>
