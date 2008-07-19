@@ -4,6 +4,11 @@ class ContactsController < ApplicationController
 
   around_filter :transaction_wrapper
   before_filter :authorized_only
+  before_filter :be_stupid
+
+  def be_stupid
+    @gizmo_context = GizmoContext.new(:name => 'contact')
+  end
 
   class ForceRollback < RuntimeError
   end
