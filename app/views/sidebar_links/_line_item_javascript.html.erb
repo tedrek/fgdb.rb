@@ -114,6 +114,10 @@
     add_line_item(args, gizmo_events_stuff, function(){}, function(){});
   }
 
+  function add_recycling_gizmo_event(gizmo_type_id, gizmo_count) {
+    add_disbursement_gizmo_event(gizmo_type_id, gizmo_count)
+  }
+
   function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
     add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price);
     add_line_item(args, gizmo_events_stuff, sales_stuff, donation_compute_totals);
@@ -132,7 +136,7 @@
     return false;
   }
 
-  function add_disbursement_gizmo_event_from_form()
+  function add_unpriced_gizmo_event_from_form()
   {
     if($('gizmo_type_id').selectedIndex == 0 || $('gizmo_count').value == '') {
       return true;
