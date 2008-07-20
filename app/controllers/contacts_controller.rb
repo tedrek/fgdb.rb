@@ -174,9 +174,11 @@ class ContactsController < ApplicationController
 
   def _apply_line_item_data(contact)
     @contact_methods = []
-    for contact_method in params[:contact_methods].values
-      p = ContactMethod.new(contact_method)
-      @contact_methods << p
+    if params[:contact_methods]
+      for contact_method in params[:contact_methods].values
+        p = ContactMethod.new(contact_method)
+        @contact_methods << p
+      end
     end
     contact.contact_methods = @contact_methods
   end

@@ -4,14 +4,17 @@
 <th>is usable</th>
 <th>description</th>
 <th></th>
-<% if @contact.contact_methods %>
-  <%= js = ""
+</tr>
+<% 
+  js = ""
+  if @contact.contact_methods %>
+  <% 
       for line in @contact.contact_methods
-        js += "add_contact_method(#{line.contact_method_type_id}, #{line.is_usable}, #{line.description});"
+        js += "add_contact_method(#{line.contact_method_type_id}, '#{line.is_usable}', '#{line.description}');"
       end
-      javascript_tag js
   %>
 <% end %>
+<%= javascript_tag js %>
 
 <tr id="form">
 <td><select id="contact_method_type_id" onchange="contact_contact_method_selected()">
