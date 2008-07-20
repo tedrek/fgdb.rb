@@ -3,6 +3,7 @@
   var counters = new Array();
   counters['gizmo_event_line_id'] = <%= defined?(@lines) ? @lines.length : 0 %>;
   counters['payment_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
+  counters['contact_method_line_id'] = <%= defined?(@contact_methods) ? @contact_methods.length : 0 %>;
 
   function add_line_item(args, hook1, hook2, update_hook){
     var prefix = args['prefix'];
@@ -287,11 +288,11 @@
     var contact_method_type_id = args['contact_method_type_id'];
     var contact_method_usable = args['contact_method_usable'];
     var line_id = counters[args['prefix'] + '_line_id'];
-    tr.appendChild(make_hidden("contacts", "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-    usable_node = make_hidden("contacts", "usable", contact_method_usable, contact_method_usable, line_id);
+    tr.appendChild(make_hidden("contact_methods", "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
+    usable_node = make_hidden("contact_methods", "usable", contact_method_usable, contact_method_usable, line_id);
     usable_node.className = "usable";
     tr.appendChild(usable_node);
-    description_node = make_hidden("contacts", "description", contact_method_description, contact_method_description, line_id);
+    description_node = make_hidden("contact_methods", "description", contact_method_description, contact_method_description, line_id);
     description_node.className = "description";
     tr.appendChild(description_node);
   }
@@ -327,6 +328,8 @@
   function recycling_gizmo_type_selected() {
   }
   function disbursement_gizmo_type_selected() {
+  }
+  function contact_contact_method_gizmo_type_selected() {
   }
 
 </script>

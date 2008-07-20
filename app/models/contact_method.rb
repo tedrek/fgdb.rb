@@ -12,6 +12,10 @@ class ContactMethod < ActiveRecord::Base
     ok
   end
 
+  def usable=(param)
+    ok=param
+  end
+
   def display
     "%s (%s)" % [description, contact_method_type.description]
   end

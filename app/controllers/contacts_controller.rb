@@ -81,7 +81,7 @@ class ContactsController < ApplicationController
   end
 
   def create
-    begin
+#    begin
       @contact = Contact.new(params[:contact])
 
       if params[:contact][:is_user].to_i != 0
@@ -93,9 +93,9 @@ class ContactsController < ApplicationController
       end
       @user = @contact.user
       @successful = _save
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
+#    rescue
+#      flash[:error], @successful  = $!.to_s, false
+#    end
 
     render :action => 'create.rjs'
   end
@@ -172,15 +172,19 @@ class ContactsController < ApplicationController
   private
   #######
 
+  def _apply_line_item_data(contact)
+    @contact_methods = []
+    for contact_method in params[:contact_methods].values
+      p = ContactMethod.new(contact_method)
+      @contact_methods << p
+    end
+    contact.contact_methods = @contact_methods
+  end
+
   def _save
     @contact.contact_types = ContactType.find(params[:contact_types]) if params[:contact_types]
     success = @contact.save
-    if datalist_objects(ContactMethodsTag)
-      datalist_objects(ContactMethodsTag).each {|method|
-        method.contact = @contact
-        success = method.save and success
-      }
-    end
+    _apply_line_item_data(@contact)
     if @contact.user
       success = @contact.user.save and success
     end
