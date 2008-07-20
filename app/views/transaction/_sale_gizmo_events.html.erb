@@ -22,12 +22,12 @@
   %>
 <% end %>
 
-<tr id="form">
-<td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
-<%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
-</select></td>
-<td><input name="gizmo_count" id="gizmo_count"></td>
-<td><input name="unit_price" id="unit_price" onkeydown="if(event.keyCode==9) {return add_priced_gizmo_event_from_form();}"></td>
-<td></td>
-</tr>
+  <tr id="form">
+    <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
+      <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
+      </select></td>
+    <td><input name="gizmo_count" id="gizmo_count" size="6"></td>
+    <td><input name="unit_price" id="unit_price" size="8" onkeydown="if(event.keyCode==9) {return add_priced_gizmo_event_from_form();}"></td>
+    <td></td>
+  </tr>
 </table>

@@ -39,9 +39,12 @@
     return td;
   }
 
-  function cent_value(node, id) {
-    var value = node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, '');
-    var arr = value.split(".");
+  function get_node_value(node, id) {
+    return node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, '');
+  }
+
+  function cent_value(value) {
+    var arr = ("" + value).split(".");
     if (arr.length > 0) {
       value = parseInt(arr[0]) * 100;
       if (arr.length > 1) {
@@ -96,7 +99,7 @@
   function add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price) {
     args = new Array();
     args['gizmo_type_id'] = gizmo_type_id;
-    args['unit_price'] = unit_price;
+    args['unit_price'] = dollar_value(cent_value(unit_price));
     args['gizmo_count'] = gizmo_count;
     args['prefix'] = 'gizmo_event';
   }
@@ -156,7 +159,7 @@
     var total = 0;
     var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
     for (var x = 0; x < arr.length; x++) {
-      total += cent_value(arr[x], "td.total_price");
+      total += cent_value(get_node_value(arr[x], "td.total_price"));
     }
     return total;
   }
@@ -165,7 +168,7 @@
     var total = 0;
     var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
     for (var x = 0; x < arr.length; x++) {
-      total += (cent_value(arr[x], "td.gizmo_count") * node_value(arr[x], "td.unit_price"));
+      total += (cent_value(get_node_value(arr[x], "td.gizmo_count")) * node_value(arr[x], "td.unit_price"));
     }
     return total;
   }
@@ -174,7 +177,7 @@
     var total = 0;
     var arr = $('payment_lines').getElementsBySelector("tr.line");
     for (var x = 0; x < arr.length; x++) {
-      total += cent_value(arr[x], "td.amount");
+      total += cent_value(get_node_value(arr[x], "td.amount"));
     }
     return total;
   }
@@ -188,12 +191,11 @@
       var multiplier = defined(discount_schedules)
         ? (discount_schedules[$('sale_discount_schedule_id').value][parseInt(thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value)])
         : 1;
-      var amount_b4_discount = (Math.floor(parseInt(thing.getElementsBySelector(".unit_price").first().firstChild.value)*100) * Math.floor(thing.getElementsBySelector(".gizmo_count").first().firstChild.value));
+      var amount_b4_discount = cent_value(get_node_value(thing, ".unit_price")) * Math.floor(thing.getElementsBySelector(".gizmo_count").first().firstChild.value);
       var amount = multiplier * amount_b4_discount;
       if (isNaN(amount))
           amount = 0;
-      amount = Math.floor(amount)/100.0;
-      var mystring = "$" + amount;
+      var mystring = "$" + dollar_value(amount);
       thing.getElementsBySelector(".total_price").first().innerHTML = mystring;
     }
   }
@@ -214,7 +216,7 @@
       var type;
       type = (fees[type_id]['required'] > 0) ? 'required' : 'suggested';
       
-      totals[type] += cent_value(arr[x], "td.total_price");
+      totals[type] += cent_value(get_node_value(arr[x], "td.total_price"));
     }
     return totals;
   }
@@ -267,7 +269,7 @@
   function add_payment(payment_method_id, payment_amount, compute_totals) {
     args = new Array();
     args['payment_method_id'] = payment_method_id;
-    args['payment_amount'] = payment_amount;
+    args['payment_amount'] = dollar_value(cent_value(payment_amount));
     args['prefix'] = 'payment';
     add_line_item(args, payment_stuff, function () {}, compute_totals);
   }

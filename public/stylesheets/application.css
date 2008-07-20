@@ -554,3 +554,7 @@ padding:0;
 #bonus_row {
   color: blue;
 }
+
+.line { 
+  text-align: right;
+}
