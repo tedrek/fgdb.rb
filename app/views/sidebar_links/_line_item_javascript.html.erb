@@ -291,8 +291,8 @@
     var contact_method_usable = args['contact_method_usable'];
     var line_id = counters[args['prefix'] + '_line_id'];
     tr.appendChild(make_hidden("contact_methods", "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-    usable_node = make_hidden("contact_methods", "usable", contact_method_usable, contact_method_usable, line_id);
-    usable_node.className = "usable";
+    usable_node = make_hidden("contact_methods", "ok", contact_method_usable, contact_method_usable, line_id);
+    usable_node.className = "ok";
     tr.appendChild(usable_node);
     description_node = make_hidden("contact_methods", "description", contact_method_description, contact_method_description, line_id);
     description_node.className = "description";
