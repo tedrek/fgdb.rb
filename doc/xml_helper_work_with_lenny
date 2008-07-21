@@ -2,26 +2,27 @@ Index: app/helpers/xml_helper.rb
 ===================================================================
 --- app/helpers/xml_helper.rb	(revision 1543)
 +++ app/helpers/xml_helper.rb	(working copy)
-@@ -40,10 +40,11 @@
+@@ -40,10 +40,12 @@
    ######
  
    def load_xml(xml)
 -    require 'xml/libxml'
++    require 'hpricot'
 +    require 'rexml/document'
-+    require 'rexml/xpath'
      begin
        raise if xml.empty?
 -      @this_thing = XML::Parser.string(xml).parse
-+      @this_thing = REXML::Document.new(xml)
++      REXML::Document.new(xml)
++      @this_thing = Hpricot.XML(xml)
        return true
      rescue
        return false
-@@ -92,7 +93,7 @@
+@@ -92,7 +94,7 @@
    #######
  
    def get_matches(what_to_match)
 -    @this_thing.find(what_to_match).to_a
-+    REXML::XPath.match(@this_thing, what_to_match)
++    @this_thing.search(what_to_match).to_a
    end
    def remove_tag(s, tag)
      s.to_s.gsub(/<#{tag}\b[^>]*>(.*?)<\/#{tag}>/, '\1')
