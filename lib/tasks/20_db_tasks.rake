@@ -94,18 +94,18 @@ def load_schema( rails_env = "development" )
   when "postgresql"
     dbname = abcs[rails_env]['database']
     print "Droping the database..."
-    `dropdb -U "#{abcs[rails_env]["username"]}" #{dbname}`
+    `dropdb #{$PSQL_OPTS} #{dbname}`
     if $?.exitstatus == 1
       puts "Warning: error dropping database"
     else
       puts "done"
     end
     print "Creating the database..."
-    `createdb -U "#{abcs[rails_env]["username"]}" #{dbname}`
+    `createdb #{$PSQL_OPTS} #{dbname}`
     raise "Error creating database" if $?.exitstatus == 1
     puts "done"
     print "Loading the schema..."
-    `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{SCHEMADUMPFILE}`
+    `psql #{$PSQL_OPTS} #{dbname} -f #{SCHEMADUMPFILE}`
     raise "Error loading schema" if $?.exitstatus == 1
     puts "done"
   else
@@ -118,8 +118,8 @@ def wipe( rails_env = "development" )
   config = YAML::load(f.read)
   f.close()
 
-  `dropdb -U "#{config[rails_env]["username"]}" #{config[rails_env]['database']}`
-  `createdb -U "#{config[rails_env]["username"]}" #{config[rails_env]['database']}`
+  `dropdb #{$PSQL_OPTS} #{config[rails_env]['database']}`
+  `createdb #{$PSQL_OPTS} #{config[rails_env]['database']}`
   if $?.to_i.nonzero?
     raise Exception, "failed to create db"
   end
@@ -131,7 +131,7 @@ def load_data( rails_env = "development" )
   when "postgresql"
     dbname = abcs[rails_env]['database']
     print "Loading the data..."
-    `zcat #{DATADUMPFILE} | psql -U "#{abcs[rails_env]["username"]}" #{dbname}`
+    `zcat #{DATADUMPFILE} | psql #{$PSQL_OPTS} #{dbname}`
     raise "Error loading data" if $?.exitstatus == 1
     puts "done"
   else
@@ -148,7 +148,7 @@ def migrate_from_schema( rails_env = "development" )
     Dir.open(MIGRATIONDIR).find_all {|name|
       /sql$/.match(name)
     }.sort.each {|name|
-      `psql -U "#{abcs[rails_env]["username"]}" #{dbname} -f #{MIGRATIONDIR}/#{name}`
+      `psql #{$PSQL_OPTS} #{dbname} -f #{MIGRATIONDIR}/#{name}`
       raise "Error loading data" if $?.exitstatus == 1
       print "."
     }
@@ -224,6 +224,10 @@ namespace :db do
 
     desc "Fill the database with data from the dumped SQL file"
     task :load => ['db:data:wipe', :environment, 'db:schema:load'] do
+      abcs, search_path = setup_environment(rails_env)
+      if abcs[rails_env]["username"]
+        PGSQL_OPTS='-U "#{abcs[rails_env]["username"]}"'
+      end
       load_data(rails_env)
     end
 
