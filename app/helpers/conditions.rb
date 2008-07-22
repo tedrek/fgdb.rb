@@ -303,11 +303,11 @@ class Conditions
 
   def to_s
     if @created_at_enabled=="true" && @contact_enabled=="true"
-      " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("created_at")
+      " by " + contact_to_s(contact_to_s) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("created_at")
     elsif(@created_at_enabled=="true")
       ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("created_at")
     elsif @date_performed_enabled=="true" && @contact_enabled=="true"
-      " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("date_performed")
+      " by " + contact_to_s(contact_to_s) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("date_performed")
     elsif(@date_performed_enabled=="true")
       ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("date_performed")
     elsif(@contact_enabled=="true")
