@@ -247,6 +247,7 @@
 
   function sale_compute_totals() {
     update_gizmo_events_totals();
+    $('change_due_tr').removeClassName('short_row');
     var subtotal = get_subtotal();
     var grand_total = get_grand_total();
     var discount = subtotal - grand_total;
@@ -257,6 +258,9 @@
     $('grand_total').innerHTML = dollar_value(grand_total);
     $('total_payments').innerHTML = dollar_value(payment);
     $('change_due').innerHTML = dollar_value(payment - grand_total);
+    if(payment - grand_total < 0) {
+      $('change_due_tr').addClassName('short_row');
+    }
   }
 
   function payment_stuff(args, tr){

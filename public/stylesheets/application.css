@@ -547,7 +547,9 @@ padding:0;
   float: left;
 }
 
-
+.short_row { 
+  color: red;
+}
 
 #short_row { 
   color: red;
