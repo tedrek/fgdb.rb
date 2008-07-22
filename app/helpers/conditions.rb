@@ -303,9 +303,13 @@ class Conditions
 
   def to_s
     if @created_at_enabled=="true" && @contact_enabled=="true"
-      " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
+      " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("created_at")
     elsif(@created_at_enabled=="true")
-      ( @date_type == "daily" ? " on " : " during ") + date_range_to_s
+      ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("created_at")
+    elsif @date_performed_enabled=="true" && @contact_enabled=="true"
+      " by " + contact_to_s(show_contact_name) + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("date_performed")
+    elsif(@date_performed_enabled=="true")
+      ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("date_performed")
     elsif(@contact_enabled=="true")
       " by " + contact_to_s
     else
@@ -313,18 +317,18 @@ class Conditions
     end
   end
 
-  def date_range_to_s
-    case @created_at_date_type
+  def date_range_to_s(thing)
+    case eval("@" + thing + "_date_type")
     when 'daily'
-      desc = Date.parse(@created_at_date.to_s).to_s
+      desc = Date.parse(eval("@" + thing + "_date").to_s).to_s
     when 'monthly'
-      year = (@created_at_year || Date.today.year).to_i
-      start_date = Time.local(year, @created_at_month, 1)
+      year = (eval("@" + thing + "_date_year") || Date.today.year).to_i
+      start_date = Time.local(year, eval("@" + thing + "month"), 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     when 'arbitrary'
-      start_date = Date.parse(@created_at_start_date.to_s)
-      end_date = Date.parse(@created_at_end_date.to_s)
-      desc = "#{created_at_start_date} to #{created_at_end_date}"
+      start_date = Date.parse(eval("@" + thing + "_start_date").to_s)
+      end_date = Date.parse(eval("@" + thing + "_end_date").to_s)
+      desc = "#{eval("@" + thing + "_start_date")} to #{eval("@" + thing + "_end_date")}"
     else
       desc = 'unknown date type'
     end
