@@ -1,9 +1,9 @@
 development:
   adapter: postgresql
   database: fgdb_development
-  username: fgdb
-  password:
-  host: localhost
+#  username: fgdb
+#  password:
+#  host: localhost
 
 # Warning: The database defined as 'test' will be erased and
 # re-generated from your development database when you run 'rake'.
@@ -11,13 +11,13 @@ development:
 test:
   adapter: postgresql
   database: fgdb_test
-  username: fgdb
-  password:
-  host: localhost
+#  username: fgdb
+#  password:
+#  host: localhost
 
 production:
   adapter: postgresql
   database: fgdb_production
-  username: fgdb
-  password:
-  host: localhost
+#  username: fgdb
+#  password:
+#  host: localhost
