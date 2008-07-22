@@ -278,7 +278,7 @@
   }
 
   function add_payment_from_form(compute_totals) {
-    if($('payment_amount').value == '') {
+    if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
       return true;
     }
     add_payment($('payment_method_id').value, $('payment_amount').value, compute_totals)
