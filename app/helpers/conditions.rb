@@ -40,6 +40,11 @@ class Conditions
     @donated_at_month = Date.today
     @donated_at_year = Date.today
 
+    @date_performed_date = Date.today
+    @date_performed_date_type = 'daily'
+    @date_performed_month = Date.today
+    @date_performed_year = Date.today
+
     @payment_method_id = PaymentMethod.cash.id
   end
 
@@ -51,6 +56,7 @@ class Conditions
   attr_accessor :bought_at_date, :bought_at_date_type, :bought_at_start_date, :bought_at_end_date, :bought_at_month, :bought_at_year, :bought_at_enabled
   attr_accessor :received_at_date, :received_at_date_type, :received_at_start_date, :received_at_end_date, :received_at_month, :received_at_year, :received_at_enabled
   attr_accessor :donated_at_date, :donated_at_date_type, :donated_at_start_date, :donated_at_end_date, :donated_at_month, :donated_at_year, :donated_at_enabled
+  attr_accessor :date_performed_date, :date_performed_date_type, :date_performed_start_date, :date_performed_end_date, :date_performed_month, :date_performed_year, :date_performed_enabled
 
   attr_accessor :contact_id, :contact_enabled
 
@@ -100,7 +106,7 @@ class Conditions
       payment_amount gizmo_type_id postal_code
       city phone_number contact volunteer_hours
       email disbursed_at donated_at occurred_at
-      worked_at bought_at received_at
+      worked_at bought_at received_at date_performed
     ].inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
@@ -239,6 +245,10 @@ class Conditions
 
   def created_at_conditions(klass)
     date_range(klass, 'created_at', 'created_at')
+  end
+
+  def created_at_conditions(klass)
+    date_range(klass, 'date_performed', 'date_performed')
   end
 
   def recycled_at_conditions(klass)
