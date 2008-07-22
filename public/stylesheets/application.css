@@ -142,6 +142,7 @@ float: right;
 }
 table.conditions {
 width: 100%;
+float: left;
 }
 select.conditions {
 width: 200px;
