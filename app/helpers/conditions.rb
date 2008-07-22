@@ -247,7 +247,7 @@ class Conditions
     date_range(klass, 'created_at', 'created_at')
   end
 
-  def created_at_conditions(klass)
+  def date_performed_conditions(klass)
     date_range(klass, 'date_performed', 'date_performed')
   end
 
