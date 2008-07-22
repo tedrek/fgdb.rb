@@ -168,12 +168,14 @@ float: right;
   display: inline;
   text-align: right;
   width: 250px;
+  font-weight: bold;
+  font-size: larger;
 }
 .totals td {
   background-color: yellow;
 }
 .totals td.amount{
-  font-size: 1.2em;
+  font-weight: normal;
 }
 .totals td.below_req {
   color: red;
