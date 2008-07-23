@@ -6,13 +6,15 @@
     <td width="15%"><strong>Est Value:</strong></td>
 </tr>
 
-<% @donation.gizmo_events.each do |event| %>
+<% @donation.gizmo_events.each do |event| -%>
+  <% if event.gizmo_type != GizmoType.fee_discount -%>
   <tr>
     <td> <%= event.gizmo_count %> </td>
     <td> <%= event.attry_description %> </td>
     <td>______</td>
   </tr>
-<% end %>
+  <% end -%>
+<% end -%>
 
 <tr><td colspan="4">&nbsp;</td></tr>
 

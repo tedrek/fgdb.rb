@@ -217,7 +217,7 @@
     for (var x = 0; x < arr.length; x++) {
       var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
       var type;
-      type = (fees[type_id]['required'] > 0) ? 'required' : 'suggested';
+      type = (fees[type_id]['suggested'] > 0) ? 'suggested' : 'required';
       
       totals[type] += cent_value(get_node_value(arr[x], "td.total_price"));
     }
@@ -339,6 +339,19 @@
   function disbursement_gizmo_type_selected() {
   }
   function contact_contact_method_selected() {
+  }
+
+  function validate_sale() {
+  }
+  function validate_donation() {
+    var required = get_donation_totals()['required'];
+    var payment = get_total_payment();
+    return (payment >= required) 
+           || confirm("The total payments (" + dollar_value(payment) + ") do not cover the required amount (" + dollar_value(required) + "), is that ok?");
+  }
+  function validate_recycling() {
+  }
+  function validate_disbursement() {
   }
 
 </script>
