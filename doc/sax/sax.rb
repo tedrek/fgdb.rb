@@ -118,13 +118,9 @@ module XmlHelper
     require 'xml/libxml'
 
     @sax = SaxParser.new(xml)
-    if @sax.parse
-      @my_node = @sax.thing
-      return @sax
-    else
-      puts "failed"
-      exit 1
-    end
+    state = @sax.parse
+    @my_node = @sax.thing
+    return state
   end
 end
 
@@ -132,15 +128,24 @@ end
 #test program starts here
 ##########################
 
-include XmlHelper
+def load_file(file = "file.xml")
+  include XmlHelper
 
-if ARGV[0] == nil
-  $stderr.puts "Usage: sax.rb file.xml"
-  exit 1
+  f = open(file, 'r')
+  if !load_xml(f.read)
+    puts "failed"
+    exit 1
+  end
+  f.close
 end
 
-f = open(ARGV[0], 'r')
-load_xml(f.read)
-f.close
+if __FILE__ == $0
+  if ARGV[0] == nil
+    $stderr.puts "Usage: sax.rb file.xml"
+    exit 1
+  end
 
-puts my_node.to_s
+  load_file(ARGV[0])
+
+  puts my_node.to_s
+end
