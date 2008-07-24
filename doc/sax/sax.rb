@@ -1,5 +1,39 @@
 #!/usr/bin/ruby
 
+class String
+  def to_bytes(precision = 0, exact = true, truncate = true)
+    if self.to_f/(exact ? 1048576 : 1000000) >= (exact ? 1024 : 1000)
+      sprintf("%.#{precision}f", truncate ? yikes((exact ? 1073741824 : 1000000000), precision) : self.to_f/(exact ? 1073741824 : 1000000000)) + "GB"
+    else
+      sprintf("%.0f", self.to_f/(exact ? 1048576 : 1000000)) + "MB"
+    end
+  end
+
+  def to_bitspersecond
+    if self.to_i >= 1000
+      (self.to_i/1000).to_s + "Gbps"
+    else
+      self + "Mbps"
+    end
+  end
+
+  def to_hertz
+    if self.to_f/1000000 >= 1000
+      sprintf("%.2f", yikes(1000000000, 2)) + "GHz" #truncate...
+    else
+      sprintf("%.0f", self.to_f/1000000) + "MHz"
+    end
+  end
+
+  #######
+  private
+  #######
+
+  def yikes(divide_by, precision) #divides and then truncates.
+    return ((((self.to_f/divide_by)*(10**precision)).to_i).to_f)/(10**precision)
+  end
+end
+
 module XmlHelper
   class SaxParser
     attr_accessor :thing
