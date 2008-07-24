@@ -143,10 +143,11 @@ class SpecSheetsController < ApplicationController
     params[:report][:old_id]=params[:report][:system_id]
     params[:report][:system_id] = 0
     @report = SpecSheet.new(params[:report])
-    if @report.save
-      redirect_to(:action=>redirect_where_on_success, :id=>@report.id)
-    else
-      redirect_to(:action => redirect_where_on_error, :error => "Could not save the database record")
+    begin
+      @report.save!
+      redirect_to(:action => redirect_where_on_success, :id => @report.id)
+    rescue
+      redirect_to(:action => redirect_where_on_error, :error => "Could not save the database record: #{$!.to_s}")
     end
   end
 

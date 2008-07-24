@@ -20,7 +20,7 @@ class GizmoEvent < ActiveRecord::Base
         "SELECT gizmo_events.gizmo_type_id,
                 gizmo_events.gizmo_context_id,
                 d.disbursement_type_id,
-                sum(gizmo_events.gizmo_count)
+                sum(gizmo_events.gizmo_count) AS count
          FROM gizmo_events
               LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
          WHERE #{sanitize_sql_for_conditions(conditions)}
@@ -44,7 +44,7 @@ class GizmoEvent < ActiveRecord::Base
       conditions = conditions.dup()
       conditions[0] += " AND gegt.gizmo_typeattr_id=14"
       connection.execute(
-        "SELECT gt.id, 
+        "SELECT gt.id AS gt, 
                 sum(gizmo_events.gizmo_count 
                     * gegt.attr_val_monetary_cents)
          FROM gizmo_events 
