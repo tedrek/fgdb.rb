@@ -30,7 +30,7 @@ module XmlHelper
 
     #debugging
     def to_s(indent = "")
-      string = indent + element + "\n" 
+      string = indent + element + "\n"
       attrses = []
       (@attrs || {}).each { |k, v|
         attrses << [k, v].join("=")
@@ -67,6 +67,16 @@ module XmlHelper
       end
       for child in @children
         child.find_by_class(klass, array)
+      end
+      return array
+    end
+
+    def find_by_element(a_element, array = [])
+      if element
+        array << self if a_element == element
+      end
+      for child in @children
+        child.find_by_element(a_element, array)
       end
       return array
     end
@@ -172,7 +182,11 @@ if __FILE__ == $0
 #  puts x.to_s
 #  }
 
-  my_node.find_by_class("processor").each {|x|
+#  my_node.find_by_class("processor").each {|x|
+#  puts x.to_s
+#  }
+
+  my_node.find_by_element("description").each {|x|
   puts x.to_s
   }
 end
