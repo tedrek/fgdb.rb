@@ -177,8 +177,12 @@ module XmlHelper
     @my_node
   end
 
-  def xml_if(a) #TODO: implement this
-    return true
+  def xml_if(thing = nil) #TODO: implement this
+    if xml_value_of(thing) == nil
+      return false
+    else
+      return true
+    end
   end
 
   def xml_foreach(type, value)
@@ -202,16 +206,17 @@ module XmlHelper
   end
 
   def xml_value_of(thing = nil)
-    case thing
-    when nil:
-        return @my_node.content
-    when /^@/:
-        return @my_node.attrs[thing.sub(/@/, "")]
-    else
-      if a = @my_node.find_by_element(thing).first #TODO: Get rid of this if, they should be using xml_if (though it's not implemented atm, so they probably are...)
-        return a.content
+    begin
+      case thing
+      when nil:
+          return @my_node.content
+      when /^@/:
+          return @my_node.attrs[thing.sub(/@/, "")]
+      else
+        return @my_node.find_by_element(thing).first.content
       end
-      return ""
+    rescue
+      return nil
     end
   end
 
