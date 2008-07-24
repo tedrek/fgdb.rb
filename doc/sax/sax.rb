@@ -177,6 +177,10 @@ module XmlHelper
     @my_node
   end
 
+  def xml_if(a) #TODO: implement this
+    return true
+  end
+
   def xml_foreach(type, value)
     oldnode = @my_node
     case type
@@ -189,7 +193,7 @@ module XmlHelper
     else
       raise NoMethodError
     end
-    for i in eval("#{method}(value)")
+    for i in eval("@my_node.#{method}(value)")
       @my_node = i
       yield
     end
@@ -204,7 +208,10 @@ module XmlHelper
     when /^@/:
         return @my_node.attrs[thing.sub(/@/, "")]
     else
-      return @my_node.find_by_element(thing).content
+      if a = @my_node.find_by_element(thing).first #TODO: Get rid of this if, they should be using xml_if (though it's not implemented atm, so they probably are...)
+        return a.content
+      end
+      return ""
     end
   end
 
