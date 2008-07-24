@@ -1,13 +1,13 @@
   <div id="hard_drives">
     <h2>Hard Drives</h2>
-    <% xpath_foreach("//node[contains(@id, 'disk')]") do %>
+    <% xml_foreach("id", "disk") do %>
     <table>
       <tr>
         <td>
           Drive:
         </td>
         <td>
-          <%= xpath_value_of("logicalname") %>
+          <%= xml_value_of("logicalname") %>
         </td>
       </tr>
       <tr>
@@ -15,7 +15,7 @@
           Vendor:
         </td>
         <td>
-          <%= xpath_value_of("vendor") %>
+          <%= xml_value_of("vendor") %>
         </td>
       </tr>
       <tr>
@@ -23,34 +23,36 @@
           Model:
         </td>
         <td>
-          <%= xpath_value_of("product") %>
+          <%= xml_value_of("product") %>
         </td>
       </tr>
-      <% if xpath_if("size") %>
+      <% if xml_if("size") %>
       <tr>
         <td>
           Capacity:
         </td>
         <td>
-          <%= xpath_value_of("size").to_bytes(0, false, false) %>
+          <%= xml_value_of("size").to_bytes(0, false, false) %>
         </td>
       </tr>
       <% end %>
-      <% if xpath_if("node[contains(@id, 'volume')]") %>
+      <% counter = 0 %>
+      <% xml_foreach("id", "volume") do |x| counter += 1 end %>
+      <% if counter > 0 %>
       <tr>
         <td valign="top">Volumes: </td>
         <td>
           <table>
-            <% xpath_foreach("node[contains(@id, 'volume')]") do %>
+            <% xml_foreach("id", "volume") do %>
             <tr>
               <td>
-                <%= xpath_value_of("logicalname") %>
+                <%= xml_value_of("logicalname") %>
               </td>
               <td>
-                <%= xpath_value_of("description") %>
+                <%= xml_value_of("description") %>
               </td>
               <td>
-                <%= xpath_value_of("capacity").to_bytes(0, false, false) %>
+                <%= xml_value_of("capacity").to_bytes(0, false, false) %>
               </td>
             </tr>
             <% end %>
@@ -60,4 +62,4 @@
       <% end %>
     </table>
     <% end %>
-  </div> 
+  </div>
