@@ -177,6 +177,37 @@ module XmlHelper
     @my_node
   end
 
+  def xml_foreach(type, value)
+    oldnode = @my_node
+    case type
+    when 'class':
+        method = 'find_by_class'
+    when 'id':
+        method = 'match_by_id'
+    when 'element':
+        method = 'find_by_element'
+    else
+      raise NoMethodError
+    end
+    for i in eval("#{method}(value)")
+      @my_node = i
+      yield
+    end
+    @my_node = oldnode
+    nil
+  end
+
+  def xml_value_of(thing = nil)
+    case thing
+    when nil:
+        return @my_node.content
+    when /^@/:
+        return @my_node.attrs[thing.sub(/@/, "")]
+    else
+      return @my_node.find_by_element(thing).content
+    end
+  end
+
   def load_xml(xml)
     require 'xml/libxml'
 
