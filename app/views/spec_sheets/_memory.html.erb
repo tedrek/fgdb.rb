@@ -1,22 +1,22 @@
   <div id="memory">
 	<h2>Memory</h2>
-	<% xpath_foreach("//node[contains(@id, 'memory')]") do %>
-	<% if xpath_if("size") %>
+	<% xml_foreach("id", "memory") do %>
+	<% if xml_if("size") %>
 	<table>
 	  <tr>
 		<td>
 		  Size:
 		</td>
 		<td>
-          <%= xpath_value_of("size").to_bytes(1) %>
+          <%= xml_value_of("size").to_bytes(1) %>
 		</td>
 	  </tr>
 	</table>
 	<% end %>
-	<% xpath_foreach("node[contains(@id, 'bank')]") do %>
-	
+	<% xml_foreach("id", "bank") do %>
+
 	<h3>
-	  <%= xpath_value_of("@id") %>
+	  <%= xml_value_of("@id") %>
 	</h3>
 	<div class="indent">
 	  <table>
@@ -25,19 +25,19 @@
 			Description:
 		  </td>
 		  <td>
-			<%= xpath_value_of("description") %>
+		    <%= xml_value_of("description") %>
 		  </td>
 		</tr>
-		<% if xpath_if("size") %>
+		<% if xml_if("size") %>
 		<tr>
 		  <td>
 			Size:
 		  </td>
 		  <td>
-            <%= xpath_value_of("size").to_bytes %>
+		    <%= xml_value_of("size").to_bytes %>
 		  </td>
 		</tr>
-        <% end %>
+		<% end %>
 	  </table>
     </div>
 	<% end %>
