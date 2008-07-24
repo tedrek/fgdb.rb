@@ -41,7 +41,6 @@ module XmlHelper
       if @content && @content != nil && @content != "" && !@content.match("^[ ]+$")
         string += " " + indent + @content + "\n"
       end
-      childs = []
       for child in @children
         string += child.to_s(indent + " ")
       end
@@ -50,6 +49,26 @@ module XmlHelper
 
     def initialize
       @children = []
+    end
+
+    def match_by_id(id, array = [])
+      if attrs['id']
+        array << self if attrs['id'].match(/#{id}/)
+      end
+      for child in @children
+        child.match_by_id(id, array)
+      end
+      return array
+    end
+
+    def find_by_class(klass, array = [])
+      if attrs['class']
+        array << self if attrs['class'] == klass
+      end
+      for child in @children
+        child.find_by_class(klass, array)
+      end
+      return array
     end
   end
 
@@ -95,7 +114,7 @@ module XmlHelper
 
     def on_end_document
       temp = @thing
-      remove_node("I'm sooooo special!!!!")
+      remove_node(@special.element)
       @thing = temp.children[0]
     end
 
@@ -147,5 +166,13 @@ if __FILE__ == $0
 
   load_file(ARGV[0])
 
-  puts my_node.to_s
+#  puts my_node.to_s
+
+#  my_node.match_by_id("disk").each {|x|
+#  puts x.to_s
+#  }
+
+  my_node.find_by_class("processor").each {|x|
+  puts x.to_s
+  }
 end
