@@ -1,13 +1,4 @@
 <div id="computer">
-<!--
-    @system_model = get_from_xml("/node/product")
-    @system_serial_number = get_from_xml("/node/serial")
-    @system_vendor = get_from_xml("/node/vendor")
-    @mobo_model = get_from_xml("/node/node[@id='core']/product")
-    @mobo_serial_number = get_from_xml("/node/node[@id='core']/serial")
-    @mobo_vendor = get_from_xml("/node/node[@id='core']/vendor")
-    @macaddr = get_from_xml("//node[@class='network']/serial")
--->
   <h2>Computer</h2>
   <table>
     <tr>
@@ -56,15 +47,15 @@
         <% end %>
       <% end %>
     <% end %>
-    <% if false %> <!-- TODO: implement these! -->
     <tr>
       <td>
         BIOS Version:
       </td>
       <td>
-        <% xpath_value_of("//node[@id='firmware']/version") %>
+        <%= xml_first("id", "firmware") do xml_value_of("version") end %>
       </td>
     </tr>
+    <% if false %> <!-- TODO: implement these! -->
     <% find_the_biggest("//node[contains(@id, 'usbhost')]", "capabilities/capability", "USB ") do |value| %>
     <tr>
       <td>
