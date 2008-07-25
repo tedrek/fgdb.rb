@@ -86,7 +86,7 @@ module XmlHelper
     end
 
     def match_by_id(id, array = [])
-      if attrs['id']
+      if attrs['id'] and element == "node"
         array << self if attrs['id'].match(/#{id}/)
       end
       for child in @children
@@ -96,7 +96,7 @@ module XmlHelper
     end
 
     def find_by_class(klass, array = [])
-      if attrs['class']
+      if attrs['class'] and element == "node"
         array << self if attrs['class'] == klass
       end
       for child in @children
@@ -106,7 +106,7 @@ module XmlHelper
     end
 
     def match_by_handle(handle, array = [])
-      if attrs['handle']
+      if attrs['handle'] and element == "node"
         array << self if attrs['handle'].match(/#{handle}/)
       end
       for child in @children
