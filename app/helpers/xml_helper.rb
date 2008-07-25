@@ -105,6 +105,16 @@ module XmlHelper
       return array
     end
 
+    def match_by_handle(handle, array = [])
+      if attrs['handle']
+        array << self if attrs['handle'].match(/#{handle}/)
+      end
+      for child in @children
+        child.match_by_handle(handle, array)
+      end
+      return array
+    end
+
     def find_by_element(a_element, array = [])
       if element
         array << self if a_element == element
@@ -190,6 +200,8 @@ module XmlHelper
     case type
     when 'class':
         method = 'find_by_class'
+    when 'handle':
+        method = 'match_by_handle'
     when 'id':
         method = 'match_by_id'
     when 'element':
@@ -253,7 +265,7 @@ if __FILE__ == $0
 
   load_file(ARGV[0])
 
-#  puts my_node.to_s
+  puts my_node.to_s
 
 #  my_node.match_by_id("disk").each {|x|
 #  puts x.to_s
@@ -263,7 +275,7 @@ if __FILE__ == $0
 #  puts x.to_s
 #  }
 
-  my_node.find_by_element("description").each {|x|
-  puts x.to_s
-  }
+#  my_node.find_by_element("description").each {|x|
+#  puts x.to_s
+#  }
 end
