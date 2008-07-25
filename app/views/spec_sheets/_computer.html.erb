@@ -15,9 +15,7 @@
         Vendor:
       </td>
       <td>
-	<%= xml_value_of("vendor") %><br />
-	<%= xml_first("id", "core") do xml_value_of("vendor") end %>
-        <%# @report.system.vendor %>
+        <%= @report.system.vendor %>
       </td>
     </tr>
     <tr>
@@ -25,9 +23,7 @@
         Model:
       </td>
       <td>
-	<%= xml_value_of("product") %><br />
-	<%= xml_first("id", "core") do xml_value_of("product") end %>
-        <%# @report.system.model %>
+        <%= @report.system.model %>
       </td>
     </tr>
     <tr>
@@ -35,10 +31,7 @@
         Serial Number:
       </td>
       <td>
-	<%= xml_value_of("serial") %><br />
-	<%= xml_first("id", "core") do xml_value_of("serial") end %><br />
-	<%= xml_first("id", "network") do xml_value_of("serial") end %>
-        <%# @report.system.serial_number %>
+        <%= @report.system.serial_number %>
       </td>
     </tr>
     <% xml_foreach("class", "processor") do %>

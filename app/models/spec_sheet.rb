@@ -15,17 +15,22 @@ class SpecSheet < ActiveRecord::Base
 
   def initialize(*args)
     super(*args)
+
+    if lshw_output == nil
+      return
+    end
+
     if !load_xml(lshw_output)
       return false
     end
 
-    @system_model = get_from_xml("/node/product")
-    @system_serial_number = get_from_xml("/node/serial")
-    @system_vendor = get_from_xml("/node/vendor")
-    @mobo_model = get_from_xml("/node/node[@id='core']/product")
-    @mobo_serial_number = get_from_xml("/node/node[@id='core']/serial")
-    @mobo_vendor = get_from_xml("/node/node[@id='core']/vendor")
-    @macaddr = get_from_xml("//node[@class='network']/serial")
+    @system_model = xml_value_of("product")
+    @system_serial_number = xml_value_of("serial")
+    @system_vendor = xml_value_of("vendor")
+    @mobo_model = xml_first("id", "core") do xml_value_of("product") end
+    @mobo_serial_number = xml_first("id", "core") do xml_value_of("serial") end
+    @mobo_vendor = xml_first("id", "core") do xml_value_of("vendor") end
+    @macaddr = xml_first("id", "network") do xml_value_of("serial") end
 
     get_vendor
     get_serial

@@ -40,7 +40,7 @@ module XmlHelper
 
     def initialize(xml)
       @parser = XML::SaxParser.new
-      @parser.string = xml
+      @parser.string = (xml || "")
       @parser.callbacks = Handler.new
     end
 
