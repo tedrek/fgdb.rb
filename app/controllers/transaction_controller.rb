@@ -155,29 +155,9 @@ class TransactionController < ApplicationController
     end
   end
 
-  def automatic_datalist_row
-    events = datalist_objects( gizmo_events_tag, gizmo_event_defaults )
-    if( events.empty? or
-          events.find {|ev| (! ev.valid?) or ev.mostly_empty? } ) # the datalist form is not filled in completely
-      render :text => ''
-    else
-      # :MC: doctor the params for datalist_add_row
-      # :TODO: rewrite datalist
-      params[:tag] = gizmo_events_tag
-      params[:datalist_id] = params["datalist_#{gizmo_events_tag}_id"]
-      datalist_add_row
-    end
-  end
-
   def receipt
     @txn = @transaction = model.find(params[:id])
     @context = @transaction_type
-  end
-
-  def update_totals
-    @transaction = model.new(params[@transaction_type])
-    _apply_datalist_data(@transaction)
-    render :action => 'update_totals.rjs'
   end
 
   #######
