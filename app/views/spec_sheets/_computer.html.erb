@@ -55,8 +55,7 @@
         <%= xml_first("id", "firmware") do xml_value_of("version") end %>
       </td>
     </tr>
-    <% if false %> <!-- TODO: implement these! -->
-    <% find_the_biggest("//node[contains(@id, 'usbhost')]", "capabilities/capability", "USB ") do |value| %>
+    <% find_the_biggest("id", "usbhost", "capability", "USB ") do |value| %>
     <tr>
       <td>
         USB Version:
@@ -65,7 +64,6 @@
         <% value %>
       </td>
     </tr>
-    <% end %>
     <% end %>
   </table>
 </div>

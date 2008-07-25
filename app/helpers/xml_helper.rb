@@ -252,6 +252,20 @@ module XmlHelper
     end
   end
 
+  def find_the_biggest(type, value, thingy, get_rid_of = "", &block)
+    value = 0.0
+    xml_foreach(type, value) do
+      if (this_value = xml_value_of(thingy).gsub(get_rid_of, "").to_f) > value
+        value = this_value
+      end
+    end
+    if value != 0.0
+      return yield(value)
+    else
+      return nil
+    end
+  end
+
   def load_xml(xml)
     require 'xml/libxml'
 

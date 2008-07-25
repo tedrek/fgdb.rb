@@ -56,14 +56,14 @@
         </td>
       </tr>
       <% end %>
-      <% if xml_value_of("@class")==" network" && xml_if("capabilities") %>
-      <%# find_the_biggest("capabilities/capability", "@id") do |value| %>
+      <% if xml_value_of("@class")=="network" && xml_if("capabilities") %>
+      <% find_the_biggest("element", "capability", "@id") do |value| %>
       <tr>
         <td>Speed: </td>
         <td>
-	      <%# value.to_i.to_s.to_bitspersecond %>
+	      <% value.to_i.to_s.to_bitspersecond %>
         </td>
       </tr>
-      <%# end %>
+      <% end %>
       <% end %>
     </table>
