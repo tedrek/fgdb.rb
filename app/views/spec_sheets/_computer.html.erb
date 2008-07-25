@@ -35,7 +35,7 @@
             <%= xml_value_of("product") %>
           </td>
         </tr>
-        <% if xml_if("size") %> 
+        <% if xml_if("size") %>
           <tr>
             <td>
               Speed:
@@ -47,23 +47,25 @@
         <% end %>
       <% end %>
     <% end %>
+    <% if false %> <!-- TODO: implement these! -->
     <tr>
       <td>
         BIOS Version:
       </td>
       <td>
-        <%# xpath_value_of("//node[@id='firmware']/version") %>
+        <% xpath_value_of("//node[@id='firmware']/version") %>
       </td>
     </tr>
-    <%# find_the_biggest("//node[contains(@id, 'usbhost')]", "capabilities/capability", "USB ") do |value| %>
+    <% find_the_biggest("//node[contains(@id, 'usbhost')]", "capabilities/capability", "USB ") do |value| %>
     <tr>
       <td>
         USB Version:
       </td>
       <td>
-        <%# value %>
+        <% value %>
       </td>
-    </tr>  
-    <%# end %>
+    </tr>
+    <% end %>
+    <% end %>
   </table>
 </div>
