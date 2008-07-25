@@ -1,4 +1,13 @@
 <div id="computer">
+<!--
+    @system_model = get_from_xml("/node/product")
+    @system_serial_number = get_from_xml("/node/serial")
+    @system_vendor = get_from_xml("/node/vendor")
+    @mobo_model = get_from_xml("/node/node[@id='core']/product")
+    @mobo_serial_number = get_from_xml("/node/node[@id='core']/serial")
+    @mobo_vendor = get_from_xml("/node/node[@id='core']/vendor")
+    @macaddr = get_from_xml("//node[@class='network']/serial")
+-->
   <h2>Computer</h2>
   <table>
     <tr>
@@ -6,7 +15,9 @@
         Vendor:
       </td>
       <td>
-        <%= @report.system.vendor %>
+	<%= xml_value_of("vendor") %><br />
+	<%= xml_first("id", "core") do xml_value_of("vendor") end %>
+        <%# @report.system.vendor %>
       </td>
     </tr>
     <tr>
@@ -14,7 +25,9 @@
         Model:
       </td>
       <td>
-        <%= @report.system.model %>
+	<%= xml_value_of("product") %><br />
+	<%= xml_first("id", "core") do xml_value_of("product") end %>
+        <%# @report.system.model %>
       </td>
     </tr>
     <tr>
@@ -22,7 +35,10 @@
         Serial Number:
       </td>
       <td>
-        <%= @report.system.serial_number %>
+	<%= xml_value_of("serial") %><br />
+	<%= xml_first("id", "core") do xml_value_of("serial") end %><br />
+	<%= xml_first("id", "network") do xml_value_of("serial") end %>
+        <%# @report.system.serial_number %>
       </td>
     </tr>
     <% xml_foreach("class", "processor") do %>

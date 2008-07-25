@@ -188,15 +188,14 @@ module XmlHelper
   end
 
   def xml_if(thing = nil) #TODO: implement this
-    if xml_value_of(thing) == nil
+    if _xml_value_of(thing) == nil
       return false
     else
       return true
     end
   end
 
-  def xml_foreach(type, value)
-    oldnode = @my_node
+  def xml_get_matches(type, value)
     case type
     when 'class':
         method = 'find_by_class'
@@ -209,7 +208,20 @@ module XmlHelper
     else
       raise NoMethodError
     end
-    for i in eval("@my_node.#{method}(value)")
+    return eval("@my_node.#{method}(value)")
+  end
+
+  def xml_first(type, value)
+    oldnode = @my_node
+    @my_node = xml_get_matches(type, value).first
+    val = yield
+    @my_node = oldnode
+    return val
+  end
+
+  def xml_foreach(type, value)
+    oldnode = @my_node
+    for i in xml_get_matches(type, value)
       @my_node = i
       yield
     end
@@ -218,6 +230,14 @@ module XmlHelper
   end
 
   def xml_value_of(thing = nil)
+    if xml_if(thing)
+      return _xml_value_of(thing)
+    else
+      return "Unknown"
+    end
+  end
+
+  def _xml_value_of(thing)
     begin
       case thing
       when nil:
