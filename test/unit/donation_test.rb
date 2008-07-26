@@ -119,25 +119,6 @@ class DonationTest < Test::Unit::TestCase
     assert donation.invoiced?
   end
 
-  def test_that_required_fees_should_not_be_valid_unpaid
-    donation = Donation.new(WITH_CONTACT_INFO)
-    donation.payments = []
-    donation.gizmo_events = [GizmoEvent.new(crt_event)]
-    assert( donation.calculated_required_fee_cents > 0, "a crt should have a required fee" )
-    assert( ! donation.valid? )
-  end
-
-  def test_that_required_fees_should_be_valid_paid
-    donation = Donation.new(WITH_CONTACT_INFO)
-    donation.gizmo_events = [GizmoEvent.new(crt_event)]
-    assert ! donation.gizmo_events.empty?
-    assert donation.gizmo_events[0].gizmo_type.required_fee_cents > 0
-    assert( donation.calculated_required_fee_cents > 0, "a crt should have a required fee" )
-    assert( ! donation.valid? )
-    donation.payments = [Payment.new({ :amount => "10", :payment_method_id => 3 })]
-    assert( donation.valid? )
-  end
-
   def test_that_payments_or_gizmos_are_required
     donation = Donation.new(WITH_CONTACT_INFO)
     assert ! donation.valid?
