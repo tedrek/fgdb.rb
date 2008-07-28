@@ -1,9 +1,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SpecSheetsControllerTest < ActionController::TestCase
+  REQUIRED_DATA={:contact_id => 1, :action_id => 1, :type_id => 1, :system_id => 1}
+
   def test_that_things_fail_if_xml_output_is_empty
     file = File.open(File.dirname(__FILE__) + "/../fixtures/empty.xml")
-    get :xml_create, :my_file => file
+    get :xml_create, REQUIRED_DATA.merge({:my_file => file})
     file.close
     assert_response :redirect
     assert_redirected_to :controller => 'spec_sheets', :action => "xml_index", :error => "The posted lshw output was empty!"
@@ -14,7 +16,7 @@ class SpecSheetsControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_redirected_to :controller => 'spec_sheets', :action => 'xml_index', :error => "That system does not exist!"
   end
-  
+
   def test_that_xml_system_show_shows_a_system
     get :xml_system_show, {:id => "1"}
     assert_response :success
@@ -22,7 +24,7 @@ class SpecSheetsControllerTest < ActionController::TestCase
 
   def test_that_bad_xml_files_fail
     file = File.open(File.dirname(__FILE__) + "/../fixtures/bad.xml")
-    get :xml_create, :my_file => file
+    get :xml_create, REQUIRED_DATA.merge({:my_file => file})
     file.close
     assert_response :redirect
     assert_redirected_to :controller => 'spec_sheets', :action => "xml_index", :error => "Invalid XML!"
@@ -30,7 +32,7 @@ class SpecSheetsControllerTest < ActionController::TestCase
 
   def test_that_good_xml_files_succeed
     file = File.open(File.dirname(__FILE__) + "/../fixtures/1967.xml")
-    get :xml_create, :my_file => file
+    get :xml_create, REQUIRED_DATA.merge({:my_file => file})
     file.close
     assert_response :redirect
     assert_redirected_to :controller => 'spec_sheets', :action => "xml_show"
@@ -38,10 +40,10 @@ class SpecSheetsControllerTest < ActionController::TestCase
 
   def test_good_but_not_containing_any_information_xml_files_succeed
     file = File.open(File.dirname(__FILE__) + "/../fixtures/good_but_bad.xml")
-    get :xml_create, :my_file => file
+    get :xml_create, REQUIRED_DATA.merge({:my_file => file})
     file.close
     assert_response :redirect
-    assert_redirected_to :controller => 'spec_sheets', :action => "xml_show"
+    assert_redirected_to :controller => 'spec_sheets', :action => "xml_show" #HERE
   end
 
   def test_that_version_compat_fails

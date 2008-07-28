@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/../test_helper'
 class SpecSheetTest < ActiveSupport::TestCase
   fixtures :actions, :types, :systems, :contacts, :spec_sheets
 
-#  REQUIRED_DATA={:contact => Contact.find_by_id(1), :type => Type.find_by_id(1), :action => Action.find_by_id(1), :system => System.find_by_id(1)}
   REQUIRED_DATA={:contact_id => 1, :action_id => 1, :type_id => 1, :system_id => 1}
 
   def test_that_generics_are_detected(stop = 0)
