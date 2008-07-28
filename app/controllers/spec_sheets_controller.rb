@@ -128,7 +128,10 @@ class SpecSheetsController < ApplicationController
   end
 
   def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
-    output = params[:report][:my_file].read
+    file = params[:report][:my_file]
+    if file != "" 
+      output = file.read
+    end
     if output == nil || output.empty?
       redirect_to(:action => redirect_where_on_error, :error => "The posted lshw output was empty!")
       return
