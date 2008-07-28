@@ -29,13 +29,13 @@ class SpecSheet < ActiveRecord::Base
       return false
     end
 
-    @system_model = xml_value_of("product")
-    @system_serial_number = xml_value_of("serial")
-    @system_vendor = xml_value_of("vendor")
-    @mobo_model = xml_first("id", "core") do xml_value_of("product") end
-    @mobo_serial_number = xml_first("id", "core") do xml_value_of("serial") end
-    @mobo_vendor = xml_first("id", "core") do xml_value_of("vendor") end
-    @macaddr = xml_first("id", "network") do xml_value_of("serial") end
+    @system_model = get_from_xml(xml_value_of("product"))
+    @system_serial_number = get_from_xml(xml_value_of("serial"))
+    @system_vendor = get_from_xml(xml_value_of("vendor"))
+    @mobo_model = get_from_xml(xml_first("id", "core") do xml_value_of("product") end)
+    @mobo_serial_number = get_from_xml(xml_first("id", "core") do xml_value_of("serial") end)
+    @mobo_vendor = get_from_xml(xml_first("id", "core") do xml_value_of("vendor") end)
+    @macaddr = get_from_xml(xml_first("id", "network") do xml_value_of("serial") end)
 
     get_vendor
     get_serial
@@ -102,8 +102,7 @@ class SpecSheet < ActiveRecord::Base
     return @serial_number
   end
 
-  def get_from_xml(xpath)
-    value = xpath_value_of(xpath)
+  def get_from_xml(value)
     if value == "Unknown"
       value = nil
     end
