@@ -6,12 +6,17 @@ class SpecSheet < ActiveRecord::Base
   validates_presence_of :action_id
   validates_presence_of :type_id
 
-  attr_readonly :lshw_output
-
   belongs_to :contact
   belongs_to :action
   belongs_to :system
   belongs_to :type
+
+  validates_existence_of :type
+  validates_existence_of :action
+  validates_existence_of :system
+  validates_existence_of :contact
+
+  attr_readonly :lshw_output
 
   def initialize(*args)
     super(*args)
