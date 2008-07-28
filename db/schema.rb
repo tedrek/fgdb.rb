@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of ActiveRecord to incrementally modify your database, and
+# please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 38) do
+ActiveRecord::Schema.define(:version => 41) do
 
   create_table "actions", :force => true do |t|
     t.string   "name"
@@ -293,7 +293,7 @@ ActiveRecord::Schema.define(:version => 38) do
     t.datetime "created_at"
   end
 
-  add_index "revision_records", ["revisionable_type", "revisionable_id", "revision"], :name => "revisionable", :unique => true
+  add_index "revision_records", ["revision", "revisionable_id", "revisionable_type"], :name => "revisionable", :unique => true
 
   create_table "roles", :force => true do |t|
     t.string   "name",       :limit => 40
@@ -306,7 +306,7 @@ ActiveRecord::Schema.define(:version => 38) do
     t.integer "role_id"
   end
 
-  add_index "roles_users", ["user_id", "role_id"], :name => "roles_users_uk", :unique => true
+  add_index "roles_users", ["role_id", "user_id"], :name => "roles_users_uk", :unique => true
 
   create_table "sales", :force => true do |t|
     t.integer  "contact_id"
@@ -380,8 +380,8 @@ ActiveRecord::Schema.define(:version => 38) do
     t.datetime "created_at"
   end
 
-  add_index "trash_records", ["trashable_type", "created_at"], :name => "index_trash_records_on_created_at_and_trashable_type"
-  add_index "trash_records", ["trashable_type", "trashable_id"], :name => "index_trash_records_on_trashable_type_and_trashable_id"
+  add_index "trash_records", ["created_at", "trashable_type"], :name => "index_trash_records_on_created_at_and_trashable_type"
+  add_index "trash_records", ["trashable_id", "trashable_type"], :name => "index_trash_records_on_trashable_type_and_trashable_id"
 
   create_table "types", :force => true do |t|
     t.string   "name"
@@ -431,6 +431,10 @@ ActiveRecord::Schema.define(:version => 38) do
     t.integer  "updated_by"
   end
 
+  add_index "volunteer_tasks", ["community_service_type_id"], :name => "index_volunteer_tasks_on_community_service_type_id"
+  add_index "volunteer_tasks", ["date_performed"], :name => "index_volunteer_tasks_on_date_performed"
+  add_index "volunteer_tasks", ["duration"], :name => "index_volunteer_tasks_on_duration"
+  add_index "volunteer_tasks", ["volunteer_task_type_id"], :name => "index_volunteer_tasks_on_volunteer_task_type_id"
   add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
 
   add_foreign_key "contact_method_types", ["parent_id"], "contact_method_types", ["id"], :on_delete => :set_null, :name => "contact_method_types_parent_id_fk"
@@ -485,6 +489,11 @@ ActiveRecord::Schema.define(:version => 38) do
 
   add_foreign_key "sales", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "sales_contacts_fk"
   add_foreign_key "sales", ["discount_schedule_id"], "discount_schedules", ["id"], :on_delete => :restrict, :name => "sales_discount_schedules_fk"
+
+  add_foreign_key "spec_sheets", ["contact_id"], "contacts", ["id"], :name => "spec_sheets_contact_id_fkey"
+  add_foreign_key "spec_sheets", ["system_id"], "systems", ["id"], :name => "spec_sheets_system_id_fkey"
+  add_foreign_key "spec_sheets", ["action_id"], "actions", ["id"], :name => "spec_sheets_action_id_fkey"
+  add_foreign_key "spec_sheets", ["type_id"], "types", ["id"], :name => "spec_sheets_type_id_fkey"
 
   add_foreign_key "users", ["contact_id"], "contacts", ["id"], :name => "users_contacts_fk"
 
