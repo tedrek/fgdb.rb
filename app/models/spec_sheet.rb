@@ -44,12 +44,20 @@ class SpecSheet < ActiveRecord::Base
       if found_system
         self.system = found_system
       else
-        self.system = System.new
+        create_system
       end
     else
-      self.system = System.new
+      create_system
     end
 
+  end
+
+  #######
+  private
+  #######
+
+  def create_system
+    self.system = System.new
     system.system_model  = @system_model
     system.system_serial_number  = @system_serial_number
     system.system_vendor  = @system_vendor
@@ -60,10 +68,6 @@ class SpecSheet < ActiveRecord::Base
     system.serial_number  = @serial_number
     system.vendor  = @vendor
   end
-
-  #######
-  private
-  #######
 
   def get_model
       if model_is_usable(@system_model)
