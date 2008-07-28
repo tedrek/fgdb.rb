@@ -129,7 +129,7 @@ class SpecSheetsController < ApplicationController
 
   def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
     file = params[:report][:my_file]
-    if file != "" 
+    if file != ""
       output = file.read
     end
     if output == nil || output.empty?
