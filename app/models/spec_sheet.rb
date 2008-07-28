@@ -2,7 +2,6 @@ class SpecSheet < ActiveRecord::Base
   include XmlHelper
 
   validates_presence_of :contact_id
-  validates_presence_of :system_id
   validates_presence_of :action_id
   validates_presence_of :type_id
 
@@ -13,7 +12,6 @@ class SpecSheet < ActiveRecord::Base
 
   validates_existence_of :type
   validates_existence_of :action
-  validates_existence_of :system
   validates_existence_of :contact
 
   attr_readonly :lshw_output
