@@ -254,8 +254,9 @@ module XmlHelper
 
   def find_the_biggest(type, value, thingy, get_rid_of = "", &block)
     array = [0.0]
-    xml_foreach('element', 'b') do
-      array << xml_value_of.to_f
+    xml_foreach(type, value) do
+      this_value = xml_value_of(thingy).gsub(/#{get_rid_of}/, '').to_f
+      array << this_value
     end
     value = array.max
     if value != 0.0
