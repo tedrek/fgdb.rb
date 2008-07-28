@@ -39,35 +39,25 @@ class SpecSheet < ActiveRecord::Base
     get_serial
     get_model
 
-    if @serial_number != "(no serial number)"
-      found_system = System.find(:first, :conditions => {:serial_number => @serial_number, :vendor => @vendor, :model => @model}, :order => :id)
-      if found_system
-        self.system = found_system
-      else
-        create_system
-      end
+    if @serial_number != "(no serial number)" && (found_system = System.find(:first, :conditions => {:serial_number => @serial_number, :vendor => @vendor, :model => @model}, :order => :id))
+      self.system = found_system
     else
-      create_system
+      self.system = System.new
+      system.system_model  = @system_model
+      system.system_serial_number  = @system_serial_number
+      system.system_vendor  = @system_vendor
+      system.mobo_model  = @mobo_model
+      system.mobo_serial_number  = @mobo_serial_number
+      system.mobo_vendor  = @mobo_vendor
+      system.model  = @model
+      system.serial_number  = @serial_number
+      system.vendor  = @vendor
     end
-
   end
 
   #######
   private
   #######
-
-  def create_system
-    self.system = System.new
-    system.system_model  = @system_model
-    system.system_serial_number  = @system_serial_number
-    system.system_vendor  = @system_vendor
-    system.mobo_model  = @mobo_model
-    system.mobo_serial_number  = @mobo_serial_number
-    system.mobo_vendor  = @mobo_vendor
-    system.model  = @model
-    system.serial_number  = @serial_number
-    system.vendor  = @vendor
-  end
 
   def get_model
       if model_is_usable(@system_model)
