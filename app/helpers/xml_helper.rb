@@ -85,42 +85,74 @@ module XmlHelper
       @children = []
     end
 
-    def match_by_id(id, array = [])
+    def match_by_id(id, type = '//', array = nil)
+      if array == nil
+        array = []
+        first = true
+      else
+        first = false
+      end
       if attrs['id'] and element == "node"
         array << self if attrs['id'].match(/#{id}/)
       end
-      for child in @children
-        child.match_by_id(id, array)
+      if type == '//' || (type == '/' && first)
+        for child in @children
+          child.match_by_id(id, type, array)
+        end
       end
       return array
     end
 
-    def find_by_class(klass, array = [])
+    def find_by_class(klass, type = '//', array = nil)
+      if array == nil
+        array = []
+        first = true
+      else
+        first = false
+      end
       if attrs['class'] and element == "node"
         array << self if attrs['class'] == klass
       end
-      for child in @children
-        child.find_by_class(klass, array)
+      if type == '//' || (type == '/' && first)
+        for child in @children
+          child.find_by_class(klass, type, array)
+        end
       end
       return array
     end
 
-    def match_by_handle(handle, array = [])
+    def match_by_handle(handle, type = '//', array = nil)
+      if array == nil
+        array = []
+        first = true
+      else
+        first = false
+      end
       if attrs['handle'] and element == "node"
         array << self if attrs['handle'].match(/#{handle}/)
       end
-      for child in @children
-        child.match_by_handle(handle, array)
+      if type == '//' || (type == '/' && first)
+        for child in @children
+          child.match_by_handle(handle, type, array)
+        end
       end
       return array
     end
 
-    def find_by_element(a_element, array = [])
+    def find_by_element(a_element, type = '//', array = [])
+      if array == nil
+        array = []
+        first = true
+      else
+        first = false
+      end
       if element
         array << self if a_element == element
       end
-      for child in @children
-        child.find_by_element(a_element, array)
+      if type == '//' || (type == '/' && first)
+        for child in @children
+        child.find_by_element(a_element, type, array)
+        end
       end
       return array
     end
@@ -195,7 +227,7 @@ module XmlHelper
     end
   end
 
-  def xml_get_matches(type, value)
+  def xml_get_matches(type, value, find_type = '//')
     case type
     when 'class':
         method = 'find_by_class'
@@ -208,20 +240,20 @@ module XmlHelper
     else
       raise NoMethodError
     end
-    return eval("@my_node.#{method}(value)")
+    return eval("@my_node.#{method}(value, find_type)")
   end
 
-  def xml_first(type, value)
+  def xml_first(type, value, find_type = '//')
     oldnode = @my_node
-    @my_node = xml_get_matches(type, value).first
+    @my_node = xml_get_matches(type, value, find_type).first
     val = yield
     @my_node = oldnode
     return val
   end
 
-  def xml_foreach(type, value)
+  def xml_foreach(type, value, find_type = '//')
     oldnode = @my_node
-    for i in xml_get_matches(type, value)
+    for i in xml_get_matches(type, value, find_type)
       @my_node = i
       yield
     end
@@ -229,15 +261,15 @@ module XmlHelper
     nil
   end
 
-  def xml_value_of(thing = nil)
+  def xml_value_of(thing = nil, type = '//')
     if xml_if(thing)
-      return _xml_value_of(thing)
+      return _xml_value_of(thing, type)
     else
       return "Unknown"
     end
   end
 
-  def _xml_value_of(thing)
+  def _xml_value_of(thing, type = '//')
     begin
       case thing
       when nil:
@@ -245,7 +277,7 @@ module XmlHelper
       when /^@/:
           return @my_node.attrs[thing.sub(/@/, "")]
       else
-        return @my_node.find_by_element(thing).first.content
+        return @my_node.find_by_element(thing, type).first.content
       end
     rescue
       return nil

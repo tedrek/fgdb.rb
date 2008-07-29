@@ -27,9 +27,9 @@ class SpecSheet < ActiveRecord::Base
       return false
     end
 
-    @system_model = get_from_xml(xml_value_of("product"))
-    @system_serial_number = get_from_xml(xml_value_of("serial"))
-    @system_vendor = get_from_xml(xml_value_of("vendor"))
+    @system_model = get_from_xml(xml_value_of("product", '/'))
+    @system_serial_number = get_from_xml(xml_value_of("serial", '/'))
+    @system_vendor = get_from_xml(xml_value_of("vendor", '/'))
     @mobo_model = get_from_xml(xml_first("id", "core") do xml_value_of("product") end)
     @mobo_serial_number = get_from_xml(xml_first("id", "core") do xml_value_of("serial") end)
     @mobo_vendor = get_from_xml(xml_first("id", "core") do xml_value_of("vendor") end)
