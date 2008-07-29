@@ -331,7 +331,7 @@ if __FILE__ == $0
 
   load_file(ARGV[0])
 
-  puts my_node.to_s
+#  puts my_node.to_s
 
 #  my_node.match_by_id("disk").each {|x|
 #  puts x.to_s
@@ -341,7 +341,7 @@ if __FILE__ == $0
 #  puts x.to_s
 #  }
 
-#  my_node.find_by_element("description").each {|x|
-#  puts x.to_s
-#  }
+  my_node.find_by_element("a", "//").first.find_by_element("description", "/").each {|x|
+  puts x.to_s
+  }
 end

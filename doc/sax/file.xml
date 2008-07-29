@@ -1,1 +1,1 @@
-<node class="system" id="thing"><a b="a"><asdf id="aoeu"></asdf><thing>thingy</thing></a></node>
+<node class="system" id="thing"><a b="a"><description>STUPID</description><asdf id="aoeu"></asdf><thing>thingy</thing></a><description>GOOD</description></node>
