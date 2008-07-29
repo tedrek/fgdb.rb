@@ -30,10 +30,10 @@ class SpecSheet < ActiveRecord::Base
     @system_model = get_from_xml(xml_value_of("product", '/'))
     @system_serial_number = get_from_xml(xml_value_of("serial", '/'))
     @system_vendor = get_from_xml(xml_value_of("vendor", '/'))
-    @mobo_model = get_from_xml(xml_first("id", "core") do xml_value_of("product") end)
-    @mobo_serial_number = get_from_xml(xml_first("id", "core") do xml_value_of("serial") end)
-    @mobo_vendor = get_from_xml(xml_first("id", "core") do xml_value_of("vendor") end)
-    @macaddr = get_from_xml(xml_first("id", "network") do xml_value_of("serial") end)
+    @mobo_model = get_from_xml(xml_first("id", "core") do xml_value_of("product", '/') end)
+    @mobo_serial_number = get_from_xml(xml_first("id", "core") do xml_value_of("serial", '/') end)
+    @mobo_vendor = get_from_xml(xml_first("id", "core") do xml_value_of("vendor", '/') end)
+    @macaddr = get_from_xml(xml_first("id", "network") do xml_value_of("serial", '/') end)
 
     get_vendor
     get_serial

@@ -151,7 +151,7 @@ module XmlHelper
       end
       if type == '//' || (type == '/' && first)
         for child in @children
-        child.find_by_element(a_element, type, array)
+          child.find_by_element(a_element, type, array)
         end
       end
       return array
