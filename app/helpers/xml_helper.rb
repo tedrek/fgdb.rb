@@ -139,7 +139,7 @@ module XmlHelper
       return array
     end
 
-    def find_by_element(a_element, type = '//', array = [])
+    def find_by_element(a_element, type = '//', array = nil)
       if array == nil
         array = []
         first = true
@@ -341,7 +341,7 @@ if __FILE__ == $0
 #  puts x.to_s
 #  }
 
-  my_node.find_by_element("a", "//").first.find_by_element("description", "/").each {|x|
+  my_node.find_by_element("node", "//").first.find_by_element("description", "/").each {|x|
   puts x.to_s
   }
 end
