@@ -53,12 +53,22 @@ class WorkShiftsController < ApplicationController
       where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
     end
 
+    # this version pulls just work_shifts to avoid confusion over
+    # id column, but it is not optimal. it would be better to
+    # use something like the stuff commented out below to avoid
+    # massive numbers of extra queries
     @work_shifts = WorkShift.find( :all, {
       :select => 'work_shifts.*', 
       :conditions => where_clause, 
       :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time', 
       :joins => 'LEFT JOIN workers ON work_shifts.worker_id = workers.id' }
     )
+
+#    @work_shifts = WorkShift.find( :all, {
+#      :conditions => where_clause, 
+#      :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time'}, 
+#      :include => [:weekday, :job, :worker, :job]
+#    )
   end
 
   def show
