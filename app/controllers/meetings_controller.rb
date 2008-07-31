@@ -38,6 +38,7 @@ class MeetingsController < ApplicationController
   def copy
     @meeting = Meeting.find(params[:id])
     @meeting2 = @meeting.clone
+    @meeting2.workers = @meeting.workers
     if @meeting2.save
       flash[:notice] = 'Meeting was successfully copied.'
       redirect_to :action => 'edit', :id => @meeting2.id
@@ -64,17 +65,17 @@ class MeetingsController < ApplicationController
       end
       WorkShift.delete_all "id IN (#{in_clause.join(',')})"
     end
-      # check to see if it's a holiday, if so then skip
-      holly = Holiday.find(:first, :conditions => ["holiday_date = ?", day])
-      if not holly
-        # check to see if the schedule displays on that
-        #   weekday, if not then skip
-        weekday_id = day.strftime( '%w' )
-        weekday = Weekday.find(:first, :conditions => ["id = ?", weekday_id])
-        if weekday.is_open
-          # get a list of all workers attending this
-          # meeting and loop through it
-          @meeting.workers.each do |w|
+    # check to see if it's a holiday, if so then skip
+    holly = Holiday.find(:first, :conditions => ["holiday_date = ?", day])
+    if not holly
+      # check to see if the schedule displays on that
+      #   weekday, if not then skip
+      weekday_id = day.strftime( '%w' )
+      weekday = Weekday.find(:first, :conditions => ["id = ?", weekday_id])
+      if weekday.is_open
+        # get a list of all workers attending this
+        # meeting and loop through it
+        @meeting.workers.each do |w|
           # if worker is on vacation, don't save shift
           v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])
           if not v
@@ -92,6 +93,9 @@ class MeetingsController < ApplicationController
   end
 
   def update
+    # NOTE: find() brings back '2000-01-01' where there should
+    # be a null date if a date field is left blank. this is fixed with a kludge in
+    # vendor/plugins/dhtml-calendar/lib/extensions/active_record.rb
     @meeting = Meeting.find(params[:id])
     if @meeting.update_attributes(params[:meeting])
       flash[:notice] = 'Meeting was successfully updated.'
