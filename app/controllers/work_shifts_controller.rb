@@ -69,6 +69,13 @@ class WorkShiftsController < ApplicationController
 #      :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time'}, 
 #      :include => [:weekday, :job, :worker, :job]
 #    )
+#
+#    another example (from another project):
+#
+#    @work_units = WorkUnit.find(:all, :order => 'parts.title', :include => [{:part => :job}, :operation])
+#
+#    (can you pull just one field as needed? :part => :job ) hmmmm....
+#    see http://snippets.dzone.com/posts/show/2089
   end
 
   def show
