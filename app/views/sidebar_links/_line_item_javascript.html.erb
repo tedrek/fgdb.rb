@@ -6,19 +6,52 @@
   counters['payment_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
   counters['contact_method_line_id'] = <%= defined?(@contact_methods) ? @contact_methods.length : 0 %>;
 
-  function toggle_description() {
+  function toggle_description(evt) {
     show_description++;
     var arr = document.getElementsByClassName('description');
     for (var i = 0; i < arr.length; i++) {
       set_visibility(arr[i], show_description & 1)
     }
+    return true;
   }
 
+  function downcase(x) { return x.toLowerCase(); }
+
+  var key_map = new Array();
+  function normalize_key_binding(key) {
+    var x = key.split("-");
+    return x.length > 1 
+           ? (x.slice(0,-1).map(downcase).sort().join("-") + "-" + x.last().toLowerCase())
+           : key;
+  }
+
+  function bind_key(key, handler) {
+    var key = normalize_key_binding(key);
+    key_map[key] = handler;
+  }
+
+  function unbind_key(key) {
+    delete key_map[normalize_key_binding(key)];
+  }
+  
   function key_handler(evt) {
-    var char = String.fromCharCode(evt.which || evt.charCode || evt.keyCode);
-    if (evt.ctrlKey && char == 'e')
-      toggle_description();
-    return false;
+    var key_sequence = "";
+    if (evt.altKey) {
+      key_sequence += "alt-";
+    }
+    if (evt.ctrlKey) {
+      key_sequence += "ctrl-";
+    }
+    if (evt.shiftKey) {
+      key_sequence += "shift-";
+    }
+    key_sequence += String.fromCharCode(evt.which || evt.charCode || evt.keyCode).toLowerCase();
+
+    handler = key_map[key_sequence];
+
+    //alert("KEY: " + key_sequence + " -- " + handler);
+
+    return handler ? handler(evt) : false;
   }
 
   function add_line_item(args, hook1, hook2, update_hook){
