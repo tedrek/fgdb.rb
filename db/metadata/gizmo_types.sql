@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: gizmo_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('gizmo_types_id_seq', 47, true);
+SELECT pg_catalog.setval('gizmo_types_id_seq', 48, true);
 
 
 --
@@ -70,6 +70,7 @@ COPY gizmo_types (id, description, parent_id, lock_version, updated_at, created_
 13	Gizmo	\N	5	2008-06-07 15:10:26.636821	2006-11-11 19:16:03	0	0	4
 45	Gift Certificate	\N	1	2008-06-07 15:10:26.640689	2007-12-11 17:01:35	0	0	4
 46	Service Fee	\N	1	2008-06-07 15:10:26.644611	2007-12-11 17:41:55	100	0	4
+48	Fee Discount	\N	0	2008-07-31 16:41:25.224914	2008-07-31 16:41:25.224914	0	0	4
 \.
 
 

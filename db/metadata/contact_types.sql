@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: contact_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('contact_types_id_seq', 27, true);
+SELECT pg_catalog.setval('contact_types_id_seq', 28, true);
 
 
 --
@@ -40,6 +40,7 @@ COPY contact_types (id, description, for_who, lock_version, updated_at, created_
 24	recycler	any	0	2006-12-29 17:07:36.567347	2006-12-29 17:07:36.567347
 26	offsite	per	0	2008-06-07 15:10:49.031445	2008-06-07 15:10:49.031445
 27	bulk buyer	any	0	2008-06-24 14:10:57.545546	2008-06-24 14:10:57.545546
+28	dropout	per	0	\N	\N
 \.
 
 
