@@ -213,7 +213,7 @@ namespace :db do
   namespace :data do
 
     desc "Dump the development database (including data) to a SQL file"
-    task :dump => [:environment, 'db:schema:dump'] do
+    task :dump => [:environment, 'db:schema:dump', 'db:metadata:dump'] do
       dump_data(rails_env)
     end
 
@@ -229,6 +229,10 @@ namespace :db do
         PGSQL_OPTS='-U "#{abcs[rails_env]["username"]}"'
       end
       load_data(rails_env)
+    end
+
+    desc "Migrate the schema.rb, devel data, and metadata"
+    task :migrate => ['db:data:load', 'db:migrate', 'db:data:dump'] do
     end
 
   end # namespace :data
