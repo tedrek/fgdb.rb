@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 41) do
+ActiveRecord::Schema.define(:version => 20080803004417) do
 
   create_table "actions", :force => true do |t|
     t.string   "name"
@@ -313,7 +313,7 @@ ActiveRecord::Schema.define(:version => 41) do
     t.string   "postal_code",                    :limit => 25
     t.boolean  "txn_complete",                                 :default => true
     t.datetime "txn_completed_at"
-    t.integer  "discount_schedule_id"
+    t.integer  "discount_schedule_id",                                            :null => false
     t.text     "comments"
     t.boolean  "bulk"
     t.integer  "lock_version",                                 :default => 0,     :null => false
