@@ -8,6 +8,18 @@ class ReportsController < ApplicationController
     end
   end
 
+  # fgss stuff, ignore it please
+  # added so that rocky can be gotten rid of
+  MINIMUM_COMPAT_VERSION=2
+  def check_compat
+    if !params[:version] || params[:version].empty? || params[:version].to_i < MINIMUM_COMPAT_VERSION
+      render :xml => {:compat => false, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
+    else
+      render :xml => {:compat => false, :your_version => params[:version].to_i, :minimum_version => 0, :message => "Something went wrong.\nYou have the printme version that should be talking to the new database,\nand yet it's still connecting to the old one.\nTry upgrading freegeek-extras...\nIf that doesn't work, go and yell at Ryan."}
+      #     render :xml => {:compat => true}
+    end
+  end
+
   #####################
   ### Gizmos report ###
   #####################
