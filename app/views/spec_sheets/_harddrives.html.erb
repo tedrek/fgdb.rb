@@ -37,7 +37,7 @@
       </tr>
       <% end %>
       <% counter = 0 %>
-      <% xml_foreach("id", "volume") do |x| counter += 1 end %>
+      <% xml_foreach("id", "volume") do counter += 1 end %>
       <% if counter > 0 %>
       <tr>
         <td valign="top">Volumes: </td>
