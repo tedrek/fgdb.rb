@@ -53,6 +53,23 @@ module GizmoTransaction
     end
   end
 
+  def combine_cash_payments
+    cashes = payments.find_all{|x| x.payment_method.description == "cash"}
+    if cashes.length > 0
+      cash = Payment.new
+      cash.payment_method = PaymentMethod.cash
+      cash.amount_cents = 0
+      for i in cashes
+        cash.amount_cents += i.amount_cents
+        i.destroy
+      end
+      payments.reject!{|x|
+        x.payment_method.description == "cash"
+      }
+      payments << cash
+    end
+  end
+
   #########
   protected
   #########

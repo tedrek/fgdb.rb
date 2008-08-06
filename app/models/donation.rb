@@ -20,6 +20,7 @@ class Donation < ActiveRecord::Base
   before_save :set_txn_as_complete
   before_save :compute_fee_totals
   before_save :add_dead_beat_discount
+  before_save :combine_cash_payments
 
   def validate
     if contact_type == 'named'
