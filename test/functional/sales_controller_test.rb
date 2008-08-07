@@ -11,7 +11,9 @@ class SalesControllerTest < ActionController::TestCase
   end
 
   def create_a_new_sale
-    s = Sale.new({:contact_type => 'named', :created_by => 1})
+    s = Sale.new({:contact_type => 'named', 
+                   :created_by => 1, 
+                   :discount_schedule => DiscountSchedule.no_discount})
     s.contact = Contact.find(:first)
     s.gizmo_events = [GizmoEvent.new(sold_system_event)]
     s.gizmo_events[0].unit_price = "20"
@@ -43,7 +45,7 @@ class SalesControllerTest < ActionController::TestCase
     login_as :quentin
     sale = create_a_new_sale
     sale = Sale.find(sale.id)
-    assert_equal sale.gizmo_events[0].unit_price, "20.00"
+    assert_equal "20.00", sale.gizmo_events[0].unit_price
     get :index
     get :destroy, :id => sale.id, :scaffold_id => 'sales'
     assert_raises(ActiveRecord::RecordNotFound) { Sale.find(sale.id) }

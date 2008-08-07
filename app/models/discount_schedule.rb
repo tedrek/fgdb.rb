@@ -8,4 +8,8 @@ class DiscountSchedule < ActiveRecord::Base
     data = discount_schedules_gizmo_types.detect {|bridge| bridge.gizmo_type_id == type.id}
     data ? data.multiplier : nil
   end
+
+  def self.no_discount
+    @@no_discount ||= find_by_name("no discount")
+  end
 end
