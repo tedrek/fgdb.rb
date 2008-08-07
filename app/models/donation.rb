@@ -71,13 +71,14 @@ class Donation < ActiveRecord::Base
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          GROUP BY payments.payment_method_id"
       ).each {|summation|
-        total_data[summation['payment_method_id'].to_i] = summation
+        d = {}
+        summation.each{|k,v|d[k] = v.to_i}
+        total_data[summation['payment_method_id'].to_i] = d
       }
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
         donation.payments.sort_by {|payment| payment.payment_method_id}.each {|payment|
           #total paid
-          total_data[payment.payment_method_id]['payment_method_id'] += payment.amount_cents
           total_data[payment.payment_method_id]['count'] += 1
           if required_to_be_paid > 0
             if required_to_be_paid > payment.amount_cents
