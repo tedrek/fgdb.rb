@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContactTypeTest < Test::Unit::TestCase
 
   fixtures( :contact_types, :volunteer_task_types, :payment_methods,
-            :gizmo_types, :gizmo_contexts, :gizmo_attrs,
+            :gizmo_types, :gizmo_contexts, :gizmo_attrs, :discount_schedules,
             :gizmo_typeattrs, :users, :roles, :roles_users )
 
   NEW_CONTACT_TYPE = {}    # e.g. {:name => 'Test ContactType', :description => 'Dummy'}
@@ -64,6 +64,7 @@ class ContactTypeTest < Test::Unit::TestCase
         sale = Sale.new({ :contact => blank, :contact_type => 'named',
                           :payments => [paid_a_dollar],
                           :created_by => 1,
+                          :discount_schedule => DiscountSchedule.no_discount,
                           :gizmo_events => [a_mouse_for_sale]})
         assert_nothing_raised {retval = sale.save}
         assert retval, "#{name} should have saved successfully"
