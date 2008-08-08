@@ -26,6 +26,9 @@ RewriteEngine On
 #   Alias /myrailsapp /path/to/myrailsapp/public
 #   RewriteBase /myrailsapp
 
+RewriteCond %{HTTP_HOST} "rocky" [OR]
+RewriteCond %{HTTP_HOST} "rocky.fglan"
+RewriteRule ^$ fgss_moved.html [QSA]
 RewriteRule ^$ index.html [QSA]
 RewriteRule ^([^.]+)$ $1.html [QSA]
 RewriteCond %{REQUEST_FILENAME} !-f
