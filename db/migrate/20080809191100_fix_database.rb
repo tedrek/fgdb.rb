@@ -7,7 +7,7 @@ class FixDatabase < ActiveRecord::Migration
     
     # populate the columns above
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       update gizmo_events 
       set unit_price_cents=(select attr_val_monetary_cents 
                             from gizmo_events_gizmo_typeattrs gegt 
@@ -17,7 +17,7 @@ class FixDatabase < ActiveRecord::Migration
                                   and ga.name='unit_price')
       ")
     
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       delete from gizmo_events_gizmo_typeattrs 
       where gizmo_typeattr_id  in (select gt.id 
                                    from gizmo_typeattrs gt 
@@ -26,7 +26,7 @@ class FixDatabase < ActiveRecord::Migration
             and (attr_val_text = '' or attr_val_text is null);
       ")
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       update gizmo_events 
       set description=(select attr_val_text
                             from gizmo_events_gizmo_typeattrs gegt 
@@ -36,7 +36,7 @@ class FixDatabase < ActiveRecord::Migration
                                   and ga.name='description' limit 1)
       ")
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       update gizmo_events 
       set as_is=(select attr_val_boolean
                             from gizmo_events_gizmo_typeattrs gegt 
@@ -46,13 +46,13 @@ class FixDatabase < ActiveRecord::Migration
                                   and ga.name='as_is')
       ")
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       update gizmo_events set as_is=false where as_is is null
       ")
 
 alter table "add not null"
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       update gizmo_events 
       set size=(select attr_val_integer
                             from gizmo_events_gizmo_typeattrs gegt 
@@ -62,7 +62,7 @@ alter table "add not null"
                                   and ga.name='size')
       ")
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       update gizmo_events
       set unit_price_cents=(select suggested_fee_cents
                       from gizmo_types
@@ -72,7 +72,7 @@ alter table "add not null"
                                              where name='donation')
       ")
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       update gizmo_events
       set unit_price_cents=(select required_fee_cents
                       from gizmo_types
@@ -84,6 +84,7 @@ alter table "add not null"
             and 
       ")
 
+    GizmoEvent.connection.execute("
     update gizmo_events ge
     set unit_price_cents=gt.required_fee_cents
     from gizmo_types gt
@@ -91,8 +92,9 @@ alter table "add not null"
           and ge.gizmo_context_id = (select id 
                                      from gizmo_contexts 
                                      where name='donation')
+      ")
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       update gizmo_events
       set unit_price_cents=adjusted_fee_cents
       where gizmo_events.gizmo_context_id = (select id 
