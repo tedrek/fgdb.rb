@@ -4,11 +4,11 @@ span.print_only {
 
 span.no_print { display: none; }
 
-div#logo, div#sidebar, div#login_box, td.actions, div.create { 
+div#logo, div#sidebar, div#login_box, td.actions, div.create {
   display: none;
 }
 
-div#content { 
+div#content {
   left: 0px;
   position: relative;
   width: 95%;

@@ -139,7 +139,7 @@ class Conditions
     case @payment_amount_type
     when 'between'
       return ["payments.amount_cents BETWEEN ? AND ?",
-               @payment_amount_low.to_s.to_cents, 
+               @payment_amount_low.to_s.to_cents,
                @payment_amount_high.to_s.to_cents]
     when '>='
       return ["payments.amount_cents >= ?", @payment_amount_ge.to_s.to_cents]

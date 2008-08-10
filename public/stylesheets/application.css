@@ -86,7 +86,7 @@ input.save {
   background:#C4D5E3;
   padding:10px;
 }
-         
+
 .tooltip_body {
   width:300;
   background:#FFFFFF;
@@ -452,11 +452,11 @@ font-size: 18px;
 background-color: #F0EFEF;
 }
 
-.report .type-row { 
+.report .type-row {
   background-color: #FF9900
 }
 
-.report .disbursement-breakout-column { 
+.report .disbursement-breakout-column {
   background-color: #0099FF;
 }
 /* ===================================
@@ -534,25 +534,25 @@ margin:0;
 padding:0;
 }
 
-.letter_head .logos { 
+.letter_head .logos {
   float: left;
 }
-.letter_head img { 
+.letter_head img {
   vertical-align: top;
 }
-.letter_head .contact-info { 
+.letter_head .contact-info {
   float: left;
 }
 
-.hours_detail_report { 
+.hours_detail_report {
   float: left;
 }
 
-.short_row { 
+.short_row {
   color: red;
 }
 
-#short_row { 
+#short_row {
   color: red;
 }
 
@@ -560,10 +560,10 @@ padding:0;
   color: blue;
 }
 
-.line { 
+.line {
   text-align: right;
 }
 
-.invisible { 
+.invisible {
   display: none;
 }

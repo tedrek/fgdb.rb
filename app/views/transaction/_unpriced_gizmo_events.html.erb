@@ -8,7 +8,7 @@
 <th></th>
 <% if @transaction.gizmo_events %>
   <%= js = ""
-      for line in @transaction.gizmo_events 
+      for line in @transaction.gizmo_events
         js += "add_disbursement_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count});"
       end
       javascript_tag js

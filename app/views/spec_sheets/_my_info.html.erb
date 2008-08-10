@@ -5,7 +5,7 @@
   <table style="font-size: 15pt;">
       <tr>
         <td>
-          Report ID: 
+          Report ID:
         </td>
         <td>
           <%= @report.id %>
@@ -13,7 +13,7 @@
       </tr>
       <tr>
         <td>
-          Technician: 
+          Technician:
         </td>
         <td>
           <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
@@ -21,7 +21,7 @@
       </tr>
       <tr>
         <td>
-          Technician's Job: 
+          Technician's Job:
         </td>
         <td>
           <%= @report.action && @report.action.name || "Unknown" %>
@@ -29,7 +29,7 @@
       </tr>
       <tr>
         <td>
-          System ID: 
+          System ID:
         </td>
         <td>
           <%= @report.system.id %>
@@ -37,7 +37,7 @@
       </tr>
       <tr>
         <td>
-          Type of System: 
+          Type of System:
         </td>
         <td>
           <%= @report.type && @report.type.name || "Unknown" %>
@@ -53,7 +53,7 @@
       </tr>
       <tr>
         <td>
-          Notes: 
+          Notes:
         </td>
         <td>
           <%= @report.notes.gsub("\n", "<br />") %>
@@ -61,7 +61,7 @@
       </tr>
       <tr>
         <td>
-          Do something: 
+          Do something:
         </td>
         <td>
           <%= link_to "Print", "#", {:onclick=>"window.print();"} %>
@@ -79,7 +79,7 @@ Sometimes the hardware lies. Sometimes the software is broken.
 <br /><br />
 Always check to see if the report shows accurate information.
 <br /><br/>
-Especially check hard drive size, amount of memory, and processor information. If you find problems, correct the report and alert the build instructor. 
+Especially check hard drive size, amount of memory, and processor information. If you find problems, correct the report and alert the build instructor.
 <br />
 (If you are a build instructor, please email the report id to the buildteachers email list and tell us what was wrong)
 </p>

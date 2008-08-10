@@ -79,7 +79,7 @@
     }
     else if (cents.length == 1) {
       return "0.0" + cents;
-    } 
+    }
     else if (cents.length == 2) {
       return "0." + cents;
     }
@@ -222,7 +222,7 @@
   function set_visibility(node, visibility) {
     if (visibility) {
       node.removeClassName("invisible");
-    } 
+    }
     else {
       node.addClassName("invisible");
     }
@@ -237,7 +237,7 @@
       var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
       var type;
       type = (fees[type_id]['suggested'] > 0) ? 'suggested' : 'required';
-      
+
       totals[type] += cent_value(get_node_value(arr[x], "td.total_price"));
     }
     return totals;
@@ -365,7 +365,7 @@
   function validate_donation() {
     var required = get_donation_totals()['required'];
     var payment = get_total_payment();
-    return (payment >= required) 
+    return (payment >= required)
            || confirm("The total payments (" + dollar_value(payment) + ") do not cover the required amount (" + dollar_value(required) + "), is that ok?");
   }
   function validate_recycling() {
@@ -376,25 +376,25 @@
 </script>
 
 <% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) -%>
-  <%= js = "var gizmo_types = new Array;" 
-      for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description) 
+  <%= js = "var gizmo_types = new Array;"
+      for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description)
         js += "gizmo_types[#{gizmo_type.id}] = '#{gizmo_type.description}';"
-      end 
-      javascript_tag js %>
-<% end -%>
-
-<% if ["sales", "donations"].include?(params[:controller]) -%>
-  <%= js = "var payment_methods = new Array;" 
-      for payment_method in PaymentMethod.find(:all).sort_by(&:description) 
-        js += "payment_methods[#{payment_method.id}] = '#{payment_method.description}';" 
       end
       javascript_tag js %>
 <% end -%>
 
-  <%= js = "var contact_method_types = new Array;" 
-      for contact_method_type in ContactMethodType.find(:all).sort_by(&:description) 
-        js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';" 
-      end 
+<% if ["sales", "donations"].include?(params[:controller]) -%>
+  <%= js = "var payment_methods = new Array;"
+      for payment_method in PaymentMethod.find(:all).sort_by(&:description)
+        js += "payment_methods[#{payment_method.id}] = '#{payment_method.description}';"
+      end
+      javascript_tag js %>
+<% end -%>
+
+  <%= js = "var contact_method_types = new Array;"
+      for contact_method_type in ContactMethodType.find(:all).sort_by(&:description)
+        js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';"
+      end
       javascript_tag js %>
 
 <%=
@@ -411,7 +411,7 @@
       javascript_tag js
     when 'donations'
       js = "var fees = new Array();"
-      fees = GizmoType.find(:all).map(){|x| 
+      fees = GizmoType.find(:all).map(){|x|
         "fees[#{x.id}]= new Array();" +
           "fees[#{x.id}]['required'] = #{x.required_fee_cents};" +
           "fees[#{x.id}]['suggested'] = #{x.suggested_fee_cents};"

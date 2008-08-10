@@ -237,7 +237,7 @@ class ReportsController < ApplicationController
 
     ranges[:sales][:min] = [ranges[:sales][:min], mn].min
     ranges[:sales][:max] = [ranges[:sales][:max], mx].max
-      
+
     payment_method = PaymentMethod.descriptions[payment_method_id]
 
     grand_totals = income_data[:grand_totals]
@@ -287,7 +287,7 @@ class ReportsController < ApplicationController
     else
       @contact = nil
     end
-   
+
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
     @tasks = VolunteerTask.find_by_conditions(@defaults.conditions(VolunteerTask))
@@ -323,7 +323,7 @@ class ReportsController < ApplicationController
     end
   end
 
-  public 
+  public
 
   def hours
     @defaults = Conditions.new
@@ -343,9 +343,9 @@ class ReportsController < ApplicationController
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
     # if this is too slow, replace it with straight sql
-    @tasks = VolunteerTask.find(:all, 
+    @tasks = VolunteerTask.find(:all,
                                 :conditions => @defaults.conditions(VolunteerTask),
                                 :order => "date_performed desc")
-    
+
   end
 end

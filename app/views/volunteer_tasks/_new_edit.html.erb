@@ -24,7 +24,7 @@
                 :contact_id => @volunteer_task.contact_id,
                 :referring_action => @options[:action]) %>
         <%= submit_to_remote "cancel", "Cancel", { :url => cancel_params, :html => {:class => "cancel"}, :loading => "Element.show('#{loading_indicator_id("form_for_volunteer_task_loading")}');" } %>
-           
+
         <%= loading_indicator_tag "form_for_volunteer_task_loading" %>
       </p>
     <% end %>

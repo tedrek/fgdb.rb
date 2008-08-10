@@ -127,7 +127,7 @@ module ApplicationHelper
         observe_field( "#{obj_name}_#{method_name}",
                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value);",
                        :with => method_name )]
-    
+
     this_choice = obj.send(method_name)
     choices.each {|choice, content|
       if this_choice.to_s == choice.to_s

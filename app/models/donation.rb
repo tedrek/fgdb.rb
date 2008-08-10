@@ -93,10 +93,10 @@ class Donation < ActiveRecord::Base
             required_to_be_paid -= payment.amount_cents
           else
             #suggested
-            total_data[payment.payment_method_id]['amount'] += payment.amount_cents 
+            total_data[payment.payment_method_id]['amount'] += payment.amount_cents
           end
 
-          total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'], 
+          total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'],
                                                       donation.id].min
           total_data[payment.payment_method_id]['max'] = [total_data[payment.payment_method_id]['max'], #wtf!?!
                                                       donation.id].max
