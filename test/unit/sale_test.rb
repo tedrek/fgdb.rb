@@ -15,7 +15,8 @@ class SaleTest < Test::Unit::TestCase
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 1,
       :unit_price => "1",
-      :gizmo_context => GizmoContext.sale
+      :gizmo_context => GizmoContext.sale,
+      :as_is => true
     }
   end
 

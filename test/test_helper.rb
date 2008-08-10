@@ -19,9 +19,8 @@ class Test::Unit::TestCase
   ORDERED_TABLES =
     [
      %W[defaults],
-     %W[gizmo_contexts gizmo_types gizmo_attrs gizmo_typeattrs
+     %W[gizmo_contexts gizmo_types
         gizmo_contexts_gizmo_types gizmo_events],
-     #%W[gizmo_contexts_gizmo_typeattrs  gizmo_events_gizmo_typeattrs],
      %W[contacts contact_types contact_types_contacts
         contact_method_types contact_methods],
      %W[users roles roles_users],
@@ -113,7 +112,8 @@ class Test::Unit::TestCase
     {
       :gizmo_type => GizmoType.find(:first, :conditions => ['description = ?', 'CRT']),
       :gizmo_count => 1,
-      :gizmo_context => GizmoContext.donation
+      :gizmo_context => GizmoContext.donation,
+      :as_is => false
     }
   end
 
@@ -121,7 +121,8 @@ class Test::Unit::TestCase
     {
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 1,
-      :gizmo_context => GizmoContext.donation
+      :gizmo_context => GizmoContext.donation,
+      :as_is => false
     }
   end
 
@@ -129,7 +130,8 @@ class Test::Unit::TestCase
     {
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 1,
-      :gizmo_context => GizmoContext.sale
+      :gizmo_context => GizmoContext.sale,
+      :as_is => true
     }
   end
 
@@ -137,7 +139,8 @@ class Test::Unit::TestCase
     {
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 10,
-      :gizmo_context => GizmoContext.recycling
+      :gizmo_context => GizmoContext.recycling,
+      :as_is => false
     }
   end
 

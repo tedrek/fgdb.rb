@@ -3,8 +3,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContactTypeTest < Test::Unit::TestCase
 
   fixtures( :contact_types, :volunteer_task_types, :payment_methods,
-            :gizmo_types, :gizmo_contexts, :gizmo_attrs, :discount_schedules,
-            :gizmo_typeattrs, :users, :roles, :roles_users )
+            :gizmo_types, :gizmo_contexts, :discount_schedules,
+            :users, :roles, :roles_users )
 
   NEW_CONTACT_TYPE = {}    # e.g. {:name => 'Test ContactType', :description => 'Dummy'}
   REQ_ATTR_NAMES              = %w( ) # name of fields that must be present, e.g. %(name description)
@@ -102,7 +102,7 @@ class ContactTypeTest < Test::Unit::TestCase
 
   def a_mouse_for_sale
     GizmoEvent.new({ :gizmo_count => 1, :gizmo_type => GizmoType.find(23),
-                     :gizmo_context => GizmoContext.sale, :unit_price => "1.0"})
+                     :gizmo_context => GizmoContext.sale, :unit_price => "1.0", :as_is => false})
   end
 end
 

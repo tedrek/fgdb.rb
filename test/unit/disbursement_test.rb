@@ -10,7 +10,8 @@ class DisbursementTest < Test::Unit::TestCase
     {
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 10,
-      :gizmo_context => GizmoContext.disbursement
+      :gizmo_context => GizmoContext.disbursement,
+      :as_is => false
     }
   end
 
