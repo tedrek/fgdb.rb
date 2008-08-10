@@ -48,7 +48,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
       update gizmo_events set as_is=false where as_is is null
       ")
 
-    GizmoEvent.connection.exec("
+    GizmoEvent.connection.execute("
       ALTER TABLE gizmo_events ALTER COLUMN as_is SET NOT NULL
       ")
 
