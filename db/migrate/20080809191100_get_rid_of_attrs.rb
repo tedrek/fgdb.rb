@@ -1,4 +1,4 @@
-class FixDatabase < ActiveRecord::Migration
+class GetRidOfAttrs < ActiveRecord::Migration
   def self.up
     add_column 'gizmo_events', 'unit_price_cents', :integer
     add_column 'gizmo_events', 'as_is', :boolean
