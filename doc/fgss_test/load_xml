@@ -9,10 +9,10 @@ fi
 
 tar xzvf xml.tgz >/dev/null
 
-if [ `ls *.xml | wc -l` != 10 ]; then
-    echo "There should be 10 xml files"
-    exit 1
-fi
+#if [ `ls *.xml | wc -l` != 10 ]; then
+#    echo "There should be 10 xml files"
+#    exit 1
+#fi
 
 ./add_report $i *.xml
 
