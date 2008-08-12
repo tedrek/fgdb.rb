@@ -192,7 +192,7 @@ ActiveRecord::Schema.define(:version => 20080810003028) do
     t.datetime "created_at"
     t.datetime "occurred_at"
     t.integer  "unit_price_cents"
-    t.boolean  "as_is",                           :null => false
+    t.boolean  "as_is"
     t.text     "description"
     t.integer  "size"
   end

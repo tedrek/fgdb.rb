@@ -45,14 +45,6 @@ class GetRidOfAttrs < ActiveRecord::Migration
       ")
 
     GizmoEvent.connection.execute("
-      update gizmo_events set as_is=false where as_is is null
-      ")
-
-    GizmoEvent.connection.execute("
-      ALTER TABLE gizmo_events ALTER COLUMN as_is SET NOT NULL
-      ")
-
-    GizmoEvent.connection.execute("
       update gizmo_events
       set size=(select attr_val_integer
                             from gizmo_events_gizmo_typeattrs gegt
