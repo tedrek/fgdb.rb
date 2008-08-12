@@ -9,7 +9,7 @@
 <%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" %>
 <%= javascript_tag "contact_form_org_toggle();" %>
 
-<% for contact_type in ContactType.find(:all) %>
+<% for contact_type in ContactType.find_instantiable %>
 <div class="form-element <%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
   <input type="checkbox" id="<%= contact_type.description %>"
     name="contact_types[]"
