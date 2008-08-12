@@ -101,11 +101,11 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def required_fee_cents
-    gizmo_count.to_i * unit_price_cents.to_i
+    gizmo_count.to_i * (unit_price_cents || gizmo_type.required_fee_cents)
   end
 
   def suggested_fee_cents
-    gizmo_count.to_i * unit_price_cents.to_i
+    gizmo_count.to_i * (unit_price_cents || gizmo_type.suggested_fee_cents)
   end
 
   def to_s
