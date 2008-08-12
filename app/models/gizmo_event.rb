@@ -40,15 +40,11 @@ class GizmoEvent < ActiveRecord::Base
     end
 
     def income_totals(conditions)
-      conditions = conditions.dup()
-      conditions[0] += " AND gegt.gizmo_typeattr_id=14"
       connection.execute(
         "SELECT gt.id AS gt,
                 sum(gizmo_events.gizmo_count
-                    * gegt.attr_val_monetary_cents)
+                    * gizmo_events.unit_price_cents)
          FROM gizmo_events
-              LEFT JOIN gizmo_events_gizmo_typeattrs gegt
-                   ON gizmo_events.id=gegt.gizmo_event_id
               LEFT JOIN gizmo_types gt
                    ON gizmo_events.gizmo_type_id=gt.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
