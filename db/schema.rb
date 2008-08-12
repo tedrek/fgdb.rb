@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080806225213) do
+ActiveRecord::Schema.define(:version => 20080810003028) do
 
   create_table "actions", :force => true do |t|
     t.string   "name"
@@ -160,14 +160,6 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
     t.integer "version"
   end
 
-  create_table "gizmo_attrs", :force => true do |t|
-    t.string   "name",         :limit => 100
-    t.string   "datatype",     :limit => 10
-    t.integer  "lock_version",                :default => 0, :null => false
-    t.datetime "updated_at"
-    t.datetime "created_at"
-  end
-
   create_table "gizmo_categories", :force => true do |t|
     t.string "description"
   end
@@ -178,16 +170,6 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
     t.datetime "updated_at"
     t.datetime "created_at"
   end
-
-  create_table "gizmo_contexts_gizmo_typeattrs", :id => false, :force => true do |t|
-    t.integer  "gizmo_context_id",                 :null => false
-    t.integer  "gizmo_typeattr_id",                :null => false
-    t.integer  "lock_version",      :default => 0, :null => false
-    t.datetime "updated_at"
-    t.datetime "created_at"
-  end
-
-  add_index "gizmo_contexts_gizmo_typeattrs", ["gizmo_context_id", "gizmo_typeattr_id"], :name => "gizmo_contexts_gizmo_typeattrs_uk", :unique => true
 
   create_table "gizmo_contexts_gizmo_types", :id => false, :force => true do |t|
     t.integer  "gizmo_context_id",                :null => false
@@ -202,14 +184,17 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
     t.integer  "sale_id"
     t.integer  "disbursement_id"
     t.integer  "recycling_id"
-    t.integer  "gizmo_type_id",                     :null => false
-    t.integer  "gizmo_context_id",                  :null => false
-    t.integer  "gizmo_count",                       :null => false
-    t.integer  "lock_version",       :default => 0, :null => false
+    t.integer  "gizmo_type_id",                   :null => false
+    t.integer  "gizmo_context_id",                :null => false
+    t.integer  "gizmo_count",                     :null => false
+    t.integer  "lock_version",     :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
     t.datetime "occurred_at"
-    t.integer  "adjusted_fee_cents"
+    t.integer  "unit_price_cents"
+    t.boolean  "as_is",                           :null => false
+    t.text     "description"
+    t.integer  "size"
   end
 
   add_index "gizmo_events", ["created_at"], :name => "gizmo_events_created_at_index"
@@ -217,31 +202,6 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
   add_index "gizmo_events", ["donation_id"], :name => "gizmo_events_donation_id_index"
   add_index "gizmo_events", ["recycling_id"], :name => "gizmo_events_recycling_id_index"
   add_index "gizmo_events", ["sale_id"], :name => "gizmo_events_sale_id_index"
-
-  create_table "gizmo_events_gizmo_typeattrs", :force => true do |t|
-    t.integer  "gizmo_event_id",                         :null => false
-    t.integer  "gizmo_typeattr_id",                      :null => false
-    t.text     "attr_val_text"
-    t.boolean  "attr_val_boolean"
-    t.integer  "attr_val_integer"
-    t.integer  "lock_version",            :default => 0, :null => false
-    t.datetime "updated_at"
-    t.datetime "created_at"
-    t.integer  "attr_val_monetary_cents"
-  end
-
-  add_index "gizmo_events_gizmo_typeattrs", ["gizmo_event_id"], :name => "gizmo_events_gizmo_typeattrs_gizmo_event_id"
-  add_index "gizmo_events_gizmo_typeattrs", ["gizmo_typeattr_id"], :name => "gizmo_events_gizmo_typeattrs_gizmo_typeattr_id"
-
-  create_table "gizmo_typeattrs", :force => true do |t|
-    t.integer  "gizmo_type_id",                         :null => false
-    t.integer  "gizmo_attr_id",                         :null => false
-    t.boolean  "is_required",         :default => true, :null => false
-    t.text     "validation_callback"
-    t.integer  "lock_version",        :default => 0,    :null => false
-    t.datetime "updated_at"
-    t.datetime "created_at"
-  end
 
   create_table "gizmo_types", :force => true do |t|
     t.string   "description",         :limit => 100
@@ -284,16 +244,6 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
   end
 
   add_index "recyclings", ["created_at"], :name => "recyclings_created_at_index"
-
-  create_table "revision_records", :force => true do |t|
-    t.string   "revisionable_type", :limit => 100
-    t.integer  "revisionable_id"
-    t.integer  "revision"
-    t.binary   "data"
-    t.datetime "created_at"
-  end
-
-  add_index "revision_records", ["revision", "revisionable_id", "revisionable_type"], :name => "revisionable", :unique => true
 
   create_table "roles", :force => true do |t|
     t.string   "name",       :limit => 40
@@ -373,16 +323,6 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
   add_index "systems", ["system_serial_number"], :name => "systems_serial_number_index"
   add_index "systems", ["system_vendor"], :name => "systems_vendor_index"
 
-  create_table "trash_records", :force => true do |t|
-    t.string   "trashable_type"
-    t.integer  "trashable_id"
-    t.binary   "data"
-    t.datetime "created_at"
-  end
-
-  add_index "trash_records", ["created_at", "trashable_type"], :name => "index_trash_records_on_created_at_and_trashable_type"
-  add_index "trash_records", ["trashable_id", "trashable_type"], :name => "index_trash_records_on_trashable_type_and_trashable_id"
-
   create_table "types", :force => true do |t|
     t.string   "name"
     t.integer  "lock_version", :default => 0, :null => false
@@ -457,9 +397,6 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
 
   add_foreign_key "donations", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "donations_contacts_fk"
 
-  add_foreign_key "gizmo_contexts_gizmo_typeattrs", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_typeattrs_gizmo_contexts_fk"
-  add_foreign_key "gizmo_contexts_gizmo_typeattrs", ["gizmo_typeattr_id"], "gizmo_typeattrs", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_typeattrs_gizmo_typeattrs_fk"
-
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_contexts_fk"
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_types_fk"
 
@@ -469,12 +406,6 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
   add_foreign_key "gizmo_events", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_types_fk"
   add_foreign_key "gizmo_events", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_contexts_fk"
   add_foreign_key "gizmo_events", ["disbursement_id"], "disbursements", ["id"], :name => "gizmo_events_disbursements_fk"
-
-  add_foreign_key "gizmo_events_gizmo_typeattrs", ["gizmo_event_id"], "gizmo_events", ["id"], :name => "gizmo_events_gizmo_typeattrs_gizmo_events_fk"
-  add_foreign_key "gizmo_events_gizmo_typeattrs", ["gizmo_typeattr_id"], "gizmo_typeattrs", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_typeattrs_gizmo_typeattrs_fk"
-
-  add_foreign_key "gizmo_typeattrs", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "gizmo_typeattrs_gizmo_types_fk"
-  add_foreign_key "gizmo_typeattrs", ["gizmo_attr_id"], "gizmo_attrs", ["id"], :on_delete => :cascade, :name => "gizmo_typeattrs_gizmo_attrs_fk"
 
   add_foreign_key "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :on_delete => :set_null, :name => "gizmo_types_parent_fk"
   add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
@@ -489,6 +420,11 @@ ActiveRecord::Schema.define(:version => 20080806225213) do
 
   add_foreign_key "sales", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "sales_contacts_fk"
   add_foreign_key "sales", ["discount_schedule_id"], "discount_schedules", ["id"], :on_delete => :restrict, :name => "sales_discount_schedules_fk"
+
+  add_foreign_key "spec_sheets", ["contact_id"], "contacts", ["id"], :name => "spec_sheets_contact_id_fkey"
+  add_foreign_key "spec_sheets", ["system_id"], "systems", ["id"], :name => "spec_sheets_system_id_fkey"
+  add_foreign_key "spec_sheets", ["action_id"], "actions", ["id"], :name => "spec_sheets_action_id_fkey"
+  add_foreign_key "spec_sheets", ["type_id"], "types", ["id"], :name => "spec_sheets_type_id_fkey"
 
   add_foreign_key "users", ["contact_id"], "contacts", ["id"], :name => "users_contacts_fk"
 
