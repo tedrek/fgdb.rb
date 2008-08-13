@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080810003028) do
+ActiveRecord::Schema.define(:version => 20080813002719) do
 
   create_table "actions", :force => true do |t|
     t.string   "name"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(:version => 20080810003028) do
     t.integer  "lock_version",                :default => 0,     :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.boolean  "instantiable",                :default => true,  :null => false
   end
 
   create_table "contact_types_contacts", :id => false, :force => true do |t|
@@ -138,8 +139,6 @@ ActiveRecord::Schema.define(:version => 20080810003028) do
   create_table "donations", :force => true do |t|
     t.integer  "contact_id"
     t.string   "postal_code",                  :limit => 25
-    t.boolean  "txn_complete",                               :default => true
-    t.datetime "txn_completed_at"
     t.text     "comments"
     t.integer  "lock_version",                               :default => 0,     :null => false
     t.datetime "updated_at"
@@ -261,8 +260,6 @@ ActiveRecord::Schema.define(:version => 20080810003028) do
   create_table "sales", :force => true do |t|
     t.integer  "contact_id"
     t.string   "postal_code",                    :limit => 25
-    t.boolean  "txn_complete",                                 :default => true
-    t.datetime "txn_completed_at"
     t.integer  "discount_schedule_id",                                            :null => false
     t.text     "comments"
     t.boolean  "bulk"
@@ -439,12 +436,10 @@ ActiveRecord::Schema.define(:version => 20080810003028) do
     v.column :total_paid
   end
 
-  create_view "v_donations", "SELECT d.id, d.contact_id, d.postal_code, d.txn_complete, d.txn_completed_at, d.comments, d.lock_version, d.updated_at, d.created_at, d.created_by, d.updated_by, d.reported_required_fee_cents, d.reported_suggested_fee_cents, v.total_paid, CASE WHEN (v.total_paid > d.reported_required_fee_cents) THEN (d.reported_required_fee_cents)::bigint ELSE v.total_paid END AS fees_paid, CASE WHEN (v.total_paid < d.reported_required_fee_cents) THEN (0)::bigint ELSE (v.total_paid - d.reported_required_fee_cents) END AS donations_paid FROM (donations d JOIN v_donation_totals v ON ((d.id = v.id)));", :force => true do |v|
+  create_view "v_donations", "SELECT d.id, d.contact_id, d.postal_code, d.comments, d.lock_version, d.updated_at, d.created_at, d.created_by, d.updated_by, d.reported_required_fee_cents, d.reported_suggested_fee_cents, v.total_paid, CASE WHEN (v.total_paid > d.reported_required_fee_cents) THEN (d.reported_required_fee_cents)::bigint ELSE v.total_paid END AS fees_paid, CASE WHEN (v.total_paid < d.reported_required_fee_cents) THEN (0)::bigint ELSE (v.total_paid - d.reported_required_fee_cents) END AS donations_paid FROM (donations d JOIN v_donation_totals v ON ((d.id = v.id)));", :force => true do |v|
     v.column :id
     v.column :contact_id
     v.column :postal_code
-    v.column :txn_complete
-    v.column :txn_completed_at
     v.column :comments
     v.column :lock_version
     v.column :updated_at
