@@ -30,14 +30,14 @@ SELECT
 -- fix the problem
 
 -- change volunteers to dropouts if they haven't volunteered
--- and they signed up before may 1 of this year
+-- and they signed up before 60 days ago
 UPDATE contact_types_contacts 
   SET contact_type_id = 28 
   WHERE contact_type_id = 4
   AND 
     (SELECT created_at 
       FROM contacts 
-      WHERE contacts.id = contact_types_contacts.contact_id) < '2008-05-01'
+      WHERE contacts.id = contact_types_contacts.contact_id) < now()::date - 60
   AND NOT EXISTS
   (SELECT volunteer_tasks.contact_id 
     FROM volunteer_tasks 
