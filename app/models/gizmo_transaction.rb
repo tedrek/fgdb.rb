@@ -54,7 +54,7 @@ module GizmoTransaction
   end
 
   def combine_cash_payments
-    cashes = payments.find_all{|x| x.payment_method.description == "cash"}
+    cashes = payments.find_all{|x| x.payment_method.name == "cash"}
     if cashes.length > 0
       cash = Payment.new
       cash.payment_method = PaymentMethod.cash
@@ -64,7 +64,7 @@ module GizmoTransaction
         i.destroy
       end
       payments.reject!{|x|
-        x.payment_method.description == "cash"
+        x.payment_method.name == "cash"
       }
       payments << cash
     end
@@ -86,23 +86,11 @@ module GizmoTransaction
     # overridden in each class which mixes this in (not dispersments, recycling)
   end
 
-  def set_txn_as_complete
-    if invoiced?
-      self.txn_complete = false
-      self.txn_completed_at = nil
-    else
-      self.txn_complete = true
-      self.txn_completed_at = Time.now
-    end
-  end
-
   def add_contact_types
     if(contact and
-        (
-          contact_type == 'named' and
-          required_contact_type != nil and
-          (! contact.contact_types.include?(required_contact_type))
-        )
+        (contact_type == 'named' and
+         required_contact_type != nil and
+         (! contact.contact_types.include?(required_contact_type)))
       )
       contact.contact_types << required_contact_type
     end

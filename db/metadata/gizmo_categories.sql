@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -23,11 +23,11 @@ SELECT pg_catalog.setval('gizmo_categories_id_seq', 4, true);
 
 ALTER TABLE gizmo_categories DISABLE TRIGGER ALL;
 
-COPY gizmo_categories (id, description) FROM stdin;
-1	System
-2	Monitor
-3	Printer
-4	Misc
+COPY gizmo_categories (id, description, name) FROM stdin;
+4	Misc	misc
+1	System	system
+3	Printer	printer
+2	Monitor	monitor
 \.
 
 

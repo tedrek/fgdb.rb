@@ -10,6 +10,6 @@ class DiscountSchedule < ActiveRecord::Base
   end
 
   def self.no_discount
-    @@no_discount ||= find_by_name("no discount")
+    @@no_discount ||= find_by_name("no_discount")
   end
 end

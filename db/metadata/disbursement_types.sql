@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -23,12 +23,12 @@ SELECT pg_catalog.setval('disbursement_types_id_seq', 5, true);
 
 ALTER TABLE disbursement_types DISABLE TRIGGER ALL;
 
-COPY disbursement_types (id, description, lock_version, updated_at, created_at) FROM stdin;
-1	Adoption	0	2007-04-04 17:26:09	2007-04-04 17:25:00
-2	Build	0	2007-04-04 17:26:16	2007-04-04 17:26:00
-3	Hardware Grants	0	2007-04-04 17:26:28	2007-04-04 17:26:00
-4	GAP	0	2007-04-04 17:26:37	2007-04-04 17:26:00
-5	Staff	0	2007-04-04 17:26:45	2007-04-04 17:26:00
+COPY disbursement_types (id, description, lock_version, updated_at, created_at, name) FROM stdin;
+5	Staff	0	2007-04-04 17:26:45	2007-04-04 17:26:00	staff
+4	GAP	0	2007-04-04 17:26:37	2007-04-04 17:26:00	gap
+1	Adoption	0	2007-04-04 17:26:09	2007-04-04 17:25:00	adoption
+2	Build	0	2007-04-04 17:26:16	2007-04-04 17:26:00	build
+3	Hardware Grants	0	2007-04-04 17:26:28	2007-04-04 17:26:00	hardware_grants
 \.
 
 

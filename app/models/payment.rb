@@ -14,6 +14,6 @@ class Payment < ActiveRecord::Base
   end
 
   def to_s
-    "$%0.2f %s" % [amount_cents/100.0, payment_method.description]
+    "$%d.%02d %s" % [amount_cents/100, amount_cents%100, payment_method.description]
   end
 end

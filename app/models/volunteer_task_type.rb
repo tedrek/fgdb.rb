@@ -36,7 +36,7 @@ class VolunteerTaskType < ActiveRecord::Base
   end
 
   def type_of_task?(type)
-    (description == type) ||
+    (name == type) ||
       ( parent &&
         parent.type_of_task?(type) )
   end

@@ -3,19 +3,15 @@ class GizmoContext < ActiveRecord::Base
   has_and_belongs_to_many  :gizmo_typeattrs
 
   def to_s
-    name
+    description
   end
 
   def abbrev
     name[0..2].capitalize
   end
 
-  def description
-    name
-  end
-
   def GizmoContext.find_all_for_select
-    find(:all).map {|context| [context.name, context.id]}
+    find(:all).map {|context| [context.description, context.id]}
   end
 
   def GizmoContext.donation

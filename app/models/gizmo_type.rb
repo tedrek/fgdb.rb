@@ -16,7 +16,7 @@ class GizmoType < ActiveRecord::Base
   define_amount_methods_on("suggested_fee")
 
   def GizmoType.fee_discount
-    @@fee_discount ||= find_by_description('Fee Discount')
+    @@fee_discount ||= find_by_name('fee_discount')
   end
 
   def fee_cents

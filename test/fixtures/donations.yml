@@ -1,29 +1,25 @@
---- 
-donations_001: 
+---
+donations_001:
   updated_at: 2008-03-15 22:27:53.301118
   postal_code: ""
   comments: ""
   reported_suggested_fee_cents: "0"
   created_by: "1"
-  txn_complete: t
   lock_version: "0"
   contact_id: "1"
-  updated_by: 
+  updated_by:
   id: "109041"
-  txn_completed_at: 2008-03-15 22:27:53.258512
   reported_required_fee_cents: "0"
   created_at: 2008-03-15 22:27:53.301118
-donations_002: 
+donations_002:
   updated_at: 2008-03-15 22:30:08.141246
   postal_code: "88776"
   comments: ""
   reported_suggested_fee_cents: "0"
   created_by: "1"
-  txn_complete: t
   lock_version: "0"
-  contact_id: 
-  updated_by: 
+  contact_id:
+  updated_by:
   id: "109042"
-  txn_completed_at: 2008-03-15 22:30:08.117559
   reported_required_fee_cents: "1000"
   created_at: 2008-03-15 22:30:08.141246

@@ -17,7 +17,6 @@ class Donation < ActiveRecord::Base
   before_save :cleanup_for_contact_type
   before_save :unzero_contact_id
   before_save :set_occurred_at_on_gizmo_events
-  before_save :set_txn_as_complete
   before_save :compute_fee_totals
   before_save :add_dead_beat_discount
   before_save :combine_cash_payments

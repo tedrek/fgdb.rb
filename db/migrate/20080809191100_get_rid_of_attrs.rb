@@ -5,6 +5,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
     add_column 'gizmo_events', 'description', :text
     add_column 'gizmo_events', 'size', :integer
 
+puts "unit_price"
     GizmoEvent.connection.execute("
       update gizmo_events
       set unit_price_cents=(select attr_val_monetary_cents
@@ -15,6 +16,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
                                   and ga.name='unit_price')
       ")
 
+puts "description"
     GizmoEvent.connection.execute("
       delete from gizmo_events_gizmo_typeattrs
       where gizmo_typeattr_id  in (select gt.id
@@ -24,6 +26,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
             and (attr_val_text = '' or attr_val_text is null);
       ")
 
+puts "description 2"
     GizmoEvent.connection.execute("
       update gizmo_events
       set description=(select attr_val_text
@@ -34,6 +37,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
                                   and ga.name='description' limit 1)
       ")
 
+puts "as_is"
     GizmoEvent.connection.execute("
       update gizmo_events
       set as_is=(select attr_val_boolean
@@ -44,6 +48,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
                                   and ga.name='as_is')
       ")
 
+puts "size"
     GizmoEvent.connection.execute("
       update gizmo_events
       set size=(select attr_val_integer
@@ -54,6 +59,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
                                   and ga.name='size')
       ")
 
+puts "unit_price from suggested_fee"
     GizmoEvent.connection.execute("
       update gizmo_events
       set unit_price_cents=(select suggested_fee_cents
@@ -64,6 +70,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
                                              where name='donation')
       ")
 
+puts "unit_price from requried_fee"
     GizmoEvent.connection.execute("
       update gizmo_events ge
       set unit_price_cents=gt.required_fee_cents
@@ -75,6 +82,7 @@ class GetRidOfAttrs < ActiveRecord::Migration
                                        where name='donation')
       ")
 
+puts "unit_price from adjusted_fee"
     GizmoEvent.connection.execute("
       update gizmo_events
       set unit_price_cents=adjusted_fee_cents

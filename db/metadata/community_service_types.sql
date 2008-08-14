@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -23,9 +23,9 @@ SELECT pg_catalog.setval('community_service_types_id_seq', 2, true);
 
 ALTER TABLE community_service_types DISABLE TRIGGER ALL;
 
-COPY community_service_types (id, description, hours_multiplier, lock_version, updated_at, created_at) FROM stdin;
-1	school	1	0	2008-03-30 00:47:56.431011	2008-03-30 00:47:56.431011
-2	punitive	0	0	2008-03-30 00:47:56.445477	2008-03-30 00:47:56.445477
+COPY community_service_types (id, description, hours_multiplier, lock_version, updated_at, created_at, name) FROM stdin;
+2	punitive	0	0	2008-03-30 00:47:56.445477	2008-03-30 00:47:56.445477	punitive
+1	school	1	0	2008-03-30 00:47:56.431011	2008-03-30 00:47:56.431011	school
 \.
 
 

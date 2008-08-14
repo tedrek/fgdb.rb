@@ -4,23 +4,23 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def PaymentMethod.cash
-    @@cash ||= find_by_description('cash')
+    @@cash ||= find_by_name('cash')
   end
 
   def PaymentMethod.check
-    @@check ||= find_by_description('check')
+    @@check ||= find_by_name('check')
   end
 
   def PaymentMethod.invoice
-    @@invoice ||= find_by_description('invoice')
+    @@invoice ||= find_by_name('invoice')
   end
 
   def PaymentMethod.coupon
-    @@coupon ||= find_by_description('coupon')
+    @@coupon ||= find_by_name('coupon')
   end
 
   def PaymentMethod.credit
-    @@credit ||= find_by_description('credit')
+    @@credit ||= find_by_name('credit')
   end
 
   def PaymentMethod.is_till_method?(id)

@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -23,12 +23,12 @@ SELECT pg_catalog.setval('payment_methods_id_seq', 6, true);
 
 ALTER TABLE payment_methods DISABLE TRIGGER ALL;
 
-COPY payment_methods (id, description, lock_version, updated_at, created_at) FROM stdin;
-1	cash	0	2006-09-25 13:12:18	2006-09-25 13:12:18
-2	check	0	2006-09-25 13:12:23	2006-09-25 13:12:23
-3	credit	0	2006-11-21 13:41:18	2006-11-21 13:41:18
-5	invoice	0	2007-01-31 21:16:39	2007-01-31 21:16:39
-6	coupon	0	2007-12-11 17:43:33	2007-12-11 17:43:33
+COPY payment_methods (id, description, lock_version, updated_at, created_at, name) FROM stdin;
+5	invoice	0	2007-01-31 21:16:39	2007-01-31 21:16:39	invoice
+3	credit	0	2006-11-21 13:41:18	2006-11-21 13:41:18	credit
+2	check	0	2006-09-25 13:12:23	2006-09-25 13:12:23	check
+1	cash	0	2006-09-25 13:12:18	2006-09-25 13:12:18	cash
+6	coupon	0	2007-12-11 17:43:33	2007-12-11 17:43:33	coupon
 \.
 
 

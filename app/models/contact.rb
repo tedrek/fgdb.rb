@@ -91,7 +91,7 @@ class Contact < ActiveRecord::Base
   end
 
   def date_of_last_adoption
-    last_adoption = Disbursement.find(:first, :conditions => [ "(disbursement_type_id = ? OR disbursement_type_id = ?) AND contact_id = ?", DisbursementType.find_by_description("Adoption").id, DisbursementType.find_by_description("Build").id, id], :order => "disbursed_at DESC")
+    last_adoption = Disbursement.find(:first, :conditions => [ "(disbursement_type_id = ? OR disbursement_type_id = ?) AND contact_id = ?", DisbursementType.find_by_name("adoption").id, DisbursementType.find_by_name("build").id, id], :order => "disbursed_at DESC")
     if last_adoption
       return Date.parse(last_adoption.disbursed_at.to_s)
     else
@@ -195,12 +195,12 @@ class Contact < ActiveRecord::Base
   end
 
   def default_discount_schedule
-    if contact_types.include?(ContactType.find_by_description("bulk buyer"))
+    if contact_types.include?(ContactType.find_by_name("bulk_buyer"))
       DiscountSchedule.find_by_name("bulk")
     elsif effective_discount_hours >= 4.0
       DiscountSchedule.find_by_name("volunteer")
     else
-      DiscountSchedule.find_by_name("no discount")
+      DiscountSchedule.find_by_name("no_discount")
     end
   end
 
@@ -267,10 +267,10 @@ class Contact < ActiveRecord::Base
   end
 
   def ensure_consistent_contact_types
-    types = contact_types.map {|ct| ct.description}
+    types = contact_types.map {|ct| ct.name}
     if((types.include?("build") or types.include?("adopter")) and
        (! types.include?("volunteer")))
-      contact_types << ContactType.find_by_description("volunteer")
+      contact_types << ContactType.find_by_name("volunteer")
     end
   end
 
@@ -280,7 +280,7 @@ class Contact < ActiveRecord::Base
       sql = "SELECT contacts.* FROM contacts
                  LEFT JOIN contact_types_contacts AS j ON j.contact_id = contacts.id
                  LEFT JOIN contact_types AS c_t ON j.contact_type_id = c_t.id
-               WHERE c_t.description = ? "
+               WHERE c_t.name = ? "
       find_by_sql([sql, type])
     end
 

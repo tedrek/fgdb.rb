@@ -9,18 +9,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080813002719) do
+ActiveRecord::Schema.define(:version => 20080813163800) do
 
   create_table "actions", :force => true do |t|
-    t.string   "name"
-    t.integer  "lock_version", :default => 0, :null => false
+    t.string   "description"
+    t.integer  "lock_version",               :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",   :default => 1, :null => false
-    t.integer  "updated_by",   :default => 1, :null => false
+    t.integer  "created_by",                 :default => 1, :null => false
+    t.integer  "updated_by",                 :default => 1, :null => false
+    t.string   "name",         :limit => 40,                :null => false
   end
 
-  add_index "actions", ["name"], :name => "roles_name_index"
+  add_index "actions", ["name"], :name => "actions_name_uk", :unique => true
+  add_index "actions", ["description"], :name => "roles_name_index"
 
   create_table "community_service_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -28,7 +30,10 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
     t.integer  "lock_version",                    :default => 0,   :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "name",             :limit => 40,                   :null => false
   end
+
+  add_index "community_service_types", ["name"], :name => "community_service_types_name_uk", :unique => true
 
   create_table "contact_method_types", :force => true do |t|
     t.string   "description",  :limit => 100
@@ -36,7 +41,10 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
     t.integer  "lock_version",                :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "name",         :limit => 40,                 :null => false
   end
+
+  add_index "contact_method_types", ["name"], :name => "contact_method_types_name_uk", :unique => true
 
   create_table "contact_methods", :force => true do |t|
     t.integer  "contact_method_type_id",                               :null => false
@@ -57,7 +65,10 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
     t.datetime "updated_at"
     t.datetime "created_at"
     t.boolean  "instantiable",                :default => true,  :null => false
+    t.string   "name",         :limit => 40,                     :null => false
   end
+
+  add_index "contact_types", ["name"], :name => "contact_types_name_uk", :unique => true
 
   create_table "contact_types_contacts", :id => false, :force => true do |t|
     t.integer "contact_id",      :default => 0, :null => false
@@ -104,7 +115,10 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
     t.integer  "lock_version",                :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "name",         :limit => 40,                 :null => false
   end
+
+  add_index "disbursement_types", ["name"], :name => "disbursement_types_name_uk", :unique => true
 
   create_table "disbursements", :force => true do |t|
     t.text     "comments"
@@ -121,11 +135,14 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
   add_index "disbursements", ["contact_id"], :name => "index_disbursements_on_contact_id"
 
   create_table "discount_schedules", :force => true do |t|
-    t.string   "name",         :limit => 25
+    t.string   "description",  :limit => 25
     t.integer  "lock_version",               :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "name",         :limit => 40,                :null => false
   end
+
+  add_index "discount_schedules", ["name"], :name => "discount_schedules_name_uk", :unique => true
 
   create_table "discount_schedules_gizmo_types", :force => true do |t|
     t.integer  "gizmo_type_id",                                                      :null => false
@@ -161,14 +178,20 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
 
   create_table "gizmo_categories", :force => true do |t|
     t.string "description"
+    t.string "name",        :limit => 40, :null => false
   end
 
+  add_index "gizmo_categories", ["name"], :name => "gizmo_categories_name_uk", :unique => true
+
   create_table "gizmo_contexts", :force => true do |t|
-    t.string   "name",         :limit => 100
+    t.string   "description",  :limit => 100
     t.integer  "lock_version",                :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "name",         :limit => 40,                 :null => false
   end
+
+  add_index "gizmo_contexts", ["name"], :name => "gizmo_contexts_name_uk", :unique => true
 
   create_table "gizmo_contexts_gizmo_types", :id => false, :force => true do |t|
     t.integer  "gizmo_context_id",                :null => false
@@ -211,14 +234,20 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
     t.integer  "required_fee_cents"
     t.integer  "suggested_fee_cents"
     t.integer  "gizmo_category_id"
+    t.string   "name",                :limit => 40,                 :null => false
   end
+
+  add_index "gizmo_types", ["name"], :name => "gizmo_types_name_uk", :unique => true
 
   create_table "payment_methods", :force => true do |t|
     t.string   "description",  :limit => 100
     t.integer  "lock_version",                :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "name",         :limit => 40,                 :null => false
   end
+
+  add_index "payment_methods", ["name"], :name => "payment_methods_name_uk", :unique => true
 
   create_table "payments", :force => true do |t|
     t.integer  "donation_id"
@@ -321,15 +350,17 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
   add_index "systems", ["system_vendor"], :name => "systems_vendor_index"
 
   create_table "types", :force => true do |t|
-    t.string   "name"
-    t.integer  "lock_version", :default => 0, :null => false
+    t.string   "description"
+    t.integer  "lock_version",               :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",   :default => 1, :null => false
-    t.integer  "updated_by",   :default => 1, :null => false
+    t.integer  "created_by",                 :default => 1, :null => false
+    t.integer  "updated_by",                 :default => 1, :null => false
+    t.string   "name",         :limit => 40,                :null => false
   end
 
-  add_index "types", ["name"], :name => "types_name_index"
+  add_index "types", ["description"], :name => "types_name_index"
+  add_index "types", ["name"], :name => "types_name_uk", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "login"
@@ -353,7 +384,10 @@ ActiveRecord::Schema.define(:version => 20080813002719) do
     t.integer  "lock_version",                                                   :default => 0,    :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "name",             :limit => 40,                                                   :null => false
   end
+
+  add_index "volunteer_task_types", ["name"], :name => "volunteer_task_types_name_uk", :unique => true
 
   create_table "volunteer_tasks", :force => true do |t|
     t.integer  "contact_id"
