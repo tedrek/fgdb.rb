@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080813163800) do
+ActiveRecord::Schema.define(:version => 20080814013607) do
 
   create_table "actions", :force => true do |t|
     t.string   "description"
@@ -101,6 +101,7 @@ ActiveRecord::Schema.define(:version => 20080813163800) do
   end
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"
+  add_index "contacts", ["sort_name"], :name => "index_contacts_on_sort_name"
 
   create_table "defaults", :force => true do |t|
     t.string   "name",         :limit => 100
