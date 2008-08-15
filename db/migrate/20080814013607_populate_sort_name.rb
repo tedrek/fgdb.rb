@@ -7,6 +7,8 @@ class PopulateSortName < ActiveRecord::Migration
       # just ignore it, must already be loaded
     end
 
+    Contact.connection.execute("ALTER TABLE contacts ALTER sort_name TYPE character varying(100);")
+
     puts "creating populate_contact_sortname() function"
     Contact.connection.execute("
       CREATE OR REPLACE FUNCTION populate_contact_sortname() RETURNS trigger as $populate_contact_sortname$
