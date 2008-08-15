@@ -1,14 +1,14 @@
   <div id="memory">
 	<h2>Memory</h2>
 	<% xml_foreach("id", "memory") do %>
-	<% if xml_if("size") %>
+	<% if (has_size = xml_if("size", '/')) || xml_if("capacity", '/') %>
 	<table>
 	  <tr>
 		<td>
 		  Size:
 		</td>
 		<td>
-          <%= xml_value_of("size").to_bytes(1) %>
+          <%= xml_value_of((has_size ? "size" : "capacity"), '/').to_bytes(1) %>
 		</td>
 	  </tr>
 	</table>

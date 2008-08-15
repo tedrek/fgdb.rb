@@ -219,8 +219,8 @@ module XmlHelper
     @my_node
   end
 
-  def xml_if(thing = nil) #TODO: implement this
-    if _xml_value_of(thing) == nil
+  def xml_if(thing = nil, type = '//')
+    if _xml_value_of(thing, type) == nil
       return false
     else
       return true
