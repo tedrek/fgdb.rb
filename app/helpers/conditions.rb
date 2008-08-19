@@ -1,4 +1,18 @@
 class Conditions
+  ARRAY = %w[
+      id contact_type needs_attention anonymous
+      unresolved_invoices created_at payment_method
+      payment_amount gizmo_type_id postal_code
+      city phone_number contact volunteer_hours
+      email disbursed_at donated_at occurred_at
+      worked_at bought_at received_at date_performed
+      recycled_at
+    ]
+
+  for i in ARRAY
+    attr_accessor (i + "_enabled").to_sym
+  end
+
   def initialize
     @created_at_date = Date.today
     @created_at_date_type = 'daily'
@@ -48,37 +62,37 @@ class Conditions
     @payment_method_id = PaymentMethod.cash.id
   end
 
-  attr_accessor :created_at_date, :created_at_date_type, :created_at_start_date, :created_at_end_date, :created_at_month, :created_at_year, :created_at_enabled
-  attr_accessor :recycled_at_date, :recycled_at_date_type, :recycled_at_start_date, :recycled_at_end_date, :recycled_at_month, :recycled_at_year, :recycled_at_enabled
-  attr_accessor :disbursed_at_date, :disbursed_at_date_type, :disbursed_at_start_date, :disbursed_at_end_date, :disbursed_at_month, :disbursed_at_year, :disbursed_at_enabled
-  attr_accessor :occurred_at_date, :occurred_at_date_type, :occurred_at_start_date, :occurred_at_end_date, :occurred_at_month, :occurred_at_year, :occurred_at_enabled
-  attr_accessor :worked_at_date, :worked_at_date_type, :worked_at_start_date, :worked_at_end_date, :worked_at_month, :worked_at_year, :worked_at_enabled
-  attr_accessor :bought_at_date, :bought_at_date_type, :bought_at_start_date, :bought_at_end_date, :bought_at_month, :bought_at_year, :bought_at_enabled
-  attr_accessor :received_at_date, :received_at_date_type, :received_at_start_date, :received_at_end_date, :received_at_month, :received_at_year, :received_at_enabled
-  attr_accessor :donated_at_date, :donated_at_date_type, :donated_at_start_date, :donated_at_end_date, :donated_at_month, :donated_at_year, :donated_at_enabled
-  attr_accessor :date_performed_date, :date_performed_date_type, :date_performed_start_date, :date_performed_end_date, :date_performed_month, :date_performed_year, :date_performed_enabled
+  attr_accessor :created_at_date, :created_at_date_type, :created_at_start_date, :created_at_end_date, :created_at_month, :created_at_year
+  attr_accessor :recycled_at_date, :recycled_at_date_type, :recycled_at_start_date, :recycled_at_end_date, :recycled_at_month, :recycled_at_year
+  attr_accessor :disbursed_at_date, :disbursed_at_date_type, :disbursed_at_start_date, :disbursed_at_end_date, :disbursed_at_month, :disbursed_at_year
+  attr_accessor :occurred_at_date, :occurred_at_date_type, :occurred_at_start_date, :occurred_at_end_date, :occurred_at_month, :occurred_at_year
+  attr_accessor :worked_at_date, :worked_at_date_type, :worked_at_start_date, :worked_at_end_date, :worked_at_month, :worked_at_year
+  attr_accessor :bought_at_date, :bought_at_date_type, :bought_at_start_date, :bought_at_end_date, :bought_at_month, :bought_at_year
+  attr_accessor :received_at_date, :received_at_date_type, :received_at_start_date, :received_at_end_date, :received_at_month, :received_at_year
+  attr_accessor :donated_at_date, :donated_at_date_type, :donated_at_start_date, :donated_at_end_date, :donated_at_month, :donated_at_year
+  attr_accessor :date_performed_date, :date_performed_date_type, :date_performed_start_date, :date_performed_end_date, :date_performed_month, :date_performed_year
 
-  attr_accessor :contact_id, :contact_enabled
+  attr_accessor :contact_id
 
-  attr_accessor :payment_method_id, :payment_method_enabled
+  attr_accessor :payment_method_id
 
-  attr_accessor :id, :id_enabled
+  attr_accessor :id
 
-  attr_accessor :needs_attention, :needs_attention_enabled
+  attr_accessor :needs_attention
 
-  attr_accessor :anonymous, :anonymous_enabled
+  attr_accessor :anonymous
 
-  attr_accessor :unresolved_invoices, :unresolved_invoices_enabled
+  attr_accessor :unresolved_invoices
 
-  attr_accessor :gizmo_type_id, :gizmo_type_id_enabled
+  attr_accessor :gizmo_type_id
 
-  attr_accessor :payment_amount_enabled, :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
+  attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
 
-  attr_accessor :contact_type, :contact_type_enabled
+  attr_accessor :contact_type
 
-  attr_accessor :city, :postal_code, :phone_number, :email, :city_enabled, :postal_code_enabled, :phone_number_enabled, :email_enabled
+  attr_accessor :city, :postal_code, :phone_number, :email
 
-  attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le, :volunteer_hours_enabled
+  attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -100,14 +114,7 @@ class Conditions
   end
 
   def conditions(klass)
-    conds = %w[
-      id contact_type needs_attention anonymous
-      unresolved_invoices created_at payment_method
-      payment_amount gizmo_type_id postal_code
-      city phone_number contact volunteer_hours
-      email disbursed_at donated_at occurred_at
-      worked_at bought_at received_at date_performed
-    ].inject([""]) {|condition_array,this_condition|
+    conds = ARRAY.inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
                         self.send("#{this_condition}_conditions",
