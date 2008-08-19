@@ -53,6 +53,9 @@
         :update => component_id( refine_params ) do %>
     <% filters = {} %>
     <% filters[@default_condition] = date_or_date_range_picker('conditions', @default_condition) %>
+    <% if filters['created_at'] == nil %>
+      <% filters['created_at'] = date_or_date_range_picker('conditions', 'created_at') %>
+    <% end %>
     <% if @model.new.respond_to?( :contact_id ) %>
       <% filters['contact'] =
            contact_field('@conditions', 'contact_id',
