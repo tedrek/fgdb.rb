@@ -351,7 +351,13 @@
   function sale_gizmo_type_selected() {
   }
   function donation_gizmo_type_selected() {
-    $('unit_price').value = dollar_value(max(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']))
+    $('unit_price').value = dollar_value(max(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']));
+    if (fees[$('gizmo_type_id').value]['required'] > fees[$('gizmo_type_id').value]['suggested']) {
+      $('unit_price').disabled=false;
+    }
+    else {
+      $('unit_price').disabled=true;
+    }
   }
   function recycling_gizmo_type_selected() {
   }
