@@ -1,5 +1,5 @@
 class Conditions
-  ARRAY = %w[
+  CONDS = %w[
       id contact_type needs_attention anonymous
       unresolved_invoices created_at payment_method
       payment_amount gizmo_type_id postal_code
@@ -9,7 +9,7 @@ class Conditions
       recycled_at
     ]
 
-  for i in ARRAY
+  for i in CONDS
     attr_accessor (i + "_enabled").to_sym
   end
 
@@ -114,7 +114,7 @@ class Conditions
   end
 
   def conditions(klass)
-    conds = ARRAY.inject([""]) {|condition_array,this_condition|
+    conds = CONDS.inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
                         self.send("#{this_condition}_conditions",
