@@ -1,8 +1,8 @@
 #!/usr/bin/ruby
 
-LIMIT="  LIMIT 20"
+LIMIT="  LIMIT 50"
 
-ENV['RAILS_ENV']="production"
+ENV['RAILS_ENV']="development"
 
 require File.dirname(__FILE__) + '/config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/config/environment")
