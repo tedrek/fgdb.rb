@@ -9,8 +9,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080814013607) do
+ActiveRecord::Schema.define(:version => 20080813163800) do
 
+  create_proc(:populate_contact_sortname, [], :return => :trigger, :lang => 'plpgsql') {
+    <<-populate_contact_sortname_sql
+
+        BEGIN
+          IF NEW.surname != OLD.surname
+             or NEW.first_name != OLD.first_name
+             or NEW.middle_name != OLD.middle_name
+          THEN
+            NEW.sort_name = LOWER(NEW.surname || '::' || NEW.first_name || '::' || NEW.middle_name);
+          END IF;
+          RETURN NEW;
+        END;
+      
+    populate_contact_sortname_sql
+  }
   create_table "actions", :force => true do |t|
     t.string   "description"
     t.integer  "lock_version",               :default => 0, :null => false
@@ -79,7 +94,7 @@ ActiveRecord::Schema.define(:version => 20080814013607) do
 
   create_table "contacts", :force => true do |t|
     t.boolean  "is_organization",                  :default => false
-    t.string   "sort_name",         :limit => 25
+    t.string   "sort_name",         :limit => 100
     t.string   "first_name",        :limit => 25
     t.string   "middle_name",       :limit => 25
     t.string   "surname",           :limit => 50
@@ -465,27 +480,5 @@ ActiveRecord::Schema.define(:version => 20080814013607) do
   add_foreign_key "volunteer_tasks", ["community_service_type_id"], "community_service_types", ["id"], :on_delete => :set_null, :name => "volunteer_tasks_community_service_type_id_fkey"
   add_foreign_key "volunteer_tasks", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "volunteer_tasks_contacts_fk"
   add_foreign_key "volunteer_tasks", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_volunteer_task_type_id_fk"
-
-  create_view "v_donation_totals", "SELECT d.id, sum(p.amount_cents) AS total_paid FROM (donations d LEFT JOIN payments p ON ((p.donation_id = d.id))) GROUP BY d.id;", :force => true do |v|
-    v.column :id
-    v.column :total_paid
-  end
-
-  create_view "v_donations", "SELECT d.id, d.contact_id, d.postal_code, d.comments, d.lock_version, d.updated_at, d.created_at, d.created_by, d.updated_by, d.reported_required_fee_cents, d.reported_suggested_fee_cents, v.total_paid, CASE WHEN (v.total_paid > d.reported_required_fee_cents) THEN (d.reported_required_fee_cents)::bigint ELSE v.total_paid END AS fees_paid, CASE WHEN (v.total_paid < d.reported_required_fee_cents) THEN (0)::bigint ELSE (v.total_paid - d.reported_required_fee_cents) END AS donations_paid FROM (donations d JOIN v_donation_totals v ON ((d.id = v.id)));", :force => true do |v|
-    v.column :id
-    v.column :contact_id
-    v.column :postal_code
-    v.column :comments
-    v.column :lock_version
-    v.column :updated_at
-    v.column :created_at
-    v.column :created_by
-    v.column :updated_by
-    v.column :reported_required_fee_cents
-    v.column :reported_suggested_fee_cents
-    v.column :total_paid
-    v.column :fees_paid
-    v.column :donations_paid
-  end
 
 end
