@@ -90,6 +90,7 @@ puts "unit_price from adjusted_fee"
                                              from gizmo_contexts
                                              where name='donation')
             and adjusted_fee_cents is not null
+            and adjusted_fee_cents != 0
       ")
 
 
