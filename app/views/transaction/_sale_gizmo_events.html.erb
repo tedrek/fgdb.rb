@@ -37,7 +37,7 @@
       <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
       </select></td>
     <td class="description invisible"><input name="description" id="description" size="10"></td>
-    <td><input name="gizmo_count" id="gizmo_count" size="6"></td>
+    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(event.keyCode==9 && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}"></td>
     <td><input name="unit_price" id="unit_price" size="8" onkeydown="if(event.keyCode==9) {return add_priced_gizmo_event_from_form();}"></td>
     <td></td>
   </tr>

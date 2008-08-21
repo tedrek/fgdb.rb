@@ -153,6 +153,7 @@
     }
     add_<%= @gizmo_context.name %>_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value, $('description').value);
     $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
+    $('unit_price').enable();
     $('description').value = $('description').defaultValue;
     $('unit_price').value = $('unit_price').defaultValue;
     $('gizmo_count').value = $('gizmo_count').defaultValue;
