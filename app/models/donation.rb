@@ -97,7 +97,7 @@ class Donation < ActiveRecord::Base
 
           total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'],
                                                       donation.id].min
-          total_data[payment.payment_method_id]['max'] = [total_data[payment.payment_method_id]['max'], #wtf!?!
+          total_data[payment.payment_method_id]['max'] = [total_data[payment.payment_method_id]['max'],
                                                       donation.id].max
         }
       }
