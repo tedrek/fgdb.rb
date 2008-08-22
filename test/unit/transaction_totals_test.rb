@@ -63,11 +63,13 @@ class TransactionTotalsTest < Test::Unit::TestCase
     i = 0
     totals.each {|summations|
       i +=1
-      method_id = summations[0]
+      method_id = summations['payment_method_id']
+      assert_not_nil method_id
       case method_id.to_i
       when method.id
-        assert_equal required, summations[2].to_i
-        assert_equal suggested, summations[1].to_i - summations[2].to_i
+        assert_equal required, summations['amount'].to_i
+        assert_equal suggested, summations['amount'].to_i - summations['required'].to_i
+        assert_equal 5, 4
       end
     }
     assert i > 0, "there should be entries in the totals summations"
