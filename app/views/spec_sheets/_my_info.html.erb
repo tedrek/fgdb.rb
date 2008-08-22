@@ -24,7 +24,7 @@
           Technician's Job:
         </td>
         <td>
-          <%= @report.action && @report.action.name || "Unknown" %>
+          <%= @report.action && @report.action.description || "Unknown" %>
         </td>
       </tr>
       <tr>
@@ -40,7 +40,7 @@
           Type of System:
         </td>
         <td>
-          <%= @report.type && @report.type.name || "Unknown" %>
+          <%= @report.type && @report.type.description || "Unknown" %>
         </td>
       </tr>
       <tr>
