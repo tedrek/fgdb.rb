@@ -67,9 +67,8 @@ class TransactionTotalsTest < Test::Unit::TestCase
       assert_not_nil method_id
       case method_id.to_i
       when method.id
-        assert_equal required, summations['amount'].to_i
+        assert_equal required, summations['required'].to_i
         assert_equal suggested, summations['amount'].to_i - summations['required'].to_i
-        assert_equal 5, 4
       end
     }
     assert i > 0, "there should be entries in the totals summations"
