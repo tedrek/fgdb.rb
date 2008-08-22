@@ -5,6 +5,12 @@ class GetRidOfAttrs < ActiveRecord::Migration
     add_column 'gizmo_events', 'description', :text
     add_column 'gizmo_events', 'size', :integer
 
+puts "Fixing incorrect gizmo_context_id's"
+    GizmoEvent.connection.execute("UPDATE gizmo_events SET gizmo_context_id = 2 WHERE (gizmo_context_id != 2 AND sale_id IS NOT NULL)")
+    GizmoEvent.connection.execute("UPDATE gizmo_events SET gizmo_context_id = 1 WHERE (gizmo_context_id != 1 AND donation_id IS NOT NULL)")
+    GizmoEvent.connection.execute("UPDATE gizmo_events SET gizmo_context_id = 3 WHERE (gizmo_context_id != 3 AND recycling_id IS NOT NULL)")
+    GizmoEvent.connection.execute("UPDATE gizmo_events SET gizmo_context_id = 4 WHERE (gizmo_context_id != 4 AND disbursement_id IS NOT NULL)")
+
 puts "unit_price"
     GizmoEvent.connection.execute("
       update gizmo_events
@@ -93,6 +99,9 @@ puts "unit_price from adjusted_fee"
             and adjusted_fee_cents != 0
       ")
 
+
+    puts "unit_price = 0 if NULL"
+    GizmoEvent.connection.execute("UPDATE gizmo_events SET unit_price_cents = 0 WHERE sale_id IS NOT NULL and unit_price_cents IS NULL")
 
     remove_column 'gizmo_events', 'adjusted_fee_cents'
 
