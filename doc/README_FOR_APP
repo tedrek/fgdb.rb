@@ -40,9 +40,8 @@ To upgrade to the newest sprint release:
 
 to setup a working environment:
 
- $> apt-get install ruby postgresql-8.1 \
-        apache2 libpgsql-ruby irb
- $> apt-get install rails=2.0.2-1.1 # you might have to download it from the archive and run "dpkg -i downloaded_file && apt-get install -f"
+ $> apt-get install ruby postgresql-8.1 libpgsql-ruby irb libxml-ruby
+ $> apt-get install rails #version 2.1
  $> aptitude hold rails # so we don't upgrade to a bad version
  $> ln -s /usr/share/rails vendor/rails
 
@@ -86,7 +85,7 @@ http://puddle.ca/~joe/freegeek/fg_database_install-HOWTO
 for a production server running apache and fcgid,
 continue with the following:
 
- $> apt-get install libapache2-mod-fcgid libfcgi-ruby1.8
+ $> apt-get install apache2 libapache2-mod-fcgid libfcgi-ruby1.8
  $> a2enmod rewrite
  $> chown -R www-data:www-data tmp log public
  $> cp doc/examples/apache2_sites-available_default /etc/apache2/sites-available/default
