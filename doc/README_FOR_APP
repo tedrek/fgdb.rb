@@ -91,6 +91,7 @@ continue with the following:
  $> cp doc/examples/apache2_sites-available_default /etc/apache2/sites-available/default
    ::: modify apache config to taste :::
    ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
+ $> a2ensite default
 
 == TODO
 
