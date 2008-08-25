@@ -23,8 +23,14 @@ we made this on debian etch systems. alteration may be needed on other distros.
 
 To get the fgdb.rb source:
 
- $> apt-get install subversion
- $> svn co http://dev.freegeek.org/svn/fgdb.rb
+ $> apt-get install subversion mr
+ $> svn co http://dev.freegeek.org/svn/fgdb.rb/mr/ fgdb.rb
+ $> mr -d fgdb.rb -c fgdb.rb/config update
+
+To upgrade to the newest sprint release:
+ $> svn up && mr -c config update
+ $> cd current
+ $> RAILS_ENV=production rake db:migrate
 
 to setup a working environment:
 
