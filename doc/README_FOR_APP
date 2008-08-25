@@ -19,13 +19,19 @@ but should not be used by typical users.
 
 == Install
 
-we made this on debian etch systems. alteration may be needed on other distros.
+we made this on debian lenny systems. alteration may be needed on other distros.
 
-To get the fgdb.rb source:
+To get the mr setup:
 
  $> apt-get install subversion mr
  $> svn co http://dev.freegeek.org/svn/fgdb.rb/mr/ fgdb.rb
- $> mr -d fgdb.rb -c fgdb.rb/config update
+ $> cd fgdb.rb
+
+If you are going to be doing development, you should use the latest (untested, unreleased, and possibly unusable) trunk:
+ $> touch devel
+
+Checkout the sources (you first need to setup mr, see above):
+ $> mr -c config update
 
 To upgrade to the newest sprint release:
  $> svn up && mr -c config update
