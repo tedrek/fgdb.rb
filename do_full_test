@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -e
+
+cd `dirname $0`/../
+
+main() {
+    cd trunk
+    rm -fr output
+    mkdir output
+    ./test.rb "$@"
+    cd ..
+    cd branches/release_1.0.11
+    rm -fr output
+    mkdir output
+    ./test.rb "$@"
+    cd ../..
+    echo "DONATIONS:"
+    diff branches/release_1.0.11/output/donations trunk/output/donations || true
+    echo "SALES:"
+    diff branches/release_1.0.11/output/sales trunk/output/sales || true
+    echo "GIZMO_EVENTS:"
+    diff branches/release_1.0.11/output/gizmo_events trunk/output/gizmo_events || true
+}
+
+main "$@" 2>&1 | tee $0.log
