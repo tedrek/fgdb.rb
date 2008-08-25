@@ -3,7 +3,7 @@ NameVirtualHost *
    ServerAdmin ass@freegeek.org
 
    SetEnv RAILS_ENV production
-   DocumentRoot /var/www/fgdb.rb/public
+   DocumentRoot /var/www/fgdb.rb/current/public
 
    <Directory />
       Options FollowSymLinks
