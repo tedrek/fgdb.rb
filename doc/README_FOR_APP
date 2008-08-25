@@ -23,7 +23,7 @@ we made this on debian lenny systems. alteration may be needed on other distros.
 
 To get the mr setup:
 
- $> apt-get install subversion mr
+ $> apt-get install subversion mr # or, wget http://git.kitenet.net/?p=mr.git;a=blob_plain;f=mr -O /usr/local/bin/mr
  $> svn co http://dev.freegeek.org/svn/fgdb.rb/mr/ fgdb.rb
  $> cd fgdb.rb
 
