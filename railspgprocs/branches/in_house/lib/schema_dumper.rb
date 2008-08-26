@@ -57,11 +57,8 @@ module ActiveRecord
       end
 
       def triggers(table_name, stream)
-        puts "IN TRIGGERS FOR TABLE : #{table_name}"
         triggers = @connection.triggers(table_name)
-        puts "FOUND #{triggers.length} TRIGGERS"
         triggers.each {|trigger|
-          puts "TRIGGER"
           stream.puts trigger.to_rdl
         }
         stream.puts unless triggers.empty?
