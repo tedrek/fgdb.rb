@@ -10,7 +10,7 @@ DECLARE
 BEGIN
     IF IS_ORG = f THEN
        RETURN
-         SUBSTR( TRIM( UPPER( 
+         SUBSTR( TRIM( LOWER( 
            COALESCE(TRIM(LAST_NAME), '''') || 
            COALESCE('' '' || TRIM(FIRST_NAME), '''') || 
            COALESCE('' '' || TRIM(MIDDLE_NAME), '''')
@@ -19,9 +19,9 @@ BEGIN
        IF TRIM(ORG_NAME) ILIKE ''THE %'' THEN 
            -- maybe take into account A and AN as first words
            -- like this as well
-           RETURN UPPER(SUBSTR(TRIM(ORG_NAME), 5, 25));
+           RETURN LOWER(SUBSTR(TRIM(ORG_NAME), 5, 25));
        ELSE
-           RETURN SUBSTR( UPPER(TRIM(ORG_NAME)), 0, 25 );
+           RETURN LOWER( LOWER(TRIM(ORG_NAME)), 0, 25 );
        END IF;
     END IF;
     RETURN '''';
@@ -33,7 +33,7 @@ END;
 CREATE FUNCTION contact_trigger() RETURNS "trigger"
     AS '
 BEGIN
-    NEW.sortname := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.last_name, NEW.organization);
+    NEW.sortname := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.surname, NEW.organization);
     RETURN NEW;
 END;
 '
