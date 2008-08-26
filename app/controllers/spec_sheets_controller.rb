@@ -23,19 +23,18 @@ class SpecSheetsController < ApplicationController
   end
 
   def index
-    @error = params[:error]
-    @conditions = Conditions.new
-    @conditions.created_at_enabled = true
+    search
   end
 
   def search
+    @error = params[:error]
+    if !params[:conditions]
+      params[:conditions] = {:created_at_enabled => "true"}
+    end
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     @reports = SpecSheet.find(:all, :conditions => @conditions.conditions(SpecSheet))
-    if @reports.length == 0
-      @error = "There are no matching reports"
-      render :action => "index"
-    end
+    render :action => "index"
   end
 
   def xml_list_for_system
