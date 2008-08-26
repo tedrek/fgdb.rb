@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -25,9 +25,9 @@ ALTER TABLE gizmo_categories DISABLE TRIGGER ALL;
 
 COPY gizmo_categories (id, description, name) FROM stdin;
 4	Misc	misc
+2	Monitor	monitor
 1	System	system
 3	Printer	printer
-2	Monitor	monitor
 \.
 
 

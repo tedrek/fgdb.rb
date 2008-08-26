@@ -9,8 +9,48 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080814013607) do
+ActiveRecord::Schema.define(:version => 20080826191839) do
 
+  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
+    <<-get_sort_name_sql
+
+DECLARE
+    IS_ORG ALIAS FOR $1 ;
+    FIRST_NAME ALIAS FOR $2 ;
+    MIDDLE_NAME ALIAS FOR $3 ;
+    LAST_NAME ALIAS FOR $4 ;
+    ORG_NAME ALIAS FOR $5 ;
+
+BEGIN
+    IF IS_ORG = 'f' THEN
+       RETURN
+         SUBSTR( TRIM( LOWER( 
+           COALESCE(TRIM(LAST_NAME), '') || 
+           COALESCE(' ' || TRIM(FIRST_NAME), '') || 
+           COALESCE(' ' || TRIM(MIDDLE_NAME), '')
+         )), 0, 25 );
+    ELSE
+       IF TRIM(ORG_NAME) ILIKE 'THE %' THEN 
+           -- maybe take into account A and AN as first words
+           -- like this as well
+           RETURN LOWER(SUBSTR(TRIM(ORG_NAME), 5, 25));
+       ELSE
+           RETURN SUBSTR(LOWER(TRIM(ORG_NAME)), 0, 25 );
+       END IF;
+    END IF;
+    RETURN '';
+END;
+    get_sort_name_sql
+  }
+  create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
+    <<-contact_trigger_sql
+
+BEGIN
+    NEW.sort_name := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.surname, NEW.organization);
+    RETURN NEW;
+END;
+    contact_trigger_sql
+  }
   create_table "actions", :force => true do |t|
     t.string   "description"
     t.integer  "lock_version",               :default => 0, :null => false
@@ -102,6 +142,8 @@ ActiveRecord::Schema.define(:version => 20080814013607) do
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"
   add_index "contacts", ["sort_name"], :name => "index_contacts_on_sort_name"
+
+  add_trigger(:contacts, [:insert, :update], :before => true, :row => true, :name => :contact_addr_insert_trigger, :function => :contact_trigger)
 
   create_table "defaults", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -414,15 +456,15 @@ ActiveRecord::Schema.define(:version => 20080814013607) do
   add_foreign_key "contact_methods", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "contact_methods_contact_id_fk"
   add_foreign_key "contact_methods", ["contact_method_type_id"], "contact_method_types", ["id"], :on_delete => :restrict, :name => "contact_methods_contact_method_type_fk"
 
-  add_foreign_key "contact_types_contacts", ["contact_type_id"], "contact_types", ["id"], :on_delete => :restrict, :name => "contact_types_contacts_contact_types_contacts_fk"
   add_foreign_key "contact_types_contacts", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "contact_types_contacts_contacts_fk"
+  add_foreign_key "contact_types_contacts", ["contact_type_id"], "contact_types", ["id"], :on_delete => :restrict, :name => "contact_types_contacts_contact_types_contacts_fk"
 
   add_foreign_key "contacts", ["user_id"], "users", ["id"], :name => "contacts_users_fk"
 
-  add_foreign_key "disbursements", ["contact_id"], "contacts", ["id"], :on_update => :cascade, :on_delete => :set_null, :name => "disbursements_contact_id_fkey"
   add_foreign_key "disbursements", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "disbursements_contacts_fk"
-  add_foreign_key "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :on_update => :cascade, :on_delete => :set_null, :name => "disbursements_disbursement_type_id_fkey"
   add_foreign_key "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :on_delete => :restrict, :name => "disbursements_disbursements_type_id_fk"
+  add_foreign_key "disbursements", ["contact_id"], "contacts", ["id"], :on_update => :cascade, :on_delete => :set_null, :name => "disbursements_contact_id_fkey"
+  add_foreign_key "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :on_update => :cascade, :on_delete => :set_null, :name => "disbursements_disbursement_type_id_fkey"
 
   add_foreign_key "discount_schedules_gizmo_types", ["discount_schedule_id"], "discount_schedules", ["id"], :on_delete => :cascade, :name => "discount_schedules_gizmo_types_discount_schedules_fk"
   add_foreign_key "discount_schedules_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "discount_schedules_gizmo_types_gizmo_types_fk"
@@ -432,23 +474,23 @@ ActiveRecord::Schema.define(:version => 20080814013607) do
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_contexts_fk"
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_types_fk"
 
-  add_foreign_key "gizmo_events", ["disbursement_id"], "disbursements", ["id"], :name => "gizmo_events_disbursements_fk"
   add_foreign_key "gizmo_events", ["donation_id"], "donations", ["id"], :on_delete => :set_null, :name => "gizmo_events_donations_fk"
-  add_foreign_key "gizmo_events", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_contexts_fk"
-  add_foreign_key "gizmo_events", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_types_fk"
-  add_foreign_key "gizmo_events", ["recycling_id"], "recyclings", ["id"], :on_delete => :set_null, :name => "gizmo_events_recyclings_fk"
   add_foreign_key "gizmo_events", ["sale_id"], "sales", ["id"], :on_delete => :set_null, :name => "gizmo_events_sales_fk"
+  add_foreign_key "gizmo_events", ["recycling_id"], "recyclings", ["id"], :on_delete => :set_null, :name => "gizmo_events_recyclings_fk"
+  add_foreign_key "gizmo_events", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_types_fk"
+  add_foreign_key "gizmo_events", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_contexts_fk"
+  add_foreign_key "gizmo_events", ["disbursement_id"], "disbursements", ["id"], :name => "gizmo_events_disbursements_fk"
 
-  add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
   add_foreign_key "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :on_delete => :set_null, :name => "gizmo_types_parent_fk"
+  add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
 
-  add_foreign_key "payments", ["donation_id"], "donations", ["id"], :on_delete => :cascade, :name => "payments_donation_id_fk"
-  add_foreign_key "payments", ["donation_id"], "donations", ["id"], :name => "payments_donation_id_fkey"
   add_foreign_key "payments", ["payment_method_id"], "payment_methods", ["id"], :on_delete => :restrict, :name => "payments_payment_methods_fk"
+  add_foreign_key "payments", ["donation_id"], "donations", ["id"], :on_delete => :cascade, :name => "payments_donation_id_fk"
+  add_foreign_key "payments", ["sale_id"], "sales", ["id"], :on_delete => :cascade, :name => "payments_sale_id_fk"
   add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fkey"
 
-  add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :name => "roles_users_role_id_fkey"
   add_foreign_key "roles_users", ["user_id"], "users", ["id"], :name => "roles_users_user_id_fkey"
+  add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :name => "roles_users_role_id_fkey"
 
   add_foreign_key "sales", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "sales_contacts_fk"
   add_foreign_key "sales", ["discount_schedule_id"], "discount_schedules", ["id"], :on_delete => :restrict, :name => "sales_discount_schedules_fk"
@@ -457,6 +499,10 @@ ActiveRecord::Schema.define(:version => 20080814013607) do
   add_foreign_key "spec_sheets", ["system_id"], "systems", ["id"], :name => "spec_sheets_system_id_fkey"
   add_foreign_key "spec_sheets", ["action_id"], "actions", ["id"], :name => "spec_sheets_action_id_fkey"
   add_foreign_key "spec_sheets", ["type_id"], "types", ["id"], :name => "spec_sheets_type_id_fkey"
+  add_foreign_key "spec_sheets", ["contact_id"], "contacts", ["id"], :name => "spec_sheets_contact_id_fkey1"
+  add_foreign_key "spec_sheets", ["system_id"], "systems", ["id"], :name => "spec_sheets_system_id_fkey1"
+  add_foreign_key "spec_sheets", ["action_id"], "actions", ["id"], :name => "spec_sheets_action_id_fkey1"
+  add_foreign_key "spec_sheets", ["type_id"], "types", ["id"], :name => "spec_sheets_type_id_fkey1"
 
   add_foreign_key "users", ["contact_id"], "contacts", ["id"], :name => "users_contacts_fk"
 
@@ -465,5 +511,27 @@ ActiveRecord::Schema.define(:version => 20080814013607) do
   add_foreign_key "volunteer_tasks", ["community_service_type_id"], "community_service_types", ["id"], :on_delete => :set_null, :name => "volunteer_tasks_community_service_type_id_fkey"
   add_foreign_key "volunteer_tasks", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "volunteer_tasks_contacts_fk"
   add_foreign_key "volunteer_tasks", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_volunteer_task_type_id_fk"
+
+  create_view "v_donation_totals", "SELECT d.id, sum(p.amount_cents) AS total_paid FROM (donations d LEFT JOIN payments p ON ((p.donation_id = d.id))) GROUP BY d.id;", :force => true do |v|
+    v.column :id
+    v.column :total_paid
+  end
+
+  create_view "v_donations", "SELECT d.id, d.contact_id, d.postal_code, d.comments, d.lock_version, d.updated_at, d.created_at, d.created_by, d.updated_by, d.reported_required_fee_cents, d.reported_suggested_fee_cents, v.total_paid, CASE WHEN (v.total_paid > d.reported_required_fee_cents) THEN (d.reported_required_fee_cents)::bigint ELSE v.total_paid END AS fees_paid, CASE WHEN (v.total_paid < d.reported_required_fee_cents) THEN (0)::bigint ELSE (v.total_paid - d.reported_required_fee_cents) END AS donations_paid FROM (donations d JOIN v_donation_totals v ON ((d.id = v.id)));", :force => true do |v|
+    v.column :id
+    v.column :contact_id
+    v.column :postal_code
+    v.column :comments
+    v.column :lock_version
+    v.column :updated_at
+    v.column :created_at
+    v.column :created_by
+    v.column :updated_by
+    v.column :reported_required_fee_cents
+    v.column :reported_suggested_fee_cents
+    v.column :total_paid
+    v.column :fees_paid
+    v.column :donations_paid
+  end
 
 end
