@@ -13,7 +13,13 @@ module RedHillConsulting::Core::ActiveRecord
     def tables_with_redhillonrails_core(stream)
       @foreign_keys = StringIO.new
       begin
+        #added for railspgprocs
+        types(stream)
+        #added for railspgprocs
+        procedures(stream, "!= 'sql'")
         tables_without_redhillonrails_core(stream)
+        #added for railspgprocs
+        procedures(stream, "= 'sql'")
         @foreign_keys.rewind
         stream.print @foreign_keys.read
       ensure
@@ -32,6 +38,8 @@ module RedHillConsulting::Core::ActiveRecord
       stream.puts unless indexes.empty?
 
       foreign_keys(table, @foreign_keys)
+      #added for railspgprocs
+      triggers(table, stream)
     end
 
     def foreign_keys(table, stream)
