@@ -33,6 +33,11 @@ class SpecSheetsController < ApplicationController
     end
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
+    if @conditions.contact_enabled
+      if !requires_role('ROLE_CONTACT_MANAGER')
+        return
+      end
+    end
     @reports = SpecSheet.find(:all, :conditions => @conditions.conditions(SpecSheet))
     render :action => "index"
   end
