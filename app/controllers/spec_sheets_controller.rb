@@ -1,4 +1,6 @@
 class SpecSheetsController < ApplicationController
+  layout :with_sidebar
+
   helper :xml
   include XmlHelper
   MINIMUM_COMPAT_VERSION=2
