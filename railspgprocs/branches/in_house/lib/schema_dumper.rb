@@ -57,8 +57,11 @@ module ActiveRecord
       end
 
       def triggers(table_name, stream)
+        puts "IN TRIGGERS FOR TABLE : #{table_name}"
         triggers = @connection.triggers(table_name)
+        puts "FOUND #{triggers.length} TRIGGERS"
         triggers.each {|trigger|
+          puts "TRIGGER"
           stream.puts trigger.to_rdl
         }
         stream.puts unless triggers.empty?
@@ -71,20 +74,5 @@ module ActiveRecord
           stream.puts  ")"
         }
       end
-
-      alias_method :procless_tables, :tables
-      def tables(stream)
-        types(stream)
-        procedures(stream, "!= 'sql'")
-        procless_tables(stream)
-        procedures(stream, "= 'sql'")
-      end
-
-      alias_method :indexes_before_triggers, :indexes
-      def indexes(table, stream)
-        indexes_before_triggers(table, stream)
-        triggers(table, stream)
-      end
-
   end
 end
