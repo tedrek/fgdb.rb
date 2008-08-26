@@ -8,36 +8,30 @@
 </div>
 
 <div id="main-section">
-<table>
-<tr><td colspan="2">
-<%= link_to "List all", :action => "list_all" %>
-</td></tr>
-<tr><td colspan="2">
-<%= link_to "List flagged", :action => "list_flagged" %>
-</td></tr>
-<tr><td>
-Get report by report id:
-</td><td>
-<% form_tag ({:action => "list_for_report"}) do %>
-<%= text_field("id", nil) %><%= submit_tag "Get Report" %>
-<% end %>
-</td></tr>
-<tr><td>
-List for one contact:
-</td><td>
-<% form_tag ({:action => "list_for_contact"}) do %>
-<%= text_field("id", nil) %><%= submit_tag "Get Reports" %>
-<% end %>
-</td></tr>
-<tr><td>
-List for one system:
-</td><td>
-<% form_tag ({:action => "list_for_system"}) do %>
-<%= text_field("id", nil) %><%= submit_tag "Get Reports" %>
-<% end %>
-</td></tr>
-<tr><td colspan="2">
-<%= link_to 'New report', {:action => "new"} %>
-</td></tr>
-</table>
+  <%= link_to 'New report', {:action => "new"} %>
+  <br />
+  <br />
+  <br />
+  <% form_tag :action => 'search' do -%>
+  <% filters = {} -%>
+  <% filters['flagged'] = "" -%>
+  <% filters['contact'] =
+           contact_field('@conditions', 'contact_id',
+             :locals => {:options =>
+               {
+                 :object_name => 'conditions',
+                 :field_name => 'contact_id',
+                 :element_prefix => 'filter_contact',
+                 :display_edit => false,
+                 :display_create => false,
+                 :show_label => false,
+               },
+               :contact => @conditions.contact
+             } ) %>
+  <% filters['system'] = text_field('conditions', 'system_id') -%>
+  <% filters['id'] = text_field('conditions', 'id') %>
+  <% filters['created_at'] = date_or_date_range_picker('conditions', 'created_at') %>
+  <%= multiselect_of_form_elements('conditions', filters ) %>
+  <%= submit_tag "Search", :class => "submit" %>
+  <% end -%>
 </div>

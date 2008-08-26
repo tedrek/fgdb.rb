@@ -23,67 +23,19 @@ class SpecSheetsController < ApplicationController
   end
 
   def index
-    @error=params[:error]
+    @error = params[:error]
+    @conditions = Conditions.new
+    @conditions.created_at_enabled = true
   end
 
-  def list_all
-    @reports = SpecSheet.find(:all, :order => "id")
+  def search
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    @reports = SpecSheet.find(:all, :conditions => @conditions.conditions(SpecSheet))
     if @reports.length == 0
-      redirect_to(:action => "index", :error => "There are no reports")
-      return
+      @error = "There are no matching reports"
+      render :action => "index"
     end
-  end
-
-  def list_flagged
-    @reports = SpecSheet.find_all_by_flag(true, :order => "id")
-    if @reports.length == 0
-      redirect_to(:action => "index", :error => "There are no flagged reports")
-      return
-    end
-  end
-
-  def list_for_contact
-    if params[:id]==nil || params[:id]==[""]
-      redirect_to(:action => "index", :error => "Please enter something")
-      return
-    end
-    if (params[:id][0].is_a?(String) && params[:id][0].length > 10) || !(@contact = Contact.find_by_id(params[:id]))
-      redirect_to(:action => "index", :error => "That contact does not exist")
-      return
-    end
-    @reports = SpecSheet.find_all_by_contact_id(params[:id], :order => "id")
-    if @reports.length == 0
-      redirect_to(:action => "index", :error => "That contact has no reports")
-      return
-    end
-  end
-
-  def list_for_system
-    if params[:id]==nil||params[:id]==[""]
-      redirect_to(:action => "index", :error => "Please enter something")
-      return
-    end
-    if (params[:id][0].is_a?(String) && params[:id][0].length > 10) || !(@system = System.find_by_id(params[:id]))
-      redirect_to(:action => "index", :error => "That system does not exist")
-      return
-    end
-    @reports = SpecSheet.find_all_by_system_id(params[:id], :order => "id")
-    if @reports.length == 0
-      redirect_to(:action => "index", :error => "That system has no reports")
-      return
-    end
-  end
-
-  def list_for_report
-    if params[:id]==nil||params[:id]==[""]
-      redirect_to(:action => "index", :error => "Please enter something")
-      return
-    end
-    if (params[:id][0].is_a?(String) && params[:id][0].length > 10)
-      redirect_to(:action => "index", :error => "That report does not exist")
-      return
-    end
-    @reports = SpecSheet.find_all_by_id(params[:id], :order => "id")
   end
 
   def xml_list_for_system

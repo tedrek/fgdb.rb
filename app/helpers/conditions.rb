@@ -6,77 +6,39 @@ class Conditions
       city phone_number contact volunteer_hours
       email disbursed_at donated_at occurred_at
       worked_at bought_at received_at date_performed
-      recycled_at
+      recycled_at flagged system
     ]
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
   end
 
+  DATES = %w[
+      created_at recycled_at disbursed_at recieved_at occured_at worked_at bought_at date_performed
+  ]
+
+  for i in DATES
+    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
+  end
+
   def initialize
-    @created_at_date = Date.today
-    @created_at_date_type = 'daily'
-    @created_at_month = Date.today
-    @created_at_year = Date.today
-
-    @recycled_at_date = Date.today
-    @recycled_at_date_type = 'daily'
-    @recycled_at_month = Date.today
-    @recycled_at_year = Date.today
-
-    @disbursed_at_date = Date.today
-    @disbursed_at_date_type = 'daily'
-    @disbursed_at_month = Date.today
-    @disbursed_at_year = Date.today
-
-    @received_at_date = Date.today
-    @received_at_date_type = 'daily'
-    @received_at_month = Date.today
-    @received_at_year = Date.today
-
-    @occurred_at_date = Date.today
-    @occurred_at_date_type = 'daily'
-    @occurred_at_month = Date.today
-    @occurred_at_year = Date.today
-
-    @worked_at_date = Date.today
-    @worked_at_date_type = 'daily'
-    @worked_at_month = Date.today
-    @worked_at_year = Date.today
-
-    @bought_at_date = Date.today
-    @bought_at_date_type = 'daily'
-    @bought_at_month = Date.today
-    @bought_at_year = Date.today
-
-    @donated_at_date = Date.today
-    @donated_at_date_type = 'daily'
-    @donated_at_month = Date.today
-    @donated_at_year = Date.today
-
-    @date_performed_date = Date.today
-    @date_performed_date_type = 'daily'
-    @date_performed_month = Date.today
-    @date_performed_year = Date.today
+    for i in DATES
+      eval("@#{i}_date = Date.today")
+      eval("@#{i}_date_type = 'daily'")
+      eval("@#{i}_month = Date.today")
+      eval("@#{i}_year = Date.today")
+    end
 
     @payment_method_id = PaymentMethod.cash.id
   end
-
-  attr_accessor :created_at_date, :created_at_date_type, :created_at_start_date, :created_at_end_date, :created_at_month, :created_at_year
-  attr_accessor :recycled_at_date, :recycled_at_date_type, :recycled_at_start_date, :recycled_at_end_date, :recycled_at_month, :recycled_at_year
-  attr_accessor :disbursed_at_date, :disbursed_at_date_type, :disbursed_at_start_date, :disbursed_at_end_date, :disbursed_at_month, :disbursed_at_year
-  attr_accessor :occurred_at_date, :occurred_at_date_type, :occurred_at_start_date, :occurred_at_end_date, :occurred_at_month, :occurred_at_year
-  attr_accessor :worked_at_date, :worked_at_date_type, :worked_at_start_date, :worked_at_end_date, :worked_at_month, :worked_at_year
-  attr_accessor :bought_at_date, :bought_at_date_type, :bought_at_start_date, :bought_at_end_date, :bought_at_month, :bought_at_year
-  attr_accessor :received_at_date, :received_at_date_type, :received_at_start_date, :received_at_end_date, :received_at_month, :received_at_year
-  attr_accessor :donated_at_date, :donated_at_date_type, :donated_at_start_date, :donated_at_end_date, :donated_at_month, :donated_at_year
-  attr_accessor :date_performed_date, :date_performed_date_type, :date_performed_start_date, :date_performed_end_date, :date_performed_month, :date_performed_year
 
   attr_accessor :contact_id
 
   attr_accessor :payment_method_id
 
   attr_accessor :id
+
+  attr_accessor :system_id
 
   attr_accessor :needs_attention
 
@@ -216,6 +178,14 @@ class Conditions
             " AND payments.payment_method_id = ?",
             PaymentMethod.find_by_description('invoice')
            ]
+  end
+
+  def flagged_conditions(klass)
+    return ["#{klass.table_name}.flagged = t"]
+  end
+
+  def system_conditions(klass)
+    return ["#{klass.table_name}.system_id = ?", @system_id]
   end
 
   def worked_at_conditions(klass)

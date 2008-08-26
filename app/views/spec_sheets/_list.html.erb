@@ -13,15 +13,15 @@
   </tr>
 <% for report in @reports %>
   <tr>
-    <td><%= link_to report.id.to_s, {:action => "list_for_report", :id => report.id} %></td>
+    <td><%= link_to report.id.to_s, {:action => "search", :conditions => {:id_enabled => true, :id => report.id}} %></td>
     <td>
 <% if thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) %>
-<%= link_to thing, {:action => "list_for_contact", :id => report.contact_id} %>
+<%= link_to thing, {:action => "search", :conditions => {:contact_enabled => true, :contact_id => report.contact.id}} %>
 <% else %>
 <%= "Unknown" %>
 <% end %>
 </td>
-    <td><%= link_to report.system_id.to_s, {:action => "list_for_system", :id => report.system_id} %></td>
+    <td><%= link_to report.system_id.to_s, {:action => "search", :conditions => {:system_enabled => true, :system_id => report.system.id}} %></td>
     <td><%= (report.type && report.type.description) || "Unknown" %></td>
     <td><%= (report.action && report.action.description) || "Unknown" %></td>
     <td><%= report.os %></td>
