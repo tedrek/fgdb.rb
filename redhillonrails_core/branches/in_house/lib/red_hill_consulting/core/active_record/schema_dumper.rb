@@ -14,12 +14,17 @@ module RedHillConsulting::Core::ActiveRecord
       @foreign_keys = StringIO.new
       begin
         #added for railspgprocs
-        types(stream)
+        if defined?(types)
+          types(stream)
+        end
         #added for railspgprocs
-        procedures(stream, "!= 'sql'")
+        if defined?(procedures)
+          procedures(stream, "!= 'sql'")
         tables_without_redhillonrails_core(stream)
         #added for railspgprocs
-        procedures(stream, "= 'sql'")
+        if defined?(procedures)
+          procedures(stream, "= 'sql'")
+        end
         @foreign_keys.rewind
         stream.print @foreign_keys.read
       ensure
@@ -39,7 +44,9 @@ module RedHillConsulting::Core::ActiveRecord
 
       foreign_keys(table, @foreign_keys)
       #added for railspgprocs
-      triggers(table, stream)
+      if defined?(triggers)
+        triggers(table, stream)
+      end
     end
 
     def foreign_keys(table, stream)
