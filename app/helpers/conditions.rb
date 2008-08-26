@@ -14,7 +14,7 @@ class Conditions
   end
 
   DATES = %w[
-      created_at recycled_at disbursed_at recieved_at occured_at worked_at bought_at date_performed
+      created_at recycled_at disbursed_at recieved_at occured_at worked_at bought_at date_performed donated_at
   ]
 
   for i in DATES
