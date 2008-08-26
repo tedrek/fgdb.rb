@@ -4,15 +4,6 @@ module ActiveRecord
     class PostgreSQLAdapter < AbstractAdapter
       include SchemaProcs
 
-      def schemas 
-        query(<<-end_sql).collect {|row| SchemaDefinition.new(*row) }
-          SELECT N.nspname, S.usename
-            FROM pg_namespace N
-            JOIN pg_shadow    S ON (N.nspowner = S.usesysid)
-           WHERE N.nspname NOT IN ('pg_toast', 'pg_temp_1', 'pg_catalog', 'public', 'information_schema')
-        end_sql
-      end
-
       def procedures(lang=nil)
         query <<-end_sql
           SELECT P.oid, proname, pronamespace, proowner, lanname, proisagg, prosecdef, proisstrict, proretset, provolatile, pronargs, prorettype, proargtypes, proargnames, prosrc, probin, proacl
@@ -63,32 +54,6 @@ module ActiveRecord
       
       def drop_type(name, cascade=false)
         execute "DROP TYPE #{name} #{cascade_or_restrict(cascade)}"
-      end
-
-      def create_view(name, columns=[], options={}, &block)
-        view = ViewDefinition.new(0, name, columns) { yield } 
-        execute view.to_sql(:create, options)
-			end
-
-      def drop_view(name, options={})
-        view = ViewDefinition.new(0, name)
-        execute view.to_sql(:drop, options)
-      end
-
-      def create_schema!(name, owner='postgres', options={})
-        drop_schema(name, options)
-        create_schema(name, owner, options)
-			end
-
-      def create_schema(name, owner='postgres', options={})
-        view = SchemaDefinition.new(name, owner)
-        execute view.to_sql(:create, options)
-        search_path = select_one("SHOW search_path")["search_path"].split(",")
-        execute "SET search_path TO #{([name.to_s] | search_path).join(', ')}"
-			end
-
-      def drop_schema(name, options={})
-         execute SchemaDefinition.new(name).to_sql(:drop, options)
       end
 
 #     Add a trigger to a table
