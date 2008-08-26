@@ -7,11 +7,11 @@
 
 </div>
 
+<% if @reports -%>
+<%= render :partial => 'list', 'reports' => @reports %>
+<% end -%>
+
 <div id="main-section">
-  <%= link_to 'New report', {:action => "new"} %>
-  <br />
-  <br />
-  <br />
   <% form_tag :action => 'search' do -%>
   <% filters = {} -%>
   <% filters['flagged'] = "" -%>
@@ -34,4 +34,6 @@
   <%= multiselect_of_form_elements('conditions', filters ) %>
   <%= submit_tag "Search", :class => "submit" %>
   <% end -%>
+  <br />
+  <%= link_to 'New report', {:action => "new"} %>
 </div>
