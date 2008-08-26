@@ -25,6 +25,11 @@ class FixSortName < ActiveRecord::Migration
     rescue
     end
 
+    begin
+    Contact.connection.execute("DROP TRIGGER contact_addr_insert_trigger ON contacts;")
+    rescue
+    end
+
 Contact.connection.execute("CREATE OR REPLACE FUNCTION get_sort_name(boolean, character varying, character varying, character varying, character varying) RETURNS character varying
     AS '
 DECLARE
@@ -57,12 +62,12 @@ END;
     LANGUAGE plpgsql;")
 
 
-Contact.connection.execute("UPDATE contacts SET sort_name = get_sort_name(is_organization, first_name, middle_name, surname, organization);")
+#Contact.connection.execute("UPDATE contacts SET sort_name = get_sort_name(is_organization, first_name, middle_name, surname, organization);")
 
 Contact.connection.execute("CREATE OR REPLACE FUNCTION contact_trigger() RETURNS \"trigger\"
     AS '
 BEGIN
-    NEW.sortname := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.surname, NEW.organization);
+    NEW.sort_name := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.surname, NEW.organization);
     RETURN NEW;
 END;
 '
