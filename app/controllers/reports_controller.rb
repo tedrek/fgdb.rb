@@ -150,8 +150,8 @@ class ReportsController < ApplicationController
   def income_report_init
     methods = PaymentMethod.find(:all)
     method_names = methods.map {|m| m.description}
-    @columns = Hash.new( method_names.insert(2, 'till total').insert(-3, 'total real').insert(-1, 'total') )
-    @width = @columns[nil].length
+    @columns = method_names.insert(2, 'till total').insert(-3, 'total real').insert(-1, 'total')
+    @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'subtotals']
     discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}.sort
@@ -165,7 +165,7 @@ class ReportsController < ApplicationController
     @income_data[:grand_totals] = {}
 
     @sections.each do |section|
-      @columns[section].each do |method|
+      @columns.each do |method|
         @income_data[section][method] = {}
         @rows[section].each do |row|
           @income_data[section][method][row] = {:total => 0.0, :count => 0}
