@@ -20,6 +20,7 @@ module RedHillConsulting::Core::ActiveRecord
         #added for railspgprocs
         if defined?(procedures)
           procedures(stream, "!= 'sql'")
+        end
         tables_without_redhillonrails_core(stream)
         #added for railspgprocs
         if defined?(procedures)
