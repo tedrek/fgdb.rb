@@ -31,6 +31,18 @@ class PaymentMethod < ActiveRecord::Base
     return [cash, check, credit].map{|x|x.id}.include?(id)
   end
 
+  def PaymentMethod.till_methods()
+    return [cash, check]
+  end
+
+  def PaymentMethod.real_non_till_methods()
+    return [credit]
+  end
+
+  def PaymentMethod.fake_money_methods()
+    return [invoice, coupon]
+  end
+
   def PaymentMethod.descriptions
     @@descriptions ||= {}
     if @@descriptions.empty?

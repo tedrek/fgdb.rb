@@ -150,7 +150,9 @@ class ReportsController < ApplicationController
   def income_report_init
     methods = PaymentMethod.find(:all)
     method_names = methods.map {|m| m.description}
-    @columns = method_names.insert(2, 'till total').insert(-3, 'total real').insert(-1, 'total')
+    @columns = PaymentMethod.till_methods.map(&:description) + ['till total'] +
+      PaymentMethod.real_non_till_methods.map(&:description) + ['total real'] +
+      PaymentMethod.fake_money_methods.map(&:description) + ['total']
     @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'subtotals']
