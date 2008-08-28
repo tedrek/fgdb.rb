@@ -76,23 +76,20 @@ class Donation < ActiveRecord::Base
       }
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
-        donation.payments.sort_by {|payment| payment.payment_method_id}.each {|payment|
+        donation.payments.sort_by(&:payment_method_id).each {|payment|
           #total paid
           total_data[payment.payment_method_id]['count'] += 1
+          total_data[payment.payment_method_id]['amount'] += payment.amount_cents
           if required_to_be_paid > 0
             if required_to_be_paid > payment.amount_cents
-              #required
-              total_data[payment.payment_method_id]['amount'] += payment.amount_cents
+              total_data[payment.payment_method_id]['required'] += payment.amount_cents
             else
-              #required
               total_data[payment.payment_method_id]['required'] += required_to_be_paid
-              #suggested
               total_data[payment.payment_method_id]['suggested'] += (payment.amount_cents - required_to_be_paid)
             end
             required_to_be_paid -= payment.amount_cents
           else
-            #suggested
-            total_data[payment.payment_method_id]['amount'] += payment.amount_cents
+            total_data[payment.payment_method_id]['suggested'] += payment.amount_cents
           end
 
           total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'],

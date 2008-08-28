@@ -24,11 +24,15 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def PaymentMethod.is_till_method?(id)
-    return [cash, check].map{|x|x.id}.include?(id)
+    return [cash, check].map(&:id).include?(id)
   end
 
   def PaymentMethod.is_money_method?(id)
-    return [cash, check, credit].map{|x|x.id}.include?(id)
+    return [cash, check, credit].map(&:id).include?(id)
+  end
+
+  def PaymentMethod.is_fake_method?(id)
+    return fake_money_methods.map(&:id).include?(id)
   end
 
   def PaymentMethod.till_methods()

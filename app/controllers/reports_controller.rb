@@ -176,44 +176,45 @@ class ReportsController < ApplicationController
     end
   end
 
+  def min(a,b)
+    return a < b ? a : b
+  end
+
+  def max(a,b)
+    return a > b ? a : b
+  end
+
   def add_donation_summation_to_data(summation, income_data, ranges)
     payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['amount'].to_i, summation['required'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
-    ranges[:donations][:min] = [ranges[:donations][:min], mn].min
-    ranges[:donations][:max] = [ranges[:donations][:max], mx].max
+    ranges[:donations][:min] = min(ranges[:donations][:min], mn)
+    ranges[:donations][:max] = max(ranges[:donations][:max], mx)
 
     payment_method = PaymentMethod.descriptions[payment_method_id]
     grand_totals = income_data[:grand_totals]
 
     column = income_data[:donations][payment_method]
-    fees_cents = 0
-    suggested_cents = 0
-    if required_cents <= 0
-      suggested_cents = amount_cents
-    elsif required_cents > amount_cents
-      required_cents -= amount_cents
-      fees_cents = amount_cents
-    else
-      fees_cents = required_cents
-      required_cents = 0
-      suggested_cents = amount_cents - fees_cents
-    end
+
+    # the suggested that's passed into us is really bogus, so we compute that here
+    # "suggested" is the wrong terminology, it should really be "donation"
+
+    required_cents = min(amount_cents, required_cents)
+    suggested_cents = max(amount_cents - required_cents, 0)
 
     if payment_method_id != PaymentMethod.invoice.id
       total_real = income_data[:donations]['total real']
 
-      update_totals(total_real['fees'], fees_cents, count)
+      update_totals(total_real['fees'], required_cents, count)
       update_totals(total_real['suggested'], suggested_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['total real']['total'], amount_cents, count)
     end
 
-    if( (payment_method_id == PaymentMethod.cash.id) ||
-        (payment_method_id == PaymentMethod.check.id) )
+    if PaymentMethod.is_till_method?(payment_method_id)
       till_total = income_data[:donations]['till total']
 
-      update_totals(till_total['fees'], fees_cents, count)
+      update_totals(till_total['fees'], required_cents, count)
       update_totals(till_total['suggested'], suggested_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
@@ -221,10 +222,10 @@ class ReportsController < ApplicationController
 
     totals = income_data[:donations]['total']
 
-    update_totals(totals['fees'], fees_cents, count)
+    update_totals(totals['fees'], required_cents, count)
     update_totals(totals['suggested'], suggested_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
-    update_totals(column['fees'], fees_cents, count)
+    update_totals(column['fees'], required_cents, count)
     update_totals(column['suggested'], suggested_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)
