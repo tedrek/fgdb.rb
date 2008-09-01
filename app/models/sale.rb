@@ -40,7 +40,7 @@ class Sale < ActiveRecord::Base
   end
 
   class << self
-j    def default_sort_sql
+    def default_sort_sql
       "sales.created_at DESC"
     end
 
