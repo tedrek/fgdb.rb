@@ -231,8 +231,13 @@ namespace :db do
       load_data(rails_env)
     end
 
+    desc "blah blah blah"
+    task :revert_stuff do
+      system("svn revert #{RAILS_ROOT}/db/schema.rb")
+    end
+
     desc "Migrate the schema.rb, devel data, and metadata"
-    task :migrate => ['db:data:load', 'db:migrate', 'db:data:dump'] do
+    task :migrate => ['db:data:revert_stuff', 'db:data:load', 'db:migrate', 'db:data:dump'] do
     end
 
   end # namespace :data
