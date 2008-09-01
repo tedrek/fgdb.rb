@@ -173,7 +173,7 @@ module WillPaginate
     def page_link_or_span(page, span_class = 'current', text = nil)
       text ||= page.to_s
       if page and page != current_page
-        if @options[:remote_options]
+        if @options[:remote_options] != {}
           @template.link_to_remote(
                                    text,
                                    @options[:remote_options].merge({:url => url_options(page)}),
