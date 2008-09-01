@@ -1,0 +1,16 @@
+<% if @show_wrapper %>
+<div id="<%= @transaction_type %>">
+  <div id="<%= component_id(params) %>">
+<% end %>
+
+<% new_params = params.merge(:controller => base_controller, :action => 'new', :transaction_type => @transaction_type) %>
+
+<% @options = { :action => "create", :id => generate_temporary_id, :transaction_type => @transaction_type } %>
+<% @new_options = @options.merge(:action => "new", :id => nil) %>
+<%= render :partial => 'new_edit' %>
+
+<% if @show_wrapper %>
+</div>
+</div>
+<% end %>
+

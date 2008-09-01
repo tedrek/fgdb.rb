@@ -1,6 +1,16 @@
 class TransactionController < ApplicationController
   layout :check_for_receipt
 
+  before_filter :set_action_name
+  before_filter :be_a_thing
+  def set_action_name
+    @action_name=action_name
+  end
+
+  def be_a_thing
+    set_transaction_type(Inflector.singularize(controller_name()))
+  end
+
   protected
 
   def check_for_receipt
@@ -14,19 +24,9 @@ class TransactionController < ApplicationController
     requires_role(:ROLE_ADMIN)
   end
 
-  def store_or_get_from_session(id_key, value_key)
-    session[id_key][value_key] = params[value_key] if !params[value_key].nil?
-    params[value_key] ||= session[id_key][value_key]
-  end
-
   public
 
-  def component_update
-    @show_wrapper = false # don't show the outer wrapper elements if we are just updating
-    component
-  end
-
-  def component
+  def search
     if params[:conditions] == nil
       params[:conditions] = {}
       params[:conditions][(default_condition + "_enabled").to_sym] = "true"
@@ -40,7 +40,7 @@ class TransactionController < ApplicationController
     @conditions
     search_options = {
       :order => @sort_sql,
-      :per_page => default_per_page,
+      :per_page => 20,
       :include => [:gizmo_events],
       :conditions => @conditions.conditions(@model)
     }
@@ -51,27 +51,38 @@ class TransactionController < ApplicationController
 
     search_options[:page] = params[:page]
     @transactions = @model.paginate( search_options )
+  end
 
-    render :action => "component", :layout => false
+  def index
+    new
+    render :action => 'new'
   end
 
   def new
-    @transaction = model.new
-    @successful = true
-    @initial_page_load = true
+    @transaction ||= model.new
+    @successful ||= true
 
-    return render(:action => 'new.rjs')
+    @conditions = Conditions.new
+    @conditions.apply_conditions((default_condition + "_enabled") => "true")
+    @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15)
   end
 
   def create
     begin
       @transaction = model.new(params[@transaction_type])
-      @successful = _save
+      _apply_line_item_data(@transaction)
+      @successful =  @transaction.save
     rescue
       flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
-
-    render :action => 'create.rjs'
+    if @successful
+      if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
+        @receipt = @transaction.id
+      end
+      @transaction = model.new
+    end
+    new
+    render :action => 'new'
   end
 
   def edit
@@ -80,22 +91,33 @@ class TransactionController < ApplicationController
       @successful = !@transaction.nil?
       @initial_page_load = true
     rescue
-      flash[:error], @successful  = $!.to_s, false
+      flash[:error], @successful = $!.to_s, false
     end
 
-    return render(:action => 'edit.rjs')
+    @conditions = Conditions.new
+    @conditions.apply_conditions((default_condition + "_enabled") => "true")
+    @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15)
   end
 
   def update
     begin
       @transaction = model.find(params[:id])
       @transaction.attributes = params[@transaction_type]
-      @successful = _save
+      _apply_line_item_data(@transaction)
+      @successful =  @transaction.save
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
     end
 
-    render :action => 'update.rjs'
+    if @successful
+      if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
+        @receipt = @transaction.id
+      end
+      @transaction = model.new
+    end
+
+    new
+    render :action => 'new'
   end
 
   def destroy
@@ -105,7 +127,7 @@ class TransactionController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
 
-    return render(:action => 'destroy.rjs')
+    redirect_to :back
   end
 
   def needs_attention
@@ -164,10 +186,6 @@ class TransactionController < ApplicationController
   private
   #######
 
-  def default_per_page
-    20
-  end
-
   def set_transaction_type(type)
     @transaction_type = type
     @gizmo_context = GizmoContext.send(@transaction_type)
@@ -175,12 +193,6 @@ class TransactionController < ApplicationController
 
   def totals_id(params)
     @transaction_type + '_totals_div'
-  end
-
-  def gizmo_event_defaults
-    @event_defaults ||= {
-      :gizmo_context_id => @gizmo_context.id
-    }
   end
 
   def model
@@ -196,14 +208,6 @@ class TransactionController < ApplicationController
     else
       raise "UNKNOWN TX-TYPE #{@transaction_type}"
     end
-  end
-
-  def gizmo_events_tag
-    @transaction_type + '_gizmo_events'
-  end
-
-  def payments_tag
-    @transaction_type + '_payments'
   end
 
   def _apply_line_item_data(transaction)
@@ -227,17 +231,5 @@ class TransactionController < ApplicationController
     end
     transaction.gizmo_events.delete_if {|gizmo| gizmo.mostly_empty?}
   end
-
-  # common save logic
-  def _save
-    _apply_line_item_data(@transaction)
-
-    success = @transaction.save
-    if success
-      @transaction.payments.each {|payment| payment.save} if @transaction.respond_to?( :payments )
-      @transaction.gizmo_events.each {|gizmo| gizmo.save}
-    end
-    return success
-  end
-
 end
+

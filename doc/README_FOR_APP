@@ -88,6 +88,11 @@ continue with the following:
  $> a2enmod rewrite
  $> chown -R www-data:www-data tmp log public
  $> cp doc/examples/apache2_sites-available_default /etc/apache2/sites-available/default
+
+   if you are using debian lenny or ubuntu intrepid (or later
+   versions), you will need to take out the NameVirtualHost line and
+   change the "<VirtualHost *>" to "<VirtualHost *:80>"
+
    ::: modify apache config to taste :::
    ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
  $> a2ensite default

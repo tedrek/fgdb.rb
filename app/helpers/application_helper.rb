@@ -342,6 +342,33 @@ module ApplicationHelper
     return html
   end
 
+  def new_edit_link(link_id, options, form_id = nil)
+    new_make_link(link_id,
+              image_tag("edit.png", :alt => "edit", :title => "edit", :style => "border: 0"),
+              options,
+              form_id)
+  end
+
+  def new_delete_link(link_id, options, form_id = nill)
+    new_make_link(link_id,
+              image_tag("remove.png", :alt => "delete", :title => "delete", :style => "border: 0"),
+              options,
+              form_id)
+  end
+
+  def new_make_link(link_id, image_tag, options, form_id = nil)
+    ify = form_id ? "form_has_not_been_edited('#{form_id}') ||" : ""
+    html = %Q[
+      <a id="#{link_id}" href="#{options[:url][:controller]}/#{options[:url][:action]}/#{options[:url][:id]}"
+         onclick="if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
+                                 #{remote_function(options)}
+                             }">
+        #{image_tag}
+      </a>
+    ]
+    return html
+  end
+
   def show_errors_for(name, object, page)
     page << "array = $$('.fieldWithErrors'); for (var count = 0; count < array.length; count++) {array[count].removeClassName('fieldWithErrors')}"
     object.errors.each {|field, msg|

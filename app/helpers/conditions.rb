@@ -1,21 +1,19 @@
 class Conditions
-  CONDS = %w[
-      id contact_type needs_attention anonymous
-      unresolved_invoices created_at payment_method
-      payment_amount gizmo_type_id postal_code
-      city phone_number contact volunteer_hours
-      email disbursed_at donated_at occurred_at
-      worked_at bought_at received_at date_performed
-      recycled_at flagged system
-    ]
+  DATES = %w[
+      created_at recycled_at disbursed_at received_at 
+      worked_at bought_at date_performed donated_at occurred_at
+  ]
+
+  CONDS = (%w[
+      id contact_type needs_attention anonymous unresolved_invoices
+      payment_method payment_amount gizmo_type_id
+      postal_code city phone_number contact volunteer_hours email
+      flagged system
+    ] + DATES).uniq
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
   end
-
-  DATES = %w[
-      created_at recycled_at disbursed_at received_at occured_at worked_at bought_at date_performed donated_at
-  ]
 
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
@@ -278,15 +276,20 @@ class Conditions
     return ["gizmo_events.gizmo_type_id=?", gizmo_type_id]
   end
 
+  def some_date_enabled
+    DATES.each{|x|
+      if eval("@#{x}_enabled") == "true"
+        return x
+      end
+    }
+    return false
+  end
+
   def to_s
-    if @created_at_enabled=="true" && @contact_enabled=="true"
-      " by " + contact_to_s + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("created_at")
-    elsif(@created_at_enabled=="true")
-      ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("created_at")
-    elsif @date_performed_enabled=="true" && @contact_enabled=="true"
-      " by " + contact_to_s + ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("date_performed")
-    elsif(@date_performed_enabled=="true")
-      ( @date_type == "daily" ? " on " : " during ") + date_range_to_s("date_performed")
+    if (which_date = some_date_enabled) && @contact_enabled=="true"
+      " by " + contact_to_s + ( eval("@#{which_date}_date_type") == "daily" ? " on " : " during ") + date_range_to_s(which_date)
+    elsif (which_date = some_date_enabled)
+      ( eval("@#{which_date}_date_type") == "daily" ? " for " : " during ") + date_range_to_s(which_date)
     elsif(@contact_enabled=="true")
       " by " + contact_to_s
     else

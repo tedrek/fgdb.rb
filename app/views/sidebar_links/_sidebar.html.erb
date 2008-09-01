@@ -1,41 +1,43 @@
 <div id="sidebar">
   <% if has_role?("ROLE_VOLUNTEER_MANAGER") %>
-    <div>
-      <%= link_to "hours", :controller => 'volunteer_tasks' %>
+    hours
+    <div class="sidebar_section">
+      <div>
+        <%= link_to "entry", :controller => 'volunteer_tasks' %>
+      </div>
+      <div>
+        <%= link_to "search", :controller => 'volunteer_tasks', :action => 'listing' %>
+      </div>
     </div>
   <% elsif current_user and current_user.contact_id %>
-    <div>
-      <%= link_to "hours", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
-    </div>
-  <% end %>
-  <% if has_role?("ROLE_FRONT_DESK") %>
-    <div>
-      <%= link_to "donations", :controller => 'donations' %>
-    </div>
-  <% end %>
-  <% if has_role?("ROLE_STORE") %>
-    <div>
-      <%= link_to "sales", :controller => 'sales' %>
+    hours
+    <div class="sidebar_section">
+      <div>
+        <%= link_to "entry", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
+      </div>
     </div>
   <% end %>
 
-  <div>
-    <%= link_to "recycling", :controller => 'recyclings' %>
-  </div>
-  <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
-  <div>
-      <%= link_to "disburse", :controller => 'disbursements' %>
-  </div>
+  <% hash = {:donation => ["ROLE_FRONT_DESK"], :sale => ["ROLE_STORE"], :recycling => nil, :disbursement => ['ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER']} %>
+  <% array = ['donation', 'sale', 'recycling', 'disbursement'] %>
+
+  <% array.each do |i| %>
+    <% x = hash[i.to_sym] %>
+    <% if x.nil? || has_role?(x) %>
+      <%= i %>s
+      <div class="sidebar_section">
+        <div>
+          <%= link_to "entry", :controller => i + 's' %>
+        </div>
+        <div>
+          <%= link_to "search", :controller => i + 's', :action => 'search' %>
+        </div>
+      </div>
+    <% end %>
   <% end %>
-  <div>
-    <a href="#" id="toggle_report_links">reports</a>
-    <%= custom_observer("toggle_report_links", "$('report_links').toggle()", "click") %>
-  </div>
-  <% if params[:controller] == "reports" %>
-  <div id="report_links">
-  <% else %>
-  <div id="report_links" style="display:none;">
-  <% end %>
+
+  reports
+  <div class="sidebar_section">
     <div>
       <%= link_to "income", :controller => 'reports', :action => 'income' %>
     </div>
@@ -47,16 +49,20 @@
     </div>
     <div>
       <%= link_to "hours",
-                  :controller => 'reports',
-                  :action => 'hours' %>
+          :controller => 'reports',
+          :action => 'hours' %>
     </div>
   </div>
-  <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
-  <div>
-    <%= link_to "contacts", :controller => 'contacts' %>
-  </div>
-  <% end %>
-  <div>
-    <%= link_to "printme", :controller => 'spec_sheets' %>
+
+  everything else
+  <div class="sidebar_section">
+    <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
+      <div>
+        <%= link_to "contacts", :controller => 'contacts' %>
+      </div>
+    <% end %>
+    <div>
+      <%= link_to "printme", :controller => 'spec_sheets' %>
+    </div>
   </div>
 </div>

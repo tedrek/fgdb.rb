@@ -1,18 +1,15 @@
 <% t_id = "#{@transaction_type}_#{transaction.id}" -%>
 <% if has_role?(*allowed_roles) %>
     <% update_options = @options.merge(:action => "update") %>
-    <%= edit_link("edit_#{transaction.id}_link",
+    <%= new_edit_link("edit_#{transaction.id}_link",
           {
             :url => @options.merge(:action => 'edit'),
-            :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');",
-            :complete => "updateTotals('#{@transaction_type}', '#{element_form_id(update_options)}')"
           },
           "#{@transaction_type}_form_tbody") %>
-    <%= delete_link("#{t_id}_delete_link",
+    <%= new_delete_link("#{t_id}_delete_link",
           {
             :url => @options.merge(:action => 'destroy'),
             :confirm => 'Are you sure?',
-            :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');"
           },
           "#{@transaction_type}_form_tbody") %>
 <% else %>

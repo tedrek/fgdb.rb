@@ -19,7 +19,7 @@
 <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
 <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
 </select></td>
-<td><input name="gizmo_count" id="gizmo_count" onkeydown="if(event.keyCode==9) {return add_unpriced_gizmo_event_from_form();}"></td>
+<td><input name="gizmo_count" id="gizmo_count" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}"></td>
 <td></td>
 </tr>
 </table>

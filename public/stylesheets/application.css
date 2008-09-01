@@ -35,7 +35,7 @@ padding-right: 20px;
 background-color: #ACF;
 }
 
-div#sidebar div#report_links {
+div#sidebar div.sidebar_section {
 padding-left: 10px;
 padding-right: 2px;
 }

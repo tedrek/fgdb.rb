@@ -49,25 +49,26 @@ class ContactsController < ApplicationController
   end
 
   def lookup
-    @defaults = Conditions.new
-    @defaults.created_at_enabled = true
+    if params[:defaults] == nil
+      params[:defaults] = {}
+      params[:defaults][:created_at_enabled] = "true"
+    end
+
+    if params[:contact]
+      params[:defaults][:id] = params[:contact][:id]
+      params[:defaults][:created_at_enabled] = "false"
+      params[:defaults][:id_enabled] = "true"
+    end
 
     if params[:contact_id]
       @contact = Contact.find_by_id(params[:contact_id])
       @thing = ContactHolder.new
       @thing.contact = @contact
     end
-  end
 
-  def lookup_results
     @defaults = Conditions.new
-
-    if params[:contact]
-      params[:defaults][:id] = params[:contact][:id]
-    end
-
     @defaults.apply_conditions(params[:defaults])
-    @contacts = Contact.find(:all, :conditions => @defaults.conditions(Contact), :order => "id ASC")
+    @contacts = Contact.paginate(:all, :per_page => 20, :page => params[:page], :conditions => @defaults.conditions(Contact), :order => "id ASC")
   end
 
   def update_display_area

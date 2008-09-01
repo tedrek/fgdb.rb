@@ -5,7 +5,7 @@
 
   <h3>Search by conditions</h3>
 
-  <% form_tag( { :controller => '/contacts', :action => 'lookup_results' } ) do %>
+  <% form_tag( { :controller => '/contacts', :action => 'lookup' }, {:method => "GET"} ) do %>
 
   <div class="form-element" style="width: 100%;">
     <% filters = {} %>

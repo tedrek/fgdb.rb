@@ -1,16 +1,9 @@
 class DisbursementsController < TransactionController
-  before_filter :be_a_disbursement
-
   before_filter :authorized_only, :except => ["destroy", "edit", "update"]
   before_filter :management_only, :only => ["destroy", "edit", "update"]
 
   def default_condition
     "disbursed_at"
-  end
-
-  def index
-    update_params_filter()
-    render :action => 'listing'
   end
 
   protected
@@ -22,12 +15,4 @@ class DisbursementsController < TransactionController
   def management_only
     requires_role(:ROLE_BEAN_COUNTER)
   end
-
-  def update_params_filter
-  end
-
-  def be_a_disbursement
-    set_transaction_type( 'disbursement' )
-  end
-
 end
