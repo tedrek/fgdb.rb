@@ -64,7 +64,7 @@ class TransactionController < ApplicationController
 
     @conditions = Conditions.new
     @conditions.apply_conditions((default_condition + "_enabled") => "true")
-    @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15)
+    @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15, :order => "created_at DESC")
   end
 
   def create
@@ -232,4 +232,3 @@ class TransactionController < ApplicationController
     transaction.gizmo_events.delete_if {|gizmo| gizmo.mostly_empty?}
   end
 end
-
