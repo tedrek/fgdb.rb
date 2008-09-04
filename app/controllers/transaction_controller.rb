@@ -26,6 +26,11 @@ class TransactionController < ApplicationController
 
   public
 
+  def component_update
+    @show_wrapper = false
+    search
+  end
+
   def search
     if params[:conditions] == nil
       params[:conditions] = {}
@@ -51,6 +56,12 @@ class TransactionController < ApplicationController
 
     search_options[:page] = params[:page]
     @transactions = @model.paginate( search_options )
+
+    if @show_wrapper
+      render :action => "search"
+    else
+      render :action => "search", :layout => false
+    end
   end
 
   def index

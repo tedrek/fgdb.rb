@@ -20,10 +20,23 @@
     </tbody>
   </table>
 
-  <%= will_paginate @transactions %>
+  <%# will_paginate @transactions %>
+  <%= will_paginate @transactions, :remote_options => {
+        :method => :get,
+        :update => component_id(params),
+        :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_footer_loading")}');",
+      },
+      :params => {
+        :conditions => params[:conditions],
+      }
+   %>
 </div>
 <div class="list_refinement">
-  <% form_tag ({ :action => 'search'}, :method => "GET") do %>
+  <% refine_params = params.merge({:action => 'component_update', :transaction_type => @transaction_type }) %>
+  <%# form_tag ({ :action => 'search'}, :method => "GET") do %>
+  <% form_remote_tag :url => { :action => 'component_update' },
+        :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
+        :update => component_id( refine_params ) do %>
     <% filters = {} %>
     <% filters[@default_condition] = date_or_date_range_picker('conditions', @default_condition) %>
     <% if filters['created_at'] == nil %>
