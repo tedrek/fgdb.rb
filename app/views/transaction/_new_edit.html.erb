@@ -4,11 +4,11 @@
       <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
     </div>
   </div>
-      <div class="messages-container">
-        <div id="<%= messages_id(params) %>">
-          <%= render :partial => 'messages' %>
-        </div>
-      </div>
+  <div id="<%= element_messages_id(@options) %>" class="messages-container">
+    <div id="<%= messages_id(params) %>">
+      <%= render :partial => 'form_messages' %>
+    </div>
+  </div>
   <div id="<%= form_tbody_id(params) %>"></div>
 
 <% if @receipt %>
@@ -20,7 +20,11 @@
 <div id="<%= element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
   <div id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
 
-    <% form_for @transaction, :url => @options.merge(:controller => base_controller), :html => {:method => 'POST'} do %>
+    <% form_remote_tag :url => @options.merge(:controller => base_controller),
+          :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}'); Form.disable('#{element_form_id(@options)}');",
+          :html => { :href => url_for(@options.merge(:controller => base_controller)),
+            :id => element_form_id(@options) } do %>
+    <%# form_for @transaction, :url => @options.merge(:controller => base_controller), :html => {:method => 'POST'} do %>
 
       <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type)
         %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
@@ -43,8 +47,7 @@
                        :onclick => "return validate_#{@transaction_type}();",
                        :class => "submit save")
  %>
-        <% cancel_params = @options.merge(:controller => base_controller, :action => 'cancel', :referring_action => @options[:action]) %>
-        <input type="button" value="Cancel" onclick="window.location.href=window.location.href" class="cancel" %>
+        <input type="button" value="Cancel" onclick="window.location.href='<%= "#{url_for( params.merge( { :action => 'new', :transaction_type => @transaction_type } ) )}" %>';" class="cancel" %>
 
         <%= loading_indicator_tag "form_for_#{@transaction_type}_loading" %>
       </p>

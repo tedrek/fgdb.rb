@@ -86,6 +86,18 @@ class TransactionController < ApplicationController
     rescue
       flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
+
+    render :action => 'create.rjs'
+  end
+
+  def create_without_ajax
+    begin
+      @transaction = model.new(params[@transaction_type])
+      _apply_line_item_data(@transaction)
+      @successful =  @transaction.save
+    rescue
+      flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
+    end
     if @successful
       if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
         @receipt = @transaction.id
@@ -111,6 +123,19 @@ class TransactionController < ApplicationController
   end
 
   def update
+    begin
+      @transaction = model.find(params[:id])
+      @transaction.attributes = params[@transaction_type]
+      _apply_line_item_data(@transaction)
+      @successful =  @transaction.save
+    rescue
+      flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
+    end
+
+    render :action => 'update.rjs'
+  end
+
+  def update_without_ajax
     begin
       @transaction = model.find(params[:id])
       @transaction.attributes = params[@transaction_type]
