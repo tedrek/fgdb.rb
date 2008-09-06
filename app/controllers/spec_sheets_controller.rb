@@ -38,7 +38,7 @@ class SpecSheetsController < ApplicationController
         return
       end
     end
-    @reports = SpecSheet.find(:all, :conditions => @conditions.conditions(SpecSheet))
+    @reports = SpecSheet.find(:all, :conditions => @conditions.conditions(SpecSheet), :order => "created_at ASC")
     render :action => "index"
   end
 
