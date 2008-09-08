@@ -2,8 +2,14 @@
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
   include AuthenticatedSystem
-
   layout "application"
+
+  protect_from_forgery
+  post_list = ["create", "update", "xml_create"]
+  ajax_post_list = ["new", "edit", "component_update"]
+  verify :method => :get, :except => post_list + ajax_post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
+  verify :method => :post, :xhr => true, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
+  verify :method => :post, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
 
   def with_sidebar
     "with_sidebar.html.erb"

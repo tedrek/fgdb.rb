@@ -1,6 +1,8 @@
 class SpecSheetsController < ApplicationController
   layout :with_sidebar
 
+  skip_before_filter :verify_authenticity_token, :only => ['xml_create']
+
   helper :xml
   include XmlHelper
   MINIMUM_COMPAT_VERSION=3
