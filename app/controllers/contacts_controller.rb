@@ -40,15 +40,7 @@ class ContactsController < ApplicationController
     attr_accessor :contact
   end
 
-  ######
-  public
-
-  def index
-    lookup
-    render :action => 'lookup'
-  end
-
-  def lookup
+  def setup_defaults
     if params[:defaults] == nil
       params[:defaults] = {}
       params[:defaults][:created_at_enabled] = "true"
@@ -68,7 +60,21 @@ class ContactsController < ApplicationController
 
     @defaults = Conditions.new
     @defaults.apply_conditions(params[:defaults])
+  end
+
+  ######
+  public
+
+  def index
+    setup_defaults()
+    render :action => 'lookup'
+  end
+
+  def lookup
+    setup_defaults()
     @contacts = Contact.paginate(:all, :per_page => 20, :page => params[:page], :conditions => @defaults.conditions(Contact), :order => "id ASC")
+
+    render :action => 'lookup_results'
   end
 
   def update_display_area
