@@ -9,9 +9,11 @@ class SpecSheetsController < ApplicationController
 
   def check_compat
     if !params[:version] || params[:version].empty? || params[:version].to_i < MINIMUM_COMPAT_VERSION
-      render :xml => {:compat => false, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
+      render :xml => {:compat => false, :who_knows => true, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
+    elsif !params[:version] || params[:version].empty? || params[:version].to_i > MINIMUM_COMPAT_VERSION
+      render :xml => {:compat => true, :who_knows => false, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "The server may be incompatible. This could lead to unexpected things happening. Continuing anyway..."}
     else
-      render :xml => {:compat => true}
+      render :xml => {:compat => true, :who_knows => true}
     end
   end
 
