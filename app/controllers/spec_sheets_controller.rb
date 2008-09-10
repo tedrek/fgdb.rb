@@ -5,7 +5,7 @@ class SpecSheetsController < ApplicationController
 
   helper :xml
   include XmlHelper
-  MINIMUM_COMPAT_VERSION=3
+  MY_VERSION=3
 
   def check_compat
     # server hash works like this: server_versions[server_version_here] = [arr, of, compatible, client, versions]
@@ -20,10 +20,10 @@ class SpecSheetsController < ApplicationController
     client_versions[2] = [2,3]    # first one that makes it here. forced upgrade.
     client_versions[3] = [2,3]    # forced upgrade
     client_versions[4] = [2,3,4]  # forced upgrade
-    if !params[:version] || params[:version].empty? || !server_versions[MINIMUM_COMPAT_VERSION].include?(params[:version].to_i)
-      render :xml => {:compat => false, :who_knows => true, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
-    elsif !params[:version] || params[:version].empty? || !client_versions[params[:version].to_i].include?(MINIMUM_COMPAT_VERSION)
-      render :xml => {:compat => true, :who_knows => false, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "The server may be incompatible. This could lead to unexpected things happening. Continuing anyway..."}
+    if !params[:version] || params[:version].empty? || !server_versions[MY_VERSION].include?(params[:version].to_i)
+      render :xml => {:compat => false, :who_knows => true, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
+    elsif !params[:version] || params[:version].empty? || !client_versions[params[:version].to_i].include?(MY_VERSION)
+      render :xml => {:compat => true, :who_knows => false, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "The server may be incompatible. This could lead to unexpected things happening. Continuing anyway..."}
     else
       render :xml => {:compat => true, :who_knows => true}
     end
