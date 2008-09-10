@@ -8,9 +8,21 @@ class SpecSheetsController < ApplicationController
   MINIMUM_COMPAT_VERSION=3
 
   def check_compat
-    if !params[:version] || params[:version].empty? || params[:version].to_i < MINIMUM_COMPAT_VERSION
+    # server hash works like this: server_versions[server_version_here] = [arr, of, compatible, client, versions]
+    server_versions = Hash.new([])
+    server_versions[1] = [1]      # I don't remember...but I know that it wouldn't have gotten to this point :)
+    server_versions[2] = [2,3,4]  # really 2-4 are all compatible with all versions
+    server_versions[3] = [3,4]    # force client upgrade. so of course old ones aren't compatible.
+    server_versions[4] = [4]      # yet another force client upgrade. (not yet forced yet)
+    # client hash works like this: client_versions[client_version_here] = [arr, of, compatible, server, versions]
+    client_versions = Hash.new([])
+    client_versions[1] = [1]      # dunno
+    client_versions[2] = [2,3]    # first one that makes it here
+    client_versions[3] = [2,3]    # forced upgrade
+    client_versions[4] = [4]      # I want to take out that rescue for old versions of the server when I bump the version.
+    if !params[:version] || params[:version].empty? || !server_versions[MINIMUM_COMPAT_VERSION].include?(params[:version].to_i)
       render :xml => {:compat => false, :who_knows => true, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
-    elsif !params[:version] || params[:version].empty? || params[:version].to_i > MINIMUM_COMPAT_VERSION
+    elsif !params[:version] || params[:version].empty? || !client_versions[params[:version].to_i].include?(MINIMUM_COMPAT_VERSION)
       render :xml => {:compat => true, :who_knows => false, :your_version => params[:version].to_i, :minimum_version => MINIMUM_COMPAT_VERSION, :message => "The server may be incompatible. This could lead to unexpected things happening. Continuing anyway..."}
     else
       render :xml => {:compat => true, :who_knows => true}
