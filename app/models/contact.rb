@@ -22,7 +22,7 @@ class Contact < ActiveRecord::Base
   def phone_numbers
     a = []
     contact_methods.map {|x|
-      a << x.description if (x.contact_method_type.description =~ /phone|fax/ and x.ok == true)
+      a << x.value if (x.contact_method_type.description =~ /phone|fax/ and x.ok == true)
     }
     a
   end
@@ -260,7 +260,7 @@ class Contact < ActiveRecord::Base
 
   def remove_empty_contact_methods
     for contact_method in contact_methods
-      if contact_method.description.nil? or contact_method.description.empty?
+      if contact_method.value.nil? or contact_method.value.empty?
         contact_method.destroy
       end
     end

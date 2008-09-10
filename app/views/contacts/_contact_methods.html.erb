@@ -2,7 +2,7 @@
 <tr>
 <th>type</th>
 <th>is usable</th>
-<th>description</th>
+<th>value</th>
 <th></th>
 </tr>
 <%
@@ -10,7 +10,7 @@
   if @contact.contact_methods %>
   <%
       for line in @contact.contact_methods
-        js += "add_contact_method(#{line.contact_method_type_id}, '#{line.ok}', '#{line.description}');"
+        js += "add_contact_method(#{line.contact_method_type_id}, '#{line.ok}', '#{line.value}');"
       end
   %>
 <% end %>
@@ -21,8 +21,7 @@
 <%= options_from_collection_for_select([ContactMethodType.new(:id=>1, :description=>"pick a type")] + ContactMethodType.find(:all).sort_by(&:description), "id", "description") %>
 </select></td>
 <td><input name="is_usable" id="is_usable" type="checkbox"></td>
-<td><input name="contact_method_description" id="contact_method_description" onkeydown="if(is_tab(event)) {return add_contact_method_from_form();}"></td>
+<td><input name="contact_method_value" id="contact_method_value" onkeydown="if(is_tab(event)) {return add_contact_method_from_form();}"></td>
 <td></td>
 </tr>
 </table>
-

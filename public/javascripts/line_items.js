@@ -336,7 +336,7 @@
   }
 
   function contact_method_stuff(args, tr){
-    var contact_method_description = args['contact_method_description'];
+    var contact_method_value = args['contact_method_value'];
     var contact_method_type_id = args['contact_method_type_id'];
     var contact_method_usable = args['contact_method_usable'];
     var line_id = counters[args['prefix'] + '_line_id'];
@@ -344,27 +344,27 @@
     usable_node = make_hidden("contact_methods", "ok", contact_method_usable, contact_method_usable, line_id);
     usable_node.className = "ok";
     tr.appendChild(usable_node);
-    description_node = make_hidden("contact_methods", "description", contact_method_description, contact_method_description, line_id);
+    description_node = make_hidden("contact_methods", "value", contact_method_value, contact_method_value, line_id);
     description_node.className = "description";
     tr.appendChild(description_node);
   }
 
-  function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_description) {
+  function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_value) {
     args = new Array();
     args['contact_method_type_id'] = contact_method_type_id;
     args['contact_method_usable'] = contact_method_usable;
-    args['contact_method_description'] = contact_method_description;
+    args['contact_method_value'] = contact_method_value;
     args['prefix'] = 'contact_method';
     add_line_item(args, contact_method_stuff, function () {}, function () {});
   }
 
   function add_contact_method_from_form() {
-    if($('contact_method_description').value == '' || $('contact_method_type_id').selectedIndex == 0) {
+    if($('contact_method_value').value == '' || $('contact_method_type_id').selectedIndex == 0) {
       return true;
     }
-    add_contact_method($('contact_method_type_id').value, $('is_usable').checked, $('contact_method_description').value)
+    add_contact_method($('contact_method_type_id').value, $('is_usable').checked, $('contact_method_value').value)
     $('contact_method_type_id').selectedIndex = 0; //should be default, but it's yucky
-    $('contact_method_description').value = $('contact_method_description').defaultValue;
+    $('contact_method_value').value = $('contact_method_value').defaultValue;
     $('is_usable').checked = false;
     $('contact_method_type_id').focus();
     return false;

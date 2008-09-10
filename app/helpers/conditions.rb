@@ -1,6 +1,6 @@
 class Conditions
   DATES = %w[
-      created_at recycled_at disbursed_at received_at 
+      created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
   ]
 
@@ -146,7 +146,7 @@ class Conditions
   end
 
   def email_conditions(klass)
-    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE description ILIKE '%email%') AND description ILIKE ?)", @email]
+    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE description ILIKE '%email%') AND value ILIKE ?)", @email]
   end
 
   def phone_number_conditions(klass)
@@ -156,7 +156,7 @@ class Conditions
       return [""]
     end
     phone_number = phone_number.sub(/^(.{3})(.{3})(.{4})$/, "%\\1%\\2%\\3%")
-    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE (description ILIKE '%phone%') OR (description ILIKE '%fax%')) AND description ILIKE ?)", phone_number]
+    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE (description ILIKE '%phone%') OR (description ILIKE '%fax%')) AND value ILIKE ?)", phone_number]
   end
 
   def contact_type_conditions(klass)
