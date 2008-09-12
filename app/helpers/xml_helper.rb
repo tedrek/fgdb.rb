@@ -301,15 +301,29 @@ module XmlHelper
 
     def initialize(xml)
       super()
+      if xml.nil? || xml.blank?
+        raise BadXml
+      end
       @sax = SaxParser.new(xml)
       state = @sax.parse
       @my_node = @sax.thing
-      if state = false
-        return state
-      else
-        return self
+      if state == false
+        raise BadXml
       end
+      return self
     end
+  end
+
+  def load_xml(xml)
+    begin
+      x = XmlParser.new(xml)
+    rescue BadXml
+      return false
+    end
+    x
+  end
+
+  class BadXml < StandardError
   end
 end
 

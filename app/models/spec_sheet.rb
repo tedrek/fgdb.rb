@@ -14,27 +14,45 @@ class SpecSheet < ActiveRecord::Base
   validates_existence_of :action
   validates_existence_of :contact
 
-  attr_readonly :lshw_output
+  def lshw_output=(val)
+    write_attribute(:original_output, val)
+    write_attribute(:original_valid, (load_xml(original_output) ? true : false))
+    write_attribute(:cleaned_output, val.gsub(/[^[:print:]]/, ''))
+    write_attribute(:cleaned_valid, (load_xml(cleaned_output) ? true : false))
+  end
+
+  def lshw_output
+    if cleaned_valid
+      return cleaned_output
+    elsif original_valid
+      return original_output
+    else
+      return ""
+    end
+  end
+
+  def validate
+    if @bad_xml
+      errors.add("lshw_output", "is invalid XML")
+    end
+  end
 
   def initialize(*args)
     super(*args)
 
-    if lshw_output == nil
+    if !(@parser = load_xml(lshw_output))
+      @bad_xml = true
       return
     end
 
-    if !(@parser = load_xml(lshw_output))
-      return false
-    end
-
-    xml_foreach("class", "system") {
+    @parser.xml_foreach("class", "system") {
       @system_model ||= @parser._xml_value_of("product", '/')
       @system_serial_number ||= @parser._xml_value_of("serial", '/')
       @system_vendor ||= @parser._xml_value_of("vendor", '/')
-      @mobo_model ||= xml_first("id", "core") do @parser._xml_value_of("product", '/') end
-      @mobo_serial_number ||= xml_first("id", "core") do @parser._xml_value_of("serial", '/') end
-      @mobo_vendor ||= xml_first("id", "core") do @parser._xml_value_of("vendor", '/') end
-      @macaddr ||= xml_first("id", "network") do @parser._xml_value_of("serial", '/') end
+      @mobo_model ||= @parser.xml_first("id", "core") do @parser._xml_value_of("product", '/') end
+      @mobo_serial_number ||= @parser.xml_first("id", "core") do @parser._xml_value_of("serial", '/') end
+      @mobo_vendor ||= @parser.xml_first("id", "core") do @parser._xml_value_of("vendor", '/') end
+      @macaddr ||= @parser.xml_first("id", "network") do @parser._xml_value_of("serial", '/') end
     }
 
     get_vendor

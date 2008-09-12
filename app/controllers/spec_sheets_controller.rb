@@ -71,7 +71,7 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => "index", :error => "There is no lshw output for that report!")
       return
     end
-    if !(@parser = XmlParser.new(output))
+    if !(@parser = load_xml(output))
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
@@ -107,15 +107,6 @@ class SpecSheetsController < ApplicationController
     if file != ""
       output = file.read
     end
-    if output == nil || output.empty?
-      redirect_to(:action => redirect_where_on_error, :error => "The posted lshw output was empty!")
-      return
-    end
-    if !(@parser = XmlParser.new(output))
-      redirect_to(:action => redirect_where_on_error, :error => "Invalid XML!")
-      return
-    end
-    # If we pass in the file descriptor to ActiveRecord, the file is already at the end so it will read an empty string
     params[:report].delete(:my_file)
     params[:report][:lshw_output] = output
     params[:report][:old_id]=params[:report][:system_id]
