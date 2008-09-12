@@ -1,0 +1,37 @@
+816d1de3045ecc25324fb910192f1a4b  mac-invalid-chars-fixed.xml
+3107891e72b6556df66de96e662072c0  mac-invalid-chars-fixed.xml.clean
+
+816d1de3045ecc25324fb910192f1a4b  mac-invalid-chars.xml
+3107891e72b6556df66de96e662072c0  mac-invalid-chars.xml.clean
+
+3107891e72b6556df66de96e662072c0  mac.xml
+3107891e72b6556df66de96e662072c0  mac.xml.clean
+
+b9e79e78155bf261cdef9769deecd7c6  matteo.xml
+b9e79e78155bf261cdef9769deecd7c6  matteo.xml.clean
+
+0b41e4e48acc10b3ee3173a0c128a899  bad-chars-two-times.xml
+571a3c7d72a4da785da1567192938da0  bad-chars-two-times.xml.clean
+
+f39d85d016d48c245eb3fef38ede51e0  invalid-chars.xml
+b9e79e78155bf261cdef9769deecd7c6  invalid-chars.xml.clean
+
+816d1de3045ecc25324fb910192f1a4b  mac-invalid-chars-fixed.xml
+3107891e72b6556df66de96e662072c0  mac-invalid-chars-fixed.xml.clean
+
+816d1de3045ecc25324fb910192f1a4b  mac-invalid-chars.xml
+3107891e72b6556df66de96e662072c0  mac-invalid-chars.xml.clean
+
+15bd42144bdae4449268c6ba27a2781d  more-bad-chars.xml
+15bd42144bdae4449268c6ba27a2781d  more-bad-chars.xml.clean
+
+mac-invalid-chars-fixed.xml - invalid
+mac-invalid-chars.xml - invalid
+mac.xml - valid
+matteo.xml - valid
+bad-chars-two-times.xml - invalid
+invalid-chars-fixed.xml - valid
+invalid-chars.xml - invalid
+mac-invalid-chars-fixed.xml - invalid
+mac-invalid-chars.xml - invalid
+more-bad-chars.xml - valid
