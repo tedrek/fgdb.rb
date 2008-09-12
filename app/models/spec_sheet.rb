@@ -107,7 +107,7 @@ class SpecSheet < ActiveRecord::Base
   end
 
   def serial_is_usable(value)
-    list_of_generics = ['0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'EVAL', 'Serial number xxxxxx', '00000000', 'XXXXXXXXXX', '$', 'xxxxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'DELL', '0', *COMMON_GENERICS]
+    list_of_generics = ['�����', '0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxx', 'xxxxxxxxxxx', 'XXXXXXXXXX', 'Serial number xxxxxx', 'EVAL', 'Serial number xxxxxx', '00000000', 'XXXXXXXXXX', '$', 'xxxxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'DELL', '0', *COMMON_GENERICS]
     return is_usable(value, list_of_generics)
   end
 
