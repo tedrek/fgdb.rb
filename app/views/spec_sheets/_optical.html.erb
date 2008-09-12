@@ -1,11 +1,11 @@
   <div id="optical_drives">
     <h2>Optical Drives</h2>
-    <% xml_foreach("id", "cdrom") do %>
+    <% @parser.xml_foreach("id", "cdrom") do %>
     <table>
       <tr>
         <td>Drive:</td>
         <td>
-          <%= xml_value_of("logicalname") %>
+          <%= @parser.xml_value_of("logicalname") %>
         </td>
       </tr>
       <tr>
@@ -13,7 +13,7 @@
           Description:
         </td>
         <td>
-          <%= xml_value_of("description") %>
+          <%= @parser.xml_value_of("description") %>
         </td>
       </tr>
       <tr>
@@ -21,7 +21,7 @@
           Model:
         </td>
         <td>
-          <%= xml_value_of("product") %>
+          <%= @parser.xml_value_of("product") %>
         </td>
       </tr>
     </table>

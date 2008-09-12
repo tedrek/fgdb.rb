@@ -1,13 +1,13 @@
   <div id="hard_drives">
     <h2>Hard Drives</h2>
-    <% xml_foreach("id", "disk") do %>
+    <% @parser.xml_foreach("id", "disk") do %>
     <table>
       <tr>
         <td>
           Drive:
         </td>
         <td>
-          <%= xml_value_of("logicalname") %>
+          <%= @parser.xml_value_of("logicalname") %>
         </td>
       </tr>
       <tr>
@@ -15,7 +15,7 @@
           Vendor:
         </td>
         <td>
-          <%= xml_value_of("vendor") %>
+          <%= @parser.xml_value_of("vendor") %>
         </td>
       </tr>
       <tr>
@@ -23,36 +23,36 @@
           Model:
         </td>
         <td>
-          <%= xml_value_of("product") %>
+          <%= @parser.xml_value_of("product") %>
         </td>
       </tr>
-      <% if xml_if("size") %>
+      <% if @parser.xml_if("size") %>
       <tr>
         <td>
           Capacity:
         </td>
         <td>
-          <%= xml_value_of("size").to_bytes(0, false, false) %>
+          <%= @parser.xml_value_of("size").to_bytes(0, false, false) %>
         </td>
       </tr>
       <% end %>
       <% counter = 0 %>
-      <% xml_foreach("id", "volume") do counter += 1 end %>
+      <% @parser.xml_foreach("id", "volume") do counter += 1 end %>
       <% if counter > 0 %>
       <tr>
         <td valign="top">Volumes: </td>
         <td>
           <table>
-            <% xml_foreach("id", "volume") do %>
+            <% @parser.xml_foreach("id", "volume") do %>
             <tr>
               <td>
-                <%= xml_value_of("logicalname") %>
+                <%= @parser.xml_value_of("logicalname") %>
               </td>
               <td>
-                <%= xml_value_of("description") %>
+                <%= @parser.xml_value_of("description") %>
               </td>
               <td>
-                <%= xml_value_of("capacity").to_bytes(0, false, false) %>
+                <%= @parser.xml_value_of("capacity").to_bytes(0, false, false) %>
               </td>
             </tr>
             <% end %>

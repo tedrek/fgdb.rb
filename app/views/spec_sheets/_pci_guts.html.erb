@@ -1,63 +1,63 @@
     <table>
-      <% if xml_if("@class") %>
+      <% if @parser.xml_if("@class") %>
       <tr>
         <td>Type: </td>
         <td>
-          <%= xml_value_of("@class") %>
+          <%= @parser.xml_value_of("@class") %>
         </td>
       </tr>
       <% end %>
-      <% if xml_if("description") %>
+      <% if @parser.xml_if("description") %>
       <tr>
         <td>Description: </td>
         <td>
-          <%= xml_value_of("description") %>
-          (<%= xml_value_of("@handle").sub(" ", "") %>)
+          <%= @parser.xml_value_of("description") %>
+          (<%= @parser.xml_value_of("@handle").sub(" ", "") %>)
         </td>
       </tr>
       <% end %>
-      <% if xml_if("vendor") %>
+      <% if @parser.xml_if("vendor") %>
       <tr>
         <td>Vendor: </td>
         <td>
-          <%= xml_value_of("vendor") %>
+          <%= @parser.xml_value_of("vendor") %>
         </td>
       </tr>
       <% end %>
-      <% if xml_if("product") %>
+      <% if @parser.xml_if("product") %>
       <tr>
         <td>Product: </td>
         <td>
-          <%= xml_value_of("product") %>
+          <%= @parser.xml_value_of("product") %>
         </td>
       </tr>
       <% end %>
-      <% if false && xml_value_of("@class")=="display" && xml_if("size") %>
+      <% if false && @parser.xml_value_of("@class")=="display" && @parser.xml_if("size") %>
       <tr>
         <td>Video Ram: </td>
         <td>
-          <%= xml_value_of("size").to_bytes %>
+          <%= @parser.xml_value_of("size").to_bytes %>
         </td>
       </tr>
       <% end %>
-      <% if false && xml_value_of("@class")=="network" && xml_if("configuration/setting[@id='wireless']") %>
+      <% if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("configuration/setting[@id='wireless']") %>
       <tr>
         <td>Wireless Capabilities: </td>
         <td>
-          <%= xml_value_of("configuration/setting[@id='wireless']/@value") %>
+          <%= @parser.xml_value_of("configuration/setting[@id='wireless']/@value") %>
         </td>
       </tr>
       <% end %>
-      <% if false && xml_value_of("@class")=="network" && xml_if("logicalname") %>
+      <% if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("logicalname") %>
       <tr>
         <td>Ethernet Interface: </td>
         <td>
-          <%= xml_value_of("logicalname") %>
+          <%= @parser.xml_value_of("logicalname") %>
         </td>
       </tr>
       <% end %>
-      <% if xml_value_of("@class")=="network" && xml_if("capabilities") %>
-      <% find_the_biggest("element", "capability", "@id") do |value| %>
+      <% if @parser.xml_value_of("@class")=="network" && @parser.xml_if("capabilities") %>
+      <% @parser.find_the_biggest("element", "capability", "@id") do |value| %>
       <tr>
         <td>Speed: </td>
         <td>

@@ -71,7 +71,7 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => "index", :error => "There is no lshw output for that report!")
       return
     end
-    if !load_xml(output)
+    if !(@parser = XmlParser.new(output))
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
@@ -111,7 +111,7 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => redirect_where_on_error, :error => "The posted lshw output was empty!")
       return
     end
-    if !load_xml(output)
+    if !(@parser = XmlParser.new(output))
       redirect_to(:action => redirect_where_on_error, :error => "Invalid XML!")
       return
     end

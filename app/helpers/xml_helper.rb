@@ -215,94 +215,101 @@ module XmlHelper
     end
   end
 
-  def my_node
-    @my_node
-  end
-
-  def xml_if(thing = nil, type = '//')
-    if _xml_value_of(thing, type) == nil
-      return false
-    else
-      return true
+  class XmlParser
+    def my_node
+      @my_node
     end
-  end
 
-  def xml_get_matches(type, value, find_type = '//')
-    case type
-    when 'class':
-        method = 'find_by_class'
-    when 'handle':
-        method = 'match_by_handle'
-    when 'id':
-        method = 'match_by_id'
-    when 'element':
-        method = 'find_by_element'
-    else
-      raise NoMethodError
-    end
-    return eval("@my_node.#{method}(value, find_type)")
-  end
-
-  def xml_first(type, value, find_type = '//')
-    oldnode = @my_node
-    @my_node = xml_get_matches(type, value, find_type).first
-    val = yield
-    @my_node = oldnode
-    return val
-  end
-
-  def xml_foreach(type, value, find_type = '//')
-    oldnode = @my_node
-    for i in xml_get_matches(type, value, find_type)
-      @my_node = i
-      yield
-    end
-    @my_node = oldnode
-    nil
-  end
-
-  def xml_value_of(thing = nil, type = '//')
-    if xml_if(thing)
-      return _xml_value_of(thing, type)
-    else
-      return "Unknown"
-    end
-  end
-
-  def _xml_value_of(thing, type = '//')
-    begin
-      case thing
-      when nil:
-          return @my_node.content
-      when /^@/:
-          return @my_node.attrs[thing.sub(/@/, "")]
+    def xml_if(thing = nil, type = '//')
+      if _xml_value_of(thing, type) == nil
+        return false
       else
-        return @my_node.find_by_element(thing, type).first.content
+        return true
       end
-    rescue
-      return nil
     end
-  end
 
-  def find_the_biggest(type, value, thingy, get_rid_of = "", &block)
-    array = [0.0]
-    xml_foreach(type, value) do
-      this_value = xml_value_of(thingy).gsub(/#{get_rid_of}/, '').to_f
-      array << this_value
+    def xml_get_matches(type, value, find_type = '//')
+      case type
+      when 'class':
+          method = 'find_by_class'
+      when 'handle':
+          method = 'match_by_handle'
+      when 'id':
+          method = 'match_by_id'
+      when 'element':
+          method = 'find_by_element'
+      else
+        raise NoMethodError
+      end
+      return eval("@my_node.#{method}(value, find_type)")
     end
-    value = array.max
-    if value != 0.0
-      return yield(value)
-    else
-      return nil
-    end
-  end
 
-  def load_xml(xml)
-    @sax = SaxParser.new(xml)
-    state = @sax.parse
-    @my_node = @sax.thing
-    return state
+    def xml_first(type, value, find_type = '//')
+      oldnode = @my_node
+      @my_node = xml_get_matches(type, value, find_type).first
+      val = yield
+      @my_node = oldnode
+      return val
+    end
+
+    def xml_foreach(type, value, find_type = '//')
+      oldnode = @my_node
+      for i in xml_get_matches(type, value, find_type)
+        @my_node = i
+        yield
+      end
+      @my_node = oldnode
+      nil
+    end
+
+    def xml_value_of(thing = nil, type = '//')
+      if xml_if(thing)
+        return _xml_value_of(thing, type)
+      else
+        return "Unknown"
+      end
+    end
+
+    def _xml_value_of(thing, type = '//')
+      begin
+        case thing
+        when nil:
+            return @my_node.content
+        when /^@/:
+            return @my_node.attrs[thing.sub(/@/, "")]
+        else
+          return @my_node.find_by_element(thing, type).first.content
+        end
+      rescue
+        return nil
+      end
+    end
+
+    def find_the_biggest(type, value, thingy, get_rid_of = "", &block)
+      array = [0.0]
+      xml_foreach(type, value) do
+        this_value = xml_value_of(thingy).gsub(/#{get_rid_of}/, '').to_f
+        array << this_value
+      end
+      value = array.max
+      if value != 0.0
+        return yield(value)
+      else
+        return nil
+      end
+    end
+
+    def initialize(xml)
+      super()
+      @sax = SaxParser.new(xml)
+      state = @sax.parse
+      @my_node = @sax.thing
+      if state = false
+        return state
+      else
+        return self
+      end
+    end
   end
 end
 
@@ -314,7 +321,7 @@ def load_file(file = "file.xml")
   include XmlHelper
 
   f = open(file, 'r')
-  if !load_xml(f.read)
+  if !(f.read)
     puts "failed"
     exit 1
   end

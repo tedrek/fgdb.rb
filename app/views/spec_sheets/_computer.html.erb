@@ -25,23 +25,23 @@
         <%= @report.system.serial_number %>
       </td>
     </tr>
-    <% xml_foreach("class", "processor") do %>
-      <% if xml_if("product") %>
+    <% @parser.xml_foreach("class", "processor") do %>
+      <% if @parser.xml_if("product") %>
         <tr>
           <td>
             Processor:
           </td>
           <td>
-            <%= xml_value_of("product") %>
+            <%= @parser.xml_value_of("product") %>
           </td>
         </tr>
-        <% if xml_if("size") %>
+        <% if @parser.xml_if("size") %>
           <tr>
             <td>
               Speed:
             </td>
             <td>
-              <%= xml_value_of("size").to_hertz %>
+              <%= @parser.xml_value_of("size").to_hertz %>
             </td>
           </tr>
         <% end %>
@@ -52,10 +52,10 @@
         BIOS Version:
       </td>
       <td>
-        <%= xml_first("id", "firmware") do xml_value_of("version") end %>
+        <%= @parser.xml_first("id", "firmware") do @parser.xml_value_of("version") end %>
       </td>
     </tr>
-    <% find_the_biggest("id", "usbhost", "capability", "USB ") do |value| %>
+    <% @parser.find_the_biggest("id", "usbhost", "capability", "USB ") do |value| %>
     <tr>
       <td>
         USB Version:
