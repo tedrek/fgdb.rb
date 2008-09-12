@@ -36,7 +36,15 @@ class ContactsController < ApplicationController
     requires_role('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER')
   end
 
-  def setup_defaults
+  ######
+  public
+
+  def index
+    lookup
+    render :action => 'lookup'
+  end
+
+  def lookup
     if params[:defaults] == nil
       params[:defaults] = {}
       params[:defaults][:created_at_enabled] = "true"
@@ -56,21 +64,7 @@ class ContactsController < ApplicationController
 
     @defaults = Conditions.new
     @defaults.apply_conditions(params[:defaults])
-  end
-
-  ######
-  public
-
-  def index
-    setup_defaults()
-    render :action => 'lookup'
-  end
-
-  def lookup
-    setup_defaults()
     @contacts = Contact.paginate(:all, :per_page => 20, :page => params[:page], :conditions => @defaults.conditions(Contact), :order => "id ASC")
-
-    render :action => 'lookup_results'
   end
 
   def update_display_area
