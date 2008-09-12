@@ -70,13 +70,10 @@ class SpecSheetsController < ApplicationController
     @report = SpecSheet.find(params[:id])
     output=@report.lshw_output #only call db once
     if !(output) || output == ""
-      redirect_to(:action => "index", :error => "There is no lshw output for that report!")
-      return
-    end
-    if !(@parser = load_xml(output))
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
+    @parser = load_xml(output)
     @mistake_title = "Things you might have done wrong: "
     @mistakes = []
     if !@report.notes || @report.notes == ""
