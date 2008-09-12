@@ -15,10 +15,13 @@ class SpecSheet < ActiveRecord::Base
   validates_existence_of :contact
 
   def lshw_output=(val)
-    write_attribute(:original_output, val)
-    write_attribute(:original_valid, (load_xml(original_output) ? true : false))
-    write_attribute(:cleaned_output, val.gsub(/[^[:print:]]/, ''))
-    write_attribute(:cleaned_valid, (load_xml(cleaned_output) ? true : false))
+    # if this record has already been saved, then don't let it change.
+    if id.nil?
+      write_attribute(:original_output, val)
+      write_attribute(:original_valid, (load_xml(original_output) ? true : false))
+      write_attribute(:cleaned_output, val.gsub(/[^[:print:]]/, ''))
+      write_attribute(:cleaned_valid, (load_xml(cleaned_output) ? true : false))
+    end
   end
 
   def lshw_output
