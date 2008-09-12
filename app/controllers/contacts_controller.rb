@@ -36,10 +36,6 @@ class ContactsController < ApplicationController
     requires_role('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER')
   end
 
-  class ContactHolder
-    attr_accessor :contact
-  end
-
   def setup_defaults
     if params[:defaults] == nil
       params[:defaults] = {}
@@ -54,7 +50,7 @@ class ContactsController < ApplicationController
 
     if params[:contact_id]
       @contact = Contact.find_by_id(params[:contact_id])
-      @thing = ContactHolder.new
+      @thing = OpenStruct.new
       @thing.contact = @contact
     end
 

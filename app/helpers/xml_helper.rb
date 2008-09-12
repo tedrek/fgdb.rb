@@ -299,8 +299,6 @@ module XmlHelper
   end
 
   def load_xml(xml)
-    require 'xml/libxml'
-
     @sax = SaxParser.new(xml)
     state = @sax.parse
     @my_node = @sax.thing

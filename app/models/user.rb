@@ -1,4 +1,3 @@
-require 'digest/sha1'
 class User < ActiveRecord::Base
   acts_as_userstamp
   has_and_belongs_to_many "roles"
