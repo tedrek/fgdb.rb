@@ -14,7 +14,6 @@ class SpecSheet < ActiveRecord::Base
   validates_existence_of :type
   validates_existence_of :action
   validates_existence_of :contact
-  validates_existence_of :system
 
   def lshw_output=(val)
     # if this record has already been saved, then don't let it change.
