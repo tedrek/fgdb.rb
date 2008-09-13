@@ -4,6 +4,7 @@ class SpecSheet < ActiveRecord::Base
   validates_presence_of :contact_id
   validates_presence_of :action_id
   validates_presence_of :type_id
+  validates_presence_of :system_id
 
   belongs_to :contact
   belongs_to :action
@@ -13,6 +14,7 @@ class SpecSheet < ActiveRecord::Base
   validates_existence_of :type
   validates_existence_of :action
   validates_existence_of :contact
+  validates_existence_of :system
 
   def lshw_output=(val)
     # if this record has already been saved, then don't let it change.
