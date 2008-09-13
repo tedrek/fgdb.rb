@@ -47,15 +47,6 @@ class SpecSheet < ActiveRecord::Base
     cleaned_valid || original_valid
   end
 
-# save bad xml
-=begin
-  def validate
-    if !xml_is_good
-      errors.add("lshw_output", "is invalid XML")
-    end
-  end
-=end
-
   def initialize(*args)
     super(*args)
 
