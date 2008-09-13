@@ -40,7 +40,7 @@ To upgrade to the newest sprint release:
 
 to setup a working environment:
 
- $> apt-get install ruby postgresql-8.1 libpgsql-ruby irb libxml-ruby
+ $> apt-get install ruby postgresql-8.1 libpgsql-ruby irb libxml-ruby xmlstarlet
  $> apt-get install rails #version 2.1
  $> ln -s /usr/share/rails vendor/rails
 

@@ -18,9 +18,15 @@ class SpecSheet < ActiveRecord::Base
     # if this record has already been saved, then don't let it change.
     if id.nil?
       write_attribute(:original_output, val)
-      write_attribute(:original_valid, (load_xml(original_output) ? true : false))
+      file = Tempfile.new("fgss-xml")
+      file.write(original_output)
+      file.flush
+      write_attribute(:original_valid, Kernel.system("xmlstarlet val #{file.path}"))
       write_attribute(:cleaned_output, val.gsub(/[^[:print:]]/, ''))
-      write_attribute(:cleaned_valid, (load_xml(cleaned_output) ? true : false))
+      file = Tempfile.new("fgss-xml")
+      file.write(cleaned_output)
+      file.flush
+      write_attribute(:cleaned_valid, Kernel.system("xmlstarlet val #{file.path}"))
     end
   end
 
