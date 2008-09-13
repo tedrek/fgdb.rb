@@ -35,3 +35,4 @@
   </tr>
 <% end %>
 </table>
+<%= will_paginate @reports, :params => {:conditions => params[:conditions]} %>
