@@ -4,7 +4,6 @@ class SpecSheet < ActiveRecord::Base
   validates_presence_of :contact_id
   validates_presence_of :action_id
   validates_presence_of :type_id
-  validates_presence_of :system_id
 
   belongs_to :contact
   belongs_to :action
@@ -14,6 +13,8 @@ class SpecSheet < ActiveRecord::Base
   validates_existence_of :type
   validates_existence_of :action
   validates_existence_of :contact
+
+  named_scope :good, :conditions => ["cleaned_valid = ? OR original_valid = ?", true, true]
 
   def lshw_output=(val)
     # if this record has already been saved, then don't let it change.
@@ -41,19 +42,28 @@ class SpecSheet < ActiveRecord::Base
     end
   end
 
+  def xml_is_good
+    cleaned_valid || original_valid
+  end
+
+# save bad xml
+=begin
   def validate
-    if @bad_xml
+    if !xml_is_good
       errors.add("lshw_output", "is invalid XML")
     end
   end
+=end
 
   def initialize(*args)
     super(*args)
 
-    if !(@parser = load_xml(lshw_output))
-      @bad_xml = true
+    if !xml_is_good
+      self.system_id = nil
       return
     end
+
+    @parser = load_xml(lshw_output)
 
     @parser.xml_foreach("class", "system") {
       @system_model ||= @parser._xml_value_of("product", '/')

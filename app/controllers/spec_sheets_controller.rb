@@ -69,19 +69,19 @@ class SpecSheetsController < ApplicationController
         return
       end
     end
-    @reports = SpecSheet.find(:all, :conditions => @conditions.conditions(SpecSheet), :order => "created_at ASC")
+    @reports = SpecSheet.good.find(:all, :conditions => @conditions.conditions(SpecSheet), :order => "created_at ASC")
     render :action => "index"
   end
 
   def xml_list_for_system
-    @reports = SpecSheet.find_all_by_system_id(params[:id], :order => "id")
+    @reports = SpecSheet.good.find_all_by_system_id(params[:id], :order => "id")
     render :xml => @reports
   end
 
   def show
     @report = SpecSheet.find(params[:id])
     output=@report.lshw_output #only call db once
-    if !(output) || output == ""
+    if !@report.xml_is_good
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
@@ -115,7 +115,7 @@ class SpecSheetsController < ApplicationController
 
   def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
     file = params[:report][:my_file]
-    if file != ""
+    if !file.nil?
       output = file.read
     end
     params[:report].delete(:my_file)
@@ -125,7 +125,11 @@ class SpecSheetsController < ApplicationController
     @report = SpecSheet.new(params[:report])
     begin
       @report.save!
-      redirect_to(:action => redirect_where_on_success, :id => @report.id)
+      if @report.xml_is_good
+        redirect_to(:action => redirect_where_on_success, :id => @report.id)
+      else
+        redirect_to(:action => redirect_where_on_error, :error => "Invalid XML! Report id is #{@report.id}. Please report this bug.")
+      end
     rescue
       redirect_to(:action => redirect_where_on_error, :error => "Could not save the database record: #{$!.to_s}")
     end
