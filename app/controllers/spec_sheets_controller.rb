@@ -12,8 +12,8 @@ class SpecSheetsController < ApplicationController
     server_versions = Hash.new([])
     server_versions[1] = [1]      # I don't remember...but I know that it wouldn't have gotten to this point :)
     server_versions[2] = [2,3,4]  # really 2-4 are all compatible with all versions
-    server_versions[3] = [3,4]    # force client upgrade. so of course old ones aren't compatible.
-    server_versions[4] = [4]      # yet another force client upgrade. (not yet forced yet)
+    server_versions[3] = [3,4]    # force client upgrade. so of course old ones aren't compatible. (field renames)
+    server_versions[4] = [4]      # yet another force client upgrade. (server version checking)
     server_versions[5] = [5]      # force upgrade. printme no longer fixes the xml.
     # client hash works like this: client_versions[client_version_here] = [arr, of, compatible, server, versions]
     client_versions = Hash.new([])
@@ -21,11 +21,11 @@ class SpecSheetsController < ApplicationController
     client_versions[2] = [2,3]    # first one that makes it here. forced upgrade.
     client_versions[3] = [3]      # forced upgrade
     client_versions[4] = [3,4]    # forced upgrade
-    client_versions[5] = [5]      # forced
+    client_versions[5] = [5]      # forced. the server needs to clean the xml now since printme isn't.
     # Note that I'd like to call this client_compat and server_compat instead of compat and who_knows, but that will break new clients with old servers, which would be bad. (or I could account for that and make a big mess...)
-    if !params[:version] || params[:version].empty? || !server_versions[MY_VERSION].include?(params[:version].to_i)
+    if !params[:version] || params[:version].empty? || !server_versions[MY_VERSION].is_a?(Array) || !server_versions[MY_VERSION].include?(params[:version].to_i)
       render :xml => {:compat => false, :who_knows => true, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
-    elsif !params[:version] || params[:version].empty? || !client_versions[params[:version].to_i].include?(MY_VERSION)
+    elsif !params[:version] || params[:version].empty? || !client_versions[params[:version].to_i].is_a?(Array) || !client_versions[params[:version].to_i].include?(MY_VERSION)
       render :xml => {:compat => true, :who_knows => false, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "The server may be incompatible. This could lead to unexpected things happening. Continuing anyway..."}
     else
       render :xml => {:compat => true, :who_knows => true}
