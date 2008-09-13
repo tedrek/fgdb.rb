@@ -26,7 +26,7 @@ class SpecSheetsController < ApplicationController
     if !params[:version] || params[:version].empty? || !server_versions[MY_VERSION].is_a?(Array) || !server_versions[MY_VERSION].include?(params[:version].to_i)
       render :xml => {:compat => false, :who_knows => true, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
     elsif !params[:version] || params[:version].empty? || !client_versions[params[:version].to_i].is_a?(Array) || !client_versions[params[:version].to_i].include?(MY_VERSION)
-      render :xml => {:compat => true, :who_knows => false, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "The server may be incompatible. This could lead to unexpected things happening. Continuing anyway..."}
+      render :xml => {:compat => true, :who_knows => false, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "The server is incompatible. exiting."}
     else
       render :xml => {:compat => true, :who_knows => true}
     end
