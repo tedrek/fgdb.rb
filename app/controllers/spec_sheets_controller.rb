@@ -32,9 +32,21 @@ class SpecSheetsController < ApplicationController
     end
   end
 
+  def original_dump; dump; end
+  def cleaned_dump; dump; end
+  def orig_dump; dump; end
+  def clean_dump; dump; end
+
   def dump
     response.headers['content-type'] = "application/xml; charset=utf-8"
-    render :text => SpecSheet.find(params[:id]).lshw_output
+    thing = "lshw_output"
+    if action_name().match(/clean/)
+      thing = "cleaned_output"
+    end
+    if action_name().match(/orig/)
+      thing = "original_output"
+    end
+    render :text => eval("SpecSheet.find(params[:id]).#{thing}")
   end
 
   def xml_index
