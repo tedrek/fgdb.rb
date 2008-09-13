@@ -1,0 +1,81 @@
+#!/bin/sh
+
+echo "Testing to see if you have everything required for fgdb to run..."
+echo
+
+STATUS=0
+
+fail(){
+    STATUS=1
+    echo "FAILED"
+    echo "  $@"
+}
+
+error(){
+    fail "$@"
+    echo
+    echo "After doing that, retry this script."
+    exit $STATUS # 1
+}
+
+start(){
+    echo -n "$@"
+}
+
+good(){
+    echo "GOOD"
+}
+
+# Usage: run "checking for blah..." "which thing_to_look_for" "message_to_fix" "fail|error|return"
+
+require_test(){
+    if [ "$GEMS" = "true" ]; then
+        ruby -r rubygems -r $1 -e puts
+    else
+        ruby -r $1 -e puts
+    fi
+}
+
+run(){
+    if [ "$4" != "return" ]; then
+        echo -n $1
+    fi
+    $2 2>/dev/null 1>/dev/null
+    if [ $? != 0 ]; then
+        if [ "$4" = "error" ]; then
+            error "$3"
+        elif [ "$4" = "fail" ]; then
+            fail "$3"
+        elif [ "$4" = "return" ]; then
+            return 1
+        else
+            echo "Error in test script. Please report a bug."
+        fi
+    else
+        if [ "$4" = "return" ]; then
+            return 0
+        else
+            good
+        fi
+    fi
+}
+
+setup_stuff(){
+    run "..." "require_test rubygems" "..." "return"
+    if [ $? = 0 ]; then
+        GEMS="true"
+    else
+        GEMS="false"
+    fi
+}
+
+run "Checking to see if ruby is installed..." "which ruby" "install ruby" "error"
+setup_stuff # only runable if ruby is installed
+run "Checking to see if rails is installed..." "ruby $(dirname $0)/../config/boot.rb" "install rails" "error"
+run "Checking to see if rails is correct version..." "ruby -r $(dirname $0)/../config/boot.rb -e test_version(2,1,0)" "upgrade rails to version 2.1.0" "fail"
+run "Checking to see if libxml-ruby is installed..." "require_test xml/libxml" "install libxml-ruby" "fail"
+run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
+run "Checking to see if postgres is installed and running..." "[ $(pgrep -c -x postgres) != \"0\" ]" "install and start postgres" "fail"
+
+exit $STATUS
+

@@ -38,11 +38,15 @@ To upgrade to the newest sprint release:
  $> cd current
  $> RAILS_ENV=production rake db:migrate
 
-to setup a working environment:
+to setup a working environment on debian and ubuntu (skip this part on other distros):
 
  $> apt-get install ruby postgresql-8.1 libpgsql-ruby irb libxml-ruby xmlstarlet
  $> apt-get install rails #version 2.1
  $> ln -s /usr/share/rails vendor/rails
+
+check if things are installed, and find out what you need to install:
+
+ $> ./script/do_i_have_everything_installed_right
 
 you need to create and configure the databases:
 
