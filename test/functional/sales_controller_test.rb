@@ -68,8 +68,4 @@ class SalesControllerTest < ActionController::TestCase
     conditions = assigns(:conditions)
     assert_equal date, conditions.created_at_date
   end
-
-  def test_that_cruise_works
-    raise NoMethodError
-  end
 end
