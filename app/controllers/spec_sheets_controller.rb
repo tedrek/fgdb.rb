@@ -22,8 +22,9 @@ class SpecSheetsController < ApplicationController
     client_versions[3] = [3]      # forced upgrade
     client_versions[4] = [3,4]    # forced upgrade
     client_versions[5] = [5]      # forced. the server needs to clean the xml now since printme isn't.
-    # Note that I'd like to call this client_compat and server_compat instead of compat and who_knows, but that will break new clients with old servers, which would be bad. (or I could account for that and make a big mess...)
-    if !params[:version] || params[:version].empty? || !server_versions[MY_VERSION].is_a?(Array) || !server_versions[MY_VERSION].include?(params[:version].to_i)
+    if !client_versions.include?(params[:version].to_i)
+      render :xml => {:cli_compat => true, :ser_compat => false, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "The server is incompatible. exiting."}
+    elsif !params[:version] || params[:version].empty? || !server_versions[MY_VERSION].is_a?(Array) || !server_versions[MY_VERSION].include?(params[:version].to_i)
       render :xml => {:cli_compat => false, :ser_compat => true, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."}
     elsif !params[:version] || params[:version].empty? || !client_versions[params[:version].to_i].is_a?(Array) || !client_versions[params[:version].to_i].include?(MY_VERSION)
       render :xml => {:cli_compat => true, :ser_compat => false, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "The server is incompatible. exiting."}

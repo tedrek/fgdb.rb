@@ -46,10 +46,16 @@ class SpecSheetsControllerTest < ActionController::TestCase
     assert_redirected_to :controller => 'spec_sheets', :action => "xml_show" #HERE
   end
 
-  def test_that_version_compat_fails
-    get :check_compat, { :version => 1000 }
+  def test_that_version_client_compat_works
+    get :check_compat, { :version => 1 }
     assert_tag :tag => "cli-compat", :child => { :content => "false" }
     assert_tag :tag => "ser-compat", :child => { :content => "true" }
+  end
+
+  def test_that_version_server_compat_works
+    get :check_compat, { :version => 1000 }
+    assert_tag :tag => "cli-compat", :child => { :content => "true" }
+    assert_tag :tag => "ser-compat", :child => { :content => "false" }
   end
 
   def test_that_compat_works_with_right_version
