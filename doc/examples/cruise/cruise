@@ -1,0 +1,23 @@
+#!/bin/sh
+
+case "$1" in
+    start)
+	sudo su - -c "/home/cruise/cruise/cruise start -p 8000 -b 127.0.0.1 -d" cruise
+	;;
+    stop)
+	kill `ps aux | awk '/^cruise/{print $2}'`
+	THING=0
+	while [ $THING -lt 5 ] && [ -n "$(ps aux | awk '/^cruise/{print $2}')" ]; do
+	    THING=$(( $THING + 1 ))
+	    sleep 1
+	done
+	kill -s 9 `ps aux | awk '/^cruise/{print $2}'`
+	;;
+    restart)
+	$0 stop
+	$0 start
+	;;
+    *)
+	echo "usage: $i start|stop"
+	;;
+esac

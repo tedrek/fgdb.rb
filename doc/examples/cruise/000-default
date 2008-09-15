@@ -1,0 +1,18 @@
+ServerName area.freegeek.org
+
+<VirtualHost *:80>
+	     ServerName area.freegeek.org
+
+	     ProxyPass / http://127.0.0.1:8000/ retry=60
+	     ProxyPassReverse / http://127.0.0.1:8000/
+
+	     <Proxy *>
+	     Order Allow,Deny
+	     Allow from all
+
+	     AuthName "fgdb.rb CruiseControl.rb"
+	     AuthType Basic
+	     AuthUserFile /etc/apache2/passwd
+	     Require valid-user
+	     </Proxy>
+</VirtualHost>
