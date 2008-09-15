@@ -6,7 +6,7 @@ Project.configure do |project|
   project.email_notifier.emails = ['fgdb-commits@lists.freegeek.org']
 
   # Set email 'from' field to john@doe.com:
-  # project.email_notifier.from = 'john@doe.com'
+  project.email_notifier.from = 'cruise@freegeek.org'
 
   # Build the project by invoking rake task 'custom'
   # project.rake_task = 'custom'
