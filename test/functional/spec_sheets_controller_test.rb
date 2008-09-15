@@ -8,7 +8,7 @@ class SpecSheetsControllerTest < ActionController::TestCase
     get :xml_create, REQUIRED_DATA.merge({:my_file => file})
     file.close
     assert_response :redirect
-    assert_redirected_to :controller => 'spec_sheets', :action => "xml_index", :error => "The posted lshw output was empty!"
+    assert_redirected_to :controller => 'spec_sheets', :action => "xml_index"
   end
 
   def test_that_xml_system_show_does_not_show_a_nonexistant_system
@@ -27,7 +27,7 @@ class SpecSheetsControllerTest < ActionController::TestCase
     get :xml_create, REQUIRED_DATA.merge({:my_file => file})
     file.close
     assert_response :redirect
-    assert_redirected_to :controller => 'spec_sheets', :action => "xml_index", :error => "Invalid XML!"
+    assert_redirected_to :controller => 'spec_sheets', :action => "xml_index"
   end
 
   def test_that_good_xml_files_succeed
@@ -48,11 +48,13 @@ class SpecSheetsControllerTest < ActionController::TestCase
 
   def test_that_version_compat_fails
     get :check_compat, { :version => 1000 }
-    assert_tag :tag => "compat", :child => { :content => "true" }
+    assert_tag :tag => "cli-compat", :child => { :content => "false" }
+    assert_tag :tag => "ser-compat", :child => { :content => "true" }
   end
 
-  def test_that_version_compat_succeeds
-    get :check_compat, { :version => 0 }
-    assert_tag :tag => "compat", :child => { :content => "false" }
+  def test_that_compat_works_with_right_version
+    get :check_compat, {:version => SpecSheetsController::MY_VERSION}
+    assert_tag :tag => "cli-compat", :child => { :content => "true" }
+    assert_tag :tag => "ser-compat", :child => { :content => "true" }
   end
 end
