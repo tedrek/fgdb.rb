@@ -5,7 +5,34 @@ class KeepOrigLshwXmlToo < ActiveRecord::Migration
     add_column "spec_sheets", :original_output, :text
     add_column "spec_sheets", :cleaned_valid, :boolean
     add_column "spec_sheets", :original_valid, :boolean
-    SpecSheet.connection.execute("UPDATE spec_sheets SET original_output=lshw_output")
+
+    ["UPDATE spec_sheets
+        SET contact_id=1
+        WHERE contact_id IS NULL",
+     "ALTER TABLE spec_sheets
+        ADD CONSTRAINT spec_sheets_contacts_fk
+        FOREIGN KEY (contact_id)
+        REFERENCES contacts(id)",
+     "ALTER TABLE spec_sheets
+        ALTER COLUMN contact_id
+        SET NOT NULL",
+     "UPDATE spec_sheets
+        SET type_id=1
+        WHERE type_id IS NULL",
+     "ALTER TABLE spec_sheets
+        ADD CONSTRAINT spec_sheets_types_fk
+        FOREIGN KEY (type_id)
+        REFERENCES types(id)",
+     "ALTER TABLE spec_sheets
+        ALTER COLUMN type_id
+        SET NOT NULL",
+     "UPDATE spec_sheets
+        SET original_output=lshw_output",
+    ].each do |sql|
+      puts "executing: #{sql}"
+      SpecSheet.connection.execute(sql)
+    end
+
     remove_column "spec_sheets", :lshw_output
     SpecSheet.find(:all).each{|x|
       if x.original_output
