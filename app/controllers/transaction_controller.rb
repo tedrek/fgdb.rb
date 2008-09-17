@@ -32,36 +32,33 @@ class TransactionController < ApplicationController
   end
 
   def search
+    @show_wrapper = true if @show_wrapper.nil?
+    @conditions = Conditions.new
+    @model = model
+
     if params[:conditions] == nil
       params[:conditions] = {}
-      params[:conditions][(default_condition + "_enabled").to_sym] = "true"
-    end
-    @default_condition = default_condition
-    @show_wrapper = true if @show_wrapper.nil?
-    @model = model
-    @sort_sql = @model.default_sort_sql
-    @conditions = Conditions.new
-    @conditions.apply_conditions(params[:conditions])
-    @conditions
-    search_options = {
-      :order => @sort_sql,
-      :per_page => 20,
-      :include => [:gizmo_events],
-      :conditions => @conditions.conditions(@model)
-    }
-
-    if @model.new.respond_to?( :payments )
-      search_options[:include] << :payments
-    end
-
-    search_options[:page] = params[:page]
-    @transactions = @model.paginate( search_options )
-
-    if @show_wrapper
-      render :action => "search"
+      @transactions = nil
     else
-      render :action => "search", :layout => false
+      @sort_sql = @model.default_sort_sql
+      @conditions.apply_conditions(params[:conditions])
+      @conditions
+      search_options = {
+        :order => @sort_sql,
+        :per_page => 20,
+        :include => [:gizmo_events],
+        :conditions => @conditions.conditions(@model)
+      }
+
+      if @model.new.respond_to?( :payments )
+        search_options[:include] << :payments
+      end
+
+      search_options[:page] = params[:page]
+      @transactions = @model.paginate( search_options )
     end
+
+    render :action => "search", :layout => @show_wrapper
   end
 
   def index
