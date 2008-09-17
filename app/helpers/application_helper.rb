@@ -344,14 +344,14 @@ module ApplicationHelper
 
   def new_edit_link(link_id, options, form_id = nil)
     new_make_link(link_id,
-              image_tag("edit.png", :alt => "edit", :title => "edit", :style => "border: 0"),
+              image_tag("edit.png", :alt => "edit", :title => "edit", :class => "image-link"),
               options,
               form_id)
   end
 
   def new_delete_link(link_id, options, form_id = nill)
     new_make_link(link_id,
-              image_tag("remove.png", :alt => "delete", :title => "delete", :style => "border: 0"),
+              image_tag("remove.png", :alt => "delete", :title => "delete", :class => "image-link"),
               options,
               form_id)
   end
