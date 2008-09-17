@@ -35,6 +35,10 @@ module GizmoTransaction
     payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
   end
 
+  def invoice_resolved?
+    return !invoice_resolved_at.nil? && invoiced?
+  end
+
   def total_paid?
     money_tendered_cents >= calculated_total_cents
   end

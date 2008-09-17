@@ -32,51 +32,67 @@
   </tr>
 <% end %>
 
-<% if @donation.cash_donation_paid_cents.nonzero? %>
-  <tr>
-    <td></td>
-    <td> Donation Paid (tax deductible): </td>
-    <td><%= my_number_to_currency(@donation.cash_donation_paid_cents) %></td>
-  </tr>
-<% end %>
-<% if @donation.invoiced? and @donation.cash_donation_owed_cents.nonzero? %>
-  <tr>
-    <td></td>
-    <td> Cash Donation Owed (tax deductible <strong>after payment</strong>) </td>
-    <td><%= my_number_to_currency(@donation.cash_donation_owed_cents) %></td>
-  </tr>
-<% end %>
-
+<% if @donation.invoice_resolved? -%>
+    <tr>
+      <td></td>
+      <td> Donation Paid (tax deductible): </td>
+      <td><%= my_number_to_currency(@donation.cash_donation_paid_cents + @donation.cash_donation_owed_cents) %></td>
+    </tr>
+<% else -%>
+  <% if @donation.cash_donation_paid_cents.nonzero? %>
+    <tr>
+      <td></td>
+      <td> Donation Paid (tax deductible): </td>
+      <td><%= my_number_to_currency(@donation.cash_donation_paid_cents) %></td>
+    </tr>
+  <% end %>
+  <% if @donation.invoiced? and @donation.cash_donation_owed_cents.nonzero? %>
+    <tr>
+      <td></td>
+      <td> Cash Donation Owed (tax deductible <strong>after payment</strong>) </td>
+      <td><%= my_number_to_currency(@donation.cash_donation_owed_cents) %></td>
+    </tr>
+  <% end -%>
+<% end -%>
 <tr>
     <td></td>
     <td>Total Deductible Donation:</td>
     <td>_________</td>
 </tr>
 
-<% if @donation.required_fee_paid_cents.nonzero? %>
+<% if @donation.invoice_resolved? -%>
   <tr>
     <td></td>
     <td> Required Fee Paid
       (<strong>not</strong> deductible): </td>
-    <td><%= my_number_to_currency(@donation.required_fee_paid_cents) %></font></td>
+    <td><%= my_number_to_currency(@donation.required_fee_paid_cents + @donation.required_fee_owed_cents) %></font></td>
   </tr>
-<% end %>
-
-<% if @donation.invoiced? and @donation.required_fee_owed_cents.nonzero? %>
-  <tr>
-    <td></td>
-    <td> Required Fee Due
-      (<strong>not</strong> deductible): </td>
-    <td><%= my_number_to_currency(@donation.required_fee_owed_cents) %></font></td>
-  </tr>
-<% end %>
-
-<% if @donation.invoiced? %>
-  <tr><td colspan="4">&nbsp;</td></tr>
-  <tr>
+<% else -%>
+  <% if @donation.required_fee_paid_cents.nonzero? %>
+    <tr>
       <td></td>
-      <td><strong>Total Amount Still Owed:</strong></td>
-      <td><strong><%= my_number_to_currency(@donation.amount_invoiced_cents) %></strong></td>
-  </tr>
+      <td> Required Fee Paid
+        (<strong>not</strong> deductible): </td>
+      <td><%= my_number_to_currency(@donation.required_fee_paid_cents) %></font></td>
+    </tr>
+  <% end %>
+
+  <% if @donation.invoiced? and @donation.required_fee_owed_cents.nonzero? %>
+    <tr>
+      <td></td>
+      <td> Required Fee Due
+        (<strong>not</strong> deductible): </td>
+      <td><%= my_number_to_currency(@donation.required_fee_owed_cents) %></font></td>
+    </tr>
+  <% end %>
+
+  <% if @donation.invoiced? %>
+    <tr><td colspan="4">&nbsp;</td></tr>
+    <tr>
+        <td></td>
+        <td><strong>Total Amount Still Owed:</strong></td>
+        <td><strong><%= my_number_to_currency(@donation.amount_invoiced_cents) %></strong></td>
+    </tr>
+  <% end %>
 <% end %>
 </tbody></table>

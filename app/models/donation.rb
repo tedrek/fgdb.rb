@@ -187,10 +187,6 @@ class Donation < ActiveRecord::Base
     money_tendered_cents >= calculated_required_fee_cents
   end
 
-  def invoiced?
-    payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
-  end
-
   def overunder_cents(only_required = false)
     if only_required
       money_tendered_cents - calculated_required_fee_cents
