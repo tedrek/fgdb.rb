@@ -25,7 +25,14 @@
     <img src="/images/freegeeklogo.png" alt="freegeeklogo.png" />
   </div>
 
+<% if !(session[:unauthorized_error] && !logged_in?) %>
   <%= render :partial => "sessions/you_are_here" %>
+<% else %>
+  <% session[:unauthorized_error] = false %> <%# rails renders the layouts last %>
+  <% session[:unauthorized_controller] = nil %>
+  <% session[:unauthorized_action] = nil %>
+  <%= javascript_tag "var pixelsize='0px';" %>
+<% end %>
 
   <%= render :partial => 'sidebar_links/sidebar' %>
 

@@ -15,6 +15,12 @@
       %>
     <% end %>
   <% else -%>
+<% if flash[:error] %>
+  <%= javascript_tag "if($('content')){ $('content').style.top='60px';} else { var pixelsize='60px';}" %>
+  <div class="error"><%= flash[:error] %></div>
+<% else %>
+  <%= javascript_tag "if($('content')){ $('content').style.top='40px';} else { var pixelsize='40px';}" %>
+<% end %>
     <%= render :partial => "sessions/form" %>
   <% end -%>
 </div>

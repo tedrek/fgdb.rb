@@ -46,6 +46,8 @@ class ApplicationController < ActionController::Base
       return true
     else
       session[:unauthorized_error] = true
+      session[:unauthorized_controller] = controller_name()
+      session[:unauthorized_action] = action_name()
       redirect_to :controller => 'sidebar_links'
       return false
     end
@@ -56,6 +58,8 @@ class ApplicationController < ActionController::Base
       return true
     else
       session[:unauthorized_error] = true
+      session[:unauthorized_controller] = controller_name()
+      session[:unauthorized_action] = action_name()
       redirect_to :controller => 'sidebar_links'
       return false
     end

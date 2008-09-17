@@ -1,8 +1,18 @@
 <h1 class="welcome">Welcome to the Free Geek Database</h1>
 
 <% if session[:unauthorized_error] %>
-<span class="error">You have insufficient privilages to access that!</span>
-<% session[:unauthorized_error] = false %>
+  <span class="error">You have insufficient privilages to access that!</span>
+  <% if !logged_in? %>
+    <br />
+    Please log in:
+    <%= render :partial => 'sessions/form' %>
+    <br/>
+    <br/>
+  <% else %>
+    <% session[:unauthorized_error] = false %>
+    <% session[:unauthorized_controller] = nil %>
+    <% session[:unauthorized_action] = nil %>
+  <% end %>
 <% end %>
 
 <% if session[:logout_message] %>
