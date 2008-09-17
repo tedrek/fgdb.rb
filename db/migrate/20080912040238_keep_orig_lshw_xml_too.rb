@@ -10,21 +10,19 @@ class KeepOrigLshwXmlToo < ActiveRecord::Migration
         SET contact_id=1
         WHERE contact_id IS NULL",
      "ALTER TABLE spec_sheets
-        ADD CONSTRAINT spec_sheets_contacts_fk
-        FOREIGN KEY (contact_id)
-        REFERENCES contacts(id)",
-     "ALTER TABLE spec_sheets
         ALTER COLUMN contact_id
         SET NOT NULL",
      "UPDATE spec_sheets
         SET type_id=1
         WHERE type_id IS NULL",
      "ALTER TABLE spec_sheets
-        ADD CONSTRAINT spec_sheets_types_fk
-        FOREIGN KEY (type_id)
-        REFERENCES types(id)",
-     "ALTER TABLE spec_sheets
         ALTER COLUMN type_id
+        SET NOT NULL",
+     "UPDATE spec_sheets
+        SET action_id=4
+        WHERE action_id IS NULL",
+     "ALTER TABLE spec_sheets
+        ALTER COLUMN action_id
         SET NOT NULL",
      "UPDATE spec_sheets
         SET original_output=lshw_output",
