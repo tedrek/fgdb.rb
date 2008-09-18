@@ -2,8 +2,24 @@
 
 task :cruise do
   ['db:drop', 'db:create', 'db:data:revert_stuff', 'db:schema:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
-    puts "Raking #{x}"
-    if !system("rake #{x}")
+    arr = x.split(":")
+    if arr.length > 1
+      string = "#{arr[arr.length - 1]}ing the #{arr[arr.length - 2]}"
+    else
+      string = "#{arr[arr.length - 1]}ing"
+    end
+    (string.length + 4).times{
+      print '='
+    }
+    puts ""
+    print '| '
+    print string
+    puts ' |'
+    (string.length + 4).times{
+      print '='
+    }
+    puts ""
+   if !system("rake #{x} 2>/dev/null >/dev/null")
       exit 1
     end
   }
