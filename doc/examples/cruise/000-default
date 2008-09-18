@@ -2,7 +2,9 @@ ServerName area.freegeek.org
 
 <VirtualHost *:80>
 	     ServerName area.freegeek.org
+	     DocumentRoot /home/cruise/.cruise/projects/fgdb/work/doc/autodoc
 
+             ProxyPass /autodoc !
 	     ProxyPass / http://127.0.0.1:8000/ retry=60
 	     ProxyPassReverse / http://127.0.0.1:8000/
 
