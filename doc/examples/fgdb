@@ -1,0 +1,19 @@
+# -*- Conf-Space -*-
+# place in /etc/logrotate.d/
+
+/var/www/fgdb.rb/current/log/ {
+        daily
+        missingok
+        notifempty
+        nocreate
+        rotate 50
+        compress
+        delaycompress
+        # copied from apache's, since it might need to be restarted.
+        sharedscripts
+        postrotate
+                if [ -f "`. /etc/apache2/envvars ; echo ${APACHE_PID_FILE:-/var/run/apache2.pid}`" ]; then
+                        /etc/init.d/apache2 restart > /dev/null
+                fi
+        endscript
+}
