@@ -24,12 +24,12 @@ class SpecSheet < ActiveRecord::Base
       file = Tempfile.new("fgss-xml")
       file.write(original_output)
       file.flush
-      write_attribute(:original_valid, Kernel.system("xmlstarlet val #{file.path}"))
+      write_attribute(:original_valid, Kernel.system("xmlstarlet val #{file.path} >/dev/null 2>/dev/null"))
       write_attribute(:cleaned_output, val.gsub(/[^[:print:]\n\t]/, ''))
       file = Tempfile.new("fgss-xml")
       file.write(cleaned_output)
       file.flush
-      write_attribute(:cleaned_valid, Kernel.system("xmlstarlet val #{file.path}"))
+      write_attribute(:cleaned_valid, Kernel.system("xmlstarlet val #{file.path} >/dev/null 2>/dev/null"))
     end
   end
 
