@@ -9,10 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080826191839) do
+ActiveRecord::Schema.define(:version => 20080920030019) do
 
   create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-get_sort_name_sql
+
 
 DECLARE
     IS_ORG ALIAS FOR $1 ;
@@ -40,15 +41,18 @@ BEGIN
     END IF;
     RETURN '';
 END;
+
     get_sort_name_sql
   }
   create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
     <<-contact_trigger_sql
 
+
 BEGIN
     NEW.sort_name := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.surname, NEW.organization);
     RETURN NEW;
 END;
+
     contact_trigger_sql
   }
   create_table "actions", :force => true do |t|
@@ -88,7 +92,7 @@ END;
 
   create_table "contact_methods", :force => true do |t|
     t.integer  "contact_method_type_id",                               :null => false
-    t.string   "description",            :limit => 100
+    t.string   "value",                  :limit => 100
     t.boolean  "ok"
     t.integer  "contact_id"
     t.integer  "lock_version",                          :default => 0, :null => false
@@ -351,19 +355,22 @@ END;
 
   create_table "spec_sheets", :force => true do |t|
     t.integer  "system_id"
-    t.integer  "contact_id"
-    t.integer  "action_id"
-    t.text     "lshw_output"
-    t.integer  "lock_version", :default => 0, :null => false
+    t.integer  "contact_id",                     :null => false
+    t.integer  "action_id",                      :null => false
+    t.integer  "lock_version",    :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",   :default => 1, :null => false
-    t.integer  "updated_by",   :default => 1, :null => false
+    t.integer  "created_by",      :default => 1, :null => false
+    t.integer  "updated_by",      :default => 1, :null => false
     t.integer  "old_id"
     t.text     "notes"
-    t.integer  "type_id"
+    t.integer  "type_id",                        :null => false
     t.string   "os"
     t.boolean  "flag"
+    t.text     "cleaned_output"
+    t.text     "original_output"
+    t.boolean  "cleaned_valid"
+    t.boolean  "original_valid"
   end
 
   add_index "spec_sheets", ["contact_id"], :name => "reports_contact_id_index"
@@ -463,8 +470,6 @@ END;
 
   add_foreign_key "disbursements", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "disbursements_contacts_fk"
   add_foreign_key "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :on_delete => :restrict, :name => "disbursements_disbursements_type_id_fk"
-  add_foreign_key "disbursements", ["contact_id"], "contacts", ["id"], :on_update => :cascade, :on_delete => :set_null, :name => "disbursements_contact_id_fkey"
-  add_foreign_key "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :on_update => :cascade, :on_delete => :set_null, :name => "disbursements_disbursement_type_id_fkey"
 
   add_foreign_key "discount_schedules_gizmo_types", ["discount_schedule_id"], "discount_schedules", ["id"], :on_delete => :cascade, :name => "discount_schedules_gizmo_types_discount_schedules_fk"
   add_foreign_key "discount_schedules_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "discount_schedules_gizmo_types_gizmo_types_fk"
@@ -486,7 +491,6 @@ END;
 
   add_foreign_key "payments", ["payment_method_id"], "payment_methods", ["id"], :on_delete => :restrict, :name => "payments_payment_methods_fk"
   add_foreign_key "payments", ["donation_id"], "donations", ["id"], :on_delete => :cascade, :name => "payments_donation_id_fk"
-  add_foreign_key "payments", ["sale_id"], "sales", ["id"], :on_delete => :cascade, :name => "payments_sale_id_fk"
   add_foreign_key "payments", ["sale_id"], "sales", ["id"], :name => "payments_sale_txn_id_fkey"
 
   add_foreign_key "roles_users", ["user_id"], "users", ["id"], :name => "roles_users_user_id_fkey"
