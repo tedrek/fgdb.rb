@@ -1,10 +1,12 @@
 class TransactionController < ApplicationController
   layout :check_for_receipt
 
-  before_filter :set_action_name
+  before_filter :set_defaults
   before_filter :be_a_thing
-  def set_action_name
+
+  def set_defaults
     @action_name=action_name
+    @return_to_search = "false"
   end
 
   def be_a_thing
@@ -67,6 +69,8 @@ class TransactionController < ApplicationController
       }
       @transactions = @model.paginate( search_options )
     end
+
+    @return_to_search = "true"
 
     render :action => "search", :layout => @show_wrapper
   end

@@ -11,7 +11,7 @@
     <tbody id="<%= tbody_id(params) %>">
       <tr></tr>
       <% if !(@transactions.nil? || @transactions.empty?) %>
-        <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false, :return_to_search=>true } %>
+        <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false} %>
       <% end %>
     </tbody>
   </table>

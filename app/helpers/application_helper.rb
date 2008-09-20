@@ -359,7 +359,7 @@ module ApplicationHelper
   def new_make_link(link_id, image_tag, options, form_id = nil)
     ify = form_id ? "form_has_not_been_edited('#{form_id}') ||" : ""
     html = %Q[
-      <a id="#{link_id}" href="#{options[:url][:controller]}/#{options[:url][:action]}/#{options[:url][:id]}#{options[:url][:return_to_search] ? '?return_to_search=true' : ''}"
+      <a id="#{link_id}" href="#{options[:url][:controller]}/#{options[:url][:action]}/#{options[:url][:id]}#{options[:url][:return_to_search]=='true' ? '?return_to_search=true' : ''}"
          onclick="if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
                                  #{remote_function(options)}
                              }">
