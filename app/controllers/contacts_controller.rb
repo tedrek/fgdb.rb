@@ -68,12 +68,13 @@ class ContactsController < ApplicationController
   end
 
   def show_dups
+    requires_role('ROLE_CONTACT_MANAGER')
     @contacts = params[:ids]
     @contacts.collect!{|x| Contact.find_by_id(x)}
   end
 
   def combine_dups
-    # TODO: require a certain role for these 2
+    requires_role('ROLE_CONTACT_MANAGER')
     keepers = params["ids"].to_a.select{|x| x[1]["keeper"]}.map{|x| x[0].to_i}
     mergers = params["ids"].to_a.select{|x| x[1]["merge"]}.map{|x| x[0].to_i}
     if keepers.length != 1
