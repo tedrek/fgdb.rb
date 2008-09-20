@@ -19,7 +19,7 @@ task :cruise do
       print '='
     }
     puts ""
-   if !system("rake #{x} 2>/dev/null >/dev/null")
+   if !system("rake #{x}")
       exit 1
     end
   }
