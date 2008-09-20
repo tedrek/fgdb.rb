@@ -15,6 +15,16 @@ class Contact < ActiveRecord::Base
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
 
+  def merge_these_in(arr)
+    for other in arr
+      connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("DELETE FROM contacts WHERE id = #{other.id}")
+    end
+  end
+
   def contact
     self
   end

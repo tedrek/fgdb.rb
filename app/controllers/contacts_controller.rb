@@ -67,6 +67,46 @@ class ContactsController < ApplicationController
     @contacts = Contact.paginate(:all, :per_page => 20, :page => params[:page], :conditions => @defaults.conditions(Contact), :order => "id ASC")
   end
 
+  def show_dups
+    @contacts = params[:ids]
+    @contacts.collect!{|x| Contact.find_by_id(x)}
+  end
+
+  def combine_dups
+    # TODO: require a certain role for these 2
+    keepers = params["ids"].to_a.select{|x| x[1]["keeper"]}.map{|x| x[0].to_i}
+    mergers = params["ids"].to_a.select{|x| x[1]["merge"]}.map{|x| x[0].to_i}
+    if keepers.length != 1
+      @error = "You must choose 1 keeper"
+      return
+    end
+    if (keepers & mergers).length != 0
+      @error = "A keeper cannot also be merged"
+      return
+    end
+    if mergers.length == 0
+      @error = "You must choose at least 1 record to be merged"
+      return
+    end
+    @keeper = Contact.find_by_id(keepers[0])
+    if !@keeper
+      @error = "The keeper doesn't exist"
+      return
+    end
+    oops = false
+    @mergers = mergers.map{|x| Contact.find_by_id(x) || oops = true}
+    if oops
+      @error = "One of the to be merged records does not exist"
+      return
+    end
+    begin
+      @keeper.merge_these_in(@mergers)
+    rescue
+      @error = "Merge failed for unknown reason: #{$!}"
+      return
+    end
+  end
+
   def update_display_area
     @contact = Contact.find( params.fetch(:contact_id, '').strip )
     render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] || params}

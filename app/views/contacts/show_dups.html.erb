@@ -1,0 +1,67 @@
+<form action="<%= url_for :action => "combine_dups" %>">
+  <table width="100%" border="1" style="border-collapse: collapse;">
+    <tr>
+      <th />
+      <% for c in @contacts %>
+        <th align="right">
+          <%= c.id %>
+        </th>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
+        Display Name
+      </th>
+      <% f_first=true %>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.display_name %>
+        </td>
+        <% f_first=false %>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
+         Contact Methods
+      </th>
+      <% f_first=true %>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.contact_methods.sort{|x,y| x.contact_method_type.description  <=> y.contact_method_type.description}.map{|x| "<b>" + x.contact_method_type.description + ":</b> " + x.value} %>
+        </td>
+        <% f_first=false %>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
+        Address
+      </th>
+      <% f_first=true %>
+      <% for c in @contacts %>
+        <td align="right">
+          <%=c.address + '<br />' + c.city + ', ' + c.state_or_province + ' ' + c.postal_code %>
+        </td>
+        <% f_first=false %>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
+        Merge
+      </th>
+      <% f_first=true %>
+      <% for c in @contacts %>
+        <td align="right">
+          Keeper: <input name=ids[<%= c.id.to_s %>][keeper] type=checkbox <%= (f_first ? 'checked=checked' : '') %> id=<%= c.id.to_s %>_keeper onChange="if(this.checked == true){$('<%= c.id %>_merge').checked = false}">
+          <br />Merge: <input name=ids[<%= c.id.to_s %>][merge] type=checkbox <%= (f_first ? '' : 'checked=checked') %> id=<%= c.id.to_s %>_merge  onChange="if(this.checked == true){$('<%= c.id %>_keeper').checked = false}">
+        </td>
+        <% f_first=false %>
+      <% end %>
+    </tr>
+  </table>
+  <br />
+  <input type="submit" value="Save" />
+</form>
