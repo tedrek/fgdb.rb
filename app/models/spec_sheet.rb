@@ -22,17 +22,21 @@ class SpecSheet < ActiveRecord::Base
   def lshw_output=(val)
     # if this record has already been saved, then don't let it change.
     if id.nil?
-      write_attribute(:original_output, val)
-      file = Tempfile.new("fgss-xml")
-      file.write(original_output)
-      file.flush
-      write_attribute(:original_valid, Kernel.system("xmlstarlet val #{file.path} >/dev/null 2>/dev/null"))
-      write_attribute(:cleaned_output, val.gsub(/[^[:print:]\n\t]/, ''))
-      file = Tempfile.new("fgss-xml")
-      file.write(cleaned_output)
-      file.flush
-      write_attribute(:cleaned_valid, Kernel.system("xmlstarlet val #{file.path} >/dev/null 2>/dev/null"))
+      _lshw_output=(val)
     end
+  end
+
+  def _lshw_output=(val)
+    write_attribute(:original_output, val)
+    file = Tempfile.new("fgss-xml")
+    file.write(original_output)
+    file.flush
+    write_attribute(:original_valid, Kernel.system("xmlstarlet val #{file.path} >/dev/null 2>/dev/null"))
+    write_attribute(:cleaned_output, val.gsub(/[^[:print:]\n\t]/, ''))
+    file = Tempfile.new("fgss-xml")
+    file.write(cleaned_output)
+    file.flush
+    write_attribute(:cleaned_valid, Kernel.system("xmlstarlet val #{file.path} >/dev/null 2>/dev/null"))
   end
 
   def lshw_output

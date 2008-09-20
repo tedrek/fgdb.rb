@@ -34,7 +34,7 @@ class KeepOrigLshwXmlToo < ActiveRecord::Migration
     remove_column "spec_sheets", :lshw_output
     SpecSheet.find(:all).each{|x|
       if x.original_output
-        x.lshw_output = x.original_output
+        x._lshw_output = x.original_output
         x.save!
       end
     }
