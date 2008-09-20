@@ -25,7 +25,7 @@ ALTER TABLE community_service_types DISABLE TRIGGER ALL;
 
 COPY community_service_types (id, description, hours_multiplier, lock_version, updated_at, created_at, name) FROM stdin;
 1	school	1	0	2008-03-30 00:47:56.431011	2008-03-30 00:47:56.431011	school
-2	punitive	0	0	2008-03-30 00:47:56.445477	2008-03-30 00:47:56.445477	punitive
+2	court	0	0	2008-03-30 00:47:56.445477	2008-03-30 00:47:56.445477	punitive
 \.
 
 
