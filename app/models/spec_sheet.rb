@@ -16,6 +16,8 @@ class SpecSheet < ActiveRecord::Base
 
   named_scope :good, :conditions => ["cleaned_valid = ? OR original_valid = ?", true, true]
   named_scope :bad, :conditions => ["cleaned_valid = ? OR original_valid = ?", false, false]
+  named_scope :originally_bad, :conditions => ["cleaned_valid = ? OR original_valid = ?", true, false]
+  named_scope :clean_broke_it, :conditions => ["cleaned_valid = ? OR original_valid = ?", false, true]
 
   def lshw_output=(val)
     # if this record has already been saved, then don't let it change.
