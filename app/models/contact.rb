@@ -9,6 +9,7 @@ class Contact < ActiveRecord::Base
   has_many :sales
   has_many :donations
   has_one :user
+  has_one :contact_duplicate
 
   validates_presence_of :postal_code
   #validates_presence_of :created_by
@@ -21,6 +22,9 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      if self.contact_duplicate
+        ContactDuplicate.delete_all(:dup_check => self.contact_duplicate.dup_check)
+      end
       connection.execute("DELETE FROM contacts WHERE id = #{other.id}")
     end
   end

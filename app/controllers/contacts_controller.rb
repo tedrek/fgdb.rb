@@ -69,7 +69,13 @@ class ContactsController < ApplicationController
 
   def show_dups
     requires_role('ROLE_CONTACT_MANAGER')
-    @contacts = params[:ids]
+    if params[:ids]
+      @contacts = params[:ids]
+    elsif params[:dup_check]
+      @contacts = ContactDuplicate.find_all_by_dup_check(params[:dup_check]).map(&:contact)
+    else
+      @contacts = []
+    end
     @contacts.collect!{|x| Contact.find_by_id(x)}
   end
 
@@ -100,12 +106,7 @@ class ContactsController < ApplicationController
       @error = "One of the to be merged records does not exist"
       return
     end
-    begin
-      @keeper.merge_these_in(@mergers)
-    rescue
-      @error = "Merge failed for unknown reason: #{$!}"
-      return
-    end
+    @keeper.merge_these_in(@mergers)
   end
 
   def update_display_area
