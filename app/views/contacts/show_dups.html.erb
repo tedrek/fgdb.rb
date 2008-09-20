@@ -55,7 +55,7 @@
       <% f_first=true %>
       <% for c in @contacts %>
         <td align="right">
-          <%=c.address + '<br />' + c.city + ', ' + c.state_or_province + ' ' + c.postal_code %>
+          <%= c.address.to_s + '<br />' + c.city.to_s + ', ' + c.state_or_province.to_s + ' ' + c.postal_code.to_s %>
         </td>
         <% f_first=false %>
       <% end %>
