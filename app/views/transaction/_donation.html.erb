@@ -20,6 +20,7 @@
     </a>
     <%= render :partial => "edit_update_transaction",
                :locals => {:transaction => donation,
+                           :return_to_search => return_to_search,
                            :allowed_roles => ["ROLE_DONATION_ADMIN", "ROLE_BEAN_COUNTERS"]}%>
   </td>
 </tr>

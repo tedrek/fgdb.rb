@@ -3,12 +3,12 @@
     <% update_options = @options.merge(:action => "update") %>
     <%= new_edit_link("edit_#{transaction.id}_link",
           {
-            :url => @options.merge(:action => 'edit'),
+            :url => @options.merge(:action => 'edit', :return_to_search => return_to_search),
           },
           "#{@transaction_type}_form_tbody") %>
     <%= new_delete_link("#{t_id}_delete_link",
           {
-            :url => @options.merge(:action => 'destroy'),
+            :url => @options.merge(:action => 'destroy', :return_to_search => return_to_search),
             :confirm => 'Are you sure?',
           },
           "#{@transaction_type}_form_tbody") %>

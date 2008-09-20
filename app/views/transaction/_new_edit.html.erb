@@ -25,7 +25,7 @@
           :html => { :href => url_for(@options.merge(:controller => base_controller)),
             :id => element_form_id(@options) } do %>
     <%# form_for @transaction, :url => @options.merge(:controller => base_controller), :html => {:method => 'POST'} do %>
-
+      <input type="hidden" name="return_to_search" value="<%= @return_to_search ? "true" : "false" %>"/>
       <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type)
         %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
       <% if @transaction.created_at && @transaction.updated_at %>
@@ -47,7 +47,7 @@
                        :onclick => "return validate_#{@transaction_type}();",
                        :class => "submit save")
  %>
-        <input type="button" value="Cancel" onclick="window.location.href='<%= "#{url_for( params.merge( { :action => 'new', :transaction_type => @transaction_type } ) )}" %>';" class="cancel" %>
+        <input type="button" value="Cancel" onclick="window.location.href='<%= @return_to_search ? url_for({:action=>"search", :continue=>true}) : url_for( params.merge( { :action => 'new', :transaction_type => @transaction_type } ) ) %>';" class="cancel" %>
 
         <%= loading_indicator_tag "form_for_#{@transaction_type}_loading" %>
       </p>

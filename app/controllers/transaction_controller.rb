@@ -36,25 +36,35 @@ class TransactionController < ApplicationController
     @conditions = Conditions.new
     @model = model
 
+    if params[:continue] && !session[:search_bookmark].nil?
+      params[:conditions] = session[:search_bookmark][:conditions]
+      params[:page] = session[:search_bookmark][:page]
+    end
+
     if params[:conditions] == nil
       params[:conditions] = {}
       @transactions = nil
+      session[:search_bookmark] = nil
     else
       @sort_sql = @model.default_sort_sql
       @conditions.apply_conditions(params[:conditions])
-      @conditions
+
       search_options = {
         :order => @sort_sql,
         :per_page => 20,
         :include => [:gizmo_events],
-        :conditions => @conditions.conditions(@model)
+        :conditions => @conditions.conditions(@model),
+        :page => params[:page]
       }
 
       if @model.new.respond_to?( :payments )
         search_options[:include] << :payments
       end
 
-      search_options[:page] = params[:page]
+      session[:search_bookmark] = {
+        :conditions => params[:conditions],
+        :page => params[:page]
+      }
       @transactions = @model.paginate( search_options )
     end
 
@@ -113,6 +123,8 @@ class TransactionController < ApplicationController
     rescue
       flash[:error], @successful = $!.to_s, false
     end
+
+    @return_to_search = params[:return_to_search] == "true"
 
     @conditions = Conditions.new
     @conditions.apply_conditions((default_condition + "_enabled") => "true")

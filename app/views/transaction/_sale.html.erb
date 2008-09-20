@@ -1,6 +1,9 @@
 <% # The following is used when the browser doesn't have javascript enabled %>
 <% classAttr = cycle("", " even") %>
-<% @options = params.merge(:controller => base_controller, :action => "view", :id => sale.send("#{Sale.primary_key}"), :transaction_type => @transaction_type) %>
+<% @options = params.merge(:controller => base_controller, :action => "view",
+                           :id => sale.send("#{Sale.primary_key}"),
+                           :transaction_type => @transaction_type) %>
+
 <tr class="<%= sale.displayed_payment_method %><%= classAttr %>"
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for column in columns %>
@@ -17,6 +20,7 @@
     </a>
     <%= render :partial=> "edit_update_transaction",
                :locals => {:transaction => sale,
+                           :return_to_search => return_to_search,
                            :allowed_roles => ["ROLE_STORE_ADMIN", "ROLE_BEAN_COUNTER"]} %>
   </td>
 </tr>
