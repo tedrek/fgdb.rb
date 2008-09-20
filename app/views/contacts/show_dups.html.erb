@@ -37,6 +37,19 @@
 
     <tr>
       <th width="10%">
+         Contact Types
+      </th>
+      <% f_first=true %>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.contact_types.map{|x| x.description}.sort.join(", ") %>
+        </td>
+        <% f_first=false %>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
         Address
       </th>
       <% f_first=true %>
