@@ -22,7 +22,7 @@ class SpecSheet < ActiveRecord::Base
   def lshw_output=(val)
     # if this record has already been saved, then don't let it change.
     if id.nil?
-      _lshw_output=(val)
+      self._lshw_output=(val)
     end
   end
 
