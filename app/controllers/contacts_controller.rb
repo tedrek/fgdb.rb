@@ -236,4 +236,11 @@ class ContactsController < ApplicationController
     end
     return success
   end
+
+  ######
+  public
+  ######
+  def list_dups
+    @duplicates = ContactDuplicate.list_dups().paginate(:page => params[:page])
+  end
 end
