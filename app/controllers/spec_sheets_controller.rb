@@ -8,6 +8,8 @@ class SpecSheetsController < ApplicationController
   MY_VERSION=5
 
   def check_compat
+    # always send compat as false so that old clients don't break
+
     # server hash works like this: server_versions[server_version_here] = [arr, of, compatible, client, versions]
     server_versions = Hash.new([])
     server_versions[1] = [1]      # I don't remember...but I know that it wouldn't have gotten to this point :)
