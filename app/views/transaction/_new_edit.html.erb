@@ -47,7 +47,7 @@
                        :onclick => "return validate_#{@transaction_type}();",
                        :class => "submit save")
  %>
-        <input type="button" value="Cancel" onclick="window.location.href='<%= @return_to_search ? url_for({:action=>"search", :continue=>true}) : url_for( params.merge( { :action => 'new', :transaction_type => @transaction_type } ) ) %>';" class="cancel" %>
+        <input type="button" value="Cancel" onclick="window.location.href='<%= @return_to_search ? url_for({:action=>"search", :continue=>true}) : url_for( params.merge( { :action => 'new' } ) ) %>';" class="cancel" %>
 
         <%= loading_indicator_tag "form_for_#{@transaction_type}_loading" %>
       </p>

@@ -2,7 +2,6 @@
       <% for column in columns %>
         <% column_sort_direction = column_sort_direction(column.name, params) %>
         <% sort_params = params.merge(:controller => base_controller,
-                                      :transaction_type => @transaction_type,
                                       :action => 'component_update',
                                       :sort => column.name,
                                       :sort_direction => column_sort_direction,

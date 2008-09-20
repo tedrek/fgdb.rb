@@ -1,4 +1,4 @@
-@options = { :action => "view", :id => params[:id], :transaction_type => @transaction_type }
+@options = { :action => "view", :id => params[:id]}
 if @successful
   page.replace("#{@transaction_type}_#{@transaction.id}_needs_attention_div",
                :partial => "getting_attention")

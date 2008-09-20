@@ -32,7 +32,7 @@
   <% end -%>
 </div>
 <div class="list_refinement">
-  <% refine_params = params.merge({:action => 'component_update', :transaction_type => @transaction_type }) %>
+  <% refine_params = params.merge({:action => 'component_update'}) %>
   <%# form_tag ({ :action => 'search'}, :method => "GET") do %>
   <% form_remote_tag :url => { :action => 'component_update' },
         :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
