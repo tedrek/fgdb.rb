@@ -56,6 +56,7 @@
     </div>
   </div>
 
+  <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
   contacts
   <div class="sidebar_section">
     <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
@@ -74,6 +75,7 @@
       </div>
     <% end %>
   </div>
+  <% end %>
 
   everything else
   <div class="sidebar_section">
