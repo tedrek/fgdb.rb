@@ -27,7 +27,7 @@
   <% if @contact.notes && @contact.notes != '' %>
   <div class="contact_comments">
     Notes:<br />
-    <%=h @contact.notes %>
+    <%= @contact.notes.gsub(/\n/, "<br />") %>
   </div>
   <% end %>
   <% if options.fetch(:display_associations, true) %>
