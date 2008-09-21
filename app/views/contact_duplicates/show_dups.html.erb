@@ -13,12 +13,10 @@
       <th width="10%">
         Display Name
       </th>
-      <% f_first=true %>
       <% for c in @contacts %>
         <td align="right">
           <%= c.display_name %>
         </td>
-        <% f_first=false %>
       <% end %>
     </tr>
 
@@ -26,12 +24,10 @@
       <th width="10%">
          Contact Methods
       </th>
-      <% f_first=true %>
       <% for c in @contacts %>
         <td align="right">
           <%= c.contact_methods.sort{|x,y| x.contact_method_type.description  <=> y.contact_method_type.description}.map{|x| "<b>" + x.contact_method_type.description + ":</b> " + x.value} %>
         </td>
-        <% f_first=false %>
       <% end %>
     </tr>
 
@@ -39,12 +35,10 @@
       <th width="10%">
          Contact Types
       </th>
-      <% f_first=true %>
       <% for c in @contacts %>
         <td align="right">
           <%= c.contact_types.map{|x| x.description}.sort.join(", ") %>
         </td>
-        <% f_first=false %>
       <% end %>
     </tr>
 
@@ -52,12 +46,10 @@
       <th width="10%">
         Address
       </th>
-      <% f_first=true %>
       <% for c in @contacts %>
         <td align="right">
           <%= c.address.to_s + '<br />' + c.city.to_s + ', ' + c.state_or_province.to_s + ' ' + c.postal_code.to_s %>
         </td>
-        <% f_first=false %>
       <% end %>
     </tr>
 
@@ -66,12 +58,10 @@
       <th width="10%">
         Last <%= Inflector.titleize(Inflector.singularize(i)) %>
       </th>
-      <% f_first=true %>
       <% for c in @contacts %>
         <td align="right">
           <%= c.send(i).sort_by(&:created_at).first.created_at.strftime("%D") if !c.send(i).empty? %>
         </td>
-        <% f_first=false %>
       <% end %>
     </tr>
     <% end %>
