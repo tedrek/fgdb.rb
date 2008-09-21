@@ -56,13 +56,22 @@
     </div>
   </div>
 
-  everything else
+  contacts
   <div class="sidebar_section">
     <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
       <div>
         <%= link_to "contacts", :controller => 'contacts' %>
       </div>
     <% end %>
+    <% if has_role?('ROLE_CONTACT_MANAGER') %>
+      <div>
+        <%= link_to "duplicates", :controller => 'contact_duplicates' %>
+      </div>
+    <% end %>
+  </div>
+
+  everything else
+  <div class="sidebar_section">
     <div>
       <%= link_to "printme", :controller => 'spec_sheets' %>
     </div>
