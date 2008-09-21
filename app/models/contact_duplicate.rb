@@ -9,6 +9,6 @@ class ContactDuplicate < ActiveRecord::Base
       ORDER BY dup_check
     ").map{|x| [x["dup_check"],x["count"]]}
 
-    return dups.collect{|x|x}
+    return dups
   end
 end
