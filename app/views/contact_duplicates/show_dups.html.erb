@@ -61,6 +61,21 @@
       <% end %>
     </tr>
 
+    <% for i in ["sales", "disbursements", "donations", "volunteer_tasks"] %>
+    <tr>
+      <th width="10%">
+        Last <%= Inflector.titleize(Inflector.singularize(i)) %>
+      </th>
+      <% f_first=true %>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.send(i).sort_by(&:created_at).first.created_at.strftime("%D") if !c.send(i).empty? %>
+        </td>
+        <% f_first=false %>
+      <% end %>
+    </tr>
+    <% end %>
+
     <tr>
       <th width="10%">
         Merge
