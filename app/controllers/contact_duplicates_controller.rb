@@ -7,8 +7,6 @@ class ContactDuplicatesController < ApplicationController
   end
 
   def index
-    list_dups
-    render :action => "list_dups"
   end
 
   def show_dups
@@ -16,10 +14,12 @@ class ContactDuplicatesController < ApplicationController
       @contacts = params[:ids]
     elsif params[:dup_check]
       @contacts = ContactDuplicate.find_all_by_dup_check(params[:dup_check]).map(&:contact)
+    elsif params[:list]
+      @contacts = params[:list].split(" ").collect{|x| x.split(",")}.flatten.collect{|x| x.to_i}
     else
       @contacts = []
     end
-    @contacts.collect!{|x| Contact.find_by_id(x)}
+    @contacts.collect!{|x| Contact.find_by_id(x)}.delete_if{|x| x.nil?}
   end
 
   def combine_dups
