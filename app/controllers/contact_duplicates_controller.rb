@@ -1,5 +1,10 @@
 class ContactDuplicatesController < ApplicationController
   layout :with_sidebar
+  before_filter :authorized_only
+
+  def authorized_only
+    requires_role('ROLE_CONTACT_MANAGER')
+  end
 
   def index
     list_dups
@@ -7,7 +12,6 @@ class ContactDuplicatesController < ApplicationController
   end
 
   def show_dups
-    requires_role('ROLE_CONTACT_MANAGER')
     if params[:ids]
       @contacts = params[:ids]
     elsif params[:dup_check]
@@ -19,7 +23,6 @@ class ContactDuplicatesController < ApplicationController
   end
 
   def combine_dups
-    requires_role('ROLE_CONTACT_MANAGER')
     keepers = params["ids"].to_a.select{|x| x[1]["keeper"]}.map{|x| x[0].to_i}
     mergers = params["ids"].to_a.select{|x| x[1]["merge"]}.map{|x| x[0].to_i}
     if keepers.length != 1
