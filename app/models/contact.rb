@@ -23,16 +23,19 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts SET created_at = (SELECT min(created_at) FROM contacts WHERE id IN (#{self.id}, #{other.id}))")
-      self.notes = [self.notes, other.notes].delete_if{|x| x.nil?}.join("\n")
+      self.notes = [self.notes, other.notes].uniq.delete_if{|x| x.nil?}.join("\n")
       self.save!
       connection.execute("UPDATE contacts SET updated_at = (SELECT max(updated_at) FROM contacts WHERE id IN (#{self.id}, #{other.id}))")
       connection.execute("UPDATE contact_methods SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       self.contact_types = (self.contact_types + other.contact_types).uniq
       self.save!
-      if self.contact_duplicate
-        ContactDuplicate.delete_all(:dup_check => self.contact_duplicate.dup_check)
+      if other.contact_duplicate
+        ContactDuplicate.delete(other.contact_duplicate)
       end
       connection.execute("DELETE FROM contacts WHERE id = #{other.id}")
+    end
+    if self.contact_duplicate && ContactDuplicate.find_all_by_dup_check(self.contact_duplicate.dup_check).length == 1
+      ContactDuplicate.delete(self.contact_duplicate)
     end
   end
 
