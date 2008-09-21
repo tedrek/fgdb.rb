@@ -24,6 +24,8 @@ Contact.find(:all).each do |c|
   puts "loaded #{i} -> #{c.id}" if i%1000==0
 end
 
+ContactDuplicate.connection.execute("DELETE FROM contact_duplicates")
+
 names = names.select {|k,v|v.size()>1}
 names.each do |k,v|
   puts "DUP! #{k}"
