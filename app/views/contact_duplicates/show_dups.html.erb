@@ -68,6 +68,17 @@
 
     <tr>
       <th width="10%">
+        Hours worked
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.volunteer_tasks.inject(0.0){|sum,i| sum + i.effective_duration} %>
+        </td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
         Merge
       </th>
       <% f_first=true %>
