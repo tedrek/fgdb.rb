@@ -20,6 +20,8 @@
       <% end %>
     </tr>
 
+    <tr><td colspan="<%= @contacts.length + 1 %>">These parts will be merged together, and combined between the keepers and the mergers:</td></tr>
+
     <tr>
       <th width="10%">
          Contact Methods
@@ -33,22 +35,22 @@
 
     <tr>
       <th width="10%">
-         Contact Types
+        Notes
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.contact_types.map{|x| x.description}.sort.join(", ") %>
+          <%= c.notes %>
         </td>
       <% end %>
     </tr>
 
     <tr>
       <th width="10%">
-        Address
+         Contact Types
       </th>
       <% for c in @contacts %>
         <td align="right">
-          <%= c.address.to_s + '<br />' + c.city.to_s + ', ' + c.state_or_province.to_s + ' ' + c.postal_code.to_s %>
+          <%= c.contact_types.map{|x| x.description}.sort.join(", ") %>
         </td>
       <% end %>
     </tr>
@@ -73,6 +75,19 @@
       <% for c in @contacts %>
         <td align="right">
           <%= c.volunteer_tasks.inject(0.0){|sum,i| sum + i.effective_duration} %>
+        </td>
+      <% end %>
+    </tr>
+
+    <tr><td colspan="<%= @contacts.length + 1 %>">These parts will <b>NOT</b> be merged together. They will be taken from the keeper only:</td></tr>
+
+    <tr>
+      <th width="10%">
+        Address
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.address.to_s + '<br />' + c.city.to_s + ', ' + c.state_or_province.to_s + ' ' + c.postal_code.to_s %>
         </td>
       <% end %>
     </tr>
