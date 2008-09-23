@@ -303,7 +303,7 @@ class Conditions
       desc = Date.parse(eval("@" + thing + "_date").to_s).to_s
     when 'monthly'
       year = (eval("@" + thing + "_date_year") || Date.today.year).to_i
-      start_date = Time.local(year, eval("@" + thing + "month"), 1)
+      start_date = Time.local(year, eval("@" + thing + "_month"), 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     when 'arbitrary'
       start_date = Date.parse(eval("@" + thing + "_start_date").to_s)
