@@ -2,15 +2,32 @@
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
+digits = "0123456789".split("")
+chars = "abcdefghijklmnopqrstuvwxyz".split("")
+
+def non_empty(val)
+  return val && !val.empty?
+end
+
 def add(list, val)
-  list << val if val
+  list << val if non_empty(val)
+end
+
+def fix_tx(txs)
+  txs.each do |tx|
+    tx.comments = tx.comments.gsub(/a-zA-Z/) { chars[rand(chars.size)] }
+    tx.save!
+  end
 end
 
 def dump(contact)
   puts "#{contact.id}"
   puts " #{contact.first_name} #{contact.middle_name} #{contact.surname}"
   puts " #{contact.organization}" if contact.organization
-  puts " " + contact.contact_methods.map(&:description).join(",")
+  puts " " + contact.contact_methods.map(&:value).join(",")
+  puts contact.extra_address
+  puts contact.address
+  puts contact.city + " " + contact.state_or_province + " " + contact.postal_code
 end
 
 first_names = []
@@ -26,6 +43,18 @@ countries = []
 
 contact_methods = {}
 ContactMethodType.find(:all).each {|x| contact_methods[x.id] = []}
+
+puts "fixing up donations"
+fix_tx(Donation.find(:all, :conditions=>"comments is not null and comments <> ''"))
+
+puts "fixing up sales"
+fix_tx(Sale.find(:all, :conditions=>"comments is not null and comments <> ''"))
+
+puts "fixing up disbursements"
+fix_tx(Disbursement.find(:all, :conditions=>"comments is not null and comments <> ''"))
+
+puts "fixing up recyclings"
+fix_tx(Recycling.find(:all, :conditions=>"comments is not null and comments <> ''"))
 
 all = Contact.find(:all)
 
@@ -46,7 +75,7 @@ all.each do |contact|
   add(zips, contact.postal_code)
   add(countries, contact.country)
   contact.contact_methods.each do |method|
-    add(contact_methods[method.contact_method_type_id], method.description)
+    add(contact_methods[method.contact_method_type_id], method.value)
   end
   i += 1
 end
@@ -64,39 +93,38 @@ countries = countries.sort_by {rand}
 
 contact_methods.each {|x,y| contact_methods[x] = contact_methods[x].sort_by{rand}}
 
-digits = "0123456789".split("")
-chars = "abcdefghijklmnopqrstuvwxyz".split("")
-
 i = 0
 Contact.find(:all, :order => "id").each do |contact|
-  
+
   if (i % 1000 == 0)
     puts "Contact: #{contact.id}"
     dump(contact)
   end
 
-  contact.first_name = first_names.pop() if contact.first_name
-  contact.middle_name = middle_names.pop() if contact.middle_name
-  contact.surname = last_names.pop() if contact.surname
-  contact.organization = organizations.pop() if contact.organization
-  contact.extra_address = extra_addresses.pop() if contact.extra_address
-  contact.address = addresses.pop() if contact.address
-  contact.city = cities.pop() if contact.city
-  contact.state_or_province = states.pop() if contact.state_or_province
-  contact.postal_code = zips.pop() if contact.postal_code
-  contact.country = countries.pop() if contact.country
+  contact.first_name = first_names.pop() if non_empty(contact.first_name)
+  contact.middle_name = middle_names.pop() if non_empty(contact.middle_name)
+  contact.surname = last_names.pop() if non_empty(contact.surname)
+  contact.organization = organizations.pop() if non_empty(contact.organization)
+  contact.extra_address = extra_addresses.pop() if non_empty(contact.extra_address)
+  contact.address = addresses.pop() if non_empty(contact.address)
+  contact.city = cities.pop() if non_empty(contact.city)
+  contact.state_or_province = states.pop() if non_empty(contact.state_or_province)
+  contact.postal_code = zips.pop() if non_empty(contact.postal_code)
+  contact.country = countries.pop() if non_empty(contact.country)
   contact.contact_methods.each do |method|
-    if method.description
+    if non_empty(method.value)
       x = contact_methods[method.contact_method_type_id].pop()
       x = x.gsub(/\d/) {digits[rand(digits.size)]}
       x = x.gsub(/@(.*)\.([^.]+)/) {"@"+("x"*$1.size)+"."+$2}
-      method.description = x
+      method.value = x
+      method.save!
     end
   end
-  contact.notes = contact.notes.gsub(/[a-zA-Z]/) {chars[rand(chars.size)]} if contact.notes
+  contact.notes = contact.notes.gsub(/[a-zA-Z]/) {chars[rand(chars.size)]} if non_empty(contact.notes)
 
   if (i % 1000 == 0)
     dump(contact)
+    puts
   end
 
   i += 1
