@@ -9,10 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080920030019) do
+ActiveRecord::Schema.define(:version => 20080923231625) do
 
   create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-get_sort_name_sql
+
 
 
 DECLARE
@@ -42,16 +43,19 @@ BEGIN
     RETURN '';
 END;
 
+
     get_sort_name_sql
   }
   create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
     <<-contact_trigger_sql
 
 
+
 BEGIN
     NEW.sort_name := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.surname, NEW.organization);
     RETURN NEW;
 END;
+
 
     contact_trigger_sql
   }
@@ -79,6 +83,14 @@ END;
 
   add_index "community_service_types", ["name"], :name => "community_service_types_name_uk", :unique => true
 
+  create_table "contact_duplicates", :force => true do |t|
+    t.integer "contact_id", :null => false
+    t.text    "dup_check",  :null => false
+  end
+
+  add_index "contact_duplicates", ["contact_id"], :name => "index_contact_duplicates_on_contact_id"
+  add_index "contact_duplicates", ["dup_check"], :name => "index_contact_duplicates_on_dup_check"
+
   create_table "contact_method_types", :force => true do |t|
     t.string   "description",  :limit => 100
     t.integer  "parent_id"
@@ -92,7 +104,7 @@ END;
 
   create_table "contact_methods", :force => true do |t|
     t.integer  "contact_method_type_id",                               :null => false
-    t.string   "value",                  :limit => 100
+    t.string   "value",                  :limit => 100,                :null => false
     t.boolean  "ok"
     t.integer  "contact_id"
     t.integer  "lock_version",                          :default => 0, :null => false
@@ -457,6 +469,8 @@ END;
   add_index "volunteer_tasks", ["duration"], :name => "index_volunteer_tasks_on_duration"
   add_index "volunteer_tasks", ["volunteer_task_type_id"], :name => "index_volunteer_tasks_on_volunteer_task_type_id"
   add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
+
+  add_foreign_key "contact_duplicates", ["contact_id"], "contacts", ["id"], :name => "contact_duplicates_contact_id_fkey"
 
   add_foreign_key "contact_method_types", ["parent_id"], "contact_method_types", ["id"], :on_delete => :set_null, :name => "contact_method_types_parent_id_fk"
 
