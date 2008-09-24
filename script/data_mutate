@@ -13,9 +13,10 @@ def add(list, val)
   list << val if non_empty(val)
 end
 
-def fix_tx(txs)
+def fix_tx(txs, chars, digits)
   txs.each do |tx|
-    tx.comments = tx.comments.gsub(/a-zA-Z/) { chars[rand(chars.size)] }
+    tx.comments = tx.comments.gsub(/[a-zA-Z]/) { chars[rand(chars.size)] }
+    tx.comments = tx.comments.gsub(/[0-9]/) { digits[rand(digits.size)] }
     tx.save!
   end
 end
@@ -45,16 +46,16 @@ contact_methods = {}
 ContactMethodType.find(:all).each {|x| contact_methods[x.id] = []}
 
 puts "fixing up donations"
-fix_tx(Donation.find(:all, :conditions=>"comments is not null and comments <> ''"))
+fix_tx(Donation.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
 puts "fixing up sales"
-fix_tx(Sale.find(:all, :conditions=>"comments is not null and comments <> ''"))
+fix_tx(Sale.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
 puts "fixing up disbursements"
-fix_tx(Disbursement.find(:all, :conditions=>"comments is not null and comments <> ''"))
+fix_tx(Disbursement.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
 puts "fixing up recyclings"
-fix_tx(Recycling.find(:all, :conditions=>"comments is not null and comments <> ''"))
+fix_tx(Recycling.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
 all = Contact.find(:all)
 
@@ -120,7 +121,11 @@ Contact.find(:all, :order => "id").each do |contact|
       method.save!
     end
   end
-  contact.notes = contact.notes.gsub(/[a-zA-Z]/) {chars[rand(chars.size)]} if non_empty(contact.notes)
+
+  if non_empty(contact.notes)
+    contact.notes = contact.notes.gsub(/[a-zA-Z]/) {chars[rand(chars.size)]}
+    contact.notes = contact.notes.gsub(/[0-9]/) {digits[rand(digits.size)]}
+  end
 
   if (i % 1000 == 0)
     dump(contact)
@@ -130,3 +135,13 @@ Contact.find(:all, :order => "id").each do |contact|
   i += 1
   contact.save()
 end
+
+# set the password for admin to secret
+x = User.find(1)
+x.crypted_password = '29e0b109247cb32ea5bd27468c249ae7c63edf64'
+x.salt = '95ce12cab15a870505167d19b1bf95548a2f175c'
+x.save!
+
+# just get rid of all the old users
+User.connection.execute("DELETE FROM roles_users WHERE user_id <> 1")
+User.connection.execute("DELETE FROM users WHERE id <> 1")
