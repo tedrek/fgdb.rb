@@ -65,8 +65,7 @@ choose one of the following: skeletal metadata, or full test data:
 
  $> rake db:metadata:load
    :OR:
- $> zcat db/devel_data.sql.gz | psql -h localhost -U SOMEUSER fgdb_production
- $> rake db:migrate
+ $> rake db:data:load db:migrate
 
 run some tests to see if things look okay:
 
