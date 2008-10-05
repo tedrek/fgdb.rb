@@ -86,7 +86,7 @@ class TransactionController < ApplicationController
 
     @conditions = Conditions.new
     @conditions.apply_conditions((default_condition + "_enabled") => "true")
-    @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15, :order => "created_at DESC")
+    @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15, :order => default_condition + " DESC")
   end
 
   def create
@@ -132,7 +132,7 @@ class TransactionController < ApplicationController
 
     @conditions = Conditions.new
     @conditions.apply_conditions((default_condition + "_enabled") => "true")
-    @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15)
+    @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15, :order => default_condition + " DESC")
   end
 
   def update
