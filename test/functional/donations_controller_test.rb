@@ -17,10 +17,7 @@ class DonationsControllerTest < ActionController::TestCase
 
   def test_basic_authorized_actions_succeed
     login_as :quentin
-    begin
-      get :index
-    rescue ActionView::TemplateError # rails is stupid
-    end
+    get :index
     assert :success
   end
 
@@ -37,14 +34,8 @@ class DonationsControllerTest < ActionController::TestCase
     [:quentin, :aaron].each { |user|
       login_as user
       donation = create_a_new_donation
-      begin
-        get :index
-      rescue ActionView::TemplateError # rails is stupid
-      end
-      begin
-        get :destroy, :id => donation.id, :scaffold_id => 'donations'
-      rescue ActionController::RedirectBackError # rails is stupid
-      end
+      get :index
+      get :destroy, :id => donation.id, :scaffold_id => 'donations'
       assert_raises(ActiveRecord::RecordNotFound) { Donation.find(donation.id) }
     }
   end
