@@ -63,12 +63,12 @@ class GizmoEvent < ActiveRecord::Base
   def attry_description(options = {})
     junk = [:unit_price, :as_is, :size] - (options[:ignore] || [])
 
-    junk.reject!{|x| z = read_attribute(x); z.nil? || (z.responds_to?(:empty?) && z.empty?)}
+    junk.reject!{|x| z = read_attribute(x); z.nil? || z.empty?}
 
-    desc = read_attribute(:description)
-    if !desc || desc.empty?
-      desc = gizmo_type.description
-    end
+    g_desc = gizmo_type.description
+    m_desc = self.description
+    desc = g_desc
+    desc += " -- " + m_desc if !(m_desc.nil? || m_desc.empty?)
 
     if junk.empty?
       return desc
