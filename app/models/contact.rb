@@ -28,6 +28,13 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE contacts SET updated_at = (SELECT max(updated_at) FROM contacts WHERE id IN (#{self.id}, #{other.id})) WHERE id = #{self.id}")
       connection.execute("UPDATE contact_methods SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       self.contact_types = (self.contact_types + other.contact_types).uniq
+      if other.user and self.user
+        self.user.merge_in(other.user)
+        Contact.connection.execute("DELETE FROM users WHERE contact_id = #{other.id}")
+      end
+      if other.user and !self.user
+        Contact.connection.execute("UPDATE users SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      end
       self.save!
       if other.contact_duplicate
         ContactDuplicate.delete(other.contact_duplicate)

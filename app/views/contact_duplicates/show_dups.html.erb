@@ -147,6 +147,21 @@
       <% end %>
     </tr>
 
+    <% if @contacts.map{|x| x.user}.delete_if{|x| x.nil? or x.blank?}.length > 0 %>
+    <tr><td colspan="<%= @contacts.length + 1 %>">The user will sort of be merged. If only one of the records has a user, then that user will be kept. If both the keeper and the merger have a user, then the users persmissions will be merged, but their login name and password will be taken from the keeper. If multiple mergers have a user and the keeper does not have a user, then one of the mergers' users will be choosen (randomly) to be kept.</td></tr>
+
+    <tr>
+      <th width="10%">
+        User
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= c.user.login if c.user %>
+        </td>
+      <% end %>
+    </tr>
+    <% end %>
+
     <tr>
       <th width="10%">
         Merge
