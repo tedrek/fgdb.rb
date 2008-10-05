@@ -163,6 +163,7 @@ module ApplicationHelper
           page << "if($('#{obj_name}_#{condition}_enabled').value == 'true'){add_condition('#{obj_name}', '#{condition}');}"
         end
       end
+      js += "$('#{obj_name}_nil').selected = true;"
     else
       html += choices.values.first
       js = "$('#{obj_name}_#{choices.keys.first}_enabled').value = 'true'"
