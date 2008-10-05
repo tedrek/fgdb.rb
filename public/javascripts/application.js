@@ -129,10 +129,6 @@ function contact_form_org_toggle() {
     $$('.organization').each(function(elem) { elem.show(); });
   } else {
     $$('.organization').each(function(elem) { elem.hide(); });
-    $$('input' + '.organization').each(function(elem) {
-      elem.checked = false;
-      elem.value = '';
-    });
   }
 }
 
