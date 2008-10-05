@@ -126,18 +126,14 @@ function set_display_mode(type, mode) {
 
 function contact_form_org_toggle() {
   if( $('contact_is_organization').checked ) {
-    var hide_type = '.person';
-    var show_type = '.organization';
+    $$('.organization').each(function(elem) { elem.show(); });
   } else {
-    var hide_type = '.organization';
-    var show_type = '.person';
+    $$('.organization').each(function(elem) { elem.hide(); });
+    $$('input' + '.organization').each(function(elem) {
+      elem.checked = false;
+      elem.value = '';
+    });
   }
-  $$(hide_type).each(function(elem) { elem.hide(); });
-  $$('input' + hide_type).each(function(elem) {
-    elem.checked = false;
-    elem.value = '';
-  });
-  $$(show_type).each(function(elem) { elem.show(); });
 }
 
 function defined(variable)
