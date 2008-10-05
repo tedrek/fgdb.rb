@@ -314,7 +314,7 @@ class Contact < ActiveRecord::Base
       # wildcards and join with ANDs.
       return [] unless query and query.length > 0
       conditions = prepare_query(query)
-      find(:all, {:limit => 5, :conditions => conditions}.merge(options))
+      find(:all, {:limit => 5, :conditions => conditions, :order => "sort_name"}.merge(options))
     end
 
     def search_by_type(type, query, options = {})
