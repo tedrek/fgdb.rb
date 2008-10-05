@@ -5,21 +5,26 @@
 	<table>
 	  <tr>
 		<td>
-		  Size:
+		  Total:
 		</td>
 		<td>
-          <%= @parser.xml_value_of("size", '/').to_bytes(1) %>
+                  <%= @parser.xml_value_of("size", '/').to_bytes(1) %>
 		</td>
 	  </tr>
 	</table>
 	<% end %>
 	<% @parser.xml_foreach("id", "bank") do %>
 
-	<h3>
-	  <%= @parser.xml_value_of("@id") %>
-	</h3>
 	<div class="indent">
 	  <table>
+            <tr>
+              <td>
+                Bank:
+              </td>
+              <td>
+	        <%= @parser.xml_value_of("@id").sub(/^bank:/, "") %>
+              </td>
+            </tr>
 		<tr>
 		  <td>
 			Description:
