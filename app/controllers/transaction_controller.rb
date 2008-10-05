@@ -175,8 +175,11 @@ class TransactionController < ApplicationController
     rescue
       flash[:error], @successful  = $!.to_s, false
     end
-
-    redirect_to :back
+    if request.env["HTTP_REFERER"]
+      redirect_to :back
+    else
+      redirect_to :action => "index"
+    end
   end
 
   def needs_attention

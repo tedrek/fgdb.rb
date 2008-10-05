@@ -5,7 +5,7 @@ require 'contacts_controller'
 class ContactsController; def rescue_action(e) raise e end; end
 
 class ContactsControllerTest < Test::Unit::TestCase
-  fixtures :contacts, :volunteer_task_types, :discount_schedules, :users, :roles, :roles_users
+  fixtures :contacts, :volunteer_task_types, :discount_schedules, :users, :roles, :roles_users, :payment_methods
 
   NEW_CONTACT = {
     'postal_code' => '98982'
