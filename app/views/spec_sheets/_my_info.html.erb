@@ -16,7 +16,7 @@
           Technician:
         </td>
         <td>
-          <% if true || (@current_user and @current_user.has_role?('ROLE_CONTACT_MANAGER')) %>
+          <% if true || (@current_user and @current_user.has_role?('CONTACT_MANAGER')) %>
             <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
           <% else %>
             <%= (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>

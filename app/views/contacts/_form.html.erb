@@ -82,7 +82,7 @@
 </div>
 
 <div class="form-element person">
-  <%= render(:partial => "user_form") if has_role_or_is_me?(@contact.id, :ROLE_ADMIN) %>
+  <%= render(:partial => "user_form") if has_role_or_is_me?(@contact.id, :ADMIN) %>
 </div>
 
 <!--[eoform:contact]-->

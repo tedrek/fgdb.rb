@@ -8,6 +8,6 @@ class RecyclingsController < TransactionController
   protected
 
   def management_only
-    requires_role(:ROLE_BEAN_COUNTER)
+    requires_role(:BEAN_COUNTER)
   end
 end

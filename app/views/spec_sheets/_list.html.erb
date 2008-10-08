@@ -15,7 +15,7 @@
   <tr>
     <td><%= link_to report.id.to_s, {:action => "search", :conditions => {:id_enabled => true, :id => report.id}} %></td>
     <td>
-<% if (@current_user and @current_user.has_role?('ROLE_CONTACT_MANAGER')) && thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) %>
+<% if (@current_user and @current_user.has_role?('CONTACT_MANAGER')) && thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) %>
 <%= link_to thing, {:action => "search", :conditions => {:contact_enabled => true, :contact_id => report.contact.id}} %>
 <% elsif thing = (report.contact_id && report.contact && report.contact.id) %>
 <%= thing %>

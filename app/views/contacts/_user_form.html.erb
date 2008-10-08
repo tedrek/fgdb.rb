@@ -35,7 +35,7 @@
                name="roles[]" value="<%= role.id %>"
                <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
         />
-        <label for="<%= role.name %>"><%= (xx = /ROLE_(.+)/.match(role.name)) ? xx[1] : role.name %></label>
+        <label for="<%= role.name %>"><%= (xx = /(.+)/.match(role.name)) ? xx[1] : role.name %></label>
       </div>
     <% end %>
   </div>

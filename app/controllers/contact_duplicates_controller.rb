@@ -3,7 +3,7 @@ class ContactDuplicatesController < ApplicationController
   before_filter :authorized_only
 
   def authorized_only
-    requires_role('ROLE_CONTACT_MANAGER')
+    requires_role('CONTACT_MANAGER')
   end
 
   def index

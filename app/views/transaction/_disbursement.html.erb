@@ -15,6 +15,6 @@
     <%= loading_indicator_tag("disbursement_#{disbursement.id}_loading") %>
     <%= render :partial => "edit_update_transaction",
                :locals => {:transaction => disbursement,
-                           :allowed_roles => ["ROLE_BEAN_COUNTERS"]}%>
+                           :allowed_roles => ["BEAN_COUNTERS"]}%>
   </td>
 </tr>

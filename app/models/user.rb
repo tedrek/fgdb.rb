@@ -76,7 +76,7 @@ class User < ActiveRecord::Base
   end
 
   def has_role?(*roles)
-    not (self.roles.map {|x| x.name } & (roles.map {|x| x.to_s} + ['ROLE_ADMIN'])).empty?
+    not (self.roles.map {|x| x.name } & (roles.map {|x| x.to_s} + ['ADMIN'])).empty?
   end
 
   protected

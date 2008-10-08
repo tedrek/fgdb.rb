@@ -68,7 +68,7 @@ class SpecSheetsController < ApplicationController
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     if @conditions.contact_enabled
-      if !requires_role('ROLE_CONTACT_MANAGER')
+      if !requires_role('CONTACT_MANAGER')
         return
       end
     end

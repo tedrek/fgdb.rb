@@ -9,10 +9,10 @@ class SalesController < TransactionController
   protected
 
   def authorized_only
-    requires_role('ROLE_STORE')
+    requires_role('STORE')
   end
 
   def management_only
-    requires_role('ROLE_STORE_ADMIN', 'ROLE_BEAN_COUNTER')
+    requires_role('STORE_ADMIN', 'BEAN_COUNTER')
   end
 end

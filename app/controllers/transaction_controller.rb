@@ -23,7 +23,7 @@ class TransactionController < ApplicationController
   end
 
   def authorized_only
-    requires_role(:ROLE_ADMIN)
+    requires_role(:ADMIN)
   end
 
   public

@@ -1,13 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 admin:
-  name: ROLE_ADMIN
+  name: ADMIN
   id: 1
 
 front_desk:
-  name: ROLE_FRONT_DESK
+  name: FRONT_DESK
   id: 2
 
 store:
-  name: ROLE_STORE
+  name: STORE
   id: 3

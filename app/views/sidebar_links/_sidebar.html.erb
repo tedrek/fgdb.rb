@@ -1,5 +1,5 @@
 <div id="sidebar">
-  <% if has_role?("ROLE_VOLUNTEER_MANAGER") %>
+  <% if has_role?("VOLUNTEER_MANAGER") %>
     hours
     <div class="sidebar_section">
       <div>
@@ -20,7 +20,7 @@
     </div>
   <% end %>
 
-  <% hash = {:donation => ["ROLE_FRONT_DESK"], :sale => ["ROLE_STORE"], :recycling => nil, :disbursement => ['ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER']} %>
+  <% hash = {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => nil, :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER']} %>
   <% array = ['donation', 'sale', 'recycling', 'disbursement'] %>
 
   <% array.each do |i| %>
@@ -56,20 +56,20 @@
     </div>
   </div>
 
-  <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
+  <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
   contacts
   <div class="sidebar_section">
-    <% if has_role?('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER') %>
+    <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
       <div>
         <%= link_to "contacts", :controller => 'contacts' %>
       </div>
     <% end %>
-    <% if has_role?('ROLE_CONTACT_MANAGER') %>
+    <% if has_role?('CONTACT_MANAGER') %>
       <div>
         <%= link_to "dedup", :controller => 'contact_duplicates' %>
       </div>
     <% end %>
-    <% if has_role?('ROLE_CONTACT_MANAGER') %>
+    <% if has_role?('CONTACT_MANAGER') %>
       <div>
         <%= link_to "duplicates list", :controller => 'contact_duplicates', :action => "list_dups" %>
       </div>

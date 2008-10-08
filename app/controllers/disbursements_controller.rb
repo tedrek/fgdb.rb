@@ -9,10 +9,10 @@ class DisbursementsController < TransactionController
   protected
 
   def authorized_only
-    requires_role('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER')
+    requires_role('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
   end
 
   def management_only
-    requires_role(:ROLE_BEAN_COUNTER)
+    requires_role(:BEAN_COUNTER)
   end
 end

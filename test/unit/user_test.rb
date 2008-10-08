@@ -17,10 +17,10 @@ class UserTest < Test::Unit::TestCase
   def test_has_role
     aaron = users(:aaron)
     assert_equal 1, aaron.roles.length
-    assert aaron.has_role?("ROLE_FRONT_DESK")
-    assert ! aaron.has_role?("ROLE_STORE"), 'should not have store role yet'
-    aaron.roles << Role.find(:first, :conditions => {:name => 'ROLE_STORE'})
-    assert aaron.has_role?("ROLE_STORE")
+    assert aaron.has_role?("FRONT_DESK")
+    assert ! aaron.has_role?("STORE"), 'should not have store role yet'
+    aaron.roles << Role.find(:first, :conditions => {:name => 'STORE'})
+    assert aaron.has_role?("STORE")
   end
 
   def test_should_require_login

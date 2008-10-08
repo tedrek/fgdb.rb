@@ -15,7 +15,7 @@
   <% form_tag :action => 'search' do -%>
   <% filters = {} -%>
   <% filters['flagged'] = "" -%>
-  <% if @current_user and @current_user.has_role?('ROLE_CONTACT_MANAGER') %>
+  <% if @current_user and @current_user.has_role?('CONTACT_MANAGER') %>
     <% filters['contact'] =
          contact_field('@conditions', 'contact_id',
                        :locals => {:options =>

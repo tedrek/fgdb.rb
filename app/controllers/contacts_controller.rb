@@ -32,8 +32,8 @@ class ContactsController < ApplicationController
     #     else
     #       contact_id = nil
     #     end
-    #     requires_role_or_me(contact_id, 'ROLE_CONTACT_MANAGER')
-    requires_role('ROLE_CONTACT_MANAGER', 'ROLE_FRONT_DESK', 'ROLE_STORE', 'ROLE_VOLUNTEER_MANAGER')
+    #     requires_role_or_me(contact_id, 'CONTACT_MANAGER')
+    requires_role('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
   end
 
   ######
@@ -88,7 +88,7 @@ class ContactsController < ApplicationController
       @contact = Contact.new(params[:contact])
 
       if params[:contact][:is_user].to_i != 0
-        if !has_role?(:ROLE_ADMIN)
+        if !has_role?(:ADMIN)
           raise RuntimeError.new("You are not authorized to create a user login")
         end
         @contact.user = User.new(params[:user])
@@ -121,11 +121,11 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if has_role_or_is_me?(@contact.id, :ROLE_ADMIN)
+      if has_role_or_is_me?(@contact.id, :ADMIN)
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
           @contact.user.attributes = params[:user]
-          if has_role?(:ROLE_ADMIN)
+          if has_role?(:ADMIN)
             if params[:roles]
               @contact.user.roles = Role.find(params[:roles])
             else
