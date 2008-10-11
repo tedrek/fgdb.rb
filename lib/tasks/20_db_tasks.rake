@@ -234,6 +234,7 @@ namespace :db do
     desc "blah blah blah"
     task :revert_stuff do
       system("svn revert #{RAILS_ROOT}/db/schema.rb")
+      system("git checkout #{RAILS_ROOT}/db/schema.rb")
     end
 
     desc "Migrate the schema.rb, devel data, and metadata"
