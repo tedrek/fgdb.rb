@@ -1,7 +1,0 @@
-
-# identify each file with a tab in it
-# auto suppress files in these subdirs:  .svn/, db/, images/, tmp/
-for f in `find . -type f |egrep -v '\.svn|/db/|/images/|/tmp/'`; do grep -l -f tab_PATT $f>> /tmp/tabfiles; done
-
-# identify each individual line with a tab in it
-# for f in `find . -type f |egrep -v '\.svn'`; do grep -H -f /tmp/tab_PATT $f>> /tmp/tablines; done
