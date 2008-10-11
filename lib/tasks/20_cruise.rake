@@ -1,7 +1,7 @@
 # -*- Ruby -*-
 
 task :cruise do
-  ['db:drop', 'db:create', 'db:data:revert_stuff', 'db:schema:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
+  ['db:drop', 'db:create', 'db:data:revert_stuff', 'db:schema:load', 'db:metadata:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
     arr = x.split(":")
     if arr.length > 1
       string = "#{arr[arr.length - 1]}ing the #{arr[arr.length - 2]}"
