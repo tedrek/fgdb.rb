@@ -1,6 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  #<ajax_crap> <!-- copied from ajax/active scaffold while in the process of getting rid of active scaffold -->
+  # ajax crap, copied from ajax/active scaffold while in the process of getting rid of active scaffold -->
 
   def generate_temporary_id
     (Time.now.to_f*1000).to_i.to_s
@@ -32,7 +32,7 @@ module ApplicationHelper
     time.strftime(format)
   end
 
-  #</ajax_crap>
+  # end of ajax crap
 
   class Column
     def initialize(klass, opts)
