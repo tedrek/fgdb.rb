@@ -223,7 +223,7 @@ namespace :db do
     end
 
     desc "Fill the database with data from the dumped SQL file"
-    task :load => ['db:data:wipe', :environment, 'db:schema:load'] do
+    task :load => ['db:data:wipe', :environment, 'db:data:revert_stuff', 'db:schema:load'] do
       abcs, search_path = setup_environment(rails_env)
       if abcs[rails_env]["username"]
         PGSQL_OPTS='-U "#{abcs[rails_env]["username"]}"'
