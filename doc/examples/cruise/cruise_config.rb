@@ -1,8 +1,6 @@
 # Project-specific configuration for CruiseControl.rb
 
 Project.configure do |project|
-  project.dashboard_url = "http://area.freegeek.org/"
-
   # Send email notifications about broken and fixed builds to email1@your.site, email2@your.site (default: send to nobody)
   project.email_notifier.emails = ['fgdb-commits@lists.freegeek.org']
 
