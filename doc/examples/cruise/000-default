@@ -17,7 +17,10 @@ ServerName area.freegeek.org
 
 	     <Proxy *>
 	     Order Allow,Deny
-	     Allow from all
+	     Allow from 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+	     Deny from 192.168.254.14/30 # teh reverse proxies
+
+	     Satisfy Any
 
 	     AuthName "fgdb.rb CruiseControl.rb"
 	     AuthType Basic
