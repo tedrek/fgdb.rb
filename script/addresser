@@ -1,0 +1,129 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+$files = {}
+
+def log(fn, line)
+  f = $files[fn] || ($files[fn] = File.open(fn, "w"))
+  f.print line
+end
+
+def close_logs()
+  $files.each { |k,v| v.close() }
+end
+
+def set_address(c, addr, city, state, zip)
+  if !(c.address == addr &&
+       c.extra_address.nil? &&
+       c.city == city &&
+       c.state_or_province == state &&
+       c.postal_code == zip)
+    c.address = addr
+    c.extra_address = nil
+    c.city = city
+    c.state_or_province = state
+    c.postal_code = zip
+    c.addr_certified = true
+    c.save!
+  else
+    puts "NO CHANGE!"
+  end
+end
+
+def check_digits(addr)
+  return addr.nil? ? nil : addr.gsub(/\D+/, '')
+end
+
+def safe_str(s)
+  return s || ""
+end
+
+def get_key(fn, ln, org)
+  (fn ||= "").strip!
+  fn.gsub!(/ +/,"")
+  (ln ||= "").strip!
+  ln.gsub!(/ +/,"")
+  (org ||= "").strip!
+  org.gsub!(/ +/,"")
+  return "#{fn} #{ln} #{org}".downcase()
+end
+
+def check_addr(c, addr, city, state, zip, chkd)
+  chk1 = check_digits(safe_str(c.address) + " " + safe_str(c.extra_address))
+  chk2 = check_digits(safe_str(c.extra_address) + " " + safe_str(c.address))
+  if chkd == chk1 || chkd == chk2
+    puts "#{c.id} -> #{c.display_name_address.join(" ")}"
+    set_address(c, addr, city, state, zip)
+    return true
+  elsif ((chk1[0..0] == '0' && chkd == chk1[1..-1]) ||
+         (chk2[0..0] == '0' && chkd == chk2[1..-1]))
+    puts "#{c.id} 0> #{c.display_name_address.join(" ")}"
+    set_address(c, addr.sub!(/(\d+)/, '0\1'), city, state, zip)
+    puts "#{c.id} 1> #{c.display_name_address.join(" ")}"
+    return true
+  end
+  return false
+end
+
+x = open(ARGV[0])
+x.readline() # skip the header
+
+i = 0
+all_contacts = {}
+Contact.find(:all).each do |c|
+  key = get_key(c.first_name, c.surname, c.organization)
+  all_contacts[key] ||= []
+  all_contacts[key] << c
+  puts "loaded #{i}" if i%1000==0
+  i += 1
+end
+
+Contact.connection.execute("ALTER TABLE contacts DISABLE TRIGGER uncertify_address")
+begin
+  x.readlines().each do |line|
+    puts line
+
+    (first_name, surname, org, addr, city, state, zip) = line.split(/\t/)
+
+
+    cnts = all_contacts[get_key(first_name, surname, org)] || []
+
+    if cnts.empty?
+      puts "no map !> #{line}"
+      log("#{ARGV[0]}.unknown", line)
+    else
+      chkd = check_digits(addr)
+      found = false
+      cnts.each do |c|
+        lfound = check_addr(c, addr, city, state, zip, chkd)
+        if !lfound && !(c.address.nil? || c.address.empty?)
+          {/first/i => "1st",
+            /\bsecond\b/i => "2nd",
+            /\bthird\b/i => "3rd",
+            /\bfourth\b/i => "4th",
+            /\bfifth\b/i => "5th",
+            /\bsixth\b/i => "6th",
+            /\bseventh\b/i => "7th"}.each do |pattern,replacement|
+            c.address.sub!(pattern, replacement)
+          end
+          lfound = check_addr(c, addr, city, state, zip, chkd)
+        end
+        found ||= lfound
+      end
+
+      if !found
+        log("#{ARGV[0]}.inexact", line)
+        cnts.each do |c|
+          puts "#{c.id} *> #{c.display_name_address.join(" ")} --- #{check_digits(safe_str(c.address) + " " + safe_str(c.extra_address))} #{c.updated_at}"
+        end
+      end
+    end
+
+    puts "----------"
+  end
+
+  close_logs()
+ensure
+  Contact.connection.execute("ALTER TABLE contacts ENABLE TRIGGER uncertify_address")
+end
