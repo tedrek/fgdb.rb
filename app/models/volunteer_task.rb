@@ -12,6 +12,11 @@ class VolunteerTask < ActiveRecord::Base
 
   before_save :add_contact_types
 
+  belongs_to :creator, :foreign_key => "created_by", :class_name => "User"
+  belongs_to :updator, :foreign_key => "created_by", :class_name => "User"
+  validates_existence_of :creator, {:allow_nil => true}
+  validates_existence_of :updator, {:allow_nil => true}
+
   def self.find_by_conditions(conditions)
     connection.execute("SELECT volunteer_tasks.duration AS duration, community_service_types.description AS community_service_type, volunteer_task_types.description AS volunteer_task_types FROM volunteer_tasks LEFT OUTER JOIN volunteer_task_types ON volunteer_task_types.id = volunteer_tasks.volunteer_task_type_id LEFT OUTER JOIN community_service_types ON community_service_types.id = volunteer_tasks.community_service_type_id WHERE #{sanitize_sql_for_conditions(conditions)}")
   end

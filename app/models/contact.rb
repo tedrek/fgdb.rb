@@ -16,6 +16,11 @@ class Contact < ActiveRecord::Base
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
 
+  belongs_to :creator, :foreign_key => "created_by", :class_name => "User"
+  belongs_to :updator, :foreign_key => "created_by", :class_name => "User"
+  validates_existence_of :creator, {:allow_nil => true}
+  validates_existence_of :updator, {:allow_nil => true}
+
   def merge_these_in(arr)
     for other in arr
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")

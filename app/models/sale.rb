@@ -14,6 +14,11 @@ class Sale < ActiveRecord::Base
   before_save :add_change_line_item
   before_save :combine_cash_payments
 
+  belongs_to :creator, :foreign_key => "created_by", :class_name => "User"
+  belongs_to :updator, :foreign_key => "created_by", :class_name => "User"
+  validates_existence_of :creator, {:allow_nil => true}
+  validates_existence_of :updator, {:allow_nil => true}
+
   def initialize(*args)
     @contact_type = 'named'
     super(*args)
