@@ -21,11 +21,6 @@ class User < ActiveRecord::Base
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation
 
-  belongs_to :creator, :foreign_key => "created_by", :class_name => "User"
-  belongs_to :updator, :foreign_key => "created_by", :class_name => "User"
-  validates_existence_of :creator, {:allow_nil => true}
-  validates_existence_of :updator, {:allow_nil => true}
-
   def merge_in(other)
     for i in [:actions, :donations, :sales, :spec_sheets, :systems, :types, :users, :volunteer_tasks, :contacts]
       User.connection.execute("UPDATE #{i.to_s} SET created_by = #{self.id} WHERE created_by = #{other.id}")

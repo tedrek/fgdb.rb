@@ -21,11 +21,6 @@ class Donation < ActiveRecord::Base
   before_save :add_dead_beat_discount
   before_save :combine_cash_payments
 
-  belongs_to :creator, :foreign_key => "created_by", :class_name => "User"
-  belongs_to :updator, :foreign_key => "created_by", :class_name => "User"
-  validates_existence_of :creator, {:allow_nil => true}
-  validates_existence_of :updator, {:allow_nil => true}
-
   def validate
     if contact_type == 'named'
       errors.add_on_empty("contact_id")

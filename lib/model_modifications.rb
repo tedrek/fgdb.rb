@@ -5,6 +5,11 @@ module ActiveRecord
         alias_method_chain :create, :user
         alias_method_chain :update, :user
 
+        belongs_to :creator, :foreign_key => "created_by", :class_name => "User"
+        belongs_to :updator, :foreign_key => "created_by", :class_name => "User"
+        validates_existence_of :creator, {:allow_nil => true}
+        validates_existence_of :updator, {:allow_nil => true}
+
         def current_user
           Thread.current['user']
         end
