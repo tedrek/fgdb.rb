@@ -19,7 +19,7 @@ task :cruise do
       print '='
     }
     puts ""
-   if !system("rake #{x}")
+    if !system("rake RAILS_ENV=development #{x}")
       exit 1
     end
   }
