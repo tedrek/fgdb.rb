@@ -11,6 +11,7 @@ class GizmoType < ActiveRecord::Base
   validates_numericality_of(:required_fee_cents,
                             :suggested_fee_cents,
                             :allow_nil => true)
+  belongs_to :gizmo_category
 
   define_amount_methods_on("required_fee")
   define_amount_methods_on("suggested_fee")
