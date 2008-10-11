@@ -1,0 +1,52 @@
+#!/bin/sh
+
+if [ "$1" = "--noexec" ] || [ "$1" = "--no-exec" ] || [ "$2" = "--noexec" ] || [ "$2" = "--no-exec" ]; then
+    NOEXEC="echo"
+fi
+
+cd `dirname $0`
+
+if (echo "$1" | grep -q -E "^[0-9]+$"); then
+    VERSION="$1"
+elif (echo "$2" | grep -q -E "^[0-9]+$"); then
+    VERSION="$2"
+else
+    echo "please provide a sprint number"
+    echo "( hint: $(( $(ls branches/ | awk '/^release_1.0./{sub("release_1.0.",""); print $1}' | sort -n | tail -1) + 1 )) )"
+    exit
+fi
+
+$NOEXEC svn up
+svn st
+svn di
+
+echo
+echo
+echo
+
+if [ -z "$NOEXEC" ]; then
+    echo "About to release sprint $VERSION"
+    echo "YOU ARE NOT IN DEBUG MODE"
+    echo -n "Continue? (say YES) "
+    read yesno
+
+    if [ "$yesno" != "YES" ]; then
+        echo "Aborted"
+        exit
+    fi
+fi
+
+cd ..
+
+if [ ! -d trunk ]; then
+    echo "Where's trunk?"
+    exit 1
+fi
+
+$NOEXEC sed -i "s/release_1.0.$(ruby -e "puts ${VERSION} - 1")/release_1.0.${VERSION}/g" trunk/mr/.mrconfig
+$NOEXEC svn ci trunk/mr/.mrconfig -m "updating mr config for sprint ${VERSION}"
+$NOEXEC svn cp svn+ssh://dev.freegeek.org/svn/fgdb.rb/trunk svn+ssh://dev.freegeek.org/svn/fgdb.rb/tags/release_1.0.${VERSION} -m "tagging sprint ${VERSION}"
+$NOEXEC svn cp svn+ssh://dev.freegeek.org/svn/fgdb.rb/trunk svn+ssh://dev.freegeek.org/svn/fgdb.rb/branches/release_1.0.${VERSION} -m "branching sprint ${VERSION}"
+NOEXEC="$NOEXEC" ./cleanup
+$NOEXEC svn up
+echo
