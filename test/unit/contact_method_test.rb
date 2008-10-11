@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContactMethodTest < Test::Unit::TestCase
-  fixtures :contact_types, :contacts, :contact_method_types, :contact_methods, :users
+  fixtures :users, :contact_types, :contacts, :contact_method_types, :contact_methods
 
   TYPE = ContactMethodType.new({:name=>'cat', :description => "cat"})
   TYPE.save
