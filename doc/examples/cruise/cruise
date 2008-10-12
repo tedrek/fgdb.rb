@@ -1,8 +1,10 @@
 #!/bin/sh
 
+# depends on daemon, downloadable here: http://git.ryan52.info/redirect/daemon.c
+
 case "$1" in
     start)
-	sudo su - -c "/home/cruise/cruise/cruise start -p 8000 -b 127.0.0.1 -d" cruise
+	sudo su - -c "daemon /home/cruise/cruise/cruise start -p 8000 -b 127.0.0.1 -d" cruise
 	;;
     stop)
 	kill `ps aux | awk '/^cruise/{print $2}'`
