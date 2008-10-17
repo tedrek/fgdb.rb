@@ -266,6 +266,20 @@ class Contact < ActiveRecord::Base
   def is_user=(x)
   end
 
+  def get_recent_sale_totals()
+    x = self.connection.execute("
+      SELECT COUNT(*),
+             SUM(reported_discount_amount_cents),
+             SUM(reported_amount_due_cents)
+      FROM sales tx
+      WHERE tx.created_at > now()-'90@day'::INTERVAL
+            AND tx.contact_id=#{self.id}
+      ")
+    return {:count=>x[0][0],
+        :discounted=>x[0][1],
+        :total=>x[0][2]}
+  end
+
   alias :is_user :is_user?
 
   private
