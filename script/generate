@@ -1,15 +1,4 @@
 #!/usr/bin/env ruby
 
-puts "Please note that this script is not perfect."
-puts "That means that you will have to test and tweak the code that it generates."
-puts "If this is too difficult for you, then please press the n key at the prompt." 
-puts "If you think you can handle it, then just press y. okay?"
-printf "here: "
-retval = gets.strip
-if retval != "y"
-  puts "okay, bye."
-  exit 1
-end
-
 require File.dirname(__FILE__) + '/../config/boot'
 require 'commands/generate'
