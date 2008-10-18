@@ -1,6 +1,6 @@
 <span class="print_only">
   <%= render :partial => "helpers/letter_head",
-             :locals => {:contact_information => @contact.nil? ? nil : @contact.display_name_address} %>
+      :locals => {:contact_information => @contact.nil? ? nil : @contact.display_name_address} %>
 </span>
 <span class="no_print">
   <h1>Report of hours worked <%= @date_range_string %></h1>
@@ -9,18 +9,18 @@
 <% table_width = 2 %>
 <% for section,types in @data %>
   <div id="<%= section -%>_report"><p><%= Inflector.titleize(section) %></p>
-  <% for type in types.keys.sort {|a,b|
-          if /total/i.match(a)
-            1
-          elsif /total/i.match(b)
-            -1
-          else
-           a.downcase <=> b.downcase
-          end } %>
-    <% if @data[section][type].nonzero? || section != :volunteer_task_type %>
-    <div class="task"><span class="task_name"><%= type %></span> <span class="task_data"><%= @data[section][type] %></span></div>
+    <% for type in types.keys.sort {|a,b|
+           if /total/i.match(a)
+             1
+           elsif /total/i.match(b)
+             -1
+           else
+             a.downcase <=> b.downcase
+           end } %>
+      <% if @data[section][type].nonzero? || section != :volunteer_task_type %>
+        <div class="task"><span class="task_name"><%= type %></span> <span class="task_data"><%= @data[section][type] %></span></div>
+      <% end %>
     <% end %>
-  <% end %>
   </div>
 <% end %>
 

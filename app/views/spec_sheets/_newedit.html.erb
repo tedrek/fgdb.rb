@@ -1,43 +1,43 @@
 <div id="form-header">
-<% if action_name == "new" %>
-<h1>New report</h1>
-<% elsif action_name == "edit" %>
-<h1>Editing report</h1>
-<% end %>
+  <% if action_name == "new" %>
+    <h1>New report</h1>
+  <% elsif action_name == "edit" %>
+    <h1>Editing report</h1>
+  <% end %>
 
-<% if @error!=nil %>
-<span style="color: red">ERROR: <%= @error %></span>
-<% end %>
+  <% if @error!=nil %>
+    <span style="color: red">ERROR: <%= @error %></span>
+  <% end %>
 
-<div id="form-body">
-<% if action_name == "new" %>
-<% form_opts = {:action => "create"} %>
-<% string = "Create" %>
-<% elsif action_name == "edit" %>
-<% form_opts = {:action => "update", :id => @report.id} %>
-<% string = "Update" %>
-<% end %>
-<% form_tag (form_opts, {:multipart => true}) do |f| %>
-  <table>
-    <tr><td>Volunteer ID:</td><td><%= text_field("report", :contact_id) %></td></tr>
-    <tr><td>Job:</td><td><%= select("report", "action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
-    <tr><td>System ID:</td><td><%= text_field("report", :system_id) %></td></tr>
-    <tr><td>Type:</td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
-    <tr><td>Notes:</td><td><%= text_area("report", :notes) %></td></tr>
+  <div id="form-body">
     <% if action_name == "new" %>
-      <tr><td>File:</td><td><%= file_field("report", :my_file) %></td></tr>
+      <% form_opts = {:action => "create"} %>
+      <% string = "Create" %>
     <% elsif action_name == "edit" %>
-      <tr><td>Flag:</td><td><%= check_box("report", :flag) %></td></tr>
+      <% form_opts = {:action => "update", :id => @report.id} %>
+      <% string = "Update" %>
     <% end %>
-    <tr><td colspan="2"><%= submit_tag string %></td></tr>
-  </table>
-<% end %>
-</div>
+    <% form_tag (form_opts, {:multipart => true}) do |f| %>
+      <table>
+        <tr><td>Volunteer ID:</td><td><%= text_field("report", :contact_id) %></td></tr>
+        <tr><td>Job:</td><td><%= select("report", "action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
+        <tr><td>System ID:</td><td><%= text_field("report", :system_id) %></td></tr>
+        <tr><td>Type:</td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
+        <tr><td>Notes:</td><td><%= text_area("report", :notes) %></td></tr>
+        <% if action_name == "new" %>
+          <tr><td>File:</td><td><%= file_field("report", :my_file) %></td></tr>
+        <% elsif action_name == "edit" %>
+          <tr><td>Flag:</td><td><%= check_box("report", :flag) %></td></tr>
+        <% end %>
+        <tr><td colspan="2"><%= submit_tag string %></td></tr>
+      </table>
+    <% end %>
+  </div>
 
-<div id="form-footer">
-<% if action_name == "edit" %>
-<%= link_to 'Show', {:action => "show", :id => @report.id} %> |
-<% end %>
-<%= link_to 'Back', {:action => "index"} %>
-</div>
+  <div id="form-footer">
+    <% if action_name == "edit" %>
+      <%= link_to 'Show', {:action => "show", :id => @report.id} %> |
+    <% end %>
+    <%= link_to 'Back', {:action => "index"} %>
+  </div>
 

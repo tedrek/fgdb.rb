@@ -1,9 +1,9 @@
 <% options ||= {} %>
 <div class="form-element">
   <%= contact_field("@transaction", "contact",
-        :locals => {:options => {
-            :object_name => @transaction_type,
-            :field_name => 'contact_id'
-          }.merge(options)
-        }) %>
+                    :locals => {:options => {
+                        :object_name => @transaction_type,
+                        :field_name => 'contact_id'
+                      }.merge(options)
+                    }) %>
 </div>

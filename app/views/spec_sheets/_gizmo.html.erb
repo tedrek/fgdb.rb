@@ -1,80 +1,80 @@
-  <div id="posted_info">
-    <h2>Gizmo Info</h2>
-    <table>
-      <tr>
-        <td>
-          Date:
-        </td>
-        <td>
-          <%= @report.created_at.strftime("%D %I:%M%p") %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          System ID:
-        </td>
-        <td>
-          <%= @report.system_id %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Type:
-        </td>
-        <td>
-          <%= @report.type && @report.type.description || "Unknown" %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Report ID:
-        </td>
-        <td>
-          <%= @report.id %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          OS:
-        </td>
-        <td>
-          <%= @report.os %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Job:
-        </td>
-        <td>
-          <%= @report.action && @report.action.description || "Unknown" %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Technician:
-        </td>
-        <td>
-          <%= @report.contact_id %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Old ID:
-        </td>
-        <td>
-          <%= @report.old_id %>
-        </td>
-      </tr>
-      <tr>
-        <td class="line_label">
-          Instructor Initials:
-        </td>
-        <td>
-          <br />
-          _________________________
-        </td>
-      </tr>
-      <% if @report.type == Type.find_by_name("laptop") %>
+<div id="posted_info">
+  <h2>Gizmo Info</h2>
+  <table>
+    <tr>
+      <td>
+        Date:
+      </td>
+      <td>
+        <%= @report.created_at.strftime("%D %I:%M%p") %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        System ID:
+      </td>
+      <td>
+        <%= @report.system_id %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Type:
+      </td>
+      <td>
+        <%= @report.type && @report.type.description || "Unknown" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Report ID:
+      </td>
+      <td>
+        <%= @report.id %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        OS:
+      </td>
+      <td>
+        <%= @report.os %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Job:
+      </td>
+      <td>
+        <%= @report.action && @report.action.description || "Unknown" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Technician:
+      </td>
+      <td>
+        <%= @report.contact_id %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Old ID:
+      </td>
+      <td>
+        <%= @report.old_id %>
+      </td>
+    </tr>
+    <tr>
+      <td class="line_label">
+        Instructor Initials:
+      </td>
+      <td>
+        <br />
+        _________________________
+      </td>
+    </tr>
+    <% if @report.type == Type.find_by_name("laptop") %>
       <tr>
         <td class="line_label">
           Battery Life:
@@ -102,14 +102,14 @@
           _________________________
         </td>
       </tr>
-      <% end %>
-      <tr>
-        <td>
-          Notes:
-        </td>
-        <td>
-          <%= @report.notes.gsub("\n", "<br />") %>
-        </td>
-      </tr>
-    </table>
-  </div>
+    <% end %>
+    <tr>
+      <td>
+        Notes:
+      </td>
+      <td>
+        <%= @report.notes.gsub("\n", "<br />") %>
+      </td>
+    </tr>
+  </table>
+</div>

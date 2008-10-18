@@ -93,10 +93,10 @@ class Conditions
     raise ArgumentError.new("'#{conds_a}' is empty") if conds_a.empty?
     raise ArgumentError.new("'#{conds_b}' is empty") if conds_b.empty?
     return [
-     conds_a[0].to_s +
-     (conds_a[0].empty? ? '' : ' AND ') +
-     conds_b[0].to_s
-    ] + conds_a[1..-1] + conds_b[1..-1]
+            conds_a[0].to_s +
+            (conds_a[0].empty? ? '' : ' AND ') +
+            conds_b[0].to_s
+           ] + conds_a[1..-1] + conds_b[1..-1]
   end
 
   def payment_amount_conditions(klass)
@@ -106,8 +106,8 @@ class Conditions
     case @payment_amount_type
     when 'between'
       return ["payments.amount_cents BETWEEN ? AND ?",
-               @payment_amount_low.to_s.to_cents,
-               @payment_amount_high.to_s.to_cents]
+              @payment_amount_low.to_s.to_cents,
+              @payment_amount_high.to_s.to_cents]
     when '>='
       return ["payments.amount_cents >= ?", @payment_amount_ge.to_s.to_cents]
     when '<='
@@ -122,8 +122,8 @@ class Conditions
     case @volunteer_hours_type
     when 'between'
       return ["#{first_part} sum(duration) BETWEEN ? AND ?)",
-               @volunteer_hours_low,
-               @payment_amount_high]
+              @volunteer_hours_low,
+              @payment_amount_high]
     when '>='
       return ["#{first_part} sum(duration) >= ?)", @volunteer_hours_ge]
     when '<='

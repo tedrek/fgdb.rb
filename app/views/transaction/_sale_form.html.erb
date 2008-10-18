@@ -1,59 +1,59 @@
 <fieldset>
   <div class="row">
     <!--[form:sale]-->
-<div id="transaction_info">
-  <div id="<%= contact_searchbox_id(@options) %>">
-    <label for="donation_contact_type">What kind of contact?</label>
-    <%= select_visibility( 'sale', 'contact_type',
-          :anonymous => render( :partial => 'anonymous' ),
-          :named => render( :partial => 'contact_search',
-                            :locals => {:options => {
-                              :on_display => "if($('contact__default_discount_schedule')) {
+    <div id="transaction_info">
+      <div id="<%= contact_searchbox_id(@options) %>">
+        <label for="donation_contact_type">What kind of contact?</label>
+        <%= select_visibility( 'sale', 'contact_type',
+                               :anonymous => render( :partial => 'anonymous' ),
+                               :named => render( :partial => 'contact_search',
+                                                 :locals => {:options => {
+                                                     :on_display => "if($('contact__default_discount_schedule')) {
                                               set_new_val($('sale_discount_schedule_id'),
                                                           parseInt($('contact__default_discount_schedule').innerHTML));
                                             }",
-                              }}
-                           )
-        ) %>
-  </div>
-
-  <div class="form-extras">
-    <div class="form-element">
-      <label for="sale_discount_schedule_id">Discount schedule</label>
-      <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]" onChange="sale_compute_totals();">
-        <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "description", @sale.discount_schedule_id || DiscountSchedule.no_discount.id) %>
-      </select>
-    </div>
-
-    <div class="form-element">
-      <label for="sale_comments">Comments</label>
-      <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
-    </div>
-
-    <% if @sale.id and @sale.invoiced? %>
-      <div class="form-element">
-        <label for="sale_invoice_resolved_at">When was this invoice resolved?</label>
-        <%= calendar_box 'sale', 'invoice_resolved_at',{},{:showOthers => true} %>
+                                                   }}
+                                                 )
+                               ) %>
       </div>
-    <% end %>
-  </div>
-</div>
 
-<div id="transaction_line_items_div">
-  <div id="sale_gizmos" class="datalist line_item">
-    <%= render :partial => 'sale_gizmo_events' %>
-  </div>
+      <div class="form-extras">
+        <div class="form-element">
+          <label for="sale_discount_schedule_id">Discount schedule</label>
+          <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]" onChange="sale_compute_totals();">
+            <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "description", @sale.discount_schedule_id || DiscountSchedule.no_discount.id) %>
+          </select>
+        </div>
 
-  <div id="sale_payments" class="datalist line_item">
-    <%= render :partial => 'sale_payments' %>
-  </div>
+        <div class="form-element">
+          <label for="sale_comments">Comments</label>
+          <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+        </div>
 
-  <%= render :partial => 'sale_totals' %>
+        <% if @sale.id and @sale.invoiced? %>
+          <div class="form-element">
+            <label for="sale_invoice_resolved_at">When was this invoice resolved?</label>
+            <%= calendar_box 'sale', 'invoice_resolved_at',{},{:showOthers => true} %>
+          </div>
+        <% end %>
+      </div>
+    </div>
 
-  <%= javascript_tag @gizmos_and_payments_js %>
-</div>
+    <div id="transaction_line_items_div">
+      <div id="sale_gizmos" class="datalist line_item">
+        <%= render :partial => 'sale_gizmo_events' %>
+      </div>
 
-<!--[eoform:sale]-->
+      <div id="sale_payments" class="datalist line_item">
+        <%= render :partial => 'sale_payments' %>
+      </div>
+
+      <%= render :partial => 'sale_totals' %>
+
+      <%= javascript_tag @gizmos_and_payments_js %>
+    </div>
+
+    <!--[eoform:sale]-->
 
   </div>
 </fieldset>

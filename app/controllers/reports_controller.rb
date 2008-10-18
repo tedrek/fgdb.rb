@@ -130,7 +130,7 @@ class ReportsController < ApplicationController
     income_report_init #:MC: modifies @income_data
     @date_range_string = @defaults.to_s
     ranges = {:sales => {:min => 1<<64, :max => 0},
-               :donations => {:min => 1<<64, :max => 0}
+      :donations => {:min => 1<<64, :max => 0}
     }
     Donation.totals(@defaults.conditions(Donation)).each do |summation|
       add_donation_summation_to_data(summation, @income_data, ranges)

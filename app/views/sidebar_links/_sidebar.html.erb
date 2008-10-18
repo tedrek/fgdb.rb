@@ -5,11 +5,11 @@
       <div>
         <%= link_to "entry", :controller => 'volunteer_tasks' %>
       </div>
-<!--
-      <div>
-        <%= link_to "search", :controller => 'volunteer_tasks', :action => 'listing' %>
-      </div>
--->
+      <!--
+          <div>
+            <%= link_to "search", :controller => 'volunteer_tasks', :action => 'listing' %>
+            </div>
+    -->
     </div>
   <% elsif current_user and current_user.contact_id %>
     hours
@@ -57,24 +57,24 @@
   </div>
 
   <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
-  contacts
-  <div class="sidebar_section">
-    <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
-      <div>
-        <%= link_to "contacts", :controller => 'contacts' %>
-      </div>
-    <% end %>
-    <% if has_role?('CONTACT_MANAGER') %>
-      <div>
-        <%= link_to "dedup", :controller => 'contact_duplicates' %>
-      </div>
-    <% end %>
-    <% if has_role?('CONTACT_MANAGER') %>
-      <div>
-        <%= link_to "duplicates list", :controller => 'contact_duplicates', :action => "list_dups" %>
-      </div>
-    <% end %>
-  </div>
+    contacts
+    <div class="sidebar_section">
+      <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
+        <div>
+          <%= link_to "contacts", :controller => 'contacts' %>
+        </div>
+      <% end %>
+      <% if has_role?('CONTACT_MANAGER') %>
+        <div>
+          <%= link_to "dedup", :controller => 'contact_duplicates' %>
+        </div>
+      <% end %>
+      <% if has_role?('CONTACT_MANAGER') %>
+        <div>
+          <%= link_to "duplicates list", :controller => 'contact_duplicates', :action => "list_dups" %>
+        </div>
+      <% end %>
+    </div>
   <% end %>
 
   everything else

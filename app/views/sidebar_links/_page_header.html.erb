@@ -1,41 +1,41 @@
 <!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-     "DTD/xhtml1-strict.dtd">
+          PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head>
-  <title>Free Geek Database:
-    <%= Inflector.titleize(controller.class.name).sub(/ Controller/, '') %>:
-    <%= Inflector.titleize(controller.action_name) %>
-  </title>
-  <%= stylesheet_link_tag 'scaffold', 'lightwindow', 'application', :media => 'all' %>
-  <%= stylesheet_link_tag 'no_print', :media => 'print' %>
-  <%= javascript_include_tag :defaults %>
-  <%= javascript_include_tag 'lightwindow' %>
-  <%= javascript_include_tag 'boxover' %>
-  <%= javascript_include_tag 'keybindings' %>
+  <head>
+    <title>Free Geek Database:
+      <%= Inflector.titleize(controller.class.name).sub(/ Controller/, '') %>:
+      <%= Inflector.titleize(controller.action_name) %>
+    </title>
+    <%= stylesheet_link_tag 'scaffold', 'lightwindow', 'application', :media => 'all' %>
+    <%= stylesheet_link_tag 'no_print', :media => 'print' %>
+    <%= javascript_include_tag :defaults %>
+    <%= javascript_include_tag 'lightwindow' %>
+    <%= javascript_include_tag 'boxover' %>
+    <%= javascript_include_tag 'keybindings' %>
 
-  <%= dhtml_calendar_includes %>
-  <% if defined?(@gizmo_context) %>
-    <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>
-  <% end %>
-</head>
-<body>
+    <%= dhtml_calendar_includes %>
+    <% if defined?(@gizmo_context) %>
+      <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>
+    <% end %>
+  </head>
+  <body>
 
-  <div id="logo">
-    <a href="/"><img src="/images/freegeeklogo.png" alt="freegeeklogo.png" class="image-link"/></a>
-  </div>
+    <div id="logo">
+      <a href="/"><img src="/images/freegeeklogo.png" alt="freegeeklogo.png" class="image-link"/></a>
+    </div>
 
-<% if !(session[:unauthorized_error] && !logged_in?) %>
-  <%= render :partial => "sessions/you_are_here" %>
-<% else %>
-  <% session[:unauthorized_error] = false %> <%# rails renders the layouts last %>
-  <% session[:unauthorized_controller] = nil %>
-  <% session[:unauthorized_action] = nil %>
-  <%= javascript_tag "var pixelsize='0px';" %>
-<% end %>
+    <% if !(session[:unauthorized_error] && !logged_in?) %>
+      <%= render :partial => "sessions/you_are_here" %>
+    <% else %>
+      <% session[:unauthorized_error] = false %> <%# rails renders the layouts last %>
+      <% session[:unauthorized_controller] = nil %>
+      <% session[:unauthorized_action] = nil %>
+      <%= javascript_tag "var pixelsize='0px';" %>
+    <% end %>
 
-  <%= render :partial => 'sidebar_links/sidebar' %>
+    <%= render :partial => 'sidebar_links/sidebar' %>
 
-  <div id="<%= content_id %>">
+    <div id="<%= content_id %>">
 
-  <%= javascript_tag "if(pixelsize) {$('content').style.top=pixelsize;}" %>
+      <%= javascript_tag "if(pixelsize) {$('content').style.top=pixelsize;}" %>

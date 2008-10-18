@@ -125,7 +125,7 @@ module ApplicationHelper
     display = %Q{ <div class="form-element"> %s %s </div> } %
       [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]} ),
         observe_field( "#{obj_name}_#{method_name}",
-                      :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value);",
+                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value);",
                        :with => method_name )]
 
     this_choice = obj.send(method_name)
@@ -159,7 +159,7 @@ module ApplicationHelper
         for condition in choices.keys do
           page.insert_html(:bottom, obj_name + "_adder",
                            '<option id="%s_%s_option" value="%s">%s</option>' %
-                             [obj_name, condition, condition, Inflector.titleize(condition)])
+                           [obj_name, condition, condition, Inflector.titleize(condition)])
           page << "if($('#{obj_name}_#{condition}_enabled').value == 'true'){add_condition('#{obj_name}', '#{condition}');}"
         end
       end
@@ -182,11 +182,11 @@ module ApplicationHelper
     date_types << ['daily', calendar_box(obj_name, field_name + '_date',{},{:showOthers => true})]
     # monthly
     date_types << ['monthly', select_month(obj.send(field_name + '_month'), :field_name => field_name + '_month', :prefix => obj_name) +
-      select_year(obj.send(field_name + '_year'), :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year)]
+                   select_year(obj.send(field_name + '_year'), :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year)]
     # arbitrary
     date_types << ['arbitrary', "From: %s To: %s" %
-      [ calendar_box(obj_name, field_name + '_start_date',{},{:showOthers => true}),
-        calendar_box(obj_name, field_name + '_end_date',{},{:showOthers => true}) ]]
+                   [ calendar_box(obj_name, field_name + '_start_date',{},{:showOthers => true}),
+                     calendar_box(obj_name, field_name + '_end_date',{},{:showOthers => true}) ]]
 
     return select_visibility(obj_name, field_name + '_date_type', date_types)
   end
@@ -210,8 +210,8 @@ module ApplicationHelper
   def contact_query_id(options)
     options[:contact_query_id] ||
       (
-        contact_object_name(options) + "_" + contact_field_name(options)
-      )
+       contact_object_name(options) + "_" + contact_field_name(options)
+       )
   end
 
   def contact_edit_link_id(options)
@@ -234,7 +234,7 @@ module ApplicationHelper
     if value_empty?(value)
       empty_text
     elsif value.instance_of? Time
-        format_time(value)
+      format_time(value)
     elsif value.instance_of? Date
       format_date(value)
     else
@@ -242,13 +242,13 @@ module ApplicationHelper
     end
   end
 
-    def value_empty?(value)
-      value.nil? || (value.empty? rescue false)
-    end
+  def value_empty?(value)
+    value.nil? || (value.empty? rescue false)
+  end
 
-    def empty_text
-      "-"
-    end
+  def empty_text
+    "-"
+  end
 
   def column_sort_direction(column_name, params)
     if column_name && column_name == current_sort(params)
@@ -345,16 +345,16 @@ module ApplicationHelper
 
   def new_edit_link(link_id, options, form_id = nil)
     new_make_link(link_id,
-              image_tag("edit.png", :alt => "edit", :title => "edit", :class => "image-link"),
-              options,
-              form_id)
+                  image_tag("edit.png", :alt => "edit", :title => "edit", :class => "image-link"),
+                  options,
+                  form_id)
   end
 
   def new_delete_link(link_id, options, form_id = nill)
     new_make_link(link_id,
-              image_tag("remove.png", :alt => "delete", :title => "delete", :class => "image-link"),
-              options,
-              form_id)
+                  image_tag("remove.png", :alt => "delete", :title => "delete", :class => "image-link"),
+                  options,
+                  form_id)
   end
 
   def new_make_link(link_id, image_tag, options, form_id = nil)

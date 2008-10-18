@@ -5,22 +5,22 @@
     <%= link_to "logout", "/sessions/destroy" %>
     <% if @current_user.contact %>
       <%# my_lightwindow_tag(
-            :content => "user info",
-            :id => 'contact_edit_link_id(params)',
-            :url => {
-              :controller => 'contacts',
-              :action => 'edit',
-              :id => @current_user.contact.id,
-            })
-      %>
+                             :content => "user info",
+                             :id => 'contact_edit_link_id(params)',
+                             :url => {
+                               :controller => 'contacts',
+                               :action => 'edit',
+                               :id => @current_user.contact.id,
+                             })
+          %>
     <% end %>
   <% else -%>
-<% if flash[:error] %>
-  <%= javascript_tag "if($('content')){ $('content').style.top='60px';} else { var pixelsize='60px';}" %>
-  <div class="error"><%= flash[:error] %></div>
-<% else %>
-  <%= javascript_tag "if($('content')){ $('content').style.top='40px';} else { var pixelsize='40px';}" %>
-<% end %>
+    <% if flash[:error] %>
+      <%= javascript_tag "if($('content')){ $('content').style.top='60px';} else { var pixelsize='60px';}" %>
+      <div class="error"><%= flash[:error] %></div>
+    <% else %>
+      <%= javascript_tag "if($('content')){ $('content').style.top='40px';} else { var pixelsize='40px';}" %>
+    <% end %>
     <%= render :partial => "sessions/form" %>
   <% end -%>
 </div>

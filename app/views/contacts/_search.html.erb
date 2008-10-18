@@ -1,12 +1,12 @@
 <% update_display = remote_function(
-     :update => searchbox_display_id(options),
-     :url => options.merge({
-       :action => 'update_display_area',
-       :controller => 'contacts',
-     }),
-     :with => "'contact_id=' + $('#{contact_query_id(options)}').value",
-     :contact_query_id => contact_query_id(options)
-   ) %>
+                                    :update => searchbox_display_id(options),
+                                    :url => options.merge({
+                                                            :action => 'update_display_area',
+                                                            :controller => 'contacts',
+                                                          }),
+                                    :with => "'contact_id=' + $('#{contact_query_id(options)}').value",
+                                    :contact_query_id => contact_query_id(options)
+                                    ) %>
 <% update_display_function = "
      function(field, choice) {
        #{update_display};
@@ -16,38 +16,38 @@
   <label for="<%= contact_query_id(options) %>">Search for a contact:</label>
 <% end %>
 <%= text_field_with_auto_complete(
-      contact_object_name(options),
-      contact_field_name(options),
-      {
-        :size=>15,
-      },
-      {
-        :after_update_element => update_display_function,
-        :after_input => "function(e) {Element.update($('#{searchbox_display_id(options)}'), '')}",
-        :skip_style => true,
-        :indicator => loading_indicator_id("contact_autocomplete_loading"),
-        :auto_select => true,
-        :method => 'GET'
-      },
-      :object_name => contact_object_name(options),
-      :controller => 'contacts',
-      :field_name => contact_field_name(options)
-    ) %>
-  <%= loading_indicator_tag("contact_autocomplete_loading") %>
+                                  contact_object_name(options),
+                                  contact_field_name(options),
+                                  {
+                                    :size=>15,
+                                  },
+                                  {
+                                    :after_update_element => update_display_function,
+                                    :after_input => "function(e) {Element.update($('#{searchbox_display_id(options)}'), '')}",
+                                    :skip_style => true,
+                                    :indicator => loading_indicator_id("contact_autocomplete_loading"),
+                                    :auto_select => true,
+                                    :method => 'GET'
+                                  },
+                                  :object_name => contact_object_name(options),
+                                  :controller => 'contacts',
+                                  :field_name => contact_field_name(options)
+                                  ) %>
+<%= loading_indicator_tag("contact_autocomplete_loading") %>
 
 <% if (! options[:display_create]) or (options[:display_create] == 'true') %>
   <% new_options = options.merge(
-       :controller => 'contacts',
-       :action => 'new',
-       :id => nil,
-       :contact_query_id => contact_query_id(options)
-     ) %>
+                                 :controller => 'contacts',
+                                 :action => 'new',
+                                 :id => nil,
+                                 :contact_query_id => contact_query_id(options)
+                                 ) %>
   <%= my_lightwindow_tag(
-        :url => new_options,
-        :content => image_tag("add.gif", :alt => "Create a new contact", :title => "Create a new contact"),
-        :id => contact_new_contact_link(options)
-      )
-  %>
+                         :url => new_options,
+                         :content => image_tag("add.gif", :alt => "Create a new contact", :title => "Create a new contact"),
+                         :id => contact_new_contact_link(options)
+                         )
+      %>
   <%= loading_indicator_tag("new_contact_loading") %>
 <% end %>
 <div id="<%= searchbox_display_id(options) %>"></div>
@@ -61,17 +61,17 @@
    else
      contact_id = nil
    end
-%>
-<%= javascript_tag "$('#{contact_query_id(options)}').onkeypress = contactKeyListener;" %>
-<%= javascript_tag("
+   %>
+  <%= javascript_tag "$('#{contact_query_id(options)}').onkeypress = contactKeyListener;" %>
+  <%= javascript_tag("
       set_new_val($('#{contact_query_id(options)}'), '#{contact_id}');
     " + remote_function(
-     :update => searchbox_display_id(options),
-     :url => options.merge({
-       :action => 'update_display_area',
-       :controller => 'contacts',
-       :on_display => nil
-     }),
-     :with => "'contact_id=' + $('#{contact_query_id(options)}').value",
-     :contact_query_id => contact_query_id(options)
-   )) if contact_id and !contact_id.to_s.empty? %>
+                        :update => searchbox_display_id(options),
+                        :url => options.merge({
+                                                :action => 'update_display_area',
+                                                :controller => 'contacts',
+                                                :on_display => nil
+                                              }),
+                        :with => "'contact_id=' + $('#{contact_query_id(options)}').value",
+                        :contact_query_id => contact_query_id(options)
+                        )) if contact_id and !contact_id.to_s.empty? %>

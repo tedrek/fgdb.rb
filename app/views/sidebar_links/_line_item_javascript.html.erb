@@ -8,7 +8,7 @@
   gizmo_context_name = '<%= @gizmo_context.name %>';
 </script>
 
-  <%= javascript_include_tag 'line_items' %>
+<%= javascript_include_tag 'line_items' %>
 
 <% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) -%>
   <%= js = "var gizmo_types = new Array;"
@@ -31,33 +31,33 @@
       javascript_tag js %>
 <% end -%>
 
-  <%= js = "var contact_method_types = new Array;"
-      for contact_method_type in ContactMethodType.find(:all).sort_by(&:description)
-        js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';"
-      end
-      javascript_tag js %>
+<%= js = "var contact_method_types = new Array;"
+    for contact_method_type in ContactMethodType.find(:all).sort_by(&:description)
+      js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';"
+    end
+    javascript_tag js %>
 
 <%=
-  case params[:controller]
-    when 'sales'
-      js = "var discount_schedules = new Array;"
-      gizmo_types = GizmoType.find(:all)
-      for discount_schedule in DiscountSchedule.find(:all)
-        js += "discount_schedules[#{discount_schedule.id}] = new Array;"
-        for gizmo_type in gizmo_types
-          js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule)};"
-        end
-      end
-      javascript_tag js
-    when 'donations'
-      js = "var fees = new Array();"
-      fees = GizmoType.find(:all).map(){|x|
-        "fees[#{x.id}]= new Array();" +
-          "fees[#{x.id}]['required'] = #{x.required_fee_cents};" +
-          "fees[#{x.id}]['suggested'] = #{x.suggested_fee_cents};"
-      }
-      js += fees.join()
-      javascript_tag js
-  end
-%>
+   case params[:controller]
+   when 'sales'
+     js = "var discount_schedules = new Array;"
+     gizmo_types = GizmoType.find(:all)
+     for discount_schedule in DiscountSchedule.find(:all)
+       js += "discount_schedules[#{discount_schedule.id}] = new Array;"
+       for gizmo_type in gizmo_types
+         js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule)};"
+       end
+     end
+     javascript_tag js
+   when 'donations'
+     js = "var fees = new Array();"
+     fees = GizmoType.find(:all).map(){|x|
+       "fees[#{x.id}]= new Array();" +
+       "fees[#{x.id}]['required'] = #{x.required_fee_cents};" +
+       "fees[#{x.id}]['suggested'] = #{x.suggested_fee_cents};"
+     }
+     js += fees.join()
+     javascript_tag js
+   end
+   %>
 

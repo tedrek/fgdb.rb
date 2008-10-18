@@ -1,45 +1,45 @@
 <% t_id = "#{@transaction_type}_#{transaction.id}" -%>
 <% if has_role?(*allowed_roles) %>
-    <% update_options = @options.merge(:action => "update")
-       @options[:return_to_search] = @return_to_search
+  <% update_options = @options.merge(:action => "update")
+     @options[:return_to_search] = @return_to_search
      %>
-    <%= new_edit_link("edit_#{transaction.id}_link",
-          {
-            :url => @options.merge(:action => 'edit'),
-          },
-          "#{@transaction_type}_form_tbody") %>
-    <%= new_delete_link("#{t_id}_delete_link",
-          {
-            :url => @options.merge(:action => 'destroy'),
-            :confirm => 'Are you sure?',
-          },
-          "#{@transaction_type}_form_tbody") %>
+  <%= new_edit_link("edit_#{transaction.id}_link",
+                    {
+                      :url => @options.merge(:action => 'edit'),
+                    },
+                    "#{@transaction_type}_form_tbody") %>
+  <%= new_delete_link("#{t_id}_delete_link",
+                      {
+                        :url => @options.merge(:action => 'destroy'),
+                        :confirm => 'Are you sure?',
+                      },
+                      "#{@transaction_type}_form_tbody") %>
 <% else %>
-    <span id="<%= t_id %>_needs_attention_div" class="needs_attention">
-      <% if (transaction.needs_attention) %>
-        <%= render :partial => "getting_attention" %>
-      <% else %>
-        <% attention_options = {:id => transaction.id, :action => 'needs_attention'} -%>
-        <a id="<%= t_id %>_attention_open" onclick="return false;"><img src="/images/stock_unknown.png" alt="flag as needing attention" title="flag as needing attention"></a>
-        <%= custom_observer("#{t_id}_attention_open",
-              "Element.show('#{t_id}_attention_div'); $('#{t_id}_attention_comment').focus();",
-              "click") %>
-        <span id="<%= t_id %>_attention_div" style="display: none">
-          <textarea id="<%= t_id %>_attention_comment"></textarea>
-          <%= link_to_remote "ok",
-                { :url => attention_options,
-                  :with => "'comment='+$('#{t_id}_attention_comment').value",
-                  :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');",
-                },
-                { :href => url_for(attention_options),
-                  :title => "set the needs attention flag",
-                  :alt => "set the needs attention flag",
-                } %>
-          <a id="<%= t_id %>_attention_cancel" href="#" onclick="return false;">cancel</a>
+  <span id="<%= t_id %>_needs_attention_div" class="needs_attention">
+    <% if (transaction.needs_attention) %>
+      <%= render :partial => "getting_attention" %>
+    <% else %>
+      <% attention_options = {:id => transaction.id, :action => 'needs_attention'} -%>
+      <a id="<%= t_id %>_attention_open" onclick="return false;"><img src="/images/stock_unknown.png" alt="flag as needing attention" title="flag as needing attention"></a>
+      <%= custom_observer("#{t_id}_attention_open",
+                          "Element.show('#{t_id}_attention_div'); $('#{t_id}_attention_comment').focus();",
+                          "click") %>
+      <span id="<%= t_id %>_attention_div" style="display: none">
+        <textarea id="<%= t_id %>_attention_comment"></textarea>
+        <%= link_to_remote "ok",
+            { :url => attention_options,
+              :with => "'comment='+$('#{t_id}_attention_comment').value",
+              :loading => "Element.show('#{loading_indicator_id("#{t_id}_loading")}');",
+            },
+            { :href => url_for(attention_options),
+              :title => "set the needs attention flag",
+              :alt => "set the needs attention flag",
+            } %>
+        <a id="<%= t_id %>_attention_cancel" href="#" onclick="return false;">cancel</a>
         <%= custom_observer("#{t_id}_attention_cancel",
-              "Element.hide('#{t_id}_attention_div');",
-              "click"); %>
-        </span>
-      <% end %>
-    </span>
+                            "Element.hide('#{t_id}_attention_div');",
+                            "click"); %>
+      </span>
+    <% end %>
+  </span>
 <% end %>

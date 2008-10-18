@@ -21,7 +21,7 @@ class ContactsController < ApplicationController
       yield
       raise ForceRollback.new if flash[:error]
     end
-    rescue ForceRollback
+  rescue ForceRollback
   end
 
   def authorized_only
@@ -84,21 +84,21 @@ class ContactsController < ApplicationController
   end
 
   def create
-#    begin
-      @contact = Contact.new(params[:contact])
+    #    begin
+    @contact = Contact.new(params[:contact])
 
-      if params[:contact][:is_user].to_i != 0
-        if !has_role?(:ADMIN)
-          raise RuntimeError.new("You are not authorized to create a user login")
-        end
-        @contact.user = User.new(params[:user])
-        @contact.user.roles = Role.find(params[:roles]) if params[:roles]
+    if params[:contact][:is_user].to_i != 0
+      if !has_role?(:ADMIN)
+        raise RuntimeError.new("You are not authorized to create a user login")
       end
-      @user = @contact.user
-      @successful = _save
-#    rescue
-#      flash[:error], @successful  = $!.to_s, false
-#    end
+      @contact.user = User.new(params[:user])
+      @contact.user.roles = Role.find(params[:roles]) if params[:roles]
+    end
+    @user = @contact.user
+    @successful = _save
+    #    rescue
+    #      flash[:error], @successful  = $!.to_s, false
+    #    end
 
     render :action => 'create.rjs'
   end
@@ -163,7 +163,7 @@ class ContactsController < ApplicationController
 
   def method_missing(symbol, *args)
     if /^auto_complete_for/.match(symbol.to_s)
-    #:MC: gah!  the auto_complete_field method screws up the arguments with that "amp;".
+      #:MC: gah!  the auto_complete_field method screws up the arguments with that "amp;".
       @contacts = Contact.search(params[params["amp;object_name"]][params[:field_name]].strip, :limit => 10)
       render :partial => 'auto_complete_list'
     else

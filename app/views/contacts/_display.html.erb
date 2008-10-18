@@ -3,9 +3,9 @@
 <div class="contact_display">
   <div class="id">
     <%= ( @contact.contact_types.map {|c_t|
-          c_t.description
-        }.sort << (@contact.is_organization ? 'organization' : 'person')
-      ).join(', ') %>
+            c_t.description
+          }.sort << (@contact.is_organization ? 'organization' : 'person')
+          ).join(', ') %>
     (id: <%= @contact.id %><%= ", login: #{@contact.user.login}" if @contact.user %>)
   </div>
   <div class="name"><%= @contact.display_name %></div>
@@ -13,71 +13,71 @@
   <% if @contact.is_person? %>
     <div class="hours_type">
       <%= render :partial => 'hours' %>
-    </div>
-    <br />
+  </div>
+  <br />
+<% end %>
+<div class="address"><%= @contact.address %><br />
+  <%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %>
+</div>
+<div class="contact_methods">
+  <% for method in @contact.contact_methods %>
+    <%= method.display %><br />
   <% end %>
-  <div class="address"><%= @contact.address %><br />
-    <%= @contact.city %>, <%= @contact.state_or_province %> <%= @contact.postal_code %>
-  </div>
-  <div class="contact_methods">
-    <% for method in @contact.contact_methods %>
-      <%= method.display %><br />
-    <% end %>
-  </div>
-  <% if @contact.notes && @contact.notes != '' %>
+</div>
+<% if @contact.notes && @contact.notes != '' %>
   <div class="contact_comments">
     Notes:<br />
     <%= @contact.notes.gsub(/\n/, "<br />") %>
   </div>
-  <% end %>
-  <% if options.fetch(:display_associations, true) %>
-    <div class="associations">
-      <% recent_purchases = @contact.get_recent_sale_totals() -%>
-      <% unless recent_purchases[:total].nil? -%>
-        <div class="sale">
-          90 day purchase total: $<%= format("%d.%02d", *recent_purchases[:total].to_i().divmod(100)) %>
-        </div>
-      <% end -%>
-      <% for txn,intro in [["sale", "purchases"],
-                           ["disbursement", "disbursements"],
-                           ["donation", "donations"]] %>
-        <% last_one = @contact.send("last_#{Inflector.pluralize(txn)}") %>
-        <% unless last_one.empty?() %>
-          <div class="<%= txn %>">
-            recent <%= link_to(intro,
-                       :controller => Inflector.pluralize(txn),
-                       :action => "search",
-                       "conditions[contact_id]" => @contact.id,
-                       "conditions[contact_enabled]" => "true"
-                     ) %>
-            : <%= last_one.map{|d,c| "#{c} #{d}"}.join(", ") %>
-          </div>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
-  <br />
-  <% if options.fetch(:display_edit, true) %>
-    <% edit_options = options.merge(:action => 'edit') %>
-    <%= loading_indicator_tag("contact_#{@contact.id}_loading") %>
-    <%= my_lightwindow_tag(
-          :content => image_tag(
-                                "edit.png",
-                                :title => "Edit this contact",
-                                :alt => "Edit"
-          ),
-          :id => contact_edit_link_id(options),
-          :url => edit_options)
-    %>
-  <% end %>
-  <% if @delete_enabled %>
-    <% delete_options = options.merge(:action => 'destroy') %>
-    <%= link_to_remote "Delete",
+<% end %>
+<% if options.fetch(:display_associations, true) %>
+  <div class="associations">
+    <% recent_purchases = @contact.get_recent_sale_totals() -%>
+    <% unless recent_purchases[:total].nil? -%>
+      <div class="sale">
+        90 day purchase total: $<%= format("%d.%02d", *recent_purchases[:total].to_i().divmod(100)) %>
+      </div>
+    <% end -%>
+    <% for txn,intro in [["sale", "purchases"],
+                         ["disbursement", "disbursements"],
+                         ["donation", "donations"]] %>
+      <% last_one = @contact.send("last_#{Inflector.pluralize(txn)}") %>
+      <% unless last_one.empty?() %>
+        <div class="<%= txn %>">
+          recent <%= link_to(intro,
+                             :controller => Inflector.pluralize(txn),
+                             :action => "search",
+                             "conditions[contact_id]" => @contact.id,
+                             "conditions[contact_enabled]" => "true"
+                             ) %>
+    : <%= last_one.map{|d,c| "#{c} #{d}"}.join(", ") %>
+  </div>
+<% end %>
+<% end %>
+</div>
+<% end %>
+<br />
+<% if options.fetch(:display_edit, true) %>
+  <% edit_options = options.merge(:action => 'edit') %>
+  <%= loading_indicator_tag("contact_#{@contact.id}_loading") %>
+  <%= my_lightwindow_tag(
+                         :content => image_tag(
+                                               "edit.png",
+                                               :title => "Edit this contact",
+                                               :alt => "Edit"
+                                               ),
+                         :id => contact_edit_link_id(options),
+                         :url => edit_options)
+      %>
+<% end %>
+<% if @delete_enabled %>
+  <% delete_options = options.merge(:action => 'destroy') %>
+  <%= link_to_remote "Delete",
       { :url => delete_options,
         :confirm => 'Are REALLY you sure you want to kill this person?',
         :loading => "Element.show('#{loading_indicator_id("contact_#{contact.id}_loading")}');" } %>
-  <% end %>
-  <div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
+<% end %>
+<div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
 </div>
 
 <%= javascript_tag(options[:on_display]) if options.has_key? :on_display %>

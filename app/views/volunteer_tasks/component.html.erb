@@ -1,25 +1,25 @@
 <% if @show_wrapper %>
-<div>
-  <div id="<%= component_id(params) %>">
+  <div>
+    <div id="<%= component_id(params) %>">
 <% end %>
-  <div class="header">
-    <div class="actions">
-      <% new_params = params.merge(:controller => '/volunteer_tasks', :action => 'new') %>
-      <%= loading_indicator_tag("new_volunteer_task_loading") %>
-    </div>
+<div class="header">
+  <div class="actions">
+    <% new_params = params.merge(:controller => '/volunteer_tasks', :action => 'new') %>
+    <%= loading_indicator_tag("new_volunteer_task_loading") %>
   </div>
-      <div class="messages-container">
-        <div id="<%= messages_id(params) %>">
-          <%= render :partial => 'messages' %>
-        </div>
-        <p id="<%= empty_message_id(params) %>" class="empty-message" <%= " style=\"display:none;\" " if !@volunteer_tasks.empty? %>>
-          No Entries
-        </p>
-      </div>
+</div>
+<div class="messages-container">
+  <div id="<%= messages_id(params) %>">
+    <%= render :partial => 'messages' %>
+  </div>
+  <p id="<%= empty_message_id(params) %>" class="empty-message" <%= " style=\"display:none;\" " if !@volunteer_tasks.empty? %>>
+    No Entries
+  </p>
+</div>
 
-  <div id="<%= form_tbody_id(params) %>">
-  </div>
-  <table class="list">
+<div id="<%= form_tbody_id(params) %>">
+</div>
+<table class="list">
   <tbody>
     <tr>
       <%= render :partial => 'column_headings' %>
@@ -39,7 +39,7 @@
   <%= will_paginate @volunteer_tasks, :remote_options => {
         :method => :get, :update => component_id(params), :loading => "Element.show('#{loading_indicator_id("volunteer_task_footer_loading")}');"
       }
-  %>
+      %>
 </div>
 
 <% if @show_wrapper %>
@@ -47,6 +47,6 @@
 </div>
 <% end %>
 <%= javascript_tag(
-      "Element.show($('#{loading_indicator_id("new_volunteer_task_loading")}'));" +
-      remote_function( :url => new_params )
-    ) %>
+                   "Element.show($('#{loading_indicator_id("new_volunteer_task_loading")}'));" +
+                   remote_function( :url => new_params )
+                   ) %>

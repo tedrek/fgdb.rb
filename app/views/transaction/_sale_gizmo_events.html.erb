@@ -6,34 +6,34 @@
     javascript_tag js %>
 
 <table id="gizmo_event_lines">
-<tr>
-<th>type</th>
-<th class="description invisible">description</th>
-<th>qty</th>
-<th>unit price</th>
-<th>total price</th>
-<th></th>
-<% if @transaction.gizmo_events %>
-  <% @gizmos_and_payments_js ||= ""
-      for line in @transaction.gizmo_events
-        if @gizmo_context.name == "sale"
-          price = line.unit_price
-        else
-          price = line.fee_cents.to_dollars
-        end
-        if defined?(line.description)
-          description = line.description
-        else
-          description = ''
-        end
-        @gizmos_and_payments_js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}');\n"
-      end
-  %>
-<% end %>
+  <tr>
+    <th>type</th>
+    <th class="description invisible">description</th>
+    <th>qty</th>
+    <th>unit price</th>
+    <th>total price</th>
+    <th></th>
+    <% if @transaction.gizmo_events %>
+      <% @gizmos_and_payments_js ||= ""
+         for line in @transaction.gizmo_events
+           if @gizmo_context.name == "sale"
+             price = line.unit_price
+           else
+             price = line.fee_cents.to_dollars
+           end
+           if defined?(line.description)
+             description = line.description
+           else
+             description = ''
+           end
+           @gizmos_and_payments_js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}');\n"
+         end
+         %>
+    <% end %>
 
   <tr id="form">
     <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
-      <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
+        <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
       </select></td>
     <td class="description invisible"><input name="description" id="description" size="10"></td>
     <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event) && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}"></td>

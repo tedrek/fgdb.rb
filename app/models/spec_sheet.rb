@@ -100,37 +100,37 @@ class SpecSheet < ActiveRecord::Base
   #######
 
   def get_model
-      if model_is_usable(@system_model)
-        @model = @system_model
-      elsif model_is_usable(@mobo_model)
-        @model = @mobo_model
-      else
-        @model = "(no model)"
-      end
+    if model_is_usable(@system_model)
+      @model = @system_model
+    elsif model_is_usable(@mobo_model)
+      @model = @mobo_model
+    else
+      @model = "(no model)"
+    end
     return @model
   end
 
   def get_vendor
-      if vendor_is_usable(@system_vendor)
-        @vendor = @system_vendor
-      elsif vendor_is_usable(@mobo_vendor)
-        @vendor = @mobo_vendor
-      else
-        @vendor = "(no vendor)"
-      end
+    if vendor_is_usable(@system_vendor)
+      @vendor = @system_vendor
+    elsif vendor_is_usable(@mobo_vendor)
+      @vendor = @mobo_vendor
+    else
+      @vendor = "(no vendor)"
+    end
     return @vendor
   end
 
   def get_serial
-      if serial_is_usable(@system_serial_number)
-        @serial_number = @system_serial_number
-      elsif serial_is_usable(@mobo_serial_number)
-        @serial_number = @mobo_serial_number
-      elsif mac_is_usable(@macaddr)
-        @serial_number = @macaddr
-      else
-        @serial_number = "(no serial number)"
-      end
+    if serial_is_usable(@system_serial_number)
+      @serial_number = @system_serial_number
+    elsif serial_is_usable(@mobo_serial_number)
+      @serial_number = @mobo_serial_number
+    elsif mac_is_usable(@macaddr)
+      @serial_number = @macaddr
+    else
+      @serial_number = "(no serial number)"
+    end
     return @serial_number
   end
 

@@ -1,6 +1,6 @@
 <% if @show_wrapper %>
-<div id="<%= @transaction_type %>">
-  <div id="<%= component_id(params) %>">
+  <div id="<%= @transaction_type %>">
+    <div id="<%= component_id(params) %>">
 <% end %>
 
 <% new_params = params.merge(:controller => base_controller, :action => 'new') %>

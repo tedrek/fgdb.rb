@@ -24,7 +24,7 @@
 
     <tr>
       <th width="10%">
-         Contact Methods
+        Contact Methods
       </th>
       <% for c in @contacts %>
         <td align="right">
@@ -46,7 +46,7 @@
 
     <tr>
       <th width="10%">
-         Contact Types
+        Contact Types
       </th>
       <% for c in @contacts %>
         <td align="right">
@@ -56,16 +56,16 @@
     </tr>
 
     <% for i in ["sales", "disbursements", "donations", "volunteer_tasks"] %>
-    <tr>
-      <th width="10%">
-        Last <%= Inflector.titleize(Inflector.singularize(i)) %>
-      </th>
-      <% for c in @contacts %>
-        <td align="right">
-          <%= c.send(i).sort_by(&:created_at).first.created_at.strftime("%D") if !c.send(i).empty? %>
-        </td>
-      <% end %>
-    </tr>
+      <tr>
+        <th width="10%">
+          Last <%= Inflector.titleize(Inflector.singularize(i)) %>
+        </th>
+        <% for c in @contacts %>
+          <td align="right">
+            <%= c.send(i).sort_by(&:created_at).first.created_at.strftime("%D") if !c.send(i).empty? %>
+          </td>
+        <% end %>
+      </tr>
     <% end %>
 
     <tr>
@@ -148,18 +148,18 @@
     </tr>
 
     <% if @contacts.map{|x| x.user}.delete_if{|x| x.nil? or x.blank?}.length > 0 %>
-    <tr><td colspan="<%= @contacts.length + 1 %>">The user will sort of be merged. If only one of the records has a user, then that user will be kept. If both the keeper and the merger have a user, then the users persmissions will be merged, but their login name and password will be taken from the keeper. If multiple mergers have a user and the keeper does not have a user, then one of the mergers' users will be choosen (randomly) to be kept.</td></tr>
+      <tr><td colspan="<%= @contacts.length + 1 %>">The user will sort of be merged. If only one of the records has a user, then that user will be kept. If both the keeper and the merger have a user, then the users persmissions will be merged, but their login name and password will be taken from the keeper. If multiple mergers have a user and the keeper does not have a user, then one of the mergers' users will be choosen (randomly) to be kept.</td></tr>
 
-    <tr>
-      <th width="10%">
-        User
-      </th>
-      <% for c in @contacts %>
-        <td align="right">
-          <%= c.user.login if c.user %>
-        </td>
-      <% end %>
-    </tr>
+      <tr>
+        <th width="10%">
+          User
+        </th>
+        <% for c in @contacts %>
+          <td align="right">
+            <%= c.user.login if c.user %>
+          </td>
+        <% end %>
+      </tr>
     <% end %>
 
     <tr>

@@ -166,7 +166,7 @@ class Contact < ActiveRecord::Base
   def default_volunteer_task_type
     last_few = last_few_volunteer_tasks
     if( last_few.length > 1 and
-          last_few.map {|v_t| v_t.volunteer_task_type}.uniq.length == 1 )
+        last_few.map {|v_t| v_t.volunteer_task_type}.uniq.length == 1 )
       return last_few.first.volunteer_task_type
     else
       return []
@@ -276,8 +276,8 @@ class Contact < ActiveRecord::Base
             AND tx.contact_id=#{self.id}
       ")
     return {:count=>x[0][0],
-        :discounted=>x[0][1],
-        :total=>x[0][2]}
+      :discounted=>x[0][1],
+      :total=>x[0][2]}
   end
 
   alias :is_user :is_user?
@@ -289,7 +289,7 @@ class Contact < ActiveRecord::Base
   def last_gizmos(table)
     # figure out how to use a prepared statement here
     return self.connection.execute(
-      "select gt.id, gt.description, sum(ge.gizmo_count)
+                                   "select gt.id, gt.description, sum(ge.gizmo_count)
        from gizmo_types gt
             join gizmo_events ge on ge.gizmo_type_id=gt.id
             join #{table} t on ge.#{Inflector.singularize(table)}_id=t.id
@@ -365,6 +365,6 @@ class Contact < ActiveRecord::Base
       return conds
     end
 
-    end # class << self
+  end # class << self
 
 end

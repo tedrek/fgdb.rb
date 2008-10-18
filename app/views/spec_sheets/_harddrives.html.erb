@@ -1,6 +1,6 @@
-  <div id="hard_drives">
-    <h2>Hard Drives</h2>
-    <% @parser.xml_foreach("id", "disk") do %>
+<div id="hard_drives">
+  <h2>Hard Drives</h2>
+  <% @parser.xml_foreach("id", "disk") do %>
     <table>
       <tr>
         <td>
@@ -27,39 +27,39 @@
         </td>
       </tr>
       <% if @parser.xml_if("size") %>
-      <tr>
-        <td>
-          Capacity:
-        </td>
-        <td>
-          <%= @parser.xml_value_of("size").to_bytes(0, false, false) %>
-        </td>
-      </tr>
+        <tr>
+          <td>
+            Capacity:
+          </td>
+          <td>
+            <%= @parser.xml_value_of("size").to_bytes(0, false, false) %>
+          </td>
+        </tr>
       <% end %>
       <% counter = 0 %>
       <% @parser.xml_foreach("id", "volume") do counter += 1 end %>
       <% if counter > 0 %>
-      <tr>
-        <td valign="top">Volumes: </td>
-        <td>
-          <table>
-            <% @parser.xml_foreach("id", "volume") do %>
-            <tr>
-              <td>
-                <%= @parser.xml_value_of("logicalname") %>
-              </td>
-              <td>
-                <%= @parser.xml_value_of("description") %>
-              </td>
-              <td>
-                <%= @parser.xml_value_of("capacity").to_bytes(0, false, false) %>
-              </td>
-            </tr>
-            <% end %>
-          </table>
-        </td>
-      </tr>
+        <tr>
+          <td valign="top">Volumes: </td>
+          <td>
+            <table>
+              <% @parser.xml_foreach("id", "volume") do %>
+                <tr>
+                  <td>
+                    <%= @parser.xml_value_of("logicalname") %>
+                  </td>
+                  <td>
+                    <%= @parser.xml_value_of("description") %>
+                  </td>
+                  <td>
+                    <%= @parser.xml_value_of("capacity").to_bytes(0, false, false) %>
+                  </td>
+                </tr>
+              <% end %>
+            </table>
+          </td>
+        </tr>
       <% end %>
     </table>
-    <% end %>
-  </div>
+  <% end %>
+</div>

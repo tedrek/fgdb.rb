@@ -3,26 +3,26 @@
   <div class="row">
     <!--[form:recycling]-->
 
-<div id="transaction_info">
-<div class="form-extras">
-  <div class="form-element">
-    <label for="recycling_recycled_at">When did this get recycled?</label>
-    <%= calendar_box "recycling", "recycled_at",{},{:showOthers => true} %>
-  </div>
-  <div class="form-element">
-    <label for="recycling_comments">Comments</label>
-    <%= text_area 'recycling', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
-  </div>
-</div>
-</div>
+    <div id="transaction_info">
+      <div class="form-extras">
+        <div class="form-element">
+          <label for="recycling_recycled_at">When did this get recycled?</label>
+          <%= calendar_box "recycling", "recycled_at",{},{:showOthers => true} %>
+        </div>
+        <div class="form-element">
+          <label for="recycling_comments">Comments</label>
+          <%= text_area 'recycling', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+        </div>
+      </div>
+    </div>
 
-<div id="transaction_line_items_div">
-<div id="recycling_gizmo_events" class="datalist line_item">
-    <%= render :partial => 'unpriced_gizmo_events' %>
-</div>
+    <div id="transaction_line_items_div">
+      <div id="recycling_gizmo_events" class="datalist line_item">
+        <%= render :partial => 'unpriced_gizmo_events' %>
+      </div>
 
-</div>
-<!--[eoform:recycling]-->
+    </div>
+    <!--[eoform:recycling]-->
 
   </div>
 </fieldset>

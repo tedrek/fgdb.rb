@@ -3,103 +3,103 @@
     Summary of this report:
   </h1>
   <table style="font-size: 15pt;">
-      <tr>
-        <td>
-          Report ID:
-        </td>
-        <td>
-          <%= @report.id %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Technician:
-        </td>
-        <td>
-          <% if true || (@current_user and @current_user.has_role?('CONTACT_MANAGER')) %>
-            <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
-          <% else %>
-            <%= (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
-          <% end %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Technician's Job:
-        </td>
-        <td>
-          <%= @report.action && @report.action.description || "Unknown" %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          System ID:
-        </td>
-        <td>
-          <%= @report.system.id %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Type of System:
-        </td>
-        <td>
-          <%= @report.type && @report.type.description || "Unknown" %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Date:
-        </td>
-        <td>
-          <%= @report.created_at.strftime("%D") %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Notes:
-        </td>
-        <td>
-          <%= @report.notes.gsub("\n", "<br />") %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Do something:
-        </td>
-        <td>
-          <%= link_to "Print", "#", {:onclick=>"window.print();"} %>
-          <%= link_to "Edit", { :action=>"edit", :id=>@report.id } %>
-        </td>
-      </tr>
+    <tr>
+      <td>
+        Report ID:
+      </td>
+      <td>
+        <%= @report.id %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Technician:
+      </td>
+      <td>
+        <% if true || (@current_user and @current_user.has_role?('CONTACT_MANAGER')) %>
+          <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
+        <% else %>
+          <%= (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Technician's Job:
+      </td>
+      <td>
+        <%= @report.action && @report.action.description || "Unknown" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        System ID:
+      </td>
+      <td>
+        <%= @report.system.id %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Type of System:
+      </td>
+      <td>
+        <%= @report.type && @report.type.description || "Unknown" %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Date:
+      </td>
+      <td>
+        <%= @report.created_at.strftime("%D") %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Notes:
+      </td>
+      <td>
+        <%= @report.notes.gsub("\n", "<br />") %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Do something:
+      </td>
+      <td>
+        <%= link_to "Print", "#", {:onclick=>"window.print();"} %>
+        <%= link_to "Edit", { :action=>"edit", :id=>@report.id } %>
+      </td>
+    </tr>
   </table>
 </fieldset>
 <fieldset style="background-color: Yellow; font-size: 15pt; width: auto;">
-<h1>
-DO A REALITY CHECK
-</h1>
-<p>
-Sometimes the hardware lies. Sometimes the software is broken.
-<br /><br />
-Always check to see if the report shows accurate information.
-<br /><br/>
-Especially check hard drive size, amount of memory, and processor information. If you find problems, correct the report and alert the build instructor.
-<br />
-(If you are a build instructor, please email the report id to the buildteachers email list and tell us what was wrong)
-</p>
+  <h1>
+    DO A REALITY CHECK
+  </h1>
+  <p>
+    Sometimes the hardware lies. Sometimes the software is broken.
+    <br /><br />
+    Always check to see if the report shows accurate information.
+    <br /><br/>
+    Especially check hard drive size, amount of memory, and processor information. If you find problems, correct the report and alert the build instructor.
+    <br />
+    (If you are a build instructor, please email the report id to the buildteachers email list and tell us what was wrong)
+  </p>
 </fieldset>
 <% if defined?(@mistakes) && @mistakes != [] %>
-<fieldset style="background-color: Red; font-size: 15pt; width: auto;">
-  <h1>
-    <%= @mistake_title || "Possible Mistakes:" %>
-  </h1>
-  <ul>
-    <% for mistake in @mistakes %>
-      <li>
-        <%= mistake %>
-      </li>
-    <% end %>
-  </ul>
-</fieldset>
+  <fieldset style="background-color: Red; font-size: 15pt; width: auto;">
+    <h1>
+      <%= @mistake_title || "Possible Mistakes:" %>
+    </h1>
+    <ul>
+      <% for mistake in @mistakes %>
+        <li>
+          <%= mistake %>
+        </li>
+      <% end %>
+    </ul>
+  </fieldset>
 <% end %>
 

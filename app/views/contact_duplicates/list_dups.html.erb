@@ -1,6 +1,6 @@
 <ul>
-<% @duplicates.each do |dup, count| -%>
-  <li><%= count %> records :: <%= link_to dup, :action=>'show_dups', :dup_check => dup %>
-<% end -%>
+  <% @duplicates.each do |dup, count| -%>
+    <li><%= count %> records :: <%= link_to dup, :action=>'show_dups', :dup_check => dup %>
+  <% end -%>
 </ul>
 <%= will_paginate @duplicates %>

@@ -4,59 +4,59 @@
   <%= stylesheet_link_tag 'application', :media => 'all' %>
 </head>
 <body>
-<table  width="75%">
-<tr>
-  <td colspan="3"><%= render :partial=>"helpers/letter_head",
-                             :locals=> {:contact_information => @txn.contact_information}%></td>
-</tr>
-<tr>
-  <td colspan="3"><hr /></td>
-</tr>
+  <table  width="75%">
+    <tr>
+      <td colspan="3"><%= render :partial=>"helpers/letter_head",
+                          :locals=> {:contact_information => @txn.contact_information}%></td>
+    </tr>
+    <tr>
+      <td colspan="3"><hr /></td>
+    </tr>
 
-<tr>
-  <td colspan="2">
-    <%= Inflector.titleize( @context ) %>
-    <strong>
-    <% if @txn.invoiced? %>
-      <font color="#FF0000" size="+2"><%= @txn.invoice_resolved_at.nil? ? "" : "Paid " %>Invoice</font>
-    <% else %>
-      Receipt
-    <% end %>
-    </strong>
-  </td>
-  <% if @context == 'donation' %>
-    <td align="right"><%= Default['tax id'] %></td>
-  <% else %>
-    <td align="right"><%= Default['business id'] %></td>
-  <% end %>
-</tr>
-<tr>
-  <td colspan="3">Created by #<%=h User.find_by_id(@transaction.created_by).contact_id %></td>
-</tr>
-<tr>
-  <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
-  <td align="center">
-    <%= Inflector.titleize( @context ) %> <strong># <%= @txn.id %></strong>
-  </td>
-  <td align="right">
-    <% if @txn.invoiced? %>
-      <strong>
-      Due: <%= @transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y") %>
-      </strong>
-    <% end %>
-  </td>
-</tr>
+    <tr>
+      <td colspan="2">
+        <%= Inflector.titleize( @context ) %>
+        <strong>
+          <% if @txn.invoiced? %>
+            <font color="#FF0000" size="+2"><%= @txn.invoice_resolved_at.nil? ? "" : "Paid " %>Invoice</font>
+          <% else %>
+            Receipt
+          <% end %>
+        </strong>
+      </td>
+      <% if @context == 'donation' %>
+        <td align="right"><%= Default['tax id'] %></td>
+      <% else %>
+        <td align="right"><%= Default['business id'] %></td>
+      <% end %>
+    </tr>
+    <tr>
+      <td colspan="3">Created by #<%=h User.find_by_id(@transaction.created_by).contact_id %></td>
+    </tr>
+    <tr>
+      <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
+      <td align="center">
+        <%= Inflector.titleize( @context ) %> <strong># <%= @txn.id %></strong>
+      </td>
+      <td align="right">
+        <% if @txn.invoiced? %>
+          <strong>
+            Due: <%= @transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y") %>
+          </strong>
+        <% end %>
+      </td>
+    </tr>
 
-<%= yield %>
+    <%= yield %>
 
-<p>
-<span id="button_span">
-  <INPUT type="button" id="print_button" value="Print"
-    onclick="window.print(); window.close();" >
+    <p>
+      <span id="button_span">
+        <INPUT type="button" id="print_button" value="Print"
+               onclick="window.print(); window.close();" >
 
-  <INPUT type="button" id="restart_button" value="Start Over"
-    onclick="window.close()" >
-</span>
-</p>
+        <INPUT type="button" id="restart_button" value="Start Over"
+               onclick="window.close()" >
+      </span>
+    </p>
 </body>
 </html>

@@ -7,13 +7,13 @@ module SalesHelper
 
   def columns
     [
-      Column.new(Sale, :name => 'id'),
-      Column.new(Sale, :name => 'payment',
-                 :eval => 'sale.payment', :sortable => false),
-      Column.new(Sale, :name => 'discount', :sortable => false, :eval => 'sale.discount_schedule.name'),
-      Column.new(Sale, :name => 'buyer', :sortable => false, :eval => 'sale.buyer'),
-      Column.new(Sale, :name => 'gizmos', :sortable => false),
-      Column.new(Sale, :name => 'created_at', :eval => 'sale.created_at'),
+     Column.new(Sale, :name => 'id'),
+     Column.new(Sale, :name => 'payment',
+                :eval => 'sale.payment', :sortable => false),
+     Column.new(Sale, :name => 'discount', :sortable => false, :eval => 'sale.discount_schedule.name'),
+     Column.new(Sale, :name => 'buyer', :sortable => false, :eval => 'sale.buyer'),
+     Column.new(Sale, :name => 'gizmos', :sortable => false),
+     Column.new(Sale, :name => 'created_at', :eval => 'sale.created_at'),
     ]
   end
 end

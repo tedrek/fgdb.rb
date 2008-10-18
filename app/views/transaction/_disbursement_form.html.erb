@@ -3,37 +3,37 @@
   <div class="row">
     <!--[form:disbursement]-->
 
-<div id="transaction_info">
-<div id="<%= contact_searchbox_id(@options) %>">
-  <%= render( :partial => 'contact_search' ) %>
-</div>
+    <div id="transaction_info">
+      <div id="<%= contact_searchbox_id(@options) %>">
+        <%= render( :partial => 'contact_search' ) %>
+      </div>
 
-<div class="form-element">
-  <label for="disbursement_disbursed_at">When did this get given away?</label>
-  <%= calendar_box "disbursement", "disbursed_at",{},{:showOthers => true} %>
-</div>
+      <div class="form-element">
+        <label for="disbursement_disbursed_at">When did this get given away?</label>
+        <%= calendar_box "disbursement", "disbursed_at",{},{:showOthers => true} %>
+      </div>
 
-<div class="form-element">
-    <label for="disbursement_disbursement_type_id">Type of dispersment</label>
-    <select id="disbursement_disbursement_type_id" name="disbursement[disbursement_type_id]">
-      <option></option>
-      <%= options_from_collection_for_select DisbursementType.find(:all), "id", "description", @disbursement.disbursement_type_id %>
-    </select>
-</div>
+      <div class="form-element">
+        <label for="disbursement_disbursement_type_id">Type of dispersment</label>
+        <select id="disbursement_disbursement_type_id" name="disbursement[disbursement_type_id]">
+          <option></option>
+          <%= options_from_collection_for_select DisbursementType.find(:all), "id", "description", @disbursement.disbursement_type_id %>
+        </select>
+      </div>
 
-<div class="form-element">
-  <label for="disbursement_comments">Comments</label>
-  <%= text_area 'disbursement', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
-</div>
-</div>
+      <div class="form-element">
+        <label for="disbursement_comments">Comments</label>
+        <%= text_area 'disbursement', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+      </div>
+    </div>
 
-<div id="transaction_line_items_div">
-<div id="disbursement_gizmo_events" class="datalist line_item">
-    <%= render :partial => 'unpriced_gizmo_events' %>
-</div>
+    <div id="transaction_line_items_div">
+      <div id="disbursement_gizmo_events" class="datalist line_item">
+        <%= render :partial => 'unpriced_gizmo_events' %>
+      </div>
 
-</div>
-<!--[eoform:disbursement]-->
+    </div>
+    <!--[eoform:disbursement]-->
 
   </div>
 </fieldset>

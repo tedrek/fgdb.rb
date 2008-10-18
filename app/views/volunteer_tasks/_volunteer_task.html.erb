@@ -13,17 +13,17 @@
     <%= loading_indicator_tag("volunteer_task_#{volunteer_task.id}_loading") %>
     <% edit_options = @options.merge(:action => 'edit') %>
     <%= edit_link("edit_#{volunteer_task.id}_link",
-          {
-            :url => edit_options,
-            :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}')"
-          },
-          'foo_form_tbody') %>
+                  {
+                    :url => edit_options,
+                    :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}')"
+                  },
+                  'foo_form_tbody') %>
     <%= delete_link("delete_#{volunteer_task.id}_link",
-          {
-            :url => @options.merge(:action => 'destroy'),
-            :confirm => "Are you sure?",
-            :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}');"
-          },
-          "foo_form_tbody") %>
+                    {
+                      :url => @options.merge(:action => 'destroy'),
+                      :confirm => "Are you sure?",
+                      :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}');"
+                    },
+                    "foo_form_tbody") %>
   </td>
 </tr>

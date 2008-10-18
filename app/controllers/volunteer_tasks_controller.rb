@@ -45,15 +45,15 @@ class VolunteerTasksController < ApplicationController
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = VolunteerTask.columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_by = @sort_sql.nil? ?
-      "#{VolunteerTask.table_name}.date_performed DESC" :
+    "#{VolunteerTask.table_name}.date_performed DESC" :
       @sort_sql  + " " + current_sort_direction(params)
     options = {
       :order => @sort_by,
       :per_page => 20,
       :include => [
-        :volunteer_task_type,
-        :contact
-      ]
+                   :volunteer_task_type,
+                   :contact
+                  ]
     }
     if params[:limit_by_contact_id]
       options[:conditions] = ['contact_id = ?', params[:contact_id]]

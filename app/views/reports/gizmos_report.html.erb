@@ -4,58 +4,58 @@
   var disbursements_toggle = 0;
   <% for c in @rows
        if c.kind_of?(GizmoCategory) %>
-  var category<%=c.id%> = 0;
-       <%end%>
-  <%end%>
+    var category<%=c.id%> = 0;
+    <%end%>
+    <%end%>
 </script>
 <table class="report">
 
-<tr>
-  <th class="section_header" colspan="<%= table_width %>">Gizmo Flow</th>
-</tr>
-<tr>
-  <td>ids: <%= @range %></td>
-</tr>
-<tr>
-  <td class="spacer"></td>
-  <% for klass,id in @columns %>
-    <% context = klass ? klass.find(id).description : 'gizmo total' %>
-    <th class="column_header <%= klass == DisbursementType ? "disbursement-breakout-column" : ""%>" <%= "onClick='set_display_mode(\".disbursement-breakout-column\", ++disbursements_toggle%2);'" %>><%= Inflector.titleize context %></th>
-  <% end %>
-</tr>
-
-<% for type in @rows %>
-  <% if type.kind_of?(GizmoCategory) %>
-  <tr class="category-row" onClick='set_display_mode(".category<%=type.id%>", ++category<%=type.id%>%2)'>
-  <% elsif type.kind_of?(GizmoType) %>
-  <tr class="type-row category<%= type.gizmo_category_id %>">
-  <% else %>
   <tr>
-  <%end%>
-    <th class="row_header"><%= Inflector.titleize type.respond_to?("description") ? type.description : type %></th>
-    <% for col in @columns %>
-      <% if col == [GizmoContext, GizmoContext.sale.id]; amt = @gizmo_income_data[type.id.to_s].to_f()/100 %>
-        <td <%= " title='$#{number_with_delimiter(amt)}'" %>>
-        <span class="print_only">$<%= number_with_delimiter(amt) %>,</span>
-      <% elsif col[0] == DisbursementType %>
-      <td class="disbursement-breakout-column">
-      <%else%>
-      <td>
-      <%end%>
-      <%= number_with_delimiter(@gizmo_data[type][col]) %></td>
+    <th class="section_header" colspan="<%= table_width %>">Gizmo Flow</th>
+  </tr>
+  <tr>
+    <td>ids: <%= @range %></td>
+  </tr>
+  <tr>
+    <td class="spacer"></td>
+    <% for klass,id in @columns %>
+      <% context = klass ? klass.find(id).description : 'gizmo total' %>
+      <th class="column_header <%= klass == DisbursementType ? "disbursement-breakout-column" : ""%>" <%= "onClick='set_display_mode(\".disbursement-breakout-column\", ++disbursements_toggle%2);'" %>><%= Inflector.titleize context %></th>
     <% end %>
   </tr>
-<% end %>
 
-<script>
-set_display_mode('.disbursement-breakout-column', 0)
-  <% for c in @rows
-       if c.kind_of?(GizmoCategory) %>
-set_display_mode('.category<%=c.id%>', 0)
-       <%end%>
-  <%end%>
-</script>
-<tr><td class="spacer" colspan="<%= table_width %>">&nbsp;</td></tr>
+  <% for type in @rows %>
+    <% if type.kind_of?(GizmoCategory) %>
+      <tr class="category-row" onClick='set_display_mode(".category<%=type.id%>", ++category<%=type.id%>%2)'>
+      <% elsif type.kind_of?(GizmoType) %>
+      <tr class="type-row category<%= type.gizmo_category_id %>">
+      <% else %>
+      <tr>
+        <%end%>
+        <th class="row_header"><%= Inflector.titleize type.respond_to?("description") ? type.description : type %></th>
+        <% for col in @columns %>
+          <% if col == [GizmoContext, GizmoContext.sale.id]; amt = @gizmo_income_data[type.id.to_s].to_f()/100 %>
+            <td <%= " title='$#{number_with_delimiter(amt)}'" %>>
+              <span class="print_only">$<%= number_with_delimiter(amt) %>,</span>
+            <% elsif col[0] == DisbursementType %>
+            <td class="disbursement-breakout-column">
+              <%else%>
+            <td>
+              <%end%>
+              <%= number_with_delimiter(@gizmo_data[type][col]) %></td>
+          <% end %>
+      </tr>
+      <% end %>
+
+      <script>
+        set_display_mode('.disbursement-breakout-column', 0)
+        <% for c in @rows
+             if c.kind_of?(GizmoCategory) %>
+          set_display_mode('.category<%=c.id%>', 0)
+          <%end%>
+          <%end%>
+      </script>
+      <tr><td class="spacer" colspan="<%= table_width %>">&nbsp;</td></tr>
 
 </table>
 

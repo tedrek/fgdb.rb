@@ -1,6 +1,6 @@
 <% if @show_wrapper %>
-<div id="<%= @transaction_type %>">
-  <div id="<%= component_id(params) %>">
+  <div id="<%= @transaction_type %>">
+    <div id="<%= component_id(params) %>">
 <% end %>
 
 <div class="footer">
@@ -28,66 +28,66 @@
         :params => {
           :conditions => params[:conditions],
         }
-     %>
+        %>
   <% end -%>
 </div>
 <div class="list_refinement">
   <% refine_params = params.merge({:action => 'component_update'}) %>
   <%# form_tag ({ :action => 'search'}, :method => "GET") do %>
-  <% form_remote_tag :url => { :action => 'component_update' },
-        :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
-        :update => component_id( refine_params ) do %>
-    <% filters = {} %>
-    <% if filters['created_at'] == nil %>
-      <% filters['created_at'] = date_or_date_range_picker('conditions', 'created_at') %>
-    <% end %>
-    <% if @model.new.respond_to?( :contact_id ) %>
-      <% filters['contact'] =
-           contact_field('@conditions', 'contact_id',
-             :locals => {:options =>
-               {
-                 :object_name => 'conditions',
-                 :field_name => 'contact_id',
-                 :element_prefix => 'filter_contact',
-                 :display_edit => false,
-                 :display_create => false,
-                 :show_label => false,
-               },
-               :contact => @conditions.contact
-             } ) %>
-    <% end %>
-    <% if @model.new.respond_to?( :postal_code ) %>
-      <% filters['anonymous'] = "" %>
-    <% end %>
-    <% if @model.new.respond_to?( :payments ) %>
-      <% filters['payment_method'] = render( :partial => 'payment_method_select',
-            :locals => {:field_id_prefix => 'conditions',
-                        :field_name_prefix => 'conditions',
-                        :show_label => false,
-                        :paid_object => @conditions} ) %>
-      <% filters['unresolved_invoices'] = "" %>
-      <% filters['payment_amount'] = select_visibility(
-        'conditions',
-        'payment_amount_type',
-        [['exact', text_field('conditions', 'payment_amount_exact')],
-         ['between', "%s to %s" % [text_field('conditions', 'payment_amount_low'),
-                                    text_field('conditions', 'payment_amount_high')]],
-         ['>=', text_field('conditions', 'payment_amount_ge')],
-         ['<=', text_field('conditions', 'payment_amount_le')],
-        ])
-      %>
-    <% end %>
-    <% filters['gizmo_type_id'] = select('conditions', 'gizmo_type_id',
-         GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}) %>
-    <% filters['id'] = text_field('conditions', 'id') %>
-    <% filters['needs_attention'] = "" %>
-    <%= multiselect_of_form_elements('conditions', filters ) %>
+    <% form_remote_tag :url => { :action => 'component_update' },
+       :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
+       :update => component_id( refine_params ) do %>
+      <% filters = {} %>
+      <% if filters['created_at'] == nil %>
+        <% filters['created_at'] = date_or_date_range_picker('conditions', 'created_at') %>
+      <% end %>
+      <% if @model.new.respond_to?( :contact_id ) %>
+        <% filters['contact'] =
+             contact_field('@conditions', 'contact_id',
+                           :locals => {:options =>
+                             {
+                               :object_name => 'conditions',
+                               :field_name => 'contact_id',
+                               :element_prefix => 'filter_contact',
+                               :display_edit => false,
+                               :display_create => false,
+                               :show_label => false,
+                             },
+                             :contact => @conditions.contact
+                           } ) %>
+      <% end %>
+      <% if @model.new.respond_to?( :postal_code ) %>
+        <% filters['anonymous'] = "" %>
+      <% end %>
+      <% if @model.new.respond_to?( :payments ) %>
+        <% filters['payment_method'] = render( :partial => 'payment_method_select',
+                                               :locals => {:field_id_prefix => 'conditions',
+                                                 :field_name_prefix => 'conditions',
+                                                 :show_label => false,
+                                                 :paid_object => @conditions} ) %>
+        <% filters['unresolved_invoices'] = "" %>
+        <% filters['payment_amount'] = select_visibility(
+                                                         'conditions',
+                                                         'payment_amount_type',
+                                                         [['exact', text_field('conditions', 'payment_amount_exact')],
+                                                          ['between', "%s to %s" % [text_field('conditions', 'payment_amount_low'),
+                                                                                    text_field('conditions', 'payment_amount_high')]],
+                                                          ['>=', text_field('conditions', 'payment_amount_ge')],
+                                                          ['<=', text_field('conditions', 'payment_amount_le')],
+                                                         ])
+           %>
+      <% end %>
+      <% filters['gizmo_type_id'] = select('conditions', 'gizmo_type_id',
+                                           GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}) %>
+      <% filters['id'] = text_field('conditions', 'id') %>
+      <% filters['needs_attention'] = "" %>
+      <%= multiselect_of_form_elements('conditions', filters ) %>
 
-    <div class="form-footer">
-      <%= submit_tag "Refine", :class => "submit" %>
-      <%= loading_indicator_tag("refine_#{@transaction_type}_loading") %>
-    </div>
-  <% end %>
+      <div class="form-footer">
+        <%= submit_tag "Refine", :class => "submit" %>
+        <%= loading_indicator_tag("refine_#{@transaction_type}_loading") %>
+      </div>
+    <% end %>
 </div>
 <% if @show_wrapper %>
 </div>

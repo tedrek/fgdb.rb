@@ -1,15 +1,15 @@
-  <div class="header">
-    <h2><%= Inflector.titleize(@transaction_type) %></h2>
-    <div class="actions">
-      <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
-    </div>
+<div class="header">
+  <h2><%= Inflector.titleize(@transaction_type) %></h2>
+  <div class="actions">
+    <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
   </div>
-  <div id="<%= element_messages_id(@options) %>" class="messages-container">
-    <div id="<%= messages_id(params) %>">
-      <%= render :partial => 'form_messages' %>
-    </div>
+</div>
+<div id="<%= element_messages_id(@options) %>" class="messages-container">
+  <div id="<%= messages_id(params) %>">
+    <%= render :partial => 'form_messages' %>
   </div>
-  <div id="<%= form_tbody_id(params) %>"></div>
+</div>
+<div id="<%= form_tbody_id(params) %>"></div>
 
 <% if @receipt %>
   <script>
@@ -21,53 +21,53 @@
   <div id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
 
     <% form_remote_tag :url => @options.merge(:controller => base_controller),
-          :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}'); Form.disable('#{element_form_id(@options)}');",
-          :html => { :href => url_for(@options.merge(:controller => base_controller)),
-            :id => element_form_id(@options) } do %>
+       :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}'); Form.disable('#{element_form_id(@options)}');",
+       :html => { :href => url_for(@options.merge(:controller => base_controller)),
+         :id => element_form_id(@options) } do %>
     <%# form_for @transaction, :url => @options.merge(:controller => base_controller), :html => {:method => 'POST'} do %>
-      <input type="hidden" name="return_to_search" value="<%= @return_to_search %>"/>
-      <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type)
-        %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
-      <% if @transaction.created_at && @transaction.updated_at %>
+    <input type="hidden" name="return_to_search" value="<%= @return_to_search %>"/>
+    <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type)
+            %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
+    <% if @transaction.created_at && @transaction.updated_at %>
       <span>created <%= if defined?(@transaction.created_by) && @transaction.created_by then "by #{User.find_by_id(@transaction.created_by).login} " end %>at <%= @transaction.created_at %></span>
       <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.updated_by then "by #{User.find_by_id(@transaction.updated_by).login} " end %>at <%= @transaction.updated_at %></span>
-      <% end %>
-      <% if request.xhr? %>
-        <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
-      <% else %>
-        <%= render :partial => 'form_messages' %>
-      <% end %>
-
-      <%= render :partial => "#{@transaction_type}_form", :locals => { "@#{@transaction_type}".to_sym => @transaction } %>
-
-      <p class="form-footer">
-        <%= javascript_tag "bind_key('shift-ctrl-s', function(e){document.getElementById('commit').click();});" %>
-        <%= submit_tag(Inflector.titleize(@options[:action]),
-                       :id => "commit",
-                       :onclick => "return validate_#{@transaction_type}();",
-                       :class => "submit save")
- %>
-        <input type="button" value="Cancel" onclick="window.location.href='<%= @return_to_search ? url_for({:action=>"search", :continue=>true}) : url_for( params.merge( { :action => 'new' } ) ) %>';" class="cancel" %>
-
-        <%= loading_indicator_tag "form_for_#{@transaction_type}_loading" %>
-      </p>
+    <% end %>
+    <% if request.xhr? %>
+      <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
+    <% else %>
+      <%= render :partial => 'form_messages' %>
     <% end %>
 
-  </div>
+    <%= render :partial => "#{@transaction_type}_form", :locals => { "@#{@transaction_type}".to_sym => @transaction } %>
+
+    <p class="form-footer">
+      <%= javascript_tag "bind_key('shift-ctrl-s', function(e){document.getElementById('commit').click();});" %>
+      <%= submit_tag(Inflector.titleize(@options[:action]),
+                     :id => "commit",
+                     :onclick => "return validate_#{@transaction_type}();",
+                     :class => "submit save")
+          %>
+      <input type="button" value="Cancel" onclick="window.location.href='<%= @return_to_search ? url_for({:action=>"search", :continue=>true}) : url_for( params.merge( { :action => 'new' } ) ) %>';" class="cancel" %>
+
+      <%= loading_indicator_tag "form_for_#{@transaction_type}_loading" %>
+    </p>
+<% end %>
+
+</div>
 </div>
 <hr />
 
-  <table class="list">
-    <tbody>
-      <%= render :partial => 'column_headings' %>
-    </tbody>
-    <tbody id="<%= tbody_id(params) %>">
-      <tr></tr>
-      <% if !@transactions.empty? %>
-        <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false } %>
-      <% end %>
-    </tbody>
-  </table>
-    <% if @transactions.length == 15 %>
-      <%= link_to "See more", {:controller => "donations", :action => "search", :conditions => {:created_at_enabled => true, :created_at_date_type=>"daily", :created_at_date => Date.today.strftime("%Y-%m-%d")}} %>
+<table class="list">
+  <tbody>
+    <%= render :partial => 'column_headings' %>
+  </tbody>
+  <tbody id="<%= tbody_id(params) %>">
+    <tr></tr>
+    <% if !@transactions.empty? %>
+      <%= render :partial => @transaction_type, :collection => @transactions, :locals => { :hidden => false } %>
     <% end %>
+  </tbody>
+</table>
+<% if @transactions.length == 15 %>
+  <%= link_to "See more", {:controller => "donations", :action => "search", :conditions => {:created_at_enabled => true, :created_at_date_type=>"daily", :created_at_date => Date.today.strftime("%Y-%m-%d")}} %>
+<% end %>

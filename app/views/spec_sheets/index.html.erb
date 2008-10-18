@@ -1,14 +1,14 @@
 <div id="form-header">
-<h1>Go to report:</h1>
+  <h1>Go to report:</h1>
 
-<% if @error!=nil %>
-<span style="color: red">ERROR: <%= @error %></span>
-<% end %>
+  <% if @error!=nil %>
+    <span style="color: red">ERROR: <%= @error %></span>
+  <% end %>
 
 </div>
 
 <% if @reports -%>
-<%= render :partial => 'list', 'reports' => @reports %>
+  <%= render :partial => 'list', 'reports' => @reports %>
 <% end -%>
 
 <div id="main-section">
@@ -35,7 +35,7 @@
   <% filters['created_at'] = date_or_date_range_picker('conditions', 'created_at') %>
   <%= multiselect_of_form_elements('conditions', filters ) %>
   <%= submit_tag "Search", :class => "submit" %>
-  <% end -%>
-  <br />
-  <%= link_to 'New report', {:action => "new"} %>
+<% end -%>
+<br />
+<%= link_to 'New report', {:action => "new"} %>
 </div>

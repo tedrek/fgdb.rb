@@ -34,7 +34,7 @@ class Donation < ActiveRecord::Base
     end
 
     gizmo_events.each do |gizmo|
-       errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
+      errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
     end
 
     #errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid? or contact_type == 'dumped')
@@ -57,7 +57,7 @@ class Donation < ActiveRecord::Base
         total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
       }
       self.connection.execute(
-        "SELECT payments.payment_method_id,
+                              "SELECT payments.payment_method_id,
                 sum(payments.amount_cents) as amount,
                 sum(donations.reported_required_fee_cents) as required,
                 sum(donations.reported_suggested_fee_cents) as suggested,
@@ -69,7 +69,7 @@ class Donation < ActiveRecord::Base
          WHERE #{sanitize_sql_for_conditions(conditions)}
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          GROUP BY payments.payment_method_id"
-      ).each {|summation|
+                              ).each {|summation|
         d = {}
         summation.each{|k,v|d[k] = v.to_i}
         total_data[summation['payment_method_id'].to_i] = d
@@ -93,9 +93,9 @@ class Donation < ActiveRecord::Base
           end
 
           total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'],
-                                                      donation.id].min
+                                                          donation.id].min
           total_data[payment.payment_method_id]['max'] = [total_data[payment.payment_method_id]['max'],
-                                                      donation.id].max
+                                                          donation.id].max
         }
       }
       return total_data.map {|method_id,sums|
@@ -173,7 +173,7 @@ class Donation < ActiveRecord::Base
 
   def required_fee_owed_cents
     if invoiced? and (reported_required_fee_cents > required_fee_paid_cents)
-        [reported_required_fee_cents - required_fee_paid_cents, amount_invoiced_cents].min
+      [reported_required_fee_cents - required_fee_paid_cents, amount_invoiced_cents].min
     else
       0
     end
@@ -226,9 +226,9 @@ class Donation < ActiveRecord::Base
     under_pay = (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
     if under_pay < 0:
         gizmo_events << GizmoEvent.new({:unit_price_cents => under_pay,
-                                        :gizmo_count => 1,
-                                        :gizmo_type => GizmoType.fee_discount,
-                                        :gizmo_context => GizmoContext.donation})
+                                         :gizmo_count => 1,
+                                         :gizmo_type => GizmoType.fee_discount,
+                                         :gizmo_context => GizmoContext.donation})
     end
   end
 end

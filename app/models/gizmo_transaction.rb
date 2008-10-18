@@ -49,7 +49,7 @@ module GizmoTransaction
 
   def contact_information
     if contact
-     contact.display_name_address
+      contact.display_name_address
     elsif postal_code
       ["Anonymous (#{postal_code})"]
     else
@@ -92,10 +92,10 @@ module GizmoTransaction
 
   def add_contact_types
     if(contact and
-        (contact_type == 'named' and
-         required_contact_type != nil and
-         (! contact.contact_types.include?(required_contact_type)))
-      )
+       (contact_type == 'named' and
+        required_contact_type != nil and
+        (! contact.contact_types.include?(required_contact_type)))
+       )
       contact.contact_types << required_contact_type
     end
   end

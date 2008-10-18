@@ -1,8 +1,8 @@
 <%= render :partial => 'messages' %>
 
 <% unless @contact.nil? -%>
-<%=  error_messages_for 'contact' %>
-<%   unless @contact.user.nil? -%>
-<%=    error_messages_for 'user' %>
-<%   end -%>
+  <%=  error_messages_for 'contact' %>
+  <%   unless @contact.user.nil? -%>
+    <%=    error_messages_for 'user' %>
+  <%   end -%>
 <% end %>

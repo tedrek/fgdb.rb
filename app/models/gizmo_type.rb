@@ -1,10 +1,10 @@
 class GizmoType < ActiveRecord::Base
   acts_as_tree
   has_many  :gizmo_typeattrs,
-            :dependent => :destroy
+  :dependent => :destroy
   has_many  :gizmo_attrs,  :through => :gizmo_typeattrs
   has_many  :discount_schedules_gizmo_types,
-            :dependent => :destroy
+  :dependent => :destroy
   has_many  :discount_schedules, :through => :discount_schedules_gizmo_types
   has_and_belongs_to_many    :gizmo_contexts
 
@@ -55,7 +55,7 @@ class GizmoType < ActiveRecord::Base
   def relevant_typeattrs(context)
     typeattrs = gizmo_typeattrs.select {|typeattr|
       (typeattr.gizmo_contexts.include? context) and
-        (typeattr.is_required)
+      (typeattr.is_required)
     }
     typeattrs += self.parent.relevant_typeattrs(context) if self.parent
     typeattrs

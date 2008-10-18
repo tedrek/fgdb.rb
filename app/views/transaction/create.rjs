@@ -4,7 +4,7 @@
 
 if @successful
   if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
-      page << "window.open('#{url_for(@print_options)}','Receipt_#{@transaction.id}','#{@print_window_options}');"
+    page << "window.open('#{url_for(@print_options)}','Receipt_#{@transaction.id}','#{@print_window_options}');"
   end
   page << "Form.enable('#{element_form_id(@create_options)}');"
   page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")

@@ -46,7 +46,7 @@ class Sale < ActiveRecord::Base
 
     def totals(conditions)
       connection.execute(
-        "SELECT payments.payment_method_id,
+                         "SELECT payments.payment_method_id,
                 sales.discount_schedule_id,
                 sum(payments.amount_cents) as amount,
                 count(*),
@@ -56,7 +56,7 @@ class Sale < ActiveRecord::Base
          JOIN payments ON payments.sale_id = sales.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY payments.payment_method_id, sales.discount_schedule_id"
-      )
+                         )
     end
   end
 
@@ -66,7 +66,7 @@ class Sale < ActiveRecord::Base
 
   def buyer
     contact ?
-      contact.display_name :
+    contact.display_name :
       "anonymous(#{postal_code})"
   end
 
@@ -118,7 +118,7 @@ class Sale < ActiveRecord::Base
     change_due = money_tendered_cents - calculated_total_cents
     if change_due > 0
       payments << Payment.new({:amount_cents => -change_due,
-                               :payment_method => PaymentMethod.cash})
+                                :payment_method => PaymentMethod.cash})
     end
   end
 end

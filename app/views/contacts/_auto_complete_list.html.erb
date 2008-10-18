@@ -1,4 +1,4 @@
 <%# :MC: the <li> should not contain any spaces, unless you want to fix the autocomplete code to pull them out -%>
 <ul><% for contact in @contacts %>
-  <li class="contact"><div class="id" style="display:none"><%=h contact.id %></div><div class="name"><span class="informal"><%=h contact.display_name %></span></div><div class="address"><span class="informal"><%=h contact.short_address %></span></div></li>
+    <li class="contact"><div class="id" style="display:none"><%=h contact.id %></div><div class="name"><span class="informal"><%=h contact.display_name %></span></div><div class="address"><span class="informal"><%=h contact.short_address %></span></div></li>
 <% end %></ul>

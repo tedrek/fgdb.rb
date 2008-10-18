@@ -3,44 +3,44 @@
   <div class="row">
     <!--[form:donation]-->
 
-<div id="transaction_info">
-<div id="<%= contact_searchbox_id(@options) %>">
-  <label for="donation_contact_type">What kind of contact?</label>
-  <%= select_visibility( 'donation', 'contact_type',
-        :anonymous => render( :partial => 'anonymous' ),
-        :named => render( :partial => 'contact_search'),
-        :dumped => render( :text => '' )) %>
-</div>
+    <div id="transaction_info">
+      <div id="<%= contact_searchbox_id(@options) %>">
+        <label for="donation_contact_type">What kind of contact?</label>
+        <%= select_visibility( 'donation', 'contact_type',
+                               :anonymous => render( :partial => 'anonymous' ),
+                               :named => render( :partial => 'contact_search'),
+                               :dumped => render( :text => '' )) %>
+      </div>
 
-<div class="form-extras">
-  <div class="form-element">
-    <label for="donation_comments">Comments</label>
-    <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
-  </div>
-  <% if @donation.id and @donation.invoiced? %>
-    <div class="form-element">
-      <label for="donation_invoice_resolved_at">When was this invoice resolved?</label>
-      <%= calendar_box 'donation', 'invoice_resolved_at',{},{:showOthers => true} %>
+      <div class="form-extras">
+        <div class="form-element">
+          <label for="donation_comments">Comments</label>
+          <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+        </div>
+        <% if @donation.id and @donation.invoiced? %>
+          <div class="form-element">
+            <label for="donation_invoice_resolved_at">When was this invoice resolved?</label>
+            <%= calendar_box 'donation', 'invoice_resolved_at',{},{:showOthers => true} %>
+          </div>
+        <% end %>
+      </div>
     </div>
-  <% end %>
-</div>
-</div>
 
-<div id="transaction_line_items_div">
-<div id="donation_gizmos" class="datalist line_item">
-    <%= render :partial => 'sale_gizmo_events' %>
-</div>
+    <div id="transaction_line_items_div">
+      <div id="donation_gizmos" class="datalist line_item">
+        <%= render :partial => 'sale_gizmo_events' %>
+      </div>
 
-  <div id="donation_payments" class="datalist line_item">
-    <%= render :partial => 'sale_payments' %>
-  </div>
+      <div id="donation_payments" class="datalist line_item">
+        <%= render :partial => 'sale_payments' %>
+      </div>
 
-  <%= render :partial => 'donation_totals' %>
+      <%= render :partial => 'donation_totals' %>
 
-  <%= javascript_tag @gizmos_and_payments_js %>
-</div>
+      <%= javascript_tag @gizmos_and_payments_js %>
+    </div>
 
-<!--[eoform:donation]-->
+    <!--[eoform:donation]-->
 
   </div>
 </fieldset>

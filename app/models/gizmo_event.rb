@@ -16,7 +16,7 @@ class GizmoEvent < ActiveRecord::Base
   class << self
     def totals(conditions)
       connection.execute(
-        "SELECT gizmo_events.gizmo_type_id,
+                         "SELECT gizmo_events.gizmo_type_id,
                 gizmo_events.gizmo_context_id,
                 d.disbursement_type_id,
                 sum(gizmo_events.gizmo_count) AS count
@@ -24,12 +24,12 @@ class GizmoEvent < ActiveRecord::Base
               LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY 2,1,3"
-      )
+                         )
     end
 
     def category_totals(conditions)
       connection.execute(
-        "SELECT gizmo_types.gizmo_category_id,
+                         "SELECT gizmo_types.gizmo_category_id,
                 gizmo_events.gizmo_context_id,
                 sum(gizmo_events.gizmo_count)
          FROM gizmo_events
@@ -41,7 +41,7 @@ class GizmoEvent < ActiveRecord::Base
 
     def income_totals(conditions)
       connection.execute(
-        "SELECT gt.id AS gt,
+                         "SELECT gt.id AS gt,
                 sum(gizmo_events.gizmo_count
                     * gizmo_events.unit_price_cents)
          FROM gizmo_events
@@ -57,7 +57,7 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def valid_gizmo_count?
-     gizmo_count.is_a?(Fixnum) and gizmo_count > 0
+    gizmo_count.is_a?(Fixnum) and gizmo_count > 0
   end
 
   def attry_description(options = {})

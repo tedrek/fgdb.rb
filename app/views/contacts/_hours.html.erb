@@ -2,15 +2,15 @@
 <% adoption = @contact.adoption_hours %>
 <span class="hours"><%= last_ninety %></span>
 last 90 days [<%= link_to('edit',
-            :action=>"list",
-            :controller=>'volunteer_tasks',
-            :contact_id=>@contact.id
-    ) %>] [<%= link_to('list',
-            :action=>"hours_report",
-            :controller=>"reports",
-            :contact_id=>@contact.id
-    ) %>]
-  <br /><span class="hours"><%= adoption %></span> effective towards adoption
+                          :action=>"list",
+                          :controller=>'volunteer_tasks',
+                          :contact_id=>@contact.id
+                          ) %>] [<%= link_to('list',
+                                             :action=>"hours_report",
+                                             :controller=>"reports",
+                                             :contact_id=>@contact.id
+                                             ) %>]
+<br /><span class="hours"><%= adoption %></span> effective towards adoption
 <% if @contact.date_of_last_adoption %>
   <br /><span class="hours"><%= Date.today - @contact.date_of_last_adoption %></span> days since last adoption
 <% end %>

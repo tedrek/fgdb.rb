@@ -1,90 +1,90 @@
 <fieldset>
-    <!--[form:contact]-->
+  <!--[form:contact]-->
 
-<div class="form-element">
-  <%= check_box "contact","is_organization"
-  %>&nbsp;<label class="checkbox" for="contact_is_organization">organization</label>
-</div>
+  <div class="form-element">
+    <%= check_box "contact","is_organization"
+        %>&nbsp;<label class="checkbox" for="contact_is_organization">organization</label>
+  </div>
 
-<%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" %>
-<%= javascript_tag "contact_form_org_toggle();" %>
+  <%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" %>
+  <%= javascript_tag "contact_form_org_toggle();" %>
 
-<% for contact_type in ContactType.find_instantiable %>
-<div class="form-element <%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
-  <input type="checkbox" id="<%= contact_type.description %>"
-    name="contact_types[]"
-    value="<%= contact_type.id %>"
-  <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
-  />&nbsp;<label class="checkbox" for="<%= contact_type.description %>"><%= contact_type.description %></label>
-</div>
-<% end %>
-<% check_vol = "if($('%s').checked) {$('volunteer').checked = true}" %>
-<%= observe_field 'build', :function => check_vol % 'build' %>
-<%= observe_field 'adopter', :function => check_vol % 'adopter' %>
-<%= observe_field 'offsite', :function => check_vol % 'offsite' %>
+  <% for contact_type in ContactType.find_instantiable %>
+    <div class="form-element <%= "#{contact_type.long_for_who} " if contact_type.for_who %>form-element">
+      <input type="checkbox" id="<%= contact_type.description %>"
+             name="contact_types[]"
+             value="<%= contact_type.id %>"
+             <% if @contact.contact_types.include? contact_type %>checked="checked"<% end %>
+             />&nbsp;<label class="checkbox" for="<%= contact_type.description %>"><%= contact_type.description %></label>
+    </div>
+  <% end %>
+  <% check_vol = "if($('%s').checked) {$('volunteer').checked = true}" %>
+  <%= observe_field 'build', :function => check_vol % 'build' %>
+  <%= observe_field 'adopter', :function => check_vol % 'adopter' %>
+  <%= observe_field 'offsite', :function => check_vol % 'offsite' %>
 
-<div class="organization form-element">
-  <label for="contact_organization">Organization Name</label>
-  <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
-</div>
-<div class="person form-element">
-  <label for="contact_first_name">First name</label>
-  <%= text_field 'contact', 'first_name' , {:class=>"person text-input"} %>
-</div>
+  <div class="organization form-element">
+    <label for="contact_organization">Organization Name</label>
+    <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
+  </div>
+  <div class="person form-element">
+    <label for="contact_first_name">First name</label>
+    <%= text_field 'contact', 'first_name' , {:class=>"person text-input"} %>
+  </div>
 
-<div class="person form-element">
-  <label for="contact_middle_name">Middle name</label>
-  <%= text_field 'contact', 'middle_name' , {:class=>"person text-input"} %>
-</div>
+  <div class="person form-element">
+    <label for="contact_middle_name">Middle name</label>
+    <%= text_field 'contact', 'middle_name' , {:class=>"person text-input"} %>
+  </div>
 
-<div class="person form-element">
-  <label for="contact_surname">Surname</label>
-  <%= text_field 'contact', 'surname' , {:class=>"person text-input"} %>
-</div>
+  <div class="person form-element">
+    <label for="contact_surname">Surname</label>
+    <%= text_field 'contact', 'surname' , {:class=>"person text-input"} %>
+  </div>
 
-<div class="form-element">
-  <label for="contact_address">Address</label>
-  <%= text_field 'contact', 'address' , {:class=>"text-input"} %>
-</div>
+  <div class="form-element">
+    <label for="contact_address">Address</label>
+    <%= text_field 'contact', 'address' , {:class=>"text-input"} %>
+  </div>
 
-<div class="form-element">
-  <label for="contact_extra_address">Extra address</label>
-  <%= text_field 'contact', 'extra_address' , {:class=>"text-input"} %>
-</div>
+  <div class="form-element">
+    <label for="contact_extra_address">Extra address</label>
+    <%= text_field 'contact', 'extra_address' , {:class=>"text-input"} %>
+  </div>
 
-<div class="form-element">
-  <label for="contact_city">City</label>
-  <%= text_field 'contact', 'city' , {:class=>"text-input"} %>
-</div>
+  <div class="form-element">
+    <label for="contact_city">City</label>
+    <%= text_field 'contact', 'city' , {:class=>"text-input"} %>
+  </div>
 
-<div class="form-element">
-  <label for="contact_state_or_province">State or province</label>
-  <%= text_field 'contact', 'state_or_province' , {:class=>"text-input"} %>
-</div>
+  <div class="form-element">
+    <label for="contact_state_or_province">State or province</label>
+    <%= text_field 'contact', 'state_or_province' , {:class=>"text-input"} %>
+  </div>
 
-<div class="form-element">
-  <label for="contact_postal_code">Postal code</label>
-  <%= text_field 'contact', 'postal_code' , {:class=>"text-input"} %>
-</div>
+  <div class="form-element">
+    <label for="contact_postal_code">Postal code</label>
+    <%= text_field 'contact', 'postal_code' , {:class=>"text-input"} %>
+  </div>
 
-<div class="form-element">
-  <label for="contact_country">Country</label>
-  <%= country_select 'contact', 'country', ['United States', 'Canada'] %>
-</div>
+  <div class="form-element">
+    <label for="contact_country">Country</label>
+    <%= country_select 'contact', 'country', ['United States', 'Canada'] %>
+  </div>
 
-<div class="form-element">
-  <label for="contact_notes">Notes</label>
-  <%= text_area 'contact', 'notes'  %>
-</div>
+  <div class="form-element">
+    <label for="contact_notes">Notes</label>
+    <%= text_area 'contact', 'notes'  %>
+  </div>
 
-<div class="form-element">
-  <%= render :partial => 'contact_methods' %>
-</div>
+  <div class="form-element">
+    <%= render :partial => 'contact_methods' %>
+  </div>
 
-<div class="form-element person">
-  <%= render(:partial => "user_form") if has_role_or_is_me?(@contact.id, :ADMIN) %>
-</div>
+  <div class="form-element person">
+    <%= render(:partial => "user_form") if has_role_or_is_me?(@contact.id, :ADMIN) %>
+  </div>
 
-<!--[eoform:contact]-->
+  <!--[eoform:contact]-->
 
 </fieldset>

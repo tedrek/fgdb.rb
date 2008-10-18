@@ -1,21 +1,21 @@
-  <div id="pci">
-    <h2>PCI Bus</h2>
-    <% @parser.xml_foreach("id", "pci|pcmcia") do %>
+<div id="pci">
+  <h2>PCI Bus</h2>
+  <% @parser.xml_foreach("id", "pci|pcmcia") do %>
     <h3><%= @parser._xml_value_of("product") %></h3>
     <% @parser.xml_foreach("handle", "PCI:|PCMCIA:", '/') do %>
-    <% if !['bus', 'bridge', 'storage', 'system', 'memory'].include?(@parser.xml_value_of("@class")) %>
-    <%= render :partial => "pci_guts" %>
-    <% end %>
+      <% if !['bus', 'bridge', 'storage', 'system', 'memory'].include?(@parser.xml_value_of("@class")) %>
+        <%= render :partial => "pci_guts" %>
+      <% end %>
     <% end %>
     <% if false %>
-    <h3>Unknown</h3>
-    <% xpath_foreach("node[not(@class='bus')
+      <h3>Unknown</h3>
+      <% xpath_foreach("node[not(@class='bus')
                       and not(@class='bridge')
                       and not(@class='storage')
                       and not(@class='system')
                       and not(@class='memory')]") do %>
-    <%= render :partial => "pci_guts" %>
+        <%= render :partial => "pci_guts" %>
+      <% end %>
     <% end %>
-    <% end %>
-    <% end %>
-  </div>
+  <% end %>
+</div>

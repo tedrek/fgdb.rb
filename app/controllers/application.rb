@@ -4,14 +4,14 @@ class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   layout "application"
 
-=begin
-  protect_from_forgery
-  post_list = ["create", "update", "xml_create"]
-  ajax_post_list = ["new", "edit", "component_update", "update_display_area"]
-  verify :method => :get, :except => post_list + ajax_post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
-  verify :method => :post, :xhr => true, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
-  verify :method => :post, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
-=end
+  =begin
+    protect_from_forgery
+    post_list = ["create", "update", "xml_create"]
+    ajax_post_list = ["new", "edit", "component_update", "update_display_area"]
+    verify :method => :get, :except => post_list + ajax_post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
+    verify :method => :post, :xhr => true, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
+    verify :method => :post, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
+  =end
 
   def with_sidebar
     "with_sidebar.html.erb"
@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   end
 
   def has_role_or_is_me?(contact_id, *roles)
-     (contact_id and is_me?(contact_id)) or has_role?(*roles)
+    (contact_id and is_me?(contact_id)) or has_role?(*roles)
   end
 
   def has_role?(*roles)

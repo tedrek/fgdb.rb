@@ -18,7 +18,7 @@
       <%= image_tag "print.png", :alt => "Print", :title => "Print" %>
     </a>
     <%= render :partial=> "edit_update_transaction",
-               :locals => {:transaction => sale,
-                           :allowed_roles => ["STORE_ADMIN", "BEAN_COUNTER"]} %>
+        :locals => {:transaction => sale,
+          :allowed_roles => ["STORE_ADMIN", "BEAN_COUNTER"]} %>
   </td>
 </tr>
