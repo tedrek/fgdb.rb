@@ -1,7 +1,7 @@
 # -*- Ruby -*-
 
 task :cruise do
-  ['db:drop', 'db:create', 'db:data:revert_stuff', 'db:schema:load', 'db:metadata:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
+  ['dont_crash_my_server', 'db:drop', 'db:create', 'db:data:revert_stuff', 'db:schema:load', 'db:metadata:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
     arr = x.split(":")
     if arr.length > 1
       string = "#{arr[arr.length - 1]}ing the #{arr[arr.length - 2]}"
@@ -23,6 +23,13 @@ task :cruise do
       exit 1
     end
   }
+end
+
+task :dont_crash_my_server do
+  if system("grep -qR \"^require 'test_helper'$\" #{RAILS_ROOT}/test")
+    puts "GENERATORS are NOT perfect! ***TEST*** and ***TWEAK*** the code they generate BEFORE committing. and please, stop crashing my server. kthxbye."
+    raise
+  end
 end
 
 task :autodoc => :environment do
