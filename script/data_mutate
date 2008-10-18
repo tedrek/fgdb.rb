@@ -81,18 +81,18 @@ all.each do |contact|
   i += 1
 end
 
-first_names = first_names.sort_by {rand}
-middle_names = middle_names.sort_by {rand}
-last_names = last_names.sort_by {rand}
-organizations = organizations.sort_by {rand}
-extra_addresses = extra_addresses.sort_by {rand}
-addresses = addresses.sort_by {rand}
-cities = cities.sort_by {rand}
-states = states.sort_by {rand}
-zips = zips.sort_by {rand}
-countries = countries.sort_by {rand}
+first_names = first_names.sort_by {rand<=>rand}
+middle_names = middle_names.sort_by {rand<=>rand}
+last_names = last_names.sort_by {rand<=>rand}
+organizations = organizations.sort_by {rand<=>rand}
+extra_addresses = extra_addresses.sort_by {rand<=>rand}
+addresses = addresses.sort_by {rand<=>rand}
+cities = cities.sort_by {rand<=>rand}
+states = states.sort_by {rand<=>rand}
+zips = zips.sort_by {rand<=>rand}
+countries = countries.sort_by {rand<=>rand}
 
-contact_methods.each {|x,y| contact_methods[x] = contact_methods[x].sort_by{rand}}
+contact_methods.each {|x,y| contact_methods[x] = contact_methods[x].sort_by{rand<=>rand}}
 
 i = 0
 Contact.find(:all, :order => "id").each do |contact|
@@ -136,12 +136,19 @@ Contact.find(:all, :order => "id").each do |contact|
   contact.save()
 end
 
-# set the password for admin to secret
-x = User.find(1)
-x.crypted_password = '29e0b109247cb32ea5bd27468c249ae7c63edf64'
-x.salt = '95ce12cab15a870505167d19b1bf95548a2f175c'
-x.save!
+# set all the passwords to secret
+User.connection.execute("UPDATE users
+                         SET crypted_password='29e0b109247cb32ea5bd27468c249ae7c63edf64',
+                         salt='95ce12cab15a870505167d19b1bf95548a2f175c'")
+names = User.find(:all).map(&:login).sort{rand<=>rand}
+User.find(:all).each do |u|
+  u.login += "1"
+  u.save!
+end
 
-# just get rid of all the old users
-User.connection.execute("DELETE FROM roles_users WHERE user_id <> 1")
-User.connection.execute("DELETE FROM users WHERE id <> 1")
+User.find(:all).each do |u|
+  u.login = names.pop()
+  u.email = u.email.gsub(/\d/) {digits[rand(digits.size)]}
+  u.email = u.email.gsub(/@(.*)\.([^.]+)/) {"@"+("x"*$1.size)+"."+$2}
+  u.save!
+end
