@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: gizmo_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('gizmo_types_id_seq', 48, true);
+SELECT pg_catalog.setval('gizmo_types_id_seq', 50, true);
 
 
 --
@@ -51,13 +51,11 @@ COPY gizmo_types (id, description, parent_id, lock_version, updated_at, created_
 32	CD Burner	43	3	2008-05-30 22:30:58.650888	2007-01-02 11:36:02	0	0	4	cd_burner
 25	Stereo System	13	2	2008-05-30 22:30:58.568755	2007-01-02 10:04:58	0	400	4	stereo_system
 7	VCR	13	3	2008-05-30 22:30:58.549293	2006-11-11 19:08:37	0	300	4	vcr
-3	CRT	1	4	2008-05-30 22:30:58.471207	2006-09-25 11:22:11	1000	0	2	crt
 40	Laptop parts	13	2	2008-05-30 22:30:58.6221	2007-04-24 17:33:43	0	0	4	laptop_parts
 26	Telephone	13	2	2008-05-30 22:30:58.573576	2007-01-02 10:05:31	0	200	4	telephone
 8	DVD Player	13	3	2008-05-30 22:30:58.554147	2006-11-11 19:08:52	0	300	4	dvd_player
 4	System	13	7	2008-05-30 22:30:58.499747	2006-09-25 11:22:30	0	500	1	system
 1	Monitor	13	8	2008-05-30 22:30:58.46632	2006-09-25 11:21:29	0	0	2	monitor
-5	Sys w/ monitor	1	5	2008-05-30 22:30:58.504698	2006-09-29 14:22:28	1000	0	1	sys_with_monitor
 30	Card	13	2	2008-05-30 22:30:58.583279	2007-01-02 10:08:06	0	100	4	card
 22	Keyboard	13	2	2008-05-30 22:30:58.559	2007-01-02 10:03:00	0	100	4	keyboard
 41	RAM	13	1	2008-05-30 22:30:58.617271	2007-04-24 17:34:10	0	0	4	ram
@@ -71,6 +69,10 @@ COPY gizmo_types (id, description, parent_id, lock_version, updated_at, created_
 19	Old Data Gizmo	13	1	2008-05-30 22:30:58.534699	2006-12-30 15:01:16	0	0	4	old_data_gizmo
 16	T-Shirt	17	2	2008-05-30 22:30:58.529744	2006-11-11 19:19:26	0	0	4	t-shirt
 15	Sticker	17	2	2008-05-30 22:30:58.524829	2006-11-11 19:19:08	0	0	4	sticker
+3	Old Fee CRT	1	4	2008-05-30 22:30:58.471207	2006-09-25 11:22:11	1000	0	2	old_crt
+5	Old Fee Sys w/ monitor	1	5	2008-05-30 22:30:58.504698	2006-09-29 14:22:28	1000	0	1	old_sys_with_monitor
+49	CRT	1	0	2008-10-10 22:42:44.86573	2008-10-10 22:42:44.86573	700	0	2	crt
+50	Sys w/ monitor	1	0	2008-10-10 22:42:45.058719	2008-10-10 22:42:45.058719	700	0	1	sys_with_monitor
 \.
 
 
