@@ -16,6 +16,11 @@
         js += "gizmo_types[#{gizmo_type.id}] = '#{gizmo_type.description}';"
       end
       javascript_tag js %>
+  <%= js = "var all_gizmo_types = new Array;"
+      for gizmo_type in GizmoType.find(:all).sort_by(&:description)
+        js += "all_gizmo_types[#{gizmo_type.id}] = '#{gizmo_type.description}';"
+      end
+      javascript_tag js %>
 <% end -%>
 
 <% if ["sales", "donations"].include?(params[:controller]) -%>

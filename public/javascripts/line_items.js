@@ -7,7 +7,7 @@ function toggle_description(evt) {
   return true;
 }
 
-function add_line_item(args, hook1, hook2, update_hook, edit_hook){
+function add_line_item(args, hook1, hook2, update_hook, edit_hook, show_edit_button){
   var prefix = args['prefix'];
   var id = prefix + '_' + counters[prefix + '_line_id'] + '_line'
     tr = document.createElement("tr");
@@ -22,8 +22,10 @@ function add_line_item(args, hook1, hook2, update_hook, edit_hook){
     Element.remove(id);
     update_hook();
   };
-  a.appendChild(document.createTextNode('e'));
-  td.appendChild(a);
+  if(show_edit_button) {
+    a.appendChild(document.createTextNode('e'));
+    td.appendChild(a);
+  }
   td.appendChild(document.createTextNode(' '));
   a = document.createElement("a");
   a.onclick = function () {
@@ -101,7 +103,7 @@ function gizmo_events_stuff(args, tr){
   var gizmo_type_id = args['gizmo_type_id'];
   var gizmo_count = args['gizmo_count'];
   var description = args['description'];
-  var gizmo_type = gizmo_types[gizmo_type_id];
+  var gizmo_type = all_gizmo_types[gizmo_type_id];
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden("line", "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
   var desc = make_hidden("line", "description", description, description, line_id)
@@ -153,12 +155,12 @@ function edit_payment(id) {
 
 function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
-  add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals, edit_sale);
+  add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals, edit_sale, true);
 }
 
 function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count) {
   var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
-  add_line_item(args, gizmo_events_stuff, function(){}, function(){}, edit_disbursement);
+  add_line_item(args, gizmo_events_stuff, function(){}, function(){}, edit_disbursement, true);
 }
 
 function add_recycling_gizmo_event(gizmo_type_id, gizmo_count) {
@@ -167,7 +169,10 @@ function add_recycling_gizmo_event(gizmo_type_id, gizmo_count) {
 
 function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
-  add_line_item(args, gizmo_events_stuff, sales_stuff, donation_compute_totals, edit_sale);
+  add_edit_button = true;
+  if(!gizmo_types[gizmo_type_id] && all_gizmo_types[gizmo_type_id])
+    add_edit_button = false;
+  add_line_item(args, gizmo_events_stuff, sales_stuff, donation_compute_totals, edit_sale, add_edit_button);
 }
 
 function add_priced_gizmo_event_from_form()
