@@ -1,5 +1,9 @@
 class ForeignKeysOnCreatedAndUpdatedBy < ActiveRecord::Migration
   def self.up
+    admin = User.find(1)
+    admin.created_by = 1
+    admin.save!
+
     for i in [:actions, :contacts, :donations, :sales, :spec_sheets, :systems, :types, :users, :volunteer_tasks]
       add_foreign_key i.to_s, ["created_by"], "users", ["id"], :on_delete => :restrict
       add_foreign_key i.to_s, ["updated_by"], "users", ["id"], :on_delete => :restrict
