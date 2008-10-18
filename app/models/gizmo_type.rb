@@ -16,6 +16,14 @@ class GizmoType < ActiveRecord::Base
   define_amount_methods_on("required_fee")
   define_amount_methods_on("suggested_fee")
 
+  def GizmoType.fee?(type)
+    return type == service_fee || type == fee_discount
+  end
+
+  def GizmoType.service_fee
+    @@service_fee ||= find_by_name('service_fee')
+  end
+
   def GizmoType.fee_discount
     @@fee_discount ||= find_by_name('fee_discount')
   end
