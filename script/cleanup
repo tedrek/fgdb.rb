@@ -8,7 +8,7 @@ if [ "$1" = "--noexec" ] || [ "$1" = "--no-exec" ]; then
 fi
 
 cd `dirname $0`
-cd ..
+cd ../..
 
 if [ ! -d trunk ]; then
     pwd
