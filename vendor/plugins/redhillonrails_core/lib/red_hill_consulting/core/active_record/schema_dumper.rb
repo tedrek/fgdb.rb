@@ -5,8 +5,6 @@ module RedHillConsulting::Core::ActiveRecord
         private
         alias_method_chain :tables, :redhillonrails_core
         alias_method_chain :indexes, :redhillonrails_core
-        alias_method_chain :tables, :railspgprocs
-        alias_method_chain :indexes, :railspgprocs
       end
     end
 
@@ -23,22 +21,6 @@ module RedHillConsulting::Core::ActiveRecord
       end
     end
 
-    def tables_with_railspgprocs(stream)
-      #added for railspgprocs
-      if defined?(types)
-        types(stream)
-      end
-      #added for railspgprocs
-      if defined?(procedures)
-        procedures(stream, "!= 'sql'")
-      end
-      tables_without_railspgprocs(stream)
-      #added for railspgprocs
-      if defined?(procedures)
-        procedures(stream, "= 'sql'")
-      end
-    end
-
     def indexes_with_redhillonrails_core(table, stream)
       indexes = @connection.indexes(table)
       indexes.each do |index|
@@ -50,14 +32,6 @@ module RedHillConsulting::Core::ActiveRecord
       stream.puts unless indexes.empty?
 
       foreign_keys(table, @foreign_keys)
-    end
-
-    def indexes_with_railspgprocs(table, stream)
-      indexes_without_railspgprocs(table, stream)
-      #added for railspgprocs
-      if defined?(triggers)
-        triggers(table, stream)
-      end
     end
 
     def foreign_keys(table, stream)

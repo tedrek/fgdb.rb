@@ -3,6 +3,13 @@ module ActiveRecord
   # output format (i.e., ActiveRecord::Schema).
   class SchemaDumper
     include SchemaProcs
+    def self.included(base)
+      base.class_eval do
+        private
+        alias_method_chain :tables, :railspgprocs
+        alias_method_chain :indexes, :railspgprocs
+      end
+    end
 
     # TODO -Implement checks on SchemaDumper instance 
     # to ensure we do this only when using pg db.
@@ -70,6 +77,18 @@ module ActiveRecord
           stream.print "#{ type.columns.collect{|column, type| "[#{Inflector.symbolize(column)}, #{get_type(type)}]"}.join(", ") }"
           stream.puts  ")"
         }
+      end
+
+      def tables_with_railspgprocs(stream)
+        types(stream)
+        procedures(stream, "!= 'sql'")
+        tables_without_railspgprocs(stream)
+        procedures(stream, "= 'sql'")
+      end
+
+      def indexes_with_procs(table, stream)
+        indexes_without_railspgprocs(table, stream)
+        triggers(table, stream)
       end
   end
 end
