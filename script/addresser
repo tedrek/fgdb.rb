@@ -82,6 +82,7 @@ end
 Contact.connection.execute("ALTER TABLE contacts DISABLE TRIGGER uncertify_address")
 begin
   x.readlines().each do |line|
+    line.chomp!
     puts line
 
     (first_name, surname, org, addr, city, state, zip) = line.split(/\t/)
