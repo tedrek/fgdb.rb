@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# all I have to say is "git log release_1.0.17..". if subversion isn't
+# as dumb as I think it is, then please correct me and tell me the
+# easy way to do this.
+
+set -e
+
+cd `dirname $0`/..
+
+if [ $# -lt 1 ]; then
+    SVNOPTS=--verbose
+else
+    SVNOPTS="$@"
+fi
+
+echo "SVNOPTS: $SVNOPTS"
+
+OTHER_BRANCH_NUMBER=$(ls ../branches/ | grep release_1.0. | sed 's/release_1.0.//' | sort -n | tail -1)
+
+svn log $SVNOPTS -r $(svn log --verbose --stop-on-copy ../branches/release_1.0.$OTHER_BRANCH_NUMBER | head -2 | tail -1 | awk '{print $1}'):HEAD | less
