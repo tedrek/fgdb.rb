@@ -8,6 +8,10 @@ set -e
 
 cd `dirname $0`/..
 
+cd ..
+svn up
+cd $OLDPWD
+
 if [ $# -lt 1 ]; then
     SVNOPTS=--verbose
 else
