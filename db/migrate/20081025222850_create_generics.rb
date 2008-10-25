@@ -7,10 +7,10 @@ class CreateGenerics < ActiveRecord::Migration
       t.timestamps
     end
     add_index "generics", ["value"], :unique => true
-    ['�����', '0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxxx', 'EVAL', 'Serial number xxxxxx', 'XXXXXXXXXX', '$', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'DELL', '0'].each{|x|
+    ['�����', '0123456789ABCDEF', '0123456789', '1234567890', 'MB-1234567890', 'SYS-1234567890', '00000000', 'xxxxxxxxxxx', 'EVAL', 'Serial number xxxxxx', 'XXXXXXXXXX', '$', 'xxxxxxxxxx', 'xxxxxxxxxxxx', 'xxxxxxxxxxxxxx', '0000000000', 'DELL', '0', '123456789000', '123456890'].each{|x|
       Generic.new(:value => x).save!
     }
-    ['System Name', 'Product Name', 'System Manufacturer', 'none', 'None', 'To Be Filled By O.E.M.', 'To Be Filled By O.E.M. by More String'].each{|x|
+    ['System Name', 'Product Name', 'System Manufacturer', 'none', 'None', 'To Be Filled By O.E.M.', 'To Be Filled By O.E.M. by More String', 'OEM00000', 'PROD00000000'].each{|x|
       Generic.new(:value => x, :only_serial => false).save!
     }
   end
