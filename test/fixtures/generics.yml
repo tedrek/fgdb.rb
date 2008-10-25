@@ -1,7 +1,178 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+--- 
+generics_020: 
+  only_serial: f
+  created_at: 2008-10-25 16:07:44.261889
+  updated_at: 2008-10-25 16:07:44.261889
+  usable: t
+  id: "20"
+  value: Product Name
+generics_009: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.229179
+  updated_at: 2008-10-25 16:07:44.229179
+  usable: t
+  id: "9"
+  value: EVAL
+generics_021: 
+  only_serial: f
+  created_at: 2008-10-25 16:07:44.264901
+  updated_at: 2008-10-25 16:07:44.264901
+  usable: t
+  id: "21"
+  value: System Manufacturer
+generics_010: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.232124
+  updated_at: 2008-10-25 16:07:44.232124
+  usable: t
+  id: "10"
+  value: Serial number xxxxxx
+generics_022: 
+  only_serial: f
+  created_at: 2008-10-25 16:07:44.267927
+  updated_at: 2008-10-25 16:07:44.267927
+  usable: t
+  id: "22"
+  value: none
+generics_011: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.235081
+  updated_at: 2008-10-25 16:07:44.235081
+  usable: t
+  id: "11"
+  value: XXXXXXXXXX
+generics_023: 
+  only_serial: f
+  created_at: 2008-10-25 16:07:44.270991
+  updated_at: 2008-10-25 16:07:44.270991
+  usable: t
+  id: "23"
+  value: None
+generics_012: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.238021
+  updated_at: 2008-10-25 16:07:44.238021
+  usable: t
+  id: "12"
+  value: $
+generics_001: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.198469
+  updated_at: 2008-10-25 16:07:44.198469
+  usable: t
+  id: "1"
+  value: !binary |
+    77+977+977+977+977+9
 
-# one:
-#   column: value
-#
-# two:
-#   column: value
+generics_024: 
+  only_serial: f
+  created_at: 2008-10-25 16:07:44.274091
+  updated_at: 2008-10-25 16:07:44.274091
+  usable: t
+  id: "24"
+  value: To Be Filled By O.E.M.
+generics_013: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.240947
+  updated_at: 2008-10-25 16:07:44.240947
+  usable: t
+  id: "13"
+  value: xxxxxxxxxx
+generics_002: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.207813
+  updated_at: 2008-10-25 16:07:44.207813
+  usable: t
+  id: "2"
+  value: 0123456789ABCDEF
+generics_025: 
+  only_serial: f
+  created_at: 2008-10-25 16:07:44.277127
+  updated_at: 2008-10-25 16:07:44.277127
+  usable: t
+  id: "25"
+  value: To Be Filled By O.E.M. by More String
+generics_014: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.243918
+  updated_at: 2008-10-25 16:07:44.243918
+  usable: t
+  id: "14"
+  value: xxxxxxxxxxxx
+generics_003: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.211163
+  updated_at: 2008-10-25 16:07:44.211163
+  usable: t
+  id: "3"
+  value: 0123456789
+generics_015: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.246847
+  updated_at: 2008-10-25 16:07:44.246847
+  usable: t
+  id: "15"
+  value: xxxxxxxxxxxxxx
+generics_004: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.214278
+  updated_at: 2008-10-25 16:07:44.214278
+  usable: t
+  id: "4"
+  value: "1234567890"
+generics_016: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.249775
+  updated_at: 2008-10-25 16:07:44.249775
+  usable: t
+  id: "16"
+  value: "0000000000"
+generics_005: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.217221
+  updated_at: 2008-10-25 16:07:44.217221
+  usable: t
+  id: "5"
+  value: MB-1234567890
+generics_017: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.2528
+  updated_at: 2008-10-25 16:07:44.2528
+  usable: t
+  id: "17"
+  value: DELL
+generics_006: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.220177
+  updated_at: 2008-10-25 16:07:44.220177
+  usable: t
+  id: "6"
+  value: SYS-1234567890
+generics_018: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.255808
+  updated_at: 2008-10-25 16:07:44.255808
+  usable: t
+  id: "18"
+  value: "0"
+generics_007: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.223274
+  updated_at: 2008-10-25 16:07:44.223274
+  usable: t
+  id: "7"
+  value: "00000000"
+generics_019: 
+  only_serial: f
+  created_at: 2008-10-25 16:07:44.258844
+  updated_at: 2008-10-25 16:07:44.258844
+  usable: t
+  id: "19"
+  value: System Name
+generics_008: 
+  only_serial: t
+  created_at: 2008-10-25 16:07:44.22624
+  updated_at: 2008-10-25 16:07:44.22624
+  usable: t
+  id: "8"
+  value: xxxxxxxxxxx
