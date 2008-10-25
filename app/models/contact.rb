@@ -22,6 +22,8 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE contacts_mailings SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts SET created_at = (SELECT min(created_at) FROM contacts WHERE id IN (#{self.id}, #{other.id})) WHERE id = #{self.id}")
       self.notes = [self.notes, other.notes].uniq.delete_if{|x| x.nil?}.join("\n")
       self.save!
