@@ -143,17 +143,17 @@ class SpecSheet < ActiveRecord::Base
   end
 
   def serial_is_usable(value)
-    list_of_generics = Generic.find(:all)
+    list_of_generics = Generic.find(:all).collect(&:value)
     return is_usable(value, list_of_generics)
   end
 
   def vendor_is_usable(value)
-    list_of_generics = Generic.find_by_only_serial(false)
+    list_of_generics = Generic.find(:all, :conditions => ['only_serial = ?', false]).collect(&:value)
     return is_usable(value, list_of_generics)
   end
 
   def model_is_usable(value)
-    list_of_generics = Generic.find_by_only_serial(false)
+    list_of_generics = Generic.find(:all, :conditions => ['only_serial = ?', false]).collect(&:value)
     return is_usable(value, list_of_generics)
   end
 end
