@@ -15,7 +15,7 @@ elif (echo "$2" | grep -q -E "^[0-9]+$"); then
     VERSION="$2"
 else
     echo "please provide a sprint number"
-    echo "( hint: $(( $(ls branches/ | awk '/^release_1.0./{sub("release_1.0.",""); print $1}' | sort -n | tail -1) + 1 )) )"
+    echo "( hint: $(( $(ls ../branches/ | awk '/^release_1.0./{sub("release_1.0.",""); print $1}' | sort -n | tail -1) + 1 )) )"
     exit
 fi
 
