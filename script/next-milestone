@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+set -u
+set -x
+
+cd /var/www/projects/fgdb.rb
+NEXT_TIME=$(ruby -r date -e "puts (Date.today + 8)")
+CURRENT=$(sudo trac-admin . milestone list | awk '/^[Ss]print/{if(NF == 3) print $1,$2}')
+NEW="sprint $(( $(echo $CURRENT | awk '{print $2}') + 1 ))"
+sudo trac-admin . milestone add "$NEW" "$NEXT_TIME"
+sudo sqlite db/trac.db "UPDATE ticket SET milestone = '$NEW' WHERE milestone = '$CURRENT' AND (status='assigned' OR status='reopened' OR status='new')"
+sudo trac-admin . milestone completed "$CURRENT" now
+sudo sqlite db/trac.db "UPDATE report SET query='SELECT p.value AS __color__, milestone||'' Release'' AS __group__, id AS ticket, summary, component, severity, t.type AS type,  (CASE status WHEN ''assigned'' THEN owner||'' *'' ELSE owner END) AS owner, time AS created, changetime AS _changetime, description AS _description, reporter AS _reporter FROM ticket t, enum p WHERE status IN (''new'', ''assigned'', ''reopened'') AND milestone IN (''$NEW'') AND p.name = t.priority AND p.type = ''priority'' ORDER BY milestone, p.value, t.type, time';"
