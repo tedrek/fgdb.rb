@@ -8,6 +8,7 @@ class Contact < ActiveRecord::Base
   has_many :disbursements
   has_many :sales
   has_many :donations
+  has_many :spec_sheets
   has_one :user
   has_one :contact_duplicate
 
