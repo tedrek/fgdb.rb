@@ -24,8 +24,8 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
-# this will make it blow up because contacts_mailings has a contraint to not allow the same mailing to be sent to the same person more than once
-#      connection.execute("UPDATE contacts_mailings SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE contacts_mailings SET contact_id = NULL WHERE contact_id = #{other.id} AND mailing_id IN (SELECT mailing_id FROM contacts_mailings WHERE contact_id IN (#{self.id}, #{other.id}) GROUP BY mailing_id HAVING count(*) > 1)")
+      connection.execute("UPDATE contacts_mailings SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts SET created_at = (SELECT min(created_at) FROM contacts WHERE id IN (#{self.id}, #{other.id})) WHERE id = #{self.id}")
       self.notes = [self.notes, other.notes].uniq.delete_if{|x| x.nil?}.join("\n")
       self.save!
