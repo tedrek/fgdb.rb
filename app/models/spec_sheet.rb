@@ -17,7 +17,7 @@ class SpecSheet < ActiveRecord::Base
   validates_existence_of :type
   validates_existence_of :action
   validates_existence_of :contact
-  validates_existance_of :contract
+  validates_existence_of :contract
 
   named_scope :good, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, true]
   named_scope :bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, false]
