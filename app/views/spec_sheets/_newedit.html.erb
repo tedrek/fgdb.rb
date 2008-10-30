@@ -23,6 +23,9 @@
         <tr><td>Job:</td><td><%= select("report", "action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
         <tr><td>System ID:</td><td><%= text_field("report", :system_id) %></td></tr>
         <tr><td>Type:</td><td><%= select("report", "type_id", Type.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
+        <% if Contract.find(:all).length > 1 %>
+          <tr><td>Keeper label type:</td><td><%= select("report", "contract_id", Contract.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
+        <% end %>
         <tr><td>Notes:</td><td><%= text_area("report", :notes) %></td></tr>
         <% if action_name == "new" %>
           <tr><td>File:</td><td><%= file_field("report", :my_file) %></td></tr>
