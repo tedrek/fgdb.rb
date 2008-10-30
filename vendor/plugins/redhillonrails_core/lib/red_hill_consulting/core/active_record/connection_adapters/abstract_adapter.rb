@@ -15,8 +15,10 @@ module RedHillConsulting::Core::ActiveRecord::ConnectionAdapters
     end
 
     def add_foreign_key(table_name, column_names, references_table_name, references_column_names, options = {})
+      column_names = [column_names].flatten
+      references_column_names = [references_column_names].flatten
       if options[:on_delete] == :set_null
-        execute "UPDATE #{table_name} SET #{column_names[0]} = NULL WHERE #{column_names[0]} IS NOT NULL AND NOT EXISTS (SELECT * FROM #{references_table_name} as rtn WHERE rtn.#{references_column_names[0]} = #{table_name}.#{column_names[0]})" 
+        execute "UPDATE #{table_name} SET #{column_names[0]} = NULL WHERE #{column_names[0]} IS NOT NULL AND NOT EXISTS (SELECT * FROM #{references_table_name} as rtn WHERE rtn.#{references_column_names[0]} = #{table_name}.#{column_names[0]})"
       elsif options[:on_delete] == :set_default
         execute "UPDATE #{table_name} SET #{column_names[0]} = DEFAULT WHERE #{column_names[0]} IS NOT NULL AND NOT EXISTS (SELECT * FROM #{references_table_name} as rtn WHERE rtn.#{references_column_names[0]} = #{table_name}.#{column_names[0]})"
       elsif options[:on_delete] == :restrict
