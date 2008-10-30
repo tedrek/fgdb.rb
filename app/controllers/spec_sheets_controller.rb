@@ -147,6 +147,7 @@ class SpecSheetsController < ApplicationController
       :contact_id => params[:contact_id],
       :action_id => params[:action_id],
       :type_id => params[:type_id],
+      :contract_id => params[:contract_id],
       :system_id => params[:system_id],
       :notes => params[:notes],
       :my_file => params[:my_file],
@@ -175,7 +176,7 @@ class SpecSheetsController < ApplicationController
   end
 
   def method_missing(symbol, *args)
-    if (result = symbol.to_s.match(/(actions|types)_(xml_index)/))
+    if (result = symbol.to_s.match(/(actions|types|contracts)_(xml_index)/))
       @property_type=result[1]
       @action=result[2]
       eval "self." + "properties_" + @action

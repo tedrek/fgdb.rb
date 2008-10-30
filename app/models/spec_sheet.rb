@@ -5,16 +5,19 @@ class SpecSheet < ActiveRecord::Base
 
   validates_presence_of :contact_id
   validates_presence_of :action_id
+  validates_presence_of :contract_id
   validates_presence_of :type_id
 
   belongs_to :contact
   belongs_to :action
   belongs_to :system
   belongs_to :type
+  belongs_to :contract
 
   validates_existence_of :type
   validates_existence_of :action
   validates_existence_of :contact
+  validates_existance_of :contract
 
   named_scope :good, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, true]
   named_scope :bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, false]
