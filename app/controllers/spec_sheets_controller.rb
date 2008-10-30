@@ -5,7 +5,7 @@ class SpecSheetsController < ApplicationController
 
   helper :xml
   include XmlHelper
-  MY_VERSION=5
+  MY_VERSION=6
 
   def check_compat
     # always send compat as false so that old clients don't break
@@ -17,6 +17,7 @@ class SpecSheetsController < ApplicationController
     server_versions[3] = [3,4]    # force client upgrade. so of course old ones aren't compatible. (field renames)
     server_versions[4] = [4]      # yet another force client upgrade. (server version checking)
     server_versions[5] = [5]      # force upgrade. printme no longer fixes the xml.
+    server_versions[6] = [6]      # see comment below.
     # client hash works like this: client_versions[client_version_here] = [arr, of, compatible, server, versions]
     client_versions = Hash.new([])
     client_versions[1] = [1]      # dunno
@@ -24,6 +25,7 @@ class SpecSheetsController < ApplicationController
     client_versions[3] = [3]      # forced upgrade
     client_versions[4] = [3,4]    # forced upgrade
     client_versions[5] = [5]      # forced. the server needs to clean the xml now since printme isn't.
+    client_versions[6] = [6]      # forced. add contracts support.
     if !client_versions.include?(params[:version].to_i)
       render :xml => {:cli_compat => true, :ser_compat => false, :your_version => params[:version].to_i, :minimum_version => MY_VERSION, :message => "The server is incompatible. exiting.", :compat => false}
     elsif !params[:version] || params[:version].empty? || !server_versions[MY_VERSION].is_a?(Array) || !server_versions[MY_VERSION].include?(params[:version].to_i)
