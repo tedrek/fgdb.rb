@@ -1,9 +1,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SpecSheetTest < ActiveSupport::TestCase
-  fixtures :actions, :types, :systems, :contacts, :spec_sheets, :generics, :users
+  fixtures :actions, :types, :systems, :contacts, :spec_sheets, :generics, :users, :contracts
 
-  REQUIRED_DATA={:contact_id => 1, :action_id => 1, :type_id => 1, :created_by => 1, :updated_by => 1}
+  REQUIRED_DATA={:contact_id => 1, :action_id => 1, :contract_id => 1, :type_id => 1, :created_by => 1, :updated_by => 1}
 
   def test_that_ryans_laptop_makes_expected_output(stop = 0)
     file = File.open(File.dirname(__FILE__) + "/../fixtures/laptop.xml")

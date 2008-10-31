@@ -5,3 +5,9 @@
 #
 # two:
 #   column: value
+
+one:
+  id: 1
+  name: default
+  description: normal
+  label: keeper
