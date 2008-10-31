@@ -1,9 +1,11 @@
 class CreateContracts < ActiveRecord::Migration
   def self.up
     create_table :contracts do |t|
-      t.string :label
-      t.string :name
-      t.string :description
+      t.string :name # the contracts name, as referred to in code.
+      t.string :description # the contracts name, as shown in donations.
+      t.string :label # the name of the label put on these computers, as shown on printmes, disbursements, sales, and recyclings. NULL if shouldn't be tracked specially with these transactions.
+      t.text :notes # the notes to be shown to the person entering in donations that came through this contract
+
       t.timestamps
     end
 
