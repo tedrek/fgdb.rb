@@ -17,6 +17,16 @@ class CreateContracts < ActiveRecord::Migration
 
     add_column "spec_sheets", "contract_id", :integer, :default => c.id, :null => false
     add_foreign_key "spec_sheets", "contract_id", "contracts", "id", :on_delete => :restrict
+
+    add_column "donations", "contract_id", :integer, :default => c.id, :null => false
+    add_foreign_key "donations", "contract_id", "contracts", "id", :on_delete => :restrict
+
+    add_column "gizmo_events", "contract_id", :integer
+    add_foreign_key "gizmo_events", "recycling_contract_id", "contracts", "id", :on_delete => :restrict
+    GizmoEvent.connection.execute("UPDATE gizmo_events SET recycling_contract_id = #{c.id} WHERE recycling_id NOT NULL;")
+
+    add_column "contacts", "contract_id", :integer, :default => c.id, :null => false
+    add_foreign_key "contacts", "contract_id", "contracts", "id", :on_delete => :restrict
   end
 
   def self.down
