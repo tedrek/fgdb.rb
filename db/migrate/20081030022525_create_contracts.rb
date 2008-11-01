@@ -32,5 +32,8 @@ class CreateContracts < ActiveRecord::Migration
   def self.down
     drop_table :contracts
     remove_column "spec_sheets", "contract_id"
+    remove_column "gizmo_events", "recycling_contract_id"
+    remove_column "donations", "contract_id"
+    remove_column "contacts", "contract_id"
   end
 end
