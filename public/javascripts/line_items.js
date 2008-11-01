@@ -141,7 +141,11 @@ function add_unpriced_gizmo_event(gizmo_type_id, gizmo_count) {
 function edit_sale(id) {
   thing = $(id);
   $('gizmo_type_id').value = thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value;
+  sale_gizmo_type_selected();
   $('gizmo_count').value = thing.getElementsBySelector(".gizmo_count").first().firstChild.value;
+  if($('system_id') != null) {
+    $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
+  }
   $('unit_price').value = thing.getElementsBySelector(".unit_price").first().firstChild.value;
   $('description').value = thing.getElementsBySelector(".description").first().firstChild.value;
   $('gizmo_type_id').focus();
@@ -150,7 +154,11 @@ function edit_sale(id) {
 function edit_disbursement(id) {
   thing = $(id);
   $('gizmo_type_id').value = thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value;
+  disbursement_gizmo_type_selected();
   $('gizmo_count').value = thing.getElementsBySelector(".gizmo_count").first().firstChild.value;
+  if($('system_id') != null) {
+    $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
+  }
   $('gizmo_type_id').focus();
 }
 
