@@ -11,6 +11,7 @@ class Contact < ActiveRecord::Base
   has_many :spec_sheets
   has_one :user
   has_one :contact_duplicate
+  belongs_to :contract
 
   validates_presence_of :postal_code
   #validates_presence_of :created_by

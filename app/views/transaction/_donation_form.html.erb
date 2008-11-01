@@ -8,11 +8,26 @@
         <label for="donation_contact_type">What kind of contact?</label>
         <%= select_visibility( 'donation', 'contact_type',
                                :anonymous => render( :partial => 'anonymous' ),
-                               :named => render( :partial => 'contact_search'),
+                               :named => render( :partial => 'contact_search',
+                                                 :locals => {:options => {
+                                                     :on_display => "if($('contact__contract') && $('donation_contract_id')) {
+                                              set_new_val($('donation_contract_id'),
+                                                          parseInt($('contact__contract').innerHTML));
+                                            }"
+                                                   }}),
                                :dumped => render( :text => '' )) %>
       </div>
 
       <div class="form-extras">
+        <% if Contract.find(:all).length > 1 %>
+        <div class="form-element">
+          <label for="donation_contract_id">Contract</label>
+          <select id="donation_contract_id" name="donation[contract_id]">
+            <%= options_from_collection_for_select(Contract.find(:all), "id", "description", @donation.contract_id || Contract.find_by_name("default")) %>
+          </select>
+        </div>
+        <% end %>
+
         <div class="form-element">
           <label for="donation_comments">Comments</label>
           <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>

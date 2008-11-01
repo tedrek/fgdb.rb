@@ -78,6 +78,7 @@
         :loading => "Element.show('#{loading_indicator_id("contact_#{contact.id}_loading")}');" } %>
 <% end %>
 <div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
+<div id="contact__contract" style="display: none"><%= @contact.contract.id %></div>
 </div>
 
 <%= javascript_tag(options[:on_display]) if options.has_key? :on_display %>
