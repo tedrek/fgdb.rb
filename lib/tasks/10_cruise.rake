@@ -1,12 +1,12 @@
 # -*- Ruby -*-
 
 task :cruise do
-  ['dont_crash_my_server', 'db:drop', 'db:create', 'db:data:revert_stuff', 'db:data:load', 'db:metadata:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
+  ['crash:prevent', 'db:drop', 'db:create', 'db:schema:revert', 'db:data:load', 'db:metadata:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
     arr = x.split(":")
     if arr.length > 1
-      string = "#{arr[arr.length - 1]}ing the #{arr[arr.length - 2]}"
+      string = "#{arr[arr.length - 1].sub(/e$/, "")}ing the #{arr[arr.length - 2]}"
     else
-      string = "#{arr[arr.length - 1]}ing"
+      string = "#{arr[arr.length - 1].sub(/e$/, "")}ing"
     end
     (string.length + 4).times{
       print '='
@@ -20,16 +20,27 @@ task :cruise do
     }
     puts ""
     if !system("rake RAILS_ENV=development #{x}")
+      (string.length + 18).times{
+        printf "="
+      }
+      puts
+      puts "=== #{string.upcase} FAILED!!! ==="
+      (string.length + 18).times{
+        printf "="
+      }
+      puts
       exit 1
     end
   }
 end
 
-task :dont_crash_my_server do
+namespace :crash do
+task :prevent do
   if system("grep -qR \"^require 'test_helper'$\" #{RAILS_ROOT}/test")
     puts "GENERATORS are NOT perfect! ***TEST*** and ***TWEAK*** the code they generate BEFORE committing. and please, stop crashing my server. kthxbye."
     raise
   end
+end
 end
 
 task :autodoc => :environment do

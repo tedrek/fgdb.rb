@@ -1,3 +1,5 @@
+# -*- Ruby -*-
+
 require 'yaml'
 
 SCHEMADUMPFILE = 'db/schema.sql'
@@ -223,7 +225,7 @@ namespace :db do
     end
 
     desc "Fill the database with data from the dumped SQL file"
-    task :load => ['db:data:wipe', :environment, 'db:data:revert_stuff', 'db:schema:load'] do
+    task :load => ['db:data:wipe', :environment, 'db:schema:revert', 'db:schema:load'] do
       abcs, search_path = setup_environment(rails_env)
       if abcs[rails_env]["username"]
         PGSQL_OPTS='-U "#{abcs[rails_env]["username"]}"'
@@ -232,15 +234,18 @@ namespace :db do
     end
 
     desc "blah blah blah"
-    task :revert_stuff do
-      system("svn revert #{RAILS_ROOT}/db/schema.rb")
-      system("git checkout #{RAILS_ROOT}/db/schema.rb")
-    end
 
     desc "Migrate the schema.rb, devel data, and metadata"
-    task :migrate => ['db:data:revert_stuff', 'db:data:load', 'db:migrate', 'db:data:dump'] do
+    task :migrate => ['db:schema:revert', 'db:data:load', 'db:migrate', 'db:data:dump'] do
     end
 
   end # namespace :data
+
+  namespace :schema do
+    task :revert do
+      system("svn revert #{RAILS_ROOT}/db/schema.rb")
+      system("git checkout #{RAILS_ROOT}/db/schema.rb")
+    end
+  end
 
 end # namespace :db
