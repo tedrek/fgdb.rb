@@ -7,5 +7,6 @@ class FixGizmoTypesForCategorization < ActiveRecord::Migration
   end
 
   def self.down
+    GizmoType.connection.execute("DELETE FROM gizmo_types WHERE name = 'mac_part';")
   end
 end
