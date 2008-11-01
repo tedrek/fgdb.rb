@@ -5,6 +5,9 @@
   <tr>
     <th>type</th>
     <th>qty</th>
+    <% if params[:controller] == "disbursements" %>
+    <th>system id</th>
+    <% end %>
     <th></th>
     <% if @transaction.gizmo_events %>
       <%= js = ""
@@ -19,7 +22,10 @@
     <td><select id="gizmo_type_id" onchange="<%= @gizmo_context.name %>_gizmo_type_selected()">
         <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a gizmo")] + @gizmo_context.gizmo_types.sort_by(&:description), "id", "description") %>
       </select></td>
-    <td><input name="gizmo_count" id="gizmo_count" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}"></td>
+    <td><input name="gizmo_count" id="gizmo_count" size="6" onkeydown="if(is_tab(event) && ($('system_id') == null || $('system_id').disabled)) {return add_unpriced_gizmo_event_from_form();}"></td>
+    <% if params[:controller] == "disbursements" %>
+    <td><input name="system_id" id="system_id" size="6" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}"></td>
+    <% end %>
     <td></td>
   </tr>
 </table>

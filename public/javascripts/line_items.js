@@ -91,7 +91,15 @@ function dollar_value(cents) {
   }
 }
 
+function systems_stuff(args, tr){
+  if($('system_id') != null) {
+    var line_id = counters[args['prefix'] + '_line_id'];
+    tr.appendChild(make_hidden("line", "system_id", args['system_id'], args['system_id'], line_id));
+  }
+}
+
 function sales_stuff(args, tr){
+  systems_stuff(args, tr);
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden("line", "unit_price", args['unit_price'], args['unit_price'], line_id));
   td = document.createElement("td");
@@ -153,14 +161,16 @@ function edit_payment(id) {
   $('payment_method_id').focus();
 }
 
-function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
+function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, system_id) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
+  args['system_id'] = system_id;
   add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals, edit_sale, true);
 }
 
-function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count) {
+function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id) {
   var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
-  add_line_item(args, gizmo_events_stuff, function(){}, function(){}, edit_disbursement, true);
+  args['system_id'] = system_id;
+  add_line_item(args, gizmo_events_stuff, systems_stuff, function(){}, edit_disbursement, true);
 }
 
 function add_recycling_gizmo_event(gizmo_type_id, gizmo_count) {
@@ -180,14 +190,34 @@ function add_priced_gizmo_event_from_form()
   if($('gizmo_type_id').selectedIndex == 0 || $('unit_price').value == '' || $('gizmo_count').value == '') {
     return true;
   }
-  eval("add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value, $('description').value);");
+  if(system_bad()) {
+    return true;
+  }
+  string = "add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value, $('description').value";
+  if($('system_id') != null) {
+    string += ", $('system_id').value";
+  }
+  string += ");";
+  eval(string);
   $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
   $('unit_price').enable();
   $('description').value = $('description').defaultValue;
   $('unit_price').value = $('unit_price').defaultValue;
   $('gizmo_count').value = $('gizmo_count').defaultValue;
+  if($('system_id') != null) {
+    $('system_id').value = $('system_id').defaultValue;
+    $('system_id').disable();
+  }
   $('gizmo_type_id').focus();
   return false;
+}
+
+function system_bad(){
+  if($('system_id') != null && !$('system_id').disabled && $('system_id').value == '') {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function add_unpriced_gizmo_event_from_form()
@@ -195,9 +225,21 @@ function add_unpriced_gizmo_event_from_form()
   if($('gizmo_type_id').selectedIndex == 0 || $('gizmo_count').value == '') {
     return true;
   }
-  eval("add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value);");
+  if(system_bad()) {
+    return true;
+  }
+  string = "add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value";
+  if($('system_id') != null) {
+    string += ", $('system_id').value";
+  }
+  string += ");";
+  eval(string);
   $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
   $('gizmo_count').value = $('gizmo_count').defaultValue;
+  if($('system_id') != null) {
+    $('system_id').value = $('system_id').defaultValue;
+    $('system_id').disable();
+  }
   $('gizmo_type_id').focus();
   return false;
 }
@@ -391,6 +433,13 @@ function donation_gizmo_type_selected() {
 function recycling_gizmo_type_selected() {
 }
 function disbursement_gizmo_type_selected() {
+  if(system_types.include($('gizmo_type_id').value)) {
+    $('system_id').enable();
+    $('system_id').value = '';
+  } else {
+    $('system_id').disable();
+    $('system_id').value = '';
+  }
 }
 function contact_contact_method_selected() {
 }

@@ -62,8 +62,8 @@
    %>
 
 <%=
-   if params[:controller] == 'sales' || params[:controller] == 'disbursments'
+   if params[:controller] == 'sales' || params[:controller] == 'disbursements'
      system_types = GizmoType.find(:all, :conditions => ['gizmo_category_id = ?', GizmoCategory.find_by_name('system').id]).collect(&:id)
-     javascript_tag "var discount_schedules = new Array(#{system_types.join(', ')});"
+     javascript_tag "var system_types = new Array(#{system_types.join(', ')});"
    end
 %>
