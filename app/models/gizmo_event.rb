@@ -15,10 +15,10 @@ class GizmoEvent < ActiveRecord::Base
   define_amount_methods_on("unit_price")
 
   def validate
-    if gizmo_type.gizmo_category.name == "system" && !system_id.nil? && gizmo_count != 1
+    if gizmo_type && gizmo_type.gizmo_category && gizmo_type.gizmo_category.name == "system" && !system_id.nil? && gizmo_count != 1
       errors.add("gizmo_count", "should be 1 if you enter a system id")
     end
-    if gizmo_type.gizmo_category.name != "system" && !system_id.nil?
+    if (!gizmo_type || !gizmo_type.gizmo_category || gizmo_type.gizmo_category.name != "system") && !system_id.nil?
       errors.add("system_id", "should only be set if the type is a system")
     end
     if !system_id.nil? && self.system.nil?
