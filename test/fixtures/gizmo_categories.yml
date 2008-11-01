@@ -1,7 +1,17 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-# one:
-#   column: value
-#
-# two:
-#   column: value
+--- 
+gizmo_categories_001: 
+  name: misc
+  id: "4"
+  description: Misc
+gizmo_categories_002: 
+  name: monitor
+  id: "2"
+  description: Monitor
+gizmo_categories_003: 
+  name: system
+  id: "1"
+  description: System
+gizmo_categories_004: 
+  name: printer
+  id: "3"
+  description: Printer

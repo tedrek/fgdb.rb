@@ -19,8 +19,9 @@ class Test::Unit::TestCase
   ORDERED_TABLES =
     [
      %W[defaults],
+     %W[contracts],
      %W[users roles roles_users],
-     %W[gizmo_contexts gizmo_types
+     %W[gizmo_categories gizmo_contexts gizmo_types
         gizmo_contexts_gizmo_types gizmo_events],
      %W[contacts contact_types contact_types_contacts
         contact_method_types contact_methods],

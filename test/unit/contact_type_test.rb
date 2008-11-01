@@ -4,7 +4,7 @@ class ContactTypeTest < Test::Unit::TestCase
 
   fixtures( :contact_types, :volunteer_task_types, :payment_methods,
             :gizmo_types, :gizmo_contexts, :discount_schedules,
-            :users, :roles, :roles_users )
+            :users, :roles, :roles_users, :contracts )
 
   NEW_CONTACT_TYPE = {}    # e.g. {:name => 'Test ContactType', :description => 'Dummy'}
   REQ_ATTR_NAMES              = %w( ) # name of fields that must be present, e.g. %(name description)
