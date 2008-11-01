@@ -31,9 +31,6 @@ class SpecSheet < ActiveRecord::Base
         system.contract = c
         system.save!
       end
-      if system.contract.nil?
-        errors.add("system", "contract is not valid")
-      end
     end
   end
 

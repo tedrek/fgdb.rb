@@ -6,12 +6,25 @@ class GizmoEvent < ActiveRecord::Base
   belongs_to :gizmo_type
   belongs_to :gizmo_category
   belongs_to  :gizmo_context
+  belongs_to :system
 
   validates_presence_of :gizmo_count
   validates_presence_of :gizmo_type_id
   validates_presence_of :gizmo_context_id
 
   define_amount_methods_on("unit_price")
+
+  def validate
+    if gizmo_type.gizmo_category.name == "system" && !system_id.nil? && gizmo_count != 1
+      errors.add("gizmo_count", "should be 1 if you enter a system id")
+    end
+    if gizmo_type.gizmo_category.name != "system" && !system_id.nil?
+      errors.add("system_id", "should only be set if the type is a system")
+    end
+    if !system_id.nil? && self.system.nil?
+      errors.add("system_id", "does not refer to a valid system")
+    end
+  end
 
   class << self
     def totals(conditions)

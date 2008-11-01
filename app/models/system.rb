@@ -5,5 +5,11 @@ class System < ActiveRecord::Base
   validates_presence_of :vendor, :serial_number, :model
   validates_existence_of :contract
 
+  def validate
+    if self.contract.nil?
+      errors.add("contract_id", "contract is not valid")
+    end
+  end
+
   acts_as_userstamp
 end
