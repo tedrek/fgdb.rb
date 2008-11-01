@@ -26,11 +26,15 @@ class SpecSheet < ActiveRecord::Base
 
   before_save :set_contract_id
   def set_contract_id
-    if @contract_id.nil? || !(c = Contract.find(@contract_id))
-      raise
+    if system
+      if !(@contract_id.nil? || !(c = Contract.find(@contract_id)))
+        system.contract = c
+        system.save!
+      end
+      if system.contract.nil?
+        errors.add("system", "contract is not valid")
+      end
     end
-    system.contract = c
-    system.save
   end
 
   def lshw_output=(val)
