@@ -15,8 +15,8 @@ class CreateContracts < ActiveRecord::Migration
     c.description = "normal"
     c.save!
 
-    add_column "spec_sheets", "contract_id", :integer, :default => c.id, :null => false
-    add_foreign_key "spec_sheets", "contract_id", "contracts", "id", :on_delete => :restrict
+    add_column "systems", "contract_id", :integer, :default => c.id, :null => false
+    add_foreign_key "systems", "contract_id", "contracts", "id", :on_delete => :restrict
 
     add_column "donations", "contract_id", :integer, :default => c.id, :null => false
     add_foreign_key "donations", "contract_id", "contracts", "id", :on_delete => :restrict
@@ -31,7 +31,7 @@ class CreateContracts < ActiveRecord::Migration
 
   def self.down
     drop_table :contracts
-    remove_column "spec_sheets", "contract_id"
+    remove_column "systems", "contract_id"
     remove_column "gizmo_events", "recycling_contract_id"
     remove_column "donations", "contract_id"
     remove_column "contacts", "contract_id"
