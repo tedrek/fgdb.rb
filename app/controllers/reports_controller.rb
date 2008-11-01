@@ -294,7 +294,7 @@ class ReportsController < ApplicationController
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
     @tasks = VolunteerTask.find_by_conditions(@defaults.conditions(VolunteerTask))
-    @sections = [:community_service_type, :volunteer_task_type]
+    @sections = [:community_service_type, :volunteer_task_types]
     @data = volunteer_report_for(@tasks, @sections)
   end
 
@@ -317,12 +317,10 @@ class ReportsController < ApplicationController
   end
 
   def add_task_to_data(task, sections, data)
-    i=1
     sections.each do |section|
-      data[section][(task[i] || '(none)')] += task[0].to_f
+      data[section][(task[section.to_s] || '(none)')] += task['duration'].to_f
       data[section]["Total"] ||= 0.0
       data[section]["Total"] += task[0].to_f
-      i += 1
     end
   end
 
