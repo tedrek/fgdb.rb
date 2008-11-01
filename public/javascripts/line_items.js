@@ -171,13 +171,18 @@ function edit_payment(id) {
 
 function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, system_id) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
-  args['system_id'] = system_id;
+  if(args['system_id'] == undefined) {
+    args['system_id'] = '';
+  }
   add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals, edit_sale, true);
 }
 
 function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id) {
   var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
   args['system_id'] = system_id;
+  if(args['system_id'] == undefined) {
+    args['system_id'] = '';
+  }
   add_line_item(args, gizmo_events_stuff, systems_stuff, function(){}, edit_disbursement, true);
 }
 

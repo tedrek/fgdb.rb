@@ -10,11 +10,12 @@
     <% end %>
     <th></th>
     <% if @transaction.gizmo_events %>
-      <%= js = ""
+      <% @js = ""
           for line in @transaction.gizmo_events
-            js += "add_disbursement_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count});"
+            @js += "add_disbursement_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}"
+            @js += ", #{line.system_id}" if line.system_id
+            @js += ");"
           end
-          javascript_tag js
           %>
     <% end %>
 
@@ -28,4 +29,8 @@
     <% end %>
     <td></td>
   </tr>
+
+  <% if @transaction.gizmo_events %>
+    <%= javascript_tag @js %>
+  <% end %>
 </table>

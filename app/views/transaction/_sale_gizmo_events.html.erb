@@ -29,7 +29,9 @@
            else
              description = ''
            end
-           @gizmos_and_payments_js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}');\n"
+           @gizmos_and_payments_js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}'"
+           @gizmos_and_payments_js += ", #{line.system_id}" if line.system_id
+           @gizmos_and_payments_js += ");\n"
          end
          %>
     <% end %>
