@@ -420,6 +420,7 @@ function add_contact_method_from_form() {
 function max(a,b) { return a>b ? a : b; }
 
 function sale_gizmo_type_selected() {
+  disbursement_gizmo_type_selected();
 }
 function donation_gizmo_type_selected() {
   $('unit_price').value = dollar_value(max(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']));
