@@ -1,5 +1,12 @@
 # -*- Ruby -*-
 
+def runtask(task)
+  puts "--Started at: " + Time.now.to_s
+  ret = system("rake RAILS_ENV=development #{task}")
+  puts "--Finished at: " + Time.now.to_s
+  return ret
+end
+
 task :cruise do
   ['crash:prevent', 'db:drop', 'db:create', 'db:schema:revert', 'db:data:load', 'db:metadata:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
     arr = x.split(":")
@@ -19,7 +26,7 @@ task :cruise do
       print '='
     }
     puts ""
-    if !system("rake RAILS_ENV=development #{x}")
+    if !runtask(x)
       (string.length + 18).times{
         printf "="
       }
