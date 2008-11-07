@@ -4,6 +4,8 @@
 # missing". if subversion isn't as dumb as I think it is, then please
 # correct me and tell me the easy way to do this.
 
+# THIS SCRIPT IS STUPID AND (LIKE SUBVERSION) JUST DOESN'T WORK!!!
+
 set -e
 
 cd `dirname $0`/..
