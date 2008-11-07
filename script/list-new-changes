@@ -28,6 +28,10 @@ IN_TRUNK=$(svn log $SVNOPTS -r $OTHER_BRANCH_COMMIT:HEAD)
 cd ../branches/release_1.0.$OTHER_BRANCH_NUMBER
 IN_BRANCH=$(svn log -r $OTHER_BRANCH_COMMIT:HEAD)
 cd $OLDPWD
+IGNORE=$(awk 'BEGIN{first=true} /merge r[0-9]+/{if(first != true) printf ","; printf substr($0, match("merge r[0-9]", $0) + 7, 5); first=false}' <<EOF
+$IN_BRANCH
+EOF
+)
 
 if test -n "$IN_BRANCH"; then
 less <<EOF
@@ -38,7 +42,7 @@ FEOF
 )
 
 Changes only in trunk:
-$(sed 's/^/ /g' <<FEOF
+$(sed 's/^/ /g' <<FEOF | awk -v blah=$IGNORE -f ./script/list_changes.awk
 $IN_TRUNK
 FEOF
 )
