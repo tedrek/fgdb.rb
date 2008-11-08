@@ -167,6 +167,9 @@ function edit_disbursement(id) {
   if($('system_id') != null) {
     $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
   }
+  if($('contract_id') != null) {
+    $('contract_id').value = thing.getElementsBySelector(".recycling_contract_id").first().firstChild.value;
+  }
   $('gizmo_type_id').focus();
 }
 
