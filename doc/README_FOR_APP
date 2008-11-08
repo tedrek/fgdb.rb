@@ -76,7 +76,7 @@ if you see any failures or errors,
 something is wrong that you should fix or tell us about.
 then start the server and browse in to see things working:
 
- $> ./script/server &
+ $> thin &
  $> iceweasel http://localhost:3000
 
 for a production server running nginx and thin,
