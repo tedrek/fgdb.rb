@@ -6,16 +6,9 @@ this webapp is meant to keep track of two main areas:
 * volunteers and the time they work
 * gizmos and their flow through our organization
 
-the /volunteer_tasks controller tracks volunteers and their hours.
-the /transaction controller takes care of gizmo flow.
-the /reports controller has some useful numbers.
-
 in the near future i hope to add:
 * classes and who has completed them
 * projects (such as building and testing a computer) and who has worked on them
-
-a bunch of other controllers are scattered around to support these,
-but should not be used by typical users.
 
 == Install
 
