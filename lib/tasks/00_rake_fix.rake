@@ -1,4 +1,4 @@
-
+# -*- Ruby -*-
 module Rake
   module TaskManager
     def redefine_task(task_class, args, &block)
@@ -26,3 +26,4 @@ end
 def redefine_task(args, &block)
   Rake::Task.redefine_task(args, &block)
 end
+
