@@ -459,14 +459,17 @@ function donation_gizmo_type_selected() {
 function recycling_gizmo_type_selected() {
 }
 function disbursement_gizmo_type_selected() {
-  if(system_types.include($('gizmo_type_id').value)) {
-    $('system_id').enable();
-    $('system_id').value = '';
-  } else {
-    $('system_id').disable();
-    $('system_id').value = '';
+  if($('system_id') != null) {
+    if(system_types.include($('gizmo_type_id').value)) {
+      $('system_id').enable();
+      $('system_id').value = '';
+    } else {
+      $('system_id').disable();
+      $('system_id').value = '';
+    }
   }
 }
+
 function contact_contact_method_selected() {
 }
 
