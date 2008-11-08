@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 -- Name: gizmo_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('gizmo_types_id_seq', 50, true);
+SELECT pg_catalog.setval('gizmo_types_id_seq', 51, true);
 
 
 --
@@ -44,10 +44,8 @@ COPY gizmo_types (id, description, parent_id, lock_version, updated_at, created_
 33	Video Card	30	3	2008-05-30 22:30:58.588091	2007-01-02 11:50:20	0	0	4	video_card
 18	1337 lappy	6	3	2008-05-30 22:30:58.514456	2006-12-19 20:16:28	0	0	1	1337_lappy
 13	Gizmo	\N	5	2008-05-30 22:30:58.689829	2006-11-11 19:16:03	0	0	4	gizmo
-39	Mac	4	1	2008-05-30 22:30:58.612372	2007-04-19 17:26:22	0	0	4	mac
 36	Net Device	13	2	2008-05-30 22:30:58.660627	2007-01-10 15:48:05	0	100	4	net_device
 48	Fee Discount	\N	0	2008-07-25 21:48:34.757712	2008-07-25 21:48:34.757712	0	0	4	fee_discount
-47	Old Data System	19	1	2008-05-30 22:30:58.670346	2008-03-11 18:26:39	0	500	4	old_data_system
 32	CD Burner	43	3	2008-05-30 22:30:58.650888	2007-01-02 11:36:02	0	0	4	cd_burner
 25	Stereo System	13	2	2008-05-30 22:30:58.568755	2007-01-02 10:04:58	0	400	4	stereo_system
 7	VCR	13	3	2008-05-30 22:30:58.549293	2006-11-11 19:08:37	0	300	4	vcr
@@ -73,6 +71,9 @@ COPY gizmo_types (id, description, parent_id, lock_version, updated_at, created_
 5	Old Fee Sys w/ monitor	1	5	2008-05-30 22:30:58.504698	2006-09-29 14:22:28	1000	0	1	old_sys_with_monitor
 49	CRT	1	0	2008-10-10 22:42:44.86573	2008-10-10 22:42:44.86573	700	0	2	crt
 50	Sys w/ monitor	1	0	2008-10-10 22:42:45.058719	2008-10-10 22:42:45.058719	700	0	1	sys_with_monitor
+39	Mac	4	1	2008-05-30 22:30:58.612372	2007-04-19 17:26:22	0	0	1	mac
+47	Old Data System	19	1	2008-05-30 22:30:58.670346	2008-03-11 18:26:39	0	500	1	old_data_system
+51	Mac Part	13	0	\N	\N	0	0	4	mac_part
 \.
 
 
