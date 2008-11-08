@@ -55,11 +55,16 @@ you need to create and configure the databases:
  $> export RAILS_ENV=production
  $> rake db:schema:load
 
-choose one of the following: skeletal metadata, or full test data:
+choose one of the following: skeletal metadata (for production databases), or full test data (for development databases):
 
  $> rake db:metadata:load
+ $> ./script/make_admin # create the admin user
    :OR:
- $> rake db:data:load db:migrate
+ $> rake db:data:load # the admin user's password is 'secret'
+
+migrate the database:
+
+ $> rake db:migrate
 
 run some tests to see if things look okay:
 
