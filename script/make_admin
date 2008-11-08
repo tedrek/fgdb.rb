@@ -1,0 +1,15 @@
+#!/usr/bin/ruby
+
+require File.dirname(__FILE__) + '/../config/environment.rb'
+
+u = User.new
+u.id = 1
+u.login = "admin"
+u.email = "root@" + `hostname -f`
+printf "Choose a long and complicated admin password (will only need to be used once): "
+pass = gets.chomp
+u.password=pass
+u.password_confirmation=pass
+u.roles = [Role.find_by_name("ADMIN")]
+u.created_by = 1
+u.save_without_validation!
