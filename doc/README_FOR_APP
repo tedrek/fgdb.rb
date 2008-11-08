@@ -27,9 +27,13 @@ Checkout the sources (you first need to setup mr, see above):
  $> mr -c config update
 
 To upgrade to the newest sprint release:
+ $> mv current/public/_release.html current/public/release.html
+ $> invoke-rc.d thin stop
  $> mr -c config update
  $> cd current
  $> RAILS_ENV=production rake db:migrate
+ $> invoke-rc.d thin start
+ $> mv public/release.html public/_release.html
 
 to setup a working environment on debian and ubuntu (skip this part on other distros):
 
