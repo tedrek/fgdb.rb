@@ -88,7 +88,7 @@ for a production server running nginx and thin,
 continue with the following:
 
  $> (wget http://packages.ryan52.info/keyring.gpg && apt-key add keyring.gpg); rm -f keyring.gpg
- $> echo "deb http://repos.ryan52.info/PACKAGE/ sid main" >> /etc/apt/sources.list.d/ryan52.list
+ $> echo "deb http://repos.ryan52.info/thin/ sid main" >> /etc/apt/sources.list.d/ryan52.list
  $> apt-get update
  $> apt-get install nginx thin
  $> ln -fs $(readlink -f doc/examples/web/fgdb.conf) /etc/nginx/sites-enabled/fgdb.conf
