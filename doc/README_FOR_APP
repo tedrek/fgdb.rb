@@ -95,14 +95,6 @@ continue with the following:
    ::: modify configs to taste :::
    ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
 
-== TODO
-
-see our trac (http://dev.freegeek.org/projects/fgdb.rb/) for details,
-but some important tasks left unfinished:
-
-* non-ajax interface
-* deb package
-
 == THANKS
 
 in chronological order of svn commits:
