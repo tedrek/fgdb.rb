@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-if system("which thin")
-  system("thin -c #{File.dirname(__FILE__) + '/../'} #{ARGV.join(' ')} start")
+if system("which thin >/dev/null") && ENV['NO_THIN'] == nil
+  system("thin -c #{File.dirname(__FILE__) + '/../'} -A rails --no-epoll #{ARGV.join(' ')} start")
 else
   require File.dirname(__FILE__) + '/../config/boot'
   require 'commands/server'
