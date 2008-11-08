@@ -223,7 +223,7 @@ namespace :db do
     task :wipe do
       wipe(rails_env)
     end
-
+=begin
     desc "Fill the database with data from the dumped SQL file"
     task :load => ['db:data:wipe', :environment, 'db:schema:revert', 'db:schema:load'] do
       abcs, search_path = setup_environment(rails_env)
@@ -231,6 +231,12 @@ namespace :db do
         PGSQL_OPTS='-U "#{abcs[rails_env]["username"]}"'
       end
       load_data(rails_env)
+    end
+=end
+
+    task :load do
+      puts "Use ./script/load_devel_data instead"
+      exit 1
     end
 
     desc "blah blah blah"

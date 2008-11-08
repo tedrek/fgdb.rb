@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+rake db:drop
+rake db:create
+rake db:schema:load
+zcat db/devel_data.sql.gz | psql fgdb_development
