@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-if !system("thin -c #{File.dirname(__FILE__) + '/../'} #{ARGV.join(' ')} start")
-  puts "Error! Make sure you have thin installed."
+if system("which thin")
+  system("thin -c #{File.dirname(__FILE__) + '/../'} #{ARGV.join(' ')} start")
+else
+  require File.dirname(__FILE__) + '/../config/boot'
+  require 'commands/server'
 end
-
-
-
