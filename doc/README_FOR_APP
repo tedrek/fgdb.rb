@@ -79,11 +79,6 @@ then start the server and browse in to see things working:
  $> ./script/server &
  $> iceweasel http://localhost:3000
 
-feel free to read the notes and listen to an audio log from our
-install at the vancouver freegeek site:
-http://puddle.ca/~joe/freegeek/martin_install.ogg
-http://puddle.ca/~joe/freegeek/fg_database_install-HOWTO
-
 for a production server running nginx and thin,
 continue with the following:
 
