@@ -223,7 +223,8 @@ namespace :db do
     task :wipe do
       wipe(rails_env)
     end
-=begin
+
+    namespace :old do
     desc "Fill the database with data from the dumped SQL file"
     task :load => ['db:data:wipe', :environment, 'db:schema:revert', 'db:schema:load'] do
       abcs, search_path = setup_environment(rails_env)
@@ -232,7 +233,7 @@ namespace :db do
       end
       load_data(rails_env)
     end
-=end
+    end
 
     task :load do
       puts "Use ./script/load_devel_data instead"

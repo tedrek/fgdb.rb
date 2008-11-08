@@ -8,7 +8,7 @@ def runtask(task)
 end
 
 task :cruise do
-  ['crash:prevent', 'db:drop', 'db:create', 'db:schema:revert', 'db:data:load', 'db:metadata:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
+  ['crash:prevent', 'db:drop', 'db:create', 'db:schema:revert', 'db:data:old:load', 'db:metadata:load', 'db:migrate', 'autodoc', 'db:test:purge', 'db:test:prepare', 'test'].each{|x|
     arr = x.split(":")
     if arr.length > 1
       string = "#{arr[arr.length - 1].sub(/e$/, "")}ing the #{arr[arr.length - 2]}"
