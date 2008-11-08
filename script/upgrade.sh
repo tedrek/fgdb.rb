@@ -13,6 +13,5 @@ cd current
 sudo env RAILS_ENV=production rake db:migrate
 pg_dump fgdb_production > ~/post-sprint-$NEW.sql
 
-sudo a2dissite release
-sudo a2ensite data
-sudo invoke-rc.d apache2 reload
+invoke-rc.d thin start
+mv public/release.html public/_release.html
