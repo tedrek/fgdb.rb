@@ -28,7 +28,13 @@ Checkout the sources (you first need to setup mr, see above):
 
 to setup a working environment on debian and ubuntu (skip this part on other distros):
 
- $> apt-get install ruby postgresql-8.1 libpgsql-ruby irb libxml-ruby xmlstarlet
+ Add my repo (required to install thin) to your sources.list:
+ $> (wget http://packages.ryan52.info/keyring.gpg && apt-key add keyring.gpg); rm -f keyring.gpg
+ $> echo "deb http://repos.ryan52.info/thin/ sid main" >> /etc/apt/sources.list.d/ryan52.list
+
+ Install stuff:
+ $> apt-get update
+ $> apt-get install ruby postgresql-8.1 libpgsql-ruby irb libxml-ruby xmlstarlet thin
  $> apt-get install rails #version 2.1
  $> ln -s /usr/share/rails vendor/rails
 
@@ -70,10 +76,7 @@ then start the server and browse in to see things working:
 for a production server running nginx and thin,
 continue with the following:
 
- $> (wget http://packages.ryan52.info/keyring.gpg && apt-key add keyring.gpg); rm -f keyring.gpg
- $> echo "deb http://repos.ryan52.info/thin/ sid main" >> /etc/apt/sources.list.d/ryan52.list
- $> apt-get update
- $> apt-get install nginx thin
+ $> apt-get install nginx
  $> ln -fs $(readlink -f doc/examples/web/fgdb.conf) /etc/nginx/sites-enabled/fgdb.conf
  $> ln -fs $(readlink -f doc/examples/web/fgdb.yml) /etc/thin/
  $> rm /etc/nginx/sites-enabled/default
