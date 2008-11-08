@@ -1,3 +1,3 @@
 class Action < ActiveRecord::Base
-  acts_as_userstamp
+  named_scope :usable
 end

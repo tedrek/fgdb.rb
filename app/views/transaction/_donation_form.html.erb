@@ -1,4 +1,4 @@
-<% if Contract.find(:all).length > 1 %>
+<% if Contract.usable.length > 1 %>
   <pre id="contract_notes" style="background: yellow">
   </pre>
 <% end %>
@@ -29,11 +29,11 @@
       </div>
 
       <div class="form-extras">
-        <% if Contract.find(:all).length > 1 %>
+        <% if Contract.usable.length > 1 %>
         <div class="form-element">
           <label for="donation_contract_id">Contract</label>
           <select id="donation_contract_id" name="donation[contract_id]" onChange="show_contract_notes();">
-            <%= options_from_collection_for_select(Contract.find(:all), "id", "description", @donation.contract_id || Contract.find_by_name("default")) %>
+            <%= options_from_collection_for_select(Contract.usable, "id", "description", @donation.contract_id || Contract.find_by_name("default")) %>
           </select>
         </div>
         <%= javascript_tag "show_contract_notes()" %>

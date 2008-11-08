@@ -7,7 +7,7 @@
     <th>qty</th>
     <% if params[:controller] == "disbursements" %>
       <th>system id</th>
-    <% elsif params[:controller] == "recyclings" && Contract.find(:all).length > 1 %>
+    <% elsif params[:controller] == "recyclings" && Contract.usable.length > 1 %>
       <th>contract</th>
     <% end %>
     <th></th>
@@ -29,9 +29,9 @@
     <td><input name="gizmo_count" id="gizmo_count" size="6"></td>
     <% if params[:controller] == "disbursements" %>
       <td><input name="system_id" id="system_id" size="6" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}"></td>
-    <% elsif params[:controller] == "recyclings" && Contract.find(:all).length > 1 %>
+    <% elsif params[:controller] == "recyclings" && Contract.usable.length > 1 %>
     <td><select id="contract_id" onkeydown="if(is_tab(event)) {return add_unpriced_gizmo_event_from_form();}">
-        <%= options_from_collection_for_select([Contract.find_by_name("default")] + Contract.find(:all).delete_if{|x| x.name == "default"}.sort_by(&:description), "id", "description") %>
+        <%= options_from_collection_for_select([Contract.find_by_name("default")] + Contract.usable.delete_if{|x| x.name == "default"}.sort_by(&:description), "id", "description") %>
       </select></td>
     <% end %>
     <td></td>

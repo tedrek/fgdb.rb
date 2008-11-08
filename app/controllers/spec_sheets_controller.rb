@@ -192,12 +192,12 @@ class SpecSheetsController < ApplicationController
   end
 
   def properties_xml_index
-    @properties=model.find(:all, :order => "id")
+    @properties=model.usable
     render :xml => @properties
   end
 
   def properties_index
-    @properties = model.find(:all, :order => "id")
+    @properties = model.usable
     render :action => "properties_" + @action
   end
 
