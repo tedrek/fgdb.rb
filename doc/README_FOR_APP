@@ -93,6 +93,7 @@ continue with the following:
  $> apt-get install nginx thin
  $> ln -fs $(readlink -f doc/examples/web/fgdb.conf) /etc/nginx/sites-enabled/fgdb.conf
  $> ln -fs $(readlink -f doc/examples/web/fgdb.yml) /etc/thin/
+ $> rm /etc/nginx/sites-enabled/default
  $> chown -R www-data:www-data tmp log public
  $> invoke-rc.d nginx restart
  $> invoke-rc.d thin restart
