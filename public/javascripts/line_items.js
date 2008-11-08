@@ -238,9 +238,6 @@ function add_priced_gizmo_event_from_form()
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
   }
-  if($('contract_id') != null) {
-    $('contract_id').selectedIndex = 0;
-  }
   $('gizmo_type_id').focus();
   return false;
 }
@@ -264,6 +261,9 @@ function add_unpriced_gizmo_event_from_form()
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
+  }
+  if($('contract_id') != null) {
+    $('contract_id').selectedIndex = 0;
   }
   $('gizmo_type_id').focus();
   return false;
