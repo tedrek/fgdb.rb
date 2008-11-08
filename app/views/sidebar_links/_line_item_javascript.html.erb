@@ -58,6 +58,12 @@
      }
      js += fees.join()
      javascript_tag js
+   when 'recyclings'
+     js = "var all_contracts = new Array;"
+     for contract in Contract.find(:all).sort_by(&:description)
+       js += "all_contracts[#{contract.id}] = '#{contract.description}';"
+     end
+     javascript_tag js
    end
    %>
 

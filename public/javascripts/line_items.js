@@ -98,6 +98,14 @@ function systems_stuff(args, tr){
   }
 }
 
+function contracts_stuff(args, tr){
+  if($('contract_id') != null) {
+    var line_id = counters[args['prefix'] + '_line_id'];
+    var contract = all_contracts[args['contract_id']];
+    tr.appendChild(make_hidden("line", "recycling_contract_id", contract, args['contract_id'], line_id));
+  }
+}
+
 function sales_stuff(args, tr){
   systems_stuff(args, tr);
   var line_id = counters[args['prefix'] + '_line_id'];
@@ -187,8 +195,13 @@ function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id) {
   add_line_item(args, gizmo_events_stuff, systems_stuff, function(){}, edit_disbursement, true);
 }
 
-function add_recycling_gizmo_event(gizmo_type_id, gizmo_count) {
-  add_disbursement_gizmo_event(gizmo_type_id, gizmo_count)
+function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id) {
+  var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
+  args['contract_id'] = contract_id;
+  if(args['contract_id'] == undefined) {
+    args['contract_id'] = '';
+  }
+  add_line_item(args, gizmo_events_stuff, contracts_stuff, function(){}, edit_disbursement, true);
 }
 
 function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
@@ -208,6 +221,9 @@ function add_priced_gizmo_event_from_form()
   if($('system_id') != null) {
     string += ", $('system_id').value";
   }
+  if($('contract_id') != null) {
+    string += ", $('contract_id').selectedIndex";
+  }
   string += ");";
   eval(string);
   $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
@@ -218,6 +234,9 @@ function add_priced_gizmo_event_from_form()
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
+  }
+  if($('contract_id') != null) {
+    $('contract_id').selectedIndex = 0;
   }
   $('gizmo_type_id').focus();
   return false;
@@ -231,6 +250,9 @@ function add_unpriced_gizmo_event_from_form()
   string = "add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value";
   if($('system_id') != null) {
     string += ", $('system_id').value";
+  }
+  if($('contract_id') != null) {
+    string += ", $('contract_id').value";
   }
   string += ");";
   eval(string);
