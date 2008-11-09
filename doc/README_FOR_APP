@@ -58,7 +58,7 @@ you need to create and configure the databases:
 choose one of the following: skeletal metadata (for production databases), or full test data (for development databases):
 
  $> rake db:metadata:load
- $> ./script/make_admin # create the admin user
+ $> ./script/make_admin # create the admin user (should only be used to create a contact for yourself, and turn yourself into an admin)
    :OR:
  $> rake db:data:load # the admin user's password is 'secret'
 
