@@ -9,10 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081018012149) do
+ActiveRecord::Schema.define(:version => 20081101220817) do
 
   create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
     <<-contact_trigger_sql
+
 
 
 
@@ -24,10 +25,12 @@ END;
 
 
 
+
     contact_trigger_sql
   }
   create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-get_sort_name_sql
+
 
 
 
@@ -61,10 +64,12 @@ END;
 
 
 
+
     get_sort_name_sql
   }
   create_proc(:uncertify_address, [], :return => :trigger, :lang => 'plpgsql') {
     <<-uncertify_address_sql
+
 
 BEGIN
   IF tg_op = 'UPDATE' THEN
@@ -83,6 +88,7 @@ BEGIN
   END IF;
   RETURN NEW;
 END
+
     uncertify_address_sql
   }
   create_table "actions", :force => true do |t|
@@ -181,11 +187,11 @@ END
     t.integer  "lock_version",                     :default => 0,     :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "user_id"
     t.integer  "created_by",                                          :null => false
     t.integer  "updated_by"
     t.integer  "next_milestone",                   :default => 100
     t.boolean  "addr_certified",                   :default => false, :null => false
+    t.integer  "contract_id",                      :default => 1,     :null => false
   end
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"
@@ -195,7 +201,7 @@ END
   add_trigger(:contacts, [:update], :before => true, :row => true, :name => :uncertify_address, :function => :uncertify_address)
 
   create_table "contacts_mailings", :force => true do |t|
-    t.integer  "contact_id",                               :null => false
+    t.integer  "contact_id"
     t.integer  "mailing_id",                               :null => false
     t.boolean  "bounced",               :default => false, :null => false
     t.datetime "response_date"
@@ -205,6 +211,15 @@ END
 
   add_index "contacts_mailings", ["contact_id", "mailing_id"], :name => "contacts_mailings_ak", :unique => true
   add_index "contacts_mailings", ["contact_id"], :name => "index_contacts_mailings_on_contact_id"
+
+  create_table "contracts", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "label"
+    t.text     "notes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "defaults", :force => true do |t|
     t.string   "name",         :limit => 100
@@ -270,6 +285,7 @@ END
     t.integer  "reported_suggested_fee_cents"
     t.boolean  "needs_attention",                            :default => false, :null => false
     t.datetime "invoice_resolved_at"
+    t.integer  "contract_id",                                :default => 1,     :null => false
   end
 
   add_index "donations", ["created_at"], :name => "donations_created_at_index"
@@ -279,6 +295,16 @@ END
     t.string  "engine_name"
     t.integer "version"
   end
+
+  create_table "generics", :force => true do |t|
+    t.string   "value",       :limit => 100,                   :null => false
+    t.boolean  "only_serial",                :default => true, :null => false
+    t.boolean  "usable",                     :default => true, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "generics", ["value"], :name => "index_generics_on_value", :unique => true
 
   create_table "gizmo_categories", :force => true do |t|
     t.string "description"
@@ -310,10 +336,10 @@ END
     t.integer  "sale_id"
     t.integer  "disbursement_id"
     t.integer  "recycling_id"
-    t.integer  "gizmo_type_id",                   :null => false
-    t.integer  "gizmo_context_id",                :null => false
-    t.integer  "gizmo_count",                     :null => false
-    t.integer  "lock_version",     :default => 0, :null => false
+    t.integer  "gizmo_type_id",                        :null => false
+    t.integer  "gizmo_context_id",                     :null => false
+    t.integer  "gizmo_count",                          :null => false
+    t.integer  "lock_version",          :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
     t.datetime "occurred_at"
@@ -321,6 +347,8 @@ END
     t.boolean  "as_is"
     t.text     "description"
     t.integer  "size"
+    t.integer  "recycling_contract_id"
+    t.integer  "system_id"
   end
 
   add_index "gizmo_events", ["created_at"], :name => "gizmo_events_created_at_index"
@@ -335,8 +363,8 @@ END
     t.integer  "lock_version",                       :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "required_fee_cents"
-    t.integer  "suggested_fee_cents"
+    t.integer  "required_fee_cents",                                :null => false
+    t.integer  "suggested_fee_cents",                               :null => false
     t.integer  "gizmo_category_id"
     t.string   "name",                :limit => 40,                 :null => false
   end
@@ -459,6 +487,7 @@ END
     t.string   "serial_number"
     t.string   "vendor"
     t.string   "model"
+    t.integer  "contract_id",          :default => 1, :null => false
   end
 
   add_index "systems", ["system_model"], :name => "systems_model_index"
@@ -539,7 +568,7 @@ END
 
   add_foreign_key "contacts", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_created_by_fkey"
   add_foreign_key "contacts", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_updated_by_fkey"
-  add_foreign_key "contacts", ["user_id"], "users", ["id"], :name => "contacts_users_fk"
+  add_foreign_key "contacts", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "contacts_contract_id_fkey"
 
   add_foreign_key "contacts_mailings", ["contact_id"], "contacts", ["id"], :name => "contacts_mailings_contact_id_fkey"
   add_foreign_key "contacts_mailings", ["mailing_id"], "mailings", ["id"], :name => "contacts_mailings_mailing_id_fkey"
@@ -553,6 +582,7 @@ END
   add_foreign_key "donations", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "donations_contacts_fk"
   add_foreign_key "donations", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_created_by_fkey"
   add_foreign_key "donations", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_updated_by_fkey"
+  add_foreign_key "donations", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "donations_contract_id_fkey"
 
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_contexts_fk"
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_types_fk"
@@ -563,6 +593,8 @@ END
   add_foreign_key "gizmo_events", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :restrict, :name => "gizmo_events_gizmo_types_fk"
   add_foreign_key "gizmo_events", ["recycling_id"], "recyclings", ["id"], :on_delete => :set_null, :name => "gizmo_events_recyclings_fk"
   add_foreign_key "gizmo_events", ["sale_id"], "sales", ["id"], :on_delete => :set_null, :name => "gizmo_events_sales_fk"
+  add_foreign_key "gizmo_events", ["recycling_contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "gizmo_events_recycling_contract_id_fkey"
+  add_foreign_key "gizmo_events", ["system_id"], "systems", ["id"], :on_delete => :restrict, :name => "gizmo_events_system_id_fkey"
 
   add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
   add_foreign_key "gizmo_types", ["parent_id"], "gizmo_types", ["id"], :on_delete => :set_null, :name => "gizmo_types_parent_fk"
@@ -591,6 +623,7 @@ END
 
   add_foreign_key "systems", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "systems_created_by_fkey"
   add_foreign_key "systems", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "systems_updated_by_fkey"
+  add_foreign_key "systems", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "systems_contract_id_fkey"
 
   add_foreign_key "types", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "types_created_by_fkey"
   add_foreign_key "types", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "types_updated_by_fkey"

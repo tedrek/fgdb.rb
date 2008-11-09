@@ -23,8 +23,8 @@ SELECT pg_catalog.setval('contracts_id_seq', 1, true);
 
 ALTER TABLE contracts DISABLE TRIGGER ALL;
 
-COPY contracts (id, name, description, label, notes, created_at, updated_at, instantiable) FROM stdin;
-1	default	normal	keeper	\N	2008-11-08 15:47:42.543388	2008-11-08 15:47:42.543388	t
+COPY contracts (id, name, description, label, notes, created_at, updated_at) FROM stdin;
+1	default	normal	keeper	\N	2008-11-08 16:27:06.347692	2008-11-08 16:27:06.347692
 \.
 
 

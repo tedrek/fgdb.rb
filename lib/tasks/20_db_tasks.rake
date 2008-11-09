@@ -243,7 +243,7 @@ namespace :db do
     desc "blah blah blah"
 
     desc "Migrate the schema.rb, devel data, and metadata"
-    task :migrate => ['db:schema:revert', 'db:data:load', 'db:migrate', 'db:data:dump'] do
+    task :migrate => ['db:schema:revert', 'db:data:old:load', 'db:migrate', 'db:data:dump'] do
     end
 
   end # namespace :data
