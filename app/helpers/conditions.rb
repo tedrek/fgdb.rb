@@ -8,7 +8,7 @@ class Conditions
       id contact_type needs_attention anonymous unresolved_invoices
       payment_method payment_amount gizmo_type_id
       postal_code city phone_number contact volunteer_hours email
-      flagged system
+      flagged system contract
     ] + DATES).uniq
 
   for i in CONDS
@@ -31,6 +31,8 @@ class Conditions
   end
 
   attr_accessor :contact_id
+
+  attr_accessor :contract_id
 
   attr_accessor :payment_method_id
 
@@ -131,6 +133,10 @@ class Conditions
     when 'exact'
       return ["#{first_part} sum(duration) = ?)", @volunteer_hours_exact]
     end
+  end
+
+  def contract_conditions(klass)
+    ["(SELECT contract_id FROM systems WHERE id = #{klass.table_name}.system_id) = ? OR recycling_contract_id = ? OR (SELECT contract_id FROM donations WHERE id = #{klass.table_name}.donation_id) = ?", @contract_id, @contract_id, @contract_id]
   end
 
   def id_conditions(klass)

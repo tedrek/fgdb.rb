@@ -26,6 +26,7 @@ class ReportsController < ApplicationController
 
   def gizmos
     @defaults = Conditions.new
+    @defaults.occurred_at_enabled = true
   end
 
   def gizmos_report
