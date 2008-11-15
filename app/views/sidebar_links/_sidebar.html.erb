@@ -1,4 +1,5 @@
 <div id="sidebar">
+  <% if PROJECT_NAME == "fgdb.rb" %>
   <% if has_role?("VOLUNTEER_MANAGER") %>
     hours
     <div class="sidebar_section">
@@ -55,6 +56,7 @@
           :action => 'hours' %>
     </div>
   </div>
+  <% end %>
 
   <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
     contacts
@@ -77,10 +79,12 @@
     </div>
   <% end %>
 
+  <% if PROJECT_NAME == "fgdb.rb" %>
   everything else
   <div class="sidebar_section">
     <div>
       <%= link_to "printme", :controller => 'spec_sheets' %>
     </div>
   </div>
+  <% end %>
 </div>
