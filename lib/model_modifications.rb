@@ -46,6 +46,44 @@ module ActiveRecord
       end
     end
   end
+
+  module Logger
+    def self.included(base)
+      base.class_eval do
+        alias_method_chain :update, :log
+        alias_method_chain :create, :log
+        alias_method_chain :destroy, :log
+      end
+    end
+
+    def logaction(action)
+      if self.class.table_name != "logs"
+        user = Thread.current['user']
+        l = Log.new
+        l.table_name = self.class.table_name
+        l.action = action
+        l.user_id = user.id if !user.nil?
+        l.thing_id = self.id
+        l.date = DateTime.now
+        l.save!
+      end
+    end
+
+    def create_with_log
+      create_without_log
+      logaction("create")
+    end
+
+    def destroy_with_log
+      logaction("destroy")
+      destroy_without_log
+    end
+
+    def update_with_log
+      update_without_log
+      logaction("update")
+    end
+  end
 end
 
 class String
@@ -67,6 +105,10 @@ class ActiveRecord::Base
     include ActiveRecord::UserMonitor
   end
 
+  def self.acts_as_logged
+    include ActiveRecord::Logger
+  end
+
   def self.define_amount_methods_on(method_name)
     code = "def #{method_name}
         (read_attribute(:#{method_name}_cents)||0).to_dollars
@@ -85,4 +127,6 @@ class ActiveRecord::Base
   def self.find_all_except(*recs)
     return find_all - recs
   end
+
+  acts_as_logged
 end
