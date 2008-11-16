@@ -41,6 +41,7 @@ git rm README
 git commit -m "[$(basename $0)] removed README"
 
 # generated with: for i in `find . -type l`; do echo $(readlink $i) $i; done | while read a b; do echo rm -fr $b; echo mkdir -p $(dirname $a); echo ln -sf $a $b; done > my_script
+# NOTE: manually removed rails symlinks in vendor/ (to /usr/share/rails/) and removed the fgdb.rb symlink, as those will vary based on the installation
 
 rm -fr ./vendor/plugins/validates_existence
 mkdir -p ./vendor/plugins
@@ -48,30 +49,6 @@ ln -sf ../../fgdb.rb/vendor/plugins/validates_existence/ ./vendor/plugins/valida
 rm -fr ./vendor/plugins/dhtml-calendar
 mkdir -p ./vendor/plugins
 ln -sf ../../fgdb.rb/vendor/plugins/dhtml-calendar/ ./vendor/plugins/dhtml-calendar
-rm -fr ./vendor/activerecord
-mkdir -p ./vendor
-ln -sf /usr/share/rails/activerecord ./vendor/activerecord
-rm -fr ./vendor/activesupport
-mkdir -p ./vendor
-ln -sf /usr/share/rails/activesupport ./vendor/activesupport
-rm -fr ./vendor/activeresource
-mkdir -p ./vendor
-ln -sf /usr/share/rails/activeresource ./vendor/activeresource
-rm -fr ./vendor/actionmailer
-mkdir -p ./vendor
-ln -sf /usr/share/rails/actionmailer ./vendor/actionmailer
-rm -fr ./vendor/actionpack
-mkdir -p ./vendor
-ln -sf /usr/share/rails/actionpack ./vendor/actionpack
-rm -fr ./vendor/railties
-mkdir -p ./vendor
-ln -sf /usr/share/rails/railties ./vendor/railties
-rm -fr ./vendor/activemodel
-mkdir -p ./vendor
-ln -sf /usr/share/rails/activemodel ./vendor/activemodel
-rm -fr ./vendor/rails
-mkdir -p ./vendor
-ln -sf /usr/share/rails ./vendor/rails
 rm -fr ./tmp
 mkdir -p .
 ln -sf fgdb.rb/tmp ./tmp
@@ -180,3 +157,13 @@ for i in `find . -type d -empty | grep -v "^./.git/"`; do
     git add $i/.gitignore
 done
 git commit -m "[$(basename $0)] added empty directories"
+
+git rm ./vendor/activerecord
+git rm ./vendor/activesupport
+git rm ./vendor/activeresource
+git rm ./vendor/actionmailer
+git rm ./vendor/actionpack
+git rm ./vendor/railties
+git rm ./vendor/activemodel
+git rm ./vendor/rails
+git commit -m "[$(basename $0)] removed debian specific rails symlinks"
