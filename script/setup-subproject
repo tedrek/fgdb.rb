@@ -9,8 +9,15 @@ fi
 
 cd $(dirname $(readlink -f $0))/../../
 
+FORCE=false
 if [ "$1" = "-f" ]; then
     FORCE=true
+    shift
+fi
+
+REDO=false
+if [ "$1" = "-r" ]; then
+    REDO=true
     shift
 fi
 
