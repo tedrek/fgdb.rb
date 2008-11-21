@@ -52,7 +52,7 @@ $NOEXEC svn ci trunk/mr/.mrconfig -m "updating mr config for sprint ${VERSION}"
 $NOEXEC svn cp svn+ssh://dev.freegeek.org/svn/fgdb.rb/trunk svn+ssh://dev.freegeek.org/svn/fgdb.rb/tags/release_1.0.${VERSION} -m "tagging sprint ${VERSION}"
 $NOEXEC svn cp svn+ssh://dev.freegeek.org/svn/fgdb.rb/trunk svn+ssh://dev.freegeek.org/svn/fgdb.rb/branches/release_1.0.${VERSION} -m "branching sprint ${VERSION}"
 cd trunk/script/
-NOEXEC="$NOEXEC" ./cleanup
+#NOEXEC="$NOEXEC" ./cleanup
 cd ../..
 $NOEXEC svn up
 echo
