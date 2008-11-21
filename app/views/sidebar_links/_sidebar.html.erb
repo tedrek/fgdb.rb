@@ -58,11 +58,6 @@
   </div>
   <% end %>
 
-  <% project_sidebar_partial = [RAILS_ROOT, "app", "views", "sidebar_links", "_#{PROJECT_NAME}.html.erb"].join("/") %>
-  <% if File.exists?(project_sidebar_partial) %>
-    <% render :partial => PROJECT_NAME %>
-  <% end %>
-
   <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
     contacts
     <div class="sidebar_section">
