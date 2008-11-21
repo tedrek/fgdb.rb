@@ -47,7 +47,7 @@ module ActiveRecord
     end
   end
 
-  module Logger
+  module MyLogger
     def self.included(base)
       base.class_eval do
         alias_method_chain :update, :log
@@ -106,7 +106,7 @@ class ActiveRecord::Base
   end
 
   def self.acts_as_logged
-    include ActiveRecord::Logger
+    include ActiveRecord::MyLogger
   end
 
   def self.define_amount_methods_on(method_name)
