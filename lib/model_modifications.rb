@@ -57,7 +57,7 @@ module ActiveRecord
     end
 
     def logaction(action)
-      if self.class.table_name != "logs"
+      if self.class.table_name != "logs" && !self.id.nil?
         user = Thread.current['user']
         l = Log.new
         l.table_name = self.class.table_name
