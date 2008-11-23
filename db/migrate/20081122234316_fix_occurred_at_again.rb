@@ -1,5 +1,7 @@
 class FixOccurredAtAgain < ActiveRecord::Migration
   def self.up
+    $stderr.puts '-- clearing occurred_at '
+    GizmoEvent.connection.execute("UPDATE gizmo_events SET occurred_at = NULL")
     $stderr.puts '-- SET occurred_at = recyclings.recycled_at'
     GizmoEvent.connection.execute("UPDATE gizmo_events
       SET occurred_at = (
