@@ -18,7 +18,7 @@
     <th></th>
     <% if @transaction.gizmo_events %>
       <% @gizmos_and_payments_js ||= ""
-         for line in @transaction.gizmo_events
+         for line in @transaction.gizmo_events.not_discount
            if @gizmo_context.name == "sale"
              price = line.unit_price
            else

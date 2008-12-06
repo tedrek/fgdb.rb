@@ -1,4 +1,6 @@
 class GizmoEvent < ActiveRecord::Base
+  named_scope :not_discount, :conditions => ["gizmo_type_id != ?", GizmoType.find_by_name("fee_discount").id]
+
   belongs_to :donation
   belongs_to :sale
   belongs_to :disbursement
