@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd /git/fgdb.rb
+chmod -R u+w .
+git fetch origin --quiet
+git fetch origin --tags --quiet
+for i in $(git branch -r | awk -F / '/^  origin./{print $2}'); do git branch -f $i origin/$i >/dev/null; done
+chmod -R a-w .
