@@ -103,7 +103,7 @@ function systems_stuff(args, tr){
       hidden.value = args['system_id'];
       hidden.type = 'hidden';
       td = document.createElement("td");
-      td.className = name;
+      td.className = "system_id";
       td.appendChild(hidden);
       td.appendChild(document.createTextNode(args['system_id'] + "["));
       a = document.createElement("a");
