@@ -1,0 +1,10 @@
+<% if @system %>
+<% form_for(:system, @system, :url => {:action => "fix_contract_save"}) do |f| %>
+  <%= hidden_field :system, :id %>
+  System: <%= @system.id %><br />
+  <%= f.select(:contract_id, Contract.usable.collect {|p| [p.description, p.id] }) %><br />
+  <%= submit_tag "save" %>
+<% end %>
+<% else %>
+  Couldn't find system #<%= params[:system_id] %>
+<% end %>

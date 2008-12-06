@@ -56,6 +56,19 @@ class SpecSheetsController < ApplicationController
     render :text => eval("SpecSheet.find(params[:id]).#{thing}")
   end
 
+  def fix_contract
+  end
+
+  def fix_contract_edit
+    @system = System.find_by_id(params[:system_id])
+  end
+
+  def fix_contract_save
+    @system = System.find_by_id(params[:system][:id])
+    @system.contract_id = params[:system][:contract_id].to_i
+    @good = @system.save
+  end
+
   def xml_index
     render :xml => {:error => params[:error]}
   end
