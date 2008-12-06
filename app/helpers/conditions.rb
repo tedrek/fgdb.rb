@@ -292,14 +292,19 @@ class Conditions
   end
 
   def to_s
+    string = ""
     if (which_date = some_date_enabled) && @contact_enabled=="true"
-      " by " + contact_to_s + ( eval("@#{which_date}_date_type") == "daily" ? " on " : " during ") + date_range_to_s(which_date)
+      string = " by " + contact_to_s + ( eval("@#{which_date}_date_type") == "daily" ? " on " : " during ") + date_range_to_s(which_date)
     elsif (which_date = some_date_enabled)
-      ( eval("@#{which_date}_date_type") == "daily" ? " for " : " during ") + date_range_to_s(which_date)
+      string = ( eval("@#{which_date}_date_type") == "daily" ? " for " : " during ") + date_range_to_s(which_date)
     elsif(@contact_enabled=="true")
-      " by " + contact_to_s
+      string = " by " + contact_to_s
     else
-      ""
+      string = ""
+    end
+    if @contract_enabled
+      string += " " if string.length > 0
+      string += "for contract \"#{Contract.find_by_id(@contract_id).description}\""
     end
   end
 
