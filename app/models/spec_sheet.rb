@@ -22,9 +22,15 @@ class SpecSheet < ActiveRecord::Base
   named_scope :originally_bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, false]
   named_scope :clean_broke_it, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, true]
 
-  attr_accessor :contract_id
-
   before_save :set_contract_id
+  def contract_id
+    @contract_id ||= (system ? system.contract_id : nil)
+  end
+
+  def contract_id=(val)
+    @contract_id = val
+  end
+
   def set_contract_id
     if system
       if !(@contract_id.nil? || !(c = Contract.find(@contract_id)))
