@@ -5,7 +5,7 @@ class SpecSheetsController < ApplicationController
 
   helper :xml
   include XmlHelper
-  MY_VERSION=6
+  MY_VERSION=7
 
   def check_compat
     # always send compat as false so that old clients don't break
