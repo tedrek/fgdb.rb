@@ -92,9 +92,29 @@ function dollar_value(cents) {
 }
 
 function systems_stuff(args, tr){
-  if($('system_id') != null) {
+  if($('system_id') != null && $('system_id').value != "") {
+    if(!all_systems[args['system_id']]) {
+      alert("system does not exist! ignoring...");
+    }
     var line_id = counters[args['prefix'] + '_line_id'];
-    tr.appendChild(make_hidden("line", "system_id", args['system_id'], args['system_id'], line_id));
+    if(all_systems[args['system_id']]) {
+      hidden = document.createElement("input");
+      hidden.name = "line" + '[-' + line_id + '][system_id]';
+      hidden.value = args['system_id'];
+      hidden.type = 'hidden';
+      td = document.createElement("td");
+      td.className = name;
+      td.appendChild(hidden);
+      td.appendChild(document.createTextNode(args['system_id'] + "["));
+      a = document.createElement("a");
+      a.href = "/spec_sheets/fix_contract_edit?system_id=" + args['system_id'];
+      a.appendChild(document.createTextNode(all_contracts_names[all_systems[args['system_id']]]));
+      td.appendChild(a);
+      td.appendChild(document.createTextNode("]"));
+      tr.appendChild(td);
+    } else {
+      tr.appendChild(make_hidden("line", "system_id", "", "", line_id));
+    }
   }
 }
 

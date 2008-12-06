@@ -10,6 +10,14 @@
 
 <%= javascript_include_tag 'line_items' %>
 
+<% if ["sales", "disbursements"].include?(params[:controller]) %>
+  <% js = "all_systems = new Array;" %>
+  <% System.find(:all).each do |x| %>
+    <% js += "all_systems[#{x.id}] = #{x.contract_id};" %>
+  <% end %>
+  <%= javascript_tag js %>
+<% end %>
+
 <% if ["sales", "donations", "recyclings", "disbursements"].include?(params[:controller]) -%>
   <%= js = "var gizmo_types = new Array;"
       for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description)
@@ -36,6 +44,15 @@
       js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';"
     end
     javascript_tag js %>
+
+<%= if ["sales", "disbursements"].include?(params[:controller])
+     js = "var all_contracts_names = new Array;"
+     for contract in Contract.find(:all).sort_by(&:description)
+       js += "all_contracts_names[#{contract.id}] = '#{contract.name}';"
+     end
+     javascript_tag js
+    end
+%>
 
 <%=
    case params[:controller]
