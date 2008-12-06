@@ -116,6 +116,9 @@ function systems_stuff(args, tr){
       tr.appendChild(make_hidden("line", "system_id", "", "", line_id));
     }
   }
+  else {
+    tr.appendChild(make_hidden("line", "system_id", "", "", line_id));
+  }
 }
 
 function contracts_stuff(args, tr){
