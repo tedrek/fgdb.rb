@@ -80,11 +80,16 @@
   <% end %>
 
   <% if PROJECT_NAME == "fgdb.rb" %>
-  everything else
-  <div class="sidebar_section">
-    <div>
-      <%= link_to "printme", :controller => 'spec_sheets' %>
+    fgss
+    <div class="sidebar_section">
+      <div>
+        <%= link_to "printme", :controller => 'spec_sheets' %>
+      </div>
+      <% if has_role?("ADMIN") # TODO: fix this %>
+        <div>
+          <%= link_to "fix contract", :controller => 'spec_sheets', :action => "fix_contract" %>
+        </div>
+      <% end %>
     </div>
-  </div>
   <% end %>
 </div>
