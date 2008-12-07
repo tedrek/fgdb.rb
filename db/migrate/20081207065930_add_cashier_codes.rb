@@ -4,6 +4,8 @@ class AddCashierCodes < ActiveRecord::Migration
     ["donations", "sales", "volunteer_tasks", "disbursements", "recyclings", "contacts"].each{|x|
       add_column x, "cashier_created_by", :integer
       add_column x, "cashier_updated_by", :integer
+      Contact.connection.execute("UPDATE #{x} SET cashier_created_by = created_by")
+      Contact.connection.execute("UPDATE #{x} SET cashier_updated_by = updated_by")
     }
     add_column "users", "cashier_code", :integer
     User.reset_all_cashier_codes
