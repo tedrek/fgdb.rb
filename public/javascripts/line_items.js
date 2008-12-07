@@ -98,21 +98,26 @@ function systems_stuff(args, tr){
     }
     var line_id = counters[args['prefix'] + '_line_id'];
     if(all_systems[args['system_id']]) {
-      hidden = document.createElement("input");
-      hidden.name = "line" + '[-' + line_id + '][system_id]';
-      hidden.value = args['system_id'];
-      hidden.type = 'hidden';
-      td = document.createElement("td");
-      td.className = "system_id";
-      td.appendChild(hidden);
-      td.appendChild(document.createTextNode(args['system_id'] + "["));
-      a = document.createElement("a");
-      a.href = "/spec_sheets/fix_contract_edit?system_id=" + args['system_id'];
-      a.appendChild(document.createTextNode(all_contracts_names[all_systems[args['system_id']]]));
-      td.appendChild(a);
-      td.appendChild(document.createTextNode("]"));
-      tr.appendChild(td);
-    } else {
+      if(all_contracts_names.length > 2) {
+        hidden = document.createElement("input");
+        hidden.name = "line" + '[-' + line_id + '][system_id]';
+        hidden.value = args['system_id'];
+        hidden.type = 'hidden';
+        td = document.createElement("td");
+        td.className = "system_id";
+        td.appendChild(hidden);
+        td.appendChild(document.createTextNode(args['system_id'] + "["));
+        a = document.createElement("a");
+        a.href = "/spec_sheets/fix_contract_edit?system_id=" + args['system_id'];
+        a.appendChild(document.createTextNode(all_contracts_names[all_systems[args['system_id']]]));
+        td.appendChild(a);
+        td.appendChild(document.createTextNode("]"));
+        tr.appendChild(td);
+      } else {
+        tr.appendChild(make_hidden("line", "system_id", args['system_id'], args['system_id'], line_id));
+      }
+    }
+    else {
       tr.appendChild(make_hidden("line", "system_id", "", "", line_id));
     }
   }
