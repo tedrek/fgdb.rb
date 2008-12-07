@@ -1,3 +1,37 @@
+function update_contract_notes(){
+  var mynotes;
+  var found = new Array;
+  mynotes = "";
+  reference_line = $('gizmo_event_0_line');
+  if(reference_line)
+    lines = $('gizmo_event_0_line').parentNode.getElementsBySelector(".line");
+  else
+    lines = [];
+  for(var i = 0; i < lines.size(); i++) {
+    line = lines[i];
+    system_id = line.getElementsBySelector(".system_id").first().firstChild.value;
+    if(system_id != null && system_id != "") {
+      contract_id = all_systems[system_id];
+      if(!found[contract_id]) {
+        notes = contracts_notes[contract_id];
+        if(notes.length > 0) {
+          if(mynotes.length > 0) {
+            mynotes += "-----\n";
+          }
+          mynotes += notes + "\n";
+        }
+        found[contract_id] = true;
+      }
+    }
+  }
+  $('contract_notes').innerHTML = mynotes;
+  if(mynotes.length > 0){
+    $('contract_notes').show();
+  } else {
+    $('contract_notes').hide();
+  }
+}
+
 function toggle_description(evt) {
   show_description++;
   var arr = document.getElementsByClassName('description');
@@ -223,7 +257,7 @@ function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id) {
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, gizmo_events_stuff, systems_stuff, function(){}, edit_disbursement, true);
+  add_line_item(args, gizmo_events_stuff, systems_stuff, update_contract_notes, edit_disbursement, true);
 }
 
 function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id) {
@@ -404,6 +438,7 @@ function sale_compute_totals() {
   if(payment - grand_total < 0) {
     $('change_due_tr').addClassName('short_row');
   }
+  update_contract_notes();
 }
 
 function payment_stuff(args, tr){

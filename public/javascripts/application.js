@@ -11,6 +11,16 @@ function show_contract_notes() {
   }
 }
 
+function show_contract_notes() {
+  var mynotes = contracts_notes[parseInt($('donation_contract_id').value)];
+  $('contract_notes').innerHTML = mynotes;
+  if(mynotes.length > 0){
+    $('contract_notes').show();
+  } else {
+    $('contract_notes').hide();
+  }
+}
+
 function select_visibility(obj_name, method_name, choices, value) {
     for( var i = 0; i < choices.length; i++)
     {var choice = choices[i]; if(choice == 'extend') {}

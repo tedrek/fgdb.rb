@@ -1,15 +1,4 @@
-<% if Contract.usable.length > 1 %>
-  <pre id="contract_notes" style="background: yellow">
-  </pre>
-<% end %>
-
 <fieldset>
-  <%= js = "contracts_notes = new Array();"
-      Contract.find(:all).collect{|x| [x.id, x.notes]}.each{|x,y|
-        js += "contracts_notes['#{x}'] = '#{escape_javascript(y)}';"
-      }
-     javascript_tag js %>
-
   <div class="row">
     <!--[form:donation]-->
 
@@ -36,7 +25,6 @@
             <%= options_from_collection_for_select(Contract.usable, "id", "description", @donation.contract_id || Contract.find_by_name("default")) %>
           </select>
         </div>
-        <%= javascript_tag "show_contract_notes()" %>
         <% end %>
 
         <div class="form-element">

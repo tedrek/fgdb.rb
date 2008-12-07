@@ -38,7 +38,24 @@
       <%= render :partial => 'form_messages' %>
     <% end %>
 
+    <% if Contract.find(:all).length > 1 %>
+      <pre id="contract_notes" style="background: yellow">
+      </pre>
+    <% end %>
+
+  <%= js = "contracts_notes = new Array();"
+      Contract.find(:all).collect{|x| [x.id, x.notes]}.each{|x,y|
+        js += "contracts_notes['#{x}'] = '#{escape_javascript(y)}';"
+      }
+     javascript_tag js %>
+
     <%= render :partial => "#{@transaction_type}_form", :locals => { "@#{@transaction_type}".to_sym => @transaction } %>
+
+    <% if params[:controller] == "donations" %>
+      <%= javascript_tag "show_contract_notes()" %>
+    <% elsif ["sales", "disbursements"].include?(params[:controller]) %>
+      <%= javascript_tag "update_contract_notes()" %>
+    <% end %>
 
     <p class="form-footer">
       <%= javascript_tag "bind_key('shift-ctrl-s', function(e){document.getElementById('commit').click();});" %>
