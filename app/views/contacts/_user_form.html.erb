@@ -29,6 +29,11 @@
       <%= password_field :user, :password_confirmation %>
     </div>
 
+    <div class='form-element'>
+      <label for="user_cashier_code">Cashier Code</label>
+      <%= text_field :user, :cashier_code, :readonly => true %>
+    </div>
+
     <% for role in Role.find(:all) %>
       <div class="form-element role-check-box">
         <input type="checkbox" id="<%= role.name %>"

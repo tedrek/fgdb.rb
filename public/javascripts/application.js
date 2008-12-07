@@ -1,6 +1,21 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function update_cashier_code() {
+  cashier_id_field = $('cashier_code');
+  if(cashier_id_field == null)
+    return;
+  thing = document.getElementsByClassName('cashierable_form')[0];
+  if(cashier_id_field.value.length == 4) {
+    thing.enable();
+  }
+  else {
+    thing.disable();
+    $('cashier_code').enable();
+    $('cashier_code').focus();
+  }
+}
+
 function show_contract_notes() {
   var mynotes = contracts_notes[parseInt($('donation_contract_id').value)];
   $('contract_notes').innerHTML = mynotes;

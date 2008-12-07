@@ -3,6 +3,7 @@
 class ApplicationController < ActionController::Base
   include AuthenticatedSystem
   layout "application"
+  helper :cashiers
 
 =begin
     protect_from_forgery
@@ -12,6 +13,29 @@ class ApplicationController < ActionController::Base
     verify :method => :post, :xhr => true, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
     verify :method => :post, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
 =end
+
+  before_filter :set_cashier
+  def set_cashier
+    uid = _set_cashier(params)
+    if uid && (u = User.find_by_cashier_code(uid.to_i))
+      Thread.current['cashier'] = u
+    else
+      logger.warn "Cashier not found" # die better
+    end
+  end
+
+  def _set_cashier(hash)
+    return hash["cashier_code"] if hash.keys.include?("cashier_code")
+    for i in hash.values.select{|x| x.class == Hash}
+      x = _set_cashier(hash)
+      return x if !x.nil?
+    end
+    return nil
+  end
+
+  def current_cashier
+    Thread.current['cashier']
+  end
 
   def with_sidebar
     "with_sidebar.html.erb"

@@ -13,13 +13,32 @@ class User < ActiveRecord::Base
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
+  validates_uniqueness_of   :cashier_code
   before_save :encrypt_password
+  before_save :add_cashier_code
 
   belongs_to :contact
 
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation
+
+  def self.reset_all_cashier_codes
+    self.find(:all).each{|x|
+      x.reset_cashier_code
+      x.save
+    }
+  end
+
+  def add_cashier_code
+    reset_cashier_code if cashier_code.nil?
+  end
+
+  def reset_cashier_code
+    valid_codes = (1000..9999).to_a - User.find(:all).collect{|x| x.cashier_code}
+    my_code = valid_codes[rand(valid_codes.length)]
+    self.cashier_code = my_code
+  end
 
   def merge_in(other)
     for i in [:actions, :donations, :sales, :spec_sheets, :systems, :types, :users, :volunteer_tasks, :contacts]
