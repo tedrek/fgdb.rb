@@ -56,6 +56,8 @@
       <%= javascript_tag "show_contract_notes()" %>
     <% elsif ["sales", "disbursements"].include?(params[:controller]) %>
       <%= javascript_tag "update_contract_notes()" %>
+    <% else %>
+      <%= javascript_tag "if ($('contract_notes')) $('contract_notes').hide();" %>
     <% end %>
 
     <p class="form-footer">
