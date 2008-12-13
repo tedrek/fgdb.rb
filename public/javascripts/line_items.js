@@ -128,7 +128,9 @@ function dollar_value(cents) {
 }
 
 function systems_stuff(args, tr){
-  if($('system_id') != null && $('system_id').value != "") {
+  if($('system_id') == null)
+    return;
+  if($('system_id').value != "") {
     if(!all_systems[args['system_id']]) {
       alert("system does not exist! ignoring...");
     }
