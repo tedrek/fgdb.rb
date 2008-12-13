@@ -109,7 +109,7 @@ module ActiveRecord
         l.cashier_id = cashier.id if self.class.cashierable && !cashier.nil?
         l.cashier_id = l.user_id if l.cashier_id.nil? && !l.user_id.nil?
         l.thing_id = self.id
-        l.date = DateTime.now
+        l.date = Time.now
         l.save!
       end
     end
