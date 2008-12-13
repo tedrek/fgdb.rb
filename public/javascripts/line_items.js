@@ -1,4 +1,6 @@
 function update_contract_notes(){
+  if($('contract_notes') == null)
+    return;
   var mynotes;
   var found = new Array;
   mynotes = "";
