@@ -20,7 +20,7 @@
     <td class="spacer"></td>
     <% for klass,id in @columns %>
       <% context = klass ? klass.find(id).description : 'gizmo total' %>
-      <th class="column_header <%= klass == DisbursementType ? "disbursement-breakout-column" : ""%>" <%= "onClick='set_display_mode(\".disbursement-breakout-column\", ++disbursements_toggle%2);'" %>><%= Inflector.titleize context %></th>
+      <th class="column_header <%= klass == DisbursementType ? "disbursement-breakout-column" : ""%>" <%= "onClick='set_display_mode(\".disbursement-breakout-column\", ++disbursements_toggle%2);'" %>><%= context.titleize %></th>
     <% end %>
   </tr>
 
@@ -32,7 +32,7 @@
       <% else %>
       <tr>
         <%end%>
-        <th class="row_header"><%= Inflector.titleize type.respond_to?("description") ? type.description : type %></th>
+        <th class="row_header"><%= (type.respond_to?("description") ? type.description : type).titleize %></th>
         <% for col in @columns %>
           <% if col == [GizmoContext, GizmoContext.sale.id]; amt = @gizmo_income_data[type.id.to_s].to_f()/100 %>
             <td <%= " title='$#{number_with_delimiter(amt)}'" %>>

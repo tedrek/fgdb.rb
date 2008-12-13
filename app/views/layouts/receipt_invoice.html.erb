@@ -15,7 +15,7 @@
 
     <tr>
       <td colspan="2">
-        <%= Inflector.titleize( @context ) %>
+        <%= @context.titleize %>
         <strong>
           <% if @txn.invoiced? %>
             <font color="#FF0000" size="+2"><%= @txn.invoice_resolved_at.nil? ? "" : "Paid " %>Invoice</font>
@@ -36,7 +36,7 @@
     <tr>
       <td>Date: <%= @txn.created_at.strftime("%m/%d/%Y") %></td>
       <td align="center">
-        <%= Inflector.titleize( @context ) %> <strong># <%= @txn.id %></strong>
+        <%= @context.titleize %> <strong># <%= @txn.id %></strong>
       </td>
       <td align="right">
         <% if @txn.invoiced? %>

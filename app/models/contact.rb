@@ -297,7 +297,7 @@ class Contact < ActiveRecord::Base
                                    "select gt.id, gt.description, sum(ge.gizmo_count)
        from gizmo_types gt
             join gizmo_events ge on ge.gizmo_type_id=gt.id
-            join #{table} t on ge.#{Inflector.singularize(table)}_id=t.id
+            join #{table} t on ge.#{table.singularize}_id=t.id
        where t.contact_id=#{self.id}
              and t.created_at > now()-'1@month'::interval
        group by 1,2").to_a.map{|hash| [hash["description"],hash["sum"]]}

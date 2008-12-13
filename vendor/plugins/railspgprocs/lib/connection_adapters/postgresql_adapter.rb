@@ -98,7 +98,7 @@ module ActiveRecord
 
       private
         def trigger_name(table, events=[], options={})
-          options[:name] || Inflector.triggerize(table, events, options[:before])
+          options[:name] || MyInflector.triggerize(table, events, options[:before])
         end
 
 #       Helper function that builds the sql query used to create a stored procedure.

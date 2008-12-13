@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <title>Free Geek Database:
-      <%= Inflector.titleize(controller.class.name).sub(/ Controller/, '') %>:
-      <%= Inflector.titleize(controller.action_name) %>
+      <%= (controller.class.name).titleize.sub(/ Controller/, '') %>:
+      <%= (controller.action_name).titleize %>
     </title>
     <%= stylesheet_link_tag 'scaffold', 'lightwindow', 'application', :media => 'all' %>
     <%= stylesheet_link_tag 'no_print', :media => 'print' %>

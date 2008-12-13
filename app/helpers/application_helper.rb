@@ -42,7 +42,7 @@ module ApplicationHelper
     end
 
     def eval
-      @opts[:eval] || "#{Inflector.underscore(@klass)}.#{@opts[:name]}"
+      @opts[:eval] || "#{(@klass).underscore}.#{@opts[:name]}"
     end
 
     def name
@@ -62,7 +62,7 @@ module ApplicationHelper
     end
 
     def label
-      @opts[:label] || Inflector.titleize(@opts[:name])
+      @opts[:label] || (@opts[:name]).titleize
     end
   end
 
@@ -149,7 +149,7 @@ module ApplicationHelper
     end
     if choices.length > 1
       choice_names = { }
-      choices.each {|k,v| choice_names[k] = Inflector.titleize(k)}
+      choices.each {|k,v| choice_names[k] = (k).titleize}
       js = update_page do |page|
         page << "list_of_conditions = $H(#{choices.to_json});"
         page << "condition_display_names = $H(#{choice_names.to_json});"
@@ -159,7 +159,7 @@ module ApplicationHelper
         for condition in choices.keys do
           page.insert_html(:bottom, obj_name + "_adder",
                            '<option id="%s_%s_option" value="%s">%s</option>' %
-                           [obj_name, condition, condition, Inflector.titleize(condition)])
+                           [obj_name, condition, condition, (condition).titleize])
           page << "if($('#{obj_name}_#{condition}_enabled').value == 'true'){add_condition('#{obj_name}', '#{condition}');}"
         end
       end

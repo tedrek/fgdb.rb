@@ -41,11 +41,11 @@
     <% for txn,intro in [["sale", "purchases"],
                          ["disbursement", "disbursements"],
                          ["donation", "donations"]] %>
-      <% last_one = @contact.send("last_#{Inflector.pluralize(txn)}") %>
+      <% last_one = @contact.send("last_#{(txn).pluralize}") %>
       <% unless last_one.empty?() %>
         <div class="<%= txn %>">
           recent <%= link_to(intro,
-                             :controller => Inflector.pluralize(txn),
+                             :controller => (txn).pluralize,
                              :action => "search",
                              "conditions[contact_id]" => @contact.id,
                              "conditions[contact_enabled]" => "true"

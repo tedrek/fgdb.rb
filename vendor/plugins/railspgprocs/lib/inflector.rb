@@ -1,4 +1,4 @@
-module Inflector
+module MyInflector
   def triggerize(table_name, events=[], before=false)
     events.join(" or ").gsub(":", "").tr(" ", "_").downcase + "_" + (before ? "before_" : "after_") + table_name.to_s + "_trigger"
   end

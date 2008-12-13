@@ -58,7 +58,7 @@
     <% for i in ["sales", "disbursements", "donations", "volunteer_tasks"] %>
       <tr>
         <th width="10%">
-          Last <%= Inflector.titleize(Inflector.singularize(i)) %>
+          Last <%= i.singularize.titleize %>
         </th>
         <% for c in @contacts %>
           <td align="right">

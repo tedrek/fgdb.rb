@@ -7,7 +7,7 @@
 
   <%= cashiers_field %>
 
-  <h4><%= Inflector.titleize(@options[:action]) %> Contact</h4>
+  <h4><%= (@options[:action]).titleize %> Contact</h4>
 
   <div id="<%= contact_messages_id(@options) %>" class="messages-container"></div>
 
@@ -17,7 +17,7 @@
 
   <p class="form-footer">
     <%= loading_indicator_tag("form_for_contact_loading") %>
-    <%= submit_tag Inflector.titleize(@options[:action]), :class => "submit save" %>
+    <%= submit_tag (@options[:action]).titleize, :class => "submit save" %>
   </p>
 
   <%= cashiers_javascript %>

@@ -10,7 +10,7 @@ class TransactionController < ApplicationController
   end
 
   def be_a_thing
-    set_transaction_type(Inflector.singularize(controller_name()))
+    set_transaction_type((controller_name()).singularize)
   end
 
   protected

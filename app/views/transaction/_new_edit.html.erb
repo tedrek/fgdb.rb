@@ -1,5 +1,5 @@
 <div class="header">
-  <h2><%= Inflector.titleize(@transaction_type) %></h2>
+  <h2><%= @transaction_type.titleize %></h2>
   <div class="actions">
     <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
   </div>
@@ -27,7 +27,7 @@
     <%# form_for @transaction, :url => @options.merge(:controller => base_controller), :html => {:method => 'POST'} do %>
     <input type="hidden" name="return_to_search" value="<%= @return_to_search %>"/>
     <%= cashiers_field %>
-    <h4><%= Inflector.titleize(@options[:action] + " " + @transaction_type)
+    <h4><%= (@options[:action] + " " + @transaction_type).titleize
             %><%= if @transaction.id then " ##{@transaction.id}" end %></h4>
     <% if @transaction.created_at && @transaction.updated_at %>
       <span>created <%= if defined?(@transaction.created_by) && @transaction.created_by then "by #{User.find_by_id(@transaction.created_by).login} " end %>at <%= @transaction.created_at %></span>
@@ -62,7 +62,7 @@
 
     <p class="form-footer">
       <%= javascript_tag "bind_key('shift-ctrl-s', function(e){document.getElementById('commit').click();});" %>
-      <%= submit_tag(Inflector.titleize(@options[:action]),
+      <%= submit_tag(@options[:action].titleize,
                      :id => "commit",
                      :onclick => "return validate_#{@transaction_type}();",
                      :class => "submit save")

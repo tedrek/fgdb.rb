@@ -10,7 +10,7 @@
 
   <% for section in @sections %>
     <tr>
-      <th class="section_header" colspan="<%= table_width %>"><%= Inflector.titleize section %></th>
+      <th class="section_header" colspan="<%= table_width %>"><%= section.titleize %></th>
     </tr>
     <% if @ranges.has_key? section %>
       <tr>
@@ -20,13 +20,13 @@
     <tr>
       <td class="spacer"></td>
       <% for method in @columns %>
-        <th class="column_header"><%= Inflector.titleize method %></th>
+        <th class="column_header"><%= method.titleize %></th>
       <% end %>
     </tr>
 
     <% for category in @rows[section] %>
       <tr>
-        <th class="row_header"><%= Inflector.titleize category %></th>
+        <th class="row_header"><%= category.titleize %></th>
         <% for method in @columns; income = @income_data[section][method][category] %>
           <td title="<%= income[:count]%> transactions"><%= number_with_delimiter('$%0.2f' % (income[:total]/100.0)) %></td>
         <% end %>

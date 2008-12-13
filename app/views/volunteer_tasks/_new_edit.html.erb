@@ -8,7 +8,7 @@
 
     <%= cashiers_field %>
 
-    <h4><%= Inflector.titleize(@options[:action]) %> Volunteer Task
+    <h4><%= (@options[:action]).titleize %> Volunteer Task
       <%= "for " + @volunteer_task.contact.display_name if @volunteer_task.contact %></h4>
 
     <% if request.xhr? %>
@@ -20,7 +20,7 @@
     <%= render :partial => 'form' %>
 
     <p class="form-footer">
-      <%= submit_tag Inflector.titleize('save hours'), :class => "submit save" %>
+      <%= submit_tag ('save hours').titleize, :class => "submit save" %>
       <% cancel_params = @options.merge(
                                         :controller => '/volunteer_tasks', :action => 'cancel',
                                         :contact_id => @volunteer_task.contact_id,

@@ -20,12 +20,12 @@ module ActiveRecord
 
       # that's to_r(uby)d(efinition)l(anguage)
       def to_rdl() 
-        "  add_trigger(#{Inflector.symbolize(table)}" <<
+        "  add_trigger(#{MyInflector.symbolize(table)}" <<
         ", [" + events.join(", ") + "]" <<
         (      before? ? ", :before => true"  : "") <<
         (         row? ? ", :row => true"     : "") <<
-        (!triggerized? ? ", :name => #{Inflector.symbolize(name)}" : "") <<
-        (!triggerized?(procedure_name) ? ", :function => #{Inflector.symbolize(procedure_name)}" : "") <<
+        (!triggerized? ? ", :name => #{MyInflector.symbolize(name)}" : "") <<
+        (!triggerized?(procedure_name) ? ", :function => #{MyInflector.symbolize(procedure_name)}" : "") <<
         ")"
       end
 
@@ -76,7 +76,7 @@ module ActiveRecord
       private
 
       def triggerized_name
-        Inflector.triggerize(table, events, calc(BEFORE))
+        MyInflector.triggerize(table, events, calc(BEFORE))
       end
 
       def events

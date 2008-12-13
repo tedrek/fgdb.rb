@@ -1,7 +1,6 @@
 require 'active_record'
-require "active_support/inflector"
 
-require 'lib/inflector'
+require 'lib/my_inflector'
 require 'lib/sql_format'
 require 'lib/schema_procs'
 require 'lib/schema_dumper'
