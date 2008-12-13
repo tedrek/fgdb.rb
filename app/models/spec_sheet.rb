@@ -1,8 +1,6 @@
 class SpecSheet < ActiveRecord::Base
   include XmlHelper
 
-  acts_as_userstamp
-
   validates_presence_of :contact_id
   validates_presence_of :action_id
   validates_presence_of :type_id

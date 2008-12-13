@@ -10,6 +10,4 @@ class System < ActiveRecord::Base
       errors.add("contract_id", "contract is not valid")
     end
   end
-
-  acts_as_userstamp
 end
