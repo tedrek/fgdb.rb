@@ -1,411 +1,551 @@
----
-gizmo_types_035:
-  updated_at: 2007-04-24 17:36:24
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "42"
-  description: Power supply
-  name: power_supply
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-04-24 17:36:24
-gizmo_types_024:
-  updated_at: 2007-01-02 15:39:46
-  suggested_fee_cents: "100"
-  lock_version: "1"
-  id: "29"
-  description: Speakers
-  name: speakers
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-02 10:07:34
-gizmo_types_013:
-  updated_at: 2007-01-02 10:11:18
-  suggested_fee_cents: "500"
-  lock_version: "1"
-  id: "14"
-  description: UPS
-  name: ups
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2006-11-11 19:18:08
-gizmo_types_002:
-  updated_at: 2006-11-11 19:16:20
-  suggested_fee_cents: "300"
-  lock_version: "1"
-  id: "11"
-  description: Scanner
-  name: scanner
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2006-11-11 19:09:38
-gizmo_types_036:
-  updated_at: 2007-08-08 16:38:06
-  suggested_fee_cents: "100"
-  lock_version: "2"
-  id: "31"
-  description: Miscellaneous
-  name: miscellaneous
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-02 10:09:22
-gizmo_types_025:
-  updated_at: 2007-01-02 15:39:55
-  suggested_fee_cents: "100"
-  lock_version: "1"
-  id: "30"
-  description: Card
-  name: card
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-02 10:08:06
-gizmo_types_014:
-  updated_at: 2007-01-02 10:11:46
-  suggested_fee_cents: "400"
-  lock_version: "3"
-  id: "2"
-  description: LCD
-  name: lcd
-  required_fee_cents: "0"
-  parent_id: "1"
-  created_at: 2006-09-25 11:21:53
-gizmo_types_003:
-  updated_at: 2006-11-11 19:16:33
-  suggested_fee_cents: "400"
-  lock_version: "1"
-  id: "10"
-  description: Printer
-  name: printer
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2006-11-11 19:09:26
-gizmo_types_037:
-  updated_at: 2007-08-22 14:04:03
-  suggested_fee_cents: "100"
-  lock_version: "1"
-  id: "43"
-  description: Drive
-  name: drive
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-08-22 14:03:55
-gizmo_types_026:
-  updated_at: 2007-01-02 15:40:19
-  suggested_fee_cents: "0"
-  lock_version: "2"
-  id: "33"
-  description: Video Card
-  name: video_card
-  required_fee_cents: "0"
-  parent_id: "30"
-  created_at: 2007-01-02 11:50:20
-gizmo_types_015:
-  updated_at: 2007-01-02 10:12:04
-  suggested_fee_cents: "300"
-  lock_version: "2"
-  id: "7"
-  description: VCR
-  name: vcr
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2006-11-11 19:08:37
-gizmo_types_004:
-  updated_at: 2006-11-11 19:17:12
-  suggested_fee_cents: "0"
-  lock_version: "7"
-  id: "1"
-  description: Monitor
-  name: monitor
-  required_fee_cents: "1000"
-  parent_id: "13"
-  created_at: 2006-09-25 11:21:29
-gizmo_types_038:
-  updated_at: 2007-08-22 14:04:30
-  suggested_fee_cents: "0"
-  lock_version: "2"
-  id: "32"
-  description: CD Burner
-  name: cd_burner
-  required_fee_cents: "0"
-  parent_id: "43"
-  created_at: 2007-01-02 11:36:02
-gizmo_types_027:
-  updated_at: 2007-01-02 15:40:32
-  suggested_fee_cents: "0"
-  lock_version: "1"
-  id: "34"
-  description: Sound Card
-  name: sound_card
-  required_fee_cents: "0"
-  parent_id: "30"
-  created_at: 2007-01-02 11:50:48
-gizmo_types_016:
-  updated_at: 2007-01-02 10:12:10
-  suggested_fee_cents: "300"
-  lock_version: "2"
-  id: "8"
-  description: DVD Player
-  name: dvd_player
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2006-11-11 19:08:52
-gizmo_types_005:
-  updated_at: 2006-11-11 19:18:18
-  suggested_fee_cents: "500"
-  lock_version: "6"
-  id: "4"
-  description: System
-  name: system
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2006-09-25 11:22:30
-gizmo_types_039:
-  updated_at: 2007-08-22 14:08:50
-  suggested_fee_cents: "100"
-  lock_version: "4"
-  id: "27"
-  description: Harddrive
-  name: harddrive
-  required_fee_cents: "0"
-  parent_id: "43"
-  created_at: 2007-01-02 10:06:08
-gizmo_types_028:
-  updated_at: 2007-01-10 15:47:37
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "35"
-  description: Case
-  name: case
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-10 15:47:37
-gizmo_types_017:
-  updated_at: 2007-01-02 15:35:07
-  suggested_fee_cents: "400"
-  lock_version: "1"
-  id: "6"
-  description: Laptop
-  name: laptop
-  required_fee_cents: "0"
-  parent_id: "4"
-  created_at: 2006-11-11 19:05:26
-gizmo_types_006:
-  updated_at: 2006-11-11 19:39:54
-  suggested_fee_cents: "0"
-  lock_version: "1"
-  id: "15"
-  description: Sticker
-  name: sticker
-  required_fee_cents: "0"
-  parent_id: "17"
-  created_at: 2006-11-11 19:19:08
-gizmo_types_040:
-  updated_at: 2007-01-02 15:35:38
-  suggested_fee_cents: "0"
-  lock_version: "4"
-  id: "17"
-  description: Schwag
-  name: schwag
-  required_fee_cents: "0"
-  parent_id:
-  created_at: 2006-11-11 19:39:41
-gizmo_types_029:
-  updated_at: 2007-01-10 15:48:05
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "36"
-  description: Networking Device
-  name: networking_device
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-10 15:48:05
-gizmo_types_018:
-  updated_at: 2007-01-02 15:36:07
-  suggested_fee_cents: "0"
-  lock_version: "2"
-  id: "18"
-  description: 1337 lappy
-  name: 1337_lappy
-  required_fee_cents: "0"
-  parent_id: "6"
-  created_at: 2006-12-19 20:16:28
-gizmo_types_007:
-  updated_at: 2006-11-11 19:40:03
-  suggested_fee_cents: "0"
-  lock_version: "1"
-  id: "16"
-  description: T-Shirt
-  name: tshirt
-  required_fee_cents: "0"
-  parent_id: "17"
-  created_at: 2006-11-11 19:19:26
-gizmo_types_041:
-  updated_at: 2007-01-04 19:06:35
-  suggested_fee_cents: "0"
-  lock_version: "4"
-  id: "13"
-  description: Gizmo
-  name: gizmo
-  required_fee_cents: "0"
-  parent_id:
-  created_at: 2006-11-11 19:16:03
-gizmo_types_030:
-  updated_at: 2007-01-10 15:48:42
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "37"
-  description: Cable
-  name: cable
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-10 15:48:42
-gizmo_types_019:
-  updated_at: 2007-01-02 15:38:40
-  suggested_fee_cents: "100"
-  lock_version: "1"
-  id: "22"
-  description: Keyboard
-  name: keyboard
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-02 10:03:00
-gizmo_types_008:
-  updated_at: 2006-12-19 18:08:47
-  suggested_fee_cents: "0"
-  lock_version: "3"
-  id: "3"
-  description: CRT
+--- 
+gizmo_types_046: 
   name: crt
-  required_fee_cents: "1000"
-  parent_id: "1"
-  created_at: 2006-09-25 11:22:11
-gizmo_types_031:
-  updated_at: 2007-01-17 14:35:51
+  created_at: 2008-10-10 22:42:44.86573
   suggested_fee_cents: "0"
+  updated_at: 2008-10-10 22:42:44.86573
   lock_version: "0"
-  id: "38"
-  description: Tuition
-  name: tuition
-  required_fee_cents: "0"
-  parent_id: "17"
-  created_at: 2007-01-17 14:35:51
-gizmo_types_020:
-  updated_at: 2007-01-02 15:38:48
-  suggested_fee_cents: "100"
-  lock_version: "1"
-  id: "23"
-  description: Mouse
-  name: mouse
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-02 10:03:31
-gizmo_types_009:
-  updated_at: 2006-12-20 08:58:11
-  suggested_fee_cents: "0"
-  lock_version: "4"
-  id: "5"
-  description: System w/builtin monitor
-  name: sys_with_monitor
-  required_fee_cents: "1000"
+  gizmo_category_id: "2"
+  id: "49"
   parent_id: "1"
-  created_at: 2006-09-29 14:22:28
-gizmo_types_032:
-  updated_at: 2007-04-19 17:26:22
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "39"
-  description: Mac
-  name: mac
-  required_fee_cents: "0"
+  description: CRT
+  required_fee_cents: "700"
+gizmo_types_035: 
+  name: laptop
+  created_at: 2006-11-11 19:05:26
+  suggested_fee_cents: "400"
+  updated_at: 2008-05-30 22:30:58.509601
+  lock_version: "2"
+  gizmo_category_id: "1"
+  id: "6"
   parent_id: "4"
-  created_at: 2007-04-19 17:26:22
-gizmo_types_021:
-  updated_at: 2007-01-02 15:38:54
-  suggested_fee_cents: "400"
-  lock_version: "1"
-  id: "25"
-  description: Stereo System
+  description: Laptop
+  required_fee_cents: "0"
+gizmo_types_024: 
   name: stereo_system
-  required_fee_cents: "0"
-  parent_id: "13"
   created_at: 2007-01-02 10:04:58
-gizmo_types_010:
-  updated_at: 2006-12-30 15:01:16
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "19"
-  description: Old Data Gizmo
-  name: old_data_gizmo
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2006-12-30 15:01:16
-gizmo_types_033:
-  updated_at: 2007-04-24 17:34:10
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "41"
-  description: RAM
-  name: ram
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-04-24 17:34:10
-gizmo_types_022:
-  updated_at: 2007-01-02 15:39:02
-  suggested_fee_cents: "200"
-  lock_version: "1"
-  id: "26"
-  description: Telephone
-  name: telephone
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-02 10:05:31
-gizmo_types_011:
-  updated_at: 2006-12-30 15:02:32
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "20"
-  description: Old Data Schwag
-  name: old_data_schwag
-  required_fee_cents: "0"
-  parent_id: "17"
-  created_at: 2006-12-30 15:02:32
-gizmo_types_034:
-  updated_at: 2007-04-24 17:34:23
-  suggested_fee_cents: "0"
-  lock_version: "1"
-  id: "40"
-  description: Laptop parts
-  name: laptop_parts
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-04-24 17:33:43
-gizmo_types_023:
-  updated_at: 2007-01-02 15:39:39
-  suggested_fee_cents: "200"
-  lock_version: "1"
-  id: "28"
-  description: Modem
-  name: modem
-  required_fee_cents: "0"
-  parent_id: "13"
-  created_at: 2007-01-02 10:06:36
-gizmo_types_012:
-  updated_at: 2006-12-30 18:57:55
-  suggested_fee_cents: "0"
-  lock_version: "0"
-  id: "21"
-  description: Old Data CRT
-  name: old_data_crt
-  required_fee_cents: "1000"
-  parent_id: "1"
-  created_at: 2006-12-30 18:57:55
-gizmo_types_001:
-  updated_at: 2006-11-11 19:16:11
   suggested_fee_cents: "400"
-  lock_version: "1"
-  id: "12"
-  description: Fax Machine
-  name: fax_machine
-  required_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.568755
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "25"
   parent_id: "13"
+  description: Stereo System
+  required_fee_cents: "0"
+gizmo_types_013: 
+  name: old_data_schwag
+  created_at: 2006-12-30 15:02:32
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.539574
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "20"
+  parent_id: "17"
+  description: Old Data Schwag
+  required_fee_cents: "0"
+gizmo_types_002: 
+  name: schwag
+  created_at: 2006-11-11 19:39:41
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.685012
+  lock_version: "5"
+  gizmo_category_id: "4"
+  id: "17"
+  parent_id: 
+  description: Schwag
+  required_fee_cents: "0"
+gizmo_types_047: 
+  name: sys_with_monitor
+  created_at: 2008-10-10 22:42:45.058719
+  suggested_fee_cents: "0"
+  updated_at: 2008-10-10 22:42:45.058719
+  lock_version: "0"
+  gizmo_category_id: "1"
+  id: "50"
+  parent_id: "1"
+  description: Sys w/ monitor
+  required_fee_cents: "700"
+gizmo_types_036: 
+  name: old_data_crt
+  created_at: 2006-12-30 18:57:55
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.47611
+  lock_version: "1"
+  gizmo_category_id: "2"
+  id: "21"
+  parent_id: "1"
+  description: Old Data CRT
+  required_fee_cents: "1000"
+gizmo_types_025: 
+  name: vcr
+  created_at: 2006-11-11 19:08:37
+  suggested_fee_cents: "300"
+  updated_at: 2008-05-30 22:30:58.549293
+  lock_version: "3"
+  gizmo_category_id: "4"
+  id: "7"
+  parent_id: "13"
+  description: VCR
+  required_fee_cents: "0"
+gizmo_types_014: 
+  name: lcd
+  created_at: 2006-09-25 11:21:53
+  suggested_fee_cents: "400"
+  updated_at: 2008-05-30 22:30:58.492476
+  lock_version: "4"
+  gizmo_category_id: "2"
+  id: "2"
+  parent_id: "1"
+  description: LCD
+  required_fee_cents: "0"
+gizmo_types_003: 
+  name: case
+  created_at: 2007-01-10 15:47:37
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.597832
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "35"
+  parent_id: "13"
+  description: Case
+  required_fee_cents: "0"
+gizmo_types_048: 
+  name: mac
+  created_at: 2007-04-19 17:26:22
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.612372
+  lock_version: "1"
+  gizmo_category_id: "1"
+  id: "39"
+  parent_id: "4"
+  description: Mac
+  required_fee_cents: "0"
+gizmo_types_037: 
+  name: printer
+  created_at: 2006-11-11 19:09:26
+  suggested_fee_cents: "400"
+  updated_at: 2008-05-30 22:30:58.45908
+  lock_version: "2"
+  gizmo_category_id: "3"
+  id: "10"
+  parent_id: "13"
+  description: Printer
+  required_fee_cents: "0"
+gizmo_types_026: 
+  name: laptop_parts
+  created_at: 2007-04-24 17:33:43
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.6221
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "40"
+  parent_id: "13"
+  description: Laptop parts
+  required_fee_cents: "0"
+gizmo_types_015: 
+  name: modem
+  created_at: 2007-01-02 10:06:36
+  suggested_fee_cents: "200"
+  updated_at: 2008-05-30 22:30:58.675204
+  lock_version: "3"
+  gizmo_category_id: "4"
+  id: "28"
+  parent_id: "13"
+  description: Modem
+  required_fee_cents: "0"
+gizmo_types_004: 
+  name: gift_cert
+  created_at: 2007-12-11 17:01:35
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.694651
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "45"
+  parent_id: 
+  description: Gift Cert
+  required_fee_cents: "0"
+gizmo_types_049: 
+  name: old_data_system
+  created_at: 2008-03-11 18:26:39
+  suggested_fee_cents: "500"
+  updated_at: 2008-05-30 22:30:58.670346
+  lock_version: "1"
+  gizmo_category_id: "1"
+  id: "47"
+  parent_id: "19"
+  description: Old Data System
+  required_fee_cents: "0"
+gizmo_types_038: 
+  name: fax_machine
   created_at: 2006-11-11 19:13:34
+  suggested_fee_cents: "400"
+  updated_at: 2008-05-30 22:30:58.443885
+  lock_version: "2"
+  gizmo_category_id: "3"
+  id: "12"
+  parent_id: "13"
+  description: Fax Machine
+  required_fee_cents: "0"
+gizmo_types_027: 
+  name: telephone
+  created_at: 2007-01-02 10:05:31
+  suggested_fee_cents: "200"
+  updated_at: 2008-05-30 22:30:58.573576
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "26"
+  parent_id: "13"
+  description: Telephone
+  required_fee_cents: "0"
+gizmo_types_016: 
+  name: drive
+  created_at: 2007-08-22 14:03:55
+  suggested_fee_cents: "100"
+  updated_at: 2008-05-30 22:30:58.636599
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "43"
+  parent_id: "13"
+  description: Drive
+  required_fee_cents: "0"
+gizmo_types_005: 
+  name: television
+  created_at: 2007-10-23 19:17:36
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.665457
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "44"
+  parent_id: "1"
+  description: Television
+  required_fee_cents: "1000"
+gizmo_types_050: 
+  name: mac_part
+  created_at: 
+  suggested_fee_cents: "0"
+  updated_at: 
+  lock_version: "0"
+  gizmo_category_id: "4"
+  id: "51"
+  parent_id: "13"
+  description: Mac Part
+  required_fee_cents: "0"
+gizmo_types_039: 
+  name: cable
+  created_at: 2007-01-10 15:48:42
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.602659
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "37"
+  parent_id: "13"
+  description: Cable
+  required_fee_cents: "0"
+gizmo_types_028: 
+  name: dvd_player
+  created_at: 2006-11-11 19:08:52
+  suggested_fee_cents: "300"
+  updated_at: 2008-05-30 22:30:58.554147
+  lock_version: "3"
+  gizmo_category_id: "4"
+  id: "8"
+  parent_id: "13"
+  description: DVD Player
+  required_fee_cents: "0"
+gizmo_types_017: 
+  name: miscellaneous
+  created_at: 2007-01-02 10:09:22
+  suggested_fee_cents: "100"
+  updated_at: 2008-05-30 22:30:58.631744
+  lock_version: "3"
+  gizmo_category_id: "4"
+  id: "31"
+  parent_id: "13"
+  description: Miscellaneous
+  required_fee_cents: "0"
+gizmo_types_006: 
+  name: harddrive
+  created_at: 2007-01-02 10:06:08
+  suggested_fee_cents: "100"
+  updated_at: 2008-05-30 22:30:58.655773
+  lock_version: "5"
+  gizmo_category_id: "4"
+  id: "27"
+  parent_id: "43"
+  description: Harddrive
+  required_fee_cents: "0"
+gizmo_types_040: 
+  name: mouse
+  created_at: 2007-01-02 10:03:31
+  suggested_fee_cents: "100"
+  updated_at: 2008-05-30 22:30:58.563893
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "23"
+  parent_id: "13"
+  description: Mouse
+  required_fee_cents: "0"
+gizmo_types_029: 
+  name: system
+  created_at: 2006-09-25 11:22:30
+  suggested_fee_cents: "500"
+  updated_at: 2008-05-30 22:30:58.499747
+  lock_version: "7"
+  gizmo_category_id: "1"
+  id: "4"
+  parent_id: "13"
+  description: System
+  required_fee_cents: "0"
+gizmo_types_018: 
+  name: video_card
+  created_at: 2007-01-02 11:50:20
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.588091
+  lock_version: "3"
+  gizmo_category_id: "4"
+  id: "33"
+  parent_id: "30"
+  description: Video Card
+  required_fee_cents: "0"
+gizmo_types_007: 
+  name: speakers
+  created_at: 2007-01-02 10:07:34
+  suggested_fee_cents: "100"
+  updated_at: 2008-05-30 22:30:58.578448
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "29"
+  parent_id: "13"
+  description: Speakers
+  required_fee_cents: "0"
+gizmo_types_041: 
+  name: old_data_gizmo
+  created_at: 2006-12-30 15:01:16
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.534699
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "19"
+  parent_id: "13"
+  description: Old Data Gizmo
+  required_fee_cents: "0"
+gizmo_types_030: 
+  name: monitor
+  created_at: 2006-09-25 11:21:29
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.46632
+  lock_version: "8"
+  gizmo_category_id: "2"
+  id: "1"
+  parent_id: "13"
+  description: Monitor
+  required_fee_cents: "0"
+gizmo_types_019: 
+  name: 1337_lappy
+  created_at: 2006-12-19 20:16:28
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.514456
+  lock_version: "3"
+  gizmo_category_id: "1"
+  id: "18"
+  parent_id: "6"
+  description: 1337 lappy
+  required_fee_cents: "0"
+gizmo_types_008: 
+  name: power_supply
+  created_at: 2007-04-24 17:36:24
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.626915
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "42"
+  parent_id: "13"
+  description: Power supply
+  required_fee_cents: "0"
+gizmo_types_042: 
+  name: t-shirt
+  created_at: 2006-11-11 19:19:26
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.529744
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "16"
+  parent_id: "17"
+  description: T-Shirt
+  required_fee_cents: "0"
+gizmo_types_031: 
+  name: card
+  created_at: 2007-01-02 10:08:06
+  suggested_fee_cents: "100"
+  updated_at: 2008-05-30 22:30:58.583279
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "30"
+  parent_id: "13"
+  description: Card
+  required_fee_cents: "0"
+gizmo_types_020: 
+  name: gizmo
+  created_at: 2006-11-11 19:16:03
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.689829
+  lock_version: "5"
+  gizmo_category_id: "4"
+  id: "13"
+  parent_id: 
+  description: Gizmo
+  required_fee_cents: "0"
+gizmo_types_009: 
+  name: sound_card
+  created_at: 2007-01-02 11:50:48
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.592979
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "34"
+  parent_id: "30"
+  description: Sound Card
+  required_fee_cents: "0"
+gizmo_types_043: 
+  name: sticker
+  created_at: 2006-11-11 19:19:08
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.524829
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "15"
+  parent_id: "17"
+  description: Sticker
+  required_fee_cents: "0"
+gizmo_types_032: 
+  name: keyboard
+  created_at: 2007-01-02 10:03:00
+  suggested_fee_cents: "100"
+  updated_at: 2008-05-30 22:30:58.559
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "22"
+  parent_id: "13"
+  description: Keyboard
+  required_fee_cents: "0"
+gizmo_types_021: 
+  name: net_device
+  created_at: 2007-01-10 15:48:05
+  suggested_fee_cents: "100"
+  updated_at: 2008-05-30 22:30:58.660627
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "36"
+  parent_id: "13"
+  description: Net Device
+  required_fee_cents: "0"
+gizmo_types_010: 
+  name: scanner
+  created_at: 2006-11-11 19:09:38
+  suggested_fee_cents: "300"
+  updated_at: 2008-05-30 22:30:58.454222
+  lock_version: "2"
+  gizmo_category_id: "3"
+  id: "11"
+  parent_id: "13"
+  description: Scanner
+  required_fee_cents: "0"
+gizmo_types_044: 
+  name: old_crt
+  created_at: 2006-09-25 11:22:11
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.471207
+  lock_version: "4"
+  gizmo_category_id: "2"
+  id: "3"
+  parent_id: "1"
+  description: Old Fee CRT
+  required_fee_cents: "1000"
+gizmo_types_033: 
+  name: ram
+  created_at: 2007-04-24 17:34:10
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.617271
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "41"
+  parent_id: "13"
+  description: RAM
+  required_fee_cents: "0"
+gizmo_types_022: 
+  name: fee_discount
+  created_at: 2008-07-25 21:48:34.757712
+  suggested_fee_cents: "0"
+  updated_at: 2008-07-25 21:48:34.757712
+  lock_version: "0"
+  gizmo_category_id: "4"
+  id: "48"
+  parent_id: 
+  description: Fee Discount
+  required_fee_cents: "0"
+gizmo_types_011: 
+  name: root
+  created_at: 2008-03-27 10:41:53.50475
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.680052
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "0"
+  parent_id: 
+  description: "[root]"
+  required_fee_cents: "0"
+gizmo_types_045: 
+  name: old_sys_with_monitor
+  created_at: 2006-09-29 14:22:28
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.504698
+  lock_version: "5"
+  gizmo_category_id: "1"
+  id: "5"
+  parent_id: "1"
+  description: Old Fee Sys w/ monitor
+  required_fee_cents: "1000"
+gizmo_types_034: 
+  name: tuition
+  created_at: 2007-01-17 14:35:51
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.607498
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "38"
+  parent_id: "17"
+  description: Tuition
+  required_fee_cents: "0"
+gizmo_types_023: 
+  name: cd_burner
+  created_at: 2007-01-02 11:36:02
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.650888
+  lock_version: "3"
+  gizmo_category_id: "4"
+  id: "32"
+  parent_id: "43"
+  description: CD Burner
+  required_fee_cents: "0"
+gizmo_types_012: 
+  name: ups
+  created_at: 2006-11-11 19:18:08
+  suggested_fee_cents: "500"
+  updated_at: 2008-05-30 22:30:58.544425
+  lock_version: "2"
+  gizmo_category_id: "4"
+  id: "14"
+  parent_id: "13"
+  description: UPS
+  required_fee_cents: "0"
+gizmo_types_001: 
+  name: service_fee
+  created_at: 2007-12-11 17:41:55
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.699506
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "46"
+  parent_id: 
+  description: Service Fee
+  required_fee_cents: "100"

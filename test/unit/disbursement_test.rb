@@ -4,14 +4,14 @@ class DisbursementTest < Test::Unit::TestCase
   load_all_fixtures
   fixtures :disbursement_types
 
-  WITH_CONTACT_INFO = {:contact_id => 1}
+  WITH_CONTACT_INFO = {:contact_id => 1, :created_by => 1}
 
   def disbursed_system_event
     {
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 10,
       :gizmo_context => GizmoContext.disbursement,
-      :as_is => false
+      :as_is => false,
     }
   end
 
