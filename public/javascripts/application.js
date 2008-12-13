@@ -17,6 +17,8 @@ function update_cashier_code() {
 }
 
 function show_contract_notes() {
+  if($('donation_contract_id') == null)
+    return;
   var mynotes = contracts_notes[parseInt($('donation_contract_id').value)];
   $('contract_notes').innerHTML = mynotes;
   if(mynotes.length > 0){
