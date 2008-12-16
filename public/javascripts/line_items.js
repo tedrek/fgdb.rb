@@ -131,7 +131,7 @@ function systems_stuff(args, tr){
   var line_id = counters[args['prefix'] + '_line_id'];
   if($('system_id') == null)
     return;
-  if($('system_id').value != "") {
+  if(args['system_id'] != "") {
     if(!all_systems[args['system_id']]) {
       alert("system does not exist! ignoring...");
     }
