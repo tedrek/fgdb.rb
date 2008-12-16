@@ -44,7 +44,7 @@ class SoapsBase
     add_methods
   end
   def add_method(name, *param)
-    namespace = self.class.to_s.underscore.sub(/_api$/, "")
+    namespace = "urn:" + self.class.to_s.underscore.sub(/_api$/, "")
 #    puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
     @router.send(:my_add_method, self, name, namespace, *param)
   end
