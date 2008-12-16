@@ -128,13 +128,13 @@ function dollar_value(cents) {
 }
 
 function systems_stuff(args, tr){
+  var line_id = counters[args['prefix'] + '_line_id'];
   if($('system_id') == null)
     return;
   if($('system_id').value != "") {
     if(!all_systems[args['system_id']]) {
       alert("system does not exist! ignoring...");
     }
-    var line_id = counters[args['prefix'] + '_line_id'];
     if(all_systems[args['system_id']]) {
       if(all_contracts_names.length > 2) {
         hidden = document.createElement("input");
