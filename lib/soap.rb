@@ -48,6 +48,11 @@ class SoapsBase
 #    puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
     @router.send(:my_add_method, self, name, namespace, *param)
   end
+  def error(message)
+    SOAP::SOAPFault.new(SOAP::SOAPString.new("soaps"),
+                        SOAP::SOAPString.new(message),
+                        SOAP::SOAPString.new(self.class.name))
+  end
 end
 
 class ActionController::CgiResponse

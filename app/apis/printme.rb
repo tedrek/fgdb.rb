@@ -14,6 +14,7 @@ class PrintmeAPI < SoapsBase
   ######################
 
   def ping
+#    return error("BOO")
     "pong"
   end
 
