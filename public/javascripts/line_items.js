@@ -225,6 +225,7 @@ function edit_sale(id) {
   thing = $(id);
   $('gizmo_type_id').value = thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value;
   sale_gizmo_type_selected();
+  coveredness_type_selected();
   $('gizmo_count').value = thing.getElementsBySelector(".gizmo_count").first().firstChild.value;
   if($('system_id') != null) {
     $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
@@ -241,6 +242,7 @@ function edit_disbursement(id) {
   thing = $(id);
   $('gizmo_type_id').value = thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value;
   disbursement_gizmo_type_selected();
+  coveredness_type_selected();
   $('gizmo_count').value = thing.getElementsBySelector(".gizmo_count").first().firstChild.value;
   if($('system_id') != null) {
     $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
