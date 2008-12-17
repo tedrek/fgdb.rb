@@ -177,6 +177,7 @@ function contracts_stuff(args, tr){
     var contract = all_contracts[args['contract_id']];
     tr.appendChild(make_hidden("line", "recycling_contract_id", contract, args['contract_id'], line_id));
   }
+  coveredness_stuff(args, tr); // TODO: another hook
 }
 
 function sales_stuff(args, tr){
@@ -271,11 +272,15 @@ function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id) {
   add_line_item(args, gizmo_events_stuff, systems_stuff, update_contract_notes, edit_disbursement, true);
 }
 
-function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id) {
+function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, covered) {
   var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
   args['contract_id'] = contract_id;
   if(args['contract_id'] == undefined) {
     args['contract_id'] = '';
+  }
+  args['covered'] = covered;
+  if(args['covered'] == undefined) {
+    args['covered'] = '';
   }
   add_line_item(args, gizmo_events_stuff, contracts_stuff, function(){}, edit_disbursement, true);
 }
@@ -335,8 +340,16 @@ function add_unpriced_gizmo_event_from_form()
   if($('system_id') != null) {
     string += ", $('system_id').value";
   }
-  if($('contract_id') != null) {
-    string += ", $('contract_id').value";
+  if(gizmo_context_name == "recycling") {
+    if($('contract_id') != null) {
+      string += ", $('contract_id').selectedIndex";
+    }
+    else {
+      string += ", undefined";
+    }
+  }
+  if($('covered') != null) {
+    string += ", $('covered').checked";
   }
   string += ");";
   eval(string);
@@ -345,6 +358,10 @@ function add_unpriced_gizmo_event_from_form()
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
+  }
+  if($('covered') != null){
+    $('covered').checked = $('covered').defaultChecked;
+    $('covered').disable();
   }
   if($('contract_id') != null) {
     $('contract_id').selectedIndex = 0;
