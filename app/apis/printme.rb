@@ -16,6 +16,7 @@ class PrintmeAPI < SoapsBase
     add_method("submit", "printme_struct")
     add_method("get_system_for_report", "report_id")
     add_method("contract_id_for_system", "system_id")
+    add_method("spec_sheet_url", "report_id")
   end
 
   ######################
@@ -109,6 +110,10 @@ class PrintmeAPI < SoapsBase
 
   def contract_id_for_system(system_id)
     System.find_by_id(system_id).contract.id
+  end
+
+  def spec_sheet_url(report_id)
+    "/spec_sheets/show/#{report_id}"
   end
 
   #####
