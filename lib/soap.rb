@@ -13,7 +13,7 @@ class SoapHandler
     router = SOAP::RPC::Router.new("Soaps")
     Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
 #      puts "Loading api from " + x
-      require x
+      eval(File.read(x))
       eval("#{File.basename(x).capitalize.sub(/.rb$/, "")}API.new(router)")
     }
     SOAP::RPC::SOAPlet.new(router)
@@ -44,7 +44,7 @@ class SoapsBase
     add_methods
   end
   def add_method(name, *param)
-    namespace = "urn:" + self.class.to_s.underscore.sub(/_api$/, "")
+    namespace = "urn:" + self.class.to_s.underscore.sub("soap_handler/", "").sub(/_api$/, "")
 #    puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
     @router.send(:my_add_method, self, name, namespace, *param)
   end
