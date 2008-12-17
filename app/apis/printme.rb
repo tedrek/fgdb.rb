@@ -11,6 +11,11 @@ class PrintmeAPI < SoapsBase
     add_method("actions")
     add_method("types")
     add_method("contracts")
+    # Printme
+    add_method("empty_struct")
+    add_method("submit", "printme_struct")
+    add_method("get_system_for_report", "report_id")
+    add_method("contract_id_for_system", "system_id")
   end
 
   ######################
@@ -72,6 +77,38 @@ class PrintmeAPI < SoapsBase
   end
   def contracts
     Contract.usable.map{|x| ContractStruct.new(x.name, x.label, x.id)}
+  end
+
+  ###########
+  # Printme #
+  ###########
+
+  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os) # if !PrintmeStruct
+
+  def empty_struct
+    PrintmeStruct.new
+  end
+
+  def submit(printme_struct)
+    report = SpecSheet.new(:contract_id => printme_struct.contract_id, :action_id => printme_struct.action_id, :type_id => printme_struct.type_id, :contact_id => printme_struct.contact_id, :old_id => printme_struct.old_id, :notes => printme_struct.notes, :lshw_output => printme_struct.lshw_output, :os => printme_struct.os)
+    begin
+      report.save!
+      if report.xml_is_good
+        return report.id
+      else
+        error("Invalid XML! Report id is #{report.id}. Please report this bug.")
+      end
+    rescue
+      return error("Could not save the database record: #{$!.to_s}")
+    end
+  end
+
+  def get_system_for_report(report_id)
+    SpecSheet.find_by_id(report_id).system.id
+  end
+
+  def contract_id_for_system(system_id)
+    System.find_by_id(system_id).contract.id
   end
 
   #####
