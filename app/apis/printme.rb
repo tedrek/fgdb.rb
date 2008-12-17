@@ -59,9 +59,9 @@ class PrintmeAPI < SoapsBase
   # Lists #
   #########
 
-  ActionStruct = Struct.new( :name, :description, :thing_id )
-  TypeStruct = Struct.new( :name, :description, :thing_id )
-  ContractStruct = Struct.new( :name, :label, :thing_id )
+  ActionStruct = Struct.new( :name, :description, :thing_id ) if !ActionStruct
+  TypeStruct = Struct.new( :name, :description, :thing_id ) if !TypeStruct
+  ContractStruct = Struct.new( :name, :label, :thing_id ) if !ContractStruct
 
   public
   def actions
