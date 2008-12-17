@@ -558,8 +558,14 @@ function max(a,b) { return a>b ? a : b; }
 function coveredness_type_selected() {
   if($('covered') == null)
     return;
-  // TODO: check if it's a coverable gizmo
-  $('covered').enable();
+  if(gizmo_types_covered[$('gizmo_type_id').value] == true) {
+    $('covered').enable();
+    $('covered').checked = true;
+  }
+  else {
+    $('covered').disable();
+    $('covered').checked = false;
+  }
 }
 
 function sale_gizmo_type_selected() {
