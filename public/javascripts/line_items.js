@@ -130,7 +130,8 @@ function dollar_value(cents) {
 function coveredness_stuff(args, tr){
   if(!coveredness_enabled)
     return;
-  alert("Coveredness: " + args['covered']);
+  var line_id = counters[args['prefix'] + '_line_id'];
+  tr.appendChild(make_hidden("line", "covered", args['covered'], args['covered'], line_id));
 }
 
 function systems_stuff(args, tr){
@@ -228,6 +229,9 @@ function edit_sale(id) {
   if($('system_id') != null) {
     $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
   }
+  if($('covered') != null) {
+    $('covered').checked = thing.getElementsBySelector(".covered").first().firstChild.value == "true";
+  }
   $('unit_price').value = thing.getElementsBySelector(".unit_price").first().firstChild.value;
   $('description').value = thing.getElementsBySelector(".description").first().firstChild.value;
   $('gizmo_type_id').focus();
@@ -243,6 +247,9 @@ function edit_disbursement(id) {
   }
   if($('contract_id') != null) {
     $('contract_id').value = thing.getElementsBySelector(".recycling_contract_id").first().firstChild.value;
+  }
+  if($('covered') != null) {
+    $('covered').checked = thing.getElementsBySelector(".covered").first().firstChild.value == "true";
   }
   $('gizmo_type_id').focus();
 }
@@ -546,10 +553,18 @@ function add_contact_method_from_form() {
 
 function max(a,b) { return a>b ? a : b; }
 
+function coveredness_type_selected() {
+  if($('covered') == null)
+    return;
+  // TODO: check if it's a coverable gizmo
+  $('covered').enable();
+}
+
 function sale_gizmo_type_selected() {
   disbursement_gizmo_type_selected();
 }
 function donation_gizmo_type_selected() {
+  coveredness_type_selected();
   $('unit_price').value = dollar_value(max(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']));
   if (fees[$('gizmo_type_id').value]['required'] > fees[$('gizmo_type_id').value]['suggested']) {
     $('unit_price').disabled=false;
@@ -559,6 +574,7 @@ function donation_gizmo_type_selected() {
   }
 }
 function recycling_gizmo_type_selected() {
+  coveredness_type_selected();
 }
 function disbursement_gizmo_type_selected() {
   if($('system_id') != null) {
