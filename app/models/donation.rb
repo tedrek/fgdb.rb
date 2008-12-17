@@ -43,6 +43,55 @@ class Donation < ActiveRecord::Base
       gizmo_events.empty? and payments.empty?
 
     errors.add("payments", "may only have one invoice") if invoices.length > 1
+
+    covered_error_checking
+  end
+
+  def covered_error_checking
+    if Default["coveredness_enabled"] != "1"
+      return
+    end
+    covered = Default["fully_covered_contact_covered_gizmo"].to_i
+    uncovered = Default["unfully_covered_contact_covered_gizmo"].to_i
+    num_choosen = self.gizmo_events.select{|x| x.covered}.collect{|x| x.gizmo_count}.inject(0){|x,y| x+y}
+    type = ""
+    if contact_type != 'named'
+      type = "anon"
+    else # named contact
+      case self.contact.fully_covered_
+      when "nil": type = "unknown"
+      when "yes": type = "covered"
+      when "no": type = "uncovered"
+      end
+    end
+    if type == "anon" || type == "unknown"
+      if !unknown_okay(uncovered, covered, num_choosen)
+        errors.add("contact_type", "must be named for donations of over #{thing(uncovered, covered)} covered items") if type == "anon"
+        errors.add("contact", "must have fully_covered set for donations of over #{thing(uncovered, covered)} covered items") if type == "unknown"
+      end
+    end
+    errors.add("gizmo_events", "may only have #{covered} covered items for who are fully covered") if type == "covered" && !okay(covered, num_choosen)
+    errors.add("gizmo_events", "may only have #{uncovered} covered items for contacts who are not fully covered") if type == "uncovered" && !okay(uncovered, num_choosen)
+  end
+
+  def thing(one,two)
+    return nil if one == two
+    return two if one == -1
+    return one if two == -1
+    return [one,two].min
+  end
+  def doesitmatter(first, second, current)
+    return false if thing(first, second).nil?
+    return true if current > thing(first, second)
+    return false
+  end
+  def unknown_okay(first,second,current)
+    !doesitmatter(first,second,current)
+  end
+  def okay(num_allowed, choosen)
+    return true if num_allowed == -1
+    return false if choosen > num_allowed
+    return true
   end
 
   class << self
