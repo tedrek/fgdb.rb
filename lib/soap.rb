@@ -13,7 +13,11 @@ class SoapHandler
     router = SOAP::RPC::Router.new("Soaps")
     Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
 #      puts "Loading api from " + x
-      eval(File.read(x))
+      if RAILS_ENV == "production"
+        require x
+      else
+        eval(File.read(x))
+      end
       eval("#{File.basename(x).capitalize.sub(/.rb$/, "")}API.new(router)")
     }
     SOAP::RPC::SOAPlet.new(router)
