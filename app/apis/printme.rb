@@ -7,6 +7,10 @@ class PrintmeAPI < SoapsBase
     add_method("version")
     add_method("bad_client_error")
     add_method("bad_server_error")
+    # Lists
+    add_method("actions")
+    add_method("types")
+    add_method("contracts")
   end
 
   ######################
@@ -49,6 +53,25 @@ class PrintmeAPI < SoapsBase
     server_versions[8] = [8]      # forced. fix contracts support. (my bugs)
     server_versions[9] = [9]      # rewrite with soap...FORCED!!! :)
     server_versions
+  end
+
+  #########
+  # Lists #
+  #########
+
+  ActionStruct = Struct.new( :name, :description, :thing_id )
+  TypeStruct = Struct.new( :name, :description, :thing_id )
+  ContractStruct = Struct.new( :name, :label, :thing_id )
+
+  public
+  def actions
+    Action.usable.map{|x| ActionStruct.new(x.name, x.description, x.id)}
+  end
+  def types
+    Type.usable.map{|x| TypeStruct.new(x.name, x.description, x.id)}
+  end
+  def contracts
+    Contract.usable.map{|x| ContractStruct.new(x.name, x.label, x.id)}
   end
 
   #####
