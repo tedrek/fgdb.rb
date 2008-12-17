@@ -440,6 +440,8 @@ function get_donation_totals() {
   totals['suggested'] = 0;
   var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
   for (var x = 0; x < arr.length; x++) {
+    if(arr[x].getElementsBySelector("td.covered").first().firstChild.value == "true")
+      continue;
     var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
     var type;
     type = (fees[type_id]['suggested'] > 0) ? 'suggested' : 'required';
