@@ -70,7 +70,7 @@ class Donation < ActiveRecord::Base
         errors.add("contact", "must have fully_covered set for donations of over #{thing(uncovered, covered)} covered items") if type == "unknown"
       end
     end
-    errors.add("gizmo_events", "may only have #{covered} covered items for who are fully covered") if type == "covered" && !okay(covered, num_choosen)
+    errors.add("gizmo_events", "may only have #{covered} covered items for contacts who are fully covered") if type == "covered" && !okay(covered, num_choosen)
     errors.add("gizmo_events", "may only have #{uncovered} covered items for contacts who are not fully covered") if type == "uncovered" && !okay(uncovered, num_choosen)
   end
 
