@@ -50,7 +50,7 @@
     <td><input name="system_id" id="system_id" size="6" onkeydown="if(is_tab(event) && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}"></td>
     <% else # donations %>
       <% if coveredness_enabled %>
-        <td><input name="covered" id="covered" type="checkbox" onkeydown="if(is_tab(event) && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}"></td>
+        <td><input name="covered" id="covered" type="checkbox" onkeydown="if(is_tab(event) && $('unit_price').disabled) {return add_priced_gizmo_event_from_form();}" checked="checked"></td>
       <% end %>
     <% end %>
     <td><input name="unit_price" id="unit_price" size="8" onkeydown="if(is_tab(event)) {return add_priced_gizmo_event_from_form();}"></td>
