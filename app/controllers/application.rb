@@ -33,6 +33,10 @@ class ApplicationController < ActionController::Base
     return nil
   end
 
+  def coveredness_enabled
+    Default["coveredness_enabled"] == 1
+  end
+
   def current_cashier
     Thread.current['cashier']
   end
