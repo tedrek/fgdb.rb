@@ -127,7 +127,14 @@ function dollar_value(cents) {
   }
 }
 
+function coveredness_stuff(args, tr){
+  if(!coveredness_enabled)
+    return;
+  alert("Coveredness: " + args['covered']);
+}
+
 function systems_stuff(args, tr){
+  coveredness_stuff(args, tr);
   var line_id = counters[args['prefix'] + '_line_id'];
   if($('system_id') == null)
     return;
@@ -273,9 +280,13 @@ function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id) {
   add_line_item(args, gizmo_events_stuff, contracts_stuff, function(){}, edit_disbursement, true);
 }
 
-function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
+function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, covered) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
   add_edit_button = true;
+  args['covered'] = covered;
+  if(args['covered'] == undefined) {
+    args['covered'] = '';
+  }
   if(!gizmo_types[gizmo_type_id] && all_gizmo_types[gizmo_type_id])
     add_edit_button = false;
   add_line_item(args, gizmo_events_stuff, sales_stuff, donation_compute_totals, edit_sale, add_edit_button);
@@ -290,6 +301,9 @@ function add_priced_gizmo_event_from_form()
   if($('system_id') != null) {
     string += ", $('system_id').value";
   }
+  if($('covered') != null) {
+    string += ", $('covered').checked";
+  }
   if($('contract_id') != null) {
     string += ", $('contract_id').selectedIndex";
   }
@@ -303,6 +317,10 @@ function add_priced_gizmo_event_from_form()
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
+  }
+  if($('covered') != null){
+    $('covered').checked = $('covered').defaultChecked;
+    $('covered').disable();
   }
   $('gizmo_type_id').focus();
   return false;
