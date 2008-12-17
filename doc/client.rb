@@ -2,7 +2,7 @@
 
 require 'soap/rpc/driver'
 
-driver = SOAP::RPC::Driver.new("http://localhost:#{ARGV[0]}/", "urn:soaps")
+driver = SOAP::RPC::Driver.new("http://localhost:3000/", "urn:soaps")
 driver.add_method("hi")
 driver.add_method("fivetimes", "num")
 puts driver.hi
