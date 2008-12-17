@@ -3,7 +3,7 @@ class Coveredness < ActiveRecord::Migration
     add_column :contacts, :fully_covered, :boolean
     add_column :gizmo_types, :covered, :boolean
     add_column :gizmo_events, :covered, :boolean
-    for i in [:coveredness_enabled, :fully_covered_contact_covered_gizmo, :fully_covered_contact_uncovered_gizmo, :unfully_covered_contact_covered_gizmo, :unfully_covered_contact_uncovered_gizmo]
+    for i in [:coveredness_enabled, :fully_covered_contact_covered_gizmo, :unfully_covered_contact_covered_gizmo]
       d = Default.new
       d.name = i.to_s
       d.value = 0
