@@ -65,9 +65,9 @@ class PrintmeAPI < SoapsBase
   # Lists #
   #########
 
-  ActionStruct = Struct.new( :name, :description, :thing_id ) if !ActionStruct
-  TypeStruct = Struct.new( :name, :description, :thing_id ) if !TypeStruct
-  ContractStruct = Struct.new( :name, :label, :thing_id ) if !ContractStruct
+  ActionStruct = Struct.new( :name, :description, :thing_id ) if !defined?(ActionStruct)
+  TypeStruct = Struct.new( :name, :description, :thing_id ) if !defined?(TypeStruct)
+  ContractStruct = Struct.new( :name, :label, :thing_id ) if !defined?(ContractStruct)
 
   public
   def actions
@@ -84,7 +84,7 @@ class PrintmeAPI < SoapsBase
   # Printme #
   ###########
 
-  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os) # if !PrintmeStruct
+  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os)  if !defined?(PrintmeStruct)
 
   def empty_struct
     PrintmeStruct.new
