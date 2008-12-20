@@ -1,8 +1,6 @@
 class SpecSheetsController < ApplicationController
   layout :with_sidebar
 
-  skip_before_filter :verify_authenticity_token, :only => ['xml_create']
-
   helper :xml
   include XmlHelper
   MY_VERSION=9
@@ -44,10 +42,6 @@ class SpecSheetsController < ApplicationController
     @good = @system.save
   end
 
-  def xml_index
-    render :xml => {:error => params[:error]}
-  end
-
   def index
     search
   end
@@ -66,11 +60,6 @@ class SpecSheetsController < ApplicationController
     end
     @reports = SpecSheet.good.paginate(:page => params[:page] ? params[:page].to_i : 1, :conditions => @conditions.conditions(SpecSheet), :order => "created_at ASC", :per_page => 50)
     render :action => "index"
-  end
-
-  def xml_list_for_system
-    @reports = SpecSheet.good.find_all_by_system_id(params[:id], :order => "id")
-    render :xml => @reports
   end
 
   def show
@@ -92,11 +81,6 @@ class SpecSheetsController < ApplicationController
       end
     end
     render :layout => 'fgss'
-  end
-
-  def xml_show
-    @report = SpecSheet.find(params[:id])
-    render :xml => @report
   end
 
   def new
@@ -134,20 +118,6 @@ class SpecSheetsController < ApplicationController
     new_common_create_stuff("new", "show")
   end
 
-  def xml_create
-    params[:report]={
-      :contact_id => params[:contact_id],
-      :action_id => params[:action_id],
-      :type_id => params[:type_id],
-      :contract_id => params[:contract_id],
-      :system_id => params[:system_id],
-      :notes => params[:notes],
-      :my_file => params[:my_file],
-      :os => params[:os]
-    }
-    new_common_create_stuff("xml_index", "xml_show")
-  end
-
   def update
     @report = SpecSheet.find(params[:id])
 
@@ -155,15 +125,6 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action=>"show", :id=>@report.id)
     else
       render :action => "edit"
-    end
-  end
-
-  def xml_system_show
-    system = System.find_by_id(params[:id])
-    if system
-      render :xml => system
-    else
-      redirect_to(:action => "xml_index", :error => "That system does not exist!")
     end
   end
 end
