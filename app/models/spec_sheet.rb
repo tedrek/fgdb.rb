@@ -1,6 +1,5 @@
 class SpecSheet < ActiveRecord::Base
   include PrintmeHelper
-  include XmlHelper
 
   validates_presence_of :contact_id
   validates_presence_of :action_id
@@ -81,7 +80,7 @@ class SpecSheet < ActiveRecord::Base
       return
     end
 
-    parse_stuff
+    parse_stuff(lshw_output)
 
     found_system = find_system_id
     if found_system

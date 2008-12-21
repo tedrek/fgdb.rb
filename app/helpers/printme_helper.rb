@@ -1,6 +1,8 @@
 module PrintmeHelper
-  def parse_stuff
-    @parser = load_xml(lshw_output)
+  include XmlHelper
+
+  def parse_stuff(my_lshw_output)
+    @parser = load_xml(my_lshw_output)
 
     @system_model = @system_serial_number = @system_vendor = @mobo_model = @mobo_serial_number = @mobo_vendor = @macaddr = nil
 

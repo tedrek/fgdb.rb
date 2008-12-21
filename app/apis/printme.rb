@@ -1,4 +1,6 @@
 class PrintmeAPI < SoapsBase
+  include PrintmeHelper
+
   def add_methods
     # Connection Testing
     add_method("ping")
