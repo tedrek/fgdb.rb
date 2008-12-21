@@ -55,7 +55,7 @@ class Donation < ActiveRecord::Base
     uncovered = Default["unfully_covered_contact_covered_gizmo"].to_i
     num_choosen = self.gizmo_events.select{|x| x.covered}.collect{|x| x.gizmo_count}.inject(0){|x,y| x+y}
     type = ""
-    if contact_type != 'named'
+    if contact_type != 'named' || contact.nil?
       type = "anon"
     else # named contact
       case self.contact.fully_covered_
