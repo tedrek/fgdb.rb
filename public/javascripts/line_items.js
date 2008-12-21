@@ -573,7 +573,6 @@ function sale_gizmo_type_selected() {
   disbursement_gizmo_type_selected();
 }
 function donation_gizmo_type_selected() {
-  coveredness_type_selected();
   $('unit_price').value = dollar_value(max(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']));
   if (fees[$('gizmo_type_id').value]['required'] > fees[$('gizmo_type_id').value]['suggested']) {
     $('unit_price').disabled=false;
@@ -581,6 +580,8 @@ function donation_gizmo_type_selected() {
   else {
     $('unit_price').disabled=true;
   }
+  if($('unit_price').disabled == false && $('covered') != null && $('covered').checked == true)
+    $('unit_price').disabled = true;
 }
 function recycling_gizmo_type_selected() {
   coveredness_type_selected();
