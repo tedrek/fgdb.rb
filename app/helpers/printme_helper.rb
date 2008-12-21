@@ -23,7 +23,7 @@ module PrintmeHelper
 
   def find_system_id
     if @serial_number != "(no serial number)" && (found_system = System.find(:first, :conditions => {:serial_number => @serial_number, :vendor => @vendor, :model => @model}, :order => :id))
-      return found_system
+      return found_system.id
     else
       return nil
     end

@@ -84,7 +84,7 @@ class SpecSheet < ActiveRecord::Base
 
     found_system = find_system_id
     if found_system
-      self.system = found_system
+      self.system = System.find_by_id(found_system)
     else
       self.system = System.new
       system.system_model  = @system_model

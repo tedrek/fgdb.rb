@@ -13,12 +13,18 @@ class PrintmeAPI < SoapsBase
     add_method("actions")
     add_method("types")
     add_method("contracts")
+    add_method("default_action_description")
+    add_method("default_type_description")
+    add_method("default_contract_label")
     # Printme
     add_method("empty_struct")
     add_method("submit", "printme_struct")
+    # Random Crap
     add_method("get_system_for_report", "report_id")
-    add_method("contract_id_for_system", "system_id")
+    add_method("contract_label_for_system", "system_id")
+    add_method("type_description_for_system", "system_id")
     add_method("spec_sheet_url", "report_id")
+    add_method("get_system_id", "xml")
   end
 
   ######################
@@ -81,6 +87,15 @@ class PrintmeAPI < SoapsBase
   def contracts
     Contract.usable.map{|x| ContractStruct.new(x.name, x.label, x.id)}
   end
+  def default_action_description
+    Action.find_by_name('checker').description
+  end
+  def default_type_description
+    Type.find_by_name('regular').description
+  end
+  def default_contract_label
+    Contract.find_by_name('default').label
+  end
 
   ###########
   # Printme #
@@ -106,16 +121,29 @@ class PrintmeAPI < SoapsBase
     end
   end
 
+  ###############
+  # Random Crap #
+  ###############
+
   def get_system_for_report(report_id)
     SpecSheet.find_by_id(report_id).system.id
   end
 
-  def contract_id_for_system(system_id)
-    System.find_by_id(system_id).contract.id
+  def contract_label_for_system(system_id)
+    System.find_by_id(system_id).contract.label
+  end
+
+  def type_description_for_system(system_id)
+    System.find_by_id(system_id).spec_sheets.sort_by{|x| x.created_at}.last.type.description
   end
 
   def spec_sheet_url(report_id)
     "/spec_sheets/show/#{report_id}"
+  end
+
+  def get_system_id(xml)
+    parse_stuff(xml)
+    return find_system_id
   end
 
   #####
