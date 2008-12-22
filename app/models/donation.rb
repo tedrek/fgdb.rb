@@ -16,9 +16,9 @@ class Donation < ActiveRecord::Base
   before_save :add_contact_types
   before_save :cleanup_for_contact_type
   before_save :unzero_contact_id
+  before_save :add_dead_beat_discount
   before_save :set_occurred_at_on_gizmo_events
   before_save :compute_fee_totals
-  before_save :add_dead_beat_discount
   before_save :combine_cash_payments
 
   def validate
