@@ -17,7 +17,10 @@ class SomeMetadataChangesRichardMade < ActiveRecord::Migration
     end
     if Default["is-pdx"] == "true"
       # #547
-      drop_table :backuptable # our weird stuff
+      begin
+        drop_table :backuptable # our weird stuff
+      rescue
+      end
       # #579
       if !VolunteerTaskType.find_by_name('case management') # our stuff
         vt = VolunteerTaskType.new
