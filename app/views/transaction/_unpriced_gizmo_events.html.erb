@@ -22,7 +22,7 @@
             @js += "add_#{@gizmo_context.name}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}"
             @js += ", #{line.system_id}" if line.system_id
             @js += ", #{line.recycling_contract_id}" if line.recycling_contract_id
-            @js += ", #{line.covered || "undefined"}" if params[:controller] == "recyclings" && coveredness_enabled
+            @js += ", #{line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false")}" if params[:controller] == "recyclings" && coveredness_enabled
             @js += ");"
           end
           %>
