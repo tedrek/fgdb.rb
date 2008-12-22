@@ -319,7 +319,7 @@ function add_priced_gizmo_event_from_form()
     string += ", $('covered').checked";
   }
   if($('contract_id') != null) {
-    string += ", $('contract_id').selectedIndex";
+    string += ", $('contract_id').value";
   }
   string += ");";
   eval(string);
@@ -351,7 +351,7 @@ function add_unpriced_gizmo_event_from_form()
   }
   if(gizmo_context_name == "recycling") {
     if($('contract_id') != null) {
-      string += ", $('contract_id').selectedIndex";
+      string += ", $('contract_id').value";
     }
     else {
       string += ", undefined";
