@@ -130,6 +130,8 @@ function dollar_value(cents) {
 function coveredness_stuff(args, tr){
   if(!coveredness_enabled)
     return;
+  if($('covered') == null)
+    return;
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden("line", "covered", args['covered'], args['covered'], line_id));
 }
@@ -443,7 +445,7 @@ function get_donation_totals() {
     var type;
     var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
     type = (fees[type_id]['suggested'] > 0) ? 'suggested' : 'required';
-    if(arr[x].getElementsBySelector("td.covered").first().firstChild.value == "true")
+    if($('covered') && arr[x].getElementsBySelector("td.covered").first().firstChild.value == "true")
       type = "suggested";
     totals[type] += cent_value(get_node_value(arr[x], "td.total_price"));
   }
