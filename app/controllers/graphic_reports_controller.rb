@@ -2,8 +2,8 @@ class GraphicReportsController < ApplicationController
   layout :with_sidebar
 
   def view
-    start_date = Date.parse("2008-11-30")
-    number_of_weeks = 3
+    start_date = Date.parse(params[:conditions][:start_date])
+    number_of_weeks = params[:conditions][:number].to_i
     list = []
     number_of_weeks.times{|x|
       list << start_date + (7*x)
@@ -16,8 +16,23 @@ class GraphicReportsController < ApplicationController
     }
     @data[:income] = []
     list.each{|x|
-      @data[:income] << get_income_for_timerange(x.to_s, (x + 6).to_s)
+      @data[:income] << get_thing_for_timerange(x.to_s, second_timerange(x))
     }
+  end
+
+  def index
+    @conditions = OpenStruct.new
+  end
+
+  def second_timerange(first)
+    (first + 6).to_s
+  end
+
+  def get_thing_for_timerange(*args)
+    case params[:conditions][:report_type]
+      when "Income"
+      return get_income_for_timerange(*args)
+    end
   end
 
   def get_income_for_timerange(start_date, end_date)
