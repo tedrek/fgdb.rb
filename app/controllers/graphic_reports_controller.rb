@@ -16,7 +16,7 @@ class GraphicReportsController < ApplicationController
     }
     @data[:income] = []
     list.each{|x|
-      @data[:income] << get_income_for_timerange(x.to_s, (x + 6).to_s) * 5
+      @data[:income] << get_income_for_timerange(x.to_s, (x + 6).to_s)
     }
   end
 
