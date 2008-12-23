@@ -1,12 +1,8 @@
 <center>
-<h1>Report for blah</h1>
-<%# main data -- from "controller" %>
-<% @data = {} %>
-<% @x_axis = ['Jan', 'Feb', 'Mar', 'Apr'] %>
-<% @data[:thing] = [10, 20, 70, 150] %>
+<h1><%= @title %></h1>
 
 <%# generate teh graph %>
-<% max_from_data = @data.to_a.collect{|x,y| y.sort_by{|z| z}.last}.sort_by{|z| z}.last %>
+<% max_from_data = @data.to_a.collect{|x,y| y.sort_by{|z| z}.last}.sort_by{|z| z}.last || 0 %>
 <% difference = 1000 %>
 <% for i in [1000, 100, 50, 10, 1]
      if (max_from_data / i) > 1 and (max_from_data / i) < 10
