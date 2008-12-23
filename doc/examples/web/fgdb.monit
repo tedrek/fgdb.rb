@@ -1,6 +1,6 @@
 set logfile syslog facility log_daemon                                                                                                                                                                             
 set daemon 120                                                                                                                                                                                                     
-set alert ryan52@freegeek.org
+set alert ryan52@freegeek.org only on { nonexist, timeout, connection }
 set mail-format { from: monit@freegeek.org }
 
 check process nginx with pidfile /var/run/nginx.pid
