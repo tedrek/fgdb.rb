@@ -1,3 +1,11 @@
 #!/bin/sh
 
-awk -F = '/^[ \t]+branch_name/{sub("release_", "", $2); print $2}' $(dirname $(readlink -f $0))/../mr/.mrconfig
+cd `dirname $0`/..
+VERSION=$(head -1 ChangeLog | awk '{print $2}' | sed 's/[()]//g')
+DIST=$(head -1 ChangeLog | awk '{print $3}' | sed 's/[;]//g')
+if [ "$DIST" = "UNRELEASED" ]; then
+    echo "$VERSION (UNRELEASED)"
+else
+    echo "$VERSION"
+fi
+
