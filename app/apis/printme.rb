@@ -130,7 +130,7 @@ class PrintmeAPI < SoapsBase
   # Notes #
   #########
 
-  NoteStruct = Struct.new(:contact_id, :system_id, :body, :lshw_output) if !defined?(NoteStruct)
+  NoteStruct = Struct.new(:contact_id, :body, :lshw_output) if !defined?(NoteStruct)
 
   def empty_notes_struct
     NoteStruct.new
