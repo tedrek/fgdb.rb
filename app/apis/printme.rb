@@ -19,6 +19,9 @@ class PrintmeAPI < SoapsBase
     # Printme
     add_method("empty_struct")
     add_method("submit", "printme_struct")
+    # Notes
+    add_method("empty_notes_struct")
+    add_method("submit_notes", "notes_struct")
     # Random Crap
     add_method("get_system_for_report", "report_id")
     add_method("contract_label_for_system", "system_id")
@@ -119,6 +122,25 @@ class PrintmeAPI < SoapsBase
     rescue
       return error("Could not save the database record: #{$!.to_s}")
     end
+  end
+
+  #########
+  # Notes #
+  #########
+  NoteStruct = Struct.new(:contact_id, :system_id, :body)  if !defined?(PrintmeStruct)
+
+  def empty_notes_struct
+    NoteStruct.new
+  end
+
+  def submit_notes(notes_struct)
+    notes = Note.new(:contact_id => notes_struct.contact_id, :system_id => notes_struct.system_id, :body => body)
+    begin
+      notes.save!
+    rescue
+      return error("Failed to save: #{$!.to_s}")
+    end
+    return notes.id
   end
 
   ###############
