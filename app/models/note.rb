@@ -8,25 +8,27 @@ class Note < ActiveRecord::Base
 
   attr_accessor :lshw_output
 
-  def initialize(*args)
-    super(*args)
+  before_save :set_system
 
-    parse_stuff(@lshw_output)
+  def set_system
+    if !self.system
+      parse_stuff(@lshw_output)
 
-    found_system = find_system_id
-    if found_system
-      self.system = System.find_by_id(found_system)
-    else
-      self.system = System.new
-      system.system_model  = @system_model
-      system.system_serial_number  = @system_serial_number
-      system.system_vendor  = @system_vendor
-      system.mobo_model  = @mobo_model
-      system.mobo_serial_number  = @mobo_serial_number
-      system.mobo_vendor  = @mobo_vendor
-      system.model  = @model
-      system.serial_number  = @serial_number
-      system.vendor  = @vendor
+      found_system = find_system_id
+      if found_system
+        self.system = System.find_by_id(found_system)
+      else
+        self.system = System.new
+        system.system_model  = @system_model
+        system.system_serial_number  = @system_serial_number
+        system.system_vendor  = @system_vendor
+        system.mobo_model  = @mobo_model
+        system.mobo_serial_number  = @mobo_serial_number
+        system.mobo_vendor  = @mobo_vendor
+        system.model  = @model
+        system.serial_number  = @serial_number
+        system.vendor  = @vendor
+      end
     end
   end
 end
