@@ -117,7 +117,7 @@ class PrintmeAPI < SoapsBase
       if report.xml_is_good
         return report.id
       else
-        error("Invalid XML! Report id is #{report.id}. Please report this bug.")
+        return error("Invalid XML! Report id is #{report.id}. Please report this bug.")
       end
     rescue
       return error("Could not save the database record: #{$!.to_s}")
