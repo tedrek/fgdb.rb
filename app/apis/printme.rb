@@ -27,6 +27,7 @@ class PrintmeAPI < SoapsBase
     add_method("contract_label_for_system", "system_id")
     add_method("type_description_for_system", "system_id")
     add_method("spec_sheet_url", "report_id")
+    add_method("system_url", "system_id")
     add_method("get_system_id", "xml")
   end
 
@@ -127,7 +128,7 @@ class PrintmeAPI < SoapsBase
   #########
   # Notes #
   #########
-  NoteStruct = Struct.new(:contact_id, :system_id, :body)  if !defined?(PrintmeStruct)
+  NoteStruct = Struct.new(:contact_id, :system_id, :body)  if !defined?(NoteStruct)
 
   def empty_notes_struct
     NoteStruct.new
@@ -161,6 +162,10 @@ class PrintmeAPI < SoapsBase
 
   def spec_sheet_url(report_id)
     "/spec_sheets/show/#{report_id}"
+  end
+
+  def system_url(system_id)
+    "/spec_sheets/system/#{system_id}"
   end
 
   def get_system_id(xml)
