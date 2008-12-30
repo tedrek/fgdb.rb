@@ -22,6 +22,7 @@ class PrintmeAPI < SoapsBase
     # Notes
     add_method("empty_notes_struct")
     add_method("submit_notes", "notes_struct")
+    add_method("get_system_for_note", "note_id")
     # Random Crap
     add_method("get_system_for_report", "report_id")
     add_method("contract_label_for_system", "system_id")
@@ -128,20 +129,25 @@ class PrintmeAPI < SoapsBase
   #########
   # Notes #
   #########
-  NoteStruct = Struct.new(:contact_id, :system_id, :body)  if !defined?(NoteStruct)
+
+  NoteStruct = Struct.new(:contact_id, :system_id, :body, :lshw_output) if !defined?(NoteStruct)
 
   def empty_notes_struct
     NoteStruct.new
   end
 
   def submit_notes(notes_struct)
-    notes = Note.new(:contact_id => notes_struct.contact_id, :system_id => notes_struct.system_id, :body => notes_struct.body)
+    notes = Note.new(:contact_id => notes_struct.contact_id, :system_id => notes_struct.system_id, :body => notes_struct.body, :lshw_output => notes_struct.lshw_output)
     begin
       notes.save!
     rescue
       return error("Failed to save: #{$!.to_s}")
     end
     return notes.id
+  end
+
+  def get_system_for_note(note_id)
+    return Note.find_by_id(note_id).system.id
   end
 
   ###############
