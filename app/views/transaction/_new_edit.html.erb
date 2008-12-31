@@ -4,7 +4,7 @@
     <%= loading_indicator_tag("new_#{@transaction_type}_loading") %>
   </div>
 </div>
-<div id="<%= element_messages_id(@options) %>" class="messages-container">
+<div id="<%= h element_messages_id(@options) %>" class="messages-container">
   <div id="<%= messages_id(params) %>">
     <%= render :partial => 'form_messages' %>
   </div>
@@ -17,8 +17,8 @@
   </script>
 <% end %>
 
-<div id="<%= element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
-  <div id="<%= element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
+<div id="<%= h element_row_id(@options) %>" <%= "style=\"display:none;\"" if request.xhr? %>>
+  <div id="<%= h element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
 
     <% form_remote_tag :url => @options.merge(:controller => base_controller),
        :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}'); Form.disable('#{element_form_id(@options)}');",
