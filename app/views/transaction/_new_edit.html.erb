@@ -45,7 +45,7 @@
     <% end %>
 
   <%= js = "contracts_notes = new Array();"
-      Contract.find(:all).collect{|x| [x.id, x.notes]}.each{|x,y|
+      Contract.find(:all).collect{|x| [h(x.id), h(x.notes)]}.each{|x,y|
         js += "contracts_notes['#{x}'] = '#{escape_javascript(y)}';"
       }
      javascript_tag js %>
