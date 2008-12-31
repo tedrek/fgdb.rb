@@ -50,7 +50,7 @@
                              "conditions[contact_id]" => @contact.id,
                              "conditions[contact_enabled]" => "true"
                              ) %>
-    : <%= last_one.map{|d,c| "#{c} #{d}"}.join(", ") %>
+    : <%= last_one.map{|d,c| "#{h c} #{h d}"}.join(", ") %>
   </div>
 <% end %>
 <% end %>
