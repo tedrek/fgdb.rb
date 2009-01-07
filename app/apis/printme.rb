@@ -137,7 +137,7 @@ class PrintmeAPI < SoapsBase
   end
 
   def submit_notes(notes_struct)
-    notes = Note.new(:contact_id => notes_struct.contact_id, :system_id => notes_struct.system_id, :body => notes_struct.body, :lshw_output => notes_struct.lshw_output)
+    notes = Note.new(:contact_id => notes_struct.contact_id, :body => notes_struct.body, :lshw_output => notes_struct.lshw_output)
     begin
       notes.save!
     rescue
