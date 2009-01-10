@@ -1,4 +1,4 @@
-fgdb.rb (1.0.24) UNRELEASED; urgency=low
+fgdb.rb (1.0.24) released; urgency=low
 
   * clean up some old cruft
   * create ChangeLog file
@@ -10,7 +10,7 @@ fgdb.rb (1.0.24) UNRELEASED; urgency=low
   * fix some XSS bugs
   * first part of graphic reports
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Jan 2009 01:51:55 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Jan 2009 01:58:00 -0800
 
 fgdb.rb (1.0.23) released; urgency=low
 
