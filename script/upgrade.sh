@@ -13,5 +13,5 @@ git checkout -b release_1.0.$NEW origin/release_1.0.$NEW
 sudo env RAILS_ENV=production rake db:migrate
 pg_dump fgdb_production > ~/post-sprint-$NEW.sql
 
-invoke-rc.d thin start
-mv public/release.html public/_release.html
+sudo invoke-rc.d thin start
+sudo mv public/release.html public/_release.html
