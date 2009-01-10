@@ -1,3 +1,5 @@
+<%= render :partial => 'beta' %>
+
 <% form_for "conditions", :url => {:action => "view"} do |f| %>
 <%= f.label "report_type", "Report Type" %>
 <%= f.select "report_type", ["Income"].map{|x| [x,x]} %>
