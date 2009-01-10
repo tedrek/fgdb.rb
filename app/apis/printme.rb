@@ -19,11 +19,16 @@ class PrintmeAPI < SoapsBase
     # Printme
     add_method("empty_struct")
     add_method("submit", "printme_struct")
+    # Notes
+    add_method("empty_notes_struct")
+    add_method("submit_notes", "notes_struct")
+    add_method("get_system_for_note", "note_id")
     # Random Crap
     add_method("get_system_for_report", "report_id")
     add_method("contract_label_for_system", "system_id")
     add_method("type_description_for_system", "system_id")
     add_method("spec_sheet_url", "report_id")
+    add_method("system_url", "system_id")
     add_method("get_system_id", "xml")
   end
 
@@ -42,10 +47,10 @@ class PrintmeAPI < SoapsBase
 
   public
   def version_compat(client_version)
-    server_hash[version].include?(client_version)
+    server_hash[version].class != Array || server_hash[version].include?(client_version)
   end
   def version
-    9
+    10
   end
   def bad_client_error
     "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."
@@ -66,6 +71,7 @@ class PrintmeAPI < SoapsBase
     server_versions[7] = [7]      # forced. fix contracts support. (bad builder problem)
     server_versions[8] = [8]      # forced. fix contracts support. (my bugs)
     server_versions[9] = [9]      # rewrite with soap...FORCED!!! :)
+    server_versions[10] = [9,10]  # all good
     server_versions
   end
 
@@ -114,11 +120,35 @@ class PrintmeAPI < SoapsBase
       if report.xml_is_good
         return report.id
       else
-        error("Invalid XML! Report id is #{report.id}. Please report this bug.")
+        return error("Invalid XML! Report id is #{report.id}. Please report this bug.")
       end
     rescue
       return error("Could not save the database record: #{$!.to_s}")
     end
+  end
+
+  #########
+  # Notes #
+  #########
+
+  NoteStruct = Struct.new(:contact_id, :body, :lshw_output) if !defined?(NoteStruct)
+
+  def empty_notes_struct
+    NoteStruct.new
+  end
+
+  def submit_notes(notes_struct)
+    notes = Note.new(:contact_id => notes_struct.contact_id, :body => notes_struct.body, :lshw_output => notes_struct.lshw_output)
+    begin
+      notes.save!
+    rescue
+      return error("Failed to save: #{$!.to_s}")
+    end
+    return notes.id
+  end
+
+  def get_system_for_note(note_id)
+    return Note.find_by_id(note_id).system.id
   end
 
   ###############
@@ -139,6 +169,10 @@ class PrintmeAPI < SoapsBase
 
   def spec_sheet_url(report_id)
     "/spec_sheets/show/#{report_id}"
+  end
+
+  def system_url(system_id)
+    "/spec_sheets/system/#{system_id}"
   end
 
   def get_system_id(xml)

@@ -6,7 +6,7 @@
         Vendor:
       </td>
       <td>
-        <%= @report.system.vendor %>
+        <%= h @report.system.vendor %>
       </td>
     </tr>
     <tr>
@@ -14,7 +14,7 @@
         Model:
       </td>
       <td>
-        <%= @report.system.model %>
+        <%= h @report.system.model %>
       </td>
     </tr>
     <tr>
@@ -22,7 +22,7 @@
         Serial Number:
       </td>
       <td>
-        <%= @report.system.serial_number %>
+        <%= h @report.system.serial_number %>
       </td>
     </tr>
     <% @parser.xml_foreach("class", "processor") do %>
@@ -58,10 +58,21 @@
     <% @parser.find_the_biggest("id", "usbhost", "capability", "USB ") do |value| %>
       <tr>
         <td>
-          USB Version:
+          Supports:
         </td>
         <td>
-          <%= value %>
+          USB <%= value %>
+        </td>
+      </tr>
+    <% end %>
+    <% a = []; @parser.xml_foreach("id", "storage|ide|scsi") do a << @parser.xml_value_of("product") + @parser.xml_value_of("description") end %>
+    <% a.collect{|x| if x.match(/(scsi|sata|ide)/i); $1.upcase; else nil; end}.delete_if{|x| x.nil?}.uniq.each do |x| %>
+      <tr>
+        <td>
+          Supports:
+        </td>
+        <td>
+          <%= x %>
         </td>
       </tr>
     <% end %>

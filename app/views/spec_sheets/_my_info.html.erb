@@ -1,3 +1,17 @@
+<fieldset style="background-color: Blue; font-size: 15pt; width: auto;">
+  <h1>
+    Double check the hard drive type, please
+  </h1>
+  <p>
+    A new feature was added to this report, which is detecting the type of hard drive (SATA, IDE, etc) in the system.
+    <br /><br />
+    Please check that it's correct below, and if it isn't please report the problem and the report id to Ryan.
+    <br />
+    (or ask your build instructor/shop lead to do so)
+    <br /><br />
+    Thanks!
+  </p>
+</fieldset>
 <fieldset style="background-color: Lime; width: auto">
   <h1>
     Summary of this report:
@@ -17,7 +31,7 @@
       </td>
       <td>
         <% if true || (@current_user and @current_user.has_role?('CONTACT_MANAGER')) %>
-          <%= (@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
+          <%= h(@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
         <% else %>
           <%= (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
         <% end %>
@@ -28,7 +42,7 @@
         Technician's Job:
       </td>
       <td>
-        <%= @report.action && @report.action.description || "Unknown" %>
+        <%= @report.action && h(@report.action.description) || "Unknown" %>
       </td>
     </tr>
     <tr>
@@ -44,7 +58,7 @@
         Type of System:
       </td>
       <td>
-        <%= @report.type && @report.type.description || "Unknown" %>
+        <%= @report.type && h(@report.type.description) || "Unknown" %>
       </td>
     </tr>
     <tr>
@@ -52,7 +66,7 @@
         Contract:
       </td>
       <td>
-        <%= @report.system.contract.description %>
+        <%= h @report.system.contract.description %>
       </td>
     </tr>
     <tr>
@@ -68,7 +82,7 @@
         Notes:
       </td>
       <td>
-        <%= @report.notes.gsub("\n", "<br />") %>
+        <%= h(@report.notes).gsub("\n", "<br />") %>
       </td>
     </tr>
     <tr>
