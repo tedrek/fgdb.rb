@@ -21,10 +21,10 @@ git commit -m "releasing"
 VERSION=$(dpkg-parsechangelog -lChangeLog | awk -F": " '/^Version: /{print $2}')
 git tag $VERSION
 git checkout -b release_$VERSION
+git push fg master:master
 git push fg release_$VERSION:release_$VERSION
 git config branch.release_$VERSION.remote origin
 git config branch.release_$VERSION.merge release_$VERSION
-git push fg master:master
 git push fg --tags
 git checkout master
 dch -c ChangeLog -i --dist UNRELEASED ""
