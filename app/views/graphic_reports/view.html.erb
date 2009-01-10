@@ -20,7 +20,7 @@
      legend_arr << k.to_s.titleize
      data_arr << v
    } %>
-<%= Gchart.line(:data => data_arr, :axis_with_labels => 'x,y', :axis_labels => [@x_axis, y_axis], :title => "", :line_colors => ['76A4FB', 'FF0000', '00A550'], :width => 700, :height => 300, :legend => legend_arr, :max_value => max, :format => "img_tag") %>
+<%= Gchart.line(:data => data_arr, :axis_with_labels => 'x,y', :axis_labels => [@x_axis, y_axis], :title => "", :line_colors => ['76A4FB', 'FF0000', '00A550'], :width => 700, :height => 300, :legend => legend_arr, :max_value => max, :format => "img_tag", :alt => "Imagine a purdy graph/chart here.") %>
 
 <% def table
      tag("table")
