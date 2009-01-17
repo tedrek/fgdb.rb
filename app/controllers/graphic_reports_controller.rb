@@ -1,6 +1,7 @@
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
 
+  # TODO: just move this to public/images/tmp or somethin
   def get_temp_file
     file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
     respond_to do |format|
