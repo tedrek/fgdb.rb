@@ -47,6 +47,15 @@
             <%= @parser.xml_value_of("size").to_bytes(0, false, false) %>
           </td>
         </tr>
+      <% elsif @parser.xml_if("capacity")%>
+        <tr>
+          <td>
+            Capacity:
+          </td>
+          <td>
+            <%= @parser.xml_value_of("capacity").to_bytes(0, false, false) %>
+          </td>
+        </tr>
       <% end %>
       <% counter = 0 %>
       <% @parser.xml_foreach("id", "volume") do counter += 1 end %>
