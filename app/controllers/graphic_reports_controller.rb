@@ -74,7 +74,7 @@ class GraphicReportsController < ApplicationController
   # Random helper crap #
   ######################
 
-  def generate_report_info
+  def generate_report_data
     list = []
     @start_date = Date.parse(params[:conditions][:start_date])
     @start_date = back_up_to_last_thing(@start_date)
