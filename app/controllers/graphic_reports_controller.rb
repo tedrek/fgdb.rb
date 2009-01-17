@@ -1,6 +1,14 @@
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
 
+  def get_temp_file
+    file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
+    respond_to do |format|
+      format.jpeg { render :text => File.read(file) }
+    end
+    File.unlink(file)
+  end
+
   def view
     generate_report_data
   end
