@@ -136,7 +136,14 @@ class Conditions
   end
 
   def contract_conditions(klass)
-    ["(donation_id IN (SELECT id FROM donations WHERE contract_id = ?) OR system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR recycling_contract_id = ?)", @contract_id, @contract_id, @contract_id]
+    if klass == GizmoEvent
+      ["(donation_id IN (SELECT id FROM donations WHERE contract_id = ?) OR system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR recycling_contract_id = ?)", @contract_id, @contract_id, @contract_id]
+    elsif klass == Donation
+      ["contract_id = ?", @contract_id]
+    else # recyclings and disbursements
+      puts @contract_id
+      ["(gizmo_events.system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR gizmo_events.recycling_contract_id = ?)", @contract_id, @contract_id]
+    end
   end
 
   def id_conditions(klass)
