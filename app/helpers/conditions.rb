@@ -191,7 +191,7 @@ class Conditions
   end
 
   def flagged_conditions(klass)
-    return ["#{klass.table_name}.flagged = t"]
+    return ["#{klass.table_name}.flag = 't'"]
   end
 
   def system_conditions(klass)
