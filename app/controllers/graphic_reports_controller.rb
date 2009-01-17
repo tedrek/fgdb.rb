@@ -6,7 +6,8 @@ class GraphicReportsController < ApplicationController
   end
 
   def index
-    @conditions = OpenStruct.new
+    @report_types = report_types
+    @breakdown_types = breakdown_types
   end
 
   private
@@ -57,9 +58,19 @@ class GraphicReportsController < ApplicationController
     end
   end
 
+  # list of breakdown types
+  def breakdown_types
+    ["Weekly"]
+  end
+
   #####################
   # Report type stuff #
   #####################
+
+  # list of report types
+  def report_types
+    ["Income"]
+  end
 
   # returns the title for that report type
   def get_title
