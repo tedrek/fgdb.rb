@@ -89,14 +89,7 @@ class GraphicReportsController < ApplicationController
   def graph_x_axis_for(x_axis)
     case params[:conditions][:breakdown_type]
     when "Quarterly"
-      if @x_axis.length > 6
-        # make it shorter (might not have to do this if a better graphing thingy is used)
-        if x_axis.match(/Q1/)
-          return x_axis.sub(/-Q1/, "")
-        else
-          return ""
-        end
-      end
+      return x_axis.sub("-Q", ".")
     end
     return x_axis
   end
