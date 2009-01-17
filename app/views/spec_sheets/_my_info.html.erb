@@ -36,7 +36,7 @@
         System ID:
       </td>
       <td>
-        <%= @report.system.id %>
+        <%= link_to @report.system.id, :action => "system", :id => @report.system.id %>
       </td>
     </tr>
     <tr>
