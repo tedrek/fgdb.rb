@@ -97,8 +97,9 @@ class GraphicReportsController < ApplicationController
   end
 
   # calls a method specific to that report that takes two arguements,
-  # a start date and an end date, and returns the number that should
-  # be plotted for that date range
+  # a start date and an end date, and returns a hash (one element for
+  # each line) with the key being the name of the line and the value
+  # the number to be plotted for that date range
   def get_thing_for_timerange(*args)
     case params[:conditions][:report_type]
       when "Income"
@@ -125,9 +126,13 @@ class GraphicReportsController < ApplicationController
     list.each{|x|
       @x_axis << x_axis_for(x)
     }
-    @data[:income] = []
     list.each{|x|
-      @data[:income] << get_thing_for_timerange(x.to_s, second_timerange(x).to_s)
+      get_thing_for_timerange(x.to_s, second_timerange(x).to_s).each{|k,v|
+        if !@data[k]
+          @data[k] = []
+        end
+        @data[k] << v
+      }
     }
   end
 
@@ -141,6 +146,7 @@ class GraphicReportsController < ApplicationController
 
   def get_income_for_timerange(start_date, end_date)
     r = ReportsController.new
-    r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date})[:grand_totals]["total"]["total"][:total] / 100.0
+    thing = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date})[:grand_totals]["total"]["total"][:total] / 100.0
+    {:income => thing}
   end
 end
