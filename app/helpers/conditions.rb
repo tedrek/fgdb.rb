@@ -141,7 +141,6 @@ class Conditions
     elsif klass == Donation
       ["contract_id = ?", @contract_id]
     else # recyclings and disbursements
-      puts @contract_id
       ["(gizmo_events.system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR gizmo_events.recycling_contract_id = ?)", @contract_id, @contract_id]
     end
   end
