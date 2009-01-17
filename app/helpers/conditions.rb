@@ -6,7 +6,7 @@ class Conditions
 
   CONDS = (%w[
       id contact_type needs_attention anonymous unresolved_invoices
-      payment_method payment_amount gizmo_type_id
+      payment_method payment_amount gizmo_type_id covered
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by
     ] + DATES).uniq
@@ -31,6 +31,8 @@ class Conditions
   end
 
   attr_accessor :created_by, :cashier_created_by
+
+  attr_accessor :covered
 
   attr_accessor :contact_id
 
@@ -101,6 +103,10 @@ class Conditions
             (conds_a[0].empty? ? '' : ' AND ') +
             conds_b[0].to_s
            ] + conds_a[1..-1] + conds_b[1..-1]
+  end
+
+  def covered_conditions(klass)
+    ["gizmo_events.covered = ?", @covered != 0]
   end
 
   def payment_amount_conditions(klass)
