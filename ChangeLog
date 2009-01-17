@@ -1,8 +1,9 @@
 fgdb.rb (1.0.25) UNRELEASED; urgency=low
 
-  * 
+  * fix searching for transactions by contract
+  * add ability to reset a persons cashier code
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Jan 2009 02:24:11 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Jan 2009 18:26:13 -0800
 
 fgdb.rb (1.0.24) released; urgency=low
 
