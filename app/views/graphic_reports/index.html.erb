@@ -6,9 +6,10 @@
 <%= f.label "breakdown_type", "Breakdown Type" %>
 <%= f.select "breakdown_type", ["Weekly"].map{|x| [x,x]} %>
 <%= f.label "number", "Number of Breakdowns" %>
-<%= f.text_field "number" %>
 <%= f.label "start_date", "Start Date" %>
 <%= calendar_box("conditions", "start_date") %>
+<%= f.label "end_date", "End Date" %>
+<%= calendar_box("conditions", "end_date") %>
 <%= f.label "submit", "" %>
 <%= f.submit "Go!" %>
 <% end %>

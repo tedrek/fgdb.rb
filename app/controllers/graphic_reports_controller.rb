@@ -15,6 +15,15 @@ class GraphicReportsController < ApplicationController
   # Time range type stuff #
   #########################
 
+  # should return the total number of things that should be on the x
+  # axis, minus one (this makes logical sense for simplicity)
+  def number_between_them(end_date)
+    case params[:conditions][:breakdown_type]
+    when "Weekly"
+      (end_date - @start_date).to_i / 7
+    end
+  end
+
   # returns true if this is a "good" date (ie, the beginning of the
   # week), or if it needs to be backed up further
   def is_last_thing?(date)
@@ -78,7 +87,9 @@ class GraphicReportsController < ApplicationController
     list = []
     @start_date = Date.parse(params[:conditions][:start_date])
     @start_date = back_up_to_last_thing(@start_date)
-    params[:conditions][:number].to_i.times{|x|
+    end_date = Date.parse(params[:conditions][:end_date])
+    end_date = back_up_to_last_thing(end_date)
+    (number_between_them(end_date) + 1).times{|x|
       list << get_this_one(x)
     }
     @title = get_title
