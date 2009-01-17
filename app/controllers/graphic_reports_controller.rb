@@ -64,6 +64,23 @@ class GraphicReportsController < ApplicationController
     end
   end
 
+  # takes in what x_axis_for outputted and reformats it for the graph
+  # (make it shorter and such)
+  def graph_x_axis_for(x_axis)
+    case params[:conditions][:breakdown_type]
+    when "Quarterly"
+      if @x_axis.length > 6
+        # make it shorter (might not have to do this if a better graphing thingy is used)
+        if x_axis.match(/Q1/)
+          return x_axis.sub(/-Q1/, "")
+        else
+          return ""
+        end
+      end
+    end
+    return x_axis
+  end
+
   # get the last day in the range
   def second_timerange(first)
     case params[:conditions][:breakdown_type]
@@ -129,6 +146,10 @@ class GraphicReportsController < ApplicationController
     @x_axis = []
     list.each{|x|
       @x_axis << x_axis_for(x)
+    }
+    @graph_x_axis = []
+    @x_axis.each{|x|
+      @graph_x_axis << graph_x_axis_for(x)
     }
     list.each{|x|
       get_thing_for_timerange(x.to_s, second_timerange(x).to_s).each{|k,v|
