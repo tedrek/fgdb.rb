@@ -26,15 +26,15 @@
 <table style="border-collapse: collapse;" border="1" width="100%">
   <tr>
     <th />
-    <% @x_axis.each do |x| %>
-      <th><%= x %></th>
+    <% @data.each do |k,v| %>
+        <th><%= k.to_s.titleize %></th>
     <% end %>
   </tr>
-  <% @data.each do |k,v| %>
+  <% @x_axis.each_with_index do |x,i| %>
     <tr>
-      <th><%= k.to_s.titleize %></th>
-      <% v.each do |y|%>
-        <td><%= y %></td>
+      <th><%= x %></th>
+      <% @data.each do |k,v|%>
+        <td><%= v[i] %></td>
       <% end %>
     </tr>
   <% end %>
