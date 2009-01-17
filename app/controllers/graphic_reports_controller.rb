@@ -85,7 +85,7 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Income"]
+    ["Income", "Average Frontdesk Income"]
   end
 
   # returns the title for that report type
@@ -93,6 +93,8 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:report_type]
       when "Income"
       "Income report"
+      when "Average Frontdesk Income"
+      "Report of Average Income at Front Desk"
     end
   end
 
@@ -102,8 +104,10 @@ class GraphicReportsController < ApplicationController
   # the number to be plotted for that date range
   def get_thing_for_timerange(*args)
     case params[:conditions][:report_type]
-      when "Income"
+    when "Income"
       get_income_for_timerange(*args)
+    when "Average Frontdesk Income"
+      get_average_frontdesk(*args)
     end
   end
 
@@ -134,6 +138,11 @@ class GraphicReportsController < ApplicationController
         @data[k] << v
       }
     }
+    if false # || true
+      require 'pp'
+      pp @data
+      render :text => "BLAH"
+    end
   end
 
   def back_up_to_last_thing(date)
@@ -144,9 +153,38 @@ class GraphicReportsController < ApplicationController
     return temp
   end
 
-  def get_income_for_timerange(start_date, end_date)
+  def created_at_conditions_for_report(start_date, end_date)
+    {"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date}
+  end
+
+  def call_income_report(*args)
     r = ReportsController.new
-    thing = r.income_report({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date})[:grand_totals]["total"]["total"][:total] / 100.0
+    r.income_report(created_at_conditions_for_report(*args))
+  end
+
+  def find_all_donations(*args)
+    c = Conditions.new
+    c.apply_conditions(created_at_conditions_for_report(*args))
+    n = Donation.number_by_conditions(c)
+  end
+
+  def get_average_frontdesk(*args)
+    thing = call_income_report(*args)[:donations].select{|k,v| !k.match(/total/)}.map{|x| x[1]}.map{|x| {:required => x["fees"][:total], :suggested => x["suggested"][:total]}}
+    suggested = thing.map{|x| x[:suggested]}.inject(0.0){|x,y| x+y} / 100.0
+    fees = thing.map{|x| x[:required]}.inject(0.0){|x,y| x+y} / 100.0
+    number = find_all_donations(*args)
+    total = suggested + fees
+    suggested = suggested / number
+    fees = fees / number
+    total = total / number
+    suggested = 0.0 if suggested.nan?
+    fees = 0.0 if fees.nan?
+    total = 0.0 if total.nan?
+    {:fees => fees, :suggested => suggested, :total => total}
+  end
+
+  def get_income_for_timerange(*args)
+    thing = call_income_report(*args)[:grand_totals]["total"]["total"][:total] / 100.0
     {:income => thing}
   end
 end
