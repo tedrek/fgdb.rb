@@ -6,8 +6,9 @@ fgdb.rb (1.0.25) UNRELEASED; urgency=low
   * add a report over time for average amount donated for each donation
   * add quarterly breakdown to reports over time
   * minor bug fixes
+  * add a few conditions and stuff
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Jan 2009 22:48:28 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Jan 2009 00:36:26 -0800
 
 fgdb.rb (1.0.24) released; urgency=low
 
