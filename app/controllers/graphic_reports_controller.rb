@@ -22,6 +22,8 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:breakdown_type]
     when "Weekly"
       (end_date - @start_date).to_i / 7
+    when "Quarterly"
+      (end_date - @start_date).to_i / 90 # MEEP. fix me.
     end
   end
 
@@ -31,6 +33,8 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:breakdown_type]
     when "Weekly"
       date.strftime("%a") == "Sun"
+    when "Quarterly"
+      true # MEEP. fix me.
     end
   end
 
@@ -39,6 +43,8 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:breakdown_type]
     when "Weekly"
       @start_date + (7*number)
+    when "Quarterly"
+      @start_date + (90*number) # MEEP. fix me.
     end
   end
 
@@ -47,6 +53,14 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:breakdown_type]
     when "Weekly"
       "Week of " + date.to_s
+    when "Quarterly"
+      string = date.strftime("%Y-Q")
+      temp = date.strftime("%m").to_i
+      hash = {:t1 => [1,2,3], :t2 => [4,5,6], :t3 => [7,8,9], :t4 => [10,11,12]}
+      hash.each{|k,v|
+        string += k.to_s.sub(/t/, "") if v.include?(temp)
+      }
+      string
     end
   end
 
@@ -54,13 +68,15 @@ class GraphicReportsController < ApplicationController
   def second_timerange(first)
     case params[:conditions][:breakdown_type]
     when "Weekly"
-      (first + 6).to_s
+      first + 6
+    when "Quarterly"
+      first + 89 # MEEP. fix me, please.
     end
   end
 
   # list of breakdown types
   def breakdown_types
-    ["Weekly"]
+    ["Weekly", "Quarterly"]
   end
 
   #####################
@@ -111,7 +127,7 @@ class GraphicReportsController < ApplicationController
     }
     @data[:income] = []
     list.each{|x|
-      @data[:income] << get_thing_for_timerange(x.to_s, second_timerange(x))
+      @data[:income] << get_thing_for_timerange(x.to_s, second_timerange(x).to_s)
     }
   end
 
