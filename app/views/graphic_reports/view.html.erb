@@ -22,20 +22,6 @@
    } %>
 <%= Gchart.line(:data => data_arr, :axis_with_labels => 'x,y', :axis_labels => [@graph_x_axis, y_axis], :title => "", :line_colors => ['76A4FB', 'FF0000', '00A550'], :width => 700, :height => 300, :legend => legend_arr, :max_value => max, :format => "img_tag", :alt => "Imagine a purdy graph/chart here.") %>
 
-<% def table
-     tag("table")
-   end
-   def tr
-     tag("tr")
-   end
-   def th
-     tag("th")
-   end
-   def td
-     tag("td")
-   end
-%>
-
 <%# generate teh table %>
 <table style="border-collapse: collapse;" border="1" width="100%">
   <tr>
