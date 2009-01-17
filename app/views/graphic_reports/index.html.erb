@@ -5,7 +5,6 @@
 <%= f.select "report_type", ["Income"].map{|x| [x,x]} %>
 <%= f.label "breakdown_type", "Breakdown Type" %>
 <%= f.select "breakdown_type", ["Weekly"].map{|x| [x,x]} %>
-<%= f.label "number", "Number of Breakdowns" %>
 <%= f.label "start_date", "Start Date" %>
 <%= calendar_box("conditions", "start_date") %>
 <%= f.label "end_date", "End Date" %>
