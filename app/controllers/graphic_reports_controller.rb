@@ -91,9 +91,7 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:breakdown_type]
     when "Quarterly"
       x_axis.match(/-Q(.)/)
-      t = x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
-      puts t
-      return t
+      return x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
     end
     return x_axis
   end
