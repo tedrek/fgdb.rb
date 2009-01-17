@@ -105,7 +105,7 @@ class GraphicReportsController < ApplicationController
 
   # list of breakdown types
   def breakdown_types
-    ["Weekly", "Quarterly"]
+    ["Quarterly", "Weekly"]
   end
 
   #####################
@@ -114,7 +114,7 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Income", "Average Frontdesk Income"]
+    ["Average Frontdesk Income", "Income"]
   end
 
   # returns the title for that report type
