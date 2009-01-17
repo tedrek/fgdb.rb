@@ -15,6 +15,8 @@ class GraphicReportsController < ApplicationController
   # Time range type stuff #
   #########################
 
+  # returns true if this is a "good" date (ie, the beginning of the
+  # week), or if it needs to be backed up further
   def is_last_thing?(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -22,6 +24,7 @@ class GraphicReportsController < ApplicationController
     end
   end
 
+  # get the date object for number "breakdowns" after the start date
   def get_this_one(number)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -29,6 +32,7 @@ class GraphicReportsController < ApplicationController
     end
   end
 
+  # convert a date object into the string that should be put on the x axis
   def x_axis_for(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -36,6 +40,7 @@ class GraphicReportsController < ApplicationController
     end
   end
 
+  # get the last day in the range
   def second_timerange(first)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -47,6 +52,7 @@ class GraphicReportsController < ApplicationController
   # Report type stuff #
   #####################
 
+  # returns the title for that report type
   def get_title
     case params[:conditions][:report_type]
       when "Income"
@@ -54,6 +60,9 @@ class GraphicReportsController < ApplicationController
     end
   end
 
+  # calls a method specific to that report that takes two arguements,
+  # a start date and an end date, and returns the number that should
+  # be plotted for that date range
   def get_thing_for_timerange(*args)
     case params[:conditions][:report_type]
       when "Income"
