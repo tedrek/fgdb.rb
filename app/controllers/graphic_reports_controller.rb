@@ -213,6 +213,9 @@ class GraphicReportsController < ApplicationController
     suggested = 0.0 if suggested.nan?
     fees = 0.0 if fees.nan?
     total = 0.0 if total.nan?
+    suggested = sprintf("%.2f", suggested).to_f
+    fees = sprintf("%.2f", fees).to_f
+    total = sprintf("%.2f", total).to_f
     {:fees => fees, :suggested => suggested, :total => total}
   end
 
