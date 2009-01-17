@@ -23,7 +23,14 @@ class GraphicReportsController < ApplicationController
     when "Weekly"
       (end_date - @start_date).to_i / 7
     when "Quarterly"
-      (end_date - @start_date).to_i / 90 # MEEP. fix me.
+      # EWWWW. this whole number_between_them needs to be eliminated
+      num = 0
+      curdate = @start_date
+      until curdate == end_date
+        curdate = Date.parse(increase_arr(curdate.to_s.split("-").map{|x| x.to_i}).join("-"))
+        num += 1
+      end
+      return num
     end
   end
 
@@ -34,7 +41,8 @@ class GraphicReportsController < ApplicationController
     when "Weekly"
       date.strftime("%a") == "Sun"
     when "Quarterly"
-      true # MEEP. fix me.
+      a = date.to_s.split("-")
+      return [1,4,7,10].include?(a[1].to_i) && a[2] == "01"
     end
   end
 
@@ -44,7 +52,11 @@ class GraphicReportsController < ApplicationController
     when "Weekly"
       @start_date + (7*number)
     when "Quarterly"
-      @start_date + (90*number) # MEEP. fix me.
+      d = @start_date.to_s.split("-").map{|x| x.to_i}
+      number.times{|x|
+        d = increase_arr(d)
+      }
+      Date.parse(d.map{|x| x.to_s}.join("-"))
     end
   end
 
@@ -87,7 +99,7 @@ class GraphicReportsController < ApplicationController
     when "Weekly"
       first + 6
     when "Quarterly"
-      first + 89 # MEEP. fix me, please.
+      Date.parse(increase_arr(first.to_s.split("-").map{|x| x.to_i}).join("-")) - 1
     end
   end
 
@@ -207,5 +219,15 @@ class GraphicReportsController < ApplicationController
   def get_income_for_timerange(*args)
     thing = call_income_report(*args)[:grand_totals]["total"]["total"][:total] / 100.0
     {:income => thing}
+  end
+
+  # used for quarterly
+  def increase_arr(d)
+    d[1] += 3
+    if d[1] > 12
+      d[1] = 1
+      d[0] += 1
+    end
+    d
   end
 end
