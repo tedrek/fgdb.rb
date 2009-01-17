@@ -12,6 +12,16 @@
       plot.notitle
       plot.ylabel ""
       plot.xlabel ""
+      plot.xtic "rotate by 90"
+      string = "("
+      string_a = []
+      @graph_x_axis.each_with_index{|x,i|
+        y = @x_axis[i]
+        string_a << "\"#{y}\" #{x}"
+      }
+      string += string_a.join(", ")
+      string += ")"
+      plot.xtics string
       @data.each do |k,v|
         plot.data << Gnuplot::DataSet.new( [@graph_x_axis, v] ) do |ds|
           ds.with = "linespoints"
