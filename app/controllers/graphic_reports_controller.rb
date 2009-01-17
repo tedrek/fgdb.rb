@@ -18,7 +18,7 @@ class GraphicReportsController < ApplicationController
   def is_last_thing?(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
-      return date.strftime("%a") == "Sun"
+      date.strftime("%a") == "Sun"
     end
   end
 
@@ -57,7 +57,7 @@ class GraphicReportsController < ApplicationController
   def get_thing_for_timerange(*args)
     case params[:conditions][:report_type]
       when "Income"
-      return get_income_for_timerange(*args)
+      get_income_for_timerange(*args)
     end
   end
 
