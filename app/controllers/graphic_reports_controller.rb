@@ -90,7 +90,10 @@ class GraphicReportsController < ApplicationController
   def graph_x_axis_for(x_axis)
     case params[:conditions][:breakdown_type]
     when "Quarterly"
-      return x_axis.sub("-Q", ".")
+      x_axis.match(/-Q(.)/)
+      t = x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
+      puts t
+      return t
     end
     return x_axis
   end
