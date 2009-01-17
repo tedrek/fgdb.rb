@@ -6,9 +6,9 @@ class Conditions
 
   CONDS = (%w[
       id contact_type needs_attention anonymous unresolved_invoices
-      payment_method payment_amount gizmo_type_id
+      payment_method payment_amount gizmo_type_id covered
       postal_code city phone_number contact volunteer_hours email
-      flagged system contract
+      flagged system contract created_by cashier_created_by
     ] + DATES).uniq
 
   for i in CONDS
@@ -29,6 +29,10 @@ class Conditions
 
     @payment_method_id = PaymentMethod.cash.id
   end
+
+  attr_accessor :created_by, :cashier_created_by
+
+  attr_accessor :covered
 
   attr_accessor :contact_id
 
@@ -99,6 +103,10 @@ class Conditions
             (conds_a[0].empty? ? '' : ' AND ') +
             conds_b[0].to_s
            ] + conds_a[1..-1] + conds_b[1..-1]
+  end
+
+  def covered_conditions(klass)
+    ["gizmo_events.covered = ?", @covered != 0]
   end
 
   def payment_amount_conditions(klass)
@@ -244,6 +252,14 @@ class Conditions
 
   def disbursed_at_conditions(klass)
     date_range(klass, 'disbursed_at', 'disbursed_at')
+  end
+
+  def created_by_conditions(klass)
+    ["created_by = ?", @created_by]
+  end
+
+  def cashier_created_by_conditions(klass)
+    ["cashier_created_by = ?", @cashier_created_by]
   end
 
   def date_range(klass, db_field, condition_name)
