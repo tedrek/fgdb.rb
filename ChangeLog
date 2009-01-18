@@ -1,8 +1,8 @@
 fgdb.rb (1.0.26) UNRELEASED; urgency=low
 
-  * 
+  * switch to gnuplot instead of google charts. this fixes bugs.
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Jan 2009 00:37:29 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Jan 2009 21:35:16 -0800
 
 fgdb.rb (1.0.25) released; urgency=low
 
