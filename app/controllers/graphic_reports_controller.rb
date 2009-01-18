@@ -48,7 +48,7 @@ class GraphicReportsController < ApplicationController
   def is_last_thing?(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
-      date.strftime("%a") == "Sun"
+      date.strftime("%a") == "Mon"
     when "Quarterly"
       a = date.to_s.split("-")
       return [1,4,7,10].include?(a[1].to_i) && a[2] == "01"
