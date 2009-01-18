@@ -167,7 +167,7 @@ class GraphicReportsController < ApplicationController
     (number_between_them(end_date) + 1).times{|x|
       list << get_this_one(x)
     }
-    @title = get_title
+    @title = get_title + " (broken down by #{params[:conditions][:breakdown_type].downcase.sub(/ly$/, "")})"
     @data = {}
     @x_axis = []
     list.each{|x|
