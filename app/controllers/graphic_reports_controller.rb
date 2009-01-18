@@ -92,6 +92,15 @@ class GraphicReportsController < ApplicationController
     when "Quarterly"
       x_axis.match(/-Q(.)/)
       return x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
+    when "Weekly"
+      date = Date.parse(x_axis.sub(/Week of /, ""))
+      other_thing = ((date.cweek / 53.0) * 100).to_i.to_s
+      if other_thing.length == 1
+        other_thing = "0" + other_thing
+      end
+      thing = date.year.to_s + "." + other_thing
+      puts thing
+      return thing
     end
     return x_axis
   end
