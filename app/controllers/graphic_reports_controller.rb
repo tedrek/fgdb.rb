@@ -1,7 +1,6 @@
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
 
-  # TODO: just move this to public/images/tmp or somethin
   def get_temp_file
     file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
     respond_to do |format|
@@ -69,7 +68,8 @@ class GraphicReportsController < ApplicationController
     end
   end
 
-  # convert a date object into the string that should be put on the x axis
+  # convert a date object into the string that should be put on the x
+  # axis, and on the left side of the table
   def x_axis_for(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -85,9 +85,10 @@ class GraphicReportsController < ApplicationController
     end
   end
 
-  # takes in what x_axis_for outputted and reformats it for the graph
-  # (make it shorter and such)
-  def graph_x_axis_for(x_axis)
+  # takes in what x_axis_for outputted, and the date object of the
+  # start date, and reformats it for the graph (as a number that will
+  # be used to place it somewhere on the x axis)
+  def graph_x_axis_for(x_axis, date)
     case params[:conditions][:breakdown_type]
     when "Quarterly"
       x_axis.match(/-Q(.)/)
@@ -173,8 +174,8 @@ class GraphicReportsController < ApplicationController
       @x_axis << x_axis_for(x)
     }
     @graph_x_axis = []
-    @x_axis.each{|x|
-      @graph_x_axis << graph_x_axis_for(x)
+    @x_axis.each_with_index{|x,i|
+      @graph_x_axis << graph_x_axis_for(x, list[i])
     }
     list.each{|x|
       get_thing_for_timerange(x.to_s, second_timerange(x).to_s).each{|k,v|
