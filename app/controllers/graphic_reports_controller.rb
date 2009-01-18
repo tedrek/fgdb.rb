@@ -7,7 +7,7 @@ class GraphicReportsController < ApplicationController
     respond_to do |format|
       format.jpeg { render :text => File.read(file) }
     end
-#    File.unlink(file)
+    File.unlink(file)
   end
 
   def view

@@ -2,7 +2,7 @@
 <h1><%= @title %></h1>
 
 <%# generate teh graph %>
-<% tempfile = Tempfile.new("graph", File.join(RAILS_ROOT, "tmp", "tmp")).path %>
+<% tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp %>
 <% basename = File.basename(tempfile).sub(".", "$") %>
 <%
   Gnuplot.open do |gp|
