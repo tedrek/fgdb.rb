@@ -98,8 +98,7 @@ class GraphicReportsController < ApplicationController
       if other_thing.length == 1
         other_thing = "0" + other_thing
       end
-      thing = date.year.to_s + "." + other_thing
-      puts thing
+      thing = date.cwyear.to_s + "." + other_thing
       return thing
     end
     return x_axis
