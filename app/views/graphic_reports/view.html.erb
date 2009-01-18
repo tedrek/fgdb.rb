@@ -17,7 +17,7 @@
       string_a = []
       @graph_x_axis.each_with_index{|x,i|
         y = @x_axis[i]
-        string_a << "\"#{y}\" #{x}"
+        string_a << "\" #{y}\" #{x}"
       }
       string += string_a.join(", ")
       string += ")"
