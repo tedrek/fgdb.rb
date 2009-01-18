@@ -94,8 +94,13 @@ class GraphicReportsController < ApplicationController
       return x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
     when "Weekly"
       date = Date.parse(x_axis.sub(/Week of /, ""))
-      other_thing = (date.cweek / 53.0).to_s.gsub(/0\./, "")
-      thing = date.cwyear.to_s + "." + other_thing
+      other_thing = (date.cweek / 52.0)
+      if other_thing >= 1.0
+        other_thing = 0.999
+      end
+      puts other_thing
+      thing = date.cwyear.to_s + "." + other_thing.to_s.gsub(/0\./, "")
+      puts thing
       return thing
     end
     return x_axis
