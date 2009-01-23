@@ -2,8 +2,10 @@ fgdb.rb (1.0.26) UNRELEASED; urgency=low
 
   * switch to gnuplot instead of google charts. this fixes bugs.
   * ignore invoices on the income report
+  * add yearly, monthly, and daily to the date breakdown types for
+    reports over time
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 22 Jan 2009 19:41:37 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 22 Jan 2009 22:19:24 -0800
 
 fgdb.rb (1.0.25) released; urgency=low
 
