@@ -1,3 +1,12 @@
+# TODO: reimplement Date class...we are converting between like 20
+# different formats, and it's a PITA. tho, now that I have it all
+# done, this todo will probably sit here for a few years...
+
+# make it so that you have methods like .add_month and such
+# cause there's a LOT of mess to do that kind of stuff
+# it could also help clean up getting the second date range and the
+# number between them, which are messy right now.
+
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
 
@@ -46,6 +55,8 @@ class GraphicReportsController < ApplicationController
       (end_date - @start_date).to_i
     when "Yearly"
       end_date.year - @start_date.year
+    when "Monthly"
+      ((end_date.year * 12) + end_date.month) - ((@start_date.year * 12) + @start_date.month)
     else
       raise NoMethodError
     end
@@ -68,6 +79,8 @@ class GraphicReportsController < ApplicationController
       true
     when "Yearly"
       date.day == 1 && date.month == 1
+    when "Monthly"
+      date.day == 1
     else
       raise NoMethodError
     end
@@ -97,6 +110,15 @@ class GraphicReportsController < ApplicationController
       end
     when "Yearly"
       Date.parse((@start_date.year + number).to_s + "-01-01")
+    when "Monthly"
+      month = @start_date.month
+      year = @start_date.year
+      month += number
+      while month > 12
+        year += 1
+        month -= 12
+      end
+      Date.parse("#{year}-#{month}-01")
     else
       raise NoMethodError
     end
@@ -120,6 +142,8 @@ class GraphicReportsController < ApplicationController
       date.to_s
     when "Yearly"
       date.year.to_s
+    when "Monthly"
+      date.strftime("%b %y")
     else
       raise NoMethodError
     end
@@ -144,6 +168,8 @@ class GraphicReportsController < ApplicationController
       date.year + (date.yday / 365.0)
     when "Yearly"
       x_axis
+    when "Monthly"
+      (date.year * 12) + date.month
     else
       raise NoMethodError
     end
@@ -160,6 +186,15 @@ class GraphicReportsController < ApplicationController
       first
     when "Yearly"
       Date.parse(first.year.to_s + "-12-31")
+    when "Monthly"
+      month = first.month
+      year = first.year
+      month += 1
+      if year > 12
+        year += 1
+        month -= 1
+      end
+      Date.parse("#{year}-#{month}-01") - 1
     else
       raise NoMethodError
     end
@@ -167,7 +202,7 @@ class GraphicReportsController < ApplicationController
 
   # list of breakdown types
   def breakdown_types
-    ["Quarterly", "Weekly", "Daily", "Yearly"]
+    ["Yearly", "Quarterly", "Monthly", "Weekly", "Daily"]
   end
 
   #####################
