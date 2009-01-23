@@ -200,7 +200,7 @@ class GraphicReportsController < ApplicationController
       list << get_this_one(x)
     }
     list.delete_if{|x| x.nil?}
-    @title = get_title + " (broken down by #{params[:conditions][:breakdown_type].downcase.sub(/ly$/, "")})"
+    @title = get_title + " (broken down by #{params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")})"
     @data = {}
     @x_axis = []
     list.each{|x|
