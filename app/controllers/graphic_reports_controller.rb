@@ -31,7 +31,10 @@ class GraphicReportsController < ApplicationController
     when "Weekly"
       (end_date - @start_date).to_i / 7
     when "Quarterly"
-      # EWWWW. this whole number_between_them needs to be eliminated
+      # EWWWW. this whole number_between_them needs to be
+      # eliminated. just do a "do {} while {current_date <=
+      # backed_up(end_date)}" or somethin like that instead of
+      # "number_between_them(blah).times{}".
       num = 0
       curdate = @start_date
       until curdate == end_date
@@ -39,6 +42,10 @@ class GraphicReportsController < ApplicationController
         num += 1
       end
       return num
+    when "Daily"
+      (end_date - @start_date).to_i
+    else
+      raise NoMethodError
     end
   end
 
@@ -51,10 +58,16 @@ class GraphicReportsController < ApplicationController
     when "Quarterly"
       a = date.to_s.split("-")
       return [1,4,7,10].include?(a[1].to_i) && a[2] == "01"
+    when "Daily"
+      true
+    else
+      raise NoMethodError
     end
   end
 
   # get the date object for number "breakdowns" after the start date
+  # return nil if you want that breakdown to be ignored (for example,
+  # ignoring weekends on daily breakdown)
   def get_this_one(number)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -65,6 +78,17 @@ class GraphicReportsController < ApplicationController
         d = increase_arr(d)
       }
       Date.parse(d.map{|x| x.to_s}.join("-"))
+    when "Daily w/weekends" # NOT ACTUALLY used.
+      @start_date + number
+    when "Daily"
+      date = @start_date + number
+      if [0,1].include?(date.wday) # MEEP. the hard coded sunday and monday are *HORRIBLE*
+        return nil
+      else
+        return date
+      end
+    else
+      raise NoMethodError
     end
   end
 
@@ -82,6 +106,10 @@ class GraphicReportsController < ApplicationController
         string += k.to_s.sub(/t/, "") if v.include?(temp)
       }
       string
+    when "Daily"
+      date.to_s
+    else
+      raise NoMethodError
     end
   end
 
@@ -92,19 +120,19 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:breakdown_type]
     when "Quarterly"
       x_axis.match(/-Q(.)/)
-      return x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
+      x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
     when "Weekly"
       date = Date.parse(x_axis.sub(/Week of /, ""))
       other_thing = (date.cweek / 52.0)
       if other_thing >= 1.0
         other_thing = 0.999
       end
-      puts other_thing
-      thing = date.cwyear.to_s + "." + other_thing.to_s.gsub(/0\./, "")
-      puts thing
-      return thing
+      date.cwyear.to_s + "." + other_thing.to_s.gsub(/0\./, "")
+    when "Daily"
+      date.year + (date.yday / 365.0)
+    else
+      raise NoMethodError
     end
-    return x_axis
   end
 
   # get the last day in the range
@@ -114,12 +142,16 @@ class GraphicReportsController < ApplicationController
       first + 6
     when "Quarterly"
       Date.parse(increase_arr(first.to_s.split("-").map{|x| x.to_i}).join("-")) - 1
+    when "Daily"
+      first
+    else
+      raise NoMethodError
     end
   end
 
   # list of breakdown types
   def breakdown_types
-    ["Quarterly", "Weekly"]
+    ["Quarterly", "Weekly", "Daily"]
   end
 
   #####################
@@ -167,6 +199,7 @@ class GraphicReportsController < ApplicationController
     (number_between_them(end_date) + 1).times{|x|
       list << get_this_one(x)
     }
+    list.delete_if{|x| x.nil?}
     @title = get_title + " (broken down by #{params[:conditions][:breakdown_type].downcase.sub(/ly$/, "")})"
     @data = {}
     @x_axis = []
@@ -185,11 +218,6 @@ class GraphicReportsController < ApplicationController
         @data[k] << v
       }
     }
-    if false # || true
-      require 'pp'
-      pp @data
-      render :text => "BLAH"
-    end
   end
 
   def back_up_to_last_thing(date)
