@@ -44,6 +44,8 @@ class GraphicReportsController < ApplicationController
       return num
     when "Daily"
       (end_date - @start_date).to_i
+    when "Yearly"
+      end_date.year - @start_date.year
     else
       raise NoMethodError
     end
@@ -51,6 +53,10 @@ class GraphicReportsController < ApplicationController
 
   # returns true if this is a "good" date (ie, the beginning of the
   # week), or if it needs to be backed up further
+  # NOTE: should be called is_first_thing? to make sense in this
+  # context
+  # this is pretty stupid, as it will require a lot of iterations for
+  # nothing. but it works.
   def is_last_thing?(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -60,6 +66,8 @@ class GraphicReportsController < ApplicationController
       return [1,4,7,10].include?(a[1].to_i) && a[2] == "01"
     when "Daily"
       true
+    when "Yearly"
+      date.day == 1 && date.month == 1
     else
       raise NoMethodError
     end
@@ -87,6 +95,8 @@ class GraphicReportsController < ApplicationController
       else
         return date
       end
+    when "Yearly"
+      Date.parse((@start_date.year + number).to_s + "-01-01")
     else
       raise NoMethodError
     end
@@ -108,6 +118,8 @@ class GraphicReportsController < ApplicationController
       string
     when "Daily"
       date.to_s
+    when "Yearly"
+      date.year.to_s
     else
       raise NoMethodError
     end
@@ -130,6 +142,8 @@ class GraphicReportsController < ApplicationController
       date.cwyear.to_s + "." + other_thing.to_s.gsub(/0\./, "")
     when "Daily"
       date.year + (date.yday / 365.0)
+    when "Yearly"
+      x_axis
     else
       raise NoMethodError
     end
@@ -144,6 +158,8 @@ class GraphicReportsController < ApplicationController
       Date.parse(increase_arr(first.to_s.split("-").map{|x| x.to_i}).join("-")) - 1
     when "Daily"
       first
+    when "Yearly"
+      Date.parse(first.year.to_s + "-12-31")
     else
       raise NoMethodError
     end
@@ -151,7 +167,7 @@ class GraphicReportsController < ApplicationController
 
   # list of breakdown types
   def breakdown_types
-    ["Quarterly", "Weekly", "Daily"]
+    ["Quarterly", "Weekly", "Daily", "Yearly"]
   end
 
   #####################
