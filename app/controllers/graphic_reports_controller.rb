@@ -216,9 +216,10 @@ class GraphicReportsController < ApplicationController
   end
 
   def get_average_frontdesk(*args)
-    thing = call_income_report(*args)[:donations].select{|k,v| !k.match(/total/)}.map{|x| x[1]}.map{|x| {:required => x["fees"][:total], :suggested => x["suggested"][:total]}}
-    suggested = thing.map{|x| x[:suggested]}.inject(0.0){|x,y| x+y} / 100.0
-    fees = thing.map{|x| x[:required]}.inject(0.0){|x,y| x+y} / 100.0
+    thing = call_income_report(*args)
+    thing = thing[:donations]["total real"] # WHY IS THERE A SPACE!?!?!
+    suggested = thing["suggested"][:total] / 100.0
+    fees = thing["fees"][:total] / 100.0
     number = find_all_donations(*args)
     total = suggested + fees
     suggested = suggested / number
