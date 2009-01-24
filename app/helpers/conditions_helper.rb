@@ -4,6 +4,7 @@ module ConditionsHelper
     Hash[hash.select{|k,v| keys.include?(k)}]
   end
 
+  # TODO: don't build them all and then take away, take away from the list before generating them
   def conditions_html(params_key = "conditions", these_things = nil)
     hash = {}
     Conditions.conds.each{|x|
@@ -40,7 +41,7 @@ module ConditionsHelper
   end
 
   def html_for_payment_method_condition(params_key)
-    render( :partial => 'payment_method_select',
+    render( :partial => 'transaction/payment_method_select',
             :locals => {:field_id_prefix => params_key,
               :field_name_prefix => params_key,
               :show_label => false,
@@ -103,11 +104,11 @@ module ConditionsHelper
   end
 
   def html_for_flagged_condition(params_key)
-    # BLAH
+    ""
   end
 
   def html_for_system_condition(params_key)
-    # BLAH
+    text_field(params_key, 'system_id')
   end
 
   def html_for_contract_condition(params_key)
