@@ -280,7 +280,7 @@ class GraphicReportsController < ApplicationController
   end
 
   def created_at_conditions_for_report(start_date, end_date)
-    {"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date}
+    params[:conditions].merge({"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => start_date, "created_at_end_date" => end_date, "created_at_enabled" => true})
   end
 
   def call_income_report(*args)
