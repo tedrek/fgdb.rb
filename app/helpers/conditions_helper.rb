@@ -25,7 +25,7 @@ module ConditionsHelper
   end
 
   def html_for_contact_type_condition(params_key)
-    # BLAH
+    collection_select(params_key, "contact_type", ContactType.find(:all), "id", "description")
   end
 
   def html_for_needs_attention_condition(params_key)
@@ -69,15 +69,15 @@ module ConditionsHelper
   end
 
   def html_for_postal_code_condition(params_key)
-    # BLAH
+    text_field(params_key, 'postal_code')
   end
 
   def html_for_city_condition(params_key)
-    # BLAH
+    text_field(params_key, 'city')
   end
 
   def html_for_phone_number_condition(params_key)
-    # BLAH
+    text_field(params_key, 'phone_number')
   end
 
   def html_for_contact_condition(params_key)
@@ -96,11 +96,19 @@ module ConditionsHelper
   end
 
   def html_for_volunteer_hours_condition(params_key)
-    # BLAH
+    select_visibility(
+                      'defaults',
+                      'volunteer_hours_type',
+                      [['exact', text_field('defaults', 'volunteer_hours_exact')],
+                       ['between', "%s to %s" % [text_field('defaults', 'volunteer_hours_low'),
+                                                 text_field('defaults', 'volunteer_hours_high')]],
+                       ['>=', text_field('defaults', 'volunteer_hours_ge')],
+                       ['<=', text_field('defaults', 'volunteer_hours_le')],
+                      ])
   end
 
   def html_for_email_condition(params_key)
-    # BLAH
+    text_field('defaults', 'email')
   end
 
   def html_for_flagged_condition(params_key)
