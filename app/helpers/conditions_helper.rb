@@ -65,7 +65,7 @@ module ConditionsHelper
   end
 
   def html_for_covered_condition(params_key)
-    # BLAH
+    check_box(params_key, 'covered')
   end
 
   def html_for_postal_code_condition(params_key)
@@ -97,18 +97,18 @@ module ConditionsHelper
 
   def html_for_volunteer_hours_condition(params_key)
     select_visibility(
-                      'defaults',
+                      params_key,
                       'volunteer_hours_type',
-                      [['exact', text_field('defaults', 'volunteer_hours_exact')],
-                       ['between', "%s to %s" % [text_field('defaults', 'volunteer_hours_low'),
-                                                 text_field('defaults', 'volunteer_hours_high')]],
-                       ['>=', text_field('defaults', 'volunteer_hours_ge')],
-                       ['<=', text_field('defaults', 'volunteer_hours_le')],
+                      [['exact', text_field(params_key, 'volunteer_hours_exact')],
+                       ['between', "%s to %s" % [text_field(params_key, 'volunteer_hours_low'),
+                                                 text_field(params_key, 'volunteer_hours_high')]],
+                       ['>=', text_field(params_key, 'volunteer_hours_ge')],
+                       ['<=', text_field(params_key, 'volunteer_hours_le')],
                       ])
   end
 
   def html_for_email_condition(params_key)
-    text_field('defaults', 'email')
+    text_field(params_key, 'email')
   end
 
   def html_for_flagged_condition(params_key)
