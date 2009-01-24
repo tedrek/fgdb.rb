@@ -81,18 +81,24 @@ module ConditionsHelper
   end
 
   def html_for_contact_condition(params_key)
-    contact_field('@' + params_key, 'contact_id',
-                  :locals => {:options =>
-                    {
-                      :object_name => params_key,
-                      :field_name => 'contact_id',
-                      :element_prefix => 'filter_contact',
-                      :display_edit => false,
-                      :display_create => false,
-                      :show_label => false,
-                    },
-                    :contact => eval("@" + params_key).contact
-                  } )
+    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK')
+      contact_field('@' + params_key, 'contact_id',
+                    :locals => {:options =>
+                      {
+                        :object_name => params_key,
+                        :field_name => 'contact_id',
+                        :element_prefix => 'filter_contact',
+                        :display_edit => false,
+                        :display_create => false,
+                        :show_label => false,
+                      },
+                      :contact => eval("@" + params_key).contact
+                    } )
+    elsif is_logged_in() && @current_user.contact_id
+      "Me" + hidden_field('defaults', 'contact_id', :value => @current_user.contact_id)
+    else
+      raise
+    end
   end
 
   def html_for_volunteer_hours_condition(params_key)
