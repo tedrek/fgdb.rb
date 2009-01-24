@@ -5,8 +5,10 @@ fgdb.rb (1.0.26) UNRELEASED; urgency=low
   * add yearly, monthly, and daily to the date breakdown types for
     reports over time
   * allow gizmo_types to be disabled without breaking stuff
+  * fix donation totals math
+  * fix deadbeat discount with coveredness
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Jan 2009 00:05:09 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Jan 2009 00:22:19 -0800
 
 fgdb.rb (1.0.25) released; urgency=low
 
