@@ -1,8 +1,10 @@
 fgdb.rb (1.0.27) UNRELEASED; urgency=low
 
-  * 
+  * clean up conditions a lot, so that all the html form side stuff
+    is shared
+  * add conditions support to graphic reports
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Jan 2009 00:49:29 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Jan 2009 02:15:49 -0800
 
 fgdb.rb (1.0.26) released; urgency=low
 
