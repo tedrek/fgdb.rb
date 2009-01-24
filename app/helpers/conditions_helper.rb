@@ -1,8 +1,8 @@
 module ConditionsHelper
   def conditions_html(params_key = "conditions", these_things = nil)
     hash = {}
-    Conditions.conds.select{|x| these_things.include?(x)}.each{|x|
-      if Conditions.dates.include?(x)
+    Conditions::CONDS.select{|x| these_things.include?(x)}.each{|x|
+      if Conditions::DATES.include?(x)
         hash[x] = date_or_date_range_picker(params_key, x)
       else
         hash[x] = eval("html_for_" + x + "_condition(params_key)")
