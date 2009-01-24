@@ -1,22 +1,13 @@
 module ConditionsHelper
-  def only_these(hash, keys)
-    keys = keys.map{|x| x.to_s}
-    Hash[hash.select{|k,v| keys.include?(k)}]
-  end
-
-  # TODO: don't build them all and then take away, take away from the list before generating them
   def conditions_html(params_key = "conditions", these_things = nil)
     hash = {}
-    Conditions.conds.each{|x|
+    Conditions.conds.select{|x| these_things.include?(x)}.each{|x|
       if Conditions.dates.include?(x)
         hash[x] = date_or_date_range_picker(params_key, x)
       else
         hash[x] = eval("html_for_" + x + "_condition(params_key)")
       end
     }
-    if these_things
-      hash = only_these(hash, these_things)
-    end
     multiselect_of_form_elements(params_key, hash)
   end
 
