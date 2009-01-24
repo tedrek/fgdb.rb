@@ -286,7 +286,8 @@ class Donation < ActiveRecord::Base
         gizmo_events << GizmoEvent.new({:unit_price_cents => under_pay,
                                          :gizmo_count => 1,
                                          :gizmo_type => GizmoType.fee_discount,
-                                         :gizmo_context => GizmoContext.donation})
+                                         :gizmo_context => GizmoContext.donation,
+                                         :covered => false})
     end
   end
 end
