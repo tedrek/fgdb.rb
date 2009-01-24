@@ -19,6 +19,14 @@ class Conditions
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
   end
 
+  def self.conds
+    CONDS
+  end
+
+  def self.dates
+    DATES
+  end
+
   def initialize
     for i in DATES
       eval("@#{i}_date = Date.today")
