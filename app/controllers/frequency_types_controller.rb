@@ -9,7 +9,7 @@ class FrequencyTypesController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @frequency_type_pages, @frequency_types = paginate :frequency_types, :order => 'name', :per_page => 20
+    @frequency_types = FrequencyType.paginate :order => 'name', :per_page => 20, :page => params[:page]
   end
 
   def show

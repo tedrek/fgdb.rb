@@ -9,7 +9,7 @@ class RrItemsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @rr_item_pages, @rr_items = paginate :rr_items, :per_page => 10
+    @rr_items = RrItem.paginate :per_page => 10, :page => params[:page]
   end
 
   def show

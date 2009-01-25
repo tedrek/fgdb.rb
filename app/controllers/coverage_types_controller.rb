@@ -9,7 +9,7 @@ class CoverageTypesController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @coverage_type_pages, @coverage_types = paginate :coverage_types, :order => 'name', :per_page => 20
+    @coverage_types = CoverageType.paginate :order => 'name', :per_page => 20, :page => params[:page]
   end
 
   def show

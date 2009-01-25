@@ -10,11 +10,11 @@ class UnavailabilitiesController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @unavailability_pages, @unavailabilities = paginate :unavailabilities, :order => 'weekday_id, ineffective_date, end_time', :conditions => ["ineffective_date IS NULL OR ineffective_date >= ?", Date.today], :per_page => 20
+    @unavailabilities = Unavailability.paginate :order => 'weekday_id, ineffective_date, end_time', :conditions => ["ineffective_date IS NULL OR ineffective_date >= ?", Date.today], :per_page => 20, :page => params[:page]
   end
 
   def full_list
-    @unavailability_pages, @unavailabilities = paginate :unavailabilities, :order => 'shift_date DESC, weekday_id', :per_page => 10
+    @unavailabilities = Unavailability.paginate :order => 'shift_date DESC, weekday_id', :per_page => 10, :page => params[:page]
   end
 
   def show

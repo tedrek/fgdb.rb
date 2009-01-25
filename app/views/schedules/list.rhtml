@@ -21,8 +21,7 @@
 <% end %>
 </table>
 
-<%= link_to 'Previous page', { :page => @schedule_pages.current.previous } if @schedule_pages.current.previous %>
-<%= link_to 'Next page', { :page => @schedule_pages.current.next } if @schedule_pages.current.next %> 
+<%= will_paginate @schedules %>
 
 <br />
 

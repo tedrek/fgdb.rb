@@ -9,7 +9,7 @@ class WeekdaysController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @weekday_pages, @weekdays = paginate :weekdays, :order => 'id', :per_page => 20
+    @weekdays = Weekday.paginate :order => 'id', :per_page => 20, :page => params[:page]
   end
 
   def show

@@ -9,7 +9,7 @@ class ShiftsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @shift_pages, @shifts = paginate :shifts, :order => 'weekday_id, worker_id, start_time', :per_page => 10
+    @shifts = Shift.paginate :order => 'weekday_id, worker_id, start_time', :per_page => 10, :page => params[:page]
   end
 
   def show

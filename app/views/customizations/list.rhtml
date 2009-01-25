@@ -20,8 +20,7 @@
 <% end %>
 </table>
 
-<%= link_to 'Previous page', { :page => @customization_pages.current.previous } if @customization_pages.current.previous %>
-<%= link_to 'Next page', { :page => @customization_pages.current.next } if @customization_pages.current.next %> 
+<%= will_paginate @customizations %>
 
 <br />
 

@@ -9,7 +9,7 @@ class HolidaysController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @holiday_pages, @holidays = paginate :holidays, :order => 'name', :per_page => 20
+    @holidays = Holiday.paginate :order => 'name', :per_page => 20, :page => params[:page]
   end
 
   def show

@@ -9,11 +9,11 @@ class VacationsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @vacation_pages, @vacations = paginate :vacations, :order => 'effective_date, ineffective_date', :conditions => ["ineffective_date >= ?", Date.today], :per_page => 20
+    @vacations = Vacation.paginate :order => 'effective_date, ineffective_date', :conditions => ["ineffective_date >= ?", Date.today], :per_page => 20, :page => params[:page]
   end
 
   def full_list
-    @vacation_pages, @vacations = paginate :vacations, :order => 'effective_date, ineffective_date', :per_page => 20
+    @vacations = Vacation.paginate :order => 'effective_date, ineffective_date', :per_page => 20, :page => params[:page]
   end
 
   def show

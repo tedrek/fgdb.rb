@@ -19,8 +19,7 @@
 <% end %>
 </table>
 
-<%= link_to 'Previous page', { :page => @shift_pages.current.previous } if @shift_pages.current.previous %>
-<%= link_to 'Next page', { :page => @shift_pages.current.next } if @shift_pages.current.next %> 
+<%= will_paginate @shifts %>
 
 <br />
 

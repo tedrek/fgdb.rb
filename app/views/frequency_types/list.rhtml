@@ -20,8 +20,7 @@
 <% end %>
 </table>
 
-<%= link_to 'Previous page', { :page => @frequency_type_pages.current.previous } if @frequency_type_pages.current.previous %>
-<%= link_to 'Next page', { :page => @frequency_type_pages.current.next } if @frequency_type_pages.current.next %> 
+<%= will_paginate @frequency_types %>
 
 <br />
 

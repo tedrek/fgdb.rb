@@ -20,8 +20,7 @@
 <% end %>
 </table>
 
-<%= link_to 'Previous page', { :page => @worker_type_pages.current.previous } if @worker_type_pages.current.previous %>
-<%= link_to 'Next page', { :page => @worker_type_pages.current.next } if @worker_type_pages.current.next %> 
+<%= will_paginate @worker_types %>
 
 <br />
 

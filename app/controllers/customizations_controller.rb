@@ -9,7 +9,7 @@ class CustomizationsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @customization_pages, @customizations = paginate :customizations, :per_page => 10
+    @customizations = Customization.paginate :per_page => 10, :page => params[:page]
   end
 
   def show

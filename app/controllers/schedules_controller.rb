@@ -16,7 +16,7 @@ class SchedulesController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @schedule_pages, @schedules = paginate :schedules, :per_page => 20
+    @schedules = Schedule.paginate :per_page => 20, :page => params[:page]
   end
 
   def show

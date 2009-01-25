@@ -9,7 +9,7 @@ class RrSetsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @rr_set_pages, @rr_sets = paginate :rr_sets, :per_page => 10
+    @rr_sets = RrSet.paginate :per_page => 10, :page => params[:page]
   end
 
   def show

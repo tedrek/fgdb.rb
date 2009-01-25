@@ -1,7 +1,6 @@
 <%= render :partial => 'list' %>
 
-<%= link_to 'Previous page', { :page => @vacation_pages.current.previous } if @vacation_pages.current.previous %>
-<%= link_to 'Next page', { :page => @vacation_pages.current.next } if @vacation_pages.current.next %> 
+<%= will_paginate @vacations %>
 
 <br />
 
