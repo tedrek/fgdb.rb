@@ -1,6 +1,6 @@
 <div class='filter'>
 <h3>Filter standard shifts:</h3>
-<%= form_tag :action => 'view_weekly_schedule' %>
+<% form_tag :action => 'view_weekly_schedule' do %>
   <%= select :filter_criteria, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] } %>
   <%= radio_button :filter_criteria, :which_way, 'Solo', :checked => (@opts['which_way']=='Solo') %> Solo
   <%= radio_button :filter_criteria, :which_way, 'Family', :checked => (@opts['which_way']=='Family') %> Family
@@ -14,5 +14,5 @@
   <%= radio_button :filter_criteria, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
   <br />
   <%= submit_tag "Apply" %><br />
-<%= end_form_tag %>
+<% end %>
 </div>
