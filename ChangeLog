@@ -1,8 +1,11 @@
 fgdb.rb (1.0.28) UNRELEASED; urgency=low
 
-  * 
+  * upgrade to the newest stable version of will_paginate
+    - port our changes over
+    - this fixes the stack level too deep errors, afaict...probably
+      just working around them, tho.
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 30 Jan 2009 23:05:19 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Jan 2009 00:25:51 -0800
 
 fgdb.rb (1.0.27) released; urgency=low
 
