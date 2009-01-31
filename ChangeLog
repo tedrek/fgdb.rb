@@ -1,4 +1,4 @@
-fgdb.rb (1.0.27) UNRELEASED; urgency=low
+fgdb.rb (1.0.27) released; urgency=low
 
   * clean up conditions a lot, so that all the html form side stuff
     is shared
@@ -6,7 +6,7 @@ fgdb.rb (1.0.27) UNRELEASED; urgency=low
   * order the contact types alphabetically
   * fix another xss bug
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 30 Jan 2009 17:32:12 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 30 Jan 2009 23:05:00 -0800
 
 fgdb.rb (1.0.26) released; urgency=low
 
