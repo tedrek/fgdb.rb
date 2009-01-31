@@ -1,3 +1,9 @@
+fgdb.rb (1.0.29) UNRELEASED; urgency=low
+
+  * 
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Jan 2009 00:27:22 -0800
+
 fgdb.rb (1.0.28) released; urgency=low
 
   * upgrade to the newest stable version of will_paginate
