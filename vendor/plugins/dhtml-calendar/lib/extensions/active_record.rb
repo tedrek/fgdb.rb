@@ -3,6 +3,11 @@ module ActiveRecord # :nodoc:
 
     def write_attribute_with_date_cast(attr, value)
       if column_for_attribute(attr) and column_for_attribute(attr).klass == Date
+        # EEK!: change empty strings into nils at this point
+        # (not sure where they get turned into empty strings
+        if value == ''
+          value = nil
+        end
         value = cast_to_date(value) unless value.nil?
       end
       write_attribute_without_date_cast(attr, value)
