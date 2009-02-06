@@ -150,7 +150,7 @@ class ShiftsController < ApplicationController
         (NOT actual) AND 
         ('#{day}' BETWEEN shifts.effective_date AND shifts.ineffective_date) AND
         ( 
-          ( shifts.shift_date = #{day} ) 
+          ( shifts.shift_date = '#{day}' ) 
             OR
           ( shifts.type IN ('StandardShift','Meeting') AND shifts.schedule_id IN #{in_clause} AND shifts.weekday_id = #{weekday_id} ) 
             OR
