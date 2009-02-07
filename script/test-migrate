@@ -2,7 +2,6 @@
 
 set -e
 set -x
-set -u
 
 export RAILS_ENV=development
 
@@ -24,7 +23,9 @@ ln -s /usr/share/rails vendor/rails
 rake db:migrate
 cd ../
 rm -f database.sql
-dropdb fgdb_$RAILS_ENV
+if [ "$1" != "--no-drop" ]; then
+    dropdb fgdb_$RAILS_ENV
+fi
 rm -fr trunk
 cd /
 rm -fr $TMP
