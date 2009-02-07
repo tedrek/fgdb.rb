@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_fgsched_session_id'
   before_filter :fix_null_date
-  skip_before_filter :fix_null_date, :except => ["update","create"]
 
   def fix_this_null_date (c1, c2)
     if params[c1]
@@ -18,6 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def fix_null_date
+    return if !([:coverage_types, :customizations, :frequency_types, :holidays, :jobs, :meetings, :rr_items, :rr_sets, :schedules, :shifts, :standard_shifts, :unavailabilities, :vacations, :weekdays, :workers, :worker_types, :work_shifts].map{|x| x.to_s}.include?(params[:controller]) && ["update","create"].include?(params[:action]))
     # fields to check. these are date fields that allow NULL
     # values in the database. the dhtml-calendar plugin passes an
     # empty string when the date is left blank, this turns into
