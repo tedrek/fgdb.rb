@@ -4,8 +4,9 @@ fgdb.rb (1.0.29) UNRELEASED; urgency=low
   * commit uncommitted changes on the db server (fix log rotate, fix
     error message)
   * fix the spec_sheets search
+  * fix graphic reports
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Feb 2009 23:00:08 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Feb 2009 23:35:22 -0800
 
 fgdb.rb (1.0.28) released; urgency=low
 
