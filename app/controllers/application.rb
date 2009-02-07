@@ -4,6 +4,12 @@
 class ApplicationController < ActionController::Base
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_fgsched_session_id'
+
+
+
+##############################################################################################
+##############################################################################################
+##############################################################################################
   before_filter :fix_null_date
 
   def fix_this_null_date (c1, c2)
@@ -45,4 +51,8 @@ class ApplicationController < ActionController::Base
     fix_this_null_date(:worker, :effective_date)
     fix_this_null_date(:worker, :ineffective_date)
   end
+##############################################################################################
+##############################################################################################
+##############################################################################################
+
 end
