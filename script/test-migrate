@@ -10,9 +10,7 @@ TMP=$(mktemp -d /tmp/fgdb.testing.script.XXXXXXXXXX)
 cd $TMP
 scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./
 dropdb fgdb_$RAILS_ENV || true
-gunzip database.sql.gz 
-#createdb fgdb_$RAILS_ENV
-#psql fgdb_$RAILS_ENV < database.sql
+gunzip database.sql.gz
 sed -i "s/fgdb_production/fgdb_$RAILS_ENV/g" database.sql
 psql < database.sql
 if hostname -f | grep -q fglan; then
