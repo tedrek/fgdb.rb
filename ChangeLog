@@ -1,6 +1,5 @@
 fgdb.rb (1.0.29) UNRELEASED; urgency=low
 
-  * 
   * skedjulnator is merged into fgdb.rb now
   * commit uncommitted changes on the db server (fix log rotate, fix
     error message)
