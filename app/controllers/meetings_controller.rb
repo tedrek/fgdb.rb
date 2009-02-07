@@ -1,4 +1,6 @@
 class MeetingsController < ApplicationController
+  layout "skedjulnator"
+
   require_dependency 'shift'
   def index
     list

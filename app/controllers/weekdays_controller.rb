@@ -1,4 +1,6 @@
 class WeekdaysController < ApplicationController
+  layout "skedjulnator"
+
   def index
     list
     render :action => 'list'

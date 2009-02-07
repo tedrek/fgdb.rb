@@ -1,4 +1,6 @@
 class UnavailabilitiesController < ApplicationController
+  layout "skedjulnator"
+
   require_dependency 'shift'
   def index
     list

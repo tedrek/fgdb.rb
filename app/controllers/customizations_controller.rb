@@ -1,4 +1,6 @@
 class CustomizationsController < ApplicationController
+  layout "skedjulnator"
+
   def index
     list
     render :action => 'list'
