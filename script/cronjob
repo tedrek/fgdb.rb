@@ -1,8 +1,0 @@
-#!/bin/bash
-
-#This script generates the main page nightly
-#because it takes like forever to generate
-
-cd /var/www/skedjulnator/public/
-rm index.html
-curl http://localhost/work_shifts/staffsched -o index.html 2>/dev/null
