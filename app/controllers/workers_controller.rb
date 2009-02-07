@@ -1,4 +1,6 @@
 class WorkersController < ApplicationController
+  before_filter :skedjulnator_role
+
   def index
     list
     render :action => 'list'

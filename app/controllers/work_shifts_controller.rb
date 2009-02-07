@@ -1,5 +1,6 @@
 class WorkShiftsController < ApplicationController
   layout "skedjulnator"
+  before_filter :skedjulnator_role, :except => [:staffsched]
 
   def index
     list

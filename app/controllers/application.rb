@@ -25,6 +25,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def skedjulnator_role
+    requires_role("SKEDJULNATOR")
+  end
+
   def _set_cashier(hash)
     return hash["cashier_code"] if hash.keys.include?("cashier_code")
     for i in hash.values.select{|x| x.class == Hash}

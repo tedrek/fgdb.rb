@@ -1,5 +1,6 @@
 class VacationsController < ApplicationController
   layout "skedjulnator"
+  before_filter :skedjulnator_role
 
   def index
     list

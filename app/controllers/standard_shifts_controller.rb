@@ -1,5 +1,6 @@
 class StandardShiftsController < ApplicationController
   layout "skedjulnator"
+  before_filter :skedjulnator_role
 
   require_dependency 'shift'
   def index
