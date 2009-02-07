@@ -8,7 +8,7 @@ export RAILS_ENV=development
 
 TMP=$(mktemp -d /tmp/fgdb.testing.script.XXXXXXXXXX)
 cd $TMP
-scp -i ~/.ssh/scp_key pollen:/usr/local/backup/database.sql.gz ./
+scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./
 dropdb fgdb_$RAILS_ENV || true
 gunzip database.sql.gz 
 #createdb fgdb_$RAILS_ENV
