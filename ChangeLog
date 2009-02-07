@@ -1,8 +1,9 @@
 fgdb.rb (1.0.29) UNRELEASED; urgency=low
 
   * 
+  * skedjulnator is merged into fgdb.rb now
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Jan 2009 00:27:22 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Feb 2009 21:33:06 -0800
 
 fgdb.rb (1.0.28) released; urgency=low
 
