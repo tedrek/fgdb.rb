@@ -3,8 +3,9 @@ fgdb.rb (1.0.29) UNRELEASED; urgency=low
   * skedjulnator is merged into fgdb.rb now
   * commit uncommitted changes on the db server (fix log rotate, fix
     error message)
+  * fix the spec_sheets search
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Feb 2009 21:50:54 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Feb 2009 23:00:08 -0800
 
 fgdb.rb (1.0.28) released; urgency=low
 
