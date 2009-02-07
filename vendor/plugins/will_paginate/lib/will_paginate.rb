@@ -68,7 +68,11 @@ module WillPaginate
 
     def self.warn(message, callstack = caller)
       message = 'WillPaginate: ' + message.strip.gsub(/\s+/, ' ')
-      ActiveSupport::Deprecation.warn(message, callstack)
+      behavior.call(message, callstack) if behavior && !silenced?
+    end
+
+    def self.silenced?
+      ActiveSupport::Deprecation.silenced?
     end
   end
 end

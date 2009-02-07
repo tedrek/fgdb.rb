@@ -192,15 +192,13 @@ class ViewTest < WillPaginate::ViewTestCase
       @html_result
   end
 
-  uses_mocha 'class name' do
-    def test_page_entries_info_with_longer_class_name
-      @template = '<%= page_entries_info collection %>'
-      collection = ('a'..'z').to_a.paginate
-      collection.first.stubs(:class).returns(mock('class', :name => 'ProjectType'))
+  def test_page_entries_info_with_longer_class_name
+    @template = '<%= page_entries_info collection %>'
+    collection = ('a'..'z').to_a.paginate
+    collection.first.stubs(:class).returns(mock('class', :name => 'ProjectType'))
     
-      paginate collection
-      assert @html_result.index('project types'), "expected <#{@html_result.inspect}> to mention 'project types'"
-    end
+    paginate collection
+    assert @html_result.index('project types'), "expected <#{@html_result.inspect}> to mention 'project types'"
   end
 
   def test_page_entries_info_with_single_page_collection

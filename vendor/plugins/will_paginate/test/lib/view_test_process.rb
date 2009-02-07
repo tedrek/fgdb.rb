@@ -42,21 +42,15 @@ class WillPaginate::ViewTestCase < Test::Unit::TestCase
 
       locals = { :collection => collection, :options => options }
 
-      unless @view.respond_to? :render_template
-        # Rails 2.2
-        @html_result = ActionView::InlineTemplate.new(@template).render(@view, locals)
+      if defined? ActionView::InlineTemplate
+        # Rails 2.1
+        args = [ ActionView::InlineTemplate.new(@view, @template, locals) ]
       else
-        if defined? ActionView::InlineTemplate
-          # Rails 2.1
-          args = [ ActionView::InlineTemplate.new(@view, @template, locals) ]
-        else
-          # older Rails versions
-          args = [nil, @template, nil, locals]
-        end
-
-        @html_result = @view.render_template(*args)
+        # older Rails versions
+        args = [nil, @template, nil, locals]
       end
       
+      @html_result = @view.render_template(*args)
       @html_document = HTML::Document.new(@html_result, true, false)
 
       if block_given?

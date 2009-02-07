@@ -29,6 +29,8 @@ module WillPaginate
       :outer_window   => 1, # links around beginning and end
       :separator      => ' ', # single space is friendly to spiders and non-graphic browsers
       :param_name     => :page,
+      :remote_options => {},
+      :remote_html_options => {},
       :params         => nil,
       :renderer       => 'WillPaginate::LinkRenderer',
       :page_links     => true,
@@ -59,6 +61,9 @@ module WillPaginate
     #
     # Advanced options:
     # * <tt>:param_name</tt> -- parameter name for page number in URLs (default: <tt>:page</tt>)
+    # * <tt>:remote_options</tt> -- options for link_to_remote. If not empty you get a
+    #   link_to_remote with these options instead of the classic link. default is empty.
+    # * <tt>:remote_html_options</tt> -- html_options for link_to_remote, default is empty.
     # * <tt>:params</tt> -- additional parameters when generating pagination links
     #   (eg. <tt>:controller => "foo", :action => nil</tt>)
     # * <tt>:renderer</tt> -- class name, class or instance of a link renderer (default:
@@ -99,7 +104,7 @@ module WillPaginate
       
       options = options.symbolize_keys.reverse_merge WillPaginate::ViewHelpers.pagination_options
       if options[:prev_label]
-        WillPaginate::Deprecation::warn(":prev_label view parameter is now :previous_label; the old name has been deprecated", caller)
+        WillPaginate::Deprecation::warn(":prev_label view parameter is now :previous_label; the old name has been deprecated.")
         options[:previous_label] = options.delete(:prev_label)
       end
       
@@ -141,15 +146,8 @@ module WillPaginate
     # blocks of pagination links sharing the same ID (which is invalid HTML).
     def paginated_section(*args, &block)
       pagination = will_paginate(*args).to_s
-      
-      unless ActionView::Base.respond_to? :erb_variable
-        concat pagination
-        yield
-        concat pagination
-      else
-        content = pagination + capture(&block) + pagination
-        concat(content, block.binding)
-      end
+      content = pagination + capture(&block) + pagination
+      concat content, block.binding
     end
 
     # Renders a helpful message with numbers of displayed vs. total entries.
@@ -185,11 +183,12 @@ module WillPaginate
 
     def self.total_pages_for_collection(collection) #:nodoc:
       if collection.respond_to?('page_count') and !collection.respond_to?('total_pages')
-        WillPaginate::Deprecation.warn %{
+        WillPaginate::Deprecation.warn <<-MSG
           You are using a paginated collection of class #{collection.class.name}
           which conforms to the old API of WillPaginate::Collection by using
           `page_count`, while the current method name is `total_pages`. Please
-          upgrade yours or 3rd-party code that provides the paginated collection}, caller
+          upgrade yours or 3rd-party code that provides the paginated collection.
+        MSG
         class << collection
           def total_pages; page_count; end
         end
@@ -303,7 +302,15 @@ module WillPaginate
     end
 
     def page_link(page, text, attributes = {})
-      @template.link_to text, url_for(page), attributes
+      if @options[:remote_options] != {}
+        @template.link_to_remote(
+                                 text,
+                                 @options[:remote_options].merge({:url => url_for(page)}),
+                                 attributes.merge(@options[:remote_html_options])
+                                 )
+      else
+        @template.link_to text, url_for(page), attributes
+      end
     end
 
     def page_span(page, text, attributes = {})
