@@ -85,7 +85,7 @@ check_a_version(){
 }
 
 check_for_postgres(){
-    [ -n "$(pgrep -x postgres)" ]
+    [ -n "$(pgrep -x postgres)$(pgrep -x postmaster)" ]
 }
 
 test_my_rails_version(){
