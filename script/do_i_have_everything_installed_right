@@ -5,6 +5,12 @@ echo
 
 STATUS=0
 p=$0
+DEBUG=false
+
+if [ "$1" = "--debug" -o "$1" = "-d" ]; then
+    DEBUG=true
+    shift
+fi
 
 fail(){
     STATUS=1
@@ -37,11 +43,19 @@ require_test(){
     fi
 }
 
+runit(){
+    if [ "$DEBUG" = "true" ]; then
+        $1
+    else
+        $1 2>/dev/null 1>/dev/null
+    fi
+}
+
 run(){
     if [ "$4" != "return" ]; then
         echo -n $1
     fi
-    $2 2>/dev/null 1>/dev/null
+    runit "$2"
     if [ $? != 0 ]; then
         if [ "$4" = "error" ]; then
             error "$3"
