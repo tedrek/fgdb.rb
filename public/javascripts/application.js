@@ -8,9 +8,11 @@ function update_cashier_code() {
   thing = document.getElementsByClassName('cashierable_form')[0];
   if(cashier_id_field.value.length == 4) {
     thing.enable();
+    enable_all_links();
   }
   else {
     thing.disable();
+    disable_all_links();
     $('cashier_code').enable();
     $('cashier_code').focus();
   }

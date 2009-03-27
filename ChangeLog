@@ -6,8 +6,10 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * make skedjul sort of work a little bit with a borked database
     (apparently after a while it breaks itself...), hopefully not
     breaking the production database...
+  * when the cashier code is not entered, don't allow the x/e links for
+    line items to be clicked
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 14:14:23 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 15:17:32 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
