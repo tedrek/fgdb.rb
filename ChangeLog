@@ -8,8 +8,10 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
     breaking the production database...
   * when the cashier code is not entered, don't allow the x/e links for
     line items to be clicked
+  * don't unlock the form for just any 4 digit number...check if it's
+    a valid cashier code first
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 15:17:32 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 16:16:48 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
