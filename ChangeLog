@@ -2,8 +2,9 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
 
   * add some helper scripts to manipulate the ChangeLog (dch, debcommit,
     dpkg-parsechangelog)
+  * no javascript/dhtml stylesheets on the skedjul when in readonly mode
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 13:11:20 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 14:13:28 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
