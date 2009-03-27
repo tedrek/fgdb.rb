@@ -1,8 +1,10 @@
 fgdb.rb (1.0.30) UNRELEASED; urgency=low
 
   * 
+  * add some helper scripts to manipulate the ChangeLog (dch, debcommit,
+    dpkg-parsechangelog)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Feb 2009 23:37:16 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 13:11:20 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
