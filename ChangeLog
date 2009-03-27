@@ -1,6 +1,5 @@
 fgdb.rb (1.0.30) UNRELEASED; urgency=low
 
-  * 
   * add some helper scripts to manipulate the ChangeLog (dch, debcommit,
     dpkg-parsechangelog)
 
