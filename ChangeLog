@@ -15,8 +15,10 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * add the scripts that sync the staffsched to freegeek.org to git
   * don't autoselect the autocomplete
   * make SQL for gizmos report contacts condition faster
+  * dont have the saved password be entered into the cashier code
+    field...silly firefox.
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 14:53:11 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 15:12:41 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
