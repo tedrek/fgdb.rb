@@ -23,7 +23,7 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
     forgot to tab
   * add a contributor contact checkbox [pdx only]
   * make the hours report have bigger text (Closes: #13066)
-  * remove contact_methods after they no longer have a contact (Close: #13087)
+  * remove contact_methods after they no longer have a contact (Closes: #13087)
     - clean up date: remove all contact_methods without a contact
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 16:48:50 -0700
