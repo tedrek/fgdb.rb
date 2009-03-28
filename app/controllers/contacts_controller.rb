@@ -205,7 +205,9 @@ class ContactsController < ApplicationController
         @contact_methods << p
       end
     end
+    orig = contact.contact_methods.map{|x| x}
     contact.contact_methods = @contact_methods
+    orig.map{|x| ContactMethod.find(x.id)}.each{|x| x.destroy if x.contact_id.nil?}
   end
 
   def _save
