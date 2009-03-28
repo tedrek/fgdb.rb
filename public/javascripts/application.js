@@ -12,6 +12,7 @@ function update_cashier_code() {
   }
   else {
     thing.disable();
+    document.getElementsByClassName('cancel')[0].disabled = false;
     disable_all_links();
     $('cashier_code').enable();
     $('cashier_code').focus();
