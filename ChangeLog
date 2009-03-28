@@ -22,8 +22,9 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * finish off the line items when you click the submit button if you
     forgot to tab
   * add a contributor contact checkbox [pdx only]
+  * make the hours report have bigger text (Closes: #13066)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 16:06:57 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 16:22:33 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
