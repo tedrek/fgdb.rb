@@ -21,8 +21,9 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
     cashier code
   * finish off the line items when you click the submit button if you
     forgot to tab
+  * add a contributor contact checkbox [pdx only]
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 16:01:26 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 16:06:57 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
