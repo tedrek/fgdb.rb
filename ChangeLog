@@ -27,8 +27,9 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
     - clean up date: remove all contact_methods without a contact
   * send out the output of dpkg-parsechangelog to the coders list when
     releasing
+  * remove extra <td> in recycling's gizmo events line item
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 16:55:33 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Mar 2009 16:59:09 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
