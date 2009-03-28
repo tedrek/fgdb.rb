@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+set -x
+
+SERVER=localhost
+
+mkdir -p ~/web
+cd ~/web
+wget http://$SERVER/staffsched -O index.html
+sed -i "s,</body>,<pre>Generated on $(date -R | sed s/,//)</pre></body>,g" index.html 
+mkdir -p stylesheets
+for i in schedule print scaffold; do
+    wget http://$SERVER/stylesheets/$i.css -O stylesheets/$i.css
+done
+
