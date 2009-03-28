@@ -12,8 +12,9 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
     a valid cashier code first
   * fix volunteering report
   * add 'generated on' to the bottom of the staff schedule
+  * add the scripts that sync the staffsched to freegeek.org to git
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 17:02:34 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 27 Mar 2009 17:10:17 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
