@@ -6,28 +6,24 @@ function update_cashier_code() {
   if(cashier_id_field == null)
     return;
   thing = document.getElementsByClassName('cashierable_form')[0];
-  if(cashier_id_field.value.length == 4 && good_cashier_code(cashier_id_field.value)) {
-    thing.enable();
-    enable_all_links();
+  if(cashier_id_field.value.length == 4) {
+    good_cashier_code(cashier_id_field.value);
+  } else {
+    disable_cashierable();
   }
-  else {
+}
+
+function disable_cashierable(){
     thing.disable();
     document.getElementsByClassName('cancel')[0].disabled = false;
     disable_all_links();
     $('cashier_code').enable();
     $('cashier_code').focus();
-  }
 }
 
-function good_cashier_code(code) {
-  x = XMLHttpRequest()
-  x.open("GET", "/contacts/check_cashier_code?cashier_code=" + code, false);
-  x.send("")
-  if(x.responseText == "yep") {
-    return true;
-  } else {
-    return false;
-  }
+function enable_cashierable(){
+    thing.enable();
+    enable_all_links();
 }
 
 function show_contract_notes() {

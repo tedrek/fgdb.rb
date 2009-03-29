@@ -9,13 +9,16 @@ class ContactsController < ApplicationController
 
   def check_cashier_code
     uid = params[:cashier_code]
-    t = ""
+    t = false
     if uid && (User.find_by_cashier_code(uid.to_i))
-      t = "yep"
+      t = true
     else
-      t = "nope"
+      t = false
     end
-    render :text => t
+    render :update do |page|
+      page.hide loading_indicator_id("cashier_loading")
+      page << (t ? "enable" : "disable") + "_cashierable();"
+    end
   end
 
   def be_stupid
