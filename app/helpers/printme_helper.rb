@@ -6,11 +6,10 @@ module PrintmeHelper
 
     @system_model = @system_serial_number = @system_vendor = @mobo_model = @mobo_serial_number = @mobo_vendor = @macaddr = nil
 
-    # FIXME: spec_sheet 1234 has a different serial number with the new parser
     @parser.xml_foreach("//*[@class='system']") {
-      @system_model ||= @parser._xml_value_of("/product")
-      @system_serial_number ||= @parser._xml_value_of("/serial")
-      @system_vendor ||= @parser._xml_value_of("/vendor")
+      @system_model ||= @parser._xml_value_of("/node/product")
+      @system_serial_number ||= @parser._xml_value_of("/node/serial")
+      @system_vendor ||= @parser._xml_value_of("/node/vendor")
       @mobo_model ||= @parser._xml_value_of("//*[contains(@id, 'core')]/product")
       @mobo_serial_number ||= @parser._xml_value_of("//*[contains(@id, 'core')]/serial")
       @mobo_vendor ||= @parser._xml_value_of("//*[contains(@id, 'core')]/vendor")
