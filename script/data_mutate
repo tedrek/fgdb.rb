@@ -57,6 +57,9 @@ fix_tx(Disbursement.find(:all, :conditions=>"comments is not null and comments <
 puts "fixing up recyclings"
 fix_tx(Recycling.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
+puts "fixing up notes"
+fix_tx(Note.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
+
 all = Contact.find(:all)
 
 i = 0
@@ -153,6 +156,16 @@ User.find(:all).each do |u|
   u.save!
 end
 
+names = Worker.find(:all).map(&:name).sort{rand<=>rand}
+contacts = Worker.find(:all).map(&:contact_id).sort{rand<=>rand}
+Worker.find(:all).each do |w|
+  next if w.id == 0
+  w.name = names.pop
+  w.contact_id = contacts.pop
+  w.save!
+end
+
+User.reset_all_cashier_codes
 admin = User.find_by_name("admin")
 admin.cashier_code = 1234
 admin.save!

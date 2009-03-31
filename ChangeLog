@@ -30,8 +30,9 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * remove extra <td> in recycling's gizmo events line item
   * use proper ajax for the cashier code checking, add loading indicator
   * allow spaces in the RAILS_ROOT...*sigh*
+  * scramble some of the newer tables when making devel data
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 30 Mar 2009 16:02:23 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 30 Mar 2009 18:17:27 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
