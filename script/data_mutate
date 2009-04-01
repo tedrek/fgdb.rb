@@ -17,10 +17,14 @@ def add(list, val)
   list << val if non_empty(val)
 end
 
-def fix_tx(txs, chars, digits)
+def fix_tx(txs, chars, digits, thing = "comments")
   txs.each do |tx|
-    tx.comments = tx.comments.gsub(/[a-zA-Z]/) { chars[rand(chars.size)] }
-    tx.comments = tx.comments.gsub(/[0-9]/) { digits[rand(digits.size)] }
+    evalstr1 = "tx.#{thing}"
+    evalstr = "tx.#{thing}=a"
+    a = eval(evalstr1).gsub(/[a-zA-Z]/) { chars[rand(chars.size)] }
+    eval(evalstr)
+    a = = eval(evalstr1).gsub(/[0-9]/) { digits[rand(digits.size)] }
+    eval(evalstr)
     tx.save!
   end
 end
@@ -62,7 +66,7 @@ puts "fixing up recyclings"
 fix_tx(Recycling.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
 
 puts "fixing up notes"
-fix_tx(Note.find(:all, :conditions=>"comments is not null and comments <> ''"), chars, digits)
+fix_tx(Note.find(:all, :conditions=>"body is not null and body <> ''"), chars, digits, "body")
 
 all = Contact.find(:all)
 
