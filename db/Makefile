@@ -42,7 +42,7 @@ tmp/devel_data/dir:
 	mkdir -p $@
 
 tmp/devel_data/database.sql.gz: tmp/devel_data/dir
-	scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./
+	scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./tmp/devel_data/
 
 tmp/devel_data/database.sql: tmp/devel_data/database.sql.gz
 	zcat tmp/devel_data/database.sql.gz > tmp/devel_data/database.sql
