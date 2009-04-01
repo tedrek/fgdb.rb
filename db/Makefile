@@ -35,7 +35,7 @@ ohaither:
 	@echo "==========================================================="
 	@echo
 
-clean_making_devel_data:
+clean_devel_data:
 	rm -fr tmp/devel_data fgdb-devel-data
 
 tmp/devel_data/dir:
