@@ -31,8 +31,10 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * use proper ajax for the cashier code checking, add loading indicator
   * allow spaces in the RAILS_ROOT...*sigh*
   * scramble some of the newer tables when making devel data
+  * don't use a gzipped version for the devel data...look for it
+    uncompressed.
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 30 Mar 2009 18:17:27 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 31 Mar 2009 18:43:21 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
