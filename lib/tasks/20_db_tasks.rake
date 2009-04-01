@@ -3,7 +3,7 @@
 require 'yaml'
 
 SCHEMADUMPFILE = 'db/schema.sql'
-DATADUMPFILE = 'db/devel_data.sql'
+DATADUMPFILE = ENV['FGDB_INTERNAL_DUMP_FILE'] || 'db/devel_data.sql'
 METADATADIR = 'db/metadata'
 METADATATABLES = %w[
         contact_method_types contact_types discount_schedules

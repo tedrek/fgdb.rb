@@ -20,3 +20,5 @@
 /vendor/rails.new
 /vendor/rails
 /tmp/*
+/db/devel_data_version
+/db/devel_data.sql
