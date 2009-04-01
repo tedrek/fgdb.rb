@@ -171,7 +171,7 @@ admin.cashier_code = 1234
 admin.save!
 
 ContactDuplicate.destroy_all
-[:donations => :contract_id, :systems => :contract_id, :gizmo_events => :recyclings_contract_id, :contacts => :contract_id].each{|table,column
+{:donations => :contract_id, :systems => :contract_id, :gizmo_events => :recyclings_contract_id, :contacts => :contract_id}.each{|table,column
   Inflector.classify(table.to_s).constantize.connection.execute("UPDATE #{table} SET #{column} = 1 WHERE #{column} NOT NULL")
 }
 Contract.destroy_all "name != 'default'"
