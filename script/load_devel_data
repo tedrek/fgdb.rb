@@ -3,6 +3,7 @@
 set -e
 set -x
 
+make -C db
 rake db:drop --trace || true
 rake db:create --trace
 rake db:schema:load --trace
