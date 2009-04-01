@@ -22,7 +22,7 @@ clean: clean_devel_data
 create_devel_data: clean_devel_data fgdb-devel-data ohaither
 
 fgdb-devel-data: tmp/devel_data/svn_repo/devel_data.sql.lzma
-	ln -s tmp/devel_data/svn_repo/ fgdb-devel-data
+	ln -s tmp/devel_data/svn_repo/ ../fgdb-devel-data
 
 committed: clean_devel_data download
 
