@@ -5,6 +5,10 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 digits = "0123456789".split("")
 chars = "abcdefghijklmnopqrstuvwxyz".split("")
 
+D = Default
+D.destroy_all "name LIKE '%_cashier_%'"
+D["coveredness_enabled"] = 0
+
 def non_empty(val)
   return val && !val.empty?
 end

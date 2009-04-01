@@ -13,5 +13,8 @@ class Default < ActiveRecord::Base
       d.save!
       return d
     end
+    def keys
+      find(:all).map(&:name).uniq
+    end
   end
 end
