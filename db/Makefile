@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 
 # TODO: keep a version number with each branch, so that devel data for older branches can be retrieved easily.
+# TODO: try ryan52.info and use that if it has it...if not, fall back to freegeek.org. I intend to set up a nightly rsync.
 
 all: download
 
