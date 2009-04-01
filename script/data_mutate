@@ -174,7 +174,7 @@ Worker.find(:all).each do |w|
 end
 
 User.reset_all_cashier_codes
-admin = User.find_by_name("admin")
+admin = User.find_by_login("admin")
 admin.cashier_code = 1234
 admin.save!
 
