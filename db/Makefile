@@ -18,6 +18,7 @@ update_devel_data_version:
 	if [ ! -f devel_data_version ] || ! diff devel_data_version devel_data_version.new; then mv devel_data_version.new devel_data_version; else rm devel_data_version.new; fi
 
 create: create_devel_data
+clean: clean_devel_data
 create_devel_data: clean_devel_data fgdb-devel-data ohaither
 
 fgdb-devel-data: tmp/devel_data/svn_repo/devel_data.sql.lzma
