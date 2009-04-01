@@ -55,7 +55,7 @@ tmp/devel_data/load_db: tmp/devel_data/database.sql
 	touch $@
 
 tmp/devel_data/mutate: tmp/devel_data/load_db
-	../script/data_mutate
+	RAILS_ENV=development ../script/data_mutate
 	touch $@
 
 tmp/devel_data/devel_data.sql: tmp/devel_data/mutate
