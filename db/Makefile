@@ -60,7 +60,7 @@ tmp/devel_data/mutate: tmp/devel_data/load_db
 
 tmp/devel_data/devel_data.sql: tmp/devel_data/mutate
 	cd ..
-	FGDB_INTERNAL_DUMP_FILE=db/tmp/devel_data/devel_data.sql rake db:data:dump
+	FGDB_INTERNAL_DUMP_FILE=db/tmp/devel_data/devel_data.sql RAILS_ENV=development rake db:data:dump
 	cd db
 
 tmp/devel_data/devel_data.sql.lzma: tmp/devel_data/devel_data.sql
