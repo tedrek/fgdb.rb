@@ -2,7 +2,9 @@
 
 # TODO: keep a version number with each branch, so that devel data for older branches can be retrieved easily.
 
-all: update_devel_data_version devel_data.sql
+all: download
+
+download: update_devel_data_version devel_data.sql
 
 devel_data.sql: devel_data.sql.lzma
 	lzcat devel_data.sql.lzma > devel_data.sql
@@ -14,12 +16,13 @@ update_devel_data_version:
 	wget http://dev.freegeek.org/~ryan52/version -O devel_data_version.new
 	if [ ! -f devel_data_version ] || ! diff devel_data_version devel_data_version.new; then mv devel_data_version.new devel_data_version; else rm devel_data_version.new; fi
 
+create: create_devel_data
 create_devel_data: clean_devel_data fgdb-devel-data ohaither
 
 fgdb-devel-data: tmp/devel_data/svn_repo/devel_data.sql.lzma
 	ln -s tmp/devel_data/svn_repo/ fgdb-devel-data
 
-committed: clean_devel_data all
+committed: clean_devel_data download
 
 ohaither:
 	@echo
