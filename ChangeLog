@@ -37,8 +37,9 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * make a script to download the devel data
   * always download the data when loading, but only if there's a new
     version
+  * move the svn post-commit hook for the devel data from svn to git
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 31 Mar 2009 19:17:17 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 31 Mar 2009 19:19:51 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 

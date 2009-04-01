@@ -1,0 +1,13 @@
+#!/bin/sh
+
+REPOS="$1"
+REV="$2"
+PROJECT="fgdb-devel-data"
+
+FILE=devel_data.sql.lzma
+
+/usr/lib/subversion/hook-scripts/commit-email.pl "$REPOS" "$REV" "fgdb-commits@lists.freegeek.org" --from svn@freegeek.org &
+set -e
+svn info file:///svn/fgdb-devel-data/trunk/$FILE | awk '/^Last Changed Rev: /{print $4}' > /home/ryan52/public_html/version
+svn export file:///svn/fgdb-devel-data/trunk/$FILE /home/ryan52/public_html/$FILE
+chmod 666 /home/ryan52/public_html/$FILE
