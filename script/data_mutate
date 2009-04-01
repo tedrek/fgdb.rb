@@ -23,7 +23,7 @@ def fix_tx(txs, chars, digits, thing = "comments")
     evalstr = "tx.#{thing}=a"
     a = eval(evalstr1).gsub(/[a-zA-Z]/) { chars[rand(chars.size)] }
     eval(evalstr)
-    a = = eval(evalstr1).gsub(/[0-9]/) { digits[rand(digits.size)] }
+    a = eval(evalstr1).gsub(/[0-9]/) { digits[rand(digits.size)] }
     eval(evalstr)
     tx.save!
   end
