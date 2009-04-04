@@ -68,6 +68,7 @@ tmp/devel_data/devel_data.sql.lzma: tmp/devel_data/devel_data.sql
 
 tmp/devel_data/svn_repo:
 	under-myagent svn co svn+ssh://devo/svn/fgdb-devel-data/trunk tmp/devel_data/svn_repo
+	touch tmp/devel_data/devel_data.sql.lzma # so that tmp/devel_data/svn_repo/devel_data.sql.lzma will get rebuilt even tho it has a newer timestamp
 
 tmp/devel_data/svn_repo/devel_data.sql.lzma: tmp/devel_data/devel_data.sql.lzma tmp/devel_data/svn_repo
 	cp tmp/devel_data/devel_data.sql.lzma tmp/devel_data/svn_repo/devel_data.sql.lzma
