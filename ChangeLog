@@ -43,6 +43,7 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * updated devel data
   * keep the current devel data version with each branch, and download
     that version if we're in a branch
+  * mirroring the devel data on my VPS, and downloading it from there
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 04 Apr 2009 14:59:04 -0700
 
