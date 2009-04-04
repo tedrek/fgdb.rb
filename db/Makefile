@@ -38,7 +38,7 @@ ohaither:
 	@echo
 
 clean_devel_data:
-	rm -fr tmp/devel_data fgdb-devel-data
+	rm -fr tmp/devel_data ../fgdb-devel-data
 
 tmp/devel_data/dir:
 	mkdir -p $@
