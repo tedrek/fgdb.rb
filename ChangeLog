@@ -41,8 +41,10 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * export all versions of devel data
   * script to create devel data
   * updated devel data
+  * keep the current devel data version with each branch, and download
+    that version if we're in a branch
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 04 Apr 2009 13:58:25 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 04 Apr 2009 14:59:04 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 

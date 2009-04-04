@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-# TODO: keep a version number with each branch, so that devel data for older branches can be retrieved easily.
-
 all: download
 
 download: update_devel_data_version devel_data.sql
@@ -16,10 +14,16 @@ devel_data.sql.lzma: devel_data_version
 	wget $(BASE_URL)/$(shell cat devel_data_version)/devel_data.sql.lzma -O devel_data.sql.lzma
 	touch devel_data.sql.lzma
 
+have_branch := $(wildcard branch_devel_data_version)
+
 update_devel_data_version:
+ifneq ($(strip $(have_branch)),)
+	cp branch_devel_data_version devel_data_version
+else
 	wget $(BASE_URL)/version -O devel_data_version.new
 	touch devel_data_version.new
 	if [ ! -f devel_data_version ] || ! diff devel_data_version devel_data_version.new; then mv devel_data_version.new devel_data_version; else rm devel_data_version.new; fi
+endif
 
 create: create_devel_data
 clean: clean_devel_data
