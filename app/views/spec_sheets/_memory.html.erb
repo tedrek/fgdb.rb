@@ -13,7 +13,7 @@
         </tr>
       </table>
     <% end %>
-    <% @parser.xml_foreach("//*[contains(@id, 'bank')]") do %>
+    <% @parser.xml_foreach(".//*[contains(@id, 'bank')]") do %>
       <div class="indent">
         <table>
           <tr>
