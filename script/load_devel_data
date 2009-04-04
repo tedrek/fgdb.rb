@@ -7,4 +7,4 @@ make -C db
 rake db:drop --trace || true
 rake db:create --trace
 rake db:schema:load --trace
-zcat db/devel_data.sql.gz | psql fgdb_development
+cat db/devel_data.sql | psql fgdb_development
