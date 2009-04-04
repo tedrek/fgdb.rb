@@ -57,7 +57,7 @@
     </tr>
   <% end %>
   <% if @parser.xml_value_of("@class")=="network" && @parser.xml_if("capabilities") %>
-    <% @parser.find_the_biggest("//element/capability/@id") do |value| %>
+    <% @parser.find_the_biggest("//capability/@id") do |value| %>
       <tr>
         <td>Speed: </td>
         <td>
