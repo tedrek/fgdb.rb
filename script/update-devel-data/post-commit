@@ -10,7 +10,7 @@ FILE=devel_data.sql.lzma
 set -e
 VERSION=$(svn info file:///svn/fgdb-devel-data/trunk/$FILE | awk '/^Last Changed Rev: /{print $4}')
 echo $VERSION > /home/ryan52/public_html/devel_data/version
-chmod 666 /home/ryan52/public_html/version
+chmod 666 /home/ryan52/public_html/devel_data/version
 if [ ! -d /home/ryan52/public_html/devel_data/$VERSION/ ]; then
     mkdir -p /home/ryan52/public_html/devel_data/$VERSION/
     svn export file:///svn/fgdb-devel-data/trunk/$FILE /home/ryan52/public_html/devel_data/$VERSION/$FILE/
