@@ -26,14 +26,16 @@ fgdb-devel-data: tmp/devel_data/svn_repo/devel_data.sql.lzma
 
 committed: clean_devel_data download
 
+commit:
+	cd ..; git commit -a -m "updated devel data"; cd fgdb-devel-data; under-myagent svn ci -m "updated devel data"; cd ..; under-myagent git push fg
+	@make committed
+
 ohaither:
 	@echo
 	@echo "==========================================================="
 	@echo "Done."
 	@echo
-	@echo "Please commit the result here, and then go into"
-	@echo "fgdb-devel-data and commit there as well."
-	@echo "Then run 'make -C db committed'"
+	@echo "Please look at the results and run 'make -C db commit'"
 	@echo "==========================================================="
 	@echo
 
