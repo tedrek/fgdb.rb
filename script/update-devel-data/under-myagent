@@ -1,0 +1,10 @@
+#!/bin/sh
+
+PROGRAM="$1"
+shift
+FILE=$(mktemp)
+ssh-agent > $FILE
+. $FILE
+ssh-add /home/ryan52/.ssh/scp_key
+"$PROGRAM" "$@"
+kill $SSH_AGENT_PID

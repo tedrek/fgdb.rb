@@ -44,7 +44,7 @@ tmp/devel_data/dir:
 	mkdir -p $@
 
 tmp/devel_data/database.sql.gz: tmp/devel_data/dir
-	scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./tmp/devel_data/
+	under-myagent scp tulip:/usr/local/arik/database.sql.gz ./tmp/devel_data/
 
 tmp/devel_data/database.sql: tmp/devel_data/database.sql.gz
 	zcat tmp/devel_data/database.sql.gz > tmp/devel_data/database.sql
@@ -67,7 +67,7 @@ tmp/devel_data/devel_data.sql.lzma: tmp/devel_data/devel_data.sql
 	cat tmp/devel_data/devel_data.sql | lzma -9 > tmp/devel_data/devel_data.sql.lzma
 
 tmp/devel_data/svn_repo:
-	svn co svn+ssh://devo/svn/fgdb-devel-data/trunk tmp/devel_data/svn_repo
+	under-myagent svn co svn+ssh://devo/svn/fgdb-devel-data/trunk tmp/devel_data/svn_repo
 
 tmp/devel_data/svn_repo/devel_data.sql.lzma: tmp/devel_data/devel_data.sql.lzma tmp/devel_data/svn_repo
 	cp tmp/devel_data/devel_data.sql.lzma tmp/devel_data/svn_repo/devel_data.sql.lzma
