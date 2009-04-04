@@ -40,8 +40,9 @@ fgdb.rb (1.0.30) UNRELEASED; urgency=low
   * move the svn post-commit hook for the devel data from svn to git
   * export all versions of devel data
   * script to create devel data
+  * updated devel data
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 31 Mar 2009 20:40:32 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 04 Apr 2009 13:58:25 -0700
 
 fgdb.rb (1.0.29) released; urgency=low
 
