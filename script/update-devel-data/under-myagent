@@ -5,6 +5,15 @@ shift
 FILE=$(mktemp)
 ssh-agent > $FILE
 . $FILE
-ssh-add /home/ryan52/.ssh/scp_key
+if [ "$HOSTNAME" = "borked" ]; then
+    ssh-add /home/ryan52/.ssh/scp_key
+elif [ "$HOSTNAME" = "xyzzy" ]; then
+    ssh-add /home/ryan52/.ssh/freegeek-git
+else
+    echo "WTF is this machine?!?!"
+    exit 1
+fi
 "$PROGRAM" "$@"
+RET=$?
 kill $SSH_AGENT_PID
+exit $RET
