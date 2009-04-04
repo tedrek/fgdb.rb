@@ -11,7 +11,8 @@ download: update_devel_data_version devel_data.sql
 devel_data.sql: devel_data.sql.lzma
 	lzcat devel_data.sql.lzma > devel_data.sql
 
-BASE_URL=http://dev.freegeek.org/~ryan52/devel_data
+BASE_URL := http://develdata.freegeek.org/
+#BASE_URL := http://dev.freegeek.org/~ryan52/devel_data
 
 devel_data.sql.lzma: devel_data_version
 	wget $(BASE_URL)/$(shell cat devel_data_version)/devel_data.sql.lzma -O devel_data.sql.lzma
