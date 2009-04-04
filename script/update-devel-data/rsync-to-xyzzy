@@ -1,5 +1,13 @@
 #!/bin/sh
 
+exec >>/var/log/rsync-to-xyzzy 2>>/var/log/rsync-to-xyzzy
+
+echo
+echo "====================================================================="
+echo "Starting at $(date) with args: $@"
+echo "====================================================================="
+echo
+
 PATH=$PATH:~/bin/
 cd
 wget http://dev.freegeek.org/~ryan52/devel_data/version -O /var/tmp/version.new
@@ -9,4 +17,11 @@ if [ "$?" != "0" ] || [ "$1" = "--force" -o "$1" = "-f" -o "$1" = "force" ] || [
     RETURN="$?"
 fi
 rmdir /tmp/rsync-to-xyzzy
+
+echo
+echo "====================================================================="
+echo "Finished with $RETURN at $(date)"
+echo "====================================================================="
+echo
+
 exit $RETURN
