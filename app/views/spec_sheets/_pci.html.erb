@@ -2,7 +2,7 @@
   <h2>PCI Bus</h2>
   <% @parser.xml_foreach("//*[contains(@id, 'pci') or contains(@id, 'pcmcia')]") do %>
     <% if @parser._xml_value_of("product") %>
-      <h3><%= @parser._xml_value_of("product") %></h3>
+    <h3><%= @parser._xml_value_of("product") %></h3>
     <% end %>
     <% @parser.xml_foreach("./node[contains(@handle, 'PCI:') or contains(@handle, 'PCMCIA:')]") do %>
       <% if !['bus', 'bridge', 'storage', 'system', 'memory'].include?(@parser.xml_value_of("@class")) %>
