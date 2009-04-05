@@ -55,7 +55,7 @@
         <%= @parser.xml_value_of("//*[contains(@id, 'firmware')]/version") %>
       </td>
     </tr>
-    <% @parser.find_the_biggest("//*[contains(@id, 'usbhost')]//capability", "USB ") do |value| %>
+    <% @parser.find_the_biggest("//node[contains(@id, 'usbhost')]/capabilities/capability", "USB ") do |value| %>
       <tr>
         <td>
           Supports:
