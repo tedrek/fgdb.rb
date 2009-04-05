@@ -2,7 +2,7 @@ module PrintmeHelper
   include XmlHelper
 
   def parse_stuff(my_lshw_output)
-    @parser = load_xml(my_lshw_output)
+    @parser = load_xml(my_lshw_output) or return false
 
     @system_model = @system_serial_number = @system_vendor = @mobo_model = @mobo_serial_number = @mobo_vendor = @macaddr = nil
 
@@ -19,6 +19,7 @@ module PrintmeHelper
     get_vendor
     get_serial
     get_model
+    return @parser
   end
 
   def find_system_id
