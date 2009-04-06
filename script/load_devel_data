@@ -18,6 +18,7 @@ RET=$?
 sleep 3
 kill %1
 wait
+#if [ "$1" = "--slexy" -o "$RET" = "1" ]; then
 if [ "$1" = "--slexy" ]; then
     echo "Tell Ryan or Chris or whoever this: $(./script/slexy.rb < log/load_devel_data.log)"
 fi
