@@ -3,8 +3,23 @@
 set -e
 set -x
 
-make -C db
-rake db:drop --trace || true
-rake db:create --trace
-rake db:schema:load --trace
-cat db/devel_data.sql | psql fgdb_development
+main(){
+    make -C db &&
+    { rake db:drop --trace || true; } &&
+    rake db:create --trace &&
+    rake db:schema:load --trace &&
+    test -f db/devel_data.sql &&
+    { cat db/devel_data.sql | psql fgdb_development; } &&
+    return 0
+    return 1
+}
+
+echo -n > log/load_devel_data.log
+tail -f log/load_devel_data.log &
+main > log/load_devel_data.log
+RET=$?
+kill %1
+if [ $1 = "--slexy" ]; then
+    echo "Tell Ryan or Chris or whoever this: $(./script/slexy.rb log/load_devel_data.log)"
+fi
+exit $RET
