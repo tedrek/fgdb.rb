@@ -18,7 +18,7 @@ tail -f log/load_devel_data.log &
 main 2>>log/load_devel_data.log >>log/load_devel_data.log
 RET=$?
 kill %1
-if [ $1 = "--slexy" ]; then
+if [ "$1" = "--slexy" ]; then
     echo "Tell Ryan or Chris or whoever this: $(./script/slexy.rb log/load_devel_data.log)"
 fi
 exit $RET
