@@ -16,7 +16,7 @@ main(){
 
 echo -n > log/load_devel_data.log
 tail -f log/load_devel_data.log &
-main > log/load_devel_data.log
+main 2>>log/load_devel_data.log >>log/load_devel_data.log
 RET=$?
 kill %1
 if [ $1 = "--slexy" ]; then
