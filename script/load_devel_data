@@ -7,7 +7,8 @@ main(){
     rake db:schema:load --trace &&
     test -f db/devel_data.sql &&
     { cat db/devel_data.sql | psql fgdb_development; } &&
-    return 0
+    { echo "Returning with success"; return 0; }
+    echo "Returning with failure"
     return 1
 }
 
