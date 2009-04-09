@@ -4,10 +4,11 @@
 
 set -ex
 
+rake db:drop --trace || true
 make -C db all_clean
 make -C db tmp/devel_data/database.sql
 make -C db update_devel_data_version
 mv db/tmp/devel_data/database.sql db/devel_data.sql
 touch db/devel_data.sql
 make -C db clean_devel_data
-./script/load_devel_data
+psql fgdb_development < db/devel_data.sql
