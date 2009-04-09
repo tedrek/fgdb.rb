@@ -4,6 +4,7 @@
 
 set -ex
 
+make -C db all_clean
 make -C db tmp/devel_data/database.sql
 make -C db devel_data.sql
 touch -r db/devel_data.sql db/tmp/devel_data/database.sql
