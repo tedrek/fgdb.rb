@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# TODO: skip downloading the "normal" file
+
+set -ex
+
+make -C db tmp/devel_data/database.sql
+make -C db devel_data.sql
+touch -r db/devel_data.sql db/tmp/devel_data/database.sql
+mv db/tmp/devel_data/database.sql db/devel_data.sql
+./script/load_devel_data
