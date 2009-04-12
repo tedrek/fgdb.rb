@@ -180,7 +180,7 @@ function cent_value(value) {
 }
 
 function dollar_value(cents) {
-  cents = "" + cents;
+  cents = "" + Math.floor(cents);
   if (cents.length == 0) {
     return "0.00";
   }
