@@ -7,7 +7,7 @@ def runtask(task)
   return ret
 end
 
-tasks :do_i_have_everything_installed_right do
+task :do_i_have_everything_installed_right do
   system("./script/do_i_have_everything_installed_right") or raise
 end
 
