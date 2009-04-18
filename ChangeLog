@@ -1,6 +1,5 @@
 fgdb.rb (1.0.31) UNRELEASED; urgency=low
 
-  * 
   * fix when a discount is applied to an event with an odd number of
     cents and an odd number of quantity
   * continuous integration
