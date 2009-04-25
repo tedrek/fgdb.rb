@@ -109,14 +109,13 @@ function toggle_description(evt) {
   return true;
 }
 
-function add_line_item(args, hook1, hook2, update_hook, edit_hook, show_edit_button){
+function add_line_item(args, stupid_hook, update_hook, edit_hook, show_edit_button){
   var prefix = args['prefix'];
   var id = prefix + '_' + counters[prefix + '_line_id'] + '_line'
     tr = document.createElement("tr");
   tr.className = "line";
   tr.id = id;
-  hook1(args, tr);
-  hook2(args, tr);
+  stupid_hook(args, tr);
   td = document.createElement("td");
   a = document.createElement("a");
   a.onclick = function () {
@@ -333,13 +332,23 @@ function edit_payment(id) {
   $('payment_method_id').focus();
 }
 
+function sales_hooks(args, tr) {
+  gizmo_events_stuff(args, tr);
+  sales_stuff(args, tr);
+}
+
 function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, system_id) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
   args['system_id'] = system_id;
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals, edit_sale, true);
+  add_line_item(args, sales_hooks, sale_compute_totals, edit_sale, true);
+}
+
+function disbursements_hooks(args, tr) {
+  gizmo_events_stuff(args, tr);
+  systems_stuff(args, tr);
 }
 
 function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id, covered) {
@@ -352,7 +361,12 @@ function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id, cov
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, gizmo_events_stuff, systems_stuff, update_contract_notes, edit_disbursement, true);
+  add_line_item(args, disbursements_hooks, update_contract_notes, edit_disbursement, true);
+}
+
+function recycling_hooks(args, tr) {
+  gizmo_events_stuff(args, tr);
+  contracts_stuff(args, tr);
 }
 
 function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, covered) {
@@ -365,19 +379,41 @@ function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, cove
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, gizmo_events_stuff, contracts_stuff, function(){}, edit_disbursement, true);
+  add_line_item(args, recycling_hooks, function(){}, edit_disbursement, true);
+}
+
+function donation_hooks(args, tr) {
+  gizmo_events_stuff(args, tr);
+  sales_stuff(args, tr); // NOT a typo, we're just that stupid
 }
 
 function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, covered) {
   var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
-  add_edit_button = true;
+//  add_edit_button = true;
   args['covered'] = covered;
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  if(!gizmo_types[gizmo_type_id] && all_gizmo_types[gizmo_type_id])
-    add_edit_button = false;
-  add_line_item(args, gizmo_events_stuff, sales_stuff, donation_compute_totals, edit_sale, add_edit_button);
+//  if(!gizmo_types[gizmo_type_id] && all_gizmo_types[gizmo_type_id]) // WTF!?!?!?!?!? screw it, I'm leaving this code unused
+//    add_edit_button = false;
+  add_line_item(args, donation_hooks, donation_compute_totals, edit_sale, true); // ?????????
+}
+
+function is_priced() {
+  if(gizmo_context_name == "donation" || gizmo_context_name == "sale")
+    return true;
+  else if(gizmo_context_name == "recycling" || gizmo_context_name == "disbursement")
+    return false;
+  else
+    alert("BUG. go yell at Ryan.");
+  return false;
+}
+
+function add_from_form() {
+  if(is_priced)
+    add_priced_gizmo_event_from_form
+  else
+    add_unpriced_gizmo_event_from_form;
 }
 
 function add_priced_gizmo_event_from_form()
