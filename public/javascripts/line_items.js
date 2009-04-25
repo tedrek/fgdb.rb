@@ -164,14 +164,14 @@ function make_hidden(container, name, display_value, value, line_id){
 function edit_sale(id) {
   thing = $(id);
   $('gizmo_type_id').value = getValueBySelector(thing, ".gizmo_type_id");
-  sale_gizmo_type_selected();
-  coveredness_type_selected();
+  $('gizmo_type_id').onchange();
   $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
   if($('system_id') != null) {
     $('system_id').value = getValueBySelector(thing, ".system_id");
   }
   if($('covered') != null) {
     $('covered').checked = getValueBySelector(thing, ".covered") == "true";
+    $('covered').
   }
   $('unit_price').value = getValueBySelector(thing, ".unit_price");
   $('description').value = getValueBySelector(thing, ".description");
@@ -180,8 +180,7 @@ function edit_sale(id) {
 function edit_disbursement(id) {
   thing = $(id);
   $('gizmo_type_id').value = getValueBySelector(thing, ".gizmo_type_id");
-  disbursement_gizmo_type_selected();
-  coveredness_type_selected();
+  $('gizmo_type_id').onchange();
   $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
   if($('system_id') != null) {
     $('system_id').value = getValueBySelector(".system_id");
