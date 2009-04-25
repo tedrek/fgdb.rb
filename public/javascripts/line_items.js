@@ -200,7 +200,6 @@ function coveredness_stuff(args, tr){
 }
 
 function systems_stuff(args, tr){
-  coveredness_stuff(args, tr);
   var line_id = counters[args['prefix'] + '_line_id'];
   if($('system_id') == null)
     return;
@@ -246,7 +245,6 @@ function contracts_stuff(args, tr){
 }
 
 function sales_stuff(args, tr){
-  systems_stuff(args, tr);
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden("line", "unit_price", args['unit_price'], args['unit_price'], line_id));
   td = document.createElement("td");
@@ -334,6 +332,8 @@ function edit_payment(id) {
 
 function sales_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
+  coveredness_stuff(args, tr);
+  systems_stuff(args, tr);
   sales_stuff(args, tr);
 }
 
@@ -348,6 +348,7 @@ function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, descriptio
 
 function disbursements_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
+  coveredness_stuff(args, tr);
   systems_stuff(args, tr);
 }
 
@@ -385,6 +386,8 @@ function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, cove
 
 function donation_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
+  coveredness_stuff(args, tr);
+  systems_stuff(args, tr);
   sales_stuff(args, tr); // NOT a typo, we're just that stupid
 }
 
