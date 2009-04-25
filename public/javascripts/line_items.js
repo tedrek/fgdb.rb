@@ -171,7 +171,6 @@ function edit_sale(id) {
   }
   if($('covered') != null) {
     $('covered').checked = getValueBySelector(thing, ".covered") == "true";
-    $('covered').
   }
   $('unit_price').value = getValueBySelector(thing, ".unit_price");
   $('description').value = getValueBySelector(thing, ".description");
@@ -244,14 +243,14 @@ function is_priced() {
   return false;
 }
 
-function add_from_form() {
+function add_gizmo_event_from_form() {
   if(is_priced)
-    add_priced_gizmo_event_from_form;
+    _add_priced_gizmo_event_from_form();
   else
-    add_unpriced_gizmo_event_from_form;
+    _add_unpriced_gizmo_event_from_form();
 }
 
-function add_priced_gizmo_event_from_form()
+function _add_priced_gizmo_event_from_form()
 {
   if($('gizmo_type_id').selectedIndex == 0 || $('unit_price').value == '' || $('gizmo_count').value == '') {
     return true;
@@ -285,7 +284,7 @@ function add_priced_gizmo_event_from_form()
   return false;
 }
 
-function add_unpriced_gizmo_event_from_form()
+function _add_unpriced_gizmo_event_from_form()
 {
   if($('gizmo_type_id').selectedIndex == 0 || $('gizmo_count').value == '') {
     return true;
