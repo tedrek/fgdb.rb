@@ -243,7 +243,6 @@ function contracts_stuff(args, tr){
     var contract = all_contracts[args['contract_id']];
     tr.appendChild(make_hidden("line", "recycling_contract_id", contract, args['contract_id'], line_id));
   }
-  coveredness_stuff(args, tr); // TODO: another hook
 }
 
 function sales_stuff(args, tr){
@@ -368,6 +367,7 @@ function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id, cov
 function recycling_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
   contracts_stuff(args, tr);
+  coveredness_stuff(args, tr);
 }
 
 function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, covered) {
