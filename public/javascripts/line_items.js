@@ -2,20 +2,20 @@
 // ALIASES TO BE CALLED FROM VIEWS //
 /////////////////////////////////////
 
-function sales_hanle_gizmo_events(){
-  return add_priced_gizmo_event_from_form();
+function sales_handle_gizmo_events(){
+  return add_gizmo_event_from_form();
 }
 
 function donations_handle_gizmo_events(){
-  return add_priced_gizmo_event_from_form();
+  return add_gizmo_event_from_form();
 }
 
 function disbursements_handle_gizmo_events(){
-  return add_unpriced_gizmo_event_from_form();
+  return add_gizmo_event_from_form();
 }
 
 function recyclings_handle_gizmo_events(){
-  return add_unpriced_gizmo_event_from_form();
+  return add_gizmo_event_from_form();
 }
 
 function sales_handle_payments(){
