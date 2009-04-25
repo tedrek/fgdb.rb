@@ -46,14 +46,10 @@ function update_contract_notes(){
   var mynotes;
   var found = new Array;
   mynotes = "";
-  reference_line = $('gizmo_event_0_line');
-  if(reference_line)
-    lines = $('gizmo_event_0_line').parentNode.getElementsBySelector(".line");
-  else
-    lines = [];
+  lines = find_these_lines('gizmo_event_lines');
   for(var i = 0; i < lines.size(); i++) {
     line = lines[i];
-    system_id = line.getElementsBySelector(".system_id").first().firstChild.value;
+    system_id = getValueBySelector(line, ".system_id");
     if(system_id != null && system_id != "") {
       contract_id = all_systems[system_id];
       if(!found[contract_id]) {
@@ -290,45 +286,50 @@ function add_unpriced_gizmo_event(gizmo_type_id, gizmo_count) {
   return args;
 }
 
+// TODO: what's the difference from get_node_value?
+function getValueBySelector(thing, selector) {
+  return thing.getElementsBySelector(selector).first().firstChild.value;
+}
+
 function edit_sale(id) {
   thing = $(id);
-  $('gizmo_type_id').value = thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value;
+  $('gizmo_type_id').value = getValueBySelector(thing, ".gizmo_type_id");
   sale_gizmo_type_selected();
   coveredness_type_selected();
-  $('gizmo_count').value = thing.getElementsBySelector(".gizmo_count").first().firstChild.value;
+  $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
   if($('system_id') != null) {
-    $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
+    $('system_id').value = getValueBySelector(thing, ".system_id");
   }
   if($('covered') != null) {
-    $('covered').checked = thing.getElementsBySelector(".covered").first().firstChild.value == "true";
+    $('covered').checked = getValueBySelector(thing, ".covered") == "true";
   }
-  $('unit_price').value = thing.getElementsBySelector(".unit_price").first().firstChild.value;
-  $('description').value = thing.getElementsBySelector(".description").first().firstChild.value;
+  $('unit_price').value = getValueBySelector(thing, ".unit_price");
+  $('description').value = getValueBySelector(thing, ".description");
   $('gizmo_type_id').focus();
 }
 
 function edit_disbursement(id) {
   thing = $(id);
-  $('gizmo_type_id').value = thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value;
+  $('gizmo_type_id').value = getValueBySelector(thing, ".gizmo_type_id");
   disbursement_gizmo_type_selected();
   coveredness_type_selected();
-  $('gizmo_count').value = thing.getElementsBySelector(".gizmo_count").first().firstChild.value;
+  $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
   if($('system_id') != null) {
-    $('system_id').value = thing.getElementsBySelector(".system_id").first().firstChild.value;
+    $('system_id').value = getValueBySelector(".system_id");
   }
   if($('contract_id') != null) {
-    $('contract_id').value = thing.getElementsBySelector(".recycling_contract_id").first().firstChild.value;
+    $('contract_id').value = getValueBySelector(".recycling_contract_id");
   }
   if($('covered') != null) {
-    $('covered').checked = thing.getElementsBySelector(".covered").first().firstChild.value == "true";
+    $('covered').checked = getValueBySelector(thing, ".covered") == "true";
   }
   $('gizmo_type_id').focus();
 }
 
 function edit_payment(id) {
   thing = $(id);
-  $('payment_method_id').value = thing.getElementsBySelector(".payment_method_id").first().firstChild.value;
-  $('payment_amount').value = thing.getElementsBySelector(".amount").first().firstChild.value;
+  $('payment_method_id').value = getValueBySelector(thing, ".payment_method_id");
+  $('payment_amount').value = getValueBySelector(thing, ".amount");
   $('payment_method_id').focus();
 }
 
@@ -489,9 +490,13 @@ function add_unpriced_gizmo_event_from_form()
   return false;
 }
 
+function find_these_lines(name){
+  return $(name).getElementsBySelector("tr.line");
+}
+
 function get_grand_total(){
   var total = 0;
-  var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
+  var arr = find_these_lines('gizmo_event_lines');
   for (var x = 0; x < arr.length; x++) {
     total += cent_value(get_node_value(arr[x], "td.total_price"));
   }
@@ -500,7 +505,7 @@ function get_grand_total(){
 
 function get_subtotal() {
   var total = 0;
-  var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
+  var arr = find_these_lines('gizmo_event_lines');
   for (var x = 0; x < arr.length; x++) {
     total += (get_node_value(arr[x], "td.gizmo_count") * cent_value(get_node_value(arr[x], "td.unit_price")));
 
@@ -510,7 +515,7 @@ function get_subtotal() {
 
 function get_total_payment() {
   var total = 0;
-  var arr = $('payment_lines').getElementsBySelector("tr.line");
+  var arr = find_these_lines('payment_lines');
   for (var x = 0; x < arr.length; x++) {
     total += cent_value(get_node_value(arr[x], "td.amount"));
   }
@@ -518,15 +523,15 @@ function get_total_payment() {
 }
 
 function update_gizmo_events_totals() {
-  gizmo_events = $('gizmo_event_lines').getElementsBySelector(".line");
+  gizmo_events = find_these_lines('gizmo_event_lines');
   for (var i = 0; i < gizmo_events.length; i++)
   {
     thing = gizmo_events[i];
 
     var multiplier = defined(discount_schedules)
-      ? (discount_schedules[$('sale_discount_schedule_id').value][parseInt(thing.getElementsBySelector(".gizmo_type_id").first().firstChild.value)])
+      ? (discount_schedules[$('sale_discount_schedule_id').value][parseInt(getValueBySelector(thing, ".gizmo_type_id"))])
       : 1;
-    var amount_b4_discount = cent_value(get_node_value(thing, ".unit_price")) * Math.floor(thing.getElementsBySelector(".gizmo_count").first().firstChild.value);
+    var amount_b4_discount = cent_value(get_node_value(thing, ".unit_price")) * Math.floor(getValueBySelector(thing, ".gizmo_count"));
     var amount = multiplier * amount_b4_discount;
     if (isNaN(amount))
       amount = 0;
@@ -548,12 +553,12 @@ function get_donation_totals() {
   var totals = new Array();
   totals['required'] = 0;
   totals['suggested'] = 0;
-  var arr = $('gizmo_event_lines').getElementsBySelector("tr.line");
+  var arr = find_these_lines('gizmo_event_lines');
   for (var x = 0; x < arr.length; x++) {
     var type;
-    var type_id = arr[x].getElementsBySelector("td.gizmo_type_id").first().firstChild.value;
+    var type_id = getValueBySelector(arr[x], "td.gizmo_type_id");
     type = (fees[type_id]['required'] > 0) ? 'required' : 'suggested';
-    if($('covered') && arr[x].getElementsBySelector("td.covered").first().firstChild.value == "true")
+    if($('covered') && getValueBySelector(arr[x], "td.covered") == "true")
       type = "suggested";
     totals[type] += cent_value(get_node_value(arr[x], "td.total_price"));
   }
