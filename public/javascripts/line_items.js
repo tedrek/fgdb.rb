@@ -751,7 +751,8 @@ function coveredness_type_selected() {
 }
 
 function sale_gizmo_type_selected() {
-  disbursement_gizmo_type_selected();
+  coveredness_type_selected();
+  systems_type_selected();
 }
 function donation_gizmo_type_selected() {
   coveredness_type_selected()
@@ -774,14 +775,17 @@ function recycling_gizmo_type_selected() {
 }
 function disbursement_gizmo_type_selected() {
   coveredness_type_selected();
-  if($('system_id') != null) {
-    if(system_types.include($('gizmo_type_id').value)) {
-      $('system_id').enable();
-      $('system_id').value = '';
-    } else {
-      $('system_id').disable();
-      $('system_id').value = '';
-    }
+  systems_type_selected();
+}
+function systems_type_selected() {
+  if($('system_id') == null)
+    return;
+  if(system_types.include($('gizmo_type_id').value)) {
+    $('system_id').enable();
+    $('system_id').value = '';
+  } else {
+    $('system_id').disable();
+    $('system_id').value = '';
   }
 }
 
