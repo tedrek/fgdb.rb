@@ -42,7 +42,7 @@
     <% end %>
 
   <tr id="form">
-    <td><select id="gizmo_type_id" onchange="coveredness_type_selected(); <%= h @gizmo_context.name %>_gizmo_type_selected();">
+    <td><select id="gizmo_type_id" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected();">
         <%= gizmo_events_options_for_transaction %>
       </select></td>
     <td class="description invisible"><input name="description" id="description" size="10"></td>

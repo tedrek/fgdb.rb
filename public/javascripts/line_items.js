@@ -691,6 +691,7 @@ function sale_gizmo_type_selected() {
   disbursement_gizmo_type_selected();
 }
 function donation_gizmo_type_selected() {
+  coveredness_type_selected()
   if($('covered') && $('covered').checked == true) {
     $('unit_price').value = dollar_value(first(fees[$('gizmo_type_id').value]['suggested'], fees[$('gizmo_type_id').value]['required']));
   } else {
