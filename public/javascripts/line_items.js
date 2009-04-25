@@ -2,46 +2,17 @@
 // ALIASES TO BE CALLED FROM VIEWS //
 /////////////////////////////////////
 
-function sales_handle_gizmo_events(){
+function handle_gizmo_events(){
   return add_gizmo_event_from_form();
 }
 
-function donations_handle_gizmo_events(){
-  return add_gizmo_event_from_form();
+function handle_payments(){
+  return add_payment_from_form();
 }
 
-function disbursements_handle_gizmo_events(){
-  return add_gizmo_event_from_form();
-}
-
-function recyclings_handle_gizmo_events(){
-  return add_gizmo_event_from_form();
-}
-
-function sales_handle_payments(){
-  return add_payment_from_form(sale_compute_totals);
-}
-
-function donations_handle_payments(){
-  return add_payment_from_form(donation_compute_totals);
-}
-
-function sales_handle_all(){
-  sales_hanle_gizmo_events();
-  sales_handle_payments();
-}
-
-function donations_handle_all(){
-  donations_handle_gizmo_events();
-  donations_handle_payments()
-}
-
-function disbursements_handle_all(){
-  disbursements_handle_gizmo_events();
-}
-
-function recyclings_handle_all(){
-  recyclings_handle_gizmo_events();
+function handle_all(){
+  hanle_gizmo_events();
+  handle_payments();
 }
 
 /////////////////////
@@ -323,7 +294,18 @@ function _add_unpriced_gizmo_event_from_form()
   return false;
 }
 
-function add_payment_from_form(compute_totals) {
+function add_payment_from_form() {
+  if(!is_priced)
+    return;
+  if(gizmo_context_name == "donation")
+    return internal_add_payment_from_form(donation_compute_totals);
+  else if(gizmo_context_name == "sale")
+    return internal_add_payment_from_form(sale_compute_totals);
+  else
+    alert("BUG. go yell at Ryan.");
+}
+
+function internal_add_payment_from_form(compute_totals) {
   if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
     return true;
   }
