@@ -342,11 +342,15 @@ function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, descriptio
   add_line_item(args, gizmo_events_stuff, sales_stuff, sale_compute_totals, edit_sale, true);
 }
 
-function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id) {
+function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id, covered) {
   var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
   args['system_id'] = system_id;
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
+  }
+  args['covered'] = covered;
+  if(args['covered'] == undefined) {
+    args['covered'] = '';
   }
   add_line_item(args, gizmo_events_stuff, systems_stuff, update_contract_notes, edit_disbursement, true);
 }
@@ -661,6 +665,7 @@ function recycling_gizmo_type_selected() {
   coveredness_type_selected();
 }
 function disbursement_gizmo_type_selected() {
+  coveredness_type_selected();
   if($('system_id') != null) {
     if(system_types.include($('gizmo_type_id').value)) {
       $('system_id').enable();
