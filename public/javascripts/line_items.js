@@ -232,18 +232,21 @@ function _add_priced_gizmo_event_from_form()
   if($('gizmo_type_id').selectedIndex == 0 || $('unit_price').value == '' || $('gizmo_count').value == '') {
     return true;
   }
-  string = "add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value, $('unit_price').value, $('description').value";
+  var args = new Array();
+  args['gizmo_type_id'] = $('gizmo_type_id').value;
+  args['gizmo_count'] = $('gizmo_count').value;
+  args['description'] = $('description').value;
+  args['unit_price'] = $('unit_price').value;
   if($('system_id') != null) {
-    string += ", $('system_id').value";
+    args['system_id'] = $('system_id').value;
   }
   if($('covered') != null) {
-    string += ", $('covered').checked";
+    args['covered'] = $('covered').checked;
   }
   if($('contract_id') != null) {
-    string += ", $('contract_id').value";
+    args['contract_id'] = $('contract_id').value;
   }
-  string += ");";
-  eval(string);
+  add_a_gizmo_event(args);
   $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
   $('unit_price').enable();
   $('description').value = $('description').defaultValue;
@@ -667,14 +670,13 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
   add_line_item(args, contact_method_stuff, function () {}, function () {});
 }
 
-function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, system_id) {
-  var args = new Array();
-  args['gizmo_type_id'] = gizmo_type_id;
-  args['unit_price'] = dollar_cent_value(unit_price);
-  args['gizmo_count'] = gizmo_count;
+function add_a_gizmo_event(args){
+  eval("add_" + gizmo_context_name + "_gizmo_event(args)");
+}
+
+function add_sale_gizmo_event(args) {
   args['prefix'] = 'gizmo_event';
-  args['description'] = description;
-  args['system_id'] = system_id;
+  args['unit_price'] = dollar_cent_value(args['unit_price']);
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
