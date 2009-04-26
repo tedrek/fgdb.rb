@@ -146,7 +146,9 @@ function edit_sale(id) {
   }
   if($('covered') != null) {
     $('covered').checked = getValueBySelector(thing, ".covered") == "true";
-    $('covered').onchange();
+    if($('covered').onchange) {
+      $('covered').onchange();
+    }
   }
   $('unit_price').value = getValueBySelector(thing, ".unit_price");
   $('description').value = getValueBySelector(thing, ".description");
@@ -158,14 +160,16 @@ function edit_disbursement(id) {
   $('gizmo_type_id').onchange();
   $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
   if($('system_id') != null) {
-    $('system_id').value = getValueBySelector(".system_id");
+    $('system_id').value = getValueBySelector(thing, ".system_id");
   }
   if($('contract_id') != null) {
-    $('contract_id').value = getValueBySelector(".recycling_contract_id");
+    $('contract_id').value = getValueBySelector(thing, ".recycling_contract_id");
   }
   if($('covered') != null) {
     $('covered').checked = getValueBySelector(thing, ".covered") == "true";
-    $('covered').onchange();
+    if($('covered').onchange) {
+      $('covered').onchange();
+    }
   }
   $('gizmo_type_id').focus();
 }
