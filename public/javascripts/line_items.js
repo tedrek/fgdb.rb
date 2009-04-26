@@ -189,7 +189,7 @@ function sales_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
   coveredness_stuff(args, tr);
   systems_stuff(args, tr);
-  sales_stuff(args, tr);
+  unit_price_stuff(args, tr);
 }
 
 function disbursements_hooks(args, tr) {
@@ -207,7 +207,7 @@ function donation_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
   coveredness_stuff(args, tr);
   systems_stuff(args, tr);
-  sales_stuff(args, tr); // NOT a typo, we're just that stupid
+  unit_price_stuff(args, tr);
 }
 
 /////////////////////////
@@ -400,7 +400,7 @@ function contracts_stuff(args, tr){
   }
 }
 
-function sales_stuff(args, tr){
+function unit_price_stuff(args, tr){
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden("line", "unit_price", args['unit_price'], args['unit_price'], line_id));
   td = document.createElement("td");
