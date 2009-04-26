@@ -142,6 +142,7 @@ function edit_sale(id) {
   }
   if($('covered') != null) {
     $('covered').checked = getValueBySelector(thing, ".covered") == "true";
+    $('covered').onchange();
   }
   $('unit_price').value = getValueBySelector(thing, ".unit_price");
   $('description').value = getValueBySelector(thing, ".description");
@@ -160,6 +161,7 @@ function edit_disbursement(id) {
   }
   if($('covered') != null) {
     $('covered').checked = getValueBySelector(thing, ".covered") == "true";
+    $('covered').onchange();
   }
   $('gizmo_type_id').focus();
 }
@@ -215,7 +217,7 @@ function is_priced() {
 }
 
 function add_gizmo_event_from_form() {
-  if(is_priced)
+  if(is_priced())
     _add_priced_gizmo_event_from_form();
   else
     _add_unpriced_gizmo_event_from_form();
@@ -295,7 +297,7 @@ function _add_unpriced_gizmo_event_from_form()
 }
 
 function add_payment_from_form() {
-  if(!is_priced)
+  if(!is_priced())
     return;
   if(gizmo_context_name == "donation")
     return internal_add_payment_from_form(donation_compute_totals);
@@ -625,6 +627,17 @@ function is_last_enabled_visable_there_field_thing_in_line_item(name, names) {
     return true;
   } else {
     return false;
+  }
+}
+
+function last_and_tab(event) {
+  linelist = ['gizmo_count', 'system_id', 'contract_id','covered', 'unit_price'];
+  return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
+}
+
+function handle_ge(event) {
+  if(last_and_tab(event)) {
+    return handle_gizmo_events();
   }
 }
 
