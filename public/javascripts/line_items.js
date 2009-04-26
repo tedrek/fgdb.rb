@@ -246,7 +246,7 @@ function _add_priced_gizmo_event_from_form()
   if($('contract_id') != null) {
     args['contract_id'] = $('contract_id').value;
   }
-  add_a_gizmo_event(args);
+  add_gizmo_event(args);
   $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
   $('unit_price').enable();
   $('description').value = $('description').defaultValue;
@@ -670,7 +670,7 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
   add_line_item(args, contact_method_stuff, function () {}, function () {});
 }
 
-function add_a_gizmo_event(args){
+function add_gizmo_event(args){
   eval("add_" + gizmo_context_name + "_gizmo_event(args)");
 }
 
@@ -715,21 +715,16 @@ function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, cove
   add_line_item(args, recycling_hooks, function(){}, edit_disbursement, true);
 }
 
-function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, covered) {
-  var args = new Array();
-  args['gizmo_type_id'] = gizmo_type_id;
-  args['unit_price'] = dollar_cent_value(unit_price);
-  args['gizmo_count'] = gizmo_count;
+function add_donation_gizmo_event(args) {
+  args['unit_price'] = dollar_cent_value(args['unit_price']);
   args['prefix'] = 'gizmo_event';
-  args['description'] = description;
-//  add_edit_button = true;
-  args['covered'] = covered;
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-//  if(!gizmo_types[gizmo_type_id] && all_gizmo_types[gizmo_type_id]) // WTF!?!?!?!?!? screw it, I'm leaving this code unused
+//  add_edit_button = true;
+//  if(!gizmo_types[args['gizmo_type_id']] && all_gizmo_types[args['gizmo_type_id']]) // WTF!?!?!?!?!? screw it, I'm leaving this code unused
 //    add_edit_button = false;
-  add_line_item(args, donation_hooks, donation_compute_totals, edit_sale, true); // ?????????
+  add_line_item(args, donation_hooks, donation_compute_totals, edit_sale, true); // was add_edit_button instead of true
 }
 
 ///////////////
