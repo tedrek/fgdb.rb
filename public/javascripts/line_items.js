@@ -11,7 +11,7 @@ function handle_payments(){
 }
 
 function handle_all(){
-  hanle_gizmo_events();
+  handle_gizmo_events();
   handle_payments();
 }
 
