@@ -663,26 +663,13 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
   add_line_item(args, contact_method_stuff, function () {}, function () {});
 }
 
-function add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description) {
+function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, system_id) {
   var args = new Array();
   args['gizmo_type_id'] = gizmo_type_id;
   args['unit_price'] = dollar_value(cent_value(unit_price));
   args['gizmo_count'] = gizmo_count;
   args['prefix'] = 'gizmo_event';
   args['description'] = description;
-  return args;
-}
-
-function add_unpriced_gizmo_event(gizmo_type_id, gizmo_count) {
-  var args = new Array();
-  args['gizmo_type_id'] = gizmo_type_id;
-  args['gizmo_count'] = gizmo_count;
-  args['prefix'] = 'gizmo_event';
-  return args;
-}
-
-function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, system_id) {
-  var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
   args['system_id'] = system_id;
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
@@ -691,7 +678,10 @@ function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, descriptio
 }
 
 function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id, covered) {
-  var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
+  var args = new Array();
+  args['gizmo_type_id'] = gizmo_type_id;
+  args['gizmo_count'] = gizmo_count;
+  args['prefix'] = 'gizmo_event';
   args['system_id'] = system_id;
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
@@ -704,7 +694,10 @@ function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id, cov
 }
 
 function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, covered) {
-  var args = add_unpriced_gizmo_event(gizmo_type_id, gizmo_count);
+  var args = new Array();
+  args['gizmo_type_id'] = gizmo_type_id;
+  args['gizmo_count'] = gizmo_count;
+  args['prefix'] = 'gizmo_event';
   args['contract_id'] = contract_id;
   if(args['contract_id'] == undefined) {
     args['contract_id'] = '';
@@ -717,7 +710,12 @@ function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, cove
 }
 
 function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, covered) {
-  var args = add_priced_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description);
+  var args = new Array();
+  args['gizmo_type_id'] = gizmo_type_id;
+  args['unit_price'] = dollar_value(cent_value(unit_price));
+  args['gizmo_count'] = gizmo_count;
+  args['prefix'] = 'gizmo_event';
+  args['description'] = description;
 //  add_edit_button = true;
   args['covered'] = covered;
   if(args['covered'] == undefined) {
