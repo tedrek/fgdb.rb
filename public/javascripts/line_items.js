@@ -269,23 +269,24 @@ function _add_unpriced_gizmo_event_from_form()
   if($('gizmo_type_id').selectedIndex == 0 || $('gizmo_count').value == '') {
     return true;
   }
-  string = "add_" + gizmo_context_name + "_gizmo_event($('gizmo_type_id').value, $('gizmo_count').value";
+  var args = new Array();
+  args['gizmo_type_id'] = $('gizmo_type_id').value;
+  args['gizmo_count'] = $('gizmo_count').value;
   if($('system_id') != null) {
-    string += ", $('system_id').value";
+    args['system_id'] = $('system_id').value;
   }
   if(gizmo_context_name == "recycling") {
     if($('contract_id') != null) {
-      string += ", $('contract_id').value";
+      args['contract_id'] = $('contract_id').value;
     }
     else {
-      string += ", undefined";
+      args['contract_id'] = undefined;
     }
   }
   if($('covered') != null) {
-    string += ", $('covered').checked";
+    args['covered'] = $('covered').checked;
   }
-  string += ");";
-  eval(string);
+  add_gizmo_event(args);
   $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
   $('gizmo_count').value = $('gizmo_count').defaultValue;
   if($('system_id') != null) {
@@ -660,7 +661,6 @@ function add_payment(payment_method_id, payment_amount, compute_totals) {
   add_line_item(args, payment_stuff, function () {}, compute_totals, edit_payment);
 }
 
-
 function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_value) {
   args = new Array();
   args['contact_method_type_id'] = contact_method_type_id;
@@ -683,32 +683,22 @@ function add_sale_gizmo_event(args) {
   add_line_item(args, sales_hooks, sale_compute_totals, edit_sale, true);
 }
 
-function add_disbursement_gizmo_event(gizmo_type_id, gizmo_count, system_id, covered) {
-  var args = new Array();
-  args['gizmo_type_id'] = gizmo_type_id;
-  args['gizmo_count'] = gizmo_count;
+function add_disbursement_gizmo_event(args) {
   args['prefix'] = 'gizmo_event';
-  args['system_id'] = system_id;
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  args['covered'] = covered;
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
   add_line_item(args, disbursements_hooks, update_contract_notes, edit_disbursement, true);
 }
 
-function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, covered) {
-  var args = new Array();
-  args['gizmo_type_id'] = gizmo_type_id;
-  args['gizmo_count'] = gizmo_count;
+function add_recycling_gizmo_event(args) {
   args['prefix'] = 'gizmo_event';
-  args['contract_id'] = contract_id;
   if(args['contract_id'] == undefined) {
     args['contract_id'] = '';
   }
-  args['covered'] = covered;
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }

@@ -23,20 +23,24 @@
     <% if @transaction.gizmo_events %>
       <% @gizmos_and_payments_js ||= ""
          for line in @transaction.gizmo_events.not_discount
+           price = 0
+           description = ''
            if @gizmo_context.name == "sale"
              price = line.unit_price
-           else
+           elsif @gizmo_context.name == "donation"
              price = line.fee_cents.to_dollars
+           else
+             raise "BUG"
            end
            if defined?(line.description)
              description = line.description
            else
              description = ''
            end
-           @gizmos_and_payments_js += "add_#{@gizmo_context}_gizmo_event(#{line.gizmo_type_id}, #{line.gizmo_count}, #{price}, '#{description}'"
-           @gizmos_and_payments_js += ", #{line.system_id}" if line.system_id
-           @gizmos_and_payments_js += ", #{line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false")}" if params[:controller] == "donations" && coveredness_enabled
-           @gizmos_and_payments_js += ");\n"
+           hash = {:gizmo_type_id => line.gizmo_type_id, :gizmo_count => line.gizmo_count, :unit_price => price, :description => description}
+           hash[:system_id] = line.system_id if line.system_id
+           hash[:covered] = line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false") if params[:controller] == "donations" && coveredness_enabled
+           @gizmos_and_payments_js += "add_gizmo_event(#{hash.to_json});"
          end
          %>
     <% end %>
