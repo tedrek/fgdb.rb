@@ -43,6 +43,10 @@ function find_these_lines(name){
   return $(name).getElementsBySelector("tr.line");
 }
 
+function dollar_cent_value(amt) {
+  return dollar_value(cent_value(amt));
+}
+
 function dollar_value(cents) {
   cents = "" + Math.floor(cents);
   if (cents.length == 0) {
@@ -648,7 +652,7 @@ function handle_ge(event) {
 function add_payment(payment_method_id, payment_amount, compute_totals) {
   args = new Array();
   args['payment_method_id'] = payment_method_id;
-  args['payment_amount'] = dollar_value(cent_value(payment_amount));
+  args['payment_amount'] = dollar_cent_value(payment_amount);
   args['prefix'] = 'payment';
   add_line_item(args, payment_stuff, function () {}, compute_totals, edit_payment);
 }
@@ -666,7 +670,7 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
 function add_sale_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, system_id) {
   var args = new Array();
   args['gizmo_type_id'] = gizmo_type_id;
-  args['unit_price'] = dollar_value(cent_value(unit_price));
+  args['unit_price'] = dollar_cent_value(unit_price);
   args['gizmo_count'] = gizmo_count;
   args['prefix'] = 'gizmo_event';
   args['description'] = description;
@@ -712,7 +716,7 @@ function add_recycling_gizmo_event(gizmo_type_id, gizmo_count, contract_id, cove
 function add_donation_gizmo_event(gizmo_type_id, gizmo_count, unit_price, description, covered) {
   var args = new Array();
   args['gizmo_type_id'] = gizmo_type_id;
-  args['unit_price'] = dollar_value(cent_value(unit_price));
+  args['unit_price'] = dollar_cent_value(unit_price);
   args['gizmo_count'] = gizmo_count;
   args['prefix'] = 'gizmo_event';
   args['description'] = description;
