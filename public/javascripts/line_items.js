@@ -190,8 +190,8 @@ function sales_hooks(args, tr) {
 
 function disbursements_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
-  coveredness_stuff(args, tr);
   systems_stuff(args, tr);
+  coveredness_stuff(args, tr);
 }
 
 function recycling_hooks(args, tr) {
