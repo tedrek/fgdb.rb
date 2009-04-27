@@ -19,6 +19,14 @@ function handle_all(){
 // GENERAL HELPERS //
 /////////////////////
 
+function strlist_to_arr(str) {
+  return str.split(",").map(function(a){return a.split(" ")}).flatten().select(function(a){return a != "";});
+}
+
+function is_a_list(str) {
+  return str.include(" ") || str.include(",");
+}
+
 function first(a,b) { return a>0 ? a : b; }
 
 function set_visibility(node, visibility) {
@@ -232,6 +240,14 @@ function _add_gizmo_event_from_form()
 {
   if($('gizmo_type_id').selectedIndex == 0 || ($('unit_price') != null && $('unit_price').value == '') || $('gizmo_count').value == '') {
     return true;
+  }
+  if($('system_id') != null) {
+    var list = strlist_to_arr($('system_id').value);
+    if(parseInt($('gizmo_count').value) < list.length) {
+      alert("you gave more system ids than the number of gizmos, which can't work...please fix this and try again.");
+      $('gizmo_type_id').focus();
+      return true;
+    }
   }
   var args = new Array();
   args['gizmo_type_id'] = $('gizmo_type_id').value;
@@ -641,6 +657,33 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
 }
 
 function add_gizmo_event(args){
+  if(args['system_id'] != null && args['system_id'] != '') {
+    if(is_a_list("" + args['system_id'])) {
+      var list = strlist_to_arr("" + args['system_id']);
+      var ni = 0;
+      while (ni < list.length) {
+        var i = list[ni];
+        var newargs = new Array();
+        for(var foo in args) {
+          newargs[foo] = args[foo];
+        }
+        newargs['system_id'] = i;
+        newargs['gizmo_count'] = 1;
+        add_gizmo_event(newargs);
+        ni++;
+      }
+      if(parseInt(args['gizmo_count']) > list.length) {
+        var newargs = new Array();
+        for(var foo in args) {
+          newargs[foo] = args[foo];
+        }
+        newargs['system_id'] = '';
+        newargs['gizmo_count'] = parseInt(args['gizmo_count']) - list.length;
+        add_gizmo_event(newargs);
+      }
+      return;
+    }
+  }
   eval("add_" + gizmo_context_name + "_gizmo_event(args)");
 }
 
