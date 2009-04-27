@@ -144,25 +144,7 @@ function make_hidden(container, name, display_value, value, line_id){
 // EDIT HOOKS //
 ////////////////
 
-function edit_sale(id) {
-  thing = $(id);
-  $('gizmo_type_id').value = getValueBySelector(thing, ".gizmo_type_id");
-  $('gizmo_type_id').onchange();
-  $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
-  if($('system_id') != null) {
-    $('system_id').value = getValueBySelector(thing, ".system_id");
-  }
-  if($('covered') != null) {
-    $('covered').checked = getValueBySelector(thing, ".covered") == "true";
-    if($('covered').onchange) {
-      $('covered').onchange();
-    }
-  }
-  $('unit_price').value = getValueBySelector(thing, ".unit_price");
-  $('description').value = getValueBySelector(thing, ".description");
-  $('gizmo_type_id').focus();
-}
-function edit_disbursement(id) {
+function edit_gizmo_event(id) {
   thing = $(id);
   $('gizmo_type_id').value = getValueBySelector(thing, ".gizmo_type_id");
   $('gizmo_type_id').onchange();
@@ -179,6 +161,10 @@ function edit_disbursement(id) {
       $('covered').onchange();
     }
   }
+  if($('unit_price') != null) {
+    $('unit_price').value = getValueBySelector(thing, ".unit_price");
+  }
+  $('description').value = getValueBySelector(thing, ".description");
   $('gizmo_type_id').focus();
 }
 
@@ -693,7 +679,7 @@ function add_sale_gizmo_event(args) {
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, sales_hooks, sale_compute_totals, edit_sale, true);
+  add_line_item(args, sales_hooks, sale_compute_totals, edit_gizmo_event, true);
 }
 
 function add_disbursement_gizmo_event(args) {
@@ -704,7 +690,7 @@ function add_disbursement_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, disbursements_hooks, update_contract_notes, edit_disbursement, true);
+  add_line_item(args, disbursements_hooks, update_contract_notes, edit_gizmo_event, true);
 }
 
 function add_recycling_gizmo_event(args) {
@@ -715,7 +701,7 @@ function add_recycling_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, recycling_hooks, function(){}, edit_disbursement, true);
+  add_line_item(args, recycling_hooks, function(){}, edit_gizmo_event, true);
 }
 
 function add_donation_gizmo_event(args) {
@@ -727,7 +713,7 @@ function add_donation_gizmo_event(args) {
 //  add_edit_button = true;
 //  if(!gizmo_types[args['gizmo_type_id']] && all_gizmo_types[args['gizmo_type_id']]) // WTF!?!?!?!?!? screw it, I'm leaving this code unused
 //    add_edit_button = false;
-  add_line_item(args, donation_hooks, donation_compute_totals, edit_sale, true); // was add_edit_button instead of true
+  add_line_item(args, donation_hooks, donation_compute_totals, edit_gizmo_event, true); // was add_edit_button instead of true
 }
 
 ///////////////
