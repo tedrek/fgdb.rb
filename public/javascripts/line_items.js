@@ -34,7 +34,7 @@ function get_node_value(node, id) {
   return node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, '');
 }
 
-// TODO: what's the difference from get_node_value?
+// TODO: what's the difference from get_node_value? they aren't interchangeable..
 function getValueBySelector(thing, selector) {
   return thing.getElementsBySelector(selector).first().firstChild.value;
 }
@@ -225,22 +225,21 @@ function is_priced() {
 }
 
 function add_gizmo_event_from_form() {
-  if(is_priced())
-    _add_priced_gizmo_event_from_form();
-  else
-    _add_unpriced_gizmo_event_from_form();
+  _add_gizmo_event_from_form();
 }
 
-function _add_priced_gizmo_event_from_form()
+function _add_gizmo_event_from_form()
 {
-  if($('gizmo_type_id').selectedIndex == 0 || $('unit_price').value == '' || $('gizmo_count').value == '') {
+  if($('gizmo_type_id').selectedIndex == 0 || ($('unit_price') != null && $('unit_price').value == '') || $('gizmo_count').value == '') {
     return true;
   }
   var args = new Array();
   args['gizmo_type_id'] = $('gizmo_type_id').value;
   args['gizmo_count'] = $('gizmo_count').value;
   args['description'] = $('description').value;
-  args['unit_price'] = $('unit_price').value;
+  if($('unit_price') != null) {
+    args['unit_price'] = $('unit_price').value;
+  }
   if($('system_id') != null) {
     args['system_id'] = $('system_id').value;
   }
@@ -252,46 +251,13 @@ function _add_priced_gizmo_event_from_form()
   }
   add_gizmo_event(args);
   $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
-  $('unit_price').enable();
+  if($('unit_price') != null) {
+    $('unit_price').enable();
+  }
   $('description').value = $('description').defaultValue;
-  $('unit_price').value = $('unit_price').defaultValue;
-  $('gizmo_count').value = $('gizmo_count').defaultValue;
-  if($('system_id') != null) {
-    $('system_id').value = $('system_id').defaultValue;
-    $('system_id').disable();
+  if($('unit_price') != null) {
+    $('unit_price').value = $('unit_price').defaultValue;
   }
-  if($('covered') != null){
-    $('covered').checked = $('covered').defaultChecked;
-    $('covered').disable();
-  }
-  $('gizmo_type_id').focus();
-  return false;
-}
-
-function _add_unpriced_gizmo_event_from_form()
-{
-  if($('gizmo_type_id').selectedIndex == 0 || $('gizmo_count').value == '') {
-    return true;
-  }
-  var args = new Array();
-  args['gizmo_type_id'] = $('gizmo_type_id').value;
-  args['gizmo_count'] = $('gizmo_count').value;
-  if($('system_id') != null) {
-    args['system_id'] = $('system_id').value;
-  }
-  if(gizmo_context_name == "recycling") {
-    if($('contract_id') != null) {
-      args['contract_id'] = $('contract_id').value;
-    }
-    else {
-      args['contract_id'] = undefined;
-    }
-  }
-  if($('covered') != null) {
-    args['covered'] = $('covered').checked;
-  }
-  add_gizmo_event(args);
-  $('gizmo_type_id').selectedIndex = 0; //should be default, but it's yucky
   $('gizmo_count').value = $('gizmo_count').defaultValue;
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
