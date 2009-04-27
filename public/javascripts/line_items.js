@@ -249,7 +249,7 @@ function _add_gizmo_event_from_form()
       return true;
     }
   }
-  var args = new Array();
+  var args = new Object();
   args['gizmo_type_id'] = $('gizmo_type_id').value;
   args['gizmo_count'] = $('gizmo_count').value;
   args['description'] = $('description').value;
@@ -434,7 +434,7 @@ function update_contract_notes(){
   if($('contract_notes') == null)
     return;
   var mynotes;
-  var found = new Array;
+  var found = new Array();
   mynotes = "";
   lines = find_these_lines('gizmo_event_lines');
   for(var i = 0; i < lines.size(); i++) {
@@ -549,7 +549,7 @@ function update_gizmo_events_totals() {
 }
 
 function get_donation_totals() {
-  var totals = new Array();
+  var totals = new Object();
   totals['required'] = 0;
   totals['suggested'] = 0;
   var arr = find_these_lines('gizmo_event_lines');
@@ -640,7 +640,7 @@ function handle_ge(event) {
 ///////////////////
 
 function add_payment(payment_method_id, payment_amount, compute_totals) {
-  args = new Array();
+  args = new Object();
   args['payment_method_id'] = payment_method_id;
   args['payment_amount'] = dollar_cent_value(payment_amount);
   args['prefix'] = 'payment';
@@ -648,7 +648,7 @@ function add_payment(payment_method_id, payment_amount, compute_totals) {
 }
 
 function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_value) {
-  args = new Array();
+  args = new Object();
   args['contact_method_type_id'] = contact_method_type_id;
   args['contact_method_usable'] = contact_method_usable;
   args['contact_method_value'] = contact_method_value;
@@ -663,7 +663,7 @@ function add_gizmo_event(args){
       var ni = 0;
       while (ni < list.length) {
         var i = list[ni];
-        var newargs = new Array();
+        var newargs = new Object();
         for(var foo in args) {
           newargs[foo] = args[foo];
         }
@@ -673,7 +673,7 @@ function add_gizmo_event(args){
         ni++;
       }
       if(parseInt(args['gizmo_count']) > list.length) {
-        var newargs = new Array();
+        var newargs = new Object();
         for(var foo in args) {
           newargs[foo] = args[foo];
         }
