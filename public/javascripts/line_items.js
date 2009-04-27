@@ -710,10 +710,7 @@ function add_donation_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-//  add_edit_button = true;
-//  if(!gizmo_types[args['gizmo_type_id']] && all_gizmo_types[args['gizmo_type_id']]) // WTF!?!?!?!?!? screw it, I'm leaving this code unused
-//    add_edit_button = false;
-  add_line_item(args, donation_hooks, donation_compute_totals, edit_gizmo_event, true); // was add_edit_button instead of true
+  add_line_item(args, donation_hooks, donation_compute_totals, edit_gizmo_event, true);
 }
 
 ///////////////
