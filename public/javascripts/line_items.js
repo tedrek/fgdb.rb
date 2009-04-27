@@ -38,11 +38,12 @@ function set_visibility(node, visibility) {
   }
 }
 
+// this one gets the visible part
 function get_node_value(node, id) {
   return node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, '');
 }
 
-// TODO: what's the difference from get_node_value? they aren't interchangeable..
+// this one gets the hidden part
 function getValueBySelector(thing, selector) {
   return thing.getElementsBySelector(selector).first().firstChild.value;
 }
