@@ -37,7 +37,7 @@
              price = line.unit_price
            elsif @gizmo_context.name == "donation"
              price = line.fee_cents.to_dollars
-           elsif @gizmo_context.name == "recyclings" or @gizmo_context.name == "disbursements"
+           elsif @gizmo_context.name == "recycling" or @gizmo_context.name == "disbursement"
              nil
            else
              raise "BUG"
