@@ -212,7 +212,9 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Average Frontdesk Income", "Income"]
+    list = ["Average Frontdesk Income", "Income"]
+    # list << "Active Volunteers"
+    list
   end
 
   # returns the title for that report type
@@ -222,6 +224,8 @@ class GraphicReportsController < ApplicationController
       "Income report"
       when "Average Frontdesk Income"
       "Report of Average Income at Front Desk"
+      when "Active Volunteers"
+      "Report of Number of Active Volunteers"
     end
   end
 
@@ -235,6 +239,8 @@ class GraphicReportsController < ApplicationController
       get_income_for_timerange(*args)
     when "Average Frontdesk Income"
       get_average_frontdesk(*args)
+    when "Active Volunteers"
+      get_active_volunteers(*args)
     end
   end
 
@@ -295,6 +301,31 @@ class GraphicReportsController < ApplicationController
     c = Conditions.new
     c.apply_conditions(created_at_conditions_for_report(*args))
     n = Donation.number_by_conditions(c)
+  end
+
+  def get_active_volunteers(start, theend)
+    res = VolunteerTask.connection.execute("SELECT
+  date_performed,
+  (SELECT count( distinct zzz.contact_id )
+    FROM volunteer_tasks AS zzz
+    WHERE zzz.contact_id IN (
+    SELECT xxx.contact_id
+      FROM volunteer_tasks AS xxx
+      WHERE xxx.date_performed BETWEEN
+        volunteer_tasks.date_performed - 90 AND
+        volunteer_tasks.date_performed
+      GROUP BY xxx.contact_id
+      HAVING SUM(xxx.duration) > 4)) AS vol_count
+  FROM volunteer_tasks
+  WHERE volunteer_tasks.date_performed = '#{start.to_s}'
+  GROUP BY date_performed
+  ORDER BY 1;
+")
+    final = 0
+    if res.first
+      final = res.first['vol_count']
+    end
+    return {:active => final}
   end
 
   def get_average_frontdesk(*args)
