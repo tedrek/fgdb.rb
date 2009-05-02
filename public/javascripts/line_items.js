@@ -95,7 +95,7 @@ function cent_value(value) {
 // LINE ITEM JUNK //
 ////////////////////
 
-function add_line_item(args, stupid_hook, update_hook, edit_hook, show_edit_button){
+function add_line_item(args, stupid_hook, update_hook, edit_hook){
   var prefix = args['prefix'];
   var id = prefix + '_' + counters[prefix + '_line_id'] + '_line'
     tr = document.createElement("tr");
@@ -109,7 +109,7 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook, show_edit_butt
     Element.remove(id);
     update_hook();
   };
-  if(show_edit_button) {
+  if(edit_hook) {
     a.appendChild(document.createTextNode('e'));
     a.className = 'disable_link';
     td.appendChild(a);
@@ -292,7 +292,7 @@ function internal_add_payment_from_form(compute_totals) {
   if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
     return true;
   }
-  add_payment($('payment_method_id').value, $('payment_amount').value, compute_totals)
+  add_payment($('payment_method_id').value, $('payment_amount').value, compute_totals);
   $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
   $('payment_amount').value = $('payment_amount').defaultValue;
   $('payment_method_id').focus();
@@ -631,7 +631,7 @@ function add_payment(payment_method_id, payment_amount, compute_totals) {
   args['payment_method_id'] = payment_method_id;
   args['payment_amount'] = dollar_cent_value(payment_amount);
   args['prefix'] = 'payment';
-  add_line_item(args, payment_stuff, function () {}, compute_totals, edit_payment);
+  add_line_item(args, payment_stuff, compute_totals, edit_payment);
 }
 
 function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_value) {
@@ -640,7 +640,7 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
   args['contact_method_usable'] = contact_method_usable;
   args['contact_method_value'] = contact_method_value;
   args['prefix'] = 'contact_method';
-  add_line_item(args, contact_method_stuff, function () {}, function () {});
+  add_line_item(args, contact_method_stuff, function () {}, false);
 }
 
 function add_gizmo_event(args){
@@ -680,7 +680,7 @@ function add_sale_gizmo_event(args) {
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, sales_hooks, sale_compute_totals, edit_gizmo_event, true);
+  add_line_item(args, sales_hooks, sale_compute_totals, edit_gizmo_event);
 }
 
 function add_disbursement_gizmo_event(args) {
@@ -691,7 +691,7 @@ function add_disbursement_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, disbursements_hooks, update_contract_notes, edit_gizmo_event, true);
+  add_line_item(args, disbursements_hooks, update_contract_notes, edit_gizmo_event);
 }
 
 function add_recycling_gizmo_event(args) {
@@ -702,7 +702,7 @@ function add_recycling_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, recycling_hooks, function(){}, edit_gizmo_event, true);
+  add_line_item(args, recycling_hooks, function(){}, edit_gizmo_event);
 }
 
 function add_donation_gizmo_event(args) {
@@ -711,7 +711,7 @@ function add_donation_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, donation_hooks, donation_compute_totals, edit_gizmo_event, true);
+  add_line_item(args, donation_hooks, donation_compute_totals, edit_gizmo_event);
 }
 
 ///////////////
