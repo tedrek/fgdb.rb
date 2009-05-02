@@ -269,6 +269,9 @@ function _add_gizmo_event_from_form()
   if($('covered') != null){
     $('covered').checked = $('covered').defaultChecked;
     $('covered').disable();
+    if($('covered').disabled) {
+      $('covered').checked = false;
+    }
   }
   if($('contract_id') != null) {
     $('contract_id').selectedIndex = 0;
@@ -732,6 +735,9 @@ function coveredness_type_selected() {
       $('covered').disable();
       $('covered').checked = false;
     }
+  }
+  if($('covered').disabled) {
+    $('covered').checked = false;
   }
 }
 
