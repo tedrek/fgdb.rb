@@ -5,8 +5,9 @@ fgdb.rb (1.0.33) UNRELEASED; urgency=low
   * fix coveredness defaulting to true when it's not coverable
   * fix tabbing to actually focus on the type selection instead of the
     next field
+  * cleanup uncoverable types that got marked as covered on accident
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 13:05:52 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 13:33:14 -0700
 
 fgdb.rb (1.0.32) released; urgency=low
 
