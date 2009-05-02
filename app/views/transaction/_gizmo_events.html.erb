@@ -42,7 +42,7 @@
            else
              raise "BUG"
            end
-           if defined?(line.description)
+           if !line.description.nil?
              description = line.description
            else
              description = ''
@@ -51,7 +51,7 @@
            hash[:unit_price] = price if (params[:controller] == "donations" or params[:controller] == "sales")
            hash[:system_id] = line.system_id if line.system_id
            hash[:contract_id] = line.recycling_contract_id if line.recycling_contract_id
-           hash[:covered] = line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false") if (params[:controller] == "donations" or params[:controller] == "recyclings") && coveredness_enabled
+           hash[:covered] = line.covered.nil? ? "undefined" : (line.covered == true ? "true" : "false") if (params[:controller] == "donations" or params[:controller] == "recyclings" or params[:controller] == "disbursements") && coveredness_enabled
            @gizmos_and_payments_js += "add_gizmo_event(#{hash.to_json});"
          end
          %>
