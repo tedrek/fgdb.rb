@@ -2,8 +2,9 @@ fgdb.rb (1.0.33) UNRELEASED; urgency=low
 
   * add active volunteers report
   * fix empty contact methods
+  * fix coveredness defaulting to true when it's not coverable
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 12:53:33 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 12:54:10 -0700
 
 fgdb.rb (1.0.32) released; urgency=low
 
