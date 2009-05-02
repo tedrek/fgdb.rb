@@ -1,4 +1,4 @@
-fgdb.rb (1.0.33) UNRELEASED; urgency=low
+fgdb.rb (1.0.33) released; urgency=low
 
   * add active volunteers report
   * fix empty contact methods
@@ -7,7 +7,7 @@ fgdb.rb (1.0.33) UNRELEASED; urgency=low
     next field
   * cleanup uncoverable types that got marked as covered on accident
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 13:33:14 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 13:36:37 -0700
 
 fgdb.rb (1.0.32) released; urgency=low
 
