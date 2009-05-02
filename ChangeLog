@@ -6,7 +6,11 @@ fgdb.rb (1.0.33) UNRELEASED; urgency=low
 
 fgdb.rb (1.0.32) released; urgency=low
 
-  * 
+  * add description to the disbursements and recyclings
+  * add covered to the disbursements
+  * add environment.local.rb and logo defaults for more customizing
+  * add ./script/defaults to help with editing the defaults table
+  * lots of cleanup to the line items stuff
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 03:08:13 -0700
 
