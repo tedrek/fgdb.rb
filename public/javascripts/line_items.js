@@ -3,7 +3,7 @@
 /////////////////////////////////////
 
 function handle_gizmo_events(){
-  return add_gizmo_event_from_form();
+  return _add_gizmo_event_from_form();
 }
 
 function handle_payments(){
@@ -217,10 +217,6 @@ function is_priced() {
   else
     alert("BUG. go yell at Ryan.");
   return false;
-}
-
-function add_gizmo_event_from_form() {
-  _add_gizmo_event_from_form();
 }
 
 function _add_gizmo_event_from_form()
