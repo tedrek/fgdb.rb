@@ -212,9 +212,7 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    list = ["Average Frontdesk Income", "Income"]
-    # list << "Active Volunteers"
-    list
+    ["Average Frontdesk Income", "Income", "Active Volunteers"]
   end
 
   # returns the title for that report type
@@ -304,23 +302,15 @@ class GraphicReportsController < ApplicationController
   end
 
   def get_active_volunteers(start, theend)
-    res = VolunteerTask.connection.execute("SELECT
-  date_performed,
-  (SELECT count( distinct zzz.contact_id )
-    FROM volunteer_tasks AS zzz
-    WHERE zzz.contact_id IN (
+    res = DB.execute("SELECT count( distinct contact_id ) as vol_count
+    FROM volunteer_tasks
+    WHERE contact_id IN (
     SELECT xxx.contact_id
       FROM volunteer_tasks AS xxx
       WHERE xxx.date_performed BETWEEN
-        volunteer_tasks.date_performed - 90 AND
-        volunteer_tasks.date_performed
+        ?::date - 90 AND ?::date
       GROUP BY xxx.contact_id
-      HAVING SUM(xxx.duration) > 4)) AS vol_count
-  FROM volunteer_tasks
-  WHERE volunteer_tasks.date_performed = '#{start.to_s}'
-  GROUP BY date_performed
-  ORDER BY 1;
-")
+      HAVING SUM(xxx.duration) > 4);", start.to_s, start.to_s)
     final = 0
     if res.first
       final = res.first['vol_count']

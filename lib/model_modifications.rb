@@ -180,5 +180,22 @@ class ActiveRecord::Base
     return Default[self.class_name.tableize + "_require_cashier_code"] ? true : false
   end
 
+  def self.prepare_sql(*arr)
+    sanitize_sql_array(arr)
+  end
+
+  def self.execute(*arr)
+    connection.execute(prepare_sql(*arr))
+  end
+
+  def self.sql(*arr)
+    execute(*arr)
+  end
+
   acts_as_logged
+end
+
+# lets call this a hack
+# DB.execute("SELECT * FROM defaults;")
+class DB < ActiveRecord::Base
 end
