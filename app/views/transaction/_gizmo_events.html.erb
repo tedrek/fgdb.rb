@@ -75,7 +75,7 @@
     <% end %>
     <% if params[:controller] == "donations" or params[:controller] == "recyclings" or params[:controller] == "disbursements" %>
       <% if coveredness_enabled %>
-        <td><input name="covered" id="covered" type="checkbox" onkeydown="handle_ge(event);" checked="checked" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected()"></td>
+        <td><input name="covered" id="covered" type="checkbox" onkeydown="handle_ge(event);" checked="checked" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected();"></td>
       <% end %>
     <% end %>
     <% if params[:controller] == "sales" or params[:controller] == "donations" %>

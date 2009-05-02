@@ -722,12 +722,16 @@ function coveredness_type_selected() {
   if($('covered') == null)
     return;
   if(gizmo_types_covered[$('gizmo_type_id').value] == true) {
-    $('covered').enable();
-    $('covered').checked = true;
+    if($('covered').disabled) {
+      $('covered').enable();
+      $('covered').checked = true;
+    }
   }
   else {
-    $('covered').disable();
-    $('covered').checked = false;
+    if(!$('covered').disabled) {
+      $('covered').disable();
+      $('covered').checked = false;
+    }
   }
 }
 
