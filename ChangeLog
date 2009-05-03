@@ -1,8 +1,8 @@
 fgdb.rb (1.0.34) UNRELEASED; urgency=low
 
-  * 
+  * use points, allow capping it off at 24 (or any number)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 13:36:44 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 May 2009 17:10:14 -0700
 
 fgdb.rb (1.0.33) released; urgency=low
 
