@@ -17,8 +17,8 @@ git fetch origin
 git pull
 dch -r -c ChangeLog ""
 git add ChangeLog
-git commit -m "releasing"
 VERSION=$(dpkg-parsechangelog -lChangeLog | awk -F": " '/^Version: /{print $2}')
+git commit -m "releasing version $VERSION"
 git checkout -b release_$VERSION
 wget http://dev.freegeek.org/~ryan52/devel_data/version -O db/branch_devel_data_version
 touch db/branch_devel_data_version
