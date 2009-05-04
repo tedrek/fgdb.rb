@@ -14,7 +14,9 @@ if [ ! -f .git/refs/remotes/fg/master -o ! -f .git/refs/remotes/origin/master ];
 fi
 
 git fetch origin
-git pull
+git fetch fg
+git pull origin/master
+git pull fg/master
 dch -r -c ChangeLog ""
 git add ChangeLog
 VERSION=$(dpkg-parsechangelog -lChangeLog | awk -F": " '/^Version: /{print $2}')
