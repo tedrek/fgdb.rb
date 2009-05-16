@@ -16,7 +16,7 @@ fi
 git fetch origin
 git fetch fg
 for i in .git/refs/remotes/fg/master .git/refs/remotes/origin/master; do
-    diff .git/refs/heads/release_1.0.31 $i > /dev/null || { echo "$(echo $i | cut -d '/' -f 4)'s master is different from ours"; exit 1; } ;
+    diff .git/refs/heads/master $i > /dev/null || { echo "$(echo $i | cut -d '/' -f 4)'s master is different from ours"; exit 1; } ;
 done
 dch -r -c ChangeLog ""
 git add ChangeLog
