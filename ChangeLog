@@ -1,8 +1,9 @@
 fgdb.rb (1.0.35) UNRELEASED; urgency=low
 
   * use actual hours, not effective, for the last ninety days
+  * add support for day of week reports to the trends thingy
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 16 May 2009 12:24:09 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 16 May 2009 16:06:08 -0700
 
 fgdb.rb (1.0.34) released; urgency=low
 
