@@ -1,4 +1,4 @@
-<% last_ninety = @contact.last_ninety_days_of_effective_hours %>
+<% last_ninety = @contact.last_ninety_days_of_actual_hours %>
 <% adoption = @contact.adoption_hours %>
 <span class="hours"><%= last_ninety %></span>
 last 90 days [<%= link_to('edit',
