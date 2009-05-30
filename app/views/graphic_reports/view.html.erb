@@ -5,12 +5,10 @@
 <% tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp %>
 <% basename = File.basename(tempfile).sub(".", "$") %>
 <%
-#  File.open("gnuplot", "w") do |gp|
   Gnuplot.open do |gp|
     Gnuplot::Plot.new( gp ) do |plot|
       plot.set "terminal", "jpeg"
       plot.set "output", tempfile
-      plot.set "key", "outside below noreverse enhanced autotitles columnhead box #{@data.keys.length > 1 ? "on" : "off"}"
       plot.notitle
       plot.ylabel ""
       plot.xlabel ""
@@ -27,17 +25,7 @@
       plot.xtics string
       @data.each do |k,v|
         plot.data << Gnuplot::DataSet.new( [@graph_x_axis, v] ) do |ds|
-          case @graph_type
-          when "line"
-            ds.with = "linespoints"
-          when "bar"
-            ds.with = "linespoints"
-          when "barAAA" # FIXME
-            ds.with = "boxes"
-            plot.set "style", "fill solid 1.00 border -1"
-          else
-            raise NoMethodError
-          end
+          ds.with = "linespoints"
           ds.title = k.to_s.titleize
         end
       end

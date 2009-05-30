@@ -20,13 +20,6 @@ class GraphicReportsController < ApplicationController
   def view
 #    @cleaned_conditions = params[:conditions].dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}
     generate_report_data
-    if is_line
-      @graph_type = "line"
-    elsif is_bar
-      @graph_type = "bar"
-    else
-      raise NoMethodError
-    end
   end
 
   def index
