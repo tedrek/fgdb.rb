@@ -3,8 +3,9 @@ fgdb.rb (1.0.35) UNRELEASED; urgency=low
   * use actual hours, not effective, for the last ninety days
   * add support for day of week reports to the trends thingy
   * add system condition to sales and disbursements (Closes: #13357)
+  * in the table show actual dates (Closes: #13629)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 13:19:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 13:59:10 -0700
 
 fgdb.rb (1.0.34) released; urgency=low
 

@@ -315,13 +315,15 @@ class GraphicReportsController < ApplicationController
       raise NoMethodError
     end
     list.delete_if{|x| x.nil?}
-    @title = get_title + " (broken down by #{params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")})"
+    @broken_down_by = params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")
+    @title = get_title + " (broken down by #{@broken_down_by})"
     @data = {}
     @x_axis = []
     list.each{|x|
       @x_axis << x_axis_for(x)
     }
     @graph_x_axis = []
+    @table_x_axis = {}
     @x_axis.each_with_index{|x,i|
       if is_line
         @graph_x_axis << graph_x_axis_for(x, list[i])
@@ -330,6 +332,7 @@ class GraphicReportsController < ApplicationController
       else
         raise NoMethodError
       end
+      @table_x_axis[x] = list[i].to_s
     }
     if is_line
       list.map!{|x|
