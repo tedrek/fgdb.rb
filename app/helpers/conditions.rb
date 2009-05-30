@@ -209,7 +209,11 @@ class Conditions
   end
 
   def system_conditions(klass)
-    return ["#{klass.table_name}.system_id = ?", @system_id]
+    if klass == GizmoEvent
+      return ["#{klass.table_name}.system_id = ?", @system_id]
+    else
+      return ["? IN (gizmo_events.system_id)", @system_id]
+    end
   end
 
   def worked_at_conditions(klass)
