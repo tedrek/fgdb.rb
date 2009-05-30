@@ -243,8 +243,14 @@ class GraphicReportsController < ApplicationController
     return v.to_a
   end
 
-  def number_of_matching(args)
-    return "blah"
+  def check_date_for_extract_type(args, date)
+    case args[:extract_type]
+    when "DOW"
+      return true if args[:extract_value] == date.cwday
+    else
+      raise NoMethodError
+    end
+    return false
   end
 
   #####################
@@ -347,9 +353,12 @@ class GraphicReportsController < ApplicationController
     end
     list.each{|args|
       if is_line
-        args[:number_of_days] = (Date.strptime(args[:end_date]) - Date.strptime(args[:start_date])).to_a
+        args[:number_of_days] = (Date.strptime(args[:end_date]) - Date.strptime(args[:start_date])).ceil
       elsif is_bar
-        args[:number_of_days] = number_of_matching(args)
+        args[:number_of_days] = 0
+        array_of_dates(args[:start_date], args[:end_date]).each do |date|
+          args[:number_of_days] += 1 if check_date_for_extract_type(args, date)
+        end
       else
         raise NoMethodError
       end
@@ -362,6 +371,24 @@ class GraphicReportsController < ApplicationController
         @data[k] << v
       }
     }
+  end
+
+  def array_of_dates(start, stop)
+    start = Date.parse(start) if start.class == String
+    stop = Date.parse(stop) if stop.class == String
+    if start > stop
+      temp = start
+      start = stop
+      stop = temp
+    end
+    stop += 1
+    arr = []
+    i = start
+    while i != stop
+      arr << i
+      i = i + 1
+    end
+    return arr
   end
 
   def breakdown_types
@@ -413,7 +440,8 @@ class GraphicReportsController < ApplicationController
     n = Donation.number_by_conditions(c)
   end
 
-  def get_active_volunteers(start, theend)
+  def get_active_volunteers(args)
+    raise "stupid" if args[:extract_type]
     res = DB.execute("SELECT count( distinct contact_id ) as vol_count
     FROM volunteer_tasks
     WHERE contact_id IN (
@@ -422,7 +450,7 @@ class GraphicReportsController < ApplicationController
       WHERE xxx.date_performed BETWEEN
         ?::date - 90 AND ?::date
       GROUP BY xxx.contact_id
-      HAVING SUM(xxx.duration) > 4);", start.to_s, start.to_s)
+      HAVING SUM(xxx.duration) > 4);", args[:start_date], args[:start_date])
     final = 0
     if res.first
       final = res.first['vol_count']
