@@ -6,8 +6,9 @@ fgdb.rb (1.0.35) UNRELEASED; urgency=low
   * in the table show actual dates (Closes: #13629)
   * add keyboard, mouse, and speakers to the list of gizmos on the
     disbursement section of the printme report (Closes: #13607)
+  * implement the hour breakdown type
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 14:06:01 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 16:17:13 -0700
 
 fgdb.rb (1.0.34) released; urgency=low
 

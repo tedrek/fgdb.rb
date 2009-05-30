@@ -8,7 +8,7 @@ class Conditions
       id contact_type needs_attention anonymous unresolved_invoices
       payment_method payment_amount gizmo_type_id covered
       postal_code city phone_number contact volunteer_hours email
-      flagged system contract created_by cashier_created_by day_of_week
+      flagged system contract created_by cashier_created_by extract
     ] + DATES).uniq
 
   for i in CONDS
@@ -60,7 +60,7 @@ class Conditions
 
   attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
 
-  attr_accessor :day_of_week
+  attr_accessor :extract_type, :extract_value
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -129,8 +129,8 @@ class Conditions
     end
   end
 
-  def day_of_week_conditions(klass)
-    return ["EXTRACT( DOW FROM #{klass.table_name}.created_at ) = ?", @day_of_week]
+  def extract_conditions(klass)
+    return ["EXTRACT( #{@extract_type} FROM #{klass.table_name}.created_at ) = ?", @extract_value]
   end
 
   def volunteer_hours_conditions(klass)

@@ -44,11 +44,11 @@ class GraphicReportsController < ApplicationController
   # bar breakdown types are when you want to compare things like
   # "which day of the week has the highest average" and such
   def bar_breakdown_types
-    ["Day"]
+    ["Day", "Hour"]
   end
 
   # convert a date object into the string that should be put on the x
-  # axis, and on the left side of the table
+  # axis
   def x_axis_for(date)
     case params[:conditions][:breakdown_type]
     when "Weekly"
@@ -69,6 +69,8 @@ class GraphicReportsController < ApplicationController
       date.strftime("%b %y")
     when "Day"
       Date.strptime(date.to_s, "%w").strftime("%A")
+    when "Hour"
+      DateTime.strptime(date.to_s, "%H").strftime("%I:00 %p")
     else
       raise NoMethodError
     end
@@ -228,6 +230,8 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:breakdown_type]
     when "Day"
       return "DOW"
+    when "Hour"
+      return "hour"
     else
       raise NoMethodError
     end
@@ -237,6 +241,8 @@ class GraphicReportsController < ApplicationController
     case params[:conditions][:breakdown_type]
     when "Day"
       v = 0..6
+    when "Hour"
+      v = 0..23
     else
       raise NoMethodError
     end
@@ -247,6 +253,8 @@ class GraphicReportsController < ApplicationController
     case args[:extract_type]
     when "DOW"
       return true if args[:extract_value] == date.cwday
+    when "hour"
+      return true
     else
       raise NoMethodError
     end
@@ -338,7 +346,13 @@ class GraphicReportsController < ApplicationController
       else
         raise NoMethodError
       end
-      @table_x_axis[x] = list[i].to_s
+      if is_line
+        @table_x_axis[x] = list[i].to_s
+      elsif is_bar
+        @table_x_axis[x] = @x_axis[i]
+      else
+        raise NoMethodError
+      end
     }
     if is_line
       list.map!{|x|
@@ -414,15 +428,9 @@ class GraphicReportsController < ApplicationController
   def created_at_conditions_for_report(args)
     h = {"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => args[:start_date], "created_at_end_date" => args[:end_date], "created_at_enabled" => "true"}
     if args[:extract_type]
-      conditions_name = ""
-      case args[:extract_type]
-      when "DOW"
-        conditions_name = "day_of_week"
-      else
-        raise NoMethodError
-      end
-      h[conditions_name + "_enabled"] = "true"
-      h[conditions_name] = args[:extract_value]
+      h["extract_enabled"] = "true"
+      h["extract_type"] = args[:extract_type]
+      h["extract_value"] = args[:extract_value]
     end
 #    puts "got args: #{args.inspect}"
 #    return @cleaned_conditions.merge(h)
