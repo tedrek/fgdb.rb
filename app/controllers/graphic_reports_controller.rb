@@ -266,7 +266,7 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Average Frontdesk Income", "Income", "Active Volunteers"]
+    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales"]
   end
 
   # returns the title for that report type
@@ -278,6 +278,8 @@ class GraphicReportsController < ApplicationController
       "Report of Average Income at Front Desk"
       when "Active Volunteers"
       "Report of Number of Active Volunteers"
+      when "Sales"
+      "Report of sales in dollars"
     end
   end
 
@@ -300,6 +302,8 @@ class GraphicReportsController < ApplicationController
       get_average_frontdesk(args)
     when "Active Volunteers"
       get_active_volunteers(args)
+    when "Sales"
+      get_sales_money(args)
     end
   end
 
@@ -445,7 +449,7 @@ class GraphicReportsController < ApplicationController
       h["extract_enabled"] = "true"
       h["extract_type"] = args[:extract_type]
       h["extract_value"] = args[:extract_value]
-      h["extract_field"] = args[field]
+      h["extract_field"] = field
     end
     h["empty_enabled"] = "true"
     return params[:conditions].dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}.merge(h)
@@ -460,6 +464,12 @@ class GraphicReportsController < ApplicationController
     c = Conditions.new
     c.apply_conditions(created_at_conditions_for_report(args))
     n = Donation.number_by_conditions(c)
+  end
+
+  def get_sales_money(args)
+    res = DB.execute("SELECT SUM( reported_amount_due_cents )/100.0 AS amount
+  FROM sales WHERE " + sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at")))
+    return {:total => res.first["amount"]}
   end
 
   def get_active_volunteers(args)

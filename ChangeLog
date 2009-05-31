@@ -8,8 +8,9 @@ fgdb.rb (1.0.35) UNRELEASED; urgency=low
     disbursement section of the printme report (Closes: #13607)
   * implement the hour breakdown type
   * add support for conditions in the reports
+  * add sales income trend report
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 17:06:21 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 17:37:35 -0700
 
 fgdb.rb (1.0.34) released; urgency=low
 
