@@ -7,8 +7,9 @@ fgdb.rb (1.0.35) UNRELEASED; urgency=low
   * add keyboard, mouse, and speakers to the list of gizmos on the
     disbursement section of the printme report (Closes: #13607)
   * implement the hour breakdown type
+  * add support for conditions in the reports
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 16:17:13 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 17:06:21 -0700
 
 fgdb.rb (1.0.34) released; urgency=low
 

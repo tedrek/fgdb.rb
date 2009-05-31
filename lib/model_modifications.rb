@@ -181,7 +181,12 @@ class ActiveRecord::Base
   end
 
   def self.prepare_sql(*arr)
-    sanitize_sql_array(arr)
+    a = arr
+    if a.length == 1 and a.first.class == Array
+      a = a.first
+    end
+    ret = sanitize_sql_for_conditions(a)
+    return ret
   end
 
   def self.execute(*arr)

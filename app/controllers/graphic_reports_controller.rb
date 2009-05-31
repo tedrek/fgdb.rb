@@ -18,7 +18,6 @@ class GraphicReportsController < ApplicationController
   end
 
   def view
-#    @cleaned_conditions = params[:conditions].dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}
     generate_report_data
   end
 
@@ -426,15 +425,30 @@ class GraphicReportsController < ApplicationController
   end
 
   def created_at_conditions_for_report(args)
-    h = {"created_at_enabled" => "true", "created_at_date_type" => "arbitrary", "created_at_start_date" => args[:start_date], "created_at_end_date" => args[:end_date], "created_at_enabled" => "true"}
+    conditions_with_daterange_for_report(args, "created_at")
+  end
+
+  def sql_for_report(model, conditions)
+    c = Conditions.new
+    c.apply_conditions(conditions)
+    return DB.prepare_sql(c.conditions(model))
+  end
+
+  def conditions_with_daterange_for_report(args, field)
+    h = {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
+    conditions_for_report(args, field, h)
+  end
+
+  def conditions_for_report(args, field, extra_conditions = {})
+    h = extra_conditions
     if args[:extract_type]
       h["extract_enabled"] = "true"
       h["extract_type"] = args[:extract_type]
       h["extract_value"] = args[:extract_value]
+      h["extract_field"] = args[field]
     end
-#    puts "got args: #{args.inspect}"
-#    return @cleaned_conditions.merge(h)
-    return h
+    h["empty_enabled"] = "true"
+    return params[:conditions].dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}.merge(h)
   end
 
   def call_income_report(args)
@@ -458,7 +472,7 @@ class GraphicReportsController < ApplicationController
       WHERE xxx.date_performed BETWEEN
         ?::date - 90 AND ?::date
       GROUP BY xxx.contact_id
-      HAVING SUM(xxx.duration) > 4);", args[:start_date], args[:start_date])
+      HAVING SUM(xxx.duration) > 4) AND #{sql_for_report(VolunteerTask, conditions_for_report(args, "date_performed"))};", args[:start_date], args[:start_date])
     final = 0
     if res.first
       final = res.first['vol_count']
