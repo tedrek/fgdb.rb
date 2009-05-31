@@ -266,7 +266,7 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales"]
+    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales Total", "Donations Count"]
   end
 
   # returns the title for that report type
@@ -278,8 +278,10 @@ class GraphicReportsController < ApplicationController
       "Report of Average Income at Front Desk"
       when "Active Volunteers"
       "Report of Number of Active Volunteers"
-      when "Sales"
-      "Report of sales in dollars"
+      when "Sales Total"
+      "Report of total sales in dollars"
+      when "Donations Count"
+      "Report of number of donations"
     end
   end
 
@@ -302,8 +304,12 @@ class GraphicReportsController < ApplicationController
       get_average_frontdesk(args)
     when "Active Volunteers"
       get_active_volunteers(args)
-    when "Sales"
+    when "Donations Count"
+      get_donations_count(args)
+    when "Sales Total"
       get_sales_money(args)
+    else
+      raise NoMethodError
     end
   end
 
@@ -470,6 +476,10 @@ class GraphicReportsController < ApplicationController
     res = DB.execute("SELECT SUM( reported_amount_due_cents )/100.0 AS amount
   FROM sales WHERE " + sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at")))
     return {:total => res.first["amount"]}
+  end
+
+  def get_donations_count(args)
+    return {:count => find_all_donations(args).to_s}
   end
 
   def get_active_volunteers(args)
