@@ -386,11 +386,17 @@ class GraphicReportsController < ApplicationController
         raise NoMethodError
       end
     }
-    list.each{|args|
-      get_thing_for_timerange(args).each{|k,v|
-        if !@data[k]
-          @data[k] = []
-        end
+    resultlist = list.map{|args|
+      get_thing_for_timerange(args)
+    }
+    lines = resultlist.map{|x| x.keys}.flatten.uniq
+    lines.each{|x|
+      @data[x] = []
+    }
+    resultlist.each{|thing|
+      lines.each{|k|
+        v = thing[k]
+        v = 0 if v.nil?
         @data[k] << v
       }
     }
