@@ -1,4 +1,4 @@
-fgdb.rb (1.0.35) UNRELEASED; urgency=low
+fgdb.rb (1.0.35) released; urgency=low
 
   * use actual hours, not effective, for the last ninety days
   * add support for day of week reports to the trends thingy
@@ -11,7 +11,7 @@ fgdb.rb (1.0.35) UNRELEASED; urgency=low
   * add sales income trend report
   * add donations count report
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 May 2009 17:46:39 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Jun 2009 23:19:44 -0700
 
 fgdb.rb (1.0.34) released; urgency=low
 
