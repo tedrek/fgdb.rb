@@ -43,7 +43,7 @@ class GraphicReportsController < ApplicationController
   # bar breakdown types are when you want to compare things like
   # "which day of the week has the highest average" and such
   def bar_breakdown_types
-    ["Day", "Hour"]
+    ["Day of week", "Hour"]
   end
 
   # convert a date object into the string that should be put on the x
@@ -66,7 +66,7 @@ class GraphicReportsController < ApplicationController
       date.year.to_s
     when "Monthly"
       date.strftime("%b %y")
-    when "Day"
+    when "Day of week"
       Date.strptime(date.to_s, "%w").strftime("%A")
     when "Hour"
       DateTime.strptime(date.to_s, "%H").strftime("%I:00 %p")
@@ -227,7 +227,7 @@ class GraphicReportsController < ApplicationController
 
   def extract_name_for_breakdown_type
     case params[:conditions][:breakdown_type]
-    when "Day"
+    when "Day of week"
       return "DOW"
     when "Hour"
       return "hour"
@@ -238,7 +238,7 @@ class GraphicReportsController < ApplicationController
 
   def get_bar_list
     case params[:conditions][:breakdown_type]
-    when "Day"
+    when "Day of week"
       v = 0..6
     when "Hour"
       v = 0..23
