@@ -1,3 +1,9 @@
+fgdb.rb (1.0.36) UNRELEASED; urgency=low
+
+  * 
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Jun 2009 23:19:59 -0700
+
 fgdb.rb (1.0.35) released; urgency=low
 
   * use actual hours, not effective, for the last ninety days
