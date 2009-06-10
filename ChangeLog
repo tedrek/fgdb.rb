@@ -1,6 +1,5 @@
 fgdb.rb (1.0.36) UNRELEASED; urgency=low
 
-  * 
   * fix searching by system, oops, I'm an idiot
   * fix trend reports when one daterange gives a result but another
     doesn't
