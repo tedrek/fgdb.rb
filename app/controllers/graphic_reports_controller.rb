@@ -23,6 +23,9 @@ class GraphicReportsController < ApplicationController
 
   def index
     @report_types = report_types
+  end
+
+  def index2
     @breakdown_types = breakdown_types
   end
 
