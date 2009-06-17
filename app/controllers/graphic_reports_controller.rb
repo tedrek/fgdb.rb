@@ -35,6 +35,8 @@ class GraphicReportsController < ApplicationController
       @breakdown_types = line_breakdown_types
     when "Sales Total"
     when "Donations Count"
+    when "Volunteer Hours by Program"
+      @breakdown_types = breakdown_types - ["Hour"]
     else
       raise NoMethodError
     end
@@ -280,22 +282,24 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales Total", "Donations Count"]
+    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales Total", "Donations Count", "Volunteer Hours by Program"]
   end
 
   # returns the title for that report type
   def get_title
     case params[:conditions][:report_type]
-      when "Income"
+    when "Income"
       "Income report"
-      when "Average Frontdesk Income"
+    when "Average Frontdesk Income"
       "Report of Average Income at Front Desk"
-      when "Active Volunteers"
+    when "Active Volunteers"
       "Report of Number of Active Volunteers"
-      when "Sales Total"
+    when "Sales Total"
       "Report of total sales in dollars"
-      when "Donations Count"
+    when "Donations Count"
       "Report of number of donations"
+    when "Volunteer Hours by Program"
+      "Report of volunteer hours by program"
     else
       raise NoMethodError
     end
@@ -324,6 +328,8 @@ class GraphicReportsController < ApplicationController
       get_donations_count(args)
     when "Sales Total"
       get_sales_money(args)
+    when "Volunteer Hours by Program"
+      get_volunteer_hours_by_program(args)
     else
       raise NoMethodError
     end
@@ -502,6 +508,17 @@ class GraphicReportsController < ApplicationController
 
   def get_donations_count(args)
     return {:count => find_all_donations(args).to_s}
+  end
+
+  def get_volunteer_hours_by_program(args)
+    res = DB.execute("SELECT programs.description, SUM( duration )
+  FROM volunteer_tasks
+  LEFT JOIN volunteer_task_types ON volunteer_tasks.volunteer_task_type_id = volunteer_task_types.id
+  LEFT JOIN volunteer_task_types AS programs ON volunteer_task_types.parent_id = programs.id
+  WHERE #{sql_for_report(VolunteerTask, created_at_conditions_for_report(args))}
+  GROUP BY programs.id, programs.description
+  ORDER BY programs.description;")
+    Hash[*res.to_a.collect{|x| [x["description"], x["sum"]]}.flatten]
   end
 
   def get_active_volunteers(args)
