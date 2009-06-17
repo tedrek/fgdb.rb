@@ -26,8 +26,18 @@ class GraphicReportsController < ApplicationController
   end
 
   def index2
-    @breakdown_types = breakdown_types
     @valid_conditions = []
+    @breakdown_types = breakdown_types
+    case params[:conditions][:report_type]
+    when "Average Frontdesk Income"
+    when "Income"
+    when "Active Volunteers"
+      @breakdown_types = line_breakdown_types
+    when "Sales Total"
+    when "Donations Count"
+    else
+      raise NoMethodError
+    end
   end
 
   private
@@ -495,7 +505,6 @@ class GraphicReportsController < ApplicationController
   end
 
   def get_active_volunteers(args)
-    raise "stupid" if args[:extract_type]
     res = DB.execute("SELECT count( distinct contact_id ) as vol_count
     FROM volunteer_tasks
     WHERE contact_id IN (
