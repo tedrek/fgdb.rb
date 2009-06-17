@@ -282,6 +282,8 @@ class GraphicReportsController < ApplicationController
       "Report of total sales in dollars"
       when "Donations Count"
       "Report of number of donations"
+    else
+      raise NoMethodError
     end
   end
 
