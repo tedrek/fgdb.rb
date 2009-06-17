@@ -7,8 +7,10 @@
 <%= calendar_box("conditions", "start_date") %>
 <%= f.label "end_date", "End Date" %>
 <%= calendar_box("conditions", "end_date") %>
+<% if @valid_conditions.length > 0 %>
 <%= f.label "conditions" %>
 <%= conditions_html("conditions", @valid_conditions) %>
+<% end %>
 <%= f.label "submit", "" %>
 <%= f.submit "Go!" %>
 <% end %>
