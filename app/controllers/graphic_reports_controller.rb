@@ -27,6 +27,7 @@ class GraphicReportsController < ApplicationController
 
   def index2
     @breakdown_types = breakdown_types
+    @valid_conditions = []
   end
 
   private

@@ -8,7 +8,7 @@
 <%= f.label "end_date", "End Date" %>
 <%= calendar_box("conditions", "end_date") %>
 <%= f.label "conditions" %>
-<%= conditions_html("conditions", []) %>
+<%= conditions_html("conditions", @valid_conditions) %>
 <%= f.label "submit", "" %>
 <%= f.submit "Go!" %>
 <% end %>
