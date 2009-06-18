@@ -1,8 +1,9 @@
 fgdb.rb (1.0.37) UNRELEASED; urgency=low
 
   * add Volunteer Hours by Program report
+  * fix spelling of disbursement
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 17 Jun 2009 12:40:53 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 18 Jun 2009 16:40:41 -0700
 
 fgdb.rb (1.0.36) released; urgency=low
 
