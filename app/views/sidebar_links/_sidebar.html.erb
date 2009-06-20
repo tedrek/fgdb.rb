@@ -20,19 +20,20 @@
     </div>
   <% end %>
 
-  <% hash = {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => ["FRONT_DESK", "RECYCLINGS"], :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER']} %>
-  <% array = ['donation', 'sale', 'recycling', 'disbursement'] %>
+  <% hash = {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => ["FRONT_DESK", "RECYCLINGS"], :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER'], :return => ['STORE', 'TECH_SUPPORT']} %>
+  <% array = ['donation', 'sale', 'return', 'recycling', 'disbursement'] %>
 
   <% array.each do |i| %>
     <% x = hash[i.to_sym] %>
     <% if x.nil? || has_role?(*x) %>
       <%= i %>s
       <div class="sidebar_section">
+        <% controller = (i == "return" ? "gizmo_" + i : i ) + 's' %>
         <div>
-          <%= link_to "entry", :controller => i + 's' %>
+          <%= link_to "entry", :controller => controller %>
         </div>
         <div>
-          <%= link_to "search", :controller => i + 's', :action => 'search' %>
+          <%= link_to "search", :controller => controller, :action => 'search' %>
         </div>
       </div>
     <% end %>

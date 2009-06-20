@@ -1,0 +1,38 @@
+<fieldset>
+  <div class="row">
+    <!--[form:sale]-->
+    <div id="transaction_info">
+      <div id="<%= contact_searchbox_id(@options) %>">
+        <label for="donation_contact_type">What kind of contact?</label>
+        <%= render( :partial => 'contact_search',
+                                                 :locals => {:options => {
+                                                     :on_display => "if($('contact__default_discount_schedule')) {
+                                              set_new_val($('sale_discount_schedule_id'),
+                                                          parseInt($('contact__default_discount_schedule').innerHTML));
+                                            }",
+                                                   }}
+                               ) %>
+      </div>
+
+      <div class="form-extras">
+        <div class="form-element">
+          <label for="sale_comments">Comments</label>
+          <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+        </div>
+      </div>
+    </div>
+
+    <div id="transaction_line_items_div">
+      <div id="sale_gizmos" class="datalist line_item">
+        <%= render :partial => 'gizmo_events' %>
+      </div>
+
+      <%= render :partial => 'sale_totals' %>
+
+      <%= javascript_tag @gizmos_and_payments_js %>
+    </div>
+
+    <!--[eoform:sale]-->
+
+  </div>
+</fieldset>
