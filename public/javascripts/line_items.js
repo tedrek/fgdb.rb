@@ -488,6 +488,12 @@ function sale_compute_totals() {
   update_contract_notes();
 }
 
+function gizmo_return_compute_totals(){
+  update_gizmo_events_totals();
+  var subtotal = get_subtotal();
+  $('grand_total').innerHTML = dollar_value(subtotal);
+}
+
 function get_grand_total(){
   var total = 0;
   var arr = find_these_lines('gizmo_event_lines');
@@ -688,7 +694,7 @@ function add_gizmo_return_gizmo_event(args) {
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, sales_hooks, update_gizmo_events_totals, edit_gizmo_event);
+  add_line_item(args, sales_hooks, gizmo_return_compute_totals, edit_gizmo_event);
 }
 
 function add_disbursement_gizmo_event(args) {
