@@ -682,6 +682,15 @@ function add_sale_gizmo_event(args) {
   add_line_item(args, sales_hooks, sale_compute_totals, edit_gizmo_event);
 }
 
+function add_gizmo_return_gizmo_event(args) {
+  args['prefix'] = 'gizmo_event';
+  args['unit_price'] = dollar_cent_value(args['unit_price']);
+  if(args['system_id'] == undefined) {
+    args['system_id'] = '';
+  }
+  add_line_item(args, sales_hooks, update_gizmo_events_totals, edit_gizmo_event);
+}
+
 function add_disbursement_gizmo_event(args) {
   args['prefix'] = 'gizmo_event';
   if(args['system_id'] == undefined) {
@@ -739,6 +748,9 @@ function coveredness_type_selected() {
 
 function sale_gizmo_type_selected() {
   coveredness_type_selected();
+  systems_type_selected();
+}
+function gizmo_return_gizmo_type_selected() {
   systems_type_selected();
 }
 function donation_gizmo_type_selected() {
