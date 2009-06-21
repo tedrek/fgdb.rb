@@ -212,7 +212,7 @@ function donation_hooks(args, tr) {
 function is_priced() {
   if(gizmo_context_name == "donation" || gizmo_context_name == "sale")
     return true;
-  else if(gizmo_context_name == "recycling" || gizmo_context_name == "disbursement")
+  else if(gizmo_context_name == "recycling" || gizmo_context_name == "disbursement" || gizmo_context_name == "gizmo_return")
     return false;
   else
     alert("BUG. go yell at Ryan.");
