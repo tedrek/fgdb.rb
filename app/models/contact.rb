@@ -30,7 +30,10 @@ class Contact < ActiveRecord::Base
   def storecredit_balance(except = nil)
     spent = self.sales.select{|x| x.id != except and x.id != nil}.inject(0){|t,x| t += x.storecredit_spent}
     have = self.gizmo_returns.inject(0){|t,x| t += x.storecredit_difference_cents}
-    left = have - spent
+    bought = 0 # how much you have bought
+    given = 0 # how much you have given away
+    got = 0 # how much people have given you
+    left = (have + bought + got) - (spent + given)
     puts left
     return left
   end
