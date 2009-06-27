@@ -27,10 +27,11 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def storecredit_balance
-    spent = self.sales.map{|x| x.payments}.flatten.select{|x| x.payment_method.name == "store_credit"}.inject(0){|t,x| t += x.amount_cents}
+  def storecredit_balance(except = nil)
+    spent = self.sales.select{|x| x.id != except and x.id != nil}.inject(0){|t,x| t += x.storecredit_spent}
     have = self.gizmo_returns.inject(0){|t,x| t += x.storecredit_difference_cents}
     left = have - spent
+    puts left
     return left
   end
 
