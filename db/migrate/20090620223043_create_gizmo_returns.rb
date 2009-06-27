@@ -14,11 +14,13 @@ class CreateGizmoReturns < ActiveRecord::Migration
     add_column "gizmo_events", "gizmo_return_id", :integer
     add_foreign_key "gizmo_events", "gizmo_return_id", "gizmo_returns", "id", :on_delete => :cascade
     GizmoContext.new({:name => "gizmo_return"}).save!
+    Default["gizmo_returns_require_cashier_code"] = 1
   end
 
   def self.down
     drop_table :gizmo_returns
     remove_column "gizmo_events", "gizmo_return_id"
     GizmoContext.find_by_name("gizmo_return").destroy
+    Default["gizmo_returns_require_cashier_code"] = nil
   end
 end
