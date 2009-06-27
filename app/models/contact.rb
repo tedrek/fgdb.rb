@@ -12,6 +12,7 @@ class Contact < ActiveRecord::Base
   has_one :user
   has_one :contact_duplicate
   belongs_to :contract
+  has_many :gizmo_returns
 
   validates_presence_of :postal_code
   #validates_presence_of :created_by
@@ -24,6 +25,13 @@ class Contact < ActiveRecord::Base
     when true: "yes"
     when false: "no"
     end
+  end
+
+  def storecredit_balance
+    spent = self.sales.map{|x| x.payments}.flatten.select{|x| x.payment_method.name == "store_credit"}.inject(0){|t,x| t += x.amount_cents}
+    have = self.gizmo_returns.inject(0){|t,x| t += x.storecredit_difference_cents}
+    left = have - spent
+    return left
   end
 
   def fully_covered_=(val)
