@@ -33,7 +33,7 @@
          for line in @transaction.gizmo_events.not_discount
            price = 0
            description = ''
-           if @gizmo_context.name == "sale"
+           if @gizmo_context.name == "sale" or @gizmo_context.name == "gizmo_return"
              price = line.unit_price
            elsif @gizmo_context.name == "donation"
              price = line.fee_cents.to_dollars
