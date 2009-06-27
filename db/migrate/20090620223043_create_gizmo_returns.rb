@@ -20,6 +20,7 @@ class CreateGizmoReturns < ActiveRecord::Migration
   def self.down
     drop_table :gizmo_returns
     remove_column "gizmo_events", "gizmo_return_id"
+    GizmoEvent.destroy_all ["gizmo_context_id = ?", GizmoContext.find_by_name("gizmo_return").id]
     GizmoContext.find_by_name("gizmo_return").destroy
     Default["gizmo_returns_require_cashier_code"] = nil
   end
