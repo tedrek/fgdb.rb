@@ -93,12 +93,6 @@ class Sale < ActiveRecord::Base
     end
   end
 
-  def calculated_subtotal_cents
-    gizmo_events.inject(0) {|tot,gizmo|
-      tot + gizmo.total_price_cents
-    }
-  end
-
   def calculated_discount_cents
     calculated_subtotal_cents - calculated_total_cents
   end

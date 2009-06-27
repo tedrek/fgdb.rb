@@ -11,6 +11,12 @@ module GizmoTransaction
     end
   end
 
+  def calculated_subtotal_cents
+    gizmo_events.inject(0) {|tot,gizmo|
+      tot + gizmo.total_price_cents
+    }
+  end
+
   def real_payments
     payments.select {|payment| payment.payment_method_id != PaymentMethod.invoice.id}
   end

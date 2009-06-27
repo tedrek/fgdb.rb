@@ -7,9 +7,9 @@ module GizmoReturnsHelper
 
   def columns
     [
-     Column.new(Sale, :name => 'id'),
-     Column.new(Sale, :name => 'gizmos', :sortable => false),
-     Column.new(Sale, :name => 'storecredit_difference'),
+     Column.new(GizmoReturn, :name => 'id'),
+     Column.new(GizmoReturn, :name => 'gizmos', :sortable => false),
+     Column.new(GizmoReturn, :name => 'storecredit_difference'),
     ]
   end
 end
