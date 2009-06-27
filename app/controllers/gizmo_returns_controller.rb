@@ -13,6 +13,6 @@ class GizmoReturnsController < TransactionController
   end
 
   def management_only
-    requires_role('STORE_ADMIN', 'BEAN_COUNTER', 'TECH_SUPPORT')
+    requires_role('STORE_ADMIN', 'BEAN_COUNTER')
   end
 end
