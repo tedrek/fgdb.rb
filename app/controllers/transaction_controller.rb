@@ -89,7 +89,7 @@ class TransactionController < ApplicationController
   end
 
   def new
-    @transaction ||= model.new
+    @transaction ||= model.new(params[@gizmo_context.name.to_sym])
     @successful ||= true
 
     @conditions = Conditions.new

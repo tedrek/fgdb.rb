@@ -33,6 +33,9 @@
       <span>created <%= if defined?(@transaction.created_by) && @transaction.cashier_created_by then "by #{h User.find_by_id(@transaction.cashier_created_by).login} " end %>at <%= @transaction.created_at %></span>
       <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.cashier_updated_by then "by #{u User.find_by_id(@transaction.cashier_updated_by).login} " end %>at <%= @transaction.updated_at %></span>
     <% end %>
+    <% if ["sale", "disbursement"].include?(@gizmo_context.name) %>
+      <br/><%= link_to "Create a return", {:controller => "gizmo_returns", :action => "new", :params => {:gizmo_return => {(@gizmo_context.name + "_id").to_sym => @transaction.id}}} %>
+    <% end %>
     <% if request.xhr? %>
       <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
     <% else %>
