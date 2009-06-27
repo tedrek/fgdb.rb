@@ -8,11 +8,15 @@ class CreateGizmoReturns < ActiveRecord::Migration
       t.text :comments
       t.integer :cashier_created_by
       t.integer :cashier_updated_by
+      t.integer :disbursement_id
+      t.integer :sale_id
 
       t.timestamps
     end
     add_column "gizmo_events", "gizmo_return_id", :integer
     add_foreign_key "gizmo_events", "gizmo_return_id", "gizmo_returns", "id", :on_delete => :cascade
+    add_foreign_key "gizmo_returns", "sale_id", "sales", "id", :on_delete => :restrict
+    add_foreign_key "gizmo_returns", "disbursement_id", "disbursements", "id", :on_delete => :restrict
     GizmoContext.new({:name => "gizmo_return"}).save!
     Default["gizmo_returns_require_cashier_code"] = 1
   end

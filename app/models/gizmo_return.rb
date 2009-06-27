@@ -4,6 +4,8 @@ class GizmoReturn < ActiveRecord::Base
   has_many :gizmo_types, :through => :gizmo_events
   include GizmoTransaction
   belongs_to :contact
+  belongs_to :sale
+  belongs_to :disbursement
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
 
@@ -13,6 +15,7 @@ class GizmoReturn < ActiveRecord::Base
       errors.add("contact_id", "does not refer to any single, unique contact")
     end
     errors.add("gizmos", "should include something") if gizmo_events.empty?
+    errors.add("transaction_links", "should link to either a sale or a disbursement") if [self.sale, self.disbursement].select{|x| !x.nil?}.length != 1
   end
 
   def gizmo_context
