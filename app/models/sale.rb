@@ -7,6 +7,7 @@ class Sale < ActiveRecord::Base
   belongs_to :discount_schedule
   has_many :gizmo_events, :dependent => :destroy
   has_many :gizmo_types, :through => :gizmo_events
+  has_many :gizmo_returns
 
   def gizmo_context
     GizmoContext.sale

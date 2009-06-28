@@ -8,6 +8,7 @@ class GizmoReturn < ActiveRecord::Base
   belongs_to :disbursement
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
+  define_amount_methods_on("storecredit_difference")
 
   def validate
     errors.add_on_empty("contact_id")
@@ -24,6 +25,10 @@ class GizmoReturn < ActiveRecord::Base
 
   def set_storecredit_difference_cents
     self.storecredit_difference_cents = calculated_subtotal_cents
+  end
+
+  def link_text
+    self.created_at.strftime("%m/%d/%Y") + " (" + self.gizmos + ", $" + self.storecredit_difference + ")"
   end
 
   def set_occurred_at_on_gizmo_events
