@@ -43,12 +43,14 @@ class Sale < ActiveRecord::Base
     #errors.add("payments", "are too much") if overpaid?
     errors.add("payments", "may only have one invoice") if invoices.length > 1
     errors.add("gizmos", "should include something") if gizmo_events.empty?
-    if (self.contact.storecredit_balance(self.id) - storecredit_spent) < 0
-      errors.add("contact_id", "does't have enough store credit")
+    if self.contact
+      if (self.contact.storecredit_balance_cents(self.id) - storecredit_spent_cents) < 0
+        errors.add("contact_id", "does't have enough store credit")
+      end
     end
   end
 
-  def storecredit_spent
+  def storecredit_spent_cents
     return self.payments.select{|x| x.payment_method.name == "store_credit"}.inject(0){|t,x| t += x.amount_cents}
   end
 
