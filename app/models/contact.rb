@@ -27,18 +27,6 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def storecredit_balance_cents(except = nil)
-    the_sales = self.sales.select{|x| x.id != except and x.id != nil}
-    spent = the_sales.inject(0){|t,x| t += x.storecredit_spent_cents}
-    have = self.gizmo_returns.inject(0){|t,x| t += x.storecredit_difference_cents}
-    bought = the_sales.map{|x| x.gizmo_events}.flatten.select{|x| x.gizmo_type == GizmoType.find_by_name("store_credit")}.inject(0){|t,x| t += x.total_price_cents}
-    given = 0 # how much you have given away
-    got = 0 # how much people have given you
-    left = (have + bought + got) - (spent + given)
-    puts left
-    return left
-  end
-
   def fully_covered_=(val)
     self.fully_covered={:nil => nil, :yes => true, :no => false}[val.to_sym]
   end
