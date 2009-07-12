@@ -279,19 +279,13 @@ function _add_gizmo_event_from_form()
 function add_payment_from_form() {
   if(!is_priced())
     return;
-  if(gizmo_context_name == "donation")
-    return internal_add_payment_from_form(donation_compute_totals);
-  else if(gizmo_context_name == "sale")
-    return internal_add_payment_from_form(sale_compute_totals);
-  else
-    alert("BUG. go yell at Ryan.");
-}
-
-function internal_add_payment_from_form(compute_totals) {
   if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
     return true;
   }
-  add_payment($('payment_method_id').value, $('payment_amount').value, compute_totals);
+  var args = new Object();
+  args['payment_method_id'] = $('payment_method_id').value;
+  args['payment_amount'] = $('payment_amount').value;
+  add_payment(args);
   $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
   $('payment_amount').value = $('payment_amount').defaultValue;
   $('payment_method_id').focus();
@@ -631,12 +625,9 @@ function handle_ge(event) {
 // ADD LINE ITEM //
 ///////////////////
 
-function add_payment(payment_method_id, payment_amount, compute_totals) {
-  args = new Object();
-  args['payment_method_id'] = payment_method_id;
-  args['payment_amount'] = dollar_cent_value(payment_amount);
+function add_payment(args) {
   args['prefix'] = 'payment';
-  add_line_item(args, payment_stuff, compute_totals, edit_payment);
+  add_line_item(args, payment_stuff, eval(gizmo_context_name + "_compute_totals"), edit_payment);
 }
 
 function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_value) {

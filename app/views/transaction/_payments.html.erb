@@ -7,7 +7,10 @@
     <% if @transaction.payments %>
       <% @gizmos_and_payments_js ||= "" %>
       <% for line in @transaction.payments %>
-        <% @gizmos_and_payments_js += "add_payment(#{line.payment_method_id}, #{line.amount}, #{@gizmo_context}_compute_totals);" %>
+        <% hash = {} %>
+        <% hash[:payment_method_id] = line.payment_method_id %>
+        <% hash[:payment_amount] = line.amount %>
+        <% @gizmos_and_payments_js += "add_payment(#{hash.to_json});" %>
       <% end %>
     <% end %>
 
