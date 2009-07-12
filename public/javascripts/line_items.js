@@ -615,9 +615,20 @@ function last_and_tab(event) {
   return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
 }
 
+function last_and_tab_p(event) {
+  linelist = ['payment_amount'];
+  return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
+}
+
 function handle_ge(event) {
   if(last_and_tab(event)) {
     return handle_gizmo_events();
+  }
+}
+
+function handle_p(event) {
+  if(last_and_tab_p(event)) {
+    return handle_payments();
   }
 }
 

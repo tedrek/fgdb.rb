@@ -18,6 +18,6 @@
     <td><select id="payment_method_id">
         <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a payment type")] + (PaymentMethod.find(:all) - (@gizmo_context.name == "donation" ? [PaymentMethod.find_by_name("store_credit")] : [])).sort_by(&:description), "id", "description") %>
       </select></td>
-    <td><input id="payment_amount" name="payment_amount" onkeydown="if(is_tab(event)) {return handle_payments();}"/></td>
+    <td><input id="payment_amount" name="payment_amount" onkeydown="return handle_p(event);"/></td>
   </tr>
 </table>
