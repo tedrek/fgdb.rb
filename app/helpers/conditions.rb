@@ -9,7 +9,7 @@ class Conditions
       payment_method payment_amount gizmo_type_id gizmo_category_id covered
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
-      empty disbursement_type_id
+      empty disbursement_type_id store_credit_id
     ] + DATES).uniq
 
   for i in CONDS
@@ -66,6 +66,8 @@ class Conditions
   attr_accessor :extract_type, :extract_value, :extract_field
 
   attr_accessor :disbursement_type_id
+
+  attr_accessor :store_credit_id
 
   def contact
     if contact_id && !contact_id.to_s.empty?
@@ -329,6 +331,14 @@ class Conditions
 
   def disbursement_type_id_conditions(klass)
     return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id]
+  end
+
+  def store_credit_id_conditions(klass)
+    if klass == GizmoReturn
+      return ["#{klass.table_name}.id IN (SELECT #{klass.table_name.singularize}_id FROM store_credits WHERE id = ?)", store_credit_id]
+    else
+      raise NoMethodError
+    end
   end
 
   def some_date_enabled

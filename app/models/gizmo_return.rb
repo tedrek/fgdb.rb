@@ -29,6 +29,10 @@ class GizmoReturn < ActiveRecord::Base
     GizmoContext.gizmo_return
   end
 
+  def store_credit_id
+    self.store_credit.id
+  end
+
   def set_storecredit_difference_cents
     self.store_credit = StoreCredit.new
     self.store_credit.amount_cents = self.storecredit_difference_cents = calculated_subtotal_cents
