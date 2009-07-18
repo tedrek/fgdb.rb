@@ -62,6 +62,7 @@
       <% filters << 'needs_attention' %>
       <% filters << 'contract' %>
       <% filters << 'contact_type' %>
+      <% filters << 'organization' %>
       <% if has_role?("ADMIN") %>
         <% filters << 'created_by' %>
         <% if cashierable %>

@@ -85,6 +85,10 @@ module ConditionsHelper
     text_field(params_key, 'phone_number')
   end
 
+  def html_for_organization_condition(params_key)
+    check_box(params_key,"is_organization")
+  end
+
   def html_for_contact_condition(params_key)
     if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK')
       contact_field('@' + params_key, 'contact_id',

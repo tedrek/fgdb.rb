@@ -9,7 +9,7 @@ class Conditions
       payment_method payment_amount gizmo_type_id gizmo_category_id covered
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
-      empty disbursement_type_id store_credit_id
+      empty disbursement_type_id store_credit_id organization
     ] + DATES).uniq
 
   for i in CONDS
@@ -58,6 +58,8 @@ class Conditions
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
 
   attr_accessor :contact_type
+
+  attr_accessor :is_organization
 
   attr_accessor :city, :postal_code, :phone_number, :email
 
@@ -203,6 +205,15 @@ class Conditions
       i = "contact_id"
     end
     return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type]
+  end
+
+  def organization_conditions(klass)
+    if klass == Contact
+      i = "id"
+    else
+      i = "contact_id"
+    end
+    return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", (@is_organization > 0) ? true : false]
   end
 
   def needs_attention_conditions(klass)
