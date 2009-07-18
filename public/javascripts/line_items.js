@@ -285,9 +285,15 @@ function add_payment_from_form() {
   var args = new Object();
   args['payment_method_id'] = $('payment_method_id').value;
   args['payment_amount'] = $('payment_amount').value;
+  if($('storecredit_id')) {
+    args['storecredit_id'] = $('storecredit_id').value;
+  }
   add_payment(args);
   $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
   $('payment_amount').value = $('payment_amount').defaultValue;
+  if($('storecredit_id')) {
+    $('storecredit_id').value = $('storecredit_id').defaultValue;
+  }
   $('payment_method_id').focus();
   return false;
 }
@@ -616,7 +622,7 @@ function last_and_tab(event) {
 }
 
 function last_and_tab_p(event) {
-  linelist = ['payment_amount'];
+  linelist = ['payment_amount', 'storecredit_id'];
   return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
 }
 

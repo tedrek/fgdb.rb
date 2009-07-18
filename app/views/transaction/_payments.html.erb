@@ -1,6 +1,9 @@
 <table id="payment_lines">
   <tr>
     <th>Payment Method</th>
+    <% if @gizmo_context == GizmoContext.sale %>
+      <th>Storecredit ID</th>
+    <% end %>
     <th>Amount</th>
     <th></th>
   <tr>
@@ -10,6 +13,9 @@
         <% hash = {} %>
         <% hash[:payment_method_id] = line.payment_method_id %>
         <% hash[:payment_amount] = line.amount %>
+        <% if line.store_credit %>
+          <% hash[:storecredit_id] = line.store_credit.id %>
+        <% end %>
         <% @gizmos_and_payments_js += "add_payment(#{hash.to_json});" %>
       <% end %>
     <% end %>
@@ -19,5 +25,8 @@
         <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a payment type")] + (PaymentMethod.find(:all) - (@gizmo_context.name == "donation" ? [PaymentMethod.find_by_name("store_credit")] : [])).sort_by(&:description), "id", "description") %>
       </select></td>
     <td><input id="payment_amount" name="payment_amount" onkeydown="return handle_p(event);"/></td>
+    <% if @gizmo_context == GizmoContext.sale %>
+      <td><input id="storecredit_id" name="storecredit_id" onkeydown="return handle_p(event);"/></td>
+    <% end %>
   </tr>
 </table>
