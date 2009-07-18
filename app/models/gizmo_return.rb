@@ -6,6 +6,7 @@ class GizmoReturn < ActiveRecord::Base
   belongs_to :contact
   belongs_to :sale
   belongs_to :disbursement
+  has_one :store_credit
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
   define_amount_methods_on("storecredit_difference")
@@ -24,7 +25,8 @@ class GizmoReturn < ActiveRecord::Base
   end
 
   def set_storecredit_difference_cents
-    self.storecredit_difference_cents = calculated_subtotal_cents
+    self.store_credit = StoreCredit.new
+    self.store_credit.amount_cents = self.storecredit_difference_cents = calculated_subtotal_cents
   end
 
   def link_text
