@@ -1,8 +1,10 @@
 fgdb.rb (1.0.38) UNRELEASED; urgency=low
 
   * 
+  * link to the contact who edited/created a transaction (Closes:
+    #14216)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Jun 2009 04:55:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 18 Jul 2009 16:10:14 -0700
 
 fgdb.rb (1.0.37) released; urgency=low
 
