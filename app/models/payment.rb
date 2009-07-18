@@ -2,11 +2,18 @@ class Payment < ActiveRecord::Base
   belongs_to :donation
   belongs_to :sale
   belongs_to :payment_method
-  belongs_to :store_credit
-
+  has_one :store_credit
   validates_presence_of :payment_method_id
 
   define_amount_methods_on("amount")
+
+  def store_credit_id=(v)
+    self.store_credit = StoreCredit.find(v)
+  end
+
+  def store_credit_id
+    self.store_credit.id
+  end
 
   def mostly_empty?
     # Allow negative payments (e.g. credits)
