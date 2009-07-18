@@ -12,6 +12,10 @@ class GizmoReturn < ActiveRecord::Base
   define_amount_methods_on("storecredit_difference")
   acts_as_userstamp
 
+  def self.default_sort_sql
+    "gizmo_returns.created_at DESC"
+  end
+
   def validate
     errors.add_on_empty("contact_id")
     if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -39,9 +43,5 @@ class GizmoReturn < ActiveRecord::Base
       self.created_at = Time.now
     end
     self.gizmo_events.each {|event| event.occurred_at = self.created_at; event.save!}
-  end
-
-  def payments
-    return []
   end
 end
