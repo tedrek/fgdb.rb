@@ -38,6 +38,7 @@ module GizmoTransaction
   end
 
   def invoiced?
+    return if ! self.respond_to?(:payments)
     payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
   end
 
@@ -55,7 +56,7 @@ module GizmoTransaction
 
   def contact_information
     if contact
-      contact.display_name_address
+      contact.p_id
     elsif postal_code
       ["Anonymous (#{postal_code})"]
     else
