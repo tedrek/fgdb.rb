@@ -197,7 +197,12 @@ class Conditions
   end
 
   def contact_type_conditions(klass)
-    return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type]
+    if klass == Contact
+      i = "id"
+    else
+      i = "contact_id"
+    end
+    return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type]
   end
 
   def needs_attention_conditions(klass)
