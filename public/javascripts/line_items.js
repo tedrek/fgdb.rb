@@ -759,7 +759,20 @@ function coveredness_type_selected() {
     $('covered').checked = false;
   }
 }
-
+function get_name_of_selected(name) {
+  return $(name).options[$(name).selectedIndex].innerHTML;
+}
+function sale_payment_method_selected(){
+  if(get_name_of_selected('payment_method_id') == "store credit") {
+    $('storecredit_id').enable();
+    $('payment_amount').disable();
+  } else {
+    $('storecredit_id').disable();
+    $('payment_amount').enable();
+  }
+}
+function donation_payment_method_selected(){
+}
 function sale_gizmo_type_selected() {
   coveredness_type_selected();
   systems_type_selected();
