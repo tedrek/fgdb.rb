@@ -221,6 +221,10 @@ class Contact < ActiveRecord::Base
     "#{city}, #{state_or_province}  #{postal_code}"
   end
 
+  def p_id
+    return ["Contact ##{self.id}"]
+  end
+
   def display_name_address
     disp = []
     disp.concat(display_name.to_a) unless
