@@ -10,6 +10,7 @@ class GizmoReturn < ActiveRecord::Base
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
   define_amount_methods_on("storecredit_difference")
+  acts_as_userstamp
 
   def validate
     errors.add_on_empty("contact_id")
@@ -38,5 +39,9 @@ class GizmoReturn < ActiveRecord::Base
       self.created_at = Time.now
     end
     self.gizmo_events.each {|event| event.occurred_at = self.created_at; event.save!}
+  end
+
+  def payments
+    return []
   end
 end
