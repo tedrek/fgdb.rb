@@ -4,8 +4,9 @@ fgdb.rb (1.0.38) UNRELEASED; urgency=low
   * link to the contact who edited/created a transaction (Closes:
     #14216)
   * dont show the persons address or name (Closes: #12809)
+  * implement returns (Closes: #12563)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 18 Jul 2009 16:48:06 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 18 Jul 2009 16:51:49 -0700
 
 fgdb.rb (1.0.37) released; urgency=low
 
