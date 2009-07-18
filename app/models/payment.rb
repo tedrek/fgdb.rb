@@ -2,6 +2,7 @@ class Payment < ActiveRecord::Base
   belongs_to :donation
   belongs_to :sale
   belongs_to :payment_method
+  belongs_to :store_credit
 
   validates_presence_of :payment_method_id
 

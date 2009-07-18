@@ -19,6 +19,14 @@
   <%= javascript_tag js %>
 <% end %>
 
+<% if ["sales"].include?(params[:controller]) %>
+  <% js = "all_store_credits = new Array;" %>
+  <% StoreCredit.find(:all).each do |x| %>
+    <% js += "all_store_credits[#{x.id}] = #{x.amount_cents};" %>
+  <% end %>
+  <%= javascript_tag js %>
+<% end %>
+
 <% if ["sales", "donations", "recyclings", "disbursements", "gizmo_returns"].include?(params[:controller]) -%>
   <%= js = "var gizmo_types = new Array;"
       for gizmo_type in @gizmo_context.gizmo_types.sort_by(&:description)

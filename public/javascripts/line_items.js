@@ -172,7 +172,11 @@ function edit_gizmo_event(id) {
 function edit_payment(id) {
   thing = $(id);
   $('payment_method_id').value = getValueBySelector(thing, ".payment_method_id");
+  eval(gizmo_context_name + "_payment_method_selected();");
   $('payment_amount').value = getValueBySelector(thing, ".amount");
+  if($('store_credit_id')) {
+    $('store_credit_id').value = getValueBySelector(thing, ".store_credit_id");
+  }
   $('payment_method_id').focus();
 }
 
@@ -217,6 +221,14 @@ function is_priced() {
   else
     alert("BUG. go yell at Ryan.");
   return false;
+}
+
+function update_amount_for_storecredit() {
+  var a = dollar_value(all_store_credits[$('store_credit_id').value]);
+  if(a == "NaN") {
+    a = "";
+  }
+  $('payment_amount').value = a;
 }
 
 function _add_gizmo_event_from_form()
@@ -285,14 +297,14 @@ function add_payment_from_form() {
   var args = new Object();
   args['payment_method_id'] = $('payment_method_id').value;
   args['payment_amount'] = $('payment_amount').value;
-  if($('storecredit_id')) {
-    args['storecredit_id'] = $('storecredit_id').value;
+  if($('store_credit_id')) {
+    args['store_credit_id'] = $('store_credit_id').value;
   }
   add_payment(args);
   $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
   $('payment_amount').value = $('payment_amount').defaultValue;
-  if($('storecredit_id')) {
-    $('storecredit_id').value = $('storecredit_id').defaultValue;
+  if($('store_credit_id')) {
+    $('store_credit_id').value = $('store_credit_id').defaultValue;
   }
   $('payment_method_id').focus();
   return false;
@@ -396,6 +408,10 @@ function payment_stuff(args, tr){
   amount_node = make_hidden("payments", "amount", payment_amount, payment_amount, line_id);
   amount_node.className = "amount";
   tr.appendChild(amount_node);
+  if($('store_credit_id')) {
+    var storecredit_id = args['store_credit_id'];
+    tr.appendChild(make_hidden("payments", "store_credit_id", storecredit_id, storecredit_id, line_id));
+  }
 }
 
 function contact_method_stuff(args, tr){
@@ -622,18 +638,22 @@ function last_and_tab(event) {
 }
 
 function last_and_tab_p(event) {
-  linelist = ['payment_amount', 'storecredit_id'];
+  linelist = ['payment_amount', 'store_credit_id'];
   return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
 }
 
 function handle_ge(event) {
   if(last_and_tab(event)) {
+    if(event.target.onchange)
+      event.target.onchange();
     return handle_gizmo_events();
   }
 }
 
 function handle_p(event) {
   if(last_and_tab_p(event)) {
+    if(event.target.onchange)
+      event.target.onchange();
     return handle_payments();
   }
 }
@@ -764,12 +784,14 @@ function get_name_of_selected(name) {
 }
 function sale_payment_method_selected(){
   if(get_name_of_selected('payment_method_id') == "store credit") {
-    $('storecredit_id').enable();
+    $('store_credit_id').enable();
     $('payment_amount').disable();
   } else {
-    $('storecredit_id').disable();
+    $('store_credit_id').disable();
     $('payment_amount').enable();
   }
+  $('payment_amount').value = "";
+  $('store_credit_id').value = "";
 }
 function donation_payment_method_selected(){
 }
