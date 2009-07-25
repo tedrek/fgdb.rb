@@ -5,8 +5,9 @@ fgdb.rb (1.0.38) UNRELEASED; urgency=low
     #14216)
   * dont show the persons address or name (Closes: #12809)
   * implement returns (Closes: #12563)
+  * fix soap errors going through the nginx proxy
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 18 Jul 2009 16:51:49 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 25 Jul 2009 15:40:51 -0700
 
 fgdb.rb (1.0.37) released; urgency=low
 

@@ -30,7 +30,11 @@ module GizmoTransaction
   end
 
   def money_tendered_cents
-    real_payments.inject(0) {|total,payment| total + payment.amount_cents}
+    amount_from_some_payments(real_payments)
+  end
+
+  def amount_from_some_payments(arr)
+    return arr.inject(0) {|total,payment| total + payment.amount_cents}
   end
 
   def amount_invoiced_cents
@@ -77,7 +81,7 @@ module GizmoTransaction
       payments.reject!{|x|
         x.payment_method.name == "cash"
       }
-      payments << cash
+      payments << cash if cash.amount_cents > 0
     end
   end
 

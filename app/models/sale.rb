@@ -98,6 +98,14 @@ class Sale < ActiveRecord::Base
     calculated_subtotal_cents - calculated_total_cents
   end
 
+  def store_credits_spent
+    payments.select{|x| x.is_storecredit?}
+  end
+
+  def other_spent # not store credit
+    payments.select{|x| !x.is_storecredit?}
+  end
+
   #########
   protected
   #########
@@ -114,10 +122,45 @@ class Sale < ActiveRecord::Base
     self.gizmo_events.each {|event| event.occurred_at = self.created_at; event.save!}
   end
 
+  # WOAH! commented code.
+  def _figure_it_all_out
+    amount_i_owe = calculated_total_cents
+    money_given = amount_from_some_payments(other_spent)
+    storecredit_given = amount_from_some_payments(store_credits_spent)
+
+    amount_i_owe -= storecredit_given
+    if amount_i_owe < 0 # more store credit than the amount to be spent
+      storecredit_to_give_back = -1 * amount_i_owe
+      cash_to_give_back = money_given
+      return [storecredit_to_give_back, cash_to_give_back]
+    end
+
+    # ok, either the store credit was just right, or we owe more money
+
+    amount_i_owe -= money_given
+    if amount_i_owe < 0 # more money was given than the amount to be spent
+      storecredit_to_give_back = 0
+      cash_to_give_back = -1 * amount_i_owe
+      return [storecredit_to_give_back, cash_to_give_back]
+    end
+
+    if amount_i_owe == 0
+      return [0, 0]
+    end
+
+    # amount_i_owe > 0 ... still need to pay more.
+    raise NoMethodError # Ryan broke something..I guess.
+  end
+
   def add_change_line_item()
-    change_due = money_tendered_cents - calculated_total_cents
-    if change_due > 0
-      payments << Payment.new({:amount_cents => -change_due,
+    storecredit_back, cash_back = _figure_it_all_out
+    if storecredit_back > 0
+      # FIXME: add a storecredit for the right amount. will do this
+      # after the hook for buying gift certs to make sure it happens
+      # in the correct order.
+    end
+    if cash_back > 0
+      payments << Payment.new({:amount_cents => cash_back,
                                 :payment_method => PaymentMethod.cash})
     end
   end
