@@ -160,7 +160,7 @@ class Sale < ActiveRecord::Base
       # in the correct order.
     end
     if cash_back > 0
-      payments << Payment.new({:amount_cents => cash_back,
+      payments << Payment.new({:amount_cents => -cash_back,
                                 :payment_method => PaymentMethod.cash})
     end
   end
