@@ -491,14 +491,30 @@ function sale_compute_totals() {
   var subtotal = get_subtotal();
   var grand_total = get_grand_total();
   var discount = subtotal - grand_total;
+  var store_credit = get_storecredit();
+  var not_store_credit = get_not_storecredit();
   var payment = get_total_payment();
 
   $('subtotal').innerHTML = dollar_value(subtotal);
   $('discount').innerHTML = dollar_value(discount);
   $('grand_total').innerHTML = dollar_value(grand_total);
   $('total_payments').innerHTML = dollar_value(payment);
-  $('change_due').innerHTML = dollar_value(payment - grand_total);
-  if(payment - grand_total < 0) {
+  var storecredit_left = store_credit - grand_total;
+  if(storecredit_left > 0) {
+    // show the row, show how much is left
+    $('storecredit_left_tr').show();
+    $('storecredit_left').innerHTML = dollar_value(storecredit_left);
+    // no more money owed
+    grand_total = 0;
+  } else if (storecredit_left < 0) {
+    // hide the row
+    $('storecredit_left_tr').hide();
+    // spent too much, leave it to the real money
+    grand_total = -1 * storecredit_left;
+  }
+  var change_due = not_store_credit - grand_total;
+  $('change_due').innerHTML = dollar_value(change_due);
+  if(change_due < 0) {
     $('change_due_tr').addClassName('short_row');
   }
   update_contract_notes();
@@ -534,6 +550,28 @@ function get_total_payment() {
   var arr = find_these_lines('payment_lines');
   for (var x = 0; x < arr.length; x++) {
     total += cent_value(get_node_value(arr[x], "td.amount"));
+  }
+  return total;
+}
+
+function get_storecredit(){
+  var total = 0;
+  var arr = find_these_lines('payment_lines');
+  for (var x = 0; x < arr.length; x++) {
+    if(get_node_value(arr[x], "td.payment_method_id") == "store credit") {
+      total += cent_value(get_node_value(arr[x], "td.amount"));
+    }
+  }
+  return total;
+}
+
+function get_not_storecredit(){
+  var total = 0;
+  var arr = find_these_lines('payment_lines');
+  for (var x = 0; x < arr.length; x++) {
+    if(get_node_value(arr[x], "td.payment_method_id") != "store credit") {
+      total += cent_value(get_node_value(arr[x], "td.amount"));
+    }
   }
   return total;
 }
