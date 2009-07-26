@@ -158,12 +158,10 @@ class Sale < ActiveRecord::Base
       puts storecredit_back
       # wow, if only I had a working test suite...testing this through the UI is a PITA!!!!
       # mebbe we should fix that.
-      ge = GizmoEvent.new({:unit_price_cents => storecredit_back,
+      gizmo_events << GizmoEvent.new({:unit_price_cents => storecredit_back,
                             :gizmo_count => 1,
                             :gizmo_type => GizmoType.find_by_name("store_credit"),
                             :gizmo_context => self.gizmo_context}) # WTF? something sets gizmo_context on *everything* else. why doesn't it set it on this one? hm...I can't find that code anyway.
-      gizmo_events << ge
-      ge.save!
     end
     if cash_back > 0
       payments << Payment.new({:amount_cents => -cash_back,
