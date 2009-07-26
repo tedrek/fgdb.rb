@@ -783,15 +783,18 @@ function get_name_of_selected(name) {
   return $(name).options[$(name).selectedIndex].innerHTML;
 }
 function sale_payment_method_selected(){
-  if(get_name_of_selected('payment_method_id') == "store credit") {
+  if(get_name_of_selected('payment_method_id') == "store credit" && (typeof(old_selected_payment_method) == "undefined" || old_selected_payment_method != "store credit")) {
     $('store_credit_id').enable();
     $('payment_amount').disable();
-  } else {
+    $('payment_amount').value = "";
+    $('store_credit_id').value = "";
+  } else if (get_name_of_selected('payment_method_id') != "store credit" && (typeof(old_selected_payment_method) == "undefined") || old_selected_payment_method == "store credit"){
     $('store_credit_id').disable();
     $('payment_amount').enable();
+    $('payment_amount').value = "";
+    $('store_credit_id').value = "";
   }
-  $('payment_amount').value = "";
-  $('store_credit_id').value = "";
+  old_selected_payment_method = get_name_of_selected('payment_method_id');
 }
 function donation_payment_method_selected(){
 }
