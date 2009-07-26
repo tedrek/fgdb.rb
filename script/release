@@ -22,6 +22,11 @@ if [ -z "$IGNORE_FIXME" ]; then
     fi
 fi
 
+if [ "$(GIT_PS1_SHOWDIRTYSTATE=42 git ps1 %s)" != "master" ]; then
+    echo "The working tree or index is dirty. Clean it up."
+    exit 1
+fi
+
 set -x
 
 echo "all good"
