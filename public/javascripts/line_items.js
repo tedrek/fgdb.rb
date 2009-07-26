@@ -506,7 +506,7 @@ function sale_compute_totals() {
     $('storecredit_left').innerHTML = dollar_value(storecredit_left);
     // no more money owed
     grand_total = 0;
-  } else if (storecredit_left < 0) {
+  } else if (storecredit_left <= 0) {
     // hide the row
     $('storecredit_left_tr').hide();
     // spent too much, leave it to the real money

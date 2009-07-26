@@ -10,12 +10,19 @@ class Payment < ActiveRecord::Base
     record.errors.add attr, 'is wonky. yell at Ryan please.' if record.store_credit.amount_cents != value
   end
   define_amount_methods_on("amount")
+  validate :sc_ok
 
   def store_credit_id=(v)
     return if v.to_i == 0
     s = StoreCredit.find_by_id(v)
     return if s.nil?
+    s.cache_shit # cache it for sc_ok
     self.store_credit = s
+  end
+
+  def sc_ok
+    return if ! is_storecredit?
+    errors.add("payment", "store credit was already spent") if self.store_credit.spent? && self.store_credit.spent_on.sale.id != self.sale.id
   end
 
   def store_credit_id
