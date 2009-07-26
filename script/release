@@ -29,9 +29,6 @@ fi
 
 set -x
 
-echo "all good"
-exit 0
-
 git fetch origin
 git fetch fg
 for i in .git/refs/remotes/fg/master .git/refs/remotes/origin/master; do
