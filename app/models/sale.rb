@@ -15,9 +15,9 @@ class Sale < ActiveRecord::Base
 
   before_save :add_contact_types
   before_save :unzero_contact_id
-  before_save :set_occurred_at_on_gizmo_events
   before_save :compute_fee_totals
   before_save :add_change_line_item
+  before_save :set_occurred_at_on_gizmo_events
   before_save :combine_cash_payments
 
   def initialize(*args)
@@ -155,9 +155,15 @@ class Sale < ActiveRecord::Base
   def add_change_line_item()
     storecredit_back, cash_back = _figure_it_all_out
     if storecredit_back > 0
-      # FIXME: add a storecredit for the right amount. will do this
-      # after the hook for buying gift certs to make sure it happens
-      # in the correct order.
+      puts storecredit_back
+      # wow, if only I had a working test suite...testing this through the UI is a PITA!!!!
+      # mebbe we should fix that.
+      ge = GizmoEvent.new({:unit_price_cents => storecredit_back,
+                            :gizmo_count => 1,
+                            :gizmo_type => GizmoType.find_by_name("store_credit"),
+                            :gizmo_context => self.gizmo_context}) # WTF? something sets gizmo_context on *everything* else. why doesn't it set it on this one? hm...I can't find that code anyway.
+      gizmo_events << ge
+      ge.save!
     end
     if cash_back > 0
       payments << Payment.new({:amount_cents => -cash_back,
