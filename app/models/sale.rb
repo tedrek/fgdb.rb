@@ -43,6 +43,12 @@ class Sale < ActiveRecord::Base
     #errors.add("payments", "are too much") if overpaid?
     errors.add("payments", "may only have one invoice") if invoices.length > 1
     errors.add("gizmos", "should include something") if gizmo_events.empty?
+    errors.add("payments", "use the same store credit multiple times") if storecredits_repeat
+  end
+
+  def storecredits_repeat
+    sc = self.payments.select{|x| x.payment_method == PaymentMethod.store_credit}.map{|x| x.store_credit_id}
+    sc.length != sc.uniq.length
   end
 
   class << self
