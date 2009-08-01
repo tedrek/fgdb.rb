@@ -29,6 +29,10 @@ class GizmoReturn < ActiveRecord::Base
     GizmoContext.gizmo_return
   end
 
+  def editable
+    return false
+  end
+
   def store_credit_id
     self.store_credit.id
   end

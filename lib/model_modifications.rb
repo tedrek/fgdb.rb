@@ -204,19 +204,24 @@ class ActiveRecord::Base
     else
       obj = self.new
     end
-    obj.attributes = hash
+    obj.attributes_with_editable = hash
     return obj
   end
 
-  def attributes_with_editable=(hash)
-    should_check = false
+  def editable?
+    editable = true
     if self.respond_to?(:editable)
       if ! self.editable
-        should_check = true
+        editable = false
       end
     end
+    return editable
+  end
+
+  def attributes_with_editable=(hash)
+    should_check = editable?
     before = attributes
-    retval = self.attributes_without_editable = hash
+    retval = self.attributes = hash
     after = attributes
     if should_check
       if before != after
@@ -225,7 +230,6 @@ class ActiveRecord::Base
     end
     return retval
   end
-  alias_method_chain :attributes=, :editable
 
   acts_as_logged
 end
