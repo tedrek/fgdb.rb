@@ -12,6 +12,10 @@ class Payment < ActiveRecord::Base
   define_amount_methods_on("amount")
   validate :sc_ok
 
+  def editable
+    return true
+  end
+
   def store_credit_id=(v)
     return if v.to_i == 0
     s = StoreCredit.find_by_id(v)

@@ -24,6 +24,7 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def set_storecredit_difference_cents
+    # all of these todos *should* be fixed now, need to confirm.
     # TODO: check that this will for sure keep the old IDs on editing.
     while self.store_credits.length < self.gizmo_count
       self.store_credits << StoreCredit.new
@@ -36,6 +37,10 @@ class GizmoEvent < ActiveRecord::Base
     self.store_credits.each{|x|
       x.amount_cents = self.unit_price_cents
     }
+  end
+
+  def editable
+    self.gizmo_type.name != "store_credit" || !self.store_credit.spent?
   end
 
   def validate

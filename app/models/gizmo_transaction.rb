@@ -85,6 +85,33 @@ module GizmoTransaction
     end
   end
 
+  def has_some_uneditable
+    gizmo_events.collect{|x| x.editable}.select{|x| x == false}.length > 0
+  end
+
+  def hooman_class_name
+    self.class.to_s.tableize.humanize.singularize.downcase
+  end
+
+  def editable_explaination
+    str = ""
+    if ! self.editable?
+      str = "This #{self.hooman_class_name} is not editable because its associated store credit has already been spent"
+    elsif self.has_some_uneditable
+      str = "Some pieces of this #{self.hooman_class_name} are not editable because their associated store credit has already been spent"
+    end
+    return str
+  end
+
+  def html_explaination
+    if !editable_explaination.blank?
+      return '<pre style="background: yellow">' +
+        editable_explaination +
+        '</pre>'
+    end
+    return ""
+  end
+
   #########
   protected
   #########
