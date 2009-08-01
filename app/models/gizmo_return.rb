@@ -30,7 +30,7 @@ class GizmoReturn < ActiveRecord::Base
   end
 
   def editable
-    return false
+    !store_credit.spent?
   end
 
   def store_credit_id

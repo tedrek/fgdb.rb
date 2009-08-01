@@ -39,7 +39,7 @@ class GizmoEvent < ActiveRecord::Base
   end
 
   def editable
-    ! (self.gizmo_type.name == "store_credit")
+    self.gizmo_type.name != "store_credit" || !self.store_credit.spent?
   end
 
   def validate
