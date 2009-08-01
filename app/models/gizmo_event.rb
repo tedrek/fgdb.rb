@@ -38,6 +38,10 @@ class GizmoEvent < ActiveRecord::Base
     }
   end
 
+  def editable
+    ! (self.gizmo_type.name == "store_credit")
+  end
+
   def validate
     if gizmo_type && gizmo_type.gizmo_category && gizmo_type.gizmo_category.name == "system" && !system_id.nil? && gizmo_count != 1
       errors.add("gizmo_count", "should be 1 if you enter a system id")

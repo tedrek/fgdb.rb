@@ -197,6 +197,36 @@ class ActiveRecord::Base
     execute(*arr)
   end
 
+  def self.new_or_edit(hash)
+    obj = nil
+    if hash[:id]
+      obj = self.find(hash[:id].to_i)
+    else
+      obj = self.new
+    end
+    obj.attributes = hash
+    return obj
+  end
+
+  def attributes_with_editable=(hash)
+    should_check = false
+    if self.respond_to?(:editable)
+      if ! self.editable
+        should_check = true
+      end
+    end
+    before = attributes
+    retval = self.attributes_without_editable = hash
+    after = attributes
+    if should_check
+      if before != after
+        raise # ActiveRecord::AttributeAssignmentError.new("Can't edit an uneditable record", Exception, nil) # TODO: add a why_uneditable to explain to the user
+      end
+    end
+    return retval
+  end
+  alias_method_chain :attributes=, :editable
+
   acts_as_logged
 end
 

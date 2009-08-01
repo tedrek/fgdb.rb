@@ -123,7 +123,12 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook){
   a.appendChild(document.createTextNode('x'));
   a.className = 'disable_link';
   td.appendChild(a);
-  tr.appendChild(td);
+  if(!args['uneditable']) {
+    tr.appendChild(td);
+  } else {
+    // ugh, I think something other than "line" needs to be passed for payments...why is this not the sames as args['prefix']? TODO: FIX THIS!!!
+    tr.appendChild(make_hidden("line", "id", "", args['id'], counters[prefix + '_line_id'])); // this should probably be done for all unedited (but editable) gizmo_events/payments/contact_methods too...
+  }
   $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_lines').lastChild.lastChild.previousSibling);
   counters[args['prefix'] + '_line_id']++;
   update_hook();
