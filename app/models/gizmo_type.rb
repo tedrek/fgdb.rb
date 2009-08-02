@@ -13,6 +13,10 @@ class GizmoType < ActiveRecord::Base
   define_amount_methods_on("required_fee")
   define_amount_methods_on("suggested_fee")
 
+  named_scope :effective_on, lambda { |date|
+    { :conditions => ['effective_on IS NULL OR effective_on < ? AND ineffective_on IS NULL OR ineffective_on > ?', date, date] }
+  }
+
   def GizmoType.fee?(type)
     return type == service_fee || type == fee_discount
   end

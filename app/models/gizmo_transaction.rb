@@ -1,6 +1,6 @@
 module GizmoTransaction
   def usable_gizmo_types
-    self.gizmo_context.gizmo_types
+    self.gizmo_context.gizmo_types.effective_on(self.occurred_at)
   end
 
   def showable_gizmo_types
