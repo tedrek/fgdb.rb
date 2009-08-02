@@ -72,10 +72,6 @@ class Sale < ActiveRecord::Base
     end
   end
 
-  def occurred_at
-    created_at
-  end
-
   def buyer
     contact ?
     contact.display_name :
@@ -119,13 +115,6 @@ class Sale < ActiveRecord::Base
   def compute_fee_totals
     self.reported_amount_due_cents = self.calculated_total_cents
     self.reported_discount_amount_cents = self.calculated_discount_cents
-  end
-
-  def set_occurred_at_on_gizmo_events
-    if self.created_at == nil
-      self.created_at = Time.now
-    end
-    self.gizmo_events.each {|event| event.occurred_at = self.created_at; event.save!}
   end
 
   # WOAH! commented code.

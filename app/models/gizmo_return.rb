@@ -45,11 +45,4 @@ class GizmoReturn < ActiveRecord::Base
   def link_text
     self.created_at.strftime("%m/%d/%Y") + " (" + self.gizmos + ", $" + self.storecredit_difference + ")"
   end
-
-  def set_occurred_at_on_gizmo_events
-    if self.created_at == nil
-      self.created_at = Time.now
-    end
-    self.gizmo_events.each {|event| event.occurred_at = self.created_at; event.save!}
-  end
 end

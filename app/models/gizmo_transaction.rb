@@ -112,6 +112,31 @@ module GizmoTransaction
     return ""
   end
 
+  def occurred_at
+    return case self
+           when Sale
+             self.created_at_or_now
+           when Donation
+             self.created_at_or_now
+           when GizmoReturn
+             self.created_at_or_now
+           when Disbursement
+             self.disbursed_at
+           when Recycling
+             self.recycled_at
+           else
+             raise NoMethodError
+           end
+  end
+
+  def created_at_or_now
+    self.created_at ||= Time.now
+  end
+
+  def set_occurred_at_on_gizmo_events
+    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at; event.save!}
+  end
+
   #########
   protected
   #########
