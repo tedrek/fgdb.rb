@@ -1,4 +1,12 @@
 module GizmoTransaction
+  def usable_gizmo_types
+    self.gizmo_context.gizmo_types
+  end
+
+  def showable_gizmo_types
+    (self.gizmo_types + self.usable_gizmo_types).uniq.sort_by(&:description)
+  end
+
   def gizmos
     gizmo_events.map {|ge| ge.display_name}.join(', ')
   end
