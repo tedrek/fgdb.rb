@@ -113,13 +113,13 @@ module GizmoTransaction
   end
 
   def occurred_at
-    return case self
+    value = case self
            when Sale
-             self.created_at_or_now
+             self.created_at
            when Donation
-             self.created_at_or_now
+             self.created_at
            when GizmoReturn
-             self.created_at_or_now
+             self.created_at
            when Disbursement
              self.disbursed_at
            when Recycling
@@ -127,10 +127,7 @@ module GizmoTransaction
            else
              raise NoMethodError
            end
-  end
-
-  def created_at_or_now
-    self.created_at ||= Time.now
+    return value || Time.now
   end
 
   def set_occurred_at_on_gizmo_events
