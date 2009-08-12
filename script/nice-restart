@@ -8,13 +8,13 @@ for i in 0 1 2; do
     echo "It does now"
     echo "Starting socat for $i"
     socat TCP4-LISTEN:300$i,reuseaddr,fork UNIX-CONNECT:/tmp/thin.$i.sock &
+    SOCAT=$!
     echo "Trying to download"
-    
     while ! curl http://localhost:300$i/ 2>/dev/null | grep -q "Free Geek"; do echo "It failed, napping"; sleep 0.5; echo "Checking again"; done
     echo "It worked"
     echo "Killing socat"
-    kill %1
-    wait
+    kill $SOCAT
+    wait $SOCAT
     echo
     echo
     echo
