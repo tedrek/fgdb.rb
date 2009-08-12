@@ -8,7 +8,7 @@
   <table  width="75%">
     <tr>
       <td colspan="3"><%= render :partial=>"helpers/letter_head",
-                          :locals=> {:contact_information => @txn.contact_information}%></td>
+                          :locals=> {:contact_information => @txn.contact_information, :hidable_contact_information => @transaction.hidable_contact_information, :hideit => @transaction.should_i_hide_it?}%></td>
     </tr>
     <tr>
       <td colspan="3"><hr /></td>
