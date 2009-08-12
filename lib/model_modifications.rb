@@ -199,12 +199,13 @@ class ActiveRecord::Base
 
   def self.new_or_edit(hash)
     obj = nil
-    if hash[:id]
+    if hash[:id] and hash[:id].to_i != 0
       obj = self.find(hash[:id].to_i)
+      obj.attributes_with_editable = hash
     else
       obj = self.new
+      obj.attributes = hash
     end
-    obj.attributes_with_editable = hash
     return obj
   end
 
