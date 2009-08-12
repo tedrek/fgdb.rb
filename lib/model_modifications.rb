@@ -228,7 +228,7 @@ class ActiveRecord::Base
     after = attributes
     if should_check
       if before != after
-        raise # ActiveRecord::AttributeAssignmentError.new("Can't edit an uneditable record", Exception, nil) # TODO: add a why_uneditable to explain to the user
+        raise
       end
     end
     return retval
