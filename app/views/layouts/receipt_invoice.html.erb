@@ -2,6 +2,7 @@
 <head>
   <title class="banner"><%= @context %></title>
   <%= stylesheet_link_tag 'application', :media => 'all' %>
+  <%= javascript_include_tag :defaults %>
 </head>
 <body>
   <table  width="75%">
@@ -51,7 +52,7 @@
     <%= yield %>
 
     <p>
-      <span id="button_span">
+      <span id="button_span" class="noprint">
         <INPUT type="button" id="print_button" value="Print"
                onclick="window.print(); window.close();" >
 

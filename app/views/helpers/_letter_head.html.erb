@@ -3,5 +3,5 @@
     <img src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
     <img src="<%= h Default['address image'] %>" alt="<%= h Default['contact info'] %>"/>
   </div>
-  <div class="contact-info"><%= contact_information.nil? ? "" : contact_information.map{|x| h(x)}.join('<br />') %></div>
+  <div class="contact-info"><%= contact_information.nil? ? "" : array_to_html(h_over_array(contact_information), hideable(@transaction.hidable_contact_information, "contact information", @transaction.should_i_hide_it?)) %></div>
 </div>
