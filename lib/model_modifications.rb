@@ -199,12 +199,15 @@ class ActiveRecord::Base
 
   def self.new_or_edit(hash)
     obj = nil
-    if hash[:id]
+    if hash[:id] and hash[:id].to_i != 0
       obj = self.find(hash[:id].to_i)
+      hash.delete(:id)
+      obj.attributes_with_editable = hash
     else
       obj = self.new
+      hash.delete(:id)
+      obj.attributes = hash
     end
-    obj.attributes_with_editable = hash
     return obj
   end
 
@@ -225,7 +228,7 @@ class ActiveRecord::Base
     after = attributes
     if should_check
       if before != after
-        raise # ActiveRecord::AttributeAssignmentError.new("Can't edit an uneditable record", Exception, nil) # TODO: add a why_uneditable to explain to the user
+        raise
       end
     end
     return retval

@@ -1,7 +1,7 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def gt_for_txn(thing)
-    [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + (thing.gizmo_types + thing.gizmo_context.gizmo_types).uniq.sort_by(&:description)
+    [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
   def gizmo_events_options_for_transaction

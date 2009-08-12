@@ -1,4 +1,12 @@
 module GizmoTransaction
+  def usable_gizmo_types
+    self.gizmo_context.gizmo_types
+  end
+
+  def showable_gizmo_types
+    (self.gizmo_types + self.usable_gizmo_types).uniq.sort_by(&:description)
+  end
+
   def gizmos
     gizmo_events.map {|ge| ge.display_name}.join(', ')
   end
@@ -110,6 +118,28 @@ module GizmoTransaction
         '</pre>'
     end
     return ""
+  end
+
+  def occurred_at
+    value = case self
+           when Sale
+             self.created_at
+           when Donation
+             self.created_at
+           when GizmoReturn
+             self.created_at
+           when Disbursement
+             self.disbursed_at
+           when Recycling
+             self.recycled_at
+           else
+             raise NoMethodError
+           end
+    return value || Time.now
+  end
+
+  def set_occurred_at_on_gizmo_events
+    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at; event.save!}
   end
 
   #########
