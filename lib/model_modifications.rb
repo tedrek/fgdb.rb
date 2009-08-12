@@ -201,9 +201,11 @@ class ActiveRecord::Base
     obj = nil
     if hash[:id] and hash[:id].to_i != 0
       obj = self.find(hash[:id].to_i)
+      hash.delete(:id)
       obj.attributes_with_editable = hash
     else
       obj = self.new
+      hash.delete(:id)
       obj.attributes = hash
     end
     return obj

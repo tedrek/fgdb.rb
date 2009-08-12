@@ -160,7 +160,6 @@ class Sale < ActiveRecord::Base
   def add_change_line_item()
     storecredit_back, cash_back = _figure_it_all_out
     if storecredit_back > 0
-      puts storecredit_back
       # wow, if only I had a working test suite...testing this through the UI is a PITA!!!!
       # mebbe we should fix that.
       gizmo_events << GizmoEvent.new({:unit_price_cents => storecredit_back,
