@@ -2,7 +2,7 @@
 
   <p>
     <%= f.label :till_type_id, 'Till type' %><br />
-    <%= select("till_adjustment", "till_type_id", TillType.all.collect {|p| [ p.name, p.id ] }) %>
+    <%= select("till_adjustment", "till_type_id", [TillType.new, TillType.all].flatten.collect {|p| [ p.name, p.id ] }) %>
   </p>
   <p>
     <%= f.label :till_date %><br />
