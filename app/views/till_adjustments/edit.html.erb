@@ -1,20 +1,8 @@
 <h1>Editing till_adjustment</h1>
 
-<% form_for(@till_adjustment, {:action => "update"}) do |f| %>
-  <%= f.error_messages %>
+<% form_for(@till_adjustment, {:url => {:id => @till_adjustment.id, :action => "update"}}) do |f| %>
+  <%= render :partial => "form", :locals => {:f => f} %>
 
-  <p>
-    <%= f.label :till_type_id %><br />
-    <%= f.text_field :till_type_id %>
-  </p>
-  <p>
-    <%= f.label :till_date %><br />
-    <%= f.date_select :till_date %>
-  </p>
-  <p>
-    <%= f.label :adjustment_cents %><br />
-    <%= f.text_field :adjustment_cents %>
-  </p>
   <p>
     <%= f.submit "Update" %>
   </p>

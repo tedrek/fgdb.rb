@@ -45,7 +45,7 @@ class TillAdjustmentsController < ApplicationController
     respond_to do |format|
       if @till_adjustment.save
         flash[:notice] = 'TillAdjustment was successfully created.'
-        format.html { redirect_to(@till_adjustment) }
+        format.html { redirect_to({:id => @till_adjustment.id, :action => "show"}) }
         format.xml  { render :xml => @till_adjustment, :status => :created, :location => @till_adjustment }
       else
         format.html { render :action => "new" }
@@ -62,7 +62,7 @@ class TillAdjustmentsController < ApplicationController
     respond_to do |format|
       if @till_adjustment.update_attributes(params[:till_adjustment])
         flash[:notice] = 'TillAdjustment was successfully updated.'
-        format.html { redirect_to(@till_adjustment) }
+        format.html { redirect_to({:action => "show", :id => @till_adjustment.id}) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -78,7 +78,7 @@ class TillAdjustmentsController < ApplicationController
     @till_adjustment.destroy
 
     respond_to do |format|
-      format.html { redirect_to(till_adjustments_url) }
+      format.html { redirect_to({:action => "index"}) }
       format.xml  { head :ok }
     end
   end
