@@ -4,8 +4,9 @@ fgdb.rb (1.0.39) UNRELEASED; urgency=low
   * add an option to the receipt to show or hide the contact
     information, and make it default to different things for different
     transaction types
+  * hide the print/start over buttons when printing
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Aug 2009 12:41:27 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Aug 2009 12:43:52 -0700
 
 fgdb.rb (1.0.38) released; urgency=low
 
