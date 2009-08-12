@@ -38,8 +38,12 @@ class GizmoReturn < ActiveRecord::Base
   end
 
   def set_storecredit_difference_cents
-    self.store_credit ||= StoreCredit.new
-    self.store_credit.amount_cents = self.storecredit_difference_cents = calculated_subtotal_cents
+    if self.storecredit_difference_cents != 0
+      self.store_credit ||= StoreCredit.new
+      self.store_credit.amount_cents = self.storecredit_difference_cents = calculated_subtotal_cents
+    else
+      self.store_credit = nil
+    end
   end
 
   def link_text
