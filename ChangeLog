@@ -1,8 +1,18 @@
-fgdb.rb (1.0.39) UNRELEASED; urgency=low
+fgdb.rb (1.0.40) UNRELEASED; urgency=low
 
-  * 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Aug 2009 01:37:46 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Aug 2009 15:03:04 -0700
+
+fgdb.rb (1.0.39) released; urgency=low
+
+  * fixes to the returns thing
+  * add an option to the receipt to show or hide the contact
+    information, and make it default to different things for different
+    transaction types
+  * hide the print/start over buttons when printing
+  * add some scripts for restart, make curl and socat dependencies
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Aug 2009 15:01:19 -0700
 
 fgdb.rb (1.0.38) released; urgency=low
 

@@ -317,7 +317,7 @@ margin-right: 10px;
 margin-bottom: 2px;
 }
 
-div.noblock label {
+.noblock label {
   display: inline;
 }
 
@@ -587,3 +587,5 @@ padding:0;
 @media print {
 .noprint { display: none; }
 }
+
+.hidden { display: none; }
