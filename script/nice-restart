@@ -1,0 +1,10 @@
+#!/bin/sh
+
+for i in 0 1 2; do
+    sudo /usr/bin/thin restart -C /etc/thin/fgdb.yml -o $i
+    while [ ! -f /tmp/thin.$i.sock ]; do sleep 0.5; done
+    socat TCP4-LISTEN:3000,reuseaddr,fork UNIX-CONNECT:/tmp/thin.$i.sock &
+    while ! curl http://localhost:3000/; do sleep 0.5; done
+    kill %1
+    wait
+done
