@@ -1,10 +1,18 @@
 #!/bin/sh
 
 for i in 0 1 2; do
-    sudo /usr/bin/thin restart -C /etc/thin/fgdb.yml -o $i
-    while [ ! -e /tmp/thin.$i.sock ]; do sleep 0.5; done
+    echo "Restarting $i"
+    sudo /usr/bin/thin restart -C /etc/thin/fgdb.yml -o $i >/dev/null 2>/dev/null
+    echo "Checking if file exists"
+    while [ ! -e /tmp/thin.$i.sock ]; do echo "It doesn't, napping"; sleep 0.5; echo "Checking again"; done
+    echo "Starting socat for $i"
     socat TCP4-LISTEN:3000,reuseaddr,fork UNIX-CONNECT:/tmp/thin.$i.sock &
-    while ! curl http://localhost:3000/; do sleep 0.5; done
+    echo "Trying to download"
+    while ! curl http://localhost:3000/ >/dev/null 2>/dev/null; do echo "It failed, napping"; sleep 0.5; echo "Checking again"; done
+    echo "Killing socat"
     kill %1
     wait
+    echo
+    echo
+    echo
 done
