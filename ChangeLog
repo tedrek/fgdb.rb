@@ -1,3 +1,8 @@
+fgdb.rb (1.0.41) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Aug 2009 18:19:52 -0700
+
 fgdb.rb (1.0.40) released; urgency=low
 
   * add short_tills (Closes: #14512)
