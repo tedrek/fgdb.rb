@@ -1,4 +1,10 @@
 class TillAdjustmentsController < ApplicationController
+  before_filter :authorized_only
+
+  def authorized_only
+    requires_role('BEAN_COUNTER')
+  end
+
   # GET /till_adjustments
   # GET /till_adjustments.xml
   def index

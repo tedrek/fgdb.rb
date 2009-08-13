@@ -83,6 +83,15 @@
     </div>
   <% end %>
 
+  <% if has_role?('BEAN_COUNTER') %>
+    bean counters
+    <div class="sidebar_section">
+      <div>
+        <%= link_to "till adjustments", :controller => 'till_adjustments' %>
+      </div>
+    </div>
+  <% end %>
+
   staff schedule
   <div class="sidebar_section">
     <div>
