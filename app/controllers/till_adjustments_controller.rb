@@ -9,7 +9,7 @@ class TillAdjustmentsController < ApplicationController
   # GET /till_adjustments
   # GET /till_adjustments.xml
   def index
-    @till_adjustments = TillAdjustment.find(:all)
+    @till_adjustments = TillAdjustment.find(:all, :order => "till_date")
 
     respond_to do |format|
       format.html # index.html.erb
