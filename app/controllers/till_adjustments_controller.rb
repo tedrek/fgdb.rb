@@ -1,5 +1,6 @@
 class TillAdjustmentsController < ApplicationController
   before_filter :authorized_only
+  layout :with_sidebar
 
   def authorized_only
     requires_role('BEAN_COUNTER')
