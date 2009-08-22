@@ -9,10 +9,12 @@ class VolunteerTaskType < ActiveRecord::Base
     find_all_by_parent_id(0)
   end
 
+  named_scope :instantiables, lambda { |date|
+    { :conditions => {'instantiable' => true} }
+  }
+
   def self.instantiable_nodes
-    find(:all,
-         :conditions => {'instantiable' => true},
-         :order => ['description ASC'])
+    self.instantiables.sort_by{|x| x.description}
   end
 
   def self.find_actual(*ids)
