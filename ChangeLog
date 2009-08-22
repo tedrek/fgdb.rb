@@ -1,6 +1,5 @@
 fgdb.rb (1.0.41) UNRELEASED; urgency=low
 
-  * always ignore the unit price
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 13 Aug 2009 23:30:59 -0700
 
