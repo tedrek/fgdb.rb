@@ -19,6 +19,11 @@ class User < ActiveRecord::Base
 
   belongs_to :contact
 
+  ####################################################
+  # I HAVE NO IDEA WHAT THIS IS HERE FOR, BUT IF YOU #
+  # FORGET ABOUT IT YOU WILL SPEND AN HOUR TRYING TO #
+  # FIGURE OUT WHAT YOU DID WRONG                    #
+  ####################################################
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation, :can_login
