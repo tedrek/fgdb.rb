@@ -9,8 +9,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
     on hours edit page (Closes: 14932)
   * show sales/disbursements/returns on the systems page (Closes:
     #14942)
+  * add an action condition to spec sheets search
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 13:44:09 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 14:11:06 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 

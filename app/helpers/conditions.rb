@@ -10,7 +10,7 @@ class Conditions
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
-      can_login role
+      can_login role action
     ] + DATES).uniq
 
   for i in CONDS
@@ -74,6 +74,8 @@ class Conditions
 
   attr_accessor :role
 
+  attr_accessor :action
+
   def contact
     if contact_id && !contact_id.to_s.empty?
       if( (! @contact) || (contact_id != @contact.id) )
@@ -129,6 +131,10 @@ class Conditions
 
   def role_conditions(klass)
     ["#{klass.table_name}.id IN (SELECT contact_id FROM users WHERE can_login = 't' AND id IN (SELECT user_id FROM roles_users WHERE role_id = ?))", @role]
+  end
+
+  def action_conditions(klass)
+    ["#{klass.table_name}.action_id = ?", @action]
   end
 
   def covered_conditions(klass)
