@@ -10,8 +10,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * show sales/disbursements/returns on the systems page (Closes:
     #14942)
   * add an action condition to spec sheets search
+  * show recent returns (Closes: 14854)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 14:11:06 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 15:20:42 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
