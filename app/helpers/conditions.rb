@@ -124,11 +124,11 @@ class Conditions
   end
 
   def can_login_conditions(klass)
-    ["#{klass.table_name}.id IN (SELECT contact_id FROM users)"]
+    ["#{klass.table_name}.id IN (SELECT contact_id FROM users WHERE can_login = 't')"]
   end
 
   def role_conditions(klass)
-    ["#{klass.table_name}.id IN (SELECT contact_id FROM users WHERE id IN (SELECT user_id FROM roles_users WHERE role_id = ?))", @role]
+    ["#{klass.table_name}.id IN (SELECT contact_id FROM users WHERE can_login = 't' AND id IN (SELECT user_id FROM roles_users WHERE role_id = ?))", @role]
   end
 
   def covered_conditions(klass)
