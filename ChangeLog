@@ -11,8 +11,10 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
     #14942)
   * add an action condition to spec sheets search
   * show recent returns (Closes: 14854)
+  * if they search then click new, auto fill in the first and last name
+    (Closes: #14827)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 15:20:42 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 15:41:26 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
