@@ -1,5 +1,9 @@
 #!/usr/bin/perl
 
+# TODO: have post-update run --pending on trunk and --close on the
+# tags. and make sure that ./script/release gets updated correctly wrt
+# order.
+
 use strict;
 use warnings;
 
