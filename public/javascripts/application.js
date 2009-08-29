@@ -13,6 +13,14 @@ function update_cashier_code() {
   }
 }
 
+function set_contact_name() {
+  list = document.getElementsByClassName('contact_search_textbox')[0].value.split(' ');
+  if(list.length == 2) {
+    $('contact_first_name').value = list[0];
+    $('contact_surname').value = list[1];
+  }
+}
+
 function process_hide(){
   if($('hideable_check').checked) {
     _hide_changes("hidden", "hideable", "show", "hide");
@@ -36,8 +44,17 @@ function disable_cashierable(){
     $('cashier_code').focus();
 }
 
+function disable_always_disabled(){
+  var arr = document.getElementsByClassName("always_disabled");
+  for (var i = 0; i < arr.length; i++) {
+    var thing = arr[i];
+    thing.disable();
+  }
+}
+
 function enable_cashierable(){
     thing.enable();
+    disable_always_disabled();
     enable_all_links();
 }
 

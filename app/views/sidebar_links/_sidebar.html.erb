@@ -29,11 +29,9 @@
       <%= i %>s
       <div class="sidebar_section">
         <% controller = (i == "return" ? "gizmo_" + i : i ) + 's' %>
-        <% if i != "return" %>
         <div>
           <%= link_to "entry", :controller => controller %>
         </div>
-        <% end %>
         <div>
           <%= link_to "search", :controller => controller, :action => 'search' %>
         </div>
