@@ -14,8 +14,10 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * if they search then click new, auto fill in the first and last name
     (Closes: #14828)
   * printme compat bumped to 11
+  * make the foreign keys on the roles_users table cascade (Closes:
+    #14966)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 16:06:50 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Aug 2009 23:56:53 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
