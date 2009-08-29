@@ -25,8 +25,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * add some old indexes that were created on the production db (Closes:
     13244)
   * add an entry page for returns (Closes: 14856)
+  * use nginx rate limiting (closes: 14797)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 14:09:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 16:45:05 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
