@@ -70,7 +70,7 @@ foreach my $entry(@entries) {
     my $ticket = RT::Client::REST::Ticket->new(rt => $rt, id => $bug)->retrieve;
     if($ticket->status ne $status) {
       my $msg = $message . $entry;
-      $rt->correspond(ticket_id => $ticket->id, message => $msg); # FIXME: s/comment/correspond/
+      $rt->correspond(ticket_id => $ticket->id, message => $msg);
       $ticket->status($status);
       $ticket->store();
     }
