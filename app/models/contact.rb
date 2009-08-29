@@ -18,6 +18,20 @@ class Contact < ActiveRecord::Base
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
+  before_save :strip_some_fields
+
+  def cleanup_string(str)
+    str = str.strip
+    str = str.gsub(/\s+/, " ")
+    return str
+  end
+
+  def strip_some_fields
+    self.first_name = cleanup_string(self.first_name)
+    self.surname = cleanup_string(self.surname)
+    self.middle_name = cleanup_string(self.middle_name)
+    self.organization = cleanup_string(self.organization)
+  end
 
   def fully_covered_
     case self.fully_covered
