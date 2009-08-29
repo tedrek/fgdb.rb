@@ -23,8 +23,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * fix the returns gc (Closes: 14967)
   * replace icons with text
   * link to returns (Closes: 14859)
+  * add cashier and gizmo_returns merging to dedup (closes: 14969)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 13:34:03 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 13:40:53 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
