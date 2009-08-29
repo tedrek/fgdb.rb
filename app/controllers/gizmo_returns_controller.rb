@@ -6,6 +6,14 @@ class GizmoReturnsController < TransactionController
     "created_at"
   end
 
+  def index
+    entry
+    render :action => 'entry'
+  end
+
+  def entry
+  end
+
   protected
 
   def authorized_only

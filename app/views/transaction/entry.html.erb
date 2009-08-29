@@ -1,0 +1,13 @@
+<% form_for :gizmo_return, :url => {:action => "new"}, :html => {:method => "GET"} do |f| %>
+      <div id="gizmo_return_transaction_links">
+        <div class="form-element">
+          <%= label 'gizmo_return', 'disbursement_id' %>
+          <%= text_field 'gizmo_return', 'disbursement_id', :maxlength => 20 %>
+        </div>
+        <div class="form-element">
+          <%= label 'gizmo_return', 'sale_id' %>
+          <%= text_field 'gizmo_return', 'sale_id', :maxlength => 20 %>
+        </div>
+      </div>
+      <%= submit_tag "Go" %>
+<% end %>
