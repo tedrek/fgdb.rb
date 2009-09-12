@@ -111,7 +111,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
   end
 
   def store_credit_ids
-    self.store_credits.map{|x| "#" + x.id.to_s}.ryan52s_join
+    self.store_credits.map{|x| "#" + x.id.to_s}.to_sentence
   end
 
   def attry_description(options = {})
