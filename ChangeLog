@@ -28,8 +28,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * add an entry page for returns (Closes: 14856)
   * use nginx rate limiting (closes: 14797)
   * effective/ineffective dates on some metadata (Closes: 14431)
+  * get rid of double time (Closes: 14865)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 16:45:05 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Sep 2009 14:31:33 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
