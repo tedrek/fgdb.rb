@@ -1,6 +1,7 @@
 fgdb.rb (1.0.41) UNRELEASED; urgency=low
 
   needs to be released with freegeek-extras, see changelog
+  TODO: test the effective/ineffective dates a bit more
 
   * reword the contracts question (Closes: 15011)
   * add search conditions for role and can login (Closes: 15013)
@@ -26,6 +27,7 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
     13244)
   * add an entry page for returns (Closes: 14856)
   * use nginx rate limiting (closes: 14797)
+  * effective/ineffective dates on some metadata (Closes: 14431)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Aug 2009 16:45:05 -0700
 
