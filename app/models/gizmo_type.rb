@@ -47,35 +47,6 @@ class GizmoType < ActiveRecord::Base
     discount_schedules_gizmo_types.map {|bridge| "%s: %0.2f" % [bridge.discount_schedule.name, bridge.multiplier]}.join(', ')
   end
 
-  def relevant_attrs(context)
-    relevant_typeattrs(context).map {|typeattr|
-      typeattr.gizmo_attr
-    }
-  end
-
-  def relevant_typeattrs(context)
-    typeattrs = gizmo_typeattrs.select {|typeattr|
-      (typeattr.gizmo_contexts.include? context) and
-      (typeattr.is_required)
-    }
-    typeattrs += self.parent.relevant_typeattrs(context) if self.parent
-    typeattrs
-  end
-
-  def possible_attrs
-    possible_typeattrs.map {|typeattr|
-      typeattr.gizmo_attr
-    }
-  end
-
-  def possible_typeattrs
-    if parent
-      gizmo_typeattrs + parent.possible_typeattrs
-    else
-      gizmo_typeattrs
-    end
-  end
-
   def multiplier_to_apply(schedule)
     mult = schedule.multiplier_for(self)
     if ! mult
