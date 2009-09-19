@@ -35,8 +35,10 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
     contributor contact type (Closes: 15202)
   * give workers a discount, and move the 4 and 90 numbers from being
     hard coded to be an editable record in the database (Closes: 15266)
+  * use real duration, not effective duration, for figuring out if they
+    get the discount
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 15:11:04 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 15:18:30 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
