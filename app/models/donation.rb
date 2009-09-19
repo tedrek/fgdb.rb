@@ -193,7 +193,7 @@ class Donation < ActiveRecord::Base
   end
 
   def required_contact_type
-    ContactType.find(7)
+    ContactType.find_by_name('donor')
   end
 
   def reported_total_cents
