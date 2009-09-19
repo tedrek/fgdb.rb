@@ -2,9 +2,9 @@ module GizmoTransaction
   def usable_gizmo_types
     if self.gizmo_context == GizmoContext.gizmo_return
       if self.sale
-        return GizmoContext.sale.gizmo_types.effective_on(self.sale.occured_at)
+        return GizmoContext.sale.gizmo_types.effective_on(self.sale.occurred_at)
       elsif self.disbursement
-        return GizmoContext.disbursement.gizmo_types.effective_on(self.disbursement.occured_at)
+        return GizmoContext.disbursement.gizmo_types.effective_on(self.disbursement.occurred_at)
       else
         return (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq
       end

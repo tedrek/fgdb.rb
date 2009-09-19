@@ -99,6 +99,7 @@ class Sale < ActiveRecord::Base
   def calculated_total_cents
     if discount_schedule
       gizmo_events.inject(0) {|tot,gizmo|
+        gizmo.sale = self
         tot + gizmo.discounted_price(discount_schedule)
       }
     else
