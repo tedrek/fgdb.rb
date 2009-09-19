@@ -30,8 +30,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * effective/ineffective dates on some metadata (Closes: 14431)
   * get rid of double time (Closes: 14865)
   * add a contact search thing to the worker form (Closes: 15279)
+  * show the capabilities of cdrom drives (Closes: 15082)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 12:26:13 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 12:48:08 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
