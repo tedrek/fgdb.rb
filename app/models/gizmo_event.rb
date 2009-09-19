@@ -49,7 +49,7 @@ class GizmoEvent < ActiveRecord::Base
     return false
   end
 
-  def transaction
+  def my_transaction
     return sale || donation || gizmo_return || disbursement || recycling
   end
 
@@ -138,7 +138,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
 
   def percent_discount(schedule)
     return 0 unless schedule && gizmo_type
-    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule, self.transaction.occurred_at) ) * 100 ).ceil
+    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) ) * 100 ).ceil
   end
 
   def total_price_cents
@@ -148,7 +148,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
 
   def discounted_price(schedule)
     return total_price_cents unless schedule && gizmo_type
-    (total_price_cents * (gizmo_type.multiplier_to_apply(schedule, self.transaction.occurred_at) * 100).to_i)/100
+    (total_price_cents * (gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) * 100).to_i)/100
   end
 
   def mostly_empty?
