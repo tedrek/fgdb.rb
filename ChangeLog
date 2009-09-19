@@ -33,8 +33,10 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * show the capabilities of cdrom drives (Closes: 15082)
   * if somebody donates more money than they have to, set the
     contributor contact type (Closes: 15202)
+  * give workers a discount, and move the 4 and 90 numbers from being
+    hard coded to be an editable record in the database (Closes: 15266)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 13:10:23 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 15:11:04 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
