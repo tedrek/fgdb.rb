@@ -37,8 +37,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
     hard coded to be an editable record in the database (Closes: 15266)
   * use real duration, not effective duration, for figuring out if they
     get the discount
+  * remove the staff contact type (Closes: 15280)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 15:18:30 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 15:41:45 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
