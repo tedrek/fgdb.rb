@@ -1,5 +1,5 @@
 class GizmoType < ActiveRecord::Base
-  acts_as_tree
+#  acts_as_tree # no, lets not
   has_many  :discount_schedules_gizmo_types,
   :dependent => :destroy
   has_many  :discount_schedules, :through => :discount_schedules_gizmo_types
@@ -47,11 +47,22 @@ class GizmoType < ActiveRecord::Base
     discount_schedules_gizmo_types.map {|bridge| "%s: %0.2f" % [bridge.discount_schedule.name, bridge.multiplier]}.join(', ')
   end
 
-  def multiplier_to_apply(schedule)
+  def parent(date)
+    return if self.parent_name.nil?
+    p = GizmoType.find_all_by_name(parent_name).select{|x| x.effective_on?(date)}.sort.last
+    raise ActiveRecord::RecordNotFound if p.nil? and self.effective_on?(date)
+    return p
+  end
+
+  def effective_on?(date)
+    (effective_on.nil? || effective_on <= date) && (ineffective_on.nil? || ineffective_on > date)
+  end
+
+  def multiplier_to_apply(schedule, date)
     mult = schedule.multiplier_for(self)
     if ! mult
-      if parent
-        mult = parent.multiplier_to_apply(schedule)
+      if parent(date)
+        mult = parent(date).multiplier_to_apply(schedule, date)
       else
         mult = 1.0
       end
