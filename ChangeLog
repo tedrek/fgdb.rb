@@ -31,8 +31,10 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * get rid of double time (Closes: 14865)
   * add a contact search thing to the worker form (Closes: 15279)
   * show the capabilities of cdrom drives (Closes: 15082)
+  * if somebody donates more money than they have to, set the
+    contributor contact type (Closes: 15202)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 12:48:08 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 13:10:23 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
