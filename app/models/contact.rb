@@ -267,7 +267,7 @@ class Contact < ActiveRecord::Base
   end
 
   def has_worker?
-    ! self.worker.nil? # FIXME: make this check the effective dates as well
+    ! self.worker.nil? && worker.effective_now?
   end
 
   def default_discount_schedule

@@ -11,4 +11,9 @@ class Worker < ActiveRecord::Base
   def is_available?( shift = Workshift.new )
     true
   end
+
+  def effective_now?
+    date = DateTime.now
+    (effective_date.nil? || effective_date <= date) && (ineffective_date.nil? || ineffective_date > date)
+  end
 end
