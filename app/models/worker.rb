@@ -5,6 +5,8 @@ class Worker < ActiveRecord::Base
   has_and_belongs_to_many :meetings
   has_many :work_shifts
   has_many :vacations
+  belongs_to :contact
+  validates_existence_of :contact, :allow_nil => false
 
   def is_available?( shift = Workshift.new )
     true

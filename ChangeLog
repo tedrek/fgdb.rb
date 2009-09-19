@@ -29,8 +29,9 @@ fgdb.rb (1.0.41) UNRELEASED; urgency=low
   * use nginx rate limiting (closes: 14797)
   * effective/ineffective dates on some metadata (Closes: 14431)
   * get rid of double time (Closes: 14865)
+  * add a contact search thing to the worker form (Closes: 15279)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Sep 2009 14:31:33 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Sep 2009 12:26:13 -0700
 
 fgdb.rb (1.0.40) released; urgency=low
 
