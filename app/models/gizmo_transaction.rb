@@ -177,7 +177,7 @@ module GizmoTransaction
   end
 
   def set_occurred_at_on_gizmo_events
-    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at; event.save!}
+    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at}
   end
 
   #########
