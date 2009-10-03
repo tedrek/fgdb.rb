@@ -1,3 +1,8 @@
+fgdb.rb (1.0.42) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryan@debian.org>  Fri, 02 Oct 2009 22:33:25 -0700
+
 fgdb.rb (1.0.41) released; urgency=low
 
   * reword the contracts question (Closes: 15011)
