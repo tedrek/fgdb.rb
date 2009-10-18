@@ -90,15 +90,18 @@
     </div>
   <% end %>
 
-  staff schedule
+  staff
   <div class="sidebar_section">
     <div>
-      <%= link_to "staffsched", "/staffsched" %>
+      <%= link_to "schedule", "/staffsched" %>
     </div>
     <% if false %>
       <% if has_role?('SKEDJULNATOR') %>
         <%= link_to "edit schedule", :controller => "work_shifts" %>
       <% end %>
+    <% end %>
+    <% if is_staff? %>
+      <%= link_to "staff hours", :controller => "worked_shifts" %>
     <% end %>
   </div>
 
