@@ -17,6 +17,7 @@ class WorkedShiftsController < ApplicationController
 #    @logged_already = true
 #    @shifts = process_shifts(params[:shifts].values)
 #    render :action => "edit"
+    process_shifts(params[:shifts].values)
     redirect_to :action => "index"
   end
 
