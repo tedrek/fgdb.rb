@@ -14,9 +14,10 @@ class WorkedShiftsController < ApplicationController
 
   def save
     common_logic
-    @logged_already = true
-    @shifts = process_shifts(params[:shifts].values)
-    render :action => "edit"
+#    @logged_already = true
+#    @shifts = process_shifts(params[:shifts].values)
+#    render :action => "edit"
+    redirect_to :action => "index"
   end
 
   private
