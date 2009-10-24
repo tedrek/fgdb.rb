@@ -281,6 +281,7 @@ function add_shift_from_form() {
   add_shift(args);
   $('job_id').selectedIndex = 0;
   $('duration').value = $('duration').defaultValue;
+  $('job_id').focus();
   return false;
 }
 
