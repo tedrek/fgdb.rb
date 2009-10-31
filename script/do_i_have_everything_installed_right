@@ -131,6 +131,7 @@ run "Checking to see if curl is installed..." "which curl" "install curl" "fail"
 run "Checking to see if socat is installed..." "which socat" "install socat" "fail"
 run "Checking to see if ruby gnuplot is installed..." "require_test gnuplot" "install libgnuplot-ruby" "fail"
 run "Checking to see if postgres is installed and running..." "check_for_postgres" "install and start postgres" "fail"
+run "Checking to see if timeout is installed..." "which timeout" "install timeout" "fail"
 
 exit $STATUS
 
