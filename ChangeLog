@@ -2,6 +2,7 @@ fgdb.rb (1.0.42) UNRELEASED; urgency=low
 
   * dont pass params when redirecting back to main screen after saving
     transaction (Closes: 15831)
+  * updated devel data (Closes: 15523)
 
  -- Ryan Niebur <ryan@debian.org>  Fri, 06 Nov 2009 09:59:54 -0800
 
