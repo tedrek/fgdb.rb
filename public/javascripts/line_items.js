@@ -519,7 +519,8 @@ function update_contract_notes(){
 }
 
 function shift_compute_totals () {
-
+  var today = get_hours_today();
+  $('total_today').innerHTML = today.toString();
 }
 
 function donation_compute_totals() {
@@ -650,6 +651,15 @@ function update_gizmo_events_totals() {
     var mystring = "$" + dollar_value(amount);
     thing.getElementsBySelector(".total_price").first().innerHTML = mystring;
   }
+}
+
+function get_hours_today () {
+  var total = 0.0;
+  var arr = find_these_lines('shift_lines');
+  for (var x = 0; x < arr.length; x++) {
+    total += parseFloat(getValueBySelector(arr[x], "td.duration"));
+ }
+  return total;
 }
 
 function get_donation_totals() {
