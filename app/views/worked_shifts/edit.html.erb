@@ -30,6 +30,13 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
     </td>
     <td><input name="duration" id="duration" size="6" onkeydown="return handle_s(event);"></td>
   </tr>
+<tr><td colspan="2">
+<div id="totals_div" class="totals line_item">
+  <table>
+    <tr><td>Total for today:</td><td id="total_today" class="amount">0.00</td></tr>
+  </table>
+</div>
+</td></tr>
 </table>
 <%= submit_tag("Save",
                :id => "commit",

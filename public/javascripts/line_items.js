@@ -148,7 +148,7 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook){
     tr.appendChild(td);
   }
   tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "id", "", args['id'], counters[prefix + '_line_id']));
-  $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_lines').lastChild.lastChild.previousSibling);
+  $(prefix + '_lines').lastChild.insertBefore(tr, $('form'));
   counters[args['prefix'] + '_line_id']++;
   update_hook();
 }
