@@ -48,6 +48,8 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <%= submit_tag("Save",
                :id => "commit",
                :onclick => "handle_shifts();") %>
+<%= loading_indicator_tag "shifts_totals" %>
+<%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
 <% end %>
 <% @shift_js += "shift_compute_totals();" %>
 <%= javascript_tag @shift_js %>

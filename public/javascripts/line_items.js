@@ -536,7 +536,7 @@ function shift_compute_totals () {
   myhash.set('worked_shift[date_performed]', shifts_date);
   myhash.set('worked_shift[worker_id]', shifts_worker);
   var str = myhash.toQueryString();
-  new Ajax.Request(update_shift_totals_url + '?' + str, {asynchronous:true, evalScripts:true});
+  new Ajax.Request(update_shift_totals_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(shifts_totals_loading_id);}});
 }
 
 function donation_compute_totals() {
