@@ -13,6 +13,8 @@ class WorkedShiftsController < ApplicationController
   end
 
   def update_shift_totals
+    common_logic
+    @hours = params[:worked_shift][:hours_today].to_f
     render :action => 'update_shift_totals.rjs'
   end
 
