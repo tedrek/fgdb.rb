@@ -38,6 +38,7 @@ class Worker < ActiveRecord::Base
   end
 
   def total_hours
-    (0..6).map{|x| Date.strptime(x.to_s, "%w").strftime("%A").downcase}.inject(0.0){|t,x| t += self.send(x.to_sym).to_f}
+    # (0..6).map{|x| Date.strptime(x.to_s, "%w").strftime("%A").downcase}.inject(0.0){|t,x| t += self.send(x.to_sym).to_f}
+    ceiling_hours
   end
 end
