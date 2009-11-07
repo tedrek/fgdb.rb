@@ -11,6 +11,7 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
 <%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
+<%= javascript_tag "hours_scheduled = #{@worker.hours_scheduled_for_weekday(@date)};" %>
 <table id="shift_lines">
   <tr>
     <th>job</th>
@@ -34,6 +35,9 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <div id="totals_div" class="totals line_item">
   <table>
     <tr><td>Total for this day:</td><td id="total_today" class="amount">0.00</td></tr>
+    <tr><td>Scheduled for this day:</td><td id="scheduled_today" class="amount">0.00</td></tr>
+    <tr id="over_today_tr"><td>Hours over for this day:</td><td id="over_today" class="amount">0.00</td></tr>
+    <tr id="under_today_tr"><td>Hours under for this day:</td><td id="under_today" class="amount">0.00</td></tr>
   </table>
 </div>
 </td></tr>
@@ -42,5 +46,6 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
                :id => "commit",
                :onclick => "handle_shifts();") %>
 <% end %>
+<% @shift_js += "shift_compute_totals();" %>
 <%= javascript_tag @shift_js %>
 

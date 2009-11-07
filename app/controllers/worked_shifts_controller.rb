@@ -50,6 +50,6 @@ class WorkedShiftsController < ApplicationController
 
   def common_logic
     @worker = Worker.find_by_id(params[:worked_shift][:worker_id])
-    @date = params[:worked_shift][:date_performed]
+    @date = Date.parse(params[:worked_shift][:date_performed])
   end
 end

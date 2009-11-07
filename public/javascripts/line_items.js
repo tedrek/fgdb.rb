@@ -148,7 +148,7 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook){
     tr.appendChild(td);
   }
   tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "id", "", args['id'], counters[prefix + '_line_id']));
-  $(prefix + '_lines').lastChild.insertBefore(tr, $('form'));
+  $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_form'));
   counters[args['prefix'] + '_line_id']++;
   update_hook();
 }
@@ -518,9 +518,35 @@ function update_contract_notes(){
   }
 }
 
+function format_float(float) {
+  var str = (parseInt(float * 100) / 100).toString();
+  if(str.split(".").length == 1) {
+    str += ".00";
+  }
+  if(str.split(".")[1].length == 1) {
+    str += "0";
+  }
+  return str;
+}
+
 function shift_compute_totals () {
   var today = get_hours_today();
-  $('total_today').innerHTML = today.toString();
+  var scheduled = hours_scheduled;
+  $('total_today').innerHTML = format_float(today);
+  $('scheduled_today').innerHTML = format_float(scheduled);
+  var difference = hours_scheduled - today;
+  if(difference == 0) {
+    $("over_today_tr").hide();
+    $("under_today_tr").hide();
+  } else if(difference > 0) {
+    $("over_today_tr").hide();
+    $("under_today_tr").show();
+    $("under_today").innerHTML = format_float(difference);
+  } else if(difference < 0) {
+    $("over_today_tr").show();
+    $("under_today_tr").hide();
+    $("over_today").innerHTML = format_float(difference * -1);
+  }
 }
 
 function donation_compute_totals() {

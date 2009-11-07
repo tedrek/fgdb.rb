@@ -32,4 +32,12 @@ class Worker < ActiveRecord::Base
   def logged_shifts_for_day(date)
     return WorkedShift.find(:all, :conditions => ['date_performed = ? AND worker_id = ?', date, self.id])
   end
+
+  def hours_scheduled_for_weekday(date)
+    self.send(date.strftime("%A").downcase.to_sym)
+  end
+
+  def total_hours
+    (0..6).map{|x| Date.strptime(x.to_s, "%w").strftime("%A").downcase}.inject(0.0){|t,x| t += self.send(x.to_sym).to_f}
+  end
 end
