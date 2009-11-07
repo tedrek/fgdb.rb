@@ -1,0 +1,4 @@
+hashkeys = %w[total_today total_week max_week overtime expected_range_min expected_range_max total_pay_period pto]
+hash = {}
+hashkeys.each{|x| hash[x.to_sym] = 0.0}
+hash.each{|k,v| page << "$(#{k.to_s.to_json}).innerHTML = #{sprintf("%.2f", v).to_s.to_json};" }

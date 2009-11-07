@@ -1,3 +1,4 @@
+<%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.id.to_json};" %>
 <h1>Logging staff hours for <%= @worker.name %> on <%= @date %></h1>
 <% if @logged_already %>
 <pre style="background: yellow">
@@ -11,7 +12,6 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
 <%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
-<%= javascript_tag "hours_scheduled = #{@worker.hours_scheduled_for_weekday(@date)};" %>
 <table id="shift_lines">
   <tr>
     <th>job</th>
@@ -24,7 +24,7 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
        hash[:id] = i.id if i.id
        @shift_js += "add_shift(#{hash.to_json});"
      end %>
-  <tr id="form">
+  <tr id="shift_form">
     <td><select id="job_id">
         <%= options_from_collection_for_select(Job.find(:all), "id", "name") %>
       </select>
@@ -34,10 +34,13 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <tr><td colspan="2">
 <div id="totals_div" class="totals line_item">
   <table>
-    <tr><td>Total for this day:</td><td id="total_today" class="amount">0.00</td></tr>
-    <tr><td>Scheduled for this day:</td><td id="scheduled_today" class="amount">0.00</td></tr>
-    <tr id="over_today_tr"><td>Hours over for this day:</td><td id="over_today" class="amount">0.00</td></tr>
-    <tr id="under_today_tr"><td>Hours under for this day:</td><td id="under_today" class="amount">0.00</td></tr>
+    <tr><td>Total for this day:</td><td id="total_today" class="amount">BROKEN</td></tr>
+    <tr><td>Total for this week:</td><td id="total_week" class="amount">BROKEN</td></tr>
+    <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">BROKEN</td></tr>
+    <tr><td>Overtime:</td><td id="overtime" class="amount">BROKEN</td></tr>
+    <tr><td>Expected range this far in pay period:</td><td class="amount"><span id="expected_range_min">BROKEN</span>-<span id="expected_range_max">BROKEN</span></td></tr>
+    <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">BROKEN</td></tr>
+    <tr><td>PTO:</td><td id="pto" class="amount">BROKEN</td></tr>
   </table>
 </div>
 </td></tr>

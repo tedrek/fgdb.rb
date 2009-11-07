@@ -531,22 +531,12 @@ function format_float(float) {
 
 function shift_compute_totals () {
   var today = get_hours_today();
-  var scheduled = hours_scheduled;
-  $('total_today').innerHTML = format_float(today);
-  $('scheduled_today').innerHTML = format_float(scheduled);
-  var difference = hours_scheduled - today;
-  if(difference == 0) {
-    $("over_today_tr").hide();
-    $("under_today_tr").hide();
-  } else if(difference > 0) {
-    $("over_today_tr").hide();
-    $("under_today_tr").show();
-    $("under_today").innerHTML = format_float(difference);
-  } else if(difference < 0) {
-    $("over_today_tr").show();
-    $("under_today_tr").hide();
-    $("over_today").innerHTML = format_float(difference * -1);
-  }
+  var myhash = new Hash();
+  myhash.set('hours_today', today);
+  myhash.set('date', shifts_date);
+  myhash.set('worker', shifts_worker);
+  var str = myhash.toQueryString();
+  new Ajax.Request(update_shift_totals_url + '?' + str, {asynchronous:true, evalScripts:true});
 }
 
 function donation_compute_totals() {
