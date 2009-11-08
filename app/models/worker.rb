@@ -33,8 +33,33 @@ class Worker < ActiveRecord::Base
     return WorkedShift.find(:all, :conditions => ['date_performed = ? AND worker_id = ?', date, self.id])
   end
 
+  def hours_worked_on_day(date)
+    logged_shifts_for_day(date).inject(0.0){|t,x| t += x.duration}
+
+  end
+
+  def fill_in_for_calendar(calendar)
+    calendar.set_missing_dates{|x| v = self.hours_worked_on_day(x)}
+  end
+
+  def fill_in_maximum_for_calendar(calendar)
+    calendar.set_missing_dates{|x| v = self.maximum_on_day(x)}
+  end
+
   def hours_scheduled_for_weekday(date)
     self.send(date.strftime("%A").downcase.to_sym)
+  end
+
+  def maximum_on_day(day)
+    self.send(day.strftime("%A").downcase.to_sym).to_f
+  end
+
+  def holiday_credit_per_day
+    ceiling_hours / 5.0
+  end
+
+  def floor_ratio
+    floor_hours / ceiling_hours
   end
 
   def total_hours

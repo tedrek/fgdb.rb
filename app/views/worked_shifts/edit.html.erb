@@ -1,5 +1,6 @@
 <%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.id.to_json};" %>
-<h1>Logging staff hours for <%= @worker.name %> on <%= @date %></h1>
+<% PayPeriod.find_for_date(@date) or raise "FIXME" %>
+<h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>
 <% if @logged_already %>
 <pre style="background: yellow">
 Editing already saved hours.
@@ -38,9 +39,10 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
     <tr><td>Total for this week:</td><td id="total_week" class="amount">BROKEN</td></tr>
     <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">BROKEN</td></tr>
     <tr><td>Overtime:</td><td id="overtime" class="amount">BROKEN</td></tr>
-    <tr><td>Expected range this far in pay period:</td><td class="amount"><span id="expected_range_min">BROKEN</span>-<span id="expected_range_max">BROKEN</span></td></tr>
+    <tr><td>Minimum so far in pay period:</td><td id="expected_minimum" class="amount">BROKEN</td></tr>
+    <tr><td>Maximum so far in pay period:</td><td id="expected_maximum" class="amount">BROKEN</td></tr>
     <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">BROKEN</td></tr>
-    <tr><td>PTO:</td><td id="pto" class="amount">BROKEN</td></tr>
+    <tr><td>PTO at this rate:</td><td id="pto" class="amount">BROKEN</td></tr>
   </table>
 </div>
 </td></tr>
