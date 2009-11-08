@@ -55,7 +55,7 @@ class Worker < ActiveRecord::Base
   end
 
   def holiday_credit_per_day
-    ceiling_hours / 5.0
+    salaried ? (ceiling_hours / 5.0) : 0.0
   end
 
   def floor_ratio
@@ -63,7 +63,6 @@ class Worker < ActiveRecord::Base
   end
 
   def total_hours
-    # (0..6).map{|x| Date.strptime(x.to_s, "%w").strftime("%A").downcase}.inject(0.0){|t,x| t += self.send(x.to_sym).to_f}
-    ceiling_hours
+    (0..6).map{|x| Date.strptime(x.to_s, "%w").strftime("%A").downcase}.inject(0.0){|t,x| t += self.send(x.to_sym).to_f}
   end
 end
