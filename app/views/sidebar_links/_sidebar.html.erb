@@ -101,7 +101,12 @@
       <% end %>
     <% end %>
     <% if is_staff? %>
-      <%= link_to "staff hours", :controller => "worked_shifts" %>
+      <div>
+        <%= link_to "staff hours", :controller => "worked_shifts" %>
+      </div>
+      <div>
+        <%= link_to "individual report", :controller => "worked_shifts", :action => "individual" %>
+      </div>
     <% end %>
   </div>
 

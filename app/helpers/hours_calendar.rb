@@ -12,6 +12,12 @@ class HoursCalendar
     @ignore_frozen = false
   end
 
+  include CalendarHelper
+
+  def to_html
+    html_calendar(self.range, self.values)
+  end
+
   def start_date
     @start_date
   end
@@ -124,6 +130,10 @@ class HoursCalendar
 
   def range
     @start_date..@end_date
+  end
+
+  def values
+    @dates
   end
 
   private

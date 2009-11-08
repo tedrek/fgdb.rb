@@ -18,6 +18,10 @@ class WorkedShiftsController < ApplicationController
     render :action => 'update_shift_totals.rjs'
   end
 
+  def individual_report
+    common_logic
+  end
+
   def save
     common_logic
 #    @logged_already = true
