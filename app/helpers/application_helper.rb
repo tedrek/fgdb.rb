@@ -352,7 +352,7 @@ module ApplicationHelper
         #{image_tag}
       </a>
     ]
-    ify = form_id ? "form_has_not_been_edited('#{form_id}') ||" : ""
+    ify = form_id ? "$('#{form_id}') == null || form_has_not_been_edited('#{form_id}') ||" : ""
     html += custom_observer(link_id,
                             "if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
                                  #{remote_function(options)}
