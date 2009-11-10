@@ -4,12 +4,23 @@ class WorkedShiftsController < ApplicationController
   before_filter :common_logic
   helper :table
 
+  before_filter :needs_beancounter_or_me
+
+  def needs_beancounter_or_me
+#    contact_id = @worker ? (@worker.contact ? @worker.contact.id : nil) : nil
+    roles = ['BEAN_COUNTER', 'SKEDJULNATOR']
+    if params[:action].match(/^(weekly_worker|payroll)/)
+      return requires_role(*roles)
+    else
+      return requires_staff
+    end
+  end
+
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'worked_shifts')
   end
 
   def edit
-    common_logic
     @shifts = @worker.shifts_for_day(@date)
     @logged_already = @shifts.shift
   end
@@ -59,13 +70,11 @@ class WorkedShiftsController < ApplicationController
   end
 
   def update_shift_totals
-    common_logic
     @hours = params[:worked_shift][:hours_today].to_f
     render :action => 'update_shift_totals.rjs'
   end
 
   def save
-    common_logic
 #    @logged_already = true
 #    @shifts = process_shifts(params[:shifts].values)
 #    render :action => "edit"

@@ -107,6 +107,8 @@
       <div>
         <%= link_to "individual report", :controller => "worked_shifts", :action => "individual" %>
       </div>
+    <% end %>
+    <% if has_role?('SKEDJULNATOR', 'BEAN_COUNTER') %>
       <div>
         <%= link_to "payroll report", :controller => "worked_shifts", :action => "payroll" %>
       </div>
