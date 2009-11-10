@@ -306,7 +306,8 @@ module ApplicationHelper
   end
 
   def is_staff?
-    @current_user and @current_user.contact and @current_user.contact.has_worker?
+    has_worker = @current_user and @current_user.contact and @current_user.contact.has_worker?
+    has_worker || has_role?("ADMIN")
   end
 
   def has_role_or_is_me?(contact_id, *roles)
