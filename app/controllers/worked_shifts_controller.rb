@@ -2,6 +2,7 @@ class WorkedShiftsController < ApplicationController
   layout :with_sidebar
   before_filter :be_stupid
   before_filter :common_logic
+  helper :table
 
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'worked_shifts')
@@ -11,6 +12,24 @@ class WorkedShiftsController < ApplicationController
     common_logic
     @shifts = @worker.shifts_for_day(@date)
     @logged_already = @shifts.shift
+  end
+
+  def weekly_workers_report
+    @start = @date.dup
+    @end = @date.dup
+    @start -= 1 while @start.wday != 1 # Monday
+    @end += 1 while @end.wday != 0 # Sunday
+    @result = Worker.effective_in_range(@start, @end).sort_by(&:sort_by).map{|x| a = (@start..@end).to_a.map{|y| x.hours_worked_on_day(y)}; [x.sort_by, a, a.inject(0.0){|t,x| t+=x}.to_s].flatten}
+    header_array = ["Worker", (@start..@end).to_a.map{|x| x.strftime("%A")}, "Total"].flatten
+    a = (1..7).to_a.map{|i|
+      @result.inject(0.0){|t,x|
+        t+=x[i]
+      }
+    }
+    footer_array = ["Total", a, a.inject(0.0){|t,x| t+=x}.to_s].flatten
+    @result.unshift(header_array)
+    @result.push(footer_array)
+    @title = "Weekly worker report for week of #{@start.to_s} to #{@end.to_s}"
   end
 
   def payroll_report

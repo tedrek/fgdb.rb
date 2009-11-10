@@ -17,8 +17,21 @@ class Worker < ActiveRecord::Base
     (effective_date.nil? || effective_date <= date) && (ineffective_date.nil? || ineffective_date > date)
   end
 
-  def Worker.effective_in_range(p)
-    Worker.find(:all, :conditions => ['(effective_date IS NULL OR effective_date < ?) AND (ineffective_date IS NULL OR ineffective_date > ?)', p.end_date, p.start_date]).sort_by(&:sort_by)
+  def Worker.effective_in_range(*args)
+    my_start = my_end = nil
+    if args.length == 1 && args[0].is_a?(PayPeriod)
+      my_start = args[0].start_date
+      my_end = args[0].end_date
+    elsif args.length == 1 && args[0].is_a?(Range)
+      my_start = args[0].min
+      my_end = args[0].max
+    elsif args.length == 2 && args[0].is_a?(Date) && args[1].is_a?(Date)
+      my_start = args[0]
+      my_end = args[1]
+    else
+      raise ArgumentError
+    end
+    Worker.find(:all, :conditions => ['(effective_date IS NULL OR effective_date < ?) AND (ineffective_date IS NULL OR ineffective_date > ?)', my_end, my_start]).sort_by(&:sort_by)
   end
 
   def sort_by
