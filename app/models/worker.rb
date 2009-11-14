@@ -44,12 +44,27 @@ class Worker < ActiveRecord::Base
     cache[x] ||= hours_worked_on_day(x)
   end
 
+  def worker_type_on_day(date)
+    worker_type
+  end
+
+  def primary_worker_type_in_range(start_d, end_d)
+    h = {}
+    (start_d..end_d).to_a.each{|x|
+      t = worker_type_on_day(x)
+      h[t] = (h[t] || 0) + 1
+    }
+    h = h.to_a
+    h = h.sort_by{|x| x[1]}.delete_if{|x| x[0].name == "inactive"}
+    h.first ? h.first.first : WorkerType.find_by_name("inactive")
+  end
+
   def to_payroll_hash(pay_period)
     # further optimization: determine the weeks and holidays outside of the workers loop
     cache = {}
     h = {}
     h[:name] = self.sort_by
-    h[:type] = self.worker_type.name
+    h[:type] = self.primary_worker_type_in_range(pay_period.start_date, pay_period.end_date).name
     h[:hours] = (pay_period.start_date..pay_period.end_date).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)}
     h[:holiday] = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", pay_period.start_date, pay_period.end_date]).inject(0.0){|t,x| t+=self.holiday_credit_per_day}
     days = {}
