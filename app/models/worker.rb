@@ -17,7 +17,7 @@ class Worker < ActiveRecord::Base
     (effective_date.nil? || effective_date <= date) && (ineffective_date.nil? || ineffective_date > date)
   end
 
-  def Worker.effective_in_range(*args)
+  named_scope :effective_in_range, lambda { |*args|
     my_start = my_end = nil
     if args.length == 1 && args[0].is_a?(PayPeriod)
       my_start = args[0].start_date
@@ -31,8 +31,10 @@ class Worker < ActiveRecord::Base
     else
       raise ArgumentError
     end
-    Worker.find(:all, :conditions => ['(effective_date IS NULL OR effective_date < ?) AND (ineffective_date IS NULL OR ineffective_date > ?)', my_end, my_start]).sort_by(&:sort_by)
-  end
+    {:conditions => ['(effective_date IS NULL OR effective_date < ?) AND (ineffective_date IS NULL OR ineffective_date > ?)', my_end, my_start]}
+  }
+
+  named_scope :real_people, :conditions => {:virtual => false}
 
   def sort_by
     self.contact ? (self.contact.surname + ", " + self.contact.first_name) : self.id.to_s
