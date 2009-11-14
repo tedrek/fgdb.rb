@@ -7,6 +7,8 @@ class Worker < ActiveRecord::Base
   has_many :vacations
   belongs_to :contact
   validates_existence_of :contact, :allow_nil => false
+  has_many :workers_worker_types
+  has_and_belongs_to_many :worker_types
 
   def is_available?( shift = Workshift.new )
     true
@@ -45,7 +47,11 @@ class Worker < ActiveRecord::Base
   end
 
   def worker_type_on_day(date)
-    worker_type
+    self.workers_worker_types.effective_on(date).first
+  end
+
+  def worker_type_today
+    self.worker_type_on_day(Date.today)
   end
 
   def primary_worker_type_in_range(start_d, end_d)
