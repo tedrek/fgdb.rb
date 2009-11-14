@@ -47,7 +47,7 @@ class Worker < ActiveRecord::Base
   end
 
   def worker_type_on_day(date)
-    self.workers_worker_types.effective_on(date).first
+    self.workers_worker_types.effective_on(date).first.worker_type
   end
 
   def worker_type_today
