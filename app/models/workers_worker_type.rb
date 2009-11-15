@@ -17,7 +17,9 @@ class WorkersWorkerType < ActiveRecord::Base
   end
 
   def siblings_dont_overlap
-    (worker.workers_worker_types.delete_if{|x| x.id == self.id} + [self]).sort_by(&:smart_effective_on).each_with_siblings{|a,b,c| errors.add("effective_on", "worker_types effective dates overlap")  if (a && (a.ineffective_on.nil? or a.smart_ineffective_on > b.smart_effective_on)) || (c && (c.effective_on.nil? or c.smart_effective_on < b.smart_ineffective_on))}
+    arr = (worker.workers_worker_types.delete_if{|x| x.id == self.id} + [self]).sort_by(&:smart_effective_on)
+    arr.each_with_siblings{|a,b,c| errors.add("effective_on", "worker_types effective dates overlap")  if (a && (a.ineffective_on.nil? or a.smart_ineffective_on > b.smart_effective_on)) || (c && (c.effective_on.nil? or c.smart_effective_on < b.smart_ineffective_on)); break}
+    arr.each_with_siblings{|a,b,c| errors.add("effective_on", "worker_types effective dates leave holes")  if (a && (a.ineffective_on != b.effective_on)) || (c && (c.effective_on != b.ineffective_on)); break}
   end
 end
 
