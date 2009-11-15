@@ -8,6 +8,7 @@ class Worker < ActiveRecord::Base
   belongs_to :contact
   validates_existence_of :contact, :allow_nil => false
   has_many :workers_worker_types
+#  validates_associated :workers_worker_types
   has_and_belongs_to_many :worker_types
 
   def is_available?( shift = Workshift.new )
