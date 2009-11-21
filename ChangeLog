@@ -1,5 +1,6 @@
 fgdb.rb (1.0.43) released; urgency=low
 
+  * staff hours tracking
 
  -- Ryan Niebur <ryan@debian.org>  Fri, 20 Nov 2009 23:20:31 -0800
 
