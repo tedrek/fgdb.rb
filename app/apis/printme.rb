@@ -1,5 +1,6 @@
 class PrintmeAPI < SoapsBase
   include PrintmeHelper
+  include ApplicationHelper
 
   def add_methods
     # Connection Testing
@@ -13,6 +14,7 @@ class PrintmeAPI < SoapsBase
     add_method("actions")
     add_method("types")
     add_method("contracts")
+    add_method("coveredness_enabled")
     add_method("default_action_description")
     add_method("default_type_description")
     add_method("default_contract_label")
@@ -73,6 +75,7 @@ class PrintmeAPI < SoapsBase
     server_versions[9] = [9]      # rewrite with soap...FORCED!!! :)
     server_versions[10] = [9,10]  # all good
     server_versions[11] = [11]    # string change on both ends, that needs to go together (reworded contracts question)
+    server_versions[12] = [12]    # new info collected, forced upgrade.
     server_versions
   end
 
@@ -103,19 +106,22 @@ class PrintmeAPI < SoapsBase
   def default_contract_label
     Contract.find_by_name('default').label
   end
+  def coveredness_enabled
+    Default["coveredness_enabled"] == "1"
+  end
 
   ###########
   # Printme #
   ###########
 
-  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os)  if !defined?(PrintmeStruct)
+  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os, :covered)  if !defined?(PrintmeStruct)
 
   def empty_struct
     PrintmeStruct.new
   end
 
   def submit(printme_struct)
-    report = SpecSheet.new(:contract_id => printme_struct.contract_id, :action_id => printme_struct.action_id, :type_id => printme_struct.type_id, :contact_id => printme_struct.contact_id, :old_id => printme_struct.old_id, :notes => printme_struct.notes, :lshw_output => printme_struct.lshw_output, :os => printme_struct.os)
+    report = SpecSheet.new(printme_struct.to_hash)
     begin
       report.save!
       if report.xml_is_good

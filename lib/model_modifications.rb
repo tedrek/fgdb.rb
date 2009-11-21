@@ -131,6 +131,14 @@ module ActiveRecord
   end
 end
 
+class Struct
+  def to_hash
+    h = {}
+    self.members.each{|x| x = x.to_sym; h[x] = self.send(x)}
+    return h
+  end
+end
+
 class String
   def to_cents
     temp = self.split('.')
