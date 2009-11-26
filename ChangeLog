@@ -3,8 +3,9 @@ fgdb.rb (1.0.44) UNRELEASED; urgency=low
   * alphabetize jobs in staff hours drop down (Closes: #16143)
   * display normally scheduled hours for the day when worker records
     hours (Closes: #16144)
+  * add meeting job type (Closes: #16166)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Nov 2009 23:20:44 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 26 Nov 2009 13:31:44 -0800
 
 fgdb.rb (1.0.43) released; urgency=low
 
