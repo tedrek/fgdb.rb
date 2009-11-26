@@ -36,7 +36,7 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <div id="totals_div" class="totals line_item">
   <table>
     <tr><td>Total for this day:</td><td id="total_today" class="amount">loading..</td></tr>
-    <tr><td>Hours normally worked on <%= @date.strftime("%A") %>:</td><td class="amount"><%= sprintf "%.2f", @worker.send(@date.strftime("%A").downcase.to_sym).to_f %></td></tr>
+    <tr><td>Hours normally worked on <%= @date.strftime("%A") %>:</td><td class="amount" id="normally_worked">loading..</td></tr>
     <tr><td>Total for this week:</td><td id="total_week" class="amount">loading..</td></tr>
     <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">loading..</td></tr>
     <tr><td>Overtime:</td><td id="overtime" class="amount">loading..</td></tr>
