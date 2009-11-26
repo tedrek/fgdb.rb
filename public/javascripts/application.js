@@ -15,7 +15,10 @@ function update_cashier_code() {
   }
 }
 
-function form_to_json(form_id){
+function form_to_json(){
+  form_id = editable_form_name;
+  if($(form_id) == null)
+    return "";
   orig = cashierable_enabled;
   if(orig == false) {
     enable_cashierable();
@@ -228,42 +231,7 @@ function defined(variable)
 }
 
 function form_has_not_been_edited(form_name) {
-    var myarray=$(form_name).getElementsByClassName('form-element');
-    for (var i = 0; i < myarray.length; i++){
-        children=myarray[i].childNodes;
-        for(var i2 = 0; i2 < children.length; i2++){
-            child=children[i2];
-            if(defined(child.tagName)){
-                if((child.tagName == "INPUT" && child.type != "checkbox") || child.tagName == "TEXTAREA") {
-                    if(child.value != child.defaultValue) {
-                        return false;
-                    }
-                }
-                else if(child.tagName == "INPUT" && child.type == "checkbox")
-                {
-                    if(child.defaultChecked != child.checked) {
-                        return false;
-                    }
-                }
-                else if(child.tagName == "SELECT") {
-                    options = child.childNodes;
-                    var i4 = 0;
-                    for (var i3 = 0; i3 < options.length; i3++)
-                    {
-                        if(options[i3].tagName=="OPTION") {
-                            if(options[i3].defaultSelected){
-                                if(i4 != child.selectedIndex) {
-                                    return false;
-                                }
-                            }
-                            i4++;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return true;
+  return form_to_json() == initial_form_json;
 }
 
 function set_new_val(element, new_val) {
