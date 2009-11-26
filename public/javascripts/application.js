@@ -1,6 +1,8 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+cashierable_enabled = true;
+
 function update_cashier_code() {
   cashier_id_field = $('cashier_code');
   if(cashier_id_field == null)
@@ -11,6 +13,23 @@ function update_cashier_code() {
   } else {
     disable_cashierable();
   }
+}
+
+function form_to_json(form_id){
+  orig = cashierable_enabled;
+  if(orig == false) {
+    enable_cashierable();
+  }
+  var hash = Form.serialize(form_id).toQueryParams();
+  hash.cashier_code = "...";
+  var result = Object.toJSON(hash);
+  if(orig == false) {
+    disable_cashierable();
+  }
+  if(orig != cashierable_enabled) {
+    alert("BUG, form_to_json");
+  }
+  return result;
 }
 
 function set_contact_name() {
@@ -35,6 +54,7 @@ function _hide_changes(one, two, three, four){
 }
 
 function disable_cashierable(){
+  cashierable_enabled = false;
     thing.disable();
     document.getElementsByClassName('cancel')[0].disabled = false;
     disable_all_links();
@@ -53,6 +73,7 @@ function disable_always_disabled(){
 }
 
 function enable_cashierable(){
+  cashierable_enabled = true;
     thing.enable();
     disable_always_disabled();
     enable_all_links();
