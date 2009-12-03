@@ -85,7 +85,7 @@ class WorkedShiftsController < ApplicationController
   private
 
   def process_shifts(shifts)
-    to_delete = WorkedShift.find(:all, :conditions => ["date_performed = ?", @date])
+    to_delete = WorkedShift.find(:all, :conditions => ["date_performed = ? AND worker_id = ?", @date, @worker.id])
     found = []
     new = []
     shifts.each{|x|
