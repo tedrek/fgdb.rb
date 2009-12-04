@@ -1,7 +1,10 @@
 fgdb.rb (1.0.45) UNRELEASED; urgency=low
 
+  * new form_has_not_been_edited, which works by serializing the form
+    and comparing it to the initial serialization. this now works
+    correctly with line items. (Closes: #15920)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 30 Nov 2009 22:47:26 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 26 Nov 2009 14:55:47 -0800
 
 fgdb.rb (1.0.44) released; urgency=low
 
