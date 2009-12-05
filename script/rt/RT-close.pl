@@ -4,6 +4,8 @@
 # tags. and make sure that ./script/release gets updated correctly wrt
 # order.
 
+# TODO: make this use ~/.rtrc
+
 use strict;
 use warnings;
 
