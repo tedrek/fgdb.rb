@@ -4,8 +4,6 @@
 # tags. and make sure that ./script/release gets updated correctly wrt
 # order.
 
-# TODO: make this use ~/.rtrc
-
 use strict;
 use warnings;
 
@@ -43,10 +41,6 @@ $message .= "\n\n";
 $message .= "Here is the relevant changelog entry:\n";
 
 use RT::Client::REST::FromConfig;
-
-my $password = `cat ~/.rt_password`;
-chomp $password;
-my $username = getlogin();
 
 my $rt = RT::Client::REST::FromConfig->new();
 
