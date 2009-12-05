@@ -1,7 +1,16 @@
 #!/bin/sh
 
+if [ -z "$1" ]; then
+   echo "Must pass at least 1 ticket number"
+   exit 1
+fi
+
 while [ -n "$1" ]; do
-      rt list "id = '$1'" | sed -r 's/^([0-9]+): (.*)$/* [[FGRT: \1 | #\1]] \2/'
+      if [ -n "$QUERY" ]; then
+        QUERY="$QUERY OR "
+      fi
+      QUERY="${QUERY}id = '$1'"
       shift
 done
 
+rt list "$QUERY" | sed -r 's/^([0-9]+): (.*)$/* [[FGRT: \1 | #\1]] \2/'
