@@ -1,0 +1,3 @@
+#!/bin/sh
+
+curl -s http://llama.freegeek.org/~ryan52/rt.822
