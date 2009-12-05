@@ -7,4 +7,4 @@ set -e
 
 cd `dirname $0`/../../
 
-{ ./script/rt/to-dctrl "(Owner = 'ryan52' OR Queue = 'ASSAction' OR Queue = 'ASSDiscussion' OR Queue = 'Coding' OR Queue = 'Technocrats' OR Queue = 'Distro') AND (Status = 'open' OR Status = 'new' OR Status = 'stalled' OR Status = 'pending')"; echo; echo "# Generated at $(date -R)"; } | ssh llama sponge public_html/rt.822
+{ ./script/rt/to-dctrl "(Owner = 'ryan52' OR Queue = 'ASSAction' OR Queue = 'ASSDiscussion' OR Queue = 'Coding' OR Queue = 'Technocrats' OR Queue = 'Distro') AND (Status = 'open' OR Status = 'new' OR Status = 'stalled' OR Status = 'pending')"; echo; echo "# Generated at $(date -R)"; } | ./script/update-devel-data/under-myagent ssh llama sponge public_html/rt.822
