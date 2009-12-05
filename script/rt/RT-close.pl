@@ -9,6 +9,10 @@
 use strict;
 use warnings;
 
+use FindBin;
+
+use lib $FindBin::RealBin . "/perllib/";
+
 my ($status, $message);
 
 open FOO, "dpkg-parsechangelog|";
@@ -38,16 +42,13 @@ $message = wrap("", "", $message);
 $message .= "\n\n";
 $message .= "Here is the relevant changelog entry:\n";
 
-use RT::Client::REST;
+use RT::Client::REST::FromConfig;
 
 my $password = `cat ~/.rt_password`;
 chomp $password;
 my $username = getlogin();
 
-my $rt = RT::Client::REST->new(
-  server => 'http://todo.freegeek.org/',
-);
-$rt->login(username => $username, password => $password);
+my $rt = RT::Client::REST::FromConfig->new();
 
 my $in_entry = 0;
 my @entries;
