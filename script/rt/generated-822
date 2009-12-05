@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# TODO: move to private dir
+
 # in crontab:
 # */10 * * * * ryan52 flock -n /tmp/generated-822 -c /home/ryan52/fgdb.rb/script/rt/generated-822
 
