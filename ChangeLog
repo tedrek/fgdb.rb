@@ -6,8 +6,9 @@ fgdb.rb (1.0.45) UNRELEASED; urgency=low
   * If the contact fails to save, do not save the user (Closes: #16231)
   * round numbers to two decimal places in payroll report (Closes:
     #16236)
+  * round to two places in the volunteering report (closes: #16239)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Dec 2009 14:21:18 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Dec 2009 14:24:24 -0800
 
 fgdb.rb (1.0.44) released; urgency=low
 
