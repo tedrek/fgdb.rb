@@ -1,2 +1,2 @@
-./script/rt/to-dctrl "(Owner = 'ryan52' OR Queue = 'ASSAction' OR Queue = 'ASSDiscussion' OR Queue = 'Coding' OR Queue = 'Technocrats' OR Queue = 'Distro') AND (Status = 'open' OR Status = 'new' OR Status = 'stalled' OR Status = 'pending')" > output
-cat output | sort-dctrl -kpriority:nr | grep-dctrl -FQueue ASSAction -o -FQueue ASSDiscussion -o -FQueue Technocrats | grep-dctrl -Fstatus open -o -FStatus new | tbl-dctrl -c id -c priority -c queue -c status -c subject | less
+curl http://llama.freegeek.org/~ryan52/rt.822 | grep-dctrl -FOwner ryan52 | grep-dctrl -Fstatus open -o -FStatus new | sort-dctrl -kpriority:nr | tbl-dctrl -c id -c priority -c queue -c status -c subject
+curl http://llama.freegeek.org/~ryan52/rt.822 | sort-dctrl -kpriority:nr | grep-dctrl -FQueue ASSAction -o -FQueue ASSDiscussion -o -FQueue Technocrats | grep-dctrl -Fstatus open -o -FStatus new | tbl-dctrl -c id -c priority -c queue -c status -c subject | less
