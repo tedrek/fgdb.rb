@@ -1,3 +1,3 @@
 #!/bin/sh
 
-`dirname $0`/get-cache | sort-dctrl -kpriority:nr,id:nr | grep-dctrl -FOwner ryan52 | grep-dctrl -Fstatus open -o -FStatus new | tbl-dctrl -c id -c priority -c queue -c status -c subject
+`dirname $0`/get-cache | sort-dctrl -kpriority:nr,id:nr | grep-dctrl -FOwner $(`dirname $0`/get-username) | grep-dctrl -Fstatus open -o -FStatus new | tbl-dctrl -c id -c priority -c queue -c status -c subject

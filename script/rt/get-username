@@ -1,0 +1,3 @@
+#!/bin/sh
+
+perl -I `dirname $0`/perllib -MConfig::RT -e 'print Config::RT->new()->username . "\n";'
