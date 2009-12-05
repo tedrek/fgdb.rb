@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use FindBin;
+
+use lib $FindBin::RealBin . "/perllib/";
+use RT::Client::REST::FromConfig;
+
+my $rt = RT::Client::REST::FromConfig->new();
+use RT::Client::REST::Ticket;
+
+my $subject = $ARGV[0];
+my $priority = 50;
+my $owner = 'ryan52';
+my $queue = 'Coding';
+
+my $ticket = RT::Client::REST::Ticket->new(
+    rt  => $rt,
+    priority => $priority,
+    owner => $owner,
+    queue => $queue,
+    subject => $subject,
+#    id => $id,
+    )->store;
+print $ticket->id . "\n";
+
