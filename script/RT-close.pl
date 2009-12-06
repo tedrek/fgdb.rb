@@ -1,1 +1,1 @@
-rt/RT-close.pl
+../../fg-git-tools/rt/RT-close.pl
