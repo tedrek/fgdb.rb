@@ -8,7 +8,7 @@ fgdb.rb (1.0.45) UNRELEASED; urgency=low
     #16236)
   * round to two places in the volunteering report (closes: #16239)
   * add a staff hours report by job type (Closes: 16246)
-  * round numbers on the trend reports (Closes: 16254)
+  * round numbers on the trend reports (Closes: 16254) 
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Dec 2009 18:51:34 -0800
 
