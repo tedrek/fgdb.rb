@@ -279,12 +279,13 @@ class ReportsController < ApplicationController
 
   public
 
-  def volunteers
+  def common_hours
     @defaults = Conditions.new
     @defaults.contact_enabled = "true"
+    render :action => "volunteers"
   end
 
-  def volunteers_report
+  def common_hours_report
     @defaults = Conditions.new
     if params[:contact]
       params[:defaults][:contact_id] = params[:contact][:id]
@@ -295,9 +296,31 @@ class ReportsController < ApplicationController
 
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
-    @tasks = VolunteerTask.find_by_conditions(@defaults.conditions(VolunteerTask))
-    @sections = [:community_service_type, :volunteer_task_types]
+    @tasks = @klass.find_by_conditions(@defaults.conditions(@klass))
     @data = volunteer_report_for(@tasks, @sections)
+    render :action => "volunteers_report"
+  end
+
+  def staff_hours
+    common_hours
+  end
+
+  def volunteers
+    common_hours
+  end
+
+  def staff_hours_report
+    @sections = [:job, :income_stream, :wc_category, :program]
+    @hours_type = "staff"
+    @klass = WorkedShift
+    common_hours_report
+  end
+
+  def volunteers_report
+    @sections = [:community_service_type, :volunteer_task_types]
+    @hours_type = "volunteer"
+    @klass = VolunteerTask
+    common_hours_report
   end
 
   protected
@@ -322,7 +345,7 @@ class ReportsController < ApplicationController
     sections.each do |section|
       data[section][(task[section.to_s] || '(none)')] += task['duration'].to_f
       data[section]["Total"] ||= 0.0
-      data[section]["Total"] += task[0].to_f
+      data[section]["Total"] += task['duration'].to_f
     end
   end
 
