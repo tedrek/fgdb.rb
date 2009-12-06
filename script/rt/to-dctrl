@@ -1,3 +1,0 @@
-#!/bin/sh
-
-rt list -l "$@" | sed '/^--$/ {N;d;}' | sed 's,id: ticket/,id: ,'
