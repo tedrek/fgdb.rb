@@ -134,9 +134,9 @@ end
 class Float
   def two_places
     v = sprintf "%.2f", self
-    if v[-1] == "0"[0]
-      v = v.chop
-    end
+#    if v[-1] == "0"[0]
+#      v = v.chop
+#    end
     v
   end
 
