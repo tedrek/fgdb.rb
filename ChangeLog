@@ -15,8 +15,10 @@ fgdb.rb (1.0.45) UNRELEASED; urgency=low
   * correctly handle when no file is attached in fgss (closes: 16293)
   * subtract the overtime hours from the hours in the payroll report
     (Closes: 16257)
+  * remove incorrect/annoying/useless sales amount info from the gizmos
+    report (closes: 16253)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:53:00 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:56:12 -0800
 
 fgdb.rb (1.0.44) released; urgency=low
 

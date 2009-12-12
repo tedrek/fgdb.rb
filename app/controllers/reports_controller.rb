@@ -41,9 +41,9 @@ class ReportsController < ApplicationController
     GizmoEvent.category_totals(@defaults.conditions(GizmoEvent)).each do |summation|
       add_gizmo_category_to_data(summation, @gizmo_data)
     end
-    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|x|
-      @gizmo_income_data[x['gt'].to_s] = x['sum']
-    }
+#    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|x|
+#      @gizmo_income_data[x['gt'].to_s] = x['sum']
+#    }
   end
 
   protected
@@ -66,7 +66,7 @@ class ReportsController < ApplicationController
     @rows << :total
     @gizmo_data = {}
     @rows.each {|type| @gizmo_data[type] = Hash.new(0)}
-    @gizmo_income_data = {}
+#    @gizmo_income_data = {}
 
     @row_types = GizmoType.find(:all).sort_by{|type| type.description}
     @row_types << "total flow"
