@@ -11,8 +11,9 @@ fgdb.rb (1.0.45) UNRELEASED; urgency=low
   * round numbers on the trend reports (Closes: 16254) 
   * fix workers listing with a hack (closes: 16277)
   * fix Active Volunteers report (Closes: 16282)
+  * fix saving when no hours are entered (Closes: #16226)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:37:19 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:41:09 -0800
 
 fgdb.rb (1.0.44) released; urgency=low
 

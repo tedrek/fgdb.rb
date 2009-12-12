@@ -76,15 +76,16 @@ class WorkedShiftsController < ApplicationController
 
   def save
 #    @logged_already = true
-#    @shifts = process_shifts(params[:shifts].values)
+#    @shifts = process_shifts(params[:shifts])
 #    render :action => "edit"
-    process_shifts(params[:shifts].values)
+    process_shifts(params[:shifts])
     redirect_to :action => "index"
   end
 
   private
 
   def process_shifts(shifts)
+    shifts = shifts.nil? ? [] : shifts.values
     to_delete = WorkedShift.find(:all, :conditions => ["date_performed = ? AND worker_id = ?", @date, @worker.id])
     found = []
     new = []
