@@ -95,6 +95,7 @@ class Worker < ActiveRecord::Base
       total = holidays + logged
       h[:overtime] += [0.0, total - self.ceiling_hours].max
     }
+    h[:hours] -= h[:overtime]
     return h
   end
 

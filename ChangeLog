@@ -13,8 +13,10 @@ fgdb.rb (1.0.45) UNRELEASED; urgency=low
   * fix Active Volunteers report (Closes: 16282)
   * fix saving when no hours are entered (Closes: #16226)
   * correctly handle when no file is attached in fgss (closes: 16293)
+  * subtract the overtime hours from the hours in the payroll report
+    (Closes: 16257)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:48:20 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:53:00 -0800
 
 fgdb.rb (1.0.44) released; urgency=low
 
