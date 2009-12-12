@@ -10,8 +10,9 @@ fgdb.rb (1.0.45) UNRELEASED; urgency=low
   * add a staff hours report by job type (Closes: 16246)
   * round numbers on the trend reports (Closes: 16254) 
   * fix workers listing with a hack (closes: 16277)
+  * fix Active Volunteers report (Closes: 16282)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:32:46 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:37:19 -0800
 
 fgdb.rb (1.0.44) released; urgency=low
 
