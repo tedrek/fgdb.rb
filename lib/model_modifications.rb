@@ -131,7 +131,7 @@ module ActiveRecord
   end
 end
 
-class Float
+class Object
   def two_places
     v = sprintf "%.2f", self
 #    if v[-1] == "0"[0]
