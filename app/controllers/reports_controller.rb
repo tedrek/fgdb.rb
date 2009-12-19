@@ -302,10 +302,16 @@ class ReportsController < ApplicationController
   end
 
   def staff_hours
+    if has_role?('SKEDJULNATOR', 'BEAN_COUNTER') or is_staff?
+      @filters = ['worker']
+    end
     common_hours
   end
 
   def volunteers
+    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in
+      @filters = ['contact']
+    end
     common_hours
   end
 
