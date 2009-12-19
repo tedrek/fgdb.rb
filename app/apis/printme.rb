@@ -3,35 +3,45 @@ class PrintmeAPI < SoapsBase
   include ApplicationHelper
 
   def add_methods
+    for i in soap_methods
+      add_method(*i)
+    end
+  end
+
+  def soap_methods
+    [
+    # soap_methods access
+    ["soap_methods"],
     # Connection Testing
-    add_method("ping")
+    ["ping"],
     # Version Checking
-    add_method("version_compat", "client_version")
-    add_method("version")
-    add_method("bad_client_error")
-    add_method("bad_server_error")
+    ["version_compat", "client_version"],
+    ["version"],
+    ["bad_client_error"],
+    ["bad_server_error"],
     # Lists
-    add_method("actions")
-    add_method("types")
-    add_method("contracts")
-    add_method("coveredness_enabled")
-    add_method("default_action_description")
-    add_method("default_type_description")
-    add_method("default_contract_label")
+    ["actions"],
+    ["types"],
+    ["contracts"],
+    ["coveredness_enabled"],
+    ["default_action_description"],
+    ["default_type_description"],
+    ["default_contract_label"],
     # Printme
-    add_method("empty_struct")
-    add_method("submit", "printme_struct")
+    ["empty_struct"],
+    ["submit", "printme_struct"],
     # Notes
-    add_method("empty_notes_struct")
-    add_method("submit_notes", "notes_struct")
-    add_method("get_system_for_note", "note_id")
+    ["empty_notes_struct"],
+    ["submit_notes", "notes_struct"],
+    ["get_system_for_note", "note_id"],
     # Random Crap
-    add_method("get_system_for_report", "report_id")
-    add_method("contract_label_for_system", "system_id")
-    add_method("type_description_for_system", "system_id")
-    add_method("spec_sheet_url", "report_id")
-    add_method("system_url", "system_id")
-    add_method("get_system_id", "xml")
+    ["get_system_for_report", "report_id"],
+    ["contract_label_for_system", "system_id"],
+    ["type_description_for_system", "system_id"],
+    ["spec_sheet_url", "report_id"],
+    ["system_url", "system_id"],
+    ["get_system_id", "xml"]
+    ]
   end
 
   ######################
@@ -121,7 +131,9 @@ class PrintmeAPI < SoapsBase
   end
 
   def submit(printme_struct)
-    report = SpecSheet.new(printme_struct.to_hash)
+    struct = PrintmeStruct.new
+    struct.members.each{|x| struct.send(x + "=", printme_struct.send(x))}
+    report = SpecSheet.new(struct.to_hash)
     begin
       report.save!
       if report.xml_is_good
