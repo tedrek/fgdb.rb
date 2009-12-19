@@ -1,8 +1,9 @@
 fgdb.rb (1.0.46) UNRELEASED; urgency=low
 
   * add L2 cache to printme report (Closes: 16335)
+  * hide empty payment method on search (Closes: 16292)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Dec 2009 13:13:13 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Dec 2009 13:34:21 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 

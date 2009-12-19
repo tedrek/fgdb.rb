@@ -49,6 +49,7 @@ module ConditionsHelper
     render( :partial => 'transaction/payment_method_select',
             :locals => {:field_id_prefix => params_key,
               :field_name_prefix => params_key,
+              :hide_empty => true,
               :show_label => false,
               :paid_object => eval("@" + params_key)} )
   end
