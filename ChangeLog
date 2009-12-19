@@ -5,8 +5,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * enforce sizes of fields using user-friendly validations, rather than
     erroring (Closes: 16291)
   * show contact info on hours report (Closes: 16297)
+  * fix all trend reports to round to two places for any type of object
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Dec 2009 13:48:15 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Dec 2009 14:43:22 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
