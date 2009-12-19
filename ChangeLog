@@ -2,8 +2,10 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
 
   * add L2 cache to printme report (Closes: 16335)
   * hide empty payment method on search (Closes: 16292)
+  * enforce sizes of fields using user-friendly validations, rather than
+    erroring (Closes: 16291)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Dec 2009 13:34:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Dec 2009 13:39:45 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
