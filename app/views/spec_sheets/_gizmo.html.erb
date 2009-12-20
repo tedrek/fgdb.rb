@@ -71,7 +71,7 @@
         Covered:
       </td>
       <td>
-        <%= h @report.system.covered ? "yes" : "no" %>
+        <%= h @report.system.covered.nil? ? "unknown" : @report.system.covered ? "yes" : "no" %>
       </td>
     </tr>
     <% end %>
