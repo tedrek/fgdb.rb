@@ -38,6 +38,7 @@ class PrintmeAPI < SoapsBase
     ["get_system_for_report", "report_id"],
     ["contract_label_for_system", "system_id"],
     ["type_description_for_system", "system_id"],
+    ["covered_for_system", "system_id"],
     ["spec_sheet_url", "report_id"],
     ["system_url", "system_id"],
     ["get_system_id", "xml"]
@@ -184,6 +185,10 @@ class PrintmeAPI < SoapsBase
 
   def type_description_for_system(system_id)
     System.find_by_id(system_id).spec_sheets.sort_by{|x| x.created_at}.last.type.description
+  end
+
+  def covered_for_system(system_id)
+    System.find_by_id(system_id).covered
   end
 
   def spec_sheet_url(report_id)
