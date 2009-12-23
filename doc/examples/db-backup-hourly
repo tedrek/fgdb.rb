@@ -5,8 +5,7 @@ export GZIP="--rsyncable"
 
 /usr/sbin/logrotate -f $backup_dir/database_logrotate.conf
 
-su - postgres -c "nice pg_dump -X use-set-session-authorization -C fgdb_production > $sql_dump"
-su - postgres -c "nice cat $sql_dump | nice gzip > $sql_dump.gz"
+su - postgres -c "nice pg_dump -X use-set-session-authorization -C fgdb_production | nice gzip > $sql_dump"
 
 su - postgres -c "nice /usr/bin/rsync -WHqzae \
   'ssh -2 -i /var/lib/postgresql/.ssh/backup_transfer_key' --bwlimit 4096\
