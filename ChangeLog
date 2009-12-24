@@ -7,8 +7,10 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * show contact info on hours report (Closes: 16297)
   * fix all trend reports to round to two places for any type of object
   * printme now asks for covered, bumped compat
+  * fix the set_occurred_at_on_gizmo_events hook again, has_many
+    relationships suck (Closes: #16202)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Dec 2009 15:01:27 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Dec 2009 19:46:58 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
