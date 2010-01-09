@@ -11,8 +11,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
     relationships suck (Closes: #16202)
   * make gizmo_types.gizmo_category_id NOT NULL (Closes: #15983)
   * make coverage_type_id NOT NULL (Closes: #16247)
+  * don't show 'unavailable' job in drop down (Closes: #16240)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Jan 2010 05:41:34 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Jan 2010 05:50:23 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 

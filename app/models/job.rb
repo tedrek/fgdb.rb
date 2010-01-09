@@ -6,6 +6,7 @@ class Job < ActiveRecord::Base
   belongs_to :program
   belongs_to :wc_category
   belongs_to :income_stream
+  named_scope :workable, :conditions => {:virtual => false}
 
   def description
     read_attribute(:name)
