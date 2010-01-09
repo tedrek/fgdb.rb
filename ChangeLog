@@ -18,6 +18,7 @@ fgdb.rb (1.0.45) released; urgency=low
   * remove incorrect/annoying/useless sales amount info from the gizmos
     report (closes: 16253)
   * use workers condition for staff hours report (Closes: #16331)
+  * update the return policy on the sale receipts (Closes: #16553)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:59:31 -0800
 
