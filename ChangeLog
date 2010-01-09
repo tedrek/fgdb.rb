@@ -9,8 +9,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * printme now asks for covered, bumped compat
   * fix the set_occurred_at_on_gizmo_events hook again, has_many
     relationships suck (Closes: #16202)
+  * make gizmo_types.gizmo_category_id NOT NULL (Closes: #15983)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Dec 2009 19:46:58 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Jan 2010 05:40:07 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
