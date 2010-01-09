@@ -1,5 +1,6 @@
 class AddMiscAsIsType < ActiveRecord::Migration
   def self.up
+    if Default["is-pdx"] == true
     bb = GizmoType.find_by_name('bargain_bin')
     bb.ineffective_on = Date.today
     bb.save!
@@ -13,13 +14,16 @@ class AddMiscAsIsType < ActiveRecord::Migration
     new.rank = 99
     new.gizmo_contexts = [GizmoContext.sale]
     new.save!
+    end
   end
 
   def self.down
+    if Default["is-pdx"] == true
     bb = GizmoType.find_by_name('bargain_bin')
     bb.ineffective_on = nil
     bb.save!
     new = GizmoType.find_by_name('misc_item_as_is')
     new.destroy
+    end
   end
 end
