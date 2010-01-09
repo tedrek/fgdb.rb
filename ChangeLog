@@ -13,8 +13,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * make coverage_type_id NOT NULL (Closes: #16247)
   * don't show 'unavailable' job in drop down (Closes: #16240)
   * add a total hours worked to the individual report (Closes: #16473)
+  * ignore work_shifts.weekday_id, it's wrong (Closes: #16651)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Jan 2010 05:56:54 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Jan 2010 15:51:21 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
