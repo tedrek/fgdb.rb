@@ -39,6 +39,7 @@ fgdb.rb (1.0.45) released; urgency=low
   * update the return policy on the sale receipts (Closes: #16553)
   * remove bargain bag type and add misc item as is type (Closes:
     #15328)
+  * make the receipt text larger and make more fit on a page (Closes: #16643)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:59:31 -0800
 
