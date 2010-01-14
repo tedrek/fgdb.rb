@@ -14,8 +14,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * don't show 'unavailable' job in drop down (Closes: #16240)
   * add a total hours worked to the individual report (Closes: #16473)
   * ignore work_shifts.weekday_id, it's wrong (Closes: #16651)
+  * add holiday credits into the weekly report (Closes: #16684)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Jan 2010 15:51:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 13 Jan 2010 19:46:21 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 

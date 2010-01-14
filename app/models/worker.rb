@@ -119,6 +119,12 @@ class Worker < ActiveRecord::Base
     logged_shifts_for_day(date).inject(0.0){|t,x| t += x.duration}
   end
 
+  def hours_effective_on_day(date)
+    amount = hours_worked_on_day(date)
+    amount += holiday_credit_per_day if Holiday.is_holiday?(date)
+    return amount
+  end
+
   def fill_in_for_calendar(calendar)
     calendar.set_missing_dates{|x| v = self.hours_worked_on_day(x)}
   end
