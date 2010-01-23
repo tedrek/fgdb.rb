@@ -15,8 +15,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * add a total hours worked to the individual report (Closes: #16473)
   * ignore work_shifts.weekday_id, it's wrong (Closes: #16651)
   * add holiday credits into the weekly report (Closes: #16684)
+  * add barcodes to printme reports (Closes: #16829)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 13 Jan 2010 19:46:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 13:47:40 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
