@@ -8,8 +8,32 @@ class Worker < ActiveRecord::Base
   belongs_to :contact
   validates_existence_of :contact, :allow_nil => false
   has_many :workers_worker_types
-#  validates_associated :workers_worker_types
+  validates_associated :workers_worker_types
   has_and_belongs_to_many :worker_types
+
+  validate :worker_types_validated
+  def worker_types_validated
+    set_temp_worker_association
+    raise if self.workers_worker_types.length == 0
+    self.workers_worker_types.each{|x|
+      raise x.errors.full_messages.to_s if ! x.valid?
+    }
+  end
+
+  def set_temp_worker_association
+    if ! @temp_worker_association.nil? and self.workers_worker_types.length == 0
+      self.workers_worker_types = [@temp_worker_association]
+      self.workers_worker_types.first.worker_id = self.id if self.id
+    end
+  end
+
+  after_save :save_worker_types
+  def save_worker_types
+    set_temp_worker_association
+    self.workers_worker_types.each{|x|
+      x.save!
+    }
+  end
 
   def is_available?( shift = Workshift.new )
     true
@@ -48,11 +72,26 @@ class Worker < ActiveRecord::Base
   end
 
   def worker_type_on_day(date)
-    self.workers_worker_types.effective_on(date).first.worker_type
+    c = self.workers_worker_types.effective_on(date).first
+    c.nil? ? nil : c.worker_type
+  end
+
+  def worker_type_id
+    worker_type.nil? ? nil : worker_type.id
+  end
+
+  def worker_type_id=(value)
+    if ! worker_type_id.nil? && worker_type_id != value
+      raise
+    end
+    t = WorkerType.find_by_id(value)
+    self.workers_worker_types = [WorkersWorkerType.new(:worker => self, :worker_type => t)]
+    @temp_worker = t
+    @temp_worker_association = self.workers_worker_types.first
   end
 
   def worker_type # FIXME: remove this
-    worker_type_today
+    @temp_worker ? @temp_worker : worker_type_today
   end
 
   def worker_type_today
