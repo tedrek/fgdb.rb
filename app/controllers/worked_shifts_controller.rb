@@ -67,12 +67,12 @@ class WorkedShiftsController < ApplicationController
     h[:pto] = @types.inject(0.0){|t, x| t+= x[:pto]}
     h[:overtime] = @types.inject(0.0){|t, x| t+= x[:overtime]}
     @types << h
-    total = h[:hours] + h[:overtime]
+    total = h[:hours] + h[:overtime] + h[:holiday] + h[:pto]
     @types.each{|x|
       percent = 0.0
-      this = x[:hours] + x[:overtime]
+      this = x[:hours] + x[:overtime] + x[:holiday] + x[:pto]
       percent = this / total if total > 0
-      x[:name] += " (#{(percent * 100).tp}%)" unless x[:name] == "total"
+      x[:percent] = percent unless x[:name] == "total"
     }
   end
 
