@@ -44,10 +44,10 @@ class WorkedShiftsController < ApplicationController
   end
 
   def payroll_report
-    pay_period = PayPeriod.find_for_date(@date) || raise
-    @workers = Worker.effective_in_range(pay_period).real_people.sort_by(&:sort_by)
+    @pay_period = PayPeriod.find_for_date(@date) || raise
+    @workers = Worker.effective_in_range(@pay_period).real_people.sort_by(&:sort_by)
 #    @workers = [Worker.find(6144)].flatten
-    @workers = @workers.map{|x| x.to_payroll_hash(pay_period)}
+    @workers = @workers.map{|x| x.to_payroll_hash(@pay_period)}
     # array of hashes with keys: name type hours pto overtime holiday
     @types = @workers.map{|x| x[:type]}.uniq.sort
     @types = @types.map{|x|
