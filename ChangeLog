@@ -16,8 +16,10 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * ignore work_shifts.weekday_id, it's wrong (Closes: #16651)
   * add holiday credits into the weekly report (Closes: #16684)
   * add barcodes to printme reports (Closes: #16829)
+  * show the percentage of the sum of hours and overtime for each worker
+    type on the payroll report (Closes: #16237)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 13:47:40 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 16:17:27 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 

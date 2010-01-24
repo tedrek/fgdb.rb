@@ -67,6 +67,13 @@ class WorkedShiftsController < ApplicationController
     h[:pto] = @types.inject(0.0){|t, x| t+= x[:pto]}
     h[:overtime] = @types.inject(0.0){|t, x| t+= x[:overtime]}
     @types << h
+    total = h[:hours] + h[:overtime]
+    @types.each{|x|
+      percent = 0.0
+      this = x[:hours] + x[:overtime]
+      percent = this / total if total > 0
+      x[:name] += " (#{(percent * 100).tp}%)" unless x[:name] == "total"
+    }
   end
 
   def update_shift_totals
