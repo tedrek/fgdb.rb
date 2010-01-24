@@ -19,8 +19,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * show the percentage of the sum of hours and overtime for each worker
     type on the payroll report (Closes: #16237)
   * add worker type to weekly report (closes: #16692)
+  * change intern worker type into apprentice (closes: #16841)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 16:51:34 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 17:05:01 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
