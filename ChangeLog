@@ -22,8 +22,10 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * change intern worker type into apprentice (closes: #16841)
   * add heading to payroll report with the start and end date (Closes:
     #16681)
+  * fix titles on jobs report form and payroll report form (Closes:
+    16683)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 17:11:18 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 17:14:45 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
