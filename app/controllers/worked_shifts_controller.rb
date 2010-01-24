@@ -30,14 +30,14 @@ class WorkedShiftsController < ApplicationController
     @end = @date.dup
     @start -= 1 while @start.wday != 1 # Monday
     @end += 1 while @end.wday != 0 # Sunday
-    @result = Worker.effective_in_range(@start, @end).real_people.sort_by(&:sort_by).map{|x| a = (@start..@end).to_a.map{|y| x.hours_effective_on_day(y)}; [x.sort_by, a, a.inject(0.0){|t,x| t+=x}.to_s].flatten}
-    header_array = ["Worker", (@start..@end).to_a.map{|x| x.strftime("%A")}, "Total"].flatten
-    a = (1..7).to_a.map{|i|
+    @result = Worker.effective_in_range(@start, @end).real_people.sort_by(&:sort_by).map{|x| a = (@start..@end).to_a.map{|y| x.hours_effective_on_day(y)}; [x.sort_by, (x.worker_type_on_day(@end) || x.worker_type_on_day(@start)).name, a, a.inject(0.0){|t,x| t+=x}.to_s].flatten}
+    header_array = ["Worker", "Worker Type", (@start..@end).to_a.map{|x| x.strftime("%A")}, "Total"].flatten
+    a = (2..8).to_a.map{|i|
       @result.inject(0.0){|t,x|
         t+=x[i]
       }
     }
-    footer_array = ["Total", a, a.inject(0.0){|t,x| t+=x}.to_s].flatten
+    footer_array = ["Total", "", a, a.inject(0.0){|t,x| t+=x}.to_s].flatten
     @result.unshift(header_array)
     @result.push(footer_array)
     @title = "Weekly worker report for week of #{@start.to_s} to #{@end.to_s}"

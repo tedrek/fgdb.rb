@@ -18,8 +18,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * add barcodes to printme reports (Closes: #16829)
   * show the percentage of the sum of hours and overtime for each worker
     type on the payroll report (Closes: #16237)
+  * add worker type to weekly report (closes: #16692)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 16:17:27 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 16:51:34 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
