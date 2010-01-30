@@ -24,7 +24,6 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
     #16681)
   * fix titles on jobs report form and payroll report form (Closes:
     16683)
-  * fix misc as is to have a discount (and parent) (Closes: #16704)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jan 2010 17:44:52 -0800
 
