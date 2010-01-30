@@ -53,6 +53,9 @@ fgdb.rb (1.0.45) released; urgency=low
   * make the receipt text larger and make more fit on a page (Closes: #16643)
   * fix editing a worker (Closes: 16819)
   * fix misc as is to have a discount (and parent) (Closes: #16704)
+  * fix long load times by using ajax to figure out system and store
+    credit info rather than loading up all of the systems on load
+    (Closes: #16904, #16666)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Dec 2009 00:59:31 -0800
 
