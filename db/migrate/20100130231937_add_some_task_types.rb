@@ -1,5 +1,6 @@
 class AddSomeTaskTypes < ActiveRecord::Migration
   def self.up
+    if Default.is_pdx
     vt = VolunteerTaskType.new
     vt.name = 'av'
     vt.description = 'A/V'
@@ -10,6 +11,7 @@ class AddSomeTaskTypes < ActiveRecord::Migration
     vt.description = 'Library'
     vt.parent_id = 17
     vt.save!
+    end
   end
 
   def self.down
