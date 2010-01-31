@@ -28,8 +28,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * make schwags have the same discount as everything else. classify
     distro cds as schwags. add an ubuntu book category. (Closes: #13659)
   * add apple laptop type to printme (Closes: #15864)
+  * add scraptop gizmo type (Closes: #16647)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Jan 2010 16:14:48 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Jan 2010 16:17:15 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
