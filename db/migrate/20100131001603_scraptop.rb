@@ -1,5 +1,6 @@
 class Scraptop < ActiveRecord::Migration
   def self.up
+    if Default.is_pdx
       new = GizmoType.new
       new.description = "Scraptop--AS-IS"
       new.required_fee_cents = 0
@@ -11,6 +12,7 @@ class Scraptop < ActiveRecord::Migration
       new.parent_name = "gizmo"
       new.gizmo_contexts = [GizmoContext.sale]
       new.save!
+    end
   end
 
   def self.down
