@@ -11,6 +11,10 @@ class Worker < ActiveRecord::Base
   validates_associated :workers_worker_types
   has_and_belongs_to_many :worker_types
 
+  def user
+    contact ? contact.user : nil
+  end
+
   validate :worker_types_validated
   def worker_types_validated
     set_temp_worker_association
