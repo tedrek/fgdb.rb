@@ -3,9 +3,10 @@
 ENV['RAILS_ENV']="production"
 
 class MyWorker
-  attr_reader :name, :dates
+  attr_reader :name, :dates, :worker_id
 
   def initialize(worker, dates)
+    @worker_id = worker.id
     @name = worker.name
     @email = worker.user ? worker.user.email : nil
     @dates = dates.sort.map{|x| x.to_s}
@@ -51,6 +52,13 @@ def dostuff
   end
 end
 
+testing = false
+if ARGV[0] == "--testemail"
+  testing = true
+  ActionMailer::Base.delivery_method = :test
+  ARGV[0] = "--email"
+end
+
 if ARGV[0] == "--print"
   dostuff
   @myworkers.each{|x|
@@ -61,9 +69,16 @@ if ARGV[0] == "--print"
   }
 elsif ARGV[0] == "--email"
   dostuff
-  puts "NO-OP"
+  exit if @myworkers.length == 0
+  Notifier.deliver_staff_hours_summary_report(@myworkers)
+  @myworkers.select{|x| x.can_send?}.each{|x|
+    Notifier.deliver_staff_hours_poke(x)
+  }
 else
-  puts "Usage: hours_poker [--date #{@target.to_s}] --print|--email"
+  puts "Usage: hours_poker [--date #{@target.to_s}] --print|--email|--testemail"
   exit
 end
 
+if testing
+  puts ActionMailer::Base.deliveries.map{|x| x.to_s}.join("\n\n\n-------\n\n\n")
+end
