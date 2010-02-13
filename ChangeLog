@@ -41,8 +41,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
     community_service_type's multiplier as well (Closes: #17041)
   * don't allow serial numbers with a length of less than 5
   * add a script to find generics
+  * add a few generics
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 13:59:01 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 14:07:17 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
