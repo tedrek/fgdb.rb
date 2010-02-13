@@ -34,8 +34,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
     more accurate
   * send out a email to people who need to log their hours (Closes:
     #17032)
+  * fix the hours report to show a contact chooser condition
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Feb 2010 17:14:58 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 12:16:34 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
