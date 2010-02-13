@@ -39,8 +39,9 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
   * add a hardware grants volunteer task type (Closes: #17120)
   * fix the effective_duration to take into account the
     community_service_type's multiplier as well (Closes: #17041)
+  * don't allow serial numbers with a length of less than 5
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 13:06:50 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 13:47:17 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
