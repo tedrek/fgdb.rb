@@ -44,8 +44,10 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
     - add a script to find generics
     - add a few generics
     - (Closes: #15924, #17098)
+  * fix detection of mac addresses with very odd systems (Closes:
+    #17099)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 14:07:17 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 14:17:09 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 

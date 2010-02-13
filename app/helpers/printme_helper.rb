@@ -13,7 +13,7 @@ module PrintmeHelper
       @mobo_model ||= @parser._xml_value_of("//*[contains(@id, 'core')]/product")
       @mobo_serial_number ||= @parser._xml_value_of("//*[contains(@id, 'core')]/serial")
       @mobo_vendor ||= @parser._xml_value_of("//*[contains(@id, 'core')]/vendor")
-      @macaddr ||= @parser._xml_value_of("//*[contains(@id, 'network')]/serial")
+      @macaddr ||= @parser._xml_value_of("//*[contains(@id, 'network') or contains(description, 'Ethernet')]/serial")
     }
 
     get_vendor
