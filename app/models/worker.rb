@@ -24,6 +24,11 @@ class Worker < ActiveRecord::Base
     }
   end
 
+  def validate
+    errors.add_on_blank %w(sunday monday tuesday wednesday thursday friday saturday pto_rate floor_hours ceiling_hours)
+    errors.add("salaried", "can't be blank") if salaried.nil?
+  end
+
   def set_temp_worker_association
     if ! @temp_worker_association.nil? and self.workers_worker_types.length == 0
       self.workers_worker_types = [@temp_worker_association]
