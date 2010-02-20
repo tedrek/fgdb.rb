@@ -289,8 +289,8 @@ class ReportsController < ApplicationController
     @defaults = Conditions.new
     if params[:contact] || params[:contact_id]
       contact_id = (params[:contact_id] || params[:contact][:id])
-      params[:defaults][:contact_id] = contact_id
       params[:defaults] ||= {:contact_enabled=>"true"}
+      params[:defaults][:contact_id] = contact_id
       @contact = @defaults.contact
     else
       @contact = nil
