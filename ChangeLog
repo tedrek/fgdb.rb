@@ -1,4 +1,4 @@
-fgdb.rb (1.0.46) UNRELEASED; urgency=low
+fgdb.rb (1.0.46) released; urgency=low
 
   * add L2 cache to printme report (Closes: 16335)
   * hide empty payment method on search (Closes: 16292)
@@ -48,7 +48,7 @@ fgdb.rb (1.0.46) UNRELEASED; urgency=low
     #17099)
   * add worker fields and validations (Closes: #16238)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Feb 2010 16:45:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 19 Feb 2010 23:33:59 -0800
 
 fgdb.rb (1.0.45) released; urgency=low
 
