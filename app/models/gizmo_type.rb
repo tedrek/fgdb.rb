@@ -49,7 +49,7 @@ class GizmoType < ActiveRecord::Base
 
   def parent(date)
     return if self.parent_name.nil?
-    p = GizmoType.find_all_by_name(parent_name).select{|x| x.effective_on?(date)}.sort.last
+    p = GizmoType.find_all_by_name(parent_name).select{|x| x.effective_on?(date)}.sort_by(&:id).last
     raise ActiveRecord::RecordNotFound if p.nil? and self.effective_on?(date)
     return p
   end
