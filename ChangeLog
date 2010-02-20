@@ -47,7 +47,7 @@ fgdb.rb (1.0.46) released; urgency=low
   * fix up some generics detection
     - don't allow serial numbers with a length of less than 5
     - add a script to find generics
-    - add a few generics 
+    - add a few generics
     - (Closes: #15924, #17098)
   * fix detection of mac addresses with very odd systems (Closes:
     #17099)
