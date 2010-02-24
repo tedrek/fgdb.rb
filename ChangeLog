@@ -1,8 +1,10 @@
 fgdb.rb (1.0.47) UNRELEASED; urgency=low
 
   * strip usernames (Closes: #17161)
+  * support KBs in String.to_bytes and majorly clean up this code
+    (Closes: #17254)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 20 Feb 2010 15:58:46 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 23 Feb 2010 20:02:18 -0800
 
 fgdb.rb (1.0.46) released; urgency=low
 
