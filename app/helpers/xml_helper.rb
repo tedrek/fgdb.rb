@@ -52,7 +52,7 @@ class String
         return hit_g
       end
     end
-    raise ArguementError
+    raise ArgumentError
   end
 
   def find_unit(exact = false, base = "")
@@ -60,9 +60,6 @@ class String
     a = unit_arr
     base_div = exact ? 1024 : 1000
     start_i = -1
-    if number < 1.0 # TODO: rewind in the array. so that "0.25 MB" in will give "256 KB" out. rather than error.
-      return [base, 1]
-    end
     i = 0
     for x in a
       if x == base
@@ -72,12 +69,13 @@ class String
       i += 1
     end
     if start_i == -1
-      raise ArguementError
+      raise ArgumentError
     end
-    i = start_i
+    number = number * (base_div ** start_i)
+    i = 0
     final_i = -1
-    for x in a[start_i..-1]
-      n = number / (base_div ** (i - start_i))
+    for x in a
+      n = number / (base_div ** i)
       if n < 1.0
         final_i = i - 1
         break
@@ -85,8 +83,7 @@ class String
       i += 1
     end
     if final_i == -1
-      puts "= #{start_i} #{number} #{base_div}"
-      raise ArguementError
+      final_i = 0
     end
     found_name = a[final_i]
     found_divisor = base_div ** (final_i - start_i)
