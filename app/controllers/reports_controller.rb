@@ -291,12 +291,10 @@ class ReportsController < ApplicationController
       contact_id = (params[:contact_id] || params[:contact][:id])
       params[:defaults] ||= {:contact_enabled=>"true"}
       params[:defaults][:contact_id] = contact_id
-      @contact = @defaults.contact
-    else
-      @contact = nil
     end
 
     @defaults.apply_conditions(params[:defaults])
+    @contact = @defaults.contact
     @date_range_string = @defaults.to_s
   end
 
