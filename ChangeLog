@@ -1,3 +1,8 @@
+fgdb.rb (1.0.48) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Feb 2010 00:19:30 -0800
+
 fgdb.rb (1.0.47) released; urgency=low
 
   * strip usernames (Closes: #17161)
