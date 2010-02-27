@@ -1,11 +1,11 @@
-fgdb.rb (1.0.47) UNRELEASED; urgency=low
+fgdb.rb (1.0.47) released; urgency=low
 
   * strip usernames (Closes: #17161)
   * support KBs in String.to_bytes and majorly clean up this code
     (Closes: #17254)
   * fix the order so that the letter head works (Closes: #17280)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Feb 2010 00:14:42 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Feb 2010 00:19:02 -0800
 
 fgdb.rb (1.0.46) released; urgency=low
 
