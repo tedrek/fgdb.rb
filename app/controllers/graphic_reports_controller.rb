@@ -484,6 +484,10 @@ class GraphicReportsController < ApplicationController
     conditions_with_daterange_for_report(args, "created_at")
   end
 
+  def occurred_at_conditions_for_report(args)
+    conditions_with_daterange_for_report(args, "occurred_at")
+  end
+
   def sql_for_report(model, conditions)
     c = Conditions.new
     c.apply_conditions(conditions)
@@ -520,7 +524,7 @@ class GraphicReportsController < ApplicationController
 
   def get_sales_money(args)
     res = DB.execute("SELECT SUM( reported_amount_due_cents )/100.0 AS amount
-  FROM sales WHERE " + sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at")))
+  FROM sales WHERE " + sql_for_report(Sale, created_at_conditions_for_report(args)))
     return {:total => res.first["amount"]}
   end
 
@@ -560,7 +564,7 @@ class GraphicReportsController < ApplicationController
     res = DB.execute("SELECT SUM( unit_price_cents * gizmo_count )/100.0 AS due
 FROM gizmo_events
 WHERE sale_id IS NOT NULL
-AND #{sql_for_report(GizmoEvent, created_at_conditions_for_report(args))}")
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     return {:amount => res.first["due"]}
   end
 
@@ -568,7 +572,7 @@ AND #{sql_for_report(GizmoEvent, created_at_conditions_for_report(args))}")
     res = DB.execute("SELECT SUM( gizmo_count ) AS count
 FROM gizmo_events
 WHERE donation_id IS NOT NULL
-AND #{sql_for_report(GizmoEvent, created_at_conditions_for_report(args))}")
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     return {:count => res.first["count"]}
   end
 
@@ -576,7 +580,7 @@ AND #{sql_for_report(GizmoEvent, created_at_conditions_for_report(args))}")
     res = DB.execute("SELECT SUM( gizmo_count ) AS count
 FROM gizmo_events
 WHERE sale_id IS NOT NULL
-AND #{sql_for_report(GizmoEvent, created_at_conditions_for_report(args))}")
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     return {:count => res.first["count"]}
   end
 
