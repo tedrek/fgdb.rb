@@ -4,6 +4,8 @@ fgdb.rb (1.0.47) released; urgency=low
   * support KBs in String.to_bytes and majorly clean up this code
     (Closes: #17254)
   * fix the order so that the letter head works (Closes: #17280)
+  * use occurred_at instead of created_at for gizmo events in the trends
+    reports (Closes: #17345)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Feb 2010 00:19:02 -0800
 
