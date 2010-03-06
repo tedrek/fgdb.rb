@@ -157,7 +157,7 @@ class ReportsController < ApplicationController
       PaymentMethod.fake_money_methods.map(&:description) + ['total']
     @width = @columns.length
     @rows = {}
-    @rows[:donations] = ['fees', 'suggested', 'subtotals']
+    @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
     discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}.sort
     @rows[:sales] = discount_types << 'subtotals'
     @rows[:grand_totals] = ['total']
@@ -187,7 +187,7 @@ class ReportsController < ApplicationController
   end
 
   def add_donation_summation_to_data(summation, income_data, ranges)
-    payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['amount'].to_i, summation['required'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+    gizmoless_cents, payment_method_id, amount_cents, required_cents, suggested_cents, count, mn, mx = summation['gizmoless_cents'], summation['payment_method_id'].to_i, summation['amount'].to_i, summation['required'].to_i, summation['suggested'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
     ranges[:donations][:min] = min(ranges[:donations][:min], mn)
@@ -201,14 +201,16 @@ class ReportsController < ApplicationController
     # the suggested that's passed into us is really bogus, so we compute that here
     # "suggested" is the wrong terminology, it should really be "donation"
 
-    required_cents = min(amount_cents, required_cents)
-    suggested_cents = max(amount_cents - required_cents, 0)
+    contribution_cents = gizmoless_cents
+    required_cents = min(amount_cents - gizmoless_cents, required_cents)
+    suggested_cents = max(amount_cents - (required_cents + gizmoless_cents), 0)
 
     if payment_method_id != PaymentMethod.invoice.id
       total_real = income_data[:donations]['total real']
 
       update_totals(total_real['fees'], required_cents, count)
       update_totals(total_real['suggested'], suggested_cents, count)
+      update_totals(total_real['other'], gizmoless_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['total real']['total'], amount_cents, count)
     end
@@ -218,6 +220,7 @@ class ReportsController < ApplicationController
 
       update_totals(till_total['fees'], required_cents, count)
       update_totals(till_total['suggested'], suggested_cents, count)
+      update_totals(till_total['other'], gizmoless_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
@@ -226,9 +229,11 @@ class ReportsController < ApplicationController
 
     update_totals(totals['fees'], required_cents, count)
     update_totals(totals['suggested'], suggested_cents, count)
+    update_totals(totals['other'], gizmoless_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
     update_totals(column['fees'], required_cents, count)
     update_totals(column['suggested'], suggested_cents, count)
+    update_totals(column['other'], gizmoless_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)
