@@ -12,7 +12,7 @@ class VolunteerTaskType < ActiveRecord::Base
   }
 
   def parent
-    self.class.find(self.parent_id)
+    self.parent_id.nil? ? nil : self.class.find_by_id(self.parent_id)
   end
 
   def self.find_actual(*ids)
