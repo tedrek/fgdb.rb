@@ -1,6 +1,4 @@
 class VolunteerTaskType < ActiveRecord::Base
-  acts_as_tree
-
   belongs_to :program
 
   def to_s
@@ -12,6 +10,10 @@ class VolunteerTaskType < ActiveRecord::Base
   named_scope :effective_on, lambda { |date|
     { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
   }
+
+  def parent
+    self.class.find(self.parent_id)
+  end
 
   def self.find_actual(*ids)
     ids.delete_if {|id| id == 0 }
