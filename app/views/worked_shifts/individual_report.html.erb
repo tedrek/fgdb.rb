@@ -1,5 +1,5 @@
 <% week = HoursCalendar.for_pay_period_of(@date) %>
 <% week.fill_in_workers_hours(@worker) %>
 <h1>Staff hours for <%= @worker.name %> in pay period between <%= week.range.min %> and <%= week.range.max %></h1>
-<%= week.to_html %>
+<%= week.to_html(@worker, @controller) %>
 Total hours worked: <%= week.total.to_f %>
