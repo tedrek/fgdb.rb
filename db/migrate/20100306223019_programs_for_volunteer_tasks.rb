@@ -38,13 +38,13 @@ class ProgramsForVolunteerTasks < ActiveRecord::Migration
         x.save!
       end
     }
+    # get rid of volunteer_task_type.parent_id
+    remove_column :volunteer_task_types, :parent_id
     # get rid of the adoption, build, program, and [root] volunteer_task_types.
     to_d = VolunteerTaskType.find_all_by_name(["build", "adoption", "program", "root"])
     to_d.each{|x|
       x.destroy
     }
-    # get rid of volunteer_task_type.parent_id
-    remove_column :volunteer_task_types, :parent_id
     # add program_id to volunteer_tasks
     add_column :volunteer_tasks, :program_id, :integer
     # go through all volunteer_tasks, set program_id to volunteer_task_type.program_id. if there is none, make it 'other'.
