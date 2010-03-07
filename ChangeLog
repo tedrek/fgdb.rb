@@ -5,8 +5,9 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
   * link volunteer_tasks to programs, and show a drop down on the
     interface that defaults to the task_type's program. got rid of the
     tree in volunteer_task_types in the process. (Closes: #16839)
+  * set scraptops to be systems (Closes: #17328)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Mar 2010 16:20:33 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Mar 2010 16:31:06 -0800
 
 fgdb.rb (1.0.47) released; urgency=low
 
