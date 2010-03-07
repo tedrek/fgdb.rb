@@ -2,8 +2,11 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
 
   * add another section to the donations on the income report so that
     donations without gizmos can happen (Closes: #15351)
+  * link volunteer_tasks to programs, and show a drop down on the
+    interface that defaults to the task_type's program. got rid of the
+    tree in volunteer_task_types in the process. (Closes: #16839)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Mar 2010 14:13:10 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Mar 2010 16:20:33 -0800
 
 fgdb.rb (1.0.47) released; urgency=low
 

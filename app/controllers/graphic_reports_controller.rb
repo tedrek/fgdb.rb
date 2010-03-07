@@ -535,9 +535,9 @@ class GraphicReportsController < ApplicationController
   def get_volunteer_hours_by_program(args)
     res = DB.execute("SELECT programs.description, SUM( duration )
   FROM volunteer_tasks
-  LEFT JOIN volunteer_task_types ON volunteer_tasks.volunteer_task_type_id = volunteer_task_types.id
-  LEFT JOIN volunteer_task_types AS programs ON volunteer_task_types.parent_id = programs.id
+  LEFT JOIN programs ON volunteer_tasks.program_id = programs.id
   WHERE #{sql_for_report(VolunteerTask, created_at_conditions_for_report(args))}
+  AND programs.volunteer = 't'
   GROUP BY programs.id, programs.description
   ORDER BY programs.description;")
     Hash[*res.to_a.collect{|x| [x["description"], x["sum"]]}.flatten]
