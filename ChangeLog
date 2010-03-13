@@ -11,8 +11,10 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
     and unpaid invoices (among other things) (Closes: #17187)
   * link to edit the schedule on hours summary report (Closes: #17396)
   * don't enable the system box for cases and scraptops (Closes: #17335)
+  * add min, max and pto to the individual pay period report (Closes:
+    #16946)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 14:25:51 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 15:03:46 -0800
 
 fgdb.rb (1.0.47) released; urgency=low
 
