@@ -19,7 +19,7 @@ class Payment < ActiveRecord::Base
   def type_description
     d = self.payment_method.name
     if d == "invoice"
-      d = (self.transaction.invoice_resolved_at.nil ? "unresolved" : "resolved") + "_" + d
+      d = (self.transaction.invoice_resolved_at.nil? ? "unresolved" : "resolved") + "_" + d
     end
     return d
   end
