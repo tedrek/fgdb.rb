@@ -9,6 +9,7 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
   * make the staff hours reports link to edit the hours (Closes: #17033)
   * change around the coloring of transactions to differ between paid
     and unpaid invoices (among other things) (Closes: #17187)
+  * link to edit the schedule on hours summary report (Closes: #17396)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 13:30:18 -0800
 
