@@ -14,8 +14,10 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
   * add min, max and pto to the individual pay period report (Closes:
     #16946)
   * fix editing payments on donations
+  * fix the Volunteer Hours by Program trend report to use
+    date_performed instead of created_at
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 15:10:51 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 15:34:35 -0800
 
 fgdb.rb (1.0.47) released; urgency=low
 

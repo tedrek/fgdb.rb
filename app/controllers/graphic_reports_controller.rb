@@ -536,7 +536,7 @@ class GraphicReportsController < ApplicationController
     res = DB.execute("SELECT programs.description, SUM( duration )
   FROM volunteer_tasks
   LEFT JOIN programs ON volunteer_tasks.program_id = programs.id
-  WHERE #{sql_for_report(VolunteerTask, created_at_conditions_for_report(args))}
+  WHERE #{sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))}
   AND programs.volunteer = 't'
   GROUP BY programs.id, programs.description
   ORDER BY programs.description;")
