@@ -7,8 +7,10 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
     tree in volunteer_task_types in the process. (Closes: #16839)
   * set scraptops to be systems (Closes: #17328)
   * make the staff hours reports link to edit the hours (Closes: #17033)
+  * change around the coloring of transactions to differ between paid
+    and unpaid invoices (among other things) (Closes: #17187)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Mar 2010 16:41:40 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 13:30:18 -0800
 
 fgdb.rb (1.0.47) released; urgency=low
 
