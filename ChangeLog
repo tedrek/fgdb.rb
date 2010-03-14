@@ -16,8 +16,10 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
   * fix editing payments on donations
   * fix the Volunteer Hours by Program trend report to use
     date_performed instead of created_at
+  * clean up the gizmos report, and fix showing the categories broken
+    down by disbursement type
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 15:34:35 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Mar 2010 16:29:12 -0800
 
 fgdb.rb (1.0.47) released; urgency=low
 

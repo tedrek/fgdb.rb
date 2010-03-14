@@ -38,12 +38,6 @@ class ReportsController < ApplicationController
     GizmoEvent.totals(@defaults.conditions(GizmoEvent)).each do |summation|
       add_gizmo_to_data(summation, @gizmo_data)
     end
-    GizmoEvent.category_totals(@defaults.conditions(GizmoEvent)).each do |summation|
-      add_gizmo_category_to_data(summation, @gizmo_data)
-    end
-#    GizmoEvent.income_totals(@defaults.conditions(GizmoEvent)).each{|x|
-#      @gizmo_income_data[x['gt'].to_s] = x['sum']
-#    }
   end
 
   protected
@@ -90,28 +84,23 @@ class ReportsController < ApplicationController
   end
 
   def add_gizmo_to_data(summation, data)
-    type_id, context_id, disbursement_type_id, count = summation['gizmo_type_id'].to_i, summation['gizmo_context_id'].to_i, summation['disbursement_type_id'].to_i, summation['count'].to_i
+    category_id, type_id, context_id, disbursement_type_id, count = summation['gizmo_category_id'], summation['gizmo_type_id'].to_i, summation['gizmo_context_id'].to_i, summation['disbursement_type_id'].to_i, summation['count'].to_i
     type = GizmoType.find(type_id)
+    category = GizmoCategory.find(category_id)
     count *= plus_or_minus(context_id)
     if context_id == GizmoContext.disbursement.id
       tuple = disbursement_tuple(disbursement_type_id)
       data[type][tuple] += count
+      data[category][tuple] += count
       data[:total][tuple] += count
     end
     tuple = context_tuple(context_id)
+    data[category][tuple] += count
     data[type][tuple] += count
     data[:total][tuple] += count
     data[type][[nil, :total]] += count
-    data[:total][[nil, :total]] += count
-  end
-
-  def add_gizmo_category_to_data(summation, data)
-    category_id, context_id, count = summation['gizmo_category_id'].to_i, summation['gizmo_context_id'].to_i, summation['sum'].to_i
-    category = GizmoCategory.find(category_id)
-    count *= plus_or_minus(context_id)
-    tuple = context_tuple(context_id)
-    data[category][tuple] += count
     data[category][[nil, :total]] += count
+    data[:total][[nil, :total]] += count
   end
 
   #####################
