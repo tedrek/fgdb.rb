@@ -121,7 +121,7 @@ module ConditionsHelper
                       :contact => eval("@" + params_key).contact
                     } )
     elsif is_logged_in() && @current_user.contact_id
-      "Me" + hidden_field('defaults', 'contact_id', :value => @current_user.contact_id)
+      "Me" + hidden_field(params_key, 'contact_id', :value => @current_user.contact_id)
     else
       raise
     end
