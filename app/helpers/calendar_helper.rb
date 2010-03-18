@@ -9,7 +9,7 @@ module CalendarHelper
     cal_end_date += 1 while cal_end_date.wday != 6 # Saturday
     cal_current_date = cal_start_date
     weeks = (((cal_end_date - cal_start_date).to_i + 1) / 7)
-    table = HtmlTag.new("table", {:width => "98%", :border => 1, :style => "border-collapse: collapse;"})
+    table = HtmlTag.new("table", {:width => "98%", :class => "awesome"})
     table.children << HtmlTag.new("tr", {}, (0..6).map{|x| Date.strptime(x.to_s, "%w").strftime("%a")}.map{|x| HtmlTag.new("th", {:colspan => 2}, [], x)})
     first = true
     weeks.times{
