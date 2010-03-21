@@ -1,6 +1,9 @@
 class Contact < ActiveRecord::Base
   acts_as_userstamp
 
+  has_many :points_traded_away, :class_name => "PointsTrade", :foreign_key => "from_contact_id"
+  has_many :points_traded_to, :class_name => "PointsTrade", :foreign_key => "to_contact_id"
+
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
@@ -31,6 +34,19 @@ class Contact < ActiveRecord::Base
   validates_length_of :state_or_province, :maximum => 15
   validates_length_of :postal_code, :maximum => 25
   validates_length_of :country, :maximum => 100
+
+  def all_points_trades
+    self.points_traded_away + self.points_traded_to
+  end
+
+  def points
+    effective_hours = hours_effective
+    negative = points_traded_since_last_adoption("from")
+    positive = points_traded_since_last_adoption("to")
+    sum = effective_hours - negative + positive
+    max = Default['max_effective_hours'].to_f
+    return [sum, max].min
+  end
 
   def cleanup_string(str)
     return nil if str.nil?
@@ -156,14 +172,15 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def find_volunteer_tasks(cutoff = nil)
+  def find_volunteer_tasks(cutoff = nil, klass = VolunteerTask, contact_id_type = "", date_field = "date_performed")
     # if it's named volunteer_tasks it breaks everything
+    contact_id_type = contact_id_type + "_" if contact_id_type.length > 0
     if cutoff
-      conditions = [ "contact_id = ? AND date_performed >= ?", id, cutoff ]
+      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ?", id, cutoff ]
     else
-      conditions = [ "contact_id = ?", id ]
+      conditions = [ "#{contact_id_type}contact_id = ?", id ]
     end
-    VolunteerTask.find(:all,
+    klass.find(:all,
                        :conditions => conditions)
   end
 
@@ -176,17 +193,30 @@ class Contact < ActiveRecord::Base
     end
   end
 
+  def points_traded_since_last_adoption(type)
+    find_volunteer_tasks(date_of_last_adoption, PointsTrade, type, "created_at").inject(0.0) do |t,r|
+      t += r.points
+    end
+  end
+
   def hours_effective
     find_volunteer_tasks(date_of_last_adoption).inject(0.0) do |total,task|
       total += task.effective_duration
     end
   end
 
-  # effective for adoption
-  def adoption_hours
-    h = hours_effective
-    h = Default['max_effective_hours'].to_f if Default['max_effective_hours'] and Default['max_effective_hours'].to_f < h
-    return h
+  def hours_since_last_adoption
+    find_volunteer_tasks(date_of_last_adoption).inject(0.0) do |total,task|
+      total += task.duration
+    end
+  end
+
+  def last_trade
+    self.all_points_trades.sort_by(&:created_at).last
+  end
+
+  def date_of_last_trade
+    last_trade.created_at.to_date
   end
 
   def effective_discount_hours

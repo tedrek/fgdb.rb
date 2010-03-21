@@ -20,8 +20,9 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
     down by disbursement type
   * add some evil hackery to work around a strange SERVER_PORT bug
     between nginx/rack/thin/rails (Closes: #16669)
+  * allow trading points (Closes: #17123)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 20 Mar 2010 13:43:22 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 20 Mar 2010 18:03:08 -0700
 
 fgdb.rb (1.0.47) released; urgency=low
 
