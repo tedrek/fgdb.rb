@@ -21,8 +21,11 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
   * add some evil hackery to work around a strange SERVER_PORT bug
     between nginx/rack/thin/rails (Closes: #16669)
   * allow trading points (Closes: #17123)
+  * store the whole params in session rather than just action and
+    controller when doing the login stuff, so that redirects to edit
+    pages and such actually work
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 20 Mar 2010 18:03:08 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 21 Mar 2010 11:15:53 -0700
 
 fgdb.rb (1.0.47) released; urgency=low
 
