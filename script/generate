@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-t = ARGV.shift
+t = ARGV.shift || "--help"
 ARGV.unshift("--git") unless t.match(/^-/)
 ARGV.unshift(t)
 require File.dirname(__FILE__) + '/../config/boot'
