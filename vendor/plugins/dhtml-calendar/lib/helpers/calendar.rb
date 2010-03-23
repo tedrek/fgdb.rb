@@ -332,13 +332,11 @@ module ActionView::Helpers
       field_options = {:name => input_field_name, :id => input_field_id}
       [:class, :size, :value].each {|key| field_options[key] = html_options[key]}
       field_options[:size] ||= 18
-      if show_field != :box and show_field != :bocks
         # DateBocks does it's own formatting
         date = self.instance_variable_get("@#{object}").send(method) if self.instance_variable_get("@#{object}")
         calendar_options[:ifFormat] ||= date_format
         field_options[:value] ||= date if date && date.strftime(calendar_options[:ifFormat])
-      end
-    
+
       field_options[:field_title] = field_options.delete(:title) if field_options[:title]
       field_options.delete(:button_title)
       case show_field
