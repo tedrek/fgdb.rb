@@ -39,10 +39,10 @@ class Contact < ActiveRecord::Base
     self.points_traded_away + self.points_traded_to
   end
 
-  def points
+  def points(trade_id = nil)
     effective_hours = hours_effective
-    negative = points_traded_since_last_adoption("from")
-    positive = points_traded_since_last_adoption("to")
+    negative = points_traded_since_last_adoption("from", trade_id)
+    positive = points_traded_since_last_adoption("to", trade_id)
     sum = effective_hours - negative + positive
     max = Default['max_effective_hours'].to_f
     return [sum, max].min
@@ -193,8 +193,8 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def points_traded_since_last_adoption(type)
-    find_volunteer_tasks(date_of_last_adoption, PointsTrade, type, "created_at").inject(0.0) do |t,r|
+  def points_traded_since_last_adoption(type, trade_id = nil)
+    find_volunteer_tasks(date_of_last_adoption, PointsTrade, type, "created_at").delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|
       t += r.points
     end
   end

@@ -9,8 +9,8 @@
 
 <% for points_trade in @points_trades %>
   <tr>
-    <td><%=h points_trade.from_contact_id %></td>
-    <td><%=h points_trade.to_contact_id %></td>
+    <td><%=h points_trade.from_contact.display_name %> (<%=h points_trade.from_contact_id %>)</td>
+    <td><%=h points_trade.to_contact.display_name %> (<%=h points_trade.to_contact_id %>)</td>
     <td><%=h points_trade.points %></td>
     <td><%= link_to 'Edit', :action => "edit", :id => points_trade.id %></td>
     <td><%= link_to 'Destroy', :action => "destroy", :id => points_trade.id, :confirm => 'Are you sure?' %></td>
