@@ -45,6 +45,6 @@ class PointsTradesController < ApplicationController
     @points_trade = PointsTrade.find(params[:id])
     @points_trade.destroy
 
-    redirect_to(points_trades_url)
+    redirect_to({:action => "index"})
   end
 end
