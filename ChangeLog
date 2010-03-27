@@ -26,8 +26,10 @@ fgdb.rb (1.0.48) UNRELEASED; urgency=low
     pages and such actually work
   * fix validating lengths to work correctly with NULL values (Closes:
     #17638)
+  * fix the logic for determining if something is real money or not in
+    the income report (Closes: #17608)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 25 Mar 2010 15:34:30 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Mar 2010 00:47:22 -0700
 
 fgdb.rb (1.0.47) released; urgency=low
 
