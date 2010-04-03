@@ -36,6 +36,8 @@ fgdb.rb (1.0.48) released; urgency=low
     #17638)
   * fix the logic for determining if something is real money or not in
     the income report (Closes: #17608)
+  * don't trigger an hours poker email if the only shift was an
+    unavailable one (Closes: #17734)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Mar 2010 01:43:46 -0700
 
