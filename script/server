@@ -19,6 +19,19 @@ def process_yaml(obj)
 end
 
 config = File.dirname(__FILE__) + "/../config/server.yml"
+pidfile = File.dirname(__FILE__) + "/../tmp/pids/thin.pid"
+
+action = "start"
+if ["restart", "stop", "start"].include?(ARGV[0])
+  action = ARGV.shift
+end
+
+if action == "restart"
+  system("#{__FILE__} stop")
+  system("#{__FILE__} start")
+  exit
+end
+
 if File.exists?(config)
   require "yaml"
   res = YAML::load(File.read(config))
@@ -28,7 +41,12 @@ if File.exists?(config)
 end
 
 if system("which thin1.8 >/dev/null") && ENV['NO_THIN'] == nil
-  system("thin1.8 -c #{File.dirname(__FILE__) + '/../'} -A rails --no-epoll #{ARGV.join(' ')} start")
+  require 'thin'
+  thin_argv = ["-P", pidfile, "-c", File.dirname(__FILE__) + '/../', "-A", "rails", "--no-epoll", ARGV, action].flatten
+  if action == "start"
+    open(pidfile,"w") { |f| f.write(Process.pid.to_s) }
+  end
+  Thin::Runner.new(thin_argv).run!
 else
   require File.dirname(__FILE__) + '/../config/boot'
   require 'commands/server'
