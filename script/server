@@ -22,7 +22,8 @@ config = File.dirname(__FILE__) + "/../config/server.yml"
 pidfile = File.dirname(__FILE__) + "/../tmp/pids/thin.pid"
 
 action = "start"
-if ["restart", "stop", "start"].include?(ARGV[0])
+actions = ["restart", "stop", "start"]
+if actions.include?(ARGV[0])
   action = ARGV.shift
 end
 
@@ -37,6 +38,9 @@ if File.exists?(config)
   res = YAML::load(File.read(config))
   @add_to_argv = []
   process_yaml(res)
+  if actions.include?(@add_to_argv[0])
+    action = @add_to_argv.shift
+  end
   ARGV.unshift(*@add_to_argv)
 end
 
@@ -45,6 +49,8 @@ if system("which thin1.8 >/dev/null") && ENV['NO_THIN'] == nil
   thin_argv = ["-P", pidfile, "-c", File.dirname(__FILE__) + '/../', "-A", "rails", "--no-epoll", ARGV, action].flatten
   if action == "start"
     open(pidfile,"w") { |f| f.write(Process.pid.to_s) }
+  elsif action == "stop"
+    thin_argv.push("-t", "10")
   end
   Thin::Runner.new(thin_argv).run!
 else
