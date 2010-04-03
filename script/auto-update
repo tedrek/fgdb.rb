@@ -45,7 +45,7 @@ if [ ! -d "$PRODUCTION" ]; then
     echo "This seems to be the wrong system."
     exit 1
 fi
-exec 2>&1 | tee -a $LOGFILE
+main() {
 echo
 echo "========================================================================================================="
 echo "auto-update starting at $(date -R) with these options: $@"
@@ -88,3 +88,5 @@ if [ "$FAKE" = "false" ]; then
 else
     echo "Would run run_$MODE in $(pwd)"
 fi
+}
+main 2>&1 | tee -a "$LOGFILE"
