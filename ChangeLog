@@ -42,6 +42,7 @@ fgdb.rb (1.0.48) released; urgency=low
     the income report (Closes: #17608)
   * don't trigger an hours poker email if the only shift was an
     unavailable one (Closes: #17734)
+  * fix calculations on hours editing interface
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Mar 2010 01:43:46 -0700
 
