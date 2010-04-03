@@ -1,7 +1,34 @@
 #!/usr/bin/env ruby
 
-if system("which thin >/dev/null") && ENV['NO_THIN'] == nil
-  system("thin -c #{File.dirname(__FILE__) + '/../'} -A rails --no-epoll #{ARGV.join(' ')} start")
+# recursive fun
+def process_yaml(obj)
+  if obj.class == Array
+    obj.each{|x|
+      process_yaml(x)
+    }
+  elsif obj.class == Hash
+    obj.each{|k, v|
+      process_yaml(k)
+      process_yaml(v)
+    }
+  elsif [String, Fixnum].include?(obj.class)
+    @add_to_argv << obj.to_s
+  else
+    raise "Don't know how to handle: #{obj.class}"
+  end
+end
+
+config = File.dirname(__FILE__) + "/../config/server.yml"
+if File.exists?(config)
+  require "yaml"
+  res = YAML::load(File.read(config))
+  @add_to_argv = []
+  process_yaml(res)
+  ARGV.unshift(*@add_to_argv)
+end
+
+if system("which thin1.8 >/dev/null") && ENV['NO_THIN'] == nil
+  system("thin1.8 -c #{File.dirname(__FILE__) + '/../'} -A rails --no-epoll #{ARGV.join(' ')} start")
 else
   require File.dirname(__FILE__) + '/../config/boot'
   require 'commands/server'
