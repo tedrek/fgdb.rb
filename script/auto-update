@@ -41,6 +41,10 @@ UPSTREAM=origin
 CHECK_THESE="$@"
 FAKE=false
 VERBOSE=false
+if [ ! -d "$PRODUCTION" ]; then
+    echo "This seems to be the wrong system."
+    exit 1
+fi
 exec 2>&1 | tee -a $LOGFILE
 echo
 echo "========================================================================================================="
