@@ -1,0 +1,6 @@
+sed -i s/UNRELEASED/released/g ChangeLog
+dch -c ChangeLog -i --dist UNRELEASED ""
+sed -i '/^  \* $/ d' ChangeLog
+git add ChangeLog
+git commit -m "add new, empty changelog entry"
+

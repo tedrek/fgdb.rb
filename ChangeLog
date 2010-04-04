@@ -1,4 +1,9 @@
-fgdb.rb (1.0.49) UNRELEASED; urgency=low
+fgdb.rb (1.0.50) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 04 Apr 2010 11:51:17 -0700
+
+fgdb.rb (1.0.49) released; urgency=low
 
   * add a bunch of missing foreign keys
   * add a new admin set of fields for adjustments, showable by
