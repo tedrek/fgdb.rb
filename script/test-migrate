@@ -23,14 +23,17 @@ if [ -n "$1" ]; then
         release|production|live|latest)
             BRANCH=release_$($SCRIPT_DIR/sorted-tags | tail -1)
             ;;
-        release_*)
+        release_*|library)
             BRANCH=$ARG
             ;;
         1.0.*)
             BRANCH=release_$ARG
             ;;
-        master|devel|development|dev)
+        master|next)
             BRANCH=master
+            ;;
+        devel|development|dev)
+            BRANCH=devel
             ;;
         *)
             echo "Unknown branch to test-migrate: $1"
