@@ -133,30 +133,34 @@ class Worker < ActiveRecord::Base
         my = WorkersWorkerType.new(:worker_id => self.id, :worker_type_id => @temp_change_worker_type_id, :ineffective_on => my_ineffective, :effective_on => @temp_change_worker_type_date)
         my.save!
       end
-      @my_worker_types = @my_worker_types.sort_by(&:smart_effective_on)
-      @my_worker_types.each_with_siblings{|a, b, c|
-        if a and b and a.worker_type_id == b.worker_type_id
-          b.killit = true
-          a.ineffective_on = b.ineffective_on
-          a.save!
-        end
-      }
-      @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
-      @my_worker_types.delete_if{|x| x.killit}
+      self.purify_worker_types
     end
   end
 
   def purify_worker_types
     @my_worker_types = self.workers_worker_types.sort_by(&:smart_effective_on)
-    @my_worker_types.each_with_siblings{|a, b, c|
-      if a and b and a.worker_type_id == b.worker_type_id
-        b.killit = true
-        a.ineffective_on = b.ineffective_on
-        a.save!
-      end
-    }
-    @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
-    @my_worker_types.delete_if{|x| x.killit}
+    prev_length = 0
+    while prev_length != @my_worker_types.length
+      prev_length = @my_worker_types.length
+      @my_worker_types.each_with_siblings{|a, b, c|
+        if a and b and a.worker_type_id == b.worker_type_id
+          b.killit = true
+          a.ineffective_on = b.ineffective_on
+          a.save!
+          @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
+          @my_worker_types.delete_if{|x| x.killit}
+          next
+        end
+        if b and c and b.worker_type_id == c.worker_type_id
+          b.killit = true
+          c.effective_on = b.effective_on
+          c.save!
+          @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
+          @my_worker_types.delete_if{|x| x.killit}
+          next
+        end
+      }
+    end
   end
 
   def change_worker_type_id=(val)
