@@ -65,6 +65,7 @@ if [ "$BRANCH" != "master" ]; then
 fi
 cp config/database.yml-example config/database.yml
 ln -s /usr/share/rails vendor/rails
+./script/do_i_have_everything_installed_right
 rake db:migrate --trace
 cd ../
 rm -f database.sql
