@@ -138,11 +138,25 @@ class Worker < ActiveRecord::Base
         if a and b and a.worker_type_id == b.worker_type_id
           b.killit = true
           a.ineffective_on = b.ineffective_on
+          a.save!
         end
       }
       @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
       @my_worker_types.delete_if{|x| x.killit}
     end
+  end
+
+  def purify_worker_types
+    @my_worker_types = self.workers_worker_types.sort_by(&:smart_effective_on)
+    @my_worker_types.each_with_siblings{|a, b, c|
+      if a and b and a.worker_type_id == b.worker_type_id
+        b.killit = true
+        a.ineffective_on = b.ineffective_on
+        a.save!
+      end
+    }
+    @my_worker_types.select{|x| x.killit}.each{|x| x.destroy}
+    @my_worker_types.delete_if{|x| x.killit}
   end
 
   def change_worker_type_id=(val)
