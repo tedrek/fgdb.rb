@@ -147,13 +147,14 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook){
   if(!args['uneditable']) {
     tr.appendChild(td);
   }
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "id", "", args['id'], counters[prefix + '_line_id']));
+  tr.appendChild(make_hidden(args['prefix'], "id", "", args['id'], counters[prefix + '_line_id']));
   $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_form'));
   counters[args['prefix'] + '_line_id']++;
   update_hook();
 }
 
-function make_hidden(container, name, display_value, value, line_id){
+function make_hidden(prefix, name, display_value, value, line_id){
+  var container = prefix_to_container(prefix);
   hidden = document.createElement("input");
   hidden.name = container + '[-' + line_id + '][' + name + ']';
   hidden.value = value;
@@ -217,52 +218,26 @@ function edit_payment(id) {
 // STUPID HOOKS //
 //////////////////
 
-function sales_hooks(args, tr) {
-  gizmo_events_stuff(args, tr);
-  coveredness_stuff(args, tr);
-  systems_stuff(args, tr);
-  unit_price_stuff(args, tr);
-}
-
-function disbursements_hooks(args, tr) {
+function transaction_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
   systems_stuff(args, tr);
-  coveredness_stuff(args, tr);
-}
-
-function recycling_hooks(args, tr) {
-  gizmo_events_stuff(args, tr);
   contracts_stuff(args, tr);
   coveredness_stuff(args, tr);
-}
-function donation_hooks(args, tr) {
-  gizmo_events_stuff(args, tr);
-  coveredness_stuff(args, tr);
-  systems_stuff(args, tr);
   unit_price_stuff(args, tr);
 }
+
 function shift_hook(args, tr) {
   var job_id = args['job_id'];
   var duration = args['duration'];
   var job = all_jobs[job_id];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "job_id", job, job_id, line_id));
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "duration", duration, duration, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "job_id", job, job_id, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "duration", duration, duration, line_id));
 }
 
 /////////////////////////
 // ADD JUNK FROM FORMS //
 /////////////////////////
-
-function is_priced() {
-  if(gizmo_context_name == "donation" || gizmo_context_name == "sale")
-    return true;
-  else if(gizmo_context_name == "recycling" || gizmo_context_name == "disbursement" || gizmo_context_name == "gizmo_return")
-    return false;
-  else
-    alert("BUG. go yell at Ryan.");
-  return false;
-}
 
 function update_amount_for_storecredit() {
   var a = dollar_value(get_storecredit_amount($('store_credit_id').value));
@@ -344,7 +319,7 @@ function _add_gizmo_event_from_form()
 }
 
 function add_payment_from_form() {
-  if(!is_priced())
+  if(!has_unit_price)
     return;
   if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
     return true;
@@ -387,7 +362,7 @@ function coveredness_stuff(args, tr){
   if($('covered') == null)
     return;
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "covered", args['covered'], args['covered'], line_id));
+  tr.appendChild(make_hidden(args['prefix'], "covered", args['covered'], args['covered'], line_id));
 }
 
 function systems_stuff(args, tr){
@@ -415,15 +390,15 @@ function systems_stuff(args, tr){
         td.appendChild(document.createTextNode("]"));
         tr.appendChild(td);
       } else {
-        tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", args['system_id'], args['system_id'], line_id));
+        tr.appendChild(make_hidden(args['prefix'], "system_id", args['system_id'], args['system_id'], line_id));
       }
     }
     else {
-      tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", "", "", line_id));
+      tr.appendChild(make_hidden(args['prefix'], "system_id", "", "", line_id));
     }
   }
   else {
-    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "system_id", "", "", line_id));
+    tr.appendChild(make_hidden(args['prefix'], "system_id", "", "", line_id));
   }
 }
 
@@ -431,15 +406,17 @@ function contracts_stuff(args, tr){
   if($('contract_id') != null) {
     var line_id = counters[args['prefix'] + '_line_id'];
     var contract = all_contracts[args['contract_id']];
-    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "recycling_contract_id", contract, args['contract_id'], line_id));
+    tr.appendChild(make_hidden(args['prefix'], "recycling_contract_id", contract, args['contract_id'], line_id));
   }
 }
 
 function unit_price_stuff(args, tr){
+  if(!has_unit_price)
+    return;
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "unit_price", args['unit_price'], args['unit_price'], line_id));
+  tr.appendChild(make_hidden(args['prefix'], "unit_price", args['unit_price'], args['unit_price'], line_id));
   td = document.createElement("td");
-  td.appendChild(make_hidden(prefix_to_container(args['prefix']), "total_price", "$0.00", "$0.00", line_id));
+  td.appendChild(make_hidden(args['prefix'], "total_price", "$0.00", "$0.00", line_id));
   tr.appendChild(td);
 }
 
@@ -449,23 +426,23 @@ function gizmo_events_stuff(args, tr){
   var description = args['description'];
   var gizmo_type = all_gizmo_types[gizmo_type_id];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
-  var desc = make_hidden(prefix_to_container(args['prefix']), "description", description, description, line_id)
-  set_visibility(desc, show_description);
+  tr.appendChild(make_hidden(args['prefix'], "gizmo_type_id", gizmo_type, gizmo_type_id, line_id));
+  var desc = make_hidden(args['prefix'], "description", description, description, line_id)
+  set_visibility(desc, show_description & 1);
   tr.appendChild(desc);
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "gizmo_count", gizmo_count, gizmo_count, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "gizmo_count", gizmo_count, gizmo_count, line_id));
 }
 function payment_stuff(args, tr){
   var payment_amount = args['payment_amount'];
   var payment_method_id = args['payment_method_id'];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "payment_method_id", payment_methods[payment_method_id], payment_method_id, line_id));
-  amount_node = make_hidden(prefix_to_container(args['prefix']), "amount", payment_amount, payment_amount, line_id);
+  tr.appendChild(make_hidden(args['prefix'], "payment_method_id", payment_methods[payment_method_id], payment_method_id, line_id));
+  amount_node = make_hidden(args['prefix'], "amount", payment_amount, payment_amount, line_id);
   amount_node.className = "amount";
   tr.appendChild(amount_node);
   if($('store_credit_id')) {
     var storecredit_id = args['store_credit_id'];
-    tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "store_credit_id", storecredit_id, storecredit_id, line_id));
+    tr.appendChild(make_hidden(args['prefix'], "store_credit_id", storecredit_id, storecredit_id, line_id));
   }
 }
 
@@ -474,11 +451,11 @@ function contact_method_stuff(args, tr){
   var contact_method_type_id = args['contact_method_type_id'];
   var contact_method_usable = args['contact_method_usable'];
   var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(prefix_to_container(args['prefix']), "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-  usable_node = make_hidden(prefix_to_container(args['prefix']), "ok", contact_method_usable, contact_method_usable, line_id);
+  tr.appendChild(make_hidden(args['prefix'], "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
+  usable_node = make_hidden(args['prefix'], "ok", contact_method_usable, contact_method_usable, line_id);
   usable_node.className = "ok";
   tr.appendChild(usable_node);
-  description_node = make_hidden(prefix_to_container(args['prefix']), "value", contact_method_value, contact_method_value, line_id);
+  description_node = make_hidden(args['prefix'], "value", contact_method_value, contact_method_value, line_id);
   description_node.className = "description";
   tr.appendChild(description_node);
 }
@@ -893,7 +870,7 @@ function add_sale_gizmo_event(args) {
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, sales_hooks, sale_compute_totals, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, sale_compute_totals, edit_gizmo_event);
 }
 
 function add_shift(args) {
@@ -907,7 +884,7 @@ function add_gizmo_return_gizmo_event(args) {
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
-  add_line_item(args, sales_hooks, gizmo_return_compute_totals, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, gizmo_return_compute_totals, edit_gizmo_event);
 }
 
 function add_disbursement_gizmo_event(args) {
@@ -918,7 +895,7 @@ function add_disbursement_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, disbursements_hooks, update_contract_notes, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, update_contract_notes, edit_gizmo_event);
 }
 
 function add_recycling_gizmo_event(args) {
@@ -929,7 +906,7 @@ function add_recycling_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, recycling_hooks, function(){}, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, function(){}, edit_gizmo_event);
 }
 
 function add_donation_gizmo_event(args) {
@@ -938,7 +915,7 @@ function add_donation_gizmo_event(args) {
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }
-  add_line_item(args, donation_hooks, donation_compute_totals, edit_gizmo_event);
+  add_line_item(args, transaction_hooks, donation_compute_totals, edit_gizmo_event);
 }
 
 ///////////////
