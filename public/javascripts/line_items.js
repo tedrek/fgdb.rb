@@ -53,7 +53,7 @@ function getValueBySelector(thing, selector) {
 }
 
 function find_these_lines(name){
-  return $(name).getElementsBySelector("tr.line");
+  return $(name + "_lines").getElementsBySelector("tr.line");
 }
 
 function dollar_cent_value(amt) {
@@ -99,23 +99,6 @@ function cent_value(value) {
 // LINE ITEM JUNK //
 ////////////////////
 
-
-function prefix_to_container(prefix) {
-  // why is this not the sames as args['prefix']? FIX THIS!!!
-  if(prefix == "contact_method") {
-    return "contact_methods";
-  } else if (prefix == "payment") {
-    return "payments";
-  } else if (prefix == "gizmo_event") {
-    return "line";
-  } else if (prefix == "shift") {
-    return "shifts";
-  } else {
-    alert("BROKEN");
-  }
-}
-
-
 function add_line_item(args, stupid_hook, update_hook, edit_hook){
   var prefix = args['prefix'];
   var id = prefix + '_' + counters[prefix + '_line_id'] + '_line'
@@ -154,9 +137,8 @@ function add_line_item(args, stupid_hook, update_hook, edit_hook){
 }
 
 function make_hidden(prefix, name, display_value, value, line_id){
-  var container = prefix_to_container(prefix);
   hidden = document.createElement("input");
-  hidden.name = container + '[-' + line_id + '][' + name + ']';
+  hidden.name = prefix + '[-' + line_id + '][' + name + ']';
   hidden.value = value;
   hidden.type = 'hidden';
   td = document.createElement("td");
@@ -470,7 +452,7 @@ function update_contract_notes(){
   var mynotes;
   var found = new Array();
   mynotes = "";
-  lines = find_these_lines('gizmo_event_lines');
+  lines = find_these_lines('gizmo_events');
   for(var i = 0; i < lines.size(); i++) {
     line = lines[i];
     system_id = getValueBySelector(line, ".system_id");
@@ -630,7 +612,7 @@ function gizmo_return_compute_totals(){
 
 function get_grand_total(){
   var total = 0;
-  var arr = find_these_lines('gizmo_event_lines');
+  var arr = find_these_lines('gizmo_events');
   for (var x = 0; x < arr.length; x++) {
     total += cent_value(get_node_value(arr[x], "td.total_price"));
   }
@@ -639,7 +621,7 @@ function get_grand_total(){
 
 function get_subtotal() {
   var total = 0;
-  var arr = find_these_lines('gizmo_event_lines');
+  var arr = find_these_lines('gizmo_events');
   for (var x = 0; x < arr.length; x++) {
     total += (get_node_value(arr[x], "td.gizmo_count") * cent_value(get_node_value(arr[x], "td.unit_price")));
 
@@ -649,7 +631,7 @@ function get_subtotal() {
 
 function get_total_payment() {
   var total = 0;
-  var arr = find_these_lines('payment_lines');
+  var arr = find_these_lines('payments');
   for (var x = 0; x < arr.length; x++) {
     total += cent_value(get_node_value(arr[x], "td.amount"));
   }
@@ -658,7 +640,7 @@ function get_total_payment() {
 
 function get_storecredit(){
   var total = 0;
-  var arr = find_these_lines('payment_lines');
+  var arr = find_these_lines('payments');
   for (var x = 0; x < arr.length; x++) {
     if(get_node_value(arr[x], "td.payment_method_id") == "store credit") {
       total += cent_value(get_node_value(arr[x], "td.amount"));
@@ -669,7 +651,7 @@ function get_storecredit(){
 
 function get_not_storecredit(){
   var total = 0;
-  var arr = find_these_lines('payment_lines');
+  var arr = find_these_lines('payments');
   for (var x = 0; x < arr.length; x++) {
     if(get_node_value(arr[x], "td.payment_method_id") != "store credit") {
       total += cent_value(get_node_value(arr[x], "td.amount"));
@@ -679,7 +661,7 @@ function get_not_storecredit(){
 }
 
 function update_gizmo_events_totals() {
-  gizmo_events = find_these_lines('gizmo_event_lines');
+  gizmo_events = find_these_lines('gizmo_events');
   for (var i = 0; i < gizmo_events.length; i++)
   {
     thing = gizmo_events[i];
@@ -698,7 +680,7 @@ function update_gizmo_events_totals() {
 
 function get_hours_today () {
   var total = 0.0;
-  var arr = find_these_lines('shift_lines');
+  var arr = find_these_lines('shifts');
   for (var x = 0; x < arr.length; x++) {
     total += parseFloat(getValueBySelector(arr[x], "td.duration"));
  }
@@ -709,7 +691,7 @@ function get_donation_totals() {
   var totals = new Object();
   totals['required'] = 0;
   totals['suggested'] = 0;
-  var arr = find_these_lines('gizmo_event_lines');
+  var arr = find_these_lines('gizmo_events');
   for (var x = 0; x < arr.length; x++) {
     var type;
     var type_id = getValueBySelector(arr[x], "td.gizmo_type_id");
@@ -820,7 +802,7 @@ function handle_s(event) {
 ///////////////////
 
 function add_payment(args) {
-  args['prefix'] = 'payment';
+  args['prefix'] = 'payments';
   add_line_item(args, payment_stuff, eval(gizmo_context_name + "_compute_totals"), edit_payment);
 }
 
@@ -829,7 +811,7 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
   args['contact_method_type_id'] = contact_method_type_id;
   args['contact_method_usable'] = contact_method_usable;
   args['contact_method_value'] = contact_method_value;
-  args['prefix'] = 'contact_method';
+  args['prefix'] = 'contact_methods';
   add_line_item(args, contact_method_stuff, function () {}, false);
 }
 
@@ -865,7 +847,7 @@ function add_gizmo_event(args){
 }
 
 function add_sale_gizmo_event(args) {
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   args['unit_price'] = dollar_cent_value(args['unit_price']);
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
@@ -874,12 +856,12 @@ function add_sale_gizmo_event(args) {
 }
 
 function add_shift(args) {
-  args['prefix'] = 'shift';
+  args['prefix'] = 'shifts';
   add_line_item(args, shift_hook, shift_compute_totals, edit_shift);
 }
 
 function add_gizmo_return_gizmo_event(args) {
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   args['unit_price'] = dollar_cent_value(args['unit_price']);
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
@@ -888,7 +870,7 @@ function add_gizmo_return_gizmo_event(args) {
 }
 
 function add_disbursement_gizmo_event(args) {
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   if(args['system_id'] == undefined) {
     args['system_id'] = '';
   }
@@ -899,7 +881,7 @@ function add_disbursement_gizmo_event(args) {
 }
 
 function add_recycling_gizmo_event(args) {
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   if(args['contract_id'] == undefined) {
     args['contract_id'] = '';
   }
@@ -911,7 +893,7 @@ function add_recycling_gizmo_event(args) {
 
 function add_donation_gizmo_event(args) {
   args['unit_price'] = dollar_cent_value(args['unit_price']);
-  args['prefix'] = 'gizmo_event';
+  args['prefix'] = 'gizmo_events';
   if(args['covered'] == undefined) {
     args['covered'] = '';
   }

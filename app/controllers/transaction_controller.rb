@@ -280,8 +280,8 @@ class TransactionController < ApplicationController
       transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
     end
 
-    if params[:line]
-      lines = params[:line]
+    if params[:gizmo_events]
+      lines = params[:gizmo_events]
       @lines = []
       for line in lines.values
         @lines << GizmoEvent.new_or_edit(line.merge({:gizmo_context => @gizmo_context}))

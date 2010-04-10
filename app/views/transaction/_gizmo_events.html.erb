@@ -17,7 +17,7 @@
     js += "has_unit_price = #{has_unit_price ? 1 : 0};"
     javascript_tag js %>
 
-<table id="gizmo_event_lines">
+<table id="gizmo_events_lines">
   <tr>
     <th>type</th>
     <th class="<%= description_class %>">description</th>
@@ -65,7 +65,7 @@
          %>
     <% end %>
 
-  <tr id="gizmo_event_form">
+  <tr id="gizmo_events_form">
     <td><select id="gizmo_type_id" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected();" name="gizmo_type_id">
         <%= gizmo_events_options_for_transaction %>
       </select></td>
