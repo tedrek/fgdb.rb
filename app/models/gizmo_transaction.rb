@@ -172,7 +172,7 @@ module GizmoTransaction
   end
 
   def set_occurred_at_on_transaction
-    self.occurred_at = DateTime.now if self.occurred_at.nil?
+    self.occurred_at = DateTime.now if self.real_occurred_at.nil?
   end
 
   def occurred_at
