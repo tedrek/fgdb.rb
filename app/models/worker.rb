@@ -67,7 +67,11 @@ class Worker < ActiveRecord::Base
     return (a.length > 0)
   end
 
-  def self.effective_in_range(*args)
+  named_scope :effective_in_range, lambda { |*args|
+    {:conditions => ['id IN (?)', Worker._effective_in_range(args)]}
+  }
+
+  def self._effective_in_range(args)
     my_start = my_end = nil
     if args.length == 1 && args[0].is_a?(PayPeriod)
       my_start = args[0].start_date
@@ -81,7 +85,7 @@ class Worker < ActiveRecord::Base
     else
       raise ArgumentError
     end
-    Worker.all.select{|x| x.effective_in_range?(my_start, my_end)}
+    Worker.all.select{|x| x.effective_in_range?(my_start, my_end)}.map{|x| x.id}
   end
 
   named_scope :real_people, :conditions => {:virtual => false}
