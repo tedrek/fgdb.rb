@@ -4,8 +4,6 @@ class GizmoReturn < ActiveRecord::Base
   has_many :gizmo_types, :through => :gizmo_events
   include GizmoTransaction
   belongs_to :contact
-  belongs_to :sale
-  belongs_to :disbursement
   has_one :store_credit
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events

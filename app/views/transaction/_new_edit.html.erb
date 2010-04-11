@@ -37,8 +37,7 @@
     <% if ["sale", "disbursement"].include?(@gizmo_context.name) && @transaction.id %>
       <br/>
       <% returns_array = @transaction.gizmo_returns.map{|x| link_to x.link_text, {:controller => "gizmo_returns", :action => "edit", :id => x.id}} %>
-      <% returns_array << link_to("Add a new return", {:controller => "gizmo_returns", :action => "new", :params => {:gizmo_return => {(@gizmo_context.name + "_id").to_sym => @transaction.id}}}) %>
-      <%= returns_array.length != 1 ? "Returns: " : "" %><%= returns_array.join(" - ") %>
+      <%= returns_array.length != 0 ? "Returns: " : "" %><%= returns_array.join(" - ") %>
     <% end %>
     <% if request.xhr? %>
       <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
