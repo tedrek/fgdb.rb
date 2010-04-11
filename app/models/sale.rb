@@ -31,6 +31,10 @@ class Sale < ActiveRecord::Base
   define_amount_methods_on("reported_discount_amount")
   define_amount_methods_on("reported_amount_due")
 
+  def storecredits
+    self.gizmo_events.map{|x| x.store_credits}.flatten
+  end
+
   def validate
     if contact_type == 'named'
       errors.add_on_empty("contact_id")

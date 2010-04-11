@@ -13,6 +13,10 @@ class GizmoReturn < ActiveRecord::Base
   acts_as_userstamp
   before_save :set_occurred_at_on_transaction
 
+  def storecredits
+    [self.store_credit]
+  end
+
   def self.default_sort_sql
     "gizmo_returns.created_at DESC"
   end

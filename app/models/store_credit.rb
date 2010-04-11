@@ -1,6 +1,8 @@
 class StoreCredit < ActiveRecord::Base
   belongs_to :payment
 
+  define_amount_methods_on :amount
+
   def spent?
     @spent ||= _is_spent
   end

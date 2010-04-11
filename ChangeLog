@@ -2,8 +2,10 @@ fgdb.rb (1.0.50) UNRELEASED; urgency=low
 
   * move out the bytes calculations to libbytes-ruby1.8
   * mutate the returns as well (Closes: 15738)
+  * make it obvious when a receipt has store credit associated (Closes:
+    14857)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Apr 2010 13:50:32 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Apr 2010 17:28:28 -0700
 
 fgdb.rb (1.0.49) released; urgency=low
 

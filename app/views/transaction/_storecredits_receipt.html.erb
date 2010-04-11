@@ -1,0 +1,9 @@
+<% if @transaction.methods.include?('storecredits') %>
+  <% for credit in @transaction.storecredits.select{|x| !x.spent?} %>
+    <fieldset style="border: 1px solid;">
+      <h3>Store Credit: Don't throw away!</h3>
+      This receipt is worth $<%= credit.amount %> of store credit.<br/>
+      The ID number is <%= credit.id %>.
+    </fieldset>
+  <% end %>
+<% end %>
