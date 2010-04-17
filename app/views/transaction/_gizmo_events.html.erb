@@ -83,7 +83,7 @@
     <% end %>
 
   <tr id="gizmo_events_form">
-    <td><select id="gizmo_type_id" onchange="<%= h @gizmo_context.name %>_gizmo_type_selected();" name="gizmo_type_id">
+    <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" name="gizmo_type_id">
         <%= gizmo_events_options_for_transaction %>
       </select></td>
     <td class="<%= description_class %>"><input name="description" id="description" size="10"></td>

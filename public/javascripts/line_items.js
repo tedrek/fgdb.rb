@@ -994,15 +994,16 @@ function sale_payment_method_selected(){
 }
 function donation_payment_method_selected(){
 }
-function sale_gizmo_type_selected() {
+function gizmo_type_selected() {
   coveredness_type_selected();
   systems_type_selected();
+  eval(gizmo_context_name + "_gizmo_type_selected();");
+}
+function sale_gizmo_type_selected() {
 }
 function gizmo_return_gizmo_type_selected() {
-  systems_type_selected();
 }
 function donation_gizmo_type_selected() {
-  coveredness_type_selected()
   if($('covered') && $('covered').checked == true) {
     $('unit_price').value = dollar_value(first(fees[$('gizmo_type_id').value]['suggested'], fees[$('gizmo_type_id').value]['required']));
   } else {
@@ -1018,7 +1019,6 @@ function donation_gizmo_type_selected() {
     $('unit_price').disabled = true;
 }
 function recycling_gizmo_type_selected() {
-  coveredness_type_selected();
 }
 function disbursement_gizmo_type_selected() {
   coveredness_type_selected();
