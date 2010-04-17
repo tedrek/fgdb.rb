@@ -7,6 +7,11 @@ module GizmoTransaction
     end
   end
 
+  def gizmo_returns
+    [] # TODO FIXME DO NOT RELEASE LIKE THIS ITS BROKEN
+       # TODO: also need to add a foreign key on gizmo_events.return_sale_id
+  end
+
   def showable_gizmo_types
     (self.gizmo_types + self.usable_gizmo_types).uniq.sort_by(&:description)
   end
