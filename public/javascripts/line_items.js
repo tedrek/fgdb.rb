@@ -181,7 +181,7 @@ function edit_gizmo_event(id) {
   if($('reason') != null) {
     $('reason').value = getValueBySelector(thing, ".reason");
     $('tester').value = getValueBySelector(thing, ".tester");
-    $('sale_id').value = getValueBySelector(thing, ".sale_id");
+    $('sale_id').value = getValueBySelector(thing, ".return_sale_id");
   }
   $('description').value = getValueBySelector(thing, ".description");
   $('gizmo_type_id').focus();
@@ -438,7 +438,7 @@ function returns_stuff(args,tr) {
   var reason = args['reason'];
   var tester = args['tester'];
   var sale_id = args['sale_id'];
-  tr.appendChild(make_hidden(args['prefix'], "sale_id", sale_id, sale_id, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "return_sale_id", sale_id, sale_id, line_id));
   tr.appendChild(make_hidden(args['prefix'], "reason", reason.truncate(15), reason, line_id));
   tr.appendChild(make_hidden(args['prefix'], "tester", tester.truncate(15), tester, line_id));
 }
