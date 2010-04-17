@@ -207,28 +207,6 @@ function edit_payment(id) {
   $('payment_method_id').focus();
 }
 
-//////////////////
-// STUPID HOOKS //
-//////////////////
-
-function transaction_hooks(args, tr) {
-  gizmo_events_stuff(args, tr);
-  returns_stuff(args, tr);
-  systems_stuff(args, tr);
-  contracts_stuff(args, tr);
-  coveredness_stuff(args, tr);
-  unit_price_stuff(args, tr);
-}
-
-function shift_hook(args, tr) {
-  var job_id = args['job_id'];
-  var duration = args['duration'];
-  var job = all_jobs[job_id];
-  var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(args['prefix'], "job_id", job, job_id, line_id));
-  tr.appendChild(make_hidden(args['prefix'], "duration", duration, duration, line_id));
-}
-
 /////////////////////////
 // ADD JUNK FROM FORMS //
 /////////////////////////
@@ -360,9 +338,9 @@ function add_contact_method_from_form() {
   return false;
 }
 
-///////////////////////////////
-// REAL PART OF STUPID HOOKS //
-///////////////////////////////
+//////////////////
+// STUPID HOOKS //
+//////////////////
 
 function coveredness_stuff(args, tr){
   if(!coveredness_enabled)
@@ -457,6 +435,25 @@ function gizmo_events_stuff(args, tr){
     tr.appendChild(make_hidden(args['prefix'], "gizmo_count", gizmo_count, gizmo_count, line_id));
   }
 }
+
+function transaction_hooks(args, tr) {
+  gizmo_events_stuff(args, tr);
+  returns_stuff(args, tr);
+  systems_stuff(args, tr);
+  contracts_stuff(args, tr);
+  coveredness_stuff(args, tr);
+  unit_price_stuff(args, tr);
+}
+
+function shift_hook(args, tr) {
+  var job_id = args['job_id'];
+  var duration = args['duration'];
+  var job = all_jobs[job_id];
+  var line_id = counters[args['prefix'] + '_line_id'];
+  tr.appendChild(make_hidden(args['prefix'], "job_id", job, job_id, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "duration", duration, duration, line_id));
+}
+
 function payment_stuff(args, tr){
   var payment_amount = args['payment_amount'];
   var payment_method_id = args['payment_method_id'];
