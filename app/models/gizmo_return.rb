@@ -25,7 +25,6 @@ class GizmoReturn < ActiveRecord::Base
       errors.add("contact_id", "does not refer to any single, unique contact")
     end
     errors.add("gizmos", "should include something") if gizmo_events.empty?
-    errors.add("transaction_links", "should link to either a sale or a disbursement") if [self.sale, self.disbursement].select{|x| !x.nil?}.length != 1
   end
 
   def gizmo_context

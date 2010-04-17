@@ -44,7 +44,11 @@ function set_visibility(node, visibility) {
 
 // this one gets the visible part
 function get_node_value(node, id) {
-  return node.getElementsBySelector(id).first().lastChild.data.replace(/\$/, '');
+  var elms = node.getElementsBySelector(id);
+  if(elms.length == 0) {
+    return null;
+  }
+  return elms.first().lastChild.data.replace(/\$/, '')
 }
 
 // this one gets the hidden part
@@ -156,7 +160,9 @@ function edit_gizmo_event(id) {
   thing = $(id);
   $('gizmo_type_id').value = getValueBySelector(thing, ".gizmo_type_id");
   $('gizmo_type_id').onchange();
-  $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
+  if($('gizmo_count') != null) {
+    $('gizmo_count').value = getValueBySelector(thing, ".gizmo_count");
+  }
   if($('system_id') != null) {
     $('system_id').value = getValueBySelector(thing, ".system_id");
   }
@@ -171,6 +177,11 @@ function edit_gizmo_event(id) {
   }
   if($('unit_price') != null) {
     $('unit_price').value = getValueBySelector(thing, ".unit_price");
+  }
+  if($('reason') != null) {
+    $('reason').value = getValueBySelector(thing, ".reason");
+    $('tester').value = getValueBySelector(thing, ".tester");
+    $('sale_id').value = getValueBySelector(thing, ".sale_id");
   }
   $('description').value = getValueBySelector(thing, ".description");
   $('gizmo_type_id').focus();
@@ -202,6 +213,7 @@ function edit_payment(id) {
 
 function transaction_hooks(args, tr) {
   gizmo_events_stuff(args, tr);
+  returns_stuff(args, tr);
   systems_stuff(args, tr);
   contracts_stuff(args, tr);
   coveredness_stuff(args, tr);
@@ -245,10 +257,10 @@ function add_shift_from_form() {
 
 function _add_gizmo_event_from_form()
 {
-  if($('gizmo_type_id').selectedIndex == 0 || ($('unit_price') != null && $('unit_price').value == '') || $('gizmo_count').value == '') {
+  if($('gizmo_type_id').selectedIndex == 0 || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
     return true;
   }
-  if($('system_id') != null) {
+  if($('system_id') != null && $('gizmo_count') != null) {
     var list = strlist_to_arr($('system_id').value);
     if(parseInt($('gizmo_count').value) < list.length) {
       alert("you gave more system ids than the number of gizmos, which can't work...please fix this and try again.");
@@ -258,13 +270,20 @@ function _add_gizmo_event_from_form()
   }
   var args = new Object();
   args['gizmo_type_id'] = $('gizmo_type_id').value;
-  args['gizmo_count'] = $('gizmo_count').value;
+  if($('gizmo_count') != null) {
+    args['gizmo_count'] = $('gizmo_count').value;
+  }
   args['description'] = $('description').value;
   if($('unit_price') != null) {
     args['unit_price'] = $('unit_price').value;
   }
   if($('system_id') != null) {
     args['system_id'] = $('system_id').value;
+  }
+  if($('reason') != null) {
+    args['reason'] = $('reason').value;
+    args['tester'] = $('tester').value;
+    args['sale_id'] = $('sale_id').value;
   }
   if($('covered') != null) {
     args['covered'] = $('covered').checked;
@@ -281,10 +300,17 @@ function _add_gizmo_event_from_form()
   if($('unit_price') != null) {
     $('unit_price').value = $('unit_price').defaultValue;
   }
-  $('gizmo_count').value = $('gizmo_count').defaultValue;
+  if($('gizmo_count') != null) {
+    $('gizmo_count').value = $('gizmo_count').defaultValue;
+  }
   if($('system_id') != null) {
     $('system_id').value = $('system_id').defaultValue;
     $('system_id').disable();
+  }
+  if($('reason') != null){
+    $('reason').value = $('reason').defaultValue;
+    $('tester').value = $('tester').defaultValue;
+    $('sale_id').value = $('sale_id').defaultValue;
   }
   if($('covered') != null){
     $('covered').checked = $('covered').defaultChecked;
@@ -397,9 +423,24 @@ function unit_price_stuff(args, tr){
     return;
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden(args['prefix'], "unit_price", args['unit_price'], args['unit_price'], line_id));
-  td = document.createElement("td");
-  td.appendChild(make_hidden(args['prefix'], "total_price", "$0.00", "$0.00", line_id));
-  tr.appendChild(td);
+  if($('gizmo_count') != null) {
+    td = document.createElement("td");
+    td.appendChild(make_hidden(args['prefix'], "total_price", "$0.00", "$0.00", line_id));
+    tr.appendChild(td);
+  }
+}
+
+function returns_stuff(args,tr) {
+  if($('reason') == null) {
+    return;
+  }
+  var line_id = counters[args['prefix'] + '_line_id'];
+  var reason = args['reason'];
+  var tester = args['tester'];
+  var sale_id = args['sale_id'];
+  tr.appendChild(make_hidden(args['prefix'], "sale_id", sale_id, sale_id, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "reason", reason.truncate(15), reason, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "tester", tester.truncate(15), tester, line_id));
 }
 
 function gizmo_events_stuff(args, tr){
@@ -412,7 +453,9 @@ function gizmo_events_stuff(args, tr){
   var desc = make_hidden(args['prefix'], "description", description, description, line_id)
   set_visibility(desc, show_description & 1);
   tr.appendChild(desc);
-  tr.appendChild(make_hidden(args['prefix'], "gizmo_count", gizmo_count, gizmo_count, line_id));
+  if($('gizmo_count') != null) {
+    tr.appendChild(make_hidden(args['prefix'], "gizmo_count", gizmo_count, gizmo_count, line_id));
+  }
 }
 function payment_stuff(args, tr){
   var payment_amount = args['payment_amount'];
@@ -605,7 +648,6 @@ function sale_compute_totals() {
 }
 
 function gizmo_return_compute_totals(){
-  update_gizmo_events_totals();
   var subtotal = get_subtotal();
   $('grand_total').innerHTML = dollar_value(subtotal);
 }
@@ -623,7 +665,11 @@ function get_subtotal() {
   var total = 0;
   var arr = find_these_lines('gizmo_events');
   for (var x = 0; x < arr.length; x++) {
-    total += (get_node_value(arr[x], "td.gizmo_count") * cent_value(get_node_value(arr[x], "td.unit_price")));
+    count = get_node_value(arr[x], "td.gizmo_count");
+    if(count == null) {
+      count = 1;
+    }
+    total += (count * cent_value(get_node_value(arr[x], "td.unit_price")));
 
   }
   return total;
@@ -764,7 +810,7 @@ function is_last_enabled_visable_there_field_thing_in_line_item(name, names) {
 }
 
 function last_and_tab(event) {
-  linelist = ['gizmo_count', 'system_id', 'contract_id','covered', 'unit_price'];
+  linelist = ['gizmo_count', 'sale_id', 'reason', 'tester', 'system_id', 'contract_id','covered', 'unit_price'];
   return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
 }
 
@@ -816,7 +862,7 @@ function add_contact_method(contact_method_type_id, contact_method_usable, conta
 }
 
 function add_gizmo_event(args){
-  if(args['system_id'] != null && args['system_id'] != '') {
+  if(args['system_id'] != null && args['system_id'] != '' && args['gizmo_count'] != null) {
     if(is_a_list("" + args['system_id'])) {
       var list = strlist_to_arr("" + args['system_id']);
       var ni = 0;
