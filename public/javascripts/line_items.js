@@ -217,6 +217,7 @@ function update_amount_for_storecredit() {
     a = "";
   }
   $('payment_amount').value = a;
+  alert_for_storecredit($('store_credit_id').value);
 }
 
 function add_shift_from_form() {
@@ -575,6 +576,12 @@ function get_storecredit_amount(id) {
   return val;
 }
 
+function alert_for_storecredit(id) {
+  if(get_storecredit_amount(id) == null) {
+    alert(storecredit_errors_cache[id]);
+  }
+}
+
 function shift_compute_totals () {
     if(shift_do_ajax == 0) {
        return;
@@ -825,10 +832,17 @@ function handle_ge(event) {
 }
 
 function handle_p(event) {
-  if(last_and_tab_p(event)) {
-    if(event.target.onchange)
-      event.target.onchange();
-    return handle_payments();
+  if(is_tab(event)) {
+    if(event.target.id == 'store_credit_id') {
+      update_amount_for_storecredit();
+      if(get_storecredit_amount(event.target.value) == null) {
+        event.target.focus();
+        return false;
+      }
+    }
+    if(last_and_tab_p(event)) {
+      return handle_payments();
+    }
   }
 }
 

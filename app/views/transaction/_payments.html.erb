@@ -26,7 +26,7 @@
       </select></td>
     <td><input id="payment_amount" name="payment_amount" onkeydown="return handle_p(event);"/></td>
     <% if @gizmo_context == GizmoContext.sale %>
-      <td><input id="store_credit_id" name="store_credit_id" onchange="update_amount_for_storecredit();" onkeydown="return handle_p(event);"/></td>
+      <td><input id="store_credit_id" name="store_credit_id" onkeydown="return handle_p(event);"/></td>
     <% end %>
     <td><%= loading_indicator_tag "payment_line_item" %>
 <%= javascript_tag "payment_line_item_loading_id = #{loading_indicator_id("payment_line_item").to_json}"; %>

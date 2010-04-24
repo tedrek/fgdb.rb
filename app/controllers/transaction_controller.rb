@@ -39,9 +39,21 @@ class TransactionController < ApplicationController
 
   def get_storecredit_amount
     s = StoreCredit.find_by_id(params[:id])
-    v = (s ? s.amount_cents : -1)
+    msg = nil
+    v = -1
+    if s
+      if s.spent?
+        msg = "This store credit has already been spent"
+      else
+        v = s.amount_cents
+      end
+    else
+      msg = "A store credit with that ID does not exist"
+    end
+    v = (s && !s.spent? ? s.amount_cents : -1)
     render :update do |page|
-      page << "internal_storecredit_amount = #{v.to_s.to_json}";
+      page << "internal_storecredit_amount = #{v.to_s.to_json};";
+      page << "storecredit_errors_cache[#{params[:id]}] = #{msg.to_json};"
       page.hide loading_indicator_id("payment_line_item")
     end
   end
