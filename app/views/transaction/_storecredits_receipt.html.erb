@@ -3,7 +3,8 @@
     <fieldset style="border: 1px solid;">
       <h3>Store Credit: Don't throw away!</h3>
       This receipt is worth $<%= credit.amount %> of store credit.<br/>
-      The ID number is <%= credit.id %>.
+      The ID number is <%= credit.id %>.<br/>
+      This store credit is valid until <%= credit.valid_until.strftime("%B %d, %Y") %>.
     </fieldset>
   <% end %>
 <% end %>

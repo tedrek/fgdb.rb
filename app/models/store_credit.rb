@@ -17,6 +17,14 @@ class StoreCredit < ActiveRecord::Base
     nil
   end
 
+  def valid?(date = Date.today)
+    date <= self.valid_until
+  end
+
+  def valid_until
+    created_at + 1.year
+  end
+
   private
 
   def _spent_on
