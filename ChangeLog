@@ -8,8 +8,9 @@ fgdb.rb (1.0.50) UNRELEASED; urgency=low
     (Closes: #16659)
   * mess around with the fields for the gizmo returns (Closes: #16660)
   * add a valid until to the store credit printout
+  * enable cashier codes for disbursements (Closes: #18046)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Apr 2010 14:18:21 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Apr 2010 15:18:38 -0700
 
 fgdb.rb (1.0.49) released; urgency=low
 
