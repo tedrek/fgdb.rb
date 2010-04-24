@@ -17,7 +17,7 @@ class StoreCredit < ActiveRecord::Base
     nil
   end
 
-  def valid?(date = Date.today)
+  def still_valid?(date = Date.today)
     date <= self.valid_until
   end
 
