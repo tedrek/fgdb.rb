@@ -827,10 +827,13 @@ function last_and_tab_p(event) {
 }
 
 function handle_ge(event) {
-  if(last_and_tab(event)) {
-    if(event.target.onchange)
+  if(is_tab(event)) {
+    if(event.target.onchange) {
       event.target.onchange();
-    return handle_gizmo_events();
+    }
+    if(last_and_tab(event)) {
+      return handle_gizmo_events();
+    }
   }
 }
 
