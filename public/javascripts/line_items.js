@@ -309,7 +309,7 @@ function _add_gizmo_event_from_form()
 }
 
 function add_payment_from_form() {
-  if(!has_unit_price)
+  if(!has_a_price)
     return;
   if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
     return true;
@@ -401,7 +401,7 @@ function contracts_stuff(args, tr){
 }
 
 function unit_price_stuff(args, tr){
-  if(!has_unit_price)
+  if(!has_a_price)
     return;
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden(args['prefix'], "unit_price", args['unit_price'], args['unit_price'], line_id));

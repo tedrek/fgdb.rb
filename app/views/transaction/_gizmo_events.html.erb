@@ -16,7 +16,7 @@
 <%= js = "gizmo_context = '#{escape_javascript h @gizmo_context.to_s}';"
     js += "show_description=#{hide_description ? "0" : "1"};"
     js += "bind_key('ctrl-e', toggle_description);";
-    js += "has_unit_price = #{has_unit_price ? 1 : 0};"
+    js += "has_a_price = #{show_price ? 1 : 0};"
     javascript_tag js %>
 
 <table id="gizmo_events_lines">
