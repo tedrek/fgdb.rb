@@ -170,7 +170,7 @@ function edit_gizmo_event(id) {
     $('contract_id').value = getValueBySelector(thing, ".recycling_contract_id");
   }
   if($('covered') != null) {
-    $('covered').checked = getValueBySelector(thing, ".covered") == "true";
+    $('covered').value = getValueBySelector(thing, ".covered");
     if($('covered').onchange) {
       $('covered').onchange();
     }
@@ -236,7 +236,7 @@ function add_shift_from_form() {
 
 function _add_gizmo_event_from_form()
 {
-  if($('gizmo_type_id').selectedIndex == 0 || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
+  if($('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && $('covered').selectedIndex == 0) || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
     return true;
   }
   if($('system_id') != null && $('gizmo_count') != null) {
@@ -268,7 +268,7 @@ function _add_gizmo_event_from_form()
     args['sale_id'] = $('sale_id').value;
   }
   if($('covered') != null) {
-    args['covered'] = $('covered').checked;
+    args['covered'] = $('covered').value;
   }
   if($('contract_id') != null) {
     args['contract_id'] = $('contract_id').value;
@@ -295,10 +295,10 @@ function _add_gizmo_event_from_form()
     $('sale_id').value = $('sale_id').defaultValue;
   }
   if($('covered') != null){
-    $('covered').checked = $('covered').defaultChecked;
+    $('covered').selectedIndex = 0;
     $('covered').disable();
     if($('covered').disabled) {
-      $('covered').checked = false;
+      $('covered').value = "false";
     }
   }
   if($('contract_id') != null) {
@@ -970,17 +970,17 @@ function coveredness_type_selected() {
   if(gizmo_types_covered[$('gizmo_type_id').value] == true) {
     if($('covered').disabled) {
       $('covered').enable();
-      $('covered').checked = true;
+      $('covered').value = "nil";
     }
   }
   else {
     if(!$('covered').disabled) {
       $('covered').disable();
-      $('covered').checked = false;
+      $('covered').value = "false";
     }
   }
   if($('covered').disabled) {
-    $('covered').checked = false;
+    $('covered').value = "false";
   }
 }
 function get_name_of_selected(name) {
@@ -1018,7 +1018,7 @@ function sale_gizmo_type_selected() {
 function gizmo_return_gizmo_type_selected() {
 }
 function donation_gizmo_type_selected() {
-  if($('covered') && $('covered').checked == true) {
+  if($('covered') && $('covered').value == "true") {
     $('unit_price').value = dollar_value(first(fees[$('gizmo_type_id').value]['suggested'], fees[$('gizmo_type_id').value]['required']));
   } else {
     $('unit_price').value = dollar_value(first(fees[$('gizmo_type_id').value]['required'], fees[$('gizmo_type_id').value]['suggested']));
@@ -1029,7 +1029,7 @@ function donation_gizmo_type_selected() {
   else {
     $('unit_price').disabled=true;
   }
-  if($('unit_price').disabled == false && $('covered') != null && $('covered').checked == true)
+  if($('unit_price').disabled == false && $('covered') != null && $('covered').value == "true")
     $('unit_price').disabled = true;
 }
 function recycling_gizmo_type_selected() {
