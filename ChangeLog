@@ -8,7 +8,6 @@ fgdb.rb (1.0.50) UNRELEASED; urgency=low
     (Closes: #16659)
   * mess around with the fields for the gizmo returns (Closes: #16660)
   * add a valid until to the store credit printout
-  * enable cashier codes for disbursements (Closes: #18046)
   * alert when the store credit id is already spent or nonexistant
   * prompt the user if they don't enter a system id
   * Store should be happy with returns (Closes: #16656)
