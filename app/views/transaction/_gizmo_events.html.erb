@@ -22,14 +22,14 @@
 <table id="gizmo_events_lines">
   <tr>
     <th>type</th>
-    <th class="<%= description_class %>">description</th>
+    <th class="<%= description_class %>">detailed desc</th>
     <% if show_qty %>
     <th>qty</th>
     <% end %>
     <% if show_return %>
       <th>sale id</th>
       <th>reason</th>
-      <th>tester</th>
+      <th>tested by</th>
     <% end %>
     <% if show_system %>
     <th>system id</th>
@@ -93,7 +93,7 @@
     <% if show_return %>
     <td><input name="sale_id" id="sale_id" size="6" onkeydown="return handle_ge(event);"></td>
     <td><input name="reason" id="reason" size="10" onkeydown="return handle_ge(event);"></td>
-    <td><input name="tester" id="tester" size="10" onkeydown="return handle_ge(event);"></td>
+    <td><input name="tester" id="tester" size="5" onkeydown="return handle_ge(event);"></td>
     <% end %>
     <% if show_system %>
     <td><input name="system_id" id="system_id" size="6" onkeydown="return handle_ge(event);"></td>
@@ -111,7 +111,7 @@
           </select></td>
     <% end %>
     <% if show_price %>
-      <td><input name="unit_price" id="unit_price" size="8" onkeydown="if(is_tab(event)) {return handle_gizmo_events();}"></td>
+      <td><input name="unit_price" id="unit_price" size="6" onkeydown="if(is_tab(event)) {return handle_gizmo_events();}"></td>
     <% end %>
     <td><%= loading_indicator_tag "line_item" %>
       <%= javascript_tag "line_item_loading_id = #{loading_indicator_id("line_item").to_json}"; %>
