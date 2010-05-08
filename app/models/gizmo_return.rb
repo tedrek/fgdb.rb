@@ -44,6 +44,7 @@ class GizmoReturn < ActiveRecord::Base
     if self.storecredit_difference_cents != 0
       self.store_credit ||= StoreCredit.new
       self.store_credit.amount_cents = self.storecredit_difference_cents
+      self.store_credit.expire_date ||= (Date.today + 1.year)
     else
       self.store_credit.destroy if self.store_credit
       self.store_credit = nil

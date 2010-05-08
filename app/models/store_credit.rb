@@ -22,7 +22,7 @@ class StoreCredit < ActiveRecord::Base
   end
 
   def valid_until
-    created_at + 1.year
+    expire_date
   end
 
   private

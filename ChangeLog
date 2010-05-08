@@ -13,8 +13,10 @@ fgdb.rb (1.0.50) UNRELEASED; urgency=low
   * Store should be happy with returns (Closes: #16656)
   * change the covered widget to be a dropdown instead of a checkbox
     (Closes: #15884)
+  * add an expire_date field to store credits, and make partial store
+    credits retain the expire date from the original store credit
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Apr 2010 17:57:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 08 May 2010 12:15:30 -0700
 
 fgdb.rb (1.0.49) released; urgency=low
 
