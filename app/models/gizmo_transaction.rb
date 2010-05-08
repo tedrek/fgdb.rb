@@ -113,9 +113,9 @@ module GizmoTransaction
   end
 
   def should_i_hide_it?
-    if gizmo_context == GizmoContext.donation
+    if gizmo_context == GizmoContext.donation or gizmo_context == GizmoContext.gizmo_return
       return true
-    elsif gizmo_context == GizmoContext.sale or gizmo_context == GizmoContext.gizmo_return
+    elsif gizmo_context == GizmoContext.sale
       return false
     else
       raise NoMethodError
