@@ -45,7 +45,7 @@
       <%= render :partial => 'form_messages' %>
     <% end %>
 
-    <% if Contract.find(:all).length > 1 %>
+    <% if contract_enabled %>
       <pre id="contract_notes" style="background: yellow">
       </pre>
     <% end %>

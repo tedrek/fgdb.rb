@@ -4,6 +4,10 @@ module ApplicationHelper
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
+  def contract_enabled
+    Contract.find(:all).length > 1
+  end
+
   def barcode(info, opts = {})
     tag("img", {:height => 30, :width => 100}.merge(opts).merge({:src => url_for(:controller => "barcode", :action => "barcode", :id => info, :format => "gif")}))
   end
