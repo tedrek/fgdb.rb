@@ -265,6 +265,9 @@ function _add_gizmo_event_from_form()
     if($('sale_id').value == "") { // TODO: put this in a loop that checks if the sale actually exists too
       $('sale_id').value = prompt("You didn't enter a sale id. Please enter one now, or continue if you are sure you don't want to enter one.");
     }
+    while($('sale_id').value != "" && !sale_exists($('sale_id').value)) {
+      $('sale_id').value = prompt("You entered a nonexistant sale id. Please enter a correct one now, or continue without entering one if you want to leave it blank.");
+    }
     args['sale_id'] = $('sale_id').value;
   }
   if($('covered') != null) {
@@ -533,6 +536,8 @@ function format_float(float) {
   return str;
 }
 
+// OLDTODO: just pass the hash in the parameters: option below
+
 function get_system_contract(system_id){
   var val;
   if(system_contract_cache[system_id]) {
@@ -541,7 +546,7 @@ function get_system_contract(system_id){
     var myhash = new Hash();
     internal_system_contract_id = -2;
     myhash.set('system_id', system_id);
-    var str = myhash.toQueryString(); // TODO: just pass the hash in the parameters: option below
+    var str = myhash.toQueryString();
     Element.show(line_item_loading_id);
     new Ajax.Request(get_system_contract_url + '?' + str, {asynchronous:false, evalScripts:true});
     system_contract_cache[system_id] = internal_system_contract_id;
@@ -564,7 +569,7 @@ function get_storecredit_amount(id) {
     var myhash = new Hash();
     internal_storecredit_amount = -2;
     myhash.set('id', id);
-    var str = myhash.toQueryString(); // TODO: just pass the hash in the parameters: option below
+    var str = myhash.toQueryString();
     Element.show(payment_line_item_loading_id);
     new Ajax.Request(get_storecredit_amount_url + '?' + str, {asynchronous:false, evalScripts:true});
     storecredit_amount_cache[id] = internal_storecredit_amount;
@@ -575,6 +580,26 @@ function get_storecredit_amount(id) {
   }
   if(val == -1) {
     val = null;
+  }
+  return val;
+}
+
+function sale_exists(sale_id){
+  var val;
+  if(sale_id_cache[sale_id]) {
+    val = sale_id_cache[sale_id];
+  } else {
+    var myhash = new Hash();
+    internal_sale_exists = -2;
+    myhash.set('id', sale_id);
+    var str = myhash.toQueryString();
+    Element.show(line_item_loading_id);
+    new Ajax.Request(get_sale_exists_url + '?' + str, {asynchronous:false, evalScripts:true});
+    sale_id_cache[sale_id] = internal_sale_exists;
+    val = internal_sale_exists;
+  }
+  if(val == -2) {
+    alert("internal error");
   }
   return val;
 }
