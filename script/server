@@ -44,7 +44,7 @@ if File.exists?(config)
   ARGV.unshift(*@add_to_argv)
 end
 
-if system("which thin1.8 >/dev/null") && ENV['NO_THIN'] == nil
+if (system("which thin1.8 >/dev/null") || system("which thin >/dev/null")) && ENV['NO_THIN'] == nil
   require 'thin'
   thin_argv = ["-P", pidfile, "-c", File.dirname(__FILE__) + '/../', "-A", "rails", "--no-epoll", ARGV, action].flatten
   if action == "start"
