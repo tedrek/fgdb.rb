@@ -170,7 +170,9 @@ function edit_gizmo_event(id) {
     $('contract_id').value = getValueBySelector(thing, ".recycling_contract_id");
   }
   if($('covered') != null) {
-    $('covered').value = getValueBySelector(thing, ".covered");
+    if($('covered').enabled) {
+      $('covered').value = getValueBySelector(thing, ".covered");
+    }
     if($('covered').onchange) {
       $('covered').onchange();
     }
