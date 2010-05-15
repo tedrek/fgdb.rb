@@ -129,7 +129,7 @@
       <div>
         <%= link_to "printme", :controller => 'spec_sheets' %>
       </div>
-      <% if contract_enabled && has_role?("ADMIN") # TODO: fix this %>
+      <% if contract_enabled && has_role?("ADMIN") %>
         <div>
           <%= link_to "fix contract", :controller => 'spec_sheets', :action => "fix_contract" %>
         </div>
