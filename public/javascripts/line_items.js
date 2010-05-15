@@ -262,7 +262,7 @@ function _add_gizmo_event_from_form()
   if($('reason') != null) {
     args['reason'] = $('reason').value;
     args['tester'] = $('tester').value;
-    if($('sale_id').value == "") { // TODO: put this in a loop that checks if the sale actually exists too
+    if($('sale_id').value == "") {
       $('sale_id').value = prompt("You didn't enter a sale id. Please enter one now, or continue if you are sure you don't want to enter one.");
     }
     while($('sale_id').value != "" && !sale_exists($('sale_id').value)) {
