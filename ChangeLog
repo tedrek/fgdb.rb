@@ -15,6 +15,7 @@ fgdb.rb (1.0.50) UNRELEASED; urgency=low
     (Closes: #15884)
   * add an expire_date field to store credits, and make partial store
     credits retain the expire date from the original store credit
+  * add a list of gizmo types at http://data/sales/gizmo_types
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 08 May 2010 12:15:30 -0700
 
