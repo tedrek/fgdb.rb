@@ -2,7 +2,7 @@
 
 <% show_system = ["sales", "disbursements", "gizmo_returns"].include?(my_cont) %>
 <% show_contract = my_cont == "recyclings" && Contract.usable.length > 1 %>
-<% show_coveredness = ["donations", "recyclings", "disbursements"].include?(my_cont) && coveredness_enabled %>
+<% show_coveredness = coveredness_enabled %>
 <% has_unit_price = ["sales", "gizmo_returns"].include?(my_cont) %>
 <% has_fee_cents = my_cont == "donations" %>
 <% hide_description = my_cont != "gizmo_returns" %>
