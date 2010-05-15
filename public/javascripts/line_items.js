@@ -540,6 +540,13 @@ function format_float(float) {
 
 // OLDTODO: just pass the hash in the parameters: option below
 
+function get_system_covered(system_id) {
+  if(!system_covered_cache[system_id]) {
+    get_system_contract(system_id);
+  }
+  return system_covered_cache[system_id];
+}
+
 function get_system_contract(system_id){
   var val;
   if(system_contract_cache[system_id]) {
