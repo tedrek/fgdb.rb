@@ -168,6 +168,7 @@ function edit_gizmo_event(id) {
   }
   if($('contract_id') != null) {
     $('contract_id').value = getValueBySelector(thing, ".recycling_contract_id");
+    $('contract_id').onchange();
   }
   if($('covered') != null) {
     if($('covered').enabled) {
@@ -1001,13 +1002,23 @@ function add_donation_gizmo_event(args) {
 // ONCHANGES //
 ///////////////
 
+function contract_selected () {
+  coveredness_type_selected();
+}
+
 function coveredness_type_selected() {
   if($('covered') == null)
     return;
+  contract_widget = $('contract_id') || $('donation_contract_id');
   if(gizmo_types_covered[$('gizmo_type_id').value] == true) {
-    if($('covered').disabled) {
-      $('covered').enable();
-      $('covered').value = "nil";
+    if(contract_widget && contract_widget.value != "1") {
+      $('covered').disable();
+      $('covered').value = "false";
+    } else {
+      if($('covered').disabled) {
+        $('covered').enable();
+        $('covered').value = "nil";
+      }
     }
   }
   else {

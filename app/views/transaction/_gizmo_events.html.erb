@@ -99,7 +99,7 @@
     <td><input name="system_id" id="system_id" size="6" onkeydown="return handle_ge(event);"></td>
     <% end %>
     <% if show_contract %>
-        <td><select id="contract_id" onkeydown="return handle_ge(event);" name="contract_id">
+        <td><select id="contract_id" onkeydown="return handle_ge(event);" onchange="contract_selected();" name="contract_id">
             <%= options_from_collection_for_select([Contract.find_by_name("default")] + Contract.usable.delete_if{|x| x.name == "default"}.sort_by(&:description), "id", "description") %>
           </select></td>
     <% end %>
