@@ -5,7 +5,7 @@ module ApplicationHelper
   end
 
   def contract_enabled
-    Contract.find(:all).length > 1
+    Contract.usable.length > 1
   end
 
   def barcode(info, opts = {})
