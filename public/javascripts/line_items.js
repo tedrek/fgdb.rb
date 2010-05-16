@@ -171,13 +171,13 @@ function edit_gizmo_event(id) {
     $('contract_id').onchange();
   }
   if($('covered') != null) {
-    if($('covered').enabled) {
-      $('covered').value = getValueBySelector(thing, ".covered");
-    }
+    $('covered').value = getValueBySelector(thing, ".covered");
+    $('covered').enable();
     if($('covered').onchange) {
       $('covered').onchange();
     }
   }
+  coveredness_type_selected();
   if($('unit_price') != null) {
     $('unit_price').value = getValueBySelector(thing, ".unit_price");
   }
