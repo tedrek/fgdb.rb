@@ -39,9 +39,9 @@ class Worker < ActiveRecord::Base
 #  after_save :save_worker_types
   def save_worker_types
     set_temp_worker_association
-    self.workers_worker_types.each{|x|
-      x.save!
-    }
+#    self.workers_worker_types.each{|x|
+#      x.save!
+#    }
   end
 
   def is_available?( shift = Workshift.new )
