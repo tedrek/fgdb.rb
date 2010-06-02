@@ -108,6 +108,7 @@ class Worker < ActiveRecord::Base
   end
 
   def worker_type_id=(value)
+    value = value.to_i
     if ! worker_type_id.nil? && worker_type_id != value
       raise
     end
