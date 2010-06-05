@@ -11,6 +11,6 @@ cd /var/www/fgdb.rb/
 sudo mv public/_release.html public/release.html
 sudo invoke-rc.d thin stop
 
-pg_dump fgdb_production > ~/pre-sprint-$NEW.sql
+pg_dump fgdb_production > ~/nobackup/pre-sprint-$NEW.sql
 
-echo "Check ~/pre-sprint-$NEW.sql"
+echo "Check ~/nobackup/pre-sprint-$NEW.sql"
