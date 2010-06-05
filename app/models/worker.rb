@@ -108,7 +108,8 @@ class Worker < ActiveRecord::Base
   end
 
   def worker_type_id=(value)
-    if ! worker_type_id.nil? && worker_type_id != value
+    value = value.to_i
+    if ! worker_type_id.nil? && worker_type_id != value && worker_type_id != 50
       raise
     end
     t = WorkerType.find_by_id(value)
