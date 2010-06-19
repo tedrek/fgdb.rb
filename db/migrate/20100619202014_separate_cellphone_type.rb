@@ -2,7 +2,7 @@ class SeparateCellphoneType < ActiveRecord::Migration
   def self.up
     if Default.is_pdx
       old = GizmoType.find_by_name("pda_cell_phone")
-      new = old.dup
+      new = GizmoType.new(old.attributes)
       old.name = "pda_mp3"
       old.description = "PDA/MP3"
       new.name = "cell_phone"
