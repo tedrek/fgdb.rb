@@ -548,6 +548,16 @@ function get_system_covered(system_id) {
   return system_covered_cache[system_id];
 }
 
+function ge_thinking() {
+  Element.show(line_item_loading_id);
+  disable_ge_entry_line();
+}
+
+function ge_done() {
+  Element.hide(line_item_loading_id);
+  enable_ge_entry_line();
+}
+
 function get_system_contract(system_id){
   var val;
   if(system_contract_cache[system_id]) {
@@ -557,7 +567,7 @@ function get_system_contract(system_id){
     internal_system_contract_id = -2;
     myhash.set('system_id', system_id);
     var str = myhash.toQueryString();
-    Element.show(line_item_loading_id);
+    ge_thinking();
     new Ajax.Request(get_system_contract_url + '?' + str, {asynchronous:false, evalScripts:true});
     system_contract_cache[system_id] = internal_system_contract_id;
     val = internal_system_contract_id;
@@ -851,8 +861,45 @@ function is_last_enabled_visable_there_field_thing_in_line_item(name, names) {
   }
 }
 
+function ge_linelist() {
+  return ['gizmo_type_id', 'gizmo_count', 'sale_id', 'reason', 'tester', 'system_id', 'contract_id','covered', 'unit_price'];
+}
+
+function disable_ge_entry_line(){
+  if(typeof(ge_entry_enabled_hash) != "undefined") {
+    return;
+  }
+  ge_entry_enabled_hash = new Hash();
+  var list = ge_linelist();
+  for(var q = 0; q < list.size(); q++) {
+    var i = list[q];
+    var o = $(i);
+    if(o != null) {
+      ge_entry_enabled_hash.set(i, (!o.disabled).toString());
+      o.disable();
+    }
+  }
+  disable_all_links();
+}
+
+function enable_ge_entry_line(){
+  if(typeof(ge_entry_enabled_hash) == "undefined") {
+    return;
+  }
+  enable_all_links();
+  var list = ge_linelist();
+  for(var q = 0; q < list.size(); q++) {
+    var i = list[q];
+    var o = $(i);
+    if(o != null && ge_entry_enabled_hash.get(i) == "true") {
+      o.enable();
+    }
+  }
+  ge_entry_enabled_hash = undefined;
+}
+
 function last_and_tab(event) {
-  linelist = ['gizmo_count', 'sale_id', 'reason', 'tester', 'system_id', 'contract_id','covered', 'unit_price'];
+  linelist = ge_linelist();
   return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
 }
 
