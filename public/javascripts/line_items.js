@@ -1053,6 +1053,19 @@ function contract_selected () {
   coveredness_type_selected();
 }
 
+function system_selected() {
+  var value = $('system_id').value;
+  var c = $('covered');
+  // TODO: this will fuck up if the system type isn't coverable. perhaps I have to combine this with coveredness_type_selected for ideal results. ugh.
+  if(!is_a_list(value) && get_system_covered(value) != "nil") {
+    c.value = get_system_covered(value);
+    c.disable();
+  } else {
+    c.enable();
+    c.value = "nil";
+  }
+}
+
 function coveredness_type_selected() {
   if($('covered') == null)
     return;

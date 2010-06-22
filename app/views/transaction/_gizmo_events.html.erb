@@ -96,7 +96,7 @@
     <td><input name="tester" id="tester" size="5" onkeydown="return handle_ge(event);"></td>
     <% end %>
     <% if show_system %>
-    <td><input name="system_id" id="system_id" size="6" onkeydown="return handle_ge(event);"></td>
+    <td><input name="system_id" id="system_id" size="6" onchange="system_selected();" onkeydown="return handle_ge(event);"></td>
     <% end %>
     <% if show_contract %>
         <td><select id="contract_id" onkeydown="return handle_ge(event);" onchange="contract_selected();" name="contract_id">
