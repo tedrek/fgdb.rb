@@ -868,9 +868,10 @@ function disable_ge_entry_line(){
     ge_entry_enabled_hash = new Hash();
     ge_entry_enabled_hash.set("state", "enabled");
   }
-  if(ge_entry_enabled_hash.get("state") == "disabled") {
+  if(ge_entry_enabled_hash.get("state") != "enabled") {
     return;
   }
+  ge_entry_enabled_hash.set("state", "stuck");
   var list = ge_linelist();
   for(var q = 0; q < list.size(); q++) {
     var i = list[q];
@@ -885,9 +886,10 @@ function disable_ge_entry_line(){
 }
 
 function enable_ge_entry_line(){
-  if(ge_entry_enabled_hash.get("state") == "enabled") {
+  if(ge_entry_enabled_hash.get("state") != "disabled") {
     return;
   }
+  ge_entry_enabled_hash.set("state", "stuck");
   enable_all_links();
   var list = ge_linelist();
   for(var q = 0; q < list.size(); q++) {
