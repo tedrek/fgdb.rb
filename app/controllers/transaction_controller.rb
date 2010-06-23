@@ -29,13 +29,16 @@ class TransactionController < ApplicationController
   public
 
   def get_system_contract
-    s = System.find_by_id(params[:system_id])
+    s = nil
+    if params[:system_id].to_s == params[:system_id].to_i.to_s
+      s = System.find_by_id(params[:system_id])
+    end
     v = (s ? s.contract_id : -1)
     v2 = (s ? s.covered : nil)
 
     render :update do |page|
       page << "internal_system_contract_id = #{v.to_s.to_json}";
-      page << "system_covered_cache[#{params[:system_id]}] = #{v2.inspect.to_json}";
+      page << "system_covered_cache[#{params[:system_id].to_json}] = #{v2.inspect.to_json}";
       page << "ge_done();"
     end
   end

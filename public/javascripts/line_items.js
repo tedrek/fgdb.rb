@@ -303,9 +303,7 @@ function _add_gizmo_event_from_form()
   if($('covered') != null){
     $('covered').selectedIndex = 0;
     $('covered').disable();
-    if($('covered').disabled) {
-      $('covered').value = "false";
-    }
+    $('covered').value = "false";
   }
   if($('contract_id') != null) {
     $('contract_id').selectedIndex = 0;
@@ -866,10 +864,13 @@ function ge_linelist() {
 }
 
 function disable_ge_entry_line(){
-  if(typeof(ge_entry_enabled_hash) != "undefined") {
+  if(typeof(ge_entry_enabled_hash) == "undefined") {
+    ge_entry_enabled_hash = new Hash();
+    ge_entry_enabled_hash.set("state", "enabled");
+  }
+  if(ge_entry_enabled_hash.get("state") == "disabled") {
     return;
   }
-  ge_entry_enabled_hash = new Hash();
   var list = ge_linelist();
   for(var q = 0; q < list.size(); q++) {
     var i = list[q];
@@ -880,10 +881,11 @@ function disable_ge_entry_line(){
     }
   }
   disable_all_links();
+  ge_entry_enabled_hash.set("state", "disabled");
 }
 
 function enable_ge_entry_line(){
-  if(typeof(ge_entry_enabled_hash) == "undefined") {
+  if(ge_entry_enabled_hash.get("state") == "enabled") {
     return;
   }
   enable_all_links();
@@ -895,7 +897,7 @@ function enable_ge_entry_line(){
       o.enable();
     }
   }
-  ge_entry_enabled_hash = undefined;
+  ge_entry_enabled_hash.set("state", "enabled");
 }
 
 function last_and_tab(event) {
@@ -1054,16 +1056,7 @@ function contract_selected () {
 }
 
 function system_selected() {
-  var value = $('system_id').value;
-  var c = $('covered');
-  // TODO: this will fuck up if the system type isn't coverable. perhaps I have to combine this with coveredness_type_selected for ideal results. ugh.
-  if(!is_a_list(value) && get_system_covered(value) != "nil") {
-    c.value = get_system_covered(value);
-    c.disable();
-  } else {
-    c.enable();
-    c.value = "nil";
-  }
+  coveredness_type_selected();
 }
 
 function coveredness_type_selected() {
@@ -1074,6 +1067,9 @@ function coveredness_type_selected() {
     if(contract_widget && contract_widget.value != "1") {
       $('covered').disable();
       $('covered').value = "false";
+    } else if($('system_id') && $('system_id').value && !is_a_list($('system_id').value) && get_system_covered($('system_id').value) != "nil") {
+      $('covered').value = get_system_covered($('system_id').value);
+      $('covered').disable();
     } else {
       if($('covered').disabled) {
         $('covered').enable();
@@ -1086,9 +1082,6 @@ function coveredness_type_selected() {
       $('covered').disable();
       $('covered').value = "false";
     }
-  }
-  if($('covered').disabled) {
-    $('covered').value = "false";
   }
 }
 function get_name_of_selected(name) {
