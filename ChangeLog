@@ -24,8 +24,10 @@ fgdb.rb (1.0.50) UNRELEASED; urgency=low
   * fix removing the last thing of a line item (Closes: #18775)
   * create a more sane 500/404 error page (with the sidebar) for
     production mode (Closes: #18774)
+  * fix hours poker to email when there is only a meeting too (Closes:
+    #18776)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 24 Jun 2010 00:55:34 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 24 Jun 2010 04:20:30 -0700
 
 fgdb.rb (1.0.49) released; urgency=low
 
