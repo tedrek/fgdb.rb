@@ -4,6 +4,30 @@ module ApplicationHelper
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
+  def process_exception_data(e)
+    rescue_template = ActionController::Rescue::DEFAULT_RESCUE_TEMPLATES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_TEMPLATE
+    rescue_status = ActionController::Rescue::DEFAULT_RESCUE_RESPONSES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_RESPONSE
+    new_params = params.dup
+    new_params.delete("action")
+    new_params.delete("controller")
+    h = {:exception_class => e.class.name,
+      :message => e.to_s,
+    :template => rescue_template,
+    :status => ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[rescue_status],
+    :response => rescue_status,
+    :controller => params[:controller],
+    :action => params[:action],
+    :params => new_params,
+    :clean_message => e.clean_message
+    }
+#    eval("h = process_exception_data_#{rescue_template}(e, h)")
+    return h
+  end
+
+#  def process_exception_data_unknown_action(e, h)
+#    h
+#  end
+
   def contract_enabled
     Contract.usable.length > 1
   end

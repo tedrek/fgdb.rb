@@ -24,6 +24,42 @@ class ApplicationController < ActionController::Base
   helper :cashiers
   helper :conditions
 
+  def fgdb_local_request?
+    consider_all_requests_local || local_request?
+  end
+
+  rescue_from 'Exception', :with => :process_exception
+
+  # to finish the "rescue" project:
+  # * create a partial which does the <pre> and @exception_data.to_yaml
+  # * make the information displayed on that partial actually useful (will require adding more stuff to @exception_data)
+  # * make "rescue_as_normal" return "false" always instead of "fgdb_local_request?" once the info in the partial is sufficient
+  # * make error.html.erb save the @exception_data to some tmp storage file, based on a "crash id" that's then given to the user
+  # * make an ADMIN-only page that retrieves the data from the tmp @exception_data file and displays the partial that formats it nice
+
+  def rescue_as_normal
+    fgdb_local_request?
+  end
+
+  def process_exception(exception)
+    if rescue_as_normal
+      return rescue_action(exception)
+    else
+      @fgdb_local_request = fgdb_local_request?
+      return rescue_action_locally(exception)
+    end
+  end
+
+  def rescues_path(thing)
+    if rescue_as_normal
+      return super(thing)
+    elsif thing == "layout"
+      return "app/views/layouts/with_sidebar.html.erb"
+    else
+      return "app/views/sidebar_links/error.html.erb"
+    end
+  end
+
   before_filter :set_correct_server_port
   def set_correct_server_port
     orig_host = request.env["HTTP_FGDB_PROXY_HTTP_HOST"]
