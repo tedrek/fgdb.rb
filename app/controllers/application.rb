@@ -30,13 +30,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from 'Exception', :with => :process_exception
 
-  # OLDTODO: to finish the "rescue" project:
-  # * make the information displayed on that partial actually useful (will require adding more stuff to @exception_data)
-  # * make "rescue_as_normal" return "false" always instead of "fgdb_local_request?" once the info in the partial is sufficient
-
   def rescue_as_normal
-#    return false
-    fgdb_local_request?
+    return false
   end
 
   def process_exception(exception)

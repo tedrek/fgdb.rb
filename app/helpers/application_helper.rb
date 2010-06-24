@@ -64,7 +64,7 @@ module ApplicationHelper
     if response
       h[:response_headers] = response.headers.dup
     end
-    h[:session_dump] = request.session.instance_variable_get("@data")
+    h[:session] = request.session.instance_variable_get("@data")
     return h
   end
 
