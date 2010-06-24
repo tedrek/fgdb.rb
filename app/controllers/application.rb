@@ -33,8 +33,6 @@ class ApplicationController < ActionController::Base
   # OLDTODO: to finish the "rescue" project:
   # * make the information displayed on that partial actually useful (will require adding more stuff to @exception_data)
   # * make "rescue_as_normal" return "false" always instead of "fgdb_local_request?" once the info in the partial is sufficient
-  # * make error.html.erb save the @exception_data to some tmp storage file, based on a "crash id" that's then given to the user
-  # * make an ADMIN-only page that retrieves the data from the tmp @exception_data file and displays the partial that formats it nice
 
   def rescue_as_normal
 #    return false

@@ -4,6 +4,18 @@ module ApplicationHelper
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
+  def save_exception_data(e)
+    exception_data = process_exception_data(e)
+    tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
+    crash_id = tempfile.match(/^.*\.([^.]+)$/)[1]
+    exception_data["tempfile"] = tempfile
+    exception_data["crash_id"] = crash_id
+    f = File.open(tempfile, "w")
+    f.write(exception_data.to_json)
+    f.close
+    exception_data
+  end
+
   def process_exception_data(e)
     rescue_template = ActionController::Rescue::DEFAULT_RESCUE_TEMPLATES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_TEMPLATE
     rescue_status = ActionController::Rescue::DEFAULT_RESCUE_RESPONSES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_RESPONSE
@@ -18,9 +30,21 @@ module ApplicationHelper
     :controller => params[:controller],
     :action => params[:action],
     :params => new_params,
-    :clean_message => e.clean_message
+    :clean_message => e.clean_message,
     }
+    if Thread.current['user']
+      h[:user] = Thread.current['user'].login
+    end
+    if Thread.current['cashier']
+      h[:cashier] = Thread.current['cashier'].login
+    end
+    if request.env["HTTP_REFERER"]
+      h[:referer] = request.env["HTTP_REFERER"]
+    end
+    h[:client_ip] = request.remote_ip
+    h[:date] = DateTime.now.to_s
     eval("h = process_exception_data_#{rescue_template}(e, h)")
+    h = JSON.parse(h.to_json)
     return h
   end
 
