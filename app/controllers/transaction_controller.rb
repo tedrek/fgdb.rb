@@ -297,9 +297,10 @@ class TransactionController < ApplicationController
   end
 
   def _apply_line_item_data(transaction)
-    if transaction.respond_to?(:payments) && params[:payments]
+    if transaction.respond_to?(:payments)
       @payments = []
-      for payment in params[:payments].values
+      payments = params[:payments] || {}
+      for payment in payments.values
         p = Payment.new(payment)
         @payments << p
       end
@@ -307,8 +308,8 @@ class TransactionController < ApplicationController
       transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
     end
     params[:gizmo_events].values.each{|x| x[:gizmo_count] ||= 1} if @gizmo_context == GizmoContext.gizmo_return
-    if params[:gizmo_events]
-      lines = params[:gizmo_events]
+    if transaction.respond_to?(:gizmo_events)
+      lines = params[:gizmo_events] || {}
       @lines = []
       for line in lines.values
         @lines << GizmoEvent.new_or_edit(line.merge({:gizmo_context => @gizmo_context}))
