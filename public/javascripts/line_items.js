@@ -864,14 +864,10 @@ function ge_linelist() {
 }
 
 function disable_ge_entry_line(){
-  if(typeof(ge_entry_enabled_hash) == "undefined") {
-    ge_entry_enabled_hash = new Hash();
-    ge_entry_enabled_hash.set("state", "enabled");
+  if(typeof(ge_entry_enabled_arr) == "undefined") {
+    ge_entry_enabled_arr = new Array();
   }
-  if(ge_entry_enabled_hash.get("state") != "enabled") {
-    return;
-  }
-  ge_entry_enabled_hash.set("state", "stuck");
+  var ge_entry_enabled_hash = new Hash();
   var list = ge_linelist();
   for(var q = 0; q < list.size(); q++) {
     var i = list[q];
@@ -882,14 +878,14 @@ function disable_ge_entry_line(){
     }
   }
   disable_all_links();
-  ge_entry_enabled_hash.set("state", "disabled");
+  ge_entry_enabled_arr.push(ge_entry_enabled_hash);
 }
 
 function enable_ge_entry_line(){
-  if(ge_entry_enabled_hash.get("state") != "disabled") {
+  var ge_entry_enabled_hash = ge_entry_enabled_arr.pop();
+  if(typeof(ge_entry_enabled_arr) == "undefined") {
     return;
   }
-  ge_entry_enabled_hash.set("state", "stuck");
   enable_all_links();
   var list = ge_linelist();
   for(var q = 0; q < list.size(); q++) {
@@ -899,7 +895,6 @@ function enable_ge_entry_line(){
       o.enable();
     }
   }
-  ge_entry_enabled_hash.set("state", "enabled");
 }
 
 function last_and_tab(event) {
