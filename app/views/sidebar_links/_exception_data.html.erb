@@ -41,18 +41,18 @@ Client IP: <%= @exception_data["client_ip"] %>
 
 <% if ["diagnostics", "template_error"].include?(@exception_data["template"]) %>
 <p>
-Session:
+Params:
 <pre>
-<%= @exception_data["session"].inspect.gsub(", ", ",\n ") %>
+<%= @exception_data["params"].inspect.gsub(", ", ",\n ") %>
 </pre>
 </p>
 <% end %>
 
 <% if ["diagnostics", "template_error"].include?(@exception_data["template"]) %>
 <p>
-Params:
+Session:
 <pre>
-<%= @exception_data["params"].inspect.gsub(", ", ",\n ") %>
+<%= @exception_data["session"].inspect.gsub(", ", ",\n ") %>
 </pre>
 </p>
 <% end %>
