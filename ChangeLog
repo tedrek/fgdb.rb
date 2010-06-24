@@ -27,8 +27,10 @@ fgdb.rb (1.0.50) UNRELEASED; urgency=low
   * fix hours poker to email when there is only a meeting too (Closes:
     #18776)
   * fgdb now saves crash reports that I can look at later
+  * when trying to generate a meeting, remove the check for whether FG
+    is open that day (Closes: #18777)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 24 Jun 2010 04:23:11 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 24 Jun 2010 04:31:10 -0700
 
 fgdb.rb (1.0.49) released; urgency=low
 
