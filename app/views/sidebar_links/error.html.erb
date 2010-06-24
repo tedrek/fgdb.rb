@@ -4,7 +4,5 @@
 An error occurred that prevented fgdb.rb from completing the request.
 
 <% if @fgdb_local_request %>
-<pre>
-<%= @exception_data.to_yaml %>
-</pre>
+<%= render :partial => "sidebar_links/exception_data", :locals => {:@exception_data => @exception_data} %>
 <% end %>

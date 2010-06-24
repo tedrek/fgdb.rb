@@ -20,13 +20,42 @@ module ApplicationHelper
     :params => new_params,
     :clean_message => e.clean_message
     }
-#    eval("h = process_exception_data_#{rescue_template}(e, h)")
+    eval("h = process_exception_data_#{rescue_template}(e, h)")
     return h
   end
 
-#  def process_exception_data_unknown_action(e, h)
-#    h
-#  end
+  def process_exception_data_simple(e, h)
+    return h
+  end
+
+  alias :process_exception_data_unknown_action :process_exception_data_simple
+  alias :process_exception_data_missing_template :process_exception_data_simple
+
+  def process_exception_data_backtrace(e, h)
+    h[:application_backtrace] = e.application_backtrace
+    h[:framework_backtrace] = e.framework_backtrace
+    h[:full_backtrace] = e.clean_backtrace
+    h[:response_headers] = {}
+    h[:blame_trace] = e.describe_blame
+    if response
+      h[:response_headers] = response.headers.dup
+    end
+    h[:session_dump] = request.session.instance_variable_get("@data")
+    return h
+  end
+
+  alias :process_exception_data_diagnostics :process_exception_data_backtrace
+  alias :process_exception_data_template_error :process_exception_data_backtrace
+
+  def process_exception_data_routing_error(e, h)
+    unless e.failures.empty?
+      h[:failures] = []
+      e.failures.each do |route, reason|
+        h[:failures] << [route.inspect.gsub('\\', ''), reason.downcase]
+      end
+    end
+    return h
+  end
 
   def contract_enabled
     Contract.usable.length > 1

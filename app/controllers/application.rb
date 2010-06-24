@@ -31,13 +31,13 @@ class ApplicationController < ActionController::Base
   rescue_from 'Exception', :with => :process_exception
 
   # OLDTODO: to finish the "rescue" project:
-  # * create a partial which does the <pre> and @exception_data.to_yaml
   # * make the information displayed on that partial actually useful (will require adding more stuff to @exception_data)
   # * make "rescue_as_normal" return "false" always instead of "fgdb_local_request?" once the info in the partial is sufficient
   # * make error.html.erb save the @exception_data to some tmp storage file, based on a "crash id" that's then given to the user
   # * make an ADMIN-only page that retrieves the data from the tmp @exception_data file and displays the partial that formats it nice
 
   def rescue_as_normal
+#    return false
     fgdb_local_request?
   end
 
