@@ -40,7 +40,7 @@ class WorkedShiftsController < ApplicationController
       res = DB.exec("SELECT id, #{NH[table]} AS label FROM #{table}")
       h = {}
       res.each{|x|
-        h[x["id"]] = x["label"]
+        h[x["id"]] = x["label"].downcase
       }
       return h
     end
