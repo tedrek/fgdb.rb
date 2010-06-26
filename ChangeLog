@@ -1,4 +1,4 @@
-fgdb.rb (1.0.50) UNRELEASED; urgency=low
+fgdb.rb (1.0.50) released; urgency=low
 
   * move out the bytes calculations to libbytes-ruby1.8
   * mutate the returns as well (Closes: 15738)
@@ -30,7 +30,7 @@ fgdb.rb (1.0.50) UNRELEASED; urgency=low
   * when trying to generate a meeting, remove the check for whether FG
     is open that day (Closes: #18777)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 24 Jun 2010 04:31:10 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 26 Jun 2010 01:02:15 -0700
 
 fgdb.rb (1.0.49) released; urgency=low
 
