@@ -191,7 +191,7 @@ WHERE
                   end
                 when 'StandardShift'
                   # check schedule for repeats_every / repeats_on logic
-                  if weekday.is_open && @shift.schedule.which_week( day ) == @shift.schedule.repeats_on
+                  if @shift.schedule.which_week( day ) == @shift.schedule.repeats_on
                     # standard shifts always get saved (even if the worker can't work)
                     # create a new work_shift from the date and standard_shift
                     workshift = WorkShift.create_from_standard_shift( @shift, day )
@@ -221,7 +221,7 @@ WHERE
                 when 'Unavailability'
                   # NOTE: don't check schedule, since it doesn't apply
                   # check for unavailability's repeats_every / repeats_on logic instead
-                  if weekday.is_open && @shift.which_week( day ) == @shift.repeats_on
+                  if @shift.which_week( day ) == @shift.repeats_on
                     # if worker is on vacation anyway, don't save the shift
                     w = @shift.worker 
                     v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])

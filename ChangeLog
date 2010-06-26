@@ -1,8 +1,9 @@
 fgdb.rb (1.0.51) UNRELEASED; urgency=low
 
   * turn covered on sales back on
+  * allow anything to be scheduled on a closed day, not just meetings
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 26 Jun 2010 11:05:18 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 26 Jun 2010 11:16:24 -0700
 
 fgdb.rb (1.0.50) released; urgency=low
 
