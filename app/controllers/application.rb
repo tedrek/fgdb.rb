@@ -24,10 +24,6 @@ class ApplicationController < ActionController::Base
   helper :cashiers
   helper :conditions
 
-  def fgdb_local_request?
-    consider_all_requests_local || local_request?
-  end
-
   rescue_from 'Exception', :with => :process_exception
 
   def rescue_as_normal
@@ -38,7 +34,6 @@ class ApplicationController < ActionController::Base
     if rescue_as_normal
       return rescue_action(exception)
     else
-      @fgdb_local_request = fgdb_local_request?
       return rescue_action_locally(exception)
     end
   end

@@ -31,6 +31,7 @@ module ApplicationHelper
     :action => params[:action],
     :params => new_params,
     :clean_message => e.clean_message,
+    :rails_env => RAILS_ENV,
     }
     if Thread.current['user']
       h[:user] = Thread.current['user'].login

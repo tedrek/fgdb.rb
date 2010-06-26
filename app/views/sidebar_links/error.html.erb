@@ -1,3 +1,5 @@
+<% @fgdb_local_request = ActionController::Base.consider_all_requests_local %>
+
 <% if @fgdb_local_request %>
   <% @exception_data = process_exception_data(@exception) %>
 <% else %>
