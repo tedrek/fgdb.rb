@@ -116,6 +116,9 @@
     <% end %>
     <% if has_role?('SKEDJULNATOR', 'BEAN_COUNTER') %>
       <div>
+        <%= link_to "types report", :controller => "worked_shifts", :action => "type_totals" %>
+      </div>
+      <div>
         <%= link_to "payroll report", :controller => "worked_shifts", :action => "payroll" %>
       </div>
       <div>
