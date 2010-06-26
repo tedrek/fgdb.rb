@@ -69,11 +69,8 @@ GROUP BY 1,2;")
     }
 
     def sort_hash(h)
-      h.to_a.sort_by(&:last).map(&:first)
+      h.to_a.sort_by{|x| t = x.last.downcase; t == "unset" ? "zzzzz-last-unset" : t}.map(&:first)
     end
-
-    sorted_row_ids = sort_hash(row_labels)
-    sorted_col_ids = sort_hash(col_labels)
 
     row_labels.each{|k,v|
       table_hash[k] = template_row_hash.dup
@@ -86,11 +83,27 @@ GROUP BY 1,2;")
 
     res.to_a.each {|x|
       d = x["duration"].to_f
-      table_hash[x["row_id"]][x["col_id"]] += d
-      row_subtotal[x["row_id"]] += d
-      col_subtotal[x["col_id"]] += d
+      ri = x["row_id"] || "NULL"
+      ci = x["col_id"] || "NULL"
+      if ri == "NULL"
+        table_hash[ri] ||= template_row_hash.dup
+	row_subtotal[ri] ||= 0.0
+      end
+      if ci == "NULL"
+      	table_hash[ri][ci] ||= 0.0
+	col_subtotal[ci] ||= 0.0
+      end
+      table_hash[ri][ci] += d
+      row_subtotal[ri] += d
+      col_subtotal[ci] += d
       total += d
     }
+
+    row_labels["NULL"] = "unset" if table_hash.keys.include?("NULL")
+    col_labels["NULL"] = "unset" if table_hash.values.map(&:keys).flatten.uniq.include?("NULL")
+
+    sorted_row_ids = sort_hash(row_labels)
+    sorted_col_ids = sort_hash(col_labels)
 
     table = []
     table << ["", sorted_col_ids.map{|x| col_labels[x]}, "total"].flatten
@@ -98,7 +111,7 @@ GROUP BY 1,2;")
       a = [row_labels[x]]
       h = table_hash[x]
       sorted_col_ids.each{|y|
-        a << h[y]
+        a << (h[y] || 0.0)
       }
       a << row_subtotal[x]
       table << a
