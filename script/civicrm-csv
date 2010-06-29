@@ -11,9 +11,7 @@ def switch_file(file = nil)
 end
 
 def output_row(*row)
-  l = CSV.generate_line(row.flatten)
-  puts l
-  @f.write(l + "\n")
+  @f.write(CSV.generate_line(row.flatten) + "\n")
 end
 
 def process_file(name, contacts, elements_arr)
@@ -28,9 +26,9 @@ def process_file(name, contacts, elements_arr)
   switch_file()
 end
 
-#contacts = Contact.find(:first, :conditions => ["is_organization = ?", false])
-contacts = Contact.find(55010)
+contacts = Contact.find(:all, :conditions => ["is_organization = ?", false])
+orgs = Contact.find(:all, :conditions => ["is_organization = ?", true])
 contacts_elements = {"first_name" => "First Name", "surname" => "Last Name", "id" => "Free Geek Database ID"}
-process_file("output", contacts, contacts_elements)
-
-
+orgs_elements = {"organization" => "Organization Name", "id" => "Free Geek Database ID"}
+process_file("contacts", contacts, contacts_elements)
+process_file("organizations", orgs, orgs_elements)
