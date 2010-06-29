@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+require 'csv'
+
+def switch_file(file = nil)
+  @f.close if @f && !@f.closed?
+  @f = File.open("#{file}.csv", "w+") if file
+end
+
+def output_row(*row)
+  l = CSV.generate_line(row.flatten)
+  puts l
+  @f.write(l + "\n")
+end
+
+def process_file(name, contacts, elements_arr)
+  switch_file(name)
+  arr = elements_arr.to_a
+  methods = arr.map(&:first)
+  names = arr.map(&:last)
+  output_row(names)
+  [contacts].flatten.each{|x|
+    output_row(methods.map{|y| x.send(y.to_sym)})
+  }
+  switch_file()
+end
+
+#contacts = Contact.find(:first, :conditions => ["is_organization = ?", false])
+contacts = Contact.find(55010)
+contacts_elements = {"first_name" => "First Name", "surname" => "Last Name", "id" => "Free Geek Database ID"}
+process_file("output", contacts, contacts_elements)
+
+
