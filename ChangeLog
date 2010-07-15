@@ -6,8 +6,9 @@ fgdb.rb (1.0.51) UNRELEASED; urgency=low
   * add a new flexible staff hours report for workers comp and taxes
     (Closes: #18538)
   * add some newly found generics
+  * skedjul: redirect to the correct controller too (Closes: #18982)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 26 Jun 2010 15:06:17 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 15 Jul 2010 13:46:25 -0700
 
 fgdb.rb (1.0.50) released; urgency=low
 
