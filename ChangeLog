@@ -8,8 +8,9 @@ fgdb.rb (1.0.51) UNRELEASED; urgency=low
   * add some newly found generics
   * skedjul: redirect to the correct controller too (Closes: #18982)
   * don't give cash back on non-cash transactions (Closes: #18806)
+  * disable some validations on adjustments (Closes: #18991)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Jul 2010 12:36:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Jul 2010 13:51:10 -0700
 
 fgdb.rb (1.0.50) released; urgency=low
 

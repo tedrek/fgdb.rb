@@ -35,6 +35,7 @@ class Sale < ActiveRecord::Base
   end
 
   def validate
+    unless is_adjustment
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -42,6 +43,7 @@ class Sale < ActiveRecord::Base
       end
     else
       errors.add_on_empty("postal_code")
+    end
     end
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
     #errors.add("payments", "are too much") if overpaid?
