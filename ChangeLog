@@ -1,6 +1,5 @@
 fgdb.rb (1.0.51) UNRELEASED; urgency=low
 
-  * turn covered on sales back on
   * allow anything to be scheduled on a closed day, not just meetings
   * fix the new error handling stuff
   * add a new flexible staff hours report for workers comp and taxes
