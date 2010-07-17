@@ -303,7 +303,7 @@ function _add_gizmo_event_from_form()
   if($('covered') != null){
     $('covered').selectedIndex = 0;
     $('covered').disable();
-    $('covered').value = "false";
+    $('covered').value = "nil";
   }
   if($('contract_id') != null) {
     $('contract_id').selectedIndex = 0;
