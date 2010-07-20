@@ -35,7 +35,7 @@ class Sale < ActiveRecord::Base
   end
 
   def validate
-    unless is_adjustment
+    unless is_adjustment?
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
