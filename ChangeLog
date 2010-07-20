@@ -1,4 +1,4 @@
-fgdb.rb (1.0.51) UNRELEASED; urgency=low
+fgdb.rb (1.0.51) released; urgency=low
 
   * allow anything to be scheduled on a closed day, not just meetings
   * fix the new error handling stuff
@@ -10,7 +10,7 @@ fgdb.rb (1.0.51) UNRELEASED; urgency=low
   * disable some validations on adjustments (Closes: #18922)
   * fix covered defaulting to nil when cashierable (Closes: #18991)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Jul 2010 14:26:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 19 Jul 2010 23:08:06 -0700
 
 fgdb.rb (1.0.50) released; urgency=low
 
