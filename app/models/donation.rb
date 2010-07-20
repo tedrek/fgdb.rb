@@ -32,7 +32,7 @@ class Donation < ActiveRecord::Base
   end
 
   def validate
-    unless is_adjustment
+    unless is_adjustment?
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -60,7 +60,7 @@ class Donation < ActiveRecord::Base
   end
 
   def covered_error_checking
-    if Default["coveredness_enabled"] != "1" or is_adjustment
+    if Default["coveredness_enabled"] != "1" or is_adjustment?
       return
     end
     covered = Default["fully_covered_contact_covered_gizmo"].to_i

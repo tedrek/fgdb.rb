@@ -11,7 +11,7 @@ class Disbursement < ActiveRecord::Base
   end
 
   def validate
-    unless is_adjustment
+    unless is_adjustment?
     errors.add_on_empty("contact_id")
     if contact_id.to_i == 0
       errors.add("contact_id", "does not refer to any single, unique contact")
