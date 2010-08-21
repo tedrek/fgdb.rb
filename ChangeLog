@@ -1,7 +1,8 @@
 fgdb.rb (1.0.52) UNRELEASED; urgency=low
 
+  * fix traceback on insufficient money on a sale (Closes: #19354)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 19 Jul 2010 23:08:45 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 21 Aug 2010 15:15:06 -0700
 
 fgdb.rb (1.0.51) released; urgency=low
 
