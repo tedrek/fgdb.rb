@@ -162,7 +162,7 @@ class Sale < ActiveRecord::Base
     end
 
     # amount_i_owe > 0 ... still need to pay more.
-    raise NoMethodError # Ryan broke something..I guess.
+    return [0, 0]
   end
 
   def add_change_line_item()
