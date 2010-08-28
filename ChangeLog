@@ -16,6 +16,7 @@ fgdb.rb (1.0.51) released; urgency=low
   * don't give cash back on non-cash transactions (Closes: #18806)
   * disable some validations on adjustments (Closes: #18922)
   * fix covered defaulting to nil when cashierable (Closes: #18991)
+  * allow negative gizmo counts in adjustments (Closes: #19571)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 19 Jul 2010 23:08:06 -0700
 
