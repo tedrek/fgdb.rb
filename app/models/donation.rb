@@ -43,10 +43,11 @@ class Donation < ActiveRecord::Base
     elsif contact_type != 'dumped'
       errors.add("contact_type", "should be one of 'named', 'anonymous', or 'dumped'")
     end
-    end
 
     gizmo_events.each do |gizmo|
       errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
+    end
+
     end
 
     #errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid? or contact_type == 'dumped')
