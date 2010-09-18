@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   end
 
   def User.current_user
-    Thread.current['user'] ||= User.fake_new
+    Thread.current['user'] || User.fake_new
   end
 
   attr_accessor :fake_logged_in
