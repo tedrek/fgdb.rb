@@ -21,7 +21,7 @@
   <% form_tag :action => 'search' do -%>
   <% filters = [] -%>
   <% filters << 'flagged' -%>
-  <% if @current_user and @current_user.has_role?('CONTACT_MANAGER') %>
+  <% if has_privileges('role_contact_manager') %>
     <% filters << 'contact' %>
   <% end %>
   <% filters << 'system' -%>

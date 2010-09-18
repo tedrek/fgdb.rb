@@ -1,4 +1,4 @@
-<fieldset style="background-color: Lime; width: auto">
+<truefieldset style="background-color: Lime; width: auto">
   <h1>
     Summary of this report:
   </h1>
@@ -16,7 +16,7 @@
         Technician:
       </td>
       <td>
-        <% if true || (@current_user and @current_user.has_role?('CONTACT_MANAGER')) %>
+        <% if true %>
           <%= h(@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
         <% else %>
           <%= (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>

@@ -80,7 +80,7 @@ class ApplicationController < ActionController::Base
   end
 
   def skedjulnator_role
-    requires_role("SKEDJULNATOR")
+    requires_privileges("role_skedjulnator")
   end
 
   def _set_cashier(hash)

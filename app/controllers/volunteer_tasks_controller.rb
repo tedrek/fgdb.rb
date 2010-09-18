@@ -22,7 +22,7 @@ class VolunteerTasksController < ApplicationController
     else
       contact_id = nil
     end
-    requires_role_or_me(contact_id, 'VOLUNTEER_MANAGER')
+    requires_privileges("contact_#{contact_id}", 'role_volunteer_manager')
   end
 
   ######

@@ -2,7 +2,7 @@ class WorkersController < ApplicationController
   before_filter :require_some_roles
 
   def require_some_roles
-    requires_role("SKEDJULNATOR", "BEAN_COUNTER")
+    requires_privileges("role_skedjulnator", "role_bean_counter")
   end
 
   def index

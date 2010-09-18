@@ -9,10 +9,10 @@ class RecyclingsController < TransactionController
   protected
 
   def authorized_only
-    requires_role('RECYCLINGS', 'FRONT_DESK')
+    requires_privileges('role_recyclings', 'role_front_desk')
   end
 
   def management_only
-    requires_role(:BEAN_COUNTER)
+    requires_privileges("role_bean_counter")
   end
 end

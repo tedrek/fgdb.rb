@@ -136,7 +136,7 @@ class User < ActiveRecord::Base
 
   def _privileges
     olda = []
-    a = [self, self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| x.to_privileges}.flatten.map{|x| Privilege.by_name(x)}
+    a = [self, self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| x.to_privileges}.flatten.select{|x| !x.nil?}.map{|x| Privilege.by_name(x)}
     while olda != a
       olda = a.dup
       a << olda.map{|x| x.children}.flatten

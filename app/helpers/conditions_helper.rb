@@ -97,7 +97,7 @@ module ConditionsHelper
   end
 
   def html_for_contact_condition(params_key)
-    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK')
+    if has_privileges('role_contact_manager', 'role_volunteer_manager', 'role_front_desk')
       contact_field('@' + params_key, 'contact_id',
                     :locals => {:options =>
                       {
@@ -110,7 +110,7 @@ module ConditionsHelper
                       },
                       :contact => eval("@" + params_key).contact
                     } )
-    elsif is_logged_in() && @current_user.contact_id
+    elsif has_privileges("has_contact")
       "Me" + hidden_field(params_key, 'contact_id', :value => @current_user.contact_id)
     else
       raise

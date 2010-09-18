@@ -3,7 +3,7 @@ class PointsTradesController < ApplicationController
 
   before_filter :authorized_only
   def authorized_only
-    requires_role('VOLUNTEER_MANAGER')
+    requires_privileges('role_volunteer_manager')
   end
 
   def index

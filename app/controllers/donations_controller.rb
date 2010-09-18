@@ -9,10 +9,10 @@ class DonationsController < TransactionController
   protected
 
   def authorized_only
-    requires_role(:FRONT_DESK)
+    requires_privileges("role_front_desk")
   end
 
   def management_only
-    requires_role(:DONATION_ADMIN, :BEAN_COUNTER)
+    requires_privileges("role_donation_admin", "role_bean_counter")
   end
 end

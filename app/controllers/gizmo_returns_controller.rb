@@ -9,10 +9,10 @@ class GizmoReturnsController < TransactionController
   protected
 
   def authorized_only
-    requires_role('STORE', 'TECH_SUPPORT')
+    requires_privileges('role_store', 'role_tech_support')
   end
 
   def management_only
-    requires_role('STORE_ADMIN', 'BEAN_COUNTER')
+    requires_privileges('role_store_admin', 'role_bean_counter')
   end
 end

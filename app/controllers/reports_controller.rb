@@ -302,7 +302,7 @@ class ReportsController < ApplicationController
 
   def staff_hours
     @title = "Jobs report"
-    if has_role?('SKEDJULNATOR', 'BEAN_COUNTER') or is_staff?
+    if has_privileges('role_skedjulnator', 'role_bean_counter', 'staff')
       @filters = ['worker']
     end
     common_hours
@@ -310,7 +310,7 @@ class ReportsController < ApplicationController
 
   def volunteers
     @title = "Volunteers task types report"
-    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in
+    if has_privileges('role_contact_manager', 'role_volunteer_manager', 'role_front_desk', 'logged_in')
       @filters = ['contact']
     end
     common_hours
@@ -359,7 +359,7 @@ class ReportsController < ApplicationController
   public
 
   def hours
-    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in
+    if has_privileges('role_contact_manager', 'role_volunteer_manager', 'role_front_desk', 'logged_in')
       @filters = ['contact']
     end
     common_hours

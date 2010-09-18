@@ -3,7 +3,7 @@ class TillAdjustmentsController < ApplicationController
   layout :with_sidebar
 
   def authorized_only
-    requires_role('BEAN_COUNTER')
+    requires_privileges('role_bean_counter')
   end
 
   # GET /till_adjustments

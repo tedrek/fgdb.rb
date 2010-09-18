@@ -8,12 +8,13 @@ class WorkedShiftsController < ApplicationController
 
   def needs_beancounter_or_me
 #    contact_id = @worker ? (@worker.contact ? @worker.contact.id : nil) : nil
-    roles = ['BEAN_COUNTER', 'SKEDJULNATOR']
+    roles = []
     if params[:action].match(/^(weekly_worker|payroll|type_totals)/)
-      return requires_role(*roles)
+      roles = ['role_bean_counter', 'role_skedjulnator']
     else
-      return requires_staff
+      roles = ['staff']
     end
+    return requires_privileges(*roles)
   end
 
   NH = {"jobs" => "name",

@@ -5,7 +5,7 @@ class SidebarLinksController < ApplicationController
 
   protected
   def authorized_only
-    requires_role(:ADMIN)
+    requires_privileges("role_admin")
   end
 
   public
