@@ -305,28 +305,8 @@ module ApplicationHelper
 
   # start auth junk
 
-  def is_logged_in()
-    has_privileges("logged_in")
-  end
-
   def has_privileges(*privs)
     User.has_privileges(*privs)
-  end
-
-  def is_me?(contact_id)
-    has_privileges("contact_#{contact_id}")
-  end
-
-  def has_role?(*roles)
-    has_privileges(roles.map{|x| "role_#{x.to_s.downcase}"})
-  end
-
-  def is_staff?
-    has_privileges("staff")
-  end
-
-  def has_role_or_is_me?(contact_id, *roles)
-    has_privileges("contact_#{contact_id}", roles.map{|x| "role_#{x.to_s.downcase}"})
   end
 
   # end auth junk

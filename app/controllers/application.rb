@@ -118,44 +118,8 @@ class ApplicationController < ActionController::Base
     User.has_privileges(*privs)
   end
 
-  def is_me?(contact_id)
-    has_privileges("contact_#{contact_id}")
-  end
-
-  def has_role_or_is_me?(contact_id, *roles)
-    has_privileges("contact_#{contact_id}", roles.map{|x| "role_#{x.to_s.downcase}"})
-  end
-
-  def is_logged_in
-    has_privileges("logged_in")
-  end
-
-  def has_role?(*roles)
-    has_privileges(roles.map{|x| "role_#{x.to_s.downcase}"})
-  end
-
-  def is_staff?
-    has_privileges("staff")
-  end
-
-  def requires_role(*roles)
-    requires(has_role?(*roles))
-  end
-
-  def requires_staff
-    requires(is_staff?)
-  end
-
-  def requires_role_or_me(contact_id, *roles)
-    requires(has_role_or_is_me?(contact_id.to_i, *roles))
-  end
-
   def requires_privileges(*privs)
-    requires(has_privileges(*privs))
-  end
-
-  def requires(val)
-    if val
+    if has_privileges(*privs)
       return true
     else
       session[:unauthorized_error] = true
