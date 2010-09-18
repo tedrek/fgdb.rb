@@ -1,141 +1,51 @@
+<script>
+function hideall() {
+a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.length; i++){if(a[i].style.display != "none") {Effect.SlideUp(a[i].id)}};
+}
+
+function f_hideall() {
+a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.length; i++){a[i].hide();};
+}
+
+function show_thing(thing) {
+if($(thing + '_sidebar_section').style.display == "none"){
+hideall();
+Effect.SlideDown(thing + '_sidebar_section');
+} else {
+Effect.SlideUp(thing + '_sidebar_section');
+}
+}
+</script>
+<% aliases, sidebar_hash = sidebar_stuff %>
 <div id="sidebar">
-  <% if has_role?("VOLUNTEER_MANAGER") %>
-    hours
-    <div class="sidebar_section">
-      <div>
-        <%= link_to "entry", :controller => 'volunteer_tasks' %>
-      </div>
-      <!--
+  <% sidebar_hash.each do |main_name, my_hash| %>
+    <% if my_hash.length > 0 %>
+      <a onClick="show_thing('<%= main_name %>')"><%= main_name %></a>
+      <div></div>
+      <div class="sidebar_section" id="<%= main_name %>_sidebar_section">
+        <% my_hash.each do |this_name, opts| %>
           <div>
-            <%= link_to "search", :controller => 'volunteer_tasks', :action => 'listing' %>
-            </div>
-    -->
-      <div>
-        <%= link_to "points trade", :controller => 'points_trades' %>
-      </div>
-    </div>
-  <% elsif current_user and current_user.contact_id %>
-    hours
-    <div class="sidebar_section">
-      <div>
-        <%= link_to "entry", :controller => 'volunteer_tasks', :contact_id => current_user.contact_id %>
-      </div>
-    </div>
-  <% end %>
-
-  <% hash = {:donation => ["FRONT_DESK"], :sale => ["STORE"], :recycling => ["FRONT_DESK", "RECYCLINGS"], :disbursement => ['CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER'], :return => ['STORE', 'TECH_SUPPORT']} %>
-  <% array = ['donation', 'sale', 'return', 'recycling', 'disbursement'] %>
-
-  <% array.each do |i| %>
-    <% x = hash[i.to_sym] %>
-    <% if x.nil? || has_role?(*x) %>
-      <%= i %>s
-      <div class="sidebar_section">
-        <% controller = (i == "return" ? "gizmo_" + i : i ) + 's' %>
-        <div>
-          <%= link_to "entry", :controller => controller %>
-        </div>
-        <div>
-          <%= link_to "search", :controller => controller, :action => 'search' %>
-        </div>
+            <% my_opts = opts %>
+            <% aliases.each do |a, b| %>
+              <% if opts[a] and !opts[b] %>
+                <% my_opts[b] = opts[a] %>
+                <% my_opts.delete(a) %>
+              <% end %>
+            <% end %>
+            <%= link_to this_name, my_opts %>
+          </div>
+        <% end %>
       </div>
     <% end %>
   <% end %>
-
-  reports
-  <div class="sidebar_section">
-    <div>
-      <%= link_to "income", :controller => 'reports', :action => 'income' %>
-    </div>
-    <div>
-      <%= link_to "gizmos", :controller => 'reports', :action => 'gizmos' %>
-    </div>
-    <div>
-      <%= link_to "volunteering", :controller => 'reports', :action => 'volunteers' %>
-    </div>
-    <div>
-      <%= link_to "hours",
-          :controller => 'reports',
-          :action => 'hours' %>
-    </div>
-    <div>
-      <%= link_to "trends", :controller => 'graphic_reports' %>
-    </div>
-  </div>
-
-  <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
-    contacts
-    <div class="sidebar_section">
-      <% if has_role?('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER') %>
-        <div>
-          <%= link_to "contacts", :controller => 'contacts' %>
-        </div>
-      <% end %>
-      <% if has_role?('CONTACT_MANAGER') %>
-        <div>
-          <%= link_to "dedup", :controller => 'contact_duplicates' %>
-        </div>
-      <% end %>
-      <% if has_role?('CONTACT_MANAGER') %>
-        <div>
-          <%= link_to "duplicates list", :controller => 'contact_duplicates', :action => "list_dups" %>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-
-  <% if has_role?('BEAN_COUNTER') %>
-    bean counters
-    <div class="sidebar_section">
-      <div>
-        <%= link_to "till adjustments", :controller => 'till_adjustments' %>
-      </div>
-    </div>
-  <% end %>
-
-  staff
-  <div class="sidebar_section">
-    <div>
-      <%= link_to "schedule", "/staffsched" %>
-    </div>
-    <% if false %>
-      <% if has_role?('SKEDJULNATOR') %>
-        <%= link_to "edit schedule", :controller => "work_shifts" %>
-      <% end %>
-    <% end %>
-    <% if is_staff? %>
-      <div>
-        <%= link_to "staff hours", :controller => "worked_shifts" %>
-      </div>
-      <div>
-        <%= link_to "individual report", :controller => "worked_shifts", :action => "individual" %>
-      </div>
-      <div>
-        <%= link_to "jobs report", :controller => "reports", :action => "staff_hours" %>
-      </div>
-    <% end %>
-    <% if has_role?('SKEDJULNATOR', 'BEAN_COUNTER') %>
-      <div>
-        <%= link_to "types report", :controller => "worked_shifts", :action => "type_totals" %>
-      </div>
-      <div>
-        <%= link_to "payroll report", :controller => "worked_shifts", :action => "payroll" %>
-      </div>
-      <div>
-        <%= link_to "weekly report", :controller => "worked_shifts", :action => "weekly_workers" %>
-      </div>
-    <% end %>
-  </div>
-
-    fgss
-    <div class="sidebar_section">
-      <div>
-        <%= link_to "printme", :controller => 'spec_sheets' %>
-      </div>
-      <% if contract_enabled && has_role?("ADMIN") %>
-        <div>
-          <%= link_to "fix contract", :controller => 'spec_sheets', :action => "fix_contract" %>
-        </div>
-      <% end %>
-    </div>
 </div>
+<script>
+<% if params[:controller] == "sidebar_links" %>
+hideall();
+<% else %>
+f_hideall();
+<% end %>
+<%= thing = controller_to_section[params[:controller]]
+   thing.nil? or thing.length == 0 ? "" : "$('#{thing}_sidebar_section').show()"
+ %>
+</script>

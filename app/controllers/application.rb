@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
   layout "application"
   helper :cashiers
   helper :conditions
+  helper :sidebar
 
   rescue_from 'Exception', :with => :process_exception
 
