@@ -36,7 +36,7 @@ class Contact < ActiveRecord::Base
   validates_length_of :country, :maximum => 100
 
   def to_privileges
-    "contact_#{self.id}"
+    ["contact_#{self.id}", "has_contact"]
   end
 
   def all_points_trades

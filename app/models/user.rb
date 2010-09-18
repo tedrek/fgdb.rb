@@ -35,6 +35,22 @@ class User < ActiveRecord::Base
     }
   end
 
+  def User.current_user
+    Thread.current['user'] ||= User.fake_new
+  end
+
+  attr_accessor :fake_logged_in
+
+  def User.fake_new
+    u = User.new
+    u.fake_logged_in = true
+    u
+  end
+
+  def logged_in
+    ! fake_logged_in
+  end
+
   def add_cashier_code
     reset_cashier_code if cashier_code.nil?
   end
@@ -110,9 +126,13 @@ class User < ActiveRecord::Base
     has_privileges(roles.map{|x| "role_#{x.to_s.downcase}"})
   end
 
+  def to_privileges
+    return "logged_in" if self.logged_in
+  end
+
   def privileges
     olda = []
-    a = [self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| Privilege.by_name(x.to_privileges)}
+    a = [self, self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| Privilege.by_name(x.to_privileges)}
     while olda != a
       olda = a.dup
       a << olda.map{|x| x.children}.flatten
