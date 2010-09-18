@@ -306,11 +306,11 @@ module ApplicationHelper
   # start auth junk
 
   def is_logged_in()
-    @current_user
+    has_privileges("logged_in")
   end
 
   def has_privileges(*privs)
-    @current_user and @current_user.has_privileges(*privs)
+    User.has_privileges(*privs)
   end
 
   def is_me?(contact_id)
