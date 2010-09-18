@@ -111,7 +111,15 @@ class User < ActiveRecord::Base
   end
 
   def privileges
-    [self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| x.to_privileges}
+    olda = []
+    a = [self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| Privilege.by_name(x.to_privileges)}
+    while olda != a
+      olda = a.dup
+      a << olda.map{|x| x.children}.flatten
+      a = a.flatten.sort_by(&:name).uniq
+    end
+    a = a.map{|x| x.name}
+    a
   end
 
   def has_privileges(*privs)
