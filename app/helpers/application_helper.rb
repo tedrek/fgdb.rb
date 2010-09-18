@@ -309,21 +309,24 @@ module ApplicationHelper
     @current_user
   end
 
+  def has_privileges(*privs)
+    @current_user and @current_user.has_privileges(*privs)
+  end
+
   def is_me?(contact_id)
-    @current_user and @current_user.contact_id == contact_id
+    has_privileges("contact_#{contact_id}")
   end
 
   def has_role?(*roles)
-    @current_user and @current_user.has_role?(*roles)
+    has_privileges(roles.map{|x| "role_#{x.to_s.downcase}"})
   end
 
   def is_staff?
-    has_worker = @current_user and @current_user.contact and @current_user.contact.has_worker?
-    has_worker || has_role?("ADMIN")
+    has_privileges("staff")
   end
 
   def has_role_or_is_me?(contact_id, *roles)
-    has_role?(*roles) or is_me?(contact_id)
+    has_privileges("contact_#{contact_id}", roles.map{|x| "role_#{x.to_s.downcase}"})
   end
 
   # end auth junk

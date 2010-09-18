@@ -107,7 +107,17 @@ class User < ActiveRecord::Base
   # start auth junk
 
   def has_role?(*roles)
-    not (self.roles.map {|x| x.name } & (roles.map {|x| x.to_s} + ['ADMIN'])).empty?
+    has_privileges(roles.map{|x| "role_#{x.to_s.downcase}"})
+  end
+
+  def privileges
+    [self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| x.to_privileges}
+  end
+
+  def has_privileges(*privs)
+    privs << "role_admin"
+    privs.flatten!
+    (privs & self.privileges).length > 0
   end
 
   # end auth junk

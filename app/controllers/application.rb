@@ -114,12 +114,16 @@ class ApplicationController < ActionController::Base
 
   # start auth junk
 
+  def has_privileges(*privs)
+    current_user and current_user.has_privileges(*privs)
+  end
+
   def is_me?(contact_id)
-    current_user and current_user.contact_id == contact_id.to_i
+    has_privileges("contact_#{contact_id}")
   end
 
   def has_role_or_is_me?(contact_id, *roles)
-    (contact_id and is_me?(contact_id)) or has_role?(*roles)
+    has_privileges("contact_#{contact_id}", roles.map{|x| "role_#{x.to_s.downcase}"})
   end
 
   def is_logged_in
@@ -127,12 +131,11 @@ class ApplicationController < ActionController::Base
   end
 
   def has_role?(*roles)
-    logged_in? and current_user.has_role?(*roles)
+    has_privileges(roles.map{|x| "role_#{x.to_s.downcase}"})
   end
 
   def is_staff?
-    has_worker = logged_in? and current_user.contact and current_user.contact.has_worker?
-    has_worker || has_role?("ADMIN")
+    has_privileges("staff")
   end
 
   def requires_role(*roles)
@@ -145,6 +148,10 @@ class ApplicationController < ActionController::Base
 
   def requires_role_or_me(contact_id, *roles)
     requires(has_role_or_is_me?(contact_id.to_i, *roles))
+  end
+
+  def requires_privileges(*privs)
+    requires(has_privileges(*privs))
   end
 
   def requires(val)
