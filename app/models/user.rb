@@ -147,6 +147,7 @@ class User < ActiveRecord::Base
   end
 
   def has_privileges(*privs)
+    return true if privs.length == 0
     privs << "role_admin"
     privs.flatten!
     (privs & self.privileges).length > 0

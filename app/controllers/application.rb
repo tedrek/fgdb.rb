@@ -112,6 +112,44 @@ class ApplicationController < ActionController::Base
     Thread.current['user'] = @current_user
   end
 
+  def required_privileges(action)
+    requires = []
+    get_required_privileges.each{|x|
+      if (x[:only].nil? || x[:only].include?(action)) && (x[:except].nil? || !x[:except].include?(action))
+        requires << x[:privileges]
+      end
+    }
+    requires.each{|x| x.flatten!}
+    requires
+  end
+
+  def self.has_required_privileges(action)
+    self.new.has_required_privileges(action)
+  end
+
+  def has_required_privileges(action)
+    required_privileges(action).each{|x|
+      if !has_privileges(x)
+        return false
+      end
+    }
+    return true
+  end
+
+  def get_required_privileges
+    a = []
+    return a
+  end
+
+  before_filter :authorize_to_required_privileges
+
+  def authorize_to_required_privileges
+    # TODO: make this just use has_required_privileges, and then combine it with requires() (once it's no longer needed)
+    required_privileges(params[:action]).each{|x|
+      requires_privileges(x)
+    }
+  end
+
   # start auth junk
 
   def has_privileges(*privs)
