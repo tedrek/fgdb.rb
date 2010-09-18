@@ -126,10 +126,6 @@ class User < ActiveRecord::Base
     User.current_user.has_privileges(*privs)
   end
 
-  def has_role?(*roles)
-    has_privileges(roles.map{|x| "role_#{x.to_s.downcase}"})
-  end
-
   def to_privileges
     return "logged_in" if self.logged_in
   end
