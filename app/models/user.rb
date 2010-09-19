@@ -147,10 +147,25 @@ class User < ActiveRecord::Base
   end
 
   def has_privileges(*privs)
-    return true if privs.length == 0
-    privs << "role_admin"
+    positive_privs = []
+    negative_privs = []
     privs.flatten!
-    (privs & self.privileges).length > 0
+    for i in privs
+      if i.match(/^!/)
+        negative_privs << i.sub(/^!/, "")
+      else
+        positive_privs << i
+      end
+    end
+    if positive_privs.length > 0
+      positive_privs << "role_admin"
+    end
+    if negative_privs.length > 0
+      negative_privs << "role_admin"
+    end
+    my_privs = self.privileges
+    puts "NEG: #{negative_privs.inspect}, POS: #{positive_privs.inspect}, MY: #{my_privs.inspect}"
+    return (negative_privs & my_privs).length == 0 && ((positive_privs & my_privs).length > 0 || positive_privs.length == 0)
   end
 
   # end auth junk
