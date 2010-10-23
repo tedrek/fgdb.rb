@@ -164,7 +164,7 @@ class User < ActiveRecord::Base
       negative_privs << "role_admin"
     end
     my_privs = self.privileges
-    puts "NEG: #{negative_privs.inspect}, POS: #{positive_privs.inspect}, MY: #{my_privs.inspect}"
+    #puts "NEG: #{negative_privs.inspect}, POS: #{positive_privs.inspect}, MY: #{my_privs.inspect}"
     return (negative_privs & my_privs).length == 0 && ((positive_privs & my_privs).length > 0 || positive_privs.length == 0)
   end
 
