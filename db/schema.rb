@@ -24,7 +24,7 @@ END;
 
 
 '], :lang => 'plpgsql')
-  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', '
+  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', "
 
 
 DECLARE
@@ -56,8 +56,8 @@ END;
 
 
 
-'], :lang => 'plpgsql')
-  create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', '
+"], :lang => 'plpgsql')
+  create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', "
 BEGIN
   IF tg_op = 'UPDATE' THEN
     IF ((NEW.address IS NULL != OLD.address IS NULL
@@ -75,7 +75,7 @@ BEGIN
   END IF;
   RETURN NEW;
 END
-'], :lang => 'plpgsql')
+"], :lang => 'plpgsql')
   create_table "actions", :force => true do |t|
     t.string   "description"
     t.integer  "lock_version",               :default => 0, :null => false
