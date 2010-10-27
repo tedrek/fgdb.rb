@@ -5,8 +5,9 @@ fgdb.rb (1.0.52) UNRELEASED; urgency=low
   * fancy sidebar
   * optimize skedjulnator a bit, to only use one SQL query when
     rendering the schedule display
+  * make things line up correctly on the hours report (Closes: #20459)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Oct 2010 11:08:35 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 26 Oct 2010 17:01:21 -0700
 
 fgdb.rb (1.0.51) released; urgency=low
 
