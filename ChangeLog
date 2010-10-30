@@ -10,8 +10,9 @@ fgdb.rb (1.0.52) UNRELEASED; urgency=low
     (Closes: #20523)
   * rename other program to mixed (Closes: #20481)
   * rename staff disbursement trype to infrastructure (Closes: #19971)
+  * add a spanish build program (Closes: #19794)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Oct 2010 16:13:25 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Oct 2010 16:34:19 -0700
 
 fgdb.rb (1.0.51) released; urgency=low
 
