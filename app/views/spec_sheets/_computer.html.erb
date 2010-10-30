@@ -45,6 +45,17 @@
             </td>
           </tr>
         <% end %>
+        <% look_for = {:lm => "64-bit", :svm => "Virtualization", :vmx => "Virtualization"} %>
+        <% list = [] %>
+        <% @parser.xml_foreach("capabilities/capability") do %>
+          <% list << @parser.xml_value_of("@id") %>
+        <% end %>
+        <% list = list.select{|x| look_for.keys.include?(x.to_sym)} %>
+
+        <tr><td>Supports:</td><td>
+            <%= list.map{|x| look_for[x.to_sym]}.join(', ') %>
+          </td></tr>
+
       <% end %>
     <% end %>
     <% @parser.xml_foreach("//*[@class='memory']") do %>

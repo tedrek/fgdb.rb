@@ -6,8 +6,10 @@ fgdb.rb (1.0.52) UNRELEASED; urgency=low
   * optimize skedjulnator a bit, to only use one SQL query when
     rendering the schedule display
   * make things line up correctly on the hours report (Closes: #20459)
+  * list processor support for virtualization or 64-bit on printme
+    (Closes: #20523)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 26 Oct 2010 17:01:21 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Oct 2010 15:30:24 -0700
 
 fgdb.rb (1.0.51) released; urgency=low
 
