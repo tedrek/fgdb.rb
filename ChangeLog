@@ -12,8 +12,10 @@ fgdb.rb (1.0.52) UNRELEASED; urgency=low
   * rename staff disbursement trype to infrastructure (Closes: #19971)
   * add a spanish build program (Closes: #19794)
   * add online payment method (Closes: #19575)
+  * allow staff to save no hours, and actually remember it (Closes:
+    #17932)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Oct 2010 17:04:04 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Oct 2010 18:03:00 -0700
 
 fgdb.rb (1.0.51) released; urgency=low
 
