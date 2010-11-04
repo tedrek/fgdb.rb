@@ -1,6 +1,8 @@
 <script>
+the_speed =  0.5; //parseFloat(prompt("how many seconds do you want it to take?"));
+
 function hideall() {
-a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.length; i++){if(a[i].style.display != "none") {Effect.SlideUp(a[i].id)}};
+a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.length; i++){if(a[i].style.display != "none") {Effect.SlideUp(a[i].id, { duration: the_speed })}};
 }
 
 function f_hideall() {
@@ -10,9 +12,9 @@ a = document.getElementsByClassName('sidebar_section'); for(var i = 0; i < a.len
 function show_thing(thing) {
 if($(thing + '_sidebar_section').style.display == "none"){
 hideall();
-Effect.SlideDown(thing + '_sidebar_section');
+Effect.SlideDown(thing + '_sidebar_section', { duration: the_speed });
 } else {
-Effect.SlideUp(thing + '_sidebar_section');
+Effect.SlideUp(thing + '_sidebar_section', { duration: the_speed });
 }
 }
 </script>
