@@ -12,7 +12,10 @@
       <td>Description: </td>
       <td>
         <%= @parser.xml_value_of("description") %>
-        (<%= @parser.xml_value_of("@handle").sub(" ", "") %>)
+        <% handle = @parser.xml_value_of("@handle").sub(" ", "") %>
+        <% if handle.length > 0 %>
+          (<%= handle %>)
+        <% end %>
       </td>
     </tr>
   <% end %>
@@ -40,7 +43,7 @@
       </td>
     </tr>
   <% end %>
-  <% if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("configuration/setting[@id='wireless']") %><%# not tested after nokogiri %>
+  <% if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("configuration/setting[@id='wireless']") %>
     <tr>
       <td>Wireless Capabilities: </td>
       <td>
