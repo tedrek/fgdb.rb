@@ -337,7 +337,7 @@ class Contact < ActiveRecord::Base
   end
 
   def last_disbursements
-    return last_gizmos("disbursements")
+    return last_gizmos("disbursements", "2@year")
   end
 
   def last_sales
@@ -379,7 +379,7 @@ class Contact < ActiveRecord::Base
 
   # returns the last gizmos associated with the given table
   # over the last month
-  def last_gizmos(table)
+  def last_gizmos(table, interval = "1@month" )
     # figure out how to use a prepared statement here
     return self.connection.execute(
                                    "select gt.id, gt.description, sum(ge.gizmo_count)
@@ -387,7 +387,7 @@ class Contact < ActiveRecord::Base
             join gizmo_events ge on ge.gizmo_type_id=gt.id
             join #{table} t on ge.#{table.singularize}_id=t.id
        where t.contact_id=#{self.id}
-             and t.created_at > now()-'1@month'::interval
+             and t.created_at > now()-'#{interval}'::interval
        group by 1,2").to_a.map{|hash| [hash["description"],hash["sum"]]}
   end
 
