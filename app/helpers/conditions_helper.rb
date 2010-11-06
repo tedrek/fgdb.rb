@@ -27,6 +27,10 @@ module ConditionsHelper
     text_field(params_key, 'id')
   end
 
+  def html_for_serial_number_condition(params_key)
+    text_field(params_key, 'serial_number')
+  end
+
   def html_for_contact_type_condition(params_key)
     collection_select(params_key, "contact_type", ContactType.find(:all), "id", "description")
   end

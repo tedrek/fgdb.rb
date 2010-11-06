@@ -10,7 +10,7 @@ class Conditions < ConditionsBase
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
-      can_login role action worker contribution
+      can_login role action worker contribution serial_number
     ] + DATES).uniq
 
   for i in CONDS
@@ -26,6 +26,8 @@ class Conditions < ConditionsBase
   attr_accessor :created_by, :cashier_created_by
 
   attr_accessor :covered
+
+  attr_accessor :serial_number
 
   attr_accessor :contact_id
 
@@ -339,6 +341,11 @@ class Conditions < ConditionsBase
 
   def gizmo_type_id_conditions(klass)
     return ["gizmo_events.gizmo_type_id=?", gizmo_type_id]
+  end
+
+  def serial_number_conditions(klass)
+
+    return ["system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
   end
 
   def contribution_conditions(klass)
