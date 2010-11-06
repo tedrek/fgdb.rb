@@ -10,7 +10,6 @@
       <% end %>
     <% end %>
   <% end %>
-  <% if false %><!-- fix for airport #19143 -->
       <h3>Unknown</h3>
       <% @parser.xml_foreach("//node[not(@class='bus')
                       and not(@class='bridge')
@@ -21,6 +20,5 @@
                       and not(@class='disk')
                       and not(@class='memory')]") do %>
         <%= render_pci_guts %>
-      <% end %>
   <% end %>
 </div>
