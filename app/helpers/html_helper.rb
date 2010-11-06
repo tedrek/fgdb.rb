@@ -34,7 +34,7 @@ module HtmlHelper
       choice_names = { }
       choices.each {|k,v| choice_names[k] = (k).titleize}
       js = update_page do |page|
-        page << "list_of_conditions = $H(#{choices.to_json});"
+        page << "list_of_conditions = $H(#{choices.to_json.gsub("</script>", "<\\\/script>")});"
         page << "condition_display_names = $H(#{choice_names.to_json});"
         page.insert_html(:bottom, obj_name + "_container",
                          :partial => 'helpers/multiselection_header',
