@@ -113,7 +113,7 @@ module ActiveRecord
 #		     behave the same so I didn't make a case for RNONI)
 #          user = INVOKER
         def delim(name, options)
-          options[:delim] || "$#{Inflector.underscore(name)}_body$"
+          options[:delim] || "$#{(name.underscore)}_body$"
         end
           
 #       From PostgreSQL

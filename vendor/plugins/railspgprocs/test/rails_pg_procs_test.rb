@@ -490,6 +490,6 @@ END;" }
     def with_trigger(table, events=[], options={}, &block)
         @connection.add_trigger(table, events, options) 
             yield
-        @connection.remove_trigger(table, options[:name] || Inflector.triggerize(table, events, options.has_key?(:before)))
+        @connection.remove_trigger(table, options[:name] || MyInflector.triggerize(table, events, options.has_key?(:before)))
     end
 end

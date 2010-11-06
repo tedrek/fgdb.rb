@@ -9,9 +9,10 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101106074148) do
+ActiveRecord::Schema.define(:version => 20100626215744) do
 
-  create_proc(:contact_trigger, [], :return => :trigger, :resource => ['', '
+  create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
+    <<-contact_trigger_sql
 
 
 
@@ -23,9 +24,10 @@ END;
 
 
 
-
-'], :lang => 'plpgsql')
-  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', '
+    contact_trigger_sql
+  }
+  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
+    <<-get_sort_name_sql
 
 
 DECLARE
@@ -57,9 +59,10 @@ END;
 
 
 
-
-'], :lang => 'plpgsql')
-  create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', '
+    get_sort_name_sql
+  }
+  create_proc(:uncertify_address, [], :return => :trigger, :lang => 'plpgsql') {
+    <<-uncertify_address_sql
 
 BEGIN
   IF tg_op = 'UPDATE' THEN
@@ -78,8 +81,8 @@ BEGIN
   END IF;
   RETURN NEW;
 END
-
-'], :lang => 'plpgsql')
+    uncertify_address_sql
+  }
   create_table "actions", :force => true do |t|
     t.string   "description"
     t.integer  "lock_version",               :default => 0, :null => false
@@ -663,6 +666,10 @@ END
 
   add_index "schedules", ["lft"], :name => "index_schedules_on_lft"
   add_index "schedules", ["rgt"], :name => "index_schedules_on_rgt"
+
+  create_table "schema_info", :id => false, :force => true do |t|
+    t.integer "version"
+  end
 
   create_table "shifts", :force => true do |t|
     t.string  "type"
