@@ -6,7 +6,6 @@ fgdb.rb (1.0.53) UNRELEASED; urgency=low
   * add a contribution condition to the donations search (Closes:
     #19121)
   * add serial number fgss search condition (Closes: #19466)
-  * fix showing some missing airport stuff from printme (Closes: #19143)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Nov 2010 16:14:43 -0700
 
