@@ -80,6 +80,8 @@ class SpecSheetsController < ApplicationController
         @mistakes << "The technician that you entered is an organization<br />(an organization cannot be a technician)<br />Click Edit to change the technician"
       end
     end
+    @seen = []
+    @seen_ser = []
     render :layout => 'fgss'
   end
 

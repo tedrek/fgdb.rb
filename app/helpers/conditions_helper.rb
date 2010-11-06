@@ -11,6 +11,10 @@ module ConditionsHelper
     ""
   end
 
+  def html_for_contribution_condition(params_key)
+    ""
+  end
+
   def html_for_role_condition(params_key)
     collection_select(params_key, "role", Role.find(:all), "id", "name")
   end
@@ -21,6 +25,10 @@ module ConditionsHelper
 
   def html_for_id_condition(params_key)
     text_field(params_key, 'id')
+  end
+
+  def html_for_serial_number_condition(params_key)
+    text_field(params_key, 'serial_number')
   end
 
   def html_for_contact_type_condition(params_key)

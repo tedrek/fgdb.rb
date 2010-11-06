@@ -94,7 +94,7 @@ class ContactsController < ApplicationController
 
   def update_display_area
     @contact = Contact.find( params.fetch(:contact_id, '').strip )
-    render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] || params}
+    render :partial => 'display', :locals => {:options => params['options'] || params}
   end
 
   def new
@@ -105,7 +105,7 @@ class ContactsController < ApplicationController
     @options = params.merge({:action => "create", :id => rand(1000).to_s * 10})
     @new_options = @options.merge(:action => "new", :id => nil)
     @successful = true
-    render :partial => 'new_edit', :locals => { :@options => @options }
+    render :partial => 'new_edit'
   end
 
   def create
@@ -139,7 +139,7 @@ class ContactsController < ApplicationController
 
     @options = params.merge({ :action => "update", :id => params[:id] })
     @view_options = @options.merge(:action => "view")
-    render :partial => 'new_edit', :locals => { :@options => @options }
+    render :partial => 'new_edit'
   end
 
   def update

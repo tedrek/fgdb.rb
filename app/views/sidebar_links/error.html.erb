@@ -10,7 +10,7 @@
 <p>An error occurred that prevented fgdb.rb from completing the request.</p>
 
 <% if @fgdb_local_request %>
-  <%= render :partial => "sidebar_links/exception_data", :locals => {:@exception_data => @exception_data} %>
+  <%= render :partial => "sidebar_links/exception_data" %>
 <% else %>
   <p>Some information about this error has been saved with the crash ID <b><%= @exception_data["crash_id"] %></b>. Save this and include it in any bug reports that you create about this issue.</p>
 <% end %>

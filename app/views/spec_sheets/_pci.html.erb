@@ -6,18 +6,19 @@
     <% end %>
     <% @parser.xml_foreach("./node[contains(@handle, 'PCI:') or contains(@handle, 'PCMCIA:')]") do %>
       <% if !['bus', 'bridge', 'storage', 'system', 'memory'].include?(@parser.xml_value_of("@class")) %>
-        <%= render :partial => "pci_guts" %>
+        <%= render_pci_guts %>
       <% end %>
     <% end %>
-    <% if false %>
+  <% end %>
       <h3>Unknown</h3>
-      <% xpath_foreach("node[not(@class='bus')
+      <% @parser.xml_foreach("//node[not(@class='bus')
                       and not(@class='bridge')
                       and not(@class='storage')
                       and not(@class='system')
+                      and not(@class='processor')
+                      and not(@class='volume')
+                      and not(@class='disk')
                       and not(@class='memory')]") do %>
-        <%= render :partial => "pci_guts" %>
-      <% end %>
-    <% end %>
+        <%= render_pci_guts %>
   <% end %>
 </div>
