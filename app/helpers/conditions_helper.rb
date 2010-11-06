@@ -11,6 +11,10 @@ module ConditionsHelper
     ""
   end
 
+  def html_for_contribution_condition(params_key)
+    ""
+  end
+
   def html_for_role_condition(params_key)
     collection_select(params_key, "role", Role.find(:all), "id", "name")
   end

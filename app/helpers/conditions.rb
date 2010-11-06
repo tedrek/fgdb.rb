@@ -10,7 +10,7 @@ class Conditions < ConditionsBase
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
-      can_login role action worker
+      can_login role action worker contribution
     ] + DATES).uniq
 
   for i in CONDS
@@ -339,6 +339,10 @@ class Conditions < ConditionsBase
 
   def gizmo_type_id_conditions(klass)
     return ["gizmo_events.gizmo_type_id=?", gizmo_type_id]
+  end
+
+  def contribution_conditions(klass)
+    return ["(SELECT count(*) from gizmo_events WHERE #{klass.table_name.singularize}_id = #{klass.table_name}.id) = 0"]
   end
 
   def gizmo_category_id_conditions(klass)
