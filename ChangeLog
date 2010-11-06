@@ -14,7 +14,7 @@ fgdb.rb (1.0.52) UNRELEASED; urgency=low
   * add online payment method (Closes: #19575)
   * allow staff to save no hours, and actually remember it (Closes:
     #17932)
-  * add a mac scraptop gizmo type
+  * add a mac scraptop gizmo type (Closes: #20590)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Nov 2010 00:42:00 -0700
 
