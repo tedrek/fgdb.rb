@@ -29,7 +29,7 @@ javascript_tag "volunteer_task_programs = #{h.to_json};" %>
 
     <%= dhtml_calendar_includes %>
     <% if defined?(@gizmo_context) %>
-      <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:@gizmo_context => @gizmo_context} %>
+      <%= render :partial => 'sidebar_links/line_item_javascript' %>
     <% end %>
   </head>
   <body>
