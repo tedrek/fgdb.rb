@@ -43,11 +43,9 @@ module SidebarHelper
     sidebar_hash = OH.n
     sidebar_hash.default_class = OH
     # hours
+    sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks"}
     if has_privileges("role_volunteer_manager")
-      sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks"}
       sidebar_hash["hours"]["points trade"] = {:c => 'points_trades'}
-    elsif current_user and current_user.contact_id
-      sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks", :contact_id => current_user.contact_id}
     end
     # transactions
     {:donation => ["role_front_desk"], :sale => ["role_store"], :recycling => ["role_front_desk", "role_recyclings"], :disbursement => ['role_contact_manager', 'role_front_desk', 'role_store', 'role_volunteer_manager'], :gizmo_return => ['role_store', 'role_tech_support']}.each do |i,x|
@@ -70,7 +68,7 @@ module SidebarHelper
     # bean counters
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"} if has_privileges('role_bean_counter')
     # staffsched
-    sidebar_hash["staff"]["schedule"] = "/staffsched" if should_show_schedule
+    sidebar_hash["staff"]["schedule"] = {:c => "work_shifts", :a => "staffsched"} if should_show_schedule
     sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule and has_privileges('role_skedjulnator')
     sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"} if has_privileges('staff')
     sidebar_hash["staff"]["individual report"] = {:c => "worked_shifts", :a => "individual"} if has_privileges('staff')

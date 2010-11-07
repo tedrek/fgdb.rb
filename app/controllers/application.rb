@@ -127,7 +127,8 @@ class ApplicationController < ActionController::Base
     }
     all = all.flatten.uniq
     if !all.include?(action)
-      puts "WARNING: action #{action}, for which the list of required privileges has been requested, is apparently unknown to the privilege system"
+#      puts "WARNING: action #{action}, for which the list of required privileges has been requested, is apparently unknown to the privilege system"
+      nil
     end
     requires.each{|x| x.flatten!}
     requires
@@ -146,9 +147,31 @@ class ApplicationController < ActionController::Base
     return true
   end
 
+  def self.sb_has_required_privileges(action)
+    self.new._internal_sb_has_required_privileges(action)
+  end
+
+  def _internal_sb_has_required_privileges(action) # TODO: should this be self.has_required_privileges? so Controller.has_required does one thing, while Controller.new.has_required does the other
+    required_privileges(action).each{|x|
+      if !has_privileges(_privis_to_out_of_page(x))
+        return false
+      end
+    }
+    return true
+  end
+
   def get_required_privileges
     a = []
     return a
+  end
+
+  def _privis_to_out_of_page(privs)
+    mappings = {"contact_nil" => "has_contact", "contact_" => "has_contact"}
+    res = privs.map{|x|
+      mappings[x] || x
+    }
+#    puts res.inspect
+    return res
   end
 
   before_filter :authorize_to_required_privileges
