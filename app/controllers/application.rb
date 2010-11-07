@@ -114,11 +114,21 @@ class ApplicationController < ActionController::Base
 
   def required_privileges(action)
     requires = []
+    base_action = action.split("/").first
+    if base_action == "" and params
+      base_action = params[:action]
+    end
+    all = []
     get_required_privileges.each{|x|
-      if (x[:only].nil? || x[:only].include?(action)) && (x[:except].nil? || !x[:except].include?(action))
+      all << [x[:only], x[:except]]
+      if (x[:only].nil? || x[:only].include?(action) || x[:only].include?(base_action)) && (x[:except].nil? || !(x[:except].include?(action) || x[:except].include?(base_action)))
         requires << x[:privileges]
       end
     }
+    all = all.flatten.uniq
+    if !all.include?(action)
+      puts "WARNING: action #{action}, for which the list of required privileges has been requested, is apparently unknown to the privilege system"
+    end
     requires.each{|x| x.flatten!}
     requires
   end
