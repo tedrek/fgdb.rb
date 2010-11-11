@@ -9,8 +9,9 @@ fgdb.rb (1.0.53) UNRELEASED; urgency=low
   * fix displaying all airports on printme (Closes: #19143)
   * fix Contact.phone_number to not include emergency phone numbers
     (Closes: #20667)
+  * change the online donation type to be a fake money method (Closes: #20632)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 11 Nov 2010 14:58:46 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 11 Nov 2010 15:01:44 -0800
 
 fgdb.rb (1.0.52) released; urgency=low
 
