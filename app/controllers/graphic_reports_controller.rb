@@ -586,7 +586,7 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
 
   def get_average_frontdesk(args)
     thing = call_income_report(args)
-    thing = thing[:donations]["total real"] # WHY IS THERE A SPACE!?!?!
+    thing = thing[:donations]["register total"] # WHY IS THERE A SPACE!?!?!
     suggested = thing["suggested"][:total] / 100.0
     fees = thing["fees"][:total] / 100.0
     number = find_all_donations(args)

@@ -10,8 +10,9 @@ fgdb.rb (1.0.53) UNRELEASED; urgency=low
   * fix Contact.phone_number to not include emergency phone numbers
     (Closes: #20667)
   * change the online donation type to be a fake money method (Closes: #20632)
+  * change 'total real' to 'register total' on the income report
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 11 Nov 2010 15:01:44 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 11 Nov 2010 15:51:14 -0800
 
 fgdb.rb (1.0.52) released; urgency=low
 
