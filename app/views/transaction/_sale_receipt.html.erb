@@ -1,4 +1,6 @@
-<%= render :partial => "sale_receipt_guts" %>
+<% @sale = sale %>
+
+<%= render :partial => "sale_receipt_guts", :locals => {:sale => @sale} %>
 
 <%= render :partial => "storecredits_receipt" %>
 

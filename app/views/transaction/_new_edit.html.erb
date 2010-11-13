@@ -62,8 +62,8 @@
       <% end %>
     </div>
   <% end %>
-    <% eval("@#{@transaction_type} = @transaction") %>
-    <%= render :partial => "#{@transaction_type}_form" %>
+
+    <%= render :partial => "#{@transaction_type}_form", :locals => { "@#{@transaction_type}".to_sym => @transaction } %>
 
     <% if params[:controller] == "donations" %>
       <%= javascript_tag "show_contract_notes()" %>
