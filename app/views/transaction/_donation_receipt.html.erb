@@ -1,4 +1,5 @@
-<%= render :partial => "donation_receipt_guts" %>
+<% @donation = donation %>
+<%= render :partial => "donation_receipt_guts", :locals => {:donation => @donation} %>
 
 <p><%= h @donation.comments %></p>
 <hr />
