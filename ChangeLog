@@ -1,3 +1,8 @@
+fgdb.rb (1.0.54) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Nov 2010 20:27:18 -0800
+
 fgdb.rb (1.0.53) released; urgency=low
 
   * fix the db plugins for rails 2.2.3
