@@ -8,7 +8,7 @@ class ShiftsController < ApplicationController
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
+  verify :method => :post, :only => [ :create, :update ],
          :redirect_to => { :action => :list }
 
   def list
@@ -63,6 +63,8 @@ class ShiftsController < ApplicationController
     redirect_to :action => 'view_weekly_schedule'
   end
 
+  helper :skedjul
+
   def view_weekly_schedule
     session["shift_return_to"] = "shifts"
     session["shift_return_action"] = "view_weekly_schedule"
@@ -103,12 +105,31 @@ class ShiftsController < ApplicationController
     end
     where_clause += ' AND schedule_id IN ' + in_clause
 
-    @shifts = Shift.find(:all, {
-      :conditions => where_clause, 
-      :include => [:weekday, :job, :worker, :coverage_type],
-      :order => 'weekday_id, workers.name, shifts.start_time'} 
-    )
-    render @view_weekly_schedule
+
+    @skedj = Skedjul.new({
+      :presentation_mode => @opts["presentation_mode"],
+
+      :block_method_name => "shifts.weekday_id",
+      :block_method_display => "weekdays.name",
+      :block_start_time => "weekdays.start_time",
+      :block_end_time => "weekdays.end_time",
+
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
+
+      :thing_start_time => "shifts.start_time",
+      :thing_end_time => "shifts.end_time",
+      :thing_table_name => "shifts",
+      :thing_description => "display_name",
+      :thing_link_id => "shifts.id",
+      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
+
+      })
+
+    @skedj.find({:conditions => where_clause, :include => [:weekday, :job, :worker, :coverage_type]})
   end
 
   def generate

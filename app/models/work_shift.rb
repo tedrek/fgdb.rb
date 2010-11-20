@@ -9,6 +9,61 @@ class WorkShift < ActiveRecord::Base
 
   before_save :set_weekday_id
 
+  def shift_date_display
+    self.shift_date.strftime('%A, %B %d, %Y').gsub( ' 0', ' ' )
+  end
+
+  def display_name
+    if self.kind == "Meeting"
+      return self.meeting_name
+    elsif self.kind == "Unavailability"
+      return '(unavailable)'
+    else
+      return self.name
+    end
+  end
+
+  def skedj_style(overlap, last)
+    shift_style = ""
+    if self.kind == 'Meeting'
+      shift_style = 'meeting'
+    elsif self.kind == 'Unavailability'
+      shift_style = 'unavailable'
+    elsif self.worker_id == 0
+      shift_style = 'unfilled'
+    elsif overlap
+        # can't seem to get this part quite right
+        # i expect a stupid syntax error
+        # what should happen:
+        # two overlapping anchored shifts should result 
+        #   in hardconflict
+        # two overlapping shifts where only one is anchored 
+        #   should result in mediumconflict
+        # other overlapping shifts should result in 
+        #   softconflict
+        # can't figure out if a shift is anchored?
+        #   pretend it is anchored
+        if (last.coverage_type ? last.coverage_type.name : 'anchored') == 'anchored'
+          if not self.coverage_type
+            shift_style = 'hardconflict'
+          elsif self.coverage_type.name == 'anchored'
+            shift_style = 'hardconflict'
+          else
+            shift_style = 'mediumconflict'
+          end
+        elsif self.coverage_type_name == 'anchored'
+          shift_style = 'mediumconflict'
+        else
+          shift_style = 'softconflict'
+        end
+        # end of problem code
+      else
+        shift_style = 'shift'
+      end
+    return shift_style
+  end
+
+
   def set_weekday_id
     self.weekday_id = self.shift_date.wday
   end

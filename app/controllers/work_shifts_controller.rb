@@ -15,8 +15,10 @@ class WorkShiftsController < ApplicationController
     render :action => 'list'
   end
 
+  helper :skedjul
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
+  verify :method => :post, :only => [ :create, :update ], # TODO: destroy should be in this list but the skedjul_links thing needs support for :post
          :redirect_to => { :action => :list }
 
   def list
@@ -44,6 +46,7 @@ class WorkShiftsController < ApplicationController
     else
       start = Date.today
       stop = start + 14
+
       @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
       @opts = {
         'schedule_id' => @root_sched.id, 
@@ -56,17 +59,32 @@ class WorkShiftsController < ApplicationController
       where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
     end
 
-    # this version pulls just work_shifts to avoid confusion over
-    # id column, but it is not optimal. it would be better to
-    # use something like the stuff commented out below to avoid
-    # massive numbers of extra queries
-    @work_shifts = WorkShift.find( :all, {
-      :conditions => where_clause, 
-      :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time', 
-      :include => [:job, :coverage_type, :worker, :weekday],
-     }
-    )
+    @skedj = Skedjul.new({
+      :presentation_mode => @opts["presentation_mode"],
+
+      :block_method_name => "work_shifts.shift_date",
+      :block_method_display => "work_shifts.shift_date_display",
+      :block_start_time => "weekdays.start_time",
+      :block_end_time => "weekdays.end_time",
+
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
+
+      :thing_start_time => "work_shifts.start_time",
+      :thing_end_time => "work_shifts.end_time",
+      :thing_table_name => "work_shifts",
+      :thing_description => "display_name",
+      :thing_link_id => "work_shifts.id",
+      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
+
+      })
+
+    @skedj.find({:conditions => where_clause, :include => [:job, :coverage_type, :worker, :weekday]})
   end
+
 
   def show
     @work_shift = WorkShift.find(params[:id])
