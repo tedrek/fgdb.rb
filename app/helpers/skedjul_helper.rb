@@ -95,7 +95,10 @@ module SkedjulHelper
     controller = skedj.opts[:thing_table_name]
 
     a = []
-    for action, type in links
+    links.each{|mya|
+      action = mya[0]
+      type = mya[1]
+      cond = mya[2]
       letter = action.to_s.scan(/./).first
       html_opts = {:title => action}
       url_opts = { :action => action, :id => tid }
@@ -104,8 +107,10 @@ module SkedjulHelper
       elsif type == :confirm
         html_opts[:confirm] = 'Are you sure?'
       end
-      a << link_to(letter, url_opts, html_opts)
-    end
+      if cond.nil? or current.send(cond)
+        a << link_to(letter, url_opts, html_opts)
+      end
+    }
     return a.join(" | ")
   end
 end
