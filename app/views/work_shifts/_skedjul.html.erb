@@ -1,3 +1,4 @@
+<% Thread.current['skedj_obj'] = skedj  %>
 <div class="skedj">
 <h2>Listing <%= params[:controller].humanize.downcase %></h2>
 
@@ -75,3 +76,4 @@
 <% end %>
 </div>
 
+<% Thread.current['skedj_obj'] = nil  %>

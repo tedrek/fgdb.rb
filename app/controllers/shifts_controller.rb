@@ -123,7 +123,7 @@ class ShiftsController < ApplicationController
       :thing_start_time => "shifts.start_time",
       :thing_end_time => "shifts.end_time",
       :thing_table_name => "shifts",
-      :thing_description => "display_name",
+      :thing_description => "display_name_skedj",
       :thing_link_id => "shifts.id",
       :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
 

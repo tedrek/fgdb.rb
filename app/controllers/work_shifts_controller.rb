@@ -76,7 +76,7 @@ class WorkShiftsController < ApplicationController
       :thing_start_time => "work_shifts.start_time",
       :thing_end_time => "work_shifts.end_time",
       :thing_table_name => "work_shifts",
-      :thing_description => "display_name",
+      :thing_description => "display_name_skedj",
       :thing_link_id => "work_shifts.id",
       :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
 

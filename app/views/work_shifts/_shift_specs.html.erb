@@ -1,8 +1,5 @@
 <% shift_length = (( skedj.get_method_value(skedj.current, :thing_end_time) - skedj.get_method_value(skedj.current, :thing_start_time) ) / ( 60 * 15 )).to_int %>
 <td class='<%= shift_style %>' colspan='<%= shift_length %>'>
-<% if skedj.opts[:presentation_mode]=='Edit' %>
-  [<%=h skedj.current.id %>]
-<% end %>
 
   <%= skedj.get_method_value(skedj.current, :thing_description) %>
 <% if skedj.opts[:presentation_mode]=='Edit' %>

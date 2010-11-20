@@ -4,8 +4,18 @@ class Shift < ActiveRecord::Base
   belongs_to :worker
   belongs_to :coverage_type
 
+  def display_name_skedj
+    skedj = Thread.current['skedj_obj']
+    raise if skedj.nil?
+    prepend = ""
+    if skedj.opts[:presentation_mode] == "Edit"
+      prepend = "[#{self.id}] "
+    end
+    prepend + display_name
+  end
+
   def display_name
-    s = " (" + self.schedule.name + ")" if self.schedule.name != "main" #FIXME
+    s = " (" + self.schedule.name + ")" if self.schedule.name != "main" #FIXME: this should look at the set root schedule, look at the past version
     s ||= ""
     self.name + s
   end

@@ -13,6 +13,16 @@ class WorkShift < ActiveRecord::Base
     self.shift_date.strftime('%A, %B %d, %Y').gsub( ' 0', ' ' )
   end
 
+  def display_name_skedj
+    skedj = Thread.current['skedj_obj']
+    raise if skedj.nil?
+    prepend = ""
+    if skedj.opts[:presentation_mode] == "Edit"
+      prepend = "[#{self.id}] "
+    end
+    prepend + display_name
+  end
+
   def display_name
     if self.kind == "Meeting"
       return self.meeting_name
