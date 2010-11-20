@@ -1,0 +1,74 @@
+<h2>Listing <%= params[:controller].humanize.downcase %></h2>
+
+<% 
+  # set up control variables and loop through all work shifts
+  #  in proper order (weekday, worker.name, start_time)
+  start_schedule = true
+  start_day = true
+  start_worker = true
+   shift_style = ''
+ 
+  for thing in skedj.results
+    skedj.set_current(thing)
+    @sched_start_time = skedj.get_method_value(thing, :block_start_time)
+    @sched_end_time = skedj.get_method_value(thing, :block_end_time)
+    @day_length = (( @sched_end_time - @sched_start_time ) / ( 60 * 30 )).to_int
+    @width = 90 / @day_length
+
+    if start_schedule
+      # first time through
+      if skedj.opts[:presentation_mode]!='Preview'
+        %> <%= render :partial => 'filter_criteria' %>
+        <div class='content'> <% 
+      end
+      shift_style = thing.skedj_style(false, nil)
+    else
+      # now previous shift should be defined, figure out what
+      # needs to happen:
+      if (skedj.get_method_value(skedj.last, :block_method_name) != skedj.get_method_value(thing, :block_method_name))
+        start_day = true
+        end_day = true
+        overlap = false
+        start_worker = true
+      elsif (skedj.get_method_value(skedj.last, :left_unique_value) != skedj.get_method_value(thing, :left_unique_value))
+        overlap = false
+        start_worker = true
+      elsif (skedj.get_method_value(skedj.last, :thing_end_time) <= skedj.get_method_value(thing, :thing_start_time))
+        overlap = false
+      else
+        overlap = true
+        start_worker = true
+      end
+
+      shift_style = thing.skedj_style(overlap, skedj.last)
+    end
+    if start_day
+      if not start_schedule
+        %> <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.last, :thing_end_time), :new => skedj.get_method_value(skedj.last, :block_end_time) } %>
+        <%= render :partial => 'work_shifts/table_footer' %> <%
+      end 
+      %> <%= render :partial => 'work_shifts/table_head', :locals => {:skedj => skedj } %> <%
+    end
+    if start_worker
+      if not start_day
+        %> <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.last, :thing_end_time), :new => skedj.get_method_value(skedj.last, :block_end_time) } %> <%
+      end
+    end
+    if start_worker
+      %> <%= render :partial => 'work_shifts/row_head', :locals => { :skedj => skedj } %> <%
+      start_worker = false
+    else
+    %> <%= render :partial => 'work_shifts/tween_time', :locals => { :old => skedj.get_method_value(skedj.last, :thing_end_time), :new => skedj.get_method_value(thing, :thing_start_time) } %> <%
+    end
+    
+    %> <%= render :partial => 'work_shifts/shift_specs', :locals => { :shift_style => shift_style, :skedj => skedj } %> <%
+
+    start_day = false
+    start_schedule = false
+  end
+%>
+<%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.current, :thing_end_time), :new => skedj.get_method_value(skedj.current, :block_end_time) } %>
+<%= render :partial => 'work_shifts/table_footer' %>
+<% if @opts['presentation_mode']!='Preview' %>
+  </div>
+<% end %>
