@@ -1,3 +1,4 @@
+<div class="skedj">
 <h2>Listing <%= params[:controller].humanize.downcase %></h2>
 
 <% 
@@ -69,6 +70,8 @@
 %>
 <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.current, :thing_end_time), :new => skedj.get_method_value(skedj.current, :block_end_time) } %>
 <%= render :partial => 'work_shifts/table_footer' %>
-<% if @opts['presentation_mode']!='Preview' %>
+<% if skedj.opts[:presentation_mode]!='Preview' %>
   </div>
 <% end %>
+</div>
+

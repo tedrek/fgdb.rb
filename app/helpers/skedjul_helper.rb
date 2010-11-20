@@ -26,7 +26,18 @@ class Skedjul
 
   def order_by
     # 'work_shifts.shift_date, workers.name, work_shifts.start_time'
-    "#{opts[:block_method_name]}, #{opts[:left_method_name]}, #{opts[:thing_start_time]}"
+    str = "#{opts[:block_method_name]}, #{opts[:left_method_name]}, #{opts[:thing_start_time]}"
+    list = str.split(",")
+    fin = []
+    list.each{|x|
+      a = x.split(".")
+      s = a[-1]
+      if a[-2]
+        s = a[-2] + "." + s
+      end
+      fin << s
+    }
+    fin.join(", ")
   end
 
   def find(opts)
@@ -45,7 +56,7 @@ class Skedjul
       foo = opts[str]
     end
     if foo.match(/,/)
-      return foo.split(/,/).map{|x| get_method_value(thing, nil, x)}.join(" ")
+      return foo.split(/, */).map{|x| get_method_value(thing, nil, x)}.join(" ")
     end
 #    puts "looking at #{foo}"
     a = foo.split(/\./)
