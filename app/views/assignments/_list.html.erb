@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <th>Volunteer shift</th>
+    <th>Contact</th>
+    <th>Start time</th>
+    <th>End time</th>
+  </tr>
+
+<% for assignment in @assignments %>
+  <tr>
+    <td><%=h assignment.volunteer_shift_id %></td>
+    <td><%=h assignment.contact_id %></td>
+    <td><%=h assignment.start_time %></td>
+    <td><%=h assignment.end_time %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => assignment.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => assignment.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => assignment.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

@@ -1,0 +1,23 @@
+<p>
+  <b>Volunteer shift:</b>
+  <%=h @assignment.volunteer_shift_id %>
+</p>
+
+<p>
+  <b>Contact:</b>
+  <%=h @assignment.contact_id %>
+</p>
+
+<p>
+  <b>Start time:</b>
+  <%=h @assignment.start_time %>
+</p>
+
+<p>
+  <b>End time:</b>
+  <%=h @assignment.end_time %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @assignment.id} %> |
+<%= link_to 'Back', {:action => "index"} %>
