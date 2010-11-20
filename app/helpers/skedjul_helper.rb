@@ -44,6 +44,9 @@ class Skedjul
     if foo.nil?
       foo = opts[str]
     end
+    if foo.match(/,/)
+      return foo.split(/,/).map{|x| get_method_value(thing, nil, x)}.join(" ")
+    end
 #    puts "looking at #{foo}"
     a = foo.split(/\./)
     t = thing
