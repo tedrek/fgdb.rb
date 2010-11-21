@@ -1,10 +1,21 @@
 class VolunteerDefaultShift < ActiveRecord::Base
+  belongs_to :volunteer_task_type
+  belongs_to :weekday
+
   named_scope :effective_at, lambda { |date|
     { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
   }
   named_scope :on_weekday, lambda { |wday|
     { :conditions => ['weekday_id = ?', wday] }
   }
+
+  def skedj_style(overlap, last)
+    overlap ? 'hardconflict' : 'shift'
+  end
+
+  def time_range_s
+    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
+  end
 
   def VolunteerDefaultShift.generate(start_date, end_date)
     (start_date..end_date).each{|x|

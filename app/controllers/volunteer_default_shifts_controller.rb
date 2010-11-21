@@ -8,8 +8,38 @@ class VolunteerDefaultShiftsController < ApplicationController
 
   layout :with_sidebar
 
+  helper :skedjul
+
+  def generate
+    VolunteerDefaultShift.generate(Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date]))
+    redirect_to :controller => 'assignments', :action => "index" # TODO: conditions once its there, to show just this date range
+  end
+
   def index
-    @volunteer_default_shifts = VolunteerDefaultShift.find(:all)
+    @skedj = Skedjul.new({
+      :presentation_mode => "Edit", # @opts["presentation_mode"] # for now no read only mode
+
+      :block_method_name => "volunteer_default_shifts.weekday_id",
+      :block_method_display => "weekdays.name",
+      :block_start_time => "weekdays.start_time",
+      :block_end_time => "weekdays.end_time",
+
+      :left_unique_value => "volunteer_task_types.id", # model
+      :left_method_name => "volunteer_task_types.description",
+      :left_table_name => "volunteer_task_types",
+      :left_link_action => "new_default_shift",
+      :left_link_id => "volunteer_task_types.id",
+
+      :thing_start_time => "volunteer_default_shifts.start_time",
+      :thing_end_time => "volunteer_default_shifts.end_time",
+      :thing_table_name => "volunteer_default_shifts",
+      :thing_description => "slot_count",
+      :thing_link_id => "volunteer_default_shifts.id",
+      :thing_links => [[:edit, :popup], [:destroy, :confirm]]
+
+      })
+
+    @skedj.find({:conditions => "'t' = 't'", :include => [:volunteer_task_type, :weekday]})
   end
 
   def show

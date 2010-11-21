@@ -5,6 +5,14 @@ class VolunteerShift < ActiveRecord::Base
   @@processing = [] # this shit is gonna be buggy...but fill_in_available does lots of things which will trigger itself, and crazy shit would happen.
   # TODO: use Thread['processing'] instead of a class variable so this is thread safe and clears each request so there's no bugs from stale information
 
+  def skedj_style(overlap, last)
+    overlap ? 'hardconflict' : 'shift'
+  end
+
+  def time_range_s
+    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
+  end
+
   def fill_in_available
     Thread.current['volskedj_fillin_processing'] ||= []
     if Thread.current['volskedj_fillin_processing'].include?(self.id)
