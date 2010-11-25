@@ -36,6 +36,8 @@ class RostersController < ApplicationController
   end
 
   def update
+    params[:roster][:sked_ids] ||= []
+
     @roster = Roster.find(params[:id])
 
     if @roster.update_attributes(params[:roster])

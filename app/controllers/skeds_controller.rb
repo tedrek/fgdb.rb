@@ -29,6 +29,8 @@ class SkedsController < ApplicationController
   end
 
   def update
+    params[:sked][:roster_ids] ||= []
+
     @sked = Sked.find(params[:id])
 
     if @sked.update_attributes(params[:sked])
