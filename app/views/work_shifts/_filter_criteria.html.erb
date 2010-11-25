@@ -1,6 +1,6 @@
 <div class='filter'>
 <h3>Filter work shifts:</h3>
-<% form_tag({:action => 'list'}, {:method => "get"}) do %>
+<% form_tag({:action => params[:action]}, {:method => "get"}) do %>
   <%= conditions_html('conditions', skedj.opts[:conditions]) %>
   <%= radio_button :opts, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
   <%= radio_button :opts, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
