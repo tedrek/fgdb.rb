@@ -125,7 +125,7 @@ class ShiftsController < ApplicationController
       :thing_table_name => "shifts",
       :thing_description => "display_name_skedj",
       :thing_link_id => "shifts.id",
-      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
+      :thing_links => [[:copy, :popup, :has_copy], [:edit, :popup], [:destroy, :confirm]]
 
       }, params)
 
