@@ -18,7 +18,7 @@ class Skedjul
 
     @__conditions = Conditions.new
     @__conditions.apply_conditions(params[:conditions] || default_conds)
-    @__where_clause = DB.prepare_sql(@__conditions.conditions(WorkShift))
+    @__where_clause = DB.prepare_sql(@__conditions.conditions(eval(opts[:thing_table_name].classify)))
   end
 
   def where_clause
