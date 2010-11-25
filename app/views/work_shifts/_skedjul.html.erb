@@ -1,6 +1,20 @@
+
 <% Thread.current['skedj_obj'] = skedj  %>
 <div class="skedj">
 <h2>Listing <%= params[:controller].humanize.downcase %></h2>
+
+<% if skedj.opts[:presentation_mode]!='Preview' %>
+
+<% if skedj.opts[:conditions] %>
+<%= render :partial => 'work_shifts/filter_criteria', :locals => {:skedj => skedj} %>
+<% else %>
+<%= render :partial => 'filter_criteria' %>
+<% end %>
+
+<% if skedj.opts[:generate_param_key] %>
+<%= render :partial => 'work_shifts/gen_sched_form', :locals => {:skedj => skedj} %>
+<% end %>
+<% end %>
 
 <% 
   # set up control variables and loop through all work shifts
@@ -20,7 +34,7 @@
     if start_schedule
       # first time through
       if skedj.opts[:presentation_mode]!='Preview'
-        %> <%= render :partial => 'filter_criteria' %>
+        %> 
         <div class='content'> <% 
       end
       shift_style = thing.skedj_style(false, nil)

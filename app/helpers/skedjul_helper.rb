@@ -44,6 +44,10 @@ class Skedjul
     @__results = klass.find(:all, opts.merge({:order => self.order_by}))
   end
 
+  def find_by_sql(sql)
+    @__results = klass.find_by_sql(sql)
+  end
+
   def results
     @__results
   end

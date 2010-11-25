@@ -8,6 +8,8 @@ class StandardShiftsController < ApplicationController
     render :action => 'list'
   end
 
+  helper :skedjul
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -97,8 +99,31 @@ SELECT
 ORDER BY 1, 2, 3, 4
 SQL
 
-    @standard_shifts = StandardShift.find_by_sql( sql )
-    render @list
+    @skedj = Skedjul.new({
+      :presentation_mode => @opts["presentation_mode"],
+      :generate_param_key => "generate_schedule",
+
+      :block_method_name => "standard_shifts.weekday_id",
+      :block_method_display => "weekdays.name",
+      :block_start_time => "weekdays.start_time",
+      :block_end_time => "weekdays.end_time",
+
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
+
+      :thing_start_time => "standard_shifts.start_time",
+      :thing_end_time => "standard_shifts.end_time",
+      :thing_table_name => "standard_shifts",
+      :thing_description => "display_name_skedj",
+      :thing_link_id => "standard_shifts.id",
+      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm], [:split, :popup, :splitable], [:merge, :popup, :mergeable], [:resize, :popup, :resizable]]
+
+      })
+
+    @skedj.find_by_sql(sql)
   end
 
   def show
