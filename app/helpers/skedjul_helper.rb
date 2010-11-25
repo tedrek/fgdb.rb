@@ -15,6 +15,7 @@ class Skedjul
       default_conds[(c+"_date_type").to_s] = "arbitrary"
       default_conds[(c+"_start_date").to_s] = Date.today.to_s
       default_conds[(c+"_end_date").to_s] = (Date.today + 14).to_s
+      default_conds["empty_enabled"] = "true"
       thing = (c+"_date_type").to_s
     end
 
@@ -23,8 +24,10 @@ class Skedjul
     if !thing.nil?
       params[:conditions][thing] = "arbitrary"
     end
+    params[:conditions]["empty_enabled"] = "true"
     @__conditions.apply_conditions(params[:conditions])
     @__where_clause = DB.prepare_sql(@__conditions.conditions(klass))
+    puts @__where_clause
   end
 
   def where_clause

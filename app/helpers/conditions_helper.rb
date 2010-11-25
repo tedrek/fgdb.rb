@@ -15,6 +15,10 @@ module ConditionsHelper
     ""
   end
 
+  def html_for_empty_condition(params_key)
+    ""
+  end
+
   def html_for_contribution_condition(params_key)
     ""
   end
