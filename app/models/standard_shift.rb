@@ -12,6 +12,10 @@ class StandardShift < Shift
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
   end
 
+  def skedj_style(overlap, last)
+    return 'shift'
+  end
+
   def long_name
     weekday = Weekday.find(:first, :conditions => "id = #{weekday_id}").short_name + ', ' 
     ret = weekday + Job.find(:first, :conditions => "id = #{job_id}").name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
