@@ -20,13 +20,13 @@ div.skedj div.generate {
     float: right;
     width: 45%;
 }
-div.skedj_footer {
-    position: absolute;
-    margin-top: 270px;
-}
 div.skedj div.content {
-    position: absolute;
-    margin-top: 340px;
+  float: left;
+  clear:left;
+}
+div.skedj_footer {
+  float: left;
+  clear:left;
 }
 .skedj caption {
     background: #FFFF99;

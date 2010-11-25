@@ -20,6 +20,14 @@ class Shift < ActiveRecord::Base
     self.name + s
   end
 
+  def skedjul_link_controller
+    self.type == 'Meeting' ? "meetings" : "shifts"
+  end
+
+  def has_copy
+    !(self.type == 'Meeting')
+  end
+
     def skedj_style(overlap, last)
       shift_style = ""
       if self.type == 'Meeting'

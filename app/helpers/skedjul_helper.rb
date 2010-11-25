@@ -128,7 +128,13 @@ module SkedjulHelper
     current = skedj.current
     links = skedj.opts[:thing_links] #
     tid = skedj.get_method_value(current, :thing_link_id)
-    controller = skedj.opts[:thing_table_name]
+    if skedj.opts.keys.include?(:thing_link_controller)
+      skedj.opts[:thing_link_controller]
+    elsif current.respond_to?(:skedjul_link_controller)
+      controller = current.send(:skedjul_link_controller)
+    else
+      controller = skedj.opts[:thing_table_name]
+    end
 
     a = []
     links.each{|mya|
@@ -137,7 +143,7 @@ module SkedjulHelper
       cond = mya[2]
       letter = action.to_s.scan(/./).first
       html_opts = {:title => action}
-      url_opts = { :action => action, :id => tid }
+      url_opts = { :controller => controller, :action => action, :id => tid }
       if type == :popup
         html_opts[:popup] = true
       elsif type == :confirm
