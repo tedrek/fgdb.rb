@@ -108,6 +108,7 @@ class ShiftsController < ApplicationController
 
     @skedj = Skedjul.new({
       :presentation_mode => @opts["presentation_mode"],
+      :generate_param_key => "date_range",
 
       :block_method_name => "shifts.weekday_id",
       :block_method_display => "weekdays.name",

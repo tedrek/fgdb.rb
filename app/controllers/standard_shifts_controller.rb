@@ -101,6 +101,7 @@ SQL
 
     @skedj = Skedjul.new({
       :presentation_mode => @opts["presentation_mode"],
+      :generate_param_key => "generate_schedule",
 
       :block_method_name => "standard_shifts.weekday_id",
       :block_method_display => "weekdays.name",
