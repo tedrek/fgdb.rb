@@ -35,7 +35,7 @@ class VolunteerShiftsController < ApplicationController
 
       }, params)
 
-    @skedj.find({:conditions => "'t' = 't'", :include => [:volunteer_task_type]})
+    @skedj.find({:include => [:volunteer_task_type]})
   end
 
   def show
