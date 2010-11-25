@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+
+<% for sked in @skeds %>
+  <tr>
+    <td><%=h sked.name %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => sked.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => sked.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => sked.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>
