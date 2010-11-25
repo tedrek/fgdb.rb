@@ -8,16 +8,22 @@ class Skedjul
     return unless opts[:conditions]
 
     default_conds = {}
+    thing = nil
     if opts[:date_range_condition]
       c = opts[:date_range_condition]
       default_conds[(c+"_enabled").to_s] = "true"
       default_conds[(c+"_date_type").to_s] = "arbitrary"
       default_conds[(c+"_start_date").to_s] = Date.today.to_s
       default_conds[(c+"_end_date").to_s] = (Date.today + 14).to_s
+      thing = (c+"_date_type").to_s
     end
 
     @__conditions = Conditions.new
-    @__conditions.apply_conditions(params[:conditions] || default_conds)
+    params[:conditions] ||= default_conds
+    if !thing.nil?
+      params[:conditions][thing] = "arbitrary"
+    end
+    @__conditions.apply_conditions(params[:conditions])
     @__where_clause = DB.prepare_sql(@__conditions.conditions(klass))
   end
 

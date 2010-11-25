@@ -1,13 +1,15 @@
 <div class='filter'>
+
 <h3>Filter work shifts:</h3>
 <% form_tag({:action => params[:action]}, {:method => "get"}) do %>
   <%= conditions_html('conditions', skedj.opts[:conditions]) %>
 
 <% if skedj.opts[:date_range_condition] %>
-<style type="text/css">
-  #conditions_<%= skedj.opts[:date_range_condition] %>_date_type { visibility: hidden; }
-</style>
   <%= conditions_html('conditions', [skedj.opts[:date_range_condition]]).gsub(/To:/, "<br />To:") %>
+  <script>
+    c = $('conditions_date_date_type');
+    c.parentNode.removeChild(c);
+  </script>
 <% end %>
   <%= radio_button :opts, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
   <%= radio_button :opts, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
