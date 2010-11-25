@@ -21,9 +21,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
     (start_date..end_date).each{|x|
       w = Weekday.find(x.wday)
       next if !w.is_open # TODO: holiday check too
-#      VolunteerShift.destroy_all "date = '#{x}'"
-      VolunteerShift.destroy_all # REMOVEME, with above
-      DB.run("DELETE FROM assignments") # REMOVEME, with fkeys
+      VolunteerShift.destroy_all "date = '#{x}'"
       shifts = VolunteerDefaultShift.effective_at(x).on_weekday(w)
       shifts.each{|ds|
         (1..ds.slot_count).each{|num|
