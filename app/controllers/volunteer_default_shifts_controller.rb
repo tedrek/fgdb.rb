@@ -20,7 +20,7 @@ class VolunteerDefaultShiftsController < ApplicationController
     @opts = params[:opts] || { 'presentation_mode' => 'Edit' }
     @skedj = Skedjul.new({
       :presentation_mode => @opts["presentation_mode"],
-      :generate_params_key => "date_range",
+      :generate_param_key => "date_range",
       :conditions => [],
 
       :block_method_name => "volunteer_default_shifts.weekday_id",
