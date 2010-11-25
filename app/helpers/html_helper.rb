@@ -38,6 +38,9 @@ module HtmlHelper
         mode = 'force'
       end
     end
+    if mode == 'multi' and choices.length == 0
+      mode = 'force'
+    end
     if mode == 'multi'
       choice_names = { }
       choices.each {|k,v| choice_names[k] = (k).titleize}
