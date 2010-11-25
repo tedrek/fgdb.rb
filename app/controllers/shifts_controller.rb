@@ -107,7 +107,6 @@ class ShiftsController < ApplicationController
 
 
     @skedj = Skedjul.new({
-      :presentation_mode => @opts["presentation_mode"],
       :generate_param_key => "date_range",
 
       :block_method_name => "shifts.weekday_id",
@@ -128,7 +127,7 @@ class ShiftsController < ApplicationController
       :thing_link_id => "shifts.id",
       :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
 
-      })
+      }, params)
 
     @skedj.find({:conditions => where_clause, :include => [:weekday, :job, :worker, :coverage_type]})
   end
