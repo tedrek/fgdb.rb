@@ -24,43 +24,35 @@ class WorkShiftsController < ApplicationController
   def list
     session["shift_return_to"] = "work_shifts"
     session["shift_return_action"] = "list"
-    if params[:filter_criteria]
 
-      start_date = params[:filter_criteria]['start_date']
-      end_date = params[:filter_criteria]['end_date']
-      date_format='%Y-%m-%d'
-      start = Date.strptime(start_date, date_format) 
-      stop = Date.strptime(end_date, date_format) 
+    # move to @skedj
+    default_values = {:shift_date_date_type => "arbitrary", :shift_date_start_date => Date.today.to_s, :shift_date_end_date => (Date.today + 14).to_s}
+    default_enabled = {:shift_date_enabled => "true"}
 
-      @opts = params[:filter_criteria]
-      @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
-      where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
-      if @opts['limit_to_worker'] and @opts['limit_to_worker'] == '1'
-        where_clause += ' AND work_shifts.worker_id = '
-        where_clause += @opts['worker_id']
+    # begin common processing
+    if params[:opts].nil?
+      params[:opts] ||= { 'presentation_mode' => 'Edit' }
+      if params[:conditions].nil? # if we have :opts and :conditions is empty, that might be intentional (user selected no conditions)
+        params[:conditions] = default_enabled.dup
       end
-      if @opts['limit_to_job'] and @opts['limit_to_job'] == '1'
-        where_clause += ' AND work_shifts.job_id = '
-        where_clause += @opts['job_id']
-      end
-    else
-      start = Date.today
-      stop = start + 14
-
-      @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
-      @opts = {
-        'schedule_id' => @root_sched.id, 
-        'which_way' => 'Family', 
-        'limit_to_worker' => '0', 
-        'limit_to_job' => '0', 
-        'worker_id' => 0, 
-        'job_id' => 0,
-        'presentation_mode' => 'Edit' }
-      where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
     end
+
+    @opts = params[:opts]
+    for key in default_values.keys
+      if !params[:conditions].include?(key)
+        params[:conditions][key] = default_values[key]
+      end
+    end
+
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    where_clause = DB.prepare_sql(@conditions.conditions(WorkShift))
+
+    # end processing
 
     @skedj = Skedjul.new({
       :presentation_mode => @opts["presentation_mode"],
+      :conditions => ["worker", "job", "shift_date"],
 
       :block_method_name => "work_shifts.shift_date",
       :block_method_display => "work_shifts.shift_date_display",

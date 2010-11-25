@@ -7,6 +7,10 @@ module ConditionsHelper
     select(params_key, "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] })
   end
 
+  def html_for_job_condition(params_key)
+    select(params_key, "job_id", Job.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] })
+  end
+
   def html_for_can_login_condition(params_key)
     ""
   end

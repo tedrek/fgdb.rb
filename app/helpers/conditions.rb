@@ -2,6 +2,7 @@ class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
+      shift_date
   ]
 
   CONDS = (%w[
@@ -10,7 +11,7 @@ class Conditions < ConditionsBase
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
-      can_login role action worker contribution serial_number
+      can_login role action worker contribution serial_number job
     ] + DATES).uniq
 
   for i in CONDS
@@ -22,6 +23,8 @@ class Conditions < ConditionsBase
   end
 
   attr_accessor :worker_id
+
+  attr_accessor :job_id
 
   attr_accessor :created_by, :cashier_created_by
 
@@ -94,6 +97,10 @@ class Conditions < ConditionsBase
 
   def worker_conditions(klass)
     return ["worker_id = ?", @worker_id]
+  end
+
+  def job_conditions(klass)
+    return ["job_id = ?", @job_id]
   end
 
   def empty_conditions(klass)
@@ -271,6 +278,10 @@ class Conditions < ConditionsBase
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM donations WHERE #{b})"
     a
+  end
+
+  def shift_date_conditions(klass)
+    date_range(klass, 'shift_date', 'shift_date')
   end
 
   def occurred_at_conditions(klass)

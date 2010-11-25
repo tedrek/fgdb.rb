@@ -20,7 +20,7 @@
     if start_schedule
       # first time through
       if skedj.opts[:presentation_mode]!='Preview'
-        %> <%= render :partial => 'filter_criteria' %>
+        %> <%= render :partial => 'filter_criteria', :locals => {:skedj => skedj} %>
         <div class='content'> <% 
       end
       shift_style = thing.skedj_style(false, nil)

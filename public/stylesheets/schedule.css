@@ -1,3 +1,7 @@
+div.skedj div.filter td, div.skedj div.filter th {
+    background: #CCCC99;
+}
+
 div.skedj div.filter {
     padding-left: 10px;
     padding-right: 10px;

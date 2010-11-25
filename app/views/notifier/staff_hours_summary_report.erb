@@ -6,7 +6,7 @@ certain day within the current pay period but didn't log their hours:
 <% @myworkers.each do |w| -%>
  <%= w.name %> (<%= w.email %>)
 <% w.dates.each do |x| -%>
-  <%= a << x; x %><%# ": " + url_for(:host => "data", :controller => "work_shifts", :action => "list", :filter_criteria => {:limit_to_worker => 1, :worker_id => w.worker_id, :end_date => x, :start_date => x, :presentation_mode => "Edit"}, :escape => false) %>
+  <%= a << x; x %><%# ": " + url_for(:host => "data", :controller => "work_shifts", :action => "list", {:conditions => {:worker_id_enabled => "true", :worker_id => w.worker_id, :shift_date_enabled => "true", :shift_date_end_date => x, :shift_date_start_date => x}, :opts => {:presentation_mode => "Edit"}}, :escape => false) %>
 <% end -%>
 <% end -%>
 
