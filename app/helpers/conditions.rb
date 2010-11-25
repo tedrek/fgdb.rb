@@ -12,6 +12,7 @@ class Conditions < ConditionsBase
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
+      volunteer_task_type weekday sked roster
     ] + DATES).uniq
 
   for i in CONDS
@@ -21,6 +22,12 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
   end
+
+  attr_accessor :volunteer_task_type_id
+
+  attr_accessor :weekday_id
+  attr_accessor :roster_id
+  attr_accessor :sked_id
 
   attr_accessor :worker_id
 
@@ -153,6 +160,28 @@ class Conditions < ConditionsBase
 
   def extract_conditions(klass)
     return ["EXTRACT( #{@extract_type} FROM #{klass.table_name}.#{@extract_field} ) = ?", @extract_value]
+  end
+
+  def volunteer_task_type_conditions(klass)
+    tbl = klass.table_name
+    tbl = "volunteer_shifts" if tbl == "assignments"
+    return ["#{tbl}.volunteer_task_type_id = ?", @volunteer_task_type_id]
+  end
+
+  def weekday_conditions(klass)
+    return ["#{klass.table_name}.weekday_id = ?", @weekday_id]
+  end
+
+  def roster_conditions(klass)
+    tbl = klass.table_name
+    tbl = "volunteer_shifts" if tbl == "assignments"
+    return ["#{tbl}.roster_id = ?", @roster_id]
+  end
+
+  def sked_conditions(klass)
+    tbl = klass.table_name
+    tbl = "volunteer_shifts" if tbl == "assignments"
+    return ["#{tbl}.roster_id IN (SELECT roster_id FROM rosters_skeds WHERE sked_id = ?)", @sked_id]
   end
 
   def volunteer_hours_conditions(klass)

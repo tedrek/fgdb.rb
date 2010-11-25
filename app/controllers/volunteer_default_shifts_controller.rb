@@ -18,7 +18,7 @@ class VolunteerDefaultShiftsController < ApplicationController
   def index
     @skedj = Skedjul.new({
       :generate_param_key => "date_range",
-      :conditions => [],
+      :conditions => ["weekday", "sked", "roster", "volunteer_task_type"],
 
       :block_method_name => "volunteer_default_shifts.weekday_id",
       :block_method_display => "weekdays.name",

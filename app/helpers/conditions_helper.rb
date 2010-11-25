@@ -8,7 +8,23 @@ module ConditionsHelper
   end
 
   def html_for_job_condition(params_key)
-    select(params_key, "job_id", Job.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] })
+    select(params_key, "job_id", Job.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] })
+  end
+
+  def html_for_weekday_condition(params_key)
+    select(params_key, "weekday_id", Weekday.find(:all).sort_by(&:name).collect{|p| [p.name, p.id]})
+  end
+
+  def html_for_roster_condition(params_key)
+    select(params_key, "roster_id", Roster.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]})
+  end
+
+  def html_for_sked_condition(params_key)
+    select(params_key, "sked_id", Sked.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]})
+  end
+
+  def html_for_volunteer_task_type_condition(params_key)
+    select(params_key, "volunteer_task_type_id", VolunteerTaskType.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] })
   end
 
   def html_for_can_login_condition(params_key)

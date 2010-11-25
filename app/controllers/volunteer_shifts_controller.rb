@@ -12,7 +12,7 @@ class VolunteerShiftsController < ApplicationController
 
   def index
     @skedj = Skedjul.new({
-      :conditions => [],
+      :conditions => ["sked", "roster", "volunteer_task_type"],
       :date_range_condition => "date",
 
       :block_method_name => "volunteer_shifts.date",
