@@ -73,7 +73,7 @@ class Skedjul
   end
 
   def find(opts = {})
-    @__results = klass.find(:all, opts.merge({:conditions => self.where_clause, :order => self.order_by}))
+    @__results = klass.find(:all, {:conditions => self.where_clause, :order => self.order_by}.merge(opts))
   end
 
   def find_by_sql(sql)
