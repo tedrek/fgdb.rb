@@ -11,8 +11,11 @@ class AssignmentsController < ApplicationController
   helper :skedjul
 
   def index
+    @conditions = Conditions.new
+    @opts = params[:opts] || { 'presentation_mode' => 'Edit' }
     @skedj = Skedjul.new({
-      :presentation_mode => "Edit", # @opts["presentation_mode"] # for now no read only mode
+      :presentation_mode => @opts["presentation_mode"],
+      :conditions => [],
 
       :block_method_name => "volunteer_shifts.date",
       :block_method_display => "volunteer_shifts.date_display",
