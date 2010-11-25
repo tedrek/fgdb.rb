@@ -11,7 +11,7 @@
 
 
 <% if skedj.opts[:date_range_condition] %>
-  <%= conditions_html('conditions', ["empty", skedj.opts[:date_range_condition]]).gsub(/To:/, "<br />To:", "force") %>
+  <%= conditions_html('conditions', ["empty", skedj.opts[:date_range_condition]], Conditions, "force").gsub(/To:/, "<br />To:") %>
 <% else %>
   <%= conditions_html('conditions', ["empty"])%>
 <% end %>
