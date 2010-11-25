@@ -49,8 +49,6 @@ class WorkShiftsController < ApplicationController
 
       }, params)
 
-    @opts = @skedj.opts
-    @conditions = @skedj.conditions
     @skedj.find({:include => [:job, :coverage_type, :worker, :weekday]})
   end
 

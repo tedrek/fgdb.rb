@@ -1,5 +1,10 @@
 <div class='filter'>
 
+<%
+    @opts = skedj.opts
+    @conditions = skedj.conditions
+%>
+
 <h3>Filter work shifts:</h3>
 <% form_tag({:action => params[:action]}, {:method => "get"}) do %>
   <%= conditions_html('conditions', skedj.opts[:conditions]) %>
@@ -7,7 +12,7 @@
 <% if skedj.opts[:date_range_condition] %>
   <%= conditions_html('conditions', [skedj.opts[:date_range_condition]]).gsub(/To:/, "<br />To:") %>
   <script>
-    c = $('conditions_date_date_type');
+    c = $('conditions_<%=  skedj.opts[:date_range_condition]%>_date_type');
     c.parentNode.removeChild(c);
   </script>
 <% end %>
