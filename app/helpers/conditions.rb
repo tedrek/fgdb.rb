@@ -2,7 +2,7 @@ class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
-      shift_date
+      shift_date date
   ]
 
   CONDS = (%w[
@@ -278,6 +278,11 @@ class Conditions < ConditionsBase
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM donations WHERE #{b})"
     a
+  end
+
+  def date_conditions(klass)
+    klass = VolunteerShift if klass == Assignment
+    date_range(klass, 'date', 'date')
   end
 
   def shift_date_conditions(klass)
