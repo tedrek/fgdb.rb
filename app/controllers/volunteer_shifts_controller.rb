@@ -11,11 +11,9 @@ class VolunteerShiftsController < ApplicationController
   helper :skedjul
 
   def index
-    @conditions = Conditions.new
-    @opts = params[:opts] || { 'presentation_mode' => 'Edit' }
     @skedj = Skedjul.new({
-      :presentation_mode => @opts["presentation_mode"],
       :conditions => [],
+      :date_range_condition => "date",
 
       :block_method_name => "volunteer_shifts.date",
       :block_method_display => "volunteer_shifts.date_display",
@@ -35,7 +33,7 @@ class VolunteerShiftsController < ApplicationController
       :thing_link_id => "volunteer_shifts.id",
       :thing_links => [[:edit, :popup], [:destroy, :confirm]]
 
-      })
+      }, params)
 
     @skedj.find({:conditions => "'t' = 't'", :include => [:volunteer_task_type]})
   end
