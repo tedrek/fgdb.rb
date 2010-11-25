@@ -18,7 +18,7 @@ class Skedjul
 
     @__conditions = Conditions.new
     @__conditions.apply_conditions(params[:conditions] || default_conds)
-    @__where_clause = DB.prepare_sql(@__conditions.conditions(WorkShift))
+    @__where_clause = DB.prepare_sql(@__conditions.conditions(klass))
   end
 
   def where_clause
@@ -66,8 +66,8 @@ class Skedjul
     fin.join(", ")
   end
 
-  def find(opts)
-    @__results = klass.find(:all, opts.merge({:order => self.order_by}))
+  def find(opts = {})
+    @__results = klass.find(:all, opts.merge({:conditions => self.where_clause, :order => self.order_by}))
   end
 
   def find_by_sql(sql)
