@@ -1,6 +1,32 @@
 class Skedjul
-  def initialize(hash)
+  def initialize(hash, params)
     @__opts = hash
+
+    opts[:presentation_mode] = (params[:opts].nil? ? nil : params[:opts]['presentation_mode']) || 'Edit'
+    opts["presentation_mode"] = opts[:presentation_mode] # FIXME
+
+    return unless opts[:conditions]
+
+    default_conds = {}
+    if opts[:date_range_condition]
+      c = opts[:date_range_condition]
+      default_conds[(c+"_enabled").to_s] = "true"
+      default_conds[(c+"_date_type").to_s] = "arbitrary"
+      default_conds[(c+"_start_date").to_s] = Date.today.to_s
+      default_conds[(c+"_end_date").to_s] = (Date.today + 14).to_s
+    end
+
+    @__conditions = Conditions.new
+    @__conditions.apply_conditions(params[:conditions] || default_conds)
+    @__where_clause = DB.prepare_sql(@__conditions.conditions(WorkShift))
+  end
+
+  def where_clause
+    @__where_clause
+  end
+
+  def conditions
+    @__conditions
   end
 
   def set_current(thing)

@@ -100,7 +100,6 @@ ORDER BY 1, 2, 3, 4
 SQL
 
     @skedj = Skedjul.new({
-      :presentation_mode => @opts["presentation_mode"],
       :generate_param_key => "generate_schedule",
 
       :block_method_name => "standard_shifts.weekday_id",
@@ -121,7 +120,7 @@ SQL
       :thing_link_id => "standard_shifts.id",
       :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm], [:split, :popup, :splitable], [:merge, :popup, :mergeable], [:resize, :popup, :resizable]]
 
-      })
+      }, params)
 
     @skedj.find_by_sql(sql)
   end

@@ -25,34 +25,9 @@ class WorkShiftsController < ApplicationController
     session["shift_return_to"] = "work_shifts"
     session["shift_return_action"] = "list"
 
-    # move to @skedj
-    default_values = {:shift_date_date_type => "arbitrary", :shift_date_start_date => Date.today.to_s, :shift_date_end_date => (Date.today + 14).to_s}
-    default_enabled = {:shift_date_enabled => "true"}
-
-    # begin common processing
-    if params[:opts].nil?
-      params[:opts] ||= { 'presentation_mode' => 'Edit' }
-      if params[:conditions].nil? # if we have :opts and :conditions is empty, that might be intentional (user selected no conditions)
-        params[:conditions] = default_enabled.dup
-      end
-    end
-
-    @opts = params[:opts]
-    for key in default_values.keys
-      if !params[:conditions].include?(key)
-        params[:conditions][key] = default_values[key]
-      end
-    end
-
-    @conditions = Conditions.new
-    @conditions.apply_conditions(params[:conditions])
-    where_clause = DB.prepare_sql(@conditions.conditions(WorkShift))
-
-    # end processing
-
     @skedj = Skedjul.new({
-      :presentation_mode => @opts["presentation_mode"],
-      :conditions => ["worker", "job", "shift_date"],
+      :conditions => ["worker", "job"],
+      :date_range_condition => "shift_date",
 
       :block_method_name => "work_shifts.shift_date",
       :block_method_display => "work_shifts.shift_date_display",
@@ -72,9 +47,11 @@ class WorkShiftsController < ApplicationController
       :thing_link_id => "work_shifts.id",
       :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
 
-      })
+      }, params)
 
-    @skedj.find({:conditions => where_clause, :include => [:job, :coverage_type, :worker, :weekday]})
+    @opts = @skedj.opts
+    @conditions = @skedj.conditions
+    @skedj.find({:conditions => @skedj.where_clause, :include => [:job, :coverage_type, :worker, :weekday]})
   end
 
 
