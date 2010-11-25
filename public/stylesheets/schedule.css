@@ -16,7 +16,7 @@ div.skedj div.generate {
     float: right;
     width: 45%;
 }
-div.skedj div.footer {
+div.skedj_footer {
     position: absolute;
     margin-top: 270px;
 }
@@ -24,16 +24,16 @@ div.skedj div.content {
     position: absolute;
     margin-top: 340px;
 }
-div.skedj caption {
+.skedj caption {
     background: #FFFF99;
     font-weight: bold;
     text-align: right;
 }
-div.skedj th {
+.skedj th {
     background: #FFCCCC;
     text-align: left;
 }
-div.skedj td {
+.skedj td {
     background: #FFCCCC;
 }
 div.skedj td.available {
