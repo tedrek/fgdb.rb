@@ -1,4 +1,7 @@
 class VolunteerShift < ActiveRecord::Base
+  validates_presence_of :volunteer_task_type_id
+  validates_presence_of :roster_id
+
   belongs_to :volunteer_task_type
   has_many :assignments
 
