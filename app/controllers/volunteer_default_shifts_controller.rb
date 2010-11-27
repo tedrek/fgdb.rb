@@ -34,7 +34,7 @@ class VolunteerDefaultShiftsController < ApplicationController
       :thing_start_time => "volunteer_default_shifts.start_time",
       :thing_end_time => "volunteer_default_shifts.end_time",
       :thing_table_name => "volunteer_default_shifts",
-      :thing_description => "slot_count",
+      :thing_description => "describe",
       :thing_link_id => "volunteer_default_shifts.id",
       :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
 
