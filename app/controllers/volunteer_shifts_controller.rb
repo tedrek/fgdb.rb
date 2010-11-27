@@ -38,10 +38,6 @@ class VolunteerShiftsController < ApplicationController
     @skedj.find({:include => [:volunteer_task_type]})
   end
 
-  def show
-    @volunteer_shift = VolunteerShift.find(params[:id])
-  end
-
   def new
     @volunteer_shift = VolunteerShift.new
   end

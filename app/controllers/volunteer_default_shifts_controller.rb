@@ -43,10 +43,6 @@ class VolunteerDefaultShiftsController < ApplicationController
     @skedj.find({:include => [:volunteer_task_type, :weekday]})
   end
 
-  def show
-    @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
-  end
-
   def new
     @volunteer_default_shift = VolunteerDefaultShift.new
   end
