@@ -36,11 +36,17 @@ class VolunteerDefaultShiftsController < ApplicationController
       :thing_table_name => "volunteer_default_shifts",
       :thing_description => "slot_count",
       :thing_link_id => "volunteer_default_shifts.id",
-      :thing_links => [[:edit, :popup], [:destroy, :confirm]]
+      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
 
       }, params)
 
     @skedj.find({:include => [:volunteer_task_type, :weekday]})
+  end
+
+  def copy
+    @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
+    @volunteer_default_shift = @volunteer_default_shift.clone
+    render :action => "new"
   end
 
   def new
@@ -56,7 +62,7 @@ class VolunteerDefaultShiftsController < ApplicationController
 
     if @volunteer_default_shift.save
       flash[:notice] = 'VolunteerDefaultShift was successfully created.'
-      redirect_to({:action => "show", :id => @volunteer_default_shift.id})
+      redirect_to({:action => "index"})
     else
       render :action => "new"
     end
@@ -67,7 +73,7 @@ class VolunteerDefaultShiftsController < ApplicationController
 
     if @volunteer_default_shift.update_attributes(params[:volunteer_default_shift])
       flash[:notice] = 'VolunteerDefaultShift was successfully updated.'
-      redirect_to({:action => "show", :id => @volunteer_default_shift.id})
+      redirect_to({:action => "index"})
     else
       render :action => "edit"
     end
