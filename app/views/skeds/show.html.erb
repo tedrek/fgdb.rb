@@ -3,6 +3,11 @@
   <%=h @sked.name %>
 </p>
 
+<p>
+  <b>Rosters:</b>
+  <%=h @sked.rosters_s %>
+</p>
+
 
 <%= link_to 'Edit', {:action => "edit", :id => @sked.id} %> |
 <%= link_to 'Back', {:action => "index"} %>
