@@ -1,5 +1,6 @@
 <h1>Editing assignment</h1>
 
+<fieldset>
 <% form_for(@assignment, :url => {:action => "update", :id => @assignment.id}) do |f| %>
   <%= f.error_messages %>
 
@@ -9,6 +10,7 @@
     <%= f.submit "Update" %>
   </p>
 <% end %>
+</fieldset>
 
 <%= link_to 'Show', {:action => "show", :id => @assignment.id} %> |
 <%= link_to 'Back', {:action => "index"} %>

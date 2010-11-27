@@ -1,21 +1,27 @@
 <p>
-  <b>Volunteer shift:</b>
-  <%=h @assignment.volunteer_shift_id %>
+  <b>Contact:</b>
+  <%=h @assignment.contact.nil? ? "(available)" : @assignment.contact.display_name %>
 </p>
 
 <p>
-  <b>Contact:</b>
-  <%=h @assignment.contact_id %>
+  <b>Task:</b>
+  <%=h @assignment.volunteer_shift.volunteer_task_type.description %>, 
+  slot <%=h @assignment.volunteer_shift.slot_number %>
+</p>
+
+<p>
+  <b>Date:</b>
+  <%=h @assignment.volunteer_shift.date.strftime("%D") %>
 </p>
 
 <p>
   <b>Start time:</b>
-  <%=h @assignment.start_time %>
+  <%=h @assignment.start_time.strftime("%I:%M %p") %>
 </p>
 
 <p>
   <b>End time:</b>
-  <%=h @assignment.end_time %>
+  <%=h @assignment.end_time.strftime("%I:%M %p") %>
 </p>
 
 

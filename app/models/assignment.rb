@@ -14,6 +14,10 @@ class Assignment < ActiveRecord::Base
     end
   end
 
+  def time_range_s
+    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
+  end
+
   def skedj_style(overlap, last)
     if overlap
       return 'hardconflict'
