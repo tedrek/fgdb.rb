@@ -44,10 +44,6 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id])
   end
 
-  def new
-    @assignment = Assignment.new
-  end
-
   def edit
     @assignment = Assignment.find(params[:id])
   end
