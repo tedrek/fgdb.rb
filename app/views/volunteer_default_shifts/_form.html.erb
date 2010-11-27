@@ -1,22 +1,22 @@
   <p>
     <%= f.label :effective_at %><br />
-    <%= f.date_select :effective_at %>
+    <%= calendar_box f.object_name, :effective_at %>
   </p>
   <p>
     <%= f.label :ineffective_at %><br />
-    <%= f.date_select :ineffective_at %>
+    <%= calendar_box f.object_name, :ineffective_at %>
   </p>
   <p>
     <%= f.label :weekday_id %><br />
-    <%= f.text_field :weekday_id %>
+    <%= select(f.object_name, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}) %>
   </p>
   <p>
     <%= f.label :start_time %><br />
-    <%= f.datetime_select :start_time %>
+    <%= f.time_select :start_time %>
   </p>
   <p>
     <%= f.label :end_time %><br />
-    <%= f.datetime_select :end_time %>
+    <%= f.time_select :end_time %>
   </p>
   <p>
     <%= f.label :slot_count %><br />
@@ -24,9 +24,9 @@
   </p>
   <p>
     <%= f.label :volunteer_task_type_id %><br />
-    <%= f.text_field :volunteer_task_type_id %>
+    <%= select(f.object_name, "volunteer_task_type_id", VolunteerTaskType.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] }) %>
   </p>
   <p>
     <%= f.label :roster_id %><br />
-    <%= f.text_field :roster_id %>
+    <%= select(f.object_name, "roster_id", Roster.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]}) %>
   </p>

@@ -1,22 +1,22 @@
   <p>
     <%= f.label :volunteer_default_shift_id %><br />
-    <%= f.text_field :volunteer_default_shift_id %>
+    <%= f.object.volunteer_default_shift_id %>
   </p>
   <p>
     <%= f.label :date %><br />
-    <%= f.date_select :date %>
+    <%= calendar_box f.object_name, :date %>
   </p>
   <p>
     <%= f.label :start_time %><br />
-    <%= f.datetime_select :start_time %>
+    <%= f.time_select :start_time %>
   </p>
   <p>
     <%= f.label :end_time %><br />
-    <%= f.datetime_select :end_time %>
+    <%= f.time_select :end_time %>
   </p>
   <p>
     <%= f.label :volunteer_task_type_id %><br />
-    <%= f.text_field :volunteer_task_type_id %>
+    <%= select(f.object_name, "volunteer_task_type_id", VolunteerTaskType.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] }) %>
   </p>
   <p>
     <%= f.label :slot_number %><br />
@@ -24,5 +24,5 @@
   </p>
   <p>
     <%= f.label :roster_id %><br />
-    <%= f.text_field :roster_id %>
+    <%= select(f.object_name, "roster_id", Roster.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]}) %>
   </p>
