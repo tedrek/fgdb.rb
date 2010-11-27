@@ -173,12 +173,15 @@ class ApplicationController < ActionController::Base
   end
 
   def fix_null_date
-    return if !([:coverage_types, :customizations, :frequency_types, :holidays, :jobs, :meetings, :rr_items, :rr_sets, :schedules, :shifts, :standard_shifts, :unavailabilities, :vacations, :weekdays, :workers, :worker_types, :work_shifts].map{|x| x.to_s}.include?(params[:controller]) && ["update","create"].include?(params[:action]))
+    return if !([:volunteer_default_shifts, :volunteer_shifts, :coverage_types, :customizations, :frequency_types, :holidays, :jobs, :meetings, :rr_items, :rr_sets, :schedules, :shifts, :standard_shifts, :unavailabilities, :vacations, :weekdays, :workers, :worker_types, :work_shifts].map{|x| x.to_s}.include?(params[:controller]) && ["update","create"].include?(params[:action]))
     # fields to check. these are date fields that allow NULL
     # values in the database. the dhtml-calendar plugin passes an
     # empty string when the date is left blank, this turns into
     # an arbitrary and unwanted date rather than a NULL. fix
     # these by explicitly setting these values to nil. 
+    fix_this_null_date(:volunteer_default_shift, :ineffective_at)
+    fix_this_null_date(:volunteer_default_shift, :effective_at)
+    fix_this_null_date(:volunteer_shift, :date)
     fix_this_null_date(:holiday, :holiday_date)
     fix_this_null_date(:meeting, :meeting_date)
     fix_this_null_date(:meeting, :effective_date)

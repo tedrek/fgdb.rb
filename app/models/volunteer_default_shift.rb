@@ -2,6 +2,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
   validates_presence_of :volunteer_task_type_id
   validates_presence_of :roster_id
   validates_presence_of :weekday_id
+  validates_presence_of :end_time
+  validates_presence_of :start_time
+  validates_presence_of :slot_count
 
   belongs_to :volunteer_task_type
   belongs_to :weekday

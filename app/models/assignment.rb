@@ -2,6 +2,7 @@ class Assignment < ActiveRecord::Base
   belongs_to :volunteer_shift
   has_one :volunteer_task_type, :through => :volunteer_shift, :source => :volunteer_task_type
   belongs_to :contact
+  validates_presence_of :volunteer_shift_id
 
   after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
