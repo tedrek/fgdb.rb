@@ -63,7 +63,6 @@ class PrintmeAPI < SoapsBase
     server_hash[version].class != Array || server_hash[version].include?(client_version)
   end
   def version
-    a.nil
     12
   end
   def bad_client_error
