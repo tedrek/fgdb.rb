@@ -1,5 +1,13 @@
 class Skedjul
   def initialize(hash, params)
+    myview = hash[:current_view] # TODO: get it from params and stick it here
+
+    if myview
+      for k in hash[:views][myview].keys
+        hash[k] = hash[:views][myview][k]
+      end
+    end
+
     @__opts = hash
 
     opts[:presentation_mode] = (params[:opts].nil? ? nil : params[:opts]['presentation_mode']) || 'Edit'
@@ -60,7 +68,7 @@ class Skedjul
 
   def order_by
     # 'work_shifts.shift_date, workers.name, work_shifts.start_time'
-    str = "#{opts[:block_method_name]}, #{opts[:left_method_name]}, #{opts[:thing_start_time]}"
+    str = "#{opts[:block_method_name]}, #{opts[:left_sort_value] || opts[:left_method_name]}, #{opts[:thing_start_time]}"
     list = str.split(",")
     fin = []
     list.each{|x|
