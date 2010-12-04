@@ -17,7 +17,7 @@ weekdays.each{|weekday_id|
       vds.end_time = end_time
       vds.slot_count = slot_count
       vds.volunteer_task_type_id = volunteer_task_type_id
-      vds.roster_id = 1 # TODO
+      vds.roster_id = (volunteer_task_type_id == 26 ? 2 : 1)
       vds.save!
     }
   }
