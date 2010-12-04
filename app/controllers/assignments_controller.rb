@@ -15,7 +15,7 @@ class AssignmentsController < ApplicationController
       :conditions => ['contact', "sked", "roster", "volunteer_task_type"],
       :date_range_condition => "date",
 
-      :current_view => :by_worker,
+      :current_view => :by_slot,
 
       :block_method_name => "volunteer_shifts.date",
       :block_method_display => "volunteer_shifts.date_display",
