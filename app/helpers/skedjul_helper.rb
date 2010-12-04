@@ -27,7 +27,6 @@ class Skedjul
     params[:conditions]["empty_enabled"] = "true"
     @__conditions.apply_conditions(params[:conditions])
     @__where_clause = DB.prepare_sql(@__conditions.conditions(klass))
-    puts @__where_clause
   end
 
   def where_clause

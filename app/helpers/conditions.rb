@@ -12,7 +12,7 @@ class Conditions < ConditionsBase
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
-      volunteer_task_type weekday sked roster
+      volunteer_task_type weekday sked roster effective_at
     ] + DATES).uniq
 
   for i in CONDS
@@ -23,11 +23,14 @@ class Conditions < ConditionsBase
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
   end
 
+
   attr_accessor :volunteer_task_type_id
 
   attr_accessor :weekday_id
   attr_accessor :roster_id
   attr_accessor :sked_id
+
+  attr_accessor :effective_at
 
   attr_accessor :worker_id
 
@@ -101,6 +104,9 @@ class Conditions < ConditionsBase
     return @worker
   end
 
+  def effective_at_conditions(klass)
+    ["(#{klass.table_name}.effective_at IS NULL OR #{klass.table_name}.effective_at <= ?) AND (#{klass.table_name}.ineffective_at IS NULL OR #{klass.table_name}.ineffective_at > ?)", @effective_at, @effective_at]
+  end
 
   def worker_conditions(klass)
     return ["worker_id = ?", @worker_id]

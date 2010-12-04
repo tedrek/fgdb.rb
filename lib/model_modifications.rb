@@ -216,7 +216,7 @@ class ActiveRecord::Base
   end
 
   def self.sql(*arr)
-    execute(*arr)
+    prepare_sql(*arr)
   end
 
   def self.new_or_edit(hash)
