@@ -7,6 +7,10 @@ class Assignment < ActiveRecord::Base
   after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
+  def contact_display
+    display_name
+  end
+
   def display_name
     if contact_id.nil?
       return "(available)"
@@ -20,16 +24,15 @@ class Assignment < ActiveRecord::Base
   end
 
   def skedj_style(overlap, last)
+    if self.contact_id.nil?
+      return 'available'
+    end
     if overlap
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_shift.end_time or self.start_time < self.volunteer_shift.start_time
       return 'mediumconflict'
     end
-    if self.contact_id.nil?
-      return 'available'
-    else
-      return 'shift'
-    end
+    return 'shift'
   end
 end
