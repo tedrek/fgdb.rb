@@ -1,0 +1,33 @@
+--- app/models/volunteer_default_shift.rb
++++ app/models/volunteer_default_shift.rb
+@@ -28,12 +28,27 @@
+     (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
+   end
+ 
+-  def VolunteerDefaultShift.generate(start_date, end_date)
++  def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil)
++    if gconditions
++      gconditions = gconditions.dup
++      gconditions.empty_enabled = "false"
++    else
++      gconditions = Conditions.new
++    end
+     (start_date..end_date).each{|x|
+       w = Weekday.find(x.wday)
+       next if !w.is_open # TODO: holiday check too
+-      VolunteerShift.destroy_all "date = '#{x}'"
+-      shifts = VolunteerDefaultShift.effective_at(x).on_weekday(w)
++      vs_conds = gconditions.dup
++      vs_conds.date_enabled = "true"
++      vs_conds.date_date_type = 'daily'
++      vs_conds.date_date = x.to_s
++      VolunteerShift.destroy_all DB.sql(vs_conds.conditions(VolunteerShift))
++      ds_conds = gconditions.dup
++      ds_conds.effective_at_enabled = "true"
++      ds_conds.effective_at = x.to_s
++      ds_conds.weekday_enabled = "true"
++      ds_conds.weekday_id = w.id
++      shifts = VolunteerDefaultShift.find(:all, :conditions => ds_conds.conditions(VolunteerDefaultShift))
+       shifts.each{|ds|
+         (1..ds.slot_count).each{|num|
+           s = VolunteerShift.new()
