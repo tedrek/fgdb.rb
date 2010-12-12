@@ -1,8 +1,11 @@
 class Skedjul
   def initialize(hash, params)
-    myview = hash[:current_view] # TODO: get it from params and stick it here
+    if hash[:views]
+      myview = ((params["opts"] ? params["opts"]["current_view"] : nil) || hash[:default_view])
+      myview = myview.to_sym
+      hash[:current_view] = myview
+      hash["current_view"] = myview
 
-    if myview
       for k in hash[:views][myview].keys
         hash[k] = hash[:views][myview][k]
       end

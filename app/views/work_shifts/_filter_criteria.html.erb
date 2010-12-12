@@ -23,6 +23,18 @@
     c.parentNode.removeChild(c);
   </script>
 <% end %>
+
+  <br / >
+
+
+<% if skedj.opts[:views] %>
+  <br / >
+  <% for k in skedj.opts[:views].keys %>
+  <%= radio_button :opts, :current_view, k, :checked => (@opts['current_view']==k) %> <%= k.to_s.humanize %>
+  <% end %>
+<% end %>
+
+  <br / >
   <%= radio_button :opts, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
   <%= radio_button :opts, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
   <%= radio_button :opts, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
