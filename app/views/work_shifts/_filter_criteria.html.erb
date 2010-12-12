@@ -29,7 +29,7 @@
 
 <% if skedj.opts[:views] %>
   <br / >
-  <% for k in skedj.opts[:views].keys %>
+  <% for k in skedj.opts[:views].keys.sort_by{|x| x.to_s == @opts[:default_view].to_s ? 0 : 1} %>
   <%= radio_button :opts, :current_view, k, :checked => (@opts['current_view']==k) %> <%= k.to_s.humanize %>
   <% end %>
 <% end %>
