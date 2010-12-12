@@ -41,6 +41,9 @@ class Assignment < ActiveRecord::Base
     if self.end_time > self.volunteer_shift.end_time or self.start_time < self.volunteer_shift.start_time
       return 'mediumconflict'
     end
+    if self.attendance_type_id
+      return 'checked_in'
+    end
     return 'shift'
   end
 end

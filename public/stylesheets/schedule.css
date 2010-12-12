@@ -70,3 +70,6 @@ div.skedj td.softconflict {
 div.skedj td.unfilled {
     background: #FFFF33;
 }
+div.skedj td.checked_in {
+    background: #FFCCCC;
+}
