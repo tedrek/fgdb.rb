@@ -51,6 +51,10 @@ div.skedj td.meeting {
     font-style: italic;
     font-weight: bold;
 }
+
+div.skedj td.cancelled {
+    background: #C0C0C0;
+}
 div.skedj td.unavailable {
     background: #99CCFF;
 }

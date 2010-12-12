@@ -29,6 +29,10 @@ class Skedjul
       default_conds["empty_enabled"] = "true"
       thing = (c+"_date_type").to_s
     end
+    if opts[:forced_condition]
+      c = opts[:forced_condition]
+      default_conds[(c+"_enabled").to_s] = "true"
+    end
 
     @__conditions = Conditions.new
     params[:conditions] ||= default_conds

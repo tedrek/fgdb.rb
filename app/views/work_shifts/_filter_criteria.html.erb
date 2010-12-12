@@ -10,10 +10,20 @@
   <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi") %>
 
 
+<% force_conds = ["empty"] %>
+
 <% if skedj.opts[:date_range_condition] %>
-  <%= conditions_html('conditions', ["empty", skedj.opts[:date_range_condition]], Conditions, "force").gsub(/To:/, "<br />To:") %>
+<%  force_conds << skedj.opts[:date_range_condition] %>
+<% end %>
+
+<% if skedj.opts[:forced_condition] %>
+<%  force_conds << skedj.opts[:forced_condition] %>
+<% end %>
+
+<% if force_conds.size > 1 %>
+  <%= conditions_html('conditions', force_conds, Conditions, "force").gsub(/To:/, "<br />To:") %>
 <% else %>
-  <%= conditions_html('conditions', ["empty"])%>
+  <%= conditions_html('conditions', force_conds)%>
 <% end %>
 
 
@@ -27,17 +37,18 @@
   <br / >
 
 
+<div style="float: right; text-align: right;">
 <% if skedj.opts[:views] %>
-  <br / >
-  <% for k in skedj.opts[:views].keys %>
+  <% for k in skedj.opts[:views].keys.sort_by{|x| x.to_s == @opts[:default_view].to_s ? 0 : 1} %>
   <%= radio_button :opts, :current_view, k, :checked => (@opts['current_view']==k) %> <%= k.to_s.humanize %>
   <% end %>
+<br/>
 <% end %>
 
-  <br / >
   <%= radio_button :opts, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
   <%= radio_button :opts, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
   <%= radio_button :opts, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
   <%= submit_tag "Go" %><br />
+</div>
 <% end %>
 </div>
