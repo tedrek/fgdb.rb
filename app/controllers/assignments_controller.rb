@@ -16,12 +16,11 @@ class AssignmentsController < ApplicationController
       :conditions => ['contact', "sked", "roster", "volunteer_task_type"],
       :date_range_condition => "date",
 
-      :current_view => :by_slot,
-
       :block_method_name => "volunteer_shifts.date",
       :block_method_display => "volunteer_shifts.date_display",
       :block_start_time => "volunteer_shifts.weekdays.start_time",
       :block_end_time => "volunteer_shifts.weekdays.end_time",
+      :default_view => "by_slot",
 
                            :views => {
                              :by_slot =>
