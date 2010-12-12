@@ -12,7 +12,8 @@ class Conditions < ConditionsBase
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
-      volunteer_task_type weekday sked roster effective_at
+      volunteer_task_type weekday sked roster effective_at cancelled
+      needs_checkin assigned
     ] + DATES).uniq
 
   for i in CONDS
@@ -23,6 +24,8 @@ class Conditions < ConditionsBase
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
   end
 
+
+  attr_accessor :cancelled
 
   attr_accessor :volunteer_task_type_id
 
@@ -118,6 +121,22 @@ class Conditions < ConditionsBase
 
   def empty_conditions(klass)
     return ["1=1"]
+  end
+
+  def cancelled_conditions(klass)
+    if @cancelled
+      return ["1=1"]
+    else
+      return ["(attendance_type_id IS NULL OR attendance_types.cancelled = false)"]
+    end
+  end
+
+  def needs_checkin_conditions(klass)
+    return ["attendance_type_id IS NULL"]
+  end
+
+  def assigned_conditions(klass)
+    return ["contact_id IS NOT NULL"]
   end
 
   def join_conditions(conds_a, conds_b)

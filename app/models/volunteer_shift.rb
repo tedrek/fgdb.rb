@@ -26,7 +26,7 @@ class VolunteerShift < ActiveRecord::Base
       Thread.current['volskedj_fillin_processing'].push(self.id)
       Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy}
       inputs = [[time_to_int(self.start_time), time_to_int(self.end_time)]]
-      Assignment.find_all_by_volunteer_shift_id(self.id).each{|x|
+      Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| !x.cancelled?}.each{|x|
         inputs.push([time_to_int(x.start_time), time_to_int(x.end_time)])
       }
       results = range_math(*inputs)

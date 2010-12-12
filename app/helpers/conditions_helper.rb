@@ -3,6 +3,18 @@ module ConditionsHelper
 
   private
 
+  def html_for_assigned_condition(params_key)
+    ""
+  end
+
+  def html_for_needs_checkin_condition(params_key)
+    ""
+  end
+
+  def html_for_cancelled_condition(params_key)
+    "Show cancelled: " + check_box(params_key, "cancelled")
+  end
+
   def html_for_worker_condition(params_key)
     select(params_key, "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] })
   end

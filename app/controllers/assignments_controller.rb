@@ -13,8 +13,9 @@ class AssignmentsController < ApplicationController
   def index
     if params[:conditions]
     @skedj = Skedjul.new({
-      :conditions => ['contact', "sked", "roster", "volunteer_task_type"],
+      :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned"],
       :date_range_condition => "date",
+                           :forced_condition => "cancelled",
 
       :block_method_name => "volunteer_shifts.date",
       :block_method_display => "volunteer_shifts.date_display",
@@ -60,7 +61,7 @@ class AssignmentsController < ApplicationController
     @opts = @skedj.opts
     @conditions = @skedj.conditions
 
-    @skedj.find({:conditions => @skedj.where_clause, :include => [:contact => [], :volunteer_shift => [:volunteer_task_type]]})
+    @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :contact => [], :volunteer_shift => [:volunteer_task_type]]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
     else
       render :partial => "index",  :layout => :with_sidebar

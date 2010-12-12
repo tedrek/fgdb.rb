@@ -3,12 +3,17 @@ class Assignment < ActiveRecord::Base
   has_one :volunteer_task_type, :through => :volunteer_shift, :source => :volunteer_task_type
   belongs_to :contact
   validates_presence_of :volunteer_shift_id
+  belongs_to :attendance_type
 
   after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
   def contact_display
     display_name
+  end
+
+  def cancelled?
+    (self.attendance_type and self.attendance_type.cancelled)
   end
 
   def display_name
@@ -24,10 +29,13 @@ class Assignment < ActiveRecord::Base
   end
 
   def skedj_style(overlap, last)
+    if self.cancelled?
+      return 'cancelled'
+    end
     if self.contact_id.nil?
       return 'available'
     end
-    if overlap
+    if overlap and !(last.cancelled? or self.cancelled?) # TODO: FIXME: BUGGY?
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_shift.end_time or self.start_time < self.volunteer_shift.start_time
