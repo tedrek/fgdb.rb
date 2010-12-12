@@ -11,6 +11,7 @@ class VolunteerShiftsController < ApplicationController
   helper :skedjul
 
   def index
+    if params[:conditions]
     @skedj = Skedjul.new({
       :conditions => ["sked", "roster", "volunteer_task_type"],
       :date_range_condition => "date",
@@ -36,6 +37,10 @@ class VolunteerShiftsController < ApplicationController
       }, params)
 
     @skedj.find({:include => [:volunteer_task_type]})
+    render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
+    else
+      render :partial => "assignments/index", :layout => :with_sidebar
+    end
   end
 
   def copy

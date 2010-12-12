@@ -14,10 +14,11 @@ class VolunteerDefaultShiftsController < ApplicationController
     gconditions = Conditions.new
     gconditions.apply_conditions(params[:gconditions])
     VolunteerDefaultShift.generate(Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date]), gconditions)
-    redirect_to :controller => 'assignments', :action => "index" # TODO: conditions once its there, to show just this date range
+    redirect_to :controller => 'assignments', :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
   end
 
   def index
+    if params[:conditions]
     @skedj = Skedjul.new({
       :generate_param_key => "date_range",
       :generate_conditions => ["sked", "roster"],
@@ -44,6 +45,10 @@ class VolunteerDefaultShiftsController < ApplicationController
       }, params)
 
     @skedj.find({:include => [:volunteer_task_type, :weekday]})
+    render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
+    else
+      render :partial => "assignments/index", :layout => :with_sidebar
+    end
   end
 
   def copy

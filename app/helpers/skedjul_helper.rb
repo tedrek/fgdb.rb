@@ -32,6 +32,11 @@ class Skedjul
     if !thing.nil?
       params[:conditions][thing] = "arbitrary"
     end
+    default_conds.to_a.each{|k,v|
+      if !params[:conditions].keys.include?(k)
+        params[:conditions][k] = v
+      end
+    }
     params[:conditions]["empty_enabled"] = "true"
     @__conditions.apply_conditions(params[:conditions])
     @__where_clause = DB.prepare_sql(@__conditions.conditions(klass))
