@@ -11,7 +11,7 @@ if @successful
   page.replace_html(searchbox_display_id(@options),
                     :partial => 'display',
                     :locals => {
-                      :@contact => @contact,
+                      :contact => @contact,
                       :options => @options
                     })
   page << "Form.enable($('#{contact_query_id(@options)}').form.id);"
