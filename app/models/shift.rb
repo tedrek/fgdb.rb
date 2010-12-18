@@ -3,6 +3,7 @@ class Shift < ActiveRecord::Base
   belongs_to :weekday
   belongs_to :worker
   belongs_to :coverage_type
+  belongs_to :schedule
 
   def display_name_skedj
     skedj = Thread.current['skedj_obj']

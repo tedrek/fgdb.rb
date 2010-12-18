@@ -12,7 +12,7 @@ class Conditions < ConditionsBase
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
-      effective_at
+      effective_at schedule
     ] + DATES).uniq
 
   for i in CONDS
@@ -22,6 +22,8 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
   end
+
+  attr_accessor :schedule_id, :schedule_which_way
 
   attr_accessor :effective_at
 
@@ -95,6 +97,22 @@ class Conditions < ConditionsBase
       @worker = nil
     end
     return @worker
+  end
+
+  def schedule_conditions(klass)
+    in_clause = "(-1)"
+    s = Schedule.find_by_id(@schedule_id)
+    if s
+      if @schedule_which_way == 'Solo'
+        in_clause = s.in_clause_solo
+      elsif @schedule_which_way == 'Solo + root'
+        in_clause = s.in_clause_root_plus
+      else # @schedule_which_way == 'Family'
+        in_clause = s.in_clause_family
+      end
+    end
+    puts in_clause
+    return ["schedule_id IN #{in_clause} AND (NOT actual) AND (shift_date IS NULL) AND ('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)"]
   end
 
   def effective_at_conditions(klass)
