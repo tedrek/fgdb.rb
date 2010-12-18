@@ -1,5 +1,14 @@
 #!/bin/bash
 
+
+if ! test -f ~/nobackup/I_AM_THE_BACKUPS; then
+    sshfs wayback:/srv/arik-extras/arik-backups/ /home/ryan52/yesbackup/
+    if ! test -f ~/nobackup/I_AM_THE_BACKUPS; then
+	echo "ERROR: nobackup isn't the backup dir"
+	exit 1
+    fi
+fi
+
 set -C
 set -e
 set -u
