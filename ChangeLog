@@ -16,6 +16,7 @@ fgdb.rb (1.0.53) released; urgency=low
     (Closes: #20667)
   * change the online donation type to be a fake money method (Closes: #20632)
   * change 'total real' to 'register total' on the income report
+  * fix the receipt footer wrt warranty (Closes: #20986)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Nov 2010 20:26:31 -0800
 
