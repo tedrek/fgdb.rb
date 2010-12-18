@@ -21,6 +21,12 @@
   <% end %>
 
 
+  <% if @user %>
+  <div class='form-element' style="clear: left">
+    Last Logged In: <%= @user.last_logged_in ? @user.last_logged_in.strftime("%D") : "Never" %>
+  </div>
+  <% end %>
+
     <div class='login form-element'>
       <label for="user_login">Login</label>
       <%= text_field :user, :login %>

@@ -1,7 +1,8 @@
 fgdb.rb (1.0.54) UNRELEASED; urgency=low
 
+  * add a last logged value on the users (Closes: #20935)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Nov 2010 20:27:18 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 18 Dec 2010 11:59:22 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 
