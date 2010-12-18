@@ -16,6 +16,10 @@ class StandardShift < Shift
     return 'shift'
   end
 
+  def skedjul_link_controller
+    "shifts"
+  end
+
   def long_name
     weekday = Weekday.find(:first, :conditions => "id = #{weekday_id}").short_name + ', ' 
     ret = weekday + Job.find(:first, :conditions => "id = #{job_id}").name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
