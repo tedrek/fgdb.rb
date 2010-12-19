@@ -111,8 +111,8 @@ class Conditions < ConditionsBase
         in_clause = s.in_clause_family
       end
     end
-    puts in_clause
-    return ["schedule_id IN #{in_clause} AND (NOT actual) AND (shift_date IS NULL) AND ('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)"]
+    in_clause += " AND (NOT actual) AND (shift_date IS NULL) AND ('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)" if klass == Shift
+    return ["#{klass.table_name}.schedule_id IN #{in_clause}"]
   end
 
   def effective_at_conditions(klass)
