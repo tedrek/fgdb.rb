@@ -1,4 +1,6 @@
-<%= render :partial => "sale_receipt_guts" %>
+<% @sale = sale %>
+
+<%= render :partial => "sale_receipt_guts", :locals => {:sale => @sale} %>
 
 <%= render :partial => "storecredits_receipt" %>
 
@@ -17,13 +19,13 @@
     store credits; if you lose a store credit, you are out of
     luck.
   <br />
-  <b>14-Day Exchange:</b> Most items in the store are returnable for a period of 14 days from the
+  <b>14-Day Exchange:</b> Most items in the store are returnable for a period of 14 calendar days from the
     date of purchase for in-store credit.
   <br />
-  <b>30-Day Warranty on LCD Monitors:</b> LCD monitors may be returned for a period of 30 days from the date of
+  <b>30-Day Warranty on LCD Monitors:</b> LCD monitors may be returned for a period of 30 calendar days from the date of
     purchase for in-store credit.
   <br />
   <b>90-Day System Warranty:</b> Systems are covered by our 90-Day System Warranty. Full text of our
     System Warranty is available on request in the Thrift Store, or online
-    at www.freegeek.org/thrift-store/warranty.
+    at www.freegeek.org/thrift-store/system-warranty/
 </div>

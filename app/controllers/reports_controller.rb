@@ -142,8 +142,8 @@ class ReportsController < ApplicationController
     methods = PaymentMethod.find(:all)
     method_names = methods.map {|m| m.description}
     @columns = PaymentMethod.till_methods.map(&:description) + ['till total'] +
-      PaymentMethod.real_non_till_methods.map(&:description) + ['total real'] +
-      PaymentMethod.fake_money_methods.map(&:description) + ['total']
+      PaymentMethod.register_non_till_methods.map(&:description) + ['register total'] +
+      PaymentMethod.non_register_methods.map(&:description) + ['total']
     @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
@@ -195,13 +195,13 @@ class ReportsController < ApplicationController
     suggested_cents = max(amount_cents - (required_cents + gizmoless_cents), 0)
 
     if PaymentMethod.is_money_method?(payment_method_id)
-      total_real = income_data[:donations]['total real']
+      total_real = income_data[:donations]['register total']
 
       update_totals(total_real['fees'], required_cents, count)
       update_totals(total_real['suggested'], suggested_cents, count)
       update_totals(total_real['other'], gizmoless_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
-      update_totals(grand_totals['total real']['total'], amount_cents, count)
+      update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
 
     if PaymentMethod.is_till_method?(payment_method_id)
@@ -244,10 +244,10 @@ class ReportsController < ApplicationController
     update_totals(column[discount_schedule.name], amount_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     if PaymentMethod.is_money_method?(payment_method_id)
-      total_real = income_data[:sales]['total real']
+      total_real = income_data[:sales]['register total']
       update_totals(total_real[discount_schedule.name], amount_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
-      update_totals(grand_totals['total real']['total'], amount_cents, count)
+      update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
     if PaymentMethod.is_till_method?(payment_method_id)
       till_total = income_data[:sales]['till total']

@@ -36,23 +36,25 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def PaymentMethod.is_money_method?(id)
-    return (till_methods + real_non_till_methods).map(&:id).include?(id)
+    return (till_methods + register_non_till_methods).map(&:id).include?(id)
   end
 
   def PaymentMethod.is_fake_method?(id)
     return fake_money_methods.map(&:id).include?(id)
   end
 
+  # the next three functions should be metadata in the db #
+
   def PaymentMethod.till_methods()
     return [cash, check]
   end
 
-  def PaymentMethod.real_non_till_methods()
-    return [credit, online]
+  def PaymentMethod.register_non_till_methods()
+    return [credit]
   end
 
-  def PaymentMethod.fake_money_methods()
-    return [invoice, coupon, store_credit]
+  def PaymentMethod.non_register_methods()
+    return [invoice, online, coupon, store_credit]
   end
 
   def PaymentMethod.descriptions

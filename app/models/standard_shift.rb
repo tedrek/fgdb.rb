@@ -7,9 +7,21 @@ class StandardShift < Shift
   belongs_to :schedule
   has_many :work_shifts
 
+  def self.table_name
+    "standard_shifts"
+  end
+
   def name
     ret = self.job.name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
+  end
+
+  def skedj_style(overlap, last)
+    return 'shift'
+  end
+
+  def skedjul_link_controller
+    "shifts"
   end
 
   def long_name

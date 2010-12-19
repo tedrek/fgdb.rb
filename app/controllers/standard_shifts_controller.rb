@@ -8,51 +8,41 @@ class StandardShiftsController < ApplicationController
     render :action => 'list'
   end
 
+  helper :skedjul
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
   def list
     session["shift_return_to"] = "standard_shifts"
     session["shift_return_action"] = "list"
-    if params[:filter_criteria]
-      @opts = params[:filter_criteria]
-      @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
-      if  @opts['which_way'] == 'Family'
-        in_clause = @root_sched.in_clause_family
-      else
-        if  @opts['which_way'] == 'Solo'
-          in_clause = @root_sched.in_clause_solo
-        else
-          in_clause = @root_sched.in_clause_root_plus
-        end
-      end
-      where_clause1 = ''
-      where_clause2 = ''
-      if @opts['limit_to_worker'] and @opts['limit_to_worker'] == '1'
-        where_clause1 += ' AND standard_shifts.worker_id = '
-        where_clause1 += @opts['worker_id']
-        where_clause2 += ' AND meetings_workers.worker_id = '
-        where_clause2 += @opts['worker_id']
-      end
-      if @opts['limit_to_job'] and @opts['limit_to_job'] == '1'
-        where_clause1 += ' AND standard_shifts.job_id = '
-        where_clause1 += @opts['job_id']
-        where_clause2 = ' AND standard_shifts.job_id IS NOT NULL '
-      end
-    else
-      @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
-      @opts = { 
-        'schedule_id' => @root_sched.id, 
-        'which_way' => 'Family', 
-        'limit_to_worker' => '0', 
-        'limit_to_job' => '0', 
-        'worker_id' => 0, 
-        'job_id' => 0, 
-        'presentation_mode' => 'Edit' }
-      in_clause = @root_sched.in_clause_root_plus
-      where_clause1 = ''
-      where_clause2 = ''
-    end
+
+    @skedj = Skedjul.new({
+      :generate_param_key => "generate_schedule",
+                           :forced_condition => "schedule",
+                           :conditions => ["job", "worker"],
+
+      :block_method_name => "standard_shifts.weekday_id",
+      :block_method_display => "weekdays.name",
+      :block_start_time => "weekdays.start_time",
+      :block_end_time => "weekdays.end_time",
+
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
+
+      :thing_start_time => "standard_shifts.start_time",
+      :thing_end_time => "standard_shifts.end_time",
+      :thing_table_name => "standard_shifts",
+      :thing_description => "display_name_skedj",
+      :thing_link_id => "standard_shifts.id",
+      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm], [:split, :popup, :splitable], [:merge, :popup, :mergeable], [:resize, :popup, :resizable]]
+
+      }, params)
+
+    where_clause = @skedj.where_clause
 
     sql = <<SQL
 SELECT 
@@ -71,8 +61,8 @@ SELECT
     standard_shifts.meeting_id 
     FROM standard_shifts
     LEFT JOIN workers ON standard_shifts.worker_id = workers.id 
-    WHERE standard_shifts.schedule_id IN #{in_clause}
-    AND standard_shifts.meeting_id IS NULL #{where_clause1}
+    WHERE standard_shifts.meeting_id IS NULL
+    AND #{where_clause}
 UNION
 SELECT 
     meetings.weekday_id, 
@@ -92,13 +82,12 @@ SELECT
     LEFT JOIN standard_shifts ON meetings.id = standard_shifts.meeting_id
     LEFT JOIN meetings_workers ON standard_shifts.meeting_id = meetings_workers.meeting_id 
     LEFT JOIN workers ON meetings_workers.worker_id = workers.id 
-    WHERE meetings.schedule_id IN #{in_clause}
-    AND standard_shifts.meeting_id IS NOT NULL #{where_clause2}
+    WHERE standard_shifts.meeting_id IS NOT NULL
+    AND #{where_clause}
 ORDER BY 1, 2, 3, 4
 SQL
 
-    @standard_shifts = StandardShift.find_by_sql( sql )
-    render @list
+    @skedj.find_by_sql(sql)
   end
 
   def show

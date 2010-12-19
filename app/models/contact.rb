@@ -122,7 +122,7 @@ class Contact < ActiveRecord::Base
   def phone_numbers
     a = []
     contact_methods.map {|x|
-      a << x.value if (x.contact_method_type.description =~ /phone|fax/ and x.ok == true)
+      a << x.value if (x.contact_method_type.description =~ /phone|fax/ and !(x.contact_method_type.description =~ /emergency/) and x.ok == true) # ruby apparently doesn't support negative lookbehinds..sadday :(
     }
     a
   end

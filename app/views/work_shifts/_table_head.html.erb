@@ -1,6 +1,8 @@
-<table border="0" width="100%" summary="<%=h shift.weekday.name %>">
-<% day_length = (( @shift.weekday.end_time - @shift.weekday.start_time ) / ( 60 * 30 )).to_int %>
-    <caption><%=h shift.weekday.name %>, <%=h shift.shift_date.strftime('%B %d, %Y').gsub( ' 0', ' ' ) %> (work shifts)</caption>
+
+<table class="skedj" border="0" width="100%" summary="<%=h skedj.get_method_value(skedj.current,:block_method_display) %>">
+<% day_length = (( skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time) ) / ( 60 * 30 )).to_int %>
+
+    <caption><%=h skedj.get_method_value(skedj.current, :block_method_display) %> (<%= params[:controller].humanize.downcase %>)</caption>
     <tr>
     <th width="10%">&nbsp;</th>
     <% for i in (0..(@day_length-1)) %>

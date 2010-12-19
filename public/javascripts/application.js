@@ -296,6 +296,8 @@ function remove_condition(obj_name, value)
 function add_condition(obj_name, value)
 {
   if(value != ''){
+    var list_of_conditions = eval("list_of_" + obj_name + "_conditions");
+    var condition_display_names  = eval("condition_" + obj_name + "_display_names");
     Insertion.Bottom(obj_name + "_table", '<tbody id="' + obj_name + '_tbody_for_' + value + '"><tr><th class="conditions"><span>' + condition_display_names.get(value) + ':</span></td><td>' + list_of_conditions.get(value) + '</td><td><span><input value="-" type="button" id="' + obj_name + '_delete_"' + value + '" onclick="remove_condition(\'' + obj_name + '\', \'' + value + '\')"/></span></td></tr></tbody>');
     Element.hide($(obj_name + '_' + value + '_option'));
     $(obj_name + '_' + value + '_enabled').value = true;

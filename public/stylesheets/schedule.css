@@ -1,4 +1,8 @@
-div.filter {
+div.skedj div.filter td, div.skedj div.filter th, div.skedj div.generate td, div.skedj div.generate th {
+    background: #CCCC99;
+}
+
+div.skedj div.filter {
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 10px;
@@ -7,7 +11,7 @@ div.filter {
     float: left;
     width: 45%;
 }
-div.generate {
+div.skedj div.generate {
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 10px;
@@ -16,46 +20,53 @@ div.generate {
     float: right;
     width: 45%;
 }
-div.footer {
-    position: absolute;
-    margin-top: 270px;
+div.skedj div.content {
+  float: left;
+  clear:left;
 }
-div.content {
-    position: absolute;
-    margin-top: 340px;
+div.skedj_footer {
+  float: left;
+  clear:left;
 }
-caption {
+.skedj caption {
     background: #FFFF99;
     font-weight: bold;
     text-align: right;
 }
-th {
+.skedj th {
     background: #FFCCCC;
     text-align: left;
 }
-td {
+.skedj td {
     background: #FFCCCC;
 }
-td.shift {
+div.skedj td.available {
+    background: #00FF00;
+}
+div.skedj td.shift {
     background: #CCFFFF;
 }
-td.meeting {
+div.skedj td.meeting {
     background: #CCCC99;
     font-style: italic;
     font-weight: bold;
 }
-td.unavailable {
+
+div.skedj td.cancelled {
+    background: #C0C0C0;
+}
+div.skedj td.unavailable {
     background: #99CCFF;
 }
-td.hardconflict {
+div.skedj td.hardconflict {
     background: #FF0000;
 }
-td.mediumconflict {
+div.skedj td.mediumconflict {
     background: #FF8800;
 }
-td.softconflict {
+div.skedj td.softconflict {
     background: #FFFF00;
 }
-td.unfilled {
+div.skedj td.unfilled {
     background: #FFFF33;
 }

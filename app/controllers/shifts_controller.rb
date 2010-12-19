@@ -8,7 +8,7 @@ class ShiftsController < ApplicationController
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
+  verify :method => :post, :only => [ :create, :update ],
          :redirect_to => { :action => :list }
 
   def list
@@ -63,52 +63,38 @@ class ShiftsController < ApplicationController
     redirect_to :action => 'view_weekly_schedule'
   end
 
+  helper :skedjul
+
   def view_weekly_schedule
     session["shift_return_to"] = "shifts"
     session["shift_return_action"] = "view_weekly_schedule"
-    where_clause = "(NOT actual) AND "
-    where_clause += "(shift_date IS NULL) AND "
-    where_clause += "('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)"
-    if params[:filter_criteria]
-      @opts = params[:filter_criteria]
-      @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
-      if  @opts['which_way'] == 'Family'
-        in_clause = @root_sched.in_clause_family
-      else
-        if  @opts['which_way'] == 'Solo'
-          in_clause = @root_sched.in_clause_solo
-        else
-          in_clause = @root_sched.in_clause_root_plus
-        end
-      end
-      if @opts['limit_to_worker'] and @opts['limit_to_worker'] == '1'
-        where_clause += ' AND shifts.worker_id = '
-        where_clause += @opts['worker_id']
-      end
-      if @opts['limit_to_job'] and @opts['limit_to_job'] == '1'
-        where_clause += ' AND shifts.job_id = '
-        where_clause += @opts['job_id']
-      end
-    else
-      @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
-      @opts = { 
-        'schedule_id' => @root_sched.id, 
-        'which_way' => 'Family', 
-        'limit_to_worker' => '0', 
-        'limit_to_job' => '0', 
-        'worker_id' => 0, 
-        'job_id' => 0, 
-        'presentation_mode' => 'Edit' }
-      in_clause = @root_sched.in_clause_family
-    end
-    where_clause += ' AND schedule_id IN ' + in_clause
 
-    @shifts = Shift.find(:all, {
-      :conditions => where_clause, 
-      :include => [:weekday, :job, :worker, :coverage_type],
-      :order => 'weekday_id, workers.name, shifts.start_time'} 
-    )
-    render @view_weekly_schedule
+    @skedj = Skedjul.new({
+      :generate_param_key => "date_range",
+                           :forced_condition => "schedule",
+                           :conditions => ["job", "worker"],
+
+      :block_method_name => "shifts.weekday_id",
+      :block_method_display => "weekdays.name",
+      :block_start_time => "weekdays.start_time",
+      :block_end_time => "weekdays.end_time",
+
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
+
+      :thing_start_time => "shifts.start_time",
+      :thing_end_time => "shifts.end_time",
+      :thing_table_name => "shifts",
+      :thing_description => "display_name_skedj",
+      :thing_link_id => "shifts.id",
+      :thing_links => [[:copy, :popup, :has_copy], [:edit, :popup], [:destroy, :confirm]]
+
+      }, params)
+
+    @skedj.find({:include => [:weekday, :job, :worker, :coverage_type, :schedule]})
   end
 
   def generate

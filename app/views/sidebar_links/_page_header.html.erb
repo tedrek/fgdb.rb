@@ -13,6 +13,7 @@
     <%= javascript_include_tag 'lightwindow' %>
     <%= javascript_include_tag 'boxover' %>
     <%= javascript_include_tag 'keybindings' %>
+    <%= stylesheet_link_tag 'schedule', :media => "all" %>
 
     <%= javascript_tag "function good_cashier_code(code) {
 " + remote_function(
@@ -29,7 +30,7 @@ javascript_tag "volunteer_task_programs = #{h.to_json};" %>
 
     <%= dhtml_calendar_includes %>
     <% if defined?(@gizmo_context) %>
-      <%= render :partial => 'sidebar_links/line_item_javascript' %>
+      <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:gizmo_context => @gizmo_context} %>
     <% end %>
   </head>
   <body>

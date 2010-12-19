@@ -2,6 +2,7 @@ class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
+      shift_date
   ]
 
   CONDS = (%w[
@@ -10,7 +11,8 @@ class Conditions < ConditionsBase
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
-      can_login role action worker contribution serial_number
+      can_login role action worker contribution serial_number job
+      effective_at schedule
     ] + DATES).uniq
 
   for i in CONDS
@@ -21,7 +23,13 @@ class Conditions < ConditionsBase
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
   end
 
+  attr_accessor :schedule_id, :schedule_which_way
+
+  attr_accessor :effective_at
+
   attr_accessor :worker_id
+
+  attr_accessor :job_id
 
   attr_accessor :created_by, :cashier_created_by
 
@@ -91,9 +99,32 @@ class Conditions < ConditionsBase
     return @worker
   end
 
+  def schedule_conditions(klass)
+    in_clause = "(-1)"
+    s = Schedule.find_by_id(@schedule_id)
+    if s
+      if @schedule_which_way == 'Solo'
+        in_clause = s.in_clause_solo
+      elsif @schedule_which_way == 'Solo + root'
+        in_clause = s.in_clause_root_plus
+      else # @schedule_which_way == 'Family'
+        in_clause = s.in_clause_family
+      end
+    end
+    in_clause += " AND (NOT actual) AND (shift_date IS NULL) AND ('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)" if klass == Shift
+    return ["#{klass.table_name}.schedule_id IN #{in_clause}"]
+  end
+
+  def effective_at_conditions(klass)
+    ["(#{klass.table_name}.effective_at IS NULL OR #{klass.table_name}.effective_at <= ?) AND (#{klass.table_name}.ineffective_at IS NULL OR #{klass.table_name}.ineffective_at > ?)", @effective_at, @effective_at]
+  end
 
   def worker_conditions(klass)
     return ["worker_id = ?", @worker_id]
+  end
+
+  def job_conditions(klass)
+    return ["job_id = ?", @job_id]
   end
 
   def empty_conditions(klass)
@@ -271,6 +302,10 @@ class Conditions < ConditionsBase
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM donations WHERE #{b})"
     a
+  end
+
+  def shift_date_conditions(klass)
+    date_range(klass, 'shift_date', 'shift_date')
   end
 
   def occurred_at_conditions(klass)

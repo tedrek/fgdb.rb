@@ -37,7 +37,7 @@
     <% if params[:action] == "new" or params[:action] == "create" %>
       <%= select("worker", "worker_type_id", WorkerType.find(:all).collect {|c| [c.name, c.id] }) %>
   <% else %>
-    <table>
+    <table class="skedj">
       <tr><th>From</th><th>To</th><th>Type</th></tr>
     <% @worker.workers_worker_types.sort_by(&:smart_effective_on).each do |x| %>
       <tr><td><%= x.effective_on || "Beginning of time" %></td><td><%= x.ineffective_on || "End of time" %></td><td><%= x.worker_type.name %></td></tr>

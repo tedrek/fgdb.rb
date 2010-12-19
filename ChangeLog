@@ -1,4 +1,10 @@
-fgdb.rb (1.0.53) UNRELEASED; urgency=low
+fgdb.rb (1.0.54) UNRELEASED; urgency=low
+
+  * add a last logged value on the users (Closes: #20935)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 18 Dec 2010 11:59:22 -0800
+
+fgdb.rb (1.0.53) released; urgency=low
 
   * fix the db plugins for rails 2.2.3
   * set the length of the recent disbursements on the contact widget to
@@ -7,8 +13,13 @@ fgdb.rb (1.0.53) UNRELEASED; urgency=low
     #19121)
   * add serial number fgss search condition (Closes: #19466)
   * fix displaying all airports on printme (Closes: #19143)
+  * fix Contact.phone_number to not include emergency phone numbers
+    (Closes: #20667)
+  * change the online donation type to be a fake money method (Closes: #20632)
+  * change 'total real' to 'register total' on the income report
+  * fix the receipt footer wrt warranty (Closes: #20986)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Nov 2010 16:24:54 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Nov 2010 20:26:31 -0800
 
 fgdb.rb (1.0.52) released; urgency=low
 

@@ -25,17 +25,28 @@ module HtmlHelper
     return display
   end
 
-  def multiselect_of_form_elements(obj_name, choices = {})
+  def multiselect_of_form_elements(obj_name, choices = {}, mode = "auto")
     html = "<div id='#{obj_name}_container' class='conditions'>"
+    js = ""
     for condition in choices.keys do
       html += hidden_field(obj_name, condition + "_enabled")
     end
-    if choices.length > 1
+    if mode == 'auto'
+      if choices.length > 1
+        mode = 'multi'
+      else
+        mode = 'force'
+      end
+    end
+    if mode == 'multi' and choices.length == 0
+      mode = 'force'
+    end
+    if mode == 'multi'
       choice_names = { }
       choices.each {|k,v| choice_names[k] = (k).titleize}
       js = update_page do |page|
-        page << "list_of_conditions = $H(#{choices.to_json.gsub("</script>", "<\\\/script>")});"
-        page << "condition_display_names = $H(#{choice_names.to_json});"
+        page << "list_of_#{obj_name}_conditions = $H(#{choices.to_json.gsub("</script>", "<\\\/script>")});"
+        page << "condition_#{obj_name}_display_names = $H(#{choice_names.to_json});"
         page.insert_html(:bottom, obj_name + "_container",
                          :partial => 'helpers/multiselection_header',
                          :locals => {:obj_name => obj_name})
@@ -47,12 +58,14 @@ module HtmlHelper
         end
       end
       js += "$('#{obj_name}_nil').selected = true;"
-    elsif choices.length == 1
-      html += choices.values.first
-      js = "$('#{obj_name}_#{choices.keys.first}_enabled').value = 'true'"
-    else
-      html += ""
-      js = ""
+    elsif mode == 'force'
+      choices.each{|k,v|
+        html += v
+        js += "$('#{obj_name}_#{k}_enabled').value = 'true'"
+      }
+      if choices.length == 0
+        js += "$('#{obj_name}_nil').selected = true;"
+      end
     end
     html += "</div>"
     return html + javascript_tag(js)

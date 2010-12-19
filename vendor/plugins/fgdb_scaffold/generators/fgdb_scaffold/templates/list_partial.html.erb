@@ -1,0 +1,18 @@
+<table>
+  <tr>
+<% for attribute in attributes -%>
+    <th><%= attribute.column.human_name %></th>
+<% end -%>
+  </tr>
+
+<%% for <%= singular_name %> in @<%= plural_name %> %>
+  <tr>
+<% for attribute in attributes -%>
+    <td><%%=h <%= singular_name %>.<%= attribute.name %> %></td>
+<% end -%>
+    <td><%%= link_to 'Show', {:action => "show", :id => <%= singular_name %>.id} %></td>
+    <td><%%= link_to 'Edit', {:action => "edit", :id => <%= singular_name %>.id} %></td>
+    <td><%%= link_to 'Destroy', {:action => "destroy", :id => <%= singular_name %>.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<%% end %>
+</table>
