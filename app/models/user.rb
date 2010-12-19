@@ -122,10 +122,6 @@ class User < ActiveRecord::Base
     ! fake_logged_in
   end
 
-  def User.has_privileges(*privs)
-    User.current_user.has_privileges(*privs)
-  end
-
   def to_privileges
     return "logged_in" if self.logged_in
   end

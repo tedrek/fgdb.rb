@@ -306,7 +306,7 @@ module ApplicationHelper
   # start auth junk
 
   def has_privileges(*privs)
-    User.has_privileges(*privs)
+    User.current_user.has_privileges(*privs)
   end
 
   # end auth junk

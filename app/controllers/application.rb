@@ -174,19 +174,35 @@ class ApplicationController < ActionController::Base
     return res
   end
 
-  before_filter :authorize_to_required_privileges
+  before_filter :future_authorize_to_required_privileges
+
+  # TODO: this and requires_privileges will be replaced by this
+  def future_authorize_to_required_privileges
+    if has_required_privileges(params[:action])
+      return true
+    else
+      session[:unauthorized_error] = true
+      session[:unauthorized_params] = params.inspect
+      redirect_to :controller => 'sidebar_links'
+      return false
+    end
+  end
 
   def authorize_to_required_privileges
-    # TODO: make this just use has_required_privileges, and then combine it with requires() (once it's no longer needed)
+    res = true
     required_privileges(params[:action]).each{|x|
-      requires_privileges(x)
+      if ! requires_privileges(x)
+        res = false
+        break
+      end
     }
+    return res
   end
 
   # start auth junk
 
   def has_privileges(*privs)
-    User.has_privileges(*privs)
+    User.current_user.has_privileges(*privs)
   end
 
   def requires_privileges(*privs)
