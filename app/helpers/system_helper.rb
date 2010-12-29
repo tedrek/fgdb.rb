@@ -131,7 +131,10 @@ module SystemHelper
 
     def do_work
       @result = Nokogiri::PList(@string)
-      @macaddr = @result.map{|x| x["_items"]}.flatten.select{|x| x["_name"] == "Built-in Ethernet"}.first["Ethernet"]["MAC Address"]
+      begin
+        @macaddr = @result.map{|x| x["_items"]}.flatten.select{|x| x["_name"] == "Built-in Ethernet"}.first["Ethernet"]["MAC Address"]
+      rescue
+      end
       @parser = load_xml(@string) # REMOVEME, just so that the page doesn't blow up since it still uses this for the other parser
     end
   end
