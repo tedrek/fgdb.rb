@@ -125,8 +125,14 @@ module SystemHelper
       "DOCTYPE plist"
     end
 
+    attr_reader :parser # REMOVEME
+
+    include XmlHelper # REMOVEME
+
     def do_work
-      raise
+      @result = Nokogiri::PList(@string)
+      @macaddr = @result.map{|x| x["_items"]}.flatten.select{|x| x["_name"] == "Built-in Ethernet"}.first["Ethernet"]["MAC Address"]
+      @parser = load_xml(@string) # REMOVEME, just so that the page doesn't blow up since it still uses this for the other parser
     end
   end
 
