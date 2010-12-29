@@ -116,7 +116,43 @@ module SystemHelper
         @macaddr ||= @parser._xml_value_of("//*[contains(@id, 'network') or contains(description, 'Ethernet')]/serial")
       }
 
-      # TODO:     attr_reader :processors, :l2_cache, :bios, :usb_supports, :drive_supports
+      @processors = []
+      @parser.xml_foreach("//*[@class='processor']") do
+        if @parser.xml_if("product")
+          h = OpenStruct.new
+          h.processor = @parser.xml_value_of("product")
+          h.speed = (@parser.xml_if("capacity") && false ? @parser.xml_value_of("capacity") : @parser.xml_value_of("size")).to_hertz if @parser.xml_if("capacity") || @parser.xml_if("size")
+
+          h.supports = []
+          find_these = ["lm", "svm", "vmx", "x86-64"]
+          @parser.xml_foreach("capabilities/capability") do
+            if find_these.include?(@parser.xml_value_of("@id"))
+              h.supports << @parser.xml_value_of(".")
+            end
+          end
+          @processors << h
+        end
+      end
+
+      @bios = @parser.xml_value_of("//*[contains(@id, 'firmware')]/version")
+
+      @parser.find_the_biggest("//node[contains(@id, 'usbhost')]/capabilities/capability", "USB ") do |value|
+        @usb_supports = value
+      end
+
+      @drive_supports = []
+      a = []; @parser.xml_foreach("//*[contains(@id, 'storage') or contains(@id, 'ide') or contains(@id, 'scsi')]") do a << @parser.xml_value_of(".//product") + @parser.xml_value_of(".//description") end
+      a.collect{|x| if x.match(/(scsi|sata|ide)/i); $1.upcase; else nil; end}.delete_if{|x| x.nil?}.uniq.each do |x|
+        @drive_supports << x
+      end
+
+      @l2_cache = []
+      @parser.xml_foreach("//*[@class='memory']") do
+        if @parser.xml_value_of("description") == "L2 cache"
+          @l2_cache << @parser.xml_value_of("size").to_bytes # the description is always L2 cache
+        end
+      end
+
       # TODO:     attr_reader :memories, :harddrives, :opticals, :pcis
     end
   end

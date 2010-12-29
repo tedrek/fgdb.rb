@@ -25,35 +25,31 @@
         <%= h @report.system.serial_number %>
       </td>
     </tr>
-    <% @parser.xml_foreach("//*[@class='processor']") do %>
-      <% if @parser.xml_if("product") %>
+    <% @system_parser.processors.each do |x| %>
         <tr>
           <td>
             Processor:
           </td>
           <td>
-            <%= @parser.xml_value_of("product") %>
+            <%= x.processor %>
           </td>
         </tr>
-        <% if @parser.xml_if("capacity") || @parser.xml_if("size") %>
+        <% if x.speed %>
           <tr>
             <td>
               Speed:
             </td>
             <td>
-              <%= (@parser.xml_if("capacity") && false ? @parser.xml_value_of("capacity") : @parser.xml_value_of("size")).to_hertz %>
+              <%= x.speed %>
             </td>
           </tr>
         <% end %>
 	<% find_these = ["lm", "svm", "vmx", "x86-64"] %>
-        <% @parser.xml_foreach("capabilities/capability") do %>
-	  <% if find_these.include?(@parser.xml_value_of("@id")) %>
+        <% x.supports.each do |y| %>
     <tr><td>Supports:</td><td>
-        <%= @parser.xml_value_of(".") %>
+        <%= y %>
     </td></tr>
-	  <% end %>
         <% end %>
-      <% end %>
     <% end %>
     <% @parser.xml_foreach("//*[@class='memory']") do %>
       <% if @parser.xml_value_of("description") == "L2 cache" %>
@@ -72,21 +68,20 @@
         BIOS Version:
       </td>
       <td>
-        <%= @parser.xml_value_of("//*[contains(@id, 'firmware')]/version") %>
+        <%= @system_parser.bios %>
       </td>
     </tr>
-    <% @parser.find_the_biggest("//node[contains(@id, 'usbhost')]/capabilities/capability", "USB ") do |value| %>
+    <% if @system_parser.usb_supports %>
       <tr>
         <td>
           Supports:
         </td>
         <td>
-          USB <%= value %>
+          USB <%= @system_parser.usb_supports %>
         </td>
       </tr>
     <% end %>
-    <% a = []; @parser.xml_foreach("//*[contains(@id, 'storage') or contains(@id, 'ide') or contains(@id, 'scsi')]") do a << @parser.xml_value_of(".//product") + @parser.xml_value_of(".//description") end %>
-    <% a.collect{|x| if x.match(/(scsi|sata|ide)/i); $1.upcase; else nil; end}.delete_if{|x| x.nil?}.uniq.each do |x| %>
+    <% @system_parser.drive_supports.each do |x| %>
       <tr>
         <td>
           Supports:
