@@ -1,20 +1,39 @@
 module SystemHelper
   # this will take over PrintmeHelper soon
 
-  class CommonParser
-    attr_reader :string, :system
+  class SystemParser
+    attr_reader :processors, :l2_cache, :bios, :usb_supports, :drive_supports
+    attr_reader :memories, :harddrives, :opticals, :pcis
+    attr_reader :system_model, :system_serial_number, :system_vendor, :mobo_model, :mobo_serial_number, :mobo_vendor, :macaddr
+    attr_reader :model, :vendor, :serial_number
 
-    def initialize(in_string, in_system)
+    attr_reader :string, :parser, :myparser
+
+    def SystemParser.parse(in_string)
+      sp = nil
+      parser = Parsers.select{|x| in_string.match(/#{x.match_string}/)}.first or return false
+      begin
+        sp = parser.new(in_string)
+      rescue SystemParserException
+        return false
+      end
+      return sp
+    end
+
+    def initialize(in_string)
       @string = in_string
-      @system = in_system
       do_work
+    end
+
+    def myparser
+      self
     end
   end
 
   class SystemParserException < Exception
   end
 
-  class LshwSystemParser < CommonParser
+  class LshwSystemParser < SystemParser
     include XmlHelper
 
     def self.match_string
@@ -29,7 +48,7 @@ module SystemHelper
     end
   end
 
-  class PlistSystemParser < CommonParser
+  class PlistSystemParser < SystemParser
     def self.match_string
       "DOCTYPE plist"
     end
@@ -39,31 +58,5 @@ module SystemHelper
     end
   end
 
-  class SystemParser
-    Parsers = [PlistSystemParser, LshwSystemParser]
-
-    attr_accessor :processors, :l2_cache, :bios, :usb_supports, :drive_supports
-    attr_accessor :memories, :harddrives, :opticals, :pcis
-    attr_accessor :system_model, :system_serial_number, :system_vendor, :mobo_model, :mobo_serial_number, :mobo_vendor, :macaddr
-    attr_accessor :model, :vendor, :serial_number
-
-    attr_reader :string, :parser, :myparser
-
-    def SystemParser.parse(in_string)
-      sp = nil
-      begin
-        sp = SystemParser.new(in_string)
-      rescue SystemParserException
-        return false
-      end
-      return sp
-    end
-
-    def initialize(in_string)
-      @string = in_string
-      @parser = Parsers.select{|x| @string.match(/#{x.match_string}/)}.first
-      raise SystemParserException if @parser.nil?
-      @myparser = @parser.new(@string, self) # TODO: does ruby's garbage collection handle these circularly referenced objects? I would think it probably doesn't...I should fix this fer sure.
-    end
-  end
+  SystemParser::Parsers = [PlistSystemParser, LshwSystemParser]
 end
