@@ -106,6 +106,8 @@ module SystemHelper
     end
 
     def do_work
+      # system data
+
       @parser.xml_foreach("//*[@class='system']") {
         @system_model ||= @parser._xml_value_of("/node/product")
         @system_serial_number ||= @parser._xml_value_of("/node/serial")
@@ -115,6 +117,8 @@ module SystemHelper
         @mobo_vendor ||= @parser._xml_value_of("//*[contains(@id, 'core')]/vendor")
         @macaddr ||= @parser._xml_value_of("//*[contains(@id, 'network') or contains(description, 'Ethernet')]/serial")
       }
+
+      # computer section
 
       @processors = []
       @parser.xml_foreach("//*[@class='processor']") do
@@ -153,6 +157,26 @@ module SystemHelper
         end
       end
 
+      # hard drives
+      @harddrives = []
+
+      @parser.xml_foreach("//*[contains(@id, 'disk')]") do
+        h = OpenStruct.new
+        h.name = @parser.xml_value_of("logicalname")
+        h.my_type = (@parser.do_with_parent do @parser.xml_value_of(".//product") + @parser.xml_value_of(".//description") end).match(/(scsi|sata|ide)/i) ? $1.upcase : "Unknown"
+        h.vendor = @parser.xml_value_of("vendor")
+        h.model = @parser.xml_value_of("product")
+        h.size = @parser.xml_if("size") ? @parser.xml_value_of("size").to_bytes(0, false, false) : @parser.xml_if("capacity") ? @parser.xml_value_of("capacity").to_bytes(0, false, false) : nil
+        h.volumes = []
+        @parser.xml_foreach(".//*[contains(@id, 'volume')]") do
+          v = OpenStruct.new
+          v.name = @parser.xml_value_of("logicalname")
+          v.description = @parser.xml_value_of("description")
+          v.size = @parser.xml_value_of("capacity").to_bytes(0, false, false)
+          h.volumes << v
+        end
+        @harddrives << h
+      end
       # TODO:     attr_reader :memories, :harddrives, :opticals, :pcis
     end
   end
