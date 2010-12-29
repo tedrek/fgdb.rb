@@ -1,7 +1,7 @@
 module SystemHelper
   class SystemParser
     attr_reader :processors, :l2_cache, :bios, :usb_supports, :drive_supports
-    attr_reader :memories, :harddrives, :opticals, :pcis
+    attr_reader :total_memory, :memories, :harddrives, :opticals, :pcis
     attr_reader :system_model, :system_serial_number, :system_vendor, :mobo_model, :mobo_serial_number, :mobo_vendor, :macaddr
     attr_reader :model, :vendor, :serial_number
 
@@ -177,7 +177,25 @@ module SystemHelper
         end
         @harddrives << h
       end
-      # TODO:     attr_reader :memories, :harddrives, :opticals, :pcis
+
+      # memory
+      @parser.xml_foreach("//*[contains(@id, 'memory')]") do
+        if @parser.xml_if("size")
+          @total_memory = @parser.xml_value_of("size").to_bytes(1)
+        end
+      end
+
+      @memories = []
+
+      @parser.xml_foreach(".//*[contains(@id, 'bank')]") do
+        m = OpenStruct.new
+        m.bank = @parser.xml_value_of("@id").sub(/^bank:/, "")
+        m.description = @parser.xml_value_of("description")
+        m.size = @parser.xml_value_of("size").to_bytes if @parser.xml_if("size")
+        @memories << m
+      end
+
+      # TODO:     attr_reader :opticals, :pcis
     end
   end
 
