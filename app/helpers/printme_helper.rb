@@ -1,8 +1,12 @@
 module PrintmeHelper
-  include XmlHelper
+  # this will all die soon, replaced by SystemHelper
+
+  include SystemHelper
 
   def parse_stuff(my_lshw_output)
-    @parser = load_xml(my_lshw_output) or return false
+    @system_parser = SystemParser.parse(my_lshw_output)
+    return false if !@system_parser
+    @parser = @system_parser.myparser.parser
 
     @system_model = @system_serial_number = @system_vendor = @mobo_model = @mobo_serial_number = @mobo_vendor = @macaddr = nil
 

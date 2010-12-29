@@ -1,8 +1,8 @@
 class SpecSheetsController < ApplicationController
   layout :with_sidebar
 
-  helper :xml
-  include XmlHelper
+  helper :system
+  include SystemHelper
   MY_VERSION=9
 
   def check_compat
@@ -69,7 +69,8 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
-    @parser = load_xml(output)
+    @system_parser = SystemParser.parse(output)
+    @parser = @system_parser.myparser.parser
     @mistake_title = "Things you might have done wrong: "
     @mistakes = []
     if !@report.notes || @report.notes == ""
