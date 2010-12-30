@@ -306,6 +306,17 @@ module SystemHelper
       @total_memory = items.select{|x| x["physical_memory"]}.first["physical_memory"]
       @l2_cache = items.select{|x| x["l2_cache_size"]}.map{|x| x["l2_cache_size"]}
 
+      items_items = items.map{|x| x["_items"]}.flatten.select{|x| !x.nil?}
+      @harddrives = items_items.select{|x| x["removable_media"] == "no"}.map{|x|
+        d = OpenStruct.new
+        d.name = x["bsd_name"]
+        d.model = x["device_model"]
+        d.size = x["size"]
+        d.my_type = x["spsata_socket_type"]
+#        d.vendor is in the model string
+        d.volumes = []
+        d
+      }
       @result = nil
     end
   end
