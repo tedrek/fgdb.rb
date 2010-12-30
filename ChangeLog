@@ -6,8 +6,10 @@ fgdb.rb (1.0.54) UNRELEASED; urgency=low
       contact manage (Closes: #17210, #15050)
     - the tech support role should have acccess to the needed stuff
       now (Closes: #16933, #20927)
+  * check that the cashier has correct permissions before enabling the
+    form (Closes: #16672)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Dec 2010 00:11:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Dec 2010 10:32:27 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 
