@@ -1,5 +1,5 @@
 class PrintmeAPI < SoapsBase
-  include PrintmeHelper
+  include SystemHelper
   include ApplicationHelper
 
   def add_methods
@@ -200,8 +200,8 @@ class PrintmeAPI < SoapsBase
   end
 
   def get_system_id(xml)
-    parse_stuff(xml)
-    return find_system_id
+    sp = SystemParser.parse(xml)
+    return sp.find_system_id
   end
 
   #####

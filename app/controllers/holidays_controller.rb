@@ -1,6 +1,18 @@
 class HolidaysController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role
+  before_filter :skedjulnator_role, :except => [:is_holiday]
+
+  def is_holiday # used by meetme
+    d = nil
+    begin
+      d = Date.parse(params[:date])
+    end
+    if d
+      render :text => Holiday.is_holiday?(d)
+    else
+      render :text => "couldn't parse 'date' parameter"
+    end
+  end
 
   def index
     list
