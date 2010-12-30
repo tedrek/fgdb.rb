@@ -70,7 +70,6 @@ class SpecSheetsController < ApplicationController
       return
     end
     @system_parser = SystemParser.parse(output)
-    @parser = @system_parser.myparser.parser
     @mistake_title = "Things you might have done wrong: "
     @mistakes = []
     if !@report.notes || @report.notes == ""

@@ -51,18 +51,17 @@
     </td></tr>
         <% end %>
     <% end %>
-    <% @parser.xml_foreach("//*[@class='memory']") do %>
-      <% if @parser.xml_value_of("description") == "L2 cache" %>
-          <tr>
+    <% @system_parser.l2_cache.each do |x| %>
+           <tr>
             <td>
-              <%= @parser.xml_value_of("description") %>:
+              L2 Cache:
             </td>
             <td>
-              <%= @parser.xml_value_of("size").to_bytes%>
+              <%= x %>
             </td>
           </tr>
-      <% end %>
     <% end %>
+    <% if @system_parser.bios %>
     <tr>
       <td>
         BIOS Version:
@@ -71,6 +70,7 @@
         <%= @system_parser.bios %>
       </td>
     </tr>
+    <% end %>
     <% if @system_parser.usb_supports %>
       <tr>
         <td>

@@ -5,7 +5,7 @@ module SystemHelper
     attr_reader :system_model, :system_serial_number, :system_vendor, :mobo_model, :mobo_serial_number, :mobo_vendor, :macaddr
     attr_reader :model, :vendor, :serial_number
 
-    attr_reader :string, :parser, :myparser
+    attr_reader :string
 
     include XmlHelper
 
@@ -24,6 +24,14 @@ module SystemHelper
       @string = in_string
 
       @parser = load_xml(@string) or raise SystemParserException
+
+      @processors = []
+      @drive_supports = []
+      @l2_cache = []
+      @harddrives = []
+      @memories = []
+      @opticals = []
+      @pcis = []
 
       do_work
 
@@ -60,13 +68,6 @@ module SystemHelper
       else
         return nil
       end
-    end
-
-    # TODO: remove these
-    attr_reader :parser
-
-    def myparser
-      self
     end
 
     private
@@ -120,7 +121,6 @@ module SystemHelper
 
       # computer section
 
-      @processors = []
       @parser.xml_foreach("//*[@class='processor']") do
         if @parser.xml_if("product")
           h = OpenStruct.new
@@ -144,13 +144,11 @@ module SystemHelper
         @usb_supports = value
       end
 
-      @drive_supports = []
       a = []; @parser.xml_foreach("//*[contains(@id, 'storage') or contains(@id, 'ide') or contains(@id, 'scsi')]") do a << @parser.xml_value_of(".//product") + @parser.xml_value_of(".//description") end
       a.collect{|x| if x.match(/(scsi|sata|ide)/i); $1.upcase; else nil; end}.delete_if{|x| x.nil?}.uniq.each do |x|
         @drive_supports << x
       end
 
-      @l2_cache = []
       @parser.xml_foreach("//*[@class='memory']") do
         if @parser.xml_value_of("description") == "L2 cache"
           @l2_cache << @parser.xml_value_of("size").to_bytes # the description is always L2 cache
@@ -158,8 +156,6 @@ module SystemHelper
       end
 
       # hard drives
-      @harddrives = []
-
       @parser.xml_foreach("//*[contains(@id, 'disk')]") do
         h = OpenStruct.new
         h.name = @parser.xml_value_of("logicalname")
@@ -185,7 +181,6 @@ module SystemHelper
         end
       end
 
-      @memories = []
 
       @parser.xml_foreach(".//*[contains(@id, 'bank')]") do
         m = OpenStruct.new
@@ -196,8 +191,6 @@ module SystemHelper
       end
 
       # optical
-      @opticals = []
-
       @parser.xml_foreach("//node[contains(@id, 'cdrom')]") do
         h = OpenStruct.new
         h.name = @parser.xml_value_of("logicalname")
@@ -214,8 +207,6 @@ module SystemHelper
       end
 
       # pci
-      @pcis = []
-
       @parser.xml_foreach("//*[contains(@id, 'pci') or contains(@id, 'pcmcia')]") do
         h = OpenStruct.new
         h.title = @parser._xml_value_of("product")
