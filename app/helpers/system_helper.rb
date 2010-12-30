@@ -5,8 +5,6 @@ module SystemHelper
     attr_reader :system_model, :system_serial_number, :system_vendor, :mobo_model, :mobo_serial_number, :mobo_vendor, :macaddr
     attr_reader :model, :vendor, :serial_number
 
-    attr_reader :string
-
     include XmlHelper
 
     def SystemParser.parse(in_string)
@@ -34,6 +32,9 @@ module SystemHelper
       @pcis = []
 
       do_work
+
+      @parser = nil
+      @string = nil
 
       if model_is_usable(@system_model)
         @model = @system_model
@@ -207,6 +208,9 @@ module SystemHelper
       end
 
       # pci
+      @seen = []
+      @seen_ser = []
+
       @parser.xml_foreach("//*[contains(@id, 'pci') or contains(@id, 'pcmcia')]") do
         h = OpenStruct.new
         h.title = @parser._xml_value_of("product")
@@ -235,13 +239,14 @@ module SystemHelper
         h.devices << t if t
       end
       @pcis << h
+
+      @seen = nil
+      @seen_ser = nil
     end
 
     private
 
     def pci_stuff
-      @seen ||= []
-      @seen_ser ||= []
       my_id = @parser.my_node
       my_ser = @parser.xml_value_of("serial")
       my_ser = nil if my_ser == "Unknown"
@@ -291,6 +296,7 @@ module SystemHelper
         @macaddr = @result.map{|x| x["_items"]}.flatten.select{|x| x["_name"] == "Built-in Ethernet"}.first["Ethernet"]["MAC Address"]
       rescue
       end
+      @result = nil
     end
   end
 
