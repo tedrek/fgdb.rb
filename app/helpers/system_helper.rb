@@ -214,7 +214,77 @@ module SystemHelper
       end
 
       # pci
-      
+      @pcis = []
+
+      @parser.xml_foreach("//*[contains(@id, 'pci') or contains(@id, 'pcmcia')]") do
+        h = OpenStruct.new
+        h.title = @parser._xml_value_of("product")
+        h.devices = []
+        @parser.xml_foreach("./node[contains(@handle, 'PCI:') or contains(@handle, 'PCMCIA:')]") do
+          if !['bus', 'bridge', 'storage', 'system', 'memory'].include?(@parser.xml_value_of("@class"))
+            t = pci_stuff
+            h.devices << t if t
+          end
+        end
+        @pcis << h
+      end
+
+      h = OpenStruct.new
+      h.title = "Unknown"
+      h.devices = []
+      @parser.xml_foreach("//node[not(@class='bus')
+                      and not(@class='bridge')
+                      and not(@class='storage')
+                      and not(@class='system')
+                      and not(@class='processor')
+                      and not(@class='volume')
+                      and not(@class='disk')
+                      and not(@class='memory')]") do
+        t = pci_stuff
+        h.devices << t if t
+      end
+      @pcis << h
+    end
+
+    private
+
+    def pci_stuff
+      @seen ||= []
+      @seen_ser ||= []
+      my_id = @parser.my_node
+      my_ser = @parser.xml_value_of("serial")
+      my_ser = nil if my_ser == "Unknown"
+      if @seen.include?(my_id) || (my_ser && @seen_ser.include?(my_ser))
+        return false
+      else
+        @seen << my_id
+        @seen_ser << my_ser if my_ser
+      end
+
+      d = OpenStruct.new
+      d.my_type = @parser.xml_value_of("@class") if @parser.xml_if("@class")
+      if @parser.xml_if("description")
+        d.description = @parser.xml_value_of("description")
+        handle = @parser.xml_value_of("@handle").sub(" ", "")
+        if handle.length > 0
+          d.description += " (#{ handle })"
+        end
+      end
+      d.vendor = @parser.xml_value_of("vendor") if @parser.xml_if("vendor")
+      d.product = @parser.xml_value_of("product") if @parser.xml_if("product")
+      # if false && @parser.xml_value_of("@class")=="display" && @parser.xml_if("size") %><%# not tested after nokogiri %>
+      # Video Ram: <%= @parser.xml_value_of("size").to_bytes %>
+      # if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("configuration/setting[@id='wireless']")
+      # Wireless Capabilities: <%= @parser.xml_value_of("configuration/setting[@id='wireless']/@value") %>
+      # if false && @parser.xml_value_of("@class")=="network" && @parser.xml_if("logicalname") %><%# not tested after nokogiri %>
+      # Ethernet Interface:  <%= @parser.xml_value_of("logicalname") %>
+      if @parser.xml_value_of("@class")=="network" && @parser.xml_if("capabilities")
+        @parser.find_the_biggest(".//capability/@id") do |value|
+          d.speed = value.to_i.to_s.to_bitspersecond
+        end
+      end
+
+      return d
     end
   end
 
