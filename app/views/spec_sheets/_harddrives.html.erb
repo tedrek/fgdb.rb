@@ -1,13 +1,13 @@
 <div id="hard_drives">
   <h2>Hard Drives</h2>
-  <% @parser.xml_foreach("//*[contains(@id, 'disk')]") do %>
+  <% @system_parser.harddrives.each do |h| %>
     <table>
       <tr>
         <td>
           Drive:
         </td>
         <td>
-          <%= @parser.xml_value_of("logicalname") %>
+          <%= h.name %>
         </td>
       </tr>
       <tr>
@@ -15,65 +15,52 @@
           Type:
         </td>
         <td>
-          <% if (@parser.do_with_parent do @parser.xml_value_of(".//product") + @parser.xml_value_of(".//description") end).match(/(scsi|sata|ide)/i) %>
-            <%= $1.upcase %>
-          <% else %>
-            Unknown
-          <% end %>
+            <%= h.my_type %>
         </td>
       </tr>
+      <% if h.vendor %>
       <tr>
         <td>
           Vendor:
         </td>
         <td>
-          <%= @parser.xml_value_of("vendor") %>
+          <%= h.vendor %>
         </td>
       </tr>
+      <% end %>
       <tr>
         <td>
           Model:
         </td>
         <td>
-          <%= @parser.xml_value_of("product") %>
+          <%= h.model %>
         </td>
       </tr>
-      <% if @parser.xml_if("size") %>
+      <% if h.size %>
         <tr>
           <td>
             Size:
           </td>
           <td>
-            <%= @parser.xml_value_of("size").to_bytes(0, false, false) %>
-          </td>
-        </tr>
-      <% elsif @parser.xml_if("capacity")%>
-        <tr>
-          <td>
-            Size:
-          </td>
-          <td>
-            <%= @parser.xml_value_of("capacity").to_bytes(0, false, false) %>
+            <%= h.size %>
           </td>
         </tr>
       <% end %>
-      <% counter = 0 %>
-      <% @parser.xml_foreach(".//*[contains(@id, 'volume')]") do counter += 1 end %>
-      <% if counter > 0 %>
+      <% if h.volumes.size > 0 %>
         <tr>
           <td valign="top">Volumes: </td>
           <td>
             <table>
-              <% @parser.xml_foreach(".//*[contains(@id, 'volume')]") do %>
+              <% h.volumes.each do |v| %>
                 <tr>
                   <td>
-                    <%= @parser.xml_value_of("logicalname") %>
+                    <%= v.name %>
                   </td>
                   <td>
-                    <%= @parser.xml_value_of("description") %>
+                    <%= v.description %>
                   </td>
                   <td>
-                    <%= @parser.xml_value_of("capacity").to_bytes(0, false, false) %>
+                    <%= v.size %>
                   </td>
                 </tr>
               <% end %>

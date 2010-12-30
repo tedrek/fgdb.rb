@@ -1,5 +1,5 @@
 class SpecSheet < ActiveRecord::Base
-  include PrintmeHelper
+  include SystemHelper
 
   validates_presence_of :contact_id
   validates_presence_of :action_id
@@ -92,22 +92,22 @@ class SpecSheet < ActiveRecord::Base
       return
     end
 
-    parse_stuff(lshw_output)
+    sp = SystemParser.parse(lshw_output)
 
-    found_system = find_system_id
+    found_system = sp.find_system_id
     if found_system
       self.system = System.find_by_id(found_system)
     else
       self.system = System.new
-      system.system_model  = @system_model
-      system.system_serial_number  = @system_serial_number
-      system.system_vendor  = @system_vendor
-      system.mobo_model  = @mobo_model
-      system.mobo_serial_number  = @mobo_serial_number
-      system.mobo_vendor  = @mobo_vendor
-      system.model  = @model
-      system.serial_number  = @serial_number
-      system.vendor  = @vendor
+      system.system_model  = sp.system_model
+      system.system_serial_number  = sp.system_serial_number
+      system.system_vendor  = sp.system_vendor
+      system.mobo_model  = sp.mobo_model
+      system.mobo_serial_number  = sp.mobo_serial_number
+      system.mobo_vendor  = sp.mobo_vendor
+      system.model  = sp.model
+      system.serial_number  = sp.serial_number
+      system.vendor  = sp.vendor
     end
   end
 end

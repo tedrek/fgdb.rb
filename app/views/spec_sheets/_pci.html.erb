@@ -1,24 +1,9 @@
 <div id="pci">
   <h2>PCI Bus</h2>
-  <% @parser.xml_foreach("//*[contains(@id, 'pci') or contains(@id, 'pcmcia')]") do %>
-    <% if @parser._xml_value_of("product") %>
-    <h3><%= @parser._xml_value_of("product") %></h3>
+  <% @system_parser.pcis.each do |pc| %>
+    <h3><%= pc.title %></h3>
+    <% pc.devices.each do |i| %>
+        <%= render :partial => "pci_guts", :locals => {:d => i} %>
     <% end %>
-    <% @parser.xml_foreach("./node[contains(@handle, 'PCI:') or contains(@handle, 'PCMCIA:')]") do %>
-      <% if !['bus', 'bridge', 'storage', 'system', 'memory'].include?(@parser.xml_value_of("@class")) %>
-        <%= render_pci_guts %>
-      <% end %>
-    <% end %>
-  <% end %>
-      <h3>Unknown</h3>
-      <% @parser.xml_foreach("//node[not(@class='bus')
-                      and not(@class='bridge')
-                      and not(@class='storage')
-                      and not(@class='system')
-                      and not(@class='processor')
-                      and not(@class='volume')
-                      and not(@class='disk')
-                      and not(@class='memory')]") do %>
-        <%= render_pci_guts %>
   <% end %>
 </div>
