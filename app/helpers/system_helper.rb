@@ -325,8 +325,8 @@ module SystemHelper
         p.supports = []
         @processors << p
       end
-#     TODO: @system_model = "machine_name" or "machine_model"
-
+      @system_model = "#{items.select{|x| x["machine_name"]}.map{|x| x["machine_name"]}.first} (#{ items.select{|x| x["machine_model"]}.map{|x| x["machine_model"]}.first })"
+      @system_vendor = "Apple Computer, Inc."
       @result = nil
     end
   end
