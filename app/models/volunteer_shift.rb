@@ -1,13 +1,14 @@
 class VolunteerShift < ActiveRecord::Base
   validates_presence_of :volunteer_task_type_id
   validates_presence_of :roster_id
-  validates_presence_of :date
   validates_presence_of :slot_number
   validates_presence_of :end_time
   validates_presence_of :start_time
 
   belongs_to :volunteer_task_type
   has_many :assignments
+
+  belongs_to :volunteer_event
 
   def skedj_style(overlap, last)
     overlap ? 'hardconflict' : 'shift'
@@ -42,6 +43,10 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   after_save :fill_in_available
+
+  def date
+    self.volunteer_event.date
+  end
 
   def date_display
     self.date.strftime('%A, %B %d, %Y').gsub( ' 0', ' ' )

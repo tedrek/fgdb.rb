@@ -1,13 +1,13 @@
 class VolunteerDefaultShift < ActiveRecord::Base
   validates_presence_of :volunteer_task_type_id
   validates_presence_of :roster_id
-  validates_presence_of :weekday_id
   validates_presence_of :end_time
   validates_presence_of :start_time
   validates_presence_of :slot_count
 
   belongs_to :volunteer_task_type
-  belongs_to :weekday
+
+  belongs_to :volunteer_default_event
 
   named_scope :effective_at, lambda { |date|
     { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
@@ -42,18 +42,26 @@ class VolunteerDefaultShift < ActiveRecord::Base
       vs_conds.date_enabled = "true"
       vs_conds.date_date_type = 'daily'
       vs_conds.date_date = x.to_s
-      VolunteerShift.destroy_all DB.sql(vs_conds.conditions(VolunteerShift))
+      VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event]).each{|x| x.destroy} # TODO: destroy_all with the :include somehow..
       ds_conds = gconditions.dup
       ds_conds.effective_at_enabled = "true"
       ds_conds.effective_at = x.to_s
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
-      shifts = VolunteerDefaultShift.find(:all, :conditions => ds_conds.conditions(VolunteerDefaultShift))
+      shifts = VolunteerDefaultShift.find(:all, :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])
       shifts.each{|ds|
         (1..ds.slot_count).each{|num|
+          ve = VolunteerEvent.find(:all, :conditions => ["volunteer_default_event_id = ? AND date = ?", ds.volunteer_default_event_id, x]).first
+          if !ve
+            ve = VolunteerEvent.new
+            ve.description = ds.volunteer_default_event.description
+            ve.volunteer_default_event_id = ds.volunteer_default_event_id
+            ve.date = x
+            ve.save!
+          end
           s = VolunteerShift.new()
           s.volunteer_default_shift_id = ds.id
-          s.date = x
+          s.volunteer_event_id = ve.id
           s.start_time = ds.start_time
           s.end_time = ds.end_time
           s.volunteer_task_type_id = ds.volunteer_task_type_id

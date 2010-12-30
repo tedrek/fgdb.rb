@@ -24,10 +24,10 @@ class VolunteerDefaultShiftsController < ApplicationController
       :generate_conditions => ["sked", "roster"],
       :conditions => ["weekday", "sked", "roster", "volunteer_task_type"],
 
-      :block_method_name => "volunteer_default_shifts.weekday_id",
-      :block_method_display => "weekdays.name",
-      :block_start_time => "weekdays.start_time",
-      :block_end_time => "weekdays.end_time",
+      :block_method_name => "volunteer_default_shifts.volunteer_default_events.weekday_id",
+      :block_method_display => "volunteer_default_events.weekdays.name",
+      :block_start_time => "volunteer_default_events.weekdays.start_time",
+      :block_end_time => "volunteer_default_events.weekdays.end_time",
 
       :left_unique_value => "volunteer_task_types.id", # model
       :left_method_name => "volunteer_task_types.description",
@@ -44,7 +44,7 @@ class VolunteerDefaultShiftsController < ApplicationController
 
       }, params)
 
-    @skedj.find({:include => [:volunteer_task_type, :weekday]})
+    @skedj.find({:include => [:volunteer_task_type => [], :volunteer_default_event => [:weekday]]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
     else
       render :partial => "assignments/index", :layout => :with_sidebar

@@ -17,7 +17,7 @@ class AssignmentsController < ApplicationController
       :date_range_condition => "date",
                            :forced_condition => "cancelled",
 
-      :block_method_name => "volunteer_shifts.date",
+      :block_method_name => "volunteer_shifts.volunteer_events.date",
       :block_method_display => "volunteer_shifts.date_display",
       :block_start_time => "volunteer_shifts.weekdays.start_time",
       :block_end_time => "volunteer_shifts.weekdays.end_time",
@@ -61,7 +61,7 @@ class AssignmentsController < ApplicationController
     @opts = @skedj.opts
     @conditions = @skedj.conditions
 
-    @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :contact => [], :volunteer_shift => [:volunteer_task_type]]})
+    @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :contact => [], :volunteer_shift => [:volunteer_task_type, :volunteer_event]]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
     else
       render :partial => "index",  :layout => :with_sidebar
