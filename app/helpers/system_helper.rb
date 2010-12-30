@@ -317,6 +317,16 @@ module SystemHelper
         d.volumes = []
         d
       }
+      numtimes = items.select{|x| x["number_processors"]}.map{|x| x["number_processors"]}.first
+      numtimes.to_i.times do
+        p = OpenStruct.new
+        p.speed = items.select{|x| x["current_processor_speed"]}.map{|x| x["current_processor_speed"]}.first
+        p.processor = items.select{|x| x["cpu_type"]}.map{|x| x["cpu_type"]}.first
+        p.supports = []
+        @processors << p
+      end
+#     TODO: @system_model = "machine_name" or "machine_model"
+
       @result = nil
     end
   end
