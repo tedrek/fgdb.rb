@@ -160,7 +160,7 @@ class ApplicationController < ActionController::Base
 
   def get_required_privileges
     a = []
-    a << {:only => ["/contact_condition_everybody"], :privileges => ['role_contact_manager', 'role_volunteer_manager', 'role_front_desk']}
+    a << {:only => ["/contact_condition_everybody"], :privileges => ['manage_contacts']}
     a << {:only => ["/admin_inventory_features"], :privileges => ['role_admin']}
     return a
   end

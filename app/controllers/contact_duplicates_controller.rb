@@ -2,7 +2,7 @@ class ContactDuplicatesController < ApplicationController
   layout :with_sidebar
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_contact_manager']}
+    a << {:privileges => ['manage_contacts']}
     a
   end
 

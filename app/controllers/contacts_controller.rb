@@ -7,7 +7,7 @@ class ContactsController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_contact_manager', 'role_front_desk', 'role_store', 'role_volunteer_manager'], :except => ['check_cashier_code']}
+    a << {:privileges => ['manage_contact'], :except => ['check_cashier_code']}
     a << {:only => ['/admin_user_accounts'], :privileges => ['role_admin']}
     a
   end

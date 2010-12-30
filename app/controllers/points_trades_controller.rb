@@ -3,7 +3,7 @@ class PointsTradesController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_volunteer_manager']}
+    a << {:privileges => ['manage_volunteer_hours']}
     a
   end
 

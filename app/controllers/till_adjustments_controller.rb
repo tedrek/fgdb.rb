@@ -3,7 +3,7 @@ class TillAdjustmentsController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_bean_counter']}
+    a << {:privileges => ['till_adjustments']}
     a
   end
 

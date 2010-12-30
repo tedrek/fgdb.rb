@@ -1,7 +1,7 @@
 class WorkersController < ApplicationController
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_skedjulnator', "role_bean_counter"]}
+    a << {:privileges => ['manage_workers']}
     a
   end
 

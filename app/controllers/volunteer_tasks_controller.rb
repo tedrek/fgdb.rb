@@ -15,8 +15,8 @@ class VolunteerTasksController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:privileges => ["contact_#{_get_contact_id.to_s}", 'role_volunteer_manager']}
-    a << {:only => ["/everybody"], :privileges => ['role_volunteer_manager']}
+    a << {:privileges => ["contact_#{_get_contact_id.to_s}", 'manage_volunteer_hours']}
+    a << {:only => ["/everybody"], :privileges => ['manage_volunteer_hours']}
     return a
   end
 

@@ -302,8 +302,8 @@ class ReportsController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:only => ["/worker_condition"], :privileges => ['role_skedjulnator', 'role_bean_counter', 'staff']}
-    a << {:only => ["/contact_condition"], :privileges => ['role_contact_manager', 'role_volunteer_manager', 'role_front_desk', 'has_contact']}
+    a << {:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']}
+    a << {:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["staff_hours", "staff_hours_report"], :privileges => ['staff']}
     return a
   end

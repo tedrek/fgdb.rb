@@ -6,7 +6,7 @@ class WorkedShiftsController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:only => [:weekly_worker, :payroll, :type_totals], :privileges => ['role_bean_counter', 'role_skedjulnator']}
+    a << {:only => [:weekly_worker, :payroll, :type_totals], :privileges => ['manage_workers']}
     a << {:except => [:weekly_worker, :payroll, :type_totals], :privileges => ['staff']}
     a
   end
