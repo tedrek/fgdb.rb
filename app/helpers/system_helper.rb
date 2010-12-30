@@ -284,6 +284,7 @@ module SystemHelper
     end
   end
 
+  # TODO: replace open structs with actual struct classes shared by the parsers (so under the module)...this way we can ensure things are done without typos in code.
 
   class PlistSystemParser < SystemParser
     def self.match_string
@@ -295,6 +296,16 @@ module SystemHelper
       begin
         @macaddr = @result.map{|x| x["_items"]}.flatten.select{|x| x["_name"] == "Built-in Ethernet"}.first["Ethernet"]["MAC Address"]
       rescue
+      end
+      begin
+      rescue
+        @memories = @result.map{|x| x["_items"]}.flatten.select{|x| x["dimm_status"]}.map{|x|
+          d = OpenStruct.new
+          d.bank = x["_name"]
+          d.description = [x["dimm_type"], x["dimm_speed"]].join(" ")
+          d.size = x["dimm_size"]
+          d
+        }
       end
       @result = nil
     end
