@@ -7,7 +7,6 @@ class Privilege < ActiveRecord::Base
 
   def children
     ret = []
-    # TODO: role implications support
     if self.name.match(/^role_(.+)$/)
       ret << Role.find_by_name($1.upcase).privileges
     end

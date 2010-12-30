@@ -3,9 +3,9 @@ fgdb.rb (1.0.54) UNRELEASED; urgency=low
   * add a last logged value on the users (Closes: #20935)
   * roles rewrite (Closes: #14985)
     - store admin implies store, store / tech support / etc implies
-	contact manage (Closes: #17210, #15050)
+      contact manage (Closes: #17210, #15050)
     - the tech support role should have acccess to the needed stuff
-	now (Closes: #16933, #20927)
+      now (Closes: #16933, #20927)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Dec 2010 00:11:21 -0800
 
