@@ -2,7 +2,7 @@ class HolidaysController < ApplicationController
   layout "skedjulnator"
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_skedjulnator'], :except => [:is_holiday]}
+    a << {:privileges => ['skedjulnator'], :except => [:is_holiday]}
     a
   end
 

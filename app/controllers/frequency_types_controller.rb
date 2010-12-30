@@ -2,7 +2,7 @@ class FrequencyTypesController < ApplicationController
   layout "skedjulnator"
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_skedjulnator']}
+    a << {:privileges => ['skedjulnator']}
     a
   end
 

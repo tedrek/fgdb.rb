@@ -3,7 +3,7 @@ class WorkShiftsController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_skedjulnator'], :except => ['staffsched']}
+    a << {:privileges => ['skedjulnator'], :except => ['staffsched']}
     a
   end
   def index
