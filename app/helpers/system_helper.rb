@@ -195,7 +195,26 @@ module SystemHelper
         @memories << m
       end
 
-      # TODO:     attr_reader :opticals, :pcis
+      # optical
+      @opticals = []
+
+      @parser.xml_foreach("//node[contains(@id, 'cdrom')]") do
+        h = OpenStruct.new
+        h.name = @parser.xml_value_of("logicalname")
+        h.description = @parser.xml_value_of("description")
+        a = []
+        @parser.xml_foreach("capabilities/capability") do
+          a << [@parser.xml_value_of("."), @parser.xml_value_of("@id")]
+        end
+        a = a.select{|a| a[1].match(/(cd|dvd)/)}
+        h.capabilities = a.map{|x| x[0]}.to_sentence
+        h.my_type = (@parser.do_with_parent do @parser.xml_value_of("product") + @parser.xml_value_of("description") end).match(/(scsi|sata|ide)/i) ? $1.upcase : "Unknown"
+        h.model = @parser.xml_value_of("product")
+        @opticals << h
+      end
+
+      # pci
+      
     end
   end
 
