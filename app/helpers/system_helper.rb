@@ -293,20 +293,19 @@ module SystemHelper
 
     def do_work
       @result = Nokogiri::PList::Parser.parse(@parser.my_node)
-      begin
-        @macaddr = @result.map{|x| x["_items"]}.flatten.select{|x| x["_name"] == "Built-in Ethernet"}.first["Ethernet"]["MAC Address"]
-      rescue
-      end
-      begin
-      rescue
-        @memories = @result.map{|x| x["_items"]}.flatten.select{|x| x["dimm_status"]}.map{|x|
-          d = OpenStruct.new
-          d.bank = x["_name"]
-          d.description = [x["dimm_type"], x["dimm_speed"]].join(" ")
-          d.size = x["dimm_size"]
-          d
-        }
-      end
+      items = @result.map{|x| x["_items"]}.flatten
+      t = items.select{|x| x["_name"] == "Built-in Ethernet"}.first
+      @macaddr =  t["Ethernet"]["MAC Address"] if t && t["Ethernet"] && t["Ethernet"]["MAC Address"]
+      @memories = items.select{|x| x["dimm_status"]}.map{|x|
+        d = OpenStruct.new
+        d.bank = x["_name"]
+        d.description = [x["dimm_type"], x["dimm_speed"]].join(" ")
+        d.size = x["dimm_size"]
+        d
+      }
+      @total_memory = items.select{|x| x["physical_memory"]}.first["physical_memory"]
+      @l2_cache = items.select{|x| x["l2_cache_size"]}.map{|x| x["l2_cache_size"]}
+
       @result = nil
     end
   end
