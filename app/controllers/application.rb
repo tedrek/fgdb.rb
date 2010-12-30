@@ -134,6 +134,8 @@ class ApplicationController < ActionController::Base
     requires
   end
 
+  helper_method :has_required_privileges
+
   def self.has_required_privileges(action)
     self.new.has_required_privileges(action)
   end
