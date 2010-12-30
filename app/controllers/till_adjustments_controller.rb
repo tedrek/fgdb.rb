@@ -1,12 +1,12 @@
 class TillAdjustmentsController < ApplicationController
   layout :with_sidebar
-
+  protected
   def get_required_privileges
     a = super
     a << {:privileges => ['till_adjustments']}
     a
   end
-
+  public
   # GET /till_adjustments
   # GET /till_adjustments.xml
   def index

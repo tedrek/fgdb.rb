@@ -1,6 +1,6 @@
 class SpecSheetsController < ApplicationController
   layout :with_sidebar
-
+  protected
   def get_required_privileges
     a = super
     a << {:only => ["/view_contact_name"], :privileges => ['manage_contacts']}
@@ -8,6 +8,7 @@ class SpecSheetsController < ApplicationController
     a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
     return a
   end
+  public
 
   helper :system
   include SystemHelper
@@ -102,6 +103,8 @@ class SpecSheetsController < ApplicationController
     @report = SpecSheet.find(params[:id])
   end
 
+  protected
+
   def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
     file = params[:report][:my_file]
     if !file.nil?
@@ -127,6 +130,8 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => redirect_where_on_error, :error => "Could not save the database record: #{$!.to_s}")
     end
   end
+
+  public
 
   def create
     new_common_create_stuff("new", "show")

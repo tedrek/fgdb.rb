@@ -4,6 +4,8 @@ class TransactionController < ApplicationController
   before_filter :set_defaults
   before_filter :be_a_thing
 
+  protected
+
   def set_defaults
     @action_name=action_name
     @return_to_search = "false"
@@ -13,7 +15,6 @@ class TransactionController < ApplicationController
     set_transaction_type((controller_name()).singularize)
   end
 
-  protected
 
   def get_required_privileges
     a = super

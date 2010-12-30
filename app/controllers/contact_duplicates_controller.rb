@@ -1,10 +1,12 @@
 class ContactDuplicatesController < ApplicationController
   layout :with_sidebar
+  protected
   def get_required_privileges
     a = super
     a << {:privileges => ['manage_contacts']}
     a
   end
+  public
 
   def index
   end

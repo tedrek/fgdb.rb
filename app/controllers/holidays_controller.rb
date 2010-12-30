@@ -1,10 +1,12 @@
 class HolidaysController < ApplicationController
   layout "skedjulnator"
+  protected
   def get_required_privileges
     a = super
     a << {:privileges => ['skedjulnator'], :except => [:is_holiday]}
     a
   end
+  public
 
   def is_holiday # used by meetme
     d = nil

@@ -3,5 +3,4 @@ class RecyclingsController < TransactionController
   def default_condition
     "recycled_at"
   end
-
 end

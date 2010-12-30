@@ -2,9 +2,13 @@ class VolunteerTasksController < ApplicationController
   layout :with_sidebar
   before_filter :be_stupid
 
+  protected
+
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'contact')
   end
+
+  public
 
   def update_task_types
     render :partial => 'task_type'

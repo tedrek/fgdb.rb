@@ -1,11 +1,12 @@
 class WeekdaysController < ApplicationController
   layout "skedjulnator"
+  protected
   def get_required_privileges
     a = super
     a << {:privileges => ['skedjulnator']}
     a
   end
-
+  public
   def index
     list
     render :action => 'list'

@@ -1,6 +1,8 @@
 class ReportsController < ApplicationController
 
   layout :report_layout_choice
+  protected
+
   def report_layout_choice
     case action_name
     when /report$/ then with_sidebar
@@ -23,6 +25,8 @@ class ReportsController < ApplicationController
   #####################
   ### Gizmos report ###
   #####################
+
+  public
 
   def gizmos
     @defaults = Conditions.new
@@ -271,7 +275,7 @@ class ReportsController < ApplicationController
   ### Volunteer report ###
   ########################
 
-  public
+  protected
 
   def common_hours
     @defaults = Conditions.new
@@ -308,6 +312,7 @@ class ReportsController < ApplicationController
     return a
   end
 
+  public
 
   def staff_hours
     @title = "Jobs report"

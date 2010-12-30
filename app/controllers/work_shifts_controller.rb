@@ -1,11 +1,15 @@
 class WorkShiftsController < ApplicationController
   layout "skedjulnator"
 
+  protected
   def get_required_privileges
     a = super
     a << {:privileges => ['skedjulnator'], :except => ['staffsched']}
     a
   end
+
+  public
+
   def index
     list
     render :action => 'list'

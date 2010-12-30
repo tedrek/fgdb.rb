@@ -8,8 +8,9 @@ fgdb.rb (1.0.54) UNRELEASED; urgency=low
       now (Closes: #16933, #20927)
   * check that the cashier has correct permissions before enabling the
     form (Closes: #16672)
+  * make nonaction public controller methods protected (Closes: #21225)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Dec 2010 10:32:27 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Dec 2010 11:03:07 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 

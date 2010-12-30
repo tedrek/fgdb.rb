@@ -5,12 +5,14 @@ class ContactsController < ApplicationController
 
   around_filter :transaction_wrapper
 
+  protected
   def get_required_privileges
     a = super
     a << {:privileges => ['manage_contact'], :except => ['check_cashier_code']}
     a << {:only => ['/admin_user_accounts'], :privileges => ['role_admin']}
     a
   end
+  public
 
   before_filter :be_stupid
 
@@ -36,9 +38,11 @@ class ContactsController < ApplicationController
     end
   end
 
+  protected
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'contact')
   end
+  public
 
   class ForceRollback < RuntimeError
   end

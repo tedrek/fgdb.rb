@@ -25,6 +25,8 @@ class ApplicationController < ActionController::Base
   helper :conditions
   helper :sidebar
 
+  protected
+
   rescue_from 'Exception', :with => :process_exception
 
   def rescue_as_normal
@@ -146,7 +148,7 @@ class ApplicationController < ActionController::Base
   end
 
   def self.sb_has_required_privileges(action)
-    self.new._internal_sb_has_required_privileges(action)
+    self.new.send(:_internal_sb_has_required_privileges, action)
   end
 
   def _internal_sb_has_required_privileges(action) # TODO: should this be self.has_required_privileges? so Controller.has_required does one thing, while Controller.new.has_required does the other
