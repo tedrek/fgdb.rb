@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
     if rescue_as_normal
       return super(thing)
     elsif thing == "layout"
-      return "app/views/layouts/with_sidebar.html.erb"
+      return "app/views/layouts/application.html.erb"
     else
       return "app/views/sidebar_links/error.html.erb"
     end
