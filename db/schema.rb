@@ -9,10 +9,9 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100626215744) do
+ActiveRecord::Schema.define(:version => 201011200924089) do
 
-  create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
-    <<-contact_trigger_sql
+  create_proc(:contact_trigger, [], :return => :trigger, :resource => ['', '
 
 
 
@@ -24,10 +23,9 @@ END;
 
 
 
-    contact_trigger_sql
-  }
-  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
-    <<-get_sort_name_sql
+
+'], :lang => 'plpgsql')
+  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', '
 
 
 DECLARE
@@ -59,10 +57,9 @@ END;
 
 
 
-    get_sort_name_sql
-  }
-  create_proc(:uncertify_address, [], :return => :trigger, :lang => 'plpgsql') {
-    <<-uncertify_address_sql
+
+'], :lang => 'plpgsql')
+  create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', '
 
 BEGIN
   IF tg_op = 'UPDATE' THEN
@@ -81,8 +78,8 @@ BEGIN
   END IF;
   RETURN NEW;
 END
-    uncertify_address_sql
-  }
+
+'], :lang => 'plpgsql')
   create_table "actions", :force => true do |t|
     t.string   "description"
     t.integer  "lock_version",               :default => 0, :null => false
@@ -95,6 +92,23 @@ END
 
   add_index "actions", ["name"], :name => "actions_name_uk", :unique => true
   add_index "actions", ["description"], :name => "roles_name_index"
+
+  create_table "assignments", :force => true do |t|
+    t.integer  "volunteer_shift_id"
+    t.integer  "contact_id"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "attendance_type_id"
+  end
+
+  create_table "attendance_types", :force => true do |t|
+    t.string   "name"
+    t.boolean  "cancelled"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "community_service_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -550,6 +564,19 @@ END
     t.datetime "updated_at"
   end
 
+  create_table "privileges", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "privileges_roles", :id => false, :force => true do |t|
+    t.integer  "privilege_id"
+    t.integer  "role_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "programs", :force => true do |t|
     t.string   "name"
     t.string   "description"
@@ -586,6 +613,17 @@ END
   end
 
   add_index "roles_users", ["role_id", "user_id"], :name => "roles_users_uk", :unique => true
+
+  create_table "rosters", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "rosters_skeds", :id => false, :force => true do |t|
+    t.integer "sked_id"
+    t.integer "roster_id"
+  end
 
   create_table "rr_items", :force => true do |t|
     t.integer "rr_set_id"
@@ -667,10 +705,6 @@ END
   add_index "schedules", ["lft"], :name => "index_schedules_on_lft"
   add_index "schedules", ["rgt"], :name => "index_schedules_on_rgt"
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
-  end
-
   create_table "shifts", :force => true do |t|
     t.string  "type"
     t.time    "start_time"
@@ -693,6 +727,12 @@ END
     t.integer "weekday_id"
     t.integer "worker_id",         :default => 0
     t.boolean "actual",            :default => false
+  end
+
+  create_table "skeds", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "spec_sheets", :force => true do |t|
@@ -821,6 +861,7 @@ END
     t.integer  "updated_by"
     t.integer  "cashier_code"
     t.boolean  "can_login",                               :default => true, :null => false
+    t.date     "last_logged_in"
   end
 
   create_table "vacations", :force => true do |t|
@@ -833,6 +874,45 @@ END
   end
 
   add_index "vacations", ["worker_id"], :name => "index_vacations_on_worker_id"
+
+  create_table "volunteer_default_events", :force => true do |t|
+    t.string   "description"
+    t.integer  "weekday_id",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "volunteer_default_shifts", :force => true do |t|
+    t.date     "effective_at"
+    t.date     "ineffective_at"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.integer  "slot_count"
+    t.integer  "volunteer_task_type_id",     :null => false
+    t.integer  "roster_id",                  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "volunteer_default_event_id"
+  end
+
+  create_table "volunteer_events", :force => true do |t|
+    t.string   "description"
+    t.date     "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "volunteer_shifts", :force => true do |t|
+    t.integer  "volunteer_default_shift_id"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.integer  "volunteer_task_type_id",     :null => false
+    t.integer  "slot_number"
+    t.integer  "roster_id",                  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "volunteer_event_id",         :null => false
+  end
 
   create_table "volunteer_task_types", :force => true do |t|
     t.string   "description",      :limit => 100
@@ -957,6 +1037,10 @@ END
   add_foreign_key "actions", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "actions_created_by_fkey"
   add_foreign_key "actions", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "actions_updated_by_fkey"
 
+  add_foreign_key "assignments", ["volunteer_shift_id"], "volunteer_shifts", ["id"], :on_delete => :cascade, :name => "assignments_volunteer_shift_id_fkey"
+  add_foreign_key "assignments", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "assignments_contact_id_fkey"
+  add_foreign_key "assignments", ["attendance_type_id"], "attendance_types", ["id"], :on_delete => :restrict, :name => "assignments_attendance_type_id_fkey"
+
   add_foreign_key "contact_duplicates", ["contact_id"], "contacts", ["id"], :name => "contact_duplicates_contact_id_fkey"
 
   add_foreign_key "contact_method_types", ["parent_id"], "contact_method_types", ["id"], :on_delete => :set_null, :name => "contact_method_types_parent_id_fk"
@@ -1035,8 +1119,14 @@ END
   add_foreign_key "points_trades", ["from_contact_id"], "contacts", ["id"], :on_delete => :restrict, :name => "points_trades_from_contact_id_fkey"
   add_foreign_key "points_trades", ["to_contact_id"], "contacts", ["id"], :on_delete => :restrict, :name => "points_trades_to_contact_id_fkey"
 
+  add_foreign_key "privileges_roles", ["role_id"], "roles", ["id"], :on_delete => :cascade, :name => "privileges_roles_role_id_fkey"
+  add_foreign_key "privileges_roles", ["privilege_id"], "privileges", ["id"], :on_delete => :cascade, :name => "privileges_roles_privilege_id_fkey"
+
   add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :on_delete => :cascade, :name => "roles_users_role_id_fkey"
   add_foreign_key "roles_users", ["user_id"], "users", ["id"], :on_delete => :cascade, :name => "roles_users_user_id_fkey"
+
+  add_foreign_key "rosters_skeds", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "rosters_skeds_roster_id_fkey"
+  add_foreign_key "rosters_skeds", ["sked_id"], "skeds", ["id"], :on_delete => :cascade, :name => "rosters_skeds_sked_id_fkey"
 
   add_foreign_key "rr_items", ["rr_set_id"], "rr_sets", ["id"], :on_delete => :cascade, :name => "rr_items_rr_sets"
 
@@ -1085,6 +1175,15 @@ END
   add_foreign_key "users", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "users_updated_by_fkey"
 
   add_foreign_key "vacations", ["worker_id"], "workers", ["id"], :on_delete => :cascade, :name => "vacations_workers"
+
+  add_foreign_key "volunteer_default_shifts", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "volunteer_default_shifts_roster_id_fkey"
+  add_foreign_key "volunteer_default_shifts", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_default_shifts_volunteer_task_type_id_fkey"
+  add_foreign_key "volunteer_default_shifts", ["volunteer_default_event_id"], "volunteer_default_events", ["id"], :on_delete => :cascade, :name => "volunteer_default_shifts_volunteer_default_event_id_fkey"
+
+  add_foreign_key "volunteer_shifts", ["volunteer_default_shift_id"], "volunteer_default_shifts", ["id"], :on_delete => :set_null, :name => "volunteer_shifts_volunteer_default_shift_id_fkey"
+  add_foreign_key "volunteer_shifts", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "volunteer_shifts_roster_id_fkey"
+  add_foreign_key "volunteer_shifts", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_shifts_volunteer_task_type_id_fkey"
+  add_foreign_key "volunteer_shifts", ["volunteer_event_id"], "volunteer_events", ["id"], :on_delete => :cascade, :name => "volunteer_shifts_volunteer_event_id_fkey"
 
   add_foreign_key "volunteer_tasks", ["community_service_type_id"], "community_service_types", ["id"], :on_delete => :set_null, :name => "volunteer_tasks_community_service_type_id_fkey"
   add_foreign_key "volunteer_tasks", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "volunteer_tasks_contacts_fk"
