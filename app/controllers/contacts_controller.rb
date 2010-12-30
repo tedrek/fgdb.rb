@@ -21,14 +21,12 @@ class ContactsController < ApplicationController
       t = true
 
       ref = request.env["HTTP_REFERER"]
-      if ref
-        ref = ref.split("/")
-        c = ref[3]
-        a = ref[4] || "index"
-        c = c.classify.pluralize + "Controller"
-        Thread.current['user'] = Thread.current['cashier']
-        t = false if ! c.constantize.sb_has_required_privileges(a)
-      end
+      ref = ref.split("/")
+      c = ref[3]
+      a = ref[4] || "index"
+      c = c.classify.pluralize + "Controller"
+      Thread.current['user'] = Thread.current['cashier']
+      t = false if ! c.constantize.sb_has_required_privileges(a)
     else
       t = false
     end
