@@ -51,7 +51,7 @@
       }
      javascript_tag js %>
 
-  <% if has_privileges("role_admin") %>
+  <% if has_required_privileges("/admin_inventory_features") %>
     <%= javascript_tag "bind_key('shift-ctrl-q', toggle_the_admin);" %>
     <div id="hidden_admin" class="<%= @transaction.adjustment ? "" : "hidden" %>">
       <label for="<%= @gizmo_context %>_adjustment">Is adjustment?</label>

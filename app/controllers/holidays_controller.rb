@@ -1,6 +1,10 @@
 class HolidaysController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role, :except => [:is_holiday]
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_skedjulnator'], :except => [:is_holiday]}
+    a
+  end
 
   def is_holiday # used by meetme
     d = nil

@@ -124,7 +124,7 @@ module ConditionsHelper
   end
 
   def html_for_contact_condition(params_key)
-    if has_privileges('role_contact_manager', 'role_volunteer_manager', 'role_front_desk')
+    if has_required_privileges('/contact_condition_everybody')
       contact_field('@' + params_key, 'contact_id',
                     :locals => {:options =>
                       {

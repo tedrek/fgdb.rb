@@ -79,10 +79,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def skedjulnator_role
-    requires_privileges("role_skedjulnator")
-  end
-
   def _set_cashier(hash)
     return hash["cashier_code"] if hash.keys.include?("cashier_code")
     for i in hash.values.select{|x| x.class == Hash}
@@ -164,6 +160,8 @@ class ApplicationController < ActionController::Base
 
   def get_required_privileges
     a = []
+    a << {:only => ["/contact_condition_everybody"], :privileges => ['role_contact_manager', 'role_volunteer_manager', 'role_front_desk']}
+    a << {:only => ["/admin_inventory_features"], :privileges => ['role_admin']}
     return a
   end
 
@@ -176,10 +174,9 @@ class ApplicationController < ActionController::Base
     return res
   end
 
-  before_filter :future_authorize_to_required_privileges
+  before_filter :authorize_to_required_privileges
 
-  # TODO: this and requires_privileges will be replaced by this
-  def future_authorize_to_required_privileges
+  def authorize_to_required_privileges
     if has_required_privileges(params[:action])
       return true
     else
@@ -190,32 +187,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def authorize_to_required_privileges
-    res = true
-    required_privileges(params[:action]).each{|x|
-      if ! requires_privileges(x)
-        res = false
-        break
-      end
-    }
-    return res
-  end
-
   # start auth junk
 
   def has_privileges(*privs)
     User.current_user.has_privileges(*privs)
-  end
-
-  def requires_privileges(*privs)
-    if has_privileges(*privs)
-      return true
-    else
-      session[:unauthorized_error] = true
-      session[:unauthorized_params] = params.inspect
-      redirect_to :controller => 'sidebar_links'
-      return false
-    end
   end
 
   # end auth junk

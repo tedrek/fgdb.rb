@@ -1,9 +1,10 @@
 class PointsTradesController < ApplicationController
   layout :with_sidebar
 
-  before_filter :authorized_only
-  def authorized_only
-    requires_privileges('role_volunteer_manager')
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_volunteer_manager']}
+    a
   end
 
   def index

@@ -1,7 +1,11 @@
 class WorkShiftsController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role, :except => [:staffsched]
 
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_skedjulnator'], :except => ['staffsched']}
+    a
+  end
   def index
     list
     render :action => 'list'

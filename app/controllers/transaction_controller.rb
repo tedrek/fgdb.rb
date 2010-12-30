@@ -15,15 +15,17 @@ class TransactionController < ApplicationController
 
   protected
 
+  def get_required_privileges
+    a = super
+    a << {:only => ["/show_created_and_updated_by"], :privileges => ['role_admin']}
+    a
+  end
+
   def check_for_receipt
     case action_name
     when /receipt/ then "receipt_invoice.html.erb"
     else                "with_sidebar.html.erb"
     end
-  end
-
-  def authorized_only
-    requires_privileges("role_admin")
   end
 
   public

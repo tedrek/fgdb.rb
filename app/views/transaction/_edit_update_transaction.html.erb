@@ -1,5 +1,5 @@
 <% t_id = "#{@transaction_type}_#{transaction.id}" -%>
-<% if has_privileges(*(allowed_roles.map{|x| "role_" + x.downcase})) %>
+<% if has_required_privileges("edit") %>
   <% update_options = @options.merge(:action => "update")
      @options[:return_to_search] = @return_to_search
      %>

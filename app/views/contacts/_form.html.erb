@@ -100,7 +100,7 @@
   </div>
 
   <div class="form-element person">
-    <%= render(:partial => "user_form") if has_privileges("contact_#{@contact.id}", "role_admin") %>
+    <%= render(:partial => "user_form") if has_required_privileges("/admin_user_accounts") or has_privileges("contact_#{@contact.id}") %>
   </div>
 
   <!--[eoform:contact]-->

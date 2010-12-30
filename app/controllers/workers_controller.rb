@@ -1,8 +1,8 @@
 class WorkersController < ApplicationController
-  before_filter :require_some_roles
-
-  def require_some_roles
-    requires_privileges("role_skedjulnator", "role_bean_counter")
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_skedjulnator', "role_bean_counter"]}
+    a
   end
 
   def index

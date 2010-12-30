@@ -44,17 +44,13 @@ module SidebarHelper
     sidebar_hash.default_class = OH
     # hours
     sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks"}
-    if has_privileges("role_volunteer_manager")
-      sidebar_hash["hours"]["points trade"] = {:c => 'points_trades'}
-    end
+    sidebar_hash["hours"]["points trade"] = {:c => 'points_trades'}
     # transactions
-    {:donation => ["role_front_desk"], :sale => ["role_store"], :recycling => ["role_front_desk", "role_recyclings"], :disbursement => ['role_contact_manager', 'role_front_desk', 'role_store', 'role_volunteer_manager'], :gizmo_return => ['role_store', 'role_tech_support']}.each do |i,x|
-      if x.nil? || has_privileges(*x)
-        pl = i.to_s.pluralize
-        disp = pl.sub("gizmo_", "")
-        sidebar_hash[disp]["entry"] = {:c => pl}
-        sidebar_hash[disp]["search"] = {:c => pl, :a => 'search'}
-      end
+    for i in [:donation, :sale, :recycling, :disbursement, :gizmo_return] do
+      pl = i.to_s.pluralize
+      disp = pl.sub("gizmo_", "")
+      sidebar_hash[disp]["entry"] = {:c => pl}
+      sidebar_hash[disp]["search"] = {:c => pl, :a => 'search'}
     end
     # reports
     ["income", "gizmos", "volunteering"].each do |x|
@@ -62,20 +58,20 @@ module SidebarHelper
     end
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
     # contacts
-    sidebar_hash["contacts"]["contacts"] = {:c => "contacts"} if has_privileges('role_contact_manager', 'role_front_desk', 'role_store', 'role_volunteer_manager')
-    sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'} if has_privileges('role_contact_manager')
-    sidebar_hash["contacts"]["duplicates list"] = {:c => 'contact_duplicates', :a => "list_dups"} if has_privileges('role_contact_manager')
+    sidebar_hash["contacts"]["contacts"] = {:c => "contacts"}
+    sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'}
+    sidebar_hash["contacts"]["duplicates list"] = {:c => 'contact_duplicates', :a => "list_dups"}
     # bean counters
-    sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"} if has_privileges('role_bean_counter')
+    sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"}
     # staffsched
     sidebar_hash["staff"]["schedule"] = {:c => "work_shifts", :a => "staffsched"} if should_show_schedule
-    sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule and has_privileges('role_skedjulnator')
-    sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"} if has_privileges('staff')
-    sidebar_hash["staff"]["individual report"] = {:c => "worked_shifts", :a => "individual"} if has_privileges('staff')
-    sidebar_hash["staff"]["jobs report"] = {:c => "reports", :a => "staff_hours"} if has_privileges('staff')
-    sidebar_hash["staff"]["types report"] = {:c => "worked_shifts", :a => "type_totals"} if has_privileges('role_skedjulnator', 'role_bean_counter')
-    sidebar_hash["staff"]["payroll report"] = {:c => "worked_shifts", :a => "payroll"} if has_privileges('role_skedjulnator', 'role_bean_counter')
-    sidebar_hash["staff"]["weekly report"] = {:c => "worked_shifts", :a => "weekly_workers"} if has_privileges('role_skedjulnator', 'role_bean_counter')
+    sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule
+    sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"}
+    sidebar_hash["staff"]["individual report"] = {:c => "worked_shifts", :a => "individual"}
+    sidebar_hash["staff"]["jobs report"] = {:c => "reports", :a => "staff_hours"}
+    sidebar_hash["staff"]["types report"] = {:c => "worked_shifts", :a => "type_totals"}
+    sidebar_hash["staff"]["payroll report"] = {:c => "worked_shifts", :a => "payroll"}
+    sidebar_hash["staff"]["weekly report"] = {:c => "worked_shifts", :a => "weekly_workers"}
     # library
 #    requires_librarian = ['overdue', 'labels', 'cataloging', 'borrowers', 'inventory']
 #    for i in ['lookup', 'overdue', 'inventory', 'cataloging', 'search', 'labels', 'borrowers'] do
@@ -85,7 +81,7 @@ module SidebarHelper
 #    end
     # fgss
     sidebar_hash["fgss"]["printme"] = {:c => 'spec_sheets'}
-    sidebar_hash["fgss"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled && has_privileges("role_admin")
+    sidebar_hash["fgss"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled
     # done
     return aliases, sidebar_hash
   end

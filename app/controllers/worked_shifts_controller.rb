@@ -4,17 +4,11 @@ class WorkedShiftsController < ApplicationController
   before_filter :common_logic
   helper :table
 
-  before_filter :needs_beancounter_or_me
-
-  def needs_beancounter_or_me
-#    contact_id = @worker ? (@worker.contact ? @worker.contact.id : nil) : nil
-    roles = []
-    if params[:action].match(/^(weekly_worker|payroll|type_totals)/)
-      roles = ['role_bean_counter', 'role_skedjulnator']
-    else
-      roles = ['staff']
-    end
-    return requires_privileges(*roles)
+  def get_required_privileges
+    a = super
+    a << {:only => [:weekly_worker, :payroll, :type_totals], :privileges => ['role_bean_counter', 'role_skedjulnator']}
+    a << {:except => [:weekly_worker, :payroll, :type_totals], :privileges => ['staff']}
+    a
   end
 
   NH = {"jobs" => "name",

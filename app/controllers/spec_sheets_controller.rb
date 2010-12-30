@@ -1,6 +1,14 @@
 class SpecSheetsController < ApplicationController
   layout :with_sidebar
 
+  def get_required_privileges
+    a = super
+    a << {:only => ["/view_contact_name"], :privileges => ['role_contact_manager']}
+    a << {:only => ["/search_by_contact"], :privileges => ['role_contact_manager', 'has_contact']}
+    a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
+    return a
+  end
+
   helper :system
   include SystemHelper
   MY_VERSION=9
@@ -54,7 +62,7 @@ class SpecSheetsController < ApplicationController
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     if @conditions.contact_enabled
-      if !requires_privileges('role_contact_manager')
+      if !has_required_privileges('/view_contact_name')
         return
       end
     end

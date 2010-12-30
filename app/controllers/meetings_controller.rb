@@ -1,6 +1,10 @@
 class MeetingsController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_skedjulnator']}
+    a
+  end
 
   require_dependency 'shift'
   def index

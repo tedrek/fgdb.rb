@@ -4,7 +4,14 @@ class ContactsController < ApplicationController
   filter_parameter_logging "user_password", "user_password_confirmation"
 
   around_filter :transaction_wrapper
-  before_filter :authorized_only, :except => [:check_cashier_code]
+
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_contact_manager', 'role_front_desk', 'role_store', 'role_volunteer_manager'], :except => ['check_cashier_code']}
+    a << {:only => ['/admin_user_accounts'], :privileges => ['role_admin']}
+    a
+  end
+
   before_filter :be_stupid
 
   def check_cashier_code
@@ -37,18 +44,6 @@ class ContactsController < ApplicationController
       raise ForceRollback.new if flash[:error]
     end
   rescue ForceRollback
-  end
-
-  def authorized_only
-    #     if params[:id]
-    #       contact_id = params[:id].to_i
-    #     elsif params[:contact_id]
-    #       contact_id = params[:id].to_i
-    #     else
-    #       contact_id = nil
-    #     end
-    #     reAquires_role_or_me(contact_id, 'CONTACT_MANAGER')
-    requires_privileges('role_contact_manager', 'role_front_desk', 'role_store', 'role_volunteer_manager')
   end
 
   ######
@@ -113,7 +108,7 @@ class ContactsController < ApplicationController
     @contact = Contact.new(params[:contact])
 
     if params[:contact][:is_user].to_i != 0
-      if !has_privileges('role_admin')
+      if !has_required_privileges("/admin_user_accounts")
         raise RuntimeError.new("You are not authorized to create a user login")
       end
       @contact.user = User.new(params[:user])
@@ -146,11 +141,11 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if has_privileges("contact_#{@contact.id}", "role_admin")
+      if has_required_privileges("/admin_user_accounts") or has_privileges("contact_#{@contact.id}")
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
           @contact.user.attributes = params[:user]
-          if has_privileges("role_admin")
+          if has_required_privileges("/admin_user_accounts")
             if params[:roles]
               @contact.user.roles = Role.find(params[:roles])
             else

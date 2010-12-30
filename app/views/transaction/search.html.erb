@@ -70,7 +70,7 @@
       <% filters << 'contract' %>
       <% filters << 'contact_type' %>
       <% filters << 'organization' %>
-      <% if has_privileges("role_admin") %>
+      <% if has_required_privileges("/show_created_and_updated_by") %>
         <% filters << 'created_by' %>
         <% if cashierable %>
           <% filters << 'cashier_created_by' %>

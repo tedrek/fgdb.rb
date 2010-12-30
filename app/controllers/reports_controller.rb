@@ -300,9 +300,18 @@ class ReportsController < ApplicationController
     render :action => "volunteers_report"
   end
 
+  def get_required_privileges
+    a = super
+    a << {:only => ["/worker_condition"], :privileges => ['role_skedjulnator', 'role_bean_counter', 'staff']}
+    a << {:only => ["/contact_condition"], :privileges => ['role_contact_manager', 'role_volunteer_manager', 'role_front_desk', 'has_contact']}
+    a << {:only => ["staff_hours", "staff_hours_report"], :privileges => ['staff']}
+    return a
+  end
+
+
   def staff_hours
     @title = "Jobs report"
-    if has_privileges('role_skedjulnator', 'role_bean_counter', 'staff')
+    if has_required_privileges('/worker_condition')
       @filters = ['worker']
     end
     common_hours
@@ -310,7 +319,7 @@ class ReportsController < ApplicationController
 
   def volunteers
     @title = "Volunteers task types report"
-    if has_privileges('role_contact_manager', 'role_volunteer_manager', 'role_front_desk', 'logged_in')
+    if has_required_privileges('/contact_condition')
       @filters = ['contact']
     end
     common_hours
@@ -359,7 +368,7 @@ class ReportsController < ApplicationController
   public
 
   def hours
-    if has_privileges('role_contact_manager', 'role_volunteer_manager', 'role_front_desk', 'logged_in')
+    if has_required_privileges('/contact_condition')
       @filters = ['contact']
     end
     common_hours

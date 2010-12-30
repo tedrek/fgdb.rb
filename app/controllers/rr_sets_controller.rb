@@ -1,6 +1,10 @@
 class RrSetsController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_skedjulnator']}
+    a
+  end
 
   def index
     list

@@ -15,7 +15,7 @@
     <tr>
       <td><%= link_to report.id.to_s, {:action => "search", :conditions => {:id_enabled => true, :id => report.id}} %></td>
       <td>
-        <% if (has_privileges('role_contact_manager')) && thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) %>
+        <% if (has_required_privileges('/view_contact_name')) && thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) %>
           <%= link_to h(thing), {:action => "search", :conditions => {:contact_enabled => true, :contact_id => report.contact.id}} %>
         <% elsif thing = (report.contact_id && report.contact && report.contact.id) %>
           <%= thing %>

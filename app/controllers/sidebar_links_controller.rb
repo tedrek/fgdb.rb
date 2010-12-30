@@ -1,12 +1,13 @@
 class SidebarLinksController < ApplicationController
   layout :with_sidebar
 
-  before_filter :authorized_only, :only => ["crash"]
-
   protected
-  def authorized_only
-    requires_privileges("role_admin")
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_admin'], :only => ["crash"]}
+    a
   end
+
 
   public
   def crash

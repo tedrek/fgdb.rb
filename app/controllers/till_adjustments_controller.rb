@@ -1,9 +1,10 @@
 class TillAdjustmentsController < ApplicationController
-  before_filter :authorized_only
   layout :with_sidebar
 
-  def authorized_only
-    requires_privileges('role_bean_counter')
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_bean_counter']}
+    a
   end
 
   # GET /till_adjustments
