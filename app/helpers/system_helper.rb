@@ -318,6 +318,7 @@ module SystemHelper
         d
       }
       numtimes = items.select{|x| x["number_processors"]}.map{|x| x["number_processors"]}.first
+      @system_serial_number = items.select{|x| x["serial_number"]}.map{|x| x["serial_number"]}.first
       numtimes.to_i.times do
         p = OpenStruct.new
         p.speed = items.select{|x| x["current_processor_speed"]}.map{|x| x["current_processor_speed"]}.first
