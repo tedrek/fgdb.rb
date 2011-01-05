@@ -4,7 +4,16 @@ class ContactsController < ApplicationController
   filter_parameter_logging "user_password", "user_password_confirmation"
 
   around_filter :transaction_wrapper
-  before_filter :authorized_only, :except => [:check_cashier_code]
+
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['manage_contact'], :except => ['check_cashier_code']}
+    a << {:only => ['/admin_user_accounts'], :privileges => ['role_admin']}
+    a
+  end
+  public
+
   before_filter :be_stupid
 
   def check_cashier_code
@@ -12,6 +21,14 @@ class ContactsController < ApplicationController
     t = false
     if uid && (User.find_by_cashier_code(uid.to_i))
       t = true
+
+      ref = request.env["HTTP_REFERER"]
+      ref = ref.split("/")
+      c = ref[3]
+      a = ref[4] || "index"
+      c = c.classify.pluralize + "Controller"
+      Thread.current['user'] = Thread.current['cashier']
+      t = false if ! c.constantize.sb_has_required_privileges(a)
     else
       t = false
     end
@@ -21,9 +38,11 @@ class ContactsController < ApplicationController
     end
   end
 
+  protected
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'contact')
   end
+  public
 
   class ForceRollback < RuntimeError
   end
@@ -37,18 +56,6 @@ class ContactsController < ApplicationController
       raise ForceRollback.new if flash[:error]
     end
   rescue ForceRollback
-  end
-
-  def authorized_only
-    #     if params[:id]
-    #       contact_id = params[:id].to_i
-    #     elsif params[:contact_id]
-    #       contact_id = params[:id].to_i
-    #     else
-    #       contact_id = nil
-    #     end
-    #     requires_role_or_me(contact_id, 'CONTACT_MANAGER')
-    requires_role('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
   end
 
   ######
@@ -113,7 +120,7 @@ class ContactsController < ApplicationController
     @contact = Contact.new(params[:contact])
 
     if params[:contact][:is_user].to_i != 0
-      if !has_role?(:ADMIN)
+      if !has_required_privileges("/admin_user_accounts")
         raise RuntimeError.new("You are not authorized to create a user login")
       end
       @contact.user = User.new(params[:user])
@@ -146,11 +153,11 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if has_role_or_is_me?(@contact.id, :ADMIN)
+      if has_required_privileges("/admin_user_accounts") or has_privileges("contact_#{@contact.id}")
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
           @contact.user.attributes = params[:user]
-          if has_role?(:ADMIN)
+          if has_required_privileges("/admin_user_accounts")
             if params[:roles]
               @contact.user.roles = Role.find(params[:roles])
             else

@@ -1,10 +1,12 @@
 class PointsTradesController < ApplicationController
   layout :with_sidebar
-
-  before_filter :authorized_only
-  def authorized_only
-    requires_role('VOLUNTEER_MANAGER')
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['manage_volunteer_hours']}
+    a
   end
+  public
 
   def index
     new

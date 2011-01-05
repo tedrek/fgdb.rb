@@ -1,8 +1,17 @@
 class SpecSheetsController < ApplicationController
   layout :with_sidebar
+  protected
+  def get_required_privileges
+    a = super
+    a << {:only => ["/view_contact_name"], :privileges => ['manage_contacts']}
+    a << {:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']}
+    a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
+    return a
+  end
+  public
 
-  helper :xml
-  include XmlHelper
+  helper :system
+  include SystemHelper
   MY_VERSION=9
 
   def check_compat
@@ -54,7 +63,7 @@ class SpecSheetsController < ApplicationController
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     if @conditions.contact_enabled
-      if !requires_role('CONTACT_MANAGER')
+      if !has_required_privileges('/view_contact_name')
         return
       end
     end
@@ -69,7 +78,7 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
-    @parser = load_xml(output)
+    @system_parser = SystemParser.parse(output)
     @mistake_title = "Things you might have done wrong: "
     @mistakes = []
     if !@report.notes || @report.notes == ""
@@ -93,6 +102,8 @@ class SpecSheetsController < ApplicationController
   def edit
     @report = SpecSheet.find(params[:id])
   end
+
+  protected
 
   def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
     file = params[:report][:my_file]
@@ -119,6 +130,8 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => redirect_where_on_error, :error => "Could not save the database record: #{$!.to_s}")
     end
   end
+
+  public
 
   def create
     new_common_create_stuff("new", "show")

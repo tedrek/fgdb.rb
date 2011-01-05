@@ -1,6 +1,8 @@
 class ReportsController < ApplicationController
 
   layout :report_layout_choice
+  protected
+
   def report_layout_choice
     case action_name
     when /report$/ then with_sidebar
@@ -23,6 +25,8 @@ class ReportsController < ApplicationController
   #####################
   ### Gizmos report ###
   #####################
+
+  public
 
   def gizmos
     @defaults = Conditions.new
@@ -271,7 +275,7 @@ class ReportsController < ApplicationController
   ### Volunteer report ###
   ########################
 
-  public
+  protected
 
   def common_hours
     @defaults = Conditions.new
@@ -300,9 +304,19 @@ class ReportsController < ApplicationController
     render :action => "volunteers_report"
   end
 
+  def get_required_privileges
+    a = super
+    a << {:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']}
+    a << {:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']}
+    a << {:only => ["staff_hours", "staff_hours_report"], :privileges => ['staff']}
+    return a
+  end
+
+  public
+
   def staff_hours
     @title = "Jobs report"
-    if has_role?('SKEDJULNATOR', 'BEAN_COUNTER') or is_staff?
+    if has_required_privileges('/worker_condition')
       @filters = ['worker']
     end
     common_hours
@@ -310,7 +324,7 @@ class ReportsController < ApplicationController
 
   def volunteers
     @title = "Volunteers task types report"
-    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in
+    if has_required_privileges('/contact_condition')
       @filters = ['contact']
     end
     common_hours
@@ -359,7 +373,7 @@ class ReportsController < ApplicationController
   public
 
   def hours
-    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK') or is_logged_in
+    if has_required_privileges('/contact_condition')
       @filters = ['contact']
     end
     common_hours

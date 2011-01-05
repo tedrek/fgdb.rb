@@ -11,6 +11,10 @@ class GraphicReportsController < ApplicationController
 
   def get_temp_file
     file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
+    if !File.exists?(file)
+      generate_report_data
+      gnuplot_stuff(file)
+    end
     respond_to do |format|
       format.jpeg { render :text => File.read(file) }
     end
@@ -49,6 +53,36 @@ class GraphicReportsController < ApplicationController
   end
 
   private
+  helper_method :gnuplot_stuff
+
+  def gnuplot_stuff(tempfile)
+    Gnuplot.open do |gp|
+      Gnuplot::Plot.new( gp ) do |plot|
+        plot.set "terminal", "jpeg"
+        plot.set "output", tempfile
+        plot.notitle
+        plot.ylabel ""
+        plot.xlabel ""
+        plot.xtic "rotate by 90"
+        plot.grid
+        string = "("
+        string_a = []
+        @graph_x_axis.each_with_index{|x,i|
+          y = @x_axis[i]
+          string_a << "\" #{y}\" #{x}"
+        }
+        string += string_a.join(", ")
+        string += ")"
+        plot.xtics string
+        @data.each do |k,v|
+          plot.data << Gnuplot::DataSet.new( [@graph_x_axis, v] ) do |ds|
+            ds.with = "linespoints"
+            ds.title = k.to_s.titleize
+          end
+        end
+      end
+    end
+  end
 
   #########################
   # Time range type stuff #

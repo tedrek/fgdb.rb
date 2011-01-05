@@ -305,25 +305,8 @@ module ApplicationHelper
 
   # start auth junk
 
-  def is_logged_in()
-    @current_user
-  end
-
-  def is_me?(contact_id)
-    @current_user and @current_user.contact_id == contact_id
-  end
-
-  def has_role?(*roles)
-    @current_user and @current_user.has_role?(*roles)
-  end
-
-  def is_staff?
-    has_worker = @current_user and @current_user.contact and @current_user.contact.has_worker?
-    has_worker || has_role?("ADMIN")
-  end
-
-  def has_role_or_is_me?(contact_id, *roles)
-    has_role?(*roles) or is_me?(contact_id)
+  def has_privileges(*privs)
+    User.current_user.has_privileges(*privs)
   end
 
   # end auth junk

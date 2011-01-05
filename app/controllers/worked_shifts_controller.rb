@@ -4,17 +4,15 @@ class WorkedShiftsController < ApplicationController
   before_filter :common_logic
   helper :table
 
-  before_filter :needs_beancounter_or_me
+  protected
 
-  def needs_beancounter_or_me
-#    contact_id = @worker ? (@worker.contact ? @worker.contact.id : nil) : nil
-    roles = ['BEAN_COUNTER', 'SKEDJULNATOR']
-    if params[:action].match(/^(weekly_worker|payroll|type_totals)/)
-      return requires_role(*roles)
-    else
-      return requires_staff
-    end
+  def get_required_privileges
+    a = super
+    a << {:only => [:weekly_worker, :payroll, :type_totals], :privileges => ['manage_workers']}
+    a << {:except => [:weekly_worker, :payroll, :type_totals], :privileges => ['staff']}
+    a
   end
+  public
 
   NH = {"jobs" => "name",
     "wc_categories" => "description",
@@ -126,11 +124,11 @@ GROUP BY 1,2;")
 
     @result = table
   end
-
+  protected
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'worked_shifts')
   end
-
+  public
   def edit
     @shifts = @worker.shifts_for_day(@date)
     @logged_already = @shifts.shift

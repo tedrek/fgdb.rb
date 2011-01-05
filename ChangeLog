@@ -1,7 +1,18 @@
 fgdb.rb (1.0.54) UNRELEASED; urgency=low
 
+  * add a last logged value on the users (Closes: #20935)
+  * roles rewrite (Closes: #14985)
+    - store admin implies store, store / tech support / etc implies
+      contact manage (Closes: #17210, #15050)
+    - the tech support role should have acccess to the needed stuff
+      now (Closes: #16933, #20927)
+  * check that the cashier has correct permissions before enabling the
+    form (Closes: #16672)
+  * make nonaction public controller methods protected (Closes: #21225)
+  * in graphic reports regenerate the temporary file if it is gone
+    (Closes: #21233)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Nov 2010 20:27:18 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 31 Dec 2010 19:19:09 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 
@@ -16,6 +27,7 @@ fgdb.rb (1.0.53) released; urgency=low
     (Closes: #20667)
   * change the online donation type to be a fake money method (Closes: #20632)
   * change 'total real' to 'register total' on the income report
+  * fix the receipt footer wrt warranty (Closes: #20986)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Nov 2010 20:26:31 -0800
 

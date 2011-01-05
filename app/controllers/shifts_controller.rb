@@ -1,6 +1,12 @@
 class ShiftsController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['skedjulnator']}
+    a
+  end
+  public
 
   def index
     list
@@ -68,46 +74,11 @@ class ShiftsController < ApplicationController
   def view_weekly_schedule
     session["shift_return_to"] = "shifts"
     session["shift_return_action"] = "view_weekly_schedule"
-    where_clause = "(NOT actual) AND "
-    where_clause += "(shift_date IS NULL) AND "
-    where_clause += "('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)"
-    if params[:filter_criteria]
-      @opts = params[:filter_criteria]
-      @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
-      if  @opts['which_way'] == 'Family'
-        in_clause = @root_sched.in_clause_family
-      else
-        if  @opts['which_way'] == 'Solo'
-          in_clause = @root_sched.in_clause_solo
-        else
-          in_clause = @root_sched.in_clause_root_plus
-        end
-      end
-      if @opts['limit_to_worker'] and @opts['limit_to_worker'] == '1'
-        where_clause += ' AND shifts.worker_id = '
-        where_clause += @opts['worker_id']
-      end
-      if @opts['limit_to_job'] and @opts['limit_to_job'] == '1'
-        where_clause += ' AND shifts.job_id = '
-        where_clause += @opts['job_id']
-      end
-    else
-      @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
-      @opts = { 
-        'schedule_id' => @root_sched.id, 
-        'which_way' => 'Family', 
-        'limit_to_worker' => '0', 
-        'limit_to_job' => '0', 
-        'worker_id' => 0, 
-        'job_id' => 0, 
-        'presentation_mode' => 'Edit' }
-      in_clause = @root_sched.in_clause_family
-    end
-    where_clause += ' AND schedule_id IN ' + in_clause
-
 
     @skedj = Skedjul.new({
       :generate_param_key => "date_range",
+                           :forced_condition => "schedule",
+                           :conditions => ["job", "worker"],
 
       :block_method_name => "shifts.weekday_id",
       :block_method_display => "weekdays.name",
@@ -129,7 +100,7 @@ class ShiftsController < ApplicationController
 
       }, params)
 
-    @skedj.find({:conditions => where_clause, :include => [:weekday, :job, :worker, :coverage_type]})
+    @skedj.find({:include => [:weekday, :job, :worker, :coverage_type, :schedule]})
   end
 
   def generate

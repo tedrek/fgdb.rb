@@ -4,6 +4,8 @@ class TransactionController < ApplicationController
   before_filter :set_defaults
   before_filter :be_a_thing
 
+  protected
+
   def set_defaults
     @action_name=action_name
     @return_to_search = "false"
@@ -13,17 +15,22 @@ class TransactionController < ApplicationController
     set_transaction_type((controller_name()).singularize)
   end
 
-  protected
+
+  def get_required_privileges
+    a = super
+    fn = self.class.to_s.tableize.gsub(/_controllers$/, "")
+    a << {:only => ["/show_created_and_updated_by"], :privileges => ['role_admin']}
+    a << {:only => ["search", "component_update", "receipt"], :privileges => ["view_#{fn}"]}
+    a << {:only => ["edit", "destroy", "update"], :privileges => ["change_#{fn}"]}
+    a << {:except => ["receipt", "edit", "destroy", "update", "search", "component_update"], :privileges => ["create_#{fn}"]}
+    a
+  end
 
   def check_for_receipt
     case action_name
     when /receipt/ then "receipt_invoice.html.erb"
     else                "with_sidebar.html.erb"
     end
-  end
-
-  def authorized_only
-    requires_role(:ADMIN)
   end
 
   public

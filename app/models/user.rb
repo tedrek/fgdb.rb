@@ -106,8 +106,62 @@ class User < ActiveRecord::Base
 
   # start auth junk
 
-  def has_role?(*roles)
-    not (self.roles.map {|x| x.name } & (roles.map {|x| x.to_s} + ['ADMIN'])).empty?
+  def User.current_user
+    Thread.current['user'] || User.fake_new
+  end
+
+  attr_accessor :fake_logged_in
+
+  def User.fake_new
+    u = User.new
+    u.fake_logged_in = true
+    u
+  end
+
+  def logged_in
+    ! fake_logged_in
+  end
+
+  def to_privileges
+    return "logged_in" if self.logged_in
+  end
+
+  def privileges
+    @privileges ||= _privileges
+  end
+
+  def _privileges
+    olda = []
+    a = [self, self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| x.to_privileges}.flatten.select{|x| !x.nil?}.map{|x| Privilege.by_name(x)}
+    while olda != a
+      olda = a.dup
+      a << olda.map{|x| x.children}.flatten
+      a = a.flatten.sort_by(&:name).uniq
+    end
+    a = a.map{|x| x.name}
+    a
+  end
+
+  def has_privileges(*privs)
+    positive_privs = []
+    negative_privs = []
+    privs.flatten!
+    for i in privs
+      if i.match(/^!/)
+        negative_privs << i.sub(/^!/, "")
+      else
+        positive_privs << i
+      end
+    end
+    if positive_privs.length > 0
+      positive_privs << "role_admin"
+    end
+    if negative_privs.length > 0
+      negative_privs << "role_admin"
+    end
+    my_privs = self.privileges
+    #puts "NEG: #{negative_privs.inspect}, POS: #{positive_privs.inspect}, MY: #{my_privs.inspect}"
+    return (negative_privs & my_privs).length == 0 && ((positive_privs & my_privs).length > 0 || positive_privs.length == 0)
   end
 
   # end auth junk

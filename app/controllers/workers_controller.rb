@@ -1,9 +1,11 @@
 class WorkersController < ApplicationController
-  before_filter :require_some_roles
-
-  def require_some_roles
-    requires_role("SKEDJULNATOR", "BEAN_COUNTER")
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['manage_workers']}
+    a
   end
+  public
 
   def index
     list
@@ -43,7 +45,7 @@ class WorkersController < ApplicationController
     session["shift_return_action"] = "edit"
     session["shift_return_id"] = @worker.id 
   end
-
+  protected
   def _parse_checkbox(val)
     val = val.to_s
     if val == "1"
@@ -54,7 +56,7 @@ class WorkersController < ApplicationController
       return nil
     end
   end
-
+  public
   def update
     @worker = Worker.find(params[:id])
     @worker.salaried = _parse_checkbox(params[:worker][:salaried])

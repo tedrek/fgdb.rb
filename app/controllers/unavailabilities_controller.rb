@@ -1,7 +1,12 @@
 class UnavailabilitiesController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role
-
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['skedjulnator']}
+    a
+  end
+  public
   require_dependency 'shift'
   def index
     list

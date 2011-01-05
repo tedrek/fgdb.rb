@@ -17,7 +17,7 @@ class VolunteerTaskType < ActiveRecord::Base
   end
 
   def display_name
-    disp = self.description
+    disp = self.description.dup
     if program.name != "other"
       disp << " (" + program.display_name + ")"
     end

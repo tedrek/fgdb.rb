@@ -25,6 +25,8 @@ class ApplicationController < ActionController::Base
   helper :conditions
   helper :sidebar
 
+  protected
+
   rescue_from 'Exception', :with => :process_exception
 
   def rescue_as_normal
@@ -43,7 +45,7 @@ class ApplicationController < ActionController::Base
     if rescue_as_normal
       return super(thing)
     elsif thing == "layout"
-      return "app/views/layouts/with_sidebar.html.erb"
+      return "app/views/layouts/application.html.erb"
     else
       return "app/views/sidebar_links/error.html.erb"
     end
@@ -79,10 +81,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def skedjulnator_role
-    requires_role("SKEDJULNATOR")
-  end
-
   def _set_cashier(hash)
     return hash["cashier_code"] if hash.keys.include?("cashier_code")
     for i in hash.values.select{|x| x.class == Hash}
@@ -112,43 +110,76 @@ class ApplicationController < ActionController::Base
     Thread.current['user'] = @current_user
   end
 
-  # start auth junk
-
-  def is_me?(contact_id)
-    current_user and current_user.contact_id == contact_id.to_i
+  def required_privileges(action)
+    requires = []
+    base_action = action.split("/").first
+    if base_action == "" and params
+      base_action = params[:action]
+    end
+    all = []
+    get_required_privileges.each{|x|
+      all << [x[:only], x[:except]]
+      if (x[:only].nil? || x[:only].include?(action) || x[:only].include?(base_action)) && (x[:except].nil? || !(x[:except].include?(action) || x[:except].include?(base_action)))
+        requires << x[:privileges]
+      end
+    }
+    all = all.flatten.uniq
+    if !all.include?(action)
+#      puts "WARNING: action #{action}, for which the list of required privileges has been requested, is apparently unknown to the privilege system"
+      nil
+    end
+    requires.each{|x| x.flatten!}
+    requires
   end
 
-  def has_role_or_is_me?(contact_id, *roles)
-    (contact_id and is_me?(contact_id)) or has_role?(*roles)
+  helper_method :has_required_privileges
+
+  def self.has_required_privileges(action)
+    self.new.has_required_privileges(action)
   end
 
-  def is_logged_in
-    !! @current_user
+  def has_required_privileges(action)
+    required_privileges(action).each{|x|
+      if !has_privileges(x)
+        return false
+      end
+    }
+    return true
   end
 
-  def has_role?(*roles)
-    logged_in? and current_user.has_role?(*roles)
+  def self.sb_has_required_privileges(action)
+    self.new.send(:_internal_sb_has_required_privileges, action)
   end
 
-  def is_staff?
-    has_worker = logged_in? and current_user.contact and current_user.contact.has_worker?
-    has_worker || has_role?("ADMIN")
+  def _internal_sb_has_required_privileges(action) # TODO: should this be self.has_required_privileges? so Controller.has_required does one thing, while Controller.new.has_required does the other
+    required_privileges(action).each{|x|
+      if !has_privileges(_privis_to_out_of_page(x))
+        return false
+      end
+    }
+    return true
   end
 
-  def requires_role(*roles)
-    requires(has_role?(*roles))
+  def get_required_privileges
+    a = []
+    a << {:only => ["/contact_condition_everybody"], :privileges => ['manage_contacts']}
+    a << {:only => ["/admin_inventory_features"], :privileges => ['role_admin']}
+    return a
   end
 
-  def requires_staff
-    requires(is_staff?)
+  def _privis_to_out_of_page(privs)
+    mappings = {"contact_nil" => "has_contact", "contact_" => "has_contact"}
+    res = privs.map{|x|
+      mappings[x] || x
+    }
+#    puts res.inspect
+    return res
   end
 
-  def requires_role_or_me(contact_id, *roles)
-    requires(has_role_or_is_me?(contact_id.to_i, *roles))
-  end
+  before_filter :authorize_to_required_privileges
 
-  def requires(val)
-    if val
+  def authorize_to_required_privileges
+    if has_required_privileges(params[:action])
       return true
     else
       session[:unauthorized_error] = true
@@ -156,6 +187,12 @@ class ApplicationController < ActionController::Base
       redirect_to :controller => 'sidebar_links'
       return false
     end
+  end
+
+  # start auth junk
+
+  def has_privileges(*privs)
+    User.current_user.has_privileges(*privs)
   end
 
   # end auth junk

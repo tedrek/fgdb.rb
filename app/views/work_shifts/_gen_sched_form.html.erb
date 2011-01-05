@@ -4,7 +4,7 @@
 <% form_tag :action => 'generate' do %>
   <p><label for="start_start_date">Start date:</label> <%= calendar_box skedj.opts[:generate_param_key], :start_date %></p>
   <p><label for="end_end_date">End date:</label> <%= calendar_box skedj.opts[:generate_param_key], :end_date %></p>
-  <% params[:gconditions] = params[:conditions].dup %>
+  <% params[:gconditions] = params[:conditions] ? params[:conditions].dup : {} %>
   <%= conditions_html('gconditions', ["empty"]) %>
   <% @gconditions = Conditions.new %>
   <% @gconditions.apply_conditions(params[:gconditions]) %>
