@@ -13,6 +13,7 @@ module ConditionsHelper
 
   def html_for_cancelled_condition(params_key)
     "Show cancelled: " + check_box(params_key, "cancelled")
+  end
 
   def html_for_schedule_condition(params_key)
     which_way = (params[params_key] ? params[params_key][:schedule_which_way] : nil) || 'Family'
