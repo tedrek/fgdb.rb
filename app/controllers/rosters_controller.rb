@@ -1,8 +1,9 @@
 class RostersController < ApplicationController
-  before_filter :authorized_only
   protected
-  def authorized_only
-    requires_role('ADMIN')
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_admin']} # FIXME
+    a
   end
   public
 

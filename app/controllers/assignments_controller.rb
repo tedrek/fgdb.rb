@@ -1,8 +1,9 @@
 class AssignmentsController < ApplicationController
-  before_filter :authorized_only
   protected
-  def authorized_only
-    requires_role('VOLUNTEER_MANAGER')
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_volunteer_manager']} # FIXME
+    a
   end
   public
 
