@@ -17,7 +17,7 @@ class VolunteerShiftsController < ApplicationController
       :conditions => ["sked", "roster", "volunteer_task_type"],
       :date_range_condition => "date",
 
-      :block_method_name => "volunteer_shifts.date",
+      :block_method_name => "volunteer_events.date",
       :block_method_display => "volunteer_shifts.date_display",
       :block_start_time => "volunteer_shifts.weekdays.start_time",
       :block_end_time => "volunteer_shifts.weekdays.end_time",
@@ -37,7 +37,7 @@ class VolunteerShiftsController < ApplicationController
 
       }, params)
 
-    @skedj.find({:include => [:volunteer_task_type]})
+    @skedj.find({:include => [:volunteer_task_type, :volunteer_event]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
     else
       render :partial => "assignments/index", :layout => :with_sidebar
