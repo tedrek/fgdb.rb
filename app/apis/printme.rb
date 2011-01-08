@@ -132,9 +132,15 @@ class PrintmeAPI < SoapsBase
   end
 
   def submit(printme_struct)
-    struct = PrintmeStruct.new
-    struct.members.each{|x| struct.send(x + "=", printme_struct.send(x))}
-    report = SpecSheet.new(struct.to_hash)
+    input = nil
+    if printme_struct.class == Hash
+      input = printme_struct
+    else
+      struct = PrintmeStruct.new
+      struct.members.each{|x| struct.send(x + "=", printme_struct.send(x))}
+      input = struct.to_hash
+    end
+    report = SpecSheet.new(input)
     begin
       report.save!
       if report.xml_is_good
