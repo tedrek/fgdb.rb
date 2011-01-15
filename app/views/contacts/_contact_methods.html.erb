@@ -9,9 +9,16 @@
     js = "my_instance = new ContactMethodFrontend;"
     if @contact.contact_methods %>
   <%
-    for line in @contact.contact_methods
-      js += "my_instance.add(#{{:id => line.id, :contact_method_type_id => line.contact_method_type_id, :contact_method_usable => line.ok, :contact_method_value => line.value}.to_json});"
-    end
+    l = @contact.contact_methods.map{|x|
+      x = x.to_hash(:id, :contact_method_type_id, :ok, :value)
+      x[:contact_method_usable] = x[:ok]
+      x[:contact_method_value] = x[:value]
+      x.delete(:value)
+      x.delete(:ok)
+      x
+    }
+    puts l.to_json
+    js += "my_instance.add_many(#{l.to_json});"
     %>
   <% end %>
   <%= javascript_tag js %>

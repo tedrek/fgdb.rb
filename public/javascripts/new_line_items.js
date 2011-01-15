@@ -106,8 +106,9 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
   },
 
   add_many: function(many) {
+    var self = this;
     many.each(function(x) {
-      this.add(x);
+      self.add(x);
     });
     return;
   },
