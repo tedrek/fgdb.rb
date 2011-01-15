@@ -3,7 +3,7 @@ class CreateResourcesVolunteerEvents < ActiveRecord::Migration
     create_table :resources_volunteer_events do |t|
       t.integer :volunteer_event_id
       t.integer :resource_id
-      t.integer :resource_volunteer_default_event_id
+      t.integer :resources_volunteer_default_event_id
       t.time :start_time
       t.time :end_time
 

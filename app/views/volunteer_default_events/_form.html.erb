@@ -4,5 +4,5 @@
   </p>
   <p>
     <%= f.label :weekday_id %><br />
-    <%= f.text_field :weekday_id %>
+    <%= select(f.object_name, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, :include_blank => true) %>
   </p>
