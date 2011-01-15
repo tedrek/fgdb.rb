@@ -10,7 +10,7 @@
     if @contact.contact_methods %>
   <%
     for line in @contact.contact_methods
-      js += "my_instance.add(#{{:contact_method_type_id => line.contact_method_type_id, :contact_method_usable => line.ok, :contact_method_value => line.value}.to_json});"
+      js += "my_instance.add(#{{:id => line.id, :contact_method_type_id => line.contact_method_type_id, :contact_method_usable => line.ok, :contact_method_value => line.value}.to_json});"
     end
     %>
   <% end %>

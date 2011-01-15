@@ -38,6 +38,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
   edit: function (line_id) {
     this.edit_hook(line_id);
+    this.editing_id = getValueBySelector($(line_id), ".id"); // TODO: need to display the editing to user somehow, and allow them to clear it. (with an x next to the editing boxes)
     Element.remove(line_id);
     this.update_hook();
   },
@@ -58,6 +59,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
   initialize: function() {
     this.counter = 0;
+    this.editing_id = undefined;
   },
 
   add_line_item: function (args){
@@ -89,10 +91,14 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     if(!args['uneditable']) {
       tr.appendChild(td);
     }
+    if(!defined(args['id'])) {
+      args['id'] = this.editing_id;
+    }
     tr.appendChild(this.make_hidden("id", "", args['id']));
     $(this.prefix + '_lines').lastChild.insertBefore(tr, $(this.prefix + '_form'));
     this.counter++;
     this.update_hook();
+    this.editing_id = undefined;
   },
 
   add_hook: function(args) {
@@ -115,7 +121,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 var ContactMethodFrontend = Class.create(LineItem, {
   prefix: 'contact_methods',
 
-  Aedit_hook: function(id) {
+  edit_hook: function(id) {
     thing = $(id);
     $('is_usable').checked = getValueBySelector(thing, ".ok");
     $('contact_method_type_id').value = getValueBySelector(thing, ".contact_method_type_id");
