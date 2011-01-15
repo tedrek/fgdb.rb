@@ -23,12 +23,12 @@
   <%= observe_field 'adopter', :function => check_vol % 'adopter' %>
   <%= observe_field 'offsite', :function => check_vol % 'offsite' %>
 
-  <div class="organization form-element">
+  <div style="clear: left;" class="organization form-element">
     <label for="contact_organization">Organization Name</label>
     <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
   </div>
 
-  <div class="person form-element">
+  <div  style="clear: left;" class="person form-element">
     <label for="contact_first_name">First name</label>
     <%= text_field 'contact', 'first_name' , {:class=>"person text-input"} %>
   </div>

@@ -222,7 +222,7 @@ module ApplicationHelper
 
   def my_lightwindow_tag(options, html_options = {})
     %Q[<a href="#{url_for(options[:url])}" class="#{html_options[:class]} lightwindow" onclick="return false"
-          id="#{options[:id]}" params="lightwindow_type=#{options[:type] || 'page'}">
+          id="#{options[:id]}" params="lightwindow_width=600,lightwindow_type=#{options[:type] || 'page'}">
          #{options[:content]}
        </a>] +
       javascript_tag("if(myLightWindow) {myLightWindow._processLink($('#{options[:id]}'))};")
