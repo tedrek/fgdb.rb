@@ -32,6 +32,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
   },
 
   add: function (args) {
+    args['prefix'] = this.prefix;
     args = this.add_hook(args);
     add_line_item(args, this.make_hidden_hook, this.update_hook, this.edit_hook); // TODO: this should move into the class
   },
@@ -54,6 +55,8 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
 
 var ContactMethodFrontend = Class.create(LineItem, {
+  prefix: 'contact_methods',
+
   add_from_form: function() {
     if($('contact_method_value').value == '' || $('contact_method_type_id').selectedIndex == 0) {
       return true;
@@ -72,11 +75,6 @@ var ContactMethodFrontend = Class.create(LineItem, {
     return false;
   },
 
-
-  add_hook: function(args) {
-    args['prefix'] = 'contact_methods'; // REMOVEME?
-    return args;
-  },
 
   make_hidden_hook: function (args, tr) {
     var contact_method_value = args['contact_method_value'];
