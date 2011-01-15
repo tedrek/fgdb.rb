@@ -1,0 +1,14 @@
+<h1>Editing volunteer_event</h1>
+
+<% form_for(@volunteer_event, :url => {:action => "update", :id => @volunteer_event.id}) do |f| %>
+  <%= f.error_messages %>
+
+  <%= render :partial => "form", :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', {:action => "show", :id => @volunteer_event.id} %> |
+<%= link_to 'Back', {:action => "index"} %>
