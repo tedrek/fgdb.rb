@@ -42,7 +42,8 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.update_hook();
   },
 
-  make_hidden: function (name, display_value, value, line_id){
+  make_hidden: function (name, display_value, value){
+    var line_id = this.counter;
     var prefix = this.prefix;
     hidden = document.createElement("input");
     hidden.name = prefix + '[-' + line_id + '][' + name + ']';
@@ -55,10 +56,12 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     return td;
   },
 
-  counter: 0,
+  initialize: function() {
+    this.counter = 0;
+  },
 
   add_line_item: function (args){
-    var id = this.prefix + '_' + this.counter + '_line'
+    var id = this.prefix + '_' + this.counter + '_line';
     tr = document.createElement("tr");
     tr.className = "line";
     tr.id = id;
@@ -86,7 +89,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     if(!args['uneditable']) {
       tr.appendChild(td);
     }
-    tr.appendChild(this.make_hidden("id", "", args['id'], this.counter));
+    tr.appendChild(this.make_hidden("id", "", args['id']));
     $(this.prefix + '_lines').lastChild.insertBefore(tr, $(this.prefix + '_form'));
     this.counter++;
     this.update_hook();
@@ -143,12 +146,11 @@ var ContactMethodFrontend = Class.create(LineItem, {
     var contact_method_value = args['contact_method_value'];
     var contact_method_type_id = args['contact_method_type_id'];
     var contact_method_usable = args['contact_method_usable'];
-    var line_id = counters[this.prefix + '_line_id'];
-    tr.appendChild(this.make_hidden("contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-    usable_node = this.make_hidden("ok", contact_method_usable, contact_method_usable, line_id);
+    tr.appendChild(this.make_hidden("contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id));
+    usable_node = this.make_hidden("ok", contact_method_usable, contact_method_usable);
     usable_node.className = "ok";
     tr.appendChild(usable_node);
-    description_node = this.make_hidden("value", contact_method_value, contact_method_value, line_id);
+    description_node = this.make_hidden("value", contact_method_value, contact_method_value);
     description_node.className = "description";
     tr.appendChild(description_node);
   },
