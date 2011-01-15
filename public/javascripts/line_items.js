@@ -334,18 +334,6 @@ function add_payment_from_form() {
   return false;
 }
 
-function add_contact_method_from_form() {
-  if($('contact_method_value').value == '' || $('contact_method_type_id').selectedIndex == 0) {
-    return true;
-  }
-  add_contact_method($('contact_method_type_id').value, $('is_usable').checked, $('contact_method_value').value)
-  $('contact_method_type_id').selectedIndex = 0; //should be default, but it's yucky
-  $('contact_method_value').value = $('contact_method_value').defaultValue;
-  $('is_usable').checked = false;
-  $('contact_method_type_id').focus();
-  return false;
-}
-
 //////////////////
 // STUPID HOOKS //
 //////////////////
@@ -474,20 +462,6 @@ function payment_stuff(args, tr){
     var storecredit_id = args['store_credit_id'];
     tr.appendChild(make_hidden(args['prefix'], "store_credit_id", storecredit_id, storecredit_id, line_id));
   }
-}
-
-function contact_method_stuff(args, tr){
-  var contact_method_value = args['contact_method_value'];
-  var contact_method_type_id = args['contact_method_type_id'];
-  var contact_method_usable = args['contact_method_usable'];
-  var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(args['prefix'], "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-  usable_node = make_hidden(args['prefix'], "ok", contact_method_usable, contact_method_usable, line_id);
-  usable_node.className = "ok";
-  tr.appendChild(usable_node);
-  description_node = make_hidden(args['prefix'], "value", contact_method_value, contact_method_value, line_id);
-  description_node.className = "description";
-  tr.appendChild(description_node);
 }
 
 //////////////////
@@ -948,15 +922,6 @@ function handle_s(event) {
 function add_payment(args) {
   args['prefix'] = 'payments';
   add_line_item(args, payment_stuff, eval(gizmo_context_name + "_compute_totals"), edit_payment);
-}
-
-function add_contact_method(contact_method_type_id, contact_method_usable, contact_method_value) {
-  args = new Object();
-  args['contact_method_type_id'] = contact_method_type_id;
-  args['contact_method_usable'] = contact_method_usable;
-  args['contact_method_value'] = contact_method_value;
-  args['prefix'] = 'contact_methods';
-  add_line_item(args, contact_method_stuff, function () {}, false);
 }
 
 function add_gizmo_event(args){
