@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   helper :cashiers
   helper :conditions
   helper :sidebar
+  helper :line_item
 
   protected
 
