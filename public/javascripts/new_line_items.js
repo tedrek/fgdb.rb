@@ -162,3 +162,36 @@ var ContactMethodFrontend = Class.create(LineItem, {
   },
 });
 
+
+function three_to_one(hour, min, ampm) {
+  hour = parseInt(hour);
+  min = parseInt(min);
+  if(hour != 12 && ampm == "PM") {
+    hour += 12;
+  } else if(hour == 12 && ampm == "AM") {
+    hour = 0;
+  }
+  return hour + ":" + min;
+}
+
+function one_to_three(one) {
+  arr = one.split(":");
+  hour = arr[0];
+  min = arr[1];
+  ampm = "AM";
+  if(hour >= 12) {
+    if(hour != 12) {
+      hour -= 12;
+    }
+    ampm = "PM";
+  } else if (hour == 0) {
+    hour = 12;
+  }
+  hour = "" + hour;
+  return [hour, min, ampm];
+}
+
+var ResourceFrontend = Class.create(LineItem, {
+  prefix: 'resources',
+
+});
