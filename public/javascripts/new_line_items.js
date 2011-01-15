@@ -20,7 +20,7 @@ var OneATimeLineItemBackend = {
 // passed. but this makes it optional to pass since most use the default.
 
 var LineItem = Class.create(OneATimeLineItemBackend, {
-/*
+  /*
   edit_hook: function(id) {
 
   },
@@ -32,9 +32,73 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
   },
 
   add: function (args) {
-    args['prefix'] = this.prefix;
     args = this.add_hook(args);
-    add_line_item(args, this.make_hidden_hook, this.update_hook, this.edit_hook); // TODO: this should move into the class
+    this.add_line_item(args);
+  },
+
+  edit: function (line_id) {
+    this.edit_hook(line_id);
+    this.editing_id = getValueBySelector($(line_id), ".id"); // TODO: need to display the editing to user somehow, and allow them to clear it. (with an x next to the editing boxes)
+    Element.remove(line_id);
+    this.update_hook();
+  },
+
+  make_hidden: function (name, display_value, value){
+    var line_id = this.counter;
+    var prefix = this.prefix;
+    hidden = document.createElement("input");
+    hidden.name = prefix + '[-' + line_id + '][' + name + ']';
+    hidden.value = value;
+    hidden.type = 'hidden';
+    td = document.createElement("td");
+    td.className = name;
+    td.appendChild(hidden);
+    td.appendChild(document.createTextNode(display_value));
+    return td;
+  },
+
+  initialize: function() {
+    this.counter = 0;
+    this.editing_id = undefined;
+  },
+
+  add_line_item: function (args){
+    var id = this.prefix + '_' + this.counter + '_line';
+    tr = document.createElement("tr");
+    tr.className = "line";
+    tr.id = id;
+    this.make_hidden_hook(args, tr);
+    td = document.createElement("td");
+    a = document.createElement("a");
+    var self = this;
+    a.onclick = function () {
+      self.edit(id);
+    };
+    if(this.edit_hook) {
+      a.appendChild(document.createTextNode('e'));
+      a.className = 'disable_link';
+      td.appendChild(a);
+    }
+    td.appendChild(document.createTextNode(' '));
+    a = document.createElement("a");
+    a.onclick = function () {
+      Element.remove(id);
+      self.update_hook();
+    };
+    a.appendChild(document.createTextNode('x'));
+    a.className = 'disable_link';
+    td.appendChild(a);
+    if(!args['uneditable']) {
+      tr.appendChild(td);
+    }
+    if(!defined(args['id'])) {
+      args['id'] = this.editing_id;
+    }
+    tr.appendChild(this.make_hidden("id", "", args['id']));
+    $(this.prefix + '_lines').lastChild.insertBefore(tr, $(this.prefix + '_form'));
+    this.counter++;
+    this.update_hook();
+    this.editing_id = undefined;
   },
 
   add_hook: function(args) {
@@ -56,6 +120,14 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
 var ContactMethodFrontend = Class.create(LineItem, {
   prefix: 'contact_methods',
+
+  edit_hook: function(id) {
+    thing = $(id);
+    $('is_usable').checked = getValueBySelector(thing, ".ok");
+    $('contact_method_type_id').value = getValueBySelector(thing, ".contact_method_type_id");
+    $('contact_method_value').value = getValueBySelector(thing, ".description");
+    $('contact_method_type_id').focus();
+  },
 
   add_from_form: function() {
     if($('contact_method_value').value == '' || $('contact_method_type_id').selectedIndex == 0) {
@@ -80,12 +152,11 @@ var ContactMethodFrontend = Class.create(LineItem, {
     var contact_method_value = args['contact_method_value'];
     var contact_method_type_id = args['contact_method_type_id'];
     var contact_method_usable = args['contact_method_usable'];
-    var line_id = counters[args['prefix'] + '_line_id'];
-    tr.appendChild(make_hidden(args['prefix'], "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-    usable_node = make_hidden(args['prefix'], "ok", contact_method_usable, contact_method_usable, line_id);
+    tr.appendChild(this.make_hidden("contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id));
+    usable_node = this.make_hidden("ok", contact_method_usable, contact_method_usable);
     usable_node.className = "ok";
     tr.appendChild(usable_node);
-    description_node = make_hidden(args['prefix'], "value", contact_method_value, contact_method_value, line_id);
+    description_node = this.make_hidden("value", contact_method_value, contact_method_value);
     description_node.className = "description";
     tr.appendChild(description_node);
   },

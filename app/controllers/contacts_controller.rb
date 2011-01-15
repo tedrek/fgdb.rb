@@ -211,7 +211,7 @@ class ContactsController < ApplicationController
     @contact_methods = []
     if params[:contact_methods]
       for contact_method in params[:contact_methods].values
-        p = ContactMethod.new(contact_method)
+        p = ContactMethod.new_or_edit(contact_method)
         @contact_methods << p
       end
     end
