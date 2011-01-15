@@ -32,7 +32,6 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
   },
 
   add: function (args) {
-    args['prefix'] = this.prefix;
     args = this.add_hook(args);
     this.add_line_item(args);
   },
@@ -43,9 +42,23 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.update_hook();
   },
 
+  make_hidden: function (name, display_value, value, line_id){
+    var prefix = this.prefix;
+    hidden = document.createElement("input");
+    hidden.name = prefix + '[-' + line_id + '][' + name + ']';
+    hidden.value = value;
+    hidden.type = 'hidden';
+    td = document.createElement("td");
+    td.className = name;
+    td.appendChild(hidden);
+    td.appendChild(document.createTextNode(display_value));
+    return td;
+  },
+
+  counter: 0,
+
   add_line_item: function (args){
-    var prefix = args['prefix'];
-    var id = prefix + '_' + counters[prefix + '_line_id'] + '_line'
+    var id = this.prefix + '_' + this.counter + '_line'
     tr = document.createElement("tr");
     tr.className = "line";
     tr.id = id;
@@ -73,9 +86,9 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     if(!args['uneditable']) {
       tr.appendChild(td);
     }
-    tr.appendChild(make_hidden(args['prefix'], "id", "", args['id'], counters[prefix + '_line_id']));
-    $(prefix + '_lines').lastChild.insertBefore(tr, $(prefix + '_form'));
-    counters[args['prefix'] + '_line_id']++;
+    tr.appendChild(this.make_hidden("id", "", args['id'], this.counter));
+    $(this.prefix + '_lines').lastChild.insertBefore(tr, $(this.prefix + '_form'));
+    this.counter++;
     this.update_hook();
   },
 
@@ -130,12 +143,12 @@ var ContactMethodFrontend = Class.create(LineItem, {
     var contact_method_value = args['contact_method_value'];
     var contact_method_type_id = args['contact_method_type_id'];
     var contact_method_usable = args['contact_method_usable'];
-    var line_id = counters[args['prefix'] + '_line_id'];
-    tr.appendChild(make_hidden(args['prefix'], "contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
-    usable_node = make_hidden(args['prefix'], "ok", contact_method_usable, contact_method_usable, line_id);
+    var line_id = counters[this.prefix + '_line_id'];
+    tr.appendChild(this.make_hidden("contact_method_type_id", contact_method_types[contact_method_type_id], contact_method_type_id, line_id));
+    usable_node = this.make_hidden("ok", contact_method_usable, contact_method_usable, line_id);
     usable_node.className = "ok";
     tr.appendChild(usable_node);
-    description_node = make_hidden(args['prefix'], "value", contact_method_value, contact_method_value, line_id);
+    description_node = this.make_hidden("value", contact_method_value, contact_method_value, line_id);
     description_node.className = "description";
     tr.appendChild(description_node);
   },
