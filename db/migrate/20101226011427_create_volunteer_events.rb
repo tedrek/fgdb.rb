@@ -9,9 +9,9 @@ class CreateVolunteerEvents < ActiveRecord::Migration
     end
     add_foreign_key "volunteer_events", ["volunteer_default_event_id"], "volunteer_default_events", ["id"], :on_delete => :set_null
 
-#    remove_column :volunteer_shifts, :date
-#    add_column :volunteer_shifts, :volunteer_event_id, :integer, :null => false
-#    add_foreign_key "volunteer_shifts", ["volunteer_event_id"], "volunteer_events", ["id"], :on_delete => :cascade
+    remove_column :volunteer_shifts, :date
+    add_column :volunteer_shifts, :volunteer_event_id, :integer, :null => false
+    add_foreign_key "volunteer_shifts", ["volunteer_event_id"], "volunteer_events", ["id"], :on_delete => :cascade
   end
 
   def self.down
