@@ -243,6 +243,15 @@ class ActiveRecord::Base
     return editable
   end
 
+  def to_hash(*list)
+    list = [list].flatten
+    h = {}
+    list.each do |k|
+      h[k] = self.send(k)
+    end
+    h
+  end
+  
   def attributes_with_editable=(hash)
     should_check = editable?
     before = attributes

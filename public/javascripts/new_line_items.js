@@ -104,6 +104,14 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
   add_hook: function(args) {
     return args;
   },
+
+  add_many: function(many) {
+    var self = this;
+    many.each(function(x) {
+      self.add(x);
+    });
+    return;
+  },
 });
 
 // *backend*
