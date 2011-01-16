@@ -11,8 +11,10 @@ fgdb.rb (1.0.54) UNRELEASED; urgency=low
   * make nonaction public controller methods protected (Closes: #21225)
   * in graphic reports regenerate the temporary file if it is gone
     (Closes: #21233)
+  * add cashier_created_by condition to average frontdesk, and use multi
+    mode for the conditions select (Closes: #21427)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 31 Dec 2010 19:19:09 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Jan 2011 16:59:05 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 

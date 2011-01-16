@@ -34,6 +34,7 @@ class GraphicReportsController < ApplicationController
     @breakdown_types = breakdown_types
     case params[:conditions][:report_type]
     when "Average Frontdesk Income"
+      @valid_conditions = ["cashier_created_by"]
     when "Income"
     when "Active Volunteers"
       @breakdown_types = line_breakdown_types
