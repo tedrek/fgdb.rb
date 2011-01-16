@@ -13,8 +13,9 @@ fgdb.rb (1.0.54) UNRELEASED; urgency=low
     (Closes: #21233)
   * add cashier_created_by condition to average frontdesk, and use multi
     mode for the conditions select (Closes: #21427)
+  * switch the income reports to use occurred at (Closes: #21414)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Jan 2011 16:59:05 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Jan 2011 17:27:48 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 
