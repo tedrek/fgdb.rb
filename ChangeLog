@@ -16,8 +16,10 @@ fgdb.rb (1.0.54) UNRELEASED; urgency=low
   * switch the income reports to use occurred at (Closes: #21414)
   * a systems-based only, nonrequired version of covered on sales
     (Closes: #21331)
+  * cap off the points before adding in the trades, not after. they can
+    only earn 24. (Closes: #21118)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Jan 2011 17:54:25 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Jan 2011 11:27:38 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 
