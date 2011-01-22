@@ -19,8 +19,9 @@ fgdb.rb (1.0.54) UNRELEASED; urgency=low
   * cap off the points before adding in the trades, not after. they can
     only earn 24. (Closes: #21118)
   * add misc disbursement type (Closes: #21475)
+  * show required/suggested fees (Closes: #21498)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Jan 2011 11:33:23 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Jan 2011 11:44:28 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 
