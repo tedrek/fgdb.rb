@@ -26,6 +26,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
   },
 */
   edit_hook: false,
+  copyable: false,
 
   update_hook: function() {
     return;
@@ -40,6 +41,11 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.edit_hook(line_id);
     this.editing_id = getValueBySelector($(line_id), ".id"); // TODO: need to display the editing to user somehow, and allow them to clear it. (with an x next to the editing boxes)
     Element.remove(line_id);
+    this.update_hook();
+  },
+
+  copy: function (line_id) {
+    this.edit_hook(line_id);
     this.update_hook();
   },
 
@@ -62,6 +68,11 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.editing_id = undefined;
   },
 
+  remove: function(line_id){
+    Element.remove(line_id);
+    this.update_hook();
+  },
+
   add_line_item: function (args){
     var id = this.prefix + '_' + this.counter + '_line';
     tr = document.createElement("tr");
@@ -79,11 +90,19 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
       a.className = 'disable_link';
       td.appendChild(a);
     }
+    a = document.createElement("a");
+    a.onclick = function () {
+      self.copy(id);
+    };
+    if(this.copyable) {
+      a.appendChild(document.createTextNode('c'));
+      a.className = 'disable_link';
+      td.appendChild(a);
+    }
     td.appendChild(document.createTextNode(' '));
     a = document.createElement("a");
     a.onclick = function () {
-      Element.remove(id);
-      self.update_hook();
+      self.remove(id);
     };
     a.appendChild(document.createTextNode('x'));
     a.className = 'disable_link';
@@ -131,7 +150,7 @@ var ContactMethodFrontend = Class.create(LineItem, {
 
   edit_hook: function(id) {
     thing = $(id);
-    $('is_usable').checked = getValueBySelector(thing, ".ok");
+    $('is_usable').checked = eval(getValueBySelector(thing, ".ok"));
     $('contact_method_type_id').value = getValueBySelector(thing, ".contact_method_type_id");
     $('contact_method_value').value = getValueBySelector(thing, ".description");
     $('contact_method_type_id').focus();
