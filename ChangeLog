@@ -24,8 +24,10 @@ fgdb.rb (1.0.54) UNRELEASED; urgency=low
     reports. that makes things float to places we don't want them. this
     is why html supports tables. (Closes: #21508)
   * add note and note edit interface for system history (Closes: #21477)
+  * plist: fix detecting some processors, add support for cd drives and
+    network cards. (Closes: #21117)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Jan 2011 12:30:03 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Jan 2011 16:07:36 -0800
 
 fgdb.rb (1.0.53) released; urgency=low
 
