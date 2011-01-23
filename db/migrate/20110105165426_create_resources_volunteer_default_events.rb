@@ -5,6 +5,8 @@ class CreateResourcesVolunteerDefaultEvents < ActiveRecord::Migration
       t.integer :resource_id
       t.time :start_time
       t.time :end_time
+      t.date :effective_at
+      t.date :ineffective_at
       t.integer :roster_id
 
       t.timestamps
