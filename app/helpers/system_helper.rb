@@ -303,7 +303,7 @@ module SystemHelper
       @memories = items.select{|x| x["dimm_status"]}.map{|x|
         d = OpenStruct.new
         d.bank = x["_name"]
-        d.description = [x["dimm_type"], x["dimm_speed"]].join(" ")
+        d.description = x["dimm_type"] == "empty" ? x["dimm_type"] : [x["dimm_type"], x["dimm_speed"]].join(" ")
         d.size = x["dimm_size"]
         d
       }
@@ -343,7 +343,12 @@ module SystemHelper
       @pcis.first.devices = []
       items.select{|x| ["Ethernet", "AirPort"].include?(x["_name"])}.each{|x|
         s = OpenStruct.new
-        s.description = x["hardware"] + " Interface"
+	h = x["hardware"]
+	if h.match(/airport/i)
+	 q = items.select{|x| x["_name"] == "spairport_information"}.first #
+	 h += " Extreme" if q && q["spairport_wireless_card_type"] && q["spairport_wireless_card_type"].match(/extreme/i)
+	end
+        s.description = h + " Interface"
         s.my_type = "network"
         s.name = x.inspect
         @pcis.first.devices << s
