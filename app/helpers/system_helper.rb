@@ -291,33 +291,45 @@ module SystemHelper
       "DOCTYPE plist"
     end
 
+    def snm(name)
+      @items.select{|x| x[name]}.map{|x| x[name]}.first
+    end
+
     def do_work
       @result = Nokogiri::PList::Parser.parse(@parser.my_node)
-      items = @result.map{|x| x["_items"]}.flatten
+      items = @items = @result.map{|x| x["_items"]}.flatten
       t = items.select{|x| x["_name"] == "Built-in Ethernet"}.first
       @macaddr =  t["Ethernet"]["MAC Address"] if t && t["Ethernet"] && t["Ethernet"]["MAC Address"]
       @memories = items.select{|x| x["dimm_status"]}.map{|x|
         d = OpenStruct.new
         d.bank = x["_name"]
-        d.description = [x["dimm_type"], x["dimm_speed"]].join(" ")
+        d.description = x["dimm_type"] == "empty" ? x["dimm_type"] : [x["dimm_type"], x["dimm_speed"]].join(" ")
         d.size = x["dimm_size"]
         d
       }
       @total_memory = items.select{|x| x["physical_memory"]}.first["physical_memory"]
       @l2_cache = items.select{|x| x["l2_cache_size"]}.map{|x| x["l2_cache_size"]}
-
       items_items = items.map{|x| x["_items"]}.flatten.select{|x| !x.nil?}
       @harddrives = items_items.select{|x| x["removable_media"] == "no"}.map{|x|
         d = OpenStruct.new
         d.name = x["bsd_name"]
         d.model = x["device_model"]
         d.size = x["size"]
-        d.my_type = x["spsata_socket_type"]
+        d.my_type = x["spata_protocol"]
 #        d.vendor is in the model string
         d.volumes = []
         d
       }
-      numtimes = items.select{|x| x["number_processors"]}.map{|x| x["number_processors"]}.first
+      @opticals = items_items.select{|x| x["spata_protocol"] == "atapi"}.map{|x|
+        d = OpenStruct.new
+        d.name = x["_name"]
+        d.model = x["device_model"]
+        d.my_type = x["spata_socket_type"]
+#        d.vendor is in the model string
+        d
+      }
+      numtimes = snm("number_processors") || snm("number_cpus")
+      @system_serial_number = items.select{|x| x["serial_number"]}.map{|x| x["serial_number"]}.first
       numtimes.to_i.times do
         p = OpenStruct.new
         p.speed = items.select{|x| x["current_processor_speed"]}.map{|x| x["current_processor_speed"]}.first
@@ -327,6 +339,20 @@ module SystemHelper
       end
       @system_model = "#{items.select{|x| x["machine_name"]}.map{|x| x["machine_name"]}.first} (#{ items.select{|x| x["machine_model"]}.map{|x| x["machine_model"]}.first })"
       @system_vendor = "Apple Computer, Inc."
+      @pcis = [OpenStruct.new]
+      @pcis.first.devices = []
+      items.select{|x| ["Ethernet", "AirPort"].include?(x["_name"])}.each{|x|
+        s = OpenStruct.new
+	h = x["hardware"]
+	if h.match(/airport/i)
+	 q = items.select{|x| x["_name"] == "spairport_information"}.first #
+	 h += " Extreme" if q && q["spairport_wireless_card_type"] && q["spairport_wireless_card_type"].match(/extreme/i)
+	end
+        s.description = h + " Interface"
+        s.my_type = "network"
+        s.name = x.inspect
+        @pcis.first.devices << s
+      }
       @result = nil
     end
   end

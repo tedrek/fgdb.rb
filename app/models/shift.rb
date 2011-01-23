@@ -16,7 +16,8 @@ class Shift < ActiveRecord::Base
   end
 
   def display_name
-    s = " (" + self.schedule.name + ")" if self.schedule.name != "main" #FIXME: this should look at the set root schedule, look at the past version
+    skedj = Thread.current['skedj_obj']
+    s = " (" + self.schedule.name + ")" if self.schedule.id != skedj.conditions.schedule_id
     s ||= ""
     self.name + s
   end

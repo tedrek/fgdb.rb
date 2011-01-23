@@ -8,6 +8,7 @@
           <%= c.name %>
         </td>
       </tr>
+      <% if c.description %>
       <tr>
         <td>
           Description:
@@ -16,6 +17,8 @@
           <%= c.description %>
         </td>
       </tr>
+      <% end %>
+      <% if c.capabilities %>
       <tr>
         <td>
           Capabilities:
@@ -24,6 +27,7 @@
           <%= c.capabilities %>
         </td>
       </tr>
+      <% end %>
       <tr>
         <td>
           Type:

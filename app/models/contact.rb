@@ -45,11 +45,12 @@ class Contact < ActiveRecord::Base
 
   def points(trade_id = nil)
     effective_hours = hours_effective
+    max = Default['max_effective_hours'].to_f
+    effective_hours = [effective_hours, max].min
     negative = points_traded_since_last_adoption("from", trade_id)
     positive = points_traded_since_last_adoption("to", trade_id)
     sum = effective_hours - negative + positive
-    max = Default['max_effective_hours'].to_f
-    return [sum, max].min
+    return sum
   end
 
   def cleanup_string(str)

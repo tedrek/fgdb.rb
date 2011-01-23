@@ -8,7 +8,7 @@
 
 <% table_width = 2 %>
 <% for section,types in @data %>
-  <div id="<%= section -%>_report"><p><%= (section).to_s.titleize %></p>
+  <table width="100%" id="<%= section -%>_report"><caption><%= (section).to_s.titleize %></caption>
     <% for type in types.keys.sort {|a,b|
            if /total/i.match(a)
              1
@@ -18,10 +18,11 @@
              a.downcase <=> b.downcase
            end } %>
       <% if @data[section][type].nonzero? || section != :volunteer_task_type %>
-        <div class="task"><span class="task_name"><%= type %></span> <span class="task_data"><%= @data[section][type].tp %></span></div>
+        <tr class="task"><td class="task_name"><%= type %></td> <td class="task_data"><%= @data[section][type].tp %></td></tr>
       <% end %>
     <% end %>
-  </div>
+  </table>
+  <p> </p>
 <% end %>
 
 <p class="timestamp"> - generated <%= Time.now %></p>

@@ -13,6 +13,8 @@ module DonationsHelper
      Column.new(Donation, :name => 'donor', :sortable => false,
                 :eval => 'donation.donor'),
      Column.new(Donation, :name => 'gizmos', :sortable => false),
+     Column.new(Donation, :name => 'reported_required_fee', :label => 'Required Fee'),
+     Column.new(Donation, :name => 'reported_suggested_fee', :label => 'Suggested Fee'),
      Column.new(Donation, :name => 'created_at'),
     ]
   end

@@ -239,7 +239,7 @@ function add_shift_from_form() {
 
 function _add_gizmo_event_from_form()
 {
-  if($('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && $('covered').selectedIndex == 0) || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
+  if($('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && $('covered').selectedIndex == 0 && gizmo_context != "sale") || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
     return true;
   }
   if($('system_id') != null && $('gizmo_count') != null) {
@@ -1025,7 +1025,7 @@ function coveredness_type_selected() {
   if($('covered') == null)
     return;
   contract_widget = $('contract_id') || $('donation_contract_id');
-  if(gizmo_types_covered[$('gizmo_type_id').value] == true) {
+  if(gizmo_context == "sale" ? system_types.include($('gizmo_type_id').value) : gizmo_types_covered[$('gizmo_type_id').value] == true) {
     if(contract_widget && contract_widget.value != "1") {
       $('covered').disable();
       $('covered').value = "false";

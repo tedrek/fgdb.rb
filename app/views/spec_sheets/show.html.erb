@@ -9,8 +9,6 @@
 </div>
 <div id="right" class="right">
   <%= render :partial => "memory" %>
-<% unless @system_parser.class == SystemHelper::PlistSystemParser %>
   <%= render :partial => "optical" %>
   <%= render :partial => "pci" %>
-<% end %>
 </div>
