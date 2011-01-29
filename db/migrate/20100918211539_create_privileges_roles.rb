@@ -1,6 +1,6 @@
 class CreatePrivilegesRoles < ActiveRecord::Migration
   def self.up
-    create_table :privileges_roles do |t|
+    create_table :privileges_roles, :id => false do |t|
       t.integer :privilege_id
       t.integer :role_id
 
