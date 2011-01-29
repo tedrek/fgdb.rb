@@ -314,21 +314,21 @@ module SystemHelper
         d = OpenStruct.new
         d.name = x["bsd_name"]
         d.model = x["device_model"]
-        d.size = x["size"]
         d.my_type = x["spata_protocol"]
 #        d.vendor is in the model string
         d.volumes = []
         d
       }
+<<<<<<< HEAD
       @opticals = items_items.select{|x| x["spata_protocol"] == "atapi"}.map{|x|
         d = OpenStruct.new
         d.name = x["_name"]
         d.model = x["device_model"]
-        d.my_type = x["spata_socket_type"]
-#        d.vendor is in the model string
-        d
       }
       numtimes = snm("number_processors") || snm("number_cpus")
+=======
+      numtimes = items.select{|x| x["number_processors"]}.map{|x| x["number_processors"]}.first
+>>>>>>> origin/release_1.0.53
       @system_serial_number = items.select{|x| x["serial_number"]}.map{|x| x["serial_number"]}.first
       numtimes.to_i.times do
         p = OpenStruct.new
