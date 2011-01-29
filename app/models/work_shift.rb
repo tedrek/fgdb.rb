@@ -61,7 +61,7 @@ class WorkShift < ActiveRecord::Base
           else
             shift_style = 'mediumconflict'
           end
-        elsif self.coverage_type_name == 'anchored'
+        elsif self.coverage_type.name == 'anchored'
           shift_style = 'mediumconflict'
         else
           shift_style = 'softconflict'
