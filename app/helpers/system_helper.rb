@@ -314,7 +314,6 @@ module SystemHelper
         d = OpenStruct.new
         d.name = x["bsd_name"]
         d.model = x["device_model"]
-        d.size = x["size"]
         d.my_type = x["spata_protocol"]
 #        d.vendor is in the model string
         d.volumes = []
@@ -324,9 +323,7 @@ module SystemHelper
         d = OpenStruct.new
         d.name = x["_name"]
         d.model = x["device_model"]
-        d.my_type = x["spata_socket_type"]
-#        d.vendor is in the model string
-        d
+	d
       }
       numtimes = snm("number_processors") || snm("number_cpus")
       @system_serial_number = items.select{|x| x["serial_number"]}.map{|x| x["serial_number"]}.first

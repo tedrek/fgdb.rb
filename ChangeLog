@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 fgdb.rb (1.0.55) UNRELEASED; urgency=low
+=======
+fgdb.rb (1.0.54) released; urgency=low
+>>>>>>> mux/remotes/fg/master
 
   * add a last logged value on the users (Closes: #20935)
   * roles rewrite (Closes: #14985)
@@ -27,7 +31,11 @@ fgdb.rb (1.0.55) UNRELEASED; urgency=low
   * plist: fix detecting some processors, add support for cd drives and
     network cards. (Closes: #21117)
 
+<<<<<<< HEAD
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 01 Feb 2011 16:29:31 -0800
+=======
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Jan 2011 00:42:47 -0800
+>>>>>>> mux/remotes/fg/master
 
 fgdb.rb (1.0.53) released; urgency=low
 
