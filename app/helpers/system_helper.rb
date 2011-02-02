@@ -323,6 +323,7 @@ module SystemHelper
         d = OpenStruct.new
         d.name = x["_name"]
         d.model = x["device_model"]
+	d
       }
       numtimes = snm("number_processors") || snm("number_cpus")
       @system_serial_number = items.select{|x| x["serial_number"]}.map{|x| x["serial_number"]}.first
