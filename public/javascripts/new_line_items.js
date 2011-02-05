@@ -27,6 +27,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 */
   edit_hook: false,
   copyable: false,
+  linelist: null,
 
   update_hook: function() {
     return;
@@ -131,6 +132,51 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     });
     return;
   },
+
+  handle_event: function(event) {
+    if(this.is_tab(event)) {
+      if(event.target.onchange) {
+        event.target.onchange();
+      }
+      if(this.is_last(event)) {
+        return this.add_from_form();
+      }
+    }
+  },
+
+  is_tab: function(event) {
+    return (event.keyCode==9 && !event.shiftKey);
+  },
+
+  is_last: function(event) {
+    var names = this.linelist;
+
+    var last = null;
+    for(var i in names) {
+      if(this.is_enabled_visable_there_field_thing(names[i])) {
+        last = names[i];
+      }
+    }
+
+    return last == event.target.id;
+  },
+
+  is_enabled_visable_there_field_thing: function(name) {
+    var el = $(name);
+    if(!el) {
+      return false;
+    }
+    if(el == null) {
+      return false;
+    }
+    if(el.disabled) {
+      return false;
+    }
+    if(!el.visible) {
+      return false;
+    }
+    return true;
+  },
 });
 
 // *backend*
@@ -147,6 +193,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
 var ContactMethodFrontend = Class.create(LineItem, {
   prefix: 'contact_methods',
+  linelist: ['contact_method_value'],
 
   edit_hook: function(id) {
     thing = $(id);
