@@ -40,7 +40,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
   edit: function (line_id) {
     this.edit_hook(line_id);
-    this.editing_id = getValueBySelector($(line_id), ".id"); // TODO: need to display the editing to user somehow, and allow them to clear it. (with an x next to the editing boxes)
+    this.editing_id = this.getValueBySelector($(line_id), ".id"); // TODO: need to display the editing to user somehow, and allow them to clear it. (with an x next to the editing boxes)
     Element.remove(line_id);
     this.update_hook();
   },
@@ -161,6 +161,10 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     return last == event.target.id;
   },
 
+  getValueBySelector: function (thing, selector) {
+    return thing.getElementsBySelector(selector).first().firstChild.value;
+  },
+
   is_enabled_visable_there_field_thing: function(name) {
     var el = $(name);
     if(!el) {
@@ -220,7 +224,6 @@ var ContactMethodFrontend = Class.create(LineItem, {
     $('contact_method_type_id').focus();
     return false;
   },
-
 
   make_hidden_hook: function (args, tr) {
     var contact_method_value = args['contact_method_value'];

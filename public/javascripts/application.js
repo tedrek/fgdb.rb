@@ -3,6 +3,22 @@
 
 cashierable_enabled = true;
 
+var FixedAutocomplete = Class.create(Ajax.Autocompleter, {
+  baseInitialize: function($super,element, update, options) {
+    $super(element, update, options);
+    Event.observe(this.element, "input", this.onInput.bindAsEventListener(this));
+  },
+
+   onInput: function(event) {
+     if(this.observer) clearTimeout(this.observer);
+
+     this.observer = setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
+     if(this.options.afterInput) {
+       this.options.afterInput();
+     }
+   },
+});
+
 function trigger_volunteer_task_type() {
   $('volunteer_task_program').value = volunteer_task_programs[$('volunteer_task_volunteer_task_type').value];
 }
