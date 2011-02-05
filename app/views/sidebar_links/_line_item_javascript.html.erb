@@ -1,4 +1,6 @@
 <% @gizmo_contact = gizmo_context %>
+
+<% if defined?(@gizmo_context) %>
 <script>
   var discount_schedules;
   var counters = new Array();
@@ -13,6 +15,8 @@
 <%= javascript_include_tag 'line_items' %>
 
 <%= javascript_tag "get_sale_exists_url = #{url_for(:action => "get_sale_exists").to_json}; sale_id_cache = new Array;" %>
+
+<% end %>
 
 <% if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller]) %>
   <%= javascript_tag "get_system_contract_url = #{url_for(:action => "get_system_contract").to_json}; system_contract_cache = new Array; system_covered_cache = new Array;" %>
@@ -50,11 +54,15 @@
       javascript_tag js %>
 <% end -%>
 
+<% if defined?(@gizmo_context) %>
+
 <%= js = "var contact_method_types = new Array;"
     for contact_method_type in ContactMethodType.find(:all).sort_by(&:description)
       js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';"
     end
     javascript_tag js %>
+
+<% end %>
 
 <%= if ["sales", "disbursements"].include?(params[:controller])
      js = "var all_contracts_names = new Array;"
@@ -65,6 +73,18 @@
     end
 %>
 
+<%= if ["volunteer_events"].include?(params[:controller]) 
+      js = 'var volunteer_task_types = new Array;'
+
+     for contract in VolunteerTaskType.find(:all).sort_by(&:description)
+       js += "volunteer_task_types[#{contract.id}] = '#{contract.description}';"
+     end
+     javascript_tag js
+ end %>
+
+
+<% if defined?(@gizmo_context) %>
+
 <%= js = ""
       js += "var gizmo_types_covered = new Array;"
       for gizmo_type in GizmoType.find(:all)
@@ -72,6 +92,8 @@
       end
       javascript_tag js
 %>
+
+<% end %>
 
 <%=
    case params[:controller]
