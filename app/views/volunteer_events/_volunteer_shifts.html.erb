@@ -1,0 +1,13 @@
+<% interface = OH.new %>
+<% interface[:volunteer_task] = '<select id="volunteer_task_type_id">' + options_from_collection_for_select([VolunteerTaskType.new(:description => ""),  VolunteerTaskType.instantiables.effective_on(Date.today)].flatten, "id", "description") + '</select>' %>
+<% interface[:slot] = text_field_tag 'slot_number', nil, :onkeydown => line_item_on_keydown("volunteer_shifts") %>
+
+<% values = [] %>
+<% if @volunteer_event.volunteer_shifts
+    values = @volunteer_event.volunteer_shifts.map{|x|
+      x = x.to_hash(:id, :slot_number, :volunteer_task_type_id)
+      x
+    }
+  end %>
+
+<%= line_item("volunteer_shifts", "VolunteerShiftFrontend", interface, values) %>

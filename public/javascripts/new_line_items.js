@@ -268,6 +268,43 @@ function one_to_three(one) {
   return [hour, min, ampm];
 }
 
+var VolunteerShiftFrontend = Class.create(LineItem, {
+  prefix: 'volunteer_shifts',
+  linelist: ['volunteer_task_type_id', 'slot_number'],
+
+  edit_hook: function(id) {
+    thing = $(id);
+    $('volunteer_task_type_id').value = this.getValueBySelector(thing, ".volunteer_task_type_id");
+    $('slot_number').value = this.getValueBySelector(thing, ".slot_number");
+    $('volunteer_task_type_id').focus();
+  },
+
+  add_from_form_hook: function() {
+    if($('slot_number').value == '' || $('volunteer_task_type_id').selectedIndex == 0) {
+      return true;
+    }
+
+    args = new Object();
+    args['slot_number'] = $('slot_number').value;
+    args['volunteer_task_type_id'] = $('volunteer_task_type_id').value;
+
+    this.add(args);
+    $('volunteer_task_type_id').selectedIndex = 0; //should be default, but it's yucky
+    $('slot_number').value = $('slot_number').defaultValue;
+    return false;
+  },
+
+
+  make_hidden_hook: function (args, tr) {
+    var slot_number = args['slot_number'];
+    var volunteer_task_type_id = args['volunteer_task_type_id'];
+
+    tr.appendChild(this.make_hidden("volunteer_task_type_id", volunteer_task_types[volunteer_task_type_id], volunteer_task_type_id));
+    tr.appendChild(this.make_hidden("slot_number", slot_number, slot_number));
+  },
+
+});
+
 var ResourceFrontend = Class.create(LineItem, {
   prefix: 'resources',
 
