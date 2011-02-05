@@ -139,7 +139,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
         event.target.onchange();
       }
       if(this.is_last(event)) {
-        return this.add_from_form();
+        return this.add_from_form_hook();
       }
     }
   },
@@ -203,7 +203,7 @@ var ContactMethodFrontend = Class.create(LineItem, {
     $('contact_method_type_id').focus();
   },
 
-  add_from_form: function() {
+  add_from_form_hook: function() {
     if($('contact_method_value').value == '' || $('contact_method_type_id').selectedIndex == 0) {
       return true;
     }
