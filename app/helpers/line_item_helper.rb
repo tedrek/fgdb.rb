@@ -27,9 +27,9 @@ module LineItemHelper
     "#{prefix}_instance"
   end
 
-  def line_item_on_change(prefix)
-    # TODO, handles the event and the list of elements. this was never
-    # used on contact methods but is used elsewhere.
+  # onkeydown="#{line_item_on_keydown(prefix)}"
+  def line_item_on_keydown(prefix)
+    "return #{line_item_instance_name_for(prefix)}.handle_event(event);"
   end
 
   def line_item_add_many(prefix, to_add)

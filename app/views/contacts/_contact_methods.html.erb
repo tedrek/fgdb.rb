@@ -1,7 +1,7 @@
 <% interface = OH.new %>
-<% interface[:type] = '<select id="contact_method_type_id" onchange="contact_contact_method_selected()">' + options_from_collection_for_select([ContactMethodType.new(:id=>1, :description=>"pick a type")] + ContactMethodType.find(:all).sort_by(&:description), "id", "description") + '</select>' %>
-<% interface[:is_usable] = '<input name="is_usable" id="is_usable" type="checkbox">' %>
-<% interface[:value] = '<input name="contact_method_value" id="contact_method_value" onkeydown="if(is_tab(event)) {return contact_methods_instance.add_from_form();}">' %>
+<% interface[:type] = %Q!<select id="contact_method_type_id" onchange="contact_contact_method_selected()">! + options_from_collection_for_select([ContactMethodType.new(:id=>1, :description=>"pick a type")] + ContactMethodType.find(:all).sort_by(&:description), "id", "description") + '</select>' %>
+<% interface[:is_usable] = %Q!<input name="is_usable" id="is_usable" type="checkbox">! %>
+<% interface[:value] = %Q!<input name="contact_method_value" id="contact_method_value" onkeydown="#{line_item_on_keydown("contact_methods")}">! %>
 
 <% values = [] %>
 <% if @contact.contact_methods
