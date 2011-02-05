@@ -25,6 +25,7 @@ class ApplicationController < ActionController::Base
   helper :conditions
   helper :sidebar
   helper :line_item
+  include LineItemHelper
 
   protected
 

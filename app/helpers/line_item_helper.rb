@@ -1,4 +1,6 @@
 module LineItemHelper
+  protected
+
   def line_item_includes
     javascript_include_tag("new_line_items")
   end
@@ -32,5 +34,23 @@ module LineItemHelper
 
   def line_item_add_many(prefix, to_add)
     javascript_tag "#{line_item_instance_name_for(prefix)}.add_many(#{to_add.to_json});"
+  end
+
+  def apply_line_item_data(object, thing_klass, prefix = nil)
+    prefix = thing_klass.table_name if prefix.nil?
+    prefix = prefix.to_sym
+    input = params[prefix]
+    arr = []
+    if input
+      for i in input.values
+        t = thing_klass.new_or_edit(i)
+        arr << t
+      end
+    end
+    orig = object.send(prefix).map{|x| x}
+    object.send((prefix.to_s + "=").to_sym, arr)
+    fkey_name = object.class.table_name.singularize + "_id"
+    orig.map{|x| thing_klass.find(x.id)}.each{|x| x.destroy if x.send(fkey_name.to_sym).nil?}
+    arr
   end
 end

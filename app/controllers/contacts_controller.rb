@@ -207,23 +207,10 @@ class ContactsController < ApplicationController
   private
   #######
 
-  def _apply_line_item_data(contact)
-    @contact_methods = []
-    if params[:contact_methods]
-      for contact_method in params[:contact_methods].values
-        p = ContactMethod.new_or_edit(contact_method)
-        @contact_methods << p
-      end
-    end
-    orig = contact.contact_methods.map{|x| x}
-    contact.contact_methods = @contact_methods
-    orig.map{|x| ContactMethod.find(x.id)}.each{|x| x.destroy if x.contact_id.nil?}
-  end
-
   def _save
     @contact.contact_types = ContactType.find(params[:contact_types]) if params[:contact_types]
     success = @contact.save
-    _apply_line_item_data(@contact)
+    @contact_methods = apply_line_item_data(@contact, ContactMethod)
     if @contact.user
       success = success and @contact.user.save
     end
