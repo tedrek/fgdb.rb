@@ -239,43 +239,56 @@ var ContactMethodFrontend = Class.create(LineItem, {
   },
 });
 
+  function three_to_one(hour, min, ampm) {
+        hour = parseInt(hour);
+        min = parseInt(min);
+        if(hour != 12 && ampm == "PM") {
+              hour += 12;
+             } else if(hour == 12 && ampm == "AM") {
+                  hour = 0;
+                 }
+        return hour + ":" + min;
+      }
 
-function three_to_one(hour, min, ampm) {
-  hour = parseInt(hour);
-  min = parseInt(min);
-  if(hour != 12 && ampm == "PM") {
-    hour += 12;
-  } else if(hour == 12 && ampm == "AM") {
-    hour = 0;
-  }
-  return hour + ":" + min;
-}
+  function one_to_three(one) {
+        arr = one.split(":");
+        hour = arr[0];
+        min = arr[1];
+        ampm = "AM";
+        if(hour >= 12) {
+              if(hour != 12) {
+                    hour -= 12;
+                  }
+              ampm = "PM";
+            } else if (hour == 0) {
+                  hour = 12;
+                }
+        hour = "" + hour;
+        return [hour, min, ampm];
+      }
 
-function one_to_three(one) {
-  arr = one.split(":");
-  hour = arr[0];
-  min = arr[1];
-  ampm = "AM";
-  if(hour >= 12) {
-    if(hour != 12) {
-      hour -= 12;
-    }
-    ampm = "PM";
-  } else if (hour == 0) {
-    hour = 12;
-  }
-  hour = "" + hour;
-  return [hour, min, ampm];
-}
 
 var VolunteerShiftFrontend = Class.create(LineItem, {
   prefix: 'volunteer_shifts',
-  linelist: ['volunteer_task_type_id', 'slot_number'],
+  linelist: ['volunteer_task_type_id', 'slot_number', 'date_start_hour', 'date_start_minute', 'date_start_ampm'],
 
   edit_hook: function(id) {
-    thing = $(id);
+    var thing = $(id);
     $('volunteer_task_type_id').value = this.getValueBySelector(thing, ".volunteer_task_type_id");
     $('slot_number').value = this.getValueBySelector(thing, ".slot_number");
+    var a = one_to_three(this.getValueBySelector(thing, ".start_time"));
+    if(a[0].length == 1) {
+      a[0] = "0" + a[0];
+    }
+    if(a[2] == "AM") {
+      a[2] = "0";
+    }
+    if(a[2] == "PM") {
+      a[2] = "1";
+    }
+    $('date_start_hour').value = a[0];
+    $('date_start_minute').value = a[1];
+    $('date_start_ampm').value = a[2];
     $('volunteer_task_type_id').focus();
   },
 
@@ -287,6 +300,15 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     args = new Object();
     args['slot_number'] = $('slot_number').value;
     args['volunteer_task_type_id'] = $('volunteer_task_type_id').value;
+    var hour = $('date_start_hour').value;
+    var minute = $('date_start_minute').value;
+    var ampm = $('date_start_ampm').value;
+    if(ampm == "0") {
+      ampm = "AM";
+    } else if (ampm == "1") {
+      ampm = "PM";
+    }
+    args['start_time'] = three_to_one(hour, minute, ampm);
 
     this.add(args);
     $('volunteer_task_type_id').selectedIndex = 0; //should be default, but it's yucky
@@ -298,9 +320,11 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
   make_hidden_hook: function (args, tr) {
     var slot_number = args['slot_number'];
     var volunteer_task_type_id = args['volunteer_task_type_id'];
+    var start_time = args['start_time'];
 
     tr.appendChild(this.make_hidden("volunteer_task_type_id", volunteer_task_types[volunteer_task_type_id], volunteer_task_type_id));
     tr.appendChild(this.make_hidden("slot_number", slot_number, slot_number));
+    tr.appendChild(this.make_hidden("start_time", one_to_three(start_time), start_time ));
   },
 
 });

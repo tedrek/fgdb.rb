@@ -18,6 +18,14 @@ class VolunteerShift < ActiveRecord::Base
     (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 
+  def start_time
+    read_attribute(:start_time).strftime("%H:%M")
+  end
+
+  def start_time=(str)
+    write_attribute(:start_time, str.strptime("%H:%M"))
+  end
+
   def fill_in_available
     Thread.current['volskedj_fillin_processing'] ||= []
     if Thread.current['volskedj_fillin_processing'].include?(self.id)
