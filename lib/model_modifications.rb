@@ -253,9 +253,9 @@ class ActiveRecord::Base
   end
   
   def attributes_with_editable=(hash)
-    should_check = editable?
-    before = attributes
-    retval = self.attributes = hash
+    should_check = !editable?
+    before = attributes.clone
+    retval = (self.attributes=(hash))
     after = attributes
     if should_check
       if before != after
