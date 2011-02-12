@@ -240,12 +240,10 @@ var ContactMethodFrontend = Class.create(LineItem, {
 });
 
   function three_to_one(hour, min, ampm) {
-        hour = parseInt(hour);
-        min = parseInt(min);
-        if(hour != 12 && ampm == "PM") {
-              hour += 12;
-             } else if(hour == 12 && ampm == "AM") {
-                  hour = 0;
+        if(hour != "12" && ampm == "PM") {
+          hour = "" + (parseInt(hour) + 12);
+             } else if(hour == "12" && ampm == "AM") {
+                  hour = "0";
                  }
         return hour + ":" + min;
       }
@@ -267,6 +265,9 @@ var ContactMethodFrontend = Class.create(LineItem, {
         return [hour, min, ampm];
       }
 
+function three_to_display(arr) {
+  return arr[0] + ":" + arr[1] + " " + arr[2];
+}
 
 var VolunteerShiftFrontend = Class.create(LineItem, {
   prefix: 'volunteer_shifts',
@@ -324,7 +325,7 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
 
     tr.appendChild(this.make_hidden("volunteer_task_type_id", volunteer_task_types[volunteer_task_type_id], volunteer_task_type_id));
     tr.appendChild(this.make_hidden("slot_number", slot_number, slot_number));
-    tr.appendChild(this.make_hidden("start_time", one_to_three(start_time), start_time ));
+    tr.appendChild(this.make_hidden("start_time", three_to_display(one_to_three(start_time)), start_time ));
   },
 
 });
