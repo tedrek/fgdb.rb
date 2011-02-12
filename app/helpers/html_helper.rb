@@ -61,7 +61,7 @@ module HtmlHelper
     elsif mode == 'force'
       choices.each{|k,v|
         html += v
-        js += "$('#{obj_name}_#{k}_enabled').value = 'true'"
+        js += "$('#{obj_name}_#{k}_enabled').value = 'true';"
       }
       if choices.length == 0
         js += "$('#{obj_name}_nil').selected = true;"
