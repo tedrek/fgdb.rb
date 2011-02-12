@@ -3,6 +3,13 @@
 
 cashierable_enabled = true;
 
+function show_message(msg) {
+  var popup1 = new Popup();
+  popup1.content = msg;
+  popup1.style = {'border':'3px solid black','backgroundColor':'white'};
+  popup1.show();
+}
+
 var FixedAutocomplete = Class.create(Ajax.Autocompleter, {
   baseInitialize: function($super,element, update, options) {
     $super(element, update, options);

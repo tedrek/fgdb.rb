@@ -28,6 +28,10 @@ class Assignment < ActiveRecord::Base
     (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 
+  def has_notes
+    self.contact and self.contact.notes.length > 0
+  end
+
   def skedj_style(overlap, last)
     if self.cancelled?
       return 'cancelled'

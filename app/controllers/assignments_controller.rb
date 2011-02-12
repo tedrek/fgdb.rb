@@ -11,6 +11,19 @@ class AssignmentsController < ApplicationController
 
   helper :skedjul
 
+  def notes
+    a = Assignment.find_by_id(params[:id])
+    c = nil
+    if !(a.nil? or a.contact_id.nil?)
+      c = a.contact
+    end
+    str = c.nil? ? "No contact found" : "Contact ##{c.id} notes:\n#{c.notes}".gsub(/\n/, "<br/>")
+    render :update do |page|
+      page.hide loading_indicator_id("skedjul_#{params[:skedjul_loading_indicator_id]}_loading")
+      page << "show_message(#{str.to_json});"
+    end
+  end
+
   def index
     if params[:conditions]
     @skedj = Skedjul.new({
@@ -37,7 +50,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -53,7 +66,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "volunteer_shifts.volunteer_task_types.description, volunteer_shifts.slot_number",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
