@@ -145,7 +145,7 @@ class Conditions < ConditionsBase
     if @cancelled == 1
       return ["1=1"]
     else
-      return ["(attendance_type_id IS NULL OR attendance_types.cancelled = false)"]
+      return ["(attendance_type_id IS NULL OR attendance_types.cancelled = false OR attendance_types.cancelled IS NULL)"]
     end
   end
 
