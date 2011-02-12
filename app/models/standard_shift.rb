@@ -7,9 +7,10 @@ class StandardShift < Shift
   belongs_to :schedule
   has_many :work_shifts
 
-  def self.table_name
-    "standard_shifts"
-  end
+# breaks save, not sure why it was there in the first place, commit 7780205e
+#  def self.table_name
+#    "standard_shifts"
+#  end
 
   def name
     ret = self.job.name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
