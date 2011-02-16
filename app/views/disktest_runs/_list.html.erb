@@ -1,0 +1,29 @@
+<table style="white-space:nowrap; width: 100%;">
+  <tr>
+    <th>Disktest Run ID</th>
+
+    <th>Vendor</th>
+    <th>Model</th>
+    <th>Serial Number</th>
+
+    <th>Created at</th>
+    <th>Completed At</th>
+
+    <th>Status</th>
+  </tr>
+  <% for dr in @disktest_runs %>
+    <tr>
+      <td><%= h(dr.id) %></td>
+
+      <td><%= h(dr.vendor) %></td>
+      <td><%= h(dr.model) %></td>
+      <td><%= h(dr.serial_number) %></td>
+
+      <td><%= h(dr.created_at) %></td>
+      <td><%= h(dr.completed_at) %></td>
+
+      <td><%= h(dr.result) %></td>
+    </tr>
+  <% end %>
+</table>
+<%= will_paginate @disktest_runs, :params => {:conditions => params[:conditions]} %>

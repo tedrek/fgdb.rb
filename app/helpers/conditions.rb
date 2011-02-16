@@ -379,8 +379,13 @@ class Conditions < ConditionsBase
   end
 
   def serial_number_conditions(klass)
-
-    return ["system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
+    if klass == SpecSheet
+      return ["system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
+    elsif klass == DisktestRun
+      return ["serial_number = ?", @serial_number]
+    else
+      raise
+    end
   end
 
   def contribution_conditions(klass)
