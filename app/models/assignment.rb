@@ -8,6 +8,14 @@ class Assignment < ActiveRecord::Base
   after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
+  named_scope :is_after_today, lambda {||
+    { :conditions => ['(SELECT date FROM volunteer_events WHERE id = (SELECT volunteer_event_id FROM volunteer_shifts WHERE id = assignments.volunteer_shift_id)) > ?', Date.today] }
+  }
+
+  def description
+    self.volunteer_shift.volunteer_event.date.strftime("%D") + " " + self.time_range_s + " " + self.volunteer_shift.volunteer_task_type.description # FIXME someday
+  end
+
   def contact_display
     display_name
   end

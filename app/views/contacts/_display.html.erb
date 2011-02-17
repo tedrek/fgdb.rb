@@ -31,6 +31,13 @@
     <%= h(@contact.notes).gsub(/\n/, "<br />") %>
   </div>
 <% end %>
+<% str = @contact.scheduled_shifts %>
+<% if !str.blank? %>
+<div>
+Scheduled Volunteer Shifts:<br/>
+<%= str %>
+</div>
+<% end %>
 <% if options.fetch(:display_associations, true) %>
   <div class="associations">
     <% recent_purchases = @contact.get_recent_sale_totals() -%>
