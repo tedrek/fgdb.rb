@@ -354,7 +354,7 @@ var CSS = (function(){
 /*   EVENT FUNCTIONS                                                   */
 /* ******************************************************************* */
 
-var Event = (function(){
+var MyEvent = (function(){
 	var ev = {};
 	
 	// Resolve an event using IE's window.event if necessary
@@ -431,7 +431,7 @@ var Event = (function(){
 /* ******************************************************************* */
 /*   SCREEN FUNCTIONS                                                  */
 /* ******************************************************************* */
-var Screen = (function() {
+var MyScreen = (function() {
 	var screen = {};
 
 	// Get a reference to the body
@@ -614,7 +614,7 @@ var Screen = (function() {
 	return sort;
 })();
 
-var Position = (function() {
+var PopupPosition = (function() {
 	// Resolve a string identifier to an object
 	// ========================================
 	function resolveObject(s) {
@@ -805,7 +805,7 @@ Popup.hideAll = function() {
 	}
 };
 // Catch global events as a trigger to hide auto-hide popups
-Event.add(document, "mouseup", Popup.hideAll, false);
+MyEvent.add(document, "mouseup", Popup.hideAll, false);
 
 // A simple class method to show a popup without creating an instance
 Popup.show = function(divObject, referenceObject, position, options, modal) {
@@ -921,7 +921,7 @@ Popup.prototype.show = function(options, modal) {
 	
 	// Make sure clicks on the DIV don't bubble up to the document
 	this.div.onclick = function(e) { 
-		Event.cancelBubble(Event.resolve(e));
+	  MyEvent.cancelBubble(MyEvent.resolve(e));
 	};
 	this.div.onmouseup = this.div.onclick;
 	
@@ -1030,8 +1030,8 @@ Popup.prototype.setPosition = function() {
 			var h = m[2];
 
 			var ref = this.reference;
-			if (ref==null) { ref = Screen.getBody(); }
-			var p = Position.get(ref);
+			if (ref==null) { ref = MyScreen.getBody(); }
+			var p = PopupPosition.get(ref);
 			var refTop = p.top;
 			var refLeft = p.left;
 			var refWidth = DOM.getOuterWidth(ref);
@@ -1040,8 +1040,8 @@ Popup.prototype.setPosition = function() {
 			var width = DOM.getOuterWidth(this.div);
 			var height = DOM.getOuterHeight(this.div);
 			
-			var scrollLeft = Screen.getScrollLeft();
-			var scrollTop = Screen.getScrollTop();
+			var scrollLeft = MyScreen.getScrollLeft();
+			var scrollTop = MyScreen.getScrollTop();
 
 			// Set vertical position relative to reference object
 			if (v=="above") { this.setTop(refTop-height+this.offsetTop); }
@@ -1077,7 +1077,7 @@ Popup.prototype.setPosition = function() {
 // Append an object to the body
 // --------------------------------------------------------------------
 Popup.prototype.appendToBody = function(o) {
-	var body = Screen.getBody();
+	var body = MyScreen.getBody();
 	if (body && body.appendChild) {
 		body.appendChild(o);
 	}
@@ -1142,7 +1142,7 @@ Popup.prototype.addScreen = function() {
 		this.screen.style.backgroundColor = this.screenColor;
 		this.screen.className=Popup.screenClass;;
 		CSS.setStyle(this.screen,"opacity",this.screenOpacity);
-		this.screen.onclick = function(e) { Event.cancelBubble(Event.resolve(e)); }
+		this.screen.onclick = function(e) { MyEvent.cancelBubble(MyEvent.resolve(e)); }
 	}
 	if (this.screenIframeShim==null) {
 		this.screenIframeShim = this.createIframe();
@@ -1151,10 +1151,10 @@ Popup.prototype.addScreen = function() {
 		this.screenIframeShim.className=Popup.screenIframeClass;
 		CSS.setStyle(this.screenIframeShim,"opacity",0);
 	}
-	this.screen.style.width = Screen.getDocumentWidth()+"px";
-	this.screen.style.height = Screen.getDocumentHeight()+"px";
-	this.screenIframeShim.style.width = Screen.getDocumentWidth()+"px";
-	this.screenIframeShim.style.height = Screen.getDocumentHeight()+"px";
+	this.screen.style.width = MyScreen.getDocumentWidth()+"px";
+	this.screen.style.height = MyScreen.getDocumentHeight()+"px";
+	this.screenIframeShim.style.width = MyScreen.getDocumentWidth()+"px";
+	this.screenIframeShim.style.height = MyScreen.getDocumentHeight()+"px";
 	this.screenIframeShim.style.zIndex = Popup.minZIndex++;
 	this.screenIframeShim.style.visibility="visible";
 	this.screenIframeShim.style.display="block";
@@ -1171,11 +1171,11 @@ Popup.prototype.fitToScreen = function() {
 	var top = this.getTop();
 	var left = this.getLeft();
 	
-	var clientWidth = Screen.getViewportWidth();
-	var clientHeight = Screen.getViewportHeight();
+	var clientWidth = MyScreen.getViewportWidth();
+	var clientHeight = MyScreen.getViewportHeight();
 	
-	var scrollLeft = Screen.getScrollLeft();
-	var scrollTop = Screen.getScrollTop();
+	var scrollLeft = MyScreen.getScrollLeft();
+	var scrollTop = MyScreen.getScrollTop();
 
 	if (top-scrollTop+height>clientHeight) {
 		top = top - ((top+height) - (scrollTop+clientHeight));
@@ -1200,14 +1200,14 @@ Popup.prototype.center = function() {
 	var top = DOM.getOuterHeight(this.div);
 	if (isNaN(left)) { left=0; }
 	if (isNaN(top)) { top=0; }	
-	var clientW = Screen.getViewportWidth();
-	var clientH = Screen.getViewportHeight();
+	var clientW = MyScreen.getViewportWidth();
+	var clientH = MyScreen.getViewportHeight();
 	if (clientW!=null && clientH!=null) {
 		top = (clientH-top)/2;
 		left = (clientW-left)/2;
 	}
-	top += Screen.getScrollTop();
-	left += Screen.getScrollLeft();
+	top += MyScreen.getScrollTop();
+	left += MyScreen.getScrollLeft();
 	
 	this.div.style.top = top+this.offsetTop+"px";
 	this.div.style.left = left+this.offsetLeft+"px";
