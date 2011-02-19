@@ -79,6 +79,12 @@
      for contract in VolunteerTaskType.find(:all).sort_by(&:description)
        js += "volunteer_task_types[#{contract.id}] = '#{contract.description}';"
      end
+
+      js += 'var rosters = new Array;'
+      for i in Roster.find(:all)
+        js += "rosters[#{i.id}] = '#{i.name}';"
+      end
+
      javascript_tag js
  end %>
 

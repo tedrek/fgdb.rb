@@ -300,11 +300,13 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     var thing = $(id);
     $('volunteer_task_type_id').value = this.getValueBySelector(thing, ".volunteer_task_type_id");
     $('slot_number').value = this.getValueBySelector(thing, ".slot_number");
+    $('roster_id').value = this.getValueBySelector(thing, ".roster_id");
+    $('class_credit').checked = eval(this.getValueBySelector(thing, ".class_credit"));
     var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".start_time")));
     $('date_start_hour').value = a[0];
     $('date_start_minute').value = a[1];
     $('date_start_ampm').value = a[2];
-    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".end_time")));
+    a = three_to_form(one_to_three(this.getValueBySelector(thing, ".end_time")));
     $('date_end_hour').value = a[0];
     $('date_end_minute').value = a[1];
     $('date_end_ampm').value = a[2];
@@ -318,6 +320,8 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
 
     args = new Object();
     args['slot_number'] = $('slot_number').value;
+    args['class_credit'] = $('class_credit').checked;
+    args['roster_id'] = $('roster_id').value;
     args['volunteer_task_type_id'] = $('volunteer_task_type_id').value;
     var hour = $('date_start_hour').value;
     var minute = $('date_start_minute').value;
@@ -336,6 +340,8 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     $('date_start_hour').selectedIndex = 0;
     $('date_start_minute').selectedIndex = 0;
     $('date_start_ampm').selectedIndex = 0;
+    $('roster_id').selectedIndex = 0;
+    $('class_credit').checked = false;
     $('slot_number').value = $('slot_number').defaultValue;
     return false;
   },
@@ -347,15 +353,21 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     var volunteer_task_type_id = args['volunteer_task_type_id'];
     var start_time = args['start_time'];
     var end_time = args['end_time'];
+    var roster_id = args['roster_id'];
+    var class_credit = args['class_credit'];
 
     tr.appendChild(this.make_hidden("volunteer_task_type_id", volunteer_task_types[volunteer_task_type_id], volunteer_task_type_id));
+    tr.appendChild(this.make_hidden("class_credit", to_yesno(class_credit), class_credit));
+    tr.appendChild(this.make_hidden("roster_id", rosters[roster_id], roster_id));
     tr.appendChild(this.make_hidden("slot_number", slot_number, slot_number));
     tr.appendChild(this.make_hidden("start_time", three_to_display(one_to_three(start_time)), start_time ));
     tr.appendChild(this.make_hidden("end_time", three_to_display(one_to_three(end_time)), end_time ));
   },
 
 });
-
+function to_yesno(truefalse) {
+  return truefalse ? "yes" : "no";
+}
 var ResourceFrontend = Class.create(LineItem, {
   prefix: 'resources',
 
