@@ -50,7 +50,7 @@ class Assignment < ActiveRecord::Base
     if overlap and !(last.cancelled? or self.cancelled?) # TODO: FIXME: BUGGY?
       return 'hardconflict'
     end
-    if self.end_time > self.volunteer_shift.end_time or self.start_time < self.volunteer_shift.send(:read_attribute, :start_time)
+    if self.end_time > self.volunteer_shift.send(:read_attribute, :end_time) or self.start_time < self.volunteer_shift.send(:read_attribute, :start_time)
       return 'mediumconflict'
     end
     if self.attendance_type_id

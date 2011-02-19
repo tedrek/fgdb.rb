@@ -15,7 +15,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def time_range_s
-    (self.start_time("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
+    (self.start_time("%I:%M") + ' - ' + self.end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 
   def start_time(format = "%H:%M")
@@ -26,6 +26,14 @@ class VolunteerShift < ActiveRecord::Base
     write_attribute(:start_time, str.strptime("%H:%M"))
   end
 
+  def end_time(format = "%H:%M")
+    read_attribute(:end_time).strftime(format)
+  end
+
+  def end_time=(str)
+    write_attribute(:end_time, str.strptime("%H:%M"))
+  end
+
   def fill_in_available
     Thread.current['volskedj_fillin_processing'] ||= []
     if Thread.current['volskedj_fillin_processing'].include?(self.id)
@@ -34,7 +42,7 @@ class VolunteerShift < ActiveRecord::Base
     begin
       Thread.current['volskedj_fillin_processing'].push(self.id)
       Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy}
-      inputs = [[time_to_int(self.read_attribute(:start_time)), time_to_int(self.end_time)]]
+      inputs = [[time_to_int(self.read_attribute(:start_time)), time_to_int(self.read_attribute(:end_time))]]
       Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| !x.cancelled?}.each{|x|
         inputs.push([time_to_int(x.start_time), time_to_int(x.end_time)])
       }

@@ -3,11 +3,12 @@
 <% kdh = {:onkeydown => line_item_on_keydown("volunteer_shifts")} %>
 <% interface[:slot] = text_field_tag 'slot_number', nil, kdh %>
 <% interface[:start_time] = select_hour(nil, {:twelve_hour => true, :field_name => "start_hour", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "start_minute", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "start_ampm", :include_blank => true}, kdh) %>
+<% interface[:end_time] = select_hour(nil, {:twelve_hour => true, :field_name => "end_hour", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "end_minute", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "end_ampm", :include_blank => true}, kdh) %>
 
 <% values = [] %>
 <% if @volunteer_event.volunteer_shifts
     values = @volunteer_event.volunteer_shifts.map{|x|
-      x = x.to_hash(:id, :slot_number, :volunteer_task_type_id, :start_time)
+      x = x.to_hash(:id, :slot_number, :volunteer_task_type_id, :start_time, :end_time)
       x
     }
   end %>

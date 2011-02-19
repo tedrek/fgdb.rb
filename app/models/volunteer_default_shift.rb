@@ -63,7 +63,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.volunteer_default_shift_id = ds.id
           s.volunteer_event_id = ve.id
           s.send(:write_attribute, :start_time, ds.start_time)
-          s.end_time = ds.end_time
+          s.send(:write_attribute, :end_time, ds.end_time)
           s.volunteer_task_type_id = ds.volunteer_task_type_id
           s.slot_number = num
           s.roster_id = ds.roster_id
