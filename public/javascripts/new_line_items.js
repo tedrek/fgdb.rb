@@ -96,6 +96,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
       self.copy(id);
     };
     if(this.copyable) {
+      td.appendChild(document.createTextNode(' '));
       a.appendChild(document.createTextNode('c'));
       a.className = 'disable_link';
       td.appendChild(a);
@@ -339,6 +340,7 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     return false;
   },
 
+  copyable: true,
 
   make_hidden_hook: function (args, tr) {
     var slot_number = args['slot_number'];
