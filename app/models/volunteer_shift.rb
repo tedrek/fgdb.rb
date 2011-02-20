@@ -1,5 +1,5 @@
 class VolunteerShift < ActiveRecord::Base
-  validates_presence_of :volunteer_task_type_id
+#  validates_presence_of :volunteer_task_type_id
   validates_presence_of :roster_id
   validates_presence_of :slot_number
   validates_presence_of :end_time

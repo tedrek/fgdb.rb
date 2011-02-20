@@ -318,7 +318,7 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
   },
 
   add_from_form_hook: function() {
-    if((eexists('slot_number') && $('slot_number').value == '') || $('volunteer_task_type_id').selectedIndex == 0) {
+    if((eexists('slot_number') && $('slot_number').value == '')) {
       return true;
     }
 
