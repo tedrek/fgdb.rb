@@ -192,9 +192,9 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 // ALWAYS: classes, then mixins, then hash of methods
 
 
-
-
-
+function eexists(eid) {
+  return ($(eid) != null);
+}
 
 var ContactMethodFrontend = Class.create(LineItem, {
   prefix: 'contact_methods',
@@ -294,12 +294,16 @@ function form_ampm(ampm) {
 
 var VolunteerShiftFrontend = Class.create(LineItem, {
   prefix: 'volunteer_shifts',
-  linelist: ['volunteer_task_type_id', 'class_credit', 'roster_id', 'slot_number', 'date_start_hour', 'date_start_minute', 'date_start_ampm', 'date_end_hour', 'date_end_minute', 'date_end_ampm'],
+  linelist: ['volunteer_task_type_id', 'class_credit', 'roster_id', 'slot_number', 'slot_count', 'date_start_hour', 'date_start_minute', 'date_start_ampm', 'date_end_hour', 'date_end_minute', 'date_end_ampm'],
 
   edit_hook: function(id) {
     var thing = $(id);
     $('volunteer_task_type_id').value = this.getValueBySelector(thing, ".volunteer_task_type_id");
-    $('slot_number').value = this.getValueBySelector(thing, ".slot_number");
+    if(eexists('slot_number')) {
+      $('slot_number').value = this.getValueBySelector(thing, ".slot_number");
+    } else {
+      $('slot_count').value = this.getValueBySelector(thing, ".slot_count");
+    }
     $('roster_id').value = this.getValueBySelector(thing, ".roster_id");
     $('class_credit').checked = eval(this.getValueBySelector(thing, ".class_credit"));
     var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".start_time")));
@@ -314,12 +318,16 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
   },
 
   add_from_form_hook: function() {
-    if($('slot_number').value == '' || $('volunteer_task_type_id').selectedIndex == 0) {
+    if((eexists('slot_number') && $('slot_number').value == '') || $('volunteer_task_type_id').selectedIndex == 0) {
       return true;
     }
 
     args = new Object();
-    args['slot_number'] = $('slot_number').value;
+    if(eexists('slot_number')) {
+      args['slot_number'] = $('slot_number').value;
+    } else {
+      args['slot_count'] = $('slot_count').value;
+    }
     args['class_credit'] = $('class_credit').checked;
     args['roster_id'] = $('roster_id').value;
     args['volunteer_task_type_id'] = $('volunteer_task_type_id').value;
@@ -342,14 +350,17 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     $('date_start_ampm').selectedIndex = 0;
     $('roster_id').selectedIndex = 0;
     $('class_credit').checked = false;
-    $('slot_number').value = $('slot_number').defaultValue;
+    if(eexists('slot_number')) {
+      $('slot_number').value = $('slot_number').defaultValue;
+    } else {
+      $('slot_count').value = $('slot_count').defaultValue;
+    }
     return false;
   },
 
   copyable: true,
 
   make_hidden_hook: function (args, tr) {
-    var slot_number = args['slot_number'];
     var volunteer_task_type_id = args['volunteer_task_type_id'];
     var start_time = args['start_time'];
     var end_time = args['end_time'];
@@ -359,7 +370,13 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     tr.appendChild(this.make_hidden("volunteer_task_type_id", volunteer_task_types[volunteer_task_type_id], volunteer_task_type_id));
     tr.appendChild(this.make_hidden("class_credit", to_yesno(class_credit), class_credit));
     tr.appendChild(this.make_hidden("roster_id", rosters[roster_id], roster_id));
-    tr.appendChild(this.make_hidden("slot_number", slot_number, slot_number));
+    if(eexists('slot_number')) {
+      var slot_number = args['slot_number'];
+      tr.appendChild(this.make_hidden("slot_number", slot_number, slot_number));
+    } else {
+      var slot_count = args['slot_count'];
+      tr.appendChild(this.make_hidden("slot_count", slot_count, slot_count));
+    }
     tr.appendChild(this.make_hidden("start_time", three_to_display(one_to_three(start_time)), start_time ));
     tr.appendChild(this.make_hidden("end_time", three_to_display(one_to_three(end_time)), end_time ));
   },

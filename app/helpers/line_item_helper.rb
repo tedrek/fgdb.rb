@@ -37,7 +37,8 @@ module LineItemHelper
   end
 
   def apply_line_item_data(object, thing_klass, prefix = nil)
-    prefix = thing_klass.table_name if prefix.nil?
+    tbl = thing_klass.table_name.to_s
+    prefix = tbl if prefix.nil?
     prefix = prefix.to_sym
     input = params[prefix]
     arr = []
@@ -47,8 +48,8 @@ module LineItemHelper
         arr << t
       end
     end
-    orig = object.send(prefix).map{|x| x}
-    object.send((prefix.to_s + "=").to_sym, arr)
+    orig = object.send(tbl.to_sym).map{|x| x}
+    object.send((tbl + "=").to_sym, arr)
     fkey_name = object.class.table_name.singularize + "_id"
     orig.map{|x| thing_klass.find(x.id)}.each{|x| x.destroy if x.send(fkey_name.to_sym).nil?}
     arr

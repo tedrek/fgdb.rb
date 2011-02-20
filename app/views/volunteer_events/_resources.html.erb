@@ -6,8 +6,9 @@
 <% interface[:end_time] = select_hour(nil, {:twelve_hour => true, :field_name => "end_hour2", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "end_minute2", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "end_ampm2", :include_blank => true}, kdh) %>
 
 <% values = [] %>
-<% if @volunteer_event.resources_volunteer_events
-    values = @volunteer_event.resources_volunteer_events.map{|x|
+<% things = @volunteer_event.class == VolunteerEvent ? @volunteer_event.resources_volunteer_events : @volunteer_event.resources_volunteer_default_events %>
+<% if things
+    values = things.map{|x|
       x = x.to_hash(:id, :start_time, :end_time, :roster_id, :resource_id)
       x
     }

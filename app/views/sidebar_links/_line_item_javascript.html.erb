@@ -73,7 +73,7 @@
     end
 %>
 
-<%= if ["volunteer_events"].include?(params[:controller]) 
+<%= if ["volunteer_events", 'volunteer_default_events'].include?(params[:controller]) 
       js = 'var volunteer_task_types = new Array;'
 
      for contract in VolunteerTaskType.find(:all).sort_by(&:description)

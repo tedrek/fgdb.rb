@@ -3,14 +3,23 @@
 <% kdh = {:onkeydown => line_item_on_keydown("volunteer_shifts")} %>
 <% interface[:class_credit] = check_box_tag "class_credit" %>
 <% interface[:roster] = '<select id="roster_id">' + options_from_collection_for_select([Roster.new(:name => ""),  Roster.find(:all)].flatten, "id", "name") + '</select>' %>
+<% slot_name = nil %>
+<% if @volunteer_event.class == VolunteerEvent %>
 <% interface[:slot] = text_field_tag 'slot_number', nil, kdh.merge({:size => 5}) %>
+<% slot_name = :slot_number %>
+<% else %>
+<% interface[:slot_count] = text_field_tag 'slot_count', nil, kdh.merge({:size => 5}) %>
+<% slot_name = :slot_count %>
+<% end %>
 <% interface[:start_time] = select_hour(nil, {:twelve_hour => true, :field_name => "start_hour", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "start_minute", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "start_ampm", :include_blank => true}, kdh) %>
 <% interface[:end_time] = select_hour(nil, {:twelve_hour => true, :field_name => "end_hour", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "end_minute", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "end_ampm", :include_blank => true}, kdh) %>
 
 <% values = [] %>
-<% if @volunteer_event.volunteer_shifts
-    values = @volunteer_event.volunteer_shifts.map{|x|
-      x = x.to_hash(:id, :slot_number, :volunteer_task_type_id, :start_time, :end_time, :roster_id, :class_credit)
+<% things = @volunteer_event.class == VolunteerEvent ? @volunteer_event.volunteer_shifts : @volunteer_event.volunteer_default_shifts%>
+
+<% if things
+    values = things.map{|x|
+      x = x.to_hash(:id, slot_name, :volunteer_task_type_id, :start_time, :end_time, :roster_id, :class_credit)
       x
     }
   end %>

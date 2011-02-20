@@ -20,7 +20,9 @@ class VolunteerDefaultEventsController < ApplicationController
   def create
     @volunteer_default_event = VolunteerDefaultEvent.new(params[:volunteer_default_event])
 
+    _save
     if @volunteer_default_event.save
+      _after_save
       flash[:notice] = 'VolunteerDefaultEvent was successfully created.'
       redirect_to({:action => "show", :id => @volunteer_default_event.id})
     else
@@ -31,12 +33,24 @@ class VolunteerDefaultEventsController < ApplicationController
   def update
     @volunteer_default_event = VolunteerDefaultEvent.find(params[:id])
 
+    _save
     if @volunteer_default_event.update_attributes(params[:volunteer_default_event])
+      _after_save
       flash[:notice] = 'VolunteerDefaultEvent was successfully updated.'
       redirect_to({:action => "show", :id => @volunteer_default_event.id})
     else
       render :action => "edit"
     end
+  end
+
+  def _save
+    @volunteer_shifts = apply_line_item_data(@volunteer_default_event, VolunteerDefaultShift, 'volunteer_shifts')
+    @resources = apply_line_item_data(@volunteer_default_event, ResourcesVolunteerDefaultEvent, 'resources_volunteer_events')
+  end
+
+  def _after_save
+    @volunteer_shifts.each{|x| x.save!}
+    @resources.each{|x| x.save!}
   end
 
   def destroy
