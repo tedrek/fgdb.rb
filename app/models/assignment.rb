@@ -24,6 +24,10 @@ class Assignment < ActiveRecord::Base
     (self.attendance_type and self.attendance_type.cancelled)
   end
 
+  def attended?
+    (self.attendance_type and !self.attendance_type.cancelled)
+  end
+
   def display_name
     if contact_id.nil?
       return "(available)"

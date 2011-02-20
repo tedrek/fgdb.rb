@@ -35,9 +35,16 @@
 <% if !str.blank? %>
 <div>
 Scheduled Volunteer Shifts:<br/>
-<%= str %>
+<%= str %><br />
 </div>
 <% end %>
+
+<% attends = @contact.assignments.select{|x| x.attended? and x.volunteer_shift.class_credit}.map{|x| x.volunteer_shift.volunteer_event}.map{|x| x.description + " on " + x.date.strftime("%D")}.join(", ") %>
+<% if !attends.blank? %>
+Attended Classes:<br />
+<%= attends %><br />
+<% end %>
+
 <% if options.fetch(:display_associations, true) %>
   <div class="associations">
     <% recent_purchases = @contact.get_recent_sale_totals() -%>
