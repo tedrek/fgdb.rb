@@ -15,10 +15,10 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def time_range_s
-    (self.start_time("%I:%M") + ' - ' + self.end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
+    (self.my_start_time("%I:%M") + ' - ' + self.my_end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 
-  def start_time(format = "%H:%M")
+  def my_start_time(format = "%H:%M")
     read_attribute(:start_time).strftime(format)
   end
 
@@ -26,15 +26,15 @@ class VolunteerShift < ActiveRecord::Base
     Time.mktime(2000, 01, 01, *time.split(":").map(&:to_i))
   end
 
-  def start_time=(str)
+  def my_start_time=(str)
     write_attribute(:start_time, VolunteerShift._parse_time(str))
   end
 
-  def end_time(format = "%H:%M")
+  def my_end_time(format = "%H:%M")
     read_attribute(:end_time).strftime(format)
   end
 
-  def end_time=(str)
+  def my_end_time=(str)
     write_attribute(:end_time, VolunteerShift._parse_time(str))
   end
 

@@ -306,11 +306,11 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     }
     $('roster_id').value = this.getValueBySelector(thing, ".roster_id");
     $('class_credit').checked = eval(this.getValueBySelector(thing, ".class_credit"));
-    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".start_time")));
+    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_start_time")));
     $('date_start_hour').value = a[0];
     $('date_start_minute').value = a[1];
     $('date_start_ampm').value = a[2];
-    a = three_to_form(one_to_three(this.getValueBySelector(thing, ".end_time")));
+    a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_end_time")));
     $('date_end_hour').value = a[0];
     $('date_end_minute').value = a[1];
     $('date_end_ampm').value = a[2];
@@ -377,8 +377,8 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
       var slot_count = args['slot_count'];
       tr.appendChild(this.make_hidden("slot_count", slot_count, slot_count));
     }
-    tr.appendChild(this.make_hidden("start_time", three_to_display(one_to_three(start_time)), start_time ));
-    tr.appendChild(this.make_hidden("end_time", three_to_display(one_to_three(end_time)), end_time ));
+    tr.appendChild(this.make_hidden("my_start_time", three_to_display(one_to_three(start_time)), start_time ));
+    tr.appendChild(this.make_hidden("my_end_time", three_to_display(one_to_three(end_time)), end_time ));
   },
 
 });
@@ -393,11 +393,11 @@ var VolunteerResourceFrontend = Class.create(LineItem, {
     var thing = $(id);
     $('roster_id2').value = this.getValueBySelector(thing, ".roster_id");
     $('resource_id').value = this.getValueBySelector(thing, ".resource_id");
-    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".start_time")));
+    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_start_time")));
     $('date_start_hour2').value = a[0];
     $('date_start_minute2').value = a[1];
     $('date_start_ampm2').value = a[2];
-    a = three_to_form(one_to_three(this.getValueBySelector(thing, ".end_time")));
+    a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_end_time")));
     $('date_end_hour2').value = a[0];
     $('date_end_minute2').value = a[1];
     $('date_end_ampm2').value = a[2];
@@ -444,8 +444,8 @@ var VolunteerResourceFrontend = Class.create(LineItem, {
     tr.appendChild(this.make_hidden("resource_id", vol_resources[resource_id], resource_id));
     tr.appendChild(this.make_hidden("roster_id", rosters[roster_id], roster_id));
 
-    tr.appendChild(this.make_hidden("start_time", three_to_display(one_to_three(start_time)), start_time ));
-    tr.appendChild(this.make_hidden("end_time", three_to_display(one_to_three(end_time)), end_time ));
+    tr.appendChild(this.make_hidden("my_start_time", three_to_display(one_to_three(start_time)), start_time ));
+    tr.appendChild(this.make_hidden("my_end_time", three_to_display(one_to_three(end_time)), end_time ));
   },
 
 });
