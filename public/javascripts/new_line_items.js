@@ -334,11 +334,11 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     var hour = $('date_start_hour').value;
     var minute = $('date_start_minute').value;
     var ampm = form_ampm($('date_start_ampm').value);
-    args['start_time'] = three_to_one(hour, minute, ampm);
+    args['my_start_time'] = three_to_one(hour, minute, ampm);
     hour = $('date_end_hour').value;
     minute = $('date_end_minute').value;
     ampm = form_ampm($('date_end_ampm').value);
-    args['end_time'] = three_to_one(hour, minute, ampm);
+    args['my_end_time'] = three_to_one(hour, minute, ampm);
 
     this.add(args);
     $('volunteer_task_type_id').selectedIndex = 0; //should be default, but it's yucky
@@ -362,8 +362,8 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
 
   make_hidden_hook: function (args, tr) {
     var volunteer_task_type_id = args['volunteer_task_type_id'];
-    var start_time = args['start_time'];
-    var end_time = args['end_time'];
+    var start_time = args['my_start_time'];
+    var end_time = args['my_end_time'];
     var roster_id = args['roster_id'];
     var class_credit = args['class_credit'];
 
@@ -415,11 +415,11 @@ var VolunteerResourceFrontend = Class.create(LineItem, {
     var hour = $('date_start_hour2').value;
     var minute = $('date_start_minute2').value;
     var ampm = form_ampm($('date_start_ampm2').value);
-    args['start_time'] = three_to_one(hour, minute, ampm);
+    args['my_start_time'] = three_to_one(hour, minute, ampm);
     hour = $('date_end_hour2').value;
     minute = $('date_end_minute2').value;
     ampm = form_ampm($('date_end_ampm2').value);
-    args['end_time'] = three_to_one(hour, minute, ampm);
+    args['my_end_time'] = three_to_one(hour, minute, ampm);
 
     this.add(args);
     $('date_end_hour2').selectedIndex = 0;
@@ -436,8 +436,8 @@ var VolunteerResourceFrontend = Class.create(LineItem, {
   copyable: true,
 
   make_hidden_hook: function (args, tr) {
-    var start_time = args['start_time'];
-    var end_time = args['end_time'];
+    var start_time = args['my_start_time'];
+    var end_time = args['my_end_time'];
     var roster_id = args['roster_id'];
     var resource_id = args['resource_id'];
 

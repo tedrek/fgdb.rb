@@ -19,7 +19,7 @@
 
 <% if things
     values = things.map{|x|
-      x = x.to_hash(:id, slot_name, :volunteer_task_type_id, :start_time, :end_time, :roster_id, :class_credit)
+      x = x.to_hash(:id, slot_name, :volunteer_task_type_id, :my_start_time, :my_end_time, :roster_id, :class_credit)
       x
     }
   end %>

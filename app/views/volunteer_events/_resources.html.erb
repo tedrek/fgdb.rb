@@ -9,7 +9,7 @@
 <% things = @volunteer_event.class == VolunteerEvent ? @volunteer_event.resources_volunteer_events : @volunteer_event.resources_volunteer_default_events %>
 <% if things
     values = things.map{|x|
-      x = x.to_hash(:id, :start_time, :end_time, :roster_id, :resource_id)
+      x = x.to_hash(:id, :my_start_time, :my_end_time, :roster_id, :resource_id)
       x
     }
   end %>
