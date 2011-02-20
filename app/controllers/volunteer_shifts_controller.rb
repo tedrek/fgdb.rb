@@ -33,7 +33,7 @@ class VolunteerShiftsController < ApplicationController
       :thing_table_name => "volunteer_shifts",
       :thing_description => "volunteer_shifts.time_range_s",
       :thing_link_id => "volunteer_shifts.id",
-      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
+      :thing_links => [[:edit, :popup], [:destroy, :confirm]] # TODO: impliment [:copy, :popup], that works across multiple events
 
       }, params)
 
@@ -44,46 +44,15 @@ class VolunteerShiftsController < ApplicationController
     end
   end
 
-  def copy
-    @volunteer_shift = VolunteerShift.find(params[:id])
-    @volunteer_shift = @volunteer_shift.clone
-    render :action => "new"
-  end
-
-  def new
-    @volunteer_shift = VolunteerShift.new
-  end
-
   def edit
-    @volunteer_shift = VolunteerShift.find(params[:id])
-  end
-
-  def create
-    @volunteer_shift = VolunteerShift.new(params[:volunteer_shift])
-
-    if @volunteer_shift.save
-      flash[:notice] = 'VolunteerShift was successfully created.'
-      redirect_to({:action => "index"})
-    else
-      render :action => "new"
-    end
-  end
-
-  def update
-    @volunteer_shift = VolunteerShift.find(params[:id])
-
-    if @volunteer_shift.update_attributes(params[:volunteer_shift])
-      flash[:notice] = 'VolunteerShift was successfully updated.'
-      redirect_to({:action => "index"})
-    else
-      render :action => "edit"
-    end
+    vs = VolunteerShift.find(params[:id])
+    redirect_to :controller => "volunteer_events", :id => vs.volunteer_event_id, :action => "edit"
   end
 
   def destroy
-    @volunteer_shift = VolunteerShift.find(params[:id])
-    @volunteer_shift.destroy
+    vs = VolunteerShift.find(params[:id])
+    vs.destroy
 
-    redirect_to({:action => "index"})
+    redirect_to :controller => "volunteer_events", :id => vs.volunteer_event_id, :action => "edit"
   end
 end

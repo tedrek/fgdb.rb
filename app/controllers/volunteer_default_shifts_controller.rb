@@ -41,7 +41,7 @@ class VolunteerDefaultShiftsController < ApplicationController
       :thing_table_name => "volunteer_default_shifts",
       :thing_description => "describe",
       :thing_link_id => "volunteer_default_shifts.id",
-      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
+      :thing_links => [[:edit, :popup], [:destroy, :confirm]]
 
       }, params)
 
@@ -52,46 +52,15 @@ class VolunteerDefaultShiftsController < ApplicationController
     end
   end
 
-  def copy
-    @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
-    @volunteer_default_shift = @volunteer_default_shift.clone
-    render :action => "new"
-  end
-
-  def new
-    @volunteer_default_shift = VolunteerDefaultShift.new
-  end
-
   def edit
     @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
-  end
-
-  def create
-    @volunteer_default_shift = VolunteerDefaultShift.new(params[:volunteer_default_shift])
-
-    if @volunteer_default_shift.save
-      flash[:notice] = 'VolunteerDefaultShift was successfully created.'
-      redirect_to({:action => "index"})
-    else
-      render :action => "new"
-    end
-  end
-
-  def update
-    @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
-
-    if @volunteer_default_shift.update_attributes(params[:volunteer_default_shift])
-      flash[:notice] = 'VolunteerDefaultShift was successfully updated.'
-      redirect_to({:action => "index"})
-    else
-      render :action => "edit"
-    end
+    redirect_to({:controller => "volunteer_default_events", :action => "edit", :id => @volunteer_default_shift.volunteer_default_event_id})
   end
 
   def destroy
     @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
     @volunteer_default_shift.destroy
 
-    redirect_to({:action => "index"})
+    redirect_to({:controller => "volunteer_default_events", :action => "edit", :id => @volunteer_default_shift.volunteer_default_event_id})
   end
 end
