@@ -45,10 +45,12 @@ class VolunteerEventsController < ApplicationController
 
   def _save
     @volunteer_shifts = apply_line_item_data(@volunteer_event, VolunteerShift)
+    @resources = apply_line_item_data(@volunteer_event, ResourcesVolunteerEvent)
   end
 
   def _after_save
     @volunteer_shifts.each{|x| x.save!}
+    @resources.each{|x| x.save!}
   end
 
   def destroy

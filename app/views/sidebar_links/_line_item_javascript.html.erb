@@ -85,6 +85,11 @@
         js += "rosters[#{i.id}] = '#{i.name}';"
       end
 
+      js += 'var vol_resources = new Array;'
+      for i in Resource.find(:all)
+        js += "vol_resources[#{i.id}] = '#{i.name}';"
+      end
+
      javascript_tag js
  end %>
 

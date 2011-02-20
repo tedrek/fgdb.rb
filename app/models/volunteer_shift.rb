@@ -22,12 +22,12 @@ class VolunteerShift < ActiveRecord::Base
     read_attribute(:start_time).strftime(format)
   end
 
-  def _parse_time(time)
+  def self._parse_time(time)
     Time.mktime(2000, 01, 01, *time.split(":").map(&:to_i))
   end
 
   def start_time=(str)
-    write_attribute(:start_time, _parse_time(str))
+    write_attribute(:start_time, VolunteerShift._parse_time(str))
   end
 
   def end_time(format = "%H:%M")
@@ -35,7 +35,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def end_time=(str)
-    write_attribute(:end_time, _parse_time(str))
+    write_attribute(:end_time, VolunteerShift._parse_time(str))
   end
 
   def fill_in_available

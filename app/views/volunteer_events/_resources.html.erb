@@ -1,0 +1,16 @@
+<% kdh = {:onkeydown => line_item_on_keydown("resources_volunteer_events")} %>
+<% interface = OH.new %>
+<% interface[:resource] = '<select id="resource_id">' + options_from_collection_for_select([Resource.new(:name => ""),  Resource.find(:all)].flatten, "id", "name") + '</select>' %>
+<% interface[:roster] = '<select id="roster_id2">' + options_from_collection_for_select([Roster.new(:name => ""),  Roster.find(:all)].flatten, "id", "name") + '</select>' %>
+<% interface[:start_time] = select_hour(nil, {:twelve_hour => true, :field_name => "start_hour2", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "start_minute2", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "start_ampm2", :include_blank => true}, kdh) %>
+<% interface[:end_time] = select_hour(nil, {:twelve_hour => true, :field_name => "end_hour2", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "end_minute2", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "end_ampm2", :include_blank => true}, kdh) %>
+
+<% values = [] %>
+<% if @volunteer_event.resources_volunteer_events
+    values = @volunteer_event.resources_volunteer_events.map{|x|
+      x = x.to_hash(:id, :start_time, :end_time, :roster_id, :resource_id)
+      x
+    }
+  end %>
+
+<%= line_item("resources_volunteer_events", "VolunteerResourceFrontend", interface, values) %>
