@@ -54,12 +54,12 @@ class VolunteerDefaultShift < ActiveRecord::Base
           ve = VolunteerEvent.find(:all, :conditions => ["volunteer_default_event_id = ? AND date = ?", ds.volunteer_default_event_id, x]).first
           if !ve
             ve = VolunteerEvent.new
-            ve.description = ds.volunteer_default_event.description
             ve.volunteer_default_event_id = ds.volunteer_default_event_id
-            ve.notes = ds.volunteer_default_event.notes
             ve.date = x
-            ve.save!
           end
+          ve.description = ds.volunteer_default_event.description
+          ve.notes = ds.volunteer_default_event.notes
+          ve.save!
           s = VolunteerShift.new()
           s.volunteer_default_shift_id = ds.id
           s.volunteer_event_id = ve.id
