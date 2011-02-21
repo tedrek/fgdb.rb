@@ -20,7 +20,7 @@ module LineItemHelper
 
   def line_item_form_for(prefix, form_oh)
     a = [(form_oh.keys.map{|x| x.to_s.titleize} + [""]), ([{:id => (prefix) + "_form"}] + form_oh.values.map{|x| x.to_s} + [""])]
-    make_table(a, {:id => (prefix) + "_lines", :border => "0"})
+    make_table(a, {:id => (prefix) + "_lines", :border => "0", :class => "line_item_table"})
   end
 
   def line_item_instance_name_for(prefix)
