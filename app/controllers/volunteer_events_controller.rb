@@ -1,4 +1,11 @@
 class VolunteerEventsController < ApplicationController
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['role_admin']} # FIXME
+    a
+  end
+  public
   layout :with_sidebar
 
   def index

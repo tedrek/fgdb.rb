@@ -18,6 +18,9 @@ class AssignmentsController < ApplicationController
       c = a.contact
     end
     str = c.nil? ? "No contact found" : "Contact ##{c.id} notes:\n#{c.notes}".gsub(/\n/, "<br/>")
+    if a.has_own_notes
+      str += "<hr />Assignment notes:<br />#{a.notes}"
+    end
     render :update do |page|
       page.hide loading_indicator_id("skedjul_#{params[:skedjul_loading_indicator_id]}_loading")
       page << "show_message(#{str.to_json});"

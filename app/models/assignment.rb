@@ -40,8 +40,12 @@ class Assignment < ActiveRecord::Base
     (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 
+  def has_own_notes
+    ((!self.notes.nil?) and self.notes.length > 0)
+  end
+
   def has_notes
-    self.contact and self.contact.notes.length > 0
+    (self.contact and self.contact.notes.length > 0) or has_own_notes
   end
 
   def skedj_style(overlap, last)

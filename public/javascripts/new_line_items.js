@@ -294,7 +294,7 @@ function form_ampm(ampm) {
 
 var VolunteerShiftFrontend = Class.create(LineItem, {
   prefix: 'volunteer_shifts',
-  linelist: ['volunteer_task_type_id', 'class_credit', 'roster_id', 'slot_number', 'slot_count', 'date_start_hour', 'date_start_minute', 'date_start_ampm', 'date_end_hour', 'date_end_minute', 'date_end_ampm'],
+  linelist: ['volunteer_task_type_id', 'class_credit', 'program_id', 'description', 'roster_id', 'slot_number', 'slot_count', 'date_start_hour', 'date_start_minute', 'date_start_ampm', 'date_end_hour', 'date_end_minute', 'date_end_ampm'],
 
   edit_hook: function(id) {
     var thing = $(id);
@@ -305,6 +305,8 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
       $('slot_count').value = this.getValueBySelector(thing, ".slot_count");
     }
     $('roster_id').value = this.getValueBySelector(thing, ".roster_id");
+    $('program_id').value = this.getValueBySelector(thing, ".program_id");
+    $('description').value = this.getValueBySelector(thing, ".description");
     $('class_credit').checked = eval(this.getValueBySelector(thing, ".class_credit"));
     var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_start_time")));
     $('date_start_hour').value = a[0];
@@ -330,6 +332,8 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     }
     args['class_credit'] = $('class_credit').checked;
     args['roster_id'] = $('roster_id').value;
+    args['program_id'] = $('program_id').value;
+    args['description'] = $('description').value;
     args['volunteer_task_type_id'] = $('volunteer_task_type_id').value;
     var hour = $('date_start_hour').value;
     var minute = $('date_start_minute').value;
@@ -349,6 +353,8 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     $('date_start_minute').selectedIndex = 0;
     $('date_start_ampm').selectedIndex = 0;
     $('roster_id').selectedIndex = 0;
+    $('program_id').selectedIndex = 0;
+    $('description').value = $('description').defaultValue;
     $('class_credit').checked = false;
     if(eexists('slot_number')) {
       $('slot_number').value = $('slot_number').defaultValue;
@@ -365,10 +371,14 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
     var start_time = args['my_start_time'];
     var end_time = args['my_end_time'];
     var roster_id = args['roster_id'];
+    var program_id = args['program_id'];
+    var description = args['description'];
     var class_credit = args['class_credit'];
 
     tr.appendChild(this.make_hidden("volunteer_task_type_id", volunteer_task_types[volunteer_task_type_id], volunteer_task_type_id));
     tr.appendChild(this.make_hidden("class_credit", to_yesno(class_credit), class_credit));
+    tr.appendChild(this.make_hidden("program_id", vol_progs[program_id], program_id));
+    tr.appendChild(this.make_hidden("description", description, description));
     tr.appendChild(this.make_hidden("roster_id", rosters[roster_id], roster_id));
     if(eexists('slot_number')) {
       var slot_number = args['slot_number'];

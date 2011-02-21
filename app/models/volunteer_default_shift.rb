@@ -6,8 +6,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
   validates_presence_of :slot_count
 
   belongs_to :volunteer_task_type
-
   belongs_to :volunteer_default_event
+  belongs_to :program
 
   named_scope :effective_at, lambda { |date|
     { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
@@ -56,12 +56,15 @@ class VolunteerDefaultShift < ActiveRecord::Base
             ve = VolunteerEvent.new
             ve.description = ds.volunteer_default_event.description
             ve.volunteer_default_event_id = ds.volunteer_default_event_id
+            ve.notes = ds.volunteer_default_event.notes
             ve.date = x
             ve.save!
           end
           s = VolunteerShift.new()
           s.volunteer_default_shift_id = ds.id
           s.volunteer_event_id = ve.id
+          s.program_id = ds.program_id
+          s.description = ds.description
           s.send(:write_attribute, :start_time, ds.start_time)
           s.send(:write_attribute, :end_time, ds.end_time)
           s.volunteer_task_type_id = ds.volunteer_task_type_id

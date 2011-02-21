@@ -6,6 +6,7 @@
       <tr><td>Date:</td><td><%= f.object.volunteer_shift.date %></td></tr>
       <tr><td>Time range:</td><td><%= f.object.volunteer_shift.time_range_s %></td></tr>
       <tr><td>Available time range:</td><td><%= [f.object.volunteer_shift.assignments.select{|x| x.contact_id.nil?}, f.object].flatten.sort_by(&:start_time).uniq.map{|x| x.time_range_s}.join(", ") %></td></tr>
+      <tr><td>Volunteer event notes:</td><td><%= (f.object.volunteer_shift.volunteer_event.notes || "").gsub('\n', '<br/>') %></td></tr>
     </table>
   </p>
 
@@ -32,3 +33,8 @@
   </p>
   <% end %>
 
+  <p>
+    Notes only get saved if a contact is assigned the shift, and get removed when the contact is removed from the shift.<br />
+    <%= f.label :notes %><br />
+    <%= f.text_area :notes %>
+  </p>
