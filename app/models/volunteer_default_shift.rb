@@ -41,25 +41,33 @@ class VolunteerDefaultShift < ActiveRecord::Base
       vs_conds = gconditions.dup
       vs_conds.date_enabled = "true"
       vs_conds.date_date_type = 'daily'
-      vs_conds.date_date = x.to_s
-      VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event]).each{|x| x.destroy} # TODO: destroy_all with the :include somehow..
+      vs_conds.date_date = x
+      VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event]).each{|y| y.destroy} # TODO: destroy_all with the :include somehow..
       ds_conds = gconditions.dup
       ds_conds.effective_at_enabled = "true"
-      ds_conds.effective_at = x.to_s
+      ds_conds.effective_at = x
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
+      puts ds_conds.conditions(VolunteerDefaultShift).inspect
       shifts = VolunteerDefaultShift.find(:all, :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])
       shifts.each{|ds|
+        myl = []
+        ve = VolunteerEvent.find(:all, :conditions => ["volunteer_default_event_id = ? AND date = ?", ds.volunteer_default_event_id, x]).first
+        if !ve
+          ve = VolunteerEvent.new
+          ve.volunteer_default_event_id = ds.volunteer_default_event_id
+          ve.date = x
+        else
+          myl = ve.volunteer_shifts.select{|y| ds.volunteer_task_type_id == y.volunteer_task_type_id}.map{|y| y.slot_number}
+        end
+        ve.description = ds.volunteer_default_event.description
+        ve.notes = ds.volunteer_default_event.notes
+        ve.save!
+        slot_number = 1
         (1..ds.slot_count).each{|num|
-          ve = VolunteerEvent.find(:all, :conditions => ["volunteer_default_event_id = ? AND date = ?", ds.volunteer_default_event_id, x]).first
-          if !ve
-            ve = VolunteerEvent.new
-            ve.volunteer_default_event_id = ds.volunteer_default_event_id
-            ve.date = x
+          while myl.include?(slot_number)
+            slot_number += 1
           end
-          ve.description = ds.volunteer_default_event.description
-          ve.notes = ds.volunteer_default_event.notes
-          ve.save!
           s = VolunteerShift.new()
           s.volunteer_default_shift_id = ds.id
           s.volunteer_event_id = ve.id
@@ -68,9 +76,10 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.send(:write_attribute, :start_time, ds.start_time)
           s.send(:write_attribute, :end_time, ds.end_time)
           s.volunteer_task_type_id = ds.volunteer_task_type_id
-          s.slot_number = num
+          s.slot_number = slot_number
           s.roster_id = ds.roster_id
           s.save!
+          myl << slot_number
         }
       }
     }
