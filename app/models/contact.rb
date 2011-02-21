@@ -98,6 +98,8 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE default_assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE gizmo_returns SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
