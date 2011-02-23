@@ -9,12 +9,41 @@ class VolunteerDefaultShift < ActiveRecord::Base
   belongs_to :volunteer_default_event
   belongs_to :program
 
+  has_one :default_assignment
+
+  after_save :save_default_assign
+
+  def save_default_assign
+    if self.default_assignment
+      self.default_assignment.save!
+    else
+      old = DefaultAssignment.find_by_volunteer_default_shift_id(self.id)
+      old.destroy if old
+    end
+  end
+
   named_scope :effective_at, lambda { |date|
     { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
   }
   named_scope :on_weekday, lambda { |wday|
     { :conditions => ['weekday_id = ?', wday] }
   }
+
+  def contact_id
+    da = self.default_assignment
+    return da.nil? ? nil : da.contact_id
+  end
+
+  def contact_id=(val)
+    val = nil if val and val.length == 0
+    da = self.default_assignment
+    if val.nil?
+      self.default_assignment = nil
+    else
+      da = self.default_assignment = DefaultAssignment.new(:volunteer_default_shift_id => self.id) if da.nil?
+      da.contact_id = val
+    end
+  end
 
   def skedj_style(overlap, last)
     overlap ? 'hardconflict' : 'shift'
@@ -36,7 +65,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
       gconditions = Conditions.new
     end
     (start_date..end_date).each{|x|
-      next if Holiday.is_holiday?(day)
+      next if Holiday.is_holiday?(x)
       w = Weekday.find(x.wday)
       next if !w.is_open
       vs_conds = gconditions.dup
@@ -65,6 +94,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
         ve.notes = ds.volunteer_default_event.notes
         ve.save!
         slot_number = 1
+        first = true
         (1..ds.slot_count).each{|num|
           while myl.include?(slot_number)
             slot_number += 1
@@ -80,7 +110,13 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.slot_number = slot_number
           s.roster_id = ds.roster_id
           s.save!
+          if first and ds.contact_id
+            a = s.assignments.first
+            a.contact_id = ds.contact_id
+            a.save!
+          end
           myl << slot_number
+          first = false
         }
       }
     }
