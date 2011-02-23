@@ -36,8 +36,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
       gconditions = Conditions.new
     end
     (start_date..end_date).each{|x|
+      next if Holiday.is_holiday?(day)
       w = Weekday.find(x.wday)
-      next if !w.is_open # TODO: holiday check too
+      next if !w.is_open
       vs_conds = gconditions.dup
       vs_conds.date_enabled = "true"
       vs_conds.date_date_type = 'daily'
