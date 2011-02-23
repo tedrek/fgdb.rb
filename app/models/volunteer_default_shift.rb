@@ -19,6 +19,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
     else
       old = DefaultAssignment.find_by_volunteer_default_shift_id(self.id)
       old.destroy if old
+      DefaultAssignment.find_all_by_volunteer_default_shift_id(nil).each{|x|
+        x.destroy # cleanup empty records
+      }
     end
   end
 
