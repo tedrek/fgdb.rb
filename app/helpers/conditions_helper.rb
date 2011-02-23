@@ -4,7 +4,7 @@ module ConditionsHelper
   private
 
   def html_for_assigned_condition(params_key)
-    ""
+    check_box params_key, "assigned"
   end
 
   def html_for_needs_checkin_condition(params_key)

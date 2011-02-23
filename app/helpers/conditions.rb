@@ -87,6 +87,13 @@ class Conditions < ConditionsBase
 
   attr_accessor :action
 
+  attr_accessor :assigned
+
+  def init_callback
+    @payment_method_id = PaymentMethod.cash.id
+    @assigned = true
+  end
+
   def contact
     if contact_id && !contact_id.to_s.empty?
       if( (! @contact) || (contact_id != @contact.id) )
@@ -154,7 +161,11 @@ class Conditions < ConditionsBase
   end
 
   def assigned_conditions(klass)
-    return ["contact_id IS NOT NULL"]
+    if @assigned
+      return ["contact_id IS NOT NULL"]
+    else
+      return ["contact_id IS NULL"]
+    end
   end
 
   def join_conditions(conds_a, conds_b)

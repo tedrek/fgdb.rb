@@ -85,6 +85,13 @@ class AssignmentsController < ApplicationController
     end
   end
 
+  def search
+    @conditions = Conditions.new
+    params[:conditions] ||= {}
+    @conditions.apply_conditions(params[:conditions])
+    @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "created_at ASC", :per_page => 50)
+  end
+
   def show
     @assignment = Assignment.find(params[:id])
   end
