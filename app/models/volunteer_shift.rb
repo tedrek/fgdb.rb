@@ -73,6 +73,11 @@ class VolunteerShift < ActiveRecord::Base
     self.date.strftime('%A, %B %d, %Y').gsub( ' 0', ' ' )
   end
 
+  def time_shift(val)
+    self.start_time += val
+    self.end_time += val
+  end
+
   def description_and_slot
     (self.volunteer_task_type_id * 1000) + self.slot_number
   end

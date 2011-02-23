@@ -24,6 +24,10 @@ class VolunteerDefaultEventsController < ApplicationController
     @volunteer_default_event = VolunteerDefaultEvent.find(params[:id])
   end
 
+  def copy
+    redirect_to :action => "show", :id => VolunteerDefaultEvent.find_by_id(params[:id]).copy_to(Weekday.find_by_id(params[:copy][:weekday_id]), hours_val(params[:copy])).id
+  end
+
   def create
     @volunteer_default_event = VolunteerDefaultEvent.new(params[:volunteer_default_event])
 

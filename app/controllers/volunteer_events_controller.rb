@@ -20,6 +20,10 @@ class VolunteerEventsController < ApplicationController
     @volunteer_event = VolunteerEvent.new
   end
 
+  def copy
+    redirect_to :action => "show", :id => VolunteerEvent.find_by_id(params[:id]).copy_to(Date.parse(params[:copy][:date]), hours_val(params[:copy])).id
+  end
+
   def edit
     @volunteer_event = VolunteerEvent.find(params[:id])
   end

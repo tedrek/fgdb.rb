@@ -57,6 +57,11 @@ class VolunteerDefaultShift < ActiveRecord::Base
     (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 
+  def time_shift(val)
+    self.start_time += val
+    self.end_time += val
+  end
+
   def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil)
     if gconditions
       gconditions = gconditions.dup

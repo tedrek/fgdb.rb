@@ -1,0 +1,16 @@
+<fieldset>
+<h3>Copy</h3>
+<% form_tag(:action => "copy", :id => @volunteer_event.id, :method => "post") do %>
+<div>
+<% if @volunteer_event.class == VolunteerDefaultEvent %>
+    <%= label "copy", :weekday_id %><br />
+    <%= select("copy", "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, :include_blank => true) %>
+<% else %>
+<%= calendar_box "copy", "date" %>
+<% end %>
+<%= label "sign", "Time change" %>
+<%= select("copy", "sign", {"+" => "+", "-" => "-"}) + text_field("copy", "hours", :size => 2) + ":" + text_field("copy", "minutes", :size => 2) %>
+</div>
+<%= submit_tag "Copy" %>
+<% end %>
+</fieldset>

@@ -1,4 +1,6 @@
 <h1>Editing volunteer_default_event</h1>
+  <% @volunteer_event = @volunteer_default_event %>
+  <%= render :partial => "volunteer_events/copy" %>
 
 <% form_for(@volunteer_default_event, :url => {:action => "update", :id => @volunteer_default_event.id}) do |f| %>
   <%= f.error_messages %>

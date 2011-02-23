@@ -29,6 +29,13 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def hours_val(cp)
+    mins = cp["minutes"].to_i
+    hours = cp["hours"].to_i
+    sign = (cp["sign"] == "-") ? -1 : 1
+    return 60 * (mins + (hours * 60)) * sign # secs
+  end
+
   rescue_from 'Exception', :with => :process_exception
 
   def rescue_as_normal
