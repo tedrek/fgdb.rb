@@ -42,7 +42,7 @@ class Contact < ActiveRecord::Base
   end
 
   def scheduled_shifts
-    a = self.assignments.is_after_today
+    a = self.assignments.is_after_today.not_yet_attended
     more = false
     if a.length > 5
       a = a[0,5]

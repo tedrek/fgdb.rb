@@ -129,6 +129,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.volunteer_task_type_id = ds.volunteer_task_type_id
           s.slot_number = slot_number
           s.roster_id = ds.roster_id
+          s.class_credit = ds.class_credit
           s.save!
           if first and ds.contact_id
             a = s.assignments.first

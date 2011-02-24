@@ -12,8 +12,10 @@ class Assignment < ActiveRecord::Base
     { :conditions => ['(SELECT date FROM volunteer_events WHERE id = (SELECT volunteer_event_id FROM volunteer_shifts WHERE id = assignments.volunteer_shift_id)) > ?', Date.today] }
   }
 
+  named_scope :not_yet_attended, :conditions => ['attendance_type_id IS NULL']
+
   def description
-    self.volunteer_shift.volunteer_event.date.strftime("%D") + " " + self.time_range_s + " " + self.volunteer_shift.volunteer_task_type.description # FIXME someday
+    self.volunteer_shift.volunteer_event.date.strftime("%D") + " " + self.time_range_s + " " + (self.volunteer_shift.volunteer_task_type_id.nil? ? self.volunteer_shift.volunteer_event.description : self.volunteer_shift.volunteer_task_type.description)
   end
 
   def contact_display
