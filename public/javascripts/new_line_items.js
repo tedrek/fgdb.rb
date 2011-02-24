@@ -1,5 +1,12 @@
 // redesign
 
+new_line_item_all_instances = [];
+function add_all_line_items() {
+  for (var i = 0; i < new_line_item_all_instances.length; i++) {
+    new_line_item_all_instances[i].on_add_all();
+  };
+}
+
 // the backends are mixins, then there's a common middle class which
 // includes the default backend, and each frontend subclasses the common
 // middle class and can include a mixin if it wants to
@@ -28,6 +35,13 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
   edit_hook: false,
   copyable: false,
   linelist: null,
+  add_on_save: false,
+
+  on_add_all: function() {
+    if(this.add_on_save) {
+      this.add_from_form_hook();
+    }
+  },
 
   update_hook: function() {
     return;
@@ -65,6 +79,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
   },
 
   initialize: function() {
+    new_line_item_all_instances.push(this);
     this.counter = 0;
     this.editing_id = undefined;
   },
@@ -199,6 +214,7 @@ function eexists(eid) {
 var ContactMethodFrontend = Class.create(LineItem, {
   prefix: 'contact_methods',
   linelist: ['contact_method_value'],
+  add_on_save: true,
 
   edit_hook: function(id) {
     thing = $(id);
