@@ -1,0 +1,2 @@
+module VolunteerDefaultShiftsHelper
+end

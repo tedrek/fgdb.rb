@@ -20,7 +20,7 @@ module LineItemHelper
 
   def line_item_form_for(prefix, form_oh)
     a = [(form_oh.keys.map{|x| x.to_s.titleize} + [""]), ([{:id => (prefix) + "_form"}] + form_oh.values.map{|x| x.to_s} + [""])]
-    make_table(a, {:id => (prefix) + "_lines", :border => "0"})
+    make_table(a, {:id => (prefix) + "_lines", :border => "0", :class => "line_item_table"})
   end
 
   def line_item_instance_name_for(prefix)
@@ -37,7 +37,8 @@ module LineItemHelper
   end
 
   def apply_line_item_data(object, thing_klass, prefix = nil)
-    prefix = thing_klass.table_name if prefix.nil?
+    tbl = thing_klass.table_name.to_s
+    prefix = tbl if prefix.nil?
     prefix = prefix.to_sym
     input = params[prefix]
     arr = []
@@ -47,8 +48,8 @@ module LineItemHelper
         arr << t
       end
     end
-    orig = object.send(prefix).map{|x| x}
-    object.send((prefix.to_s + "=").to_sym, arr)
+    orig = object.send(tbl.to_sym).map{|x| x}
+    object.send((tbl + "=").to_sym, arr)
     fkey_name = object.class.table_name.singularize + "_id"
     orig.map{|x| thing_klass.find(x.id)}.each{|x| x.destroy if x.send(fkey_name.to_sym).nil?}
     arr

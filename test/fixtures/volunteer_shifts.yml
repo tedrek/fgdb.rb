@@ -1,0 +1,19 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  volunteer_default_shift_id: 1
+  date: 2010-11-20
+  start_time: 2010-11-20 01:24:08
+  end_time: 2010-11-20 01:24:08
+  volunteer_task_type_id: 1
+  slot_number: 1
+  roster_id: 1
+
+two:
+  volunteer_default_shift_id: 1
+  date: 2010-11-20
+  start_time: 2010-11-20 01:24:08
+  end_time: 2010-11-20 01:24:08
+  volunteer_task_type_id: 1
+  slot_number: 1
+  roster_id: 1

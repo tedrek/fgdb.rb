@@ -96,6 +96,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
       self.copy(id);
     };
     if(this.copyable) {
+      td.appendChild(document.createTextNode(' '));
       a.appendChild(document.createTextNode('c'));
       a.className = 'disable_link';
       td.appendChild(a);
@@ -191,9 +192,9 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 // ALWAYS: classes, then mixins, then hash of methods
 
 
-
-
-
+function eexists(eid) {
+  return ($(eid) != null);
+}
 
 var ContactMethodFrontend = Class.create(LineItem, {
   prefix: 'contact_methods',
@@ -239,3 +240,241 @@ var ContactMethodFrontend = Class.create(LineItem, {
   },
 });
 
+  function three_to_one(hour, min, ampm) {
+        if(hour != "12" && ampm == "PM") {
+          hour = "" + (parseInt(hour) + 12);
+             } else if(hour == "12" && ampm == "AM") {
+                  hour = "0";
+                 }
+        return hour + ":" + min;
+      }
+
+  function one_to_three(one) {
+        arr = one.split(":");
+        hour = arr[0];
+        min = arr[1];
+        ampm = "AM";
+        if(hour >= 12) {
+              if(hour != 12) {
+                    hour -= 12;
+                  }
+              ampm = "PM";
+            } else if (hour == 0) {
+                  hour = 12;
+                }
+        hour = "" + hour;
+        return [hour, min, ampm];
+      }
+
+function three_to_form(a) {
+    if(a[0].length == 1) {
+      a[0] = "0" + a[0];
+    }
+    if(a[2] == "AM") {
+      a[2] = "0";
+    }
+    if(a[2] == "PM") {
+      a[2] = "1";
+    }
+  return a;
+}
+
+function three_to_display(arr) {
+  return arr[0] + ":" + arr[1] + " " + arr[2];
+}
+
+function form_ampm(ampm) {
+    if(ampm == "0") {
+      ampm = "AM";
+    } else if (ampm == "1") {
+      ampm = "PM";
+    }
+  return ampm;
+}
+
+function trigger_contact_field(el) {
+  // TODO
+}
+
+var VolunteerShiftFrontend = Class.create(LineItem, {
+  prefix: 'volunteer_shifts',
+  linelist: ['volunteer_task_type_id', 'contact_contact_id', 'class_credit', 'program_id', 'description', 'roster_id', 'slot_number', 'slot_count', 'date_start_hour', 'date_start_minute', 'date_start_ampm', 'date_end_hour', 'date_end_minute', 'date_end_ampm'],
+
+  edit_hook: function(id) {
+    var thing = $(id);
+    $('volunteer_task_type_id').value = this.getValueBySelector(thing, ".volunteer_task_type_id");
+    if(eexists('slot_number')) {
+      $('slot_number').value = this.getValueBySelector(thing, ".slot_number");
+    } else {
+      $('slot_count').value = this.getValueBySelector(thing, ".slot_count");
+    }
+    $('roster_id').value = this.getValueBySelector(thing, ".roster_id");
+    $('program_id').value = this.getValueBySelector(thing, ".program_id");
+    $('description').value = this.getValueBySelector(thing, ".description");
+    $('class_credit').checked = eval(this.getValueBySelector(thing, ".class_credit"));
+    if(eexists('contact_contact_id')) {
+      $('contact_contact_id').value = this.getValueBySelector(thing, ".contact_id");
+      trigger_contact_field($('contact_contact_id'));
+    }
+    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_start_time")));
+    $('date_start_hour').value = a[0];
+    $('date_start_minute').value = a[1];
+    $('date_start_ampm').value = a[2];
+    a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_end_time")));
+    $('date_end_hour').value = a[0];
+    $('date_end_minute').value = a[1];
+    $('date_end_ampm').value = a[2];
+    $('volunteer_task_type_id').focus();
+  },
+
+  add_from_form_hook: function() {
+    if((eexists('slot_number') && $('slot_number').value == '')) {
+      return true;
+    }
+
+    args = new Object();
+    if(eexists('slot_number')) {
+      args['slot_number'] = $('slot_number').value;
+    } else {
+      args['slot_count'] = $('slot_count').value;
+    }
+    args['class_credit'] = $('class_credit').checked;
+    args['roster_id'] = $('roster_id').value;
+    args['program_id'] = $('program_id').value;
+    args['description'] = $('description').value;
+    args['volunteer_task_type_id'] = $('volunteer_task_type_id').value;
+    var hour = $('date_start_hour').value;
+    var minute = $('date_start_minute').value;
+    var ampm = form_ampm($('date_start_ampm').value);
+    if(eexists('contact_contact_id')) {
+      args['contact_id'] = $('contact_contact_id').value;
+    }
+    args['my_start_time'] = three_to_one(hour, minute, ampm);
+    hour = $('date_end_hour').value;
+    minute = $('date_end_minute').value;
+    ampm = form_ampm($('date_end_ampm').value);
+    args['my_end_time'] = three_to_one(hour, minute, ampm);
+
+    this.add(args);
+    $('volunteer_task_type_id').selectedIndex = 0; //should be default, but it's yucky
+    $('date_end_hour').selectedIndex = 0;
+    $('date_end_minute').selectedIndex = 0;
+    $('date_end_ampm').selectedIndex = 0;
+    $('date_start_hour').selectedIndex = 0;
+    $('date_start_minute').selectedIndex = 0;
+    $('date_start_ampm').selectedIndex = 0;
+    $('roster_id').selectedIndex = 0;
+    $('program_id').selectedIndex = 0;
+    if(eexists('contact_contact_id')) {
+      $('contact_contact_id').value = '';
+      trigger_contact_field($('contact_contact_id'));
+    }
+    $('description').value = $('description').defaultValue;
+    $('class_credit').checked = false;
+    if(eexists('slot_number')) {
+      $('slot_number').value = $('slot_number').defaultValue;
+    } else {
+      $('slot_count').value = $('slot_count').defaultValue;
+    }
+    return false;
+  },
+
+  copyable: true,
+
+  make_hidden_hook: function (args, tr) {
+    var volunteer_task_type_id = args['volunteer_task_type_id'];
+    var start_time = args['my_start_time'];
+    var end_time = args['my_end_time'];
+    var roster_id = args['roster_id'];
+    var program_id = args['program_id'];
+    var description = args['description'];
+    var class_credit = args['class_credit'];
+
+    tr.appendChild(this.make_hidden("volunteer_task_type_id", volunteer_task_types[volunteer_task_type_id], volunteer_task_type_id));
+    if(eexists('contact_contact_id')) {
+      var contact_id = args['contact_id'];
+      tr.appendChild(this.make_hidden("contact_id", contact_id, contact_id)); // TODO: get their name over ajax
+    }
+    tr.appendChild(this.make_hidden("class_credit", to_yesno(class_credit), class_credit));
+    tr.appendChild(this.make_hidden("program_id", vol_progs[program_id], program_id));
+    tr.appendChild(this.make_hidden("description", description, description));
+    tr.appendChild(this.make_hidden("roster_id", rosters[roster_id], roster_id));
+    if(eexists('slot_number')) {
+      var slot_number = args['slot_number'];
+      tr.appendChild(this.make_hidden("slot_number", slot_number, slot_number));
+    } else {
+      var slot_count = args['slot_count'];
+      tr.appendChild(this.make_hidden("slot_count", slot_count, slot_count));
+    }
+    tr.appendChild(this.make_hidden("my_start_time", three_to_display(one_to_three(start_time)), start_time ));
+    tr.appendChild(this.make_hidden("my_end_time", three_to_display(one_to_three(end_time)), end_time ));
+  },
+
+});
+function to_yesno(truefalse) {
+  return truefalse ? "yes" : "no";
+}
+var VolunteerResourceFrontend = Class.create(LineItem, {
+  prefix: 'resources_volunteer_events',
+  linelist: ['resource_id', 'roster_id2', 'date_start_hour2', 'date_start_minute2', 'date_start_ampm2', 'date_end_hour2', 'date_end_minute2', 'date_end_ampm2'],
+
+  edit_hook: function(id) {
+    var thing = $(id);
+    $('roster_id2').value = this.getValueBySelector(thing, ".roster_id");
+    $('resource_id').value = this.getValueBySelector(thing, ".resource_id");
+    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_start_time")));
+    $('date_start_hour2').value = a[0];
+    $('date_start_minute2').value = a[1];
+    $('date_start_ampm2').value = a[2];
+    a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_end_time")));
+    $('date_end_hour2').value = a[0];
+    $('date_end_minute2').value = a[1];
+    $('date_end_ampm2').value = a[2];
+    $('resource_id').focus();
+  },
+
+  add_from_form_hook: function() {
+    if($('resource_id').selectedIndex == 0 || $('roster_id2').selectedIndex == 0) {
+      return true;
+    }
+
+    args = new Object();
+    args['resource_id'] = $('resource_id').value;
+    args['roster_id'] = $('roster_id2').value;
+    var hour = $('date_start_hour2').value;
+    var minute = $('date_start_minute2').value;
+    var ampm = form_ampm($('date_start_ampm2').value);
+    args['my_start_time'] = three_to_one(hour, minute, ampm);
+    hour = $('date_end_hour2').value;
+    minute = $('date_end_minute2').value;
+    ampm = form_ampm($('date_end_ampm2').value);
+    args['my_end_time'] = three_to_one(hour, minute, ampm);
+
+    this.add(args);
+    $('date_end_hour2').selectedIndex = 0;
+    $('date_end_minute2').selectedIndex = 0;
+    $('date_end_ampm2').selectedIndex = 0;
+    $('date_start_hour2').selectedIndex = 0;
+    $('date_start_minute2').selectedIndex = 0;
+    $('date_start_ampm2').selectedIndex = 0;
+    $('roster_id2').selectedIndex = 0;
+    $('resource_id').selectedIndex = 0;
+    return false;
+  },
+
+  copyable: true,
+
+  make_hidden_hook: function (args, tr) {
+    var start_time = args['my_start_time'];
+    var end_time = args['my_end_time'];
+    var roster_id = args['roster_id'];
+    var resource_id = args['resource_id'];
+
+    tr.appendChild(this.make_hidden("resource_id", vol_resources[resource_id], resource_id));
+    tr.appendChild(this.make_hidden("roster_id", rosters[roster_id], roster_id));
+
+    tr.appendChild(this.make_hidden("my_start_time", three_to_display(one_to_three(start_time)), start_time ));
+    tr.appendChild(this.make_hidden("my_end_time", three_to_display(one_to_three(end_time)), end_time ));
+  },
+
+});

@@ -2,7 +2,7 @@ class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
-      shift_date
+      shift_date date
   ]
 
   CONDS = (%w[
@@ -12,6 +12,8 @@ class Conditions < ConditionsBase
       flagged system contract created_by cashier_created_by extract
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
+      volunteer_task_type weekday sked roster effective_at cancelled
+      needs_checkin assigned
       effective_at schedule
     ] + DATES).uniq
 
@@ -22,6 +24,14 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
   end
+
+  attr_accessor :cancelled
+
+  attr_accessor :volunteer_task_type_id
+
+  attr_accessor :weekday_id
+  attr_accessor :roster_id
+  attr_accessor :sked_id
 
   attr_accessor :schedule_id, :schedule_which_way
 
@@ -77,6 +87,13 @@ class Conditions < ConditionsBase
 
   attr_accessor :action
 
+  attr_accessor :assigned
+
+  def init_callback
+    @payment_method_id = PaymentMethod.cash.id
+    @assigned = true
+  end
+
   def contact
     if contact_id && !contact_id.to_s.empty?
       if( (! @contact) || (contact_id != @contact.id) )
@@ -131,6 +148,26 @@ class Conditions < ConditionsBase
     return ["1=1"]
   end
 
+  def cancelled_conditions(klass)
+    if @cancelled == 1
+      return ["1=1"]
+    else
+      return ["(attendance_type_id IS NULL OR attendance_types.cancelled = false OR attendance_types.cancelled IS NULL)"]
+    end
+  end
+
+  def needs_checkin_conditions(klass)
+    return ["attendance_type_id IS NULL"]
+  end
+
+  def assigned_conditions(klass)
+    if @assigned
+      return ["contact_id IS NOT NULL"]
+    else
+      return ["contact_id IS NULL"]
+    end
+  end
+
   def join_conditions(conds_a, conds_b)
     raise ArgumentError.new("'#{conds_a}' is empty") if conds_a.empty?
     raise ArgumentError.new("'#{conds_b}' is empty") if conds_b.empty?
@@ -177,6 +214,29 @@ class Conditions < ConditionsBase
 
   def extract_conditions(klass)
     return ["EXTRACT( #{@extract_type} FROM #{klass.table_name}.#{@extract_field} ) = ?", @extract_value]
+  end
+
+  def volunteer_task_type_conditions(klass)
+    tbl = klass.table_name
+    tbl = "volunteer_shifts" if tbl == "assignments"
+    return ["#{tbl}.volunteer_task_type_id = ?", @volunteer_task_type_id]
+  end
+
+  def weekday_conditions(klass)
+    klass = VolunteerDefaultEvent if klass == VolunteerDefaultShift
+    return ["#{klass.table_name}.weekday_id = ?", @weekday_id]
+  end
+
+  def roster_conditions(klass)
+    tbl = klass.table_name
+    tbl = "volunteer_shifts" if tbl == "assignments"
+    return ["#{tbl}.roster_id = ?", @roster_id]
+  end
+
+  def sked_conditions(klass)
+    tbl = klass.table_name
+    tbl = "volunteer_shifts" if tbl == "assignments"
+    return ["#{tbl}.roster_id IN (SELECT roster_id FROM rosters_skeds WHERE sked_id = ?)", @sked_id]
   end
 
   def volunteer_hours_conditions(klass)
@@ -302,6 +362,12 @@ class Conditions < ConditionsBase
     b = a[0]
     a[0] = "id IN (SELECT contact_id FROM donations WHERE #{b})"
     a
+  end
+
+  def date_conditions(klass)
+    klass = VolunteerShift if klass == Assignment
+    klass = VolunteerEvent if klass == VolunteerShift
+    date_range(klass, 'date', 'date')
   end
 
   def shift_date_conditions(klass)

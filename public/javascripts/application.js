@@ -3,6 +3,25 @@
 
 cashierable_enabled = true;
 
+function show_message(msg) {
+  popup1 = new Popup();
+  popup1.content = msg;
+  popup1.style = {'border':'3px solid black','backgroundColor':'white'};
+  popup1.show();
+  document.onkeydown = function(e){
+    var keycode;
+    if (e == null) {
+      keycode = event.keyCode;
+    } else {
+      keycode = e.which;
+    }
+    if(keycode == 27){
+      popup1.hide();
+      document.onkeydown = null;
+    }
+  };
+}
+
 var FixedAutocomplete = Class.create(Ajax.Autocompleter, {
   baseInitialize: function($super,element, update, options) {
     $super(element, update, options);

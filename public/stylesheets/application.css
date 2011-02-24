@@ -603,3 +603,8 @@ padding:0;
 }
 
 .hidden { display: none; }
+
+table.line_item_table tr th, table.line_item_table tr td {
+text-align: right;
+align: right;
+}

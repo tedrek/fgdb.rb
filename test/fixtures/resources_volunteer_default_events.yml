@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  volunteer_event_id: 1
+  resource_id: 1
+
+two:
+  volunteer_event_id: 1
+  resource_id: 1

@@ -1,0 +1,17 @@
+<% to_action = "index" %>
+
+<h2><%= params[:controller].humanize %>:</h2>
+<div>
+<h3>By Schedule</h3>
+<%= link_to "ALL", {:action => to_action, :conditions => {:empty_enabled => "true"}} %>
+<% Sked.find(:all).each do |x| %>
+<%= link_to x.name, {:action => to_action, :conditions => {:sked_enabled => "true", :sked_id => x.id}} %>
+<% end %>
+</div>
+
+<div>
+<h3>By Roster</h3>
+<% Roster.find(:all).each do |x| %>
+<%= link_to x.name, {:action => to_action, :conditions => {:roster_enabled => "true", :roster_id => x.id}} %>
+<% end %>
+</div>

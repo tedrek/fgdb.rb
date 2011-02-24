@@ -34,7 +34,16 @@ module SidebarHelper
     "gizmo_returns" => "returns",
     "till_adjustments" => "bean counters",
     "worked_shifts" => "staff",
-    "points_trades" => "hours"}
+    "points_trades" => "hours",
+    "volunteer_events" => "sked admin",
+    "volunteer_default_events" => "sked admin",
+    "volunteer_shifts" => "sked admin",
+    "resources" => "sked admin",
+    "skeds" => "sked admin",
+    "rosters" => "sked admin",
+    "volunteer_default_shifts" => "sked admin",
+    "assignments" => "vol sked",
+    }
   end
 
   def sidebar_stuff
@@ -63,6 +72,11 @@ module SidebarHelper
     sidebar_hash["contacts"]["duplicates list"] = {:c => 'contact_duplicates', :a => "list_dups"}
     # bean counters
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"}
+    # skedjuler
+    sidebar_hash["sked admin"]["regular sked"] = {:c => "volunteer_default_shifts"}
+    sidebar_hash["sked admin"]["real sked"] = {:c => "volunteer_shifts"}
+    sidebar_hash["vol sked"]["schedule"] = {:c => "assignments"}
+    sidebar_hash["vol sked"]["search"] = {:c => "assignments", :a => "search"}
     # staffsched
     sidebar_hash["staff"]["schedule"] = {:c => "work_shifts", :a => "staffsched"} if should_show_schedule
     sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule

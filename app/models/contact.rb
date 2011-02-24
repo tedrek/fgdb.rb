@@ -4,6 +4,8 @@ class Contact < ActiveRecord::Base
   has_many :points_traded_away, :class_name => "PointsTrade", :foreign_key => "from_contact_id"
   has_many :points_traded_to, :class_name => "PointsTrade", :foreign_key => "to_contact_id"
 
+  has_many :assignments
+
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
@@ -37,6 +39,18 @@ class Contact < ActiveRecord::Base
 
   def to_privileges
     ["contact_#{self.id}", "has_contact"]
+  end
+
+  def scheduled_shifts
+    a = self.assignments.is_after_today
+    more = false
+    if a.length > 5
+      a = a[0,5]
+      more = true
+    end
+    a = a.map{|x| x.description}
+    a << "More.." if more # FIXME: this needs to be a link
+    a.join("<br/>")
   end
 
   def all_points_trades
@@ -84,6 +98,8 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE default_assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE gizmo_returns SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")

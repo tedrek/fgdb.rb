@@ -18,7 +18,11 @@ class ConditionsBase
       eval("@#{i}_year = Date.today")
     end
 
-    @payment_method_id = PaymentMethod.cash.id
+    init_callback
+  end
+
+  def init_callback
+
   end
 
   def conditions(klass)

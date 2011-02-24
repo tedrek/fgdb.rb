@@ -1,0 +1,25 @@
+<table>
+  <tr>
+    <th>Volunteer default shift</th>
+    <th>Date</th>
+    <th>Start time</th>
+    <th>End time</th>
+    <th>Volunteer task type</th>
+    <th>Slot number</th>
+    <th>Roster</th>
+  </tr>
+
+<% for volunteer_shift in @volunteer_shifts %>
+  <tr>
+    <td><%=h volunteer_shift.volunteer_default_shift_id %></td>
+    <td><%=h volunteer_shift.date %></td>
+    <td><%=h volunteer_shift.start_time %></td>
+    <td><%=h volunteer_shift.end_time %></td>
+    <td><%=h volunteer_shift.volunteer_task_type_id %></td>
+    <td><%=h volunteer_shift.slot_number %></td>
+    <td><%=h volunteer_shift.roster_id %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => volunteer_shift.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => volunteer_shift.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

@@ -1,0 +1,13 @@
+<p>
+  <b>Description:</b>
+  <%=h @volunteer_event.description %>
+</p>
+
+<p>
+  <b>Date:</b>
+  <%=h @volunteer_event.date %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @volunteer_event.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

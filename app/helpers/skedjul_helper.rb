@@ -39,6 +39,11 @@ class Skedjul
     if !thing.nil?
       params[:conditions][thing] = "arbitrary"
     end
+    default_conds.to_a.each{|k,v|
+      if !params[:conditions].keys.include?(k)
+        params[:conditions][k] = v
+      end
+    }
     params[:conditions]["empty_enabled"] = "true"
     @__conditions.apply_conditions(params[:conditions])
     @__where_clause = DB.prepare_sql(@__conditions.conditions(klass))
@@ -79,6 +84,10 @@ class Skedjul
     list = str.split(",")
     fin = []
     list.each{|x|
+      if x.match(/^\s*[\(]/)
+        fin << x
+        next
+      end
       a = x.split(".")
       s = a[-1]
       if a[-2]
@@ -99,6 +108,12 @@ class Skedjul
 
   def results
     @__results
+  end
+
+  def new_number
+    @number_i ||= 0
+    @number_i += 1
+    @number_i
   end
 
   def get_method_value(thing, str, foo = nil)
@@ -153,6 +168,8 @@ module SkedjulHelper
       controller = skedj.opts[:thing_table_name]
     end
 
+    this_id = skedj.new_number
+
     a = []
     links.each{|mya|
       action = mya[0]
@@ -161,15 +178,21 @@ module SkedjulHelper
       letter = action.to_s.scan(/./).first
       html_opts = {:title => action}
       url_opts = { :controller => controller, :action => action, :id => tid }
+      func = :link_to
       if type == :popup
         html_opts[:popup] = true
       elsif type == :confirm
         html_opts[:confirm] = 'Are you sure?'
+      elsif type == :remote
+        func = :link_to_remote
+        url_opts[:url] = url_opts.dup # yuck
+        url_opts[:url][:skedjul_loading_indicator_id] = this_id
+        url_opts[:loading] = "Element.show('#{loading_indicator_id("skedjul_#{this_id}_loading")}');"
       end
       if cond.nil? or current.send(cond)
-        a << link_to(letter, url_opts, html_opts)
+        a << self.send(func, letter, url_opts, html_opts)
       end
     }
-    return a.join(" | ")
+    return loading_indicator_tag("skedjul_#{this_id}_loading") + a.join(" | ")
   end
 end

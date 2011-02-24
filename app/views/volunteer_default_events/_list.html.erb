@@ -1,0 +1,16 @@
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Weekday</th>
+  </tr>
+
+<% for volunteer_default_event in @volunteer_default_events %>
+  <tr>
+    <td><%=h volunteer_default_event.description %></td>
+    <td><%=h volunteer_default_event.weekday_id %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => volunteer_default_event.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => volunteer_default_event.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => volunteer_default_event.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>
