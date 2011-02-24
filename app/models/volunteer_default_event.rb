@@ -12,7 +12,7 @@ class VolunteerDefaultEvent < ActiveRecord::Base
     new.volunteer_default_shifts.each{|x| x.time_shift(time_shift)}
 #    new.resources.each{|x| x.time_shift(time_shift)}
     new.save!
-    new.volunteer_shifts.each{|x| x.save!}
+    new.volunteer_default_shifts.each{|x| x.save!}
     return new
   end
 end

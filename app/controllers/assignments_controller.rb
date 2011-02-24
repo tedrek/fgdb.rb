@@ -44,7 +44,7 @@ class AssignmentsController < ApplicationController
                              :by_slot =>
                              { :left_unique_value => "volunteer_shifts.left_unique_value", # model
                                :left_method_name => "volunteer_shifts.left_method_name",
-                               :left_sort_value => "volunteer_shifts.volunteer_task_types.description, (volunteer_shifts.volunteer_task_type_id || volunteer_events.description), volunteer_shifts.slot_number, volunteer_shifts.description",
+                               :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_events.description)), volunteer_shifts.slot_number, volunteer_shifts.description",
                                :left_table_name => "volunteer_shifts",
                                :left_link_action => "assign",
                                :left_link_id => "volunteer_shifts.description_and_slot",
