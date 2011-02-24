@@ -1,8 +1,9 @@
 class AssignmentsController < ApplicationController
   protected
+
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_volunteer_manager']} # FIXME
+    a << {:privileges => ['schedule_volunteers']}
     a
   end
   public

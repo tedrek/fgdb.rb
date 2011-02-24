@@ -2,7 +2,7 @@ class VolunteerDefaultEventsController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_admin']} # FIXME
+    a << {:privileges => ['admin_skedjul']}
     a
   end
   public
