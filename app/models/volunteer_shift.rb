@@ -78,8 +78,16 @@ class VolunteerShift < ActiveRecord::Base
     self.end_time += val
   end
 
+  def left_method_name
+    [self.volunteer_task_type_id.nil? ? self.volunteer_event.description : self.volunteer_task_type.description, self.slot_number, self.description].select{|x| !x.nil?}.join(", ")
+  end
+
+  def left_unique_value
+    left_method_name
+  end
+
   def description_and_slot
-    (self.volunteer_task_type_id * 1000) + self.slot_number
+    ((self.volunteer_task_type_id || -1) * 1000) + self.slot_number
   end
 
   def weekday

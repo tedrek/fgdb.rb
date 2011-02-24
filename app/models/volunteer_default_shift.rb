@@ -53,7 +53,19 @@ class VolunteerDefaultShift < ActiveRecord::Base
   end
 
   def describe
-    slot_count.to_s + " slots from " + time_range_s
+    s = slot_count.to_s + " slots from " + time_range_s
+    s += " assigned to #{self.default_assignment.contact.display_name}" if self.default_assignment
+    s
+  end
+
+  def left_unique_value
+    [self.volunteer_task_type_id.nil? ? self.volunteer_default_event.description : self.volunteer_task_type_id, self.description].join(", ")
+  end
+
+  def left_method_name
+    a = [self.volunteer_task_type_id.nil? ? self.volunteer_default_event.description : volunteer_task_type.description]
+    a << self.description if self.description.to_s.length > 0
+    a.join(", ")
   end
 
   def time_range_s

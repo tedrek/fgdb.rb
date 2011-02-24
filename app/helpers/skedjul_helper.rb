@@ -84,6 +84,10 @@ class Skedjul
     list = str.split(",")
     fin = []
     list.each{|x|
+      if x.match(/^\s*[\(]/)
+        fin << x
+        next
+      end
       a = x.split(".")
       s = a[-1]
       if a[-2]

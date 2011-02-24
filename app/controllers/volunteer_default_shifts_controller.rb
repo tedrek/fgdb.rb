@@ -30,8 +30,9 @@ class VolunteerDefaultShiftsController < ApplicationController
       :block_start_time => "volunteer_default_events.weekdays.start_time",
       :block_end_time => "volunteer_default_events.weekdays.end_time",
 
-      :left_unique_value => "volunteer_task_types.id", # model
-      :left_method_name => "volunteer_task_types.description",
+      :left_unique_value => "volunteer_default_shifts.left_unique_value", # model
+      :left_method_name => "volunteer_default_shifts.left_method_name",
+      :left_sort_value => "volunteer_task_types.description, (volunteer_task_types.id || volunteer_default_events.description)",
       :left_table_name => "volunteer_task_types",
       :left_link_action => "new_default_shift",
       :left_link_id => "volunteer_task_types.id",
