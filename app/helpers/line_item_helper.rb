@@ -12,15 +12,20 @@ module LineItemHelper
     javascript_tag("#{line_item_instance_name_for(prefix)} = new #{klass};")
   end
 
-  def line_item(prefix, klass, form_oh, values = [])
-    line_item_instance_js(prefix, klass) + line_item_form_for(prefix, form_oh).to_s + ((values.length > 0) ? line_item_add_many(prefix, values) : "")
+  def line_item(prefix, klass, form_oh, values = [], add_link = false)
+    line_item_instance_js(prefix, klass) + line_item_form_for(prefix, form_oh, add_link).to_s + ((values.length > 0) ? line_item_add_many(prefix, values) : "")
   end
 
   include TableHelper
 
-  def line_item_form_for(prefix, form_oh)
-    a = [(form_oh.keys.map{|x| x.to_s.titleize} + [""]), ([{:id => (prefix) + "_form"}] + form_oh.values.map{|x| x.to_s} + [""])]
+  def line_item_form_for(prefix, form_oh, add_link = false)
+    a = [(form_oh.keys.map{|x| x.to_s.titleize} + [""]), ([{:id => (prefix) + "_form"}] + form_oh.values.map{|x| x.to_s} + [add_link ? line_item_add_link(prefix) : ""])]
     make_table(a, {:id => (prefix) + "_lines", :border => "0", :class => "line_item_table"})
+  end
+
+  def line_item_add_link(prefix)
+    js = line_item_instance_name_for(prefix) + ".add_from_form_hook();"
+    link_to_function("a", js)
   end
 
   def line_item_instance_name_for(prefix)
