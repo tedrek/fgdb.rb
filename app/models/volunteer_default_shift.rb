@@ -108,7 +108,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
           ve.volunteer_default_event_id = ds.volunteer_default_event_id
           ve.date = x
         else
-          myl = VolunteerEvent.find(:all, :conditions => ["date = ?", x]).map{|y| y.id == ve.id ? ve : y}.map{|y| y.volunteer_shifts}.flatten.select{|y| ds.volunteer_task_type_id == y.volunteer_task_type_id and ds.start_time == y.start_time}.map{|y| y.slot_number}
+          myl = VolunteerEvent.find(:all, :conditions => ["date = ?", x]).map{|y| y.id == ve.id ? ve : y}.map{|y| y.volunteer_shifts}.flatten.select{|y| (ds.volunteer_task_type_id.nil? ? (ds.volunteer_default_event.description == y.volunteer_event.description) : ((ds.volunteer_task_type_id == y.volunteer_task_type_id))) and ((ds.start_time >= y.start_time and ds.start_time < y.end_time) or (ds.end_time > y.start_time and ds.end_time <= y.end_time) or (ds.start_time < y.start_time and ds.end_time > y.end_time))}.map{|y| y.slot_number}
         end
         ve.description = ds.volunteer_default_event.description
         ve.notes = ds.volunteer_default_event.notes
