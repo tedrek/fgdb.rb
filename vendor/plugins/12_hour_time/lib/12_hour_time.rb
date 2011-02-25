@@ -105,5 +105,5 @@ class ActionView::Helpers::InstanceTag
       select_ampm(datetime, options_with_prefix(6, options.merge(:use_hidden => options[:discard_hour])), html_options)
   end
 
-  alias_method_chain :date_or_time_select, :ampm
+#  alias_method_chain :date_or_time_select, :ampm # TODO: FIXME
 end

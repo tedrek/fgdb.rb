@@ -37,13 +37,14 @@ class VolunteerTasksController < ApplicationController
 
   def index
     list
-    render :action => 'list'
   end
 
   def list
     if get_contact_id
       params[:limit_by_contact_id] = true
     end
+    @show_layout = true
+    component
   end
 
   # All posts to change variables like sort values or page changes go through this action
@@ -53,6 +54,7 @@ class VolunteerTasksController < ApplicationController
   end
 
   def component
+    @show_layout ||= false
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = VolunteerTask.columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_by = @sort_sql.nil? ?
@@ -72,7 +74,11 @@ class VolunteerTasksController < ApplicationController
     end
     options[:page] = params[:page]
     @volunteer_tasks = VolunteerTask.paginate(options)
-    render :action => "component", :layout => false
+    if @show_layout
+      render :action => "component"
+    else
+      render :action => "component", :layout => false
+    end
   end
 
   def new

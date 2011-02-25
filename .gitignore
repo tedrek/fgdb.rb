@@ -1,4 +1,5 @@
 *~
+/rmgr/
 /config/database.yml
 /doc/autodoc
 /log/*.log*

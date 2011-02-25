@@ -7,7 +7,7 @@ all: download
 download: update_devel_data_version devel_data.sql
 
 devel_data.sql: devel_data.sql.lzma
-	lzcat devel_data.sql.lzma > devel_data.sql
+	xzcat devel_data.sql.lzma > devel_data.sql
 
 BASE_URL := http://develdata.freegeek.org/
 #BASE_URL := http://dev.freegeek.org/~ryan52/devel_data
