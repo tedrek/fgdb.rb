@@ -1,10 +1,10 @@
 Basic install:
-ryan52@chaos:~$ sudo apt-get install -y git-core postgresql-8.4 rails ruby1.8 libnokogiri-ruby libbarby-ruby librmagick-ruby  libjson-ruby1.8 xmlstarlet thin curl socat libgnuplot-ruby timeout
+ryan52@chaos:~$ sudo apt-get install -y git-core postgresql-8.4 rails ruby1.8 libnokogiri-ruby libbarby-ruby librmagick-ruby  libjson-ruby1.8 xmlstarlet thin curl socat libgnuplot-ruby libpgsql-ruby1.8 ruby
 ryan52@chaos:~$ wget http://apt.freegeek.org/pool/debian/f/fgdiag/libbytes-ruby1.8_0.2.38_all.deb
 ryan52@chaos:~$ sudo dpkg -i libbytes-ruby1.8_0.2.38_all.deb
 ryan52@chaos:~$ git clone git://git.freegeek.org/git/fgdb.rb
 ryan52@chaos:~$ cd fgdb.rb
-ryan52@chaos:~/fgdb.rb$ ln -sf /usr/share/rails/ vendor/rails
+ryan52@chaos:~/fgdb.rb$ ln -sf /usr/share/rails-ruby1.8/ vendor/rails
 ryan52@chaos:~/fgdb.rb$ ./script/do_i_have_everything_installed_right
 ryan52@chaos:~/fgdb.rb$ cp config/database.yml-example config/database.yml
 ryan52@chaos:~/fgdb.rb$ sudo su - postgres -c "createuser -a $USER"
