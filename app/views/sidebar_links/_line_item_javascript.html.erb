@@ -62,15 +62,11 @@
       javascript_tag js %>
 <% end -%>
 
-<% if defined?(@gizmo_context) %>
-
 <%= js = "var contact_method_types = new Array;"
     for contact_method_type in ContactMethodType.find(:all).sort_by(&:description)
       js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';"
     end
     javascript_tag js %>
-
-<% end %>
 
 <%= if ["sales", "disbursements"].include?(params[:controller])
      js = "var all_contracts_names = new Array;"
