@@ -3,8 +3,10 @@ fgdb.rb (1.0.55) UNRELEASED; urgency=low
     so it doesn't trample over it later (Closes: 21693)
   * have disktest log to fgdb.rb, and let people search the results
   * volunteer scheduling merged into this release (Closes: 19337)
+  * signing off spec sheets, and other builder tracking stuff (Closes:
+    #15337)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Feb 2011 19:15:02 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 25 Feb 2011 23:53:39 -0800
 
 fgdb.rb (1.0.54) released; urgency=low
 

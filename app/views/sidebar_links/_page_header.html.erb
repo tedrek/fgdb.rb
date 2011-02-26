@@ -17,13 +17,6 @@
     <%= line_item_includes %>
     <%= stylesheet_link_tag 'schedule', :media => "all" %>
 
-    <%= javascript_tag "function good_cashier_code(code) {
-" + remote_function(
-          :url => {:controller => "contacts", :action => "check_cashier_code"},
-                          :loading => "Element.show('#{loading_indicator_id("cashier_loading")}');",
-                          :with => "{cashier_code: code}") + "
-}" %>
-
 <% if ["volunteer_tasks"].include?(params[:controller]) %>
 <%= h = {}; VolunteerTaskType.find(:all).each{|x| h[x.id] = x.program_id};
 javascript_tag "volunteer_task_programs = #{h.to_json};" %>

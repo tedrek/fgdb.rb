@@ -18,14 +18,18 @@ class ContactsController < ApplicationController
 
   def check_cashier_code
     uid = params[:cashier_code]
+    append = (params[:append_this].nil? ? "" : "/#{params[:append_this]}")
     t = false
-    if uid && (User.find_by_cashier_code(uid.to_i))
+    u = nil
+    if uid && (u = User.find_by_cashier_code(uid.to_i))
       t = true
+
+      t = false if !u.can_login?
 
       ref = request.env["HTTP_REFERER"]
       ref = ref.split("/")
       c = ref[3]
-      a = ref[4] || "index"
+      a = (ref[4] || "index") + append
       c = c.classify.pluralize + "Controller"
       Thread.current['user'] = Thread.current['cashier']
       t = false if ! c.constantize.sb_has_required_privileges(a)

@@ -5,7 +5,9 @@
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <title>printme</title>
+    <%= javascript_include_tag :defaults %>
     <%= stylesheet_link_tag 'fgss.css', :media => 'all' %>
+    <%= render :partial => 'sidebar_links/line_item_javascript' %>
   </head>
   <body>
 

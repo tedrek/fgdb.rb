@@ -25,6 +25,15 @@ class SpecSheet < ActiveRecord::Base
     @contract_id ||= (system ? system.contract_id : nil)
   end
 
+  def signed_off_by
+    self.cashier_signed_off_by.nil? ? "Not signed off." : User.find(self.cashier_signed_off_by).contact.display_name
+  end
+
+  def signed_off_by=(user)
+    new = user.id
+    self.cashier_signed_off_by = (self.cashier_signed_off_by == new ? nil : new)
+  end
+
   def contract_id=(val)
     @contract_id = val
   end

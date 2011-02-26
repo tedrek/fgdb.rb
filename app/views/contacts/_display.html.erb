@@ -31,6 +31,16 @@
     <%= h(@contact.notes).gsub(/\n/, "<br />") %>
   </div>
 <% end %>
+<% checked_since = @contact.spec_sheets_since_last_adoption("checker").length %>
+<% built_since = @contact.spec_sheets_since_last_adoption("builder").length %>
+
+<% if (checked_since + built_since) > 0 %>
+<div>
+Computers QAed since last adoption: <%= checked_since %><br/>
+Computers Built since last adoption: <%= built_since %><br/>
+</div>
+<% end %>
+
 <% str = @contact.scheduled_shifts %>
 <% if !str.blank? %>
 <div>

@@ -58,7 +58,11 @@ function update_cashier_code() {
     return;
   thing = document.getElementsByClassName('cashierable_form')[0];
   if(cashier_id_field.value.length == 4) {
-    good_cashier_code(cashier_id_field.value);
+    if(arguments[0] != null) {
+      good_cashier_code(cashier_id_field.value, arguments[0]);
+    } else {
+      good_cashier_code(cashier_id_field.value);
+    }
   } else {
     disable_cashierable();
   }
@@ -108,7 +112,9 @@ function _hide_changes(one, two, three, four){
 function disable_cashierable(){
   cashierable_enabled = false;
     thing.disable();
+  if(document.getElementsByClassName('cancel')[0] != null) {
     document.getElementsByClassName('cancel')[0].disabled = false;
+  }
     disable_all_links();
   if(typeof(form_is_editable) == "undefined" || form_is_editable) {
     $('cashier_code').enable();
