@@ -12,6 +12,8 @@
     </table>
   </p>
 
+  <%= f.hidden_field :redirect_to, :value => @referer %>
+
     <%= f.label :contact_id %><br />
     <% @obj = f.object %>
       <%= contact_field("@obj", "assignment",
