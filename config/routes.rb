@@ -36,7 +36,7 @@ ActionController::Routing::Routes.draw do |map|
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   # map.root :controller => "welcome"
 
-  map.root :controller => "soap", :conditions => { :method => :post, :soap => true }
+#  map.root :controller => "soap", :conditions => { :method => :post, :soap => true } # this will be used again in rails 3's metals.
   map.root :controller => "sidebar_links", :action => "fgss_moved", :conditions => {:host => /^(printme|fgss|rocky)(.fglan)?$/i}
   map.root :controller => "sidebar_links", :action => "staffsched_moved", :conditions => {:host => /^(bullwinkle)(.fglan)?$/i}
   map.root :controller => "sidebar_links"
