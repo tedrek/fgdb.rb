@@ -17,6 +17,7 @@ CUR=$(cat /var/www/fgdb.rb/.git/HEAD  | sed 's,ref: refs/heads/release_1.0.,,')
 NEW=$(( $CUR + 1 ))
 
 checkit(){
+    return 1
     NUM=$1
     if [ ! -f ~/nobackup/post-sprint-$CUR.sql -o ! -f ~/nobackup/pre-sprint-$CUR.sql ]; then
 	return 0
