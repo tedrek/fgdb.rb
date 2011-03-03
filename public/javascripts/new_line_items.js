@@ -312,6 +312,130 @@ function trigger_contact_field(el) {
   // TODO
 }
 
+var LineItemComponent = Class.create({
+  getValueBySelector: function (thing, selector) {
+    return thing.getElementsBySelector(selector).first().firstChild.value;
+  },
+
+  make_hidden: function (name, display_value, value){
+    var prefix = this.prefix;
+    var line_id = this._internal_line_id;
+    hidden = document.createElement("input");
+    hidden.name = prefix + '[-' + line_id + '][' + name + ']';
+    hidden.value = value;
+    hidden.type = 'hidden';
+    td = document.createElement("td");
+    td.className = name;
+    td.appendChild(hidden);
+    td.appendChild(document.createTextNode(display_value));
+    return td;
+  },
+
+  initialize: function(prefix) {
+    this.prefix = prefix;
+  },
+
+  // hooks
+  linelist: [],
+
+  add_from_form_reject: function() {
+    return false;
+  },
+
+  set_args_from_form: function(args) {
+    alert('broken');
+  },
+
+  edit_hook: function(thing) {
+    alert('broken');
+  },
+
+  make_hidden_hook: function (args, tr) {
+    alert('broken');
+  },
+
+  clear_widget: function() {
+    alert('broken');
+  }
+});
+
+var ComponentLineItem = Class.create(LineItem, {
+  checkfor: [],
+  prefix: null,
+
+  initialize: function($super) {
+    $super();
+    this.rebuild_component_lists();
+  },
+
+  rebuild_component_lists: function() {
+    this.componentlist = []; // instances of components
+    for(var i = 0; i < this.checkfor.length; i++) {
+      var cc = this.checkfor[i];
+      var a = cc.prototype.linelist;
+      if(eexists(a[0])) {
+        var c = this.checkfor[i];
+        var x = new c(this.prefix);
+        this.componentlist[this.componentlist.length] = x;
+      }
+    }
+    this.linelist = [];
+    for(var i = 0; i < this.componentlist.length; i++) {
+      var c = this.componentlist[i];
+      var l = c.linelist;
+      for(var x = 0; x < l.length; x++) {
+        this.linelist[this.linelist.length] = l[x];
+      }
+    }
+  },
+
+  edit_hook: function(id) {
+    var thing = $(id);
+    for(var i = 0; i < this.componentlist.length; i++) {
+      var c = this.componentlist[i];
+      c.edit_hook(thing);
+    }
+    this.focus_first();
+  },
+
+  make_hidden_hook: function (args, tr) {
+    for(var i = 0; i < this.componentlist.length; i++) {
+      var c = this.componentlist[i];
+      c._internal_line_id = this.counter;
+      c.make_hidden_hook(args, tr);
+    }
+  },
+
+  add_from_form_hook: function() {
+    for(var i = 0; i < this.componentlist.length; i++) {
+      var c = this.componentlist[i];
+      if(c.add_from_form_reject()) {
+        return true;
+      }
+    }
+    args = new Object();
+    for(var i = 0; i < this.componentlist.length; i++) {
+      var c = this.componentlist[i];
+      c.set_args_from_form(args);
+    }
+    this.add(args);
+    this.clear_all_widgets();
+    this.focus_first();
+    return false; // all good
+  },
+
+  focus_first: function() {
+    $(this.linelist[0]).focus();
+  },
+
+  clear_all_widgets: function() { // we can add a button that clears the line if its useful. would presumably clear editing_id too, if set. and we should indicate that its set. anyways..
+    for(var i = 0; i < this.componentlist.length; i++) {
+      var c = this.componentlist[i];
+      c.clear_widget();
+    }
+  }
+});
+
 var VolunteerShiftFrontend = Class.create(LineItem, {
   prefix: 'volunteer_shifts',
   linelist: ['volunteer_task_type_id', 'contact_contact_id', 'class_credit', 'program_id', 'description', 'roster_id', 'slot_number', 'slot_count', 'date_start_hour', 'date_start_minute', 'date_start_ampm', 'date_end_hour', 'date_end_minute', 'date_end_ampm'],
@@ -430,67 +554,96 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
 function to_yesno(truefalse) {
   return truefalse ? "yes" : "no";
 }
-var VolunteerResourceFrontend = Class.create(LineItem, {
-  prefix: 'resources_volunteer_events',
-  linelist: ['resource_id', 'roster_id2', 'date_start_hour2', 'date_start_minute2', 'date_start_ampm2', 'date_end_hour2', 'date_end_minute2', 'date_end_ampm2'],
 
-  edit_hook: function(id) {
-    var thing = $(id);
-    $('roster_id2').value = this.getValueBySelector(thing, ".roster_id");
-    $('resource_id').value = this.getValueBySelector(thing, ".resource_id");
-    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_start_time")));
-    $('date_start_hour2').value = a[0];
-    $('date_start_minute2').value = a[1];
-    $('date_start_ampm2').value = a[2];
-    a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_end_time")));
-    $('date_end_hour2').value = a[0];
-    $('date_end_minute2').value = a[1];
-    $('date_end_ampm2').value = a[2];
-    $('resource_id').focus();
-  },
+var ResourceComponent = Class.create(LineItemComponent, {
+  linelist: ['resource_id'],
 
-  add_from_form_hook: function() {
-    if($('resource_id').selectedIndex == 0 || $('roster_id2').selectedIndex == 0) {
-      return true;
-    }
-
-    args = new Object();
+  set_args_from_form: function(args) {
     args['resource_id'] = $('resource_id').value;
-    args['roster_id'] = $('roster_id2').value;
-    var hour = $('date_start_hour2').value;
-    var minute = $('date_start_minute2').value;
-    var ampm = form_ampm($('date_start_ampm2').value);
-    args['my_start_time'] = three_to_one(hour, minute, ampm);
-    hour = $('date_end_hour2').value;
-    minute = $('date_end_minute2').value;
-    ampm = form_ampm($('date_end_ampm2').value);
-    args['my_end_time'] = three_to_one(hour, minute, ampm);
-
-    this.add(args);
-    $('date_end_hour2').selectedIndex = 0;
-    $('date_end_minute2').selectedIndex = 0;
-    $('date_end_ampm2').selectedIndex = 0;
-    $('date_start_hour2').selectedIndex = 0;
-    $('date_start_minute2').selectedIndex = 0;
-    $('date_start_ampm2').selectedIndex = 0;
-    $('roster_id2').selectedIndex = 0;
-    $('resource_id').selectedIndex = 0;
-    return false;
   },
 
-  copyable: true,
-
-  make_hidden_hook: function (args, tr) {
-    var start_time = args['my_start_time'];
-    var end_time = args['my_end_time'];
-    var roster_id = args['roster_id'];
+  make_hidden_hook: function(args, tr) {
     var resource_id = args['resource_id'];
-
     tr.appendChild(this.make_hidden("resource_id", vol_resources[resource_id], resource_id));
-    tr.appendChild(this.make_hidden("roster_id", rosters[roster_id], roster_id));
-
-    tr.appendChild(this.make_hidden("my_start_time", three_to_display(one_to_three(start_time)), start_time ));
-    tr.appendChild(this.make_hidden("my_end_time", three_to_display(one_to_three(end_time)), end_time ));
   },
+
+  clear_widget: function(){
+    $('resource_id').selectedIndex = 0;
+  },
+
+  add_from_form_reject: function() {
+    return $('resource_id').selectedIndex == 0;
+  },
+
+  edit_hook: function(thing) {
+    $('resource_id').value = this.getValueBySelector(thing, ".resource_id");
+  }
+});
+
+var RosterComponent = Class.create(LineItemComponent, {
+  add_from_form_reject: function() {
+    return $('roster_id2').selectedIndex == 0;
+  },
+
+  linelist: ['roster_id2'],
+
+  edit_hook: function(thing) {
+    $('roster_id2').value = this.getValueBySelector(thing, ".roster_id");
+  },
+
+  clear_widget: function(){
+    $('roster_id2').selectedIndex = 0;
+  },
+
+  make_hidden_hook: function(args, tr) {
+    var roster_id = args['roster_id'];
+    tr.appendChild(this.make_hidden("roster_id", rosters[roster_id], roster_id));
+  },
+
+  set_args_from_form: function(args) {
+    args['roster_id'] = $('roster_id2').value;
+  }
 
 });
+
+var StartTimeComponent = Class.create(LineItemComponent, {
+  time_name: 'start',
+  linelist: ['date_start_hour2', 'date_start_minute2', 'date_start_ampm2'],
+
+  edit_hook: function(thing) {
+    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_start_time")));
+    $('date_' + this.time_name + '_hour2').value = a[0];
+    $('date_' + this.time_name + '_minute2').value = a[1];
+    $('date_' + this.time_name + '_ampm2').value = a[2];
+  },
+
+  set_args_from_form: function(args) {
+    var hour = $('date_' + this.time_name + '_hour2').value;
+    var minute = $('date_' + this.time_name + '_minute2').value;
+    var ampm = form_ampm($('date_' + this.time_name + '_ampm2').value);
+    args['my_' + this.time_name + '_time'] = three_to_one(hour, minute, ampm);
+  },
+
+  clear_widget: function(){
+    $('date_' + this.time_name + '_hour2').selectedIndex = 0;
+    $('date_' + this.time_name + '_minute2').selectedIndex = 0;
+    $('date_' + this.time_name + '_ampm2').selectedIndex = 0;
+  },
+
+  make_hidden_hook: function(args, tr) {
+    var time = args['my_' + this.time_name + '_time'];
+    tr.appendChild(this.make_hidden('my_' + this.time_name + '_time', three_to_display(one_to_three(time)), time ));
+  }
+});
+
+var EndTimeComponent = Class.create(StartTimeComponent, {
+  time_name: 'end',
+  linelist: ['date_end_hour2', 'date_end_minute2', 'date_end_ampm2']
+});
+
+var VolunteerResourceFrontend = Class.create(ComponentLineItem, {
+  prefix: 'resources_volunteer_events',
+  copyable: true,
+  checkfor: [ResourceComponent, RosterComponent, StartTimeComponent, EndTimeComponent]
+});
+

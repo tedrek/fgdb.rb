@@ -55,7 +55,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -100,6 +100,7 @@ class AssignmentsController < ApplicationController
 
   def edit
     @assignment = Assignment.find(params[:id])
+    @referer = request.env["HTTP_REFERER"]
   end
 
   def create
@@ -116,9 +117,11 @@ class AssignmentsController < ApplicationController
   def update
     @assignment = Assignment.find(params[:id])
 
+    redirect_dest = params[:assignment].delete(:redirect_to) || {:action => "index"}
+
     if @assignment.update_attributes(params[:assignment])
       flash[:notice] = 'Assignment was successfully updated.'
-      redirect_to({:action => "index", :id => @assignment.id})
+      redirect_to(redirect_dest)
     else
       render :action => "edit"
     end

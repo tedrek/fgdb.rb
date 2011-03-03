@@ -5,6 +5,7 @@ class SpecSheetsController < ApplicationController
     a = super
     a << {:only => ["/view_contact_name"], :privileges => ['manage_contacts']}
     a << {:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']}
+    a << {:only => ["show/sign_off"], :privileges => ['sign_off_spec_sheets']}
     a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
     return a
   end
@@ -13,6 +14,16 @@ class SpecSheetsController < ApplicationController
   helper :system
   include SystemHelper
   MY_VERSION=9
+
+  def sign_off
+    u = User.find_by_cashier_code(params[:cashier_code])
+    s = SpecSheet.find(params[:id])
+    if u.has_privileges(required_privileges("show/sign_off").flatten.first) # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
+      s.signed_off_by=(u)
+      s.save!
+    end
+    redirect_to :back
+  end
 
   def check_compat
     # this is for old version compatibility

@@ -13,7 +13,7 @@ module LineItemHelper
   end
 
   def line_item(prefix, klass, form_oh, values = [], add_link = false)
-    line_item_instance_js(prefix, klass) + line_item_form_for(prefix, form_oh, add_link).to_s + ((values.length > 0) ? line_item_add_many(prefix, values) : "")
+    line_item_form_for(prefix, form_oh, add_link).to_s + line_item_instance_js(prefix, klass) + ((values.length > 0) ? line_item_add_many(prefix, values) : "")
   end
 
   include TableHelper

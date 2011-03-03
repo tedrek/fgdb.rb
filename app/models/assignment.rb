@@ -47,7 +47,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def has_notes
-    (self.contact and self.contact.notes.length > 0) or has_own_notes
+    (self.contact and (!self.contact.notes.nil?) and self.contact.notes.length > 0) or has_own_notes
   end
 
   def skedj_style(overlap, last)
