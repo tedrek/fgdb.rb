@@ -1,13 +1,18 @@
 class ActiveRecord::Base
   def instantiate_time_object_with_ampm(name, values)
+    if values.length == 2 or values.length == 3
+      values = [0, 0, 0, *values]
+    end
     if values.last < 0
       ampm = values.pop
-      if ampm == ActionView::Helpers::DateTimeSelector::AM and values[1] == 12
-        values[1] = 0
-      elsif ampm == ActionView::Helpers::DateTimeSelector::PM and values[1] != 12
-        values[1] += 12
+      if ampm == ActionView::Helpers::DateTimeSelector::AM and values[3] == 12
+        values[3] = 0
+      elsif ampm == ActionView::Helpers::DateTimeSelector::PM and values[3] != 12
+        values[3] += 12
       end
     end
+
+    puts values.inspect
 
     instantiate_time_object_without_ampm(name, values)
   end
