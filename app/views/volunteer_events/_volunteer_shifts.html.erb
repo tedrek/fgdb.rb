@@ -17,8 +17,9 @@
 <% interface[:slot_count] = text_field_tag 'slot_count', nil, kdh.merge({:size => 5}) %>
 <% slot_name = :slot_count %>
 <% end %>
-<% interface[:start_time] = select_hour(nil, {:twelve_hour => true, :field_name => "start_hour", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "start_minute", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "start_ampm", :include_blank => true}, kdh) %>
-<% interface[:end_time] = select_hour(nil, {:twelve_hour => true, :field_name => "end_hour", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "end_minute", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "end_ampm", :include_blank => true}, kdh) %>
+<% o = 0 %>
+<% interface[:start_time] = select_hour(o, {:twelve_hour => true, :field_name => "start_hour", :include_blank => true}, kdh) + select_minute(o, {:field_name => "start_minute", :include_blank => true}, kdh) + ActionView::Helpers::DateTimeSelector.new(o, {:field_name => "start_ampm", :include_blank => true}, kdh).select_ampm %>
+<% interface[:end_time] = select_hour(o, {:twelve_hour => true, :field_name => "end_hour", :include_blank => true}, kdh) + select_minute(o, {:field_name => "end_minute", :include_blank => true}, kdh) + ActionView::Helpers::DateTimeSelector.new(o, {:field_name => "end_ampm", :include_blank => true}, kdh).select_ampm %>
 
 <% values = [] %>
 <% things = @volunteer_event.class == VolunteerEvent ? @volunteer_event.volunteer_shifts : @volunteer_event.volunteer_default_shifts%>

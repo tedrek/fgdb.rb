@@ -287,10 +287,10 @@ function three_to_form(a) {
       a[0] = "0" + a[0];
     }
     if(a[2] == "AM") {
-      a[2] = "0";
+      a[2] = "-1";
     }
     if(a[2] == "PM") {
-      a[2] = "1";
+      a[2] = "-2";
     }
   return a;
 }
@@ -300,9 +300,9 @@ function three_to_display(arr) {
 }
 
 function form_ampm(ampm) {
-    if(ampm == "0") {
+    if(ampm == "-1") {
       ampm = "AM";
-    } else if (ampm == "1") {
+    } else if (ampm == "-2") {
       ampm = "PM";
     }
   return ampm;
