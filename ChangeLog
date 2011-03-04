@@ -1,7 +1,8 @@
 fgdb.rb (1.0.56) UNRELEASED; urgency=low
 
+  * rails 2.3.5, so runs on debian squeeze (Closes: #20603)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 26 Feb 2011 00:19:58 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 03 Mar 2011 23:17:43 -0800
 
 fgdb.rb (1.0.55) released; urgency=low
   * fix pasting in the autocomplete, but this time subclass rails code
