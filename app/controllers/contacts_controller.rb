@@ -218,6 +218,9 @@ class ContactsController < ApplicationController
     if @contact.user
       success = success and @contact.user.save
     end
+    if success
+      @contact_methods.each{|x| x.save}
+    end
     return success
   end
 end
