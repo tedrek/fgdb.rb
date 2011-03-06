@@ -28,6 +28,7 @@
   <% filters << 'id' %>
   <% filters << 'created_at' %>
   <% filters << 'action' %>
+  <% filters << 'type' %>
   <% filters << 'serial_number' %>
   <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>

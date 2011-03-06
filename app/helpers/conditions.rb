@@ -14,7 +14,7 @@ class Conditions < ConditionsBase
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned
-      effective_at schedule
+      effective_at schedule type
     ] + DATES).uniq
 
   for i in CONDS
@@ -86,6 +86,8 @@ class Conditions < ConditionsBase
   attr_accessor :role
 
   attr_accessor :action
+
+  attr_accessor :type
 
   attr_accessor :assigned
 
@@ -188,6 +190,10 @@ class Conditions < ConditionsBase
 
   def action_conditions(klass)
     ["#{klass.table_name}.action_id = ?", @action]
+  end
+
+  def type_conditions(klass)
+    ["#{klass.table_name}.type_id = ?", @type]
   end
 
   def covered_conditions(klass)
