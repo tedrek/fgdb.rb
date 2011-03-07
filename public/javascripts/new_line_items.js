@@ -61,7 +61,6 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
   copy: function (line_id) {
     this.edit_hook(line_id);
-    this.update_hook();
   },
 
   make_hidden: function (name, display_value, value){
