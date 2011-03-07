@@ -436,6 +436,63 @@ var ComponentLineItem = Class.create(LineItem, {
   }
 });
 
+
+function get_name_from_select(select_id, value) {
+  var hash = new Hash();
+  var a = $(select_id).children;
+  for(var i = 0; i < a.length; i++) {
+    var x = a[i];
+    hash.set(x.value, x.innerHTML);
+  };
+  return hash.get(value);
+}
+
+var SelectBasedComponent = Class.create(LineItemComponent, {
+  add_from_form_reject: function() {
+    return $(this.linelist[0]).selectedIndex == 0;
+  },
+
+  edit_hook: function(thing) {
+    $(this.linelist[0]).value = this.getValueBySelector(thing, "." + this.linelist[0]);
+  },
+
+  clear_widget: function(){
+    $(this.linelist[0]).selectedIndex = 0;
+  },
+
+  make_hidden_hook: function(args, tr) {
+    var choosen_id = args[this.linelist[0]];
+    tr.appendChild(this.make_hidden("payment_type_id", get_name_from_select(this.linelist[0], choosen_id), choosen_id));
+  },
+
+  set_args_from_form: function(args) {
+    args[this.linelist[0]] = $(this.linelist[0]).value;
+  }
+});
+
+var InputBasedComponent = Class.create(LineItemComponent, {
+  add_from_form_reject: function() {
+    return $(this.linelist[0]).value == $(this.linelist[0]).defaultValue;
+  },
+
+  edit_hook: function(thing){
+    $(this.linelist[0]).value = this.getValueBySelector(thing, "." + this.linelist[0]);
+  },
+
+  clear_widget: function() {
+    $(this.linelist[0]).value = $(this.linelist[0]).defaultValue;
+  },
+
+  make_hidden_hook: function(args, tr) {
+    var value = args[this.linelist[0]];
+    tr.appendChild(this.make_hidden(this.linelist[0], value, value));
+  },
+
+  set_args_from_form: function(args) {
+    args[this.linelist[0]] = $(this.linelist[0]).value;
+  },
+});
+
 var VolunteerShiftFrontend = Class.create(LineItem, {
   prefix: 'volunteer_shifts',
   linelist: ['volunteer_task_type_id', 'contact_contact_id', 'class_credit', 'program_id', 'description', 'roster_id', 'slot_number', 'slot_count', 'date_start_hour', 'date_start_minute', 'date_start_ampm', 'date_end_hour', 'date_end_minute', 'date_end_ampm'],
