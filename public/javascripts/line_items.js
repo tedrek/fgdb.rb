@@ -90,6 +90,12 @@ function cent_value(value) {
     if (arr.length > 1) {
       if (arr[1].length == 1) {
         value += parseInt(arr[1]) * 10;
+      } else if(arr[1].length > 2) {
+        var tempint = parseInt(arr[1][0] + arr[1][1]);
+        if(parseInt(arr[1][2]) >= 5) {
+          tempint++;
+        }
+        value += tempint;
       }
       else {
         value += parseInt(arr[1]);
