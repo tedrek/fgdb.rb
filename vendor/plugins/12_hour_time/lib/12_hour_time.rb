@@ -12,7 +12,7 @@ class ActiveRecord::Base
       end
     end
 
-    puts values.inspect
+#    puts values.inspect
 
     instantiate_time_object_without_ampm(name, values)
   end
