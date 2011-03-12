@@ -73,6 +73,10 @@ class VolunteerShift < ActiveRecord::Base
     self.date.strftime('%A, %B %d, %Y').gsub( ' 0', ' ' )
   end
 
+  def date_anchor
+    self.date.strftime('%Y%m%d')
+  end
+
   def time_shift(val)
     self.start_time += val
     self.end_time += val

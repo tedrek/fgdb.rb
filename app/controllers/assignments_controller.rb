@@ -36,6 +36,7 @@ class AssignmentsController < ApplicationController
                            :forced_condition => "cancelled",
 
       :block_method_name => "volunteer_shifts.volunteer_events.date",
+      :block_anchor => 'volunteer_shifts.date_anchor',
       :block_method_display => "volunteer_shifts.date_display",
       :block_start_time => "volunteer_shifts.weekdays.start_time",
       :block_end_time => "volunteer_shifts.weekdays.end_time",
@@ -118,6 +119,7 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id])
 
     redirect_dest = params[:assignment].delete(:redirect_to) || {:action => "index"}
+    redirect_dest += "#" + @assignment.volunteer_shift.date_anchor if redirect_dest.class != Hash
 
     if @assignment.update_attributes(params[:assignment])
       flash[:notice] = 'Assignment was successfully updated.'
@@ -131,6 +133,9 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id])
     @assignment.destroy
 
-    redirect_to({:action => "index"})
+    redirect_dest = params[:assignment].delete(:redirect_to) || {:action => "index"}
+    redirect_dest += "#" + @assignment.volunteer_shift.date_anchor if redirect_dest.class != Hash
+
+    redirect_to(redirect_dest)
   end
 end
