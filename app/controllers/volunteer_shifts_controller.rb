@@ -18,6 +18,7 @@ class VolunteerShiftsController < ApplicationController
       :date_range_condition => "date",
 
       :block_method_name => "volunteer_events.date",
+      :block_anchor => 'volunteer_shifts.date_anchor',
       :block_method_display => "volunteer_shifts.date_display",
       :block_start_time => "volunteer_shifts.weekdays.start_time",
       :block_end_time => "volunteer_shifts.weekdays.end_time",
@@ -54,6 +55,6 @@ class VolunteerShiftsController < ApplicationController
     vs = VolunteerShift.find(params[:id])
     vs.destroy
 
-    redirect_to :controller => "volunteer_events", :id => vs.volunteer_event_id, :action => "edit"
+    redirect_skedj(request.env["HTTP_REFERER"], vs.date_anchor)
   end
 end

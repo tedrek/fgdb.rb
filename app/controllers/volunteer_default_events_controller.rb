@@ -22,6 +22,7 @@ class VolunteerDefaultEventsController < ApplicationController
 
   def edit
     @volunteer_default_event = VolunteerDefaultEvent.find(params[:id])
+    @referer = request.env["HTTP_REFERER"]
   end
 
   def copy
@@ -43,12 +44,13 @@ class VolunteerDefaultEventsController < ApplicationController
 
   def update
     @volunteer_default_event = VolunteerDefaultEvent.find(params[:id])
+    rt = params[:volunteer_default_event].delete(:redirect_to)
 
     _save
     if @volunteer_default_event.update_attributes(params[:volunteer_default_event])
       _after_save
       flash[:notice] = 'VolunteerDefaultEvent was successfully updated.'
-      redirect_to({:action => "show", :id => @volunteer_default_event.id})
+      redirect_skedj(rt, @volunteer_default_event.weekday.name)
     else
       render :action => "edit"
     end

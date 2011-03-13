@@ -26,6 +26,7 @@ class VolunteerEventsController < ApplicationController
 
   def edit
     @volunteer_event = VolunteerEvent.find(params[:id])
+    @referer = request.env["HTTP_REFERER"]
   end
 
   def create
@@ -43,12 +44,13 @@ class VolunteerEventsController < ApplicationController
 
   def update
     @volunteer_event = VolunteerEvent.find(params[:id])
+    rt = params[:volunteer_event].delete(:redirect_to)
 
     _save
     if @volunteer_event.update_attributes(params[:volunteer_event])
       _after_save
       flash[:notice] = 'VolunteerEvent was successfully updated.'
-      redirect_to({:action => "show", :id => @volunteer_event.id})
+      redirect_skedj(rt, @volunteer_event.date_anchor)
     else
       render :action => "edit"
     end

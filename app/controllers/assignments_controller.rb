@@ -117,10 +117,11 @@ class AssignmentsController < ApplicationController
 
   def update
     @assignment = Assignment.find(params[:id])
+    rt = params[:assignment].delete(:redirect_to)
 
     if @assignment.update_attributes(params[:assignment])
       flash[:notice] = 'Assignment was successfully updated.'
-      redirect_skedj(params[:assignment].delete(:redirect_to), @assignment.volunteer_shift.date_anchor)
+      redirect_skedj(rt, @assignment.volunteer_shift.date_anchor)
     else
       render :action => "edit"
     end

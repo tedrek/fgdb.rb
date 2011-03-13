@@ -62,6 +62,6 @@ class VolunteerDefaultShiftsController < ApplicationController
     @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
     @volunteer_default_shift.destroy
 
-    redirect_to({:controller => "volunteer_default_events", :action => "edit", :id => @volunteer_default_shift.volunteer_default_event_id})
+    redirect_skedj(request.env["HTTP_REFERER"], @volunteer_default_shift.volunteer_default_event.weekday.name)
   end
 end
