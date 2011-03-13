@@ -83,7 +83,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def left_method_name
-    [self.volunteer_task_type_id.nil? ? self.volunteer_event.description : self.volunteer_task_type.description, self.slot_number, self.description].select{|x| !x.nil?}.join(", ")
+    [self.volunteer_task_type_id.nil? ? self.volunteer_event.description : self.volunteer_task_type.description, self.slot_number].select{|x| !x.nil?}.join(", ")
   end
 
   def left_unique_value

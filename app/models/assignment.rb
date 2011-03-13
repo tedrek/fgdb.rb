@@ -18,8 +18,8 @@ class Assignment < ActiveRecord::Base
     self.volunteer_shift.volunteer_event.date.strftime("%D") + " " + self.time_range_s + " " + (self.volunteer_shift.volunteer_task_type_id.nil? ? self.volunteer_shift.volunteer_event.description : self.volunteer_shift.volunteer_task_type.description)
   end
 
-  def contact_display
-    display_name
+  def display_name
+    ((!(self.volunteer_shift.description.nil? or self.volunteer_shift.description.blank?)) ? self.volunteer_shift.description + ": " : "") + self.contact_display
   end
 
   def cancelled?
@@ -30,7 +30,7 @@ class Assignment < ActiveRecord::Base
     (self.attendance_type and !self.attendance_type.cancelled)
   end
 
-  def display_name
+  def contact_display
     if contact_id.nil?
       return "(available)"
     else
