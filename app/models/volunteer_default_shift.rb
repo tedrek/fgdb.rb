@@ -98,7 +98,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
       ds_conds.effective_at = x
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
-      shifts = VolunteerDefaultShift.find(:all, :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])
+      shifts = VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])
       shifts.each{|ds|
         ve = VolunteerEvent.find(:all, :conditions => ["volunteer_default_event_id = ? AND date = ?", ds.volunteer_default_event_id, x]).first
         if !ve
@@ -111,7 +111,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
         ve.notes = ds.volunteer_default_event.notes
         ve.save!
         slot_number = 1
-        first = true
         (1..ds.slot_count).each{|num|
           while myl.include?(slot_number)
             slot_number += 1
@@ -128,13 +127,12 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.roster_id = ds.roster_id
           s.class_credit = ds.class_credit
           s.save!
-          if first and ds.contact_id
+          if ds.contact_id
             a = s.assignments.first
             a.contact_id = ds.contact_id
             a.save!
           end
           myl << slot_number
-          first = false
         }
       }
     }
