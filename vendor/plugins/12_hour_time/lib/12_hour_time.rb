@@ -1,18 +1,21 @@
 class ActiveRecord::Base
   def instantiate_time_object_with_ampm(name, values)
     if values.length == 2 or values.length == 3
-      values = [0, 0, 0, *values]
-    end
-    if values.last < 0
-      ampm = values.pop
-      if ampm == ActionView::Helpers::DateTimeSelector::AM and values[3] == 12
-        values[3] = 0
-      elsif ampm == ActionView::Helpers::DateTimeSelector::PM and values[3] != 12
-        values[3] += 12
-      end
+      values = [2000, 1, 1, *values] # this is really messed up but
+#      fine...ruby represents times as seconds since epoch, so it can't
+#      handle a time without having a date too. this will introduce
+#      many, many bugs over the course of this app I'm sure.
+#      We do it elsewhere anyway tho...it has to happen all over.
     end
 
-#    puts values.inspect
+    if values.last < 0
+      ampm = values.pop
+      if ampm == ActionView::Helpers::DateTimeSelector::AM and values[-2] == 12
+        values[-2] = 0
+      elsif ampm == ActionView::Helpers::DateTimeSelector::PM and values[-2] != 12
+        values[-2] += 12
+      end
+    end
 
     instantiate_time_object_without_ampm(name, values)
   end
