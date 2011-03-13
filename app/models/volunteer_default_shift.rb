@@ -98,7 +98,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
       ds_conds.effective_at = x
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
-      shifts = VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])
+      shifts = VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.roster_id, volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])
       shifts.each{|ds|
         ve = VolunteerEvent.find(:all, :conditions => ["volunteer_default_event_id = ? AND date = ?", ds.volunteer_default_event_id, x]).first
         if !ve
