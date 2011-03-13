@@ -118,12 +118,9 @@ class AssignmentsController < ApplicationController
   def update
     @assignment = Assignment.find(params[:id])
 
-    redirect_dest = params[:assignment].delete(:redirect_to) || {:action => "index"}
-    redirect_dest += "#" + @assignment.volunteer_shift.date_anchor if redirect_dest.class != Hash
-
     if @assignment.update_attributes(params[:assignment])
       flash[:notice] = 'Assignment was successfully updated.'
-      redirect_to(redirect_dest)
+      redirect_skedj(params[:assignment].delete(:redirect_to), @assignment.volunteer_shift.date_anchor)
     else
       render :action => "edit"
     end
@@ -133,9 +130,6 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id])
     @assignment.destroy
 
-    redirect_dest = request.env["HTTP_REFERER"] || {:action => "index"}
-    redirect_dest += "#" + @assignment.volunteer_shift.date_anchor if redirect_dest.class != Hash
-
-    redirect_to(redirect_dest)
+    redirect_skedj(request.env["HTTP_REFERER"], @assignment.volunteer_shift.date_anchor)
   end
 end

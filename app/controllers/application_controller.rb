@@ -19,6 +19,10 @@ module ActionController
 end
 
 class ApplicationController < ActionController::Base
+  def redirect_skedj(referer, anchor)
+    redirect_to(referer ? (referer + "#" + anchor) : ({:action => "index"}))
+  end
+
   include AuthenticatedSystem
   layout "application"
   helper :cashiers
