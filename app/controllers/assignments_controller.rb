@@ -133,7 +133,7 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:id])
     @assignment.destroy
 
-    redirect_dest = params[:assignment].delete(:redirect_to) || {:action => "index"}
+    redirect_dest = request.env["HTTP_REFERER"] || {:action => "index"}
     redirect_dest += "#" + @assignment.volunteer_shift.date_anchor if redirect_dest.class != Hash
 
     redirect_to(redirect_dest)
