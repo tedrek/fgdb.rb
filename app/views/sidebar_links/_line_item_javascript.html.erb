@@ -6,7 +6,7 @@
 }" %>
 
 
-<% @gizmo_contact = gizmo_context %>
+<% @gizmo_contact = gizmo_context if defined?(gizmo_context) %>
 
 <% if defined?(@gizmo_context) %>
 <script>
