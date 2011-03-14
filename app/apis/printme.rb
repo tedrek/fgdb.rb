@@ -63,7 +63,7 @@ class PrintmeAPI < SoapsBase
     server_hash[version].class != Array || server_hash[version].include?(client_version)
   end
   def version
-    12
+    13
   end
   def bad_client_error
     "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."
@@ -87,6 +87,7 @@ class PrintmeAPI < SoapsBase
     server_versions[10] = [9,10]  # all good
     server_versions[11] = [11]    # string change on both ends, that needs to go together (reworded contracts question)
     server_versions[12] = [12]    # new info collected, forced upgrade.
+    server_versions[13] = [12,13]    # works fine.
     server_versions
   end
 

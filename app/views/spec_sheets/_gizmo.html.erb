@@ -106,8 +106,12 @@
           Battery Life:
         </td>
         <td>
+          <% if @system_parser.battery_life.nil? %>
           <br />
           _________________________
+          <% else %>
+            <%= @system_parser.battery_life %>
+          <% end %>
         </td>
       </tr>
       <tr>

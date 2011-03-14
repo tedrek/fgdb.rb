@@ -4,6 +4,7 @@ module SystemHelper
     attr_reader :total_memory, :memories, :harddrives, :opticals, :pcis
     attr_reader :system_model, :system_serial_number, :system_vendor, :mobo_model, :mobo_serial_number, :mobo_vendor, :macaddr
     attr_reader :model, :vendor, :serial_number
+    attr_reader :battery_life
 
     include XmlHelper
 
@@ -98,6 +99,29 @@ module SystemHelper
   end
 
   class SystemParserException < Exception
+  end
+
+  class FgdbPrintmeExtrasSystemParser < SystemParser
+    include XmlHelper
+
+    def self.match_string
+      "fgdb_printme"
+    end
+
+    def do_work
+      @parser.xml_foreach("//fgdb_data") {
+        d = @parser.my_node.children.map{|x| x.to_s}.join("")
+        @real_system_parser = SystemParser.parse(d)
+      }
+      @real_system_parser.instance_variables.each{|x|
+        next if x == "@parser"
+        self.instance_variable_set(x, @real_system_parser.instance_variable_get(x))
+      }
+
+      @parser.xml_foreach("//fgdb_printme") {
+        @battery_life = @parser.xml_value_of("batterytest") if @parser.xml_if("batterytest")
+      }
+    end
   end
 
   class LshwSystemParser < SystemParser
@@ -288,7 +312,7 @@ module SystemHelper
 
   class PlistSystemParser < SystemParser
     def self.match_string
-      "DOCTYPE plist"
+      "<plist"
     end
 
     def snm(name)
@@ -354,5 +378,5 @@ module SystemHelper
     end
   end
 
-  SystemParser::Parsers = [PlistSystemParser, LshwSystemParser]
+  SystemParser::Parsers = [FgdbPrintmeExtrasSystemParser, PlistSystemParser, LshwSystemParser]
 end
