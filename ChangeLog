@@ -1,12 +1,18 @@
 fgdb.rb (1.0.56) UNRELEASED; urgency=low
 
   * rails 2.3.5, so runs on debian squeeze (Closes: #20603)
-  * type condition (Closes: #22095)
+  * type condition for spec_sheets (Closes: #22095)
   * show results of batterytest on the spec_sheet if the client includes
     it (Closes: #18537)
   * reject future dates on volunteer_tasks (Closes: #20112)
+  * return to the correct page and day section after editting/destroying
+    skedjul view items
+  * show attended shifts as yellow instead of the bg color
+  * move the shift description into the cell rather than off to the
+    left, and allow things with the same slot but different descriptions
+    to be on the same line
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 13 Mar 2011 23:36:57 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 13 Mar 2011 23:41:52 -0700
 
 fgdb.rb (1.0.55) released; urgency=low
   * fix pasting in the autocomplete, but this time subclass rails code
