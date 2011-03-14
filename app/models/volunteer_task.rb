@@ -29,6 +29,7 @@ class VolunteerTask < ActiveRecord::Base
     if duration.to_f <= 0.0
       errors.add(:duration, "must be greater than zero")
     end
+    errors.add(:date_performed, "is in the future") if self.date_performed > Date.today
   end
 
   def effective_duration
