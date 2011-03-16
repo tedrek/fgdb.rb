@@ -1,0 +1,9 @@
+<h2>Split assignment</h2>
+Valid range: <%= @assignment.start_time.strftime("%I:%M %p") %> to <%= @assignment.end_time.strftime("%I:%M %p") %>
+<% remote_form_for :split, nil, :url => {:action => "dosplit", :id => @assignment.id}, :loading => "$(#{ loading_indicator_id("split_assignment_form").to_json }).show();" do |f| %>
+<%= f.time_select :split_time, :ignore_date => true, :twelve_hour => true, :include_blank => false %>
+<%= f.submit "Split" %>
+<%= loading_indicator_tag("split_assignment_form") %>
+<% end %>
+
+

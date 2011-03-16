@@ -58,7 +58,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -74,7 +74,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
@@ -87,6 +87,42 @@ class AssignmentsController < ApplicationController
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
     else
       render :partial => "index",  :layout => :with_sidebar
+    end
+  end
+
+  def split
+    @assignment = Assignment.find(params[:id])
+    render :update do |page|
+      page.hide loading_indicator_id("skedjul_#{params[:skedjul_loading_indicator_id]}_loading")
+      page << "show_message(#{(render :partial => "splitform").to_json});"
+    end
+  end
+
+  def dosplit
+    sp = params[:split].to_a.sort_by{|k,v| k}.map{|a| a[1].to_i}
+    @assignment = Assignment.find(params[:id])
+    old_end = @assignment.end_time
+    @assignment.end_time = @assignment.send(:instantiate_time_object, "split_time", sp)
+    new_end = @assignment.end_time
+    success = ((@assignment.end_time < old_end) and (@assignment.end_time > @assignment.start_time))
+   if success
+      success = @assignment.save
+      if success
+        @assignment = Assignment.new(@assignment.attributes)
+        @assignment.start_time = new_end
+        @assignment.end_time = old_end
+        success = @assignment.save
+      end
+    end
+    render :update do |page|
+      if success
+        page.reload
+#        page << "selection_toggle(#{params[:id]});"
+#        page << "popup1.hide();"
+      else
+        page << "alert('split failed. this is probably due to the time not being within the correct range.');"
+      end
+      page.hide loading_indicator_id("split_assignment_form")
     end
   end
 
