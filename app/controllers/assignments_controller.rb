@@ -104,7 +104,7 @@ class AssignmentsController < ApplicationController
     # do it
     @assigned.volunteer_shift_id = @available.volunteer_shift_id
     @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
-    @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.end_time)
+    @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
     @new.start_time = @assigned_orig.start_time
     @new.end_time = @assigned_orig.end_time
