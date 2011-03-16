@@ -1,5 +1,5 @@
 <% shift_length = (( skedj.get_method_value(skedj.current, :thing_end_time) - skedj.get_method_value(skedj.current, :thing_start_time) ) / ( 60 * 15 )).to_int %>
-<td id='<%= skedj.current.class.to_s %>_<%= skedj.current.id %>' class='<%= shift_style %>' colspan='<%= shift_length %>'>
+<td id='<%= skedj.current.class.to_s %>_<%= skedj.current.id %>' class='<%= shift_style %>' colspan='<%= shift_length %>' <%= skedj.opts[:cell_onclick] ? " onclick=\"#{skedj.opts[:cell_onclick]}(#{skedj.current.id});\"" : "" %>>
 
   <%= skedj.get_method_value(skedj.current, :thing_description) %>
 <% if skedj.opts[:presentation_mode]=='Edit' %>

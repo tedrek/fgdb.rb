@@ -27,7 +27,7 @@ function all_selected() {
 function do_multi_edit() {
   ids = all_selected();
   if(ids.length == 0) {
-    alert("Select some assignments to mass edit using the 's' links and try again");
+    alert("Select some assignments by clicking on them and try again");
     return;
   }
   window.location.href = "/assignments/edit/" + ids;

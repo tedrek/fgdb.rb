@@ -42,6 +42,7 @@ class AssignmentsController < ApplicationController
       :block_end_time => "volunteer_shifts.weekdays.end_time",
       :default_view => "by_slot",
                            :table_head_partial => "assignments/multi_edit",
+                           :cell_onclick => "selection_toggle",
 
                            :views => {
                              :by_slot =>
@@ -57,7 +58,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:selection_toggle, :function], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -73,7 +74,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:selection_toggle, :function], [:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
