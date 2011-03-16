@@ -6,7 +6,7 @@ fgdb.rb (1.0.56) UNRELEASED; urgency=low
     it (Closes: #18537)
   * reject future dates on volunteer_tasks (Closes: #20112)
   * return to the correct page and day section after editting/destroying
-    skedjul view items
+    skedjul view items (Closes: #22230)
   * show attended shifts as yellow instead of the bg color
   * move the shift description into the cell rather than off to the
     left, and allow things with the same slot but different descriptions
