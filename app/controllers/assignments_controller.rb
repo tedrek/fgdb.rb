@@ -196,6 +196,7 @@ class AssignmentsController < ApplicationController
       flash[:notice] = 'Assignment was successfully updated.'
       redirect_skedj(rt, @assignment.volunteer_shift.date_anchor)
     else
+      @referer = rt
       render :action => "edit"
     end
   end

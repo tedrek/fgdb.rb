@@ -13,8 +13,10 @@ fgdb.rb (1.0.56) UNRELEASED; urgency=low
     to be on the same line
   * add ability to edit multiple assignments at once, split assignments,
     and reassign an assignment to another shift
+  * add validations to prevents workers being scheduled at two places at
+    once, and to prevent shifts being assigned to two people at once
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 15 Mar 2011 23:16:00 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 15 Mar 2011 23:55:01 -0700
 
 fgdb.rb (1.0.55) released; urgency=low
   * fix pasting in the autocomplete, but this time subclass rails code
