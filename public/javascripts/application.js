@@ -3,6 +3,36 @@
 
 cashierable_enabled = true;
 
+function selection_toggle(id) {
+  var e = $('Assignment' + "_" + id);
+  if(e.className != 'selected') {
+    e.old_class = e.className;
+    e.className = 'selected';
+  } else {
+    e.className = e.old_class;
+  }
+}
+
+function all_selected() {
+  var a = document.getElementsByClassName("selected");
+  var r = [];
+  for(var i = 0; i < a.length; i++) {
+    var x = a[i];
+    var s = x.id.split("_")[1];
+    r.push(s);
+  }
+  return r.join(",");
+}
+
+function do_multi_edit() {
+  ids = all_selected();
+  if(ids.length == 0) {
+    alert("Select some assignments to mass edit using the 's' links and try again");
+    return;
+  }
+  window.location.href = "/assignments/edit/" + ids;
+}
+
 function show_message(msg) {
   popup1 = new Popup();
   popup1.content = msg;

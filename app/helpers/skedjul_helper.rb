@@ -183,6 +183,10 @@ module SkedjulHelper
         html_opts[:popup] = true
       elsif type == :confirm
         html_opts[:confirm] = 'Are you sure?'
+      elsif type == :function
+        func = :link_to_function
+        url_opts = url_opts[:action].to_s + "(#{tid});"
+        html_opts = nil
       elsif type == :remote
         func = :link_to_remote
         url_opts[:url] = url_opts.dup # yuck

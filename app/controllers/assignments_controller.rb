@@ -41,6 +41,7 @@ class AssignmentsController < ApplicationController
       :block_start_time => "volunteer_shifts.weekdays.start_time",
       :block_end_time => "volunteer_shifts.weekdays.end_time",
       :default_view => "by_slot",
+                           :table_head_partial => "assignments/multi_edit",
 
                            :views => {
                              :by_slot =>
@@ -56,7 +57,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:selection_toggle, :function], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -72,7 +73,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:selection_toggle, :function], [:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
@@ -100,7 +101,8 @@ class AssignmentsController < ApplicationController
   end
 
   def edit
-    @assignment = Assignment.find(params[:id])
+    @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
+    @assignment = @assignments.first
     @referer = request.env["HTTP_REFERER"]
   end
 
@@ -116,10 +118,18 @@ class AssignmentsController < ApplicationController
   end
 
   def update
-    @assignment = Assignment.find(params[:id])
+    @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
+    @assignment = @assignments.first
     rt = params[:assignment].delete(:redirect_to)
 
-    if @assignment.update_attributes(params[:assignment])
+    ret = true
+    @assignments.each{|x|
+      if ret
+        ret = !!(x.update_attributes(params[:assignment]))
+      end
+    }
+
+    if ret
       flash[:notice] = 'Assignment was successfully updated.'
       redirect_skedj(rt, @assignment.volunteer_shift.date_anchor)
     else

@@ -73,3 +73,6 @@ div.skedj td.unfilled {
 div.skedj td.checked_in {
     background: #FFFF00;
 }
+div.skedj td.selected {
+    background: #800080;
+}

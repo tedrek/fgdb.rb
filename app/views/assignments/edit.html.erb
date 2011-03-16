@@ -1,7 +1,14 @@
 <h1>Editing assignment</h1>
 
+<% if @assignments.length > 1 %>
+<h2>Editing multiple assignments at once:</h2>
+<% for x in @assignments %>
+  <%= x.description %><br />
+<% end %>
+<% end %>
+
 <fieldset>
-<% form_for(@assignment, :url => {:action => "update", :id => @assignment.id}) do |f| %>
+<% form_for(@assignment, :url => {:action => "update", :id => params[:id]}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>
