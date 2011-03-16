@@ -182,12 +182,12 @@ class AssignmentsController < ApplicationController
 
   def update
     @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
-    @assignment = @assignments.first
     rt = params[:assignment].delete(:redirect_to)
 
     ret = true
     @assignments.each{|x|
       if ret
+        @assignment = x
         ret = !!(x.update_attributes(params[:assignment]))
       end
     }
