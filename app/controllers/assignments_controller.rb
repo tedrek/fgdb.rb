@@ -58,7 +58,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -74,7 +74,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
@@ -88,6 +88,32 @@ class AssignmentsController < ApplicationController
     else
       render :partial => "index",  :layout => :with_sidebar
     end
+  end
+
+  def reassign
+    assigned, available = params[:id].split(",")
+
+    # readonly
+    @assigned_orig = Assignment.find(assigned)
+    @available = Assignment.find(available)
+
+    # for write
+    @assigned = Assignment.find(assigned)
+    @new = Assignment.new # available
+
+    # do it
+    @assigned.volunteer_shift_id = @available.volunteer_shift_id
+    @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
+    @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.end_time)
+
+    @new.start_time = @assigned_orig.start_time
+    @new.end_time = @assigned_orig.end_time
+    @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
+
+    @assigned.save!
+    @new.save!
+
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned.volunteer_shift.date_anchor)
   end
 
   def split

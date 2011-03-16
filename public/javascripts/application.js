@@ -13,6 +13,24 @@ function selection_toggle(id) {
   }
 }
 
+function reassign(assigned_id) {
+  var available_id = all_selected();
+  if(available_id.split(",").length != 1 || available_id.length == 0) {
+    alert("Select one assignment to reassign this shift to by clicking on it and then try again");
+    selection_toggle(assigned_id);
+    return;
+  }
+  var available_e = $('Assignment' + "_" + available_id);
+  if(available_e.old_class != "available") {
+    alert("The selected assignment is not available");
+    selection_toggle(assigned_id);
+    return;
+  }
+  var arr = [assigned_id, available_id];
+  arr = arr.join(",");
+  window.location.href = "/assignments/reassign/" + arr;
+}
+
 function all_selected() {
   var a = document.getElementsByClassName("selected");
   var r = [];
@@ -25,7 +43,7 @@ function all_selected() {
 }
 
 function do_multi_edit() {
-  ids = all_selected();
+  var ids = all_selected();
   if(ids.length == 0) {
     alert("Select some assignments by clicking on them and try again");
     return;
