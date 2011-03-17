@@ -63,7 +63,7 @@ class AssignmentsController < ApplicationController
 
                              :by_worker =>
                              { :left_unique_value => "assignments.contact_id",
-                               :left_sort_value => "assignments.contact_id",
+                               :left_sort_value => "assignments.contacts.sort_name",
                                :left_method_name => "assignments.contact_display",
                                :left_table_name => "contacts",
                                :left_link_action => "assignments",
