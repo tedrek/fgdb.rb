@@ -51,7 +51,12 @@ class TransactionController < ApplicationController
   end
 
   def get_storecredit_amount
-    s = StoreCredit.find_by_id(params[:id])
+    s = nil
+    begin
+      scid = StoreChecksum.new_from_checksum(params[:id]).result
+      s = StoreCredit.find_by_id(scid)
+    rescue StoreChecksumException
+    end # else below..
     msg = nil
     v = -1
     if s
@@ -61,12 +66,12 @@ class TransactionController < ApplicationController
         v = s.amount_cents
       end
     else
-      msg = "A store credit with that ID does not exist"
+      msg = "That store credit hash is not valid or doesn't exist"
     end
     v = (s && !s.spent? ? s.amount_cents : -1)
     render :update do |page|
       page << "internal_storecredit_amount = #{v.to_s.to_json};";
-      page << "storecredit_errors_cache[#{params[:id]}] = #{msg.to_json};"
+      page << "storecredit_errors_cache[#{params[:id].to_json}] = #{msg.to_json};"
       page.hide loading_indicator_id("payment_line_item")
     end
   end

@@ -39,6 +39,10 @@ class GizmoReturn < ActiveRecord::Base
     self.store_credit.id
   end
 
+  def store_credit_hash
+    StoreChecksum.new_from_result(store_credit_id).checksum
+  end
+
   def set_storecredit_difference_cents
     self.storecredit_difference_cents = calculated_subtotal_cents
     if self.storecredit_difference_cents != 0

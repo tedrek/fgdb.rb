@@ -106,7 +106,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
   end
 
   def attry_description(options = {})
-    junk = [:store_credit_ids, :as_is, :size, :system_id, :original_sale_id].map{|x| x.to_s} - (options[:ignore] || [])
+    junk = [:as_is, :size, :system_id, :original_sale_id].map{|x| x.to_s} - (options[:ignore] || []) # :store_credit_ids, 
 
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 

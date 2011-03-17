@@ -19,8 +19,9 @@ fgdb.rb (1.0.56) UNRELEASED; urgency=low
   * show event notes through markdown on the skedjul view and to where
     they can be edited if the user has those permissions
   * by_worker view: sort by sort_name, not id
+  * impliment store credit hash (Closes: #19359)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 16 Mar 2011 17:45:16 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 17 Mar 2011 08:25:03 -0700
 
 fgdb.rb (1.0.55) released; urgency=low
   * fix pasting in the autocomplete, but this time subclass rails code

@@ -29,6 +29,11 @@ class Payment < ActiveRecord::Base
   end
 
   def store_credit_id=(v)
+    begin
+      v = StoreChecksum.new_from_checksum(v).result
+    rescue StoreChecksumException
+      return
+    end
     return if v.to_i == 0
     s = StoreCredit.find_by_id(v)
     return if s.nil?
@@ -43,7 +48,7 @@ class Payment < ActiveRecord::Base
 
   def store_credit_id
     return nil if ! self.store_credit
-    self.store_credit.id
+    StoreChecksum.new_from_result(self.store_credit.id).checksum
   end
 
   def is_storecredit?

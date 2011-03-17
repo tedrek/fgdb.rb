@@ -10,7 +10,7 @@ module GizmoReturnsHelper
      Column.new(GizmoReturn, :name => 'id'),
      Column.new(GizmoReturn, :name => 'gizmos', :sortable => false),
      Column.new(GizmoReturn, :name => 'storecredit_difference'),
-     Column.new(GizmoReturn, :name => 'store_credit_id'),
+     Column.new(GizmoReturn, :name => 'store_credit_hash'),
     ]
   end
 end
