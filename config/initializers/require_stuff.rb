@@ -6,3 +6,12 @@ require 'gnuplot'
 require 'bytes'
 require 'json'
 require 'ostruct'
+require 'bluecloth'
+
+module ActionView
+  module Helpers
+    module TextHelper
+      Markdown = BlueCloth
+    end
+  end
+end

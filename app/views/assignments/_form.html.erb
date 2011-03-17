@@ -8,7 +8,7 @@
       <tr><td>Shift description:</td><td><%= vs = f.object.volunteer_shift; s = vs.volunteer_task_type_id.nil? ? vs.volunteer_event.description : vs.volunteer_task_type.description; s += ", #{vs.description}" if vs.description.to_s.length > 0; s %></td></tr>
       <tr><td>Available time range:</td><td><%= [f.object.volunteer_shift.assignments.select{|x| x.contact_id.nil?}, f.object].flatten.sort_by(&:start_time).uniq.map{|x| x.time_range_s}.join(", ") %></td></tr>
       <tr><td>Volunteer event name:</td><td><%= f.object.volunteer_shift.volunteer_event.description %></td></tr>
-      <tr><td>Volunteer event notes:</td><td><%= (f.object.volunteer_shift.volunteer_event.notes || "").gsub('\n', '<br/>') %></td></tr>
+      <tr><td>Volunteer event notes:</td><td><%= markdown(f.object.volunteer_shift.volunteer_event.notes) %></td></tr>
     </table>
   </p>
 

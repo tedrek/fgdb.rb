@@ -1,5 +1,5 @@
 <% if skedj.opts.include?(:table_head_partial) %>
-<%= render :partial => skedj.opts[:table_head_partial], :locals => {:block_display => skedj.get_method_value(skedj.current, :block_method_display)} %>
+<%= render :partial => skedj.opts[:table_head_partial], :locals => {:skedj => skedj, :block_display => skedj.get_method_value(skedj.current, :block_method_display), :block_anchor => skedj.get_method_value(skedj.current,( skedj.opts.include?(:block_anchor) ? :block_anchor : :block_method_display))} %>
 <% end %>
 <a name="<%= skedj.get_method_value(skedj.current,( skedj.opts.include?(:block_anchor) ? :block_anchor : :block_method_display)) %>" />
 <table class="skedj" border="0" width="100%" summary="<%=h skedj.get_method_value(skedj.current,:block_method_display) %>">

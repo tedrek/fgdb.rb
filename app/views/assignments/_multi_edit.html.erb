@@ -1,2 +1,17 @@
+<%# todo: rename this file.. %>
+
+<div>
+<% my_date = Date.strptime(block_anchor, "%Y%m%d") %>
+<% my_events = skedj.results.map{|x| x.volunteer_shift.volunteer_event}.uniq.select{|x| x.date == my_date} %>
+<% my_events.each do |x| %>
+<fieldset style="float: left">
+<h4><%= x.description %> (<%= x.time_range_s %>) <%= has_privileges('admin_skedjul') ? (link_to "e", :action => "edit", :id => x.id, :controller => "volunteer_events") : "" %></h4>
+<%= markdown(x.notes) %>
+</fieldset>
+<% end %>
+</div>
+
+<div style="clear: left">
 <%= button_to_function "Multi-Edit", "do_multi_edit();" %>
+</div>
 
