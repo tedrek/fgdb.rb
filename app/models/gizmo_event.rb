@@ -101,12 +101,16 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
     self.store_credits.map{|x| "#" + x.id.to_s}.to_sentence
   end
 
+  def store_credit_hashes
+    self.store_credits.map{|x| "#" + StoreChecksum.new_from_result(x.id).checksum}.to_sentence
+  end
+
   def original_sale_id
     return_sale_id
   end
 
   def attry_description(options = {})
-    junk = [:as_is, :size, :system_id, :original_sale_id].map{|x| x.to_s} - (options[:ignore] || []) # :store_credit_ids, 
+    junk = [:store_credit_hashes, :as_is, :size, :system_id, :original_sale_id].map{|x| x.to_s} - (options[:ignore] || [])
 
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 
