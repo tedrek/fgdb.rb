@@ -2,7 +2,7 @@
 
 
 if ! test -f ~/nobackup/I_AM_THE_BACKUPS; then
-    sshfs wayback:/srv/arik-extras/arik-backups/ /home/ryan52/yesbackup/
+    sshfs wayback:/srv/arik-extras/arik-backups/ /home/ryan52/nobackup/
     if ! test -f ~/nobackup/I_AM_THE_BACKUPS; then
 	echo "ERROR: nobackup isn't the backup dir"
 	exit 1
