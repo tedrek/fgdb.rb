@@ -106,5 +106,9 @@ module Rails
   end
 end
 
+def test_version(*args)
+  exit Rails::VERSION::STRING == args.join('.')
+end
+
 # All that for this:
 Rails.boot!
