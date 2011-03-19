@@ -1,5 +1,5 @@
 # cleans up sessions
-0 0 * * * root rm /var/www/fgdb.rb/tmp/sessions/*
+0 0 * * * root /var/www/fgdb.rb/script/delete-sessions
 
 # milestone report
 0 21 * * 3 root /var/www/fgdb.rb/script/volunteer_milestones_report
