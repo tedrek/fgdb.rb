@@ -6,7 +6,7 @@ module HtmlHelper
 
     # type choice
     display = %Q{ <div class="form-element"> %s %s </div> } %
-      [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]} ),
+      [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]}.sort_by(&:first) ),
         observe_field( "#{obj_name}_#{method_name}",
                        :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value);",
                        :with => method_name )]

@@ -1,6 +1,9 @@
 #!/bin/sh
 
-for i in 0 1 2; do
+SERVERS=$(cat /etc/thin/fgdb.yml | grep servers | cut -d ' ' -f 2)
+
+for q in `seq $SERVERS`; do
+    i=$(( $q - 1 ))
     echo "Restarting $i"
     sudo /usr/bin/thin restart -C /etc/thin/fgdb.yml -o $i >/dev/null 2>/dev/null
     echo "Checking if file exists"

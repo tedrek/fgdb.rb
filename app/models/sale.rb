@@ -21,7 +21,7 @@ class Sale < ActiveRecord::Base
   before_save :set_occurred_at_on_transaction
 
   def initialize(*args)
-    @contact_type = 'named'
+    @contact_type = 'anonymous'
     super(*args)
   end
 

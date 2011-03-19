@@ -1,0 +1,4 @@
+#!/bin/sh
+exec ruby `dirname $0`/sql_runner $0 "$@"
+
+DELETE FROM sessions;

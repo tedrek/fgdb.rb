@@ -22,7 +22,7 @@ class Assignment < ActiveRecord::Base
   named_scope :potential_overlappers, lambda{|assignment|
     tid = assignment.id
     tdate = assignment.volunteer_shift.volunteer_event.date
-    { :conditions => ['id != ? AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tdate] }
+    { :conditions => ['id != ? AND attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\') AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tdate] }
   }
 
   named_scope :for_contact, lambda{|assignment|
