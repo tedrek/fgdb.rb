@@ -54,17 +54,17 @@ class StoreChecksum
   end
 
   def _result
-    arr = @checksum.to_i(16).to_s(10).scan(/./)
-    @checkbit = arr.pop
-    hex = arr.join("")
-    result = hex
+    arr = @checksum.to_i(16)
+    @checkbit = (arr % 100)
+    hex = ((arr - @checkbit) / 100.0) - 1000
+    result = hex.to_i.to_s
     raise StoreChecksumException if checkbit != self.class.new_from_result(result).checkbit
     return result
   end
 
   def _checksum
-    hex = @result.to_s
-    @checkbit = (@result.to_i + extra_data).to_s(2).scan(/./).inject(0){|t,x| t+=x.to_i}.to_s(10).scan(/./).last
+    hex = ((1000 + @result.to_i) * 100)
+    @checkbit = ((10000000000000000000000000000*(@result.to_i + extra_data)).to_s(2).scan(/./).inject(0){|t,x| t+=x.to_i} % 100)
     hex += @checkbit
     hex = hex.to_i.to_s(16)
     return hex
