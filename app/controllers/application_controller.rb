@@ -2,7 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 module ActionController
-  class AbstractRequest
+  class Request
     def my_port
       return @fgdb_internal_port || @env["SERVER_PORT"].to_i
     end
