@@ -70,6 +70,7 @@ class PrintmeAPI < SoapsBase
   end
   def bad_server_error
     "The server is incompatible. exiting."
+    "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again." # REMOVEME, use above
   end
 
   private
