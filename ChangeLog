@@ -1,4 +1,4 @@
-fgdb.rb (1.0.56) UNRELEASED; urgency=low
+fgdb.rb (1.0.56) released; urgency=low
 
   * rails 2.3.5, so runs on debian squeeze (Closes: #20603)
   * type condition for spec_sheets (Closes: #22095)
@@ -21,7 +21,7 @@ fgdb.rb (1.0.56) UNRELEASED; urgency=low
   * by_worker view: sort by sort_name, not id
   * impliment store credit hash (Closes: #19359)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 17 Mar 2011 08:25:03 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 Mar 2011 20:12:39 -0700
 
 fgdb.rb (1.0.55) released; urgency=low
   * fix pasting in the autocomplete, but this time subclass rails code
