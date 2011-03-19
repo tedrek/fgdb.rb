@@ -1,6 +1,53 @@
 class StoreChecksumException < Exception
 end
 
+class BaseStore
+  def self.new_from_base10(val)
+    BaseStore.new(:base10 => val)
+  end
+
+  def self.new_from_base_store(val)
+    BaseStore.new(:base_store => val)
+  end
+
+  def initialize(h)
+    @base_store = h[:base_store]
+    @base10 = h[:base10]
+  end
+
+  def base_store
+    @base_store ||= _base_store
+  end
+
+  def base10
+    @base10 ||= _base10
+  end
+
+  def _base_store
+    number = @base10.to_i
+    ret = ''
+    while(number != 0)
+      ret = _char_arr[number % _char_arr.length] + ret
+      number = number / _char_arr.length
+    end
+    return ret
+  end
+
+  def _base10
+    ret = 0
+    @base_store.split(//).each{|digit|
+      ret = (_char_arr.index(digit) + ret) * _char_arr.length
+    }
+   return (ret/_char_arr.length).to_s
+  end
+
+  private
+
+  def _char_arr
+    "0123456789ABCDEF".split(//)
+  end
+end
+
 class StoreChecksum
   # takes a decimal ID in
   # adds the id with the amount_cents of the store credit, looks at
@@ -54,7 +101,7 @@ class StoreChecksum
   end
 
   def _result
-    arr = @checksum.to_i(16)
+    arr = BaseStore.new_from_base_store(@checksum).base10.to_i
     @checkbit = (arr % 100)
     hex = ((arr - @checkbit) / 100.0) - 1000
     result = hex.to_i.to_s
@@ -66,7 +113,7 @@ class StoreChecksum
     hex = ((1000 + @result.to_i) * 100)
     @checkbit = ((10000000000000000000000000000*(@result.to_i + extra_data)).to_s(2).scan(/./).inject(0){|t,x| t+=x.to_i} % 100)
     hex += @checkbit
-    hex = hex.to_i.to_s(16)
+    hex = BaseStore.new_from_base10(hex).base_store
     return hex
   end
 end
