@@ -26,6 +26,7 @@ class Donation < ActiveRecord::Base
   before_save :compute_fee_totals
   before_save :combine_cash_payments
   before_save :set_occurred_at_on_transaction
+  before_save :strip_postal_code
 
   def self.number_by_conditions(c)
     Donation.connection.execute("SELECT count(*) FROM donations WHERE #{sanitize_sql_for_conditions(c.conditions(Donation))}").to_a[0]["count"].to_i

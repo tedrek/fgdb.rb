@@ -46,6 +46,10 @@ module GizmoTransaction
     return t + "_transaction"
   end
 
+  def strip_postal_code
+    self.postal_code = self.postal_code.strip if self.postal_code
+  end
+
   def invoices
     payments.select {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
   end
