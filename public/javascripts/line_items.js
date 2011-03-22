@@ -603,7 +603,7 @@ function sale_exists(sale_id){
 }
 
 function alert_for_storecredit(id) {
-  if(get_storecredit_amount(id) == null) {
+  if(storecredit_errors_cache[id] != null) {
     alert(storecredit_errors_cache[id]);
   }
 }

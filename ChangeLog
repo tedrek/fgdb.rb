@@ -1,7 +1,9 @@
 fgdb.rb (1.0.57) UNRELEASED; urgency=low
 
+  * alert the user if a store credit is expired, but allow them to make
+    the decision (Closes: #18045)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 Mar 2011 20:15:12 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 22 Mar 2011 16:16:20 -0700
 
 fgdb.rb (1.0.56) released; urgency=low
 

@@ -64,6 +64,9 @@ class TransactionController < ApplicationController
         msg = "This store credit has already been spent"
       else
         v = s.amount_cents
+        if !s.still_valid?
+          msg = "This store credit is expired. It expired on #{s.expire_date.strftime("%D")}. This software will allow it anyway, but you possibly should not."
+        end
       end
     else
       msg = "That store credit hash is not valid or doesn't exist"
