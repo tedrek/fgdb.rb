@@ -58,7 +58,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -150,6 +150,13 @@ class AssignmentsController < ApplicationController
       end
       page.hide loading_indicator_id("split_assignment_form")
     end
+  end
+
+  def arrived
+    a = Assignment.find(params[:id])
+    a.attendance_type = AttendanceType.find_by_name("arrived")
+    a.save!
+    redirect_skedj(request.env["HTTP_REFERER"], a.volunteer_shift.date_anchor)
   end
 
   def search

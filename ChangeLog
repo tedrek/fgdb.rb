@@ -3,8 +3,9 @@ fgdb.rb (1.0.57) UNRELEASED; urgency=low
   * alert the user if a store credit is expired, but allow them to make
     the decision (Closes: #18045)
   * track resource scheduling too
+  * add an arrived link to the assignments display
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 22 Mar 2011 17:14:21 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 22 Mar 2011 17:25:58 -0700
 
 fgdb.rb (1.0.56) released; urgency=low
 
