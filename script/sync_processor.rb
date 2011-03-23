@@ -1,5 +1,25 @@
 #!/usr/bin/ruby
 
+# the REST API works like this:
+
+# login:
+# res = "https://<your site>/sites/all/modules/civicrm/extern/rest.php?q=civicrm/login&name=fgdb&pass=<password>&key=<site key>&json=1"
+## fgdb will be a user with privileges to use the REST API
+## site key comes from a settings file
+
+# a request:
+# "https://<your site>/sites/all/modules/civicrm/extern/rest.php?q=civicrm/contact/get&json=1&key=<site key>&api_key=$apikey&last_name=Foo"
+## $api_key = res["key"]
+
+# Api's we will use:
+## http://wiki.civicrm.org/confluence/display/CRMDOC33/Contact+APIs
+## http://wiki.civicrm.org/confluence/display/CRMDOC33/Contribution+APIs
+## http://wiki.civicrm.org/confluence/display/CRMDOC33/Custom+Data+Group+and+Custom+Field+APIs
+### setup script with fgdb that calls civicrm_custom_group_create and
+### civicrm_custom_field_create to add fgdb_id field to contributions and
+### contacts, and saves the ['id'] of the fields into the defaults
+### table so we know what to look for later. two birds, one stone.
+
 # TODO: impliment these sync_ functions. they return nil if it was not successful.
 
 def sync_donation_from_fgdb(fgdb_id)
