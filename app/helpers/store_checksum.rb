@@ -44,7 +44,7 @@ class BaseStore
   private
 
   def _char_arr
-    "0123456789ABCDEF".split(//)
+    @char_arr ||= Default["checksum_base"].split(//)
   end
 end
 
