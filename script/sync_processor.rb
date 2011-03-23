@@ -12,6 +12,8 @@ def sync_contact_from_fgdb(fgdb_id)
   return civicrm_id
 end
 
+# set @saved_civicrm to true if we save the civicrm record too. we might do this to set the fgdb_id field if this is the first sync to fgdb.
+
 def sync_donation_from_civicrm(civicrm_id)
   fgdb_id = nil
   return fgdb_id
@@ -27,6 +29,7 @@ def do_main
   fgdb_id = nil
   civicrm_id = nil
   source, table, tid = ARGV
+  @saved_civicrm = false
 
   if source == "civicrm" && system(ENV["SCRIPT"], "find", "skip_civicrm", table, tid)
     system(ENV["SCRIPT"], "rm", source, table, tid)
@@ -48,13 +51,11 @@ def do_main
     system(ENV["SCRIPT"], "rm", source, table, tid)
     if source == "civicrm"
       system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id)
+      if @saved_civicrm
+        system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id)
+      end
     else # source == "fgdb"
       system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id)
     end
   end
 end
-
-if $0 == __FILE__
-  do_main
-end
-
