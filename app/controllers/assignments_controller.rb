@@ -61,6 +61,22 @@ class AssignmentsController < ApplicationController
                                :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
                              },
 
+                             :call_list =>
+                             { :left_unique_value => "volunteer_shifts.left_unique_value", # model
+                               :left_method_name => "volunteer_shifts.left_method_name",
+                               :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_events.description)), volunteer_shifts.slot_number",
+                               :left_table_name => "volunteer_shifts",
+                               :left_link_action => "assign",
+                               :left_link_id => "volunteer_shifts.description_and_slot",
+
+                               :thing_start_time => "assignments.start_time",
+                               :thing_end_time => "assignments.end_time",
+                               :thing_table_name => "assignments",
+                               :thing_description => "time_range_s,display_name,display_call_status,display_phone_numbers",
+                               :thing_link_id => "assignments.id",
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                             },
+
                              :by_worker =>
                              { :left_unique_value => "assignments.contact_id",
                                :left_sort_value => "assignments.contacts.sort_name",

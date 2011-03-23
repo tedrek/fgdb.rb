@@ -36,6 +36,10 @@
     <%= f.label :attendance_type_id %><br />
     <%= select(f.object_name, "attendance_type_id", AttendanceType.find(:all).sort_by(&:id).collect {|p| [ p.name, p.id ] }, :include_blank => true) %>
   </p>
+  <p>
+    <%= f.label :call_status_type_id %><br />
+    <%= select(f.object_name, "call_status_type_id", ([["not called yet", ""]] + CallStatusType.find(:all).sort_by(&:id).collect {|p| [ p.name, p.id ] }), :include_blank => false) %>
+  </p>
   <% end %>
 
   <p>

@@ -4,6 +4,7 @@ class Assignment < ActiveRecord::Base
   belongs_to :contact
   validates_presence_of :volunteer_shift_id
   belongs_to :attendance_type
+  belongs_to :call_status_type
 
   after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
@@ -44,6 +45,18 @@ class Assignment < ActiveRecord::Base
     end
     ret
   }
+
+  def my_call_status
+    self.call_status_type_id ? self.call_status_type.name : "not called yet"
+  end
+
+  def display_call_status
+    " - " + self.my_call_status + " - "
+  end
+
+  def display_phone_numbers
+    self.contact_id ? self.contact.display_phone_numbers : ""
+  end
 
   def find_potential_overlappers
     Assignment.potential_overlappers(self)

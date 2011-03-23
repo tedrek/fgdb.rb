@@ -136,6 +136,12 @@ class Contact < ActiveRecord::Base
     self
   end
 
+  def display_phone_numbers
+    self.contact_methods.map{|x|
+      (x.contact_method_type.description =~ /phone/ and !(x.contact_method_type.description =~ /emergency/) and x.ok == true) ? "#{x.contact_method_type.description}: #{x.value}" : nil
+    }.select{|x| !x.nil?}.join(", ")
+  end
+
   def phone_numbers
     a = []
     contact_methods.map {|x|

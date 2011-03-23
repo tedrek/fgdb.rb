@@ -4,8 +4,9 @@ fgdb.rb (1.0.57) UNRELEASED; urgency=low
     the decision (Closes: #18045)
   * track resource scheduling too
   * add an arrived link to the assignments display
+  * add call statuses and a call list view
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 22 Mar 2011 17:25:58 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 22 Mar 2011 21:53:40 -0700
 
 fgdb.rb (1.0.56) released; urgency=low
 
