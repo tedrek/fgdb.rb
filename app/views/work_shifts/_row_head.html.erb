@@ -10,8 +10,6 @@
 
 
     <% # output leading cells as padding %>
-    <% lead_time = ( skedj.get_method_value(skedj.current, :thing_start_time) - skedj.get_method_value(skedj.current, :block_start_time) ) / (60*15) %>
-    <% for i in (1..lead_time) %>
-      <td>&nbsp;</td>
-    <% end %>
+    <% lead_time = ( skedj.get_method_value(skedj.current, :thing_start_time) - skedj.get_method_value(skedj.current, :block_start_time) ) / (60) %>
+    <%= render :partial => "work_shifts/pad", :locals => {:mins => lead_time} %>
 

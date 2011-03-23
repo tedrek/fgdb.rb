@@ -2,7 +2,6 @@
     # output between cells as padding -- called right before
     # the next shift is rendered (excluding first shift of day)
     %>
-    <% tween_time = ( new - old ) / (60*15) %>
-    <% for i in (1..tween_time) %>
-      <td>&nbsp;</td>
-    <% end %>
+    <% mins = ( new - old ) / (60 ) %>
+    <%= render :partial => "work_shifts/pad", :locals => {:mins => mins} %>
+
