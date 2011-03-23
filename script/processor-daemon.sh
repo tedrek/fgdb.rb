@@ -34,12 +34,23 @@ ensure_workdir() {
 }
 
 MAX_TIMEOUT=100
+BREAK_TIME=10 # how many seconds to sleep after something fails to sync. assuming this is because a service is down, not because a record is borked...hope that's a good assumption.
+
+PARENT_LINE="$LINE"
+LINE="$@"
+export LINE
 
 case "$MODE" in
     run)
         WORK_SCRIPT="$1"
         export WORK_SCRIPT
         flock -n "$WORKDIR/daemon.lock" -c "$SCRIPT _internal"
+        ;;
+    take_a_break)
+        touch "$WORKDIR/take_a_break"
+        ;;
+    kill)
+        kill $(cat $WORKDIR/daemon.lock )
         ;;
     _internal)
 	exec 2>&1 >>"$WORKDIR/daemon.log"
@@ -49,20 +60,34 @@ case "$MODE" in
             cp "$WORKDIR/filelist" "$WORKDIR/.filelist.processing"
             while read LINE; do
                 if "$SCRIPT" find "$LINE"; then
-                    "$WORK_SCRIPT" "$LINE"
+                    "$WORK_SCRIPT" $LINE
+                fi
+                if [ -e "$WORKDIR/take_a_break" ]; then
+                    echo "Sleeping for $BREAK_TIME seconds because of failure..."
+                    sleep $BREAK_TIME
+                    rm "$WORKDIR/take_a_break"
                 fi
             done < "$WORKDIR/.filelist.processing"
             rm -f "$WORKDIR/.filelist.processing"
         done
         ;;
     add)
-        flock -w $MAX_TIMEOUT "$WORKDIR/filelist" -c "echo \"$@\" >> \"$WORKDIR/filelist\""
+        flock -w $MAX_TIMEOUT "$WORKDIR/filelist" -c "$SCRIPT _add"
+        ;;
+    _add)
+        echo "$PARENT_LINE" >> "$WORKDIR/filelist"
         ;;
     find)
-        flock -w $MAX_TIMEOUT "$WORKDIR/filelist" -c "grep -q -x \"$@\" \"$WORKDIR/filelist\""
+        flock -w $MAX_TIMEOUT "$WORKDIR/filelist" -c "$SCRIPT _find"
+        ;;
+    _find)
+        grep -q -x "$PARENT_LINE" "$WORKDIR/filelist"
         ;;
     rm)
-        flock -w $MAX_TIMEOUT "$WORKDIR/filelist" -c "sed -i \"/^$@\$/ d\" \"$WORKDIR/filelist\""
+        flock -w $MAX_TIMEOUT "$WORKDIR/filelist" -c "$SCRIPT _rm"
+        ;;
+    _rm)
+        sed -i "/^${PARENT_LINE}$/ d" "$WORKDIR/filelist"
         ;;
     *)
         die "Unknown mode: $MODE"

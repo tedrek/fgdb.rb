@@ -24,11 +24,13 @@
 
 def sync_donation_from_fgdb(fgdb_id)
   civicrm_id = nil
+  civicrm_id = 1
   return civicrm_id
 end
 
 def sync_contact_from_fgdb(fgdb_id)
   civicrm_id = nil
+  civicrm_id = 1
   return civicrm_id
 end
 
@@ -36,13 +38,17 @@ end
 
 def sync_donation_from_civicrm(civicrm_id)
   fgdb_id = nil
+  fgdb_id = 1
   return fgdb_id
 end
 
 def sync_contact_from_civicrm(civicrm_id)
   fgdb_id = nil
+  fgdb_id = 1
   return fgdb_id
 end
+
+# will talk to Default['civicrm_server']
 
 def do_main
   success = false
@@ -54,7 +60,7 @@ def do_main
   if source == "civicrm" && system(ENV["SCRIPT"], "find", "skip_civicrm", table, tid)
     system(ENV["SCRIPT"], "rm", source, table, tid)
     system(ENV["SCRIPT"], "rm", "skip_civicrm", table, tid)
-    # success is false, the else doesn't get ran, so it falls through, as it should
+    return
   else
     puts "Syncing #{table} ##{tid} from #{source} at #{Time.now}"
     if source == "fgdb"
@@ -70,12 +76,16 @@ def do_main
   if success
     system(ENV["SCRIPT"], "rm", source, table, tid)
     if source == "civicrm"
-      system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id)
+      system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s)
       if @saved_civicrm
-        system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id)
+        system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s)
       end
     else # source == "fgdb"
-      system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id)
+###      system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) ### FIXME: uncomment this once it is actually doing some syncing
     end
+  else
+    system(ENV["SCRIPT"], "take_a_break")
   end
 end
+
+do_main
