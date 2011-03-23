@@ -5,6 +5,10 @@ class ContactsController < ApplicationController
 
   around_filter :transaction_wrapper
 
+  def civicrm_sync
+    _civicrm_sync
+  end
+
   protected
   def get_required_privileges
     a = super

@@ -33,6 +33,11 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def _civicrm_sync
+    ProcessorDaemon.add_to(params[:controller], params[:id], "civicrm")
+    render :text => "ok"
+  end
+
   def hours_val(cp)
     mins = cp["minutes"].to_i
     hours = cp["hours"].to_i

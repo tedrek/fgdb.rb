@@ -1,3 +1,12 @@
+class ProcessorDaemon
+  def self.add_to(type, tid, source = "fgdb")
+    tid = tid.to_i.to_s
+    arr = [File.join(RAILS_ROOT, "script", "processor-daemon.sh"), source, type, tid]
+#    puts arr.inspect
+#    system(*arr)
+  end
+end
+
 module ActiveRecord
   module UserMonitor
     def self.included(base)
@@ -217,6 +226,10 @@ class ActiveRecord::Base
 
   def self.sql(*arr)
     prepare_sql(*arr)
+  end
+
+  def add_to_processor_daemon
+    ProcessorDaemon.add_to(self.class.table_name, self.id)
   end
 
   def self.new_or_edit(hash)

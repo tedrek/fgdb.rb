@@ -26,6 +26,8 @@ class Contact < ActiveRecord::Base
   before_save :ensure_consistent_contact_types
   before_save :strip_some_fields
 
+  after_save :add_to_processor_daemon
+
   validates_length_of :first_name, :maximum => 25
   validates_length_of :middle_name, :maximum => 25
   validates_length_of :surname, :maximum => 50
