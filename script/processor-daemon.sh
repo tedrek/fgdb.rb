@@ -42,7 +42,7 @@ case "$MODE" in
         flock -n "$WORKDIR/daemon.lock" -c "$SCRIPT _internal"
         ;;
     _internal)
-	exec 2>&1 | tee -a "$WORKDIR/daemon.log"
+	exec 2>&1 >>"$WORKDIR/daemon.log"
         echo "$$" > "$WORKDIR/daemon.lock"
         touch "$WORKDIR/filelist"
         while [ "$(wc -l "$WORKDIR/filelist")" != 0 ] || inotifywait -e modify "$WORKDIR/filelist"; do
