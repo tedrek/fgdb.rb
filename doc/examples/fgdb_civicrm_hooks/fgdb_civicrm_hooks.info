@@ -1,0 +1,6 @@
+name = hooks that glue together fgdb and civicrm
+description = This hook triggers fgdb to sync the records every time civicrm saves a relavent record
+dependencies[] = civicrm
+package = CiviCRM
+core = 6.x
+version = 1.0
