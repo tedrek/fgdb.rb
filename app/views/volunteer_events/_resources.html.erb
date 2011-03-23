@@ -2,8 +2,9 @@
 <% interface = OH.new %>
 <% interface[:resource] = '<select id="resource_id">' + options_from_collection_for_select([Resource.new(:name => ""),  Resource.find(:all)].flatten, "id", "name") + '</select>' %>
 <% interface[:roster] = '<select id="roster_id2">' + options_from_collection_for_select([Roster.new(:name => ""),  Roster.find(:all)].flatten, "id", "name") + '</select>' %>
-<% interface[:start_time] = select_hour(nil, {:twelve_hour => true, :field_name => "start_hour2", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "start_minute2", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "start_ampm2", :include_blank => true}, kdh) %>
-<% interface[:end_time] = select_hour(nil, {:twelve_hour => true, :field_name => "end_hour2", :include_blank => true}, kdh) + select_minute(nil, {:field_name => "end_minute2", :include_blank => true}, kdh) + select_ampm(nil, {:field_name => "end_ampm2", :include_blank => true}, kdh) %>
+<% o = 0 %>
+<% interface[:start_time] = select_hour(0, {:twelve_hour => true, :field_name => "start_hour2", :include_blank => true}, kdh) + select_minute(0, {:field_name => "start_minute2", :include_blank => true}, kdh) + ActionView::Helpers::DateTimeSelector.new(0, {:field_name => "start_ampm2", :include_blank => true}, kdh).select_ampm %>
+<% interface[:end_time] = select_hour(0, {:twelve_hour => true, :field_name => "end_hour2", :include_blank => true}, kdh) + select_minute(0, {:field_name => "end_minute2", :include_blank => true}, kdh) + ActionView::Helpers::DateTimeSelector.new(0, {:field_name => "end_ampm2", :include_blank => true}, kdh).select_ampm %>
 
 <% values = [] %>
 <% things = @volunteer_event.class == VolunteerEvent ? @volunteer_event.resources_volunteer_events : @volunteer_event.resources_volunteer_default_events %>
@@ -14,4 +15,4 @@
     }
   end %>
 
-<%= line_item("resources_volunteer_events", "VolunteerResourceFrontend", interface, values) %>
+<%= line_item("resources_volunteer_events", "VolunteerResourceFrontend", interface, values, true) %>

@@ -255,14 +255,17 @@ var ContactMethodFrontend = Class.create(LineItem, {
   },
 });
 
-  function three_to_one(hour, min, ampm) {
-        if(hour != "12" && ampm == "PM") {
-          hour = "" + (parseInt(hour) + 12);
-             } else if(hour == "12" && ampm == "AM") {
-                  hour = "0";
-                 }
-        return hour + ":" + min;
-      }
+function three_to_one(hour, min, ampm) {
+  if(hour[0] == "0") {
+    hour = hour[1];
+  }
+  if(hour != "12" && ampm == "PM") {
+    hour = "" + (parseInt(hour) + 12);
+  } else if(hour == "12" && ampm == "AM") {
+    hour = "0";
+  }
+  return hour + ":" + min;
+}
 
   function one_to_three(one) {
         arr = one.split(":");
@@ -667,7 +670,7 @@ var StartTimeComponent = Class.create(LineItemComponent, {
   linelist: ['date_start_hour2', 'date_start_minute2', 'date_start_ampm2'],
 
   edit_hook: function(thing) {
-    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_start_time")));
+    var a = three_to_form(one_to_three(this.getValueBySelector(thing, ".my_" + this.time_name + "_time")));
     $('date_' + this.time_name + '_hour2').value = a[0];
     $('date_' + this.time_name + '_minute2').value = a[1];
     $('date_' + this.time_name + '_ampm2').value = a[2];

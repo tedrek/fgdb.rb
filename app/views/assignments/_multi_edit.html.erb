@@ -6,6 +6,10 @@
 <% my_events.each do |x| %>
 <fieldset style="float: left">
 <h4><%= x.description %> (<%= x.time_range_s %>) <%= has_privileges('admin_skedjul') ? (link_to "e", :action => "edit", :id => x.id, :controller => "volunteer_events") : "" %></h4>
+<% resources = x.resources_volunteer_events.map{|q| q.resource.name}.join(", ") %>
+<% if resources.length > 0 %>
+Resources: <%= resources %><br />
+<% end %>
 <%= markdown(x.notes) %>
 </fieldset>
 <% end %>
