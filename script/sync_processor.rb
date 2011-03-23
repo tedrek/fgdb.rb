@@ -58,8 +58,8 @@ def do_main
   @saved_civicrm = false
 
   if source == "civicrm" && system(ENV["SCRIPT"], "find", "skip_civicrm", table, tid)
-    system(ENV["SCRIPT"], "rm", source, table, tid)
-    system(ENV["SCRIPT"], "rm", "skip_civicrm", table, tid)
+    system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
+    system(ENV["SCRIPT"], "rm", "skip_civicrm", table, tid) or raise Exception
     return
   else
     puts "Syncing #{table} ##{tid} from #{source} at #{Time.now}"
@@ -74,17 +74,17 @@ def do_main
   end
 
   if success
-    system(ENV["SCRIPT"], "rm", source, table, tid)
+    system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
     if source == "civicrm"
-      system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s)
+      system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s) or raise Exception
       if @saved_civicrm
-        system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s)
+        system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception
       end
     else # source == "fgdb"
-###      system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) ### FIXME: uncomment this once it is actually doing some syncing
+###      system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception ### FIXME: uncomment this once it is actually doing some syncing
     end
   else
-    system(ENV["SCRIPT"], "take_a_break")
+    system(ENV["SCRIPT"], "take_a_break") or raise Exception
   end
 end
 
