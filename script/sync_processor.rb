@@ -33,13 +33,15 @@ def do_main
     system(ENV["SCRIPT"], "rm", "skip_civicrm", table, tid)
     # success is false, the else doesn't get ran, so it falls through, as it should
   else
+    puts "Syncing #{table} ##{tid} from #{source} at #{Time.now}"
     if source == "fgdb"
       fgdb_id = tid
-      success = !!(civicrm_id = (table == "donations" ? sync_donation_from_fgdb(fgdb_id) : sync_contact_from_fgdb(fgdb_id)))
+      success = !!(oid = civicrm_id = (table == "donations" ? sync_donation_from_fgdb(fgdb_id) : sync_contact_from_fgdb(fgdb_id)))
     else #source == "civicrm"
       civicrm_id = tid
-      success = !!(fgdb_id = (table == "donations" ? sync_donation_from_civicrm(civicrm_id) : sync_contact_from_civicrm(civicrm_id)))
+      success = !!(oid = fgdb_id = (table == "donations" ? sync_donation_from_civicrm(civicrm_id) : sync_contact_from_civicrm(civicrm_id)))
     end
+    puts "  Completed at #{Time.now}. Resulting id on #{source == "fgdb" ? "civicrm" : "fgdb"} was: #{oid.nil? ? "FAIL" : oid}"
   end
 
   if success
