@@ -1,13 +1,5 @@
 #!/bin/sh
 
-# an init script for this will probably involve using
-# start-stop-daemon and it's --background option
-
-# simplest example WORK_SCRIPT:
-#
-# echo "$@"
-# "$SCRIPT" rm "$@"
-
 set -e
 
 SCRIPT="$(readlink -f $0)"
@@ -34,7 +26,8 @@ ensure_workdir() {
 }
 
 MAX_TIMEOUT=100
-BREAK_TIME=10 # how many seconds to sleep after something fails to sync. assuming this is because a service is down, not because a record is borked...hope that's a good assumption.
+# how many seconds to sleep after something fails to sync. assuming this is because a service is down, not because a record is borked...hope that's a good assumption.
+BREAK_TIME=10
 
 PARENT_LINE="$LINE"
 LINE="$@"
