@@ -5,8 +5,13 @@ fgdb.rb (1.0.57) UNRELEASED; urgency=low
   * track resource scheduling too
   * add an arrived link to the assignments display
   * add call statuses and a call list view
+  * split out the spec_sheets table into spec_sheets and builder_tasks.
+    every spec_sheet is a builder_task, but not every builder_task is a
+    spec_sheet. builder_tasks can count as signed off builds without
+    running printme. tho there's no interface for builder_tasks (without
+    going through the associated spec_sheet) yet.
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 22 Mar 2011 21:53:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Mar 2011 22:04:41 -0700
 
 fgdb.rb (1.0.56) released; urgency=low
 

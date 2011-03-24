@@ -5,15 +5,19 @@ class SpecSheet < ActiveRecord::Base
   validates_presence_of :action_id
   validates_presence_of :type_id
 
-  belongs_to :contact
-  belongs_to :action
+  belongs_to :builder_task, :dependent => :destroy
   belongs_to :system
   belongs_to :type
   has_one :contract, :through => :system
+  validates_associated :builder_task
+
+  after_save :save_bt
+
+  def save_bt
+    self.builder_task.save!
+  end
 
   validates_existence_of :type
-  validates_existence_of :action
-  validates_existence_of :contact
 
   named_scope :good, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, true]
   named_scope :bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, false]
@@ -21,8 +25,59 @@ class SpecSheet < ActiveRecord::Base
   named_scope :clean_broke_it, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, true]
 
   before_save :set_contract_id_and_covered
+  before_save :builder_task
+
+  def contact
+    self.builder_task.contact
+  end
+
+  def action
+    self.builder_task.action
+  end
+
   def contract_id
     @contract_id ||= (system ? system.contract_id : nil)
+  end
+
+  def contact_id
+    contact ? contact.id : nil
+  end
+
+  def builder_task_with_magic
+    builder_task_without_magic || self.builder_task=(BuilderTask.new)
+  end
+  alias_method_chain :builder_task, :magic
+
+  def contact_id=(val)
+    self.builder_task.contact_id = val
+  end
+
+  def action_id
+    action ? action.id : nil
+  end
+
+  def action_id=(val)
+    self.builder_task.action_id = val
+  end
+
+  def after_initialize
+    builder_task
+  end
+
+  def cashier_signed_off_by
+    self.builder_task.cashier_signed_off_by
+  end
+
+  def cashier_signed_off_by=(val)
+    self.builder_task.cashier_signed_off_by = val
+  end
+
+  def notes
+    self.builder_task.notes
+  end
+
+  def notes=(val)
+    self.builder_task.notes = val
   end
 
   def signed_off_by

@@ -226,7 +226,7 @@ class Contact < ActiveRecord::Base
   end
 
   def spec_sheets_since_last_adoption(action_name)
-    SpecSheet.find(:all, :conditions => ["contact_id = ? AND created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption, Action.find_by_name(action_name).id])
+    BuilderTask.find(:all, :conditions => ["contact_id = ? AND builder_tasks.created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption, Action.find_by_name(action_name).id])
   end
 
   def points_traded_since_last_adoption(type, trade_id = nil)
