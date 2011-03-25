@@ -8,6 +8,7 @@ chars = "abcdefghijklmnopqrstuvwxyz".split("")
 D = Default
 D.destroy_all "name LIKE '%_cashier_%'"
 D["coveredness_enabled"] = 0
+D["checksum_base"] = "0123456789ABCDEF"
 
 def non_empty(val)
   return val && !val.empty?
