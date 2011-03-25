@@ -54,7 +54,7 @@ export RAILS_ENV=development
 TMP=$(mktemp -d /tmp/fgdb.testing.script.XXXXXXXXXX)
 set -x
 cd $TMP
-$SCRIPT_DIR/update-devel-data/under-myagent scp tulip:/usr/local/arik/database.sql.gz ./
+$SCRIPT_DIR/update-devel-data/under-myagent scp tulip:/usr/local/zhora/database.sql.gz ./
 dropdb fgdb_$RAILS_ENV || true
 gunzip database.sql.gz
 sed -i "1,100 s/fgdb_production/fgdb_$RAILS_ENV/g" database.sql
@@ -69,7 +69,7 @@ if [ "$BRANCH" != "master" ]; then
     git checkout -b $BRANCH origin/$BRANCH
 fi
 cp config/database.yml-example config/database.yml
-ln -s /usr/share/rails vendor/rails
+ln -s /usr/share/rails-ruby1.8 vendor/rails
 ./script/do_i_have_everything_installed_right
 rake db:migrate --trace
 cd ../

@@ -8,7 +8,7 @@ ssh-agent > $FILE
 NORMAL=$(dirname $(readlink -f $0))/scp_key
 if [ -f "$NORMAL" ]; then
     ssh-add "$NORMAL"
-elif [ "$(hostname)" = "borked" -o "$(hostname)" = "oahu" -o "$(hostname)" = "chaos" ]; then
+elif [ "$(hostname)" = "borked" -o "$(hostname)" = "oahu" -o "$(hostname)" = "chaos" -o "$(hostname)" = "blip" ]; then
     ssh-add /home/ryan52/.ssh/scp_key
 elif [ "$(hostname)" = "xyzzy" ]; then
     ssh-add /home/ryan52/.ssh/freegeek-git
