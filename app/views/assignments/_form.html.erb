@@ -25,11 +25,11 @@
   </div>
   <p>
     <%= f.label :start_time %><br />
-    <%= f.time_select :start_time, :ignore_date => true, :twelve_hour => true, :include_blank => false %>
+    <%= f.time_select :start_time, :ignore_date => true, :twelve_hour => true, :include_blank => false, :minute_step => 15 %>
   </p>
   <p>
     <%= f.label :end_time %><br />
-    <%= f.time_select :end_time, :ignore_date => true, :twelve_hour => true, :include_blank => false %>
+    <%= f.time_select :end_time, :ignore_date => true, :twelve_hour => true, :include_blank => false, :minute_step => 15 %>
   </p>
   <% if f.object.contact_id %>
   <p>
