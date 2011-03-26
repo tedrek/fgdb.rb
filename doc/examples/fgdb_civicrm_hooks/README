@@ -1,2 +1,12 @@
 Has to be enabled here:
 http://civicrm/drupal6/?q=admin/build/modules
+
+To generate a key:
+php -r 'echo md5(uniqid(rand(), true)) . "\n";
+
+Set a site key:
+set CIVICRM_SITE_KEY in /usr/share/drupal6/sites/default/civicrm.settings.php
+
+Set a users key (yes, sadly can only be done through SQL):
+In the "drupal" db, get the users email: SELECT mail FROM users WHERE name LIKE 'ass';
+Set it in the "civicrm" db on their contact: UPDATE civicrm_contact SET api_key = 'BLAH' WHERE id IN (SELECT contact_id FROM civicrm_email WHERE email LIKE 'root@freegeek.org');
