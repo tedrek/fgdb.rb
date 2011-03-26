@@ -19,6 +19,8 @@
 ### civicrm_custom_field_create to add fgdb_id field to contributions and
 ### contacts, and saves the ['id'] of the fields into the defaults
 ### table so we know what to look for later. two birds, one stone.
+## http://wiki.civicrm.org/confluence/display/CRMDOC33/Check+for+existence+of+custom+field+groups+or+custom+fields
+### this is better. finds the id based on name.
 
 # TODO: impliment these sync_ functions. they return nil if it was not successful.
 
