@@ -5,7 +5,7 @@
 <table class="skedj" border="0" width="100%" summary="<%=h skedj.get_method_value(skedj.current,:block_method_display) %>">
 <% day_length = (( skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time) ) / ( 60 * 30 )).to_int %>
 
-    <caption><%=h skedj.get_method_value(skedj.current, :block_method_display) %> (<%= params[:controller].humanize.downcase %>)</caption>
+    <caption><%=h skedj.get_method_value(skedj.current, :block_method_display) %> (<%= skedj.conditions.skedj_to_s %>)</caption>
     <tr>
     <th width="10%">&nbsp;</th>
     <% for i in (0..(@day_length-1)) %>

@@ -1,7 +1,9 @@
 fgdb.rb (1.0.58) UNRELEASED; urgency=low
 
+  * show the roster/schedule name next to the date instead of
+    assignments
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 25 Mar 2011 20:06:39 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 26 Mar 2011 11:55:21 -0700
 
 fgdb.rb (1.0.57) released; urgency=low
 

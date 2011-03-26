@@ -91,6 +91,27 @@ class Conditions < ConditionsBase
 
   attr_accessor :assigned
 
+  def skedj_to_s
+    mea = self.methods
+    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym)}
+    ta.map{|t|
+      meo = me = t.sub(/_enabled$/, "")
+      v = ""
+      if !mea.include?(me)
+        me += "_id"
+        if !mea.include?(me)
+          v = ""
+        else
+          obj = meo.classify.constantize.find_by_id(self.send(me))
+          v = obj.send(obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s) if obj
+        end
+      else
+        v = self.send(me)
+      end
+      (v && v.respond_to?(:length) && v.length > 0) ? (meo.humanize + ": " + v.to_s) : (nil)
+    }.select{|x| !!x}.join(", ")
+  end
+
   def init_callback
     @payment_method_id = PaymentMethod.cash.id
     @assigned = true
@@ -493,6 +514,7 @@ class Conditions < ConditionsBase
     return false
   end
 
+  # TODO: reimplement this based on the code in skedj_to_s
   def to_s
     string = ""
     contact_or_worker = @contact_enabled=="true" || @worker_enabled == "true"
