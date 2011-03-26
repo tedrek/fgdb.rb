@@ -1,5 +1,6 @@
+<% if f.object.id and @referer %>
   <%= f.hidden_field :redirect_to, :value => @referer %>
-
+<% end %>
   <p>
     <%= f.label :description %><br />
     <%= f.text_field :description %>
