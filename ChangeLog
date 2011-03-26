@@ -1,4 +1,4 @@
-fgdb.rb (1.0.57) UNRELEASED; urgency=low
+fgdb.rb (1.0.57) released; urgency=low
 
   * alert the user if a store credit is expired, but allow them to make
     the decision (Closes: #18045)
@@ -13,7 +13,7 @@ fgdb.rb (1.0.57) UNRELEASED; urgency=low
   * the hash is fancier now (Closes: #22357)
   * only allow times to be in 15 minute increments
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 25 Mar 2011 12:00:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 25 Mar 2011 20:05:49 -0700
 
 fgdb.rb (1.0.56) released; urgency=low
 
