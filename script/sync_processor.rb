@@ -1,15 +1,5 @@
+
 #!/usr/bin/ruby
-
-# the REST API works like this:
-
-# login:
-# res = "https://<your site>/sites/all/modules/civicrm/extern/rest.php?q=civicrm/login&name=fgdb&pass=<password>&key=<site key>&json=1"
-## fgdb will be a user with privileges to use the REST API
-## site key comes from a settings file
-
-# a request:
-# "https://<your site>/sites/all/modules/civicrm/extern/rest.php?q=civicrm/contact/get&json=1&key=<site key>&api_key=$apikey&last_name=Foo"
-## $api_key = res["key"]
 
 # Api's we will use:
 ## http://wiki.civicrm.org/confluence/display/CRMDOC33/Contact+APIs
@@ -21,6 +11,30 @@
 ### table so we know what to look for later. two birds, one stone.
 ## http://wiki.civicrm.org/confluence/display/CRMDOC33/Check+for+existence+of+custom+field+groups+or+custom+fields
 ### this is better. finds the id based on name.
+### needs to added to the REST API tho...this might help: http://wiki.civicrm.org/confluence/display/CRMDOC33/How+to+migrate
+
+require 'json'
+require 'net/http'
+require 'uri'
+
+class CiviCRMClient
+  def initialize(server, api_key, user_key)
+    @server = server
+    @site_key = api_key
+    @key = user_key
+  end
+
+  def do_req(func, opts)
+    get("http://#{@server}/sites/all/modules/civicrm/extern/rest.php?q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
+  end
+
+  private
+  def get(url)
+    ret = JSON.parse(Net::HTTP.get(URI.parse(url)))
+    raise ret["error_message"] if ret.class == Hash and ret["is_error"] == 1
+    ret
+  end
+end
 
 # TODO: impliment these sync_ functions. they return nil if it was not successful.
 
