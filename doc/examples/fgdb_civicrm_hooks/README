@@ -1,4 +1,21 @@
-Has to be enabled here:
+This dir (and the civicrm root, see below) go in
+sites/all/modules (symlinked), Custom.php goes in civicrm/api/v2/
+(symlinked), download-version.sh used to download and prepare new
+versions.
+
+All the symlinks from /usr/share/drupal6 to civicrm
+go to ~/code/latest, which is a manually updated
+symlink (after "download-version.sh" is ran and all
+is good).
+
+http://civicrm/drupal6/update.php may need
+to be ran after upgrades.
+
+Initial setup involves installing drupal6, letting it the pkg
+handle the db, going to server/drupal6/install.php, then going
+to /sites/all/modules/civicrm/install/index.php
+
+On install this module to be enabled here:
 http://civicrm/drupal6/?q=admin/build/modules
 
 To generate a key:
