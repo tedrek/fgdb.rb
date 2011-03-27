@@ -11,7 +11,8 @@
 ### table so we know what to look for later. two birds, one stone.
 ## http://wiki.civicrm.org/confluence/display/CRMDOC33/Check+for+existence+of+custom+field+groups+or+custom+fields
 ### this is better. finds the id based on name.
-### needs to added to the REST API tho...this might help: http://wiki.civicrm.org/confluence/display/CRMDOC33/How+to+migrate
+### needs to added to the REST API tho...this might help:
+### the dgwcontact part of http://wiki.civicrm.org/confluence/display/CRMDOC33/REST+interface
 
 require 'json'
 require 'net/http'
