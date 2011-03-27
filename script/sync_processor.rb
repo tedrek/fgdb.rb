@@ -9,10 +9,8 @@
 ### civicrm_custom_field_create to add fgdb_id field to contributions and
 ### contacts, and saves the ['id'] of the fields into the defaults
 ### table so we know what to look for later. two birds, one stone.
-## http://wiki.civicrm.org/confluence/display/CRMDOC33/Check+for+existence+of+custom+field+groups+or+custom+fields
-### this is better. finds the id based on name.
-### needs to added to the REST API tho...this might help:
-### the dgwcontact part of http://wiki.civicrm.org/confluence/display/CRMDOC33/REST+interface
+## civicrm/custom/get_group_id?group_name=asdf
+## civicrm/custom/get_field_id?field_name=fgdb_id&group_id=1
 
 require 'json'
 require 'net/http'
