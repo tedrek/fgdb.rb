@@ -49,7 +49,7 @@ case "$MODE" in
 	exec 2>&1 >>"$WORKDIR/daemon.log"
         echo "$$" > "$WORKDIR/daemon.lock"
         touch "$WORKDIR/filelist"
-        while [ "$(wc -l "$WORKDIR/filelist")" != 0 ] || inotifywait -e modify "$WORKDIR/filelist"; do
+        while [ "$(cat "$WORKDIR/filelist" | wc -l)" != 0 ] || inotifywait -e modify "$WORKDIR/filelist"; do
             cp "$WORKDIR/filelist" "$WORKDIR/.filelist.processing"
             while read LINE; do
                 if "$SCRIPT" find "$LINE"; then
