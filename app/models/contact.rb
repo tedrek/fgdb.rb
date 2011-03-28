@@ -44,7 +44,7 @@ class Contact < ActiveRecord::Base
   end
 
   def scheduled_shifts
-    a = self.assignments.is_after_today.not_yet_attended
+    a = self.assignments.on_or_after_today.not_cancelled.sort{|a,b| t = a.date <=> b.date; t == 0 ? a.start_time <=> b.start_time : t}
     more = false
     if a.length > 5
       a = a[0,5]

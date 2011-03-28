@@ -14,8 +14,16 @@ class Assignment < ActiveRecord::Base
     errors.add("volunteer_shift_id", "is already assigned during that time") if self.find_overlappers(:for_slot).length > 0
   end
 
+  def date
+    volunteer_shift.date
+  end
+
   named_scope :is_after_today, lambda {||
     { :conditions => ['(SELECT date FROM volunteer_events WHERE id = (SELECT volunteer_event_id FROM volunteer_shifts WHERE id = assignments.volunteer_shift_id)) > ?', Date.today] }
+  }
+
+  named_scope :on_or_after_today, lambda {||
+    { :conditions => ['(SELECT date FROM volunteer_events WHERE id = (SELECT volunteer_event_id FROM volunteer_shifts WHERE id = assignments.volunteer_shift_id)) >= ?', Date.today] }
   }
 
   named_scope :not_yet_attended, :conditions => ['attendance_type_id IS NULL']
@@ -25,6 +33,8 @@ class Assignment < ActiveRecord::Base
     tdate = assignment.volunteer_shift.volunteer_event.date
     { :conditions => ['id != ? AND attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\') AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tdate] }
   }
+
+  named_scope :not_cancelled, :conditions => ['attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\')']
 
   named_scope :for_contact, lambda{|assignment|
     tcid = assignment.contact.id
