@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BACKUP_DIR=~/nobackup/db-backups/
+BACKUP_DIR=~/nobackup/data-backups/
 
 if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
     echo "ERROR: $BACKUP_DIR isn't the backup dir"

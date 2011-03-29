@@ -1,8 +1,8 @@
 #!/bin/bash
 
-BACKUP_DIR=~/nobackup/db-backups/
+BACKUP_DIR=~/nobackup/data-backups/
 BACKUP_SERVER=peabody
-REMOTE_DIR=/srv/db-extras/db-backups/
+REMOTE_DIR=/srv/data-extras/data-backups/
 
 if [ ! -d $BACKUP_DIR ]; then
     mkdir -p $BACKUP_DIR
