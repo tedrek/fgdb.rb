@@ -1,10 +1,17 @@
 #!/bin/bash
 
+BACKUP_DIR=~/nobackup/data-backups/
+BACKUP_SERVER=peabody
+REMOTE_DIR=/srv/data-extras/data-backups/
 
-if ! test -f ~/nobackup/I_AM_THE_BACKUPS; then
-    sshfs wayback:/srv/arik-extras/arik-backups/ /home/ryan52/nobackup/
-    if ! test -f ~/nobackup/I_AM_THE_BACKUPS; then
-	echo "ERROR: nobackup isn't the backup dir"
+if [ ! -d $BACKUP_DIR ]; then
+    mkdir -p $BACKUP_DIR
+fi
+
+if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
+    sshfs $BACKUP_SERVER:$REMOTE_DIR $BACKUP_DIR
+    if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
+	echo "ERROR: $BACKUP_DIR isn't the backup dir"
 	exit 1
     fi
 fi
@@ -19,10 +26,10 @@ NEW=$(( $CUR + 1 ))
 checkit(){
     return 1
     NUM=$1
-    if [ ! -f ~/nobackup/post-sprint-$CUR.sql -o ! -f ~/nobackup/pre-sprint-$CUR.sql ]; then
+    if [ ! -f $BACKUP_DIR/post-sprint-$CUR.sql -o ! -f $BACKUP_DIR/pre-sprint-$CUR.sql ]; then
 	return 0
     fi
-    [ $(( ( $NUM * 15 * $(du -sc ~/nobackup/{pre,post}-sprint-$CUR.sql | tail -1 | awk '{print $1}') ) / 10 )) -gt $(df  | grep " /$" | awk '{print $4}') ]
+    [ $(( ( $NUM * 15 * $(du -sc $BACKUP_DIR/{pre,post}-sprint-$CUR.sql | tail -1 | awk '{print $1}') ) / 10 )) -gt $(df  | grep " /$" | awk '{print $4}') ]
 }
 
 boldit(){
@@ -64,6 +71,6 @@ cd /var/www/fgdb.rb/
 sudo mv public/_release.html public/release.html
 sudo invoke-rc.d thin stop
 
-pg_dump fgdb_production > ~/nobackup/pre-sprint-$NEW.sql
+pg_dump fgdb_production > $BACKUP_DIR/pre-sprint-$NEW.sql
 
-echo "Check ~/nobackup/pre-sprint-$NEW.sql"
+echo "Check $BACKUP_DIR/pre-sprint-$NEW.sql"
