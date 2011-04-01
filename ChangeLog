@@ -6,8 +6,10 @@ fgdb.rb (1.0.58) UNRELEASED; urgency=low
     updating) into the metadata
   * add a new privilege and role for issueing store credits (Closes:
     #22377)
+  * add a builder_tasks interface for build intructors to give credit
+    without a spec_sheet
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 31 Mar 2011 20:38:13 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Apr 2011 11:57:59 -0700
 
 fgdb.rb (1.0.57) released; urgency=low
 

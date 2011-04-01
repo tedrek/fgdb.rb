@@ -1,0 +1,19 @@
+<h1>Listing builder_tasks</h1>
+
+<%= render :partial => "list" %>
+
+<div id="main-section">
+  <% form_tag :action => 'index' do -%>
+  <% filters = [] -%>
+  <% if has_required_privileges('/search_by_contact') %>
+    <% filters << 'contact' %>
+  <% end %>
+  <% filters << 'created_at' %>
+  <% filters << 'action' %>
+  <%= conditions_html("conditions", filters) %>
+  <%= submit_tag "Search", :class => "submit" %>
+<% end -%>
+
+<br />
+
+<%= link_to 'New builder_task', {:action => "new"} %>

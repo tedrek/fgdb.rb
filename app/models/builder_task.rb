@@ -11,5 +11,14 @@ class BuilderTask < ActiveRecord::Base
     self.created_at = self.spec_sheet.created_at
     self.updated_at = self.spec_sheet.updated_at
   end
+
+  def signed_off_by
+    self.cashier_signed_off_by.nil? ? "Not signed off." : User.find(self.cashier_signed_off_by).contact.display_name
+  end
+
+  def signed_off_by=(user)
+    new = user.id
+    self.cashier_signed_off_by = (self.cashier_signed_off_by == new ? nil : new)
+  end
 end
 

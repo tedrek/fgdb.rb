@@ -64,12 +64,12 @@ class SpecSheet < ActiveRecord::Base
     builder_task
   end
 
-  def cashier_signed_off_by
-    self.builder_task.cashier_signed_off_by
+  def signed_off_by
+    self.builder_task.signed_off_by
   end
 
-  def cashier_signed_off_by=(val)
-    self.builder_task.cashier_signed_off_by = val
+  def signed_off_by=(val)
+    self.builder_task.signed_off_by = val
   end
 
   def notes
@@ -78,15 +78,6 @@ class SpecSheet < ActiveRecord::Base
 
   def notes=(val)
     self.builder_task.notes = val
-  end
-
-  def signed_off_by
-    self.cashier_signed_off_by.nil? ? "Not signed off." : User.find(self.cashier_signed_off_by).contact.display_name
-  end
-
-  def signed_off_by=(user)
-    new = user.id
-    self.cashier_signed_off_by = (self.cashier_signed_off_by == new ? nil : new)
   end
 
   def contract_id=(val)

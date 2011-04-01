@@ -1,0 +1,30 @@
+<p>
+  <b>Cashier signed off by:</b>
+  <%= @builder_task.signed_off_by %>
+
+        <% form_for "sign_off", :html => {:class => "cashierable_form"}, :url => {:action => "sign_off", :id => @builder_task.id} do |f| %>
+          To sign off, enter <%= cashiers_field(true, "sign_off") %>
+          <%= submit_tag "Sign off" %>
+        <% end %>
+
+          <%= cashiers_javascript(true, "sign_off") %>
+</p>
+
+<p>
+  <b>Action:</b>
+  <%=h @builder_task.action.name %>
+</p>
+
+<p>
+  <b>Contact:</b>
+  <%=h @builder_task.contact_id %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%=h @builder_task.notes %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @builder_task.id} %> |
+<%= link_to 'Back', {:action => "index"} %>
