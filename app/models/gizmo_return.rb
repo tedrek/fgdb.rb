@@ -25,6 +25,7 @@ class GizmoReturn < ActiveRecord::Base
       errors.add("contact_id", "does not refer to any single, unique contact")
     end
     errors.add("gizmos", "should include something") if gizmo_events.empty?
+    storecredit_priv_check if self.store_credit and self.store_credit.amount_cents > 0
   end
 
   def gizmo_context
@@ -48,7 +49,7 @@ class GizmoReturn < ActiveRecord::Base
     if self.storecredit_difference_cents != 0
       self.store_credit ||= StoreCredit.new
       self.store_credit.amount_cents = self.storecredit_difference_cents
-      self.store_credit.expire_date ||= (Date.today + 1.year)
+      self.store_credit.expire_date ||= (Date.today + eval(Default["storecredit_expire_after"]))
     else
       self.store_credit.destroy if self.store_credit
       self.store_credit = nil

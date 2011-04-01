@@ -62,6 +62,8 @@ class Sale < ActiveRecord::Base
         errors.add("gizmos", z)
       }
     }
+
+    storecredit_priv_check if (self.storecredits.inject(0){|t,x| t += x.amount_cents} - amount_from_some_payments(store_credits_spent)) > 0
   end
 
   def storecredits_repeat

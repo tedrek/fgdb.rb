@@ -7,6 +7,10 @@ module GizmoTransaction
     end
   end
 
+  def storecredit_priv_check
+    errors.add("gizmos", "increases store credit value without cashier privileges") unless (Thread.current['cashier'] and Thread.current['cashier'].has_privileges("issue_store_credit"))
+  end
+
   def showable_gizmo_types
     (self.gizmo_types + self.usable_gizmo_types).uniq.sort_by(&:description)
   end
