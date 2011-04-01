@@ -29,7 +29,7 @@ class GizmoEvent < ActiveRecord::Base
   def set_storecredit_difference_cents
     my_expire_date = self.store_credits.map{|x| x.expire_date}.uniq.select{|x| !x.nil?}.sort.last
     my_expire_date ||= @expire_date
-    my_expire_date ||= (Date.today + 1.year)
+    my_expire_date ||= (Date.today + StoreCredit.expire_after_value)
     while self.store_credits.length < self.gizmo_count
       self.store_credits << StoreCredit.new
     end
@@ -102,7 +102,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
   end
 
   def store_credit_hashes
-    self.store_credits.map{|x| "#" + StoreChecksum.new_from_result(x.id).checksum}.to_sentence
+    self.store_credits.map{|x| "#" + x.store_credit_hash}.to_sentence
   end
 
   def original_sale_id

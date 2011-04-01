@@ -25,6 +25,14 @@ class StoreCredit < ActiveRecord::Base
     expire_date
   end
 
+  def store_credit_hash
+    StoreChecksum.new_from_result(self.id).checksum
+  end
+
+  def self.expire_after_value
+    eval(Default["storecredit_expire_after"])
+  end
+
   private
 
   def _spent_on

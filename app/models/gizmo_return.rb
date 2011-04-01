@@ -41,7 +41,7 @@ class GizmoReturn < ActiveRecord::Base
   end
 
   def store_credit_hash
-    StoreChecksum.new_from_result(store_credit_id).checksum
+    self.store_credit.store_credit_hash
   end
 
   def set_storecredit_difference_cents
@@ -49,7 +49,7 @@ class GizmoReturn < ActiveRecord::Base
     if self.storecredit_difference_cents != 0
       self.store_credit ||= StoreCredit.new
       self.store_credit.amount_cents = self.storecredit_difference_cents
-      self.store_credit.expire_date ||= (Date.today + eval(Default["storecredit_expire_after"]))
+      self.store_credit.expire_date ||= (Date.today + StoreCredit.expire_after_value)
     else
       self.store_credit.destroy if self.store_credit
       self.store_credit = nil
