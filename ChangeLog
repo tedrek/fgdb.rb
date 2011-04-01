@@ -10,8 +10,9 @@ fgdb.rb (1.0.58) UNRELEASED; urgency=low
     without a spec_sheet
   * make an empty anchor correctly, this is apparently not XML (Closes:
     #22447)
+  * do not carry over the old expire date to new credits
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Apr 2011 12:26:27 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Apr 2011 12:37:05 -0700
 
 fgdb.rb (1.0.57) released; urgency=low
 
