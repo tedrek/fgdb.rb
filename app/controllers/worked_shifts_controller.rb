@@ -128,11 +128,20 @@ GROUP BY 1,2;")
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'worked_shifts')
   end
+  def default_my_form
+    @worker ||= @current_user.contact.worker
+    @date ||= Date.today
+  end
   public
-  def edit
+  def index
+    default_my_form
     @shifts = @worker.shifts_for_day(@date)
     @logged_already = @shifts.shift
     @shifts = @shifts.select{|x| !(x.job_id.nil? && x.duration == 0)}
+  end
+
+  def individual
+    default_my_form
   end
 
   include WorkedShiftsHelper
