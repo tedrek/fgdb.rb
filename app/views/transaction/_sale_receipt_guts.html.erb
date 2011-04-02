@@ -11,7 +11,11 @@
         <td width="12%"></td>
       </tr>
 
-      <% @sale.gizmo_events.each do |event| %>
+      <% all_gizmo_events = @sale.gizmo_events %>
+      <% store_credit_gizmo_events = all_gizmo_events.select{|x| x.gizmo_type.name == "store_credit"} %>
+      <% other_gizmo_events = all_gizmo_events - store_credit_gizmo_events %>
+
+      <% other_gizmo_events.each do |event| %>
         <tr>
           <td> <%= h event.attry_description( :ignore => ['unit_price'] ) %> </td>
           <td> <%= my_number_to_currency event.unit_price_cents %> </td>
@@ -22,12 +26,14 @@
         </tr>
       <% end %>
 
+      <% store_credit_gizmo_events_total_cents = store_credit_gizmo_events.inject(0){|t,x| t+=x.total_price_cents} %>
+
       <tr><td colspan="7">&nbsp;</td></tr>
 
       <tr>
         <td colspan="4">&nbsp;</td>
         <td align="right" colspan="2">Subtotal:</td>
-        <td><%= my_number_to_currency(@sale.calculated_subtotal_cents) %></td>
+        <td><%= my_number_to_currency(@sale.calculated_subtotal_cents - store_credit_gizmo_events_total_cents) %></td>
       </tr>
 
       <tr>
@@ -39,14 +45,29 @@
       <tr>
         <td colspan="4">&nbsp;</td>
         <td align="right" colspan="2"><strong>Total:</strong></td>
-        <td><strong><%= my_number_to_currency(@sale.calculated_total_cents) %></strong></td>
+        <td><strong><%= my_number_to_currency(@sale.calculated_total_cents - store_credit_gizmo_events_total_cents) %></strong></td>
       </tr>
+
+      <% seen_sc = false %>
 
       <% @sale.payments.each do |payment| %>
         <tr>
           <td colspan="4">&nbsp;</td>
           <td align="right" colspan="2"><%= h payment.payment_method.description %>:</td>
-          <td><%= my_number_to_currency(payment.amount_cents) %></td>
+          <% amount = payment.amount_cents %>
+          <% if payment.payment_method.name == "store_credit" and !seen_sc %>
+            <% amount -= store_credit_gizmo_events_total_cents %>
+            <% seen_sc = true %>
+          <% end %>
+          <td><%= my_number_to_currency(amount) %></td>
+        </tr>
+      <% end %>
+
+      <% if store_credit_gizmo_events_total_cents > 0 and !seen_sc %>
+        <tr>
+          <td colspan="4">&nbsp;</td>
+          <td align="right" colspan="2">store credit:</td>
+          <td><%= my_number_to_currency(-1 * store_credit_gizmo_events_total_cents) %></td>
         </tr>
       <% end %>
 
