@@ -15,7 +15,7 @@ MODE="$1"
 shift
 
 die() {
-    echo "$@" >/dev/stderr
+    echo "$@" >&2
     exit 1
 }
 

@@ -2,8 +2,10 @@
 
 echo "$(date -R): Triggering fgdb to sync $1 #$2"
 
-DB="data"
-RES="$(curl -s "http://${DB}/${1}/civicrm_sync/${2}")"
+if [ -z "$FGDB" ]; then
+    FGDB="data"
+fi
+RES="$(curl -s "http://${FGDB}/${1}/civicrm_sync/${2}")"
 
 set -e
 
