@@ -1,4 +1,4 @@
-fgdb.rb (1.0.58) UNRELEASED; urgency=low
+fgdb.rb (1.0.58) released; urgency=low
 
   * show the roster/schedule name next to the date instead of
     assignments
@@ -12,7 +12,7 @@ fgdb.rb (1.0.58) UNRELEASED; urgency=low
     #22447)
   * do not carry over the old expire date to new credits
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Apr 2011 12:37:05 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Apr 2011 19:25:01 -0700
 
 fgdb.rb (1.0.57) released; urgency=low
 
