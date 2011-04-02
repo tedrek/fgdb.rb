@@ -15,16 +15,26 @@
 require 'json'
 require 'net/http'
 require 'uri'
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
 class CiviCRMClient
+  def CiviCRMClient.from_defaults
+    CiviCRMClient.new(Default['civicrm_server'], Default['civicrm_api_key'], Default['civicrm_user_key'])
+  end
+
   def initialize(server, api_key, user_key)
     @server = server
     @site_key = api_key
     @key = user_key
   end
 
+  def server
+    @server + "/drupal6"
+  end
+
   def do_req(func, opts)
-    get("http://#{@server}/sites/all/modules/civicrm/extern/rest.php?q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
+    get("http://#{server}/sites/all/modules/civicrm/extern/rest.php?q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
   end
 
   private
@@ -62,8 +72,6 @@ def sync_contact_from_civicrm(civicrm_id)
   fgdb_id = 1
   return fgdb_id
 end
-
-# will talk to Default['civicrm_server']
 
 def do_main
   success = false
@@ -103,4 +111,7 @@ def do_main
   end
 end
 
-do_main
+if $0 == __FILE__
+  do_main
+end
+
