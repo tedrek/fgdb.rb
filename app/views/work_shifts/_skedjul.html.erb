@@ -12,7 +12,7 @@
 <% end %>
 
 <% if skedj.opts[:generate_param_key] %>
-<%= render :partial => 'work_shifts/gen_sched_form', :locals => {:skedj => skedj} %>
+<%= render :partial => "#{skedj.opts[:generate_gen_sched_form_controller] || "volunteer_default_shifts"}/gen_sched_form", :locals => {:skedj => skedj} %>
 <% end %>
 <% end %>
 

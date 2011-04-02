@@ -14,7 +14,12 @@ class VolunteerDefaultShiftsController < ApplicationController
   def generate
     gconditions = Conditions.new
     gconditions.apply_conditions(params[:gconditions])
-    VolunteerDefaultShift.generate(Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date]), gconditions)
+    if params[:date_range][:do_shifts] == "1"
+      VolunteerDefaultShift.generate(Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date]), gconditions)
+    end
+    if params[:date_range][:do_resources] == "1"
+      ResourcesVolunteerDefaultEvent.generate(Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date]), gconditions)
+    end
     redirect_to :controller => 'assignments', :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
   end
 

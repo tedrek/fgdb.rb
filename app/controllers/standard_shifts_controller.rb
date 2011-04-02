@@ -24,6 +24,7 @@ class StandardShiftsController < ApplicationController
 
     @skedj = Skedjul.new({
       :generate_param_key => "generate_schedule",
+                           :generate_gen_sched_form_controller => "work_shifts",
                            :forced_condition => "schedule",
                            :conditions => ["job", "worker"],
 
