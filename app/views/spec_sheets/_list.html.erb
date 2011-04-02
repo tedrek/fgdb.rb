@@ -9,6 +9,7 @@
     <th>Created at</th>
     <th>Flag</th>
     <th>Go Somewhere</th>
+    <th>Bug Correction</th>
     <th>Notes</th>
   </tr>
   <% for report in @reports %>
@@ -31,6 +32,7 @@
       <td style="color: red;"><%= if report.flag; "FLAGGED"; else; ""; end %></td>
       <td><%= link_to 'Show', {:action => "show", :id => report.id} %>
         <%= link_to 'XML', {:action => "dump", :id => report.id} %></td>
+      <td><%= h report.bug_correction %></td>
       <td><%= h report.notes %></td>
     </tr>
   <% end %>

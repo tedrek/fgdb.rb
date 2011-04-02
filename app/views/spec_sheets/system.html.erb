@@ -17,6 +17,9 @@
       <% elsif thing.class == SpecSheet %>
         Action: <%= thing.action.description %><br />
         Type: <%= thing.type.description %><br />
+        <% if thing.bug_correction and thing.bug_correction.length >0 %>
+        Bug Correction: <%= thing.bug_correction %><br />
+        <% end %>
         Notes: <%= thing.notes %>
       <% end %>
     </div>

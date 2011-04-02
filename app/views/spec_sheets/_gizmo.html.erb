@@ -133,6 +133,16 @@
         </td>
       </tr>
     <% end %>
+    <% if @report.bug_correction and @report.bug_correction.length > 0 %>
+    <tr>
+      <td>
+        Corrections:
+      </td>
+      <td>
+        <b><%= h(@report.bug_correction) %></b>
+      </td>
+    </tr>
+    <% end %>
     <tr>
       <td>
         Notes:

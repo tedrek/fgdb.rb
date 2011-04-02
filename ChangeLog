@@ -1,8 +1,10 @@
 fgdb.rb (1.0.59) UNRELEASED; urgency=low
 
   * default the staff hours forms (Closes: #18266)
+  * add a bug correction field to the spec_sheet that is shared between
+    all the spec_sheets for a system (Closes: #20524)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Apr 2011 11:35:05 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Apr 2011 12:50:18 -0700
 
 fgdb.rb (1.0.58) released; urgency=low
 

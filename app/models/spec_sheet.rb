@@ -92,6 +92,14 @@ class SpecSheet < ActiveRecord::Base
     @covered = val
   end
 
+  def bug_correction
+    self.system.bug_correction
+  end
+
+  def bug_correction=(val)
+    self.system.bug_correction=(val)
+  end
+
   def set_contract_id_and_covered
     if system
       if !(@contract_id.nil? || !(c = Contract.find(@contract_id)))

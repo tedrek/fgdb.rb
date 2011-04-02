@@ -87,6 +87,16 @@
         <%= @report.created_at.strftime("%D") %>
       </td>
     </tr>
+    <% if @report.bug_correction and @report.bug_correction.length > 0 %>
+    <tr>
+      <td>
+        Bug Corrections:
+      </td>
+      <td>
+        <%= h(@report.bug_correction) %>
+      </td>
+    </tr>
+    <% end %>
     <tr>
       <td>
         Notes:
