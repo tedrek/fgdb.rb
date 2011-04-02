@@ -1,3 +1,8 @@
+fgdb.rb (1.0.59) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Apr 2011 19:25:31 -0700
+
 fgdb.rb (1.0.58) released; urgency=low
 
   * show the roster/schedule name next to the date instead of
