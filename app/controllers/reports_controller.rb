@@ -137,29 +137,43 @@ class ReportsController < ApplicationController
     [:sales, :donations].each do |x|
       @ranges[x] = "#{ranges[x][:min]}..#{ranges[x][:max]}"
     end
+
+    # cleanup :written_off_invoices if its empty
+    h = @income_data[:written_off_invoices]['total']
+    h.each{|k,v|
+      if v[:total] == 0.0
+        h.delete(k)
+        @rows[:written_off_invoices].delete(k)
+      end
+    }
+    if h.length == 0
+      @income_data.delete(:written_off_invoices)
+      @sections.delete(:written_off_invoices)
+    end
+
     @income_data
   end
 
   protected
 
   def income_report_init
-    methods = PaymentMethod.find(:all)
-    method_names = methods.map {|m| m.description}
     @columns = PaymentMethod.till_methods.map(&:description) + ['till total'] +
       PaymentMethod.register_non_till_methods.map(&:description) + ['register total'] +
-      PaymentMethod.non_register_methods.map(&:description) + ['total']
+      PaymentMethod.non_register_methods.select{|x| x != PaymentMethod.written_off_invoice}.map(&:description) + ['total']
     @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
     discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}.sort
     @rows[:sales] = discount_types << 'subtotals'
     @rows[:grand_totals] = ['total']
-    @sections = [:donations, :sales, :grand_totals]
+    @rows[:written_off_invoices] = ['donations', 'sales', 'total']
+    @sections = [:donations, :sales, :grand_totals, :written_off_invoices]
 
     @income_data = {}
     @income_data[:donations] = {}
     @income_data[:sales] = {}
     @income_data[:grand_totals] = {}
+    @income_data[:written_off_invoices] = {}
 
     @sections.each do |section|
       @columns.each do |method|
@@ -230,6 +244,10 @@ class ReportsController < ApplicationController
     update_totals(column['subtotals'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)
+    if PaymentMethod.written_off_invoice.id == payment_method_id
+      update_totals(income_data[:written_off_invoices]['total']['donations'], amount_cents, count)
+      update_totals(income_data[:written_off_invoices]['total']['total'], amount_cents, count)
+    end
   end
 
   def add_sale_summation_to_data(summation, income_data, ranges)
@@ -264,6 +282,10 @@ class ReportsController < ApplicationController
     update_totals(totals['subtotals'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)
+    if PaymentMethod.written_off_invoice.id == payment_method_id
+      update_totals(income_data[:written_off_invoices]['total']['sales'], amount_cents, count)
+      update_totals(income_data[:written_off_invoices]['total']['total'], amount_cents, count)
+    end
   end
 
   def update_totals(totals, amount, count)

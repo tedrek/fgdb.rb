@@ -72,7 +72,7 @@ module GizmoTransaction
 
   def invoiced?
     return if ! self.respond_to?(:payments)
-    payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
+    payments.detect {|payment| payment.payment_method.name.match(/invoice/)}
   end
 
   def invoice_resolved?

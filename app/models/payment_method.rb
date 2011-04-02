@@ -15,6 +15,10 @@ class PaymentMethod < ActiveRecord::Base
     @@invoice ||= find_by_name('invoice')
   end
 
+  def PaymentMethod.written_off_invoice
+    @@written_off_invoice ||= find_by_name('written_off_invoice')
+  end
+
   def PaymentMethod.coupon
     @@coupon ||= find_by_name('coupon')
   end
@@ -54,14 +58,14 @@ class PaymentMethod < ActiveRecord::Base
   end
 
   def PaymentMethod.non_register_methods()
-    return [invoice, online, coupon, store_credit]
+    return [written_off_invoice, invoice, online, coupon, store_credit]
   end
 
   def PaymentMethod.descriptions
     @@descriptions ||= {}
     if @@descriptions.empty?
       find(:all).each {|p_m|
-        @@descriptions[p_m.id] = p_m.description
+        @@descriptions[p_m.id] = p_m.name == "written_off_invoice" ? "invoice" : p_m.description
       }
     end
     @@descriptions
