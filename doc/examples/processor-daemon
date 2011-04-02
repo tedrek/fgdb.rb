@@ -28,9 +28,13 @@ DAEMON_OPTS="run $WORK_SCRIPT"
 case "$1" in
     stop)
         start-stop-daemon --stop --pidfile $PID_FILE
+	PIDS=$(lsof $PID_FILE | sed '1 d' | awk '{print $2}')
+	if [ -n "$PIDS" ]; then
+		kill $PIDS
+	fi
         ;;
     start)
-        start-stop-daemon --start --background --exec $DAEMON --pidfile $PID_FILE --chuid $TARGET_USER -- $DAEMON_OPTS
+        start-stop-daemon --start --nicelevel 10 --background --exec $DAEMON --pidfile $PID_FILE --chuid $TARGET_USER -- $DAEMON_OPTS
         ;;
     restart)
         $0 stop
