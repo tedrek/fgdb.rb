@@ -36,7 +36,9 @@ class BaseStore
   def _base10
     ret = 0
     @base_store.split(//).each{|digit|
-      ret = (_char_arr.index(digit.upcase) + ret) * _char_arr.length
+      char = _char_arr.index(digit.upcase)
+      raise StoreChecksumException if char.nil?
+      ret = (char + ret) * _char_arr.length
     }
    return (ret/_char_arr.length).to_s
   end
