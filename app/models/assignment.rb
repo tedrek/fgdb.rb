@@ -10,8 +10,10 @@ class Assignment < ActiveRecord::Base
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
   def validate
-    errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
-    errors.add("volunteer_shift_id", "is already assigned during that time") if self.find_overlappers(:for_slot).length > 0
+    unless self.cancelled?
+      errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
+      errors.add("volunteer_shift_id", "is already assigned during that time") if self.find_overlappers(:for_slot).length > 0
+     end
   end
 
   def date
