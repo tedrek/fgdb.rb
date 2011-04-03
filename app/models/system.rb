@@ -8,6 +8,10 @@ class System < ActiveRecord::Base
   has_many :notes
   has_many :gizmo_events
 
+  def previous
+    self.class.find(previous_id) if previous_id
+  end
+
   def covered_s
     self.covered.to_s
   end
@@ -20,5 +24,9 @@ class System < ActiveRecord::Base
     if self.contract.nil?
       errors.add("contract_id", "contract is not valid")
     end
+  end
+
+  def gone?
+    self.gizmo_events.length > 0
   end
 end

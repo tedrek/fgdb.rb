@@ -5,8 +5,10 @@ fgdb.rb (1.0.59) UNRELEASED; urgency=low
     all the spec_sheets for a system (Closes: #20524)
   * make both generate widgets generate both shifts and resources
   * implement written off invoices (Closes: #21827)
+  * do not reuse the old system id if it has been sold/disbursed
+    - breaks printme compat
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Apr 2011 14:45:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Apr 2011 11:24:28 -0700
 
 fgdb.rb (1.0.58) released; urgency=low
 
