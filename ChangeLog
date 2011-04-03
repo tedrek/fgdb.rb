@@ -7,8 +7,9 @@ fgdb.rb (1.0.59) UNRELEASED; urgency=low
   * implement written off invoices (Closes: #21827)
   * do not reuse the old system id if it has been sold/disbursed
     - breaks printme compat
+  * provide a different upgrade message to mac printme users
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Apr 2011 11:24:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Apr 2011 11:34:24 -0700
 
 fgdb.rb (1.0.58) released; urgency=low
 
