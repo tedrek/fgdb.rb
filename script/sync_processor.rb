@@ -37,6 +37,10 @@ class CiviCRMClient
     return self.do_req("civicrm/custom/get_field_id", "group_id=#{group_id}&field_name=#{field_name}")["result"]
   end
 
+  def fgdb_field(table_name)
+    custom_field_id("fgdb_#{table_name}s", "fgdb_#{table_name}_id")
+  end
+
   def do_req(func, opts)
     get("http://#{server}/sites/all/modules/civicrm/extern/rest.php?q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
   end
@@ -49,8 +53,6 @@ class CiviCRMClient
   end
 end
 
-# TODO: impliment these sync_ functions. they return nil if it was not successful.
-
 def sync_donation_from_fgdb(fgdb_id)
   civicrm_id = nil
   civicrm_id = 1
@@ -60,7 +62,7 @@ end
 def sync_contact_from_fgdb(fgdb_id)
   civicrm_id = nil
   my_client = CiviCRMClient.from_defaults
-  my_custom = my_client.custom_field_id("fgdb_contacts", "fgdb_contact_id")
+  my_custom = my_client.fgdb_field("contact")
   find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}")
   civicrm_id = (find_arr.class == Array) ? find_arr.first["contact_id"] : nil
   c = Contact.find(fgdb_id)
@@ -84,8 +86,6 @@ def sync_contact_from_fgdb(fgdb_id)
   return civicrm_id
 end
 
-# set @saved_civicrm to true if we save the civicrm record too. we might do this to set the fgdb_id field if this is the first sync to fgdb.
-
 def sync_donation_from_civicrm(civicrm_id)
   fgdb_id = nil
   fgdb_id = 1
@@ -94,7 +94,26 @@ end
 
 def sync_contact_from_civicrm(civicrm_id)
   fgdb_id = nil
-  fgdb_id = 1
+  my_client = CiviCRMClient.from_defaults
+  my_custom = my_client.fgdb_field("contact")
+  fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params).first["custom_#{my_custom}"]
+  c = nil
+  unless fgdb_id and (c = Contact.find_by_id(fgdb_id))
+    fgdb_id = nil
+    @saved_civicrm = true
+    c = Contact.new
+  end
+  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params).first
+  c.first_name = civicrm_contact["first_name"]
+  c.created_by ||= 1
+  c.postal_code ||= "97007" # FIXME
+  c.surname = civicrm_contact["last_name"]
+  c.is_organization = civicrm_contact["contact_type"] == "Organization"
+  c.save!
+  if @saved_civicrm
+    fgdb_id = c.id
+    my_client.do_req("civicrm/contact/update", {:contact_id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params)
+  end
   return fgdb_id
 end
 
