@@ -1,4 +1,3 @@
-
 #!/usr/bin/ruby
 
 # Api's we will use:
@@ -10,6 +9,12 @@ require 'net/http'
 require 'uri'
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+class Hash
+  def r_to_params
+    self.map{|k,v| "#{k.to_s}=#{v.to_s}"}.join("&") # TODO: cgi escape
+  end
+end
 
 class CiviCRMClient
   def CiviCRMClient.from_defaults
@@ -54,7 +59,28 @@ end
 
 def sync_contact_from_fgdb(fgdb_id)
   civicrm_id = nil
-  civicrm_id = 1
+  my_client = CiviCRMClient.from_defaults
+  my_custom = my_client.custom_field_id("fgdb_contacts", "fgdb_contact_id")
+  find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}")
+  civicrm_id = (find_arr.class == Array) ? find_arr.first["contact_id"] : nil
+  c = Contact.find(fgdb_id)
+  hash = {}
+  if c.is_organization
+    hash[:contact_type] = "Organization"
+    hash[:organization] = c.organization
+  else
+    hash[:contact_type] = "Individual"
+    hash[:first_name] = c.first_name
+    hash[:middle_name] = c.middle_name
+    hash[:last_name] = c.surname
+  end
+  if civicrm_id
+    hash[:contact_id] = civicrm_id
+    my_client.do_req("civicrm/contact/update", hash.r_to_params)
+  else
+    hash["custom_#{my_custom}"] = fgdb_id
+    civicrm_id = my_client.do_req("civicrm/contact/create", hash.r_to_params)["contact_id"]
+  end
   return civicrm_id
 end
 
