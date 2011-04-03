@@ -4,13 +4,6 @@
 # Api's we will use:
 ## http://wiki.civicrm.org/confluence/display/CRMDOC33/Contact+APIs
 ## http://wiki.civicrm.org/confluence/display/CRMDOC33/Contribution+APIs
-## http://wiki.civicrm.org/confluence/display/CRMDOC33/Custom+Data+Group+and+Custom+Field+APIs
-### setup script with fgdb that calls civicrm_custom_group_create and
-### civicrm_custom_field_create to add fgdb_id field to contributions and
-### contacts, and saves the ['id'] of the fields into the defaults
-### table so we know what to look for later. two birds, one stone.
-## civicrm/custom/get_group_id?group_name=asdf
-## civicrm/custom/get_field_id?field_name=fgdb_id&group_id=1
 
 require 'json'
 require 'net/http'
@@ -31,6 +24,12 @@ class CiviCRMClient
 
   def server
     @server + "/drupal6"
+  end
+
+  #               ex: "fgdb_donations" "fgdb_donation_id"
+  def custom_field_id(group_name, field_name)
+    group_id = self.do_req("civicrm/custom/get_group_id", "group_name=#{group_name}")
+    return CiviCRMClient.from_defaults.do_req("civicrm/custom/get_field_id", "group_id=#{group_id}&field_name=#{field_name}")
   end
 
   def do_req(func, opts)
