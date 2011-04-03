@@ -1,5 +1,6 @@
-<% @system = System.find_by_id(params[:id]) %>
-<% while @system %>
+<% @main_system = System.find_by_id(params[:id]) %>
+<% for sys in @main_system ? @main_system.all_instances : [] %>
+<% @system = sys %>
 <h2>System #<%= @system.id %></h2>
   <% things = [@system.notes, @system.spec_sheets, @system.gizmo_events].flatten.sort_by{|x| x.created_at} %>
   <% things.each do |thing| %>
@@ -28,5 +29,4 @@
     <br />
   <% end %>
   <%= link_to "Add note", :controller => "notes", :action => "new", :system_id => @system.id %> 
-  <% @system = @system.previous %>
 <% end %>

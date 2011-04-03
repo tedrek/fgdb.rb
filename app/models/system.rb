@@ -12,6 +12,22 @@ class System < ActiveRecord::Base
     self.class.find(previous_id) if previous_id
   end
 
+  def next
+    self.class.find_by_previous_id(self.id)
+  end
+
+  def all_instances
+    [self.all_next, self, self.all_previous].flatten
+  end
+
+  def all_next
+    return self.next ? [self.next.all_next, self.next] : []
+  end
+
+  def all_previous
+    return self.previous ? [self.previous, self.previous.all_previous] : []
+  end
+
   def covered_s
     self.covered.to_s
   end
