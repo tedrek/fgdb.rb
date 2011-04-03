@@ -28,8 +28,8 @@ class CiviCRMClient
 
   #               ex: "fgdb_donations" "fgdb_donation_id"
   def custom_field_id(group_name, field_name)
-    group_id = self.do_req("civicrm/custom/get_group_id", "group_name=#{group_name}")
-    return CiviCRMClient.from_defaults.do_req("civicrm/custom/get_field_id", "group_id=#{group_id}&field_name=#{field_name}")
+    group_id = self.do_req("civicrm/custom/get_group_id", "group_name=#{group_name}")["result"]
+    return self.do_req("civicrm/custom/get_field_id", "group_id=#{group_id}&field_name=#{field_name}")["result"]
   end
 
   def do_req(func, opts)
