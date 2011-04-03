@@ -6,6 +6,7 @@ fgdb.rb (1.0.59) UNRELEASED; urgency=low
   * make both generate widgets generate both shifts and resources
   * implement written off invoices (Closes: #21827)
   * do not reuse the old system id if it has been sold/disbursed
+    (Closes: #17231)
     - breaks printme compat
   * provide a different upgrade message to mac printme users
 
