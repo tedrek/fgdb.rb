@@ -93,11 +93,11 @@ class SpecSheet < ActiveRecord::Base
   end
 
   def bug_correction
-    self.system.bug_correction
+    self.system.bug_correction if self.system
   end
 
   def bug_correction=(val)
-    self.system.bug_correction=(val)
+    self.system.bug_correction=(val) if self.system
   end
 
   def set_contract_id_and_covered
