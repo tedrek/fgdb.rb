@@ -210,6 +210,7 @@ class Conditions < ConditionsBase
   end
 
   def action_conditions(klass)
+    klass = BuilderTask if klass == SpecSheet
     ["#{klass.table_name}.action_id = ?", @action]
   end
 
@@ -458,6 +459,7 @@ class Conditions < ConditionsBase
   end
 
   def contact_conditions(klass)
+    klass = BuilderTask if klass == SpecSheet
     return [ "#{klass.table_name}.contact_id = ?", contact_id ]
   end
 
