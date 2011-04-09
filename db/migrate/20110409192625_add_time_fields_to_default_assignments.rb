@@ -10,12 +10,12 @@ class AddTimeFieldsToDefaultAssignments < ActiveRecord::Migration
       x.save!
       if x.volunteer_default_shift.slot_count > 1
         i = 2
-        (x.volunteer_default_shift.slot_count - 1).times{|x|
+        (x.volunteer_default_shift.slot_count - 1).times do
           y = x.dup
           y.slot_number = i
           y.save!
           i += 1
-        }
+        end
       end
     }
     VolunteerDefaultShift.find(:all).each{|x| x.fill_in_available}
