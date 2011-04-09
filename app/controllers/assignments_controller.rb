@@ -52,6 +52,7 @@ class AssignmentsController < ApplicationController
                                :left_table_name => "volunteer_shifts",
                                :left_link_action => "assign",
                                :left_link_id => "volunteer_shifts.description_and_slot",
+                               :break_between_difference => "assignments.slot_type_desc",
 
                                :thing_start_time => "assignments.start_time",
                                :thing_end_time => "assignments.end_time",
@@ -68,6 +69,7 @@ class AssignmentsController < ApplicationController
                                :left_table_name => "volunteer_shifts",
                                :left_link_action => "assign",
                                :left_link_id => "volunteer_shifts.description_and_slot",
+                               :break_between_difference => "assignment.slot_type_desc",
 
                                :thing_start_time => "assignments.start_time",
                                :thing_end_time => "assignments.end_time",

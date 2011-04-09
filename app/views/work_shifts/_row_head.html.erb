@@ -1,3 +1,13 @@
+<% if skedj.opts[:break_between_difference] and skedj.last %> <!-- is same day? -->
+<% if skedj.get_method_value(skedj.current, :break_between_difference) != skedj.get_method_value(skedj.last, :break_between_difference) %>
+<tr>
+  <td>&nbsp;</td>
+  <td colspan="<%= (skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time)) / 60 %>">&nbsp;</td>
+
+</tr>
+<% end %>
+<% end %>
+
     <tr>
     <th>
       <% if skedj.opts[:presentation_mode]=='Preview' %>
