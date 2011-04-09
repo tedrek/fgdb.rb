@@ -9,8 +9,9 @@ fgdb.rb (1.0.59) UNRELEASED; urgency=low
     (Closes: #17231)
     - breaks printme compat
   * provide a different upgrade message to mac printme users
+  * sub l or 1 for i if is_pdx (Closes: #22512)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Apr 2011 11:34:24 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Apr 2011 19:35:40 -0700
 
 fgdb.rb (1.0.58) released; urgency=low
 
