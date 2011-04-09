@@ -1,7 +1,9 @@
 fgdb.rb (1.0.60) UNRELEASED; urgency=low
 
+  * convert default_assignments to be a has_many for
+    volunteer_default_shifts (Closes: #22484)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Apr 2011 19:39:58 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Apr 2011 14:23:00 -0700
 
 fgdb.rb (1.0.59) released; urgency=low
 
