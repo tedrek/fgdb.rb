@@ -1,3 +1,8 @@
+fgdb.rb (1.0.60) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Apr 2011 19:39:58 -0700
+
 fgdb.rb (1.0.59) released; urgency=low
 
   * default the staff hours forms (Closes: #18266)
