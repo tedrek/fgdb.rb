@@ -1,4 +1,9 @@
-fgdb.rb (1.0.59) UNRELEASED; urgency=low
+fgdb.rb (1.0.60) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Apr 2011 19:39:58 -0700
+
+fgdb.rb (1.0.59) released; urgency=low
 
   * default the staff hours forms (Closes: #18266)
   * add a bug correction field to the spec_sheet that is shared between
@@ -11,7 +16,7 @@ fgdb.rb (1.0.59) UNRELEASED; urgency=low
   * provide a different upgrade message to mac printme users
   * sub l or 1 for i if is_pdx (Closes: #22512)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Apr 2011 19:35:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Apr 2011 19:38:49 -0700
 
 fgdb.rb (1.0.58) released; urgency=low
 
