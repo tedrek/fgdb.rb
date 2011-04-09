@@ -15,6 +15,12 @@ class DefaultAssignment < ActiveRecord::Base
     return 'shift'
   end
 
+  def left_method_name
+    a = [self.volunteer_default_shift.volunteer_task_type_id.nil? ? self.volunteer_default_shift.volunteer_default_event.description : volunteer_default_shift.volunteer_task_type.description]
+    a << self.slot_number
+    a.join(", ")
+  end
+
   def time_range_s
     (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end

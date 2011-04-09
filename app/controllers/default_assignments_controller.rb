@@ -25,8 +25,8 @@ class DefaultAssignmentsController < ApplicationController
 #                           :table_head_partial => "default_assignments/multi_edit", # TODO: FIXME
                            :cell_onclick => "selection_toggle",
 
-                            :left_unique_value => "volunteer_default_shifts.left_unique_value", # model
-                               :left_method_name => "volunteer_default_shifts.left_method_name",
+                            :left_unique_value => "default_assignments.left_method_name",
+                               :left_method_name => "default_assignments.left_method_name",
                                :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_default_events.description)), default_assignments.slot_number",
                                :left_table_name => "volunteer_default_shifts",
                                :left_link_action => "assign",
