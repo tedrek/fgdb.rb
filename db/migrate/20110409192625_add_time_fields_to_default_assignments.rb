@@ -19,7 +19,7 @@ class AddTimeFieldsToDefaultAssignments < ActiveRecord::Migration
       end
     }
     VolunteerDefaultShift.find(:all).each{|x| x.fill_in_available}
-    VolunteerDefaultEvent.each{|x|
+    VolunteerDefaultEvent.find(:all).each{|x|
       x.merge_similar_shifts
     }
   end
