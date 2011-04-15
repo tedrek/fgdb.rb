@@ -4,18 +4,13 @@ class AddTimeFieldsToDefaultAssignments < ActiveRecord::Migration
     add_column :default_assignments, :end_time, :time
     add_column :default_assignments, :slot_number, :integer
     DefaultAssignment.find(:all).each{|x|
-      x.start_time = x.volunteer_default_shift.start_time
-      x.end_time = x.volunteer_default_shift.end_time
-      x.slot_number = 1
-      x.save!
-      if x.volunteer_default_shift.slot_count > 1
-        i = 2
-        (x.volunteer_default_shift.slot_count - 1).times do
-          y = x.dup
-          y.slot_number = i
-          y.save!
-          i += 1
-        end
+      i = 1
+      x.volunteer_default_shift.slot_count.times do
+        x.start_time = x.volunteer_default_shift.start_time
+        x.end_time = x.volunteer_default_shift.end_time
+        x.slot_number = i
+        x.save!
+        i += 1
       end
     }
     VolunteerDefaultShift.find(:all).each{|x| x.fill_in_available}
