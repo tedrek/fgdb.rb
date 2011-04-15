@@ -68,7 +68,7 @@
     end
     javascript_tag js %>
 
-<%= if ["sales", "disbursements"].include?(params[:controller])
+<%= if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller])
      js = "var all_contracts_names = new Array;"
      for contract in Contract.find(:all).sort_by(&:description)
        js += "all_contracts_names[#{contract.id}] = '#{contract.name}';"
