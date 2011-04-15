@@ -184,25 +184,10 @@ class AssignmentsController < ApplicationController
     @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "created_at ASC", :per_page => 50)
   end
 
-  def show
-    @assignment = Assignment.find(params[:id])
-  end
-
   def edit
     @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
     @assignment = @assignments.first
     @referer = request.env["HTTP_REFERER"]
-  end
-
-  def create
-    @assignment = Assignment.new(params[:assignment])
-
-    if @assignment.save
-      flash[:notice] = 'Assignment was successfully created.'
-      redirect_to({:action => "index", :id => @assignment.id})
-    else
-      render :action => "new"
-    end
   end
 
   def update

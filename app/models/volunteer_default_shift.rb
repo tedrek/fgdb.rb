@@ -26,11 +26,15 @@ class VolunteerDefaultShift < ActiveRecord::Base
     begin
       Thread.current['volskedj2_fillin_processing'].push(self.id)
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy}
-      inputs = Hash.new([[time_to_int(self.read_attribute(:start_time)), time_to_int(self.read_attribute(:end_time))]])
+      inputs = {}
+      (1 .. self.slot_count).each{|q|
+        inputs[q] = [[time_to_int(self.read_attribute(:start_time)), time_to_int(self.read_attribute(:end_time))]]
+      }
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).each{|x|
         inputs[x.slot_number].push([time_to_int(x.start_time), time_to_int(x.end_time)])
       }
       (1 .. self.slot_count).each{|q|
+        puts q.to_s + " == " + inputs[q].inspect
         results = range_math(*inputs[q])
         results = results.map{|a| a.map{|x| int_to_time(x)}}
         results.each{|x|

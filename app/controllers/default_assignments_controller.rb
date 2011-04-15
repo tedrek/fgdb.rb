@@ -38,7 +38,7 @@ class DefaultAssignmentsController < ApplicationController
                                :thing_table_name => "default_assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "default_assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id],[:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:split, :remote, :contact_id],[:edit, :link], [:destroy, :confirm, :contact_id]], # TODO: [:reassign, :function, :contact_id], 
 
 
       }, params)
@@ -57,12 +57,12 @@ class DefaultAssignmentsController < ApplicationController
     assigned, available = params[:id].split(",")
 
     # readonly
-    @assigned_orig = Assignment.find(assigned)
-    @available = Assignment.find(available)
+    @assigned_orig = DefaultAssignment.find(assigned)
+    @available = DefaultAssignment.find(available)
 
     # for write
-    @assigned = Assignment.find(assigned)
-    @new = Assignment.new # available
+    @assigned = DefaultAssignment.find(assigned)
+    @new = DefaultAssignment.new # available
 
     # do it
     @assigned.volunteer_shift_id = @available.volunteer_shift_id
@@ -76,11 +76,11 @@ class DefaultAssignmentsController < ApplicationController
     @assigned.save!
     @new.save!
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assigned.volunteer_shift.date_anchor)
+    redirect_skedj(request.env["HTTP_REFERER"], @assignment.volunteer_default_shift.volunteer_default_event.weekday.name)
   end
 
   def split
-    @assignment = Assignment.find(params[:id])
+    @assignment = DefaultAssignment.find(params[:id])
     render :update do |page|
       page.hide loading_indicator_id("skedjul_#{params[:skedjul_loading_indicator_id]}_loading")
       page << "show_message(#{(render :partial => "splitform").to_json});"
@@ -89,7 +89,7 @@ class DefaultAssignmentsController < ApplicationController
 
   def dosplit
     sp = params[:split].to_a.sort_by{|k,v| k}.map{|a| a[1].to_i}
-    @assignment = Assignment.find(params[:id])
+    @assignment = DefaultAssignment.find(params[:id])
     old_end = @assignment.end_time
     @assignment.end_time = @assignment.send(:instantiate_time_object, "split_time", sp)
     new_end = @assignment.end_time
@@ -97,7 +97,7 @@ class DefaultAssignmentsController < ApplicationController
    if success
       success = @assignment.save
       if success
-        @assignment = Assignment.new(@assignment.attributes)
+        @assignment = DefaultAssignment.new(@assignment.attributes)
         @assignment.start_time = new_end
         @assignment.end_time = old_end
         success = @assignment.save
@@ -116,7 +116,7 @@ class DefaultAssignmentsController < ApplicationController
   end
 
   def arrived
-    a = Assignment.find(params[:id])
+    a = DefaultAssignment.find(params[:id])
     a.attendance_type = AttendanceType.find_by_name("arrived")
     a.save!
     redirect_skedj(request.env["HTTP_REFERER"], a.volunteer_shift.date_anchor)
@@ -129,42 +129,28 @@ class DefaultAssignmentsController < ApplicationController
     @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "created_at ASC", :per_page => 50)
   end
 
-  def show
-    @assignment = Assignment.find(params[:id])
-  end
-
   def edit
-    @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
+    @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
     @assignment = @assignments.first
     @referer = request.env["HTTP_REFERER"]
   end
 
-  def create
-    @assignment = Assignment.new(params[:assignment])
-
-    if @assignment.save
-      flash[:notice] = 'Assignment was successfully created.'
-      redirect_to({:action => "index", :id => @assignment.id})
-    else
-      render :action => "new"
-    end
-  end
-
   def update
-    @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
-    rt = params[:assignment].delete(:redirect_to)
+    @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
+    rt = params[:default_assignment].delete(:redirect_to)
 
     ret = true
     @assignments.each{|x|
       if ret
         @assignment = x
-        ret = !!(x.update_attributes(params[:assignment]))
+        ret = !!(x.update_attributes(params[:default_assignment]))
       end
     }
 
     if ret
-      flash[:notice] = 'Assignment was successfully updated.'
-      redirect_skedj(rt, @assignment.volunteer_shift.date_anchor)
+      flash[:notice] = 'DefaultAssignment was successfully updated.'
+      puts rt
+      redirect_skedj(rt, @assignment.volunteer_default_shift.volunteer_default_event.weekday.name)
     else
       @referer = rt
       render :action => "edit"
@@ -172,9 +158,9 @@ class DefaultAssignmentsController < ApplicationController
   end
 
   def destroy
-    @assignment = Assignment.find(params[:id])
+    @assignment = DefaultAssignment.find(params[:id])
     @assignment.destroy
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assignment.volunteer_shift.date_anchor)
+    redirect_skedj(request.env["HTTP_REFERER"], @assignment.volunteer_default_shift.volunteer_default_event.weekday.name)
   end
 end

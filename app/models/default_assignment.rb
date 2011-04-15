@@ -2,6 +2,10 @@ class DefaultAssignment < ActiveRecord::Base
   belongs_to :contact
   belongs_to :volunteer_default_shift
 
+  after_destroy { |record| VolunteerDefaultShift.find_by_id(record.volunteer_default_shift_id).fill_in_available }
+  after_save { |record| VolunteerDefaultShift.find_by_id(record.volunteer_default_shift_id).fill_in_available }
+
+
   def skedj_style(overlap, last)
     if self.contact_id.nil?
       return 'available'

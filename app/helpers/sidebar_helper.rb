@@ -37,6 +37,7 @@ module SidebarHelper
     "points_trades" => "hours",
     "volunteer_events" => "sked admin",
     "volunteer_default_events" => "sked admin",
+    "default_assignments" => "sked admin",
     "volunteer_shifts" => "sked admin",
     "resources" => "sked admin",
     "skeds" => "sked admin",
@@ -76,6 +77,7 @@ module SidebarHelper
     # skedjuler
     sidebar_hash["sked admin"]["regular sked"] = {:c => "volunteer_default_shifts"}
     sidebar_hash["sked admin"]["real sked"] = {:c => "volunteer_shifts"}
+    sidebar_hash["sked admin"]["default assign"] = {:c => "default_assignments"}
     sidebar_hash["vol sked"]["schedule"] = {:c => "assignments"}
     sidebar_hash["vol sked"]["search"] = {:c => "assignments", :a => "search"}
     # staffsched
