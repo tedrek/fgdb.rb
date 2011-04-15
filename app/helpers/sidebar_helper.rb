@@ -31,7 +31,7 @@ module SidebarHelper
     "contact_duplicates" => "contacts",
 #    "library" => "library",
     "spec_sheets" => "fgss",
-    "gizmo_returns" => "returns",
+    "gizmo_returns" => "sales",
     "till_adjustments" => "bean counters",
     "worked_shifts" => "staff",
     "points_trades" => "hours",
@@ -57,9 +57,10 @@ module SidebarHelper
     # transactions
     for i in [:donation, :sale, :recycling, :disbursement, :gizmo_return] do
       pl = i.to_s.pluralize
-      disp = pl.sub("gizmo_", "")
-      sidebar_hash[disp]["entry"] = {:c => pl}
-      sidebar_hash[disp]["search"] = {:c => pl, :a => 'search'}
+      disp = pl.sub("gizmo_returns", "sales")
+      prep = ([:sale, :gizmo_return].include?(i) ? pl.sub("gizmo_", "") + " " : "")
+      sidebar_hash[disp][prep + "entry"] = {:c => pl}
+      sidebar_hash[disp][prep + "search"] = {:c => pl, :a => 'search'}
     end
     # reports
     ["income", "gizmos", "volunteering"].each do |x|
