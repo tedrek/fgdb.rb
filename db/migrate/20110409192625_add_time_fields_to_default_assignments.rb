@@ -15,6 +15,7 @@ class AddTimeFieldsToDefaultAssignments < ActiveRecord::Migration
         y.start_time = x.volunteer_default_shift.start_time
         y.end_time = x.volunteer_default_shift.end_time
         y.slot_number = i
+        y.contact_id = x.contact_id
         y.save!
         i += 1
       end
