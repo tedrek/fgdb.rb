@@ -22,6 +22,9 @@ class AddTimeFieldsToDefaultAssignments < ActiveRecord::Migration
     VolunteerDefaultEvent.find(:all).each{|x|
       x.merge_similar_shifts
     }
+    VolunteerEvent.find(:all).each{|x|
+      x.merge_similar_shifts
+    }
   end
 
   def self.down
