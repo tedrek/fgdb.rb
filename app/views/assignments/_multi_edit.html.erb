@@ -1,12 +1,22 @@
 <%# todo: rename this file.. %>
-
+<% is_r = params[:controller] == "assignments" %>
 <div>
+<% if is_r %>
 <% my_date = Date.strptime(block_anchor, "%Y%m%d") %>
-<% my_events = skedj.results.map{|x| x.volunteer_shift.volunteer_event}.uniq.select{|x| x.date == my_date} %>
+<% else %>
+<% my_date = Weekday.find_by_name(block_anchor) %>
+<% end %>
+<% my_events = skedj.results %>
+<% if is_r %>
+<% my_events = my_events.map{|x| x.volunteer_shift.volunteer_event}.uniq.select{|x| x.date == my_date} %>
+<% else %>
+<% my_events = my_events.map{|x| x.volunteer_default_shift.volunteer_default_event}.uniq.select{|x| x.weekday == my_date} %>
+<% end %>
 <% my_events.each do |x| %>
 <fieldset style="float: left">
-<h4><%= x.description %> (<%= x.time_range_s %>) <%= has_privileges('admin_skedjul') ? (link_to "e", :action => "edit", :id => x.id, :controller => "volunteer_events") : "" %></h4>
-<% resources = x.resources_volunteer_events.map{|q| q.resource.name}.join(", ") %>
+<h4><%= x.description %> (<%= x.time_range_s %>) <%= has_privileges('admin_skedjul') ? (link_to "e", :action => "edit", :id => x.id, :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %></h4>
+<% resources = is_r ? x.resources_volunteer_events : x.resources_volunteer_default_events %>
+<% resources = resources.map{|q| q.resource.name}.join(", ") %>
 <% if resources.length > 0 %>
 Resources: <%= resources %><br />
 <% end %>

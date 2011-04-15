@@ -18,23 +18,23 @@ class VolunteerDefaultShift < ActiveRecord::Base
     { :conditions => ['weekday_id = ?', wday] }
   }
 
-  def fill_in_available
+  def fill_in_available(slot_num = nil)
     Thread.current['volskedj2_fillin_processing'] ||= []
     if Thread.current['volskedj2_fillin_processing'].include?(self.id)
       return
     end
     begin
       Thread.current['volskedj2_fillin_processing'].push(self.id)
-      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy}
+      slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
+      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy if slots.include?(x.slot_number)}
       inputs = {}
-      (1 .. self.slot_count).each{|q|
+      slots.each{|q|
         inputs[q] = [[time_to_int(self.read_attribute(:start_time)), time_to_int(self.read_attribute(:end_time))]]
       }
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).each{|x|
-        inputs[x.slot_number].push([time_to_int(x.start_time), time_to_int(x.end_time)])
+        inputs[x.slot_number].push([time_to_int(x.start_time), time_to_int(x.end_time)]) if slots.include?(x.slot_number)
       }
-      (1 .. self.slot_count).each{|q|
-        puts q.to_s + " == " + inputs[q].inspect
+      slots.each{|q|
         results = range_math(*inputs[q])
         results = results.map{|a| a.map{|x| int_to_time(x)}}
         results.each{|x|

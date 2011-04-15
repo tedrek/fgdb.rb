@@ -22,7 +22,7 @@ class DefaultAssignmentsController < ApplicationController
       :block_start_time => "volunteer_default_shifts.volunteer_default_events.weekdays.start_time",
       :block_end_time => "volunteer_default_shifts.volunteer_default_events.weekdays.end_time",
 #      :default_view => "by_slot",
-#                           :table_head_partial => "default_assignments/multi_edit", # TODO: FIXME
+                           :table_head_partial => "default_assignments/multi_edit",
                            :cell_onclick => "selection_toggle",
 
                             :left_unique_value => "default_assignments.left_method_name",
@@ -38,7 +38,7 @@ class DefaultAssignmentsController < ApplicationController
                                :thing_table_name => "default_assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "default_assignments.id",
-                               :thing_links => [[:split, :remote, :contact_id],[:edit, :link], [:destroy, :confirm, :contact_id]], # TODO: [:reassign, :function, :contact_id], 
+                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id],[:edit, :link], [:destroy, :confirm, :contact_id]],
 
 
       }, params)
@@ -65,18 +65,20 @@ class DefaultAssignmentsController < ApplicationController
     @new = DefaultAssignment.new # available
 
     # do it
-    @assigned.volunteer_shift_id = @available.volunteer_shift_id
+    @assigned.volunteer_default_shift_id = @available.volunteer_default_shift_id
+    @assigned.slot_number = @available.slot_number
     @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
     @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
     @new.start_time = @assigned_orig.start_time
     @new.end_time = @assigned_orig.end_time
-    @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
+    @new.volunteer_default_shift_id = @assigned_orig.volunteer_default_shift_id
+    @new.slot_number = @assigned_orig.slot_number
 
     @assigned.save!
     @new.save!
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assignment.volunteer_default_shift.volunteer_default_event.weekday.name)
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned.volunteer_default_shift.volunteer_default_event.weekday.name)
   end
 
   def split
@@ -115,13 +117,6 @@ class DefaultAssignmentsController < ApplicationController
     end
   end
 
-  def arrived
-    a = DefaultAssignment.find(params[:id])
-    a.attendance_type = AttendanceType.find_by_name("arrived")
-    a.save!
-    redirect_skedj(request.env["HTTP_REFERER"], a.volunteer_shift.date_anchor)
-  end
-
   def search
     @conditions = Conditions.new
     params[:conditions] ||= {}
@@ -149,7 +144,6 @@ class DefaultAssignmentsController < ApplicationController
 
     if ret
       flash[:notice] = 'DefaultAssignment was successfully updated.'
-      puts rt
       redirect_skedj(rt, @assignment.volunteer_default_shift.volunteer_default_event.weekday.name)
     else
       @referer = rt

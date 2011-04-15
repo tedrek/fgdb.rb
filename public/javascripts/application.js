@@ -4,7 +4,9 @@
 cashierable_enabled = true;
 
 function selection_toggle(id) {
-  var e = $('Assignment' + "_" + id);
+  var is_r = !window.location.href.match("default_assignments");
+  var name = (is_r) ? 'Assignment' : 'DefaultAssignment';
+  var e = $(name + "_" + id);
   if(e.className != 'selected') {
     e.old_class = e.className;
     e.className = 'selected';
@@ -14,13 +16,16 @@ function selection_toggle(id) {
 }
 
 function reassign(assigned_id) {
+  var is_r = !window.location.href.match("default_assignments");
+  var name = (is_r) ? 'Assignment' : 'DefaultAssignment';
+  var controller = (is_r) ? 'assignments' : 'default_assignments';
   var available_id = all_selected();
   if(available_id.split(",").length != 1 || available_id.length == 0) {
     alert("Select one assignment to reassign this shift to by clicking on it and then try again");
     selection_toggle(assigned_id);
     return;
   }
-  var available_e = $('Assignment' + "_" + available_id);
+  var available_e = $(name + "_" + available_id);
   if(available_e.old_class != "available") {
     alert("The selected assignment is not available");
     selection_toggle(assigned_id);
@@ -28,7 +33,7 @@ function reassign(assigned_id) {
   }
   var arr = [assigned_id, available_id];
   arr = arr.join(",");
-  window.location.href = "/assignments/reassign/" + arr;
+  window.location.href = "/" + controller + "/reassign/" + arr;
 }
 
 function all_selected() {
@@ -43,12 +48,14 @@ function all_selected() {
 }
 
 function do_multi_edit() {
+  var is_r = !window.location.href.match("default_assignments");
+  var controller = (is_r) ? 'assignments' : 'default_assignments';
   var ids = all_selected();
   if(ids.length == 0) {
     alert("Select some assignments by clicking on them and try again");
     return;
   }
-  window.location.href = "/assignments/edit/" + ids;
+  window.location.href = "/" + controller + "/edit/" + ids;
 }
 
 function show_message(msg) {
