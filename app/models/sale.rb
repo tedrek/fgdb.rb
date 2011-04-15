@@ -169,6 +169,11 @@ class Sale < ActiveRecord::Base
   end
 
   def add_change_line_item()
+    if self.payments.length == 1 and self.payments.first.payment_method.id == PaymentMethod.credit.id
+      self.payments.first.amount_cents = self.calculated_total_cents
+      self.payments.first.save
+      return
+    end
     storecredit_back, cash_back = _figure_it_all_out
     if storecredit_back > 0
       # wow, if only I had a working test suite...testing this through the UI is a PITA!!!!

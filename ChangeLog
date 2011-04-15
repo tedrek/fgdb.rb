@@ -2,8 +2,10 @@ fgdb.rb (1.0.60) UNRELEASED; urgency=low
 
   * convert default_assignments to be a has_many for
     volunteer_default_shifts (Closes: #22484)
+  * on sales if there's 1 payment and its a credit card, disregard the
+    entered amount and set it to the total amount due (Closes: #22614)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Apr 2011 14:23:00 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 12:58:04 -0700
 
 fgdb.rb (1.0.59) released; urgency=low
 
