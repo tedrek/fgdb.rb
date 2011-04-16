@@ -1,18 +1,27 @@
-<table>
+<table width="100%">
   <tr>
-    <th>Volunteer shift</th>
     <th>Contact</th>
+    <th>Date</th>
+    <th>Event Name</th>
+    <th>Task type</th>
     <th>Start time</th>
     <th>End time</th>
   </tr>
 
 <% for assignment in @results %>
   <tr>
-    <td><%=h assignment.volunteer_shift_id %></td>
-    <td><%=h assignment.contact_id %></td>
-    <td><%=h assignment.start_time %></td>
-    <td><%=h assignment.end_time %></td>
-    <td><%= link_to 'Show', {:action => "show", :id => assignment.id} %></td>
+    <td>
+<% if assignment.contact_id %>
+<%=h assignment.contact.display_name %> (<%= assignment.contact_id %>)
+<% else %>
+(available)
+<% end %>
+</td>
+    <td><%=h assignment.volunteer_shift.volunteer_event.date %></td>
+    <td><%=h assignment.volunteer_shift.volunteer_event.description %></td>
+    <td><%=h [assignment.volunteer_shift.volunteer_task_type, assignment.volunteer_shift].select{|x| !x.nil?}.map{|x| x.description.to_s}.select{|x| x.length >0}.join(", ")  %></td>
+    <td><%=h assignment.start_time.strftime("%l:%M %p") %></td>
+    <td><%=h assignment.end_time.strftime("%l:%M %p") %></td>
     <td><%= link_to 'Edit', {:action => "edit", :id => assignment.id} %></td>
     <td><%= link_to 'Destroy', {:action => "destroy", :id => assignment.id}, :confirm => 'Are you sure?' %></td>
   </tr>
