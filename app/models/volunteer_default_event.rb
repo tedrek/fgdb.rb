@@ -1,4 +1,5 @@
 class VolunteerDefaultEvent < ActiveRecord::Base
+  attr_accessor :redirect_to
   validates_presence_of :weekday_id
   belongs_to :weekday
   has_many :volunteer_default_shifts, :dependent => :destroy
