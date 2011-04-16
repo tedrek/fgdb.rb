@@ -1,4 +1,4 @@
-fgdb.rb (1.0.60) UNRELEASED; urgency=low
+fgdb.rb (1.0.60) released; urgency=low
 
   * convert default_assignments to be a has_many for
     volunteer_default_shifts (Closes: #22484)
@@ -8,7 +8,7 @@ fgdb.rb (1.0.60) UNRELEASED; urgency=low
   * move the returns stuff under the sales sidebar section (Closes:
     #22552)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 13:19:46 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:49:35 -0700
 
 fgdb.rb (1.0.59) released; urgency=low
 
