@@ -1,3 +1,8 @@
+fgdb.rb (1.0.61) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:50:06 -0700
+
 fgdb.rb (1.0.60) released; urgency=low
 
   * convert default_assignments to be a has_many for
