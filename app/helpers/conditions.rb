@@ -253,6 +253,7 @@ class Conditions < ConditionsBase
   def weekday_conditions(klass)
     klass = VolunteerDefaultEvent if klass == VolunteerDefaultShift
     klass = VolunteerDefaultEvent if klass == ResourcesVolunteerDefaultEvent
+    klass = VolunteerDefaultEvent if klass == DefaultAssignment
     return ["#{klass.table_name}.weekday_id = ?", @weekday_id]
   end
 

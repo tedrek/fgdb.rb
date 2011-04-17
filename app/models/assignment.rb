@@ -1,4 +1,5 @@
 class Assignment < ActiveRecord::Base
+  attr_accessor :redirect_to
   belongs_to :volunteer_shift
   has_one :volunteer_task_type, :through => :volunteer_shift, :source => :volunteer_task_type
   belongs_to :contact

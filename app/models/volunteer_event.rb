@@ -1,4 +1,5 @@
 class VolunteerEvent < ActiveRecord::Base
+  attr_accessor :redirect_to
   validates_presence_of :date
   has_many :volunteer_shifts, :dependent => :destroy
   has_many :resources_volunteer_events, :dependent => :destroy

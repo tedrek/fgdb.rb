@@ -104,8 +104,8 @@ class StoreChecksum
 
   def _result
     if Default.is_pdx
-      @checksum = @checksum.gsub(/l/, 'i')
-      @checksum = @checksum.gsub(/1/, 'i')
+      @checksum = @checksum.gsub(/i/, 'l')
+      @checksum = @checksum.gsub(/1/, 'l')
     end
     arr = BaseStore.new_from_base_store(@checksum).base10.to_i
     @checkbit = (arr % 100)
