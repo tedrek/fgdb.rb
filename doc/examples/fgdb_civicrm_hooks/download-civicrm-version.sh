@@ -10,10 +10,10 @@ if [ -z "$VERSION" ];then
     die "Please specify a version to download"
 fi
 
-cd /home/ryan52/code/
+cd /home/ryan52/code/civicrm/
 
 if [ -d "$VERSION" ]; then
-    die "$VERSION already exists, please remove/displace ~/code/$VERSION"
+    die "$VERSION already exists, please remove/displace ~/code/civicrm/$VERSION"
 fi
 
 mkdir "$VERSION"
@@ -22,4 +22,4 @@ cd "$VERSION"
 TAR="civicrm-${VERSION}-drupal.tar.gz"
 wget -O $TAR "http://downloads.sourceforge.net/project/civicrm/civicrm-stable/${VERSION}/${TAR}"
 tar xzvf $TAR
-ln -sf /home/ryan52/fgdb.rb/doc/examples/fgdb_civicrm_hooks/Custom.php civicrm/api/v2/Custom.php
+ln -sf ../../../../../fgdb_civicrm_hooks/Custom.php civicrm/api/v2/Custom.php
