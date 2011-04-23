@@ -28,7 +28,7 @@ class CiviCRMClient
   end
 
   def server
-    @server + "/drupal6"
+    @server + "/drupal"
   end
 
   #               ex: "fgdb_donations" "fgdb_donation_id"
@@ -140,6 +140,7 @@ def do_main
     puts "  Completed at #{Time.now}. Resulting id on #{source == "fgdb" ? "civicrm" : "fgdb"} was: #{oid.nil? ? "FAIL" : oid}"
   end
 
+  if ENV["SCRIPT"]
   if success
     system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
     if source == "civicrm"
@@ -152,6 +153,7 @@ def do_main
     end
   else
     system(ENV["SCRIPT"], "take_a_break") or raise Exception
+  end
   end
 end
 
