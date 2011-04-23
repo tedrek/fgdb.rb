@@ -86,8 +86,12 @@ class Assignment < ActiveRecord::Base
   end
 
   def description
-    self.volunteer_shift.volunteer_event.date.strftime("%D") + " " + self.time_range_s + " " + (self.volunteer_shift.volunteer_task_type_id.nil? ? self.volunteer_shift.volunteer_event.description : self.volunteer_shift.volunteer_task_type.description)
+    self.volunteer_shift.volunteer_event.date.strftime("%D") + " " + self.time_range_s + " " + self.slot_type_desc
   end
+
+  def slot_type_desc
+    (self.volunteer_shift.volunteer_task_type_id.nil? ? self.volunteer_shift.volunteer_event.description : self.volunteer_shift.volunteer_task_type.description)
+   end
 
   def display_name
     ((!(self.volunteer_shift.description.nil? or self.volunteer_shift.description.blank?)) ? self.volunteer_shift.description + ": " : "") + self.contact_display

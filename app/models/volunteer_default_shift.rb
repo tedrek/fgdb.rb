@@ -9,21 +9,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
   belongs_to :volunteer_default_event
   belongs_to :program
 
-  has_one :default_assignment
-
-  after_save :save_default_assign
-
-  def save_default_assign
-    if self.default_assignment
-      self.default_assignment.save!
-    else
-      old = DefaultAssignment.find_by_volunteer_default_shift_id(self.id)
-      old.destroy if old
-      DefaultAssignment.find_all_by_volunteer_default_shift_id(nil).each{|x|
-        x.destroy # cleanup empty records
-      }
-    end
-  end
+  has_many :default_assignments
 
   named_scope :effective_at, lambda { |date|
     { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
@@ -32,21 +18,42 @@ class VolunteerDefaultShift < ActiveRecord::Base
     { :conditions => ['weekday_id = ?', wday] }
   }
 
-  def contact_id
-    da = self.default_assignment
-    return da.nil? ? nil : da.contact_id
-  end
-
-  def contact_id=(val)
-    val = nil if val and val.length == 0
-    da = self.default_assignment
-    if val.nil?
-      self.default_assignment = nil
-    else
-      da = self.default_assignment = DefaultAssignment.new(:volunteer_default_shift_id => self.id) if da.nil?
-      da.contact_id = val
+  def fill_in_available(slot_num = nil)
+    Thread.current['volskedj2_fillin_processing'] ||= []
+    if Thread.current['volskedj2_fillin_processing'].include?(self.id)
+      return
+    end
+    begin
+      Thread.current['volskedj2_fillin_processing'].push(self.id)
+      slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
+      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy if slots.include?(x.slot_number)}
+      inputs = {}
+      slots.each{|q|
+        inputs[q] = [[time_to_int(self.read_attribute(:start_time)), time_to_int(self.read_attribute(:end_time))]]
+      }
+      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).each{|x|
+        inputs[x.slot_number].push([time_to_int(x.start_time), time_to_int(x.end_time)]) if slots.include?(x.slot_number)
+      }
+      slots.each{|q|
+        results = range_math(*inputs[q])
+        results = results.map{|a| a.map{|x| int_to_time(x)}}
+        results.each{|x|
+          a = DefaultAssignment.new
+          a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
+          a.slot_number = q
+          a.save!
+        }
+      }
+    ensure
+      Thread.current['volskedj2_fillin_processing'].delete(self.id)
     end
   end
+
+  def description_and_slot
+    0
+  end
+
+  after_save :fill_in_available
 
   def skedj_style(overlap, last)
     overlap ? 'hardconflict' : 'shift'
@@ -54,7 +61,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
 
   def describe
     s = slot_count.to_s + " slots from " + time_range_s
-    s += " assigned to #{self.default_assignment.contact.display_name}" if self.default_assignment
+#    s += " assigned to #{self.default_assignment.contact.display_name}" if self.default_assignment
     s
   end
 
@@ -127,10 +134,16 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.roster_id = ds.roster_id
           s.class_credit = ds.class_credit
           s.save!
-          if ds.contact_id
-            a = s.assignments.first
-            a.contact_id = ds.contact_id
-            a.save!
+          mats = ds.default_assignments.select{|q| q.contact_id and q.slot_number == num}
+          if mats.length > 0
+            mats.each{|da|
+              a = Assignment.new
+              a.start_time = da.start_time
+              a.end_time = da.end_time
+              a.volunteer_shift_id = s.id
+              a.contact_id = da.contact_id
+              a.save!
+            }
           end
           myl << slot_number
         }

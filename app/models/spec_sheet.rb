@@ -93,11 +93,11 @@ class SpecSheet < ActiveRecord::Base
   end
 
   def bug_correction
-    self.system.bug_correction
+    self.system.bug_correction if self.system
   end
 
   def bug_correction=(val)
-    self.system.bug_correction=(val)
+    self.system.bug_correction=(val) if self.system
   end
 
   def set_contract_id_and_covered
@@ -157,11 +157,12 @@ class SpecSheet < ActiveRecord::Base
 
     sp = SystemParser.parse(lshw_output)
 
-    found_system = sp.find_system_id
-    if found_system
-      self.system = System.find_by_id(found_system)
+    found_system = System.find_by_id(sp.find_system_id)
+    if found_system and !found_system.gone?
+      self.system = found_system
     else
       self.system = System.new
+      system.previous_id = found_system.id if found_system
       system.system_model  = sp.system_model
       system.system_serial_number  = sp.system_serial_number
       system.system_vendor  = sp.system_vendor

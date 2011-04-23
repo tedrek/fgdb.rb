@@ -1,12 +1,34 @@
-fgdb.rb (1.0.59) UNRELEASED; urgency=low
+fgdb.rb (1.0.61) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:50:06 -0700
+
+fgdb.rb (1.0.60) released; urgency=low
+
+  * convert default_assignments to be a has_many for
+    volunteer_default_shifts (Closes: #22484)
+  * on sales if there's 1 payment and its a credit card, disregard the
+    entered amount and set it to the total amount due (Closes: #22614)
+  * change label to be amount paid for returns (Closes: #22550)
+  * move the returns stuff under the sales sidebar section (Closes:
+    #22552)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:49:35 -0700
+
+fgdb.rb (1.0.59) released; urgency=low
 
   * default the staff hours forms (Closes: #18266)
   * add a bug correction field to the spec_sheet that is shared between
     all the spec_sheets for a system (Closes: #20524)
   * make both generate widgets generate both shifts and resources
   * implement written off invoices (Closes: #21827)
+  * do not reuse the old system id if it has been sold/disbursed
+    (Closes: #17231)
+    - breaks printme compat
+  * provide a different upgrade message to mac printme users
+  * sub l or 1 for i if is_pdx (Closes: #22512)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Apr 2011 14:45:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Apr 2011 19:38:49 -0700
 
 fgdb.rb (1.0.58) released; urgency=low
 

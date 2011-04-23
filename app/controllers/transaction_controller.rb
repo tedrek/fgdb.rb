@@ -322,7 +322,7 @@ class TransactionController < ApplicationController
       @transaction.payments = @payments
       transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
     end
-    params[:gizmo_events].values.each{|x| x[:gizmo_count] ||= 1} if @gizmo_context == GizmoContext.gizmo_return
+    params[:gizmo_events].values.each{|x| x[:gizmo_count] ||= 1} if @gizmo_context == GizmoContext.gizmo_return and params[:gizmo_events]
     if transaction.respond_to?(:gizmo_events)
       lines = params[:gizmo_events] || {}
       @lines = []

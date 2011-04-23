@@ -1,15 +1,23 @@
 <div style="float: right; text-align: right;">
   <p>
 <%= f.label :volunteer_shift %>    <table class="awesome">
-
-      <tr><td>Id:</td><td><%= f.object.volunteer_shift_id %></td></tr>
-      <tr><td>Date:</td><td><%= f.object.volunteer_shift.date %></td></tr>
-      <tr><td>Time range:</td><td><%= f.object.volunteer_shift.time_range_s %></td></tr>
-      <tr><td>Shift description:</td><td><%= vs = f.object.volunteer_shift; s = vs.volunteer_task_type_id.nil? ? vs.volunteer_event.description : vs.volunteer_task_type.description; s += ", #{vs.description}" if vs.description.to_s.length > 0; s %></td></tr>
-      <tr><td>Available time range:</td><td><%= [f.object.volunteer_shift.assignments.select{|x| x.contact_id.nil?}, f.object].flatten.sort_by(&:start_time).uniq.map{|x| x.time_range_s}.join(", ") %></td></tr>
-      <tr><td>Volunteer event name:</td><td><%= f.object.volunteer_shift.volunteer_event.description %></td></tr>
-      <tr><td>Volunteer event notes:</td><td><%= markdown(f.object.volunteer_shift.volunteer_event.notes) %></td></tr>
-      <tr><td>Resources:</td><td><%= f.object.volunteer_shift.volunteer_event.resources_volunteer_events.map{|x| x.resource.name}.join(", ") %></td></tr>
+  <% is_r = params[:controller] == "assignments" %>
+  <% shift = is_r ? f.object.volunteer_shift : f.object.volunteer_default_shift %>
+  <% event = is_r ? shift.volunteer_event : shift.volunteer_default_event %>
+  <% rsrcs = is_r ? event.resources_volunteer_events : event.resources_volunteer_default_events %>
+  <% assigns = is_r ? shift.assignments : shift.default_assignments %>
+  <% if !is_r; assigns = assigns.select{|x| x.slot_number == f.object.slot_number}; end %>
+  <% date = is_r ? shift.date : event.weekday.name %>
+      <tr><td>Id:</td><td><%= shift.id %></td></tr>
+      <tr><td>Date:</td><td><%= date %></td></tr>
+      <tr><td>Time range:</td><td><%= shift.time_range_s %></td></tr>
+      <tr><td>Shift description:</td><td><%= vs = shift; s = vs.volunteer_task_type_id.nil? ? event.description : vs.volunteer_task_type.description; s += ", #{vs.description}" if vs.description.to_s.length > 0; s %></td></tr>
+      <tr><td>Available time range:</td><td><%= [assigns.select{|x| x.contact_id.nil?}, f.object].flatten.sort_by(&:start_time).uniq.map{|x| x.time_range_s}.join(", ") %></td></tr>
+      <tr><td>Volunteer event name:</td><td><%= event.description %></td></tr>
+      <% if is_r %>
+      <tr><td>Volunteer event notes:</td><td><%= markdown(event.notes) %></td></tr>
+      <% end %>
+      <tr><td>Resources:</td><td><%=rsrcs.map{|x| x.resource.name}.join(", ") %></td></tr>
     </table>
   </p>
 
@@ -17,9 +25,9 @@
 
     <%= f.label :contact_id %><br />
     <% @obj = f.object %>
-      <%= contact_field("@obj", "assignment",
+      <%= contact_field("@obj", "contact_id",
                     :locals => {:options => {
-                        :object_name => "assignment",
+                        :object_name => f.object_name.to_s,
                         :field_name => 'contact_id'
                       }}) %>
   </div>
@@ -31,6 +39,7 @@
     <%= f.label :end_time %><br />
     <%= f.time_select :end_time, :ignore_date => true, :twelve_hour => true, :include_blank => false, :minute_step => 15 %>
   </p>
+      <% if is_r %>
   <% if f.object.contact_id %>
   <p>
     <%= f.label :attendance_type_id %><br />
@@ -47,3 +56,4 @@
     <%= f.label :notes %><br />
     <%= f.text_area :notes %>
   </p>
+  <% end %>

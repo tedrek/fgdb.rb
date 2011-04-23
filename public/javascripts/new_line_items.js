@@ -449,6 +449,29 @@ function get_name_from_select(select_id, value) {
   return hash.get(value);
 }
 
+var CheckBasedComponent = Class.create(LineItemComponent, {
+  add_from_form_reject: function() {
+    return false;
+  },
+
+  edit_hook: function(thing){
+    $(this.linelist[0]).checked = eval(this.getValueBySelector(thing, "." + this.linelist[0]));
+  },
+
+  clear_widget: function() {
+    $(this.linelist[0]).checked = $(this.linelist[0]).defaultChecked;
+  },
+
+  make_hidden_hook: function(args, tr) {
+    var value = args[this.linelist[0]];
+    tr.appendChild(this.make_hidden(this.linelist[0], value, value));
+  },
+
+  set_args_from_form: function(args) {
+    args[this.linelist[0]] = $(this.linelist[0]).checked  ? "true" : "false";
+  },
+});
+
 var SelectBasedComponent = Class.create(LineItemComponent, {
   add_from_form_reject: function() {
     return $(this.linelist[0]).selectedIndex == 0;

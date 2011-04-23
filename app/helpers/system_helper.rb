@@ -65,7 +65,7 @@ module SystemHelper
     end
 
     def find_system_id
-      if @serial_number != "(no serial number)" && (found_system = System.find(:first, :conditions => {:serial_number => @serial_number, :vendor => @vendor, :model => @model}, :order => :id))
+      if @serial_number != "(no serial number)" && (found_system = System.find(:first, :conditions => {:serial_number => @serial_number, :vendor => @vendor, :model => @model}, :order => 'id DESC'))
         return found_system.id
       else
         return nil

@@ -52,6 +52,7 @@ class AssignmentsController < ApplicationController
                                :left_table_name => "volunteer_shifts",
                                :left_link_action => "assign",
                                :left_link_id => "volunteer_shifts.description_and_slot",
+                               :break_between_difference => "assignments.slot_type_desc",
 
                                :thing_start_time => "assignments.start_time",
                                :thing_end_time => "assignments.end_time",
@@ -68,6 +69,7 @@ class AssignmentsController < ApplicationController
                                :left_table_name => "volunteer_shifts",
                                :left_link_action => "assign",
                                :left_link_id => "volunteer_shifts.description_and_slot",
+                               :break_between_difference => "assignment.slot_type_desc",
 
                                :thing_start_time => "assignments.start_time",
                                :thing_end_time => "assignments.end_time",
@@ -182,25 +184,10 @@ class AssignmentsController < ApplicationController
     @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "created_at ASC", :per_page => 50)
   end
 
-  def show
-    @assignment = Assignment.find(params[:id])
-  end
-
   def edit
     @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
     @assignment = @assignments.first
     @referer = request.env["HTTP_REFERER"]
-  end
-
-  def create
-    @assignment = Assignment.new(params[:assignment])
-
-    if @assignment.save
-      flash[:notice] = 'Assignment was successfully created.'
-      redirect_to({:action => "index", :id => @assignment.id})
-    else
-      render :action => "new"
-    end
   end
 
   def update

@@ -210,6 +210,7 @@ class Conditions < ConditionsBase
   end
 
   def action_conditions(klass)
+    klass = BuilderTask if klass == SpecSheet
     ["#{klass.table_name}.action_id = ?", @action]
   end
 
@@ -256,14 +257,16 @@ class Conditions < ConditionsBase
   end
 
   def roster_conditions(klass)
+    klass = VolunteerShift if klass == Assignment
+    klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    tbl = "volunteer_shifts" if tbl == "assignments"
     return ["#{tbl}.roster_id = ?", @roster_id]
   end
 
   def sked_conditions(klass)
+    klass = VolunteerShift if klass == Assignment
+    klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    tbl = "volunteer_shifts" if tbl == "assignments"
     return ["#{tbl}.roster_id IN (SELECT roster_id FROM rosters_skeds WHERE sked_id = ?)", @sked_id]
   end
 
@@ -458,6 +461,7 @@ class Conditions < ConditionsBase
   end
 
   def contact_conditions(klass)
+    klass = BuilderTask if klass == SpecSheet
     return [ "#{klass.table_name}.contact_id = ?", contact_id ]
   end
 
