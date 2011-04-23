@@ -36,3 +36,9 @@ set CIVICRM_SITE_KEY in /usr/share/drupal6/sites/default/civicrm.settings.php
 Set a users key (yes, sadly can only be done through SQL):
 In the "drupal" db, get the users email: SELECT mail FROM users WHERE name LIKE 'ass';
 Set it in the "civicrm" db on their contact: UPDATE civicrm_contact SET api_key = 'BLAH' WHERE id IN (SELECT contact_id FROM civicrm_email WHERE email LIKE 'root@freegeek.org');
+
+Add custom fields for fgdb id:
+To do this, go to Administer -> Customize -> Custom Data
+add a fgdb_contacts set for contacts
+add a fgdb_contact_id field, of integer type, make it searchable
+do this again for donations
