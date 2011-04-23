@@ -124,7 +124,7 @@ def do_main
   source, table, tid = ARGV
   @saved_civicrm = false
 
-  if source == "civicrm" && system(ENV["SCRIPT"], "find", "skip_civicrm", table, tid)
+  if source == "civicrm" && (ENV["SCRIPT"] && system(ENV["SCRIPT"], "find", "skip_civicrm", table, tid))
     system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
     system(ENV["SCRIPT"], "rm", "skip_civicrm", table, tid) or raise Exception
     return
