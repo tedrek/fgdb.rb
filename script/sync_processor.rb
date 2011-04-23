@@ -4,6 +4,8 @@
 ## http://wiki.civicrm.org/confluence/display/CRMDOC33/Contact+APIs
 ## http://wiki.civicrm.org/confluence/display/CRMDOC33/Contribution+APIs
 
+# API explorer: http://civicrm/drupal/?q=civicrm/ajax/doc#explorer
+
 require 'json'
 require 'net/http'
 require 'uri'
