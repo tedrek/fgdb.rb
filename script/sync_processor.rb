@@ -35,16 +35,20 @@ class CiviCRMClient
 
   #               ex: "fgdb_donations" "fgdb_donation_id"
   def custom_field_id(group_name, field_name)
-    group_id = self.do_req("civicrm/custom/get_group_id", "group_name=#{group_name}")["result"]
-    return self.do_req("civicrm/custom/get_field_id", "group_id=#{group_id}&field_name=#{field_name}")["result"]
+    res = self.do_req("civicrm/CustomField/get", "", 3)
+    hash = {}
+    res["values"].each{|k,v|
+      hash[v] = k
+    }
+    return hash[field_name]
   end
 
   def fgdb_field(table_name)
     custom_field_id("fgdb_#{table_name}s", "fgdb_#{table_name}_id")
   end
 
-  def do_req(func, opts)
-    get("http://#{server}/sites/all/modules/civicrm/extern/rest.php?q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
+  def do_req(func, opts, version = 2) # FIXME: 3
+    get("http://#{server}/sites/all/modules/civicrm/extern/rest.php?version=#{version}&q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
   end
 
   private
