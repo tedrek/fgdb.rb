@@ -22,4 +22,4 @@ cd "$VERSION"
 TAR="civicrm-${VERSION}-drupal.tar.gz"
 wget -O $TAR "http://downloads.sourceforge.net/project/civicrm/civicrm-stable/${VERSION}/${TAR}"
 tar xzvf $TAR
-ln -sf ../../../../../fgdb_civicrm_hooks/Custom.php civicrm/api/v2/Custom.php
+
