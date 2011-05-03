@@ -73,7 +73,7 @@ class Sale < ActiveRecord::Base
 
   class << self
     def default_sort_sql
-      "sales.created_at DESC"
+      "sales.occurred_at DESC"
     end
 
     def totals(conditions)
