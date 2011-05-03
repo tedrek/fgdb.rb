@@ -29,8 +29,9 @@ class DefaultAssignment < ActiveRecord::Base
 
   def left_method_name
     a = [self.volunteer_default_shift.volunteer_task_type_id.nil? ? self.volunteer_default_shift.volunteer_default_event.description : volunteer_default_shift.volunteer_task_type.description]
+    a << self.volunteer_default_shift.description
     a << self.slot_number
-    a.join(", ")
+    a.select{|x| x.to_s.length > 0}.join(", ")
   end
 
   def time_range_s
