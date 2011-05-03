@@ -112,7 +112,7 @@ class Donation < ActiveRecord::Base
 
   class << self
     def default_sort_sql
-      "donations.created_at DESC"
+      "donations.occurred_at DESC"
     end
 
     def totals(conditions)
