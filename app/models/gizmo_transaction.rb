@@ -178,7 +178,7 @@ module GizmoTransaction
   end
 
   def set_occurred_at_on_transaction
-    self.occurred_at = DateTime.now if self.real_occurred_at.nil?
+    self.write_attribute(:occurred_at, Time.now) if self.real_occurred_at.nil?
   end
 
   def occurred_at
