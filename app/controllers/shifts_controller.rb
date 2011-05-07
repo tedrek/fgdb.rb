@@ -175,6 +175,7 @@ WHERE
                         v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])
                         if not v
                           workshift = WorkShift.create_from_meeting( @shift, w, day )
+                    workshift.shift_id = @shift.id
                           # workshift.worker_id = w.id
                           workshift.save
                         end
@@ -183,10 +184,12 @@ WHERE
                   end
                 when 'StandardShift'
                   # check schedule for repeats_every / repeats_on logic
+                    if (not @shift.shift_date) or @shift.shift_date == day
                   if @shift.schedule.which_week( day ) == @shift.schedule.repeats_on
                     # standard shifts always get saved (even if the worker can't work)
                     # create a new work_shift from the date and standard_shift
                     workshift = WorkShift.create_from_standard_shift( @shift, day )
+                    workshift.shift_id = @shift.id
                     if workshift
                       zero = Worker.find(:first, :conditions => 'id = 0')
                       w = @shift.worker 
@@ -210,6 +213,7 @@ WHERE
                       workshift.save
                     end
                   end
+                  end
                 when 'Unavailability'
                   # NOTE: don't check schedule, since it doesn't apply
                   # check for unavailability's repeats_every / repeats_on logic instead
@@ -219,6 +223,7 @@ WHERE
                     v = Vacation.find(:first, :conditions => ["worker_id = ? AND ? BETWEEN effective_date AND ineffective_date", w.id, day])
                     if not v
                       workshift = WorkShift.create_from_unavailability( @shift, day )
+                    workshift.shift_id = @shift.id
                       workshift.save
                     end
                   end

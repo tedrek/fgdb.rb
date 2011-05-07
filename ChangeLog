@@ -11,6 +11,9 @@ fgdb.rb (1.0.60) released; urgency=low
   * fix contact dedup (Closes: 22904)
   * fix duplicate transactions by not reenabling the form on success
     (Closes: #22800)
+  * fix tracking the parent shift_id on work_shifts and pay
+    attention to shift_date on shifts other than meetings
+    (Closes: #22875)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:49:35 -0700
 
