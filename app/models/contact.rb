@@ -20,7 +20,7 @@ class Contact < ActiveRecord::Base
   has_many :gizmo_returns
   has_one :worker
 
-  validates_presence_of :postal_code
+  validates_presence_of :postal_code, :on => :create
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
