@@ -9,6 +9,8 @@ fgdb.rb (1.0.60) released; urgency=low
     #22552)
   * sort by occurred_at on sales/donations (Closes: #22839)
   * fix contact dedup (Closes: 22904)
+  * fix duplicate transactions by not reenabling the form on success
+    (Closes: #22800)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:49:35 -0700
 
