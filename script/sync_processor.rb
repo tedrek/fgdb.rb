@@ -102,7 +102,7 @@ def sync_contact_from_civicrm(civicrm_id)
   fgdb_id = nil
   my_client = CiviCRMClient.from_defaults
   my_custom = my_client.fgdb_field("contact")
-  fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params).first["custom_#{my_custom}"]
+  fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params, 3)["values"][civicrm_id]["custom_#{my_custom}"]
   c = nil
   @double_saved = false
   unless fgdb_id and (c = Contact.find_by_id(fgdb_id))
@@ -110,7 +110,7 @@ def sync_contact_from_civicrm(civicrm_id)
     @saved_civicrm = true
     c = Contact.new
   end
-  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params).first
+  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params, 3)["values"][civicrm_id]
   c.first_name = civicrm_contact["first_name"]
   c.created_by ||= 1
   c.surname = civicrm_contact["last_name"]
