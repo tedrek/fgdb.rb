@@ -112,7 +112,6 @@ def sync_contact_from_civicrm(civicrm_id)
   civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params).first
   c.first_name = civicrm_contact["first_name"]
   c.created_by ||= 1
-  c.postal_code ||= "97007" # FIXME
   c.surname = civicrm_contact["last_name"]
   c.is_organization = civicrm_contact["contact_type"] == "Organization"
   c.save!
