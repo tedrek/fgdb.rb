@@ -83,11 +83,11 @@ def sync_contact_from_fgdb(fgdb_id)
     hash[:last_name] = c.surname
   end
   if civicrm_id
-    hash[:contact_id] = civicrm_id
-    my_client.do_req("civicrm/contact/update", hash.r_to_params, 2)
+    hash[:id] = civicrm_id
+    my_client.do_req("civicrm/contact/update", hash.r_to_params)
   else
     hash["custom_#{my_custom}"] = fgdb_id
-    civicrm_id = my_client.do_req("civicrm/contact/create", hash.r_to_params, 2)["contact_id"]
+    civicrm_id = my_client.do_req("civicrm/contact/create", hash.r_to_params)["contact_id"]
   end
   return civicrm_id
 end
@@ -127,7 +127,7 @@ def sync_contact_from_civicrm(civicrm_id)
   end
   if @saved_civicrm
     fgdb_id = c.id
-    my_client.do_req("civicrm/contact/update", {:contact_id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params, 2)
+    my_client.do_req("civicrm/contact/update", {:id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params)
   end
   return fgdb_id
 end
