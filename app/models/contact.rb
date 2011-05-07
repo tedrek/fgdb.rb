@@ -13,7 +13,7 @@ class Contact < ActiveRecord::Base
   has_many :disbursements
   has_many :sales
   has_many :donations
-  has_many :spec_sheets
+  has_many :builder_tasks
   has_one :user
   has_one :contact_duplicate
   belongs_to :contract
@@ -104,7 +104,7 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE default_assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE gizmo_returns SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
-      connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE builder_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE workers SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE points_trades SET from_contact_id = #{self.id} WHERE from_contact_id = #{other.id}")
       connection.execute("UPDATE points_trades SET to_contact_id = #{self.id} WHERE to_contact_id = #{other.id}")

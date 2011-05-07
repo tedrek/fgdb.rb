@@ -6,7 +6,6 @@ if @successful
   if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped") or (@transaction_type == "gizmo_return" and @transaction.store_credit)
     page << "window.open('#{url_for(@print_options)}','Receipt_#{@transaction.id}','#{@print_window_options}');"
   end
-  page << "Form.enable('#{element_form_id(@create_options)}');"
   page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")
   page << "window.location.href='#{url_for( ( { :action => 'new'} ) )}';"
 else
