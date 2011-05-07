@@ -69,8 +69,8 @@ def sync_contact_from_fgdb(fgdb_id)
   civicrm_id = nil
   my_client = CiviCRMClient.from_defaults
   my_custom = my_client.fgdb_field("contact")
-  find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}")
-  civicrm_id = (find_arr.class == Array) ? find_arr.first["contact_id"] : nil
+  find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}", 3)
+  civicrm_id = (find_arr["count"] == 1) ? find_arr["id"] : nil
   c = Contact.find(fgdb_id)
   hash = {}
   if c.is_organization
