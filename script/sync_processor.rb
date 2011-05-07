@@ -104,6 +104,7 @@ def sync_contact_from_civicrm(civicrm_id)
   my_custom = my_client.fgdb_field("contact")
   fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params).first["custom_#{my_custom}"]
   c = nil
+  @double_saved = false
   unless fgdb_id and (c = Contact.find_by_id(fgdb_id))
     fgdb_id = nil
     @saved_civicrm = true
@@ -114,7 +115,13 @@ def sync_contact_from_civicrm(civicrm_id)
   c.created_by ||= 1
   c.surname = civicrm_contact["last_name"]
   c.is_organization = civicrm_contact["contact_type"] == "Organization"
+  c.postal_code ||= "CIVICRM_UNSETME"
   c.save!
+  if c.postal_code == "CIVICRM_UNSETME"
+    @double_saved = true
+    c.postal_code = nil
+    c.save!
+  end
   if @saved_civicrm
     fgdb_id = c.id
     my_client.do_req("civicrm/contact/update", {:contact_id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params)
@@ -150,6 +157,9 @@ def do_main
     system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
     if source == "civicrm"
       system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s) or raise Exception
+      if @double_saved
+        system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s) or raise Exception
+      end
       if @saved_civicrm
         system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception
       end
