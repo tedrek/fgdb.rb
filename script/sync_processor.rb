@@ -35,7 +35,7 @@ class CiviCRMClient
 
   #               ex: "fgdb_donations" "fgdb_donation_id"
   def custom_field_id(group_name, field_name)
-    res = self.do_req("civicrm/CustomField/get", "", 3)
+    res = self.do_req("civicrm/CustomField/get", "")
     hash = {}
     res["values"].each{|k,v|
       hash[v] = k
@@ -47,7 +47,7 @@ class CiviCRMClient
     custom_field_id("fgdb_#{table_name}s", "fgdb_#{table_name}_id")
   end
 
-  def do_req(func, opts, version = 2) # FIXME: 3
+  def do_req(func, opts, version = 3)
     get("http://#{server}/sites/all/modules/civicrm/extern/rest.php?version=#{version}&q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
   end
 
@@ -69,7 +69,7 @@ def sync_contact_from_fgdb(fgdb_id)
   civicrm_id = nil
   my_client = CiviCRMClient.from_defaults
   my_custom = my_client.fgdb_field("contact")
-  find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}", 3)
+  find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}")
   civicrm_id = (find_arr["count"] == 1) ? find_arr["id"] : nil
   c = Contact.find(fgdb_id)
   hash = {}
@@ -84,10 +84,10 @@ def sync_contact_from_fgdb(fgdb_id)
   end
   if civicrm_id
     hash[:contact_id] = civicrm_id
-    my_client.do_req("civicrm/contact/update", hash.r_to_params)
+    my_client.do_req("civicrm/contact/update", hash.r_to_params, 2)
   else
     hash["custom_#{my_custom}"] = fgdb_id
-    civicrm_id = my_client.do_req("civicrm/contact/create", hash.r_to_params)["contact_id"]
+    civicrm_id = my_client.do_req("civicrm/contact/create", hash.r_to_params, 2)["contact_id"]
   end
   return civicrm_id
 end
@@ -102,7 +102,7 @@ def sync_contact_from_civicrm(civicrm_id)
   fgdb_id = nil
   my_client = CiviCRMClient.from_defaults
   my_custom = my_client.fgdb_field("contact")
-  fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params, 3)["values"][civicrm_id]["custom_#{my_custom}"]
+  fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params)["values"][civicrm_id]["custom_#{my_custom}"]
   c = nil
   @double_saved = false
   unless fgdb_id and (c = Contact.find_by_id(fgdb_id))
@@ -110,7 +110,7 @@ def sync_contact_from_civicrm(civicrm_id)
     @saved_civicrm = true
     c = Contact.new
   end
-  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params, 3)["values"][civicrm_id]
+  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params)["values"][civicrm_id]
   c.first_name = civicrm_contact["first_name"]
   c.created_by ||= 1
   c.surname = civicrm_contact["last_name"]
@@ -127,7 +127,7 @@ def sync_contact_from_civicrm(civicrm_id)
   end
   if @saved_civicrm
     fgdb_id = c.id
-    my_client.do_req("civicrm/contact/update", {:contact_id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params)
+    my_client.do_req("civicrm/contact/update", {:contact_id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params, 2)
   end
   return fgdb_id
 end
