@@ -18,6 +18,24 @@ class VolunteerDefaultShift < ActiveRecord::Base
     { :conditions => ['weekday_id = ?', wday] }
   }
 
+  before_destroy :get_rid_of_available
+  def get_rid_of_available
+    Thread.current['volskedj2_fillin_processing'] ||= []
+    if Thread.current['volskedj2_fillin_processing'].include?(self.id)
+      return
+    end
+    begin
+      Thread.current['volskedj2_fillin_processing'].push(self.id)
+
+      a = self.default_assignments.select{|x| x.contact_id.nil?}
+      a.each{|x| x.destroy}
+      self.default_assignments = []
+
+    ensure
+      Thread.current['volskedj2_fillin_processing'].delete(self.id)
+    end
+  end
+
   def fill_in_available(slot_num = nil)
     Thread.current['volskedj2_fillin_processing'] ||= []
     if Thread.current['volskedj2_fillin_processing'].include?(self.id)
