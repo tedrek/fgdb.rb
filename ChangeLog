@@ -1,7 +1,8 @@
 fgdb.rb (1.0.61) UNRELEASED; urgency=low
 
+  * add new class page for volunteer scheduling
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:50:06 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 May 2011 15:58:22 -0700
 
 fgdb.rb (1.0.60) released; urgency=low
 
