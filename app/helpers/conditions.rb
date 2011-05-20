@@ -13,7 +13,7 @@ class Conditions < ConditionsBase
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
-      needs_checkin assigned
+      needs_checkin assigned attendance_type
       effective_at schedule type
     ] + DATES).uniq
 
@@ -82,6 +82,8 @@ class Conditions < ConditionsBase
   attr_accessor :disbursement_type_id
 
   attr_accessor :store_credit_id
+
+  attr_accessor :attendance_type_id
 
   attr_accessor :role
 
@@ -177,6 +179,10 @@ class Conditions < ConditionsBase
     else
       return ["(attendance_type_id IS NULL OR attendance_types.cancelled = false OR attendance_types.cancelled IS NULL)"]
     end
+  end
+
+  def attendance_type_conditions(klass)
+    return ["attendance_type_id = ?", @attendance_type_id]
   end
 
   def needs_checkin_conditions(klass)
