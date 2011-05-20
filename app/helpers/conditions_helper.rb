@@ -34,6 +34,10 @@ module ConditionsHelper
     select(params_key, "job_id", Job.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] })
   end
 
+  def html_for_attendance_type_condition(params_key)
+    select(params_key, "attendance_type_id", AttendanceType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
+  end
+
   def html_for_weekday_condition(params_key)
     select(params_key, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]})
   end
