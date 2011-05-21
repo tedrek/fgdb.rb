@@ -35,11 +35,19 @@ class VolunteerEventsController < ApplicationController
 #    end
     start_hour = c["start_time(4i)"].to_i
     start_minute = c["start_time(5i)"].to_i
-    start_hour += 12 if c["start_time(7i)"].to_i == ActionView::Helpers::DateTimeSelector::PM
+    if c["start_time(7i)"].to_i == ActionView::Helpers::DateTimeSelector::PM
+      start_hour += 12 unless start_hour == 12
+    else
+      start_hour -= 12 if start_hour == 12
+    end
     start_time = Time.parse([start_hour, start_minute].join(":"))
     end_hour = c["end_time(4i)"].to_i
     end_minute = c["end_time(5i)"].to_i
-    end_hour += 12 if c["end_time(7i)"].to_i == ActionView::Helpers::DateTimeSelector::PM
+    if c["end_time(7i)"].to_i == ActionView::Helpers::DateTimeSelector::PM
+      end_hour += 12 unless end_hour == 12
+    else
+      end_hour -= 12 if end_hour == 12
+    end
     end_time = Time.parse([end_hour, end_minute].join(":"))
     c["start_time"] = start_time
     c["end_time"] = end_time
