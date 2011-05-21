@@ -45,7 +45,7 @@ class Assignment < ActiveRecord::Base
   }
 
   named_scope :for_slot, lambda{|assignment|
-    has_task_type = assignment.volunteer_shift.volunteer_task_type_id.nil?
+    has_task_type = ! assignment.volunteer_shift.volunteer_task_type_id.nil?
     ret = nil
     if has_task_type
       tslot = assignment.volunteer_shift.slot_number
