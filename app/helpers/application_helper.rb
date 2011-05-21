@@ -168,6 +168,11 @@ module ApplicationHelper
     columns.length + 1
   end
 
+
+  def sked_url(referer, anchor)
+    (referer ? (referer + "#" + anchor) : ({:action => "index"}))
+  end
+
   def contact_field(obj_name, field_name, options = {})
     options[:locals] ||= {}
     options[:locals][:options] ||= {}
