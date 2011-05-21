@@ -54,7 +54,7 @@ class Assignment < ActiveRecord::Base
     else
       tslot = assignment.volunteer_shift.slot_number
       teid = assignment.volunteer_shift.volunteer_event_id
-      ret = {:conditions => ['volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ?)', tslot, teid]}
+      ret = {:conditions => ['volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL)', tslot, teid]}
     end
     ret
   }
