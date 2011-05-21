@@ -20,7 +20,12 @@ end
 
 class ApplicationController < ActionController::Base
   def redirect_skedj(referer, anchor)
-    redirect_to(referer ? (referer + "#" + anchor) : ({:action => "index"}))
+    redirect_to(skedj_url(referer, anchor))
+  end
+
+
+  def sked_url(referer, anchor)
+    (referer ? (referer + "#" + anchor) : ({:action => "index"}))
   end
 
   include AuthenticatedSystem

@@ -20,4 +20,4 @@
 </fieldset>
 
 <%= link_to 'Show', {:action => "show", :id => @assignment.id} %> |
-<%= link_to 'Back', {:action => "index"} %>
+<%= link_to 'Back', sked_url(@referer, @assignment.volunteer_shift.date_anchor) %>
