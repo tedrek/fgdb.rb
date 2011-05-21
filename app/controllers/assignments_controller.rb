@@ -181,7 +181,7 @@ class AssignmentsController < ApplicationController
     @conditions = Conditions.new
     params[:conditions] ||= {}
     @conditions.apply_conditions(params[:conditions])
-    @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "created_at ASC", :per_page => 50)
+    @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "volunteer_events.date ASC", :per_page => 50, :include => [:volunteer_shift => [:volunteer_event]])
   end
 
   def edit

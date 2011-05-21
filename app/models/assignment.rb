@@ -45,7 +45,7 @@ class Assignment < ActiveRecord::Base
   }
 
   named_scope :for_slot, lambda{|assignment|
-    has_task_type = assignment.volunteer_shift.volunteer_task_type_id.nil?
+    has_task_type = ! assignment.volunteer_shift.volunteer_task_type_id.nil?
     ret = nil
     if has_task_type
       tslot = assignment.volunteer_shift.slot_number
@@ -54,7 +54,7 @@ class Assignment < ActiveRecord::Base
     else
       tslot = assignment.volunteer_shift.slot_number
       teid = assignment.volunteer_shift.volunteer_event_id
-      ret = {:conditions => ['volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ?)', tslot, teid]}
+      ret = {:conditions => ['volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL)', tslot, teid]}
     end
     ret
   }
