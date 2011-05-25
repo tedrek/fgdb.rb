@@ -20,7 +20,7 @@ end
 
 class ApplicationController < ActionController::Base
   def redirect_skedj(referer, anchor)
-    redirect_to(skedj_url(referer, anchor))
+    redirect_to(sked_url(referer, anchor))
   end
 
 
