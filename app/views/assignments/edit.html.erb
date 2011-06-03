@@ -20,4 +20,4 @@
 </fieldset>
 
 <%= link_to 'Show', {:action => "show", :id => @assignment.id} %> |
-<%= link_to 'Back', sked_url(@referer, @assignment.volunteer_shift.date_anchor) %>
+<%= link_to 'Back', sked_url(@referer, params[:controller] == "assignments" ? @assignment.volunteer_shift.date_anchor : @assignment.volunteer_default_shift.volunteer_default_event.weekday.name) %>
