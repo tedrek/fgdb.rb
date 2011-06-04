@@ -45,11 +45,11 @@
   </p>
 <p>
     <%= f.label :start_time %><br />
-<%= time_select :klass, :start_time, :twelve_hour => true %>
+<%= time_select :klass, :start_time, :twelve_hour => true, :minute_step => 15 %>
 </p>
 <p>
     <%= f.label :end_time %><br />
-<%= time_select :klass, :end_time, :twelve_hour => true %>
+<%= time_select :klass, :end_time, :twelve_hour => true, :minute_step => 15 %>
 </p>
 
   <p>
