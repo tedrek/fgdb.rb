@@ -8,6 +8,7 @@ fgdb.rb (1.0.61) released; urgency=low
   * add new class page for volunteer scheduling
   * add an attendance type condition to assignments search
   * add student contact type (Closes: #23167)
+  * add game type (Closes: #23221)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 May 2011 15:59:35 -0700
 
