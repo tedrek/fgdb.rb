@@ -1,7 +1,9 @@
 fgdb.rb (1.0.62) UNRELEASED; urgency=low
 
+  * limit work shifts edit to people who work here on that day. the
+    other forms are not used I think. (Closes: 23216)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 May 2011 15:59:53 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 04 Jun 2011 16:52:36 -0700
 
 fgdb.rb (1.0.61) released; urgency=low
 
