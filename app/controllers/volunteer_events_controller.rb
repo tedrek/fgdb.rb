@@ -23,12 +23,14 @@ class VolunteerEventsController < ApplicationController
       render :action => "new_class"
       return
     end
-    puts c.inspect
+    c[:contact_id] = params["contact"]["id"] if params["contact"] and params["contact"]["id"]
     normal = c[:student_slot_count].to_i || 0
     instructor = c[:instructor_slot_count].to_i || 0
     audit = c[:audit_slot_count].to_i || 0
     roster = Roster.find_by_id(c[:roster_id].to_i)
     program = Program.find_by_id(c[:program_id].to_i)
+    resource = Resource.find_by_id(c[:resource_id].to_i)
+    contact = Contact.find_by_id(c[:contact_id].to_i)
 #    if roster.nil? or program.nil?
 #      redirect_to :action => "new_class"
 #      return
@@ -53,10 +55,14 @@ class VolunteerEventsController < ApplicationController
     c["end_time"] = end_time
     c["program"] = program
     c["roster"] = roster
+    c["resource"] = resource
+    params["contact"] ||= {}
+    params["contact"]["id"] = contact.id if contact
     @volunteer_event = VolunteerEvent.new
     @volunteer_event.description = c[:description]
     @volunteer_event.date = c[:date]
     @volunteer_event.notes = c[:notes]
+    inst_shift = nil
     normal.times do |i|
       a = VolunteerShift.new
       a.class_credit = true
@@ -87,11 +93,26 @@ class VolunteerEventsController < ApplicationController
       a.program_id = program.id if program
       a.start_time = start_time
       a.end_time = end_time
+      a.volunteer_event = @volunteer_event
+      if contact and i == 0
+        inst_shift = a
+      end
       @volunteer_event.volunteer_shifts << a
     end
-    puts @volunteer_event.inspect
-    puts @volunteer_event.volunteer_shifts.inspect
+    if resource
+      a = ResourcesVolunteerEvent.new
+      a.resource = resource
+      a.roster_id = roster.id if roster
+      a.start_time = start_time
+      a.end_time = end_time
+      @volunteer_event.resources_volunteer_events << a
+    end
     if @volunteer_event.save
+      if inst_shift
+        a = inst_shift.assignments.first
+        a.contact_id = contact.id
+        a.save
+      end
       @volunteer_event = VolunteerEvent.new
       @notice = "\"#{c[:description]}\" created successfully"
       render :action => "new_class"

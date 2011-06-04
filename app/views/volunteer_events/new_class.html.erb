@@ -26,11 +26,15 @@
   <p>
     <%= f.label :audit_slot_count %><br />
     <%= f.text_field :audit_slot_count %>
-  </p
+  </p>
   <p>
     <%= f.label :instructor_slot_count %><br />
     <%= f.text_field :instructor_slot_count %>
-  </p
+  </p>
+<p>
+<%= contact_field('@klass', 'contact_id') %>
+</p>
+
   <p>
     <%= f.label :roster_id %><br />
     <%= f.select("roster_id", [Roster.new(:name => ""),  Roster.find(:all)].flatten.map{|x| [x.name, x.id]}) %>
@@ -43,11 +47,16 @@
     <%= f.label :start_time %><br />
 <%= time_select :klass, :start_time, :twelve_hour => true %>
 </p>
-
 <p>
     <%= f.label :end_time %><br />
 <%= time_select :klass, :end_time, :twelve_hour => true %>
 </p>
+
+  <p>
+    <%= f.label :resource_id %><br />
+    <%= f.select("resource_id", [Resource.new(:name => ""),  Resource.find(:all)].flatten.map{|x| [x.name, x.id]}) %>
+  </p>
+
 <p><%= f.submit "Continue" %>
 </p>
 <% end %>
