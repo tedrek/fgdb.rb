@@ -37,7 +37,7 @@ class Assignment < ActiveRecord::Base
     { :conditions => ['id != ? AND (attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\')) AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tdate] }
   }
 
-  named_scope :not_cancelled, :conditions => ['attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\')']
+  named_scope :not_cancelled, :conditions => ['(attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\'))']
 
   named_scope :for_contact, lambda{|assignment|
     tcid = assignment.contact.id
