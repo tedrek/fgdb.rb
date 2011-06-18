@@ -23,7 +23,7 @@
 <%= select("standard_shift", "job_id", Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
 
 <p><label for="standard_shift_worker_id">Worker</label><br/>
-<%= select("standard_shift", "worker_id", Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+<%= select("standard_shift", "worker_id", Worker.on_or_after_date(Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }) %></p>
 
 <p><label for="standard_shift_weekday_id">Weekday</label><br/>
 <%= select("standard_shift", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
