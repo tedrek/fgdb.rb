@@ -55,7 +55,7 @@ LEFT OUTER JOIN income_streams ON income_streams.id = jobs.income_stream_id
 LEFT OUTER JOIN workers ON worker_id = workers.id
 LEFT OUTER JOIN workers_worker_types ON workers_worker_types.worker_id = workers.id AND (workers_worker_types.effective_on <= worked_shifts.date_performed OR workers_worker_types.effective_on IS NULL) AND (workers_worker_types.ineffective_on > worked_shifts.date_performed OR workers_worker_types.ineffective_on IS NULL)
 LEFT OUTER JOIN worker_types ON worker_types.id = workers_worker_types.worker_type_id
-WHERE #{ActiveRecord::Base.send(:sanitize_sql_for_conditions, @defaults.conditions(WorkedShift))}
+WHERE #{DB.prepare_sql(@defaults.conditions(WorkedShift))}
 GROUP BY 1,2;")
 
     template_row_hash = {}
