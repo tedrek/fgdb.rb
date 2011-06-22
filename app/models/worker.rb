@@ -45,6 +45,11 @@ class Worker < ActiveRecord::Base
     Worker.effective_in_range(date, date)
   end
 
+  def Worker.on_or_after_date(date = nil)
+    date ||= DateTime.now
+    Worker.effective_in_range(date, date + 1.year)
+  end
+
 #  after_save :save_worker_types
   def save_worker_types
     set_temp_worker_association

@@ -35,7 +35,8 @@
 
 <p><label for="workers">Workers:</label><br/>
 <ul>
-<% Worker.find(:all, :order => "name").each do |w| %>
+
+<% (@meeting.workers + Worker.on_or_after_date(Date.today)).uniq.sort_by(&:name).each do |w| %>
    <li><input type="checkbox" name="meeting[worker_ids][]" 
           value="<%= w.id %>" 
           <% if @meeting.workers.include?(w) %> checked="checked" <% end %> />
