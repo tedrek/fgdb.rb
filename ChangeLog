@@ -5,6 +5,7 @@ fgdb.rb (1.0.61) released; urgency=low
   * add student contact type (Closes: #23167)
   * add game type (Closes: #23221)
   * display the attendance type on assignments search (Closes: #23321)
+  * useful page titles on assignments skedjul view (Closes: #23385)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 May 2011 15:59:35 -0700
 
