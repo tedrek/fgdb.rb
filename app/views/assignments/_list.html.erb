@@ -2,6 +2,7 @@
   <tr>
     <th>Contact</th>
     <th>Date</th>
+    <th>Attendance Type</th>
     <th>Event Name</th>
     <th>Task type</th>
     <th>Start time</th>
@@ -18,6 +19,7 @@
 <% end %>
 </td>
     <td><%=h assignment.volunteer_shift.volunteer_event.date %></td>
+    <td><%=h assignment.attendance_type ? assignment.attendance_type.name : "" %></td>
     <td><%=h assignment.volunteer_shift.volunteer_event.description %></td>
     <td><%=h [assignment.volunteer_shift.volunteer_task_type, assignment.volunteer_shift].select{|x| !x.nil?}.map{|x| x.description.to_s}.select{|x| x.length >0}.join(", ")  %></td>
     <td><%=h assignment.start_time.strftime("%l:%M %p") %></td>

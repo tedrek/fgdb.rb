@@ -1,10 +1,15 @@
-fgdb.rb (1.0.62) UNRELEASED; urgency=low
+fgdb.rb (1.0.63) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 24 Jun 2011 20:38:32 -0700
+
+fgdb.rb (1.0.62) released; urgency=low
 
   * limit work shifts edit to people who work here on that day. the
     other forms are not used I think. (Closes: 23216)
   * add contact types for post build areas (Closes: #23079)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 11 Jun 2011 16:44:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 24 Jun 2011 20:37:59 -0700
 
 fgdb.rb (1.0.61) released; urgency=low
 
@@ -12,6 +17,8 @@ fgdb.rb (1.0.61) released; urgency=low
   * add an attendance type condition to assignments search
   * add student contact type (Closes: #23167)
   * add game type (Closes: #23221)
+  * display the attendance type on assignments search (Closes: #23321)
+  * useful page titles on assignments skedjul view (Closes: #23385)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 May 2011 15:59:35 -0700
 
