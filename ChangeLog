@@ -1,10 +1,10 @@
-fgdb.rb (1.0.62) UNRELEASED; urgency=low
+fgdb.rb (1.0.62) released; urgency=low
 
   * limit work shifts edit to people who work here on that day. the
     other forms are not used I think. (Closes: 23216)
   * add contact types for post build areas (Closes: #23079)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 11 Jun 2011 16:44:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 24 Jun 2011 20:37:59 -0700
 
 fgdb.rb (1.0.61) released; urgency=low
 
