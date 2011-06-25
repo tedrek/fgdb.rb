@@ -93,7 +93,7 @@ class Conditions < ConditionsBase
 
   attr_accessor :assigned
 
-  def skedj_to_s
+  def skedj_to_s(style = "before")
     mea = self.methods
     ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym)}
     ta.map{|t|
@@ -110,7 +110,7 @@ class Conditions < ConditionsBase
       else
         v = self.send(me)
       end
-      (v && v.respond_to?(:length) && v.length > 0) ? (meo.humanize + ": " + v.to_s) : (nil)
+      (v && v.respond_to?(:length) && v.length > 0) ? (style == "before" ? (meo.humanize + ": " + v.to_s) : (v.to_s + " (" + meo.humanize + ")")) : (nil)
     }.select{|x| !!x}.join(", ")
   end
 
