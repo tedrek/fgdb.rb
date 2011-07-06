@@ -84,7 +84,7 @@ class ReportsController < ApplicationController
 
   def plus_or_minus(id)
     # donations come in.  sales, recycling and disbursements go out.
-    id == GizmoContext.donation.id ? 1 : -1
+    (id == GizmoContext.donation.id || id == GizmoContext.gizmo_return.id) ? 1 : -1
   end
 
   def add_gizmo_to_data(summation, data)
