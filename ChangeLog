@@ -8,6 +8,7 @@ fgdb.rb (1.0.62) released; urgency=low
   * limit work shifts edit to people who work here on that day. the
     other forms are not used I think. (Closes: 23216)
   * add contact types for post build areas (Closes: #23079)
+  * add server category to database (Closes: #23451)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 24 Jun 2011 20:37:59 -0700
 
