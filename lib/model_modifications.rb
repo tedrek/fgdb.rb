@@ -364,5 +364,8 @@ class DB < ActiveRecord::Base
   def self.run(*args)
     DB.execute(*args)
   end
+  def self.conditions_date_field
+    return 'created_at'
+  end
 end
 

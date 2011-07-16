@@ -13,7 +13,7 @@ class Conditions < ConditionsBase
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
-      needs_checkin assigned attendance_type
+      needs_checkin assigned attendance_type worker_type
       effective_at schedule type
     ] + DATES).uniq
 
@@ -84,6 +84,8 @@ class Conditions < ConditionsBase
   attr_accessor :store_credit_id
 
   attr_accessor :attendance_type_id
+
+  attr_accessor :worker_type_id
 
   attr_accessor :role
 
@@ -159,6 +161,12 @@ class Conditions < ConditionsBase
 
   def effective_at_conditions(klass)
     ["(#{klass.table_name}.effective_at IS NULL OR #{klass.table_name}.effective_at <= ?) AND (#{klass.table_name}.ineffective_at IS NULL OR #{klass.table_name}.ineffective_at > ?)", @effective_at, @effective_at]
+  end
+
+  def worker_type_conditions(klass)
+    search_date = klass.table_name + "." + klass.conditions_date_field
+    search_worker_id = klass.table_name + ".worker_id"
+    ["(SELECT worker_type_id FROM workers_worker_types WHERE workers_worker_types.worker_id = #{search_worker_id} AND (#{search_date} >= workers_worker_types.effective_on OR workers_worker_types.effective_on IS NULL) AND (#{search_date} <= workers_worker_types.ineffective_on OR workers_worker_types.ineffective_on IS NULL) LIMIT 1) = ?", @worker_type_id]
   end
 
   def worker_conditions(klass)

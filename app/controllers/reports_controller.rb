@@ -339,7 +339,7 @@ class ReportsController < ApplicationController
   def staff_hours
     @title = "Jobs report"
     if has_required_privileges('/worker_condition')
-      @filters = ['worker']
+      @filters = ['worker', 'worker_type']
     end
     common_hours
   end

@@ -3,6 +3,10 @@ module ConditionsHelper
 
   private
 
+  def html_for_worker_type_condition(params_key)
+    select(params_key, "worker_type_id", WorkerType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
+  end
+
   def html_for_assigned_condition(params_key)
     check_box params_key, "assigned"
   end
