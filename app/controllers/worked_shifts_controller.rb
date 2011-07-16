@@ -164,10 +164,27 @@ GROUP BY 1,2;")
   end
 
   def payroll_report
-    @pay_period = PayPeriod.find_for_date(@date) || raise
-    @workers = Worker.effective_in_range(@pay_period).real_people.sort_by(&:sort_by)
-#    @workers = [Worker.find(6144)].flatten
-    @workers = @workers.map{|x| x.to_payroll_hash(@pay_period)}
+    @enddate = Date.parse(params[:worked_shift][:end_date]) if params[:worked_shift].keys.include?("end_date") and params[:worked_shift][:end_date] != ""
+    if @enddate
+      @pay_periods = PayPeriod.find(:all, :conditions => ['start_date <= ? AND end_date >= ?', @enddate, @date]).sort_by(&:start_date)
+    else
+      @pay_periods = [PayPeriod.find_for_date(@date) || raise]
+    end
+    theworkers = Worker.effective_in_range(@pay_periods.first.start_date, @pay_periods.last.end_date).real_people.sort_by(&:sort_by)
+    @workers = []
+    @pay_periods.each{|p|
+      myworkers = theworkers.map{|x| x.to_payroll_hash(p)}
+      myworkers.each_with_index{|x,i|
+        if ! (h = @workers[i])
+          @workers[i] = x
+        else
+          h[:hours] += x[:hours]
+          h[:holiday] += x[:holiday]
+          h[:pto] += x[:pto]
+          h[:overtime] += x[:overtime]
+        end
+      }
+    }
     # array of hashes with keys: name type hours pto overtime holiday
     @types = @workers.map{|x| x[:type]}.uniq.sort
     @types = @types.map{|x|
