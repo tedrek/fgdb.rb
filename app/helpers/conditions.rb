@@ -19,6 +19,7 @@ class Conditions < ConditionsBase
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
+    attr_accessor (i + "_excluded").to_sym
   end
 
   for i in DATES

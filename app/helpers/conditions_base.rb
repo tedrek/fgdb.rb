@@ -25,12 +25,17 @@ class ConditionsBase
 
   end
 
+  def _wrap_with_not(my_data, exclude_val = false)
+    my_data[0] = "NOT (#{my_data[0]})" if exclude_val
+    return my_data
+  end
+
   def conditions(klass)
     conds = self.class::CONDS.inject([""]) {|condition_array,this_condition|
       if instance_variable_get("@#{this_condition}_enabled") == "true"
         join_conditions(condition_array,
-                        self.send("#{this_condition}_conditions",
-                                  klass))
+                        _wrap_with_not(self.send("#{this_condition}_conditions",
+                                                 klass), instance_variable_get("@#{this_condition}_excluded")))
       else
         condition_array
       end
