@@ -16,7 +16,7 @@ module ConditionsHelper
   end
 
   def html_for_cancelled_condition(params_key)
-    "Show cancelled: " + check_box(params_key, "cancelled")
+    "<div style=\"display: inline-block;\">Show cancelled: " + check_box(params_key, "cancelled") + "</div>"
   end
 
   def html_for_schedule_condition(params_key)
