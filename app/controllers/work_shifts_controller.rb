@@ -2,6 +2,11 @@ class WorkShiftsController < ApplicationController
   layout "skedjulnator"
 
   protected
+  before_filter :enable_multi
+  def enable_multi
+    @multi_enabled = true
+  end
+
   def get_required_privileges
     a = super
     a << {:privileges => ['skedjulnator'], :except => ['staffsched']}

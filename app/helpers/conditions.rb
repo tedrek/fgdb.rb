@@ -91,24 +91,26 @@ class Conditions < ConditionsBase
   attr_accessor :role
 
   attr_accessor :action
-
   attr_accessor :type
 
   attr_accessor :assigned
 
   def skedj_to_s(style = "before")
     mea = self.methods
-    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym)}
+    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"}
     ta.map{|t|
       meo = me = t.sub(/_enabled$/, "")
       v = ""
-      if !mea.include?(me)
+      if meo == 'worker' or !mea.include?(me)
         me += "_id"
         if !mea.include?(me)
           v = ""
         else
-          obj = meo.classify.constantize.find_by_id(self.send(me))
-          v = obj.send(obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s) if obj
+          v = [self.send(me)].flatten.map{|it|
+            obj = meo.classify.constantize.find_by_id(it)
+            sendit = obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s
+            obj ? obj.send(sendit) : nil
+          }.select{|x| !x.nil?}.join(",")
         end
       else
         v = self.send(me)
@@ -171,11 +173,11 @@ class Conditions < ConditionsBase
   end
 
   def worker_conditions(klass)
-    return ["worker_id = ?", @worker_id]
+    return ["worker_id IN (?)", @worker_id]
   end
 
   def job_conditions(klass)
-    return ["job_id = ?", @job_id]
+    return ["job_id IN (?)", @job_id]
   end
 
   def empty_conditions(klass)

@@ -4,7 +4,11 @@ class ConditionsBase
 
   def apply_conditions(options)
     options.each do |name,val|
-      val = val.to_i if( val.to_i.to_s == val )
+      if val.class != Array
+        val = val.to_i if( val.to_i.to_s == val )
+      else
+        val = val.map{|x| x.to_i.to_s == x ? x.to_i : x}
+      end
       self.send(name+"=", val)
     end
     return options
