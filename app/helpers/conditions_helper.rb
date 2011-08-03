@@ -34,7 +34,7 @@ module ConditionsHelper
 
   def html_for_worker_condition(params_key)
     show_all = false
-    select(params_key, "worker_id", Worker.real_people.select{|x| show_all or x.effective_now?}.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts)
+    select(params_key, "worker_id", Worker.find(:all).select{|x| show_all or x.effective_now?}.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts)
   end
 
   def _multi_html_opts
