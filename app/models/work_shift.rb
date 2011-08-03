@@ -68,7 +68,7 @@ class WorkShift < ActiveRecord::Base
         end
         # end of problem code
       else
-        shift_style = 'shift'
+        shift_style = self.training ? 'training' : 'shift'
       end
     return shift_style
   end

@@ -18,7 +18,7 @@ class StandardShift < Shift
   end
 
   def skedj_style(overlap, last)
-    return 'shift'
+    training ? 'training' :  'shift'
   end
 
   def skedjul_link_controller

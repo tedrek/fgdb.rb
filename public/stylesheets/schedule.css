@@ -46,6 +46,9 @@ div.skedj td.available {
 div.skedj td.shift {
     background: #CCFFFF;
 }
+div.skedj td.training {
+    background: #8467D7;
+}
 div.skedj td.meeting {
     background: #CCCC99;
     font-style: italic;
