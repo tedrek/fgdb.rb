@@ -138,6 +138,7 @@ class WorkShift < ActiveRecord::Base
     ret.mergeable = shift.mergeable
     ret.resizable = shift.resizable
     ret.worker_id = shift.worker_id
+    ret.training = shift.training
     #ret.coverage_type_id = shift.coverage_type_id
     ret.job_id = shift.job_id
     ret.schedule_id = shift.schedule_id
