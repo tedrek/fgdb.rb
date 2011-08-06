@@ -1,3 +1,8 @@
+fgdb.rb (1.0.64) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Aug 2011 22:15:13 -0700
+
 fgdb.rb (1.0.63) released; urgency=low
 
   * add training option for shifts that turns them purple
