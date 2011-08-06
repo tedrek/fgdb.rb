@@ -10,6 +10,7 @@ module ConditionsBaseHelper
       else
         raise "Unknown condition: #{x}"
       end
+      hash[x] = "<div style=\"display: inline-block;\">" + label_tag("#{params_key}[#{x}_excluded]", "Exclude?") + check_box_tag("#{params_key}[#{x}_excluded]", "#{x}_excluded", false) + "</div>" + hash[x] unless ["cancelled", "assigned", "covered", "organization", "empty"].include?(x) or multiselect_mode == "force"
     }
     multiselect_of_form_elements(params_key, hash, multiselect_mode)
   end

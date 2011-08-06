@@ -13,12 +13,13 @@ class Conditions < ConditionsBase
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
-      needs_checkin assigned attendance_type
+      needs_checkin assigned attendance_type worker_type
       effective_at schedule type
     ] + DATES).uniq
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
+    attr_accessor (i + "_excluded").to_sym
   end
 
   for i in DATES
@@ -85,27 +86,31 @@ class Conditions < ConditionsBase
 
   attr_accessor :attendance_type_id
 
+  attr_accessor :worker_type_id
+
   attr_accessor :role
 
   attr_accessor :action
-
   attr_accessor :type
 
   attr_accessor :assigned
 
   def skedj_to_s(style = "before")
     mea = self.methods
-    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym)}
+    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"}
     ta.map{|t|
       meo = me = t.sub(/_enabled$/, "")
       v = ""
-      if !mea.include?(me)
+      if meo == 'worker' or !mea.include?(me)
         me += "_id"
         if !mea.include?(me)
           v = ""
         else
-          obj = meo.classify.constantize.find_by_id(self.send(me))
-          v = obj.send(obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s) if obj
+          v = [self.send(me)].flatten.map{|it|
+            obj = meo.classify.constantize.find_by_id(it)
+            sendit = obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s
+            obj ? obj.send(sendit) : nil
+          }.select{|x| !x.nil?}.join(",")
         end
       else
         v = self.send(me)
@@ -161,12 +166,18 @@ class Conditions < ConditionsBase
     ["(#{klass.table_name}.effective_at IS NULL OR #{klass.table_name}.effective_at <= ?) AND (#{klass.table_name}.ineffective_at IS NULL OR #{klass.table_name}.ineffective_at > ?)", @effective_at, @effective_at]
   end
 
+  def worker_type_conditions(klass)
+    search_date = klass.table_name + "." + klass.conditions_date_field
+    search_worker_id = klass.table_name + ".worker_id"
+    ["(SELECT worker_type_id FROM workers_worker_types WHERE workers_worker_types.worker_id = #{search_worker_id} AND (#{search_date} >= workers_worker_types.effective_on OR workers_worker_types.effective_on IS NULL) AND (#{search_date} <= workers_worker_types.ineffective_on OR workers_worker_types.ineffective_on IS NULL) LIMIT 1) = ?", @worker_type_id]
+  end
+
   def worker_conditions(klass)
-    return ["worker_id = ?", @worker_id]
+    return ["worker_id IN (?)", @worker_id]
   end
 
   def job_conditions(klass)
-    return ["job_id = ?", @job_id]
+    return ["job_id IN (?)", @job_id]
   end
 
   def empty_conditions(klass)

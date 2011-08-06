@@ -1,6 +1,9 @@
 <%= error_messages_for 'shift' %>
 
 <!--[form:shift]-->
+<p><%= check_box "shift", "training" %>
+<label for="shift_training">Training</label></p>
+
 <p><label for="shift_start_time">Start time</label><br/>
 <%= time_select 'shift', 'start_time', {:minute_step => 15}  %></p>
 

@@ -22,19 +22,23 @@ class Shift < ActiveRecord::Base
     self.name + s
   end
 
+  def read_type
+    self.read_attribute(:type)
+  end
+
   def skedjul_link_controller
-    self.type == 'Meeting' ? "meetings" : "shifts"
+    self.read_type == 'Meeting' ? "meetings" : "shifts"
   end
 
   def has_copy
-    !(self.type == 'Meeting')
+    !(self.read_type == 'Meeting')
   end
 
     def skedj_style(overlap, last)
       shift_style = ""
-      if self.type == 'Meeting'
+      if self.read_type == 'Meeting'
         shift_style = 'meeting'
-      elsif self.type == 'Unavailability'
+      elsif self.read_type == 'Unavailability'
         shift_style = 'unavailable'
       elsif self.worker_id == 0
         shift_style = 'unfilled'
@@ -65,7 +69,7 @@ class Shift < ActiveRecord::Base
         end
         # end of problem code
       else
-        shift_style = 'shift'
+        shift_style = self.training ? 'training' : 'shift'
       end
       return shift_style
     end
