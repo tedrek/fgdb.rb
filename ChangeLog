@@ -11,6 +11,8 @@ fgdb.rb (1.0.62) released; urgency=low
   * add contact types for post build areas (Closes: #23079)
   * add server category to database (Closes: #23451)
   * kill gift cert category (Closes: #23681)
+  * makes jobs and workers a multi select and remove inactive workers
+    from everywhere (Closes: 23734, 23735)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 24 Jun 2011 20:37:59 -0700
 
