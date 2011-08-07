@@ -1,6 +1,7 @@
 fgdb.rb (1.0.63) released; urgency=low
 
   * add training option for shifts that turns them purple
+  * fix store credit search by hash (Closes: #23937)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Aug 2011 22:14:53 -0700
 

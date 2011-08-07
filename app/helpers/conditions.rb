@@ -518,10 +518,15 @@ class Conditions < ConditionsBase
   end
 
   def store_credit_id_conditions(klass)
+    tid = -1
+    begin
+      tid = StoreChecksum.new_from_checksum(store_credit_id).result
+    rescue StoreChecksumException
+    end
     if klass == GizmoReturn
-      return ["#{klass.table_name}.id IN (SELECT #{klass.table_name.singularize}_id FROM store_credits WHERE id = ?)", store_credit_id]
+      return ["#{klass.table_name}.id IN (SELECT #{klass.table_name.singularize}_id FROM store_credits WHERE id = ?)", tid]
     elsif klass == Sale
-      return ["payments.id = (SELECT payment_id FROM store_credits WHERE id = ?)", store_credit_id]
+      return ["payments.id = (SELECT payment_id FROM store_credits WHERE id = ?)", tid]
     else
       raise NoMethodError
     end
