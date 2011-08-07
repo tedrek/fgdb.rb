@@ -226,7 +226,7 @@ class Worker < ActiveRecord::Base
     h[:name] = self.sort_by
     h[:type] = self.primary_worker_type_in_range(pay_period.start_date, pay_period.end_date).name
     h[:hours] = (pay_period.start_date..pay_period.end_date).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)}
-    h[:holiday] = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", pay_period.start_date, pay_period.end_date]).inject(0.0){|t,x| t+=self.holiday_credit_per_day}
+    h[:holiday] = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", pay_period.start_date, pay_period.end_date]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)}
     days = {}
     (pay_period.start_date..pay_period.end_date).to_a.each{|x| x = x.wday; days[x] ||= 0; days[x] += 1;}
     a = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
@@ -239,7 +239,7 @@ class Worker < ActiveRecord::Base
     h[:overtime] = 0.0
     (pay_period.start_date..pay_period.end_date).to_a.select{|x| x.wday == 0}.each{|endit|
       startit = endit - 6
-      holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", startit, endit]).inject(0.0){|t,x| t+=self.holiday_credit_per_day}
+      holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", startit, endit]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)}
       logged = (startit..endit).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)}
       total = holidays + logged
       h[:overtime] += [0.0, total - self.ceiling_hours].max
@@ -270,7 +270,7 @@ class Worker < ActiveRecord::Base
 
   def hours_effective_on_day(date)
     amount = hours_worked_on_day(date)
-    amount += holiday_credit_per_day if Holiday.is_holiday?(date)
+    amount += holiday_credit_per_day(date) if Holiday.is_holiday?(date)
     return amount
   end
 
@@ -290,8 +290,11 @@ class Worker < ActiveRecord::Base
     self.send(day.strftime("%A").downcase.to_sym).to_f
   end
 
-  def holiday_credit_per_day
-    salaried ? (ceiling_hours / 5.0) : 0.0
+  def holiday_credit_per_day(date)
+    new_logic = (date >= Date.parse('2011-08-01'))
+    hours = (new_logic ? weekly_work_hours : ceiling_hours) / 5.0
+    show = (new_logic ? (! ['substitude', 'inactive'].include?(worker_type_on_day(date).name)) : salaried)
+    return ((show) ? (hours) : 0.0)
   end
 
   def floor_ratio
