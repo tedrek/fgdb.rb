@@ -237,7 +237,7 @@ class Contact < ActiveRecord::Base
 
   def hours_effective
     find_volunteer_tasks(date_of_last_adoption).inject(0.0) do |total,task|
-      total += task.effective_duration
+        total += task.effective_duration
     end
   end
 

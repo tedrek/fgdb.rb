@@ -1,7 +1,10 @@
 fgdb.rb (1.0.64) UNRELEASED; urgency=low
 
+  * things logged under the build, spanish, or intern programs no longer
+    receive adoption point credit. this is a setting for each program.
+    (Closes: #23931)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Aug 2011 22:15:13 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Aug 2011 16:47:15 -0700
 
 fgdb.rb (1.0.63) released; urgency=low
 

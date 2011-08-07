@@ -34,6 +34,9 @@ class VolunteerTask < ActiveRecord::Base
 
   def effective_duration
     d = duration
+    if !self.program.adoption_credit
+      return 0.0
+    end
     if volunteer_task_type
       d *= volunteer_task_type.hours_multiplier
     end
