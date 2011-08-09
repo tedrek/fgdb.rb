@@ -3,12 +3,15 @@ fgdb.rb (1.0.64) UNRELEASED; urgency=low
   * things logged under the build, spanish, or intern programs no longer
     receive adoption point credit. this is a setting for each program.
     (Closes: #23931)
+  * implement new holiday credit logic to give everybody but substitutes
+    (Closes: #23793)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Aug 2011 16:47:15 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Aug 2011 17:28:03 -0700
 
 fgdb.rb (1.0.63) released; urgency=low
 
   * add training option for shifts that turns them purple
+  * fix store credit search by hash
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Aug 2011 22:14:53 -0700
 
