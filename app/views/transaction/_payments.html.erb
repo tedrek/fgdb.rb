@@ -30,6 +30,9 @@
     <% end %>
     <td><%= loading_indicator_tag "payment_line_item" %>
 <%= javascript_tag "payment_line_item_loading_id = #{loading_indicator_id("payment_line_item").to_json}"; %>
+      <% if @gizmo_context == GizmoContext.sale %>
+<%= javascript_tag "sc_loading_id = #{loading_indicator_id("payment_line_item").to_json}"; %>
+<% end %>
 </td>
   </tr>
 </table>

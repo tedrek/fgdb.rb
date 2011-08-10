@@ -33,13 +33,21 @@ class StoreCredit < ActiveRecord::Base
     eval(Default["storecredit_expire_after"])
   end
 
-  private
+#  private  ## HELPME, this breaks it.
 
   def _spent_on
     return payment
   end
 
+  def my_return
+    GizmoEvent.find_by_return_store_credit_id(self.id)
+  end
+
+  def is_returned
+    !! self.my_return
+  end
+
   def _is_spent
-    return ! payment.nil?
+    return !(payment.nil?) || is_returned
   end
 end

@@ -24,9 +24,52 @@ class GizmoEvent < ActiveRecord::Base
     self.gizmo_type.id == GizmoType.find_by_name("store_credit").id
   end
 
+  before_save :set_storecredit_on_return
+
+  def set_storecredit_on_return
+    if(@sc_id_set and @sc_id != self.return_store_credit_id)
+      raise unless self.gizmo_context == GizmoContext.gizmo_return
+      self.return_store_credit_id = @sc_id
+    end
+  end
+
+  def store_credit_hash=(hash)
+    return unless hash and hash.length > 0
+    @sc_id_set = true
+    begin
+      @sc_id = StoreChecksum.new_from_checksum(hash).result
+    rescue StoreChecksumException
+      @sc_id = nil
+    end
+  end
+
+  def store_credit_hash_id
+    if ! @sc_id_set
+      @sc_id_set = true
+      @sc_id = self.return_store_credit_id
+    end
+    @sc_id
+  end
+
+  def store_credit_hash
+    StoreChecksum.new_from_result(store_credit_hash_id).checksum if store_credit_hash_id
+  end
+
+  def my_sc_h
+    StoreCredit.find_by_id(store_credit_hash_id)
+  end
+
+  validate :sc_h_ok
+
+  def sc_h_ok
+    return if !(is_store_credit && self.gizmo_context == GizmoContext.gizmo_return)
+    errors.add("gizmo_event", "store credit was already spent") if self.my_sc_h.spent? && (self.gizmo_return.id.nil? || self.my_sc_h.payment_id || ((self.my_sc_h.my_return.gizmo_return.id) != self.gizmo_return.id))
+  end
+
   attr_accessor :expire_date
 
   def set_storecredit_difference_cents
+    return unless self.gizmo_context == GizmoContext.sale
     my_expire_date = self.store_credits.map{|x| x.expire_date}.uniq.select{|x| !x.nil?}.sort.last
     my_expire_date ||= @expire_date
     my_expire_date ||= (Date.today + StoreCredit.expire_after_value)
