@@ -6,6 +6,10 @@ class ContactType < ActiveRecord::Base
     find(:all, :conditions => ["instantiable = ?", true], :order => "description")
   end
 
+  def self.builder_relevent # this should be metadata probably
+    ContactType.find_instantiable.select{|x| x.name.match(/_build/) or x.name == "advanced_testing" or x.name.match(/completed_/)}
+  end
+
   def to_s
     description
   end
