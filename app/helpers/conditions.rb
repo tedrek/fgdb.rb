@@ -14,7 +14,7 @@ class Conditions < ConditionsBase
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type
-      effective_at schedule type
+      effective_at schedule type store_credit_redeemed
     ] + DATES).uniq
 
   for i in CONDS
@@ -160,6 +160,11 @@ class Conditions < ConditionsBase
     end
     in_clause += " AND (NOT actual) AND (shift_date IS NULL) AND ('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)" if klass == Shift
     return ["#{klass.table_name}.schedule_id IN #{in_clause}"]
+  end
+
+  def store_credit_redeemed_conditions(klass)
+    raise unless klass == GizmoReturn
+    return ["#{klass.table_name}.id IN (SELECT gizmo_return_id FROM store_credits WHERE gizmo_return_id IS NOT NULL AND (payment_id IS NOT NULL OR id IN (SELECT return_store_credit_id FROM gizmo_events WHERE return_store_credit_id IS NOT NULL)))"]
   end
 
   def effective_at_conditions(klass)

@@ -7,8 +7,9 @@ fgdb.rb (1.0.64) UNRELEASED; urgency=low
     (Closes: #23793)
   * add ability to add onto store credits on returns (Closes: #23938)
   * builder status sheet view (Closes: #23863)
+  * add redeemed column and conditions to gizmo_returns (Closes: #23937)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 16:31:02 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 16:49:06 -0700
 
 fgdb.rb (1.0.63) released; urgency=low
 
