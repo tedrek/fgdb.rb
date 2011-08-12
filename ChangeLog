@@ -6,8 +6,9 @@ fgdb.rb (1.0.64) UNRELEASED; urgency=low
   * implement new holiday credit logic to give everybody but substitutes
     (Closes: #23793)
   * add ability to add onto store credits on returns (Closes: #23938)
+  * builder status sheet view (Closes: #23863)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 10 Aug 2011 13:27:15 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 16:31:02 -0700
 
 fgdb.rb (1.0.63) released; urgency=low
 

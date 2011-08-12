@@ -3,7 +3,7 @@ class SpecSheetsController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:only => ["/view_contact_name"], :privileges => ['manage_contacts']}
+    a << {:only => ["builder", "/view_contact_name"], :privileges => ['manage_contacts']}
     a << {:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["show/sign_off"], :privileges => ['sign_off_spec_sheets']}
     a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
@@ -64,6 +64,12 @@ class SpecSheetsController < ApplicationController
 
   def index
     search
+  end
+
+  def builder
+    @contact = Contact.find_by_id(params[:contact][:id])
+    @contact_types = ContactType.builder_relevent
+    @builder_tasks = @contact.builder_tasks
   end
 
   def search
