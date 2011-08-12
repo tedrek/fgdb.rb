@@ -12,3 +12,9 @@
 
 <%= link_to 'Show', {:action => "show", :id => @builder_task.id} %> |
 <%= link_to 'Back', {:action => "index"} %>
+
+<p>
+  <h1>Sign off</h1>
+  <%= render :partial => 'sign_off', :locals => {:builder_task => @builder_task} %>
+</p>
+

@@ -99,7 +99,6 @@ module SidebarHelper
     # fgss
     sidebar_hash["fgss"]["printme"] = {:c => 'spec_sheets'}
     sidebar_hash["fgss"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled
-    sidebar_hash["fgss"]["builder tasks"] = {:c => 'builder_tasks'}
     # done
     return aliases, sidebar_hash
   end

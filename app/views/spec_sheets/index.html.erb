@@ -35,4 +35,7 @@
 <% end -%>
 <br />
 <%= link_to 'New report', {:action => "new"} %>
+<% if has_required_privileges("show/sign_off") %>
+<br /><%= link_to 'New builder_task credit without report', {:action => "new", :controller => "builder_tasks"} %>
+<% end %>
 </div>

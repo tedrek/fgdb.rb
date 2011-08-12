@@ -232,6 +232,7 @@ class Conditions < ConditionsBase
   end
 
   def type_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     ["#{klass.table_name}.type_id = ?", @type]
   end
 
@@ -315,6 +316,7 @@ class Conditions < ConditionsBase
   end
 
   def id_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     return ["#{klass.table_name}.id = ?", @id]
   end
 
@@ -374,10 +376,12 @@ class Conditions < ConditionsBase
   end
 
   def flagged_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     return ["#{klass.table_name}.flag = 't'"]
   end
 
   def system_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     if klass == Sale or klass == Disbursement
       return ["? IN (gizmo_events.system_id)", @system_id]
     else
@@ -496,8 +500,9 @@ class Conditions < ConditionsBase
   end
 
   def serial_number_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     if klass == SpecSheet
-      return ["system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
+      return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
     elsif klass == DisktestRun
       return ["serial_number = ?", @serial_number]
     else

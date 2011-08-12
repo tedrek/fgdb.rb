@@ -11,29 +11,36 @@
     <th>Go Somewhere</th>
     <th>Bug Correction</th>
     <th>Notes</th>
+    <th>Cashier signed off by</th>
   </tr>
-  <% for report in @reports %>
+  <% for builder_task in @reports %>
     <tr>
-      <td><%= link_to report.id.to_s, {:action => "search", :conditions => {:id_enabled => true, :id => report.id}} %></td>
+      <td><%= builder_task.spec_sheet ? (link_to "Spec Sheet ##{builder_task.spec_sheet.id}", {:controller => "spec_sheets", :action => "show", :id => builder_task.spec_sheet.id}) : "None" %></td>
       <td>
-        <% if (has_required_privileges('/view_contact_name')) && thing = (report.contact_id && report.contact && report.contact.display_name != "(person without name)" && report.contact.display_name) || (report.contact_id && report.contact && report.contact.id) %>
-          <%= link_to h(thing), {:action => "search", :conditions => {:contact_enabled => true, :contact_id => report.contact.id}} %>
-        <% elsif thing = (report.contact_id && report.contact && report.contact.id) %>
+        <% if (has_required_privileges('/view_contact_name')) && thing = (builder_task.contact_id && builder_task.contact && builder_task.contact.display_name != "(person without name)" && builder_task.contact.display_name) || (builder_task.contact_id && builder_task.contact && builder_task.contact.id) %>
+          <%= link_to h(thing), {:action => "search", :conditions => {:contact_enabled => true, :contact_id => builder_task.contact.id}} %>
+        <% elsif thing = (builder_task.contact_id && builder_task.contact && builder_task.contact.id) %>
           <%= thing %>
         <% else %>
           <%= "Unknown" %>
         <% end %>
       </td>
-      <td><%= link_to report.system_id.to_s, {:action => "system", :id => report.system_id} %></td>
-      <td><%= h(report.type && report.type.description) || "Unknown" %></td>
-      <td><%= h(report.action && report.action.description) || "Unknown" %></td>
-      <td><%= h report.os %></td>
-      <td><%= report.created_at.strftime("%D %I:%M%p") %></td>
-      <td style="color: red;"><%= if report.flag; "FLAGGED"; else; ""; end %></td>
-      <td><%= link_to 'Show', {:action => "show", :id => report.id} %>
-        <%= link_to 'XML', {:action => "dump", :id => report.id} %></td>
-      <td><%= h report.bug_correction %></td>
-      <td><%= h report.notes %></td>
+      <td><%= builder_task.spec_sheet ? (link_to builder_task.spec_sheet.system_id.to_s, {:action => "system", :id => builder_task.spec_sheet.system_id}) : "" %></td>
+      <td><%= h(builder_task.spec_sheet && builder_task.spec_sheet.type && builder_task.spec_sheet.type.description) || "Unknown" %></td>
+      <td><%= h(builder_task.action && builder_task.action.description) || "Unknown" %></td>
+      <td><%= h builder_task.spec_sheet ? builder_task.spec_sheet.os : "" %></td>
+      <td><%= builder_task.created_at.strftime("%D %I:%M%p") %></td>
+      <td style="color: red;"><%= if builder_task.spec_sheet && builder_task.spec_sheet.flag; "FLAGGED"; else; ""; end %></td>
+      <td><% if builder_task.spec_sheet %>
+          <%= link_to 'Show', {:action => "show", :id => builder_task.spec_sheet.id} %>
+        <%= link_to 'XML', {:action => "dump", :id => builder_task.spec_sheet.id} %>
+      <% else %>
+          <%= link_to 'Show', {:action => "show", :id => builder_task.id, :controller => "builder_tasks"} %>
+          <%= link_to 'Edit', {:action => "edit", :id => builder_task.id, :controller => "builder_tasks"} %>
+      <% end %></td>
+      <td><%= h builder_task.spec_sheet ? builder_task.spec_sheet.bug_correction : "" %></td>
+      <td><%= h builder_task.notes %></td>
+      <td style="text-align: right"><%= builder_task.cashier_signed_off_by ? "User #" + builder_task.cashier_signed_off_by.to_s : "" %></td>
     </tr>
   <% end %>
 </table>
