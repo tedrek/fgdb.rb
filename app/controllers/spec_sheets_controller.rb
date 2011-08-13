@@ -69,7 +69,7 @@ class SpecSheetsController < ApplicationController
   def builder
     @contact = Contact.find_by_id(params[:contact][:id])
     @contact_types = ContactType.builder_relevent
-    @builder_tasks = @contact.builder_tasks
+    @builder_tasks = @contact.builder_tasks.last_two_years
   end
 
   def search

@@ -3,9 +3,10 @@
 <h2>Build Totals</h2>
 Computers QAed since last adoption: <%= @contact.spec_sheets_since_last_adoption("checker").length %><br />
 Computers Built since last adoption: <%= @contact.spec_sheets_since_last_adoption("builder").length %>
-<h2>Most Recent Adoption</h2>
+<h2>Recent Adoptions</h2>
 <% if @contact.date_of_last_adoption %>
-Date of last adoption: <%= @contact.date_of_last_adoption%>
+Date of last adoption: <%= @contact.date_of_last_adoption%><br />
+<%= link_to "See all", :params => {:controller => "disbursements", :action => "search", :conditions => {:contact_enabled => true, :contact_id => 55010}} %>
 <% else %>
 No adoptions.
 <% end %>
@@ -29,9 +30,10 @@ No adoptions.
 <% end %>
 </ul>
 <h2>Recent Builds</h2>
+Includes last two years. <%= link_to "See all", :params => {:action => "search", :conditions => {:contact_enabled => true, :contact_id => 55010}} %>
 <h3>Signed off</h3>
 <% signed_off = @builder_tasks.select{|x| x.cashier_signed_off_by}.sort_by(&:created_at).reverse %>
 <%= render :partial => "list", :locals => {:reports => signed_off} %>
 <h3>Others</h3>
 <% others = (@builder_tasks - signed_off).sort_by(&:created_at).reverse %>
-
+<%= render :partial => "list", :locals => {:reports => others} %>
