@@ -1,4 +1,4 @@
-fgdb.rb (1.0.64) UNRELEASED; urgency=low
+fgdb.rb (1.0.64) released; urgency=low
 
   * things logged under the build, spanish, or intern programs no longer
     receive adoption point credit. this is a setting for each program.
@@ -9,7 +9,7 @@ fgdb.rb (1.0.64) UNRELEASED; urgency=low
   * builder status sheet view (Closes: #23863)
   * add redeemed column and conditions to gizmo_returns (Closes: #23937)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 16:49:06 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 19:17:04 -0700
 
 fgdb.rb (1.0.63) released; urgency=low
 
