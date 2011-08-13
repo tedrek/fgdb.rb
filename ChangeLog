@@ -1,17 +1,27 @@
-fgdb.rb (1.0.64) UNRELEASED; urgency=low
+fgdb.rb (1.0.65) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 19:17:23 -0700
+
+fgdb.rb (1.0.64) released; urgency=low
 
   * things logged under the build, spanish, or intern programs no longer
     receive adoption point credit. this is a setting for each program.
     (Closes: #23931)
   * implement new holiday credit logic to give everybody but substitutes
     (Closes: #23793)
+  * add ability to add onto store credits on returns (Closes: #23938)
+  * builder status sheet view (Closes: #23863)
+  * add redeemed column and conditions to gizmo_returns (Closes: #23937)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Aug 2011 17:28:03 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 19:17:04 -0700
 
 fgdb.rb (1.0.63) released; urgency=low
 
   * add training option for shifts that turns them purple
   * fix store credit search by hash
+  * strip the dollar sign when parsing values on amount methods (Closes:
+    #23959)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Aug 2011 22:14:53 -0700
 

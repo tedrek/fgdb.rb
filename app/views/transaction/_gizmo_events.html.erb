@@ -28,6 +28,7 @@
     <% end %>
     <% if show_return %>
       <th>sale id</th>
+      <th>checksum</th>
       <th>reason</th>
       <th>tested by</th>
     <% end %>
@@ -76,6 +77,7 @@
              hash[:reason] = line.reason if line.reason
              hash[:tester] = line.tester if line.tester
              hash[:sale_id] = line.return_sale_id if line.return_sale_id
+             hash[:store_credit_hash] = line.store_credit_hash if line.store_credit_hash
            end
            hash[:contract_id] = line.recycling_contract_id if line.recycling_contract_id
            hash[:covered] = line.covered.inspect if show_coveredness
@@ -96,6 +98,7 @@
     <% end %>
     <% if show_return %>
     <td><input name="sale_id" id="sale_id" size="6" onkeydown="return handle_ge(event);"></td>
+    <td><input name="store_credit_hash" id="store_credit_hash" size="6" onkeydown="return handle_ge(event);" onchange="storecredit_selected();"></td>
     <td><input name="reason" id="reason" size="10" onkeydown="return handle_ge(event);"></td>
     <td><input name="tester" id="tester" size="5" onkeydown="return handle_ge(event);"></td>
     <% end %>
@@ -119,6 +122,10 @@
     <% end %>
     <td><%= loading_indicator_tag "line_item" %>
       <%= javascript_tag "line_item_loading_id = #{loading_indicator_id("line_item").to_json}"; %>
+      <% if @gizmo_context == GizmoContext.gizmo_return %>
+<%= javascript_tag "sc_loading_id = #{loading_indicator_id("line_item").to_json}"; %>
+<% end %>
+
     </td>
   </tr>
 </table>

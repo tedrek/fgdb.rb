@@ -75,7 +75,7 @@ class TransactionController < ApplicationController
     render :update do |page|
       page << "internal_storecredit_amount = #{v.to_s.to_json};";
       page << "storecredit_errors_cache[#{params[:id].to_json}] = #{msg.to_json};"
-      page.hide loading_indicator_id("payment_line_item")
+      page.hide     params[:loading] # loading_indicator_id("payment_line_item")
     end
   end
 

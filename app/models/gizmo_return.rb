@@ -11,6 +11,10 @@ class GizmoReturn < ActiveRecord::Base
   acts_as_userstamp
   before_save :set_occurred_at_on_transaction
 
+  def storecredit_spent
+    self.store_credit.spent?
+  end
+
   def storecredits
     [self.store_credit]
   end

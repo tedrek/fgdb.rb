@@ -14,7 +14,7 @@ class Conditions < ConditionsBase
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type
-      effective_at schedule type
+      effective_at schedule type store_credit_redeemed
     ] + DATES).uniq
 
   for i in CONDS
@@ -162,6 +162,11 @@ class Conditions < ConditionsBase
     return ["#{klass.table_name}.schedule_id IN #{in_clause}"]
   end
 
+  def store_credit_redeemed_conditions(klass)
+    raise unless klass == GizmoReturn
+    return ["#{klass.table_name}.id IN (SELECT gizmo_return_id FROM store_credits WHERE gizmo_return_id IS NOT NULL AND (payment_id IS NOT NULL OR id IN (SELECT return_store_credit_id FROM gizmo_events WHERE return_store_credit_id IS NOT NULL)))"]
+  end
+
   def effective_at_conditions(klass)
     ["(#{klass.table_name}.effective_at IS NULL OR #{klass.table_name}.effective_at <= ?) AND (#{klass.table_name}.ineffective_at IS NULL OR #{klass.table_name}.ineffective_at > ?)", @effective_at, @effective_at]
   end
@@ -232,6 +237,7 @@ class Conditions < ConditionsBase
   end
 
   def type_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     ["#{klass.table_name}.type_id = ?", @type]
   end
 
@@ -315,6 +321,7 @@ class Conditions < ConditionsBase
   end
 
   def id_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     return ["#{klass.table_name}.id = ?", @id]
   end
 
@@ -374,10 +381,12 @@ class Conditions < ConditionsBase
   end
 
   def flagged_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     return ["#{klass.table_name}.flag = 't'"]
   end
 
   def system_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     if klass == Sale or klass == Disbursement
       return ["? IN (gizmo_events.system_id)", @system_id]
     else
@@ -496,8 +505,9 @@ class Conditions < ConditionsBase
   end
 
   def serial_number_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
     if klass == SpecSheet
-      return ["system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
+      return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
     elsif klass == DisktestRun
       return ["serial_number = ?", @serial_number]
     else

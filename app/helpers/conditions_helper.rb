@@ -15,6 +15,10 @@ module ConditionsHelper
     ""
   end
 
+  def html_for_store_credit_redeemed_condition(params_key)
+    ""
+  end
+
   def html_for_cancelled_condition(params_key)
     "<div style=\"display: inline-block;\">Show cancelled: " + check_box(params_key, "cancelled") + "</div>"
   end

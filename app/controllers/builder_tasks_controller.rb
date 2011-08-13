@@ -20,23 +20,12 @@ class BuilderTasksController < ApplicationController
   end
 
   def index
-    @error = params[:error]
-    if !params[:conditions]
-      params[:conditions] = {:created_at_enabled => "true"}
-    end
-    @conditions = Conditions.new
-    @conditions.apply_conditions(params[:conditions])
-    if @conditions.contact_enabled
-      if !has_required_privileges('/view_contact_name')
-        return
-      end
-    end
-    @builder_tasks = BuilderTask.paginate(:page => params[:page], :conditions => @conditions.conditions(BuilderTask), :order => "created_at ASC", :per_page => 50)
-    render :action => "index"
+    redirect_to :controller => "spec_sheets", :action => "index"
   end
 
   def show
     @builder_task = BuilderTask.find(params[:id])
+    _do_redirect_if_ss
   end
 
   def new
@@ -45,6 +34,7 @@ class BuilderTasksController < ApplicationController
 
   def edit
     @builder_task = BuilderTask.find(params[:id])
+    _do_redirect_if_ss
   end
 
   def create
@@ -67,5 +57,10 @@ class BuilderTasksController < ApplicationController
     else
       render :action => "edit"
     end
+  end
+
+  private
+  def _do_redirect_if_ss
+    redirect_to :controller => "spec_sheets", :action => params[:action], :id => @builder_task.spec_sheet.id if @builder_task.spec_sheet
   end
 end

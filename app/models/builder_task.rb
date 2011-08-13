@@ -5,6 +5,8 @@ class BuilderTask < ActiveRecord::Base
   validates_existence_of :action
   validates_existence_of :contact
 
+  named_scope :last_two_years, :conditions => ['created_at >= ?', 2.years.ago]
+
   before_save :set_created_and_updated_at
   def set_created_and_updated_at
     return unless self.spec_sheet
