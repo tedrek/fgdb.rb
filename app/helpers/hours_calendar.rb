@@ -80,7 +80,7 @@ class HoursCalendar
   end
 
   def add_in_holidays(worker)
-    Holiday.add_credit_for_holidays_to_calendar(self, worker.holiday_credit_per_day)
+    Holiday.add_credit_for_holidays_to_calendar(self, worker)
   end
 
   def total
