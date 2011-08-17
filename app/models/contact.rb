@@ -43,6 +43,11 @@ class Contact < ActiveRecord::Base
     ["contact_#{self.id}", "has_contact"]
   end
 
+  def update_syseval_count
+    vtt = VolunteerTaskType.evaluation_type
+    self.syseval_count = self.volunteer_tasks.for_type_id(vtt.id).count
+  end
+
   def scheduled_shifts
     a = self.assignments.on_or_after_today.not_cancelled.sort{|a,b| t = a.date <=> b.date; t == 0 ? a.start_time <=> b.start_time : t}
     more = false

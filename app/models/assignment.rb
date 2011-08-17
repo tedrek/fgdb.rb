@@ -110,7 +110,11 @@ class Assignment < ActiveRecord::Base
     if contact_id.nil?
       return "(available)"
     else
-      return self.contact.display_name
+      if self.volunteer_shift.volunteer_task_type_id == VolunteerTaskType.evaluation_type.id
+        return self.contact.display_name + "(#{self.contact.syseval_count})"
+      else
+        return self.contact.display_name
+      end
     end
   end
 
