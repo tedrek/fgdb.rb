@@ -28,7 +28,7 @@ class WorkShiftsController < ApplicationController
   def staffsched
     @readonly = true
     @vacations = Vacation.find(:all, :order => 'effective_date, ineffective_date', :conditions => ["ineffective_date >= ?", Date.today])
-    params["conditions"] = {:shift_date_enabled => "true", :shift_date_end_date => (Date.today + 60).to_s, :shift_date_start_date => Date.today.to_s, }
+    params["conditions"] ||= {:shift_date_enabled => "true", :shift_date_end_date => (Date.today + 60).to_s, :shift_date_start_date => Date.today.to_s, }
     params["opts"] ||= {:presentation_mode => "Display"}
 
     list
