@@ -13,6 +13,8 @@ fgdb.rb (1.0.64) released; urgency=low
   * add ability to add onto store credits on returns (Closes: #23938)
   * builder status sheet view (Closes: #23863)
   * add redeemed column and conditions to gizmo_returns (Closes: #23937)
+  * show the filtering widget on the schedule display on the database,
+    but still not the published version
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 19:17:04 -0700
 

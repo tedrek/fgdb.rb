@@ -40,11 +40,11 @@ class StoreCredit < ActiveRecord::Base
   end
 
   def my_return
-    GizmoEvent.find_by_return_store_credit_id(self.id)
+    self.id ? GizmoEvent.find_by_return_store_credit_id(self.id) : nil
   end
 
   def is_returned
-    !! self.my_return
+    self.id && !! self.my_return
   end
 
   def _is_spent

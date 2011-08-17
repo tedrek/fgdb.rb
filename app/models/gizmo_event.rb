@@ -21,7 +21,7 @@ class GizmoEvent < ActiveRecord::Base
   define_amount_methods_on("unit_price")
 
   def is_store_credit
-    self.gizmo_type.id == GizmoType.find_by_name("store_credit").id
+    self.gizmo_type_id == GizmoType.find_by_name("store_credit").id
   end
 
   before_save :set_storecredit_on_return

@@ -45,7 +45,9 @@
 <br/>
 <% end %>
 
+<% unless @readonly %>
   <%= radio_button :opts, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
+<% end %>
   <%= radio_button :opts, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
   <%= radio_button :opts, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
   <%= submit_tag "Go" %><br />
