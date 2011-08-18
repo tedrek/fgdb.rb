@@ -43,6 +43,11 @@ class Contact < ActiveRecord::Base
     ["contact_#{self.id}", "has_contact"]
   end
 
+  def update_syseval_count
+    vtt = VolunteerTaskType.evaluation_type
+    self.syseval_count = self.volunteer_tasks.for_type_id(vtt.id).count
+  end
+
   def scheduled_shifts
     a = self.assignments.on_or_after_today.not_cancelled.sort{|a,b| t = a.date <=> b.date; t == 0 ? a.start_time <=> b.start_time : t}
     more = false
@@ -226,7 +231,7 @@ class Contact < ActiveRecord::Base
   end
 
   def spec_sheets_since_last_adoption(action_name)
-    BuilderTask.find(:all, :conditions => ["contact_id = ? AND builder_tasks.created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption, Action.find_by_name(action_name).id])
+    BuilderTask.find(:all, :conditions => ["contact_id = ? AND builder_tasks.created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption || Date.parse("2000-01-01"), Action.find_by_name(action_name).id])
   end
 
   def points_traded_since_last_adoption(type, trade_id = nil)

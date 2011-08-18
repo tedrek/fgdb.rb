@@ -13,6 +13,15 @@ class VolunteerTask < ActiveRecord::Base
   validates_presence_of :program
 
   before_save :add_contact_types
+  before_save :set_contact_syseval_count
+  after_destroy { |record| c = record.contact; c.update_syseval_count; c.save!}
+
+  named_scope :for_type_id, lambda{|opt| {:conditions => ['volunteer_task_type_id = ?', opt]}}
+
+  def set_contact_syseval_count
+    self.contact.update_syseval_count
+    self.contact.save! # , :autosave => true does not work?
+  end
 
   def self.find_by_conditions(conditions)
     connection.execute("SELECT volunteer_tasks.duration AS duration, community_service_types.description AS community_service_type, volunteer_task_types.description AS volunteer_task_types FROM volunteer_tasks LEFT OUTER JOIN volunteer_task_types ON volunteer_task_types.id = volunteer_tasks.volunteer_task_type_id LEFT OUTER JOIN community_service_types ON community_service_types.id = volunteer_tasks.community_service_type_id WHERE #{sanitize_sql_for_conditions(conditions)}")

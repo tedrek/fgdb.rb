@@ -1,7 +1,10 @@
 fgdb.rb (1.0.65) UNRELEASED; urgency=low
 
+  * show a count of the times a person has already done system eval on
+    their block in the schedule
+  * add a proposed flag to shifts to turn them green
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 19:17:23 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 17 Aug 2011 14:24:05 -0700
 
 fgdb.rb (1.0.64) released; urgency=low
 
