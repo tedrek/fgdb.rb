@@ -9,6 +9,24 @@ class SkedsController < ApplicationController
 
   layout :with_sidebar
 
+  def move_higher
+    @sked = Sked.find(params[:id])
+    @roster = @sked.rosters.select{|x| x.id == params[:roster_id].to_i}.first
+    raise unless @roster
+    @sked.rosters.move_higher(@roster)
+    @sked.save
+    redirect_to :back
+  end
+
+  def move_lower
+    @sked = Sked.find(params[:id])
+    @roster = @sked.rosters.select{|x| x.id == params[:roster_id].to_i}.first
+    raise unless @roster
+    @sked.rosters.move_lower(@roster)
+    @sked.save
+    redirect_to :back
+  end
+
   def index
     @skeds = Sked.find(:all)
   end
