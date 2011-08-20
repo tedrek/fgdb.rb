@@ -7,6 +7,15 @@ class Assignment < ActiveRecord::Base
   belongs_to :attendance_type
   belongs_to :call_status_type
 
+  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift.stuck_to_assignment}
+  before_save :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
+  def set_values_if_stuck
+    return unless self.volunteer_shift.stuck_to_assignment
+    self.volunteer_shift.start_time = self.start_time
+    self.volunteer_shift.end_time = self.end_time
+    self.volunteer_shift.save
+  end
+
   after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 

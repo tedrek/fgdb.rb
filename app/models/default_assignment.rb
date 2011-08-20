@@ -2,6 +2,15 @@ class DefaultAssignment < ActiveRecord::Base
   belongs_to :contact
   belongs_to :volunteer_default_shift
 
+  after_destroy { |record| record.volunteer_default_shift.destroy if record.volunteer_default_shift.stuck_to_assignment}
+  before_save :set_values_if_stuck
+  def set_values_if_stuck
+    return unless self.volunteer_default_shift.stuck_to_assignment
+    self.volunteer_default_shift.start_time = self.start_time
+    self.volunteer_default_shift.end_time = self.end_time
+    self.volunteer_default_shift.save
+  end
+
   after_destroy { |record| VolunteerDefaultShift.find_by_id(record.volunteer_default_shift_id).fill_in_available(record.slot_number) }
   after_save { |record| VolunteerDefaultShift.find_by_id(record.volunteer_default_shift_id).fill_in_available(record.slot_number) }
 
