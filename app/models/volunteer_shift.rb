@@ -8,6 +8,7 @@ class VolunteerShift < ActiveRecord::Base
   belongs_to :volunteer_task_type
   has_many :assignments
   belongs_to :program
+  belongs_to :roster
 
   belongs_to :volunteer_event
 
