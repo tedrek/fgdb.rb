@@ -192,9 +192,11 @@ class AssignmentsController < ApplicationController
     @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
     @assignment = @assignments.first
     @referer = request.env["HTTP_REFERER"]
+    @my_url = {:action => "update", :id => params[:id]}
   end
 
   def update
+    @my_url = {:action => "update", :id => params[:id]}
     @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
     rt = params[:assignment].delete(:redirect_to)
 

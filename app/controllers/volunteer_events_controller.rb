@@ -12,6 +12,46 @@ class VolunteerEventsController < ApplicationController
     @volunteer_events = VolunteerEvent.find(:all)
   end
 
+  def add_shift
+    @ve = VolunteerEvent.find(params[:id])
+    vs = VolunteerShift.new
+#    vs.slot_count = 1
+    vs.volunteer_event_id = @ve.id
+    vs.volunteer_event = @ve
+    a = Assignment.new
+    a.volunteer_shift = vs
+    vs.stuck_to_assignment = vs.not_numbered = true
+    @assignments = vs.assignments = [a]
+    @referer = request.env["HTTP_REFERER"]
+    a.volunteer_shift.volunteer_event = @ve
+    a.volunteer_shift.stuck_to_assignment = a.volunteer_shift.not_numbered = true
+    @my_url = {:action => "create_shift", :id => params[:id]}
+    @assignment = a
+    render :template => 'assignments/edit'
+  end
+
+  def create_shift
+    @ve = VolunteerEvent.find(params[:id])
+    vs = VolunteerShift.new
+    vs.volunteer_event_id = @ve.id
+    vs.volunteer_event = @ve
+    a = Assignment.new
+    a.volunteer_shift = vs
+    a.attributes = params[:assignment]
+    vs.stuck_to_assignment = vs.not_numbered = true
+    @assignments = vs.assignments = [a]
+    rt = params[:assignment].delete(:redirect_to)
+    @my_url = {:action => "create_shift", :id => params[:id]}
+    @assignment = a
+    a.volunteer_shift.stuck_to_assignment = a.volunteer_shift.not_numbered = true
+    a.volunteer_shift.volunteer_event = @ve
+    if @assignment.save # and @assignment.volunteer_shift.save
+      redirect_skedj(rt, @ve.date_anchor)
+    else
+      render :template => 'assignments/edit'
+    end
+  end
+
   def show
     @volunteer_event = VolunteerEvent.find(params[:id])
   end

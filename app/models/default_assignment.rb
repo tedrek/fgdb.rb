@@ -4,10 +4,10 @@ class DefaultAssignment < ActiveRecord::Base
 
   accepts_nested_attributes_for :volunteer_default_shift
 
-  after_destroy { |record| record.volunteer_default_shift.destroy if record.volunteer_default_shift.stuck_to_assignment}
+  after_destroy { |record| record.volunteer_default_shift.destroy if record.volunteer_default_shift && record.volunteer_default_shift.stuck_to_assignment}
   before_save :set_values_if_stuck
   def set_values_if_stuck
-    return unless self.volunteer_default_shift.stuck_to_assignment
+    return unless self.volunteer_default_shift && self.volunteer_default_shift.stuck_to_assignment
     self.volunteer_default_shift.start_time = self.start_time
     self.volunteer_default_shift.end_time = self.end_time
     self.volunteer_default_shift.save

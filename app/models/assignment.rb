@@ -3,22 +3,22 @@ class Assignment < ActiveRecord::Base
   belongs_to :volunteer_shift
   has_one :volunteer_task_type, :through => :volunteer_shift, :source => :volunteer_task_type
   belongs_to :contact
-  validates_presence_of :volunteer_shift_id
+  validates_presence_of :volunteer_shift
   belongs_to :attendance_type
   belongs_to :call_status_type
 
   accepts_nested_attributes_for :volunteer_shift
 
-  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift.stuck_to_assignment}
-  before_save :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
+  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment}
+  before_validation :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
   def set_values_if_stuck
-    return unless self.volunteer_shift.stuck_to_assignment
+    return unless self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
     self.volunteer_shift.start_time = self.start_time
     self.volunteer_shift.end_time = self.end_time
     self.volunteer_shift.save
   end
 
-  after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
+  after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available unless record.volunteer_shift_id.nil? or VolunteerShift.find_by_id(record.volunteer_shift_id).nil?}
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
   def validate
@@ -130,6 +130,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def time_range_s
+    return "" unless start_time and end_time
     (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 

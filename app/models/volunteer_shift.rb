@@ -1,7 +1,6 @@
 class VolunteerShift < ActiveRecord::Base
 #  validates_presence_of :volunteer_task_type_id
   validates_presence_of :roster_id
-  validates_presence_of :slot_number
   validates_presence_of :end_time
   validates_presence_of :start_time
 
@@ -17,6 +16,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def time_range_s
+    return unless self.read_attribute(:start_time) and  self.read_attribute(:end_time)
     (self.my_start_time("%I:%M") + ' - ' + self.my_end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 

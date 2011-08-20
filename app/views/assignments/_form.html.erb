@@ -1,8 +1,7 @@
 <div style="float: right; text-align: right;">
-  <% is_r = params[:controller] == "assignments" %>
+  <% is_r = @assignment.class == Assignment %>
   <% shift = is_r ? f.object.volunteer_shift : f.object.volunteer_default_shift %>
 <% if shift.stuck_to_assignment %>
-
   <% f.fields_for is_r ? :volunteer_shift : :volunteer_default_shift do |s| %>
     <p>
       <%= s.label :volunteer_task_type_id %>
