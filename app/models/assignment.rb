@@ -7,6 +7,8 @@ class Assignment < ActiveRecord::Base
   belongs_to :attendance_type
   belongs_to :call_status_type
 
+  accepts_nested_attributes_for :volunteer_shift
+
   after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift.stuck_to_assignment}
   before_save :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
   def set_values_if_stuck
