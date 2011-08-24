@@ -20,6 +20,7 @@ class VolunteerEventsController < ApplicationController
     vs.volunteer_event = @ve
     a = Assignment.new
     a.volunteer_shift = vs
+    a.volunteer_shift_id = vs.id
     vs.stuck_to_assignment = vs.not_numbered = true
     @assignments = vs.assignments = [a]
     @referer = request.env["HTTP_REFERER"]
@@ -30,6 +31,19 @@ class VolunteerEventsController < ApplicationController
     render :template => 'assignments/edit'
   end
 
+  # ve = VolunteerEvent.find(params["id"])
+  # vs = ve.volunteer_shifts.new(params["assignment"]["volunteer_shift_attributes"])
+  # vs.not_numbered = vs.stuck_to_assignment = true
+  # a = vs.assignments.new(params["assignment"])
+  # a.volunteer_shift = vs
+  # a.set_values_if_stuck
+  # vs.save
+  # vs = VolunteerShift.find(vs.id)
+  # a = vs.assignments.first
+  # a.attributes=(params["assignment"])
+  # a.volunteer_shift = vs # FIXME: would a hidden id field help?
+  # a.save
+
   def create_shift
     @ve = VolunteerEvent.find(params[:id])
     vs = VolunteerShift.new
@@ -37,6 +51,7 @@ class VolunteerEventsController < ApplicationController
     vs.volunteer_event = @ve
     a = Assignment.new
     a.volunteer_shift = vs
+    a.volunteer_shift_id = vs.id
     a.attributes = params[:assignment]
     vs.stuck_to_assignment = vs.not_numbered = true
     @assignments = vs.assignments = [a]
