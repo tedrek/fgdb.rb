@@ -44,6 +44,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
     begin
       Thread.current['volskedj2_fillin_processing'].push(self.id)
       slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
+      slots = [nil] if self.not_numbered
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy if slots.include?(x.slot_number)}
       inputs = {}
       slots.each{|q|
@@ -58,7 +59,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
         results.each{|x|
           a = DefaultAssignment.new
           a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
-          a.slot_number = q
+          a.slot_number = q unless self.not_numbered
           a.save!
         }
       }
@@ -148,11 +149,13 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.send(:write_attribute, :start_time, ds.start_time)
           s.send(:write_attribute, :end_time, ds.end_time)
           s.volunteer_task_type_id = ds.volunteer_task_type_id
-          s.slot_number = slot_number
+          s.slot_number = slot_number unless ds.not_numbered
+          s.not_numbered = ds.not_numbered
+          s.stuck_to_assignment = ds.stuck_to_assignment
           s.roster_id = ds.roster_id
           s.class_credit = ds.class_credit
           s.save!
-          mats = ds.default_assignments.select{|q| q.contact_id and q.slot_number == num}
+          mats = ds.default_assignments.select{|q| q.contact_id and ((s.slot_number.nil?) || (q.slot_number == num))}
           if mats.length > 0
             mats.each{|da|
               a = Assignment.new
