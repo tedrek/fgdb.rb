@@ -15,10 +15,10 @@ class Assignment < ActiveRecord::Base
     return unless self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
     self.volunteer_shift.start_time = self.start_time
     self.volunteer_shift.end_time = self.end_time
-    self.volunteer_shift.save
+    self.volunteer_shift.save if self.volunteer_shift.id
   end
 
-  after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available unless record.volunteer_shift_id.nil? or VolunteerShift.find_by_id(record.volunteer_shift_id).nil?}
+  after_destroy { |record| (VolunteerShift.find_by_id(record.volunteer_shift_id) || record.volunteer_shift).fill_in_available} #  unless record.volunteer_shift_id.nil? or VolunteerShift.find_by_id(record.volunteer_shift_id).nil?
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
   def validate
