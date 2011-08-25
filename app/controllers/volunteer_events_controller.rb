@@ -41,9 +41,6 @@ class VolunteerEventsController < ApplicationController
   # a.volunteer_shift = vs # FIXME: would a hidden id field help?
   # a.save
 
-  # TODO: do a save in def update on volunteer_shift if we have assignment stuck to
-  # TODO: also to run the set_values_if_stuck
-
   def create_shift
     ve = VolunteerEvent.find(params["id"])
     vs = ve.volunteer_shifts.new
@@ -59,12 +56,12 @@ class VolunteerEventsController < ApplicationController
     @assignments = vs.assignments = [a]
     vs.set_values_if_stuck
     vs.assignments = []
-    @success = vs.save
-    vs = vs.reload
+    @success = a.valid? && vs.save
     rt = params[:assignment].delete(:redirect_to)
     @my_url = {:action => "create_shift", :id => params[:id]}
     @assignment = a
     if @success
+      vs = vs.reload
       @assignment = a = vs.assignments.new
       a.volunteer_shift = vs
       #    a.volunteer_shift_id = vs.id

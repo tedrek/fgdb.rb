@@ -2,8 +2,9 @@ fgdb.rb (1.0.66) UNRELEASED; urgency=low
 
   * add a migration to add a foreign key for programs back, wherever it
     went (Closes: #24114)
+  * support intern scheduling (Closes: #23928)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 20 Aug 2011 16:34:43 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 25 Aug 2011 16:28:58 -0700
 
 fgdb.rb (1.0.65) released; urgency=low
 
