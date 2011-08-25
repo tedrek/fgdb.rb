@@ -30,7 +30,7 @@ class Assignment < ActiveRecord::Base
 
 #  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment}
 
-  after_destroy { |record| (VolunteerShift.find_by_id(record.volunteer_shift_id) || record.volunteer_shift).fill_in_available} #  unless record.volunteer_shift_id.nil? or VolunteerShift.find_by_id(record.volunteer_shift_id).nil?
+  after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
   def validate
