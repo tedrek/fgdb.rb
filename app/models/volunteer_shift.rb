@@ -1,5 +1,5 @@
 class VolunteerShift < ActiveRecord::Base
-#  validates_presence_of :volunteer_task_type_id
+  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
   validates_presence_of :roster_id
   validates_presence_of :end_time
   validates_presence_of :start_time
@@ -11,7 +11,7 @@ class VolunteerShift < ActiveRecord::Base
 
   belongs_to :volunteer_event
 
-  before_validation :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
+#  before_validation :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
   def set_values_if_stuck
     return unless self.stuck_to_assignment
     self.start_time = self.assignments.first.start_time

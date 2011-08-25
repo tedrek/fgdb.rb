@@ -3,7 +3,8 @@ class Assignment < ActiveRecord::Base
   belongs_to :volunteer_shift
   has_one :volunteer_task_type, :through => :volunteer_shift, :source => :volunteer_task_type
   belongs_to :contact
-#  validates_presence_of :volunteer_shift
+  validates_presence_of :volunteer_shift
+  validates_associated :volunteer_shift
   belongs_to :attendance_type
   belongs_to :call_status_type
 

@@ -57,11 +57,13 @@ class VolunteerEventsController < ApplicationController
     a.attributes = (params["assignment"])
     @assignments = vs.assignments = [a]
     vs.set_values_if_stuck
+    @success = vs.save
     rt = params[:assignment].delete(:redirect_to)
     @my_url = {:action => "create_shift", :id => params[:id]}
     @assignment = a
-    if @assignment.save # and @assignment.volunteer_shift.save
-      redirect_skedj(rt, @ve.date_anchor)
+    @success = @assignment.save
+    if @success # and @assignment.volunteer_shift.save
+      redirect_skedj(rt, ve.date_anchor)
     else
       render :template => 'assignments/edit'
     end
