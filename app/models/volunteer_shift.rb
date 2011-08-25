@@ -99,7 +99,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def description_and_slot
-    ((self.volunteer_task_type_id || -1) * 1000) + self.slot_number
+    ((self.volunteer_task_type_id || -1) * 1000) + (self.not_numbered ? 0 : self.slot_number)
   end
 
   def weekday

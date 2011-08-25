@@ -42,13 +42,14 @@ class VolunteerEventsController < ApplicationController
   # a.save
 
   # TODO: do a save in def update on volunteer_shift if we have assignment stuck to
+  # TODO: also to run the set_values_if_stuck
 
   def create_shift
     ve = VolunteerEvent.find(params["id"])
     vs = ve.volunteer_shifts.new
 #    vs.slot_count = 1
-    vs.volunteer_event_id = ve.id
-    vs.volunteer_event = ve
+#    vs.volunteer_event_id = ve.id
+#    vs.volunteer_event = ve
     vs.stuck_to_assignment = vs.not_numbered = true
     vs.attributes=(params["assignment"]["volunteer_shift_attributes"])
     a = vs.assignments.new
@@ -57,11 +58,23 @@ class VolunteerEventsController < ApplicationController
     a.attributes = (params["assignment"])
     @assignments = vs.assignments = [a]
     vs.set_values_if_stuck
+    vs.assignments = []
     @success = vs.save
+    vs = vs.reload
     rt = params[:assignment].delete(:redirect_to)
     @my_url = {:action => "create_shift", :id => params[:id]}
     @assignment = a
-    @success = @assignment.save
+    if @success
+      @assignment = a = vs.assignments.new
+      a.volunteer_shift = vs
+      #    a.volunteer_shift_id = vs.id
+      a.attributes = (params["assignment"])
+      @assignments = vs.assignments = [a]
+
+      if !@success
+        vs.destroy
+      end
+    end
     if @success # and @assignment.volunteer_shift.save
       redirect_skedj(rt, ve.date_anchor)
     else

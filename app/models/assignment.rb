@@ -8,8 +8,7 @@ class Assignment < ActiveRecord::Base
   belongs_to :attendance_type
   belongs_to :call_status_type
 
-  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment}
-  after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
+  after_destroy { |record| if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment; record.volunteer_shift.destroy; else VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available; end}
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
   def volunteer_shift_attributes=(attrs)
