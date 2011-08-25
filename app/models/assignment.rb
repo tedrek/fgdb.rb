@@ -3,20 +3,32 @@ class Assignment < ActiveRecord::Base
   belongs_to :volunteer_shift
   has_one :volunteer_task_type, :through => :volunteer_shift, :source => :volunteer_task_type
   belongs_to :contact
-  validates_presence_of :volunteer_shift
+#  validates_presence_of :volunteer_shift
   belongs_to :attendance_type
   belongs_to :call_status_type
 
   accepts_nested_attributes_for :volunteer_shift
 
-  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment}
-  before_validation :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
-  def set_values_if_stuck
-    return unless self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
-    self.volunteer_shift.start_time = self.start_time
-    self.volunteer_shift.end_time = self.end_time
-    self.volunteer_shift.save if self.volunteer_shift.id
+  # patch in :update_only => true
+  def assign_nested_attributes_for_one_to_one_association_with_update_only(association_name, attributes)
+    options = self.nested_attributes_options[association_name]
+    attributes = attributes.with_indifferent_access
+    if true # options[:update_only]
+      if existing_record = send(association_name)
+        assign_to_or_mark_for_destruction(existing_record, attributes, options[:allow_destroy])
+      else
+        unless reject_new_record?(association_name, attributes)
+          send("build_#{association_name}", attributes.except(*%w( id _destroy _delete )))
+        end
+      end
+    else
+      raise
+      assign_nested_attributes_for_one_to_one_association_without_update_only(association_name, attributes)
+    end
   end
+  alias_method_chain :assign_nested_attributes_for_one_to_one_association, :update_only
+
+#  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment}
 
   after_destroy { |record| (VolunteerShift.find_by_id(record.volunteer_shift_id) || record.volunteer_shift).fill_in_available} #  unless record.volunteer_shift_id.nil? or VolunteerShift.find_by_id(record.volunteer_shift_id).nil?
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }

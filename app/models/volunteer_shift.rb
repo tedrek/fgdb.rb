@@ -11,6 +11,13 @@ class VolunteerShift < ActiveRecord::Base
 
   belongs_to :volunteer_event
 
+  before_validation :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
+  def set_values_if_stuck
+    return unless self.stuck_to_assignment
+    self.start_time = self.assignments.first.start_time
+    self.end_time = self.assignments.first.end_time
+  end
+
   def skedj_style(overlap, last)
     overlap ? 'hardconflict' : 'shift'
   end

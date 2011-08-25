@@ -13,19 +13,16 @@ class VolunteerEventsController < ApplicationController
   end
 
   def add_shift
-    @ve = VolunteerEvent.find(params[:id])
-    vs = VolunteerShift.new
+    ve = VolunteerEvent.find(params["id"])
+    vs = ve.volunteer_shifts.new
 #    vs.slot_count = 1
-    vs.volunteer_event_id = @ve.id
-    vs.volunteer_event = @ve
-    a = Assignment.new
+    vs.volunteer_event_id = ve.id
+    vs.volunteer_event = ve
+    a = vs.assignments.new
     a.volunteer_shift = vs
-    a.volunteer_shift_id = vs.id
     vs.stuck_to_assignment = vs.not_numbered = true
     @assignments = vs.assignments = [a]
     @referer = request.env["HTTP_REFERER"]
-    a.volunteer_shift.volunteer_event = @ve
-    a.volunteer_shift.stuck_to_assignment = a.volunteer_shift.not_numbered = true
     @my_url = {:action => "create_shift", :id => params[:id]}
     @assignment = a
     render :template => 'assignments/edit'
@@ -45,21 +42,22 @@ class VolunteerEventsController < ApplicationController
   # a.save
 
   def create_shift
-    @ve = VolunteerEvent.find(params[:id])
-    vs = VolunteerShift.new
-    vs.volunteer_event_id = @ve.id
-    vs.volunteer_event = @ve
-    a = Assignment.new
-    a.volunteer_shift = vs
-    a.volunteer_shift_id = vs.id
-    a.attributes = params[:assignment]
+    ve = VolunteerEvent.find(params["id"])
+    vs = ve.volunteer_shifts.new
+#    vs.slot_count = 1
+    vs.volunteer_event_id = ve.id
+    vs.volunteer_event = ve
     vs.stuck_to_assignment = vs.not_numbered = true
+    vs.attributes=(params["assignment"]["volunteer_shift_attributes"])
+    a = vs.assignments.new
+    a.volunteer_shift = vs
+#    a.volunteer_shift_id = vs.id
+    a.attributes = (params["assignment"])
     @assignments = vs.assignments = [a]
+    vs.set_values_if_stuck
     rt = params[:assignment].delete(:redirect_to)
     @my_url = {:action => "create_shift", :id => params[:id]}
     @assignment = a
-    a.volunteer_shift.stuck_to_assignment = a.volunteer_shift.not_numbered = true
-    a.volunteer_shift.volunteer_event = @ve
     if @assignment.save # and @assignment.volunteer_shift.save
       redirect_skedj(rt, @ve.date_anchor)
     else
