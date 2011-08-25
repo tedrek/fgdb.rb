@@ -41,6 +41,8 @@ class VolunteerEventsController < ApplicationController
   # a.volunteer_shift = vs # FIXME: would a hidden id field help?
   # a.save
 
+  # TODO: do a save in def update on volunteer_shift if we have assignment stuck to
+
   def create_shift
     ve = VolunteerEvent.find(params["id"])
     vs = ve.volunteer_shifts.new

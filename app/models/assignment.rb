@@ -7,31 +7,13 @@ class Assignment < ActiveRecord::Base
   belongs_to :attendance_type
   belongs_to :call_status_type
 
-  accepts_nested_attributes_for :volunteer_shift
-
-  # patch in :update_only => true
-  def assign_nested_attributes_for_one_to_one_association_with_update_only(association_name, attributes)
-    options = self.nested_attributes_options[association_name]
-    attributes = attributes.with_indifferent_access
-    if true # options[:update_only]
-      if existing_record = send(association_name)
-        assign_to_or_mark_for_destruction(existing_record, attributes, options[:allow_destroy])
-      else
-        unless reject_new_record?(association_name, attributes)
-          send("build_#{association_name}", attributes.except(*%w( id _destroy _delete )))
-        end
-      end
-    else
-      raise
-      assign_nested_attributes_for_one_to_one_association_without_update_only(association_name, attributes)
-    end
-  end
-  alias_method_chain :assign_nested_attributes_for_one_to_one_association, :update_only
-
-#  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment}
-
+  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment}
   after_destroy { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
+
+  def volunteer_shift_attributes=(attrs)
+    self.volunteer_shift.attributes=(attrs) # just pass it up
+  end
 
   def validate
     unless self.cancelled?
