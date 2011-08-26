@@ -11,7 +11,7 @@ class VolunteerShift < ActiveRecord::Base
 
   belongs_to :volunteer_event
 
-  before_validation :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
+  before_validation :set_values_if_stuck
   def set_values_if_stuck
     return unless self.stuck_to_assignment
     assn = self.assignments.first
