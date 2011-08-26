@@ -8,6 +8,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
   belongs_to :volunteer_task_type
   belongs_to :volunteer_default_event
   belongs_to :program
+  belongs_to :roster
 
   has_many :default_assignments
 
