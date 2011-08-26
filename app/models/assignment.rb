@@ -4,27 +4,25 @@ class Assignment < ActiveRecord::Base
   has_one :volunteer_task_type, :through => :volunteer_shift, :source => :volunteer_task_type
   belongs_to :contact
   validates_presence_of :volunteer_shift
+  validates_associated :volunteer_shift
   belongs_to :attendance_type
   belongs_to :call_status_type
 
-  accepts_nested_attributes_for :volunteer_shift
-
-  after_destroy { |record| record.volunteer_shift.destroy if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment}
-  before_validation :set_values_if_stuck # integrate with fill_in_available? might be less buggy that way. yeah.
-  def set_values_if_stuck
-    return unless self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
-    self.volunteer_shift.start_time = self.start_time
-    self.volunteer_shift.end_time = self.end_time
-    self.volunteer_shift.save if self.volunteer_shift.id
-  end
-
-  after_destroy { |record| (VolunteerShift.find_by_id(record.volunteer_shift_id) || record.volunteer_shift).fill_in_available} #  unless record.volunteer_shift_id.nil? or VolunteerShift.find_by_id(record.volunteer_shift_id).nil?
+  after_destroy { |record| if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment; record.volunteer_shift.destroy; else VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available; end}
+  after_save {|record| if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment; record.volunteer_shift.save; end}
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
+  def volunteer_shift_attributes=(attrs)
+    self.volunteer_shift.attributes=(attrs) # just pass it up
+  end
+
   def validate
+    if self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
+      errors.add("contact_id", "is empty for a assignment-based shift") if self.contact_id.nil?
+    end
     unless self.cancelled?
       errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
-      errors.add("volunteer_shift_id", "is already assigned during that time") if self.find_overlappers(:for_slot).length > 0
+      errors.add("volunteer_shift_id", "is already assigned during that time") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
      end
   end
 

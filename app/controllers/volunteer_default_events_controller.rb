@@ -1,4 +1,59 @@
 class VolunteerDefaultEventsController < ApplicationController
+  def add_shift
+    ve = VolunteerDefaultEvent.find(params["id"])
+    vs = ve.volunteer_default_shifts.new
+    vs.slot_count = 1
+#    vs.volunteer_default_event_id = ve.id
+#    vs.volunteer_event = ve
+    a = vs.default_assignments.new
+    a.volunteer_default_shift = vs
+    vs.stuck_to_assignment = vs.not_numbered = true
+    @assignments = vs.default_assignments = [a]
+    @referer = request.env["HTTP_REFERER"]
+    @my_url = {:action => "create_shift", :id => params[:id]}
+    @assignment = a
+    render :template => 'assignments/edit'
+  end
+
+  def create_shift
+    ve = VolunteerDefaultEvent.find(params["id"])
+    vs = ve.volunteer_default_shifts.new
+    vs.slot_count = 1
+#    vs.volunteer_event_id = ve.id
+#    vs.volunteer_event = ve
+    vs.stuck_to_assignment = vs.not_numbered = true
+    vs.attributes=(params["default_assignment"]["volunteer_default_shift_attributes"])
+    a = vs.default_assignments.new
+    a.volunteer_default_shift = vs
+#    a.volunteer_shift_id = vs.id
+    a.attributes = (params["default_assignment"])
+    @assignments = vs.default_assignments = [a]
+    vs.set_values_if_stuck
+    vs.default_assignments = []
+    @success = a.valid? && vs.save
+    rt = params[:default_assignment].delete(:redirect_to)
+    @my_url = {:action => "create_shift", :id => params[:id]}
+    @assignment = a
+    if @success
+      vs = vs.reload
+      @assignment = a = vs.default_assignments.new
+      a.volunteer_default_shift = vs
+      #    a.volunteer_shift_id = vs.id
+      a.attributes = (params["default_assignment"])
+      @assignments = vs.default_assignments = [a]
+
+      if !@success
+        vs.destroy
+      end
+    end
+    if @success # and @assignment.volunteer_shift.save
+      redirect_skedj(rt, ve.weekday.name)
+    else
+      render :template => 'assignments/edit'
+    end
+  end
+
+
   protected
   def get_required_privileges
     a = super

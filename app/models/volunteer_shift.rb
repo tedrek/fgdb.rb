@@ -1,5 +1,5 @@
 class VolunteerShift < ActiveRecord::Base
-#  validates_presence_of :volunteer_task_type_id
+  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
   validates_presence_of :roster_id
   validates_presence_of :end_time
   validates_presence_of :start_time
@@ -10,6 +10,15 @@ class VolunteerShift < ActiveRecord::Base
   belongs_to :roster
 
   belongs_to :volunteer_event
+
+  before_validation :set_values_if_stuck
+  def set_values_if_stuck
+    return unless self.stuck_to_assignment
+    assn = self.assignments.first
+    return unless assn
+    self.start_time = assn.start_time
+    self.end_time = assn.end_time
+  end
 
   def skedj_style(overlap, last)
     overlap ? 'hardconflict' : 'shift'
@@ -41,6 +50,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def fill_in_available
+    return if self.stuck_to_assignment
     Thread.current['volskedj_fillin_processing'] ||= []
     if Thread.current['volskedj_fillin_processing'].include?(self.id)
       return
@@ -57,6 +67,7 @@ class VolunteerShift < ActiveRecord::Base
       results.each{|x|
         a = Assignment.new
         a.volunteer_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
+        a.volunteer_shift = self
         a.save!
       }
     ensure
@@ -92,7 +103,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def description_and_slot
-    ((self.volunteer_task_type_id || -1) * 1000) + self.slot_number
+    ((self.volunteer_task_type_id || -1) * 1000) + (self.not_numbered ? 0 : self.slot_number)
   end
 
   def weekday
