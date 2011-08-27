@@ -30,7 +30,7 @@ class AssignmentsController < ApplicationController
 
   def index
     if params[:conditions]
-      my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_shifts.roster_id), " : ""
+      my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_shifts.roster_id), " : "volunteer_shifts.roster_id, "
     @skedj = Skedjul.new({
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned"],
       :date_range_condition => "date",
@@ -192,9 +192,11 @@ class AssignmentsController < ApplicationController
     @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
     @assignment = @assignments.first
     @referer = request.env["HTTP_REFERER"]
+    @my_url = {:action => "update", :id => params[:id]}
   end
 
   def update
+    @my_url = {:action => "update", :id => params[:id]}
     @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
     rt = params[:assignment].delete(:redirect_to)
 

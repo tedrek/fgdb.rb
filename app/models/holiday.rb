@@ -8,6 +8,6 @@ class Holiday < ActiveRecord::Base
   end
 
   def Holiday.add_credit_for_holidays_to_calendar(calendar,worker)
-    calendar.add_for_day{|x| Holiday.is_holiday?(x) ? worker.holiday_credit_per_day(x.holiday_date) : 0}
+    calendar.add_for_day{|x| Holiday.is_holiday?(x) ? worker.holiday_credit_per_day(x) : 0}
   end
 end

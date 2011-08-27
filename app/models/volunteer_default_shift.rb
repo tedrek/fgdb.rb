@@ -1,13 +1,14 @@
 class VolunteerDefaultShift < ActiveRecord::Base
-#  validates_presence_of :volunteer_task_type_id
   validates_presence_of :roster_id
   validates_presence_of :end_time
   validates_presence_of :start_time
   validates_presence_of :slot_count
+  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
 
   belongs_to :volunteer_task_type
   belongs_to :volunteer_default_event
   belongs_to :program
+  belongs_to :roster
 
   has_many :default_assignments
 
@@ -36,7 +37,17 @@ class VolunteerDefaultShift < ActiveRecord::Base
     end
   end
 
+  before_validation :set_values_if_stuck
+  def set_values_if_stuck
+    return unless self.stuck_to_assignment
+    assn = self.default_assignments.first
+    return unless assn
+    self.start_time = assn.start_time
+    self.end_time = assn.end_time
+  end
+
   def fill_in_available(slot_num = nil)
+    return if self.stuck_to_assignment
     Thread.current['volskedj2_fillin_processing'] ||= []
     if Thread.current['volskedj2_fillin_processing'].include?(self.id)
       return

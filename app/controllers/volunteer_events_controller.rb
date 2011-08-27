@@ -12,6 +12,73 @@ class VolunteerEventsController < ApplicationController
     @volunteer_events = VolunteerEvent.find(:all)
   end
 
+  def add_shift
+    ve = VolunteerEvent.find(params["id"])
+    vs = ve.volunteer_shifts.new
+#    vs.slot_count = 1
+    vs.volunteer_event_id = ve.id
+    vs.volunteer_event = ve
+    a = vs.assignments.new
+    a.volunteer_shift = vs
+    vs.stuck_to_assignment = vs.not_numbered = true
+    @assignments = vs.assignments = [a]
+    @referer = request.env["HTTP_REFERER"]
+    @my_url = {:action => "create_shift", :id => params[:id]}
+    @assignment = a
+    render :template => 'assignments/edit'
+  end
+
+  # ve = VolunteerEvent.find(params["id"])
+  # vs = ve.volunteer_shifts.new(params["assignment"]["volunteer_shift_attributes"])
+  # vs.not_numbered = vs.stuck_to_assignment = true
+  # a = vs.assignments.new(params["assignment"])
+  # a.volunteer_shift = vs
+  # a.set_values_if_stuck
+  # vs.save
+  # vs = VolunteerShift.find(vs.id)
+  # a = vs.assignments.first
+  # a.attributes=(params["assignment"])
+  # a.volunteer_shift = vs # FIXME: would a hidden id field help?
+  # a.save
+
+  def create_shift
+    ve = VolunteerEvent.find(params["id"])
+    vs = ve.volunteer_shifts.new
+#    vs.slot_count = 1
+#    vs.volunteer_event_id = ve.id
+#    vs.volunteer_event = ve
+    vs.stuck_to_assignment = vs.not_numbered = true
+    vs.attributes=(params["assignment"]["volunteer_shift_attributes"])
+    a = vs.assignments.new
+    a.volunteer_shift = vs
+#    a.volunteer_shift_id = vs.id
+    a.attributes = (params["assignment"])
+    @assignments = vs.assignments = [a]
+    vs.set_values_if_stuck
+    vs.assignments = []
+    @success = a.valid? && vs.save
+    rt = params[:assignment].delete(:redirect_to)
+    @my_url = {:action => "create_shift", :id => params[:id]}
+    @assignment = a
+    if @success
+      vs = vs.reload
+      @assignment = a = vs.assignments.new
+      a.volunteer_shift = vs
+      #    a.volunteer_shift_id = vs.id
+      a.attributes = (params["assignment"])
+      @assignments = vs.assignments = [a]
+
+      if !@success
+        vs.destroy
+      end
+    end
+    if @success # and @assignment.volunteer_shift.save
+      redirect_skedj(rt, ve.date_anchor)
+    else
+      render :template => 'assignments/edit'
+    end
+  end
+
   def show
     @volunteer_event = VolunteerEvent.find(params[:id])
   end

@@ -30,6 +30,8 @@ class WorkedShiftsController < ApplicationController
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
 
+    @by_percentage = params[:worked_shift][:by_percentage] == "1"
+    @include_empty = params[:worked_shift][:include_empty] == "1"
     @row_table = params[:worked_shift][:row_name]
     @col_table = params[:worked_shift][:col_name]
     @start_date = @end_date = "2010-06-24"
@@ -103,6 +105,22 @@ GROUP BY 1,2;")
     sorted_row_ids = sort_hash(row_labels)
     sorted_col_ids = sort_hash(col_labels)
 
+    if @by_percentage
+      sorted_row_ids.each{|ri|
+        total = row_subtotal[ri]
+        sorted_col_ids.each{|ci|
+          table_hash[ri][ci] ||= 0.0
+          table_hash[ri][ci] = (table_hash[ri][ci] / total) * 100 unless total == 0.0
+        }
+        row_subtotal[ri] = (total == 0.0 ? 0 : 1) * 100.0
+      }
+    end
+
+    unless @include_empty
+      sorted_row_ids = sorted_row_ids.select{|x| row_subtotal[x] > 0}
+      sorted_col_ids = sorted_col_ids.select{|x| col_subtotal[x] > 0}
+    end
+
     table = []
     table << ["", sorted_col_ids.map{|x| col_labels[x]}, "total"].flatten
     sorted_row_ids.each{|x|
@@ -120,7 +138,7 @@ GROUP BY 1,2;")
       a << col_subtotal[y]
     }
     a << total
-    table << a
+    table << a unless @by_percentage
 
     @result = table
   end
