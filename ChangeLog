@@ -1,7 +1,8 @@
 fgdb.rb (1.0.67) UNRELEASED; urgency=low
 
+  * refactor the generation code a bit
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 26 Aug 2011 22:34:08 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 30 Aug 2011 16:35:27 -0700
 
 fgdb.rb (1.0.66) released; urgency=low
 

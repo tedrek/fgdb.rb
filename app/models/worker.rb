@@ -67,6 +67,10 @@ class Worker < ActiveRecord::Base
     self.effective_in_range?(date, nil)
   end
 
+  def Worker.zero
+    @@zero ||= Worker.find(:first, :conditions => 'id = 0')
+  end
+
   def effective_in_range?(start_d, end_d)
     start_t = self.worker_type_on_day(start_d)
     end_t = nil
