@@ -111,14 +111,20 @@ GROUP BY 1,2;")
         sorted_col_ids.each{|ci|
           table_hash[ri][ci] ||= 0.0
           table_hash[ri][ci] = (table_hash[ri][ci] / total) * 100 unless total == 0.0
+          table_hash[ri][ci] = sprintf '%.2f%',table_hash[ri][ci]
         }
         row_subtotal[ri] = (total == 0.0 ? 0 : 1) * 100.0
+        row_subtotal[ri] = sprintf '%.2f%', row_subtotal[ri]
       }
     end
 
+    def value_is_zero(value)
+      value == (value.class == String ? '0.00%' : 0.0)
+    end
+
     unless @include_empty
-      sorted_row_ids = sorted_row_ids.select{|x| row_subtotal[x] > 0}
-      sorted_col_ids = sorted_col_ids.select{|x| col_subtotal[x] > 0}
+      sorted_row_ids = sorted_row_ids.select{|x| !value_is_zero(row_subtotal[x])}
+      sorted_col_ids = sorted_col_ids.select{|x| !value_is_zero(col_subtotal[x])}
     end
 
     table = []

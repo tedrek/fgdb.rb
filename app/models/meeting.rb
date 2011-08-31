@@ -12,4 +12,25 @@ class Meeting < Shift
     ret = meeting_name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
   end
+
+  def generates_on_day?(day)
+    #   check to see if its schedule prints this week
+    #     (repeats_every and repeats_on), if not then
+    #     skip
+    self.schedule.which_week( day ) == self.schedule.repeats_on and ((not self.shift_date) or self.shift_date == day)
+  end
+
+  def do_my_generate(day)
+    # get a list of all workers attending this
+    # meeting and loop through it
+    self.workers.each do |w|
+      # if worker is on vacation, don't save shift
+      if save_for_worker?(day, w)
+        workshift = WorkShift.create_from_meeting( self, w, day )
+        workshift.shift_id = self.id
+        # workshift.worker_id = w.id
+        workshift.save
+      end
+    end
+  end
 end
