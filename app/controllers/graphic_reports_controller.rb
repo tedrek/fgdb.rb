@@ -788,6 +788,22 @@ class NumberOfSalesByCashiersTrend < TrendReport
 
   end
 end
+class TotalAmountOfSalesByCashiersTrend < TrendReport
+  class << self
+    def category
+      "Store"
+    end
+
+    def title
+      "Total amount of sales by cashier"
+    end
+    def get_for_timerange(args)
+      where_clause = sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at"))
+      res = DB.execute("SELECT users.login, SUM(payments.amount_cents) FROM payments INNER JOIN sales ON payments.sale_id = sales.id LEFT JOIN users ON users.id = sales.cashier_created_by WHERE #{where_clause} GROUP BY 1;")
+      Hash[*res.to_a.collect{|x| [x["login"], x["sum"].to_i / 100.0]}.flatten]
+    end
+  end
+end
 class NumberOfHoursWorkedByWorkersTrend < TrendReport
   class << self
     def get_for_timerange(args)
