@@ -48,6 +48,9 @@ class GraphicReportsController < ApplicationController
       @valid_conditions = ["gizmo_category_id", "gizmo_type_id"]
     when "Sales amount by gizmo type"
       @valid_conditions = ["gizmo_category_id", "gizmo_type_id"]
+    when "Number of Sales by Cashier"
+    when "Number of hours worked by worker"
+      @valid_conditions = ["job"]
     else
       raise NoMethodError
     end
@@ -323,12 +326,16 @@ class GraphicReportsController < ApplicationController
 
   # list of report types
   def report_types
-    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales Total", "Donations Count", "Volunteer Hours by Program", "Donations gizmo count by type", "Sales gizmo count by type", "Sales amount by gizmo type"]
+    ["Average Frontdesk Income", "Income", "Active Volunteers", "Sales Total", "Donations Count", "Volunteer Hours by Program", "Donations gizmo count by type", "Sales gizmo count by type", "Sales amount by gizmo type", "Number of Sales by Cashier", "Number of hours worked by worker"]
   end
 
   # returns the title for that report type
   def get_title
     case params[:conditions][:report_type]
+    when "Number of Sales by Cashier"
+      "Number of sales by Cashier"
+    when "Number of hours worked by worker"
+      "Report of hours worked by worker"
     when "Income"
       "Income report"
     when "Average Frontdesk Income"
@@ -383,6 +390,10 @@ class GraphicReportsController < ApplicationController
      get_sales_count_by_gizmo(args)
     when "Sales amount by gizmo type"
      get_sales_amount_by_gizmo(args)
+    when "Number of Sales by Cashier"
+      get_sales_by_cashier(args)
+    when "Number of hours worked by worker"
+      get_hours_worked_by_worker(args)
     else
       raise NoMethodError
     end
@@ -568,14 +579,36 @@ class GraphicReportsController < ApplicationController
   end
 
   def get_volunteer_hours_by_program(args)
+    where_clause = sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))
     res = DB.execute("SELECT programs.description, SUM( duration )
   FROM volunteer_tasks
   LEFT JOIN programs ON volunteer_tasks.program_id = programs.id
-  WHERE #{sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))}
+  WHERE #{where_clause}
   AND programs.volunteer = 't'
   GROUP BY programs.id, programs.description
   ORDER BY programs.description;")
     Hash[*res.to_a.collect{|x| [x["description"], x["sum"]]}.flatten]
+  end
+
+  def get_sales_by_cashier(args) # TODO: other transaction types?
+    where_clause = sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at"))
+    res = DB.execute("SELECT count(*), users.login FROM sales
+ LEFT JOIN users ON users.id = sales.cashier_created_by
+ WHERE #{where_clause}
+ GROUP BY users.login
+ ORDER BY users.login")
+    Hash[*res.to_a.collect{|x| [x["login"], x["count"]]}.flatten]
+  end
+
+  def get_hours_worked_by_worker(args)
+    where_clause = sql_for_report(WorkedShift, conditions_with_daterange_for_report(args, "date_performed"))
+    res = DB.execute("SELECT workers.name, SUM( duration )
+  FROM worked_shifts
+  LEFT JOIN workers ON worked_shifts.worker_id = workers.id
+  WHERE #{where_clause}
+  GROUP BY workers.name
+  ORDER BY workers.name;")
+    Hash[*res.to_a.collect{|x| [x["name"], x["sum"]]}.flatten]
   end
 
   def get_active_volunteers(args)
