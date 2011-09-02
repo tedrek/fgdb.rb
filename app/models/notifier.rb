@@ -2,6 +2,7 @@ class Notifier < ActionMailer::Base
   def volunteer_milestone_report( volunteers )
     recipients Default['volunteer_reports_to']
     from Default['my_email_address']
+    headers 'return-path' => Default['return_path'] if Default['return_path']
     subject "Volunteer Milestone Report"
     body :volunteers => volunteers
   end
@@ -9,6 +10,7 @@ class Notifier < ActionMailer::Base
   def staff_hours_summary_report(myworkers)
     recipients Default['scheduler_reports_to']
     from Default['my_email_address']
+    headers 'return-path' => Default['return_path'] if Default['return_path']
     subject "Staff Hours Summary"
     body :myworkers => myworkers
   end
@@ -17,6 +19,7 @@ class Notifier < ActionMailer::Base
     recipients myworker.name + " <" + myworker.email + ">"
     from Default['my_email_address']
     reply_to Default['scheduler_reports_to']
+    headers 'return-path' => Default['return_path'] if Default['return_path']
     subject "Please log your hours"
     body :myworker => myworker
   end
