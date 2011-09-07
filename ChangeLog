@@ -6,8 +6,9 @@ fgdb.rb (1.0.67) UNRELEASED; urgency=low
   * implement correct payroll logic (Closes: #24314)
   * show Maximum supported under the memory section if printme provides
     us with the value from dmidecode (Closes: #24201)
+  * implement generating vacations (Closes: #24198)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Sep 2011 23:54:49 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 07 Sep 2011 00:33:12 -0700
 
 fgdb.rb (1.0.66) released; urgency=low
 

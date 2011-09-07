@@ -17,6 +17,7 @@
     <td><%=h vacation.ineffective_date %></td>
     <% unless @readonly %>
       <td><%= link_to 'Show', :action => 'show', :id => vacation %></td>
+      <td><%= link_to 'Generate', :action => 'generate', :id => vacation %></td>
       <td><%= link_to 'Edit', :action => 'edit', :id => vacation %></td>
       <td><%= link_to 'Destroy', { :action => 'destroy', :id => vacation }, :confirm => 'Are you sure?', :method => :post %></td>
       <td><%= link_to 'Copy', { :action => 'copy', :id => vacation.id }, :title => 'copy', :method => :post %></td>

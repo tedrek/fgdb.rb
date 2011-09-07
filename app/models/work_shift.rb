@@ -23,6 +23,15 @@ class WorkShift < ActiveRecord::Base
     prepend + display_name
   end
 
+  def on_vacation
+    if ["Meeting", "Unavailability"].include?(self.kind)
+      self.destroy
+    else
+      self.worker = Worker.zero
+      self.save!
+    end
+  end
+
   def display_name
     if self.kind == "Meeting"
       return self.meeting_name
