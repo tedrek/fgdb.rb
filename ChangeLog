@@ -1,8 +1,11 @@
 fgdb.rb (1.0.67) UNRELEASED; urgency=low
 
   * refactor the generation code a bit
+  * remove PTO related stuff from the hours logging interface since it's
+    confusing anyway
+  * implement correct payroll logic (Closes: #24314)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 30 Aug 2011 16:35:27 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 06 Sep 2011 23:36:50 -0700
 
 fgdb.rb (1.0.66) released; urgency=low
 
