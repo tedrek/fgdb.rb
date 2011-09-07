@@ -1,9 +1,8 @@
 class DefaultAssignment < ActiveRecord::Base
   belongs_to :contact
   belongs_to :volunteer_default_shift
-  attr_accessor :set_weekday_id
   validates_presence_of :set_weekday_id, :if => :volshift_stuck
-
+  delegate :set_weekday_id, :set_weekday_id=, :to => :volunteer_default_shift
   before_validation :set_values_if_stuck
 
   def set_values_if_stuck
@@ -13,10 +12,6 @@ class DefaultAssignment < ActiveRecord::Base
 
   def volshift_stuck
     self.volunteer_default_shift && self.volunteer_default_shift.stuck_to_assignment
-  end
-
-  def set_weekday_id
-    @set_weekday_id ||= ((self.volunteer_default_shift and self.volunteer_default_shift.volunteer_default_event) ? self.volunteer_default_shift.volunteer_default_event.weekday_id : nil)
   end
 
   after_destroy { |record| record.volunteer_default_shift.destroy if record.volunteer_default_shift && record.volunteer_default_shift.stuck_to_assignment}

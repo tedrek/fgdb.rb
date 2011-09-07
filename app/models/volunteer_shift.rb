@@ -11,6 +11,19 @@ class VolunteerShift < ActiveRecord::Base
 
   belongs_to :volunteer_event
 
+    def set_date_set
+    @set_date_set
+  end
+
+  def set_date=(val)
+    @set_date_set = true
+    @set_date = val
+  end
+
+  def set_date
+    @set_date_set ? @set_date : ((self..volunteer_event) ? self.volunteer_event.date: nil)
+  end
+
   def set_values_if_stuck
     return unless self.stuck_to_assignment
     assn = self.assignments.first
@@ -18,14 +31,13 @@ class VolunteerShift < ActiveRecord::Base
     self.start_time = assn.start_time
     self.end_time = assn.end_time
     return unless self.volunteer_event_id.nil? or self.volunteer_event.description.match(/^Roster #/)
-    raise unless assn.set_date_set
+    return unless set_date_set
     roster = Roster.find_by_id(self.roster_id)
-    if roster and !(assn.set_date == nil || assn.set_date == "")
-      ve = roster.vol_event_for_date(assn.set_date)
+    if roster and !(set_date == nil || set_date == "")
+      ve = roster.vol_event_for_date(set_date)
       ve.save! if ve.id.nil?
       self.volunteer_event = ve
       self.volunteer_event_id = ve.id
-      puts "SETTING VOL EVENT ID #{ve.id} for date #{assn.set_date}"
     else
       if self.volunteer_event.nil?
         self.volunteer_event = VolunteerEvent.new

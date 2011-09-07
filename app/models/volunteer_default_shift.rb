@@ -37,7 +37,25 @@ class VolunteerDefaultShift < ActiveRecord::Base
     end
   end
 
-  def weekday
+  def set_weekday_id=(val)
+    @set_weekday_id_set = true
+    @set_weekday_id = val
+  end
+
+  def set_weekday_id
+    res = if @set_weekday_id_set
+      @set_weekday_id
+    else
+      ((self.volunteer_default_event) ? self.volunteer_default_event.weekday_id : nil)
+    end
+    res
+  end
+
+  def set_weekday_id_set
+    @set_weekday_id_set
+  end
+
+def weekday
     self.volunteer_default_event.weekday
   end
 
@@ -52,14 +70,16 @@ class VolunteerDefaultShift < ActiveRecord::Base
     self.start_time = assn.start_time
     self.end_time = assn.end_time
     return unless self.volunteer_default_event_id.nil? or self.volunteer_default_event.description.match(/^Roster #/)
-    raise unless assn.set_weekday_id
+    return unless set_weekday_id_set
     roster = Roster.find_by_id(self.roster_id)
-    if roster and !(assn.set_weekday_id == nil || assn.set_weekday_id == "")
-      self.volunteer_default_event = roster.vol_event_for_weekday(assn.set_weekday_id)
-      self.volunteer_default_event.save! if self.volunteer_default_event.id.nil?
+    if roster and !(set_weekday_id == nil || set_weekday_id == "")
+      ve = roster.vol_event_for_weekday(set_weekday_id)
+      ve.save! if ve.id.nil?
+      self.volunteer_default_event = ve
+      self.volunteer_default_event_id = ve.id
     else
       if self.volunteer_default_event.nil?
-        self.volunteer_default_event = VolunteerEvent.new
+        self.volunteer_default_event = VolunteerDefaultEvent.new
       end
     end
   end

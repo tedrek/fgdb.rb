@@ -7,27 +7,14 @@ class Assignment < ActiveRecord::Base
   validates_associated :volunteer_shift
   belongs_to :attendance_type
   belongs_to :call_status_type
-  attr_accessor :set_date
   validates_presence_of :set_date, :if => :volshift_stuck
+
+  delegate :set_date, :set_date=, :to => :volunteer_shift
 
   before_validation :set_values_if_stuck
   def set_values_if_stuck
     return unless volshift_stuck
     volunteer_shift.set_values_if_stuck
-  end
-
-  def set_date_set
-    @set_date_set
-  end
-
-  def set_date=(val)
-    @set_date_set = true
-    puts "RECV: #{val}"
-    @set_date = val
-  end
-
-  def set_date
-    @set_date_set ? @set_date : ((self.volunteer_shift and self.volunteer_shift.volunteer_event) ? self.volunteer_shift.volunteer_event.date: nil)
   end
 
   after_destroy { |record| if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment; record.volunteer_shift.destroy; else VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available; end}
