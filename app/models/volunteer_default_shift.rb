@@ -37,13 +37,31 @@ class VolunteerDefaultShift < ActiveRecord::Base
     end
   end
 
-  before_validation :set_values_if_stuck
+  def weekday
+    self.volunteer_default_event.weekday
+  end
+
+  def weekday_name
+    weekday ? weekday.name : nil
+  end
+
   def set_values_if_stuck
     return unless self.stuck_to_assignment
     assn = self.default_assignments.first
     return unless assn
     self.start_time = assn.start_time
     self.end_time = assn.end_time
+    return unless self.volunteer_default_event_id.nil? or self.volunteer_default_event.description.match(/^Roster #/)
+    raise unless assn.set_weekday_id
+    roster = Roster.find_by_id(self.roster_id)
+    if roster and !(assn.set_weekday_id == nil || assn.set_weekday_id == "")
+      self.volunteer_default_event = roster.vol_event_for_weekday(assn.set_weekday_id)
+      self.volunteer_default_event.save! if self.volunteer_default_event.id.nil?
+    else
+      if self.volunteer_default_event.nil?
+        self.volunteer_default_event = VolunteerEvent.new
+      end
+    end
   end
 
   def fill_in_available(slot_num = nil)

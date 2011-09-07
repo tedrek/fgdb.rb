@@ -61,7 +61,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
                              },
 
                              :call_list =>
@@ -78,7 +78,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name,display_call_status,display_phone_numbers",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -94,7 +94,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
@@ -188,11 +188,24 @@ class AssignmentsController < ApplicationController
     @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "volunteer_events.date ASC", :per_page => 50, :include => [:volunteer_shift => [:volunteer_event]])
   end
 
+  def copy
+    @assignment = Assignment.find(params[:id])
+    @my_url = {:action => "create_shift", :controller => "volunteer_events"}
+    @assignment.id = nil
+    @action_title = "Copying"
+    edit
+  end
+
   def edit
-    @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
-    @assignment = @assignments.first
+    if @assignment
+      @assignments = [@assignment]
+    else
+      @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
+      @assignment = @assignments.first
+    end
     @referer = request.env["HTTP_REFERER"]
-    @my_url = {:action => "update", :id => params[:id]}
+    @my_url ||= {:action => "update", :id => params[:id]}
+    render :action => 'edit'
   end
 
   def update

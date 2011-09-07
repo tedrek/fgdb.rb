@@ -40,7 +40,7 @@ class DefaultAssignmentsController < ApplicationController
                                :thing_table_name => "default_assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "default_assignments.id",
-                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id],[:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id],[:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
 
 
       }, params)
@@ -126,11 +126,24 @@ class DefaultAssignmentsController < ApplicationController
     @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "created_at ASC", :per_page => 50)
   end
 
+  def copy
+    @assignment = DefaultAssignment.find(params[:id])
+    @my_url = {:action => "create_shift", :controller => "volunteer_default_events"}
+    @assignment.id = nil
+    @action_title = "Copying"
+    edit
+  end
+
   def edit
-    @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
-    @assignment = @assignments.first
+    if @assignment
+      @assignments = [@assignment]
+    else
+      @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
+      @assignment = @assignments.first
+    end
     @referer = request.env["HTTP_REFERER"]
-    @my_url = {:action => "update", :id => params[:id]}
+    @my_url ||= {:action => "update", :id => params[:id]}
+    render :action => 'edit'
   end
 
   def update
