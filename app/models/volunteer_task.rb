@@ -13,7 +13,7 @@ class VolunteerTask < ActiveRecord::Base
   validates_presence_of :program
 
   before_save :add_contact_types
-  before_save :set_contact_syseval_count
+  after_save :set_contact_syseval_count
   after_destroy { |record| c = record.contact; c.update_syseval_count; c.save!}
 
   named_scope :for_type_id, lambda{|opt| {:conditions => ['volunteer_task_type_id = ?', opt]}}
