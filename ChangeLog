@@ -1,8 +1,20 @@
-fgdb.rb (1.0.67) UNRELEASED; urgency=low
+fgdb.rb (1.0.68) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 07 Sep 2011 01:01:54 -0700
+
+fgdb.rb (1.0.67) released; urgency=low
 
   * refactor the generation code a bit
+  * remove PTO related stuff from the hours logging interface since it's
+    confusing anyway
+  * implement correct payroll logic (Closes: #24314)
+  * show Maximum supported under the memory section if printme provides
+    us with the value from dmidecode (Closes: #24201)
+  * implement generating vacations (Closes: #24198)
+  * add generating unavailabilities, too
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 30 Aug 2011 16:35:27 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 07 Sep 2011 01:01:38 -0700
 
 fgdb.rb (1.0.66) released; urgency=low
 
@@ -11,6 +23,7 @@ fgdb.rb (1.0.66) released; urgency=low
   * support intern scheduling (Closes: #23928)
   * add percentages and hiding empty rows/columns to types report
     (Closes: 24167)
+  * add trend reports about thrift store workers (Closes: #24275)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 26 Aug 2011 22:32:44 -0700
 

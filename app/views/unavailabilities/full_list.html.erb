@@ -7,7 +7,7 @@
   <% for column in Unavailability.content_columns %>
     <th><%= column.human_name %></th>
   <% end %>
-  <th colspan="4">&nbsp;</th>
+  <th colspan="5">&nbsp;</th>
   </tr>
   
 <% for unavailability in @unavailabilities %>
@@ -21,6 +21,7 @@
     <td><%= link_to 'Edit', :action => 'edit', :id => unavailability %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => unavailability }, :confirm => 'Are you sure?', :method => :post %></td>
     <td><%= link_to 'Copy', { :action => 'copy', :id => unavailability.id }, :title => 'copy', :method => :post %></td>
+    <td><%= link_to 'Generate', :action => 'generate', :id => unavailability %></td>
   </tr>
 <% end %>
 </table>

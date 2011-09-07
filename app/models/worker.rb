@@ -224,31 +224,28 @@ class Worker < ActiveRecord::Base
   end
 
   def to_payroll_hash(pay_period)
-    # further optimization: determine the weeks and holidays outside of the workers loop
+    # further optimization: determine the weeks and holidays outside of the workers loop by passing in a hash {:1 => [], :2 => [Date.today]} by week number
     cache = {}
     h = {}
     h[:name] = self.sort_by
     h[:type] = self.primary_worker_type_in_range(pay_period.start_date, pay_period.end_date).name
-    h[:hours] = (pay_period.start_date..pay_period.end_date).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)}
-    h[:holiday] = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", pay_period.start_date, pay_period.end_date]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)}
-    days = {}
-    (pay_period.start_date..pay_period.end_date).to_a.each{|x| x = x.wday; days[x] ||= 0; days[x] += 1;}
-    a = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
-    t = 0.0
-    days.each{|k,v|
-      t += (self.send(a[k.to_i]) * v)
-    }
-    minimum = t * self.floor_ratio
-    h[:pto] = [0.0, minimum - (h[:hours] + h[:holiday])].max
+    h[:hours] = 0.0
+    h[:holiday] = 0.0
+    h[:overtime] = 0.0
+    weeks = 0
     h[:overtime] = 0.0
     (pay_period.start_date..pay_period.end_date).to_a.select{|x| x.wday == 0}.each{|endit|
       startit = endit - 6
-      holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", startit, endit]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)}
-      logged = (startit..endit).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)}
+      weeks += 1
+      h[:holiday] += (holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", startit, endit]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)})
+      h[:hours] += (logged = (startit..endit).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)})
       total = holidays + logged
-      h[:overtime] += [0.0, total - self.ceiling_hours].max
+      h[:overtime] += total - self.ceiling_hours if total > self.ceiling_hours
     }
     h[:hours] -= h[:overtime]
+    total = (h[:hours] + h[:holiday] + h[:overtime])
+    floor = self.floor_hours * weeks
+    h[:pto] = floor > total ? floor - total : 0.0
     return h
   end
 
@@ -258,8 +255,12 @@ class Worker < ActiveRecord::Base
     return [false, scheduled_shifts_for_day(date)].flatten
   end
 
+  def work_shifts_for_day(date)
+    WorkShift.find(:all, :conditions => ['shift_date = ? AND worker_id = ?', date, self.id])
+  end
+
   def scheduled_shifts_for_day(date)
-    shifts = WorkShift.find(:all, :conditions => ['shift_date = ? AND worker_id = ?', date, self.id])
+    shifts = self.work_shifts_for_day(date)
     shifts = shifts.map{|x| x.to_worked_shift}.delete_if{|x| x == nil}
     return shifts
   end
