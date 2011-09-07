@@ -555,7 +555,7 @@ class TrendReport
       self.send(:subclasses).map{|x| x.constantize}
     end
 
-    def all_report_types # FIXME
+    def all_report_types
       return all_reports.map{|x| x.name}
     end
 
