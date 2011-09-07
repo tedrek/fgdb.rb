@@ -1,4 +1,4 @@
-fgdb.rb (1.0.67) UNRELEASED; urgency=low
+fgdb.rb (1.0.67) released; urgency=low
 
   * refactor the generation code a bit
   * remove PTO related stuff from the hours logging interface since it's
@@ -9,7 +9,7 @@ fgdb.rb (1.0.67) UNRELEASED; urgency=low
   * implement generating vacations (Closes: #24198)
   * add generating unavailabilities, too
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 07 Sep 2011 00:55:55 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 07 Sep 2011 01:01:38 -0700
 
 fgdb.rb (1.0.66) released; urgency=low
 
