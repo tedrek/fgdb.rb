@@ -7,8 +7,9 @@ fgdb.rb (1.0.67) UNRELEASED; urgency=low
   * show Maximum supported under the memory section if printme provides
     us with the value from dmidecode (Closes: #24201)
   * implement generating vacations (Closes: #24198)
+  * add generating unavailabilities, too
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 07 Sep 2011 00:33:12 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 07 Sep 2011 00:55:55 -0700
 
 fgdb.rb (1.0.66) released; urgency=low
 

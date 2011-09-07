@@ -47,7 +47,7 @@ class WorkShift < ActiveRecord::Base
     if self.kind == 'Meeting'
       shift_style = 'meeting'
     elsif self.kind == 'Unavailability'
-      shift_style = 'unavailable'
+      shift_style = overlap ? 'hardconflict' : 'unavailable'
     elsif self.worker_id == 0
       shift_style = 'unfilled'
     elsif overlap
