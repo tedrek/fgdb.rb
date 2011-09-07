@@ -27,7 +27,31 @@ class DefaultAssignment < ActiveRecord::Base
     if self.volunteer_default_shift && self.volunteer_default_shift.stuck_to_assignment
       errors.add("contact_id", "is empty for a assignment-based shift") if self.contact_id.nil?
     end
+    errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
+#    errors.add("volunteer_default_shift_id", "is already assigned during that time") if self.volunteer_default_shift && !self.volunteer_default_shift.not_numbered && self.find_overlappers(:for_slot).length > 0 # TODO maybe?
   end
+
+  def does_conflict?(other)
+    arr = [self, other]
+    arr = arr.sort_by(&:start_time)
+    a, b = arr
+    a.end_time > b.start_time
+  end
+
+  def find_overlappers(type)
+    self.class.potential_overlappers(self).send(type, self).select{|x| self.does_conflict?(x)}
+  end
+
+  named_scope :potential_overlappers, lambda{|assignment|
+    tid = assignment.id
+    tday = assignment.volunteer_default_shift.volunteer_default_event.weekday_id
+    { :conditions => ['(id != ? OR ? IS NULL) AND volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts JOIN volunteer_default_events ON volunteer_default_events.id = volunteer_default_shifts.volunteer_default_event_id WHERE volunteer_default_events.weekday_id = ?)', tid, tid, tday] }
+  }
+
+  named_scope :for_contact, lambda{|assignment|
+    tcid = assignment.contact.id
+    { :conditions => ['contact_id = ?', tcid] }
+  }
 
   def volunteer_default_shift_attributes=(attrs)
     self.volunteer_default_shift.attributes=(attrs) # just pass it up

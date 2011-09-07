@@ -93,10 +93,6 @@ class Assignment < ActiveRecord::Base
     self.contact_id ? self.contact.display_phone_numbers : ""
   end
 
-  def find_potential_overlappers
-    Assignment.potential_overlappers(self)
-  end
-
   def does_conflict?(other)
     arr = [self, other]
     arr = arr.sort_by(&:start_time)
@@ -105,7 +101,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def find_overlappers(type)
-    self.find_potential_overlappers.send(type, self).select{|x| self.does_conflict?(x)}
+    Assignment.potential_overlappers(self).send(type, self).select{|x| self.does_conflict?(x)}
   end
 
   def description

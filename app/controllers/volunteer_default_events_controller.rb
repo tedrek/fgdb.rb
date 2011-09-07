@@ -32,6 +32,7 @@ class VolunteerDefaultEventsController < ApplicationController
       end
     end
     vs = ve.volunteer_default_shifts.new
+    vs.program = Program.find_by_name("intern")
     vs.slot_count = 1
     vs.volunteer_default_event_id = ve.id if ve.id
     vs.volunteer_default_event = ve
