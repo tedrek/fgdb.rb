@@ -1,6 +1,8 @@
 <% form_for :conditions, :url => {:action => "index2"} do |f| %>
 <%= f.label "report_type", "Report Type" %>
-<%= f.select "report_type", @report_types.map{|x| [x,x]} %>
+<% grouped_list = {} %>
+<% @report_types.each{|x| (grouped_list[x.category] ||= []) << x.name} %>
+<%= f.select "report_type", grouped_options_for_select(grouped_list) %>
 <%= f.label "submit", "" %>
 <%= f.submit "Go!" %>
 <% end %>

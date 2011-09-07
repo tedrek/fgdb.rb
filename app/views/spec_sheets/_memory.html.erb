@@ -1,7 +1,8 @@
 <div id="memory">
   <h2>Memory</h2>
-    <% if @system_parser.total_memory %>
+      <% if @system_parser.maximum_memory or @system_parser.total_memory %>
       <table>
+        <% if @system_parser.total_memory %>
         <tr>
           <td>
             Total:
@@ -10,8 +11,20 @@
             <%= @system_parser.total_memory %>
           </td>
         </tr>
+        <% end %>
+      <% if @system_parser.maximum_memory %>
+        <tr>
+          <td>
+            Maximum supported:
+          </td>
+          <td>
+            <%= @system_parser.maximum_memory %>
+          </td>
+        </tr>
+      <% end %>
       </table>
-    <% end %>
+      <% end %>
+
     <% @system_parser.memories.each do |m| %>
       <div class="indent">
         <table>

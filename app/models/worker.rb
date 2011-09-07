@@ -255,8 +255,12 @@ class Worker < ActiveRecord::Base
     return [false, scheduled_shifts_for_day(date)].flatten
   end
 
+  def work_shifts_for_day(date)
+    WorkShift.find(:all, :conditions => ['shift_date = ? AND worker_id = ?', date, self.id])
+  end
+
   def scheduled_shifts_for_day(date)
-    shifts = WorkShift.find(:all, :conditions => ['shift_date = ? AND worker_id = ?', date, self.id])
+    shifts = self.work_shifts_for_day(date)
     shifts = shifts.map{|x| x.to_worked_shift}.delete_if{|x| x == nil}
     return shifts
   end

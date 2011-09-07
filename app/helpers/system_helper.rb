@@ -1,7 +1,7 @@
 module SystemHelper
   class SystemParser
     attr_reader :processors, :l2_cache, :bios, :usb_supports, :drive_supports
-    attr_reader :total_memory, :memories, :harddrives, :opticals, :pcis
+    attr_reader :total_memory, :maximum_memory, :memories, :harddrives, :opticals, :pcis
     attr_reader :system_model, :system_serial_number, :system_vendor, :mobo_model, :mobo_serial_number, :mobo_vendor, :macaddr
     attr_reader :model, :vendor, :serial_number
     attr_reader :battery_life
@@ -120,6 +120,7 @@ module SystemHelper
 
       @parser.xml_foreach("//fgdb_printme") {
         @battery_life = @parser.xml_value_of("batterytest") if @parser.xml_if("batterytest")
+        @maximum_memory = @parser.xml_value_of("max_capacity") if @parser.xml_if("max_capacity")
       }
     end
   end

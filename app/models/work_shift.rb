@@ -23,6 +23,15 @@ class WorkShift < ActiveRecord::Base
     prepend + display_name
   end
 
+  def on_vacation
+    if ["Meeting", "Unavailability"].include?(self.kind)
+      self.destroy
+    else
+      self.worker = Worker.zero
+      self.save!
+    end
+  end
+
   def display_name
     if self.kind == "Meeting"
       return self.meeting_name
@@ -38,7 +47,7 @@ class WorkShift < ActiveRecord::Base
     if self.kind == 'Meeting'
       shift_style = 'meeting'
     elsif self.kind == 'Unavailability'
-      shift_style = 'unavailable'
+      shift_style = overlap ? 'hardconflict' : 'unavailable'
     elsif self.worker_id == 0
       shift_style = 'unfilled'
     elsif overlap
