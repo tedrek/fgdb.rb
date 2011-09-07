@@ -13,7 +13,7 @@ module WorkedShiftsHelper
 
   def get_hash(*a)
     date, worker, hours = a
-    hashkeys = %w[total_today total_week max_week overtime expected_minimum total_pay_period pto normally_worked]
+    hashkeys = %w[total_today total_week max_week overtime total_pay_period normally_worked]
     hash = {}
     hashkeys.each{|x| hash[x.to_sym] = 0.0}
     if hours
@@ -38,9 +38,9 @@ module WorkedShiftsHelper
     end
     expected_this_far = HoursCalendar.new(pay_period.start_date, max_date)
     expected_this_far.fill_in_workers_maximums(worker)
-    minimum = expected_this_far.total * worker.floor_ratio
-    hash[:expected_minimum] = minimum
-    hash[:expected_maximum] = expected_this_far.total
+#    minimum = expected_this_far.total * worker.floor_ratio
+#    hash[:expected_minimum] = minimum
+#    hash[:expected_maximum] = expected_this_far.total
     this_far = HoursCalendar.new(pay_period.start_date, max_date)
     if hours
       this_far.set_date(date, hours)
@@ -51,7 +51,7 @@ module WorkedShiftsHelper
     pay_period.add_in_holidays(worker)
     hash[:pay_period] = pay_period
     hash[:total_pay_period] = pay_period.total
-    hash[:pto] = [0.0, minimum - pay_period.total].max
+#    hash[:pto] = [0.0, minimum - pay_period.total].max
     hash[:normally_worked] = worker.send(date.strftime("%A").downcase.to_sym)
     return hash
   end
