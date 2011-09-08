@@ -50,7 +50,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
     @set_weekday_id_set
   end
 
-def weekday
+  def weekday
     self.volunteer_default_event.weekday
   end
 
