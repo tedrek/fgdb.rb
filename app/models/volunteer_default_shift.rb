@@ -43,12 +43,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
   end
 
   def set_weekday_id
-    res = if @set_weekday_id_set
-      @set_weekday_id
-    else
-      ((self.volunteer_default_event) ? self.volunteer_default_event.weekday_id : nil)
-    end
-    res
+    @set_weekday_id_set ?  @set_weekday_id :   ((self.volunteer_default_event) ? self.volunteer_default_event.weekday_id : nil)
   end
 
   def set_weekday_id_set
