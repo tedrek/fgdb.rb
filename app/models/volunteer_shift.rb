@@ -21,7 +21,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def set_date
-    @set_date_set ? @set_date : ((self..volunteer_event) ? self.volunteer_event.date: nil)
+    @set_date_set ? @set_date : self.volunteer_event.date
   end
 
   def set_values_if_stuck
