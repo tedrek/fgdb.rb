@@ -1,10 +1,16 @@
 class VolunteerDefaultEventsController < ApplicationController
   def add_shift
-    ve = VolunteerDefaultEvent.find(params["id"])
+    ve = nil
+    if !params["id"].blank?
+      ve = VolunteerDefaultEvent.find(params["id"])
+    else
+      ve = VolunteerDefaultEvent.new
+    end
     vs = ve.volunteer_default_shifts.new
+    vs.program = Program.find_by_name("intern")
     vs.slot_count = 1
-#    vs.volunteer_default_event_id = ve.id
-#    vs.volunteer_event = ve
+    vs.volunteer_default_event_id = ve.id if ve.id
+    vs.volunteer_default_event = ve
     a = vs.default_assignments.new
     a.volunteer_default_shift = vs
     vs.stuck_to_assignment = vs.not_numbered = true
@@ -16,11 +22,20 @@ class VolunteerDefaultEventsController < ApplicationController
   end
 
   def create_shift
-    ve = VolunteerDefaultEvent.find(params["id"])
+    ve = nil
+    if !params["id"].blank?
+      ve = VolunteerDefaultEvent.find(params["id"])
+    else
+      if (params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"].blank? || params["default_assignment"]["set_weekday_id"].blank?)
+        ve = VolunteerDefaultEvent.new
+      else
+        ve = Roster.find_by_id(params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"]).vol_event_for_weekday(params["default_assignment"]["set_weekday_id"])
+      end
+    end
     vs = ve.volunteer_default_shifts.new
     vs.slot_count = 1
-#    vs.volunteer_event_id = ve.id
-#    vs.volunteer_event = ve
+    vs.volunteer_default_event_id = ve.id if ve.id
+    vs.volunteer_default_event = ve
     vs.stuck_to_assignment = vs.not_numbered = true
     vs.attributes=(params["default_assignment"]["volunteer_default_shift_attributes"])
     a = vs.default_assignments.new
