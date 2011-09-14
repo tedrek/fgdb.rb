@@ -435,12 +435,24 @@ class Conditions < ConditionsBase
       end
       end_date = Time.local(end_year, end_month, 1)
     when 'arbitrary'
-      start_date = Date.parse(eval("@#{field}_start_date").to_s)
-      end_date = Date.parse(eval("@#{field}_end_date").to_s) + 1
+      stds = eval("@#{field}_start_date").to_s
+      start_date = stds.length == 0 ? nil : Date.parse(stds)
+      ends = eval("@#{field}_end_date").to_s
+      end_date = ends.length == 0 ? nil : (Date.parse(ends) + 1)
     end
     column_name = db_field
-    return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
-             start_date, end_date ]
+    conds = []
+    opts = []
+    unless start_date.nil?
+      opts << start_date
+      conds << "#{klass.table_name}.#{column_name} >= ?"
+    end
+    unless end_date.nil?
+      opts << end_date
+      conds << "#{klass.table_name}.#{column_name} < ?"
+    end
+    return [ conds.join(" AND "),
+             *opts ]
   end
 
   def contact_conditions(klass)
@@ -544,9 +556,13 @@ class Conditions < ConditionsBase
       start_date = Time.local(year, eval("@" + thing + "_month"), 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     when 'arbitrary'
-      start_date = Date.parse(eval("@" + thing + "_start_date").to_s)
-      end_date = Date.parse(eval("@" + thing + "_end_date").to_s)
-      desc = "#{eval("@" + thing + "_start_date")} to #{eval("@" + thing + "_end_date")}"
+#      start_date = Date.parse(eval("@" + thing + "_start_date").to_s)
+#      end_date = Date.parse(eval("@" + thing + "_end_date").to_s)
+      stds = eval("@" + thing + "_start_date")
+      stds = "Beginning of time" if stds.length == 0
+      ends = eval("@" + thing + "_end_date")
+      ends = "End of time" if ends.length == 0
+      desc = "#{stds} to #{ends}"
     else
       desc = 'unknown date type'
     end

@@ -2,8 +2,10 @@ fgdb.rb (1.0.69) UNRELEASED; urgency=low
 
   * integrate multiple helpers for titles based on user entered
     conditions, add it to graphic reports (Closes: #24279)
+  * allow empty values in the arbitrary date chooser for beginning/end
+    of time
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 14 Sep 2011 13:09:24 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 14 Sep 2011 13:46:29 -0700
 
 fgdb.rb (1.0.68) released; urgency=low
 
