@@ -13,10 +13,16 @@ class VolunteerEventsController < ApplicationController
   end
 
   def add_shift
-    ve = VolunteerEvent.find(params["id"])
+    ve = nil
+    if !params["id"].blank?
+      ve = VolunteerEvent.find_by_id(params["id"])
+    else
+      ve = VolunteerEvent.new
+    end
     vs = ve.volunteer_shifts.new
+    vs.program = Program.find_by_name("intern")
 #    vs.slot_count = 1
-    vs.volunteer_event_id = ve.id
+    vs.volunteer_event_id = ve.id if ve.id
     vs.volunteer_event = ve
     a = vs.assignments.new
     a.volunteer_shift = vs
@@ -42,7 +48,16 @@ class VolunteerEventsController < ApplicationController
   # a.save
 
   def create_shift
-    ve = VolunteerEvent.find(params["id"])
+    ve = nil
+    if !params["id"].blank?
+      ve = VolunteerEvent.find(params["id"])
+    else
+      if (params["assignment"]["volunteer_shift_attributes"]["roster_id"].blank? || params["assignment"]["set_date"].blank?)
+        ve = VolunteerEvent.new # won't save
+      else
+        ve = Roster.find_by_id(params["assignment"]["volunteer_shift_attributes"]["roster_id"]).vol_event_for_date(params["assignment"]["set_date"])
+      end
+    end
     vs = ve.volunteer_shifts.new
 #    vs.slot_count = 1
 #    vs.volunteer_event_id = ve.id

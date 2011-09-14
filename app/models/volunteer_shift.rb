@@ -11,13 +11,38 @@ class VolunteerShift < ActiveRecord::Base
 
   belongs_to :volunteer_event
 
-  before_validation :set_values_if_stuck
+    def set_date_set
+    @set_date_set
+  end
+
+  def set_date=(val)
+    @set_date_set = true
+    @set_date = val
+  end
+
+  def set_date
+    @set_date_set ? @set_date : self.volunteer_event.date
+  end
+
   def set_values_if_stuck
     return unless self.stuck_to_assignment
     assn = self.assignments.first
     return unless assn
     self.start_time = assn.start_time
     self.end_time = assn.end_time
+    return unless self.volunteer_event_id.nil? or self.volunteer_event.description.match(/^Roster #/)
+    return unless set_date_set
+    roster = Roster.find_by_id(self.roster_id)
+    if roster and !(set_date == nil || set_date == "")
+      ve = roster.vol_event_for_date(set_date)
+      ve.save! if ve.id.nil?
+      self.volunteer_event = ve
+      self.volunteer_event_id = ve.id
+    else
+      if self.volunteer_event.nil?
+        self.volunteer_event = VolunteerEvent.new
+      end
+    end
   end
 
   def skedj_style(overlap, last)
@@ -86,7 +111,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def date_anchor
-    self.date.strftime('%Y%m%d')
+    self.date ? self.date.strftime('%Y%m%d') : ''
   end
 
   def time_shift(val)

@@ -15,8 +15,18 @@
       <%= s.label :program_id %>
       <%= s.select("program_id", [Program.new(:name => ""),  Program.find(:all, :conditions => {:volunteer => true})].flatten.map{|x| [x.name, x.id]}) %>
     </p>
+    <% if is_r %>
+      <p>
+        <%= f.label :set_date, "Date" %>
+        <%= calendar_box f.object_name, :set_date %>
+      </p>
+    <% else %>
+      <p>
+        <%= f.label :set_weekday_id, "Weekday" %>
+        <%= f.select("set_weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, :include_blank => true) %>
+      </p>
+    <% end %>
   <% end %>
-
 <% else %>
   <p>
 <%= f.label :volunteer_shift %>    <table class="awesome">

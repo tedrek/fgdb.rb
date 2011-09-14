@@ -1,5 +1,9 @@
 <%# todo: rename this file.. %>
 <% is_r = params[:controller] == "assignments"%>
+<% if @first_done.nil? %>
+<% @first_done = true %>
+<%= has_privileges('admin_skedjul') ? (link_to "add intern", :action => "add_shift", :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %>
+<% end %>
 <div>
 <% if is_r %>
 <% my_date = Date.strptime(block_anchor, "%Y%m%d") %>
@@ -13,9 +17,10 @@
 <% my_events = my_events.map{|x| x.volunteer_default_shift.volunteer_default_event}.uniq.select{|x| x.weekday == my_date} %>
 <% end %>
 <% my_events.each do |x| %>
+<% resources = is_r ? x.resources_volunteer_events : x.resources_volunteer_default_events %>
+<% next if resources.length == 0 and x.description.match(/^Roster #/) %>
 <fieldset style="float: left">
 <h4><%= x.description %> (<%= x.time_range_s %>) <%= has_privileges('admin_skedjul') ? (link_to "a", :action => "add_shift", :id => x.id, :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %> <%= has_privileges('admin_skedjul') ? (link_to "e", :action => "edit", :id => x.id, :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %></h4>
-<% resources = is_r ? x.resources_volunteer_events : x.resources_volunteer_default_events %>
 <% resources = resources.map{|q| q.resource.name}.join(", ") %>
 <% if resources.length > 0 %>
 Resources: <%= resources %><br />

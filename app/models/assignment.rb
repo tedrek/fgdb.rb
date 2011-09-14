@@ -7,6 +7,15 @@ class Assignment < ActiveRecord::Base
   validates_associated :volunteer_shift
   belongs_to :attendance_type
   belongs_to :call_status_type
+  validates_presence_of :set_date, :if => :volshift_stuck
+
+  delegate :set_date, :set_date=, :to => :volunteer_shift
+
+  before_validation :set_values_if_stuck
+  def set_values_if_stuck
+    return unless volshift_stuck
+    volunteer_shift.set_values_if_stuck
+  end
 
   after_destroy { |record| if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment; record.volunteer_shift.destroy; else VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available; end}
   after_save {|record| if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment; record.volunteer_shift.save; end}
@@ -14,6 +23,10 @@ class Assignment < ActiveRecord::Base
 
   def volunteer_shift_attributes=(attrs)
     self.volunteer_shift.attributes=(attrs) # just pass it up
+  end
+
+  def volshift_stuck
+    self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
   end
 
   def validate
@@ -43,7 +56,7 @@ class Assignment < ActiveRecord::Base
   named_scope :potential_overlappers, lambda{|assignment|
     tid = assignment.id
     tdate = assignment.volunteer_shift.volunteer_event.date
-    { :conditions => ['id != ? AND (attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\')) AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tdate] }
+    { :conditions => ['(id != ? OR ? IS NULL) AND (attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\')) AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tid, tdate] }
   }
 
   named_scope :not_cancelled, :conditions => ['(attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\'))']
@@ -80,10 +93,6 @@ class Assignment < ActiveRecord::Base
     self.contact_id ? self.contact.display_phone_numbers : ""
   end
 
-  def find_potential_overlappers
-    Assignment.potential_overlappers(self)
-  end
-
   def does_conflict?(other)
     arr = [self, other]
     arr = arr.sort_by(&:start_time)
@@ -92,7 +101,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def find_overlappers(type)
-    self.find_potential_overlappers.send(type, self).select{|x| self.does_conflict?(x)}
+    Assignment.potential_overlappers(self).send(type, self).select{|x| self.does_conflict?(x)}
   end
 
   def description
@@ -147,7 +156,7 @@ class Assignment < ActiveRecord::Base
     if self.contact_id.nil?
       return 'available'
     end
-    if overlap and !(last.cancelled? or self.cancelled?) # TODO: FIXME: BUGGY? need a order by cancelled too then probably..
+    if overlap and !(last.cancelled? or self.cancelled?) and !self.volshift_stuck# TODO: FIXME: BUGGY? need a order by cancelled too then probably..
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_shift.send(:read_attribute, :end_time) or self.start_time < self.volunteer_shift.send(:read_attribute, :start_time)
