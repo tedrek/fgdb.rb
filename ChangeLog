@@ -1,5 +1,7 @@
 fgdb.rb (1.0.68) released; urgency=low
 
+  * fix the builder status sheet to not hard code my contact id in links
+    (Closes: #24451)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 08 Sep 2011 22:59:33 -0700
 
