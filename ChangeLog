@@ -5,8 +5,9 @@ fgdb.rb (1.0.69) UNRELEASED; urgency=low
   * allow empty values in the arbitrary date chooser for beginning/end
     of time
   * add a couple more data entry fields to spec sheet (Closes: #24389)
+  * add top contributors report (Closes: #19907)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 14 Sep 2011 14:03:22 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 14 Sep 2011 17:57:42 -0700
 
 fgdb.rb (1.0.68) released; urgency=low
 
