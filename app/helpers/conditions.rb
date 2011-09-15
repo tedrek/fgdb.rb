@@ -25,7 +25,7 @@ class Conditions < ConditionsBase
   end
 
   for i in DATES
-    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
+    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_quarter').to_sym
   end
 
   attr_accessor :cancelled
@@ -417,6 +417,8 @@ class Conditions < ConditionsBase
     ["cashier_created_by = ?", @cashier_created_by]
   end
 
+  # TODO: should this be in conditions_base? and the html part that's
+  # in html_helper in conditions_base_helper? YES!
   def date_range(klass, db_field, condition_name)
     field = condition_name
     case eval("@#{field}_date_type")
@@ -434,6 +436,22 @@ class Conditions < ConditionsBase
         end_year = year
       end
       end_date = Time.local(end_year, end_month, 1)
+    when 'quarterly'
+      quarter = eval("@#{field}_quarter")
+      year = eval("@#{field}_year")
+      start_date = Time.local(year, (quarter * 3) - 2, 1)
+      end_year = year
+      end_month = (quarter * 3) - 2
+      end_month += 3
+      if end_month > 12
+        end_month -= 12
+        end_year += 1
+      end
+      end_date = Time.local(end_year, end_month, 1)
+    when 'yearly'
+      year = eval("@#{field}_year")
+      start_date = Time.local(year, 1, 1)
+      end_date = Time.local(year + 1, 1, 1)
     when 'arbitrary'
       stds = eval("@#{field}_start_date").to_s
       start_date = stds.length == 0 ? nil : Date.parse(stds)
@@ -555,6 +573,13 @@ class Conditions < ConditionsBase
       year = (eval("@" + thing + "_year") || Date.today.year).to_i
       start_date = Time.local(year, eval("@" + thing + "_month"), 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
+    when 'quarterly'
+      year = eval("@" + thing + "_year")
+      quarter = eval("@" + thing + "_quarter")
+      desc = 'quarter %i of %i' % [ quarter, year ]
+    when 'yearly'
+      year = eval("@" + thing + "_year")
+      desc = '%i' % [ year ]
     when 'arbitrary'
 #      start_date = Date.parse(eval("@" + thing + "_start_date").to_s)
 #      end_date = Date.parse(eval("@" + thing + "_end_date").to_s)
