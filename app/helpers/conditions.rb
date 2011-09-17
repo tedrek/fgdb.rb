@@ -17,13 +17,15 @@ class Conditions < ConditionsBase
       effective_at schedule type store_credit_redeemed
     ] + DATES).uniq
 
+  CHECKBOXES = %w[ cancelled assigned covered organization empty ]
+
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
     attr_accessor (i + "_excluded").to_sym
   end
 
   for i in DATES
-    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym
+    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_quarter').to_sym
   end
 
   attr_accessor :cancelled
@@ -95,55 +97,9 @@ class Conditions < ConditionsBase
 
   attr_accessor :assigned
 
-  def skedj_to_s(style = "before")
-    mea = self.methods
-    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"}
-    ta.map{|t|
-      meo = me = t.sub(/_enabled$/, "")
-      v = ""
-      if meo == 'worker' or !mea.include?(me)
-        me += "_id"
-        if !mea.include?(me)
-          v = ""
-        else
-          v = [self.send(me)].flatten.map{|it|
-            obj = meo.classify.constantize.find_by_id(it)
-            sendit = obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s
-            obj ? obj.send(sendit) : nil
-          }.select{|x| !x.nil?}.join(",")
-        end
-      else
-        v = self.send(me)
-      end
-      (v && v.respond_to?(:length) && v.length > 0) ? (style == "before" ? (meo.humanize + ": " + v.to_s) : (v.to_s + " (" + meo.humanize + ")")) : (nil)
-    }.select{|x| !!x}.join(", ")
-  end
-
   def init_callback
     @payment_method_id = PaymentMethod.cash.id
     @assigned = true
-  end
-
-  def contact
-    if contact_id && !contact_id.to_s.empty?
-      if( (! @contact) || (contact_id != @contact.id) )
-        @contact = Contact.find(contact_id)
-      end
-    else
-      @contact = nil
-    end
-    return @contact
-  end
-
-  def worker
-    if worker_id && !worker_id.to_s.empty?
-      if( (! @worker) || (worker_id != @worker.id) )
-        @worker = Worker.find(worker_id)
-      end
-    else
-      @worker = nil
-    end
-    return @worker
   end
 
   def schedule_conditions(klass)
@@ -461,6 +417,8 @@ class Conditions < ConditionsBase
     ["cashier_created_by = ?", @cashier_created_by]
   end
 
+  # TODO: should this be in conditions_base? and the html part that's
+  # in html_helper in conditions_base_helper? YES!
   def date_range(klass, db_field, condition_name)
     field = condition_name
     case eval("@#{field}_date_type")
@@ -478,13 +436,41 @@ class Conditions < ConditionsBase
         end_year = year
       end
       end_date = Time.local(end_year, end_month, 1)
+    when 'quarterly'
+      quarter = eval("@#{field}_quarter")
+      year = eval("@#{field}_year")
+      start_date = Time.local(year, (quarter * 3) - 2, 1)
+      end_year = year
+      end_month = (quarter * 3) - 2
+      end_month += 3
+      if end_month > 12
+        end_month -= 12
+        end_year += 1
+      end
+      end_date = Time.local(end_year, end_month, 1)
+    when 'yearly'
+      year = eval("@#{field}_year")
+      start_date = Time.local(year, 1, 1)
+      end_date = Time.local(year + 1, 1, 1)
     when 'arbitrary'
-      start_date = Date.parse(eval("@#{field}_start_date").to_s)
-      end_date = Date.parse(eval("@#{field}_end_date").to_s) + 1
+      stds = eval("@#{field}_start_date").to_s
+      start_date = stds.length == 0 ? nil : Date.parse(stds)
+      ends = eval("@#{field}_end_date").to_s
+      end_date = ends.length == 0 ? nil : (Date.parse(ends) + 1)
     end
     column_name = db_field
-    return [ "#{klass.table_name}.#{column_name} >= ? AND #{klass.table_name}.#{column_name} < ?",
-             start_date, end_date ]
+    conds = []
+    opts = []
+    unless start_date.nil?
+      opts << start_date
+      conds << "#{klass.table_name}.#{column_name} >= ?"
+    end
+    unless end_date.nil?
+      opts << end_date
+      conds << "#{klass.table_name}.#{column_name} < ?"
+    end
+    return [ conds.join(" AND "),
+             *opts ]
   end
 
   def contact_conditions(klass)
@@ -551,30 +537,34 @@ class Conditions < ConditionsBase
     return false
   end
 
-  # TODO: reimplement this based on the code in skedj_to_s
-  def to_s
-    string = ""
-    contact_or_worker = @contact_enabled=="true" || @worker_enabled == "true"
-    if (which_date = some_date_enabled) && contact_or_worker
-      string = " by " + contact_to_s + ( eval("@#{which_date}_date_type") == "daily" ? " on " : " during ") + date_range_to_s(which_date)
-    elsif (which_date = some_date_enabled)
-      string = ( eval("@#{which_date}_date_type") == "daily" ? " for " : " during ") + date_range_to_s(which_date)
-    elsif(contact_or_worker)
-      string = " by " + contact_to_s
+  def contact
+    if contact_id && !contact_id.to_s.empty?
+      if( (! @contact) || (contact_id != @contact.id) )
+        @contact = Contact.find(contact_id)
+      end
     else
-      string = ""
+      @contact = nil
     end
-    if @contract_enabled == "true"
-      string += " " if string.length > 0
-      string += "for contract \"#{Contract.find_by_id(@contract_id).description}\""
-    end
-    if @covered_enabled == "true"
-      string += " " if string.length > 0
-      string += "for #{covered == 0 ? "un" : ""}covered items"
-    end
-    string
+    return @contact
   end
 
+  def worker
+    if worker_id && !worker_id.to_s.empty?
+      if( (! @worker) || (worker_id != @worker.id) )
+        @worker = Worker.find(worker_id)
+      end
+    else
+      @worker = nil
+    end
+    return @worker
+  end
+
+  def to_s
+    return skedj_to_s("sentence")
+  end
+
+  # TODO: move the "during" part here, ( eval("@#{which_date}_date_type") == "daily" ? " on " : " during ")
+  # TODO: move into skedj_to_s once they are integrated
   def date_range_to_s(thing)
     case eval("@" + thing + "_date_type")
     when 'daily'
@@ -583,23 +573,80 @@ class Conditions < ConditionsBase
       year = (eval("@" + thing + "_year") || Date.today.year).to_i
       start_date = Time.local(year, eval("@" + thing + "_month"), 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
+    when 'quarterly'
+      year = eval("@" + thing + "_year")
+      quarter = eval("@" + thing + "_quarter")
+      desc = 'quarter %i of %i' % [ quarter, year ]
+    when 'yearly'
+      year = eval("@" + thing + "_year")
+      desc = '%i' % [ year ]
     when 'arbitrary'
-      start_date = Date.parse(eval("@" + thing + "_start_date").to_s)
-      end_date = Date.parse(eval("@" + thing + "_end_date").to_s)
-      desc = "#{eval("@" + thing + "_start_date")} to #{eval("@" + thing + "_end_date")}"
+#      start_date = Date.parse(eval("@" + thing + "_start_date").to_s)
+#      end_date = Date.parse(eval("@" + thing + "_end_date").to_s)
+      stds = eval("@" + thing + "_start_date")
+      stds = "Beginning of time" if stds.length == 0
+      ends = eval("@" + thing + "_end_date")
+      ends = "End of time" if ends.length == 0
+      desc = "#{stds} to #{ends}"
     else
       desc = 'unknown date type'
     end
     return desc
   end
 
-  def contact_to_s # "Report of hours worked for ..."
-    if @contact_enabled=="true"
-      return contact.display_name
-    elsif  @worker_enabled == "true"
-      return worker.name # HERE
-    else
-      return "ERROR"
+  def skedj_to_s(style = "before", show_date = false)
+    show_date = show_date || (style == "sentence")
+    mea = self.methods
+    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"} # TODO: look at CONDS instead
+    dv = nil
+    ret = ta.map{|t|
+      meo = me = t.sub(/_enabled$/, "")
+      v = ""
+      if DATES.include?(me)
+        mv = date_range_to_s(me)
+        if dv.nil? and (style == "sentence")
+          dv = mv
+        else
+          v = mv if show_date
+        end
+      elsif CHECKBOXES.include?(me)
+        v = self.send(me) == 1
+      elsif meo == 'contact' or meo == 'worker' or !mea.include?(me) or meo.match(/_id/)
+        me += "_id" unless me.match(/_id/)
+        meo = meo.sub(/_id/, "")
+        if !mea.include?(me)
+          v = ""
+        else
+          v = [self.send(me)].flatten.map{|it|
+            obj = meo.classify.constantize.find_by_id(it)
+            sendit = obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s
+            obj ? obj.send(sendit) : nil
+          }.select{|x| !x.nil?}.join(",")
+        end
+      else
+        v = self.send(me)
+      end
+      res = nil
+      if CHECKBOXES.include?(me)
+        res = (v ? "" : " not ") + " " + meo.humanize
+      elsif (v && v.respond_to?(:length) && v.length > 0)
+        if style == "before"
+          res = (meo.humanize + ": " + v.to_s)
+        else
+          res = (v.to_s + " (" + meo.humanize + ")")
+        end
+        if instance_variable_get("@#{meo}_excluded")
+          res = "Excluding " + res
+        end
+      end
+      res
+    }.select{|x| !!x}.join(style == "sentence" ? " " : ", ")
+    if style == "sentence"
+      ret = "for " + ret if ret.length > 0
+      if show_date
+        ret += " during " + dv if dv
+      end
     end
+    ret
   end
 end

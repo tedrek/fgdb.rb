@@ -63,7 +63,13 @@ class Sale < ActiveRecord::Base
       }
     }
 
-    storecredit_priv_check if (self.storecredits.inject(0){|t,x| t += x.amount_cents} - amount_from_some_payments(store_credits_spent)) > 0
+    storecred_received = self.storecredits.inject(0){|t,x| t += x.amount_cents}
+    storecred_spent = amount_from_some_payments(store_credits_spent)
+    oldstorecredit = 0
+    if self.id
+      oldstorecredit = self.class.find_by_id(self.id).storecredits.inject(0){|t,x| t += x.amount_cents}
+    end
+    storecredit_priv_check if storecred_received > storecred_spent and storecred_received > oldstorecredit
   end
 
   def storecredits_repeat

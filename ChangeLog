@@ -1,10 +1,23 @@
-fgdb.rb (1.0.69) UNRELEASED; urgency=low
+fgdb.rb (1.0.70) UNRELEASED; urgency=low
 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 08 Sep 2011 22:59:52 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Sep 2011 19:09:56 -0700
+
+fgdb.rb (1.0.69) released; urgency=low
+
+  * integrate multiple helpers for titles based on user entered
+    conditions, add it to graphic reports (Closes: #24279)
+  * allow empty values in the arbitrary date chooser for beginning/end
+    of time
+  * add a couple more data entry fields to spec sheet (Closes: #24389)
+  * add top contributors report (Closes: #19907)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Sep 2011 19:09:29 -0700
 
 fgdb.rb (1.0.68) released; urgency=low
 
+  * fix the builder status sheet to not hard code my contact id in links
+    (Closes: #24451)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 08 Sep 2011 22:59:33 -0700
 

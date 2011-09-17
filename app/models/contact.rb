@@ -39,6 +39,10 @@ class Contact < ActiveRecord::Base
   validates_length_of :postal_code, :maximum => 25
   validates_length_of :country, :maximum => 100
 
+  def condition_to_s
+    display_name
+  end
+
   def to_privileges
     ["contact_#{self.id}", "has_contact"]
   end

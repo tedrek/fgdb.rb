@@ -1,5 +1,10 @@
 #!/usr/bin/make -f
 
+REMOTE_SOURCE = tulip:/usr/local/zhora/database.sql.gz
+
+source:
+	echo $(REMOTE_SOURCE)
+
 PATH := $(PATH):$(shell readlink -f ../script/update-devel-data/)
 
 all: download
@@ -69,7 +74,7 @@ tmp/devel_data/dir:
 	mkdir -p $@
 
 tmp/devel_data/database.sql.gz: tmp/devel_data/dir
-	under-myagent scp tulip:/usr/local/arik/database.sql.gz ./tmp/devel_data/
+	under-myagent scp $(REMOTE_SOURCE) ./tmp/devel_data/
 
 tmp/devel_data/database.sql: tmp/devel_data/database.sql.gz
 	zcat tmp/devel_data/database.sql.gz > tmp/devel_data/database.sql

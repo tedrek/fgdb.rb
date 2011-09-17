@@ -22,6 +22,30 @@ class ReportsController < ApplicationController
     end
   end
 
+  public
+
+  def top_contributors
+    @conditions = Conditions.new
+    @report = OpenStruct.new
+    @report.amount = 5000
+  end
+
+  def top_contributors_report
+    limit = params[:report][:amount]
+    conds = Conditions.new
+    conds.apply_conditions(params[:conditions])
+    limit = (limit.to_i * 100).to_i
+    result = DB.exec("SELECT contact_id,SUM(amount_cents) as total FROM payments JOIN donations ON payments.donation_id = donations.id WHERE donation_id IS NOT NULL AND contact_id IS NOT NULL AND #{DB.prepare_sql(conds.conditions(Donation))} GROUP BY contact_id HAVING SUM(amount_cents) > #{limit.to_s} ORDER BY SUM(amount_cents) DESC;").to_a
+    @title = "Top contributors" + conds.to_s
+    @result = [["Contact ID", "Contact Name", "Total Contribution"]]
+    result.map{|x|
+      cid = x["contact_id"]
+      cdisp = Contact.find_by_id(cid).display_name
+      total = x["total"].to_i.to_dollars
+      @result << [cid, cdisp, total]
+    }
+  end
+
   #####################
   ### Gizmos report ###
   #####################
@@ -328,6 +352,7 @@ class ReportsController < ApplicationController
 
   def get_required_privileges
     a = super
+    a << {:only => ["top_contributors", "top_contributors_report"], :privileges => ['manage_contacts']}
     a << {:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']}
     a << {:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["staff_hours", "staff_hours_report"], :privileges => ['staff']}

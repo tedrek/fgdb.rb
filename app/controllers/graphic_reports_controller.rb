@@ -358,6 +358,10 @@ class GraphicReportsController < ApplicationController
     list.delete_if{|x| x.nil?}
     @broken_down_by = params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")
     @title = get_title + " (broken down by #{@broken_down_by})"
+    @klass.set_conditions(params[:conditions])
+    cstr = @klass.conditions_to_s()
+    puts cstr
+    @title = @title + " (" + cstr + ")" if cstr.length > 0
     @data = {}
     @x_axis = []
     list.each{|x|
@@ -488,6 +492,12 @@ class TrendReport
       @conditions = conds
     end
 
+    def conditions_to_s
+      c = Conditions.new
+      c.apply_conditions(usable_conditions)
+      return c.skedj_to_s("before")
+    end
+
     def sql_for_report(model, conditions)
       c = Conditions.new
       c.apply_conditions(conditions)
@@ -503,7 +513,11 @@ class TrendReport
         h["extract_field"] = field
       end
       h["empty_enabled"] = "true"
-      return @conditions.dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}.merge(h)
+      return usable_conditions.merge(h)
+    end
+
+    def usable_conditions
+      @conditions.dup.delete_if{|k,v| [:start_date, :end_date, :report_type, :breakdown_type].map{|x| x.to_s}.include?(k)}
     end
 
     def call_income_report(args)

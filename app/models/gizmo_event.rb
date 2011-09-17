@@ -133,7 +133,9 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
   end
 
   def display_name
-    "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
+    rstr = "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
+    rstr += " (#{self.system_id ? "#" + system_id.to_s : "unknown"})" if self.gizmo_type.needs_id
+    rstr
   end
 
   def valid_gizmo_count?
