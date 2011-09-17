@@ -1,4 +1,4 @@
-fgdb.rb (1.0.69) UNRELEASED; urgency=low
+fgdb.rb (1.0.69) released; urgency=low
 
   * integrate multiple helpers for titles based on user entered
     conditions, add it to graphic reports (Closes: #24279)
@@ -7,7 +7,7 @@ fgdb.rb (1.0.69) UNRELEASED; urgency=low
   * add a couple more data entry fields to spec sheet (Closes: #24389)
   * add top contributors report (Closes: #19907)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 14 Sep 2011 17:57:42 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Sep 2011 19:09:29 -0700
 
 fgdb.rb (1.0.68) released; urgency=low
 
