@@ -28,6 +28,8 @@ class ReportsController < ApplicationController
     @conditions = Conditions.new
     @report = OpenStruct.new
     @report.amount = 5000
+    @conditions = Conditions.new
+    @conditions.occurred_at_date_type = "yearly"
   end
 
   def top_contributors_report
