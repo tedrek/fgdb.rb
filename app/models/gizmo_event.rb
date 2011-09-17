@@ -120,12 +120,15 @@ class GizmoEvent < ActiveRecord::Base
                          "SELECT gizmo_types.gizmo_category_id,
                 gizmo_events.gizmo_type_id,
                 gizmo_events.gizmo_context_id,
-                d.disbursement_type_id,
+                disbursements.disbursement_type_id,
                 sum(gizmo_events.gizmo_count) AS count
          FROM gizmo_events
-              LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
+              LEFT OUTER JOIN disbursements ON disbursements.id = gizmo_events.disbursement_id
               LEFT JOIN gizmo_types ON gizmo_types.id=gizmo_events.gizmo_type_id
 LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems ON system_id = systems.id
+LEFT JOIN sales ON gizmo_events.sale_id = sales.id
+LEFT JOIN gizmo_returns ON gizmo_events.gizmo_return_id = gizmo_returns.id
+LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY 3,2,4,1"
                          )

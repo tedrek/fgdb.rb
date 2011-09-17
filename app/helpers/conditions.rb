@@ -17,7 +17,7 @@ class Conditions < ConditionsBase
       effective_at schedule type store_credit_redeemed
     ] + DATES).uniq
 
-  CHECKBOXES = %w[ cancelled assigned covered organization empty ]
+  CHECKBOXES = %w[ cancelled assigned covered organization ]
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
@@ -475,7 +475,11 @@ class Conditions < ConditionsBase
 
   def contact_conditions(klass)
     klass = BuilderTask if klass == SpecSheet
-    return [ "#{klass.table_name}.contact_id = ?", contact_id ]
+    if klass == GizmoEvent
+      return ["(sales.contact_id = ? OR donations.contact_id = ? OR gizmo_returns.contact_id = ? OR disbursements.contact_id = ?)", contact_id, contact_id, contact_id, contact_id] # NOT OR recyclings.contact_id = ?
+    else
+      return [ "#{klass.table_name}.contact_id = ?", contact_id ]
+    end
   end
 
   def payment_method_conditions(klass)
