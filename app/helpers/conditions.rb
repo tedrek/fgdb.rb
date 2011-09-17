@@ -17,7 +17,7 @@ class Conditions < ConditionsBase
       effective_at schedule type store_credit_redeemed
     ] + DATES).uniq
 
-  CHECKBOXES = %w[ cancelled assigned covered organization empty ]
+  CHECKBOXES = %w[ cancelled assigned covered organization ]
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
