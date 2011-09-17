@@ -475,7 +475,11 @@ class Conditions < ConditionsBase
 
   def contact_conditions(klass)
     klass = BuilderTask if klass == SpecSheet
-    return [ "#{klass.table_name}.contact_id = ?", contact_id ]
+    if klass == GizmoEvent
+      return ["(sales.contact_id = ? OR donations.contact_id = ? OR gizmo_returns.contact_id = ? OR disbursements.contact_id = ?)", contact_id, contact_id, contact_id, contact_id] # NOT OR recyclings.contact_id = ?
+    else
+      return [ "#{klass.table_name}.contact_id = ?", contact_id ]
+    end
   end
 
   def payment_method_conditions(klass)
