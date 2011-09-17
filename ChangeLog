@@ -1,5 +1,6 @@
 fgdb.rb (1.0.70) UNRELEASED; urgency=low
 
+  * add a recent crash page (Closes: #24513)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Sep 2011 19:09:56 -0700
 
