@@ -598,13 +598,16 @@ class Conditions < ConditionsBase
     return desc
   end
 
-  def skedj_to_s(style = "before", show_date = false)
+  def skedj_to_s(style = "before", show_date = false, ignores = [])
     show_date = show_date || (style == "sentence")
     mea = self.methods
     ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"} # TODO: look at CONDS instead
     dv = nil
     ret = ta.map{|t|
       meo = me = t.sub(/_enabled$/, "")
+      if ignores.include?(me)
+        nil
+      else
       v = ""
       if DATES.include?(me)
         mv = date_range_to_s(me)
@@ -643,7 +646,8 @@ class Conditions < ConditionsBase
           res = "Excluding " + res
         end
       end
-      res
+        res
+      end
     }.select{|x| !!x}.join(style == "sentence" ? " " : ", ")
     if style == "sentence"
       ret = "for " + ret if ret.length > 0
