@@ -102,7 +102,7 @@ class AssignmentsController < ApplicationController
 
     @opts = @skedj.opts
     @conditions = @skedj.conditions
-      @page_title = @conditions.skedj_to_s("after")
+      @page_title = @conditions.skedj_to_s("after", false, ["cancelled"])
       @page_title = "All schedules" if @page_title.length == 0
 
     @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :contact => [], :volunteer_shift => [:volunteer_task_type, :volunteer_event, :roster]]})
