@@ -11,8 +11,10 @@
 
 ActiveRecord::Schema.define(:version => 20110820233219) do
 
-  create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', "DECLARE
-        result character varying;
+  create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
+<<SQL_CODE
+DECLARE
+        result character varying ;
 BEGIN
         result = '';
         result = result || coalesce(' ' || $1, '');
@@ -21,10 +23,11 @@ BEGIN
         result = result || coalesce(' ' || $4, '');
         RETURN result;
 END;
-"], :lang => 'plpgsql')
-  create_proc(:contact_trigger, [], :return => :trigger, :resource => ['', '
-
-
+SQL_CODE
+  }
+  
+  create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
+<<SQL_CODE
 
 BEGIN
     NEW.sort_name := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.surname, 
@@ -34,8 +37,11 @@ END;
 
 
 
-'], :lang => 'plpgsql')
-  create_proc(:get_match_score, [:varchar, :varchar], :return => :int4, :resource => ['', "DECLARE
+SQL_CODE
+  }
+  create_proc(:get_match_score, [:varchar, :varchar], :return => :int4, :lang => 'plpgsql') {
+<<SQL_CODE
+DECLARE
         score integer ;
         inwords ALIAS FOR $1 ;
         interms ALIAS FOR $2 ;
@@ -62,9 +68,10 @@ BEGIN
         END LOOP;
         RETURN score;
 END;
-"], :lang => 'plpgsql')
-  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', "
-
+SQL_CODE
+  }
+    create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
+<<SQL_CODE
 
 DECLARE
     IS_ORG ALIAS FOR $1 ;
@@ -95,8 +102,10 @@ END;
 
 
 
-"], :lang => 'plpgsql')
-  create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', "
+SQL_CODE
+  }
+    create_proc(:uncertify_address, [], :return => :trigger, :lang => 'plpgsql') {
+<<SQL_CODE
 BEGIN
   IF tg_op = 'UPDATE' THEN
     IF ((NEW.address IS NULL != OLD.address IS NULL
@@ -114,7 +123,8 @@ BEGIN
   END IF;
   RETURN NEW;
 END
-"], :lang => 'plpgsql')
+SQL_CODE
+    }
   create_table "actions", :force => true do |t|
     t.string   "description"
     t.integer  "lock_version",               :default => 0, :null => false
