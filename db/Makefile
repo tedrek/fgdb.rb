@@ -1,13 +1,13 @@
 #!/usr/bin/make -f
 
+PATH := $(PATH):$(shell readlink -f ../script/update-devel-data/)
+
+all: download
+
 REMOTE_SOURCE = tulip:/usr/local/zhora/database.sql.gz
 
 source:
 	echo $(REMOTE_SOURCE)
-
-PATH := $(PATH):$(shell readlink -f ../script/update-devel-data/)
-
-all: download
 
 download: update_devel_data_version devel_data.sql
 
