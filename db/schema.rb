@@ -11,7 +11,7 @@
 
 ActiveRecord::Schema.define(:version => 20110820233219) do
 
-  create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', 'DECLARE
+  create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', "DECLARE
         result character varying;
 BEGIN
         result = '';
@@ -21,7 +21,7 @@ BEGIN
         result = result || coalesce(' ' || $4, '');
         RETURN result;
 END;
-'], :lang => 'plpgsql')
+"], :lang => 'plpgsql')
   create_proc(:contact_trigger, [], :return => :trigger, :resource => ['', '
 
 
@@ -35,7 +35,7 @@ END;
 
 
 '], :lang => 'plpgsql')
-  create_proc(:get_match_score, [:varchar, :varchar], :return => :int4, :resource => ['', 'DECLARE
+  create_proc(:get_match_score, [:varchar, :varchar], :return => :int4, :resource => ['', "DECLARE
         score integer ;
         inwords ALIAS FOR $1 ;
         interms ALIAS FOR $2 ;
@@ -62,8 +62,8 @@ BEGIN
         END LOOP;
         RETURN score;
 END;
-'], :lang => 'plpgsql')
-  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', '
+"], :lang => 'plpgsql')
+  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', "
 
 
 DECLARE
@@ -95,8 +95,8 @@ END;
 
 
 
-'], :lang => 'plpgsql')
-  create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', '
+"], :lang => 'plpgsql')
+  create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', "
 BEGIN
   IF tg_op = 'UPDATE' THEN
     IF ((NEW.address IS NULL != OLD.address IS NULL
@@ -114,7 +114,7 @@ BEGIN
   END IF;
   RETURN NEW;
 END
-'], :lang => 'plpgsql')
+"], :lang => 'plpgsql')
   create_table "actions", :force => true do |t|
     t.string   "description"
     t.integer  "lock_version",               :default => 0, :null => false
