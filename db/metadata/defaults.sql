@@ -3,7 +3,7 @@
 --
 
 SET statement_timeout = 0;
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: defaults_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('defaults_id_seq', 20, true);
+SELECT pg_catalog.setval('defaults_id_seq', 23, true);
 
 
 --
@@ -41,9 +41,12 @@ COPY defaults (id, name, value, lock_version, updated_at, created_at) FROM stdin
 16	max_effective_hours	24.0	1	2009-05-15 23:53:59.595633	2009-05-02 17:10:41.606476
 18	hours_for_discount	3.0	0	2009-10-02 22:40:22.47043	2009-10-02 22:40:22.47043
 19	days_for_discount	31	0	2009-10-02 22:40:22.49443	2009-10-02 22:40:22.49443
-20	scheduler_reports_to	schedule@lists.freegeek.org	1	2010-02-06 15:43:58.191298	2010-02-06 15:43:58.191298
-12	coveredness_enabled	0	1	2010-10-23 09:31:20.770071	2008-12-22 09:00:53.614147
-15	is-pdx	false	1	2010-10-23 11:16:28.176557	2008-12-22 09:01:02.01784
+22	storecredit_expire_after	2.years	0	2011-04-01 19:27:45.019369	2011-04-01 19:27:45.019369
+20	scheduler_reports_to	schedule@freegeek.org	1	2010-02-06 15:43:58.191298	2010-02-06 15:43:58.191298
+23	return_path	www-data@freegeek.org	0	\N	\N
+12	coveredness_enabled	0	1	2011-09-18 12:31:40.211591	2008-12-22 09:00:53.614147
+21	checksum_base	0123456789ABCDEF	2	2011-09-18 12:31:40.22648	2011-03-25 20:19:22.694195
+15	is-pdx	false	1	2011-09-18 19:55:20.882457	2008-12-22 09:01:02.01784
 \.
 
 

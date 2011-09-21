@@ -3,7 +3,7 @@
 --
 
 SET statement_timeout = 0;
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: generics_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('generics_id_seq', 45, true);
+SELECT pg_catalog.setval('generics_id_seq', 46, true);
 
 
 --
@@ -72,6 +72,7 @@ COPY generics (id, value, only_serial, usable, created_at, updated_at) FROM stdi
 43	Chassis Manufacture	f	t	2010-07-19 23:13:21.347784	2010-07-19 23:13:21.347784
 44	System product name	f	t	2010-07-19 23:13:21.359784	2010-07-19 23:13:21.359784
 45	Ssystem manufacturer	f	t	2010-07-19 23:13:21.371785	2010-07-19 23:13:21.371785
+46	INVALID	f	t	\N	\N
 \.
 
 

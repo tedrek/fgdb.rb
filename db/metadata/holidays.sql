@@ -3,7 +3,7 @@
 --
 
 SET statement_timeout = 0;
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: holidays_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('holidays_id_seq', 37, true);
+SELECT pg_catalog.setval('holidays_id_seq', 49, true);
 
 
 --
@@ -56,6 +56,15 @@ COPY holidays (id, name, holiday_date, is_all_day, start_time, end_time, frequen
 23	Thanksgiving	2009-11-26	\N	\N	\N	6	1	4
 24	Thanksgiving	2009-11-27	\N	\N	\N	6	1	5
 25	Thanksgiving	2009-11-28	\N	\N	\N	6	1	6
+39	New Years	2011-01-01	t	08:00:00	08:00:00	6	1	6
+40	Independence Day	2011-07-02	t	08:00:00	08:00:00	6	1	2
+41	Memorial Day	2011-05-28	t	08:00:00	08:00:00	6	1	6
+42	Labor Day	2011-09-03	t	08:00:00	08:00:00	6	1	6
+43	Thanksgiving	2011-11-24	t	08:00:00	08:00:00	6	1	4
+44	Thanksgiving	2011-11-25	t	08:00:00	08:00:00	6	1	5
+45	Thanksgiving	2011-11-26	t	08:00:00	08:00:00	6	1	6
+46	Christmas	2011-12-24	t	08:00:00	08:00:00	6	1	6
+47	New Years	2011-12-31	t	08:00:00	08:00:00	6	1	6
 \.
 
 
