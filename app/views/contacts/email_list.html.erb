@@ -8,9 +8,22 @@
 
 
 <% if @contacts %>
+<% notfound = [] %>
+<% found = [] %>
+<h3>Matching contacts with email addresses:</h3>
+<% for i in @contacts; if ( e = i.mailing_list_email ); found << "#{i.display_name} &lt;#{e}&gt;#{@include_comma ? "," : ""}"; else; notfound << "#{i.display_name} (##{ i.id })"; end; end %>
 <pre>
-<% for i in @contacts %>
-<%= i.display_name %> &lt;<%= i.mailing_list_email %>&gt;<%= @include_comma ? "," : "" %>
+<% for i in found -%>
+<%= i %> 
+<% end %>
+</pre>
+
+<h3>Matches without email addresses:</h3>
+<pre>
+<% for i in notfound -%>
+<%= i %> 
 <% end %>
 </pre>
 <% end %>
+
+
