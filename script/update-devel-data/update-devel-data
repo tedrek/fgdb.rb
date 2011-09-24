@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 if ! test -x /usr/bin/lzma; then
     echo "ERROR: please run sudo apt-get install lzma"
+    exit 1
 fi
 
 time make -C db create_devel_data
