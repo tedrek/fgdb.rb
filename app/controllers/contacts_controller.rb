@@ -3,6 +3,15 @@ class ContactsController < ApplicationController
   layout :with_sidebar
   filter_parameter_logging "user_password", "user_password_confirmation"
 
+  def email_list
+    @include_comma = (params[:include_comma] == "1")
+    if params[:conditions]
+      @conditions = Conditions.new
+      @conditions.apply_conditions(params[:conditions])
+      @contacts = Contact.find(:all, :conditions => @conditions.conditions(Contact))
+    end
+  end
+
   around_filter :transaction_wrapper
 
   def civicrm_sync

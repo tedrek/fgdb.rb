@@ -2,8 +2,11 @@ fgdb.rb (1.0.70) UNRELEASED; urgency=low
 
   * allow limiting by contact on the gizmos report (Closes: #23320)
   * add a recent crash page (Closes: #24513)
+  * add a report for generating list of email addresses which can be
+    copied to a mailing list or mail client, as well as adding two new
+    contact types for newsletters (Closes: #23408)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Sep 2011 12:29:26 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Sep 2011 19:27:54 -0700
 
 fgdb.rb (1.0.69) released; urgency=low
 

@@ -1,0 +1,16 @@
+<h1>List of volunteer email addresses <%= @conditions ? @conditions.to_s : "" %></h1>
+
+<% form_tag do %>
+<%= check_box_tag 'include_comma', "1", @include_comma %><%= label_tag 'include_comma' %><br />
+<%= conditions_html("conditions", ['contact_type', 'volunteered_hours_in_days']) %>
+<%= submit_tag 'View Email List' %>
+<% end %>
+
+
+<% if @contacts %>
+<pre>
+<% for i in @contacts %>
+<%= i.display_name %> &lt;<%= i.mailing_list_email %>&gt;<%= @include_comma ? "," : "" %>
+<% end %>
+</pre>
+<% end %>
