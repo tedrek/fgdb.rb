@@ -5,10 +5,13 @@ class ContactsController < ApplicationController
 
   def email_list
     @include_comma = (params[:include_comma] == "1")
+    @show_email = (params[:show_email] == "1")
     if params[:conditions]
       @conditions = Conditions.new
       @conditions.apply_conditions(params[:conditions])
       @contacts = Contact.find(:all, :conditions => @conditions.conditions(Contact))
+    else
+      @show_email = true
     end
   end
 
