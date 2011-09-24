@@ -1,3 +1,8 @@
+fgdb.rb (1.0.71) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Sep 2011 19:52:52 -0700
+
 fgdb.rb (1.0.70) released; urgency=low
 
   * allow limiting by contact on the gizmos report (Closes: #23320)
