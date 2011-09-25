@@ -27,9 +27,46 @@ class Sale < ActiveRecord::Base
   end
 
   def text_receipt_lines
-    [["Receipt for sale # #{self.id}"],
-    [],
-    ["This is a receipt"]]
+    store_credit_gizmo_events = self.gizmo_events.select{|x| x.gizmo_type.name == "store_credit"}
+    other_gizmo_events = self.gizmo_events - store_credit_gizmo_events
+    gizmo_lines =  other_gizmo_events.map{|event| [ event.attry_description( :ignore => ['unit_price'] ), "$" + event.unit_price.to_s, event.gizmo_count, "$" + event.total_price_cents.to_dollars.to_s, event.percent_discount(self.discount_schedule).to_s + "%", "$" + event.discounted_price(self.discount_schedule).to_dollars.to_s ] }
+    store_credit_gizmo_events_total_cents = store_credit_gizmo_events.inject(0){|t,x| t+=x.total_price_cents} 
+    gizmo_lines << []
+    payment_lines = [
+                     ["Subtotal:", "#{(self.calculated_subtotal_cents - store_credit_gizmo_events_total_cents).to_dollars}"],
+                     ["Discounted:", "#{self.calculated_discount_cents.to_dollars}"],
+                     ["Total:", "#{(self.calculated_total_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
+                    ]
+    seen_sc = false
+    self.payments.each{|payment|
+      amount = payment.amount_cents
+      if payment.payment_method.name == "store_credit" and !seen_sc
+        amount -= store_credit_gizmo_events_total_cents
+        seen_sc = true
+      end
+      payment_lines << [payment.payment_method.description + ":", amount.to_dollars]
+    }
+    if store_credit_gizmo_events_total_cents > 0 and !seen_sc
+      payment_lines << ["store credit:", (-1 * store_credit_gizmo_events_total_cents).to_dollars]
+    end
+    if self.calculated_total_cents > self.money_tendered_cents && !self.invoice_resolved?
+      payment_lines << [    "Due by #{self.created_at.to_date + 30 }:", (self.calculated_total_cents - self.money_tendered_cents).to_dollars]
+    end
+
+    head_lines = [
+     ["FREE GEEK"],
+     [],
+     ["Receipt for sale ##{self.id}"],
+     ["Date: #{self.occurred_at.strftime("%m/%d/%Y")}"],
+     ["Created By ##{User.find_by_id(self.cashier_created_by).contact_id}"],
+     []
+                 ]
+     # TODO: include others conditionally
+    footer_lines = [[],
+     ["Returns Policy:"],
+     ["In order to return an item, you must present your receipt at the time of return. The item must have original stickers attached, and must be returned in the same condition as originally sold. We do not offer refunds for any reason. In some circumstances, we do provide in-store credit, which is valid for a period of one year from the date of issue. We cannot provide duplicate copies of store credits; if you lose a store credit, you are out of luck."],
+    ]
+    head_lines + gizmo_lines + payment_lines + footer_lines
   end
 
   attr_accessor :contact_type  #anonymous or named

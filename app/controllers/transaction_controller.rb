@@ -26,6 +26,7 @@ class TransactionController < ApplicationController
       s = Sale.find_by_id(params[:id])
       res = generate_raw_receipt(s.text_receipt_lines, printer)
       page << "print_text(#{res.to_json});"
+#      page << "alert(#{res.to_json});"
     end
       page.hide loading_indicator_id("raw_receipt")
     end
