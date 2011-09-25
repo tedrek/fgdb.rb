@@ -17,6 +17,8 @@ function set_printers() {
   }
 }
 
+// FIXME: needs to be rewritten to be event driven so that race conditions and errors are accounted for
+
 function print_text(text) {
   var ap = document.jzebra;
   if(ap == null) {

@@ -1,3 +1,8 @@
+# Receipt printer configuration:
+# the local machines configures a printer for on the parellel port with make "Raw" and driver "Raw Queue" (might need to enable printing from Internet)
+# scribble adds a network IPP printer with address http://MACHINE:631/printers/PRINTER_NAME
+# the users installs java and chooses to enable text receipts for their session in fgdb's receipt display and chooses the printer
+
 module RawReceiptHelper
   def receipt_printer_enabled
     session.keys.include?('raw_receipt_printer')

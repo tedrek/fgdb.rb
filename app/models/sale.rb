@@ -26,6 +26,18 @@ class Sale < ActiveRecord::Base
     super(*args)
   end
 
+  # TODO list from Tony's notes:
+  # justify numbers right
+  # align all number columns and "Subtotal:", etc labels
+  # only show price after discount for unit and total
+  # if description is included, put it on the following line (attr_description kind of stuff)
+  # show "VOLUNTEER DISCOUNT" in flashing text if applied
+  # wrap words on word boundaries
+  # add the contact details for free geek
+  # replace the cashier's number with the customers, or anonymouse (zip)
+  # pad left side with some space
+  # center the FREE GEEK info at top
+  # s/receipt for sale/sale/
   def text_receipt_lines
     store_credit_gizmo_events = self.gizmo_events.select{|x| x.gizmo_type.name == "store_credit"}
     other_gizmo_events = self.gizmo_events - store_credit_gizmo_events
@@ -61,7 +73,7 @@ class Sale < ActiveRecord::Base
      ["Created By ##{User.find_by_id(self.cashier_created_by).contact_id}"],
      []
                  ]
-     # TODO: include others conditionally
+     # TODO: include others conditionally, maybe? wait for new text from Tony.
     footer_lines = [[],
      ["Returns Policy:"],
      ["In order to return an item, you must present your receipt at the time of return. The item must have original stickers attached, and must be returned in the same condition as originally sold. We do not offer refunds for any reason. In some circumstances, we do provide in-store credit, which is valid for a period of one year from the date of issue. We cannot provide duplicate copies of store credits; if you lose a store credit, you are out of luck."],
