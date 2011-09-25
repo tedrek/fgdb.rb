@@ -3,6 +3,45 @@
 
 cashierable_enabled = true;
 
+function set_printers() {
+  document.jzebra.findPrinter("");
+  var list = document.jzebra.getPrinters();
+  list = list.split(",").select(function(n) {return (n != "null");})
+  list.each(function(i){e = document.createElement("option"); e.text = e.value = i; $('receipt_printer').add(e, $('receipt_printer').options[0]);});
+  var a = $('receipt_printer').options;
+  for(var i = 0; i < a.length; i++) {
+    var q = a[i];
+    if(q.value == receipt_printer_default) {
+      $('receipt_printer').selectedIndex = i;
+    }
+  }
+}
+
+function print_text(text) {
+  var ap = document.jzebra;
+  if(ap == null) {
+    alert('jZebra could not load, do you have java installed?');
+    return;
+  }
+  var printer = selected_printer();
+  ap.findPrinter(printer);
+  if(printer == "") {
+    alert('Please choose a printer');
+    return;
+  }
+  // FIXME: we need to check that it is done with each step as we go
+  if(printer != ap.getPrinter()) {
+    alert('Could not choose printer');
+    return;
+  }
+  ap.append(text);
+  ap.print();
+}
+
+function selected_printer() {
+  return $('receipt_printer').options[$('receipt_printer').selectedIndex].value;
+}
+
 function selection_toggle(id) {
   var is_r = !window.location.href.match("default_assignments");
   var name = (is_r) ? 'Assignment' : 'DefaultAssignment';

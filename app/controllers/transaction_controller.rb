@@ -1,8 +1,35 @@
 class TransactionController < ApplicationController
   layout :check_for_receipt
 
+  helper :raw_receipt
+
   before_filter :set_defaults
   before_filter :be_a_thing
+
+  include RawReceiptHelper
+
+  def enable_raw_printing
+    printer = (params[:receipt] ? params[:receipt][:printer] : "")
+    receipt_printer_set_default(printer)
+    redirect_to :back
+  end
+
+  def raw_receipt
+    printer = (params[:receipt] ? params[:receipt][:printer] : "")
+    set_default = (params[:receipt] && (params[:receipt][:mode] == "default"))
+    render :update do |page|
+    if set_default
+      receipt_printer_set_default(printer)
+      page.reload
+    else
+      raise unless params[:controller] == 'sales'
+      s = Sale.find_by_id(params[:id])
+      res = generate_raw_receipt(s.text_receipt_lines, printer)
+      page << "print_text(#{res.to_json});"
+    end
+      page.hide loading_indicator_id("raw_receipt")
+    end
+  end
 
   protected
 
@@ -14,7 +41,6 @@ class TransactionController < ApplicationController
   def be_a_thing
     set_transaction_type((controller_name()).singularize)
   end
-
 
   def get_required_privileges
     a = super

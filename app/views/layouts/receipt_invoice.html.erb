@@ -57,6 +57,11 @@
 
         <INPUT type="button" id="restart_button" value="Start Over"
                onclick="window.close()" >
+
+        <% if params[:controller] == 'sales' %>
+        <hr />
+        <%= receipt_printer_html %>
+        <% end %>
       </span>
     </p>
 </body>

@@ -26,6 +26,12 @@ class Sale < ActiveRecord::Base
     super(*args)
   end
 
+  def text_receipt_lines
+    [["Receipt for sale # #{self.id}"],
+    [],
+    ["This is a receipt"]]
+  end
+
   attr_accessor :contact_type  #anonymous or named
 
   define_amount_methods_on("reported_discount_amount")
