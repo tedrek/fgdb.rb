@@ -140,7 +140,6 @@ class Sale < ActiveRecord::Base
     def totals(conditions)
       connection.execute(
                          "SELECT payments.payment_method_id,
-                sales.discount_schedule_id,
                 sum(payments.amount_cents) as amount,
                 count(*),
                 min(sales.id),
@@ -148,7 +147,7 @@ class Sale < ActiveRecord::Base
          FROM sales
          JOIN payments ON payments.sale_id = sales.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
-         GROUP BY payments.payment_method_id, sales.discount_schedule_id"
+         GROUP BY payments.payment_method_id"
                          )
     end
   end
