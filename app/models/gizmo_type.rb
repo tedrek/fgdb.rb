@@ -4,6 +4,7 @@ class GizmoType < ActiveRecord::Base
   :dependent => :destroy
   has_many  :discount_schedules, :through => :discount_schedules_gizmo_types
   has_and_belongs_to_many    :gizmo_contexts
+  belongs_to :return_policy
 
   validates_numericality_of(:required_fee_cents,
                             :suggested_fee_cents,
@@ -56,6 +57,16 @@ class GizmoType < ActiveRecord::Base
 
   def effective_on?(date)
     (effective_on.nil? || effective_on <= date) && (ineffective_on.nil? || ineffective_on > date)
+  end
+
+  def my_return_policy_id
+    pol = self.return_policy_id
+    if ! pol
+      if p = parent(Date.today) # FIXME
+        pol = p.my_return_policy_id
+      end
+    end
+    pol
   end
 
   def multiplier_to_apply(schedule, date)

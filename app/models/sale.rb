@@ -77,11 +77,8 @@ class Sale < ActiveRecord::Base
       head_lines << ["   ### #{sprintf('%d', percent)}% #{self.discount_schedule.name.upcase} DISCOUNT APPLIED ###"]
     end
     head_lines << []
-     # TODO: include others conditionally, maybe? wait for new text from Tony.
-    footer_lines = [[],
-     ["Returns Policy:"],
-     ["In order to return an item, you must present your receipt at the time of return. The item must have original stickers attached, and must be returned in the same condition as originally sold. We do not offer refunds for any reason. In some circumstances, we do provide in-store credit, which is valid for a period of one year from the date of issue. We cannot provide duplicate copies of store credits; if you lose a store credit, you are out of luck."],
-    ]
+     # TODO: create the actual return_policies and gizmo_type associations
+    footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| [x.full_text]}
     head_lines + gizmo_lines + payment_lines + footer_lines
   end
 
