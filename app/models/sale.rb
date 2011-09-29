@@ -26,6 +26,8 @@ class Sale < ActiveRecord::Base
     super(*args)
   end
 
+  # Quick Testing: ./script/runner 'class F; include RawReceiptHelper; def session; {}; end; end; puts F.new.generate_raw_receipt(Sale.last.text_receipt_lines)'
+
   # TODO list from Tony's notes:
   # justify numbers right
   # align all number columns and "Subtotal:", etc labels
@@ -69,10 +71,12 @@ class Sale < ActiveRecord::Base
      ["FREE GEEK"],
      [],
      ["Receipt for sale ##{self.id}"],
-     ["Date: #{self.occurred_at.strftime("%m/%d/%Y")}"],
-     ["Created By ##{User.find_by_id(self.cashier_created_by).contact_id}"],
-     []
-                 ]
+     ["Date: #{self.occurred_at.strftime("%m/%d/%Y")}"]]
+    if self.discount_schedule.name != 'no_discount'
+      percent = (100 - (100 * self.discount_schedule.discount_schedules_gizmo_types.find_by_gizmo_type_id(GizmoType.find_by_name_and_ineffective_on('gizmo', nil).id).multiplier)) # FIXME: ineffective_on shouldn't be nil, it should find was effective during the self.created at of this
+      head_lines << ["   ### #{sprintf('%d', percent)}% #{self.discount_schedule.name.upcase} DISCOUNT APPLIED ###"]
+    end
+    head_lines << []
      # TODO: include others conditionally, maybe? wait for new text from Tony.
     footer_lines = [[],
      ["Returns Policy:"],
