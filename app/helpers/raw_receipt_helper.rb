@@ -33,17 +33,91 @@ module RawReceiptHelper
     end
   end
 
-# the first subelement would align left, the
-#              rest would align right. they would be joined by spaces for as many as will fit before it
-#              finds a breaking places to put a \n if necessary and continue its formatting logic on the
-#              next line (still aligning right)
-  def receipt_printer_format_line(line, limit)
-    line.join(' ')# FIXME: needs line limit implementation, and alignment
+  # TODO: need to make sure handling of line_width and indent is correct always
+  def basic_wrap_lines(text, line_width, indent = 0)
+    to_add = (" " * indent)
+    my_next_limit = (line_width - indent)
+    text.split("\n").collect do |line|
+      if line.length > line_width
+        r = line.sub(/(.{1,#{line_width}})(\s+|$)/, "\\1\n").split("\n")
+        firstline = r.shift
+        if r.length > 0
+          rest = r.join("\n")
+          extra = nil
+          if rest.split(" ").last.length > my_next_limit
+            a = rest.split(" ")
+            extra = a.pop
+            rest = a.join(" ")
+          end
+          if rest.length > my_next_limit
+            rest = rest.gsub(/(.{1,#{my_next_limit}})(\s+|$)/, "#{to_add}\\1\n").strip
+          end
+          a= [firstline, to_add + rest]
+          a << (" " * [0, [indent, line_width - extra.length].min].max)+extra if extra
+          a.join("\n")
+        else
+          firstline
+        end
+      else
+        line
+      end
+    end * "\n"
+  end
+
+  def receipt_printer_format_line(line, limit, padding = 2)
+    type = line.shift
+    limit -= (2 * padding)
+    textline = line.join(' ')
+    pad =  (' ' * (padding))
+    if line.length == 0
+      return textline
+    elsif type == 'center'
+      if textline.length > limit # if too long just format as left text, this should mean things are broken
+        return pad + receipt_printer_format_line(['left', textline], limit, 0) + pad
+      else
+        extra_needed = (limit - textline.length)
+        one_off = (extra_needed % 2)
+        extra_needed -= one_off
+        right = (extra_needed / 2)
+        left = right + one_off
+        return (' ' * (padding + left))+ (textline)+ (' ' * (padding + right))
+      end
+    elsif type == 'left'
+      return pad + basic_wrap_lines(textline, limit, 2 + padding)
+    elsif type == 'two'
+      left_limit = (limit % 2)
+      left_limit += ((limit - left_limit) / 2)
+      first_col = line[0]
+      second_col = line[1]
+      while first_col.length < left_limit
+        first_col += ' '
+      end
+      result = first_col + second_col
+      return pad + result + pad
+    elsif type == 'right'
+      # will handle the arry named line
+      # line will have up to 5 elements, with up to 8 chars each
+      # will add padding to sides, line elements up with right side and pad with spaces to fill out
+      mys = ''
+      5.times do |x|
+        this = line.pop.to_s
+        mys = this + mys
+        t = ((x + 1) * 8)
+#        t -= 1 if x == 0 # evil
+        t += 1 if x == 1 # replaced
+        while mys.length < t
+          mys = ' ' + mys
+        end
+      end
+      return mys
+    else
+      raise "Unknown type of line: #{type}"
+    end
   end
 
   def printer_cut_character(printer_name)
     printer_characters = {}
-    printer_characters[printer_name] || "\x1Bi" 
+    printer_characters[printer_name] || "\x1Bi"
   end
 
   def limit_by_printer_name(printer_name)

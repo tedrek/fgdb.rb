@@ -1,6 +1,6 @@
 fgdb.rb (1.0.71) released; urgency=low
 
-  * lame attempt at receipt printing
+  * thermal receipt printing (Closes: #24467)
   * add anonymous option on store returns (Closes: #24684)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 01 Oct 2011 00:30:11 -0700
