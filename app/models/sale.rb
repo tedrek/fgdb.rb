@@ -32,16 +32,18 @@ class Sale < ActiveRecord::Base
     other_gizmo_events = self.gizmo_events - store_credit_gizmo_events
     gizmo_lines =  []
     other_gizmo_events.each{|event|
+      iszero = event.percent_discount(self.discount_schedule) == 0
       gizmo_lines << [ 'left', event.attry_description( :upcase => true, :ignore => ['unit_price'] ) ]
-      gizmo_lines << ['right', event.gizmo_count.to_s + ' @', event.unit_price.to_s, event.total_price_cents.to_dollars.to_s, 'less ' + event.percent_discount(self.discount_schedule).to_s + "%", event.discounted_price(self.discount_schedule).to_dollars.to_s]
+      gizmo_lines << ['right', event.gizmo_count.to_s + ' @', event.unit_price.to_s, iszero ? '' : event.total_price_cents.to_dollars.to_s, iszero ? '' : ('less ' + event.percent_discount(self.discount_schedule).to_s + "%"), event.discounted_price(self.discount_schedule).to_dollars.to_s]
     }
     store_credit_gizmo_events_total_cents = store_credit_gizmo_events.inject(0){|t,x| t+=x.total_price_cents} 
     gizmo_lines << []
-    payment_lines = [
-                     ['right', "Subtotal:", "#{(self.calculated_subtotal_cents - store_credit_gizmo_events_total_cents).to_dollars}"],
-                     ['right', "Discounted:", "#{self.calculated_discount_cents.to_dollars}"],
-                     ['right', "Total:", "#{(self.calculated_total_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
-                    ]
+    payment_lines = []
+    unless self.calculated_discount_cents == 0
+      payment_lines << ['right', "Subtotal:", "#{(self.calculated_subtotal_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
+      payment_lines << ['right', "Discounted:", "#{self.calculated_discount_cents.to_dollars}"]
+    end
+    payment_lines << ['right', "Total:", "#{(self.calculated_total_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
     seen_sc = false
     self.payments.each{|payment|
       amount = payment.amount_cents
