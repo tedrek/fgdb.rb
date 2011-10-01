@@ -50,7 +50,6 @@ function monitorPrinting() {
         alert("ERROR: printing failed. " + e.getLocalizedMessage());
       } else {
         Element.hide("raw_receipt_loading_indicator_id");
-        alert("Printed Successfully"); // REMOVEME
       }
     }
   } else {
