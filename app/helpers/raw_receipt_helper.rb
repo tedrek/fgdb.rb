@@ -43,17 +43,10 @@ module RawReceiptHelper
         firstline = r.shift
         if r.length > 0
           rest = r.join("\n")
-          extra = nil
-          if rest.split(" ").last.length > my_next_limit
-            a = rest.split(" ")
-            extra = a.pop
-            rest = a.join(" ")
-          end
           if rest.length > my_next_limit
             rest = rest.gsub(/(.{1,#{my_next_limit}})(\s+|$)/, "#{to_add}\\1\n").strip
           end
           a= [firstline, to_add + rest]
-          a << (" " * [0, [indent, line_width - extra.length].min].max)+extra if extra
           a.join("\n")
         else
           firstline
