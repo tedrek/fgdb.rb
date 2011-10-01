@@ -73,7 +73,7 @@ class Sale < ActiveRecord::Base
       head_lines << ['center', "### #{sprintf('%d', percent)}% #{self.discount_schedule.name.upcase} DISCOUNT APPLIED ###"]
     end
     head_lines << []
-    footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| ['left', x.full_text]}
+    footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.select{|x| !x.nil?}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| ['left', x.full_text]}
     final = head_lines + gizmo_lines + payment_lines + footer_lines
     final
   end

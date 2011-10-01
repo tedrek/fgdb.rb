@@ -26,7 +26,10 @@ class TransactionController < ApplicationController
       s = Sale.find_by_id(params[:id])
       res = generate_raw_receipt(s.text_receipt_lines, printer)
       page << "print_text(#{res.to_json});"
-#      page << "alert(#{res.to_json});"
+      text = s.storecredits.select{|x| !x.spent?}.map{|credit|
+          "Store Credit Hash ##{StoreChecksum.new_from_result(credit.id).checksum}\n\nAmount: $#{credit.amount}\nExpires: #{credit.valid_until.strftime("%B %d, %Y")}"
+        }.join("\n\n\n")
+      page << "alert(#{text.to_json});" if text.length > 0
     end
       page.hide loading_indicator_id("raw_receipt")
     end
