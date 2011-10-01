@@ -1,9 +1,5 @@
 <%# todo: rename this file.. %>
 <% is_r = params[:controller] == "assignments"%>
-<% if @first_done.nil? %>
-<% @first_done = true %>
-<%= has_privileges('admin_skedjul') ? (link_to "add intern", :action => "add_shift", :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %>
-<% end %>
 <div>
 <% if is_r %>
 <% my_date = Date.strptime(block_anchor, "%Y%m%d") %>
