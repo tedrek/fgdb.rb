@@ -1,3 +1,8 @@
+fgdb.rb (1.0.72) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 01 Oct 2011 00:30:26 -0700
+
 fgdb.rb (1.0.71) released; urgency=low
 
   * lame attempt at receipt printing
