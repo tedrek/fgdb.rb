@@ -1,8 +1,9 @@
 fgdb.rb (1.0.71) UNRELEASED; urgency=low
 
   * lame attempt at receipt printing
+  * add anonymous option on store returns (Closes: #24684)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 01 Oct 2011 00:08:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 01 Oct 2011 00:27:09 -0700
 
 fgdb.rb (1.0.70) released; urgency=low
 

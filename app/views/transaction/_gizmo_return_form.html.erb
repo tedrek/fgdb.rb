@@ -4,7 +4,18 @@
     <!--[form:sale]-->
     <div id="transaction_info">
       <div id="<%= contact_searchbox_id(@options) %>">
-        <%= render( :partial => 'contact_search' ) %>
+        <label for="donation_contact_type">What kind of contact?</label>
+        <%= select_visibility( 'gizmo_return', 'contact_type',
+                               :anonymous => render( :partial => 'anonymous' ),
+                               :named => render( :partial => 'contact_search',
+                                                 :locals => {:options => {
+                                                     :on_display => "if($('contact__default_discount_schedule')) {
+                                              set_new_val($('sale_discount_schedule_id'),
+                                                          parseInt($('contact__default_discount_schedule').innerHTML));
+                                            }",
+                                                   }}
+                                                 )
+                               ) %>
       </div>
 
       <div class="form-extras">
