@@ -55,7 +55,7 @@ class Sale < ActiveRecord::Base
       payment_lines << ['right', payment.payment_method.description + ":", (amount + ((payment.payment_method.name == "cash") ? cash_back : 0)).to_dollars]
     }
     if cash_back > 0
-      payment_lines << ['right', "change due: #{cash_back.to_dollars}"]
+      payment_lines << ['right', "change due:", "#{cash_back.to_dollars}"]
     end
     if store_credit_gizmo_events_total_cents > 0 and !seen_sc
       payment_lines << ['right', "store credit:", (-1 * store_credit_gizmo_events_total_cents).to_dollars]

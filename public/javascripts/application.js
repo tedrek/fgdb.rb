@@ -49,7 +49,12 @@ function monitorPrinting() {
       if(e != null) {
         alert("ERROR: printing failed. " + e.getLocalizedMessage());
       } else {
-        Element.hide("raw_receipt_loading_indicator_id");
+        if(typeof(loading_indicator_after_print) != "undefined") {
+          Element.hide(loading_indicator_after_print);
+        }
+        if(typeof(redirect_after_print) != "undefined") {
+          window.location.href = redirect_after_print;
+        }
       }
     }
   } else {
