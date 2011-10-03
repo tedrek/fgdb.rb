@@ -1,31 +1,39 @@
 <div id="optical_drives">
   <h2>Optical Drives</h2>
-  <% @parser.xml_foreach("//node[contains(@id, 'cdrom')]") do %>
+  <% @system_parser.opticals.each do |c| %>
     <table>
       <tr>
         <td>Drive:</td>
         <td>
-          <%= @parser.xml_value_of("logicalname") %>
+          <%= c.name %>
         </td>
       </tr>
+      <% if c.description %>
       <tr>
         <td>
           Description:
         </td>
         <td>
-          <%= @parser.xml_value_of("description") %>
+          <%= c.description %>
         </td>
       </tr>
+      <% end %>
+      <% if c.capabilities %>
+      <tr>
+        <td>
+          Capabilities:
+        </td>
+        <td>
+          <%= c.capabilities %>
+        </td>
+      </tr>
+      <% end %>
       <tr>
         <td>
           Type:
         </td>
         <td>
-          <% if (@parser.do_with_parent do @parser.xml_value_of("product") + @parser.xml_value_of("description") end).match(/(scsi|sata|ide)/i) %>
-            <%= $1.upcase %>
-          <% else %>
-            Unknown
-          <% end %>
+            <%= c.my_type %>
         </td>
       </tr>
       <tr>
@@ -33,7 +41,7 @@
           Model:
         </td>
         <td>
-          <%= @parser.xml_value_of("product") %>
+          <%= c.model %>
         </td>
       </tr>
     </table>

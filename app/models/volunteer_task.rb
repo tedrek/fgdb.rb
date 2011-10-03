@@ -4,16 +4,31 @@ class VolunteerTask < ActiveRecord::Base
   belongs_to :volunteer_task_type
   belongs_to :contact
   belongs_to :community_service_type
+  belongs_to :program
 
   validates_presence_of :contact
   validates_presence_of :volunteer_task_type
   validates_presence_of :date_performed
   validates_presence_of :duration
+  validates_presence_of :program
 
   before_save :add_contact_types
+  after_save :set_contact_syseval_count
+  after_destroy { |record| c = record.contact; c.update_syseval_count; c.save!}
+
+  named_scope :for_type_id, lambda{|opt| {:conditions => ['volunteer_task_type_id = ?', opt]}}
+
+  def set_contact_syseval_count
+    self.contact.update_syseval_count
+    self.contact.save! # , :autosave => true does not work?
+  end
 
   def self.find_by_conditions(conditions)
     connection.execute("SELECT volunteer_tasks.duration AS duration, community_service_types.description AS community_service_type, volunteer_task_types.description AS volunteer_task_types FROM volunteer_tasks LEFT OUTER JOIN volunteer_task_types ON volunteer_task_types.id = volunteer_tasks.volunteer_task_type_id LEFT OUTER JOIN community_service_types ON community_service_types.id = volunteer_tasks.community_service_type_id WHERE #{sanitize_sql_for_conditions(conditions)}")
+  end
+
+  def show_for_me
+    VolunteerTaskType.instantiables.effective_on(self.date_performed || Date.today).sort_by{|x| x.description.downcase}
   end
 
   def validate
@@ -23,18 +38,25 @@ class VolunteerTask < ActiveRecord::Base
     if duration.to_f <= 0.0
       errors.add(:duration, "must be greater than zero")
     end
+    errors.add(:date_performed, "is in the future") if self.date_performed > Date.today
   end
 
   def effective_duration
-    if volunteer_task_type
-      return (duration * volunteer_task_type.hours_multiplier)
-    else
-      return duration
+    d = duration
+    if !self.program.adoption_credit
+      return 0.0
     end
+    if volunteer_task_type
+      d *= volunteer_task_type.hours_multiplier
+    end
+    if community_service_type
+      d *= community_service_type.hours_multiplier
+    end
+    return d
   end
 
   def type_of_task?(type)
-    volunteer_task_type.type_of_task? type
+    program.name == type
   end
 
   def add_contact_types

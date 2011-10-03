@@ -2,7 +2,8 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'UTF8';
+SET statement_timeout = 0;
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -21,10 +22,12 @@ SELECT pg_catalog.setval('contracts_id_seq', 2, true);
 -- Data for Name: contracts; Type: TABLE DATA; Schema: public; Owner: -
 --
 
+SET SESSION AUTHORIZATION DEFAULT;
+
 ALTER TABLE contracts DISABLE TRIGGER ALL;
 
 COPY contracts (id, name, description, label, notes, created_at, updated_at, instantiable) FROM stdin;
-1	default	normal	keeper	\N	2008-11-01 03:36:20.074472	2008-11-01 03:36:20.074472	t
+1	default	normal	No Sticker	\N	2008-11-01 03:36:20.074472	2009-10-02 22:40:21.882428	t
 \.
 
 

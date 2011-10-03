@@ -1,0 +1,16 @@
+  <%= f.hidden_field :redirect_to, :value => @referer %>
+
+  <p>
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
+  </p>
+  <p>
+    <%= f.label :weekday_id %><br />
+    <%= select(f.object_name, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, :include_blank => true) %>
+  </p>
+  <p>
+    <%= f.label :notes %><br />
+    <%= f.text_area :notes %>
+  </p>
+  <%= render :partial => 'volunteer_events/volunteer_shifts' %>
+  <%= render :partial => 'volunteer_events/resources' %>

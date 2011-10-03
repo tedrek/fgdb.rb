@@ -1,8 +1,7 @@
 
     <% # output trailing cells as padding %>
-    <% trail_time = (begin; ( @shift.weekday.end_time - @prev_shift[:end_time] ); rescue; 0; end) / (60*15) %>
-    <% for i in (1..trail_time) %>
-      <td>&nbsp;</td>
-    <% end %>
+
+    <% trail_time = (old ? (new - old) : 0) / (60) %>
+    <%= render :partial => "work_shifts/pad", :locals => {:mins => trail_time} %>
 
 </tr>

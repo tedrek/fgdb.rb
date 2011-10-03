@@ -1,0 +1,10 @@
+<% for attribute in attributes -%>
+<p>
+  <b><%= attribute.column.human_name %>:</b>
+  <%%=h @<%= singular_name %>.<%= attribute.name %> %>
+</p>
+
+<% end -%>
+
+<%%= link_to 'Edit', {:action => "edit", :id => @<%= singular_name %>.id} %> |
+<%%= link_to 'Back', {:action => "index"} %>

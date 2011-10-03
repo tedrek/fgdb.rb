@@ -1,0 +1,7 @@
+hash = get_hash(@date, @worker, @hours)
+hash.each{|k,v|
+  if v.class == Float
+    page << "$(#{k.to_s.to_json}).innerHTML = #{sprintf("%.2f", v).to_s.to_json};"
+  end
+}
+page.hide loading_indicator_id("shifts_totals")

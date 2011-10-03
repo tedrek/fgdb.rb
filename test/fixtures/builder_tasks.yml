@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  cashier_signed_off_by: 1
+  action_id: 1
+  contact_id: 1
+  notes: MyText
+
+two:
+  cashier_signed_off_by: 1
+  action_id: 1
+  contact_id: 1
+  notes: MyText

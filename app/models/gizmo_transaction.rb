@@ -1,6 +1,14 @@
 module GizmoTransaction
   def usable_gizmo_types
-    self.gizmo_context.gizmo_types
+    if self.gizmo_context == GizmoContext.gizmo_return
+      return (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq
+    else
+      return self.gizmo_context.gizmo_types.effective_on(self.occurred_at || Date.today)
+    end
+  end
+
+  def storecredit_priv_check
+    errors.add("gizmos", "increases store credit value without cashier privileges") unless (Thread.current['cashier'] and Thread.current['cashier'].has_privileges("issue_store_credit"))
   end
 
   def showable_gizmo_types
@@ -30,7 +38,20 @@ module GizmoTransaction
   end
 
   def displayed_payment_method
-    payments.map {|payment| payment.payment_method.description}.uniq.join( ' ' )
+    found = payments.map {|payment| payment.type_description}.uniq
+    t = ""
+    if found.length > 1
+      t = "mixed"
+    elsif found.length == 1
+      t = found.first # will be one of: unresolved_invoice, resolved_invoice, cash, check, coupon, credit, store_credit
+    else # length < 1
+      t = "free"
+    end
+    return t + "_transaction"
+  end
+
+  def strip_postal_code
+    self.postal_code = self.postal_code.strip if self.postal_code
   end
 
   def invoices
@@ -51,7 +72,7 @@ module GizmoTransaction
 
   def invoiced?
     return if ! self.respond_to?(:payments)
-    payments.detect {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
+    payments.detect {|payment| payment.payment_method.name.match(/invoice/)}
   end
 
   def invoice_resolved?
@@ -76,6 +97,16 @@ module GizmoTransaction
     end
   end
 
+  def contact_information_web
+    if contact
+      contact.display_name
+    elsif postal_code
+      ["Anonymous (#{postal_code})"]
+    else
+      ["Dumped"]
+    end
+  end
+
   def hidable_contact_information
     if contact
       contact.display_name_address
@@ -85,13 +116,17 @@ module GizmoTransaction
   end
 
   def should_i_hide_it?
-    if gizmo_context == GizmoContext.donation
+    if gizmo_context == GizmoContext.donation or gizmo_context == GizmoContext.gizmo_return
       return true
-    elsif gizmo_context == GizmoContext.sale or gizmo_context == GizmoContext.gizmo_return
+    elsif gizmo_context == GizmoContext.sale
       return false
     else
       raise NoMethodError
     end
+  end
+
+  def is_adjustment?
+    self.adjustment
   end
 
   def combine_cash_payments
@@ -138,14 +173,22 @@ module GizmoTransaction
     return ""
   end
 
+  def real_occurred_at
+    self.read_attribute(:occurred_at)
+  end
+
+  def set_occurred_at_on_transaction
+    self.write_attribute(:occurred_at, Time.now) if self.real_occurred_at.nil?
+  end
+
   def occurred_at
     value = case self
            when Sale
-             self.created_at
+             self.real_occurred_at
            when Donation
-             self.created_at
+             self.real_occurred_at
            when GizmoReturn
-             self.created_at
+             self.real_occurred_at
            when Disbursement
              self.disbursed_at
            when Recycling
@@ -157,7 +200,7 @@ module GizmoTransaction
   end
 
   def set_occurred_at_on_gizmo_events
-    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at; event.save!}
+    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at; event.save! unless event.id.nil?} # stupid has_many relationships...
   end
 
   #########
@@ -179,10 +222,12 @@ module GizmoTransaction
   def add_contact_types
     if(contact and
        (contact_type == 'named' and
-        required_contact_type != nil and
-        (! contact.contact_types.include?(required_contact_type)))
-       )
-      contact.contact_types << required_contact_type
+        required_contact_type != nil))
+      for x in [required_contact_type].flatten
+        if (! contact.contact_types.include?(x))
+          contact.contact_types << x
+        end
+      end
     end
   end
 end

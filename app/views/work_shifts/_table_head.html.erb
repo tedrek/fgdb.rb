@@ -1,12 +1,17 @@
-<table border="0" width="100%" summary="<%=h shift.weekday.name %>">
-<% day_length = (( @shift.weekday.end_time - @shift.weekday.start_time ) / ( 60 * 30 )).to_int %>
-    <caption><%=h shift.weekday.name %>, <%=h shift.shift_date.strftime('%B %d, %Y').gsub( ' 0', ' ' ) %> (work shifts)</caption>
+<% if skedj.opts.include?(:table_head_partial) %>
+<%= render :partial => skedj.opts[:table_head_partial], :locals => {:skedj => skedj, :block_display => skedj.get_method_value(skedj.current, :block_method_display), :block_anchor => skedj.get_method_value(skedj.current,( skedj.opts.include?(:block_anchor) ? :block_anchor : :block_method_display))} %>
+<% end %>
+<a name="<%= skedj.get_method_value(skedj.current,( skedj.opts.include?(:block_anchor) ? :block_anchor : :block_method_display)) %>"></a>
+<table class="skedj" border="0" width="100%" summary="<%=h skedj.get_method_value(skedj.current,:block_method_display) %>">
+<% day_length = (( skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time) ) / ( 60 * 30 )).to_int %>
+
+    <caption><%=h skedj.get_method_value(skedj.current, :block_method_display) %> (<%= skedj.conditions.skedj_to_s("before", false, ["cancelled"]) %>)</caption>
     <tr>
     <th width="10%">&nbsp;</th>
     <% for i in (0..(@day_length-1)) %>
       <% time = (@sched_start_time + (i * 60 * 30 )) %>
       <% display_time = time.strftime(" %I:%M").gsub( ' 0', '' ) %>
-      <th colspan="2" width="<%= @width %>%"><%= display_time %></th>
+      <th colspan="30" width="<%= @width %>%"><%= display_time %></th>
     <% end %>
     </tr>
 

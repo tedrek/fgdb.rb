@@ -1,0 +1,6 @@
+<% mins = mins.to_i %>
+    <% while mins > 0 %>
+      <% length = [mins, 15].min %>
+      <td colspan="<%= length %>">&nbsp;</td>
+      <% mins -= length %>
+    <% end %>

@@ -3,15 +3,52 @@ class ContactsController < ApplicationController
   layout :with_sidebar
   filter_parameter_logging "user_password", "user_password_confirmation"
 
+  def email_list
+    @include_comma = (params[:include_comma] == "1")
+    @show_email = (params[:show_email] == "1")
+    if params[:conditions]
+      @conditions = Conditions.new
+      @conditions.apply_conditions(params[:conditions])
+      @contacts = Contact.find(:all, :conditions => @conditions.conditions(Contact))
+    else
+      @show_email = true
+    end
+  end
+
   around_filter :transaction_wrapper
-  before_filter :authorized_only, :except => [:check_cashier_code]
+
+  def civicrm_sync
+    _civicrm_sync
+  end
+
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['manage_contacts'], :except => ['check_cashier_code', 'civicrm_sync']}
+    a << {:only => ['/admin_user_accounts'], :privileges => ['role_admin']}
+    a
+  end
+  public
+
   before_filter :be_stupid
 
   def check_cashier_code
     uid = params[:cashier_code]
+    append = (params[:append_this].nil? ? "" : "/#{params[:append_this]}")
     t = false
-    if uid && (User.find_by_cashier_code(uid.to_i))
+    u = nil
+    if uid && (u = User.find_by_cashier_code(uid.to_i))
       t = true
+
+      t = false if !u.can_login?
+
+      ref = request.env["HTTP_REFERER"]
+      ref = ref.split("/")
+      c = ref[3]
+      a = (ref[4] || "index") + append
+      c = c.classify.pluralize + "Controller"
+      Thread.current['user'] = Thread.current['cashier']
+      t = false if ! c.constantize.sb_has_required_privileges(a)
     else
       t = false
     end
@@ -21,9 +58,11 @@ class ContactsController < ApplicationController
     end
   end
 
+  protected
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'contact')
   end
+  public
 
   class ForceRollback < RuntimeError
   end
@@ -37,18 +76,6 @@ class ContactsController < ApplicationController
       raise ForceRollback.new if flash[:error]
     end
   rescue ForceRollback
-  end
-
-  def authorized_only
-    #     if params[:id]
-    #       contact_id = params[:id].to_i
-    #     elsif params[:contact_id]
-    #       contact_id = params[:id].to_i
-    #     else
-    #       contact_id = nil
-    #     end
-    #     requires_role_or_me(contact_id, 'CONTACT_MANAGER')
-    requires_role('CONTACT_MANAGER', 'FRONT_DESK', 'STORE', 'VOLUNTEER_MANAGER')
   end
 
   ######
@@ -94,7 +121,7 @@ class ContactsController < ApplicationController
 
   def update_display_area
     @contact = Contact.find( params.fetch(:contact_id, '').strip )
-    render :partial => 'display', :locals => { :@contact => @contact, :options => params['options'] || params}
+    render :partial => 'display', :locals => { :contact => @contact, :options => params['options'] || params}
   end
 
   def new
@@ -105,7 +132,7 @@ class ContactsController < ApplicationController
     @options = params.merge({:action => "create", :id => rand(1000).to_s * 10})
     @new_options = @options.merge(:action => "new", :id => nil)
     @successful = true
-    render :partial => 'new_edit', :locals => { :@options => @options }
+    render :partial => 'new_edit', :locals => { :options => @options }
   end
 
   def create
@@ -113,7 +140,7 @@ class ContactsController < ApplicationController
     @contact = Contact.new(params[:contact])
 
     if params[:contact][:is_user].to_i != 0
-      if !has_role?(:ADMIN)
+      if !has_required_privileges("/admin_user_accounts")
         raise RuntimeError.new("You are not authorized to create a user login")
       end
       @contact.user = User.new(params[:user])
@@ -139,18 +166,18 @@ class ContactsController < ApplicationController
 
     @options = params.merge({ :action => "update", :id => params[:id] })
     @view_options = @options.merge(:action => "view")
-    render :partial => 'new_edit', :locals => { :@options => @options }
+    render :partial => 'new_edit', :locals => { :options => @options }
   end
 
   def update
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if has_role_or_is_me?(@contact.id, :ADMIN)
+      if has_required_privileges("/admin_user_accounts") or has_privileges("contact_#{@contact.id}")
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
           @contact.user.attributes = params[:user]
-          if has_role?(:ADMIN)
+          if has_required_privileges("/admin_user_accounts")
             if params[:roles]
               @contact.user.roles = Role.find(params[:roles])
             else
@@ -188,8 +215,7 @@ class ContactsController < ApplicationController
 
   def method_missing(symbol, *args)
     if /^auto_complete_for/.match(symbol.to_s)
-      #:MC: gah!  the auto_complete_field method screws up the arguments with that "amp;".
-      @contacts = Contact.search(params[params["amp;object_name"]][params[:field_name]].strip, :limit => 10)
+      @contacts = Contact.search(params[params["object_name"]][params[:field_name]].strip, :limit => 10)
       render :partial => 'auto_complete_list'
     else
       super
@@ -200,25 +226,15 @@ class ContactsController < ApplicationController
   private
   #######
 
-  def _apply_line_item_data(contact)
-    @contact_methods = []
-    if params[:contact_methods]
-      for contact_method in params[:contact_methods].values
-        p = ContactMethod.new(contact_method)
-        @contact_methods << p
-      end
-    end
-    orig = contact.contact_methods.map{|x| x}
-    contact.contact_methods = @contact_methods
-    orig.map{|x| ContactMethod.find(x.id)}.each{|x| x.destroy if x.contact_id.nil?}
-  end
-
   def _save
     @contact.contact_types = ContactType.find(params[:contact_types]) if params[:contact_types]
     success = @contact.save
-    _apply_line_item_data(@contact)
+    @contact_methods = apply_line_item_data(@contact, ContactMethod)
     if @contact.user
-      success = @contact.user.save and success
+      success = success and @contact.user.save
+    end
+    if success
+      @contact_methods.each{|x| x.save}
     end
     return success
   end

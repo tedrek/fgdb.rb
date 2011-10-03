@@ -9,6 +9,10 @@ class GizmoContext < ActiveRecord::Base
     name[0..2].capitalize
   end
 
+  def model
+    self.name.classify.constantize
+  end
+
   def GizmoContext.find_all_for_select
     find(:all).map {|context| [context.description, context.id]}
   end
@@ -17,16 +21,8 @@ class GizmoContext < ActiveRecord::Base
     @@donation ||= find_by_name('donation')
   end
 
-  def GizmoContext._gizmo_return
-    g = find_by_name('gizmo_return')
-    def g.gizmo_types
-      (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq
-    end
-    return g
-  end
-
   def GizmoContext.gizmo_return
-    @@gizmo_return ||= GizmoContext._gizmo_return
+    @@gizmo_return ||= find_by_name('gizmo_return')
   end
 
   def GizmoContext.sale

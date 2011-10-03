@@ -1,15 +1,194 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+cashierable_enabled = true;
+
+function set_printers() {
+  document.jzebra.findPrinter("");
+  var list = document.jzebra.getPrinters();
+  list = list.split(",").select(function(n) {return (n != "null");})
+  list.each(function(i){e = document.createElement("option"); e.text = e.value = i; $('receipt_printer').add(e, $('receipt_printer').options[0]);});
+  var a = $('receipt_printer').options;
+  for(var i = 0; i < a.length; i++) {
+    var q = a[i];
+    if(q.value == receipt_printer_default) {
+      $('receipt_printer').selectedIndex = i;
+    }
+  }
+}
+
+// FIXME: needs to be rewritten to be event driven so that race conditions and errors are accounted for
+
+function print_text(text) {
+  var ap = document.jzebra;
+  if(ap == null) {
+    alert('jZebra could not load, do you have java installed?');
+    return;
+  }
+  var printer = selected_printer();
+  ap.findPrinter(printer);
+  if(printer == "") {
+    alert('Please choose a printer');
+    return;
+  }
+  // FIXME: we need to check that it is done with each step as we go
+  if(printer != ap.getPrinter()) {
+    alert('Could not choose printer');
+    return;
+  }
+  ap.append(text);
+  ap.print();
+}
+
+function selected_printer() {
+  return $('receipt_printer').options[$('receipt_printer').selectedIndex].value;
+}
+
+function selection_toggle(id) {
+  var is_r = !window.location.href.match("default_assignments");
+  var name = (is_r) ? 'Assignment' : 'DefaultAssignment';
+  var e = $(name + "_" + id);
+  if(e.className != 'selected') {
+    e.old_class = e.className;
+    e.className = 'selected';
+  } else {
+    e.className = e.old_class;
+  }
+}
+
+function reassign(assigned_id) {
+  var is_r = !window.location.href.match("default_assignments");
+  var name = (is_r) ? 'Assignment' : 'DefaultAssignment';
+  var controller = (is_r) ? 'assignments' : 'default_assignments';
+  var available_id = all_selected();
+  if(available_id.split(",").length != 1 || available_id.length == 0) {
+    alert("Select one assignment to reassign this shift to by clicking on it and then try again");
+    selection_toggle(assigned_id);
+    return;
+  }
+  var available_e = $(name + "_" + available_id);
+  if(available_e.old_class != "available") {
+    alert("The selected assignment is not available");
+    selection_toggle(assigned_id);
+    return;
+  }
+  var arr = [assigned_id, available_id];
+  arr = arr.join(",");
+  window.location.href = "/" + controller + "/reassign/" + arr;
+}
+
+function all_selected() {
+  var a = document.getElementsByClassName("selected");
+  var r = [];
+  for(var i = 0; i < a.length; i++) {
+    var x = a[i];
+    var s = x.id.split("_")[1];
+    r.push(s);
+  }
+  return r.join(",");
+}
+
+function do_multi_edit() {
+  var is_r = !window.location.href.match("default_assignments");
+  var controller = (is_r) ? 'assignments' : 'default_assignments';
+  var ids = all_selected();
+  if(ids.length == 0) {
+    alert("Select some assignments by clicking on them and try again");
+    return;
+  }
+  window.location.href = "/" + controller + "/edit/" + ids;
+}
+
+function show_message(msg) {
+  popup1 = new Popup();
+  popup1.content = msg;
+  popup1.style = {'border':'3px solid black','backgroundColor':'white'};
+  popup1.show();
+  document.onkeydown = function(e){
+    var keycode;
+    if (e == null) {
+      keycode = event.keyCode;
+    } else {
+      keycode = e.which;
+    }
+    if(keycode == 27){
+      popup1.hide();
+      document.onkeydown = null;
+    }
+  };
+}
+
+var FixedAutocomplete = Class.create(Ajax.Autocompleter, {
+  baseInitialize: function($super,element, update, options) {
+    $super(element, update, options);
+    Event.observe(this.element, "input", this.onInput.bindAsEventListener(this));
+  },
+
+   onInput: function(event) {
+     if(this.observer) clearTimeout(this.observer);
+
+     this.observer = setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
+     if(this.options.afterInput) {
+       this.options.afterInput();
+     }
+   },
+});
+
+function trigger_volunteer_task_type() {
+  $('volunteer_task_program').value = volunteer_task_programs[$('volunteer_task_volunteer_task_type').value];
+}
+
+function toggle_the_admin() {
+  div = $('hidden_admin');
+  klass = 'hidden';
+  if(div.hasClassName(klass)) {
+    div.removeClassName(klass);
+  } else {
+    div.addClassName(klass);
+  }
+}
+
 function update_cashier_code() {
   cashier_id_field = $('cashier_code');
   if(cashier_id_field == null)
     return;
   thing = document.getElementsByClassName('cashierable_form')[0];
   if(cashier_id_field.value.length == 4) {
-    good_cashier_code(cashier_id_field.value);
+    if(arguments[0] != null) {
+      good_cashier_code(cashier_id_field.value, arguments[0]);
+    } else {
+      good_cashier_code(cashier_id_field.value);
+    }
   } else {
     disable_cashierable();
+  }
+}
+
+function form_to_json(){
+  form_id = editable_form_name;
+  if($(form_id) == null)
+    return "";
+  orig = cashierable_enabled;
+  if(orig == false) {
+    enable_cashierable();
+  }
+  var hash = Form.serialize(form_id).toQueryParams();
+  hash.cashier_code = "...";
+  var result = Object.toJSON(hash);
+  if(orig == false) {
+    disable_cashierable();
+  }
+  if(orig != cashierable_enabled) {
+    alert("BUG, form_to_json");
+  }
+  return result;
+}
+
+function set_contact_name() {
+  list = document.getElementsByClassName('contact_search_textbox')[0].value.split(' ');
+  if(list.length == 2) {
+    $('contact_first_name').value = list[0];
+    $('contact_surname').value = list[1];
   }
 }
 
@@ -27,8 +206,11 @@ function _hide_changes(one, two, three, four){
 }
 
 function disable_cashierable(){
+  cashierable_enabled = false;
     thing.disable();
+  if(document.getElementsByClassName('cancel')[0] != null) {
     document.getElementsByClassName('cancel')[0].disabled = false;
+  }
     disable_all_links();
   if(typeof(form_is_editable) == "undefined" || form_is_editable) {
     $('cashier_code').enable();
@@ -36,9 +218,22 @@ function disable_cashierable(){
     $('cashier_code').focus();
 }
 
+function disable_always_disabled(){
+  var arr = document.getElementsByClassName("always_disabled");
+  for (var i = 0; i < arr.length; i++) {
+    var thing = arr[i];
+    thing.disable();
+  }
+}
+
 function enable_cashierable(){
+  cashierable_enabled = true;
     thing.enable();
+    disable_always_disabled();
     enable_all_links();
+  if($('covered')) {
+    $('covered').value = "nil";
+  }
 }
 
 function show_contract_notes() {
@@ -51,6 +246,7 @@ function show_contract_notes() {
   } else {
     $('contract_notes').hide();
   }
+  contract_selected();
 }
 
 function select_visibility(obj_name, method_name, choices, value) {
@@ -190,42 +386,7 @@ function defined(variable)
 }
 
 function form_has_not_been_edited(form_name) {
-    var myarray=$(form_name).getElementsByClassName('form-element');
-    for (var i = 0; i < myarray.length; i++){
-        children=myarray[i].childNodes;
-        for(var i2 = 0; i2 < children.length; i2++){
-            child=children[i2];
-            if(defined(child.tagName)){
-                if((child.tagName == "INPUT" && child.type != "checkbox") || child.tagName == "TEXTAREA") {
-                    if(child.value != child.defaultValue) {
-                        return false;
-                    }
-                }
-                else if(child.tagName == "INPUT" && child.type == "checkbox")
-                {
-                    if(child.defaultChecked != child.checked) {
-                        return false;
-                    }
-                }
-                else if(child.tagName == "SELECT") {
-                    options = child.childNodes;
-                    var i4 = 0;
-                    for (var i3 = 0; i3 < options.length; i3++)
-                    {
-                        if(options[i3].tagName=="OPTION") {
-                            if(options[i3].defaultSelected){
-                                if(i4 != child.selectedIndex) {
-                                    return false;
-                                }
-                            }
-                            i4++;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return true;
+  return form_to_json() == initial_form_json;
 }
 
 function set_new_val(element, new_val) {
@@ -272,6 +433,8 @@ function remove_condition(obj_name, value)
 function add_condition(obj_name, value)
 {
   if(value != ''){
+    var list_of_conditions = eval("list_of_" + obj_name + "_conditions");
+    var condition_display_names  = eval("condition_" + obj_name + "_display_names");
     Insertion.Bottom(obj_name + "_table", '<tbody id="' + obj_name + '_tbody_for_' + value + '"><tr><th class="conditions"><span>' + condition_display_names.get(value) + ':</span></td><td>' + list_of_conditions.get(value) + '</td><td><span><input value="-" type="button" id="' + obj_name + '_delete_"' + value + '" onclick="remove_condition(\'' + obj_name + '\', \'' + value + '\')"/></span></td></tr></tbody>');
     Element.hide($(obj_name + '_' + value + '_option'));
     $(obj_name + '_' + value + '_enabled').value = true;

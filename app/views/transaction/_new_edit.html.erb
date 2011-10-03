@@ -10,7 +10,7 @@
     <%= render :partial => 'form_messages' %>
   </div>
 </div>
-<div id="<%= form_tbody_id(params) %>"></div>
+<div id="<%= form_tbody_id(params) %>">
 
 <% if @receipt %>
   <script>
@@ -34,19 +34,13 @@
       <span>created <%= if defined?(@transaction.created_by) && @transaction.cashier_created_by then "by #{link_to User.find_by_id(@transaction.cashier_created_by).login, {:controller => "contacts", :action => "index", :contact_id => User.find_by_id(@transaction.cashier_created_by).contact_id}} " end %>at <%= @transaction.created_at %></span>
       <br /><span>updated <%= if defined?(@transaction.updated_by) && @transaction.cashier_updated_by then "by #{link_to User.find_by_id(@transaction.cashier_updated_by).login, {:controller => "contacts", :action => "index", :contact_id => User.find_by_id(@transaction.cashier_updated_by).contact_id}} " end %>at <%= @transaction.updated_at %></span>
     <% end %>
-    <% if ["sale", "disbursement"].include?(@gizmo_context.name) && @transaction.id %>
-      <br/>
-      <% returns_array = @transaction.gizmo_returns.map{|x| link_to x.link_text, {:controller => "gizmo_returns", :action => "edit", :id => x.id}} %>
-      <% returns_array << link_to("Add a new return", {:controller => "gizmo_returns", :action => "new", :params => {:gizmo_return => {(@gizmo_context.name + "_id").to_sym => @transaction.id}}}) %>
-      <%= returns_array.length != 1 ? "Returns: " : "" %><%= returns_array.join(" - ") %>
-    <% end %>
     <% if request.xhr? %>
       <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
     <% else %>
       <%= render :partial => 'form_messages' %>
     <% end %>
 
-    <% if Contract.find(:all).length > 1 %>
+    <% if contract_enabled %>
       <pre id="contract_notes" style="background: yellow">
       </pre>
     <% end %>
@@ -57,7 +51,19 @@
       }
      javascript_tag js %>
 
-    <%= render :partial => "#{@transaction_type}_form", :locals => { "@#{@transaction_type}".to_sym => @transaction } %>
+  <% if has_required_privileges("/admin_inventory_features") %>
+    <%= javascript_tag "bind_key('shift-ctrl-q', toggle_the_admin);" %>
+    <div id="hidden_admin" class="<%= @transaction.adjustment ? "" : "hidden" %>">
+      <label for="<%= @gizmo_context %>_adjustment">Is adjustment?</label>
+      <%= check_box @gizmo_context, 'adjustment' %>
+      <% if ["gizmo_return", "sale", "donation"].include?(@gizmo_context.to_s) %>
+        <label for="<%= @gizmo_context %>_occurred_at">When did this occur?</label>
+        <%= calendar_box @gizmo_context, "occurred_at",{},{:showOthers => true} %>
+      <% end %>
+    </div>
+  <% end %>
+
+    <%= render :partial => "#{@transaction_type}_form", :locals => { "#{@transaction_type}".to_sym => @transaction } %>
 
     <% if params[:controller] == "donations" %>
       <%= javascript_tag "show_contract_notes()" %>
@@ -74,7 +80,7 @@
                      :onclick => "handle_all(); return validate_#{@transaction_type}();",
                      :class => "submit save")
           %>
-      <input type="button" value="Cancel" onclick="window.location.href='<%= @return_to_search ? url_for({:action=>"search", :continue=>true}) : url_for( params.merge( { :action => 'new' } ) ) %>';" class="cancel" %>
+      <input type="button" value="Cancel" onclick="window.location.href='<%= @return_to_search ? url_for({:action=>"search", :continue=>true}) : url_for( params.merge( { :action => 'new' } ) ) %>';" class="cancel" >
 
       <%= loading_indicator_tag "form_for_#{@transaction_type}_loading" %>
     </p>
@@ -82,8 +88,8 @@
 <%= cashiers_javascript %>
 </div>
 </div>
+</div>
 <hr />
-
 <table class="list">
   <tbody>
     <%= render :partial => 'column_headings' %>
@@ -96,5 +102,5 @@
   </tbody>
 </table>
 <% if @transactions.length == 15 %>
-  <%= link_to "See more", {:controller => "donations", :action => "search", :conditions => {:created_at_enabled => true, :created_at_date_type=>"daily", :created_at_date => Date.today.strftime("%Y-%m-%d")}} %>
+  <%= link_to "See more", {:action => "search", :conditions => {:created_at_enabled => true, :created_at_date_type=>"daily", :created_at_date => Date.today.strftime("%Y-%m-%d")}} %>
 <% end %>

@@ -1,6 +1,11 @@
 class Contact < ActiveRecord::Base
   acts_as_userstamp
 
+  has_many :points_traded_away, :class_name => "PointsTrade", :foreign_key => "from_contact_id"
+  has_many :points_traded_to, :class_name => "PointsTrade", :foreign_key => "to_contact_id"
+
+  has_many :assignments
+
   has_and_belongs_to_many :contact_types
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
@@ -8,16 +13,91 @@ class Contact < ActiveRecord::Base
   has_many :disbursements
   has_many :sales
   has_many :donations
-  has_many :spec_sheets
+  has_many :builder_tasks
   has_one :user
   has_one :contact_duplicate
   belongs_to :contract
   has_many :gizmo_returns
+  has_one :worker
 
-  validates_presence_of :postal_code
+  validates_presence_of :postal_code, :on => :create
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
+  before_save :strip_some_fields
+
+  after_save :add_to_processor_daemon
+
+  validates_length_of :first_name, :maximum => 25
+  validates_length_of :middle_name, :maximum => 25
+  validates_length_of :surname, :maximum => 50
+  validates_length_of :organization, :maximum => 100
+  validates_length_of :extra_address, :maximum => 52
+  validates_length_of :address, :maximum => 52
+  validates_length_of :city, :maximum => 30
+  validates_length_of :state_or_province, :maximum => 15
+  validates_length_of :postal_code, :maximum => 25
+  validates_length_of :country, :maximum => 100
+
+  def condition_to_s
+    display_name
+  end
+
+  def mailing_list_email
+    list = ContactMethodType.email_types_ordered.map{|x| x.id}
+    list = list.reverse if self.organization
+    result = self.contact_methods.select{|x| x.ok}.select{|x| list.include?(x.contact_method_type_id)}.sort{|a,b| r = (list.index(a.contact_method_type_id) <=> list.index(b.contact_method_type_id)); r == 0 ? ((b.updated_at || b.created_at) <=> (a.updated_at || a.created_at)) : r}.first
+    result ? result.value : nil
+  end
+
+  def to_privileges
+    ["contact_#{self.id}", "has_contact"]
+  end
+
+  def update_syseval_count
+    vtt = VolunteerTaskType.evaluation_type
+    self.syseval_count = self.volunteer_tasks.for_type_id(vtt.id).count
+  end
+
+  def scheduled_shifts
+    a = self.assignments.on_or_after_today.not_cancelled.sort{|a,b| t = a.date <=> b.date; t == 0 ? a.start_time <=> b.start_time : t}
+    more = false
+    if a.length > 5
+      a = a[0,5]
+      more = true
+    end
+    a = a.map{|x| x.description}
+    a << "More.." if more # FIXME: this needs to be a link
+    a.join("<br/>")
+  end
+
+  def all_points_trades
+    self.points_traded_away + self.points_traded_to
+  end
+
+  def points(trade_id = nil)
+    effective_hours = hours_effective
+    max = Default['max_effective_hours'].to_f
+    effective_hours = [effective_hours, max].min
+    negative = points_traded_since_last_adoption("from", trade_id)
+    positive = points_traded_since_last_adoption("to", trade_id)
+    sum = effective_hours - negative + positive
+    return sum
+  end
+
+  def cleanup_string(str)
+    return nil if str.nil?
+    str = str.strip
+    str = str.gsub(/\s+/, " ")
+    return str
+  end
+
+  def strip_some_fields
+    self.first_name = cleanup_string(self.first_name)
+    self.surname = cleanup_string(self.surname)
+    self.middle_name = cleanup_string(self.middle_name)
+    self.organization = cleanup_string(self.organization)
+  end
 
   def fully_covered_
     case self.fully_covered
@@ -36,8 +116,14 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE default_assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE gizmo_returns SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
-      connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE builder_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE workers SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE points_trades SET from_contact_id = #{self.id} WHERE from_contact_id = #{other.id}")
+      connection.execute("UPDATE points_trades SET to_contact_id = #{self.id} WHERE to_contact_id = #{other.id}")
       connection.execute("UPDATE contacts_mailings SET contact_id = NULL WHERE contact_id = #{other.id} AND mailing_id IN (SELECT mailing_id FROM contacts_mailings WHERE contact_id IN (#{self.id}, #{other.id}) GROUP BY mailing_id HAVING count(*) > 1)")
       connection.execute("UPDATE contacts_mailings SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts SET created_at = (SELECT min(created_at) FROM contacts WHERE id IN (#{self.id}, #{other.id})) WHERE id = #{self.id}")
@@ -68,10 +154,16 @@ class Contact < ActiveRecord::Base
     self
   end
 
+  def display_phone_numbers
+    self.contact_methods.map{|x|
+      (x.contact_method_type.description =~ /phone/ and !(x.contact_method_type.description =~ /emergency/) and x.ok == true) ? "#{x.contact_method_type.description}: #{x.value}" : nil
+    }.select{|x| !x.nil?}.join(", ")
+  end
+
   def phone_numbers
     a = []
     contact_methods.map {|x|
-      a << x.value if (x.contact_method_type.description =~ /phone|fax/ and x.ok == true)
+      a << x.value if (x.contact_method_type.description =~ /phone|fax/ and !(x.contact_method_type.description =~ /emergency/) and x.ok == true) # ruby apparently doesn't support negative lookbehinds..sadday :(
     }
     a
   end
@@ -128,14 +220,15 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def find_volunteer_tasks(cutoff = nil)
+  def find_volunteer_tasks(cutoff = nil, klass = VolunteerTask, contact_id_type = "", date_field = "date_performed")
     # if it's named volunteer_tasks it breaks everything
+    contact_id_type = contact_id_type + "_" if contact_id_type.length > 0
     if cutoff
-      conditions = [ "contact_id = ? AND date_performed >= ?", id, cutoff ]
+      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ?", id, cutoff ]
     else
-      conditions = [ "contact_id = ?", id ]
+      conditions = [ "#{contact_id_type}contact_id = ?", id ]
     end
-    VolunteerTask.find(:all,
+    klass.find(:all,
                        :conditions => conditions)
   end
 
@@ -148,17 +241,34 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def hours_effective
-    find_volunteer_tasks(date_of_last_adoption).inject(0.0) do |total,task|
-      total += task.effective_duration
+  def spec_sheets_since_last_adoption(action_name)
+    BuilderTask.find(:all, :conditions => ["contact_id = ? AND builder_tasks.created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption || Date.parse("2000-01-01"), Action.find_by_name(action_name).id])
+  end
+
+  def points_traded_since_last_adoption(type, trade_id = nil)
+    find_volunteer_tasks(date_of_last_adoption, PointsTrade, type, "created_at").delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|
+      t += r.points
     end
   end
 
-  # effective for adoption
-  def adoption_hours
-    h = hours_effective
-    h = Default['max_effective_hours'].to_f if Default['max_effective_hours'] and Default['max_effective_hours'].to_f < h
-    return h
+  def hours_effective
+    find_volunteer_tasks(date_of_last_adoption).inject(0.0) do |total,task|
+        total += task.effective_duration
+    end
+  end
+
+  def hours_since_last_adoption
+    find_volunteer_tasks(date_of_last_adoption).inject(0.0) do |total,task|
+      total += task.duration
+    end
+  end
+
+  def last_trade
+    self.all_points_trades.sort_by(&:created_at).last
+  end
+
+  def date_of_last_trade
+    last_trade.nil? ? nil : last_trade.created_at.to_date
   end
 
   def effective_discount_hours
@@ -166,7 +276,7 @@ class Contact < ActiveRecord::Base
   end
 
   def last_ninety_days_of_volunteer_tasks
-    find_volunteer_tasks(Date.today - 90)
+    find_volunteer_tasks(Date.today - Default['days_for_discount'].to_f)
   end
 
   def last_ninety_days_of_actual_hours
@@ -175,7 +285,7 @@ class Contact < ActiveRecord::Base
 
   def last_ninety_days_of_effective_hours
     last_ninety_days_of_volunteer_tasks.inject(0.0) {|tot,task|
-      tot + task.effective_duration
+      tot + task.duration
     }
   end
 
@@ -249,10 +359,14 @@ class Contact < ActiveRecord::Base
     contact_types.join(' ')
   end
 
+  def has_worker?
+    ! self.worker.nil? && worker.effective_now?
+  end
+
   def default_discount_schedule
     if contact_types.include?(ContactType.find_by_name("bulk_buyer"))
       DiscountSchedule.find_by_name("bulk")
-    elsif effective_discount_hours >= 4.0
+    elsif effective_discount_hours >= Default['hours_for_discount'].to_f or self.has_worker?
       DiscountSchedule.find_by_name("volunteer")
     else
       DiscountSchedule.find_by_name("no_discount")
@@ -272,7 +386,7 @@ class Contact < ActiveRecord::Base
   end
 
   def last_disbursements
-    return last_gizmos("disbursements")
+    return last_gizmos("disbursements", "2@year")
   end
 
   def last_sales
@@ -281,6 +395,10 @@ class Contact < ActiveRecord::Base
 
   def last_donations
     return last_gizmos("donations")
+  end
+
+  def last_gizmo_returns
+    return last_gizmos("gizmo_returns")
   end
 
   def is_user?
@@ -310,7 +428,7 @@ class Contact < ActiveRecord::Base
 
   # returns the last gizmos associated with the given table
   # over the last month
-  def last_gizmos(table)
+  def last_gizmos(table, interval = "1@month" )
     # figure out how to use a prepared statement here
     return self.connection.execute(
                                    "select gt.id, gt.description, sum(ge.gizmo_count)
@@ -318,7 +436,7 @@ class Contact < ActiveRecord::Base
             join gizmo_events ge on ge.gizmo_type_id=gt.id
             join #{table} t on ge.#{table.singularize}_id=t.id
        where t.contact_id=#{self.id}
-             and t.created_at > now()-'1@month'::interval
+             and t.created_at > now()-'#{interval}'::interval
        group by 1,2").to_a.map{|hash| [hash["description"],hash["sum"]]}
   end
 

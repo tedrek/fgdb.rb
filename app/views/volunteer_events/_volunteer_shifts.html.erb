@@ -1,0 +1,35 @@
+<% interface = OH.new %>
+<% interface[:volunteer_task] = '<select id="volunteer_task_type_id">' + options_from_collection_for_select([VolunteerTaskType.new(:description => ""),  VolunteerTaskType.instantiables.effective_on(Date.today)].flatten, "id", "description") + '</select>' %>
+<% kdh = {:onkeydown => line_item_on_keydown("volunteer_shifts")} %>
+<% if @volunteer_event.class == VolunteerDefaultEvent %>
+<% @nil = nil %>
+<%# interface[:default_assignment_contact] = contact_field('@nil', 'contact_id', :locals => {:options =>{:object_name => 'contact', :field_name => 'contact_id'}}) %>
+<% end %>
+<% interface[:class_credit] = check_box_tag "class_credit" %>
+<% interface[:program] = '<select id="program_id">' + options_from_collection_for_select([Program.new(:name => ""), Program.find(:all, :conditions => {:volunteer => true})].flatten, "id", "name") + '</select>' %>
+<% interface[:description] = text_field_tag 'description', nil, kdh.merge({:size => 8}) %>
+<% interface[:roster] = '<select id="roster_id">' + options_from_collection_for_select([Roster.new(:name => ""),  Roster.find(:all)].flatten, "id", "name") + '</select>' %>
+<% slot_name = nil %>
+<% if @volunteer_event.class == VolunteerEvent %>
+<% interface[:slot] = text_field_tag 'slot_number', nil, kdh.merge({:size => 5}) %>
+<% slot_name = :slot_number %>
+<% else %>
+<% interface[:slot_count] = text_field_tag 'slot_count', nil, kdh.merge({:size => 5}) %>
+<% slot_name = :slot_count %>
+<% end %>
+<% o = 0 %>
+<% interface[:start_time] = select_hour(o, {:twelve_hour => true, :field_name => "start_hour", :include_blank => true}, kdh) + select_minute(o, {:field_name => "start_minute", :minute_step => 15, :include_blank => true}, kdh) + ActionView::Helpers::DateTimeSelector.new(o, {:field_name => "start_ampm", :include_blank => true}, kdh).select_ampm %>
+<% interface[:end_time] = select_hour(o, {:twelve_hour => true, :field_name => "end_hour", :include_blank => true}, kdh) + select_minute(o, {:field_name => "end_minute", :include_blank => true, :minute_step => 15}, kdh) + ActionView::Helpers::DateTimeSelector.new(o, {:field_name => "end_ampm", :include_blank => true}, kdh).select_ampm %>
+
+<% values = [] %>
+<% things = @volunteer_event.class == VolunteerEvent ? @volunteer_event.volunteer_shifts : @volunteer_event.volunteer_default_shifts%>
+
+<% if things
+    values = things.map{|x|
+       list = [:id, slot_name, :volunteer_task_type_id, :my_start_time, :my_end_time, :roster_id, :class_credit, :program_id, :description]
+       x = x.to_hash(*list)
+       x
+    }
+  end %>
+
+<%= line_item("volunteer_shifts", "VolunteerShiftFrontend", interface, values, true) %>

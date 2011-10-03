@@ -9,6 +9,7 @@
 <table class="report">
 
   <% for section in @sections %>
+    <% cols = section == :written_off_invoices ? ["total"] : @columns %>
     <tr>
       <th class="section_header" colspan="<%= table_width %>"><%= section.to_s.titleize %></th>
     </tr>
@@ -19,7 +20,7 @@
     <% end %>
     <tr>
       <td class="spacer"></td>
-      <% for method in @columns %>
+      <% for method in cols %>
         <th class="column_header"><%= method.titleize %></th>
       <% end %>
     </tr>
@@ -27,7 +28,7 @@
     <% for category in @rows[section] %>
       <tr>
         <th class="row_header"><%= category.titleize %></th>
-        <% for method in @columns; income = @income_data[section][method][category] %>
+        <% for method in cols; income = @income_data[section][method][category] %>
           <td title="<%= income[:count]%> transactions"><%= number_with_delimiter('$%0.2f' % (income[:total]/100.0)) %></td>
         <% end %>
       </tr>

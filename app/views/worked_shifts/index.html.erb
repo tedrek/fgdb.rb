@@ -1,0 +1,68 @@
+<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker.id, @date) %>
+
+<% form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
+<% label :worked_shifts, :worker_id %>
+<%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
+<%# label :worked_shifts, :date_performed %>
+<%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
+<%= submit_tag "Go" %>
+<% end %>
+
+<%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.id.to_json};" %>
+<% PayPeriod.find_for_date(@date) or raise "FIXME" %>
+<h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>
+
+<% if @logged_already %>
+<pre style="background: yellow">
+Editing already saved hours.
+</pre>
+<% else %>
+<pre style="background: yellow">
+Hours have not yet been saved for this day. The jobs listed below are automatically guessed based on the staff schedule. You still need to save hours.
+</pre>
+<% end %>
+<% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
+<%= hidden_field "worked_shift", "date_performed", :value => @date %>
+<%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
+<table id="shifts_lines">
+  <tr>
+    <th>job</th>
+    <th>duration</th>
+    <th></th>
+  </tr>
+  <% @shift_js = "shift_do_ajax = 0;"
+     for i in @shifts
+       hash = {:job_id => i.job_id, :duration => i.duration.to_f}
+       hash[:id] = i.id if i.id
+       @shift_js += "add_shift(#{hash.to_json});"
+     end 
+     @shift_js += "shift_do_ajax = 1;"%>
+  <tr id="shifts_form">
+    <td><select id="job_id">
+        <%= options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") %>
+      </select>
+    </td>
+    <td><input name="duration" id="duration" size="6" onkeydown="return handle_s(event);"></td>
+  </tr>
+<tr><td colspan="2">
+<div id="totals_div" class="totals line_item">
+  <table>
+    <tr><td>Total for this day:</td><td id="total_today" class="amount">loading..</td></tr>
+    <tr><td>Hours normally worked on <%= @date.strftime("%A") %>:</td><td class="amount" id="normally_worked">loading..</td></tr>
+    <tr><td>Total for this week:</td><td id="total_week" class="amount">loading..</td></tr>
+    <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">loading..</td></tr>
+    <tr><td>Overtime:</td><td id="overtime" class="amount">loading..</td></tr>
+    <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">loading..</td></tr>
+  </table>
+</div>
+</td></tr>
+</table>
+<%= submit_tag("Save",
+               :id => "commit",
+               :onclick => "handle_shifts();") %>
+<%= loading_indicator_tag "shifts_totals" %>
+<%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
+<% end %>
+<% @shift_js += "shift_compute_totals();" %>
+<%= javascript_tag @shift_js %>
+

@@ -7,7 +7,7 @@
 <p><label for="meeting_shift_date">Meeting date</label><br/>
  <%= calendar_box 'meeting', 'shift_date', 
     { },
-    { :range => [2000, 2010], :showOthers => true }
+    { :range => [2000, Date.today.year + 1], :showOthers => true }
     # TODO: mess with the above to try to get date format to change
     # TODO: http://dry.4thebusiness.com/doc/dhtml_calendar/index.html 
  %></p>
@@ -35,7 +35,8 @@
 
 <p><label for="workers">Workers:</label><br/>
 <ul>
-<% Worker.find(:all, :order => "name").each do |w| %>
+
+<% (@meeting.workers + Worker.on_or_after_date(Date.today)).uniq.sort_by(&:name).each do |w| %>
    <li><input type="checkbox" name="meeting[worker_ids][]" 
           value="<%= w.id %>" 
           <% if @meeting.workers.include?(w) %> checked="checked" <% end %> />

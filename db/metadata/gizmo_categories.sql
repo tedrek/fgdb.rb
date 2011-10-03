@@ -2,7 +2,8 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'UTF8';
+SET statement_timeout = 0;
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -20,6 +21,8 @@ SELECT pg_catalog.setval('gizmo_categories_id_seq', 4, true);
 --
 -- Data for Name: gizmo_categories; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE gizmo_categories DISABLE TRIGGER ALL;
 

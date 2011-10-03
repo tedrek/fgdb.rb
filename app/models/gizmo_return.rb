@@ -4,25 +4,48 @@ class GizmoReturn < ActiveRecord::Base
   has_many :gizmo_types, :through => :gizmo_events
   include GizmoTransaction
   belongs_to :contact
-  belongs_to :sale
-  belongs_to :disbursement
   has_one :store_credit
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
   define_amount_methods_on("storecredit_difference")
   acts_as_userstamp
+  before_save :set_occurred_at_on_transaction
+
+  attr_accessor :contact_type  #anonymous or named
+  before_save :strip_postal_code
+  before_save :unzero_contact_id
+  def contact_type
+    @contact_type ||= contact ? 'named' : 'anonymous'
+  end
+
+  def initialize(*args)
+    @contact_type = 'anonymous'
+    super(*args)
+  end
+
+  def storecredit_spent
+    self.store_credit.spent?
+  end
+
+  def storecredits
+    [self.store_credit]
+  end
 
   def self.default_sort_sql
     "gizmo_returns.created_at DESC"
   end
 
   def validate
-    errors.add_on_empty("contact_id")
-    if contact_id.to_i == 0 or !Contact.exists?(contact_id)
-      errors.add("contact_id", "does not refer to any single, unique contact")
+    if contact_type == 'named'
+      errors.add_on_empty("contact_id")
+      if contact_id.to_i == 0 or !Contact.exists?(contact_id)
+        errors.add("contact_id", "does not refer to any single, unique contact")
+      end
+    else
+      errors.add_on_empty("postal_code")
     end
     errors.add("gizmos", "should include something") if gizmo_events.empty?
-    errors.add("transaction_links", "should link to either a sale or a disbursement") if [self.sale, self.disbursement].select{|x| !x.nil?}.length != 1
+    storecredit_priv_check if self.store_credit and self.store_credit.amount_cents_changed? and self.store_credit.amount_cents > 0
   end
 
   def gizmo_context
@@ -37,11 +60,16 @@ class GizmoReturn < ActiveRecord::Base
     self.store_credit.id
   end
 
+  def store_credit_hash
+    self.store_credit.store_credit_hash
+  end
+
   def set_storecredit_difference_cents
     self.storecredit_difference_cents = calculated_subtotal_cents
     if self.storecredit_difference_cents != 0
       self.store_credit ||= StoreCredit.new
       self.store_credit.amount_cents = self.storecredit_difference_cents
+      self.store_credit.expire_date ||= (Date.today + StoreCredit.expire_after_value)
     else
       self.store_credit.destroy if self.store_credit
       self.store_credit = nil

@@ -1,11 +1,12 @@
 class TillAdjustmentsController < ApplicationController
-  before_filter :authorized_only
   layout :with_sidebar
-
-  def authorized_only
-    requires_role('BEAN_COUNTER')
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['till_adjustments']}
+    a
   end
-
+  public
   # GET /till_adjustments
   # GET /till_adjustments.xml
   def index

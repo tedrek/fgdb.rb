@@ -1,29 +1,80 @@
 #!/bin/bash
 
 set -e
-set -x
+
+SCRIPT_DIR=$(dirname $(readlink -f $0))
+DEVEL_CHECKOUT=$(dirname $SCRIPT_DIR)
+MY_FULL_PATH=$(readlink -f $0)
+
+MD5=$(md5sum $MY_FULL_PATH)
+cd $DEVEL_CHECKOUT
+git checkout master
+git pull origin master
+
+if [ "$MD5" != "$(md5sum $MY_FULL_PATH)" ]; then
+    echo "Script updated, please restart it. Aborting."
+    exit 1
+fi
+
+NO_DROP=0
+BRANCH=master
+
+while [ -n "$1" ]; do
+    ARG="$1"
+    shift
+    ARG=$(echo "$ARG" | sed 's/--//g')
+    case "$ARG" in
+        release|production|live|latest)
+            BRANCH=release_$($SCRIPT_DIR/sorted-tags | tail -1)
+            ;;
+        release_*|library)
+            BRANCH=$ARG
+            ;;
+        1.0.*)
+            BRANCH=release_$ARG
+            ;;
+        master|next)
+            BRANCH=master
+            ;;
+        devel|development|dev)
+            BRANCH=devel
+            ;;
+        no-drop)
+            NO_DROP=1
+            ;;
+        *)
+            echo "Unknown option to test-migrate: $ARG"
+            exit 1
+            ;;
+    esac
+done
 
 export RAILS_ENV=development
 
 TMP=$(mktemp -d /tmp/fgdb.testing.script.XXXXXXXXXX)
+set -x
 cd $TMP
-scp -i ~/.ssh/scp_key tulip:/usr/local/arik/database.sql.gz ./
+$SCRIPT_DIR/update-devel-data/under-myagent scp tulip:/usr/local/zhora/database.sql.gz ./
 dropdb fgdb_$RAILS_ENV || true
 gunzip database.sql.gz
-sed -i "s/fgdb_production/fgdb_$RAILS_ENV/g" database.sql
-psql < database.sql
+sed -i "1,100 s/fgdb_production/fgdb_$RAILS_ENV/g" database.sql
+psql template1 < database.sql
 if hostname -f | grep -q fglan; then
     git clone http://dev.freegeek.org/~ryan52/git/fgdb.rb trunk
 else
-    git clone git://git.ryan52.info/git/fgdb.rb trunk
+    git clone git://git.freegeek.org/git/fgdb.rb trunk
 fi
 cd trunk
+if [ "$BRANCH" != "master" ]; then
+    git checkout -b $BRANCH origin/$BRANCH
+fi
 cp config/database.yml-example config/database.yml
-ln -s /usr/share/rails vendor/rails
-rake db:migrate
+ln -s /usr/share/rails-ruby1.8 vendor/rails
+./script/do_i_have_everything_installed_right
+rake db:migrate --trace
 cd ../
 rm -f database.sql
-if [ "$1" != "--no-drop" ]; then
+if [ "1" != "$NO_DROP" ]; then
     dropdb fgdb_$RAILS_ENV
 fi
 rm -fr trunk

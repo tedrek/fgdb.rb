@@ -71,7 +71,7 @@ module SymetrieCom
           extend SymetrieCom::Acts::NestedSet::ClassMethods
           
           # adds the helper for the class
-#          ActionView::Base.send(:define_method, "#{Inflector.underscore(self.class)}_options_for_select") { special=nil
+#          ActionView::Base.send(:define_method, "#{(self.class.underscore)}_options_for_select") { special=nil
 #              "#{acts_as_nested_set_options[:text_column]} || "#{self.class} id #{id}"
 #            }
           

@@ -1,0 +1,19 @@
+<p>
+  <b>Contact:</b>
+  <%=h @note.contact_id %>
+</p>
+
+<p>
+  <b>System:</b>
+  <%=h @note.system_id %>
+</p>
+
+<p>
+  <b>Body:</b>
+  <%=h @note.body %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @note.id} %> |
+<%= link_to "System History", {:controller => "spec_sheets", :action => "system", :id => @note.system_id} %>
+

@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  vendor: MyString
+  model: MyString
+  serial_number: MyString
+  completed_at: 
+  result: MyString
+
+two:
+  vendor: MyString
+  model: MyString
+  serial_number: MyString
+  completed_at: 
+  result: MyString

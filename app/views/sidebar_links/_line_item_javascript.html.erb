@@ -1,30 +1,37 @@
+    <%= javascript_tag "function good_cashier_code(code, append) {
+" + remote_function(
+          :url => {:controller => "contacts", :action => "check_cashier_code"},
+                          :loading => "Element.show('#{loading_indicator_id("cashier_loading")}');",
+                          :with => "{cashier_code: code, append_this: append}") + "
+}" %>
+
+
+<% @gizmo_contact = gizmo_context if defined?(gizmo_context) %>
+
+<% if defined?(@gizmo_context) %>
 <script>
-  var show_description = 0;
   var discount_schedules;
   var counters = new Array();
-  counters['gizmo_event_line_id'] = <%= defined?(@lines) ? @lines.length : 0 %>;
-  counters['payment_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
-  counters['contact_method_line_id'] = <%= defined?(@contact_methods) ? @contact_methods.length : 0 %>;
+  counters['gizmo_events_line_id'] = <%= defined?(@lines) ? @lines.length : 0 %>;
+  counters['payments_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
+  counters['shifts_line_id'] = <%= defined?(@shifts) ? @shifts.length : 0 %>;
+  counters['contact_methods_line_id'] = <%= defined?(@contact_methods) ? @contact_methods.length : 0 %>;
   gizmo_context_name = '<%= @gizmo_context.name %>';
   coveredness_enabled = <%= coveredness_enabled.to_json %>;
 </script>
 
 <%= javascript_include_tag 'line_items' %>
 
-<% if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller]) %>
-  <% js = "all_systems = new Array;" %>
-  <% System.find(:all).each do |x| %>
-    <% js += "all_systems[#{x.id}] = #{x.contract_id};" %>
-  <% end %>
-  <%= javascript_tag js %>
+<%= javascript_tag "get_sale_exists_url = #{url_for(:action => "get_sale_exists").to_json}; sale_id_cache = new Array;" %>
+
 <% end %>
 
-<% if ["sales"].include?(params[:controller]) %>
-  <% js = "all_store_credits = new Array;" %>
-  <% StoreCredit.find(:all).each do |x| %>
-    <% js += "all_store_credits[#{x.id}] = #{x.amount_cents};" %>
-  <% end %>
-  <%= javascript_tag js %>
+<% if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller]) %>
+  <%= javascript_tag "get_system_contract_url = #{url_for(:action => "get_system_contract").to_json}; system_contract_cache = new Array; system_covered_cache = new Array;" %>
+<% end %>
+
+<% if ["sales", "gizmo_returns"].include?(params[:controller]) %>
+  <%= javascript_tag "get_storecredit_amount_url = #{url_for(:action => "get_storecredit_amount").to_json}; storecredit_amount_cache = new Array; storecredit_errors_cache = new Array;" %>
 <% end %>
 
 <% if ["sales", "donations", "recyclings", "disbursements", "gizmo_returns"].include?(params[:controller]) -%>
@@ -40,6 +47,13 @@
       javascript_tag js %>
 <% end -%>
 
+<% if ["worked_shifts"].include?(params[:controller]) %>
+  <%= js = "var all_jobs = new Array;"
+      for job in Job.find(:all).sort_by(&:name)
+        js += "all_jobs[#{job.id}] = '#{job.name}';"
+      end
+      javascript_tag js %>
+<% end %>
 <% if ["sales", "donations"].include?(params[:controller]) -%>
   <%= js = "var payment_methods = new Array;"
       for payment_method in PaymentMethod.find(:all).sort_by(&:description)
@@ -54,7 +68,7 @@
     end
     javascript_tag js %>
 
-<%= if ["sales", "disbursements"].include?(params[:controller])
+<%= if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller])
      js = "var all_contracts_names = new Array;"
      for contract in Contract.find(:all).sort_by(&:description)
        js += "all_contracts_names[#{contract.id}] = '#{contract.name}';"
@@ -62,6 +76,34 @@
      javascript_tag js
     end
 %>
+
+<%= if ["volunteer_events", 'volunteer_default_events'].include?(params[:controller]) 
+      js = 'var volunteer_task_types = new Array;'
+
+     for contract in VolunteerTaskType.find(:all).sort_by(&:description)
+       js += "volunteer_task_types[#{contract.id}] = '#{contract.description}';"
+     end
+
+      js += 'var rosters = new Array;'
+      for i in Roster.find(:all)
+        js += "rosters[#{i.id}] = '#{i.name}';"
+      end
+
+      js += 'var vol_progs = new Array;'
+      for i in Program.find(:all)
+        js += "vol_progs[#{i.id}] = '#{i.name}';"
+      end
+
+      js += 'var vol_resources = new Array;'
+      for i in Resource.find(:all)
+        js += "vol_resources[#{i.id}] = '#{i.name}';"
+      end
+
+     javascript_tag js
+ end %>
+
+
+<% if defined?(@gizmo_context) %>
 
 <%= js = ""
       js += "var gizmo_types_covered = new Array;"
@@ -71,6 +113,8 @@
       javascript_tag js
 %>
 
+<% end %>
+
 <%=
    case params[:controller]
    when 'sales'
@@ -79,7 +123,7 @@
      for discount_schedule in DiscountSchedule.find(:all)
        js += "discount_schedules[#{discount_schedule.id}] = new Array;"
        for gizmo_type in gizmo_types
-         js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule)};"
+         js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule, @transaction ? @transaction.occurred_at : DateTime.now)};"
        end
      end
      javascript_tag js
@@ -103,7 +147,7 @@
 
 <%=
    if params[:controller] == 'sales' || params[:controller] == 'disbursements' || params[:controller] == 'gizmo_returns'
-     system_types = GizmoType.find(:all, :conditions => ['gizmo_category_id = ?', GizmoCategory.find_by_name('system').id]).collect(&:id)
+     system_types = GizmoType.find_all_by_needs_id(true).collect(&:id)
      javascript_tag "var system_types = new Array(#{system_types.join(', ')});"
    end
 %>

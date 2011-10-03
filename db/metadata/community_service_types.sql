@@ -2,7 +2,8 @@
 -- PostgreSQL database dump
 --
 
-SET client_encoding = 'UTF8';
+SET statement_timeout = 0;
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -20,6 +21,8 @@ SELECT pg_catalog.setval('community_service_types_id_seq', 2, true);
 --
 -- Data for Name: community_service_types; Type: TABLE DATA; Schema: public; Owner: -
 --
+
+SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE community_service_types DISABLE TRIGGER ALL;
 

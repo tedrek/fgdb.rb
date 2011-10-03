@@ -1,0 +1,16 @@
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Date</th>
+  </tr>
+
+<% for volunteer_event in @volunteer_events %>
+  <tr>
+    <td><%=h volunteer_event.description %></td>
+    <td><%=h volunteer_event.date %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => volunteer_event.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => volunteer_event.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => volunteer_event.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

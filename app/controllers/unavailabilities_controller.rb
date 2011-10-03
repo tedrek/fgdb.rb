@@ -1,7 +1,12 @@
 class UnavailabilitiesController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role
-
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['skedjulnator']}
+    a
+  end
+  public
   require_dependency 'shift'
   def index
     list
@@ -22,6 +27,21 @@ class UnavailabilitiesController < ApplicationController
 
   def show
     @unavailability = Unavailability.find(params[:id])
+  end
+
+  def generate
+    @unavailability = Unavailability.find(params[:id])
+    # generates until the ineffective date or the last generate shift, whichever comes first
+    max = WorkShift.maximum(:shift_date)
+    max = [max, @unavailability.ineffective_date].select{|x| !x.nil?}.min
+    # generates from today, or the effective date, whichever comes first
+    min = Date.today
+    min = [min, @unavailability.effective_date].select{|x| !x.nil?}.max
+    # uses the min date as the max if the max is smaller than the min
+    max = [min, max].max
+    Shift.destroy_in_range(min, max, "work_shifts.shift_id = #{@unavailability.id}")
+    Shift.generate(min, max, "shifts.id = #{@unavailability.id}")
+    redirect_to :back
   end
 
   def new

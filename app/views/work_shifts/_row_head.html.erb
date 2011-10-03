@@ -1,15 +1,34 @@
+<% broke_already  = false %>
+<% if skedj.opts[:title_between] %>
+<% if (!skedj.last) || skedj.get_method_value(skedj.current, :block_method_name) != skedj.get_method_value(skedj.last,  :block_method_name) || skedj.get_method_value(skedj.current, :title_between) !=  skedj.get_method_value(skedj.last, :title_between)  %>
+<% broke_already = true %>
+<tr>
+  <td>&nbsp;</td>
+  <th colspan="<%= (skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time)) / 60 %>"><%= skedj.get_method_value(skedj.current, :title_between) %></td>
+<% end %>
+<% end %>
+<% if skedj.opts[:break_between_difference] and skedj.last and ! broke_already %>
+<% if skedj.get_method_value(skedj.current, :block_method_name) == skedj.get_method_value(skedj.last,  :block_method_name) && skedj.get_method_value(skedj.current, :break_between_difference) != skedj.get_method_value(skedj.last, :break_between_difference) %>
+<tr>
+  <td>&nbsp;</td>
+  <td colspan="<%= (skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time)) / 60 %>">&nbsp;</td>
+
+</tr>
+<% end %>
+<% end %>
+
     <tr>
     <th>
-      <% if @opts['presentation_mode']=='Preview' %>
-        <%= @shift.worker.name %>
+      <% if skedj.opts[:presentation_mode]=='Preview' %>
+        <%= skedj.get_method_value(skedj.current, :left_method_name) %>
       <% else %>
-        <%= link_to @shift.worker.name, { :action => 'edit', :controller => 'workers', :id => @shift.worker.id }, :title => 'edit', :popup => true %>
+        <%= link_to skedj.get_method_value(skedj.current, :left_method_name), { :action => skedj.opts[:left_link_action], :controller => skedj.opts[:left_table_name], :id => skedj.get_method_value(skedj.current, :left_link_id) }, :title => skedj.opts[:left_link_action], :popup => true %>
       <% end %>
     </th>
 
+
+
     <% # output leading cells as padding %>
-    <% lead_time = ( @shift.start_time - @shift.weekday.start_time ) / (60*15) %>
-    <% for i in (1..lead_time) %>
-      <td>&nbsp;</td>
-    <% end %>
+    <% lead_time = ( skedj.get_method_value(skedj.current, :thing_start_time) - skedj.get_method_value(skedj.current, :block_start_time) ) / (60) %>
+    <%= render :partial => "work_shifts/pad", :locals => {:mins => lead_time} %>
 

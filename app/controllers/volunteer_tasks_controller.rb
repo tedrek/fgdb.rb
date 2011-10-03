@@ -1,24 +1,35 @@
 class VolunteerTasksController < ApplicationController
   layout :with_sidebar
-  before_filter :authorized_only
   before_filter :be_stupid
+
+  protected
 
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'contact')
   end
 
+  public
+
+  def update_task_types
+    render :partial => 'task_type'
+  end
+
   #########
   protected
 
-  def authorized_only
-    if params[:contact_id]
-      contact_id = params[:contact_id].to_i
-    elsif params[:volunteer_task] and params[:volunteer_task][:contact_id]
-      contact_id = params[:volunteer_task][:contact_id].to_i
-    else
-      contact_id = nil
-    end
-    requires_role_or_me(contact_id, 'VOLUNTEER_MANAGER')
+  def get_required_privileges
+    a = super
+    a << {:privileges => ["contact_#{_get_contact_id.to_s}", 'manage_volunteer_hours']}
+    a << {:only => ["/everybody"], :privileges => ['manage_volunteer_hours']}
+    return a
+  end
+
+  def _get_contact_id
+    ((params && params[:contact_id] && params[:contact_id].to_i) || (params && params[:volunteer_task] && params[:volunteer_task][:contact_id] && params[:volunteer_task][:contact_id].to_i) || (@current_user && @current_user.contact_id))
+  end
+
+  def get_contact_id
+    ((params && params[:contact_id] && params[:contact_id].to_i) || (params && params[:volunteer_task] && params[:volunteer_task][:contact_id] && params[:volunteer_task][:contact_id].to_i) || (has_required_privileges("/everybody") ? nil : (@current_user && @current_user.contact_id)))
   end
 
   ######
@@ -26,13 +37,14 @@ class VolunteerTasksController < ApplicationController
 
   def index
     list
-    render :action => 'list'
   end
 
   def list
-    if params[:contact_id]
+    if get_contact_id
       params[:limit_by_contact_id] = true
     end
+    @show_layout = true
+    component
   end
 
   # All posts to change variables like sort values or page changes go through this action
@@ -42,6 +54,7 @@ class VolunteerTasksController < ApplicationController
   end
 
   def component
+    @show_layout ||= false
     @show_wrapper = true if @show_wrapper.nil?
     @sort_sql = VolunteerTask.columns_hash[current_sort(params)].sort_sql rescue nil
     @sort_by = @sort_sql.nil? ?
@@ -56,19 +69,23 @@ class VolunteerTasksController < ApplicationController
                   ]
     }
     if params[:limit_by_contact_id]
-      options[:conditions] = ['contact_id = ?', params[:contact_id]]
-      @contact = Contact.find(params[:contact_id])
+      @contact = Contact.find(get_contact_id)
+      options[:conditions] = ['contact_id = ?', @contact.id]
     end
     options[:page] = params[:page]
     @volunteer_tasks = VolunteerTask.paginate(options)
-    render :action => "component", :layout => false
+    if @show_layout
+      render :action => "component"
+    else
+      render :action => "component", :layout => false
+    end
   end
 
   def new
     @volunteer_task = VolunteerTask.new
     @volunteer_task.duration = nil
     @volunteer_task.date_performed = Date.today
-    @volunteer_task.contact_id = params[:contact_id] if params[:limit_by_contact_id]
+    @volunteer_task.contact_id = get_contact_id if params[:limit_by_contact_id]
     @successful = true
 
     return render(:action => 'new.rjs')

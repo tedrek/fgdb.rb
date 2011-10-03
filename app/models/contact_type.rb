@@ -1,8 +1,13 @@
 class ContactType < ActiveRecord::Base
   validates_uniqueness_of :name, :message => "already exists"
+  has_and_belongs_to_many :contacts
 
   def self.find_instantiable
     find(:all, :conditions => ["instantiable = ?", true], :order => "description")
+  end
+
+  def self.builder_relevent # this should be metadata probably
+    ContactType.find_instantiable.select{|x| x.name.match(/_build/) or x.name == "advanced_testing" or x.name.match(/completed_/)}
   end
 
   def to_s

@@ -1,3 +1,13 @@
+class ProcessorDaemon
+  def self.add_to(type, tid, source = "fgdb")
+    return if Default['civicrm_server'].nil?
+    tid = tid.to_i.to_s
+    arr = [File.join(RAILS_ROOT, "script", "processor-daemon.sh"), "add", source, type, tid]
+#    puts arr.inspect
+    system(*arr)
+  end
+end
+
 module ActiveRecord
   module UserMonitor
     def self.included(base)
@@ -131,9 +141,32 @@ module ActiveRecord
   end
 end
 
+class Object
+  def two_places
+    v = sprintf "%.2f", self
+#    if v[-1] == "0"[0]
+#      v = v.chop
+#    end
+    v
+  end
+
+  def tp
+    two_places
+  end
+end
+
+class Struct
+  def to_hash
+    h = {}
+    self.members.each{|x| x = x.to_sym; h[x] = self.send(x)}
+    return h
+  end
+end
+
 class String
   def to_cents
-    temp = self.split('.')
+    tmp = self.sub(/^\$/, "")
+    temp = tmp.split('.')
     temp[1]=((temp[1]||"0")+"0")[0..1]
     temp[0].to_i*100 + temp[1].to_i
   end
@@ -194,7 +227,11 @@ class ActiveRecord::Base
   end
 
   def self.sql(*arr)
-    execute(*arr)
+    prepare_sql(*arr)
+  end
+
+  def add_to_processor_daemon
+    ProcessorDaemon.add_to(self.class.table_name, self.id)
   end
 
   def self.new_or_edit(hash)
@@ -221,10 +258,19 @@ class ActiveRecord::Base
     return editable
   end
 
+  def to_hash(*list)
+    list = [list].flatten
+    h = {}
+    list.each do |k|
+      h[k] = self.send(k)
+    end
+    h
+  end
+  
   def attributes_with_editable=(hash)
-    should_check = editable?
-    before = attributes
-    retval = self.attributes = hash
+    should_check = !editable?
+    before = attributes.clone
+    retval = (self.attributes=(hash))
     after = attributes
     if should_check
       if before != after
@@ -235,20 +281,92 @@ class ActiveRecord::Base
   end
 
   acts_as_logged
+
+
+  protected
+
+  # TODO: shift is 11 - 2
+  #       assignment is 12-3 (over the end)
+  # does not add an available for 11-12 as it should
+
+#  fstart, pstart, fend, pend
+
+  def range_math(*ranges)
+    frange = nil
+    ranges.each{|a|
+      pstart, pend = a
+      if frange.nil?
+        frange = [[pstart, pend]]
+      else
+        frange.each{|a2|
+          fstart, fend = a2
+          if fstart < pstart and pstart < fend
+            if pend >= fend
+              fend = pstart
+            else
+              new = [pend, fend]
+              frange.push(new)
+              fend = pstart
+            end
+          elsif fstart >= pstart and fend <= pend
+            fstart = fend = nil
+          elsif pstart <= fstart and pend > fstart
+            if pend > fend
+              fstart = fend = nil # shouldn't get here
+            else
+              fstart = pend
+            end
+          end
+          a2[0] = fstart
+          a2[1] = fend
+        }
+        frange = frange.select{|x| !(x.first.nil? or x.first == x.last or x.last < x.first)}.sort_by{|x| x.first}
+      end
+    }
+    return frange
+  end
+
+  def time_to_int(time)
+    (time.hour * 60) + time.min
+  end
+
+  def int_to_time(int)
+    hours = (int / 60).floor
+    mins = int % 60
+    Time.parse("#{hours}:#{mins}")
+  end
+
+end
+
+class Array
+  def each_with_siblings
+    self.each_with_index{|b, i|
+      a = self[i - 1] if i > 0 # -1 does not mean what we want it to
+      c = self[i + 1]
+      yield(a, b, c)
+    }
+  end
+
+    def map_with_index
+      result = []
+      self.each_with_index do |elt, idx|
+        result << yield(elt, idx)
+      end
+      result
+    end
 end
 
 # lets call this a hack
 # DB.execute("SELECT * FROM defaults;")
 class DB < ActiveRecord::Base
-end
-
-class Array
-  def ryan52s_join
-    return "" if self.length == 0
-    return self.first if self.length == 1
-    return "#{self.first} and #{self.last}" if self.length == 2
-    list = self.dup
-    last = list.pop
-    return list.join(", ") + " and " + last
+  def self.exec(*args)
+    DB.execute(*args)
+  end
+  def self.run(*args)
+    DB.execute(*args)
+  end
+  def self.conditions_date_field
+    return 'created_at'
   end
 end
+

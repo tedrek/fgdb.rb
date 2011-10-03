@@ -23,12 +23,12 @@
   <%= observe_field 'adopter', :function => check_vol % 'adopter' %>
   <%= observe_field 'offsite', :function => check_vol % 'offsite' %>
 
-  <div class="organization form-element">
+  <div style="clear: left;" class="organization form-element">
     <label for="contact_organization">Organization Name</label>
     <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
   </div>
 
-  <div class="person form-element">
+  <div  style="clear: left;" class="person form-element">
     <label for="contact_first_name">First name</label>
     <%= text_field 'contact', 'first_name' , {:class=>"person text-input"} %>
   </div>
@@ -83,7 +83,7 @@
     <label for="contact_fully_covered__nil">Unknown</label>
   </div>
 
-  <% if Contract.usable.length > 1 %>
+  <% if contract_enabled %>
     <div class="contract form-element">
       <label for="contact_contract">Default Donation Contract</label>
       <%= collection_select("contact", "contract_id", Contract.usable, "id", "description") %>
@@ -100,7 +100,7 @@
   </div>
 
   <div class="form-element person">
-    <%= render(:partial => "user_form") if has_role_or_is_me?(@contact.id, :ADMIN) %>
+    <%= render(:partial => "user_form") if has_required_privileges("/admin_user_accounts") or has_privileges("contact_#{@contact.id}") %>
   </div>
 
   <!--[eoform:contact]-->

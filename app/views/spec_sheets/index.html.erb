@@ -1,29 +1,51 @@
 <div id="form-header">
-  <h1>Go to report:</h1>
-
   <% if @error!=nil %>
     <span style="color: red">ERROR: <%= @error %></span>
   <% end %>
-
 </div>
 
+<h2>Show system history</h2>
+
+<% form_for "", nil, :url => {:action => "system" }, :html => {:method => "get"} do |f| %>
+<%= (f.text_field "id").sub(/\[id\]/, "id") %>
+<%= submit_tag 'Show' %>
+<% end %>
+
+<% if has_required_privileges("builder") %>
+<h2>Show builder status sheet</h2>
+
+<% form_for "", nil, :url => {:action => "builder" }, :html => {:method => "get"} do |f| %>
+<%= submit_tag 'Show' %>
+<%= contact_field('@nil', 'contact_id') %>
+<% end %>
+<% end %>
+
+<h2>Search for reports</h2>
+
 <% if @reports -%>
-  <%= render :partial => 'list', 'reports' => @reports %>
+  <%= render :partial => 'list', :locals => {:reports => @reports} %>
+  <%= will_paginate @reports, :params => {:conditions => params[:conditions]} %>
 <% end -%>
 
 <div id="main-section">
   <% form_tag :action => 'search' do -%>
   <% filters = [] -%>
   <% filters << 'flagged' -%>
-  <% if @current_user and @current_user.has_role?('CONTACT_MANAGER') %>
+  <% if has_required_privileges('/search_by_contact') %>
     <% filters << 'contact' %>
   <% end %>
   <% filters << 'system' -%>
   <% filters << 'id' %>
   <% filters << 'created_at' %>
+  <% filters << 'action' %>
+  <% filters << 'type' %>
+  <% filters << 'serial_number' %>
   <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>
 <% end -%>
 <br />
 <%= link_to 'New report', {:action => "new"} %>
+<% if has_required_privileges("show/sign_off") %>
+<br /><%= link_to 'New builder_task credit without report', {:action => "new", :controller => "builder_tasks"} %>
+<% end %>
 </div>

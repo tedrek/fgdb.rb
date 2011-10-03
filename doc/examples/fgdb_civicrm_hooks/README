@@ -1,0 +1,44 @@
+This dir (and the civicrm root, see below) go in
+sites/all/modules (symlinked), Custom.php goes in civicrm/api/v2/
+(symlinked), download-version.sh used to download and prepare new
+versions.
+
+All the symlinks from /usr/share/drupal6 to civicrm
+go to ~/code/latest, which is a manually updated
+symlink (after "download-version.sh" is ran and all
+is good).
+
+http://civicrm/drupal6/update.php may need
+to be ran after upgrades.
+
+Initial setup involves installing apache2, php5.
+
+Create the mysql database:
+CREATE DATABASE drupal7;
+CREATE DATABASE civicrm;
+CREATE USER 'drupal7'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON drupal7.* TO 'drupal7'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON civicrm.* TO 'drupal7'@'localhost' IDENTIFIED BY 'password';
+
+Then do what these URLs say to:
+/drupal/install.php
+/drupal/sites/all/modules/civicrm/install/index.php
+
+On install this module to be enabled here:
+http://civicrm/drupal6/?q=admin/build/modules
+
+To generate a key:
+php -r 'echo md5(uniqid(rand(), true)) . "\n";
+
+Set a site key:
+set CIVICRM_SITE_KEY in /usr/share/drupal6/sites/default/civicrm.settings.php
+
+Set a users key (yes, sadly can only be done through SQL):
+In the "drupal" db, get the users email: SELECT mail FROM users WHERE name LIKE 'ass';
+Set it in the "civicrm" db on their contact: UPDATE civicrm_contact SET api_key = 'BLAH' WHERE id IN (SELECT contact_id FROM civicrm_email WHERE email LIKE 'root@freegeek.org');
+
+Add custom fields for fgdb id:
+To do this, go to Administer -> Customize -> Custom Data
+add a fgdb_contacts set for contacts
+add a fgdb_contact_id field, of integer type, make it searchable
+do this again for donations

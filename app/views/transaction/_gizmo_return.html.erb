@@ -3,7 +3,7 @@
 <% @options = params.merge(:controller => base_controller, :action => "view",
                            :id => gizmo_return.send("#{Sale.primary_key}")) %>
 
-<tr class="<%= classAttr %>"
+<tr class="<%= (gizmo_return.store_credit && gizmo_return.store_credit.spent?) ? "red" : "" %><%= classAttr %>"
     id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for column in columns %>
     <% column_value = eval(column.eval) rescue nil %>
@@ -15,10 +15,9 @@
     <%= loading_indicator_tag("gizmo_return_#{gizmo_return.id}_loading") %>
     <% print_options = @options.merge(:action => 'receipt') %>
     <a onclick="window.open('<%= url_for(print_options) %>','Receipt_<%= gizmo_return.id %>','');" title="Print" style="cursor: pointer;">
-      <%= image_tag "print.png", :alt => "Print", :title => "Print" %>
+      Print
     </a>
     <%= render :partial=> "edit_update_transaction",
-        :locals => {:transaction => gizmo_return,
-          :allowed_roles => ["STORE_ADMIN", "BEAN_COUNTER"]} %>
+        :locals => {:transaction => gizmo_return} %>
   </td>
 </tr>

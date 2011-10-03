@@ -1,0 +1,12 @@
+  <p>
+    <%= f.label :action_id %><br />
+    <%= f.select("action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %>
+  </p>
+  <p>
+    <%= f.label :contact_id %><br />
+    <%= f.text_field :contact_id %>
+  </p>
+  <p>
+    <%= f.label :notes %><br />
+    <%= f.text_area :notes %>
+  </p>

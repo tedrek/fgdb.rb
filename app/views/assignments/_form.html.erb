@@ -1,0 +1,87 @@
+<div style="float: right; text-align: right;">
+  <% is_r = @assignment.class == Assignment %>
+  <% shift = is_r ? f.object.volunteer_shift : f.object.volunteer_default_shift %>
+<% if shift.stuck_to_assignment %>
+  <% f.fields_for is_r ? :volunteer_shift : :volunteer_default_shift do |s| %>
+    <p>
+      <%= s.label :volunteer_task_type_id %>
+      <%= s.select("volunteer_task_type_id", [VolunteerTaskType.new(:description => ""),  VolunteerTaskType.instantiables.effective_on(Date.today)].flatten.map{|x| [x.description, x.id]}) %>
+    </p>
+    <p>
+      <%= s.label :roster_id %>
+      <%= s.select("roster_id", [Roster.new(:name => ""),  Roster.find(:all)].flatten.map{|x| [x.name, x.id]}) %>
+    </p>
+    <p>
+      <%= s.label :program_id %>
+      <%= s.select("program_id", [Program.new(:name => ""),  Program.find(:all, :conditions => {:volunteer => true})].flatten.map{|x| [x.name, x.id]}) %>
+    </p>
+    <% if is_r %>
+      <p>
+        <%= f.label :set_date, "Date" %>
+        <%= calendar_box f.object_name, :set_date %>
+      </p>
+    <% else %>
+      <p>
+        <%= f.label :set_weekday_id, "Weekday" %>
+        <%= f.select("set_weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, :include_blank => true) %>
+      </p>
+    <% end %>
+  <% end %>
+<% else %>
+  <p>
+<%= f.label :volunteer_shift %>    <table class="awesome">
+  <% event = is_r ? shift.volunteer_event : shift.volunteer_default_event %>
+  <% rsrcs = is_r ? event.resources_volunteer_events : event.resources_volunteer_default_events %>
+  <% assigns = is_r ? shift.assignments : shift.default_assignments %>
+  <% if !is_r; assigns = assigns.select{|x| x.slot_number == f.object.slot_number}; end %>
+  <% date = is_r ? shift.date : event.weekday.name %>
+      <tr><td>Id:</td><td><%= shift.id %></td></tr>
+      <tr><td>Date:</td><td><%= date %></td></tr>
+      <tr><td>Time range:</td><td><%= shift.time_range_s %></td></tr>
+      <tr><td>Shift description:</td><td><%= vs = shift; s = vs.volunteer_task_type_id.nil? ? event.description : vs.volunteer_task_type.description; s += ", #{vs.description}" if vs.description.to_s.length > 0; s %></td></tr>
+      <tr><td>Available time range:</td><td><%= [assigns.select{|x| x.contact_id.nil?}, f.object].flatten.sort_by(&:start_time).uniq.map{|x| x.time_range_s}.join(", ") %></td></tr>
+      <tr><td>Volunteer event name:</td><td><%= event.description %></td></tr>
+      <% if is_r %>
+      <tr><td>Volunteer event notes:</td><td><%= markdown(event.notes) %></td></tr>
+      <% end %>
+      <tr><td>Resources:</td><td><%=rsrcs.map{|x| x.resource.name}.join(", ") %></td></tr>
+    </table>
+  </p>
+<% end %>
+
+  <%= f.hidden_field :redirect_to, :value => @referer %>
+
+    <%= f.label :contact_id %><br />
+    <% @obj = f.object %>
+      <%= contact_field("@obj", "contact_id",
+                    :locals => {:options => {
+                        :object_name => f.object_name.to_s,
+                        :field_name => 'contact_id'
+                      }}) %>
+  </div>
+  <p>
+    <%= f.label :start_time %><br />
+    <%= f.time_select :start_time, :ignore_date => true, :twelve_hour => true, :include_blank => false, :minute_step => 15 %>
+  </p>
+  <p>
+    <%= f.label :end_time %><br />
+    <%= f.time_select :end_time, :ignore_date => true, :twelve_hour => true, :include_blank => false, :minute_step => 15 %>
+  </p>
+      <% if is_r %>
+  <% if f.object.contact_id %>
+  <p>
+    <%= f.label :attendance_type_id %><br />
+    <%= select(f.object_name, "attendance_type_id", AttendanceType.find(:all).sort_by(&:id).collect {|p| [ p.name, p.id ] }, :include_blank => true) %>
+  </p>
+  <p>
+    <%= f.label :call_status_type_id %><br />
+    <%= select(f.object_name, "call_status_type_id", ([["not called yet", ""]] + CallStatusType.find(:all).sort_by(&:id).collect {|p| [ p.name, p.id ] }), :include_blank => false) %>
+  </p>
+  <% end %>
+
+  <p>
+    Notes only get saved if a contact is assigned the shift, and get removed when the contact is removed from the shift.<br />
+    <%= f.label :notes %><br />
+    <%= f.text_area :notes %>
+  </p>
+  <% end %>

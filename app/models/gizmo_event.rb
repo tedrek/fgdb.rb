@@ -3,6 +3,7 @@ class GizmoEvent < ActiveRecord::Base
 
   belongs_to :donation
   belongs_to :sale
+  belongs_to :gizmo_return
   belongs_to :disbursement
   belongs_to :recycling
   belongs_to :gizmo_type
@@ -20,10 +21,58 @@ class GizmoEvent < ActiveRecord::Base
   define_amount_methods_on("unit_price")
 
   def is_store_credit
-    self.gizmo_type.id == GizmoType.find_by_name("store_credit").id
+    self.gizmo_type_id == GizmoType.find_by_name("store_credit").id
   end
 
+  before_save :set_storecredit_on_return
+
+  def set_storecredit_on_return
+    if(@sc_id_set and @sc_id != self.return_store_credit_id)
+      raise unless self.gizmo_context == GizmoContext.gizmo_return
+      self.return_store_credit_id = @sc_id
+    end
+  end
+
+  def store_credit_hash=(hash)
+    return unless hash and hash.length > 0
+    @sc_id_set = true
+    begin
+      @sc_id = StoreChecksum.new_from_checksum(hash).result
+    rescue StoreChecksumException
+      @sc_id = nil
+    end
+  end
+
+  def store_credit_hash_id
+    if ! @sc_id_set
+      @sc_id_set = true
+      @sc_id = self.return_store_credit_id
+    end
+    @sc_id
+  end
+
+  def store_credit_hash
+    StoreChecksum.new_from_result(store_credit_hash_id).checksum if store_credit_hash_id
+  end
+
+  def my_sc_h
+    StoreCredit.find_by_id(store_credit_hash_id)
+  end
+
+  validate :sc_h_ok
+
+  def sc_h_ok
+    return if !(is_store_credit && self.gizmo_context == GizmoContext.gizmo_return)
+    errors.add("gizmo_event", "store credit was already spent") if self.my_sc_h.spent? && (self.gizmo_return.id.nil? || self.my_sc_h.payment_id || ((self.my_sc_h.my_return.gizmo_return.id) != self.gizmo_return.id))
+  end
+
+  attr_accessor :expire_date
+
   def set_storecredit_difference_cents
+    return unless self.gizmo_context == GizmoContext.sale
+    my_expire_date = self.store_credits.map{|x| x.expire_date}.uniq.select{|x| !x.nil?}.sort.last
+    my_expire_date ||= @expire_date
+    my_expire_date ||= (Date.today + StoreCredit.expire_after_value)
     while self.store_credits.length < self.gizmo_count
       self.store_credits << StoreCredit.new
     end
@@ -34,6 +83,7 @@ class GizmoEvent < ActiveRecord::Base
     self.store_credits.each{|x|
       raise if x.spent? and x.amount_cents != self.unit_price_cents
       x.amount_cents = self.unit_price_cents
+      x.expire_date = my_expire_date
     }
   end
 
@@ -46,6 +96,10 @@ class GizmoEvent < ActiveRecord::Base
       return true if i.spent?
     end
     return false
+  end
+
+  def my_transaction
+    return sale || donation || gizmo_return || disbursement || recycling
   end
 
   def validate
@@ -63,47 +117,28 @@ class GizmoEvent < ActiveRecord::Base
   class << self
     def totals(conditions)
       connection.execute(
-                         "SELECT gizmo_events.gizmo_type_id,
+                         "SELECT gizmo_types.gizmo_category_id,
+                gizmo_events.gizmo_type_id,
                 gizmo_events.gizmo_context_id,
-                d.disbursement_type_id,
+                disbursements.disbursement_type_id,
                 sum(gizmo_events.gizmo_count) AS count
          FROM gizmo_events
-              LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
-LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems ON system_id = systems.id
-         WHERE #{sanitize_sql_for_conditions(conditions)}
-         GROUP BY 2,1,3"
-                         )
-    end
-
-    def category_totals(conditions)
-      connection.execute(
-                         "SELECT gizmo_types.gizmo_category_id,
-                gizmo_events.gizmo_context_id,
-                sum(gizmo_events.gizmo_count)
-         FROM gizmo_events
+              LEFT OUTER JOIN disbursements ON disbursements.id = gizmo_events.disbursement_id
               LEFT JOIN gizmo_types ON gizmo_types.id=gizmo_events.gizmo_type_id
 LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems ON system_id = systems.id
+LEFT JOIN sales ON gizmo_events.sale_id = sales.id
+LEFT JOIN gizmo_returns ON gizmo_events.gizmo_return_id = gizmo_returns.id
+LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
-         GROUP BY 1,2"
+         GROUP BY 3,2,4,1"
                          )
-    end
-
-    def income_totals(conditions)
-      connection.execute(
-                         "SELECT gt.id AS gt,
-                sum(gizmo_events.gizmo_count
-                    * gizmo_events.unit_price_cents)
-         FROM gizmo_events
-              LEFT JOIN gizmo_types gt
-                   ON gizmo_events.gizmo_type_id=gt.id
-LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems ON system_id = systems.id
-         WHERE #{sanitize_sql_for_conditions(conditions)}
-         GROUP by 1")
     end
   end
 
   def display_name
-    "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
+    rstr = "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
+    rstr += " (#{self.system_id ? "#" + system_id.to_s : "unknown"})" if self.gizmo_type.needs_id
+    rstr
   end
 
   def valid_gizmo_count?
@@ -111,11 +146,19 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
   end
 
   def store_credit_ids
-    self.store_credits.map{|x| "#" + x.id.to_s}.ryan52s_join
+    self.store_credits.map{|x| "#" + x.id.to_s}.to_sentence
+  end
+
+  def store_credit_hashes
+    self.store_credits.map{|x| "#" + x.store_credit_hash}.to_sentence
+  end
+
+  def original_sale_id
+    return_sale_id
   end
 
   def attry_description(options = {})
-    junk = [:store_credit_ids, :as_is, :size, :system_id].map{|x| x.to_s} - (options[:ignore] || [])
+    junk = [:as_is, :size, :system_id, :original_sale_id].map{|x| x.to_s} - (options[:ignore] || [])
 
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 
@@ -133,7 +176,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
 
   def percent_discount(schedule)
     return 0 unless schedule && gizmo_type
-    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule) ) * 100 ).ceil
+    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) ) * 100 ).ceil
   end
 
   def total_price_cents
@@ -143,7 +186,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
 
   def discounted_price(schedule)
     return total_price_cents unless schedule && gizmo_type
-    (total_price_cents * (gizmo_type.multiplier_to_apply(schedule) * 100).to_i)/100
+    (total_price_cents * (gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) * 100).to_i)/100
   end
 
   def mostly_empty?

@@ -14,7 +14,6 @@
   <td class="actions">
     <%= loading_indicator_tag("recycling_#{recycling.id}_loading") %>
     <%= render :partial => "edit_update_transaction",
-        :locals => {:transaction => recycling,
-          :allowed_roles => ["BEAN_COUNTERS"]}%>
+        :locals => {:transaction => recycling}%>
   </td>
 </tr>

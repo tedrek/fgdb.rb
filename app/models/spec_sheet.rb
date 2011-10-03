@@ -1,38 +1,113 @@
 class SpecSheet < ActiveRecord::Base
-  include PrintmeHelper
+  include SystemHelper
 
   validates_presence_of :contact_id
   validates_presence_of :action_id
   validates_presence_of :type_id
 
-  belongs_to :contact
-  belongs_to :action
+  belongs_to :builder_task, :dependent => :destroy
   belongs_to :system
   belongs_to :type
   has_one :contract, :through => :system
+  validates_associated :builder_task
+
+  after_save :save_bt
+
+  def save_bt
+    self.builder_task.save!
+  end
 
   validates_existence_of :type
-  validates_existence_of :action
-  validates_existence_of :contact
 
   named_scope :good, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, true]
   named_scope :bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, false]
   named_scope :originally_bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, false]
   named_scope :clean_broke_it, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, true]
 
-  before_save :set_contract_id
+  before_save :set_contract_id_and_covered
+  before_save :builder_task
+
+  def contact
+    self.builder_task.contact
+  end
+
+  def action
+    self.builder_task.action
+  end
+
   def contract_id
     @contract_id ||= (system ? system.contract_id : nil)
+  end
+
+  def contact_id
+    contact ? contact.id : nil
+  end
+
+  def builder_task_with_magic
+    builder_task_without_magic || self.builder_task=(BuilderTask.new)
+  end
+  alias_method_chain :builder_task, :magic
+
+  def contact_id=(val)
+    self.builder_task.contact_id = val
+  end
+
+  def action_id
+    action ? action.id : nil
+  end
+
+  def action_id=(val)
+    self.builder_task.action_id = val
+  end
+
+  def after_initialize
+    builder_task
+  end
+
+  def signed_off_by
+    self.builder_task.signed_off_by
+  end
+
+  def signed_off_by=(val)
+    self.builder_task.signed_off_by = val
+  end
+
+  def notes
+    self.builder_task.notes
+  end
+
+  def notes=(val)
+    self.builder_task.notes = val
   end
 
   def contract_id=(val)
     @contract_id = val
   end
 
-  def set_contract_id
+  def covered
+    @covered ||= (system ? system.covered : nil)
+  end
+
+  def covered=(val)
+    @covered = val
+  end
+
+  def bug_correction
+    self.system.bug_correction if self.system
+  end
+
+  def bug_correction=(val)
+    self.system.bug_correction=(val) if self.system
+  end
+
+  def set_contract_id_and_covered
     if system
       if !(@contract_id.nil? || !(c = Contract.find(@contract_id)))
         system.contract = c
+        system.save!
+      end
+      if !(@covered.nil?)
+        system.covered = @covered
         system.save!
       end
     end
@@ -80,22 +155,23 @@ class SpecSheet < ActiveRecord::Base
       return
     end
 
-    parse_stuff(lshw_output)
+    sp = SystemParser.parse(lshw_output)
 
-    found_system = find_system_id
-    if found_system
-      self.system = System.find_by_id(found_system)
+    found_system = System.find_by_id(sp.find_system_id)
+    if found_system and !found_system.gone?
+      self.system = found_system
     else
       self.system = System.new
-      system.system_model  = @system_model
-      system.system_serial_number  = @system_serial_number
-      system.system_vendor  = @system_vendor
-      system.mobo_model  = @mobo_model
-      system.mobo_serial_number  = @mobo_serial_number
-      system.mobo_vendor  = @mobo_vendor
-      system.model  = @model
-      system.serial_number  = @serial_number
-      system.vendor  = @vendor
+      system.previous_id = found_system.id if found_system
+      system.system_model  = sp.system_model
+      system.system_serial_number  = sp.system_serial_number
+      system.system_vendor  = sp.system_vendor
+      system.mobo_model  = sp.mobo_model
+      system.mobo_serial_number  = sp.mobo_serial_number
+      system.mobo_vendor  = sp.mobo_vendor
+      system.model  = sp.model
+      system.serial_number  = sp.serial_number
+      system.vendor  = sp.vendor
     end
   end
 end

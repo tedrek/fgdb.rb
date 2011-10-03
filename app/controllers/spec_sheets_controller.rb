@@ -1,9 +1,29 @@
 class SpecSheetsController < ApplicationController
   layout :with_sidebar
+  protected
+  def get_required_privileges
+    a = super
+    a << {:only => ["builder", "/view_contact_name"], :privileges => ['manage_contacts']}
+    a << {:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']}
+    a << {:only => ["show/sign_off"], :privileges => ['sign_off_spec_sheets']}
+    a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
+    return a
+  end
+  public
 
-  helper :xml
-  include XmlHelper
+  helper :system
+  include SystemHelper
   MY_VERSION=9
+
+  def sign_off
+    u = User.find_by_cashier_code(params[:cashier_code])
+    s = SpecSheet.find(params[:id])
+    if u.has_privileges(required_privileges("show/sign_off").flatten.first) # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
+      s.signed_off_by=(u)
+      s.save!
+    end
+    redirect_to :back
+  end
 
   def check_compat
     # this is for old version compatibility
@@ -38,12 +58,18 @@ class SpecSheetsController < ApplicationController
 
   def fix_contract_save
     @system = System.find_by_id(params[:system][:id])
-    @system.contract_id = params[:system][:contract_id].to_i
+    @system.attributes = params[:system]
     @good = @system.save
   end
 
   def index
     search
+  end
+
+  def builder
+    @contact = Contact.find_by_id(params[:contact][:id])
+    @contact_types = ContactType.builder_relevent
+    @builder_tasks = @contact.builder_tasks.last_two_years
   end
 
   def search
@@ -54,11 +80,11 @@ class SpecSheetsController < ApplicationController
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     if @conditions.contact_enabled
-      if !requires_role('CONTACT_MANAGER')
+      if !has_required_privileges('/view_contact_name')
         return
       end
     end
-    @reports = SpecSheet.paginate(:page => params[:page], :conditions => @conditions.conditions(SpecSheet), :order => "created_at ASC", :per_page => 50)
+    @reports = BuilderTask.paginate(:page => params[:page], :conditions => @conditions.conditions(BuilderTask), :order => "builder_tasks.created_at ASC", :per_page => 50, :include => :spec_sheet)
     render :action => "index"
   end
 
@@ -69,7 +95,7 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => "index", :error => "Invalid XML!")
       return
     end
-    @parser = load_xml(output)
+    @system_parser = SystemParser.parse(output)
     @mistake_title = "Things you might have done wrong: "
     @mistakes = []
     if !@report.notes || @report.notes == ""
@@ -80,6 +106,8 @@ class SpecSheetsController < ApplicationController
         @mistakes << "The technician that you entered is an organization<br />(an organization cannot be a technician)<br />Click Edit to change the technician"
       end
     end
+    @seen = []
+    @seen_ser = []
     render :layout => 'fgss'
   end
 
@@ -92,9 +120,15 @@ class SpecSheetsController < ApplicationController
     @report = SpecSheet.find(params[:id])
   end
 
+  protected
+
   def new_common_create_stuff(redirect_where_on_error, redirect_where_on_success)
     file = params[:report][:my_file]
     if !file.nil?
+      if file == ""
+        redirect_to(:action => redirect_where_on_error, :error => "lshw output needs to be attached")
+        return
+      end
       output = file.read
     end
     params[:report].delete(:my_file)
@@ -113,6 +147,8 @@ class SpecSheetsController < ApplicationController
       redirect_to(:action => redirect_where_on_error, :error => "Could not save the database record: #{$!.to_s}")
     end
   end
+
+  public
 
   def create
     new_common_create_stuff("new", "show")

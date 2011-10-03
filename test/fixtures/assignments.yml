@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  volunteer_shift_id: 1
+  contact_id: 1
+  start_time: 2010-11-20 01:24:09
+  end_time: 2010-11-20 01:24:09
+
+two:
+  volunteer_shift_id: 1
+  contact_id: 1
+  start_time: 2010-11-20 01:24:09
+  end_time: 2010-11-20 01:24:09

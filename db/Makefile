@@ -1,14 +1,24 @@
 #!/usr/bin/make -f
 
+PATH := $(PATH):$(shell readlink -f ../script/update-devel-data/)
+
 all: download
+
+REMOTE_SOURCE = tulip:/usr/local/zhora/database.sql.gz
+
+source:
+	echo $(REMOTE_SOURCE)
 
 download: update_devel_data_version devel_data.sql
 
 devel_data.sql: devel_data.sql.lzma
-	lzcat devel_data.sql.lzma > devel_data.sql
+	xzcat devel_data.sql.lzma > devel_data.sql
 
 BASE_URL := http://develdata.freegeek.org/
 #BASE_URL := http://dev.freegeek.org/~ryan52/devel_data
+
+### HEY, USE THIS COOL FEATURE ###
+continue: fgdb-devel-data ohaither
 
 devel_data.sql.lzma: devel_data_version
 	wget $(BASE_URL)/$(shell cat devel_data_version)/devel_data.sql.lzma -O devel_data.sql.lzma
@@ -45,7 +55,7 @@ fgdb-devel-data: tmp/devel_data/svn_repo/devel_data.sql.lzma
 committed: clean_devel_data download
 
 commit:
-	cd ..; git commit -a -m "updated devel data"; cd fgdb-devel-data; under-myagent svn ci -m "updated devel data"; cd ..; under-myagent git push fg
+	cd ..; git add db/metadata/ db/schema.rb; git commit -m "updated devel data"; cd fgdb-devel-data; under-myagent svn ci -m "updated devel data"; cd ..; under-myagent git pull fg master; under-myagent git push fg
 	@make committed
 
 ohaither:
@@ -64,7 +74,7 @@ tmp/devel_data/dir:
 	mkdir -p $@
 
 tmp/devel_data/database.sql.gz: tmp/devel_data/dir
-	under-myagent scp tulip:/usr/local/arik/database.sql.gz ./tmp/devel_data/
+	under-myagent scp $(REMOTE_SOURCE) ./tmp/devel_data/
 
 tmp/devel_data/database.sql: tmp/devel_data/database.sql.gz
 	zcat tmp/devel_data/database.sql.gz > tmp/devel_data/database.sql

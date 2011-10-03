@@ -19,9 +19,14 @@ class User < ActiveRecord::Base
 
   belongs_to :contact
 
+  ####################################################
+  # I HAVE NO IDEA WHAT THIS IS HERE FOR, BUT IF YOU #
+  # FORGET ABOUT IT YOU WILL SPEND AN HOUR TRYING TO #
+  # FIGURE OUT WHAT YOU DID WRONG                    #
+  ####################################################
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :password, :password_confirmation
+  attr_accessible :login, :email, :password, :password_confirmation, :can_login
 
   def self.reset_all_cashier_codes
     self.find(:all).each{|x|
@@ -41,18 +46,23 @@ class User < ActiveRecord::Base
   end
 
   def merge_in(other)
-    for i in [:actions, :donations, :sales, :spec_sheets, :systems, :types, :users, :volunteer_tasks, :contacts]
+    for i in [:actions, :donations, :sales, :types, :users, :volunteer_tasks, :contacts, :gizmo_returns]
       User.connection.execute("UPDATE #{i.to_s} SET created_by = #{self.id} WHERE created_by = #{other.id}")
       User.connection.execute("UPDATE #{i.to_s} SET updated_by = #{self.id} WHERE updated_by = #{other.id}")
-      self.roles = (self.roles + other.roles).uniq
-      self.save!
     end
+    ["donations", "sales", "volunteer_tasks", "disbursements", "recyclings", "contacts"].each{|x|
+      User.connection.execute("UPDATE #{x.to_s} SET cashier_created_by = #{self.id} WHERE cashier_created_by = #{other.id}")
+      User.connection.execute("UPDATE #{x.to_s} SET cashier_updated_by = #{self.id} WHERE cashier_updated_by = #{other.id}")
+    }
+    self.roles = (self.roles + other.roles).uniq
+    self.save!
   end
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
     u = find_by_login(login) # need to get the salt
-    u && u.authenticated?(password) ? u : nil
+    return u if u && u.can_login && u.authenticated?(password)
+    return nil
   end
 
   # Encrypts some data with the salt.
@@ -94,9 +104,67 @@ class User < ActiveRecord::Base
     save(false)
   end
 
-  def has_role?(*roles)
-    not (self.roles.map {|x| x.name } & (roles.map {|x| x.to_s} + ['ADMIN'])).empty?
+  # start auth junk
+
+  def User.current_user
+    Thread.current['user'] || User.fake_new
   end
+
+  attr_accessor :fake_logged_in
+
+  def User.fake_new
+    u = User.new
+    u.fake_logged_in = true
+    u
+  end
+
+  def logged_in
+    ! fake_logged_in
+  end
+
+  def to_privileges
+    return "logged_in" if self.logged_in
+  end
+
+  def privileges
+    @privileges ||= _privileges
+  end
+
+  def _privileges
+    olda = []
+    a = [self, self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| x.to_privileges}.flatten.select{|x| !x.nil?}.map{|x| Privilege.by_name(x)}
+    while olda != a
+      olda = a.dup
+      a << olda.map{|x| x.children}.flatten
+      a = a.flatten.sort_by(&:name).uniq
+    end
+    a = a.map{|x| x.name}
+    a
+  end
+
+  def has_privileges(*privs)
+    positive_privs = []
+    negative_privs = []
+    privs.flatten!
+    for i in privs
+      if i.match(/^!/)
+        negative_privs << i.sub(/^!/, "")
+      else
+        positive_privs << i
+      end
+    end
+    if positive_privs.length > 0
+      positive_privs << "role_admin"
+    end
+    if negative_privs.length > 0
+      negative_privs << "role_admin"
+    end
+    my_privs = self.privileges
+    #puts "NEG: #{negative_privs.inspect}, POS: #{positive_privs.inspect}, MY: #{my_privs.inspect}"
+    return (negative_privs & my_privs).length == 0 && ((positive_privs & my_privs).length > 0 || positive_privs.length == 0)
+  end
+
+  # end auth junk
 
   protected
   # before filter

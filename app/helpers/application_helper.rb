@@ -4,6 +4,92 @@ module ApplicationHelper
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
+  def save_exception_data(e)
+    exception_data = process_exception_data(e)
+    tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
+    crash_id = tempfile.match(/^.*\.([^.]+)$/)[1]
+    exception_data["tempfile"] = tempfile
+    exception_data["crash_id"] = crash_id
+    f = File.open(tempfile, "w")
+    f.write(exception_data.to_json)
+    f.close
+    exception_data
+  end
+
+  def process_exception_data(e)
+    rescue_template = ActionController::Rescue::DEFAULT_RESCUE_TEMPLATES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_TEMPLATE
+    rescue_status = ActionController::Rescue::DEFAULT_RESCUE_RESPONSES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_RESPONSE
+    new_params = params.dup
+    new_params.delete("action")
+    new_params.delete("controller")
+    h = {:exception_class => e.class.name,
+      :message => e.to_s,
+    :template => rescue_template,
+    :status => ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[rescue_status],
+    :response => rescue_status,
+    :controller => params[:controller],
+    :action => params[:action],
+    :params => new_params,
+    :clean_message => e.clean_message,
+    :rails_env => RAILS_ENV,
+    }
+    if Thread.current['user']
+      h[:user] = Thread.current['user'].login
+    end
+    if Thread.current['cashier']
+      h[:cashier] = Thread.current['cashier'].login
+    end
+    if request.env["HTTP_REFERER"]
+      h[:referer] = request.env["HTTP_REFERER"]
+    end
+    h[:client_ip] = request.remote_ip
+    h[:date] = DateTime.now.to_s
+    eval("h = process_exception_data_#{rescue_template}(e, h)")
+    h = JSON.parse(h.to_json)
+    return h
+  end
+
+  def process_exception_data_simple(e, h)
+    return h
+  end
+
+  alias :process_exception_data_unknown_action :process_exception_data_simple
+  alias :process_exception_data_missing_template :process_exception_data_simple
+
+  def process_exception_data_backtrace(e, h)
+    h[:application_backtrace] = e.application_backtrace
+    h[:framework_backtrace] = e.framework_backtrace
+    h[:full_backtrace] = e.clean_backtrace
+    h[:response_headers] = {}
+    h[:blame_trace] = e.describe_blame
+    if response
+      h[:response_headers] = response.headers.dup
+    end
+    h[:session] = request.session.instance_variable_get("@data")
+    return h
+  end
+
+  alias :process_exception_data_diagnostics :process_exception_data_backtrace
+  alias :process_exception_data_template_error :process_exception_data_backtrace
+
+  def process_exception_data_routing_error(e, h)
+    unless e.failures.empty?
+      h[:failures] = []
+      e.failures.each do |route, reason|
+        h[:failures] << [route.inspect.gsub('\\', ''), reason.downcase]
+      end
+    end
+    return h
+  end
+
+  def contract_enabled
+    Contract.usable.length > 1
+  end
+
+  def barcode(info, opts = {})
+    tag("img", {:height => 30, :width => 100}.merge(opts).merge({:src => url_for(:controller => "barcode", :action => "barcode", :id => info, :format => "gif")}))
+  end
+
   def gizmo_events_options_for_transaction
     options_from_collection_for_select(gt_for_txn(@transaction), "id", "description")
   end
@@ -82,6 +168,11 @@ module ApplicationHelper
     columns.length + 1
   end
 
+
+  def sked_url(referer, anchor)
+    (referer ? (referer + (anchor ? "#" + anchor : "")) : ({:action => "index"}))
+  end
+
   def contact_field(obj_name, field_name, options = {})
     options[:locals] ||= {}
     options[:locals][:options] ||= {}
@@ -128,83 +219,7 @@ module ApplicationHelper
     "#{@transaction_type||'foo'}_form_tbody"
   end
 
-  # due to prototype suckness, 'extend' may not be used as a choice name.
-  def select_visibility(obj_name, method_name, choices = [])
-    #:TODO: scrub this first
-    obj = eval( "@#{obj_name}" )
-
-    # type choice
-    display = %Q{ <div class="form-element"> %s %s </div> } %
-      [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]} ),
-        observe_field( "#{obj_name}_#{method_name}",
-                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value);",
-                       :with => method_name )]
-
-    this_choice = obj.send(method_name)
-    choices.each {|choice, content|
-      if this_choice.to_s == choice.to_s
-        visibility = ''
-      else
-        visibility = 'style="display:none;"'
-      end
-      display += %Q{ <div id="%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, choice.to_s, visibility, content ]
-    }
-
-    display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s}.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")
-    return display
-  end
-
-  def multiselect_of_form_elements(obj_name, choices = {})
-    html = "<div id='#{obj_name}_container' class='conditions'>"
-    for condition in choices.keys do
-      html += hidden_field(obj_name, condition + "_enabled")
-    end
-    if choices.length > 1
-      choice_names = { }
-      choices.each {|k,v| choice_names[k] = (k).titleize}
-      js = update_page do |page|
-        page << "list_of_conditions = $H(#{choices.to_json});"
-        page << "condition_display_names = $H(#{choice_names.to_json});"
-        page.insert_html(:bottom, obj_name + "_container",
-                         :partial => 'helpers/multiselection_header',
-                         :locals => {:obj_name => obj_name})
-        for condition in choices.keys do
-          page.insert_html(:bottom, obj_name + "_adder",
-                           '<option id="%s_%s_option" value="%s">%s</option>' %
-                           [obj_name, condition, condition, (condition).titleize])
-          page << "if($('#{obj_name}_#{condition}_enabled').value == 'true'){add_condition('#{obj_name}', '#{condition}');}"
-        end
-      end
-      js += "$('#{obj_name}_nil').selected = true;"
-    elsif choices.length == 1
-      html += choices.values.first
-      js = "$('#{obj_name}_#{choices.keys.first}_enabled').value = 'true'"
-    else
-      html += ""
-      js = ""
-    end
-    html += "</div>"
-    return html + javascript_tag(js)
-  end
-
-  # the object named "@#{obj_name}" must be able to respond to all the
-  # fields listed below, or you should provide alternate fieldnames.
-  def date_or_date_range_picker(obj_name, field_name)
-    date_types = []
-    obj = eval( "@#{obj_name}" )
-
-    # daily
-    date_types << ['daily', calendar_box(obj_name, field_name + '_date',{},{:showOthers => true})]
-    # monthly
-    date_types << ['monthly', select_month(obj.send(field_name + '_month'), :field_name => field_name + '_month', :prefix => obj_name) +
-                   select_year(obj.send(field_name + '_year'), :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year)]
-    # arbitrary
-    date_types << ['arbitrary', "From: %s To: %s" %
-                   [ calendar_box(obj_name, field_name + '_start_date',{},{:showOthers => true}),
-                     calendar_box(obj_name, field_name + '_end_date',{},{:showOthers => true}) ]]
-
-    return select_visibility(obj_name, field_name + '_date_type', date_types)
-  end
+  include HtmlHelper
 
   def time_or_time_range_picker(obj_name, fields)
     #:TODO: ?
@@ -212,7 +227,7 @@ module ApplicationHelper
 
   def my_lightwindow_tag(options, html_options = {})
     %Q[<a href="#{url_for(options[:url])}" class="#{html_options[:class]} lightwindow" onclick="return false"
-          id="#{options[:id]}" params="lightwindow_type=#{options[:type] || 'page'}">
+          id="#{options[:id]}" params="lightwindow_width=600,lightwindow_type=#{options[:type] || 'page'}">
          #{options[:content]}
        </a>] +
       javascript_tag("if(myLightWindow) {myLightWindow._processLink($('#{options[:id]}'))};")
@@ -293,21 +308,13 @@ module ApplicationHelper
     %Q[<span style="display:none" id="#{loading_indicator_id(prefix)}"><img src="/images/indicator.gif" alt="loading..."></img></span>]
   end
 
-  def is_logged_in()
-    @current_user
+  # start auth junk
+
+  def has_privileges(*privs)
+    User.current_user.has_privileges(*privs)
   end
 
-  def is_me?(contact_id)
-    @current_user and @current_user.contact_id == contact_id
-  end
-
-  def has_role?(*roles)
-    @current_user and @current_user.has_role?(*roles)
-  end
-
-  def has_role_or_is_me?(contact_id, *roles)
-    has_role?(*roles) or is_me?(contact_id)
-  end
+  # end auth junk
 
   def custom_change_observer(element, handler)
     custom_observer(element, handler, 'change')
@@ -330,26 +337,29 @@ module ApplicationHelper
 
   def edit_link(link_id, options, form_id = nil)
     make_link(link_id,
-              image_tag("edit.png", :alt => "edit", :title => "edit"),
+              "E",
+              "Edit",
               options,
               form_id)
   end
 
   def delete_link(link_id, options, form_id = nill)
     make_link(link_id,
-              image_tag("remove.png", :alt => "delete", :title => "delete"),
+              "D",
+              "Delete",
               options,
               form_id)
   end
 
-  def make_link(link_id, image_tag, options, form_id = nil)
+  def make_link(link_id, image_tag, title, options, form_id = nil)
+    image_tag = title
     html = %Q[
-      <a id="#{link_id}"
+      <a id="#{link_id}" title="#{title}"
          onclick="return false">
         #{image_tag}
       </a>
     ]
-    ify = form_id ? "form_has_not_been_edited('#{form_id}') ||" : ""
+    ify = form_id ? "$('#{form_id}') == null || form_has_not_been_edited('#{form_id}') ||" : ""
     html += custom_observer(link_id,
                             "if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
                                  #{remote_function(options)}
@@ -360,22 +370,25 @@ module ApplicationHelper
 
   def new_edit_link(link_id, options, form_id = nil)
     new_make_link(link_id,
-                  image_tag("edit.png", :alt => "edit", :title => "edit", :class => "image-link"),
+                  "E",
+                  "Edit",
                   options,
                   form_id)
   end
 
   def new_delete_link(link_id, options, form_id = nill)
     new_make_link(link_id,
-                  image_tag("remove.png", :alt => "delete", :title => "delete", :class => "image-link"),
+                  "D",
+                  "Delete",
                   options,
                   form_id)
   end
 
-  def new_make_link(link_id, image_tag, options, form_id = nil)
+  def new_make_link(link_id, image_tag, title, options, form_id = nil)
+    image_tag = title
     ify = form_id ? "form_has_not_been_edited('#{h form_id}') ||" : ""
     html = %Q[
-      <a id="#{link_id}" href="#{h options[:url][:controller]}/#{h options[:url][:action]}/#{h options[:url][:id]}#{h options[:url][:return_to_search]=='true' ? '?return_to_search=true' : ''}"
+      <a id="#{link_id}" title="#{title}" href="#{h options[:url][:controller]}/#{h options[:url][:action]}/#{h options[:url][:id]}#{h options[:url][:return_to_search]=='true' ? '?return_to_search=true' : ''}"
          onclick="if(#{h ify} confirm('Current entry form will be lost.  Continue?')) {
                                  #{h remote_function(options)}
                              }">

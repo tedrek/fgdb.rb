@@ -1,0 +1,24 @@
+<h1><%= @action_title || "Editing" %> assignment</h1>
+
+<% if @assignments.length > 1 %>
+<h2>Editing multiple assignments at once:</h2>
+<% for x in @assignments %>
+  <%= x.description %><br />
+<% end %>
+<% end %>
+
+<fieldset>
+<% form_for(@assignment, :url => @my_url) do |f| %>
+  <%= f.error_messages %>
+
+  <%= render :partial => "assignments/form", :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+</fieldset>
+
+<%= link_to 'Show', {:action => "show", :id => @assignment.id} %> |
+<%= link_to 'Back', sked_url(@referer, @assignment.class == Assignment ? @assignment.volunteer_shift.date_anchor : @assignment.volunteer_default_shift.weekday_name) %>
+

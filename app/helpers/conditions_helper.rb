@@ -1,20 +1,111 @@
 module ConditionsHelper
-  def conditions_html(params_key = "conditions", these_things = nil)
-    hash = {}
-    Conditions::CONDS.select{|x| these_things.include?(x)}.each{|x|
-      if Conditions::DATES.include?(x)
-        hash[x] = date_or_date_range_picker(params_key, x)
-      else
-        hash[x] = eval("html_for_" + x + "_condition(params_key)")
-      end
-    }
-    multiselect_of_form_elements(params_key, hash)
-  end
+  include ConditionsBaseHelper
 
   private
 
+  def html_for_worker_type_condition(params_key)
+    select(params_key, "worker_type_id", WorkerType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
+  end
+
+  def html_for_assigned_condition(params_key)
+    check_box params_key, "assigned"
+  end
+
+  def html_for_needs_checkin_condition(params_key)
+    ""
+  end
+
+  def html_for_store_credit_redeemed_condition(params_key)
+    ""
+  end
+
+  def html_for_cancelled_condition(params_key)
+    "<div style=\"display: inline-block;\">Show cancelled: " + check_box(params_key, "cancelled") + "</div>"
+  end
+
+  def html_for_schedule_condition(params_key)
+    which_way = (params[params_key] ? params[params_key][:schedule_which_way] : nil) || 'Family'
+    if !['Family', 'Solo', 'Solo + root'].include?(which_way)
+      which_way = 'Family'
+    end
+    ((select params_key, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] }) +
+    (radio_button params_key, :schedule_which_way, 'Family', :checked => (which_way=='Family')) + "Family" +
+    (radio_button params_key, :schedule_which_way, 'Solo', :checked => (which_way=='Solo')) + "Solo" +
+    (radio_button params_key, :schedule_which_way, 'Solo + root', :checked => (which_way=='Solo + root')) + "Solo + root")
+  end
+
+  attr_accessor :multi_enabled
+
+  def html_for_worker_condition(params_key)
+    show_all = false
+    select(params_key, "worker_id", Worker.find(:all).select{|x| show_all or x.effective_now?}.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts)
+  end
+
+  def _multi_html_opts
+    @multi_enabled ? {:multiple=> (!!@multi_enabled), :size => 7} : {}
+  end
+
+  def html_for_job_condition(params_key)
+    select(params_key, "job_id", Job.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts)
+  end
+
+  def html_for_attendance_type_condition(params_key)
+    select(params_key, "attendance_type_id", AttendanceType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
+  end
+
+  def html_for_weekday_condition(params_key)
+    select(params_key, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]})
+  end
+
+  def html_for_roster_condition(params_key)
+    select(params_key, "roster_id", Roster.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]})
+  end
+
+  def html_for_sked_condition(params_key)
+    select(params_key, "sked_id", Sked.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]})
+  end
+
+  def html_for_volunteer_task_type_condition(params_key)
+    select(params_key, "volunteer_task_type_id", VolunteerTaskType.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] })
+  end
+
+  def html_for_can_login_condition(params_key)
+    ""
+  end
+
+  def html_for_empty_condition(params_key)
+    ""
+  end
+
+  def html_for_contribution_condition(params_key)
+    ""
+  end
+
+  def html_for_role_condition(params_key)
+    collection_select(params_key, "role", Role.find(:all), "id", "name")
+  end
+
+  def html_for_action_condition(params_key)
+    collection_select(params_key, "action", Action.find(:all), "id", "description")
+  end
+
+  def html_for_type_condition(params_key)
+    collection_select(params_key, "type", Type.find(:all), "id", "description")
+  end
+
+  def html_for_volunteered_hours_in_days_condition(params_key)
+    label(params_key, 'volunteer_hours_minimum', "Minimum number of hours volunteered:") +
+    text_field(params_key, 'volunteer_hours_minimum') +
+    label(params_key, 'volunteer_hours_minimum', "Within number of days:") +
+    text_field(params_key, 'volunteer_hours_days')
+  end
+
   def html_for_id_condition(params_key)
     text_field(params_key, 'id')
+  end
+
+  def html_for_serial_number_condition(params_key)
+    text_field(params_key, 'serial_number')
   end
 
   def html_for_contact_type_condition(params_key)
@@ -37,6 +128,7 @@ module ConditionsHelper
     render( :partial => 'transaction/payment_method_select',
             :locals => {:field_id_prefix => params_key,
               :field_name_prefix => params_key,
+              :hide_empty => true,
               :show_label => false,
               :paid_object => eval("@" + params_key)} )
   end
@@ -90,7 +182,7 @@ module ConditionsHelper
   end
 
   def html_for_contact_condition(params_key)
-    if has_role?('CONTACT_MANAGER', 'VOLUNTEER_MANAGER', 'FRONT_DESK')
+    if has_required_privileges('/contact_condition_everybody')
       contact_field('@' + params_key, 'contact_id',
                     :locals => {:options =>
                       {
@@ -103,8 +195,8 @@ module ConditionsHelper
                       },
                       :contact => eval("@" + params_key).contact
                     } )
-    elsif is_logged_in() && @current_user.contact_id
-      "Me" + hidden_field('defaults', 'contact_id', :value => @current_user.contact_id)
+    elsif has_privileges("has_contact")
+      "Me" + hidden_field(params_key, 'contact_id', :value => @current_user.contact_id)
     else
       raise
     end

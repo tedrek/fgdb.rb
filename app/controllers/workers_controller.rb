@@ -1,5 +1,11 @@
 class WorkersController < ApplicationController
-  before_filter :skedjulnator_role
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['manage_workers']}
+    a
+  end
+  public
 
   def index
     list
@@ -24,6 +30,7 @@ class WorkersController < ApplicationController
 
   def create
     @worker = Worker.new(params[:worker])
+    @worker.salaried = _parse_checkbox(params[:worker][:salaried])
     if @worker.save
       flash[:notice] = 'Worker was successfully created.'
       redirect_to :action => 'list'
@@ -38,9 +45,21 @@ class WorkersController < ApplicationController
     session["shift_return_action"] = "edit"
     session["shift_return_id"] = @worker.id 
   end
-
+  protected
+  def _parse_checkbox(val)
+    val = val.to_s
+    if val == "1"
+      return true
+    elsif val == "0"
+      return false
+    else
+      return nil
+    end
+  end
+  public
   def update
     @worker = Worker.find(params[:id])
+    @worker.salaried = _parse_checkbox(params[:worker][:salaried])
     if !params[:worker][:job_ids]
       @worker.jobs.clear
     end

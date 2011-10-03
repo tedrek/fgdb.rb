@@ -114,7 +114,11 @@ check_for_postgres(){
 }
 
 test_my_rails_version(){
-    check_a_version 2.1.2 || check_a_version 2.1.0
+    check_a_version 2.3.5
+}
+
+test_find_thin(){
+    which thin || which thin1.8
 }
 
 echo "Testing to see if you have everything required for fgdb to run..."
@@ -123,14 +127,21 @@ run "Checking to see if ruby is installed..." "which ruby" "install ruby" "error
 setup_stuff # only runable if ruby is installed
 run "Checking to see if make is installed..." "which make" "install make" "fail"
 run "Checking to see if rails is installed..." "ruby $(dirname $0)/../config/boot.rb" "install rails" "error"
-run "Checking to see if rails is correct version..." "test_my_rails_version" "use rails version 2.1.x" "fail"
+run "Checking to see if rails is correct version..." "test_my_rails_version" "use rails version 2.3.5" "fail"
+run "Checking to see if the ruby postgres bindings are installed..." "require_test pg" "install libpgsql-ruby" "fail"
 run "Checking to see if nokogiri is installed..." "require_test nokogiri" "install libnokogiri-ruby" "fail"
+run "Checking to see if barby is installed..." "require_test barby" "install libbarby-ruby" "fail"
+run "Checking to see if bluecloth is installed..." "require_test bluecloth" "install libbluecloth-ruby" "fail"
+run "Checking to see if rmagick is installed..." "require_test RMagick" "install librmagick-ruby" "fail"
+run "Checking to see if bytes is installed..." "require_test bytes" "install libbytes-ruby1.8" "fail"
+run "Checking to see if json is installed..." "require_test json" "install libjson-ruby1.8" "fail"
 run "Checking to see if xmlstarlet is installed..." "which xmlstarlet" "install xmlstarlet" "fail"
-run "Checking to see if thin is installed..." "which thin" "install thin" "fail"
+run "Checking to see if thin is installed..." "test_find_thin" "install thin" "fail"
 run "Checking to see if curl is installed..." "which curl" "install curl" "fail"
 run "Checking to see if socat is installed..." "which socat" "install socat" "fail"
 run "Checking to see if ruby gnuplot is installed..." "require_test gnuplot" "install libgnuplot-ruby" "fail"
 run "Checking to see if postgres is installed and running..." "check_for_postgres" "install and start postgres" "fail"
+run "Checking to see if timeout is installed..." "which timeout" "install timeout" "fail"
 
 exit $STATUS
 

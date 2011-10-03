@@ -4,35 +4,8 @@
 <%# generate teh graph %>
 <% tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp %>
 <% basename = File.basename(tempfile).sub(".", "$") %>
-<%
-  Gnuplot.open do |gp|
-    Gnuplot::Plot.new( gp ) do |plot|
-      plot.set "terminal", "jpeg"
-      plot.set "output", tempfile
-      plot.notitle
-      plot.ylabel ""
-      plot.xlabel ""
-      plot.xtic "rotate by 90"
-      plot.grid
-      string = "("
-      string_a = []
-      @graph_x_axis.each_with_index{|x,i|
-        y = @x_axis[i]
-        string_a << "\" #{y}\" #{x}"
-      }
-      string += string_a.join(", ")
-      string += ")"
-      plot.xtics string
-      @data.each do |k,v|
-        plot.data << Gnuplot::DataSet.new( [@graph_x_axis, v] ) do |ds|
-          ds.with = "linespoints"
-          ds.title = k.to_s.titleize
-        end
-      end
-    end
-  end
-  %>
-<img src="<%= url_for :action => "get_temp_file", :id => basename %>" />
+<% gnuplot_stuff(tempfile) %>
+<img src="<%= url_for :action => "get_temp_file", :id => basename, :conditions => params[:conditions] %>" />
 <%# generate teh table %>
 <table style="border-collapse: collapse;" border="1" width="100%">
   <tr>
@@ -47,7 +20,7 @@
     <tr>
       <th><%= @table_x_axis[x] %></th>
       <% @data.each do |k,v|%>
-        <td><%= v[i] %></td>
+        <td><%= v[i].tp %></td>
       <% end %>
     </tr>
   <% end %>

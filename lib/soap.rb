@@ -13,11 +13,7 @@ class SoapHandler
     router = SOAP::RPC::Router.new("Soaps")
     Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
 #      puts "Loading api from " + x
-      if RAILS_ENV == "production"
-        require x
-      else
-        eval(File.read(x))
-      end
+      require_dependency x
       eval("#{File.basename(x).capitalize.sub(/.rb$/, "")}API.new(router)")
     }
     SOAP::RPC::SOAPlet.new(router)
@@ -59,42 +55,44 @@ class SoapsBase
   end
 end
 
-class ActionController::CgiResponse
-  def status=(thing)
-    self.headers['Status'] = thing.to_s
-  end
-  def []=(a,b)
-    self.headers[a] = b
-  end
-end
+# might regain its usefulness with rails 3:
 
-class ActionController::CgiRequest
-  def meta_vars
-    {'HTTP_SOAPACTION' => self.headers['Soapaction']}
-  end
-end
+#class ActionController::CgiResponse
+#  def status=(thing)
+#    self.headers['Status'] = thing.to_s
+#  end
+#  def []=(a,b)
+#    self.headers[a] = b
+#  end
+#end
 
-class ActionController::Routing::RouteSet
-  def extract_request_environment_with_soap(req)
-    hash = extract_request_environment_without_soap(req)
-    hash[:soap] = !req.headers['Soapaction'].nil?
-    hash
-  end
-  alias_method_chain :extract_request_environment, :soap
-end
+#class ActionController::CgiRequest
+#  def meta_vars
+#    {'HTTP_SOAPACTION' => self.headers['Soapaction']}
+#  end
+#end
 
-class ActionController::Routing::Route
-  def recognition_conditions_with_soap
-    res = recognition_conditions_without_soap
-    res << "conditions[:soap] == env[:soap]" if conditions[:soap]
-    res
-  end
-  alias_method_chain :recognition_conditions, :soap
-end
+#class ActionController::Routing::RouteSet
+#  def extract_request_environment_with_soap(req)
+#    hash = extract_request_environment_without_soap(req)
+#    hash[:soap] = !req.headers['Soapaction'].nil?
+#    hash
+#  end
+#  alias_method_chain :extract_request_environment, :soap
+#end
 
-class SoapController < ActionController::Base
-  def index
-    SoapHandler.new.handle(request, response)
-    @performed_render = true
-  end
-end
+#class ActionController::Routing::Route
+#  def recognition_conditions_with_soap
+#    res = recognition_conditions_without_soap
+#    res << "conditions[:soap] == env[:soap]" if conditions[:soap]
+#    res
+#  end
+#  alias_method_chain :recognition_conditions, :soap
+#end
+
+#class SoapController < ActionController::Base
+#  def index
+#    SoapHandler.new.handle(request, response)
+#    @performed_render = true
+#  end
+#end

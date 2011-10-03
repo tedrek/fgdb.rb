@@ -1,19 +1,31 @@
 <div id="memory">
   <h2>Memory</h2>
-  <% @parser.xml_foreach("//*[contains(@id, 'memory')]") do %>
-    <% if @parser.xml_if("size") %>
+      <% if @system_parser.maximum_memory or @system_parser.total_memory %>
       <table>
+        <% if @system_parser.total_memory %>
         <tr>
           <td>
             Total:
           </td>
           <td>
-            <%= @parser.xml_value_of("size").to_bytes(1) %>
+            <%= @system_parser.total_memory %>
           </td>
         </tr>
+        <% end %>
+      <% if @system_parser.maximum_memory %>
+        <tr>
+          <td>
+            Maximum supported:
+          </td>
+          <td>
+            <%= @system_parser.maximum_memory %>
+          </td>
+        </tr>
+      <% end %>
       </table>
-    <% end %>
-    <% @parser.xml_foreach(".//*[contains(@id, 'bank')]") do %>
+      <% end %>
+
+    <% @system_parser.memories.each do |m| %>
       <div class="indent">
         <table>
           <tr>
@@ -21,7 +33,7 @@
               Bank:
             </td>
             <td>
-              <%= @parser.xml_value_of("@id").sub(/^bank:/, "") %>
+              <%= m.bank %>
             </td>
           </tr>
           <tr>
@@ -29,21 +41,20 @@
               Description:
             </td>
             <td>
-              <%= @parser.xml_value_of("description") %>
+              <%= m.description %>
             </td>
           </tr>
-          <% if @parser.xml_if("size") %>
+          <% if m.size %>
             <tr>
               <td>
                 Size:
               </td>
               <td>
-                <%= @parser.xml_value_of("size").to_bytes %>
+                <%= m.size %>
               </td>
             </tr>
           <% end %>
         </table>
       </div>
-    <% end %>
   <% end %>
 </div>

@@ -25,12 +25,17 @@ class Donation < ActiveRecord::Base
   before_save :set_occurred_at_on_gizmo_events
   before_save :compute_fee_totals
   before_save :combine_cash_payments
+  before_save :set_occurred_at_on_transaction
+  before_save :strip_postal_code
+
+  after_save :add_to_processor_daemon
 
   def self.number_by_conditions(c)
     Donation.connection.execute("SELECT count(*) FROM donations WHERE #{sanitize_sql_for_conditions(c.conditions(Donation))}").to_a[0]["count"].to_i
   end
 
   def validate
+    unless is_adjustment?
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -46,6 +51,8 @@ class Donation < ActiveRecord::Base
       errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
     end
 
+    end
+
     #errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid? or contact_type == 'dumped')
 
     errors.add("payments", "or gizmos should include some reason to call this a donation") if
@@ -57,7 +64,7 @@ class Donation < ActiveRecord::Base
   end
 
   def covered_error_checking
-    if Default["coveredness_enabled"] != "1"
+    if Default["coveredness_enabled"] != "1" or is_adjustment?
       return
     end
     covered = Default["fully_covered_contact_covered_gizmo"].to_i
@@ -105,14 +112,18 @@ class Donation < ActiveRecord::Base
 
   class << self
     def default_sort_sql
-      "donations.created_at DESC"
+      "donations.occurred_at DESC"
     end
 
     def totals(conditions)
       total_data = {}
+      gizmoless_data = {}
       methods = PaymentMethod.find(:all)
       methods.each {|method|
         total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
+      }
+      methods.each {|method|
+        gizmoless_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
       }
       self.connection.execute(
                               "SELECT payments.payment_method_id,
@@ -132,22 +143,41 @@ class Donation < ActiveRecord::Base
         summation.each{|k,v|d[k] = v.to_i}
         total_data[summation['payment_method_id'].to_i] = d
       }
+       self.connection.execute("SELECT payments.payment_method_id,
+                sum(payments.amount_cents) as amount
+         FROM donations
+         JOIN payments ON payments.donation_id = donations.id
+         WHERE #{sanitize_sql_for_conditions(conditions)}
+         AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
+         AND (SELECT count(*) FROM gizmo_events WHERE gizmo_events.donation_id = donations.id) = 0
+         GROUP BY payments.payment_method_id").each {|summation|
+        d = {}
+        summation.each{|k,v|d[k] = v.to_i}
+        gizmoless_data[summation['payment_method_id'].to_i] = d
+      }
+      total_data.each{|k,v|
+        total_data[k]['gizmoless_cents'] = gizmoless_data[k]['amount']
+      }
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
         donation.payments.sort_by(&:payment_method_id).each {|payment|
           #total paid
           total_data[payment.payment_method_id]['count'] += 1
           total_data[payment.payment_method_id]['amount'] += payment.amount_cents
-          if required_to_be_paid > 0
-            if required_to_be_paid > payment.amount_cents
-              total_data[payment.payment_method_id]['required'] += payment.amount_cents
+          if donation.gizmo_events.length > 0
+            if required_to_be_paid > 0
+              if required_to_be_paid > payment.amount_cents
+                total_data[payment.payment_method_id]['required'] += payment.amount_cents
+              else
+                total_data[payment.payment_method_id]['required'] += required_to_be_paid
+                total_data[payment.payment_method_id]['suggested'] += (payment.amount_cents - required_to_be_paid)
+              end
+              required_to_be_paid -= payment.amount_cents
             else
-              total_data[payment.payment_method_id]['required'] += required_to_be_paid
-              total_data[payment.payment_method_id]['suggested'] += (payment.amount_cents - required_to_be_paid)
+              total_data[payment.payment_method_id]['suggested'] += payment.amount_cents
             end
-            required_to_be_paid -= payment.amount_cents
           else
-            total_data[payment.payment_method_id]['suggested'] += payment.amount_cents
+            total_data[payment.payment_method_id]['gizmoless_cents'] += payment.amount_cents
           end
 
           total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'],
@@ -193,7 +223,9 @@ class Donation < ActiveRecord::Base
   end
 
   def required_contact_type
-    ContactType.find(7)
+    a = [ContactType.find_by_name('donor')]
+    a << ContactType.find_by_name('contributor') if cash_donation_paid_cents > 0
+    return a
   end
 
   def reported_total_cents
@@ -234,7 +266,7 @@ class Donation < ActiveRecord::Base
   end
 
   def required_fee_paid_cents
-    [reported_required_fee_cents, money_tendered_cents].min
+    [reported_required_fee_cents || calculated_required_fee_cents, money_tendered_cents].min
   end
 
   def required_paid?

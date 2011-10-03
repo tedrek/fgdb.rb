@@ -1,0 +1,22 @@
+<p>
+  <%= render :partial => 'sign_off', :locals => {:builder_task => @builder_task} %>
+</p>
+
+<p>
+  <b>Action:</b>
+  <%=h @builder_task.action.name %>
+</p>
+
+<p>
+  <b>Contact:</b>
+  <%=h @builder_task.contact_id %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%=h @builder_task.notes %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @builder_task.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

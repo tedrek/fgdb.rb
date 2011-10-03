@@ -12,11 +12,28 @@ class Payment < ActiveRecord::Base
   define_amount_methods_on("amount")
   validate :sc_ok
 
+  def my_transaction
+    self.sale || self.donation
+  end
+
+  def type_description
+    d = self.payment_method.name
+    if d == "invoice"
+      d = (self.my_transaction.invoice_resolved_at.nil? ? "unresolved" : "resolved") + "_" + d
+    end
+    return d
+  end
+
   def editable
     return true
   end
 
   def store_credit_id=(v)
+    begin
+      v = StoreChecksum.new_from_checksum(v).result
+    rescue StoreChecksumException
+      return
+    end
     return if v.to_i == 0
     s = StoreCredit.find_by_id(v)
     return if s.nil?
@@ -26,12 +43,12 @@ class Payment < ActiveRecord::Base
 
   def sc_ok
     return if ! is_storecredit?
-    errors.add("payment", "store credit was already spent") if self.store_credit.spent? && (self.sale.nil? || self.store_credit.spent_on.sale.id != self.sale.id)
+    errors.add("payment", "store credit was already spent") if self.store_credit.spent? && (self.sale.nil? || self.store_credit.spent_on.nil? || (self.store_credit.spent_on.sale.id != self.sale.id))
   end
 
   def store_credit_id
     return nil if ! self.store_credit
-    self.store_credit.id
+    StoreChecksum.new_from_result(self.store_credit.id).checksum
   end
 
   def is_storecredit?
@@ -43,6 +60,6 @@ class Payment < ActiveRecord::Base
   end
 
   def to_s
-    "$%d.%02d %s" % [amount_cents/100, amount_cents%100, payment_method.description]
+    "$%d.%02d %s" % [amount_cents/100, amount_cents%100, self.type_description.sub(/_/, " ")]
   end
 end

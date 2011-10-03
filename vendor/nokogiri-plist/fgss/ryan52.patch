@@ -1,0 +1,119 @@
+diff --git a/lib/nokogiri-plist.rb b/lib/nokogiri-plist.rb
+index eb3a81d..49bec69 100644
+--- a/lib/nokogiri-plist.rb
++++ b/lib/nokogiri-plist.rb
+@@ -6,9 +6,14 @@ rescue LoadError
+ end
+ require 'date'
+ 
+-# TODO: Do this a not so stupid way
+-require File.join(File.dirname(__FILE__), 'string')
++Nokogiri::PLIST_LOADING = "1"
++
++Nokogiri::XML::Node.send(:define_method, :to_plist) {Nokogiri::PList::Parser.parse(self)}
++String.send(:define_method, :to_plist) {Nokogiri::PList(self)}
++
+ require File.join(File.dirname(__FILE__), 'nokogiri', 'plist', 'generator')
+ require File.join(File.dirname(__FILE__), 'nokogiri', 'plist', 'parser')
+ require File.join(File.dirname(__FILE__), 'nokogiri', 'plist')
+-require File.join(File.dirname(__FILE__), 'nokogiri', 'xml', 'node')
+\ No newline at end of file
++
++Nokogiri::PLIST_LOADING.gsub!("1", "0")
++
+diff --git a/lib/nokogiri/plist.rb b/lib/nokogiri/plist.rb
+index 5bf4a41..b9bd862 100644
+--- a/lib/nokogiri/plist.rb
++++ b/lib/nokogiri/plist.rb
+@@ -1,3 +1,7 @@
++if !defined?(Nokogiri::PLIST_LOADING) || Nokogiri::PLIST_LOADING == "0"
++  require File.join(File.dirname(__FILE__), '..', "nokogiri-plist")
++else
++
+ module Nokogiri  
+   
+   class << self
+@@ -8,4 +12,6 @@ module Nokogiri
+     
+   end
+   
+-end
+\ No newline at end of file
++end
++
++end
+diff --git a/lib/nokogiri/plist/generator.rb b/lib/nokogiri/plist/generator.rb
+index a6e48cf..2d70e17 100644
+--- a/lib/nokogiri/plist/generator.rb
++++ b/lib/nokogiri/plist/generator.rb
+@@ -1,3 +1,7 @@
++if !defined?(Nokogiri::PLIST_LOADING) || Nokogiri::PLIST_LOADING == "0"
++  require File.join(File.dirname(__FILE__), '..', "..", "nokogiri-plist")
++else
++
+ module Nokogiri
+ 
+   module PList
+@@ -81,3 +85,5 @@ end
+   end
+ 
+ end
++
++end
+diff --git a/lib/nokogiri/plist/parser.rb b/lib/nokogiri/plist/parser.rb
+index d5721f3..ce88457 100644
+--- a/lib/nokogiri/plist/parser.rb
++++ b/lib/nokogiri/plist/parser.rb
+@@ -1,3 +1,7 @@
++if !defined?(Nokogiri::PLIST_LOADING) || Nokogiri::PLIST_LOADING == "0"
++  require File.join(File.dirname(__FILE__), '..', "..", "nokogiri-plist")
++else
++
+ module Nokogiri
+ 
+   module PList
+@@ -63,4 +67,6 @@ module Nokogiri
+     
+   end
+   
+-end
+\ No newline at end of file
++end
++
++end
+diff --git a/lib/nokogiri/xml/node.rb b/lib/nokogiri/xml/node.rb
+deleted file mode 100644
+index ae0d522..0000000
+--- a/lib/nokogiri/xml/node.rb
++++ /dev/null
+@@ -1,15 +0,0 @@
+-module Nokogiri  
+-  
+-  module XML
+-    
+-    class Node
+-      
+-      def to_plist
+-        Nokogiri::PList::Parser.parse(self)
+-      end
+-      
+-    end
+-
+-  end
+-  
+-end
+\ No newline at end of file
+diff --git a/lib/string.rb b/lib/string.rb
+deleted file mode 100644
+index 26200ae..0000000
+--- a/lib/string.rb
++++ /dev/null
+@@ -1,7 +0,0 @@
+-String.class_eval do
+-  
+-  define_method :to_plist do
+-    Nokogiri::PList(self)
+-  end
+-  
+-end
+\ No newline at end of file

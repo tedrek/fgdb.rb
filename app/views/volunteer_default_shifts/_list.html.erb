@@ -1,0 +1,27 @@
+<table>
+  <tr>
+    <th>Effective at</th>
+    <th>Ineffective at</th>
+    <th>Weekday</th>
+    <th>Start time</th>
+    <th>End time</th>
+    <th>Slot count</th>
+    <th>Volunteer task type</th>
+    <th>Roster</th>
+  </tr>
+
+<% for volunteer_default_shift in @volunteer_default_shifts %>
+  <tr>
+    <td><%=h volunteer_default_shift.effective_at %></td>
+    <td><%=h volunteer_default_shift.ineffective_at %></td>
+    <td><%=h volunteer_default_shift.weekday_id %></td>
+    <td><%=h volunteer_default_shift.start_time %></td>
+    <td><%=h volunteer_default_shift.end_time %></td>
+    <td><%=h volunteer_default_shift.slot_count %></td>
+    <td><%=h volunteer_default_shift.volunteer_task_type_id %></td>
+    <td><%=h volunteer_default_shift.roster_id %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => volunteer_default_shift.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => volunteer_default_shift.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

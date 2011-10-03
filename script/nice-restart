@@ -1,16 +1,19 @@
 #!/bin/sh
 
-for i in 0 1 2; do
+SERVERS=$(cat /etc/thin/fgdb.yml | grep servers | cut -d ' ' -f 2)
+
+for q in `seq $SERVERS`; do
+    i=$(( $q - 1 ))
     echo "Restarting $i"
     sudo /usr/bin/thin restart -C /etc/thin/fgdb.yml -o $i >/dev/null 2>/dev/null
     echo "Checking if file exists"
     while [ ! -e /tmp/thin.$i.sock ]; do echo "It doesn't, napping"; sleep 0.5; echo "Checking again"; done
     echo "It does now"
     echo "Starting socat for $i"
-    socat TCP4-LISTEN:300$i,reuseaddr,fork UNIX-CONNECT:/tmp/thin.$i.sock &
+    socat TCP4-LISTEN:500$i,reuseaddr,fork UNIX-CONNECT:/tmp/thin.$i.sock &
     SOCAT=$!
     echo "Trying to download"
-    while ! curl http://localhost:300$i/ 2>/dev/null | grep -q "Free Geek"; do echo "It failed, napping"; sleep 0.5; echo "Checking again"; done
+    while ! curl http://localhost:500$i/ 2>/dev/null | grep -q "Free Geek"; do echo "It failed, napping"; sleep 0.5; echo "Checking again"; done
     echo "It worked"
     echo "Killing socat"
     kill $SOCAT

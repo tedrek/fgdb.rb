@@ -19,6 +19,14 @@
     </tr>
     <tr>
       <td>
+        System Barcode:
+      </td>
+      <td>
+        <%= barcode @report.system_id %>
+      </td>
+    </tr>
+    <tr>
+      <td>
         Type:
       </td>
       <td>
@@ -65,6 +73,16 @@
         <%= h @report.system.contract.description %>
       </td>
     </tr>
+    <% if coveredness_enabled %>
+    <tr>
+      <td>
+        Covered:
+      </td>
+      <td>
+        <%= h @report.system.covered.nil? ? "unknown" : @report.system.covered ? "yes" : "no" %>
+      </td>
+    </tr>
+    <% end %>
     <tr>
       <td>
         Old ID:
@@ -82,14 +100,18 @@
         _________________________
       </td>
     </tr>
-    <% if @report.type == Type.find_by_name("laptop") %>
+    <% if @report.type && @report.type.name.match(/laptop/) %>
       <tr>
         <td class="line_label">
           Battery Life:
         </td>
         <td>
+          <% if @system_parser.battery_life.nil? %>
           <br />
           _________________________
+          <% else %>
+            <%= @system_parser.battery_life %>
+          <% end %>
         </td>
       </tr>
       <tr>
@@ -110,6 +132,16 @@
           _________________________
         </td>
       </tr>
+    <% end %>
+    <% if @report.bug_correction and @report.bug_correction.length > 0 %>
+    <tr>
+      <td>
+        Corrections:
+      </td>
+      <td>
+        <b><%= h(@report.bug_correction) %></b>
+      </td>
+    </tr>
     <% end %>
     <tr>
       <td>

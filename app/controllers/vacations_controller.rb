@@ -1,7 +1,12 @@
 class VacationsController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role
-
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['skedjulnator']}
+    a
+  end
+  public
   def index
     list
     render :action => 'list'
@@ -21,6 +26,17 @@ class VacationsController < ApplicationController
 
   def show
     @vacation = Vacation.find(params[:id])
+  end
+
+  def generate
+    @vacation = Vacation.find(params[:id])
+    w = @vacation.worker
+    (@vacation.effective_date..@vacation.ineffective_date).each{|x|
+      w.work_shifts_for_day(x).each{|x|
+        x.on_vacation
+      }
+    }
+    redirect_to :back
   end
 
   def new

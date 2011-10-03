@@ -7,7 +7,6 @@ class Sale < ActiveRecord::Base
   belongs_to :discount_schedule
   has_many :gizmo_events, :dependent => :destroy
   has_many :gizmo_types, :through => :gizmo_events
-  has_many :gizmo_returns
 
   def gizmo_context
     GizmoContext.sale
@@ -19,10 +18,68 @@ class Sale < ActiveRecord::Base
   before_save :add_change_line_item
   before_save :set_occurred_at_on_gizmo_events
   before_save :combine_cash_payments
+  before_save :set_occurred_at_on_transaction
+  before_save :strip_postal_code
 
   def initialize(*args)
-    @contact_type = 'named'
+    @contact_type = 'anonymous'
     super(*args)
+  end
+
+  # Quick Testing: ./script/runner 'class F; include RawReceiptHelper; def session; {}; end; end; puts F.new.generate_raw_receipt(Sale.last.text_receipt_lines)'
+
+  # TODO list from Tony's notes:
+  # justify numbers right
+  # align all number columns and "Subtotal:", etc labels
+  # only show price after discount for unit and total
+  # if description is included, put it on the following line (attr_description kind of stuff)
+  # show "VOLUNTEER DISCOUNT" in flashing text if applied
+  # wrap words on word boundaries
+  # add the contact details for free geek
+  # replace the cashier's number with the customers, or anonymouse (zip)
+  # pad left side with some space
+  # center the FREE GEEK info at top
+  # s/receipt for sale/sale/
+  def text_receipt_lines
+    store_credit_gizmo_events = self.gizmo_events.select{|x| x.gizmo_type.name == "store_credit"}
+    other_gizmo_events = self.gizmo_events - store_credit_gizmo_events
+    gizmo_lines =  other_gizmo_events.map{|event| [ event.attry_description( :ignore => ['unit_price'] ), "$" + event.unit_price.to_s, event.gizmo_count, "$" + event.total_price_cents.to_dollars.to_s, event.percent_discount(self.discount_schedule).to_s + "%", "$" + event.discounted_price(self.discount_schedule).to_dollars.to_s ] }
+    store_credit_gizmo_events_total_cents = store_credit_gizmo_events.inject(0){|t,x| t+=x.total_price_cents} 
+    gizmo_lines << []
+    payment_lines = [
+                     ["Subtotal:", "#{(self.calculated_subtotal_cents - store_credit_gizmo_events_total_cents).to_dollars}"],
+                     ["Discounted:", "#{self.calculated_discount_cents.to_dollars}"],
+                     ["Total:", "#{(self.calculated_total_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
+                    ]
+    seen_sc = false
+    self.payments.each{|payment|
+      amount = payment.amount_cents
+      if payment.payment_method.name == "store_credit" and !seen_sc
+        amount -= store_credit_gizmo_events_total_cents
+        seen_sc = true
+      end
+      payment_lines << [payment.payment_method.description + ":", amount.to_dollars]
+    }
+    if store_credit_gizmo_events_total_cents > 0 and !seen_sc
+      payment_lines << ["store credit:", (-1 * store_credit_gizmo_events_total_cents).to_dollars]
+    end
+    if self.calculated_total_cents > self.money_tendered_cents && !self.invoice_resolved?
+      payment_lines << [    "Due by #{self.created_at.to_date + 30 }:", (self.calculated_total_cents - self.money_tendered_cents).to_dollars]
+    end
+
+    head_lines = [
+     ["FREE GEEK"],
+     [],
+     ["Receipt for sale ##{self.id}"],
+     ["Date: #{self.occurred_at.strftime("%m/%d/%Y")}"]]
+    if self.discount_schedule.name != 'no_discount'
+      percent = (100 - (100 * self.discount_schedule.discount_schedules_gizmo_types.find_by_gizmo_type_id(GizmoType.find_by_name_and_ineffective_on('gizmo', nil).id).multiplier)) # FIXME: ineffective_on shouldn't be nil, it should find was effective during the self.created at of this
+      head_lines << ["   ### #{sprintf('%d', percent)}% #{self.discount_schedule.name.upcase} DISCOUNT APPLIED ###"]
+    end
+    head_lines << []
+     # TODO: create the actual return_policies and gizmo_type associations
+    footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| [x.full_text]}
+    head_lines + gizmo_lines + payment_lines + footer_lines
   end
 
   attr_accessor :contact_type  #anonymous or named
@@ -30,7 +87,12 @@ class Sale < ActiveRecord::Base
   define_amount_methods_on("reported_discount_amount")
   define_amount_methods_on("reported_amount_due")
 
+  def storecredits
+    self.gizmo_events.map{|x| x.store_credits}.flatten
+  end
+
   def validate
+    unless is_adjustment?
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -39,11 +101,13 @@ class Sale < ActiveRecord::Base
     else
       errors.add_on_empty("postal_code")
     end
+    end
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
     #errors.add("payments", "are too much") if overpaid?
     errors.add("payments", "may only have one invoice") if invoices.length > 1
     errors.add("gizmos", "should include something") if gizmo_events.empty?
     errors.add("payments", "use the same store credit multiple times") if storecredits_repeat
+
     payments.each{|x|
       x.errors.each{|y, z|
         errors.add("payments", z)
@@ -54,6 +118,14 @@ class Sale < ActiveRecord::Base
         errors.add("gizmos", z)
       }
     }
+
+    storecred_received = self.storecredits.inject(0){|t,x| t += x.amount_cents}
+    storecred_spent = amount_from_some_payments(store_credits_spent)
+    oldstorecredit = 0
+    if self.id
+      oldstorecredit = self.class.find_by_id(self.id).storecredits.inject(0){|t,x| t += x.amount_cents}
+    end
+    storecredit_priv_check if storecred_received > storecred_spent and storecred_received > oldstorecredit
   end
 
   def storecredits_repeat
@@ -63,13 +135,12 @@ class Sale < ActiveRecord::Base
 
   class << self
     def default_sort_sql
-      "sales.created_at DESC"
+      "sales.occurred_at DESC"
     end
 
     def totals(conditions)
       connection.execute(
                          "SELECT payments.payment_method_id,
-                sales.discount_schedule_id,
                 sum(payments.amount_cents) as amount,
                 count(*),
                 min(sales.id),
@@ -77,7 +148,7 @@ class Sale < ActiveRecord::Base
          FROM sales
          JOIN payments ON payments.sale_id = sales.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
-         GROUP BY payments.payment_method_id, sales.discount_schedule_id"
+         GROUP BY payments.payment_method_id"
                          )
     end
   end
@@ -93,12 +164,13 @@ class Sale < ActiveRecord::Base
   end
 
   def required_contact_type
-    ContactType.find(14)
+    ContactType.find_by_name('buyer')
   end
 
   def calculated_total_cents
     if discount_schedule
       gizmo_events.inject(0) {|tot,gizmo|
+        gizmo.sale = self
         tot + gizmo.discounted_price(discount_schedule)
       }
     else
@@ -154,10 +226,15 @@ class Sale < ActiveRecord::Base
     end
 
     # amount_i_owe > 0 ... still need to pay more.
-    raise NoMethodError # Ryan broke something..I guess.
+    return [0, 0]
   end
 
   def add_change_line_item()
+    if self.payments.length == 1 and self.payments.first.payment_method.id == PaymentMethod.credit.id
+      self.payments.first.amount_cents = self.calculated_total_cents
+      self.payments.first.save
+      return
+    end
     storecredit_back, cash_back = _figure_it_all_out
     if storecredit_back > 0
       # wow, if only I had a working test suite...testing this through the UI is a PITA!!!!
@@ -165,7 +242,9 @@ class Sale < ActiveRecord::Base
       gizmo_events << GizmoEvent.new({:unit_price_cents => storecredit_back,
                             :gizmo_count => 1,
                             :gizmo_type => GizmoType.find_by_name("store_credit"),
-                            :gizmo_context => self.gizmo_context}) # WTF? something sets gizmo_context on *everything* else. why doesn't it set it on this one? hm...I can't find that code anyway.
+                                       :gizmo_context => self.gizmo_context})
+# <Ryan52> so it should just recalculate the expire date always? <store> yeah, that's it
+#                            :expire_date => store_credits_spent.map{|x| x.store_credit.expire_date}.uniq.select{|x| !x.nil?}.sort.last}) # WTF? something sets gizmo_context on *everything* else. why doesn't it set it on this one? hm...I can't find that code anyway.
     end
     if cash_back > 0
       payments << Payment.new({:amount_cents => -cash_back,

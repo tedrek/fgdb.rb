@@ -1,6 +1,24 @@
 class HolidaysController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['skedjulnator'], :except => ["is_holiday"]}
+    a
+  end
+  public
+
+  def is_holiday # used by meetme
+    d = nil
+    begin
+      d = Date.parse(params[:date])
+    end
+    if d
+      render :text => Holiday.is_holiday?(d)
+    else
+      render :text => "couldn't parse 'date' parameter"
+    end
+  end
 
   def index
     list

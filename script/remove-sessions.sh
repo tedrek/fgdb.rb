@@ -30,4 +30,5 @@ if [ ! -d $RAILS_ROOT ]; then
     exit 1
 fi
 
-find $RAILS_ROOT/tmp/sessions -mmin +$TIME -iname 'ruby_sess.*' -exec rm -v {} \;
+echo "DELETE FROM sessions WHERE updated_at < (current_timestamp - interval '$TIME minutes');" | psql fgdb_production
+#find $RAILS_ROOT/tmp/sessions -mmin +$TIME -iname 'ruby_sess.*' -exec rm -v {} \;

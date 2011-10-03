@@ -1,17 +1,56 @@
-<div class='filter'>
+<div class='filter noprint'>
+
+<%
+    @opts = skedj.opts
+    @conditions = skedj.conditions
+%>
+
 <h3>Filter work shifts:</h3>
-<% form_tag :action => 'list' do %>
-  <%= check_box :filter_criteria, :limit_to_worker, :checked => (@opts['limit_to_worker']=='1') %> Limit to worker:
-  <%= select(:filter_criteria, :worker_id, Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %><br />
-  <%= check_box :filter_criteria, :limit_to_job, :checked => (@opts['limit_to_job']=='1') %> Limit to job
-  <%= select(:filter_criteria, :job_id, Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %><br />
-  <%= radio_button :filter_criteria, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
-  <%= radio_button :filter_criteria, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
-  <%= radio_button :filter_criteria, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
-  <label for="start_start_date">Start date:</label> 
-    <%= calendar_box 'filter_criteria', 'start_date' %>
-  <label for="end_end_date">End date:</label> 
-    <%= calendar_box 'filter_criteria', 'end_date' %>
-  <%= submit_tag "Apply" %><br />
+<% form_tag({:action => params[:action]}, {:method => "get"}) do %>
+  <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi") %>
+
+
+<% force_conds = ["empty"] %>
+
+<% if skedj.opts[:date_range_condition] %>
+<%  force_conds << skedj.opts[:date_range_condition] %>
+<% end %>
+
+<% if skedj.opts[:forced_condition] %>
+<%  force_conds << skedj.opts[:forced_condition] %>
+<% end %>
+
+<% if force_conds.size > 1 %>
+  <%= conditions_html('conditions', force_conds, Conditions, "force").gsub(/To:/, "<br />To:") %>
+<% else %>
+  <%= conditions_html('conditions', force_conds)%>
+<% end %>
+
+
+<% if skedj.opts[:date_range_condition] %>
+  <script>
+    c = $('conditions_<%=  skedj.opts[:date_range_condition]%>_date_type');
+    c.parentNode.removeChild(c);
+  </script>
+<% end %>
+
+  <br / >
+
+
+<div style="float: right; text-align: right;">
+<% if skedj.opts[:views] %>
+  <% for k in skedj.opts[:views].keys.sort_by{|x| x.to_s == @opts[:default_view].to_s ? 0 : 1} %>
+  <%= radio_button :opts, :current_view, k, :checked => (@opts['current_view']==k) %> <%= k.to_s.humanize %>
+  <% end %>
+<br/>
+<% end %>
+
+<% unless @readonly %>
+  <%= radio_button :opts, :presentation_mode, 'Edit', :checked => (@opts['presentation_mode']=='Edit') %> Edit
+<% end %>
+  <%= radio_button :opts, :presentation_mode, 'Display', :checked => (@opts['presentation_mode']=='Display') %> Display
+  <%= radio_button :opts, :presentation_mode, 'Preview', :checked => (@opts['presentation_mode']=='Preview') %> Preview<br />
+  <%= submit_tag "Go" %><br />
+</div>
 <% end %>
 </div>

@@ -1,0 +1,13 @@
+<h1>Payroll Report</h1>
+
+<% @worked_shift = Struct.new(:date_performed, :end_date).new(Date.today, nil) %>
+
+<% form_for :worked_shift, nil, :url => { :action => "payroll_report" } do |f| %>
+<% label :worked_shifts, :worker_id %>
+<%# label :worked_shifts, :date_performed %>
+Date:<br />
+<%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %><br />
+Select an end date if you want to include multiple pay periods:<br />
+<%= calendar_box('worked_shift', 'end_date',{},{:showOthers => true}) %><br />
+<%= submit_tag "Go" %>
+<% end %>

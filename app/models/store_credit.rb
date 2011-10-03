@@ -1,6 +1,8 @@
 class StoreCredit < ActiveRecord::Base
   belongs_to :payment
 
+  define_amount_methods_on :amount
+
   def spent?
     @spent ||= _is_spent
   end
@@ -15,13 +17,37 @@ class StoreCredit < ActiveRecord::Base
     nil
   end
 
-  private
+  def still_valid?(date = Date.today)
+    date <= self.valid_until
+  end
+
+  def valid_until
+    expire_date
+  end
+
+  def store_credit_hash
+    StoreChecksum.new_from_result(self.id).checksum
+  end
+
+  def self.expire_after_value
+    eval(Default["storecredit_expire_after"])
+  end
+
+#  private  ## HELPME, this breaks it.
 
   def _spent_on
     return payment
   end
 
+  def my_return
+    self.id ? GizmoEvent.find_by_return_store_credit_id(self.id) : nil
+  end
+
+  def is_returned
+    self.id && !! self.my_return
+  end
+
   def _is_spent
-    return ! payment.nil?
+    return !(payment.nil?) || is_returned
   end
 end

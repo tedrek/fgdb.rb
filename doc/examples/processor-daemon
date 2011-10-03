@@ -1,0 +1,48 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          processor-daemon
+# Required-Start:    $local_fs $remote_fs $network $named
+# Required-Stop:     $local_fs $remote_fs $network $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop FG sync processor-daemon
+### END INIT INFO
+
+
+BASE=$(readlink -f $(dirname $(readlink -f $0))/../../)
+SCRIPT_BASE=$BASE/script
+PID_FILE=$BASE/tmp/daemon-workdir/daemon.lock
+DAEMON=$SCRIPT_BASE/processor-daemon.sh
+DEFAULT_FILE=/etc/default/processor-daemon
+TARGET_USER=www-data
+
+if [ ! -f "$DEFAULT_FILE" ]; then
+    echo "Please create $DEFAULT_FILE"
+    echo "It should set WORK_SCRIPT to something like \$SCRIPT_BASE/{sync_processor.rb,civicrm_processor.sh}"
+    exit 1
+fi
+. "$DEFAULT_FILE"
+
+DAEMON_OPTS="run $WORK_SCRIPT"
+
+case "$1" in
+    stop)
+        start-stop-daemon --stop --pidfile $PID_FILE
+	PIDS=$(lsof $PID_FILE | sed '1 d' | awk '{print $2}')
+	if [ -n "$PIDS" ]; then
+		kill $PIDS
+	fi
+        ;;
+    start)
+        start-stop-daemon --start --nicelevel 10 --background --exec $DAEMON --pidfile $PID_FILE --chuid $TARGET_USER -- $DAEMON_OPTS
+        ;;
+    restart)
+        $0 stop
+        $0 start
+        ;;
+    *)
+        echo "Unknown action: $1"
+        exit 1
+        ;;
+esac
+

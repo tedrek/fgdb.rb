@@ -1,8 +1,38 @@
 class TransactionController < ApplicationController
   layout :check_for_receipt
 
+  helper :raw_receipt
+
   before_filter :set_defaults
   before_filter :be_a_thing
+
+  include RawReceiptHelper
+
+  def enable_raw_printing
+    printer = (params[:receipt] ? params[:receipt][:printer] : "")
+    receipt_printer_set_default(printer)
+    redirect_to :back
+  end
+
+  def raw_receipt
+    printer = (params[:receipt] ? params[:receipt][:printer] : "")
+    set_default = (params[:receipt] && (params[:receipt][:mode] == "default"))
+    render :update do |page|
+    if set_default
+      receipt_printer_set_default(printer)
+      page.reload
+    else
+      raise unless params[:controller] == 'sales'
+      s = Sale.find_by_id(params[:id])
+      res = generate_raw_receipt(s.text_receipt_lines, printer)
+      page << "print_text(#{res.to_json});"
+#      page << "alert(#{res.to_json});"
+    end
+      page.hide loading_indicator_id("raw_receipt")
+    end
+  end
+
+  protected
 
   def set_defaults
     @action_name=action_name
@@ -13,7 +43,15 @@ class TransactionController < ApplicationController
     set_transaction_type((controller_name()).singularize)
   end
 
-  protected
+  def get_required_privileges
+    a = super
+    fn = self.class.to_s.tableize.gsub(/_controllers$/, "")
+    a << {:only => ["/show_created_and_updated_by"], :privileges => ['role_admin']}
+    a << {:only => ["search", "component_update", "receipt"], :privileges => ["view_#{fn}"]}
+    a << {:only => ["edit", "destroy", "update"], :privileges => ["change_#{fn}"]}
+    a << {:except => ["civicrm_sync", "receipt", "edit", "destroy", "update", "search", "component_update"], :privileges => ["create_#{fn}"]}
+    a
+  end
 
   def check_for_receipt
     case action_name
@@ -22,11 +60,60 @@ class TransactionController < ApplicationController
     end
   end
 
-  def authorized_only
-    requires_role(:ADMIN)
+  public
+
+  def get_system_contract
+    s = nil
+    if params[:system_id].to_s == params[:system_id].to_i.to_s
+      s = System.find_by_id(params[:system_id])
+    end
+    v = (s ? s.contract_id : -1)
+    v2 = (s ? s.covered : nil)
+
+    render :update do |page|
+      page << "internal_system_contract_id = #{v.to_s.to_json}";
+      page << "system_covered_cache[#{params[:system_id].to_json}] = #{v2.inspect.to_json}";
+      page << "ge_done();"
+    end
   end
 
-  public
+  def get_storecredit_amount
+    s = nil
+    begin
+      scid = StoreChecksum.new_from_checksum(params[:id]).result
+      s = StoreCredit.find_by_id(scid)
+    rescue StoreChecksumException
+    end # else below..
+    msg = nil
+    v = -1
+    if s
+      if s.spent?
+        msg = "This store credit has already been spent"
+      else
+        v = s.amount_cents
+        if !s.still_valid?
+          msg = "This store credit is expired. It expired on #{s.expire_date.strftime("%D")}. This software will allow it anyway, but you possibly should not."
+        end
+      end
+    else
+      msg = "That store credit hash is not valid or doesn't exist"
+    end
+    v = (s && !s.spent? ? s.amount_cents : -1)
+    render :update do |page|
+      page << "internal_storecredit_amount = #{v.to_s.to_json};";
+      page << "storecredit_errors_cache[#{params[:id].to_json}] = #{msg.to_json};"
+      page.hide     params[:loading] # loading_indicator_id("payment_line_item")
+    end
+  end
+
+  def get_sale_exists
+    s = Sale.find_by_id(params[:id])
+    s = !! s
+    render :update do |page|
+      page << "internal_sale_exists = #{s.to_json};";
+      page.hide loading_indicator_id("line_item")
+    end
+  end
 
   def update_stuff
     @show_wrapper = false
@@ -181,13 +268,11 @@ class TransactionController < ApplicationController
     begin
       @successful = model.find(params[:id]).destroy
     rescue
+      @error = $!.to_s
+      @successful = false
       flash[:error], @successful  = $!.to_s, false
     end
-    if request.env["HTTP_REFERER"]
-      redirect_to :back
-    else
-      redirect_to :action => "index"
-    end
+    render :action => "destroy.rjs"
   end
 
   def needs_attention
@@ -215,25 +300,6 @@ class TransactionController < ApplicationController
     end
     render :update do |page|
       page << "set_new_val($('#{@transaction_type}_discount_schedule_id'), '#{default_discount_schedule.id}');"
-    end
-  end
-
-  # For gizmo_events embedded in a form
-  def add_attrs_to_form
-    if params[:gizmo_type_id]
-      @gizmo_context = GizmoContext.find(params[:gizmo_context_id])
-      @gizmo_type = GizmoType.find(params[:gizmo_type_id])
-      if ! @gizmo_type.relevant_attrs(@gizmo_context).empty?
-        render :update do |page|
-          page.replace_html(params[:div_id],
-                            :partial => 'gizmo_event_attr_form',
-                            :locals => { :params => params })
-          page << "trigger_change_on($('#{params[:div_id]}'));"
-        end
-        return true
-      end
-    end
-    render :update do |page|
     end
   end
 
@@ -273,18 +339,19 @@ class TransactionController < ApplicationController
   end
 
   def _apply_line_item_data(transaction)
-    if transaction.respond_to?(:payments) && params[:payments]
+    if transaction.respond_to?(:payments)
       @payments = []
-      for payment in params[:payments].values
+      payments = params[:payments] || {}
+      for payment in payments.values
         p = Payment.new(payment)
         @payments << p
       end
       @transaction.payments = @payments
       transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
     end
-
-    if params[:line]
-      lines = params[:line]
+    params[:gizmo_events].values.each{|x| x[:gizmo_count] ||= 1} if @gizmo_context == GizmoContext.gizmo_return and params[:gizmo_events]
+    if transaction.respond_to?(:gizmo_events)
+      lines = params[:gizmo_events] || {}
       @lines = []
       for line in lines.values
         @lines << GizmoEvent.new_or_edit(line.merge({:gizmo_context => @gizmo_context}))

@@ -1,0 +1,21 @@
+<div id="form-header">
+  <% if @error!=nil %>
+    <span style="color: red">ERROR: <%= @error %></span>
+  <% end %>
+</div>
+
+<h2>Search for disktest runs</h2>
+
+<% if @disktest_runs -%>
+  <%= render :partial => 'list', 'disktest_runs' => @disktest_runs %>
+<% end -%>
+
+<div id="main-section">
+  <% form_tag :action => 'search' do -%>
+  <% filters = [] -%>
+  <% filters << 'created_at' %>
+  <% filters << 'serial_number' %>
+  <%= conditions_html("conditions", filters) %>
+  <%= submit_tag "Search", :class => "submit" %>
+<% end -%>
+</div>

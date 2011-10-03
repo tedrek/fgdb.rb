@@ -5,4 +5,7 @@ set -x
 
 SERVER=oahu.freegeek.org
 
-rsync -azv web/ $SERVER:web/
+if ! grep -q "Database maintenance is happening" web/index.html; then
+    rsync -azv web/ $SERVER:web/
+fi
+

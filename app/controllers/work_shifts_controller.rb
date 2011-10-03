@@ -1,85 +1,77 @@
 class WorkShiftsController < ApplicationController
   layout "skedjulnator"
-  before_filter :skedjulnator_role, :except => [:staffsched]
+
+  protected
+  before_filter :enable_multi
+  def enable_multi
+    @multi_enabled = true
+  end
+
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'staffsched_publish']}
+    a
+  end
+
+  public
 
   def index
     list
     render :action => 'list'
   end
 
+  def staffsched_publish
+    params["opts"] = {:presentation_mode => "Preview"}
+    staffsched
+  end
+
   def staffsched
     @readonly = true
     @vacations = Vacation.find(:all, :order => 'effective_date, ineffective_date', :conditions => ["ineffective_date >= ?", Date.today])
-    params[:filter_criteria] = {:end_date => (Date.today + 60).to_s, :start_date => Date.today.to_s, :presentation_mode => "Preview"}
+    params["conditions"] ||= {:shift_date_enabled => "true", :shift_date_end_date => (Date.today + 60).to_s, :shift_date_start_date => Date.today.to_s, }
+    params["opts"] ||= {:presentation_mode => "Display"}
+
     list
     render :action => 'list'
   end
 
+  helper :skedjul
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
+  verify :method => :post, :only => [ :create, :update ], # TODO: destroy should be in this list but the skedjul_links thing needs support for :post
          :redirect_to => { :action => :list }
 
   def list
     session["shift_return_to"] = "work_shifts"
     session["shift_return_action"] = "list"
-    if params[:filter_criteria]
 
-      start_date = params[:filter_criteria]['start_date']
-      end_date = params[:filter_criteria]['end_date']
-      date_format='%Y-%m-%d'
-      start = Date.strptime(start_date, date_format) 
-      stop = Date.strptime(end_date, date_format) 
+    @skedj = Skedjul.new({
+      :conditions => ["worker", "job"],
+      :date_range_condition => "shift_date",
 
-      @opts = params[:filter_criteria]
-      @root_sched = Schedule.find( :first, :conditions => ["id = ?", @opts['schedule_id']])
-      where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
-      if @opts['limit_to_worker'] and @opts['limit_to_worker'] == '1'
-        where_clause += ' AND work_shifts.worker_id = '
-        where_clause += @opts['worker_id']
-      end
-      if @opts['limit_to_job'] and @opts['limit_to_job'] == '1'
-        where_clause += ' AND work_shifts.job_id = '
-        where_clause += @opts['job_id']
-      end
-    else
-      start = Date.today
-      stop = start + 14
-      @root_sched = Schedule.find( :first, :order => 'id', :conditions => 'parent_id IS NULL')
-      @opts = {
-        'schedule_id' => @root_sched.id, 
-        'which_way' => 'Family', 
-        'limit_to_worker' => '0', 
-        'limit_to_job' => '0', 
-        'worker_id' => 0, 
-        'job_id' => 0,
-        'presentation_mode' => 'Edit' }
-      where_clause = "shift_date BETWEEN '" + start.to_s + "' AND '" + stop.to_s + "'"
-    end
+      :block_method_name => "work_shifts.shift_date",
+      :block_method_display => "work_shifts.shift_date_display",
+      :block_start_time => "weekdays.start_time",
+      :block_end_time => "weekdays.end_time",
 
-    # this version pulls just work_shifts to avoid confusion over
-    # id column, but it is not optimal. it would be better to
-    # use something like the stuff commented out below to avoid
-    # massive numbers of extra queries
-    @work_shifts = WorkShift.find( :all, {
-      :select => 'work_shifts.*', 
-      :conditions => where_clause, 
-      :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time', 
-      :joins => 'LEFT JOIN workers ON work_shifts.worker_id = workers.id' }
-    )
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
 
-#    @work_shifts = WorkShift.find( :all, {
-#      :conditions => where_clause, 
-#      :order => 'work_shifts.shift_date, workers.name, work_shifts.start_time'}, 
-#      :include => [:weekday, :job, :worker, :job]
-#    )
-#
-#    another example (from another project):
-#
-#    @work_units = WorkUnit.find(:all, :order => 'parts.title', :include => [{:part => :job}, :operation])
-#
-#    (can you pull just one field as needed? :part => :job ) hmmmm....
-#    see http://snippets.dzone.com/posts/show/2089
+      :thing_start_time => "work_shifts.start_time",
+      :thing_end_time => "work_shifts.end_time",
+      :thing_table_name => "work_shifts",
+      :thing_description => "display_name_skedj",
+      :thing_link_id => "work_shifts.id",
+      :thing_links => [[:copy, :popup], [:edit, :popup], [:destroy, :confirm]]
+
+      }, params)
+
+    @skedj.find({:include => [:job, :coverage_type, :worker, :weekday]})
   end
+
 
   def show
     @work_shift = WorkShift.find(params[:id])
@@ -119,7 +111,7 @@ class WorkShiftsController < ApplicationController
     if @work_shift.update_attributes(params[:work_shift])
       flash[:notice] = 'WorkShift was successfully updated.'
       if session["shift_return_to"] 
-        redirect_to :action => session["shift_return_action"], :id => session["shift_return_id"]
+        redirect_to :controller => session["shift_return_to"], :action => session["shift_return_action"], :id => session["shift_return_id"]
       else
         redirect_to :action => 'list', :id => @work_shift
       end

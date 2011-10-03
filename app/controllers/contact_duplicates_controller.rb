@@ -1,10 +1,12 @@
 class ContactDuplicatesController < ApplicationController
   layout :with_sidebar
-  before_filter :authorized_only
-
-  def authorized_only
-    requires_role('CONTACT_MANAGER')
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['manage_contacts']}
+    a
   end
+  public
 
   def index
   end

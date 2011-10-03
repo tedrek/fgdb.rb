@@ -13,10 +13,24 @@
     </tr>
     <tr>
       <td>
+        Signed off by:
+      </td>
+      <td>
+        <%= @report.signed_off_by %>
+        <% form_for "sign_off", :html => {:class => "cashierable_form"}, :url => {:action => "sign_off", :id => @report.id} do |f| %>
+          To sign off, enter <%= cashiers_field(true, "sign_off") %>
+          <%= submit_tag "Sign off" %>
+        <% end %>
+
+          <%= cashiers_javascript(true, "sign_off") %>
+     </td>
+    </tr>
+    <tr>
+      <td>
         Technician:
       </td>
       <td>
-        <% if true || (@current_user and @current_user.has_role?('CONTACT_MANAGER')) %>
+        <% if true %>
           <%= h(@report.contact_id && @report.contact && @report.contact.display_name != "(person without name)" && @report.contact.display_name) || (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
         <% else %>
           <%= (@report.contact_id && @report.contact && @report.contact.id) || "Unknown" %>
@@ -55,6 +69,16 @@
         <%= h @report.system.contract.description %>
       </td>
     </tr>
+    <% if coveredness_enabled %>
+    <tr>
+      <td>
+        Covered:
+      </td>
+      <td>
+        <%= h @report.system.covered.nil? ? "unknown" : @report.system.covered ? "yes" : "no" %>
+      </td>
+    </tr>
+    <% end %>
     <tr>
       <td>
         Date:
@@ -63,6 +87,16 @@
         <%= @report.created_at.strftime("%D") %>
       </td>
     </tr>
+    <% if @report.bug_correction and @report.bug_correction.length > 0 %>
+    <tr>
+      <td>
+        Bug Corrections:
+      </td>
+      <td>
+        <%= h(@report.bug_correction) %>
+      </td>
+    </tr>
+    <% end %>
     <tr>
       <td>
         Notes:

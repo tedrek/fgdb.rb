@@ -7,7 +7,11 @@ class SessionsController < ApplicationController
   end
 
   def create
-    self.current_user = User.authenticate(params[:login], params[:password])
+    self.current_user = User.authenticate(params[:login].strip, params[:password])
+    if self.current_user
+      self.current_user.last_logged_in = Date.today
+      self.current_user.save
+    end
     flash[:error] = "invalid username/password" unless logged_in?
     rerender()
   end
@@ -26,7 +30,7 @@ class SessionsController < ApplicationController
   def rerender
     render :update do |page|
       if params[:goto]
-        page.redirect_to(:controller => params[:goto][:controller], :action => params[:goto][:action])
+        page.redirect_to(eval(params[:goto][:params]))
       else
         page.redirect_to("")
       end

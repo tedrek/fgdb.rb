@@ -1,22 +1,32 @@
-<% if @system = System.find_by_id(params[:id]) %>
-  <% things = [@system.notes, @system.spec_sheets].flatten.sort_by{|x| x.created_at} %>
+<% @main_system = System.find_by_id(params[:id]) %>
+<% for sys in @main_system ? @main_system.all_instances : [] %>
+<% @system = sys %>
+<h2>System #<%= @system.id %></h2>
+  <% things = [@system.notes, @system.spec_sheets, @system.gizmo_events].flatten.sort_by{|x| x.created_at} %>
   <% things.each do |thing| %>
     <div style="border: 1px solid rgb(0, 0, 0); display: block;">
-      <b><%= thing.contact.display_name %> created a <%= if thing.class == SpecSheet
-                                                           link_to thing.class.to_s, :controller => "spec_sheets", :action => "show", :id => thing.id
+      <% if thing.class == GizmoEvent %>
+        <% transaction = thing.sale || thing.disbursement || thing.gizmo_return %>
+        <b><% what = (if thing.gizmo_context.name == "disbursement"; "disbursed to"; elsif thing.gizmo_context.name == "sale"; "sold to"; elsif thing.gizmo_context.name == "gizmo_return"; "returned by"; else; raise NoMethodError; end) %><% what = what.split(' ') %><%= link_to what[0], :controller => transaction.class.table_name, :action => "edit", :id => transaction.id %> <%= what[1] %> <%= transaction.contact_information_web %> on <%= thing.occurred_at.to_date.strftime("%D") %></b><br/>
+      <% else %>
+      <b><%= thing.contact.display_name %> created a <%= if [SpecSheet, Note].include?(thing.class)
+                                                           link_to thing.class.to_s, :controller => thing.class.to_s.tableize, :action => "show", :id => thing.id
                                                          else
                                                            thing.class.to_s
                                                          end%> at <%= thing.created_at %></b><br/>
+      <% end %>
       <% if thing.class == Note %>
         <%= thing.body %>
-      <% else %> <%# aka SpecSheet %>
+      <% elsif thing.class == SpecSheet %>
         Action: <%= thing.action.description %><br />
         Type: <%= thing.type.description %><br />
+        <% if thing.bug_correction and thing.bug_correction.length >0 %>
+        Bug Correction: <%= thing.bug_correction %><br />
+        <% end %>
         Notes: <%= thing.notes %>
       <% end %>
     </div>
     <br />
   <% end %>
-<% else %>
-  <span style="color: red">Error: Can't find system</span>
+  <%= link_to "Add note", :controller => "notes", :action => "new", :system_id => @system.id %> 
 <% end %>

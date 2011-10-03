@@ -1,0 +1,25 @@
+<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker.id, @date) %>
+
+<% form_for :worked_shift, nil, :url => { :action => "individual" } do |f| %>
+<% label :worked_shifts, :worker_id %>
+<%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
+<%# label :worked_shifts, :date_performed %>
+<%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
+<%= submit_tag "Go" %>
+<% end %>
+
+<% hash = get_hash(@date, @worker) %>
+<% pay_period = hash[:pay_period] %>
+<h1>Staff hours for <%= @worker.name %> in pay period between <%= pay_period.range.min %> and <%= pay_period.range.max %></h1>
+<%= pay_period.to_html(@worker, @controller) %>
+<br />
+<table class="awesome">
+<% [
+     [:total_pay_period, "Total hours worked"],
+#     [:expected_minimum, "Minimum so far in pay period"],
+#     [:expected_maximum, "Maximum so far in pay period"],
+#     [:pto, "PTO at this rate"],
+].each do |k,v| -%>
+<tr><td><%= v %>:</td><td style="text-align: right;"><%= sprintf("%.2f", hash[k]) %></td></tr>
+<% end %>
+</table>
