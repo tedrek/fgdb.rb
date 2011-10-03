@@ -3,7 +3,7 @@
 if [ ! -f /var/log/rsync-to-xyzzy ]; then
     sudo touch /var/log/rsync-to-xyzzy
 fi
-sudo chown $USER /var/log/rsync-to-xyzzy
+sudo chown ryan52 /var/log/rsync-to-xyzzy
 chmod ug+w /var/log/rsync-to-xyzzy
 exec >>/var/log/rsync-to-xyzzy 2>>/var/log/rsync-to-xyzzy
 
