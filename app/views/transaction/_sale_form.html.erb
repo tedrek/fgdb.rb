@@ -58,3 +58,15 @@
 
   </div>
 </fieldset>
+      <% if receipt_printer_enabled %>
+        <div>
+          <%= javascript_tag "receipt_printer_default = #{receipt_printer_default.to_json};" %>
+          Receipt Printer: <%= select_tag "receipt_printer", options_for_select([["Old Format (Choose a Printer)", ""]]) %>
+        </div>
+      <% end %>
+
+      <% if receipt_printer_enabled %>
+<%= javascript_include_tag("/jzebra/jzebra.js") + javascript_tag("monitorLoadingThenCall('set_printers();');") %>
+<applet name='jzebra' code='jzebra.PrintApplet.class' alt='Error loading jZebra applet' archive='/jzebra/jzebra.jar' width=0 height=0></applet>
+      <% end %>
+
