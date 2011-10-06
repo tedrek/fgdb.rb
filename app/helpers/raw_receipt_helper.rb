@@ -75,6 +75,9 @@ module RawReceiptHelper
         left = right + one_off
         return (' ' * (padding + left))+ (textline)+ (' ' * (padding + right))
       end
+    elsif type == 'standard'
+      puts line[0].length
+      return line[0]
     elsif type == 'left'
       return pad + basic_wrap_lines(textline, limit, 2 + padding)
     elsif type == 'two'

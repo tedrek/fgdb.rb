@@ -80,7 +80,13 @@ class Sale < ActiveRecord::Base
     end
     head_lines << []
     footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.select{|x| !x.nil?}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| ['left', x.full_text]}
-    final = head_lines + gizmo_lines + payment_lines + footer_lines
+thanks = [
+"      _                    _            ",
+"     | |                  | |        |||",
+" _|_ | |     __,   _  _   | |   ,    |||",
+"  |  |/ \\   /  |  / |/ |  |/_) / \\_  |||",
+"  |_/|   |_/\\_/|_/  |  |_/| \\_/ \\/   ooo"].map{|t| ['standard', t]}
+    final = head_lines + gizmo_lines + payment_lines + footer_lines + thanks
     final
   end
 
