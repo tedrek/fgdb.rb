@@ -6,11 +6,11 @@
 module RawReceiptHelper
   def receipt_printer_enabled
     # TODO: Default.keys.include?("raw_receipt_printer")
-    true
+    Default.is_pdx
   end
 
   def receipt_printer_default
-    if ((!session.keys.include?('raw_receipt_printer')) and )
+    if ((!session.keys.include?('raw_receipt_printer')) and receipt_printer_enabled)
       session['raw_receipt_printer'] = "zebra" # TODO: Default["raw_receipt_printer"] database someday, see above
     end
     session['raw_receipt_printer']
