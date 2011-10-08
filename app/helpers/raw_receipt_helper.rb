@@ -5,10 +5,13 @@
 
 module RawReceiptHelper
   def receipt_printer_enabled
-    session.keys.include?('raw_receipt_printer')
+    true
   end
 
   def receipt_printer_default
+    if ((!session.keys.include?('raw_receipt_printer')) and )
+      session['raw_receipt_printer'] = "zebra" # TODO: in database someday
+    end
     session['raw_receipt_printer']
   end
 
@@ -25,14 +28,6 @@ module RawReceiptHelper
     lim = limit_by_printer_name(printer)
     text_lines = yield(lim)
     text_lines.map{|line| receipt_printer_format_line(line, lim)}.join("\n") + ("\n"*receipt_trailing_newlines) + printer_cut_character(printer)
-  end
-
-  def receipt_printer_html
-    if receipt_printer_enabled
-      return render(:partial => 'raw_receipt_form')
-    else
-      button_to "Enable Text Receipt Printing For This Session", {:action => 'enable_raw_printing', :printer_name => ""}
-    end
   end
 
   def handle_java_print(page, text, opts)

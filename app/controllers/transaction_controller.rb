@@ -14,22 +14,6 @@ class TransactionController < ApplicationController
     redirect_to :back
   end
 
-  def raw_receipt
-    printer = (params[:receipt] ? params[:receipt][:printer] : "")
-    set_default = (params[:receipt] && (params[:receipt][:mode] == "default"))
-    render :update do |page|
-    if set_default
-      receipt_printer_set_default(printer)
-      page.reload
-    else
-      raise unless params[:controller] == 'sales'
-      s = Sale.find_by_id(params[:id])
-      handle_java_print(page, generate_raw_receipt(printer) {|limit| s.text_receipt_lines(limit)}, {:alert => s.storecredit_alert_text, :loading => "raw_receipt_loading_indicator_id"})
-    end
-      page.hide loading_indicator_id("raw_receipt")
-    end
-  end
-
   protected
 
   def set_defaults
