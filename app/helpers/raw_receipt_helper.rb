@@ -20,9 +20,11 @@ module RawReceiptHelper
     7
   end
 
-  def generate_raw_receipt(text_lines, printer = nil)
+  def generate_raw_receipt(printer = nil)
     printer ||= receipt_printer_default
-    text_lines.map{|line| receipt_printer_format_line(line, limit_by_printer_name(printer))}.join("\n") + ("\n"*receipt_trailing_newlines) + printer_cut_character(printer)
+    lim = limit_by_printer_name(printer)
+    text_lines = yield(lim)
+    text_lines.map{|line| receipt_printer_format_line(line, lim)}.join("\n") + ("\n"*receipt_trailing_newlines) + printer_cut_character(printer)
   end
 
   def receipt_printer_html
@@ -76,7 +78,6 @@ module RawReceiptHelper
         return (' ' * (padding + left))+ (textline)+ (' ' * (padding + right))
       end
     elsif type == 'standard'
-      puts line[0].length
       return line[0]
     elsif type == 'left'
       return pad + basic_wrap_lines(textline, limit, 2 + padding)

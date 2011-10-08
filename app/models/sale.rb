@@ -27,7 +27,7 @@ class Sale < ActiveRecord::Base
   end
 
   # Quick Testing: ./script/runner 'class F; include RawReceiptHelper; def session; {}; end; end; puts F.new.generate_raw_receipt(Sale.last.text_receipt_lines)'
-  def text_receipt_lines
+  def text_receipt_lines(fulllimit)
     store_credit_gizmo_events = self.gizmo_events.select{|x| x.gizmo_type.name == "store_credit"}
     other_gizmo_events = self.gizmo_events - store_credit_gizmo_events
     gizmo_lines =  []
@@ -80,12 +80,15 @@ class Sale < ActiveRecord::Base
     end
     head_lines << []
     footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.select{|x| !x.nil?}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| ['left', x.full_text]}
+    thanks = []
+    if fulllimit == 44
 thanks = [
 "      _                    _            ",
 "     | |                  | |        |||",
 " _|_ | |     __,   _  _   | |   ,    |||",
 "  |  |/ \\   /  |  / |/ |  |/_) / \\_  |||",
 "  |_/|   |_/\\_/|_/  |  |_/| \\_/ \\/   ooo"].map{|t| ['standard', t]}
+    end
     final = head_lines + gizmo_lines + payment_lines + footer_lines + thanks
     final
   end
