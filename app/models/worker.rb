@@ -72,7 +72,7 @@ class Worker < ActiveRecord::Base
   end
 
   def effective_in_range?(start_d, end_d)
-    a = ((end_d and end_d != start_d) ? (start_d..end_d) : [start_d]).map{|x| s
+    a = ((end_d and end_d != start_d) ? (start_d..end_d) : [start_d]).map{|x| self.worker_type_on_day(x)}
     a = a.delete_if{|x| x.nil?}
     a = a.map{|x| x.name}
     a = a.uniq
