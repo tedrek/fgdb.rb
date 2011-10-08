@@ -5,6 +5,8 @@ fgdb.rb (1.0.73) UNRELEASED; urgency=low
 
 fgdb.rb (1.0.72) released; urgency=low
 
+  * fix the payroll report to check if they were active
+    on any of the days within the range (Closes: #24863)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 08 Oct 2011 00:19:25 -0700
 
