@@ -24,17 +24,7 @@ class TransactionController < ApplicationController
     else
       raise unless params[:controller] == 'sales'
       s = Sale.find_by_id(params[:id])
-      res = generate_raw_receipt(printer) {|limit| s.text_receipt_lines(limit)}
-      if RAILS_ENV == "development"
-        page << "alert('Would have printed to text receipt mode (but RAILS_ENV is development):' + #{res.to_json});"
-      else
-        page << "print_text(#{res.to_json});"
-      end
-      page << 'loading_indicator_after_print = "raw_receipt_loading_indicator_id";';
-      text = s.storecredits.select{|x| !x.spent?}.map{|credit|
-          "Store Credit Hash ##{StoreChecksum.new_from_result(credit.id).checksum}\n\nAmount: $#{credit.amount}\nExpires: #{credit.valid_until.strftime("%B %d, %Y")}"
-        }.join("\n\n\n")
-      page << "alert(#{text.to_json});" if text.length > 0
+      handle_java_print(page, generate_raw_receipt(printer) {|limit| s.text_receipt_lines(limit)}, {:alert => s.storecredit_alert_text, :loading => "raw_receipt_loading_indicator_id"})
     end
       page.hide loading_indicator_id("raw_receipt")
     end

@@ -3,22 +3,16 @@
 @print_options = @options.merge(:action => "receipt")
 
 if @successful
-  is_receipt = false
+  is_receipt = @transaction_type == 'sale' and receipt_printer_enabled and params.include?("receipt_printer") and params["receipt_printer"] != ""
+  return_url = params[:return_to_search] == "true" ? url_for( { :action => 'search', :continue=>true } ) : url_for(({:action => 'new'}))
   if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped") or (@transaction_type == "gizmo_return" and @transaction.store_credit)
-    if @transaction_type == 'sale' and receipt_printer_enabled and params.include?("receipt_printer") and params["receipt_printer"] != ""
-      text = generate_raw_receipt(@transaction.text_receipt_lines, params["receipt_printer"])
-      page << "print_text(#{text.to_json});"
-      is_receipt = true
-    else
+    if !is_receipt
       page << "window.open('#{url_for(@print_options)}','Receipt_#{@transaction.id}','#{@print_window_options}');"
     end
   end
 
-  return_url = params[:return_to_search] == "true" ? url_for( { :action => 'search', :continue=>true } ) : url_for(({:action => 'new'}))
-
   if is_receipt
-    page << "redirect_after_print = #{return_url.to_json}"
-    page << "loading_indicator_after_print = #{loading_indicator_id("form_for_#{@transaction_type}_loading").to_json}"
+    handle_java_print(page, generate_raw_receipt(params["receipt_printer"]) {|limit| @transaction.text_receipt_lines(limit)}, {:alert => @transaction.storecredit_alert_text, :loading => loading_indicator_id("form_for_#{@transaction_type}_loading"), :redirect => return_url})
   else
     page << "window.location.href='#{return_url}';"
     page.hide loading_indicator_id("form_for_#{@transaction_type}_loading")

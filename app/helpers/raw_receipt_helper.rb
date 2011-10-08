@@ -35,6 +35,24 @@ module RawReceiptHelper
     end
   end
 
+  def handle_java_print(page, text, opts)
+    if opts[:loading]
+      page << "loading_indicator_after_print = #{opts[:loading].to_json};";
+    end
+    if opts[:redirect]
+      page << "redirect_after_print = #{opts[:redirect].to_json}"
+    end
+    if RAILS_ENV == "development"
+      page << "alert('Would have printed to text receipt mode (but RAILS_ENV is development):' + #{text.to_json});"
+      page << "after_print_hook();"
+    else
+      page << "print_text(#{res.to_json});"
+    end
+    if opts[:alert]
+      page << "alert(#{opts[:alert].to_json});" if opts[:alert].length > 0
+    end
+  end
+
   # TODO: need to make sure handling of line_width and indent is correct always
   def basic_wrap_lines(text, line_width, indent = 0)
     to_add = (" " * indent)

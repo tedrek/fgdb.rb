@@ -39,6 +39,15 @@ function monitorAppending() {
   }
 }
 
+function after_print_hook() {
+        if(typeof(loading_indicator_after_print) != "undefined") {
+          Element.hide(loading_indicator_after_print);
+        }
+        if(typeof(redirect_after_print) != "undefined") {
+          window.location.href = redirect_after_print;
+        }
+}
+
 function monitorPrinting() {
   var applet = document.jzebra;
   if (applet != null) {
@@ -49,12 +58,7 @@ function monitorPrinting() {
       if(e != null) {
         alert("ERROR: printing failed. " + e.getLocalizedMessage());
       } else {
-        if(typeof(loading_indicator_after_print) != "undefined") {
-          Element.hide(loading_indicator_after_print);
-        }
-        if(typeof(redirect_after_print) != "undefined") {
-          window.location.href = redirect_after_print;
-        }
+        after_print_hook();
       }
     }
   } else {

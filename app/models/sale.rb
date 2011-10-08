@@ -26,6 +26,12 @@ class Sale < ActiveRecord::Base
     super(*args)
   end
 
+  def storecredit_alert_text
+    self.storecredits.select{|x| !x.spent?}.map{|credit|
+          "Store Credit Hash ##{StoreChecksum.new_from_result(credit.id).checksum}\n\nAmount: $#{credit.amount}\nExpires: #{credit.valid_until.strftime("%B %d, %Y")}"
+        }.join("\n\n\n")
+  end
+
   # Quick Testing: ./script/runner 'class F; include RawReceiptHelper; def session; {}; end; end; puts F.new.generate_raw_receipt(Sale.last.text_receipt_lines)'
   def text_receipt_lines(fulllimit)
     store_credit_gizmo_events = self.gizmo_events.select{|x| x.gizmo_type.name == "store_credit"}
