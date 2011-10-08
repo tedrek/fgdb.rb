@@ -48,7 +48,7 @@ module RawReceiptHelper
       page << "alert('Would have printed to text receipt mode (but RAILS_ENV is development):' + #{text.to_json});"
       page << "after_print_hook();"
     else
-      page << "print_text(#{res.to_json});"
+      page << "print_text(#{text.to_json});"
     end
     if opts[:alert]
       page << "alert(#{opts[:alert].to_json});" if opts[:alert].length > 0
