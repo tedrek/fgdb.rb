@@ -31,6 +31,12 @@ module RawReceiptHelper
     text_lines.map{|line| receipt_printer_format_line(line, lim)}.join("\n") + ("\n"*receipt_trailing_newlines) + printer_cut_character(printer)
   end
 
+  def receipt_printer_html
+    if receipt_printer_enabled
+      return render(:partial => 'raw_receipt_form')
+    end
+  end
+
   def handle_java_print(page, text, opts)
     if opts[:loading]
       page << "loading_indicator_after_print = #{opts[:loading].to_json};";
