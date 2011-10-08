@@ -8,10 +8,14 @@ class TransactionController < ApplicationController
 
   include RawReceiptHelper
 
-  def enable_raw_printing
+  def raw_receipt
     printer = (params[:receipt] ? params[:receipt][:printer] : "")
-    receipt_printer_set_default(printer)
-    redirect_to :back
+    render :update do |page|
+      raise unless params[:controller] == 'sales'
+      s = Sale.find_by_id(params[:id])
+      receipt_printer_set_default(printer)
+      handle_java_print(page, generate_raw_receipt(printer) {|limit| s.text_receipt_lines(limit)}, {:alert => s.storecredit_alert_text, :loading => "raw_receipt_loading_indicator_id"})
+    end
   end
 
   protected
