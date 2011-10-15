@@ -14,7 +14,7 @@ class Conditions < ConditionsBase
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type
-      effective_at schedule type store_credit_redeemed
+      effective_at schedule type store_credit_redeemed volunteered_hours_in_days
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled assigned covered organization ]
@@ -27,6 +27,8 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_quarter').to_sym
   end
+
+  attr_accessor :volunteer_hours_days, :volunteer_hours_minimum
 
   attr_accessor :cancelled
 
@@ -264,6 +266,10 @@ class Conditions < ConditionsBase
     when 'exact'
       return ["#{first_part} sum(duration) = ?)", @volunteer_hours_exact]
     end
+  end
+
+  def volunteered_hours_in_days_conditions(klass)
+    ['contacts.id IN (SELECT contact_id FROM volunteer_tasks WHERE date_performed >= ? GROUP BY contact_id HAVING SUM(duration) >= ?)', Date.today - @volunteer_hours_days.to_i, @volunteer_hours_minimum.to_i]
   end
 
   def contract_conditions(klass)
@@ -618,13 +624,17 @@ class Conditions < ConditionsBase
         end
       elsif CHECKBOXES.include?(me)
         v = self.send(me) == 1
-      elsif meo == 'contact' or meo == 'worker' or !mea.include?(me) or meo.match(/_id/)
+      elsif me == 'volunteered_hours_in_days'
+        v = "volunteering #{@volunteer_hours_minimum} hours in last #{@volunteer_hours_days} days"
+      elsif meo == 'contact' or meo == 'worker' or meo == 'contact_type' or !mea.include?(me) or meo.match(/_id/)
+        ome = me.dup
         me += "_id" unless me.match(/_id/)
+        ome = me unless ome == 'contact_type' # FIXME: this is ugly
         meo = meo.sub(/_id/, "")
-        if !mea.include?(me)
+        if !mea.include?(ome)
           v = ""
         else
-          v = [self.send(me)].flatten.map{|it|
+          v = [self.send(ome)].flatten.map{|it|
             obj = meo.classify.constantize.find_by_id(it)
             sendit = obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s
             obj ? obj.send(sendit) : nil
@@ -640,7 +650,11 @@ class Conditions < ConditionsBase
         if style == "before"
           res = (meo.humanize + ": " + v.to_s)
         else
-          res = (v.to_s + " (" + meo.humanize + ")")
+          if meo == 'volunteered_hours_in_days'
+            res = v.to_s
+          else
+            res = (v.to_s + " (" + meo.humanize + ")")
+          end
         end
         if instance_variable_get("@#{meo}_excluded")
           res = "Excluding " + res

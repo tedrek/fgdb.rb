@@ -93,6 +93,13 @@ module ConditionsHelper
     collection_select(params_key, "type", Type.find(:all), "id", "description")
   end
 
+  def html_for_volunteered_hours_in_days_condition(params_key)
+    label(params_key, 'volunteer_hours_minimum', "Minimum number of hours volunteered:") +
+    text_field(params_key, 'volunteer_hours_minimum') +
+    label(params_key, 'volunteer_hours_minimum', "Within number of days:") +
+    text_field(params_key, 'volunteer_hours_days')
+  end
+
   def html_for_id_condition(params_key)
     text_field(params_key, 'id')
   end

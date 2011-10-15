@@ -189,8 +189,7 @@ class ReportsController < ApplicationController
     @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
-    discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}.sort
-    @rows[:sales] = discount_types << 'subtotals'
+    @rows[:sales] = ['subtotals']
     @rows[:grand_totals] = ['total']
     @rows[:written_off_invoices] = ['donations', 'sales', 'total']
     @sections = [:donations, :sales, :grand_totals, :written_off_invoices]
@@ -277,10 +276,9 @@ class ReportsController < ApplicationController
   end
 
   def add_sale_summation_to_data(summation, income_data, ranges)
-    payment_method_id, discount_schedule_id, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['discount_schedule_id'].to_i, summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+    payment_method_id, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
-    discount_schedule = DiscountSchedule.find(discount_schedule_id)
 
     ranges[:sales][:min] = [ranges[:sales][:min], mn].min
     ranges[:sales][:max] = [ranges[:sales][:max], mx].max
@@ -289,22 +287,18 @@ class ReportsController < ApplicationController
 
     grand_totals = income_data[:grand_totals]
     column = income_data[:sales][payment_method]
-    update_totals(column[discount_schedule.name], amount_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     if PaymentMethod.is_money_method?(payment_method_id)
       total_real = income_data[:sales]['register total']
-      update_totals(total_real[discount_schedule.name], amount_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
     if PaymentMethod.is_till_method?(payment_method_id)
       till_total = income_data[:sales]['till total']
-      update_totals(till_total[discount_schedule.name], amount_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
     totals = income_data[:sales]['total']
-    update_totals(totals[discount_schedule.name], amount_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)

@@ -11,6 +11,18 @@ class GizmoReturn < ActiveRecord::Base
   acts_as_userstamp
   before_save :set_occurred_at_on_transaction
 
+  attr_accessor :contact_type  #anonymous or named
+  before_save :strip_postal_code
+  before_save :unzero_contact_id
+  def contact_type
+    @contact_type ||= contact ? 'named' : 'anonymous'
+  end
+
+  def initialize(*args)
+    @contact_type = 'anonymous'
+    super(*args)
+  end
+
   def storecredit_spent
     self.store_credit.spent?
   end
@@ -24,9 +36,13 @@ class GizmoReturn < ActiveRecord::Base
   end
 
   def validate
-    errors.add_on_empty("contact_id")
-    if contact_id.to_i == 0 or !Contact.exists?(contact_id)
-      errors.add("contact_id", "does not refer to any single, unique contact")
+    if contact_type == 'named'
+      errors.add_on_empty("contact_id")
+      if contact_id.to_i == 0 or !Contact.exists?(contact_id)
+        errors.add("contact_id", "does not refer to any single, unique contact")
+      end
+    else
+      errors.add_on_empty("postal_code")
     end
     errors.add("gizmos", "should include something") if gizmo_events.empty?
     storecredit_priv_check if self.store_credit and self.store_credit.amount_cents_changed? and self.store_credit.amount_cents > 0
