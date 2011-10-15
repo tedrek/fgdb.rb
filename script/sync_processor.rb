@@ -84,6 +84,7 @@ def sync_contact_from_fgdb(fgdb_id)
   end
   if civicrm_id
     hash[:id] = civicrm_id
+    # TODO: return nil for FAIL if not success
     my_client.do_req("civicrm/contact/update", hash.r_to_params)
   else
     hash["custom_#{my_custom}"] = fgdb_id
