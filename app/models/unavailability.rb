@@ -24,4 +24,17 @@ class Unavailability < Shift
     end
   end
 
+  def generates_on_day?(day)
+    # NOTE: don't check schedule, since it doesn't apply
+    # check for unavailability's repeats_every / repeats_on logic instead
+    # AND
+    # if worker is on vacation anyway, don't save the shift
+    self.which_week( day ) == self.repeats_on and self.save_for_worker?(day)
+  end
+
+  def do_my_generate(day)
+    workshift = WorkShift.create_from_unavailability( self, day )
+    workshift.shift_id = self.id
+    workshift.save
+  end
 end

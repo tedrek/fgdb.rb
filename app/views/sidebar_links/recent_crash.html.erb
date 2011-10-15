@@ -1,0 +1,19 @@
+<h1>Recent Crashes</h1>
+<table class="awesome">
+<tr>
+  <th>ID</th>
+  <th>URL</th>
+  <th>User</th>
+  <th>Date</th>
+</tr>
+<% for file in @first %>
+<% data = @strs[file] %>
+<tr>
+<td><%= link_to file, :action => "crash", :id => file %>  </td>
+<td><%= un = "NONE"; (data["controller"] || un) + "#" + (data["action"] || un) %>      </td>
+<td> <%= (data["cashier"] || data["user"] || data["client_ip"])  %></td>
+<td><%=  data["date"] %></td>
+</tr>
+<% end %>
+</table>
+<!-- TODO: form allowing entering any crash id -->

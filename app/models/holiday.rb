@@ -7,7 +7,7 @@ class Holiday < ActiveRecord::Base
     !! Holiday.find(:first, :conditions => ["holiday_date = ? AND is_all_day = 't'", day])
   end
 
-  def Holiday.add_credit_for_holidays_to_calendar(calendar, credit_per_day)
-    calendar.add_for_day{|x| Holiday.is_holiday?(x) ? credit_per_day : 0}
+  def Holiday.add_credit_for_holidays_to_calendar(calendar,worker)
+    calendar.add_for_day{|x| Holiday.is_holiday?(x) ? worker.holiday_credit_per_day(x) : 0}
   end
 end

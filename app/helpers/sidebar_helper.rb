@@ -64,14 +64,15 @@ module SidebarHelper
       sidebar_hash[disp][prep + "search"] = {:c => pl, :a => 'search'}
     end
     # reports
-    ["income", "gizmos", "volunteering"].each do |x|
-      sidebar_hash["reports"][x] = {:c => "reports", :a => x.sub("ing", "s")}
+    ["income", "gizmos", "volunteering", "top_contributors"].each do |x|
+      sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => x.sub("ing", "s")}
     end
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
     # contacts
     sidebar_hash["contacts"]["contacts"] = {:c => "contacts"}
     sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'}
     sidebar_hash["contacts"]["duplicates list"] = {:c => 'contact_duplicates', :a => "list_dups"}
+    sidebar_hash["contacts"]["email list"] = {:c => 'contacts', :a => "email_list"}
     # bean counters
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"}
     # skedjuler
@@ -99,7 +100,6 @@ module SidebarHelper
     # fgss
     sidebar_hash["fgss"]["printme"] = {:c => 'spec_sheets'}
     sidebar_hash["fgss"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled
-    sidebar_hash["fgss"]["builder tasks"] = {:c => 'builder_tasks'}
     # done
     return aliases, sidebar_hash
   end

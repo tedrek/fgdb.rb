@@ -1,4 +1,4 @@
-<h1>Editing assignment</h1>
+<h1><%= @action_title || "Editing" %> assignment</h1>
 
 <% if @assignments.length > 1 %>
 <h2>Editing multiple assignments at once:</h2>
@@ -8,10 +8,10 @@
 <% end %>
 
 <fieldset>
-<% form_for(@assignment, :url => {:action => "update", :id => params[:id]}) do |f| %>
+<% form_for(@assignment, :url => @my_url) do |f| %>
   <%= f.error_messages %>
 
-  <%= render :partial => "form", :locals => {:f => f} %>
+  <%= render :partial => "assignments/form", :locals => {:f => f} %>
 
   <p>
     <%= f.submit "Update" %>
@@ -20,4 +20,5 @@
 </fieldset>
 
 <%= link_to 'Show', {:action => "show", :id => @assignment.id} %> |
-<%= link_to 'Back', {:action => "index"} %>
+<%= link_to 'Back', sked_url(@referer, @assignment.class == Assignment ? @assignment.volunteer_shift.date_anchor : @assignment.volunteer_default_shift.weekday_name) %>
+

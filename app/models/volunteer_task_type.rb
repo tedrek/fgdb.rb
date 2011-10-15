@@ -1,6 +1,10 @@
 class VolunteerTaskType < ActiveRecord::Base
   belongs_to :program
 
+  def self.evaluation_type
+    @@eval_type ||= VolunteerTaskType.find_by_name('evaluation')
+  end
+
   def to_s
     description
   end

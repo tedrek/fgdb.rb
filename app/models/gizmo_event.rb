@@ -21,12 +21,55 @@ class GizmoEvent < ActiveRecord::Base
   define_amount_methods_on("unit_price")
 
   def is_store_credit
-    self.gizmo_type.id == GizmoType.find_by_name("store_credit").id
+    self.gizmo_type_id == GizmoType.find_by_name("store_credit").id
+  end
+
+  before_save :set_storecredit_on_return
+
+  def set_storecredit_on_return
+    if(@sc_id_set and @sc_id != self.return_store_credit_id)
+      raise unless self.gizmo_context == GizmoContext.gizmo_return
+      self.return_store_credit_id = @sc_id
+    end
+  end
+
+  def store_credit_hash=(hash)
+    return unless hash and hash.length > 0
+    @sc_id_set = true
+    begin
+      @sc_id = StoreChecksum.new_from_checksum(hash).result
+    rescue StoreChecksumException
+      @sc_id = nil
+    end
+  end
+
+  def store_credit_hash_id
+    if ! @sc_id_set
+      @sc_id_set = true
+      @sc_id = self.return_store_credit_id
+    end
+    @sc_id
+  end
+
+  def store_credit_hash
+    StoreChecksum.new_from_result(store_credit_hash_id).checksum if store_credit_hash_id
+  end
+
+  def my_sc_h
+    StoreCredit.find_by_id(store_credit_hash_id)
+  end
+
+  validate :sc_h_ok
+
+  def sc_h_ok
+    return if !(is_store_credit && self.gizmo_context == GizmoContext.gizmo_return)
+    errors.add("gizmo_event", "store credit was already spent") if self.my_sc_h.spent? && (self.gizmo_return.id.nil? || self.my_sc_h.payment_id || ((self.my_sc_h.my_return.gizmo_return.id) != self.gizmo_return.id))
   end
 
   attr_accessor :expire_date
 
   def set_storecredit_difference_cents
+    return unless self.gizmo_context == GizmoContext.sale
     my_expire_date = self.store_credits.map{|x| x.expire_date}.uniq.select{|x| !x.nil?}.sort.last
     my_expire_date ||= @expire_date
     my_expire_date ||= (Date.today + StoreCredit.expire_after_value)
@@ -77,12 +120,15 @@ class GizmoEvent < ActiveRecord::Base
                          "SELECT gizmo_types.gizmo_category_id,
                 gizmo_events.gizmo_type_id,
                 gizmo_events.gizmo_context_id,
-                d.disbursement_type_id,
+                disbursements.disbursement_type_id,
                 sum(gizmo_events.gizmo_count) AS count
          FROM gizmo_events
-              LEFT OUTER JOIN disbursements AS d ON d.id = gizmo_events.disbursement_id
+              LEFT OUTER JOIN disbursements ON disbursements.id = gizmo_events.disbursement_id
               LEFT JOIN gizmo_types ON gizmo_types.id=gizmo_events.gizmo_type_id
 LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems ON system_id = systems.id
+LEFT JOIN sales ON gizmo_events.sale_id = sales.id
+LEFT JOIN gizmo_returns ON gizmo_events.gizmo_return_id = gizmo_returns.id
+LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          GROUP BY 3,2,4,1"
                          )
@@ -90,7 +136,9 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
   end
 
   def display_name
-    "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
+    rstr = "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
+    rstr += " (#{self.system_id ? "#" + system_id.to_s : "unknown"})" if self.gizmo_type.needs_id
+    rstr
   end
 
   def valid_gizmo_count?
@@ -115,6 +163,7 @@ LEFT JOIN donations ON gizmo_events.donation_id = donations.id LEFT JOIN systems
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 
     g_desc = gizmo_type.description
+    g_desc.upcase! if options[:upcase]
     m_desc = self.description
     desc = g_desc
     desc += " -- " + m_desc if !(m_desc.nil? || m_desc.empty?)

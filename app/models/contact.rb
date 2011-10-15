@@ -13,14 +13,14 @@ class Contact < ActiveRecord::Base
   has_many :disbursements
   has_many :sales
   has_many :donations
-  has_many :spec_sheets
+  has_many :builder_tasks
   has_one :user
   has_one :contact_duplicate
   belongs_to :contract
   has_many :gizmo_returns
   has_one :worker
 
-  validates_presence_of :postal_code
+  validates_presence_of :postal_code, :on => :create
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
@@ -39,8 +39,24 @@ class Contact < ActiveRecord::Base
   validates_length_of :postal_code, :maximum => 25
   validates_length_of :country, :maximum => 100
 
+  def condition_to_s
+    display_name
+  end
+
+  def mailing_list_email
+    list = ContactMethodType.email_types_ordered.map{|x| x.id}
+    list = list.reverse if self.organization
+    result = self.contact_methods.select{|x| x.ok}.select{|x| list.include?(x.contact_method_type_id)}.sort{|a,b| r = (list.index(a.contact_method_type_id) <=> list.index(b.contact_method_type_id)); r == 0 ? ((b.updated_at || b.created_at) <=> (a.updated_at || a.created_at)) : r}.first
+    result ? result.value : nil
+  end
+
   def to_privileges
     ["contact_#{self.id}", "has_contact"]
+  end
+
+  def update_syseval_count
+    vtt = VolunteerTaskType.evaluation_type
+    self.syseval_count = self.volunteer_tasks.for_type_id(vtt.id).count
   end
 
   def scheduled_shifts
@@ -104,7 +120,7 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE default_assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE gizmo_returns SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disbursements SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
-      connection.execute("UPDATE spec_sheets SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE builder_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE workers SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE points_trades SET from_contact_id = #{self.id} WHERE from_contact_id = #{other.id}")
       connection.execute("UPDATE points_trades SET to_contact_id = #{self.id} WHERE to_contact_id = #{other.id}")
@@ -226,7 +242,7 @@ class Contact < ActiveRecord::Base
   end
 
   def spec_sheets_since_last_adoption(action_name)
-    BuilderTask.find(:all, :conditions => ["contact_id = ? AND builder_tasks.created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption, Action.find_by_name(action_name).id])
+    BuilderTask.find(:all, :conditions => ["contact_id = ? AND builder_tasks.created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption || Date.parse("2000-01-01"), Action.find_by_name(action_name).id])
   end
 
   def points_traded_since_last_adoption(type, trade_id = nil)
@@ -237,7 +253,7 @@ class Contact < ActiveRecord::Base
 
   def hours_effective
     find_volunteer_tasks(date_of_last_adoption).inject(0.0) do |total,task|
-      total += task.effective_duration
+        total += task.effective_duration
     end
   end
 

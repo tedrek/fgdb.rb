@@ -3,6 +3,10 @@ module ConditionsHelper
 
   private
 
+  def html_for_worker_type_condition(params_key)
+    select(params_key, "worker_type_id", WorkerType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
+  end
+
   def html_for_assigned_condition(params_key)
     check_box params_key, "assigned"
   end
@@ -11,8 +15,12 @@ module ConditionsHelper
     ""
   end
 
+  def html_for_store_credit_redeemed_condition(params_key)
+    ""
+  end
+
   def html_for_cancelled_condition(params_key)
-    "Show cancelled: " + check_box(params_key, "cancelled")
+    "<div style=\"display: inline-block;\">Show cancelled: " + check_box(params_key, "cancelled") + "</div>"
   end
 
   def html_for_schedule_condition(params_key)
@@ -26,12 +34,23 @@ module ConditionsHelper
     (radio_button params_key, :schedule_which_way, 'Solo + root', :checked => (which_way=='Solo + root')) + "Solo + root")
   end
 
+  attr_accessor :multi_enabled
+
   def html_for_worker_condition(params_key)
-    select(params_key, "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] })
+    show_all = false
+    select(params_key, "worker_id", Worker.find(:all).select{|x| show_all or x.effective_now?}.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts)
+  end
+
+  def _multi_html_opts
+    @multi_enabled ? {:multiple=> (!!@multi_enabled), :size => 7} : {}
   end
 
   def html_for_job_condition(params_key)
-    select(params_key, "job_id", Job.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] })
+    select(params_key, "job_id", Job.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts)
+  end
+
+  def html_for_attendance_type_condition(params_key)
+    select(params_key, "attendance_type_id", AttendanceType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
   end
 
   def html_for_weekday_condition(params_key)
@@ -72,6 +91,13 @@ module ConditionsHelper
 
   def html_for_type_condition(params_key)
     collection_select(params_key, "type", Type.find(:all), "id", "description")
+  end
+
+  def html_for_volunteered_hours_in_days_condition(params_key)
+    label(params_key, 'volunteer_hours_minimum', "Minimum number of hours volunteered:") +
+    text_field(params_key, 'volunteer_hours_minimum') +
+    label(params_key, 'volunteer_hours_minimum', "Within number of days:") +
+    text_field(params_key, 'volunteer_hours_days')
   end
 
   def html_for_id_condition(params_key)

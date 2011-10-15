@@ -2,9 +2,14 @@ class WorkShiftsController < ApplicationController
   layout "skedjulnator"
 
   protected
+  before_filter :enable_multi
+  def enable_multi
+    @multi_enabled = true
+  end
+
   def get_required_privileges
     a = super
-    a << {:privileges => ['skedjulnator'], :except => ['staffsched']}
+    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'staffsched_publish']}
     a
   end
 
@@ -15,11 +20,16 @@ class WorkShiftsController < ApplicationController
     render :action => 'list'
   end
 
+  def staffsched_publish
+    params["opts"] = {:presentation_mode => "Preview"}
+    staffsched
+  end
+
   def staffsched
     @readonly = true
     @vacations = Vacation.find(:all, :order => 'effective_date, ineffective_date', :conditions => ["ineffective_date >= ?", Date.today])
-    params["conditions"] = {:shift_date_enabled => "true", :shift_date_end_date => (Date.today + 60).to_s, :shift_date_start_date => Date.today.to_s, }
-    params["opts"] = {:presentation_mode => "Preview"}
+    params["conditions"] ||= {:shift_date_enabled => "true", :shift_date_end_date => (Date.today + 60).to_s, :shift_date_start_date => Date.today.to_s, }
+    params["opts"] ||= {:presentation_mode => "Display"}
 
     list
     render :action => 'list'

@@ -188,4 +188,6 @@ ContactDuplicate.destroy_all
 }
 Contract.destroy_all "name != 'default'"
 
+DB.execute("UPDATE assignments SET notes = '';")
+
 Default["is-pdx"] = "false"

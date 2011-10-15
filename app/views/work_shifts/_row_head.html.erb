@@ -1,5 +1,14 @@
-<% if skedj.opts[:break_between_difference] and skedj.last %> <!-- is same day? -->
-<% if skedj.get_method_value(skedj.current, :break_between_difference) != skedj.get_method_value(skedj.last, :break_between_difference) %>
+<% broke_already  = false %>
+<% if skedj.opts[:title_between] %>
+<% if (!skedj.last) || skedj.get_method_value(skedj.current, :block_method_name) != skedj.get_method_value(skedj.last,  :block_method_name) || skedj.get_method_value(skedj.current, :title_between) !=  skedj.get_method_value(skedj.last, :title_between)  %>
+<% broke_already = true %>
+<tr>
+  <td>&nbsp;</td>
+  <th colspan="<%= (skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time)) / 60 %>"><%= skedj.get_method_value(skedj.current, :title_between) %></td>
+<% end %>
+<% end %>
+<% if skedj.opts[:break_between_difference] and skedj.last and ! broke_already %>
+<% if skedj.get_method_value(skedj.current, :block_method_name) == skedj.get_method_value(skedj.last,  :block_method_name) && skedj.get_method_value(skedj.current, :break_between_difference) != skedj.get_method_value(skedj.last, :break_between_difference) %>
 <tr>
   <td>&nbsp;</td>
   <td colspan="<%= (skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time)) / 60 %>">&nbsp;</td>

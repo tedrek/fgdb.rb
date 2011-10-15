@@ -165,7 +165,8 @@ end
 
 class String
   def to_cents
-    temp = self.split('.')
+    tmp = self.sub(/^\$/, "")
+    temp = tmp.split('.')
     temp[1]=((temp[1]||"0")+"0")[0..1]
     temp[0].to_i*100 + temp[1].to_i
   end
@@ -363,6 +364,9 @@ class DB < ActiveRecord::Base
   end
   def self.run(*args)
     DB.execute(*args)
+  end
+  def self.conditions_date_field
+    return 'created_at'
   end
 end
 

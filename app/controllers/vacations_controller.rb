@@ -28,6 +28,17 @@ class VacationsController < ApplicationController
     @vacation = Vacation.find(params[:id])
   end
 
+  def generate
+    @vacation = Vacation.find(params[:id])
+    w = @vacation.worker
+    (@vacation.effective_date..@vacation.ineffective_date).each{|x|
+      w.work_shifts_for_day(x).each{|x|
+        x.on_vacation
+      }
+    }
+    redirect_to :back
+  end
+
   def new
     @vacation = Vacation.new
   end

@@ -11,10 +11,20 @@
 <%= submit_tag 'Show' %>
 <% end %>
 
+<% if has_required_privileges("builder") %>
+<h2>Show builder status sheet</h2>
+
+<% form_for "", nil, :url => {:action => "builder" }, :html => {:method => "get"} do |f| %>
+<%= submit_tag 'Show' %>
+<%= contact_field('@nil', 'contact_id') %>
+<% end %>
+<% end %>
+
 <h2>Search for reports</h2>
 
 <% if @reports -%>
-  <%= render :partial => 'list', 'reports' => @reports %>
+  <%= render :partial => 'list', :locals => {:reports => @reports} %>
+  <%= will_paginate @reports, :params => {:conditions => params[:conditions]} %>
 <% end -%>
 
 <div id="main-section">
@@ -35,4 +45,7 @@
 <% end -%>
 <br />
 <%= link_to 'New report', {:action => "new"} %>
+<% if has_required_privileges("show/sign_off") %>
+<br /><%= link_to 'New builder_task credit without report', {:action => "new", :controller => "builder_tasks"} %>
+<% end %>
 </div>

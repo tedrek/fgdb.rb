@@ -22,6 +22,32 @@ class ReportsController < ApplicationController
     end
   end
 
+  public
+
+  def top_contributors
+    @conditions = Conditions.new
+    @report = OpenStruct.new
+    @report.amount = 5000
+    @conditions = Conditions.new
+    @conditions.occurred_at_date_type = "yearly"
+  end
+
+  def top_contributors_report
+    limit = params[:report][:amount]
+    conds = Conditions.new
+    conds.apply_conditions(params[:conditions])
+    limit = (limit.to_i * 100).to_i
+    result = DB.exec("SELECT contact_id,SUM(amount_cents) as total FROM payments JOIN donations ON payments.donation_id = donations.id WHERE donation_id IS NOT NULL AND contact_id IS NOT NULL AND #{DB.prepare_sql(conds.conditions(Donation))} GROUP BY contact_id HAVING SUM(amount_cents) > #{limit.to_s} ORDER BY SUM(amount_cents) DESC;").to_a
+    @title = "Top contributors" + conds.to_s
+    @result = [["Contact ID", "Contact Name", "Total Contribution"]]
+    result.map{|x|
+      cid = x["contact_id"]
+      cdisp = Contact.find_by_id(cid).display_name
+      total = x["total"].to_i.to_dollars
+      @result << [cid, cdisp, total]
+    }
+  end
+
   #####################
   ### Gizmos report ###
   #####################
@@ -84,7 +110,7 @@ class ReportsController < ApplicationController
 
   def plus_or_minus(id)
     # donations come in.  sales, recycling and disbursements go out.
-    id == GizmoContext.donation.id ? 1 : -1
+    (id == GizmoContext.donation.id || id == GizmoContext.gizmo_return.id) ? 1 : -1
   end
 
   def add_gizmo_to_data(summation, data)
@@ -163,8 +189,7 @@ class ReportsController < ApplicationController
     @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
-    discount_types = DiscountSchedule.find(:all).map {|d_s| d_s.name}.sort
-    @rows[:sales] = discount_types << 'subtotals'
+    @rows[:sales] = ['subtotals']
     @rows[:grand_totals] = ['total']
     @rows[:written_off_invoices] = ['donations', 'sales', 'total']
     @sections = [:donations, :sales, :grand_totals, :written_off_invoices]
@@ -251,10 +276,9 @@ class ReportsController < ApplicationController
   end
 
   def add_sale_summation_to_data(summation, income_data, ranges)
-    payment_method_id, discount_schedule_id, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['discount_schedule_id'].to_i, summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+    payment_method_id, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
-    discount_schedule = DiscountSchedule.find(discount_schedule_id)
 
     ranges[:sales][:min] = [ranges[:sales][:min], mn].min
     ranges[:sales][:max] = [ranges[:sales][:max], mx].max
@@ -263,22 +287,18 @@ class ReportsController < ApplicationController
 
     grand_totals = income_data[:grand_totals]
     column = income_data[:sales][payment_method]
-    update_totals(column[discount_schedule.name], amount_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     if PaymentMethod.is_money_method?(payment_method_id)
       total_real = income_data[:sales]['register total']
-      update_totals(total_real[discount_schedule.name], amount_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
     if PaymentMethod.is_till_method?(payment_method_id)
       till_total = income_data[:sales]['till total']
-      update_totals(till_total[discount_schedule.name], amount_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
     totals = income_data[:sales]['total']
-    update_totals(totals[discount_schedule.name], amount_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)
@@ -328,6 +348,7 @@ class ReportsController < ApplicationController
 
   def get_required_privileges
     a = super
+    a << {:only => ["top_contributors", "top_contributors_report"], :privileges => ['manage_contacts']}
     a << {:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']}
     a << {:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["staff_hours", "staff_hours_report"], :privileges => ['staff']}
@@ -339,7 +360,7 @@ class ReportsController < ApplicationController
   def staff_hours
     @title = "Jobs report"
     if has_required_privileges('/worker_condition')
-      @filters = ['worker']
+      @filters = ['worker', 'worker_type']
     end
     common_hours
   end

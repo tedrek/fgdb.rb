@@ -191,6 +191,7 @@ function edit_gizmo_event(id) {
     $('reason').value = getValueBySelector(thing, ".reason");
     $('tester').value = getValueBySelector(thing, ".tester");
     $('sale_id').value = getValueBySelector(thing, ".return_sale_id");
+    $('store_credit_hash').value = getValueBySelector(thing, ".store_credit_hash");
   }
   $('description').value = getValueBySelector(thing, ".description");
   $('gizmo_type_id').focus();
@@ -226,7 +227,7 @@ function update_amount_for_storecredit() {
     a = "";
   }
   $('payment_amount').value = a;
-  alert_for_storecredit($('store_credit_id').value);
+//  alert_for_storecredit($('store_credit_id').value);
 }
 
 function add_shift_from_form() {
@@ -271,13 +272,14 @@ function _add_gizmo_event_from_form()
   if($('reason') != null) {
     args['reason'] = $('reason').value;
     args['tester'] = $('tester').value;
-    if($('sale_id').value == "") {
+    if((!gt_is_sc()) && $('sale_id').value == "") {
       $('sale_id').value = prompt("You didn't enter a sale id. Please enter one now, or continue if you are sure you don't want to enter one.");
     }
-    while($('sale_id').value != "" && !sale_exists($('sale_id').value)) {
+    while((!gt_is_sc()) && $('sale_id').value != "" && !sale_exists($('sale_id').value)) {
       $('sale_id').value = prompt("You entered a nonexistant sale id. Please enter a correct one now, or continue without entering one if you want to leave it blank.");
     }
     args['sale_id'] = $('sale_id').value;
+    args['store_credit_hash'] = $('store_credit_hash').value;
   }
   if($('covered') != null) {
     args['covered'] = $('covered').value;
@@ -305,6 +307,7 @@ function _add_gizmo_event_from_form()
     $('reason').value = $('reason').defaultValue;
     $('tester').value = $('tester').defaultValue;
     $('sale_id').value = $('sale_id').defaultValue;
+    $('store_credit_hash').value = $('store_credit_hash').defaultValue;
   }
   if($('covered') != null){
     $('covered').selectedIndex = 0;
@@ -418,7 +421,9 @@ function returns_stuff(args,tr) {
   var reason = args['reason'];
   var tester = args['tester'];
   var sale_id = args['sale_id'];
+  var sc_hash = args['store_credit_hash'];
   tr.appendChild(make_hidden(args['prefix'], "return_sale_id", sale_id, sale_id, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "store_credit_hash", sc_hash, sc_hash, line_id));
   tr.appendChild(make_hidden(args['prefix'], "reason", reason.truncate(15), reason, line_id));
   tr.appendChild(make_hidden(args['prefix'], "tester", tester.truncate(15), tester, line_id));
 }
@@ -566,9 +571,11 @@ function get_storecredit_amount(id) {
   } else {
     var myhash = new Hash();
     internal_storecredit_amount = -2;
+    st_lid = sc_loading_id;
     myhash.set('id', id);
+    myhash.set('loading', st_lid);
     var str = myhash.toQueryString();
-    Element.show(payment_line_item_loading_id);
+    Element.show(st_lid);
     new Ajax.Request(get_storecredit_amount_url + '?' + str, {asynchronous:false, evalScripts:true});
     storecredit_amount_cache[id] = internal_storecredit_amount;
     val = internal_storecredit_amount;
@@ -602,8 +609,12 @@ function sale_exists(sale_id){
   return val;
 }
 
+function has_alert_for_storecredit(id) {
+  return (storecredit_errors_cache[id] != null);
+}
+
 function alert_for_storecredit(id) {
-  if(storecredit_errors_cache[id] != null) {
+  if(has_alert_for_storecredit(id)) {
     alert(storecredit_errors_cache[id]);
   }
 }
@@ -840,7 +851,7 @@ function is_last_enabled_visable_there_field_thing_in_line_item(name, names) {
 }
 
 function ge_linelist() {
-  return ['gizmo_type_id', 'gizmo_count', 'sale_id', 'reason', 'tester', 'system_id', 'contract_id','covered', 'unit_price'];
+  return ['gizmo_type_id', 'gizmo_count', 'sale_id', 'store_credit_hash', 'reason', 'tester', 'system_id', 'contract_id','covered', 'unit_price'];
 }
 
 function disable_ge_entry_line(){
@@ -1027,6 +1038,15 @@ function system_selected() {
   coveredness_type_selected();
 }
 
+function storecredit_selected () {
+  var val = dollar_value(get_storecredit_amount($('store_credit_hash').value));
+  alert_for_storecredit($('store_credit_hash').value);
+  if(val == "0.00") {
+    val="";
+  }
+  $('unit_price').value = val;
+}
+
 function coveredness_type_selected() {
   if($('covered') == null)
     return;
@@ -1084,7 +1104,21 @@ function gizmo_type_selected() {
 }
 function sale_gizmo_type_selected() {
 }
+
+function gt_is_sc() {
+  return get_name_of_selected('gizmo_type_id') == "Store Credit";
+}
 function gizmo_return_gizmo_type_selected() {
+  if(gt_is_sc()) {
+    $('sale_id').disabled = true;
+    $('unit_price').disabled = true;
+    $('store_credit_hash').disabled = false;
+  } else {
+    $('sale_id').disabled = false;
+    $('unit_price').disabled = false;
+    $('store_credit_hash').disabled = true;
+    $('store_credit_hash').value = $('store_credit_hash').defaultValue;
+  }
 }
 function donation_gizmo_type_selected() {
   if($('covered') && $('covered').value == "true") {

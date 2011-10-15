@@ -1,21 +1,56 @@
 class VolunteerShift < ActiveRecord::Base
-#  validates_presence_of :volunteer_task_type_id
+  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
   validates_presence_of :roster_id
-  validates_presence_of :slot_number
   validates_presence_of :end_time
   validates_presence_of :start_time
 
   belongs_to :volunteer_task_type
   has_many :assignments
   belongs_to :program
+  belongs_to :roster
 
   belongs_to :volunteer_event
+
+    def set_date_set
+    @set_date_set
+  end
+
+  def set_date=(val)
+    @set_date_set = true
+    @set_date = val
+  end
+
+  def set_date
+    @set_date_set ? @set_date : self.volunteer_event.date
+  end
+
+  def set_values_if_stuck
+    return unless self.stuck_to_assignment
+    assn = self.assignments.first
+    return unless assn
+    self.start_time = assn.start_time
+    self.end_time = assn.end_time
+    return unless self.volunteer_event_id.nil? or self.volunteer_event.description.match(/^Roster #/)
+    return unless set_date_set
+    roster = Roster.find_by_id(self.roster_id)
+    if roster and !(set_date == nil || set_date == "")
+      ve = roster.vol_event_for_date(set_date)
+      ve.save! if ve.id.nil?
+      self.volunteer_event = ve
+      self.volunteer_event_id = ve.id
+    else
+      if self.volunteer_event.nil?
+        self.volunteer_event = VolunteerEvent.new
+      end
+    end
+  end
 
   def skedj_style(overlap, last)
     overlap ? 'hardconflict' : 'shift'
   end
 
   def time_range_s
+    return unless self.read_attribute(:start_time) and  self.read_attribute(:end_time)
     (self.my_start_time("%I:%M") + ' - ' + self.my_end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 
@@ -40,6 +75,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def fill_in_available
+    return if self.stuck_to_assignment
     Thread.current['volskedj_fillin_processing'] ||= []
     if Thread.current['volskedj_fillin_processing'].include?(self.id)
       return
@@ -56,6 +92,7 @@ class VolunteerShift < ActiveRecord::Base
       results.each{|x|
         a = Assignment.new
         a.volunteer_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
+        a.volunteer_shift = self
         a.save!
       }
     ensure
@@ -74,7 +111,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def date_anchor
-    self.date.strftime('%Y%m%d')
+    self.date ? self.date.strftime('%Y%m%d') : ''
   end
 
   def time_shift(val)
@@ -91,7 +128,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def description_and_slot
-    ((self.volunteer_task_type_id || -1) * 1000) + self.slot_number
+    ((self.volunteer_task_type_id || -1) * 1000) + (self.not_numbered ? 0 : self.slot_number)
   end
 
   def weekday

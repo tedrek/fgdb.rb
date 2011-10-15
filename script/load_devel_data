@@ -2,7 +2,7 @@
 
 set -ex
 
-make -C db
+make -C db download
 rake db:drop --trace || true
 rake db:create --trace
 rake db:schema:load --trace

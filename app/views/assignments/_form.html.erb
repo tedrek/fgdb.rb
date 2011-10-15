@@ -1,8 +1,35 @@
 <div style="float: right; text-align: right;">
+  <% is_r = @assignment.class == Assignment %>
+  <% shift = is_r ? f.object.volunteer_shift : f.object.volunteer_default_shift %>
+<% if shift.stuck_to_assignment %>
+  <% f.fields_for is_r ? :volunteer_shift : :volunteer_default_shift do |s| %>
+    <p>
+      <%= s.label :volunteer_task_type_id %>
+      <%= s.select("volunteer_task_type_id", [VolunteerTaskType.new(:description => ""),  VolunteerTaskType.instantiables.effective_on(Date.today)].flatten.map{|x| [x.description, x.id]}) %>
+    </p>
+    <p>
+      <%= s.label :roster_id %>
+      <%= s.select("roster_id", [Roster.new(:name => ""),  Roster.find(:all)].flatten.map{|x| [x.name, x.id]}) %>
+    </p>
+    <p>
+      <%= s.label :program_id %>
+      <%= s.select("program_id", [Program.new(:name => ""),  Program.find(:all, :conditions => {:volunteer => true})].flatten.map{|x| [x.name, x.id]}) %>
+    </p>
+    <% if is_r %>
+      <p>
+        <%= f.label :set_date, "Date" %>
+        <%= calendar_box f.object_name, :set_date %>
+      </p>
+    <% else %>
+      <p>
+        <%= f.label :set_weekday_id, "Weekday" %>
+        <%= f.select("set_weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, :include_blank => true) %>
+      </p>
+    <% end %>
+  <% end %>
+<% else %>
   <p>
 <%= f.label :volunteer_shift %>    <table class="awesome">
-  <% is_r = params[:controller] == "assignments" %>
-  <% shift = is_r ? f.object.volunteer_shift : f.object.volunteer_default_shift %>
   <% event = is_r ? shift.volunteer_event : shift.volunteer_default_event %>
   <% rsrcs = is_r ? event.resources_volunteer_events : event.resources_volunteer_default_events %>
   <% assigns = is_r ? shift.assignments : shift.default_assignments %>
@@ -20,6 +47,7 @@
       <tr><td>Resources:</td><td><%=rsrcs.map{|x| x.resource.name}.join(", ") %></td></tr>
     </table>
   </p>
+<% end %>
 
   <%= f.hidden_field :redirect_to, :value => @referer %>
 

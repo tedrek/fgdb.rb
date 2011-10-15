@@ -40,6 +40,16 @@ class Worker < ActiveRecord::Base
     @already_set_it = true
   end
 
+  def Worker.on_date(date = nil)
+    date ||= DateTime.now
+    Worker.effective_in_range(date, date)
+  end
+
+  def Worker.on_or_after_date(date = nil)
+    date ||= DateTime.now
+    Worker.effective_in_range(date, date + 1.year)
+  end
+
 #  after_save :save_worker_types
   def save_worker_types
     set_temp_worker_association
@@ -54,25 +64,17 @@ class Worker < ActiveRecord::Base
 
   def effective_now?
     date = DateTime.now
-    self.effective_in_range?(date, nil)
+    wt = self.worker_type_on_day(date)
+    (wt && (wt.name != "inactive"))
   end
 
-  def effective_in_range?(start_d, end_d)
-    start_t = self.worker_type_on_day(start_d)
-    end_t = nil
-    if end_d && start_d != end_d
-      end_t = self.worker_type_on_day(end_d)
-    end
-    a = [start_t, end_t]
-    a = a.delete_if{|x| x.nil?}
-    a = a.map{|x| x.name}
-    a = a.uniq
-    a = a.delete_if{|x| x == "inactive"}
-    return (a.length > 0)
+  def Worker.zero
+    @@zero ||= Worker.find(:first, :conditions => 'id = 0')
   end
 
   named_scope :effective_in_range, lambda { |*args|
-    {:conditions => ['id IN (?)', Worker._effective_in_range(args)]}
+    start, fin = Worker._effective_in_range(args)
+    {:conditions => ["id IN (SELECT DISTINCT worker_id FROM workers_worker_types JOIN worker_types ON worker_type_id = worker_types.id WHERE worker_types.name != 'inactive' AND (((effective_on <= ? OR effective_on IS NULL) AND (ineffective_on > ? OR ineffective_on IS NULL)) OR (effective_on > ? AND ineffective_on <= ?) OR ((ineffective_on is NULL or ineffective_on > ?) AND (effective_on IS NULL or effective_on <= ?))))", start, start, start, fin, fin, fin]}
   }
 
   def self._effective_in_range(args)
@@ -89,7 +91,7 @@ class Worker < ActiveRecord::Base
     else
       raise ArgumentError
     end
-    Worker.all.select{|x| x.effective_in_range?(my_start, my_end)}.map{|x| x.id}
+    return [my_start, my_end]
   end
 
   named_scope :real_people, :conditions => {:virtual => false}
@@ -210,31 +212,28 @@ class Worker < ActiveRecord::Base
   end
 
   def to_payroll_hash(pay_period)
-    # further optimization: determine the weeks and holidays outside of the workers loop
+    # further optimization: determine the weeks and holidays outside of the workers loop by passing in a hash {:1 => [], :2 => [Date.today]} by week number
     cache = {}
     h = {}
     h[:name] = self.sort_by
     h[:type] = self.primary_worker_type_in_range(pay_period.start_date, pay_period.end_date).name
-    h[:hours] = (pay_period.start_date..pay_period.end_date).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)}
-    h[:holiday] = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", pay_period.start_date, pay_period.end_date]).inject(0.0){|t,x| t+=self.holiday_credit_per_day}
-    days = {}
-    (pay_period.start_date..pay_period.end_date).to_a.each{|x| x = x.wday; days[x] ||= 0; days[x] += 1;}
-    a = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
-    t = 0.0
-    days.each{|k,v|
-      t += (self.send(a[k.to_i]) * v)
-    }
-    minimum = t * self.floor_ratio
-    h[:pto] = [0.0, minimum - (h[:hours] + h[:holiday])].max
+    h[:hours] = 0.0
+    h[:holiday] = 0.0
+    h[:overtime] = 0.0
+    weeks = 0
     h[:overtime] = 0.0
     (pay_period.start_date..pay_period.end_date).to_a.select{|x| x.wday == 0}.each{|endit|
       startit = endit - 6
-      holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", startit, endit]).inject(0.0){|t,x| t+=self.holiday_credit_per_day}
-      logged = (startit..endit).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)}
+      weeks += 1
+      h[:holiday] += (holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", startit, endit]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)})
+      h[:hours] += (logged = (startit..endit).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)})
       total = holidays + logged
-      h[:overtime] += [0.0, total - self.ceiling_hours].max
+      h[:overtime] += total - self.ceiling_hours if total > self.ceiling_hours
     }
     h[:hours] -= h[:overtime]
+    total = (h[:hours] + h[:holiday] + h[:overtime])
+    floor = self.floor_hours * weeks
+    h[:pto] = floor > total ? floor - total : 0.0
     return h
   end
 
@@ -244,8 +243,12 @@ class Worker < ActiveRecord::Base
     return [false, scheduled_shifts_for_day(date)].flatten
   end
 
+  def work_shifts_for_day(date)
+    WorkShift.find(:all, :conditions => ['shift_date = ? AND worker_id = ?', date, self.id])
+  end
+
   def scheduled_shifts_for_day(date)
-    shifts = WorkShift.find(:all, :conditions => ['shift_date = ? AND worker_id = ?', date, self.id])
+    shifts = self.work_shifts_for_day(date)
     shifts = shifts.map{|x| x.to_worked_shift}.delete_if{|x| x == nil}
     return shifts
   end
@@ -260,7 +263,7 @@ class Worker < ActiveRecord::Base
 
   def hours_effective_on_day(date)
     amount = hours_worked_on_day(date)
-    amount += holiday_credit_per_day if Holiday.is_holiday?(date)
+    amount += holiday_credit_per_day(date) if Holiday.is_holiday?(date)
     return amount
   end
 
@@ -280,8 +283,11 @@ class Worker < ActiveRecord::Base
     self.send(day.strftime("%A").downcase.to_sym).to_f
   end
 
-  def holiday_credit_per_day
-    salaried ? (ceiling_hours / 5.0) : 0.0
+  def holiday_credit_per_day(date)
+    new_logic = (date >= Date.parse('2011-08-01'))
+    hours = (new_logic ? weekly_work_hours : ceiling_hours) / 5.0
+    show = (new_logic ? (! ['substitude', 'inactive'].include?(worker_type_on_day(date).name)) : salaried)
+    return ((show) ? (hours) : 0.0)
   end
 
   def floor_ratio

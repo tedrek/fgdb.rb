@@ -1,8 +1,22 @@
 class TransactionController < ApplicationController
   layout :check_for_receipt
 
+  helper :raw_receipt
+
   before_filter :set_defaults
   before_filter :be_a_thing
+
+  include RawReceiptHelper
+
+  def raw_receipt
+    printer = (params[:receipt] ? params[:receipt][:printer] : "")
+    render :update do |page|
+      raise unless params[:controller] == 'sales'
+      s = Sale.find_by_id(params[:id])
+      receipt_printer_set_default(printer)
+      handle_java_print(page, generate_raw_receipt(printer) {|limit| s.text_receipt_lines(limit)}, {:alert => s.storecredit_alert_text, :loading => "raw_receipt_loading_indicator_id"})
+    end
+  end
 
   protected
 
@@ -14,7 +28,6 @@ class TransactionController < ApplicationController
   def be_a_thing
     set_transaction_type((controller_name()).singularize)
   end
-
 
   def get_required_privileges
     a = super
@@ -75,7 +88,7 @@ class TransactionController < ApplicationController
     render :update do |page|
       page << "internal_storecredit_amount = #{v.to_s.to_json};";
       page << "storecredit_errors_cache[#{params[:id].to_json}] = #{msg.to_json};"
-      page.hide loading_indicator_id("payment_line_item")
+      page.hide     params[:loading] # loading_indicator_id("payment_line_item")
     end
   end
 

@@ -1,0 +1,48 @@
+<h1>List of volunteer email addresses <%= @conditions ? @conditions.to_s : "" %></h1>
+
+<% form_tag do %>
+<%= check_box_tag 'include_comma', "1", @include_comma %><%= label_tag 'include_comma' %><br />
+<%= check_box_tag 'show_email', "1", @show_email %><%= label_tag 'show_email' %><br />
+<%= conditions_html("conditions", ['contact_type', 'volunteered_hours_in_days']) %>
+<%= submit_tag 'View Email List' %>
+<% end %>
+
+
+<% if @contacts %>
+<% if @show_email %>
+<% notfound = [] %>
+<% found = [] %>
+<h3>Matching contacts with email addresses:</h3>
+<% for i in @contacts; if ( e = i.mailing_list_email ); found << "#{i.display_name} &lt;#{e}&gt;#{@include_comma ? "," : ""}"; else; notfound << "#{i.display_name} (##{ i.id })"; end; end %>
+<pre>
+<% for i in found -%>
+<%= i %>
+<% end %>
+</pre>
+
+<% if notfound.length > 0 %>
+<h3>Matches without email addresses:</h3>
+<pre>
+<% for i in notfound -%>
+<%= i %>
+<% end %>
+</pre>
+<% end %>
+<% else %>
+
+<h3>Matches:</h3>
+<pre>
+<% for i in @contacts.sort_by(&:sort_name)  -%>
+<% if i.is_organization -%>
+<%= i.organization %><%= @include_comma ? "," : "" %>
+<% else -%>
+<%= i.surname %>, <%= i.first_name %><%= @include_comma ? "," : "" %>
+<% end -%>
+<% end %>
+</pre>
+
+
+<% end %>
+
+
+<% end %>

@@ -1,13 +1,14 @@
 class VolunteerDefaultShift < ActiveRecord::Base
-#  validates_presence_of :volunteer_task_type_id
   validates_presence_of :roster_id
   validates_presence_of :end_time
   validates_presence_of :start_time
   validates_presence_of :slot_count
+  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
 
   belongs_to :volunteer_task_type
   belongs_to :volunteer_default_event
   belongs_to :program
+  belongs_to :roster
 
   has_many :default_assignments
 
@@ -18,7 +19,68 @@ class VolunteerDefaultShift < ActiveRecord::Base
     { :conditions => ['weekday_id = ?', wday] }
   }
 
+  before_destroy :get_rid_of_available
+  def get_rid_of_available
+    Thread.current['volskedj2_fillin_processing'] ||= []
+    if Thread.current['volskedj2_fillin_processing'].include?(self.id)
+      return
+    end
+    begin
+      Thread.current['volskedj2_fillin_processing'].push(self.id)
+
+      a = self.default_assignments.select{|x| x.contact_id.nil?}
+      a.each{|x| x.destroy}
+      self.default_assignments = []
+
+    ensure
+      Thread.current['volskedj2_fillin_processing'].delete(self.id)
+    end
+  end
+
+  def set_weekday_id=(val)
+    @set_weekday_id_set = true
+    @set_weekday_id = (val.nil? || val.blank?) ? nil : val.to_i
+  end
+
+  def set_weekday_id
+    @set_weekday_id_set ?  @set_weekday_id : self.volunteer_default_event.weekday_id
+  end
+
+  def set_weekday_id_set
+    @set_weekday_id_set
+  end
+
+  def weekday
+    self.volunteer_default_event.weekday
+  end
+
+  def weekday_name
+    weekday ? weekday.name : nil
+  end
+
+  def set_values_if_stuck
+    return unless self.stuck_to_assignment
+    assn = self.default_assignments.first
+    return unless assn
+    self.start_time = assn.start_time
+    self.end_time = assn.end_time
+    return unless self.volunteer_default_event_id.nil? or self.volunteer_default_event.description.match(/^Roster #/)
+    return unless set_weekday_id_set
+    roster = Roster.find_by_id(self.roster_id)
+    if roster and !(set_weekday_id == nil || set_weekday_id == "")
+      ve = roster.vol_event_for_weekday(set_weekday_id)
+      ve.save! if ve.id.nil?
+      self.volunteer_default_event = ve
+      self.volunteer_default_event_id = ve.id
+    else
+      if self.volunteer_default_event.nil?
+        self.volunteer_default_event = VolunteerDefaultEvent.new
+      end
+    end
+  end
+
   def fill_in_available(slot_num = nil)
+    return if self.stuck_to_assignment
     Thread.current['volskedj2_fillin_processing'] ||= []
     if Thread.current['volskedj2_fillin_processing'].include?(self.id)
       return
@@ -26,6 +88,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
     begin
       Thread.current['volskedj2_fillin_processing'].push(self.id)
       slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
+      slots = [nil] if self.not_numbered
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy if slots.include?(x.slot_number)}
       inputs = {}
       slots.each{|q|
@@ -40,7 +103,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
         results.each{|x|
           a = DefaultAssignment.new
           a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
-          a.slot_number = q
+          a.slot_number = q unless self.not_numbered
           a.save!
         }
       }
@@ -94,7 +157,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
     (start_date..end_date).each{|x|
       next if Holiday.is_holiday?(x)
       w = Weekday.find(x.wday)
-      next if !w.is_open
+#      next if !w.is_open
       vs_conds = gconditions.dup
       vs_conds.date_enabled = "true"
       vs_conds.date_date_type = 'daily'
@@ -130,11 +193,13 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.send(:write_attribute, :start_time, ds.start_time)
           s.send(:write_attribute, :end_time, ds.end_time)
           s.volunteer_task_type_id = ds.volunteer_task_type_id
-          s.slot_number = slot_number
+          s.slot_number = slot_number unless ds.not_numbered
+          s.not_numbered = ds.not_numbered
+          s.stuck_to_assignment = ds.stuck_to_assignment
           s.roster_id = ds.roster_id
           s.class_credit = ds.class_credit
           s.save!
-          mats = ds.default_assignments.select{|q| q.contact_id and q.slot_number == num}
+          mats = ds.default_assignments.select{|q| q.contact_id and ((s.slot_number.nil?) || (q.slot_number == num))}
           if mats.length > 0
             mats.each{|da|
               a = Assignment.new

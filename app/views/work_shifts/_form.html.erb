@@ -1,6 +1,12 @@
 <%= error_messages_for 'work_shift' %>
 
 <!--[form:work_shift]-->
+<p><%= check_box "work_shift", "training" %>
+<label for="work_shift_training">Training</label></p>
+
+<p><%= check_box "work_shift", "proposed" %>
+<label for="work_shift_training">Proposed</label></p>
+
 <p><label for="work_shift_shift_date">Shift date</label><br/>
 <%= calendar_box 'work_shift', 'shift_date'  %></p>
 
@@ -26,7 +32,7 @@
 <%= select("work_shift", "job_id", Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
 
 <p><label for="work_shift_worker_id">Worker</label><br/>
-<%= select("work_shift", "worker_id", Worker.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+<%= select("work_shift", "worker_id", Worker.on_date(@work_shift.shift_date).collect {|c| [c.name, c.id] }.sort_by(&:first)) %></p>
 
 <p><label for="work_shift_weekday_id">Weekday</label><br/>
 <%= select("work_shift", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>

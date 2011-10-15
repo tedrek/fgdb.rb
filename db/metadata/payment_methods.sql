@@ -3,7 +3,7 @@
 --
 
 SET statement_timeout = 0;
-SET client_encoding = 'UTF8';
+SET client_encoding = 'SQL_ASCII';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: payment_methods_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('payment_methods_id_seq', 7, true);
+SELECT pg_catalog.setval('payment_methods_id_seq', 11, true);
 
 
 --
@@ -33,6 +33,8 @@ COPY payment_methods (id, description, lock_version, updated_at, created_at, nam
 1	cash	0	2006-09-25 13:12:18	2006-09-25 13:12:18	cash
 2	check	0	2006-09-25 13:12:23	2006-09-25 13:12:23	check
 7	store credit	0	2009-08-12 01:46:01.155962	2009-08-12 01:46:01.155962	store_credit
+8	online	0	2010-11-06 00:52:32.946189	2010-11-06 00:52:32.946189	online
+11	written off invoice	0	2011-04-08 19:45:20.896898	2011-04-08 19:45:20.896898	written_off_invoice
 \.
 
 

@@ -13,7 +13,7 @@ module SalesHelper
      Column.new(Sale, :name => 'discount', :sortable => false, :eval => 'sale.discount_schedule.name'),
      Column.new(Sale, :name => 'buyer', :sortable => false, :eval => 'sale.buyer'),
      Column.new(Sale, :name => 'gizmos', :sortable => false),
-     Column.new(Sale, :name => 'created_at', :eval => 'sale.created_at'),
+     Column.new(Sale, :name => 'occurred_at', :eval => 'sale.occurred_at'),
     ]
   end
 end

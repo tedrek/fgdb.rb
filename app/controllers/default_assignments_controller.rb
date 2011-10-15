@@ -14,6 +14,7 @@ class DefaultAssignmentsController < ApplicationController
 
   def index
     if params[:conditions]
+      my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_default_shifts.roster_id), " : "volunteer_default_shifts.roster_id, "
     @skedj = Skedjul.new({
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "assigned", "weekday"],
 
@@ -27,10 +28,11 @@ class DefaultAssignmentsController < ApplicationController
 
                             :left_unique_value => "default_assignments.left_method_name",
                                :left_method_name => "default_assignments.left_method_name",
-                               :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_default_events.description)), default_assignments.slot_number",
+                           :left_sort_value => "#{my_sort_prepend}(coalesce(volunteer_task_types.description, volunteer_default_events.description)), volunteer_default_shifts.description, default_assignments.slot_number",
                                :left_table_name => "volunteer_default_shifts",
                                :left_link_action => "assign",
                                :left_link_id => "volunteer_default_shifts.description_and_slot",
+                               :title_between => 'volunteer_default_shifts.rosters.name',
 #                               :break_between_difference => "default_assignments.slot_type_desc",
 
                                :thing_start_time => "default_assignments.start_time",
@@ -38,7 +40,7 @@ class DefaultAssignmentsController < ApplicationController
                                :thing_table_name => "default_assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "default_assignments.id",
-                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id],[:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id],[:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
 
 
       }, params)
@@ -124,13 +126,28 @@ class DefaultAssignmentsController < ApplicationController
     @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "created_at ASC", :per_page => 50)
   end
 
+  def copy
+    @assignment = DefaultAssignment.find(params[:id])
+    @my_url = {:action => "create_shift", :controller => "volunteer_default_events"}
+    @assignment.id = nil
+    @action_title = "Copying"
+    edit
+  end
+
   def edit
-    @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
-    @assignment = @assignments.first
+    if @assignment
+      @assignments = [@assignment]
+    else
+      @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
+      @assignment = @assignments.first
+    end
     @referer = request.env["HTTP_REFERER"]
+    @my_url ||= {:action => "update", :id => params[:id]}
+    render :action => 'edit'
   end
 
   def update
+    @my_url = {:action => "update", :id => params[:id]}
     @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
     rt = params[:default_assignment].delete(:redirect_to)
 

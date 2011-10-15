@@ -3,7 +3,7 @@ class SpecSheetsController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:only => ["/view_contact_name"], :privileges => ['manage_contacts']}
+    a << {:only => ["builder", "/view_contact_name"], :privileges => ['manage_contacts']}
     a << {:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["show/sign_off"], :privileges => ['sign_off_spec_sheets']}
     a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
@@ -66,6 +66,12 @@ class SpecSheetsController < ApplicationController
     search
   end
 
+  def builder
+    @contact = Contact.find_by_id(params[:contact][:id])
+    @contact_types = ContactType.builder_relevent
+    @builder_tasks = @contact.builder_tasks.last_two_years
+  end
+
   def search
     @error = params[:error]
     if !params[:conditions]
@@ -78,7 +84,7 @@ class SpecSheetsController < ApplicationController
         return
       end
     end
-    @reports = SpecSheet.paginate(:page => params[:page], :conditions => @conditions.conditions(SpecSheet), :order => "spec_sheets.created_at ASC", :per_page => 50, :include => :builder_task)
+    @reports = BuilderTask.paginate(:page => params[:page], :conditions => @conditions.conditions(BuilderTask), :order => "builder_tasks.created_at ASC", :per_page => 50, :include => :spec_sheet)
     render :action => "index"
   end
 

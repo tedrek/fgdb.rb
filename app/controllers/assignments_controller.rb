@@ -30,6 +30,7 @@ class AssignmentsController < ApplicationController
 
   def index
     if params[:conditions]
+      my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_shifts.roster_id), " : "volunteer_shifts.roster_id, "
     @skedj = Skedjul.new({
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned"],
       :date_range_condition => "date",
@@ -48,9 +49,10 @@ class AssignmentsController < ApplicationController
                              :by_slot =>
                              { :left_unique_value => "volunteer_shifts.left_unique_value", # model
                                :left_method_name => "volunteer_shifts.left_method_name",
-                               :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_events.description)), volunteer_shifts.slot_number",
+                               :left_sort_value => "#{my_sort_prepend}(coalesce(volunteer_task_types.description, volunteer_events.description)), volunteer_shifts.slot_number",
                                :left_table_name => "volunteer_shifts",
                                :left_link_action => "assign",
+                               :title_between => 'volunteer_shifts.rosters.name',
                                :left_link_id => "volunteer_shifts.description_and_slot",
                                :break_between_difference => "assignments.slot_type_desc",
 
@@ -59,7 +61,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
                              },
 
                              :call_list =>
@@ -76,7 +78,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name,display_call_status,display_phone_numbers",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -92,7 +94,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :popup], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
@@ -100,8 +102,10 @@ class AssignmentsController < ApplicationController
 
     @opts = @skedj.opts
     @conditions = @skedj.conditions
+      @page_title = @conditions.skedj_to_s("after", false, ["cancelled"])
+      @page_title = "All schedules" if @page_title.length == 0
 
-    @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :contact => [], :volunteer_shift => [:volunteer_task_type, :volunteer_event]]})
+    @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :contact => [], :volunteer_shift => [:volunteer_task_type, :volunteer_event, :roster]]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
     else
       render :partial => "index",  :layout => :with_sidebar
@@ -181,16 +185,31 @@ class AssignmentsController < ApplicationController
     @conditions = Conditions.new
     params[:conditions] ||= {}
     @conditions.apply_conditions(params[:conditions])
-    @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "created_at ASC", :per_page => 50)
+    @results = Assignment.paginate(:page => params[:page], :conditions => @conditions.conditions(Assignment), :order => "volunteer_events.date ASC", :per_page => 50, :include => [:volunteer_shift => [:volunteer_event]])
+  end
+
+  def copy
+    @assignment = Assignment.find(params[:id])
+    @my_url = {:action => "create_shift", :controller => "volunteer_events"}
+    @assignment.id = nil
+    @action_title = "Copying"
+    edit
   end
 
   def edit
-    @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
-    @assignment = @assignments.first
+    if @assignment
+      @assignments = [@assignment]
+    else
+      @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
+      @assignment = @assignments.first
+    end
     @referer = request.env["HTTP_REFERER"]
+    @my_url ||= {:action => "update", :id => params[:id]}
+    render :action => 'edit'
   end
 
   def update
+    @my_url = {:action => "update", :id => params[:id]}
     @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
     rt = params[:assignment].delete(:redirect_to)
 

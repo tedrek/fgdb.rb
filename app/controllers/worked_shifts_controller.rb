@@ -30,6 +30,8 @@ class WorkedShiftsController < ApplicationController
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
 
+    @by_percentage = params[:worked_shift][:by_percentage] == "1"
+    @include_empty = params[:worked_shift][:include_empty] == "1"
     @row_table = params[:worked_shift][:row_name]
     @col_table = params[:worked_shift][:col_name]
     @start_date = @end_date = "2010-06-24"
@@ -55,7 +57,7 @@ LEFT OUTER JOIN income_streams ON income_streams.id = jobs.income_stream_id
 LEFT OUTER JOIN workers ON worker_id = workers.id
 LEFT OUTER JOIN workers_worker_types ON workers_worker_types.worker_id = workers.id AND (workers_worker_types.effective_on <= worked_shifts.date_performed OR workers_worker_types.effective_on IS NULL) AND (workers_worker_types.ineffective_on > worked_shifts.date_performed OR workers_worker_types.ineffective_on IS NULL)
 LEFT OUTER JOIN worker_types ON worker_types.id = workers_worker_types.worker_type_id
-WHERE #{ActiveRecord::Base.send(:sanitize_sql_for_conditions, @defaults.conditions(WorkedShift))}
+WHERE #{DB.prepare_sql(@defaults.conditions(WorkedShift))}
 GROUP BY 1,2;")
 
     template_row_hash = {}
@@ -103,6 +105,28 @@ GROUP BY 1,2;")
     sorted_row_ids = sort_hash(row_labels)
     sorted_col_ids = sort_hash(col_labels)
 
+    if @by_percentage
+      sorted_row_ids.each{|ri|
+        total = row_subtotal[ri]
+        sorted_col_ids.each{|ci|
+          table_hash[ri][ci] ||= 0.0
+          table_hash[ri][ci] = (table_hash[ri][ci] / total) * 100 unless total == 0.0
+          table_hash[ri][ci] = sprintf '%.2f%',table_hash[ri][ci]
+        }
+        row_subtotal[ri] = (total == 0.0 ? 0 : 1) * 100.0
+        row_subtotal[ri] = sprintf '%.2f%', row_subtotal[ri]
+      }
+    end
+
+    def value_is_zero(value)
+      value == (value.class == String ? '0.00%' : 0.0)
+    end
+
+    unless @include_empty
+      sorted_row_ids = sorted_row_ids.select{|x| !value_is_zero(row_subtotal[x])}
+      sorted_col_ids = sorted_col_ids.select{|x| !value_is_zero(col_subtotal[x])}
+    end
+
     table = []
     table << ["", sorted_col_ids.map{|x| col_labels[x]}, "total"].flatten
     sorted_row_ids.each{|x|
@@ -120,7 +144,7 @@ GROUP BY 1,2;")
       a << col_subtotal[y]
     }
     a << total
-    table << a
+    table << a unless @by_percentage
 
     @result = table
   end
@@ -164,10 +188,27 @@ GROUP BY 1,2;")
   end
 
   def payroll_report
-    @pay_period = PayPeriod.find_for_date(@date) || raise
-    @workers = Worker.effective_in_range(@pay_period).real_people.sort_by(&:sort_by)
-#    @workers = [Worker.find(6144)].flatten
-    @workers = @workers.map{|x| x.to_payroll_hash(@pay_period)}
+    @enddate = Date.parse(params[:worked_shift][:end_date]) if params[:worked_shift].keys.include?("end_date") and params[:worked_shift][:end_date] != ""
+    if @enddate
+      @pay_periods = PayPeriod.find(:all, :conditions => ['start_date <= ? AND end_date >= ?', @enddate, @date]).sort_by(&:start_date)
+    else
+      @pay_periods = [PayPeriod.find_for_date(@date) || raise]
+    end
+    theworkers = Worker.effective_in_range(@pay_periods.first.start_date, @pay_periods.last.end_date).real_people.sort_by(&:sort_by)
+    @workers = []
+    @pay_periods.each{|p|
+      myworkers = theworkers.map{|x| x.to_payroll_hash(p)}
+      myworkers.each_with_index{|x,i|
+        if ! (h = @workers[i])
+          @workers[i] = x
+        else
+          h[:hours] += x[:hours]
+          h[:holiday] += x[:holiday]
+          h[:pto] += x[:pto]
+          h[:overtime] += x[:overtime]
+        end
+      }
+    }
     # array of hashes with keys: name type hours pto overtime holiday
     @types = @workers.map{|x| x[:type]}.uniq.sort
     @types = @types.map{|x|

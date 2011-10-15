@@ -1,7 +1,128 @@
-fgdb.rb (1.0.61) UNRELEASED; urgency=low
+fgdb.rb (1.0.73) UNRELEASED; urgency=low
 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:50:06 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 08 Oct 2011 00:19:44 -0700
+
+fgdb.rb (1.0.72) released; urgency=low
+
+  * fix the payroll report to check if they were active
+    on any of the days within the range (Closes: #24863)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 08 Oct 2011 00:19:25 -0700
+
+fgdb.rb (1.0.71) released; urgency=low
+
+  * thermal receipt printing (Closes: #24467)
+  * add anonymous option on store returns (Closes: #24684)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 01 Oct 2011 00:30:11 -0700
+
+fgdb.rb (1.0.70) released; urgency=low
+
+  * allow limiting by contact on the gizmos report (Closes: #23320)
+  * add a recent crash page (Closes: #24513)
+  * add a report for generating list of email addresses which can be
+    copied to a mailing list or mail client, as well as adding two new
+    contact types for newsletters (Closes: #23408)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Sep 2011 19:52:29 -0700
+
+fgdb.rb (1.0.69) released; urgency=low
+
+  * integrate multiple helpers for titles based on user entered
+    conditions, add it to graphic reports (Closes: #24279)
+  * allow empty values in the arbitrary date chooser for beginning/end
+    of time
+  * add a couple more data entry fields to spec sheet (Closes: #24389)
+  * add top contributors report (Closes: #19907)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Sep 2011 19:09:29 -0700
+
+fgdb.rb (1.0.68) released; urgency=low
+
+  * fix the builder status sheet to not hard code my contact id in links
+    (Closes: #24451)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 08 Sep 2011 22:59:33 -0700
+
+fgdb.rb (1.0.67) released; urgency=low
+
+  * refactor the generation code a bit
+  * remove PTO related stuff from the hours logging interface since it's
+    confusing anyway
+  * implement correct payroll logic (Closes: #24314)
+  * show Maximum supported under the memory section if printme provides
+    us with the value from dmidecode (Closes: #24201)
+  * implement generating vacations (Closes: #24198)
+  * add generating unavailabilities, too
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 07 Sep 2011 01:01:38 -0700
+
+fgdb.rb (1.0.66) released; urgency=low
+
+  * add a migration to add a foreign key for programs back, wherever it
+    went (Closes: #24114)
+  * support intern scheduling (Closes: #23928)
+  * add percentages and hiding empty rows/columns to types report
+    (Closes: 24167)
+  * add trend reports about thrift store workers (Closes: #24275)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 26 Aug 2011 22:32:44 -0700
+
+fgdb.rb (1.0.65) released; urgency=low
+
+  * show a count of the times a person has already done system eval on
+    their block in the schedule
+  * add a proposed flag to shifts to turn them green
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 20 Aug 2011 00:24:20 -0700
+
+fgdb.rb (1.0.64) released; urgency=low
+
+  * things logged under the build, spanish, or intern programs no longer
+    receive adoption point credit. this is a setting for each program.
+    (Closes: #23931)
+  * implement new holiday credit logic to give everybody but substitutes
+    (Closes: #23793)
+  * add ability to add onto store credits on returns (Closes: #23938)
+  * builder status sheet view (Closes: #23863)
+  * add redeemed column and conditions to gizmo_returns (Closes: #23937)
+  * show the filtering widget on the schedule display on the database,
+    but still not the published version
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 12 Aug 2011 19:17:04 -0700
+
+fgdb.rb (1.0.63) released; urgency=low
+
+  * add training option for shifts that turns them purple
+  * fix store credit search by hash
+  * strip the dollar sign when parsing values on amount methods (Closes:
+    #23959)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 05 Aug 2011 22:14:53 -0700
+
+fgdb.rb (1.0.62) released; urgency=low
+
+  * limit work shifts edit to people who work here on that day. the
+    other forms are not used I think. (Closes: 23216)
+  * add contact types for post build areas (Closes: #23079)
+  * add server category to database (Closes: #23451)
+  * kill gift cert category (Closes: #23681)
+  * makes jobs and workers a multi select and remove inactive workers
+    from everywhere (Closes: 23734, 23735)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 24 Jun 2011 20:37:59 -0700
+
+fgdb.rb (1.0.61) released; urgency=low
+
+  * add new class page for volunteer scheduling
+  * add an attendance type condition to assignments search
+  * add student contact type (Closes: #23167)
+  * add game type (Closes: #23221)
+  * display the attendance type on assignments search (Closes: #23321)
+  * useful page titles on assignments skedjul view (Closes: #23385)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 May 2011 15:59:35 -0700
 
 fgdb.rb (1.0.60) released; urgency=low
 
@@ -12,6 +133,14 @@ fgdb.rb (1.0.60) released; urgency=low
   * change label to be amount paid for returns (Closes: #22550)
   * move the returns stuff under the sales sidebar section (Closes:
     #22552)
+  * sort by occurred_at on sales/donations (Closes: #22839)
+  * fix contact dedup (Closes: 22904)
+  * fix duplicate transactions by not reenabling the form on success
+    (Closes: #22800)
+  * fix overlappers logic, SQL tricked me (Closes: #22861)
+  * fix tracking the parent shift_id on work_shifts and pay
+    attention to shift_date on shifts other than meetings
+    (Closes: #22875)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 15 Apr 2011 21:49:35 -0700
 

@@ -35,7 +35,7 @@ class CiviCRMClient
 
   #               ex: "fgdb_donations" "fgdb_donation_id"
   def custom_field_id(group_name, field_name)
-    res = self.do_req("civicrm/CustomField/get", "", 3)
+    res = self.do_req("civicrm/CustomField/get", "")
     hash = {}
     res["values"].each{|k,v|
       hash[v] = k
@@ -47,7 +47,7 @@ class CiviCRMClient
     custom_field_id("fgdb_#{table_name}s", "fgdb_#{table_name}_id")
   end
 
-  def do_req(func, opts, version = 2) # FIXME: 3
+  def do_req(func, opts, version = 3)
     get("http://#{server}/sites/all/modules/civicrm/extern/rest.php?version=#{version}&q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
   end
 
@@ -70,7 +70,7 @@ def sync_contact_from_fgdb(fgdb_id)
   my_client = CiviCRMClient.from_defaults
   my_custom = my_client.fgdb_field("contact")
   find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}")
-  civicrm_id = (find_arr.class == Array) ? find_arr.first["contact_id"] : nil
+  civicrm_id = (find_arr["count"] == 1) ? find_arr["id"] : nil
   c = Contact.find(fgdb_id)
   hash = {}
   if c.is_organization
@@ -83,7 +83,7 @@ def sync_contact_from_fgdb(fgdb_id)
     hash[:last_name] = c.surname
   end
   if civicrm_id
-    hash[:contact_id] = civicrm_id
+    hash[:id] = civicrm_id
     my_client.do_req("civicrm/contact/update", hash.r_to_params)
   else
     hash["custom_#{my_custom}"] = fgdb_id
@@ -102,23 +102,32 @@ def sync_contact_from_civicrm(civicrm_id)
   fgdb_id = nil
   my_client = CiviCRMClient.from_defaults
   my_custom = my_client.fgdb_field("contact")
-  fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params).first["custom_#{my_custom}"]
+  fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params)["values"][civicrm_id]["custom_#{my_custom}"]
   c = nil
+  @double_saved = false
   unless fgdb_id and (c = Contact.find_by_id(fgdb_id))
     fgdb_id = nil
     @saved_civicrm = true
     c = Contact.new
   end
-  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params).first
+  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params)["values"][civicrm_id]
   c.first_name = civicrm_contact["first_name"]
   c.created_by ||= 1
-  c.postal_code ||= "97007" # FIXME
   c.surname = civicrm_contact["last_name"]
   c.is_organization = civicrm_contact["contact_type"] == "Organization"
+  c.postal_code = civicrm_contact["postal_code"]
+  if @saved_civicrm
+    c.postal_code ||= "CIVICRM_UNSETME"
+  end
   c.save!
+  if c.postal_code == "CIVICRM_UNSETME"
+    @double_saved = true
+    c.postal_code = nil
+    c.save!
+  end
   if @saved_civicrm
     fgdb_id = c.id
-    my_client.do_req("civicrm/contact/update", {:contact_id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params)
+    my_client.do_req("civicrm/contact/update", {:id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params)
   end
   return fgdb_id
 end
@@ -151,6 +160,9 @@ def do_main
     system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
     if source == "civicrm"
       system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s) or raise Exception
+      if @double_saved
+        system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s) or raise Exception
+      end
       if @saved_civicrm
         system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception
       end

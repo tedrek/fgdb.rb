@@ -1,4 +1,74 @@
 class VolunteerDefaultEventsController < ApplicationController
+  def add_shift
+    ve = nil
+    if !params["id"].blank?
+      ve = VolunteerDefaultEvent.find(params["id"])
+    else
+      ve = VolunteerDefaultEvent.new
+    end
+    vs = ve.volunteer_default_shifts.new
+    vs.program = Program.find_by_name("intern")
+    vs.slot_count = 1
+    vs.volunteer_default_event_id = ve.id if ve.id
+    vs.volunteer_default_event = ve
+    a = vs.default_assignments.new
+    a.volunteer_default_shift = vs
+    vs.stuck_to_assignment = vs.not_numbered = true
+    @assignments = vs.default_assignments = [a]
+    @referer = request.env["HTTP_REFERER"]
+    @my_url = {:action => "create_shift", :id => params[:id]}
+    @assignment = a
+    render :template => 'assignments/edit'
+  end
+
+  def create_shift
+    ve = nil
+    if !params["id"].blank?
+      ve = VolunteerDefaultEvent.find(params["id"])
+    else
+      if (params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"].blank? || params["default_assignment"]["set_weekday_id"].blank?)
+        ve = VolunteerDefaultEvent.new
+      else
+        ve = Roster.find_by_id(params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"]).vol_event_for_weekday(params["default_assignment"]["set_weekday_id"])
+      end
+    end
+    vs = ve.volunteer_default_shifts.new
+    vs.slot_count = 1
+    vs.volunteer_default_event_id = ve.id if ve.id
+    vs.volunteer_default_event = ve
+    vs.stuck_to_assignment = vs.not_numbered = true
+    vs.attributes=(params["default_assignment"]["volunteer_default_shift_attributes"])
+    a = vs.default_assignments.new
+    a.volunteer_default_shift = vs
+#    a.volunteer_shift_id = vs.id
+    a.attributes = (params["default_assignment"])
+    @assignments = vs.default_assignments = [a]
+    vs.set_values_if_stuck
+    vs.default_assignments = []
+    @success = a.valid? && vs.save
+    rt = params[:default_assignment].delete(:redirect_to)
+    @my_url = {:action => "create_shift", :id => params[:id]}
+    @assignment = a
+    if @success
+      vs = vs.reload
+      @assignment = a = vs.default_assignments.new
+      a.volunteer_default_shift = vs
+      #    a.volunteer_shift_id = vs.id
+      a.attributes = (params["default_assignment"])
+      @assignments = vs.default_assignments = [a]
+
+      if !@success
+        vs.destroy
+      end
+    end
+    if @success # and @assignment.volunteer_shift.save
+      redirect_skedj(rt, ve.weekday.name)
+    else
+      render :template => 'assignments/edit'
+    end
+  end
+
+
   protected
   def get_required_privileges
     a = super
