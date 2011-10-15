@@ -8,8 +8,11 @@ go to ~/code/latest, which is a manually updated
 symlink (after "download-version.sh" is ran and all
 is good).
 
-http://civicrm/drupal6/update.php may need
-to be ran after upgrades.
+After updating, update the current symlinks and:
+http://civicrm/drupal6/update.php
+and then:
+http://civicrm/drupal/?q=civicrm/upgrade&reset=1
+may need to be ran after upgrades.
 
 Initial setup involves installing apache2, php5.
 

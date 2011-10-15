@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 die() {
     echo "$@"
     exit 1
