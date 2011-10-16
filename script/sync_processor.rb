@@ -38,7 +38,7 @@ class CiviCRMClient
     res = self.do_req("civicrm/CustomField/get", "")
     hash = {}
     res["values"].each{|k,v|
-      hash[v] = k
+      hash[v["name"]] = k
     }
     return hash[field_name]
   end
