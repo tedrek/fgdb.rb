@@ -1,4 +1,4 @@
-class DisktestAPI < SoapsBase
+class DisktestAPI < SOAP::SoapsBase
   include ApplicationHelper
 
   def add_methods

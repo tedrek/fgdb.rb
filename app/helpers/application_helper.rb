@@ -1,4 +1,13 @@
 # Methods added to this helper will be available to all templates in the application.
+class EmptyReq
+  def env
+    {}
+  end
+
+  def remote_ip
+    "SOAP"
+  end
+end
 module ApplicationHelper
   def gt_for_txn(thing)
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
@@ -17,6 +26,7 @@ module ApplicationHelper
   end
 
   def process_exception_data(e)
+    request ||= EmptyReq.new; params ||= {}; # YUCK for soap api :/
     rescue_template = ActionController::Rescue::DEFAULT_RESCUE_TEMPLATES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_TEMPLATE
     rescue_status = ActionController::Rescue::DEFAULT_RESCUE_RESPONSES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_RESPONSE
     new_params = params.dup
@@ -62,10 +72,14 @@ module ApplicationHelper
     h[:full_backtrace] = e.clean_backtrace
     h[:response_headers] = {}
     h[:blame_trace] = e.describe_blame
-    if response
-      h[:response_headers] = response.headers.dup
+    if !defined?(request)
+# ?     h[:controller] = response.to_s
+    else
+      h[:session] = request.session.instance_variable_get("@data")
+      if response
+        h[:response_headers] = response.headers.dup
+      end
     end
-    h[:session] = request.session.instance_variable_get("@data")
     return h
   end
 

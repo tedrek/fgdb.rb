@@ -1,1 +1,0 @@
-../../lib/fix_stupid_rails.rb

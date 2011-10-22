@@ -3,32 +3,6 @@ require 'soap/mapping'
 require 'soap/rpc/element'
 require 'soap/rpc/soaplet'
 
-class SoapHandler
-  def handle(req, res)
-    @@mysoaplet.do_POST(req, res)
-    res
-  end
-
-  def setup
-    router = SOAP::RPC::Router.new("Soaps")
-    Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
-#      puts "Loading api from " + x
-      require_dependency x
-      eval("#{File.basename(x).capitalize.sub(/.rb$/, "")}API.new(router)")
-    }
-    SOAP::RPC::SOAPlet.new(router)
-  end
-
-  def initialize
-    # remember all of the stuff between requests if we are in production mode
-    if RAILS_ENV == "production"
-      @@mysoaplet ||= setup
-    else
-      @@mysoaplet = setup
-    end
-  end
-end
-
 class SOAP::RPC::Router
   def my_add_method(obj, name, namespace, *param)
     qname = XSD::QName.new(namespace, name)
@@ -38,7 +12,10 @@ class SOAP::RPC::Router
   end
 end
 
+module SOAP
+
 class SoapsBase
+  include ApplicationHelper
   def initialize(router)
     @router = router
     add_methods
@@ -48,11 +25,48 @@ class SoapsBase
 #    puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
     @router.send(:my_add_method, self, name, namespace, *param)
   end
-  def error(message)
+  def error(e, msg = "")
+    ret = save_exception_data(e)
+    message = msg + e.message + " (crash id #{ret["crash_id"]})"
     SOAP::SOAPFault.new(SOAP::SOAPString.new("soaps"),
                         SOAP::SOAPString.new(message),
                         SOAP::SOAPString.new(self.class.name))
   end
+end
+end
+
+Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+  require_dependency x
+}
+
+module SOAP
+class SoapHandler
+  def handle(req, res)
+    @mysoaplet.do_POST(req, res)
+    res
+  end
+
+  def setup
+    router = SOAP::RPC::Router.new("Soaps")
+Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+  require_dependency x
+}
+
+
+#      puts "Loading api from " + x
+#    Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+    SOAP::SoapsBase.subclasses.map{|x| x.constantize}.each{|x|
+      x.new(router)
+#      eval("SOAP::#{File.basename(x).capitalize.sub(/.rb$/, "")}API.new(router)")
+    }
+    SOAP::RPC::SOAPlet.new(router)
+  end
+
+  def initialize
+    # remember all of the stuff between requests if we are in production mode
+    @mysoaplet = setup
+  end
+end
 end
 
 # might regain its usefulness with rails 3:

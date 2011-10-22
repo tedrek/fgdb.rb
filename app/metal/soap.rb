@@ -51,7 +51,7 @@ class Soap
     if !env["HTTP_SOAPACTION"].nil?
       rq = SoapMetal::Req.new(env, env["rack.input"].read)
       rs = SoapMetal::Res.new
-      SoapHandler.new.handle(rq, rs)
+      SOAP::SoapHandler.new.handle(rq, rs)
       return [rs.status, rs.headers, [rs.body]]
     else
       return [404, {"Content-Type" => "text/html"}, ["Not Found"]] # falls through to rails

@@ -109,8 +109,9 @@ module ActiveRecord
     end
 
     def logaction(action)
-      if self.class.table_name != "logs" && !self.id.nil?
+      if self.class.table_name != "logs" && !self.id.nil? # AND (!["spec_sheets", "builder_tasks"].include?(self.class.table_name)) && 
         user = Thread.current['user']
+#        raise "THIS IS YOUR INFO ... U: #{user.inspect} ... C: #{self.class.inspect} ... S: #{self.inspect}"
         cashier = Thread.current['cashier']
         l = Log.new
         l.table_name = self.class.table_name

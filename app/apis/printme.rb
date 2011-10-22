@@ -1,6 +1,5 @@
-class PrintmeAPI < SoapsBase
+class PrintmeAPI < SOAP::SoapsBase
   include SystemHelper
-  include ApplicationHelper
 
   def add_methods
     for i in soap_methods
@@ -153,10 +152,14 @@ class PrintmeAPI < SoapsBase
       if report.xml_is_good
         return report.id
       else
-        return error("Invalid XML! Report id is #{report.id}. Please report this bug.")
+        begin
+          raise "Invalid XML! Report id is #{report.id}. Please report this bug."
+        rescue => e
+          return error(e) # TODO: should move into a wrapper
+        end
       end
-    rescue
-      return error("Could not save the database record: #{$!.to_s}")
+    rescue => e
+      return error(e, "Could not save the database record: ")
     end
   end
 
@@ -174,8 +177,8 @@ class PrintmeAPI < SoapsBase
     notes = Note.new(:contact_id => notes_struct.contact_id, :body => notes_struct.body, :lshw_output => notes_struct.lshw_output)
     begin
       notes.save!
-    rescue
-      return error("Failed to save: #{$!.to_s}")
+    rescue => e
+      return error(e, "Failed to save: ")
     end
     return notes.id
   end
