@@ -1,0 +1,11 @@
+<h2>Upcoming holidays (<%= @range_to_s %>)</h2>
+<ul>
+<% @holidays.each do |hol| %>
+<li><%= hol.holiday_date.strftime("%A %B %d, %Y") + ": " + hol.name %></li>
+<% end %>
+</ul>
+<br />
+<%= ltum "Show all", :action => "show_display" %> | 
+<%= ltum "Show future", :action => "display" %>
+<br />
+<br />
