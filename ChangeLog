@@ -1,9 +1,9 @@
-fgdb.rb (1.0.73) UNRELEASED; urgency=low
+fgdb.rb (1.0.73) released; urgency=low
 
   * add listing of upcoming holidays
   * supports passenger deployment method (Closes: #24872)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Oct 2011 00:55:07 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Oct 2011 00:55:47 -0700
 
 fgdb.rb (1.0.72) released; urgency=low
 
