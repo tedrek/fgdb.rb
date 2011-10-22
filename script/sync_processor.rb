@@ -38,7 +38,7 @@ class CiviCRMClient
     res = self.do_req("civicrm/CustomField/get", "")
     hash = {}
     res["values"].each{|k,v|
-      hash[v] = k
+      hash[v["name"]] = k
     }
     return hash[field_name]
   end
@@ -84,6 +84,7 @@ def sync_contact_from_fgdb(fgdb_id)
   end
   if civicrm_id
     hash[:id] = civicrm_id
+    # TODO: return nil for FAIL if not success
     my_client.do_req("civicrm/contact/update", hash.r_to_params)
   else
     hash["custom_#{my_custom}"] = fgdb_id
@@ -167,7 +168,7 @@ def do_main
         system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception
       end
     else # source == "fgdb"
-###      system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception ### FIXME: uncomment this once it is actually doing some syncing
+      system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception
     end
   else
     system(ENV["SCRIPT"], "take_a_break") or raise Exception

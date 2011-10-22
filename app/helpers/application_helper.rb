@@ -13,6 +13,18 @@ module ApplicationHelper
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
+  def ltum(text, hash, condition = nil) # link_to_unless_me
+    hash[:action] ||= "index"
+    hash[:controller] ||= params[:controller]
+    me = params[:controller] + "/" + params[:action]
+    to = hash[:controller] + "/" + hash[:action]
+    if condition || (condition.nil? && me == to)
+      return text
+    else
+      return link_to text, hash
+    end
+  end
+
   def save_exception_data(e)
     exception_data = process_exception_data(e)
     tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp

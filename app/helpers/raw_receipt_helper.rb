@@ -132,9 +132,18 @@ module RawReceiptHelper
     end
   end
 
+  def hex_arr_to_str(chars)
+      chars.map{|x| x.to_i(16).chr}.join("")
+  end
+
+  def str_to_hex_arr(str) # to reverse
+    str.split(//).map{|x| "0x" + x[0].to_s(16)}  
+  end
+
   def printer_cut_character(printer_name)
     printer_characters = {}
-    printer_characters[printer_name] || "\x1Bi"
+    printer_characters[:those_sam4s_printers_that_wouldnt_print] = hex_arr_to_str(["0x1D","0x21"])
+    printer_characters[printer_name] || hex_arr_to_str(["0x1b", "0x69"])
   end
 
   def limit_by_printer_name(printer_name)
