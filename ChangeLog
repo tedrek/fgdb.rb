@@ -1,3 +1,8 @@
+fgdb.rb (1.0.74) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Oct 2011 00:56:06 -0700
+
 fgdb.rb (1.0.73) released; urgency=low
 
   * add listing of upcoming holidays
