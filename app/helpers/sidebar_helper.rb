@@ -63,6 +63,7 @@ module SidebarHelper
       sidebar_hash[disp][prep + "entry"] = {:c => pl}
       sidebar_hash[disp][prep + "search"] = {:c => pl, :a => 'search'}
     end
+    sidebar_hash["sales"]["store credits"] = {:c => "store_credits", :a => 'index'}
     # reports
     ["income", "gizmos", "volunteering", "top_contributors"].each do |x|
       sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => x.sub("ing", "s")}

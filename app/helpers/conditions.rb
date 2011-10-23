@@ -207,17 +207,18 @@ class Conditions < ConditionsBase
     # the to_s is required below because when a value of "6" is passed in
     # it is magically made into a Fixnum so the to_cents blows up
     # not sure where this magic comes from
+    klass = Payment unless klass == StoreCredit
     case @payment_amount_type
     when 'between'
-      return ["payments.amount_cents BETWEEN ? AND ?",
+      return ["#{klass.table_name}.amount_cents BETWEEN ? AND ?",
               @payment_amount_low.to_s.to_cents,
               @payment_amount_high.to_s.to_cents]
     when '>='
-      return ["payments.amount_cents >= ?", @payment_amount_ge.to_s.to_cents]
+      return ["#{klass.table_name}.amount_cents >= ?", @payment_amount_ge.to_s.to_cents]
     when '<='
-      return ["payments.amount_cents <= ?", @payment_amount_le.to_s.to_cents]
+      return ["#{klass.table_name}.amount_cents <= ?", @payment_amount_le.to_s.to_cents]
     when 'exact'
-      return ["payments.amount_cents = ?", @payment_amount_exact.to_s.to_cents]
+      return ["#{klass.table_name}.amount_cents = ?", @payment_amount_exact.to_s.to_cents]
     end
   end
 
@@ -533,8 +534,10 @@ class Conditions < ConditionsBase
       return ["#{klass.table_name}.id IN (SELECT #{klass.table_name.singularize}_id FROM store_credits WHERE id = ?)", tid]
     elsif klass == Sale
       return ["payments.id = (SELECT payment_id FROM store_credits WHERE id = ?)", tid]
+    elsif klass == StoreCredit
+      return ["id = ?", tid]
     else
-      raise NoMethodError
+      raise
     end
   end
 
