@@ -1,0 +1,31 @@
+<table style="white-space:nowrap; width: 100%;">
+  <tr>
+    <th>Store Credit Hash</th>
+    <th>Amount Cents</th>
+    <th>Spent?</th>
+    <th>Source</th>
+    <th>History</th>
+    <th>Created at</th>
+  </tr>
+  <% for credit in credits %>
+    <tr>
+      <td><%= credit.store_credit_hash %></td>
+      <td>
+        <%= credit.amount %>
+      </td>
+      <td><%= credit.spent? ? "Yes" : "No" %></td>
+      <td><% if credit.gizmo_return_id %>
+          <%= link_to "Gizmo Return #" + credit.gizmo_return_id.to_s, :controller => "gizmo_returns", :action => "edit", :id => credit.gizmo_return_id %>
+<% else %>
+  <% if credit.gizmo_event and credit.gizmo_event.sale_id %>
+    <%= link_to "Sale #" + credit.gizmo_event.sale_id.to_s, :controller => "sales", :action => "edit", :id => credit.gizmo_event.sale_id  %>
+  <% else %>
+    Unknown, something's wrong
+  <% end %>
+        <% end %>
+      </td>
+      <td><%= link_to "View History", :action => "history", :id => credit.store_credit_hash %></td>
+      <td><%= credit.created_at.strftime("%D %I:%M%p") %></td>
+    </tr>
+  <% end %>
+</table>

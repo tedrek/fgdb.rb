@@ -1,0 +1,31 @@
+<div id="form-header">
+  <% if @error!=nil %>
+    <span style="color: red">ERROR: <%= @error %></span>
+  <% end %>
+</div>
+
+<h2>Show store credit's history</h2>
+
+<% form_for "", nil, :url => {:action => "history" }, :html => {:method => "get"} do |f| %>
+<%= (f.text_field "id").sub(/\[id\]/, "id") %>
+<%= submit_tag 'Show' %>
+<% end %>
+
+<h2>Search for store credits</h2>
+
+<% if @credits -%>
+  <%= render :partial => 'list', :locals => {:credits => @credits} %>
+  <%= will_paginate @credits, :params => {:conditions => params[:conditions]} %>
+<% end -%>
+
+<div id="main-section">
+  <% form_tag :action => 'search' do -%>
+  <% filters = [] -%>
+  <%# filters << 'contact' %>
+  <% filters << 'store_credit_id' %>
+  <% filters << 'payment_amount' %>
+  <% filters << 'created_at' %>
+  <%= conditions_html("conditions", filters) %>
+  <%= submit_tag "Search", :class => "submit" %>
+<% end -%>
+</div>
