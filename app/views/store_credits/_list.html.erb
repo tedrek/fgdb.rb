@@ -27,7 +27,7 @@
       </td>
       <td><%= link_to "View History", :action => "history", :id => credit.store_credit_hash %></td>
       <td><%= credit.created_at.strftime("%D %I:%M%p") %></td>
-      <td><%= credit.expire_date.nil? ? "" : credit.expire_date.strftime("%D %I:%M%p") %></td>
+      <td><%= credit.expire_date.nil? ? "" : credit.expire_date.strftime("%D") %></td>
     </tr>
   <% end %>
 </table>
