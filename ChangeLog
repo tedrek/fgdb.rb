@@ -2,6 +2,8 @@ fgdb.rb (1.0.74) UNRELEASED; urgency=low
 
   * allow postal codes to be empty on sales and disable the field by
     default
+  * add effective/ineffective dates to intern scheduling
+  * add generate widget to default_assignments view
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Oct 2011 23:38:26 -0700
 
