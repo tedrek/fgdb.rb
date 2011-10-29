@@ -161,8 +161,14 @@ class TransactionController < ApplicationController
     render :action => 'new'
   end
 
+  private
+  def new_trans_init_hook
+  end
+  public
+
   def new
     @transaction ||= model.new(params[@gizmo_context.name.to_sym])
+    new_trans_init_hook
     @successful ||= true
 
     @conditions = Conditions.new

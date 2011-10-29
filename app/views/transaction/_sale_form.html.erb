@@ -12,6 +12,8 @@
                                                      :on_display => "if($('contact__default_discount_schedule')) {
                                               set_new_val($('sale_discount_schedule_id'),
                                                           parseInt($('contact__default_discount_schedule').innerHTML));
+                                              set_new_val($('sale_discount_schedule_id_hidden'),
+                                                          parseInt($('contact__default_discount_schedule').innerHTML));
                                             }",
                                                    }}
                                                  )
@@ -20,15 +22,17 @@
 
       <div class="form-extras">
         <div class="form-element">
-          <label for="sale_discount_schedule_id">Discount schedule</label>
-          <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]" onChange="sale_compute_totals();">
+          <%= hidden_field 'sale', 'discount_schedule_id', {:id => 'sale_discount_schedule_id_hidden'} %>
+          <label for="sale_discount_schedule_id" onclick="toggle_disabled_with_hidden('sale_discount_schedule_id');">Discount schedule</label>
+          <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]" onChange="sale_compute_totals();" class="always_disabled" disabled="disabled">
             <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "description", @sale.discount_schedule_id || DiscountSchedule.no_discount.id) %>
           </select>
         </div>
 
         <div class="form-element">
-          <label for="sale_comments">Comments</label>
-          <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
+          <label for="sale_comments"  onclick="toggle_disabled_with_hidden('sale_comments');">Comments</label>
+          <%= hidden_field 'sale', 'comments', {:id => 'sale_comments_hidden'} %>
+          <%= text_area 'sale', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input #{@sale.comments.to_s.length >= 1 ? "" : "always_disabled"}", :disabled => (@sale.comments.to_s.length == 0)} %>
         </div>
 
         <% if @sale.id and @sale.invoiced? %>
