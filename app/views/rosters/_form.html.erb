@@ -2,6 +2,10 @@
     <%= f.label :name %><br />
     <%= f.text_field :name %>
   </p>
+  <p>
+    <%= f.label :enabled %><br />
+    <%= f.check_box :enabled %>
+  </p>
   <h2>Schedules:</h2>
   <% for sked in Sked.find(:all) %>
     <div>
