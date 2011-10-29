@@ -18,6 +18,9 @@ class DefaultAssignmentsController < ApplicationController
     @skedj = Skedjul.new({
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "assigned", "weekday"],
 
+      :generate_param_key => "date_range",
+      :generate_conditions => ["sked", "roster"],
+
       :block_method_name => "volunteer_default_shifts.volunteer_default_events.weekday_id",
       :block_method_display => "volunteer_default_shifts.volunteer_default_events.weekdays.name",
       :block_start_time => "volunteer_default_shifts.volunteer_default_events.weekdays.start_time",
@@ -47,6 +50,9 @@ class DefaultAssignmentsController < ApplicationController
 
     @opts = @skedj.opts
     @conditions = @skedj.conditions
+      @conditions.effective_on_enabled = "true" # TODO: use range from today to today+7
+      @conditions.effective_on_start = Date.today - 14
+      @conditions.effective_on_end = Date.today + 60
 
     @skedj.find({:conditions => @skedj.where_clause, :include => [:contact => [], :volunteer_default_shift => [:volunteer_task_type, :volunteer_default_event]]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar

@@ -25,6 +25,15 @@
         <%= f.label :set_weekday_id, "Weekday" %>
         <%= f.select("set_weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, :include_blank => true) %>
       </p>
+      Can be empty:
+      <p>
+        <%= s.label :effective_on, "Effective Starting" %>
+        <%= calendar_box s.object_name, :effective_on, :value => s.object.effective_on.to_s %>
+      </p>
+      <p>
+        <%= s.label :ineffective_on, "Ineffective Starting" %>
+        <%= calendar_box s.object_name, :ineffective_on, :value => s.object.ineffective_on.to_s %>
+      </p>
     <% end %>
   <% end %>
 <% else %>

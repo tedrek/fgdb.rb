@@ -3,6 +3,8 @@ class DefaultAssignment < ActiveRecord::Base
   belongs_to :volunteer_default_shift
   validates_presence_of :set_weekday_id, :if => :volshift_stuck
   delegate :set_weekday_id, :set_weekday_id=, :to => :volunteer_default_shift
+  delegate :effective_on, :effective_on=, :to => :volunteer_default_shift
+  delegate :ineffective_on, :ineffective_on=, :to => :volunteer_default_shift
   before_validation :set_values_if_stuck
 
   def set_values_if_stuck
@@ -45,7 +47,7 @@ class DefaultAssignment < ActiveRecord::Base
   named_scope :potential_overlappers, lambda{|assignment|
     tid = assignment.id
     tday = assignment.volunteer_default_shift.volunteer_default_event.weekday_id
-    { :conditions => ['(id != ? OR ? IS NULL) AND volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts JOIN volunteer_default_events ON volunteer_default_events.id = volunteer_default_shifts.volunteer_default_event_id WHERE volunteer_default_events.weekday_id = ?)', tid, tid, tday] }
+    { :conditions => ['(id != ? OR ? IS NULL) AND volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts JOIN volunteer_default_events ON volunteer_default_events.id = volunteer_default_shifts.volunteer_default_event_id WHERE volunteer_default_events.weekday_id = ? AND (ineffective_on IS NULL AND effective_on IS NULL))', tid, tid, tday] } # FIXME: handle the ineffective_on logic
   }
 
   named_scope :for_contact, lambda{|assignment|
@@ -91,7 +93,7 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def display_name
-    ((!(self.volunteer_default_shift.description.nil? or self.volunteer_default_shift.description.blank?)) ? self.volunteer_default_shift.description + ": " : "") + self.contact_display
+   ((!(self.volunteer_default_shift.description.nil? or self.volunteer_default_shift.description.blank?)) ? self.volunteer_default_shift.description + ": " : "") + self.contact_display + ((self.volunteer_default_shift.effective_on.nil? and self.volunteer_default_shift.ineffective_on.nil?) ? "" : " (#{self.effective_on || "beginning of time"} till #{self.ineffective_on || "end of time"})")
   end
 
   def contact_display

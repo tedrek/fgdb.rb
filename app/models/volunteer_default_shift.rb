@@ -4,7 +4,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
   validates_presence_of :start_time
   validates_presence_of :slot_count
   validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
-
   belongs_to :volunteer_task_type
   belongs_to :volunteer_default_event
   belongs_to :program
@@ -12,9 +11,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
 
   has_many :default_assignments
 
-  named_scope :effective_at, lambda { |date|
-    { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
-  }
+#  named_scope :effective_at, lambda { |date|
+#    { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
+#  }
   named_scope :on_weekday, lambda { |wday|
     { :conditions => ['weekday_id = ?', wday] }
   }
@@ -164,8 +163,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
       vs_conds.date_date = x
       VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event]).each{|y| y.destroy} # TODO: destroy_all with the :include somehow..
       ds_conds = gconditions.dup
-      ds_conds.effective_at_enabled = "true"
-      ds_conds.effective_at = x
+      ds_conds.effective_on_enabled = "true"
+      ds_conds.effective_on_start = x
+      ds_conds.effective_on_end = x + 1
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
       shifts = VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.roster_id, volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])

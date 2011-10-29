@@ -14,7 +14,7 @@ class Conditions < ConditionsBase
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type
-      effective_at schedule type store_credit_redeemed volunteered_hours_in_days
+      effective_on schedule type store_credit_redeemed volunteered_hours_in_days
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled assigned covered organization ]
@@ -41,6 +41,8 @@ class Conditions < ConditionsBase
   attr_accessor :schedule_id, :schedule_which_way
 
   attr_accessor :effective_at
+
+  attr_accessor :effective_on_start, :effective_on_end
 
   attr_accessor :worker_id
 
@@ -127,6 +129,11 @@ class Conditions < ConditionsBase
 
   def effective_at_conditions(klass)
     ["(#{klass.table_name}.effective_at IS NULL OR #{klass.table_name}.effective_at <= ?) AND (#{klass.table_name}.ineffective_at IS NULL OR #{klass.table_name}.ineffective_at > ?)", @effective_at, @effective_at]
+  end
+
+  def effective_on_conditions(klass)
+    klass = VolunteerDefaultShift if klass == DefaultAssignment
+    ["(#{klass.table_name}.effective_on IS NULL OR #{klass.table_name}.effective_on <= ?) AND (#{klass.table_name}.ineffective_on IS NULL OR #{klass.table_name}.ineffective_on > ?)", @effective_on_end, @effective_on_start]
   end
 
   def worker_type_conditions(klass)

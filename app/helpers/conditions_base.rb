@@ -36,7 +36,7 @@ class ConditionsBase
 
   def conditions(klass)
     conds = self.class::CONDS.inject([""]) {|condition_array,this_condition|
-      if instance_variable_get("@#{this_condition}_enabled") == "true"
+      if ["true", true].include?(instance_variable_get("@#{this_condition}_enabled"))
         join_conditions(condition_array,
                         _wrap_with_not(self.send("#{this_condition}_conditions",
                                                  klass), instance_variable_get("@#{this_condition}_excluded")))
