@@ -1,4 +1,4 @@
-fgdb.rb (1.0.74) UNRELEASED; urgency=low
+fgdb.rb (1.0.74) released; urgency=low
 
   * allow postal codes to be empty on sales and disable the field by
     default
@@ -6,7 +6,7 @@ fgdb.rb (1.0.74) UNRELEASED; urgency=low
   * add generate widget to default_assignments view
   * add a way to disable the rosters
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Oct 2011 01:45:08 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Oct 2011 01:46:41 -0700
 
 fgdb.rb (1.0.73) released; urgency=low
 
