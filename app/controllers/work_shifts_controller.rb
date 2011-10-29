@@ -7,6 +7,30 @@ class WorkShiftsController < ApplicationController
     @multi_enabled = true
   end
 
+  public
+  def find_problems
+    @start_date = Date.parse(params[:start_date])
+    @end_date = Date.parse(params[:end_date])
+    @all_dates = (@start_date..@end_date).to_a.select{|x| Weekday.find_by_id(x.wday).is_open}
+    @jobs = Job.find_all_by_coverage_type_id(CoverageType.find_by_name("full").id)
+    all_shifts = WorkShift.find(:all, :conditions => ['job_id IN (?) AND shift_date >= ? AND shift_date <= ?', @jobs.map{|x| x.id}, @start_date, @end_date])
+    @shift_gap_hash = {}
+    @jobs.each{|x|
+      @shift_gap_hash[x.id] = {}
+      @all_dates.each{|d|
+        @shift_gap_hash[x.id][d] = [[Time.parse("10:00"), Time.parse("18:00")]]
+      }
+    }
+    all_shifts.each{|x|
+      @shift_gap_hash[x.job_id][x.shift_date].push([x.start_time, x.end_time])
+    }
+    @shift_gap_hash.keys.each{|x|
+      @shift_gap_hash[x].keys.each{|d|
+        @shift_gap_hash[x][d] = WorkShift.range_math(*@shift_gap_hash[x][d])
+      }
+    }
+  end
+  protected
   def get_required_privileges
     a = super
     a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'staffsched_publish']}
