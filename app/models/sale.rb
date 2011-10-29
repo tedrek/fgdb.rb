@@ -116,7 +116,7 @@ thanks = [
         errors.add("contact_id", "does not refer to any single, unique contact")
       end
     else
-      errors.add_on_empty("postal_code")
+      nil
     end
     end
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?

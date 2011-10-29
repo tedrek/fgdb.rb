@@ -1,4 +1,5 @@
 <div class="form-element">
-  <label for="<%= @transaction_type %>_postal_code">Postal code</label>
-  <%= text_field @transaction_type, 'postal_code', {:class => 'text-input', :size => "6"} %>
+  <label for="<%= @transaction_type %>_postal_code" onclick="<%= (defined?(disabled_code) && disabled_code) ? "var r = $('sale_postal_code'); r.disabled = !r.disabled;" : "" %>">Postal code</label>
+  <% opts = (defined?(disabled_code) && disabled_code && @sale.postal_code.nil?) ? {:disabled => true, :class => 'text-input always_disabled'} : {:class => 'text-input'} %>
+  <%= text_field @transaction_type, 'postal_code', opts.merge({:size => "6"}) %>
 </div>
