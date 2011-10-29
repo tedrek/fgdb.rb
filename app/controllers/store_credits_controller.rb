@@ -26,7 +26,7 @@ class StoreCreditsController < ApplicationController
     render :action => "index"
   end
 
-  def history # TODO: in the future, like the systems page
+  def history
     tid = -1
     begin
       tid = StoreChecksum.new_from_checksum(params[:id]).result # what I'm after here

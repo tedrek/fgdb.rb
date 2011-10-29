@@ -50,7 +50,7 @@ class DefaultAssignmentsController < ApplicationController
 
     @opts = @skedj.opts
     @conditions = @skedj.conditions
-      @conditions.effective_on_enabled = "true" # TODO: use range from today to today+7
+      @conditions.effective_on_enabled = "true"
       @conditions.effective_on_start = Date.today - 14
       @conditions.effective_on_end = Date.today + 60
 
