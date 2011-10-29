@@ -1,4 +1,8 @@
 <%= link_to "Request schedule changes", "http://todo.freegeek.org/schedule/" %>
+<% if has_required_privileges('edit') %>
+<br />
+<%= link_to "Find problems in the schedule", :action => "find_problems", :start_date => @skedj.conditions.shift_date_start_date, :end_date => @skedj.conditions.shift_date_end_date %>
+<% end %>
 <%= render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj } %>
 <% if @readonly %>
   <%= render :partial => "vacations/list" %>

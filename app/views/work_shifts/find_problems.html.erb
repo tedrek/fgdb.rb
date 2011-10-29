@@ -1,0 +1,22 @@
+<h1>Report of Schedule problems between <%= @start_date.to_s %> and <%= @end_date.to_s %></h1>
+
+<table class="awesome">
+  <tr>
+    <th>Fully Covered Jobs</th>
+    <% (@all_dates).each do |x| %>
+    <th><%= x.strftime("%a, %D") %></th>
+    <% end %>
+  </tr>
+  <% @jobs.sort_by(&:name).each do |j| %>
+  <tr>
+    <th><%= j.name %></th>
+    <% (@all_dates).each do |x| %>
+    <td>
+      <% @shift_gap_hash[j.id][x].each do |g| %>
+      <b>GAP</b>: <%= g[0].strftime("%T") %> - <%= g[1].strftime("%T") %><br />
+      <% end %>
+    </td>
+    <% end %>
+  </tr>
+  <% end %>
+</table>
