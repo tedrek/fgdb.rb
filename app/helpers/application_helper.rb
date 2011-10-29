@@ -1,13 +1,4 @@
 # Methods added to this helper will be available to all templates in the application.
-class EmptyReq
-  def env
-    {}
-  end
-
-  def remote_ip
-    "SOAP"
-  end
-end
 module ApplicationHelper
   def gt_for_txn(thing)
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
@@ -38,7 +29,6 @@ module ApplicationHelper
   end
 
   def process_exception_data(e)
-    request ||= EmptyReq.new; params ||= {}; # YUCK for soap api :/
     rescue_template = ActionController::Rescue::DEFAULT_RESCUE_TEMPLATES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_TEMPLATE
     rescue_status = ActionController::Rescue::DEFAULT_RESCUE_RESPONSES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_RESPONSE
     new_params = params.dup
@@ -49,22 +39,28 @@ module ApplicationHelper
     :template => rescue_template,
     :status => ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[rescue_status],
     :response => rescue_status,
-    :controller => params[:controller],
-    :action => params[:action],
     :params => new_params,
     :clean_message => e.clean_message,
     :rails_env => RAILS_ENV,
     }
+    if defined?(params)
+      h[:controller] = params[:controller]
+      h[:action] = params[:action]
+    end
     if Thread.current['user']
       h[:user] = Thread.current['user'].login
     end
     if Thread.current['cashier']
       h[:cashier] = Thread.current['cashier'].login
     end
-    if request.env["HTTP_REFERER"]
+    if defined?(request) and request.env["HTTP_REFERER"]
       h[:referer] = request.env["HTTP_REFERER"]
     end
-    h[:client_ip] = request.remote_ip
+    if defined?(request)
+      h[:client_ip] = request.remote_ip
+    else
+      h[:client_ip] = "SOAP Client" # TODO: use the request object that SoapHandler has if it will let me
+    end
     h[:date] = DateTime.now.to_s
     eval("h = process_exception_data_#{rescue_template}(e, h)")
     h = JSON.parse(h.to_json)
