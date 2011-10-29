@@ -41,13 +41,36 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def find_overlappers(type)
-    self.class.potential_overlappers(self).send(type, self).select{|x| self.does_conflict?(x)}
+    self.class.potential_overlappers(self).send(type, self).overlaps_effective(self).select{|x| self.does_conflict?(x)}
   end
+
+  named_scope :overlaps_effective, lambda {|assignment|
+    cond = ""
+    opts = []
+    if assignment.ineffective_on.nil? and assignment.effective_on.nil?
+      cond = "(ineffective_on IS NULL AND effective_on IS NULL)"
+    else
+      if !(assignment.ineffective_on.nil? or assignment.effective_on.nil?)
+        cond = "((ineffective_on IS NULL OR ineffective_on > ?) AND (effective_on < ? OR effective_on IS NULL))"
+        opts = [assignment.effective_on, assignment.ineffective_on]
+      end
+      if assignment.ineffective_on.nil?
+        cond = "(ineffective_on IS NULL OR ineffective_on > ?)"
+        opts = [assignment.effective_on]
+      end
+      if assignment.effective_on.nil?
+        cond = "(effective_on < ? OR effective_on IS NULL)"
+        opts = [assignment.ineffective_on]
+      end
+    end
+    opts.unshift("volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts WHERE #{cond})")
+    {:conditions => opts}
+  }
 
   named_scope :potential_overlappers, lambda{|assignment|
     tid = assignment.id
     tday = assignment.volunteer_default_shift.volunteer_default_event.weekday_id
-    { :conditions => ['(id != ? OR ? IS NULL) AND volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts JOIN volunteer_default_events ON volunteer_default_events.id = volunteer_default_shifts.volunteer_default_event_id WHERE volunteer_default_events.weekday_id = ? AND (ineffective_on IS NULL AND effective_on IS NULL))', tid, tid, tday] } # FIXME: handle the ineffective_on logic
+    { :conditions => ['(id != ? OR ? IS NULL) AND volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts JOIN volunteer_default_events ON volunteer_default_events.id = volunteer_default_shifts.volunteer_default_event_id WHERE volunteer_default_events.weekday_id = ?)', tid, tid, tday] }
   }
 
   named_scope :for_contact, lambda{|assignment|
