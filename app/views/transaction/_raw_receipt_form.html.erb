@@ -5,4 +5,4 @@
   <%= f.select "printer", [["<Choose a Printer>", ""]] %>
   <%= f.hidden_field "mode", :value => 'print' %>
 <%      end %>
-<%= javascript_include_tag("/jzebra/jzebra.js") + "<applet name='jzebra' code='jzebra.PrintApplet.class' alt='Error loading jZebra applet' archive='/jzebra/jzebra.jar' width=0 height=0 />" + javascript_tag("monitorLoadingThenCall('set_printers();');") %>
+<%= javascript_include_tag("/jzebra/jzebra.js") + "<applet name='jzebra' codebase='/jzebra/' code='jzebra.PrintApplet.class' alt='Error loading jZebra applet' archive='/jzebra/jzebra.jar' width=0 height=0 />" + javascript_tag("monitorLoadingThenCall('set_printers();');") %>
