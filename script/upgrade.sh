@@ -26,6 +26,6 @@ sudo git checkout -b release_1.0.$NEW origin/release_1.0.$NEW
 sudo env RAILS_ENV=production rake db:migrate
 pg_dump fgdb_production > $BACKUP_DIR/post-sprint-$NEW.sql
 
-sudo invoke-rc.d thin start
+#sudo invoke-rc.d thin start
 sudo mv public/release.html public/_release.html
-sudo invoke-rc.d nginx restart
+sudo invoke-rc.d apache2 restart # TODO: replace with touching maintenance

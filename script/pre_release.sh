@@ -68,8 +68,8 @@ if checkit 2; then
 fi
 
 cd /var/www/fgdb.rb/
-sudo mv public/_release.html public/release.html
-sudo invoke-rc.d thin stop
+sudo mv public/_release.html public/release.html # TODO: implement this in apache2 configs now
+sudo invoke-rc.d apache2 stop
 
 pg_dump fgdb_production > $BACKUP_DIR/pre-sprint-$NEW.sql
 

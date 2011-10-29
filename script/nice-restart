@@ -1,5 +1,9 @@
 #!/bin/sh
 
+sudo touch /var/www/fgdb.rb/tmp/restart.txt
+
+exit 0
+
 SERVERS=$(cat /etc/thin/fgdb.yml | grep servers | cut -d ' ' -f 2)
 
 for q in `seq $SERVERS`; do
