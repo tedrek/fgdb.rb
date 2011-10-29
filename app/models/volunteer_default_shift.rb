@@ -91,14 +91,13 @@ class VolunteerDefaultShift < ActiveRecord::Base
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy if slots.include?(x.slot_number)}
       inputs = {}
       slots.each{|q|
-        inputs[q] = [[time_to_int(self.read_attribute(:start_time)), time_to_int(self.read_attribute(:end_time))]]
+        inputs[q] = [[(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]]
       }
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).each{|x|
-        inputs[x.slot_number].push([time_to_int(x.start_time), time_to_int(x.end_time)]) if slots.include?(x.slot_number)
+        inputs[x.slot_number].push([(x.start_time), (x.end_time)]) if slots.include?(x.slot_number)
       }
       slots.each{|q|
-        results = range_math(*inputs[q])
-        results = results.map{|a| a.map{|x| int_to_time(x)}}
+        results = self.class.range_math(*inputs[q])
         results.each{|x|
           a = DefaultAssignment.new
           a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
