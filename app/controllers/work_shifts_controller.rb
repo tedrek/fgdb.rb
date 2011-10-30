@@ -26,6 +26,32 @@ class WorkShiftsController < ApplicationController
     all_shifts.each{|x|
       @shift_gap_hash[x.job_id][x.shift_date].push([x.start_time, x.end_time])
     }
+    w_start = @start_date
+    while w_start.wday != 1
+      w_start -= 1
+    end
+    w_end = @end_date
+    while w_start.wday != 1
+      w_start -= 1
+    end
+    @weeks = (w_start..w_end).to_a.select{|x| x.wday == 1}
+    @workers_week_hash = {}
+    @workers = []
+    all_scheduled = WorkShift.find(:all, :conditions => ['shift_date >= ? AND shift_date <= ?', @weeks.first, (@weeks.last+6)], :order => 'shift_date ASC')
+    cur_week = @weeks.first
+    all_scheduled.each{|w|
+      if !@workers.include?(w.worker)
+        @workers << w.worker
+        @workers_week_hash[w.worker_id] = {}
+        @weeks.each{|week|
+          @workers_week_hash[w.worker_id][week] = 0.0
+        }
+      end
+      if w.shift_date > (cur_week + 6)
+        cur_week += 7
+      end
+      @workers_week_hash[w.worker_id][cur_week] += ((w.end_time - w.start_time)/3600.0)
+    }
     @shift_gap_hash.keys.each{|x|
       @shift_gap_hash[x].keys.each{|d|
         @shift_gap_hash[x][d] = WorkShift.range_math(*@shift_gap_hash[x][d])

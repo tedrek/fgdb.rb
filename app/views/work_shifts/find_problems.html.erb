@@ -42,3 +42,23 @@ none found
   </tr>
   <% end %>
 </table>
+<h2>Weekly Hours Scheduled By Worker</h2>
+
+<table class="awesome">
+  <tr>
+    <th>Fully Covered Jobs</th>
+    <% (@weeks).each do |x| %>
+    <th><%= x.strftime("%D") %> - <%= (x + 6).strftime("%D") %></th>
+    <% end %>
+  </tr>
+  <% @workers.sort_by(&:name).each do |worker| %>
+  <tr>
+    <th><%= worker.name %></th>
+    <% (@weeks).each do |w| %>
+    <td>
+      <%= @workers_week_hash[worker.id][w] %>
+    </td>
+    <% end %>
+  </tr>
+  <% end %>
+</table>
