@@ -1,7 +1,7 @@
-<h1>Report of schedule problems between <%= @start_date.to_s %> and <%= @end_date.to_s %></h1>
+<h1>Report of schedule problems between <%= @start_date.to_s %> and <%= @disp_end_date.to_s %></h1>
 
 <% form_tag do %>
-  <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @end_date) %> <%= submit_tag "Find Problems" %>
+  <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @disp_end_date) %> <%= submit_tag "Find Problems" %>
 <% end %>
 
 <h2>Worker Conflicts</h2>
