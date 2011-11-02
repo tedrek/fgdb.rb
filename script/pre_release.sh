@@ -71,6 +71,6 @@ cd /var/www/fgdb.rb/
 sudo mv public/_release.html public/release.html # TODO: implement this in apache2 configs now
 sudo invoke-rc.d apache2 stop
 
-pg_dump fgdb_production > $BACKUP_DIR/pre-sprint-$NEW.sql
+pg_dump fgdb_production | bzip2 -c - > $BACKUP_DIR/pre-sprint-$NEW.sql.bz2
 
 echo "Check $BACKUP_DIR/pre-sprint-$NEW.sql"
