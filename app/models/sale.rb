@@ -86,7 +86,7 @@ class Sale < ActiveRecord::Base
     end
     head_lines << []
     footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.select{|x| !x.nil?}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| ['left', x.full_text]}
-    if self.comments.length >= 1
+    if self.comments and self.comments.length >= 1
       footer_lines = [[], ['left', 'Comments: ' + self.comments]] + footer_lines
     end
     thanks = []
