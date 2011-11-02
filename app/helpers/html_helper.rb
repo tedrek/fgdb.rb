@@ -1,6 +1,6 @@
 module HtmlHelper
   # due to prototype suckness, 'extend' may not be used as a choice name.
-  def select_visibility(obj_name, method_name, choices = [])
+  def select_visibility(obj_name, method_name, choices = [], html_opts = {})
     #:TODO: scrub this first
     obj = eval( "@#{obj_name}" )
 
@@ -8,7 +8,7 @@ module HtmlHelper
     display = %Q{ <div class="form-element"> %s %s </div> } %
       [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]}.sort_by(&:first) ),
         observe_field( "#{obj_name}_#{method_name}",
-                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value);",
+                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value); #{html_opts[:onchange].to_s}",
                        :with => method_name )]
 
     this_choice = obj.send(method_name)

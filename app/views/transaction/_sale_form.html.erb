@@ -5,7 +5,8 @@
     <div id="transaction_info">
       <div id="<%= contact_searchbox_id(@options) %>">
         <label for="donation_contact_type">What kind of contact?</label>
-        <%= select_visibility( 'sale', 'contact_type',
+
+        <%= select_visibility( 'sale', 'contact_type', {
                                :anonymous => render( :partial => 'anonymous', :locals => {:disabled_code => true} ),
                                :named => render( :partial => 'contact_search',
                                                  :locals => {:options => {
@@ -16,7 +17,7 @@
                                                           parseInt($('contact__default_discount_schedule').innerHTML));
                                             }",
                                                    }}
-                                                 )
+                                                 )}, {:onchange => "if($('sale_contact_type').value == 'named') {$('sale_contact_id').focus();};"}
                                ) %>
       </div>
 
