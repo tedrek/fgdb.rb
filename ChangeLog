@@ -1,8 +1,11 @@
 fgdb.rb (1.0.75) UNRELEASED; urgency=low
 
   * change distro cd to have AS IS in the description (Closes: #24801)
+  * add created/last updated/occurred conditions to all transactions,
+    and fix a bug to allow searching on multiple date type conditions at
+    the same time (Closes: #25258)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Oct 2011 01:46:57 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 02 Nov 2011 17:16:09 -0700
 
 fgdb.rb (1.0.74) released; urgency=low
 
