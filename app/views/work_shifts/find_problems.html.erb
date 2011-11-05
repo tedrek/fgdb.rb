@@ -24,6 +24,21 @@ none found
   <% end %>
 </ul>
 <% end %>
+<h2>Workers with no Breaks</h2>
+
+<% nobreak_found = [] %>
+<% @workers_day_hash.map do |w,h| %>
+  <% h.each do |d, bl| %>
+    <% if bl.length == 0 %>
+      <% nobreak_found << [d, @workers_h[w]] %>
+    <% end %>
+  <% end %>
+<% end %>
+<ul>
+<% nobreak_found.sort_by(&:first).each do |x,w| %>
+<li>On <%= link_to "#{x.to_s}", :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x, :shift_date_end_date => x} %>, <%= w.name %> works all day with no break</li>
+<% end %>
+</ul>
 <h2>Gaps in Fully Covered Jobs</h2>
 
 <table class="awesome">
@@ -40,34 +55,6 @@ none found
     <td>
       <% @shift_gap_hash[j.id][x].each do |g| %>
       <b>GAP</b>: <%= g[0].strftime("%T") %> - <%= g[1].strftime("%T") %><br />
-      <% end %>
-    </td>
-    <% end %>
-  </tr>
-  <% end %>
-</table>
-<h2>Worker Breaks</h2>
-
-<table class="awesome">
-  <tr>
-    <th>Worker</th>
-    <% (@all_dates).each do |x| %>
-      <th><%= link_to "#{x.strftime("%D")}", :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x, :shift_date_end_date => x} %></th>
-    <% end %>
-  </tr>
-  <% @workers.sort_by(&:name).each do |worker| %>
-  <tr>
-    <th><%= worker.name %></th>
-
-    <% (@all_dates).each do |d| %>
-    <td>
-      <% list = @workers_day_hash[worker.id][d] %>
-      <% if list.length == 0 %>
-        <b>NO BREAKS</b>
-      <% else %>
-        <% list.each do |s,e| %>
-          <%= s.strftime("%T") %>-<%= e.strftime("%T") %><br />
-        <% end %>
       <% end %>
     </td>
     <% end %>

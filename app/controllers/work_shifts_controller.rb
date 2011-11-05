@@ -41,11 +41,13 @@ class WorkShiftsController < ApplicationController
     @workers_week_hash = {}
     @workers_day_hash = {}
     @workers = []
+    @workers_h = {}
     all_scheduled = WorkShift.find(:all, :conditions => ['shift_date >= ? AND shift_date <= ? AND kind NOT LIKE ?', @weeks.first, (@weeks.last+6), 'Unavailability'], :order => 'shift_date ASC')
     cur_week = @weeks.first
     all_scheduled.each{|w|
       if !@workers.include?(w.worker)
         @workers << w.worker
+        @workers_h[w.worker_id] = w.worker
         @workers_week_hash[w.worker_id] = {}
         @weeks.each{|week|
           @workers_week_hash[w.worker_id][week] = 0.0
