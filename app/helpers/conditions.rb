@@ -520,7 +520,7 @@ class Conditions < ConditionsBase
   end
 
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id=?", gizmo_type_id]
+    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id]
   end
 
   def serial_number_conditions(klass)
