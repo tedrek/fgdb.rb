@@ -54,7 +54,7 @@ module ConditionsHelper
   end
 
   def html_for_weekday_condition(params_key)
-    select(params_key, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]})
+    select(params_key, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, {}, _multi_html_opts)
   end
 
   def html_for_roster_condition(params_key)

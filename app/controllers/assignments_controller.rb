@@ -33,7 +33,7 @@ class AssignmentsController < ApplicationController
     if params[:conditions]
       my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_shifts.roster_id), " : "volunteer_shifts.roster_id, "
     @skedj = Skedjul.new({
-      :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned"],
+      :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned", "weekday"],
       :date_range_condition => "date",
                            :forced_condition => "cancelled",
 
@@ -62,7 +62,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id_and_today], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
                              },
 
                              :call_list =>

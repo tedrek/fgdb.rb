@@ -15,7 +15,7 @@ class VolunteerShiftsController < ApplicationController
     @multi_enabled = true
     if params[:conditions]
     @skedj = Skedjul.new({
-      :conditions => ["sked", "roster", "volunteer_task_type"],
+      :conditions => ["sked", "roster", "volunteer_task_type", "weekday"],
       :date_range_condition => "date",
 
       :block_method_name => "volunteer_events.date",
