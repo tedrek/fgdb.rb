@@ -24,6 +24,7 @@ class VolunteerDefaultShiftsController < ApplicationController
   end
 
   def index
+    @multi_enabled = true
     if params[:conditions]
     @skedj = Skedjul.new({
       :generate_param_key => "date_range",

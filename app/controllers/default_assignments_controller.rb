@@ -13,6 +13,7 @@ class DefaultAssignmentsController < ApplicationController
   helper :skedjul
 
   def index
+    @multi_enabled = true
     if params[:conditions]
       my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_default_shifts.roster_id), " : "volunteer_default_shifts.roster_id, "
     @skedj = Skedjul.new({
