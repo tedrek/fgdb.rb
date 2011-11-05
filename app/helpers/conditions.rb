@@ -250,7 +250,7 @@ class Conditions < ConditionsBase
     klass = VolunteerShift if klass == Assignment
     klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    return ["#{tbl}.roster_id = ?", @roster_id]
+    return ["#{tbl}.roster_id IN (?)", @roster_id]
   end
 
   def sked_conditions(klass)

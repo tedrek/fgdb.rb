@@ -12,6 +12,7 @@ class VolunteerShiftsController < ApplicationController
   helper :skedjul
 
   def index
+    @multi_enabled = true
     if params[:conditions]
     @skedj = Skedjul.new({
       :conditions => ["sked", "roster", "volunteer_task_type"],

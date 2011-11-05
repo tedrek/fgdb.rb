@@ -58,7 +58,7 @@ module ConditionsHelper
   end
 
   def html_for_roster_condition(params_key)
-    select(params_key, "roster_id", Roster.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]})
+    select(params_key, "roster_id", Roster.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]}, {}, _multi_html_opts)
   end
 
   def html_for_sked_condition(params_key)
