@@ -243,7 +243,14 @@ class Conditions < ConditionsBase
     klass = VolunteerDefaultEvent if klass == VolunteerDefaultShift
     klass = VolunteerDefaultEvent if klass == ResourcesVolunteerDefaultEvent
     klass = VolunteerDefaultEvent if klass == DefaultAssignment
-    return ["#{klass.table_name}.weekday_id = ?", @weekday_id]
+    klass = VolunteerEvent if klass == VolunteerShift
+    klass = VolunteerEvent if klass == ResourcesVolunteerEvent
+    klass = VolunteerEvent if klass == Assignment
+    if klass == VolunteerEvent
+      return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", @weekday_id]
+    else
+      return ["#{klass.table_name}.weekday_id IN (?)", @weekday_id]
+    end
   end
 
   def roster_conditions(klass)

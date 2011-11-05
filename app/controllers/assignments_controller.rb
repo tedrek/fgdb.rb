@@ -33,7 +33,7 @@ class AssignmentsController < ApplicationController
     if params[:conditions]
       my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_shifts.roster_id), " : "volunteer_shifts.roster_id, "
     @skedj = Skedjul.new({
-      :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned"],
+      :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned", "weekday"],
       :date_range_condition => "date",
                            :forced_condition => "cancelled",
 
