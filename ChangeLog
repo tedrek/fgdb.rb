@@ -1,4 +1,4 @@
-fgdb.rb (1.0.75) UNRELEASED; urgency=low
+fgdb.rb (1.0.75) released; urgency=low
 
   * change distro cd to have AS IS in the description (Closes: #24801)
   * add created/last updated/occurred conditions to all transactions,
@@ -6,7 +6,7 @@ fgdb.rb (1.0.75) UNRELEASED; urgency=low
     the same time (Closes: #25258)
   * add crontab for overtime report (Closes: #17255)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 Nov 2011 23:43:47 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 Nov 2011 23:45:06 -0700
 
 fgdb.rb (1.0.74) released; urgency=low
 
