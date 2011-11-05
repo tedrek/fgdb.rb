@@ -785,11 +785,18 @@ class DisbursementGizmoCountByTypesTrend < TrendReport
       "Count of gizmos disbursed by type"
     end
     def get_for_timerange(args)
-      res = DB.execute("SELECT SUM( gizmo_count ) AS count
+      res = DB.execute("SELECT SUM( gizmo_count ) AS count, disbursement_types.description AS desc
 FROM gizmo_events
+JOIN disbursements ON gizmo_events.disbursement_id = disbursements.id
+JOIN disbursement_types ON disbursements.disbursement_type_id = disbursement_types.id
 WHERE disbursement_id IS NOT NULL
-AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
-      return {:count => res.first["count"]}
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}
+GROUP BY 2;")
+      ret = {}
+      res.each{|x|
+        ret[x["desc"]] = x["count"]
+      }
+      return ret
     end
   end
 end
