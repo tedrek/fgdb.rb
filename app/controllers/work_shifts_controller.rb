@@ -59,7 +59,9 @@ class WorkShiftsController < ApplicationController
         cur_week += 7
       end
       @workers_week_hash[w.worker_id][cur_week] += ((w.end_time - w.start_time)/3600.0)
-      @workers_day_hash[w.worker_id][w.shift_date] << [w.start_time, w.end_time]
+      if @all_dates.include?(w.shift_date)
+        @workers_day_hash[w.worker_id][w.shift_date] << [w.start_time, w.end_time]
+      end
     }
     @workers_day_hash.keys.each{|w|
       @workers_day_hash[w].keys.each{|d|
