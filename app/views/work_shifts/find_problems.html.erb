@@ -46,6 +46,34 @@ none found
   </tr>
   <% end %>
 </table>
+<h2>Worker Breaks</h2>
+
+<table class="awesome">
+  <tr>
+    <th>Worker</th>
+    <% (@all_dates).each do |x| %>
+      <th><%= link_to "#{x.strftime("%D")}", :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x, :shift_date_end_date => x} %></th>
+    <% end %>
+  </tr>
+  <% @workers.sort_by(&:name).each do |worker| %>
+  <tr>
+    <th><%= worker.name %></th>
+
+    <% (@all_dates).each do |d| %>
+    <td>
+      <% list = @workers_day_hash[worker.id][d] %>
+      <% if list.length == 0 %>
+        <b>NO BREAKS</b>
+      <% else %>
+        <% list.each do |s,e| %>
+          <%= s.strftime("%T") %>-<%= e.strftime("%T") %><br />
+        <% end %>
+      <% end %>
+    </td>
+    <% end %>
+  </tr>
+  <% end %>
+</table>
 <h2>Weekly Hours Scheduled By Worker</h2>
 
 <table class="awesome">
