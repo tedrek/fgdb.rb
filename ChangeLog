@@ -1,3 +1,8 @@
+fgdb.rb (1.0.76) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 Nov 2011 23:45:30 -0700
+
 fgdb.rb (1.0.75) released; urgency=low
 
   * change distro cd to have AS IS in the description (Closes: #24801)
