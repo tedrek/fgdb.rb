@@ -1,7 +1,9 @@
 fgdb.rb (1.0.76) UNRELEASED; urgency=low
 
+  * set WorkShifts.kind to be NOT NULL and default to StandardShift,
+    fixing the work_shifts#new form
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 Nov 2011 23:45:30 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Nov 2011 12:53:46 -0700
 
 fgdb.rb (1.0.75) released; urgency=low
 
@@ -9,7 +11,9 @@ fgdb.rb (1.0.75) released; urgency=low
   * add created/last updated/occurred conditions to all transactions,
     and fix a bug to allow searching on multiple date type conditions at
     the same time (Closes: #25258)
-  * add crontab for overtime report (Closes: #17255)
+  * add overtime report (Closes: #17255)
+  * show workers with no breaks in schedule problem finder (Closes: #25319)
+  * limit by real schedule assignments by weekday (Closes: #25290)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 Nov 2011 23:45:06 -0700
 

@@ -30,6 +30,7 @@ class GraphicReportsController < ApplicationController
   end
 
   def index2
+    @multi_enabled = true
     @valid_conditions = []
     get_title # sets @klass
     @breakdown_types = @klass.breakdown_types
@@ -360,7 +361,6 @@ class GraphicReportsController < ApplicationController
     @title = get_title + " (broken down by #{@broken_down_by})"
     @klass.set_conditions(params[:conditions])
     cstr = @klass.conditions_to_s()
-    puts cstr
     @title = @title + " (" + cstr + ")" if cstr.length > 0
     @data = {}
     @x_axis = []
@@ -617,6 +617,23 @@ class AverageFrontdeskIncomesTrend < TrendReport
     end
   end
 end
+class AverageSaleIncomesTrend < TrendReport
+  class << self
+    def category
+      "Store"
+    end
+
+    def title
+      "Report of Average Income for Sales"
+    end
+
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( reported_amount_due_cents )/(100.0*COUNT(*)) AS amount
+  FROM sales WHERE " + sql_for_report(Sale, created_at_conditions_for_report(args)))
+      return {:total => res.first["amount"]}
+    end
+  end
+end
 class IncomesTrend < TrendReport
   class << self
     def get_for_timerange(args)
@@ -673,6 +690,23 @@ class SalesTotalsTrend < TrendReport
 
     def title
       "Report of total sales in dollars"
+    end
+  end
+end
+class DonationTotalsTrend < TrendReport
+  class << self
+    def category
+      "Front Desk"
+    end
+
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( amount_cents )/100.0 AS amount
+  FROM payments JOIN donations ON payments.donation_id = donations.id WHERE " + sql_for_report(Donation, created_at_conditions_for_report(args)))
+      return {:total => res.first["amount"]}
+    end
+
+    def title
+      "Report of total donations in dollars"
     end
   end
 end
@@ -738,6 +772,72 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     end
   end
 end
+class DisbursementGizmoCountByTypesTrend < TrendReport
+  class << self
+    def category
+      "Other"
+    end
+
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id"]
+    end
+    def title
+      "Count of gizmos disbursed by type"
+    end
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( gizmo_count ) AS count
+FROM gizmo_events
+WHERE disbursement_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
+      return {:count => res.first["count"]}
+    end
+  end
+end
+
+class RecycledGizmoCountByTypesTrend < TrendReport
+  class << self
+    def category
+      "Other"
+    end
+
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id"]
+    end
+    def title
+      "Count of gizmos recycled by type"
+    end
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( gizmo_count ) AS count
+FROM gizmo_events
+WHERE recycling_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
+      return {:count => res.first["count"]}
+    end
+  end
+end
+
+class ReturnGizmoCountByTypesTrend < TrendReport
+  class << self
+    def category
+      "Store"
+    end
+
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id"]
+    end
+    def title
+      "Count of gizmos returned by type"
+    end
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( gizmo_count ) AS count
+FROM gizmo_events
+WHERE gizmo_return_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
+      return {:count => res.first["count"]}
+    end
+  end
+end
+
 class SalesGizmoCountByTypesTrend < TrendReport
   class << self
     def category
