@@ -10,6 +10,7 @@ fgdb.rb (1.0.74) released; urgency=low
   * add effective/ineffective dates to intern scheduling
   * add generate widget to default_assignments view
   * add a way to disable the rosters
+  * add a RECYCLING_ADMIN (Closes: #25253)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Oct 2011 01:46:41 -0700
 

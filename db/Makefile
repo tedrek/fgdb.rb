@@ -4,7 +4,7 @@ PATH := $(PATH):$(shell readlink -f ../script/update-devel-data/)
 
 all: download
 
-REMOTE_SOURCE = tulip:/usr/local/zhora/database.sql.gz
+REMOTE_SOURCE = tulip:/usr/local/zhora/database_hourly_full.sql.gz
 
 source:
 	echo $(REMOTE_SOURCE)
