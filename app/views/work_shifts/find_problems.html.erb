@@ -24,6 +24,21 @@ none found
   <% end %>
 </ul>
 <% end %>
+<h2>Workers with no Breaks</h2>
+
+<% nobreak_found = [] %>
+<% @workers_day_hash.map do |w,h| %>
+  <% h.each do |d, bl| %>
+    <% if bl.length == 0 %>
+      <% nobreak_found << [d, @workers_h[w]] %>
+    <% end %>
+  <% end %>
+<% end %>
+<ul>
+<% nobreak_found.sort_by(&:first).each do |x,w| %>
+<li>On <%= link_to "#{x.to_s}", :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x, :shift_date_end_date => x} %>, <%= w.name %> works all day with no break</li>
+<% end %>
+</ul>
 <h2>Gaps in Fully Covered Jobs</h2>
 
 <table class="awesome">

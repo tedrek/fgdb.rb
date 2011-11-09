@@ -336,8 +336,8 @@ function show_contract_notes() {
 function select_visibility(obj_name, method_name, choices, value) {
     for( var i = 0; i < choices.length; i++)
     {var choice = choices[i]; if(choice == 'extend') {}
-        else if(choice == value) {$(obj_name + '_' + choice + '_choice').show();}
-        else {$(obj_name + '_' + choice + '_choice').hide();} }
+        else if(choice == value) {$(obj_name + '_' + method_name + '_' + choice + '_choice').show();}
+        else {$(obj_name + '_' + method_name + '_' + choice + '_choice').hide();} }
 }
 
 // Called as:

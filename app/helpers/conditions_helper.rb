@@ -54,11 +54,11 @@ module ConditionsHelper
   end
 
   def html_for_weekday_condition(params_key)
-    select(params_key, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]})
+    select(params_key, "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, {}, _multi_html_opts)
   end
 
   def html_for_roster_condition(params_key)
-    select(params_key, "roster_id", Roster.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]})
+    select(params_key, "roster_id", Roster.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]}, {}, _multi_html_opts)
   end
 
   def html_for_sked_condition(params_key)
@@ -146,7 +146,7 @@ module ConditionsHelper
   end
 
   def html_for_gizmo_type_id_condition(params_key)
-    select(params_key, 'gizmo_type_id', GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]})
+    select(params_key, 'gizmo_type_id', GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}, {}, _multi_html_opts)
   end
 
   def html_for_gizmo_category_id_condition(params_key)

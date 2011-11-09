@@ -2,7 +2,7 @@ class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
-      shift_date date
+      shift_date date updated_at occurred_at
   ]
 
   CONDS = (%w[
@@ -243,14 +243,21 @@ class Conditions < ConditionsBase
     klass = VolunteerDefaultEvent if klass == VolunteerDefaultShift
     klass = VolunteerDefaultEvent if klass == ResourcesVolunteerDefaultEvent
     klass = VolunteerDefaultEvent if klass == DefaultAssignment
-    return ["#{klass.table_name}.weekday_id = ?", @weekday_id]
+    klass = VolunteerEvent if klass == VolunteerShift
+    klass = VolunteerEvent if klass == ResourcesVolunteerEvent
+    klass = VolunteerEvent if klass == Assignment
+    if klass == VolunteerEvent
+      return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", @weekday_id]
+    else
+      return ["#{klass.table_name}.weekday_id IN (?)", @weekday_id]
+    end
   end
 
   def roster_conditions(klass)
     klass = VolunteerShift if klass == Assignment
     klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    return ["#{tbl}.roster_id = ?", @roster_id]
+    return ["#{tbl}.roster_id IN (?)", @roster_id]
   end
 
   def sked_conditions(klass)
@@ -411,6 +418,14 @@ class Conditions < ConditionsBase
     date_range(klass, 'created_at', 'created_at')
   end
 
+  def updated_at_conditions(klass)
+    date_range(klass, 'updated_at', 'updated_at')
+  end
+
+  def occurred_at_conditions(klass)
+    date_range(klass, 'occurred_at', 'occurred_at')
+  end
+
   def date_performed_conditions(klass)
     date_range(klass, 'date_performed', 'date_performed')
   end
@@ -505,7 +520,7 @@ class Conditions < ConditionsBase
   end
 
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id=?", gizmo_type_id]
+    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id]
   end
 
   def serial_number_conditions(klass)

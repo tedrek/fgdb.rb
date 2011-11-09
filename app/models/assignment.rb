@@ -136,6 +136,10 @@ class Assignment < ActiveRecord::Base
     end
   end
 
+  def contact_id_and_today
+    (!!contact_id) && (self.volunteer_shift.volunteer_event.date <= Date.today)
+  end
+
   def time_range_s
     return "" unless start_time and end_time
     (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
