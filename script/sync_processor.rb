@@ -75,7 +75,7 @@ def sync_contact_from_fgdb(fgdb_id)
   hash = {}
   if c.is_organization
     hash[:contact_type] = "Organization"
-    hash[:organization] = c.organization
+    hash[:organization_name] = c.organization
   else
     hash[:contact_type] = "Individual"
     hash[:first_name] = c.first_name
@@ -116,6 +116,7 @@ def sync_contact_from_civicrm(civicrm_id)
   c.created_by ||= 1
   c.surname = civicrm_contact["last_name"]
   c.is_organization = civicrm_contact["contact_type"] == "Organization"
+  c.organization = civicrm_contact["organization_name"]
   c.postal_code = civicrm_contact["postal_code"]
   if @saved_civicrm
     c.postal_code ||= "CIVICRM_UNSETME"
