@@ -3,6 +3,28 @@
 
 cashierable_enabled = true;
 
+function cleanup_hour_select(hour_id, start_hour, end_hour) {
+  var e = $(hour_id);
+  for(var hour = 0; hour <= 23; hour++) {
+    if(hour < start_hour || hour > end_hour) {
+      e.options[hour].hide();
+    } else {
+      var display = "";
+      if(hour > 12) {
+        display = display + (hour - 12);
+      } else {
+        display = display + (hour);
+      }
+      if(hour >= 12) {
+        display = display + " PM";
+      } else {
+        display = display + " AM";
+      }
+      e.options[hour].text = display;
+    }
+  }
+}
+
 function monitorInitFinding() {
   var applet = document.jzebra;
   if (applet != null) {

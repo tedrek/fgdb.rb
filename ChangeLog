@@ -2,8 +2,10 @@ fgdb.rb (1.0.77) UNRELEASED; urgency=low
 
   * add open_time/close_time to weekdays table in database and use that
     in find_problems
+  * restrict the values of the start and end times to prevent scheduling
+    errors (Closes: #25438)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 11 Nov 2011 20:38:35 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Nov 2011 12:31:05 -0800
 
 fgdb.rb (1.0.76) released; urgency=low
 
