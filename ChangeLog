@@ -1,7 +1,13 @@
 fgdb.rb (1.0.77) UNRELEASED; urgency=low
 
+  * add open_time/close_time to weekdays table in database and use that
+    in find_problems
+  * restrict the values of the start and end times to prevent scheduling
+    errors (Closes: #25438)
+  * add a read-only view, privilege and role for volunteer scheduling
+    (Closes: #25435)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 11 Nov 2011 20:38:35 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 Nov 2011 12:52:38 -0800
 
 fgdb.rb (1.0.76) released; urgency=low
 

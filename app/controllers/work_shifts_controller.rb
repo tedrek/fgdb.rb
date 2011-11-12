@@ -20,10 +20,14 @@ class WorkShiftsController < ApplicationController
     @jobs = Job.find_all_by_coverage_type_id(CoverageType.find_by_name("full").id)
     all_shifts = WorkShift.find(:all, :conditions => ['job_id IN (?) AND shift_date >= ? AND shift_date <= ?', @jobs.map{|x| x.id}, @start_date, @end_date])
     @shift_gap_hash = {}
+    weekday_times = {}
+    Weekday.find(:all).each do |w|
+      weekday_times[w.id] = [w.open_time, w.close_time]
+    end
     @jobs.each{|x|
       @shift_gap_hash[x.id] = {}
       @all_dates.each{|d|
-        @shift_gap_hash[x.id][d] = [[Time.parse("10:00"), Time.parse("18:00")]]
+        @shift_gap_hash[x.id][d] = [weekday_times[d.wday]]
       }
     }
     all_shifts.each{|x|
@@ -54,7 +58,7 @@ class WorkShiftsController < ApplicationController
         }
         @workers_day_hash[w.worker_id] = {}
         (@all_dates).each{|day|
-          @workers_day_hash[w.worker_id][day] = [[Time.parse("10:00"), Time.parse("18:00")]]
+          @workers_day_hash[w.worker_id][day] = [weekday_times[day.wday]]
         }
       end
       if w.shift_date > (cur_week + 6)
