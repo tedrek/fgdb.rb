@@ -54,7 +54,21 @@ Add custom fields for fgdb id:
 To do this, go to Administer -> Customize -> Custom Data
 add a fgdb_contacts set for contacts
 add a fgdb_contact_id field, of integer type, make it searchable
+"leave empty, will be set by fgdb."
+[do not select "view only", this breaks using API, and therefor our sync process]
 do this again for donations
 
-Modify the options lists under administer tab for our contact method types:
+For contacts, add custom fields:
+fgdb_default_contract, Alphanumeric Select, Options:
+  Value 1, Label "normal" ( default )
+  Value 2, Label "City of Portland" # Should metadata be synced someday?
+make required.
+
+fgdb_pickup_fee, of type: Money, Text
+
+fgdb_fully_covered, of type: Boolean
+"can be left empty if unknown."
+
+Modify the options lists under administer tab for our contact method
+types:
 TODO
