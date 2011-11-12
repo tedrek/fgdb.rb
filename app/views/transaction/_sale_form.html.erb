@@ -23,7 +23,7 @@
 
       <div class="form-extras">
         <div class="form-element">
-          <%= hidden_field 'sale', 'discount_schedule_id', {:id => 'sale_discount_schedule_id_hidden'} %>
+          <%= hidden_field 'sale', 'discount_schedule_id', {:id => 'sale_discount_schedule_id_hidden', :onchange => "sale_compute_totals();"} %>
           <label for="sale_discount_schedule_id" onclick="toggle_disabled_with_hidden('sale_discount_schedule_id');">Discount schedule</label>
           <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]" onChange="sale_compute_totals();" class="always_disabled" disabled="disabled">
             <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "description", @sale.discount_schedule_id || DiscountSchedule.no_discount.id) %>
@@ -72,6 +72,6 @@
 
       <% if receipt_printer_enabled %>
 <%= javascript_include_tag("/jzebra/jzebra.js") + javascript_tag("monitorLoadingThenCall('set_printers();');") %>
-<applet name='jzebra' code='jzebra.PrintApplet.class' alt='Error loading jZebra applet' archive='/jzebra/jzebra.jar' width=0 height=0></applet>
+<applet name='jzebra' code='jzebra.PrintApplet.class' alt='Error loading jZebra applet, please install and enable Java for text receipt printing' archive='/jzebra/jzebra.jar' width=0 height=0></applet>
       <% end %>
 

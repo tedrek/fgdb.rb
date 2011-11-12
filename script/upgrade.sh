@@ -27,5 +27,5 @@ sudo env RAILS_ENV=production rake db:migrate
 pg_dump fgdb_production | bzip2 -c - > $BACKUP_DIR/post-sprint-$NEW.sql.bz2
 
 #sudo invoke-rc.d thin start
-sudo mv public/release.html public/_release.html
-sudo invoke-rc.d apache2 restart # TODO: replace with touching maintenance
+sudo rm tmp/release.txt
+sudo invoke-rc.d apache2 restart
