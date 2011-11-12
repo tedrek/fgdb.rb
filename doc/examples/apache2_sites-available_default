@@ -15,6 +15,13 @@
         Header set Expires -1 env=MAINTENANCE
         # END maintenance handling
 
+        ErrorDocument 500 /500.html;
+        ErrorDocument 503 /500.html;
+        ErrorDocument 504 /500.html;
+        ErrorDocument 502 /502.html;
+        ErrorDocument 403 /404.html;
+        ErrorDocument 404 /404.html;
+
 #	DocumentRoot /var/www
 	<Directory />
 		Options FollowSymLinks
