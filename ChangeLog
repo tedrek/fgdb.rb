@@ -1,3 +1,8 @@
+fgdb.rb (1.0.77) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 11 Nov 2011 20:38:35 -0800
+
 fgdb.rb (1.0.76) released; urgency=low
 
   * set WorkShifts.kind to be NOT NULL and default to StandardShift,
