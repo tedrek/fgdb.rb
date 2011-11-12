@@ -4,6 +4,7 @@ class AssignmentsController < ApplicationController
   def get_required_privileges
     a = super
     a << {:privileges => ['schedule_volunteers']}
+    a << {:only => ['view'], :privileges => ['schedule_volunteers', 'view_volunteer_schedule']}
     a
   end
   public
@@ -26,6 +27,12 @@ class AssignmentsController < ApplicationController
       page.hide loading_indicator_id("skedjul_#{params[:skedjul_loading_indicator_id]}_loading")
       page << "show_message(#{str.to_json});"
     end
+  end
+
+  def view
+    params["opts"] = {:presentation_mode => "Display"}
+    @readonly = true
+    index
   end
 
   def index
