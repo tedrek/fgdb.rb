@@ -586,7 +586,7 @@ end
 class AverageFrontdeskIncomesTrend < TrendReport
   class << self
     def category
-      "Front Desk"
+      "Transaction"
     end
 
     def title
@@ -620,7 +620,7 @@ end
 class AverageSaleIncomesTrend < TrendReport
   class << self
     def category
-      "Store"
+      "Transaction"
     end
 
     def title
@@ -636,6 +636,10 @@ class AverageSaleIncomesTrend < TrendReport
 end
 class IncomesTrend < TrendReport
   class << self
+    def category
+      "Income"
+    end
+
     def get_for_timerange(args)
       thing = call_income_report(args)[:grand_totals]["total"]["total"][:total] / 100.0
       {:income => thing}
@@ -679,7 +683,7 @@ end
 class SalesTotalsTrend < TrendReport
   class << self
     def category
-      "Store"
+      "Income"
     end
 
     def get_for_timerange(args)
@@ -696,7 +700,7 @@ end
 class DonationTotalsTrend < TrendReport
   class << self
     def category
-      "Front Desk"
+      "Income"
     end
 
     def get_for_timerange(args)
@@ -713,7 +717,7 @@ end
 class DonationsCountsTrend < TrendReport
   class << self
     def category
-      "Front Desk"
+      "Transaction"
     end
 
     def get_for_timerange(args)
@@ -754,7 +758,7 @@ end
 class DonationsGizmoCountByTypesTrend < TrendReport
   class << self
     def category
-      "Front Desk"
+      "Gizmo"
     end
 
     def valid_conditions
@@ -775,7 +779,7 @@ end
 class DisbursementGizmoCountByTypesTrend < TrendReport
   class << self
     def category
-      "Other"
+      "Gizmo"
     end
 
     def valid_conditions
@@ -804,7 +808,7 @@ end
 class RecycledGizmoCountByTypesTrend < TrendReport
   class << self
     def category
-      "Other"
+      "Gizmo"
     end
 
     def valid_conditions
@@ -826,7 +830,7 @@ end
 class ReturnGizmoCountByTypesTrend < TrendReport
   class << self
     def category
-      "Store"
+      "Gizmo"
     end
 
     def valid_conditions
@@ -848,7 +852,7 @@ end
 class SalesGizmoCountByTypesTrend < TrendReport
   class << self
     def category
-      "Store"
+      "Gizmo"
     end
 
     def get_for_timerange(args)
@@ -870,7 +874,7 @@ end
 class SalesAmountByGizmoTypesTrend < TrendReport
   class << self
     def category
-      "Store"
+      "Income"
     end
 
     def get_for_timerange(args)
@@ -891,7 +895,7 @@ end
 class NumberOfSalesByCashiersTrend < TrendReport
   class << self
     def category
-      "Store"
+      "Transaction"
     end
 
     def title
@@ -912,7 +916,7 @@ end
 class TotalAmountOfSalesByCashiersTrend < TrendReport
   class << self
     def category
-      "Store"
+      "Income"
     end
 
     def title
@@ -936,6 +940,9 @@ class NumberOfHoursWorkedByWorkersTrend < TrendReport
   GROUP BY workers.name
   ORDER BY workers.name;")
       Hash[*res.to_a.collect{|x| [x["name"], x["sum"]]}.flatten]
+    end
+    def category
+      "Staff"
     end
     def title
       "Report of hours worked by worker"
