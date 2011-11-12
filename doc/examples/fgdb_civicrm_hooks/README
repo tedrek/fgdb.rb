@@ -1,7 +1,4 @@
-This dir (and the civicrm root, see below) go in
-sites/all/modules (symlinked), Custom.php goes in civicrm/api/v2/
-(symlinked), download-version.sh used to download and prepare new
-versions.
+== Upgrading ==
 
 All the symlinks from /usr/share/drupal6 to civicrm
 go to ~/code/latest, which is a manually updated
@@ -14,7 +11,16 @@ and then:
 http://civicrm/drupal/?q=civicrm/upgrade&reset=1
 may need to be ran after upgrades.
 
+== Initial Setup ==
+
+=== Basic Installation ===
+
 Initial setup involves installing apache2, php5.
+
+This dir (and the civicrm root, see below) go in
+sites/all/modules (symlinked), Custom.php goes in civicrm/api/v2/
+(symlinked), download-version.sh used to download and prepare new
+versions.
 
 Create the mysql database:
 CREATE DATABASE drupal7;
@@ -30,6 +36,8 @@ Then do what these URLs say to:
 On install this module to be enabled here:
 http://civicrm/drupal6/?q=admin/build/modules
 
+=== Setting up account for syncing ===
+
 To generate a key:
 php -r 'echo md5(uniqid(rand(), true)) . "\n";
 
@@ -40,8 +48,27 @@ Set a users key (yes, sadly can only be done through SQL):
 In the "drupal" db, get the users email: SELECT mail FROM users WHERE name LIKE 'ass';
 Set it in the "civicrm" db on their contact: UPDATE civicrm_contact SET api_key = 'BLAH' WHERE id IN (SELECT contact_id FROM civicrm_email WHERE email LIKE 'root@freegeek.org');
 
+=== Customizations for our data ===
+
 Add custom fields for fgdb id:
 To do this, go to Administer -> Customize -> Custom Data
 add a fgdb_contacts set for contacts
 add a fgdb_contact_id field, of integer type, make it searchable
+"leave empty, will be set by fgdb."
+[do not select "view only", this breaks using API, and therefor our sync process]
 do this again for donations
+
+For contacts, add custom fields:
+fgdb_default_contract, Alphanumeric Select, Options:
+  Value 1, Label "normal" ( default )
+  Value 2, Label "City of Portland" # Should metadata be synced someday?
+make required.
+
+fgdb_pickup_fee, of type: Money, Text
+
+fgdb_fully_covered, of type: Boolean
+"can be left empty if unknown."
+
+Modify the options lists under administer tab for our contact method
+types:
+TODO
