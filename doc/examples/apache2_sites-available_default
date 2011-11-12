@@ -4,6 +4,17 @@
 #        RailsEnv production
         RailsSpawnMethod conservative
 
+        # BEGIN maintenance handling, thanks http://zebert.blogspot.com/2007/12/maintenance-mode-for-apache.html
+        # Note: Requires modules, run a2enmod for headers and rewrite
+        RewriteEngine On
+        RewriteCond /var/www/fgdb.rb/tmp/release.txt -f
+        RewriteCond %{REQUEST_URI} !^/release.html
+        RewriteRule ^.* /release.html [L,env=MAINTENANCE:1]
+
+        Header set cache-control "max-age=0,must-revalidate,post-check=0,pre-check=0" env=MAINTENANCE
+        Header set Expires -1 env=MAINTENANCE
+        # END maintenance handling
+
 #	DocumentRoot /var/www
 	<Directory />
 		Options FollowSymLinks
