@@ -120,10 +120,13 @@ class SpecSheet < ActiveRecord::Base
     end
   end
 
+  validates_presence_of :lshw_output
+
   def _lshw_output=(val)
 #    write_attribute(:original_output, val)
+    val = val.to_s
     file = Tempfile.new("fgss-xml")
-    file.write(original_output)
+    file.write(val)
     file.flush
     write_attribute(:original_valid, Kernel.system("xmlstarlet val #{file.path} >/dev/null 2>/dev/null"))
     write_attribute(:cleaned_output, val.gsub(/[^[:print:]\n\t]/, ''))
