@@ -14,11 +14,12 @@ class GraphicReportsController < ApplicationController
 
   def get_temp_file # TODO: move this all within?
     file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
-    find_report
     if !File.exists?(file)
+      find_report
       @report = @klass.new
+      @report.set_conditions(params[:conditions])
       @report.generate_report_data
-      @report.gnuplot_stuff(file)
+      @report.gnuplot_stuff(file, params[:graph_n].to_i)
     end
     respond_to do |format|
       format.jpeg { render :text => File.read(file) }
@@ -62,10 +63,10 @@ class GraphicReportsController < ApplicationController
 end
 
 class TrendReport
-  def gnuplot_stuff(tempfile)
+  def gnuplot_stuff(tempfile, graph_n)
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
-        plot.set "title", self.title
+        plot.set "title", self.graph_titles[graph_n]
         plot.set "terminal", "jpeg"
         plot.set "output", tempfile
         plot.ylabel ""
@@ -81,7 +82,7 @@ class TrendReport
         string += string_a.join(", ")
         string += ")"
         plot.xtics string
-        @data.each do |k,v|
+        @data[graph_n].each do |k,v|
           plot.data << Gnuplot::DataSet.new( [@graph_x_axis, v] ) do |ds|
             ds.with = "linespoints"
             ds.title = k.to_s.titleize
@@ -343,7 +344,7 @@ class TrendReport
   # Random helper crap #
   ######################
 
-  attr_accessor :broken_down_by, :x_axis, :data, :table_x_axis, :full_title
+  attr_accessor :broken_down_by, :x_axis, :data, :table_x_axis, :full_title, :graph_titles
 
   def generate_report_data
     list = []
@@ -370,7 +371,10 @@ class TrendReport
     @full_title = self.title + " (broken down by #{@broken_down_by})"
     cstr = self.conditions_to_s()
     @full_title = @full_title + " (" + cstr + ")" if cstr.length > 0
-    @data = {}
+    @data = []
+    @data[0] = {}
+    @graph_titles = []
+    @graph_titles[0] = self.title
     @x_axis = []
     list.each{|x|
       @x_axis << x_axis_for(x)
@@ -421,13 +425,13 @@ class TrendReport
     }
     lines = resultlist.map{|x| x.keys}.flatten.uniq
     lines.each{|x|
-      @data[x] = []
+      @data[0][x] = []
     }
     resultlist.each{|thing|
       lines.each{|k|
         v = thing[k]
         v = 0 if v.nil?
-        @data[k] << v
+        @data[0][k] << v
       }
     }
   end

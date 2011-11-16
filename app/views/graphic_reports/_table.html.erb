@@ -1,0 +1,18 @@
+<table style="border-collapse: collapse;" border="1" width="100%">
+  <tr>
+    <th>
+      <%= @report.broken_down_by.capitalize %><%= @report.broken_down_by.match(/of/) ? "" : " of" %>
+    </th>
+    <% @report.data[table_n].each do |k,v| %>
+        <th><%= k.to_s.titleize %></th>
+    <% end %>
+  </tr>
+  <% @report.x_axis.each_with_index do |x,i| %>
+    <tr>
+      <th><%= @report.table_x_axis[x] %></th>
+      <% @report.data[table_n].each do |k,v|%>
+        <td><%= v[i].tp %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
