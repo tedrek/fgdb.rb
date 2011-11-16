@@ -335,16 +335,16 @@ class TrendReport
   # :extract_type - if also limiting by day of week, hour, etc, this will be not nil, so extract this and make sure it's equal to :extract_value
   # :extract_value - the value to make sure that the thing extracted from the date matches
   # :number_of_days - the numbef of days matching these criteria (for averaging, etc)
-  def get_thing_for_timerange(args)
+#  def get_thing_for_timerange(args)
 #    set_conditions(params[:conditions]) # what's this?
-    get_for_timerange(args)
-  end
+#    get_for_timerange(args)
+#  end
 
   ######################
   # Random helper crap #
   ######################
 
-  attr_accessor :broken_down_by, :x_axis, :data, :table_x_axis, :full_title, :graph_titles
+  attr_accessor :broken_down_by, :x_axis, :data, :table_x_axis, :full_title, :graph_titles, :display
 
   def generate_report_data
     list = []
@@ -371,10 +371,6 @@ class TrendReport
     @full_title = self.title + " (broken down by #{@broken_down_by})"
     cstr = self.conditions_to_s()
     @full_title = @full_title + " (" + cstr + ")" if cstr.length > 0
-    @data = []
-    @data[0] = {}
-    @graph_titles = []
-    @graph_titles[0] = self.title
     @x_axis = []
     list.each{|x|
       @x_axis << x_axis_for(x)
@@ -420,8 +416,17 @@ class TrendReport
         raise NoMethodError
       end
     }
-    resultlist = list.map{|args|
-      get_thing_for_timerange(args)
+    generate_display_data(list)
+  end
+
+  # for single reports
+  def generate_display_data(argslist)
+    @data = []
+    @graph_titles = []
+    @data[0] = {}
+    @graph_titles[0] = self.title
+    resultlist = argslist.map{|args|
+      get_for_timerange(args)
     }
     lines = resultlist.map{|x| x.keys}.flatten.uniq
     lines.each{|x|
@@ -434,6 +439,7 @@ class TrendReport
         @data[0][k] << v
       }
     }
+    @display = [["graph", 0], ["table", 0]]
   end
 
   def array_of_dates(start, stop)
@@ -568,6 +574,13 @@ class TrendReport
       []
     end
 
+  def child_report_for_argslist(report, argslist)
+    r = report.new
+    r.set_conditions(@conditions)
+    r.generate_display_data(argslist)
+    return r # manipulate its .data, etc
+  end
+
   class << self
     def name
       self.to_s.sub("Trend", "").underscore.humanize.split(" ").map{|x| x.capitalize}.join(" ").singularize
@@ -694,6 +707,40 @@ class ActiveVolunteersTrend < TrendReport
       line_breakdown_types
     end
 end
+class MasterGizmoFlowTrend < TrendReport
+  def category
+    "Combined"
+  end
+
+  # for single reports
+  def generate_display_data(argslist)
+    @data = []
+    @graph_titles = []
+    donations = child_report_for_argslist(DonationsGizmoCountByTypesTrend, argslist)
+    sales = child_report_for_argslist(SalesGizmoCountByTypesTrend, argslist)
+# WAY ONE: combining two reports by showing two graphs
+    @data[0] = donations.data[0]
+    @graph_titles[0] = donations.graph_titles[0]
+    @data[1] = sales.data[0]
+    @graph_titles[1] = sales.graph_titles[0]
+#    @display = [["graph", 0], ["table", 0], ["graph", 1], ["table", 1]]
+# WAY TWO: combining two reports by showing two lines
+    @data[2] = {}
+    @data[2][:sales] = sales.data[0][:count]
+    @data[2][:donations] = donations.data[0][:count]
+    @graph_titles[2] = self.title
+#    @display = [["graph", 2], ["table", 2]]
+    @display = [["graph", 0], ["table", 0], ["graph", 1], ["table", 1], ["graph", 2], ["table", 2]]
+  end
+
+  def valid_conditions
+    ["gizmo_category_id", "gizmo_type_id"]
+  end
+
+  def title
+    "Master Gizmo Flow Report"
+  end
+end
 class SalesTotalsTrend < TrendReport
     def category
       "Income"
@@ -780,6 +827,7 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:count => res.first["count"]}
     end
 end
+
 class DisbursementGizmoCountByTypesTrend < TrendReport
     def category
       "Gizmo"
@@ -894,7 +942,7 @@ class NumberOfSalesByCashiersTrend < TrendReport
     def title
       "Number of sales by Cashier"
     end
-    def get_for_timerange(args) # TODO: other transaction types?
+    def get_for_timerange(args)
       where_clause = sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at"))
       res = DB.execute("SELECT count(*), users.login FROM sales
  LEFT JOIN users ON users.id = sales.cashier_created_by

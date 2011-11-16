@@ -1,4 +1,5 @@
+<%# generate teh graph %>
 <% tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp %>
 <% basename = File.basename(tempfile).sub(".", "$") %>
-<% @report.gnuplot_stuff(tempfile, graph_n) %>
-<img src="<%= url_for :action => "get_temp_file", :id => basename, :graph_n => graph_n, :conditions => params[:conditions] %>" />
+<% @report.gnuplot_stuff(tempfile, num) %>
+<img src="<%= url_for :action => "get_temp_file", :id => basename, :graph_n => num, :conditions => params[:conditions] %>" />
