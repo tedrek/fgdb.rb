@@ -6,14 +6,19 @@
 # it could also help clean up getting the second date range and the
 # number between them, which are messy right now.
 
+require_dependency RAILS_ROOT + '/app/helpers/conditions.rb'
+
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
+  helper :conditions
 
-  def get_temp_file
+  def get_temp_file # TODO: move this all within?
     file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
+    find_report
     if !File.exists?(file)
-      generate_report_data
-      gnuplot_stuff(file)
+      @report = @klass.new
+      @report.generate_report_data
+      @report.gnuplot_stuff(file)
     end
     respond_to do |format|
       format.jpeg { render :text => File.read(file) }
@@ -22,7 +27,10 @@ class GraphicReportsController < ApplicationController
   end
 
   def view
-    generate_report_data
+    find_report
+    @report = @klass.new
+    @report.set_conditions(params[:conditions])
+    @report.generate_report_data
   end
 
   def index
@@ -32,14 +40,28 @@ class GraphicReportsController < ApplicationController
   def index2
     @multi_enabled = true
     @valid_conditions = []
-    get_title # sets @klass
+    find_report
     @breakdown_types = @klass.breakdown_types
     @valid_conditions = @klass.valid_conditions
   end
 
+  #####################
+  # Report type stuff #
+  #####################
   private
-  helper_method :gnuplot_stuff
+  # list of report types
+  def report_types
+    return TrendReport.all_reports
+  end
 
+  # returns the title for that report type
+  def find_report
+    @klass ||= TrendReport.find_class(params[:conditions][:report_type])
+  end
+
+end
+
+class TrendReport
   def gnuplot_stuff(tempfile)
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
@@ -90,7 +112,7 @@ class GraphicReportsController < ApplicationController
   # convert a date object into the string that should be put on the x
   # axis
   def x_axis_for(date)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       "Week of " + date.to_s
     when "Quarterly"
@@ -123,7 +145,7 @@ class GraphicReportsController < ApplicationController
   # should return the total number of things that should be on the x
   # axis, minus one (this makes logical sense for simplicity)
   def number_between_them(end_date)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       (end_date - @start_date).to_i / 7
     when "Quarterly"
@@ -156,7 +178,7 @@ class GraphicReportsController < ApplicationController
   # this is pretty stupid, as it will require a lot of iterations for
   # nothing. but it works.
   def is_last_thing?(date)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       date.strftime("%a") == "Mon"
     when "Quarterly"
@@ -177,7 +199,7 @@ class GraphicReportsController < ApplicationController
   # return nil if you want that breakdown to be ignored (for example,
   # ignoring weekends on daily breakdown)
   def get_this_one(number)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       @start_date + (7*number)
     when "Quarterly"
@@ -215,7 +237,7 @@ class GraphicReportsController < ApplicationController
   # start date, and reformats it for the graph (as a number that will
   # be used to place it somewhere on the x axis)
   def graph_x_axis_for(x_axis, date)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Quarterly"
       x_axis.match(/-Q(.)/)
       x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
@@ -239,7 +261,7 @@ class GraphicReportsController < ApplicationController
 
   # get the last day in the range
   def second_timerange(first)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       first + 6
     when "Quarterly"
@@ -267,7 +289,7 @@ class GraphicReportsController < ApplicationController
   ##################
 
   def extract_name_for_breakdown_type
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Day of week"
       return "DOW"
     when "Hour"
@@ -278,7 +300,7 @@ class GraphicReportsController < ApplicationController
   end
 
   def get_bar_list
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Day of week"
       v = 0..6
     when "Hour"
@@ -301,21 +323,6 @@ class GraphicReportsController < ApplicationController
     return false
   end
 
-  #####################
-  # Report type stuff #
-  #####################
-
-  # list of report types
-  def report_types
-    return TrendReport.all_reports
-  end
-
-  # returns the title for that report type
-  def get_title
-    @klass ||= TrendReport.find_class(params[:conditions][:report_type])
-    @klass.title
-  end
-
   # calls a method specific to that report that takes args, explained
   # below, and returns a hash (one element for each line) with the key
   # being the name of the line and the value the number to be plotted
@@ -328,18 +335,20 @@ class GraphicReportsController < ApplicationController
   # :extract_value - the value to make sure that the thing extracted from the date matches
   # :number_of_days - the numbef of days matching these criteria (for averaging, etc)
   def get_thing_for_timerange(args)
-    @klass.set_conditions(params[:conditions])
-    @klass.get_for_timerange(args)
+#    set_conditions(params[:conditions]) # what's this?
+    get_for_timerange(args)
   end
 
   ######################
   # Random helper crap #
   ######################
 
+  attr_accessor :broken_down_by, :x_axis, :data, :table_x_axis, :full_title
+
   def generate_report_data
     list = []
-    @start_date = Date.parse(params[:conditions][:start_date])
-    end_date = Date.parse(params[:conditions][:end_date])
+    @start_date = Date.parse(@conditions[:start_date])
+    end_date = Date.parse(@conditions[:end_date])
     if is_line
       @start_date = back_up_to_last_thing(@start_date)
       end_date = back_up_to_last_thing(end_date)
@@ -357,11 +366,10 @@ class GraphicReportsController < ApplicationController
       raise NoMethodError
     end
     list.delete_if{|x| x.nil?}
-    @broken_down_by = params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")
-    @title = get_title + " (broken down by #{@broken_down_by})"
-    @klass.set_conditions(params[:conditions])
-    cstr = @klass.conditions_to_s()
-    @title = @title + " (" + cstr + ")" if cstr.length > 0
+    @broken_down_by = @conditions[:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")
+    @full_title = self.title + " (broken down by #{@broken_down_by})"
+    cstr = self.conditions_to_s()
+    @full_title = @full_title + " (" + cstr + ")" if cstr.length > 0
     @data = {}
     @x_axis = []
     list.each{|x|
@@ -447,11 +455,11 @@ class GraphicReportsController < ApplicationController
   end
 
   def is_line
-    line_breakdown_types.include?(params[:conditions][:breakdown_type])
+    line_breakdown_types.include?(@conditions[:breakdown_type])
   end
 
   def is_bar
-    bar_breakdown_types.include?(params[:conditions][:breakdown_type])
+    bar_breakdown_types.include?(@conditions[:breakdown_type])
   end
 
   def back_up_to_last_thing(date)
@@ -471,10 +479,7 @@ class GraphicReportsController < ApplicationController
     end
     d
   end
-end
 
-class TrendReport
-  class << self
     def created_at_conditions_for_report(args)
       conditions_with_daterange_for_report(args, "created_at")
     end
@@ -531,12 +536,6 @@ class TrendReport
       n = Donation.number_by_conditions(c)
     end
 
-    def find_class(name)
-      found = all_reports.select{|x| x.name == name}
-      raise "Cannot find class named #{((name.underscore.parameterize.tableize + "_trend").classify.to_s)}" if found.length != 1
-      return found.first
-    end
-
     def breakdown_types # default
       line_breakdown_types + bar_breakdown_types
     end
@@ -553,16 +552,27 @@ class TrendReport
       ["Day of week", "Hour"]
     end
 
-    def name
-      self.to_s.sub("Trend", "").underscore.humanize.split(" ").map{|x| x.capitalize}.join(" ").singularize
+    def category # default
+      "Other"
     end
 
     def title
       "Report of " + self.name
     end
 
-    def category # default
-      "Other"
+    def valid_conditions # default
+      []
+    end
+
+  class << self
+    def name
+      self.to_s.sub("Trend", "").underscore.humanize.split(" ").map{|x| x.capitalize}.join(" ").singularize
+    end
+
+    def find_class(name)
+      found = all_reports.select{|x| x.name == name}
+      raise "Cannot find class named #{((name.underscore.parameterize.tableize + "_trend").classify.to_s)}" if found.length != 1
+      return found.first
     end
 
     def all_reports
@@ -573,18 +583,25 @@ class TrendReport
       return all_reports.map{|x| x.name}
     end
 
-    def get_conditions
-      valid_conditions
+    def valid_conditions
+      self.new.valid_conditions
     end
 
-    def valid_conditions # default
-      []
+    def title
+      self.new.title
+    end
+
+    def breakdown_types
+      self.new.breakdown_types
+    end
+
+    def category
+      self.new.category
     end
   end
 end
 
 class AverageFrontdeskIncomesTrend < TrendReport
-  class << self
     def category
       "Transaction"
     end
@@ -615,10 +632,8 @@ class AverageFrontdeskIncomesTrend < TrendReport
     def valid_conditions
       ["cashier_created_by"]
     end
-  end
 end
 class AverageSaleIncomesTrend < TrendReport
-  class << self
     def category
       "Transaction"
     end
@@ -631,11 +646,9 @@ class AverageSaleIncomesTrend < TrendReport
       res = DB.execute("SELECT SUM( reported_amount_due_cents )/(100.0*COUNT(*)) AS amount
   FROM sales WHERE " + sql_for_report(Sale, created_at_conditions_for_report(args)))
       return {:total => res.first["amount"]}
-    end
   end
 end
 class IncomesTrend < TrendReport
-  class << self
     def category
       "Income"
     end
@@ -647,10 +660,8 @@ class IncomesTrend < TrendReport
     def title
       "Income report"
     end
-  end
 end
 class ActiveVolunteersTrend < TrendReport
-  class << self
     def category
       "Volunteer"
     end
@@ -678,10 +689,8 @@ class ActiveVolunteersTrend < TrendReport
     def breakdown_types
       line_breakdown_types
     end
-  end
 end
 class SalesTotalsTrend < TrendReport
-  class << self
     def category
       "Income"
     end
@@ -695,10 +704,8 @@ class SalesTotalsTrend < TrendReport
     def title
       "Report of total sales in dollars"
     end
-  end
 end
 class DonationTotalsTrend < TrendReport
-  class << self
     def category
       "Income"
     end
@@ -712,10 +719,8 @@ class DonationTotalsTrend < TrendReport
     def title
       "Report of total donations in dollars"
     end
-  end
 end
 class DonationsCountsTrend < TrendReport
-  class << self
     def category
       "Transaction"
     end
@@ -727,10 +732,8 @@ class DonationsCountsTrend < TrendReport
     def title
       "Report of number of donations"
     end
-  end
 end
 class VolunteerHoursByProgramsTrend < TrendReport
-  class << self
     def category
       "Volunteer"
     end
@@ -753,10 +756,8 @@ class VolunteerHoursByProgramsTrend < TrendReport
     def breakdown_types
       super - ["Hour"]
     end
-  end
 end
 class DonationsGizmoCountByTypesTrend < TrendReport
-  class << self
     def category
       "Gizmo"
     end
@@ -774,10 +775,8 @@ WHERE donation_id IS NOT NULL
 AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:count => res.first["count"]}
     end
-  end
 end
 class DisbursementGizmoCountByTypesTrend < TrendReport
-  class << self
     def category
       "Gizmo"
     end
@@ -801,12 +800,10 @@ GROUP BY 2;")
         ret[x["desc"]] = x["count"]
       }
       return ret
-    end
   end
 end
 
 class RecycledGizmoCountByTypesTrend < TrendReport
-  class << self
     def category
       "Gizmo"
     end
@@ -824,11 +821,9 @@ WHERE recycling_id IS NOT NULL
 AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:count => res.first["count"]}
     end
-  end
 end
 
 class ReturnGizmoCountByTypesTrend < TrendReport
-  class << self
     def category
       "Gizmo"
     end
@@ -846,11 +841,9 @@ WHERE gizmo_return_id IS NOT NULL
 AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:count => res.first["count"]}
     end
-  end
 end
 
 class SalesGizmoCountByTypesTrend < TrendReport
-  class << self
     def category
       "Gizmo"
     end
@@ -869,10 +862,8 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     def title
       "Count of gizmos sold by type"
     end
-  end
 end
 class SalesAmountByGizmoTypesTrend < TrendReport
-  class << self
     def category
       "Income"
     end
@@ -889,11 +880,9 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     end
     def title
       "Sales amount by gizmo type"
-    end
   end
 end
 class NumberOfSalesByCashiersTrend < TrendReport
-  class << self
     def category
       "Transaction"
     end
@@ -911,10 +900,8 @@ class NumberOfSalesByCashiersTrend < TrendReport
       Hash[*res.to_a.collect{|x| [x["login"], x["count"]]}.flatten]
     end
 
-  end
 end
 class TotalAmountOfSalesByCashiersTrend < TrendReport
-  class << self
     def category
       "Income"
     end
@@ -927,10 +914,8 @@ class TotalAmountOfSalesByCashiersTrend < TrendReport
       res = DB.execute("SELECT users.login, SUM(payments.amount_cents) FROM payments INNER JOIN sales ON payments.sale_id = sales.id LEFT JOIN users ON users.id = sales.cashier_created_by WHERE #{where_clause} GROUP BY 1;")
       Hash[*res.to_a.collect{|x| [x["login"], x["sum"].to_i / 100.0]}.flatten]
     end
-  end
 end
 class NumberOfHoursWorkedByWorkersTrend < TrendReport
-  class << self
     def get_for_timerange(args)
       where_clause = sql_for_report(WorkedShift, conditions_with_daterange_for_report(args, "date_performed"))
       res = DB.execute("SELECT workers.name, SUM( duration )
@@ -950,5 +935,4 @@ class NumberOfHoursWorkedByWorkersTrend < TrendReport
     def valid_conditions
       ["job"]
     end
-  end
 end
