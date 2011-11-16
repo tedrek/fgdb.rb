@@ -65,9 +65,9 @@ class TrendReport
   def gnuplot_stuff(tempfile)
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
+        plot.set "title", self.title
         plot.set "terminal", "jpeg"
         plot.set "output", tempfile
-        plot.notitle
         plot.ylabel ""
         plot.xlabel ""
         plot.xtic "rotate by 90"
