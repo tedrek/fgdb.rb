@@ -756,7 +756,7 @@ class MasterGizmoFlowTrend < TrendReport
     @data[2][:reused] = @data[0][:reused]
     @graph_titles[2] = "Recycle vs Reuse"
 
-    @data[3] = {}
+    @data[3] = OH.new
     @data[3][:reused] = @data[0][:reused]
     @data[3][:returned] = @data[0][:returned]
     @data[3][:return_percentage] = []
@@ -767,7 +767,7 @@ class MasterGizmoFlowTrend < TrendReport
     @data[4][:return_rate] = @data[3][:return_percentage]
     @graph_titles[4] = "Return Rate"
 
-    @data[5] = {}
+    @data[5] = OH.new
     @data[5][:donated] = @data[0][:donated]
     @data[5][:reused] = @data[0][:reused]
     @data[5][:disbursed] = @data[0][:disbursed]
@@ -792,7 +792,7 @@ class MasterGizmoFlowTrend < TrendReport
     @graph_titles[7] = "Disbursement Rate"
     @graph_titles[8] = "Sales Rate"
 
-    @data[9] = {}
+    @data[9] = OH.new
     sales_totals = child_report_for_argslist(SalesAmountByGizmoTypesTrend, argslist)
     @data[9][:sales] = sales_totals.data[0][:amount]
     @data[9][:sold] = @data[0][:sold]
