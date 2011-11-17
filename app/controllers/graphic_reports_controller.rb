@@ -716,21 +716,103 @@ class MasterGizmoFlowTrend < TrendReport
   def generate_display_data(argslist)
     @data = []
     @graph_titles = []
+
     donations = child_report_for_argslist(DonationsGizmoCountByTypesTrend, argslist)
     sales = child_report_for_argslist(SalesGizmoCountByTypesTrend, argslist)
-# WAY ONE: combining two reports by showing two graphs
-    @data[0] = donations.data[0]
-    @graph_titles[0] = donations.graph_titles[0]
-    @data[1] = sales.data[0]
-    @graph_titles[1] = sales.graph_titles[0]
-#    @display = [["graph", 0], ["table", 0], ["graph", 1], ["table", 1]]
-# WAY TWO: combining two reports by showing two lines
+    disbursements = child_report_for_argslist(DisbursementGizmoCountByTypesTrend, argslist)
+    recyclings = child_report_for_argslist(RecycledGizmoCountByTypesTrend, argslist)
+    returns = child_report_for_argslist(ReturnGizmoCountByTypesTrend, argslist)
+
+    dis_tot = []
+    disbursements.data[0].values.each{|a|
+      a.each_with_index{|x,i|
+        dis_tot[i] ||= 0
+        dis_tot[i] += x.to_i
+      }
+    }
+
+    @data[0] = {}
+    @data[0][:sold] = sales.data[0][:count]
+    @data[0][:donated] = donations.data[0][:count]
+    @data[0][:recycled] = recyclings.data[0][:count]
+    @data[0][:returned] = returns.data[0][:count]
+    @data[0][:disbursed] = dis_tot
+
+    reuse_tot = []
+    for a in [@data[0][:sold], @data[0][:disbursed]]
+      a.each_with_index{|x,i|
+        reuse_tot[i] ||= 0
+        reuse_tot[i] += x.to_i
+      }
+    end
+    @data[0][:reused] = reuse_tot
+    @graph_titles[0] = self.title
+
+    @data[1] = disbursements.data[0]
+    @graph_titles[1] = disbursements.graph_titles[0]
+
     @data[2] = {}
-    @data[2][:sales] = sales.data[0][:count]
-    @data[2][:donations] = donations.data[0][:count]
-    @graph_titles[2] = self.title
-#    @display = [["graph", 2], ["table", 2]]
-    @display = [["graph", 0], ["table", 0], ["graph", 1], ["table", 1], ["graph", 2], ["table", 2]]
+    @data[2][:recycled] = @data[0][:recycled]
+    @data[2][:reused] = @data[0][:reused]
+    @graph_titles[2] = "Recycle vs Reuse"
+
+    @data[3] = {}
+    @data[3][:reused] = @data[0][:reused]
+    @data[3][:returned] = @data[0][:returned]
+    @data[3][:return_percentage] = []
+    argslist.length.times do |i|
+      @data[3][:return_percentage][i] = 100 * (@data[3][:returned][i].to_f / @data[3][:reused][i].to_f)
+    end
+    @data[4] = {}
+    @data[4][:return_rate] = @data[3][:return_percentage]
+    @graph_titles[4] = "Return Rate"
+
+    @data[5] = {}
+    @data[5][:donated] = @data[0][:donated]
+    @data[5][:reused] = @data[0][:reused]
+    @data[5][:disbursed] = @data[0][:disbursed]
+    @data[5][:sold] = @data[0][:sold]
+    for i in [:reuse_percentage, :disbursement_percentage, :sales_percentage]
+      @data[5][i] = []
+    end
+    argslist.length.times do |i|
+      divisor = @data[5][:donated][i].to_f
+      if divisor == 0.0
+        @data[5][:reuse_percentage][i] = @data[5][:disbursement_percentage][i] = @data[5][:sales_percentage][i] = 0
+      else
+        @data[5][:reuse_percentage][i] = 100 * (@data[5][:reused][i].to_f / divisor)
+        @data[5][:disbursement_percentage][i] = 100 * (@data[5][:disbursed][i].to_f / divisor)
+        @data[5][:sales_percentage][i] = 100 * (@data[5][:sold][i].to_f / divisor)
+      end
+    end
+    @data[6] = {:reuse_percentage => @data[5][:reuse_percentage]}
+    @data[7] = {:disbursement_percentage => @data[5][:disbursement_percentage]}
+    @data[8] = {:sales_percentage => @data[5][:sales_percentage]}
+    @graph_titles[6] = "Reuse Rate"
+    @graph_titles[7] = "Disbursement Rate"
+    @graph_titles[8] = "Sales Rate"
+
+    @data[9] = {}
+    sales_totals = child_report_for_argslist(SalesAmountByGizmoTypesTrend, argslist)
+    @data[9][:sales] = sales_totals.data[0][:amount]
+    @data[9][:sold] = @data[0][:sold]
+    @data[9][:avg_price] = []
+    argslist.length.times do |i|
+      divisor = @data[9][:sold][i].to_f
+      if divisor == 0.0
+        @data[9][:avg_price][i] = 0.0
+      else
+        @data[9][:avg_price][i] = @data[9][:sales][i].to_f / divisor
+      end
+    end
+    @data[10] = {:sales => @data[9][:sales]}
+    @data[11] = {:sold => @data[9][:sold]}
+    @data[12] = {:avg_price => @data[9][:avg_price]}
+    @graph_titles[10] = "Total Sales Amount"
+    @graph_titles[11] = "Sales Count"
+    @graph_titles[12] = "Average Sale Price"
+
+    @display = [["graph", 0], ["table", 0], ["graph", 1], ["table", 1], ["graph", 10], ["graph", 11], ["graph", 12], ["table", 9], ["graph", 2], ["table", 2], ["graph", 4], ["table", 3], ["graph", 6], ["graph", 7], ["graph", 8], ["table", 5]]
   end
 
   def valid_conditions
