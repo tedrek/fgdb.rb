@@ -69,7 +69,6 @@ fi
 
 cd /var/www/fgdb.rb/
 sudo touch tmp/release.txt
-sudo invoke-rc.d apache2 stop
 
 pg_dump fgdb_production | bzip2 -c - > $BACKUP_DIR/pre-sprint-$NEW.sql.bz2
 
