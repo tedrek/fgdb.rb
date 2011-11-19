@@ -7,6 +7,7 @@
 # number between them, which are messy right now.
 
 require_dependency RAILS_ROOT + '/app/helpers/conditions.rb'
+require_dependency RAILS_ROOT + '/app/controllers/reports_controller.rb'
 
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
@@ -344,7 +345,7 @@ class TrendReport
   # Random helper crap #
   ######################
 
-  attr_accessor :broken_down_by, :x_axis, :data, :table_x_axis, :full_title, :graph_titles, :display
+  attr_accessor :broken_down_by, :x_axis, :data, :table_x_axis, :full_title, :graph_titles, :display, :table_data_types
 
   def generate_report_data
     list = []
@@ -439,7 +440,13 @@ class TrendReport
         @data[0][k] << v
       }
     }
+    @table_data_types = []
+    @table_data_types[0] = self.default_table_data_types
     @display = [["graph", 0], ["table", 0]]
+  end
+
+  def default_table_data_types
+    Hash.new("normal")
   end
 
   def array_of_dates(start, stop)
@@ -646,6 +653,10 @@ class AverageFrontdeskIncomesTrend < TrendReport
       {:fees => fees, :suggested => suggested, :total => total}
     end
 
+    def default_table_data_types
+      Hash.new("money")
+    end
+
     def valid_conditions
       ["cashier_created_by"]
     end
@@ -659,6 +670,10 @@ class AverageSaleIncomesTrend < TrendReport
       "Report of Average Income for Sales"
     end
 
+    def default_table_data_types
+      Hash.new("money")
+    end
+
     def get_for_timerange(args)
       res = DB.execute("SELECT SUM( reported_amount_due_cents )/(100.0*COUNT(*)) AS amount
   FROM sales WHERE " + sql_for_report(Sale, created_at_conditions_for_report(args)))
@@ -668,6 +683,10 @@ end
 class IncomesTrend < TrendReport
     def category
       "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
     end
 
     def get_for_timerange(args)
@@ -681,6 +700,10 @@ end
 class ActiveVolunteersTrend < TrendReport
     def category
       "Volunteer"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
     end
 
     def get_for_timerange(args)
@@ -716,6 +739,7 @@ class MasterGizmoFlowTrend < TrendReport
   def generate_display_data(argslist)
     @data = []
     @graph_titles = []
+    @table_data_types = []
 
     donations = child_report_for_argslist(DonationsGizmoCountByTypesTrend, argslist)
     sales = child_report_for_argslist(SalesGizmoCountByTypesTrend, argslist)
@@ -737,6 +761,7 @@ class MasterGizmoFlowTrend < TrendReport
     @data[0][:recycled] = recyclings.data[0][:count]
     @data[0][:returned] = returns.data[0][:count]
     @data[0][:disbursed] = dis_tot
+    @table_data_types[0] = sales.default_table_data_types
 
     reuse_tot = []
     for a in [@data[0][:sold], @data[0][:disbursed]]
@@ -750,16 +775,19 @@ class MasterGizmoFlowTrend < TrendReport
 
     @data[1] = disbursements.data[0]
     @graph_titles[1] = disbursements.graph_titles[0]
+    @table_data_types[1] = disbursements.default_table_data_types
 
     @data[2] = {}
     @data[2][:recycled] = @data[0][:recycled]
     @data[2][:reused] = @data[0][:reused]
     @graph_titles[2] = "Recycle vs Reuse"
+    @table_data_types[2] = recyclings.default_table_data_types
 
     @data[3] = OH.new
     @data[3][:reused] = @data[0][:reused]
     @data[3][:returned] = @data[0][:returned]
     @data[3][:return_percentage] = []
+    @table_data_types[3] = recyclings.default_table_data_types.merge({:return_percentage => 'percentage'})
     argslist.length.times do |i|
       @data[3][:return_percentage][i] = 100 * (@data[3][:returned][i].to_f / @data[3][:reused][i].to_f)
     end
@@ -772,6 +800,7 @@ class MasterGizmoFlowTrend < TrendReport
     @data[5][:reused] = @data[0][:reused]
     @data[5][:disbursed] = @data[0][:disbursed]
     @data[5][:sold] = @data[0][:sold]
+    @table_data_types[5] = @table_data_types[0].merge({:reuse_percentage => 'percentage', :disbursement_percentage => 'percentage', :sales_percentage => 'percentage'})
     for i in [:reuse_percentage, :disbursement_percentage, :sales_percentage]
       @data[5][i] = []
     end
@@ -797,6 +826,7 @@ class MasterGizmoFlowTrend < TrendReport
     @data[9][:sales] = sales_totals.data[0][:amount]
     @data[9][:sold] = @data[0][:sold]
     @data[9][:avg_price] = []
+    @table_data_types[9] = sales_totals.table_data_types[0].merge(:sold => @table_data_types[0][:sold])
     argslist.length.times do |i|
       divisor = @data[9][:sold][i].to_f
       if divisor == 0.0
@@ -816,7 +846,7 @@ class MasterGizmoFlowTrend < TrendReport
   end
 
   def valid_conditions
-    ["gizmo_category_id", "gizmo_type_id"]
+    ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
   end
 
   def title
@@ -826,6 +856,10 @@ end
 class SalesTotalsTrend < TrendReport
     def category
       "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
     end
 
     def get_for_timerange(args)
@@ -843,6 +877,10 @@ class DonationTotalsTrend < TrendReport
       "Income"
     end
 
+    def default_table_data_types
+      Hash.new("money")
+    end
+
     def get_for_timerange(args)
       res = DB.execute("SELECT SUM( amount_cents )/100.0 AS amount
   FROM payments JOIN donations ON payments.donation_id = donations.id WHERE " + sql_for_report(Donation, created_at_conditions_for_report(args)))
@@ -856,6 +894,10 @@ end
 class DonationsCountsTrend < TrendReport
     def category
       "Transaction"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
     end
 
     def get_for_timerange(args)
@@ -895,8 +937,12 @@ class DonationsGizmoCountByTypesTrend < TrendReport
       "Gizmo"
     end
 
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos donated by type"
@@ -915,8 +961,12 @@ class DisbursementGizmoCountByTypesTrend < TrendReport
       "Gizmo"
     end
 
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos disbursed by type"
@@ -942,8 +992,12 @@ class RecycledGizmoCountByTypesTrend < TrendReport
       "Gizmo"
     end
 
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos recycled by type"
@@ -962,8 +1016,12 @@ class ReturnGizmoCountByTypesTrend < TrendReport
       "Gizmo"
     end
 
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos returned by type"
@@ -982,6 +1040,10 @@ class SalesGizmoCountByTypesTrend < TrendReport
       "Gizmo"
     end
 
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
     def get_for_timerange(args)
       res = DB.execute("SELECT SUM( gizmo_count ) AS count
 FROM gizmo_events
@@ -991,7 +1053,7 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos sold by type"
@@ -1002,6 +1064,10 @@ class SalesAmountByGizmoTypesTrend < TrendReport
       "Income"
     end
 
+    def default_table_data_types
+      Hash.new("money")
+    end
+
     def get_for_timerange(args)
       res = DB.execute("SELECT SUM( unit_price_cents * gizmo_count )/100.0 AS due
 FROM gizmo_events
@@ -1010,7 +1076,7 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:amount => res.first["due"]}
     end
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Sales amount by gizmo type"
@@ -1019,6 +1085,10 @@ end
 class NumberOfSalesByCashiersTrend < TrendReport
     def category
       "Transaction"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
     end
 
     def title
@@ -1038,6 +1108,10 @@ end
 class TotalAmountOfSalesByCashiersTrend < TrendReport
     def category
       "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
     end
 
     def title

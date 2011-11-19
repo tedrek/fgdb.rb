@@ -13,7 +13,7 @@ class Conditions < ConditionsBase
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
-      needs_checkin assigned attendance_type worker_type
+      needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
     ] + DATES).uniq
 
@@ -71,6 +71,8 @@ class Conditions < ConditionsBase
   attr_accessor :unresolved_invoices
 
   attr_accessor :gizmo_type_id
+
+  attr_accessor :gizmo_type_group_id
 
   attr_accessor :gizmo_category_id
 
@@ -521,6 +523,10 @@ class Conditions < ConditionsBase
 
   def gizmo_type_id_conditions(klass)
     return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id]
+  end
+
+  def gizmo_type_group_id_conditions(klass)
+    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", gizmo_type_group_id]
   end
 
   def serial_number_conditions(klass)
