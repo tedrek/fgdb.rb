@@ -1,20 +1,20 @@
 #!/bin/bash
 
-BACKUP_DIR=~/nobackup/data-backups/
-BACKUP_SERVER=peabody
+BACKUP_DIR=/usr/local/zhora-backup/incoming/
+#BACKUP_SERVER=peabody
 REMOTE_DIR=/srv/data-extras/data-backups/
 
-if [ ! -d $BACKUP_DIR ]; then
-    mkdir -p $BACKUP_DIR
-fi
+#if [ ! -d $BACKUP_DIR ]; then
+#    mkdir -p $BACKUP_DIR
+#fi
 
-if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
-    sshfs $BACKUP_SERVER:$REMOTE_DIR $BACKUP_DIR
-    if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
-	echo "ERROR: $BACKUP_DIR isn't the backup dir"
-	exit 1
-    fi
-fi
+#if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
+#    sshfs $BACKUP_SERVER:$REMOTE_DIR $BACKUP_DIR
+#    if ! test -f $BACKUP_DIR/I_AM_THE_BACKUPS; then
+#	echo "ERROR: $BACKUP_DIR isn't the backup dir"
+#	exit 1
+#    fi
+#fi
 
 set -C
 set -e
@@ -70,6 +70,6 @@ fi
 cd /var/www/fgdb.rb/
 sudo touch tmp/release.txt
 
-pg_dump fgdb_production | bzip2 -c - > $BACKUP_DIR/pre-sprint-$NEW.sql.bz2
+pg_dump fgdb_production > $BACKUP_DIR/pre-sprint-$NEW.sql.bz2
 
 echo "Check $BACKUP_DIR/pre-sprint-$NEW.sql"
