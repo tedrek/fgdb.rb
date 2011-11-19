@@ -18,7 +18,7 @@ run_full () {
 
 run_fail () {
     echo "Looks like update is not needed"
-    exit 1
+#    exit 1
 }
 
 needs_fail () {
@@ -41,16 +41,20 @@ UPSTREAM=origin
 CHECK_THESE="$@"
 FAKE=false
 VERBOSE=false
+ALL_OPTS="$@"
 if [ ! -d "$PRODUCTION" ]; then
     echo "This seems to be the wrong system."
     exit 1
 fi
+do_date() {
+echo
+echo "========================================================================================================="
+echo "auto-update $@ at $(date -R) with these options: $ALL_OPTS"
+echo "========================================================================================================="
+echo
+}
 main() {
-echo
-echo "========================================================================================================="
-echo "auto-update starting at $(date -R) with these options: $@"
-echo "========================================================================================================="
-echo
+do_date "starting"
 if [ -n "$CHECK_THESE" ]; then
     CHECK_THESE=$(echo "$CHECK_THESE" | sed 's/--//g')
 else
@@ -88,6 +92,7 @@ if [ "$FAKE" = "false" ]; then
 else
     echo "Would run run_$MODE in $(pwd)"
 fi
+do_date "ending"
 }
 sudo touch "$LOGFILE"
 sudo chown "$USER" "$LOGFILE"

@@ -1,3 +1,8 @@
+fgdb.rb (1.0.78) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 Nov 2011 22:17:00 -0800
+
 fgdb.rb (1.0.77) released; urgency=low
 
   * add open_time/close_time to weekdays table in database and use that
