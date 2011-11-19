@@ -68,7 +68,6 @@ if checkit 2; then
 fi
 
 cd /var/www/fgdb.rb/
-sudo mv public/_release.html public/release.html
 sudo touch tmp/release.txt
 sudo invoke-rc.d apache2 stop
 
