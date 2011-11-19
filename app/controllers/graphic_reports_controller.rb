@@ -846,7 +846,7 @@ class MasterGizmoFlowTrend < TrendReport
   end
 
   def valid_conditions
-    ["gizmo_category_id", "gizmo_type_id"]
+    ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
   end
 
   def title
@@ -942,7 +942,7 @@ class DonationsGizmoCountByTypesTrend < TrendReport
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos donated by type"
@@ -966,7 +966,7 @@ class DisbursementGizmoCountByTypesTrend < TrendReport
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos disbursed by type"
@@ -997,7 +997,7 @@ class RecycledGizmoCountByTypesTrend < TrendReport
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos recycled by type"
@@ -1021,7 +1021,7 @@ class ReturnGizmoCountByTypesTrend < TrendReport
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos returned by type"
@@ -1053,7 +1053,7 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos sold by type"
@@ -1076,7 +1076,7 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:amount => res.first["due"]}
     end
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Sales amount by gizmo type"
