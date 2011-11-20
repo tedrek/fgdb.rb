@@ -150,7 +150,7 @@ module ConditionsHelper
   end
 
   def html_for_gizmo_type_group_id_condition(params_key)
-    select(params_key, 'gizmo_type_group_id', GizmoTypeGroup.find(:all).sort_by(&:name).collect(){|x|[x.name, x.id]}, {}, _multi_html_opts)
+    select(params_key, 'gizmo_type_group_id', GizmoTypeGroup.find(:all).sort_by(&:name).collect(){|x|[x.name + " (" + x.gizmo_type_list + ")", x.id]}, {}, _multi_html_opts)
   end
 
   def html_for_gizmo_category_id_condition(params_key)
