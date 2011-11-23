@@ -29,6 +29,11 @@
         <% end %>
 
         <div class="form-element">
+          <label for="donation_is_pickup">Is pickup?</label>
+        <%= check_box 'donation', 'is_pickup' %>
+        </div>
+
+        <div class="form-element">
           <label for="donation_comments">Comments</label>
           <%= text_area 'donation', 'comments' , {:cols => 20, :rows => 3, :class=>"text-input"} %>
         </div>
