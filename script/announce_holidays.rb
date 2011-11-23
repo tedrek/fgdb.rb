@@ -14,9 +14,7 @@ def handle_holiday(holiday, num_weeks)
   end
   subj = "Closed for #{holiday.name} (#{num_weeks} week reminder)"
   msg = "Free Geek will be closed #{i == 1 ? "on" : "starting"} #{holiday.holiday_date} for #{i} day#{i == 1 ? "" : "s"} for the #{holiday.name} holiday."
-  blah = ["Be sure to update:", " * the phone system message (http://wiki.freegeek.org/index.php/Changing_the_Phone_Greetings)", " * the main website", " * social media websites (Twitter, Facebook, etc)", " * anywhere else people might expect to find this information"].join("\n")
-  msg += "\n\n" + blah
-  Notifier.deliver_text_report("staff_mailing_list", subj, msg)
+  Notifier.deliver_holiday_announcement(subj, msg)
 end
 
 tod = Date.today

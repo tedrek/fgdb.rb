@@ -7,6 +7,14 @@ class Notifier < ActionMailer::Base
     body :text => data
   end
 
+  def holiday_announcement(subj, data)
+    recipients Default['staff_mailing_list']
+    from Default['my_email_address']
+    headers 'return-path' => Default['return_path'] if Default['return_path']
+    subject subj
+    body :text => data
+  end
+
   def volunteer_milestone_report( volunteers )
     recipients Default['volunteer_reports_to']
     from Default['my_email_address']
