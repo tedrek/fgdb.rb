@@ -1,10 +1,10 @@
-fgdb.rb (1.0.78) UNRELEASED; urgency=low
+fgdb.rb (1.0.78) released; urgency=low
 
   * add a holiday announcer (Closes: #25504)
   * add 'is pickup?' checkbox to donations, defaulting to false except
     for previous donations that have service fees
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Nov 2011 12:32:06 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Nov 2011 15:52:11 -0800
 
 fgdb.rb (1.0.77) released; urgency=low
 
