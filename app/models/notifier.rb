@@ -1,4 +1,12 @@
 class Notifier < ActionMailer::Base
+  def text_report(mail_default_name, subj, data)
+    recipients Default[mail_default_name]
+    from Default['my_email_address']
+    headers 'return-path' => Default['return_path'] if Default['return_path']
+    subject subj
+    body :text => data
+  end
+
   def volunteer_milestone_report( volunteers )
     recipients Default['volunteer_reports_to']
     from Default['my_email_address']

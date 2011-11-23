@@ -5,7 +5,29 @@ ENV['RAILS_ENV']||="production"
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
+email = nil
+subj = nil
+testing = false
+if ARGV[1] == "--testemail"
+  ARGV[1] = '--email'
+  testing = true
+end
+if ARGV[1] == "--email"
+  subj = ARGV[2]
+  email = ARGV[3]
+end
+
 db = Default.configurations[RAILS_ENV]["database"]
 cmd = "cat " + ARGV[0] + " | sed '1,2 d' | psql " + db + " | less -F"
 puts "Executing: #{cmd}" if ARGV[1] == "--debug"
-system(cmd)
+if email and subj
+  if testing
+    ActionMailer::Base.delivery_method = :test
+  end
+  Notifier.deliver_text_report(email, subj, `#{cmd} 2>&1`)
+  if testing
+    puts ActionMailer::Base.deliveries.map{|x| x.to_s}.join("\n\n\n-------\n\n\n")
+  end
+else
+  system(cmd)
+end
