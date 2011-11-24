@@ -1,3 +1,8 @@
+fgdb.rb (1.0.79) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Nov 2011 16:04:09 -0800
+
 fgdb.rb (1.0.78) released; urgency=low
 
   * add a holiday announcer (Closes: #25504)
