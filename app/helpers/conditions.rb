@@ -238,6 +238,7 @@ class Conditions < ConditionsBase
   def volunteer_task_type_conditions(klass)
     tbl = klass.table_name
     tbl = "volunteer_shifts" if tbl == "assignments"
+    tbl = "volunteer_default_shifts" if tbl == "default_assignments"
     return ["#{tbl}.volunteer_task_type_id = ?", @volunteer_task_type_id]
   end
 
