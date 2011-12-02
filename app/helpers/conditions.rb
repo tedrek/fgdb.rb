@@ -414,7 +414,7 @@ class Conditions < ConditionsBase
   end
 
   def occurred_at_conditions(klass)
-    klass = GizmoEvent if [Recycling, Donation, Sale, Disbursement, GizmoReturn].include?(klass)
+    klass = GizmoEvent if [Recycling, Disbursement].include?(klass) # Donation, Sale, GizmoReturn
     date_range(klass, 'occurred_at', 'occurred_at')
   end
 
