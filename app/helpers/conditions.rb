@@ -302,7 +302,7 @@ class Conditions < ConditionsBase
 
   def id_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
-    return ["#{klass.table_name}.id = ?", @id]
+    return ["#{klass.table_name}.id = ?", @id.to_i]
   end
 
   def postal_code_conditions(klass)
@@ -520,11 +520,11 @@ class Conditions < ConditionsBase
   end
 
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id]
+    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id.to_i]
   end
 
   def gizmo_type_group_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", gizmo_type_group_id]
+    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", gizmo_type_group_id.to_i]
   end
 
   def serial_number_conditions(klass)
@@ -543,11 +543,11 @@ class Conditions < ConditionsBase
   end
 
   def gizmo_category_id_conditions(klass)
-    return ["(SELECT gizmo_category_id FROM gizmo_types WHERE id = gizmo_events.gizmo_type_id) = ?", gizmo_category_id]
+    return ["(SELECT gizmo_category_id FROM gizmo_types WHERE id = gizmo_events.gizmo_type_id) = ?", gizmo_category_id.to_i]
   end
 
   def disbursement_type_id_conditions(klass)
-    return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id]
+    return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id.to_i]
   end
 
   def store_credit_id_conditions(klass)
