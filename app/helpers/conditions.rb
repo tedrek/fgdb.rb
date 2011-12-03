@@ -665,9 +665,9 @@ class Conditions < ConditionsBase
           v = ""
         else
           v = [self.send(ome)].flatten.map{|it|
-            obj = meo.classify.constantize.find_by_id(it)
+            obj = meo.classify.constantize.find_by_id(it.to_i)
             sendit = obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s
-            obj ? obj.send(sendit) : nil
+              obj.nil? ? nil : obj ? obj.send(sendit) : nil
           }.select{|x| !x.nil?}.join(",")
         end
       else
