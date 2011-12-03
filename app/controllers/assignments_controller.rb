@@ -202,8 +202,14 @@ class AssignmentsController < ApplicationController
     if @assignment
       @assignments = [@assignment]
     else
-      @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
-      @assignment = @assignments.first
+      begin
+        @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
+        @assignment = @assignments.first
+      rescue
+        flash[:error] = $!.to_s
+        redirect_to :back
+        return
+      end
     end
     @referer = request.env["HTTP_REFERER"]
     @my_url ||= {:action => "update", :id => params[:id]}
