@@ -12,7 +12,12 @@ class SidebarLinksController < ApplicationController
   public
   def recent_crash
     d = File.join(RAILS_ROOT, "tmp", "crash")
-    @first = `ls -t #{d} | head -30`.split("\n").map{|x| x.split(".").last}
+    @page = params[:page] || 1
+    @page = @page.to_i
+    @first = `ls -t #{d} | head -#{30 * @page}`.split("\n")
+    @first = @first[((@page - 1) * 30)..(@page * 30)]
+    @first ||= []
+    @first = @first.map{|x| x.split(".").last}
     @strs = {}
     for file in @first
       f = File.join(RAILS_ROOT, "tmp", "crash", "crash." + file)
