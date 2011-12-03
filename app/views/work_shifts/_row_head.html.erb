@@ -19,7 +19,7 @@
 
     <tr>
     <th>
-      <% if skedj.opts[:presentation_mode]=='Preview' %>
+      <% if skedj.opts[:presentation_mode]=='Preview' or skedj.opts[:left_link_id].nil? %>
         <%= skedj.get_method_value(skedj.current, :left_method_name) %>
       <% else %>
         <%= link_to skedj.get_method_value(skedj.current, :left_method_name), { :action => skedj.opts[:left_link_action], :controller => skedj.opts[:left_table_name], :id => skedj.get_method_value(skedj.current, :left_link_id) }, :title => skedj.opts[:left_link_action], :popup => true %>
