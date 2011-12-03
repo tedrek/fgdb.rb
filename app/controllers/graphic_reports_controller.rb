@@ -29,7 +29,11 @@ class GraphicReportsController < ApplicationController
   end
 
   def view
-    find_report
+    if find_report.nil?
+      flash[:error] = "Select a report"
+      redirect_to :action => "index"
+      return
+    end
     @report = @klass.new
     @report.set_conditions(params[:conditions])
     @report.generate_report_data
@@ -42,7 +46,11 @@ class GraphicReportsController < ApplicationController
   def index2
     @multi_enabled = true
     @valid_conditions = []
-    find_report
+    if find_report.nil?
+      flash[:error] = "Select a report"
+      redirect_to :action => "index"
+      return
+    end
     @breakdown_types = @klass.breakdown_types
     @valid_conditions = @klass.valid_conditions
   end
@@ -58,6 +66,7 @@ class GraphicReportsController < ApplicationController
 
   # returns the title for that report type
   def find_report
+    return nil unless params[:conditions]
     @klass ||= TrendReport.find_class(params[:conditions][:report_type])
   end
 
