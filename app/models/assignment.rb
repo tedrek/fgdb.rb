@@ -8,6 +8,7 @@ class Assignment < ActiveRecord::Base
   belongs_to :attendance_type
   belongs_to :call_status_type
   validates_presence_of :set_date, :if => :volshift_stuck
+  validates_existence_of :contact, :allow_nil => true
 
   delegate :set_date, :set_date=, :to => :volunteer_shift
 
