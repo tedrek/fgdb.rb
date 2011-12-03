@@ -103,7 +103,13 @@ class SpecSheetsController < ApplicationController
   end
 
   def show
-    @report = SpecSheet.find(params[:id])
+    begin
+      @report = SpecSheet.find(params[:id])
+    rescue => e
+      flash[:error] = e.to_s
+      redirect_to :action => "index"
+      return
+    end
     output=@report.lshw_output #only call db once
     if !@report.xml_is_good
       redirect_to(:action => "index", :error => "Invalid XML!")
