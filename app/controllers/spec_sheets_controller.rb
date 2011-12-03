@@ -67,9 +67,23 @@ class SpecSheetsController < ApplicationController
   end
 
   def builder
-    @contact = Contact.find_by_id(params[:contact][:id])
+    @contact = params[:contact] && Contact.find_by_id(params[:contact][:id].to_i)
+    if !@contact
+      flash[:error] = "Contact id ##{params[:contact].nil? ? "" : params[:contact][:id]} could not be found"
+      redirect_to :action => "index"
+      return
+    end
     @contact_types = ContactType.builder_relevent
     @builder_tasks = @contact.builder_tasks.last_two_years
+  end
+
+  def system
+    @main_system = System.find_by_id(params[:id].to_i)
+    if !@main_system
+      flash[:error] = "System id ##{params[:id]} could not be found"
+      redirect_to :action => "index"
+      return
+    end
   end
 
   def search

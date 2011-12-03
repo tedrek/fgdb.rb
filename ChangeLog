@@ -4,8 +4,9 @@ fgdb.rb (1.0.79) UNRELEASED; urgency=low
     table [needs fgdiag update]
   * Warn when a volunteer signs up for more than 2 shifts (Closes:
     #25440)
+  * handle bad input from the users nicer
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 30 Nov 2011 17:35:43 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Dec 2011 11:16:03 -0800
 
 fgdb.rb (1.0.78) released; urgency=low
 

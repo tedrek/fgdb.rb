@@ -4,6 +4,8 @@
   <% end %>
 </div>
 
+<% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
+
 <h2>Show system history</h2>
 
 <% form_for "", nil, :url => {:action => "system" }, :html => {:method => "get"} do |f| %>
