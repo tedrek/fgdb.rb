@@ -191,6 +191,7 @@ function edit_gizmo_event(id) {
     $('reason').value = getValueBySelector(thing, ".reason");
     $('tester').value = getValueBySelector(thing, ".tester");
     $('sale_id').value = getValueBySelector(thing, ".return_sale_id");
+    $('disbursement_id').value = getValueBySelector(thing, ".return_disbursement_id");
     $('store_credit_hash').value = getValueBySelector(thing, ".store_credit_hash");
   }
   $('description').value = getValueBySelector(thing, ".description");
@@ -272,13 +273,20 @@ function _add_gizmo_event_from_form()
   if($('reason') != null) {
     args['reason'] = $('reason').value;
     args['tester'] = $('tester').value;
-    if((!gt_is_sc()) && $('sale_id').value == "") {
-      $('sale_id').value = prompt("You didn't enter a sale id. Please enter one now, or continue if you are sure you don't want to enter one.");
+    if((!gt_is_sc()) && $('sale_id').value == "" && $('disbursement_id').value == "") {
+      $('sale_id').value = prompt("You didn't enter a sale or disbursement id. If this is a sale, please enter the sale id now, or continue if it was a disbursement or you are sure you don't want to enter the id.");
+    }
+    if((!gt_is_sc()) && $('sale_id').value == "" && $('disbursement_id').value == "") {
+      $('disbursement_id').value = prompt("You didn't enter a sale or disbursement id. If this is a disbursement, please enter the disbursement id now, or continue if you are sure you don't want to enter one. You can cancel to go back to enter the sale id.");
     }
     while((!gt_is_sc()) && $('sale_id').value != "" && !sale_exists($('sale_id').value)) {
       $('sale_id').value = prompt("You entered a nonexistant sale id. Please enter a correct one now, or continue without entering one if you want to leave it blank.");
     }
+    while((!gt_is_sc()) && $('disbursement_id').value != "" && !disbursement_exists($('disbursement_id').value)) {
+      $('disbursement_id').value = prompt("You entered a nonexistant disbursement id. Please enter a correct one now, or continue without entering one if you want to leave it blank.");
+    }
     args['sale_id'] = $('sale_id').value;
+    args['disbursement_id'] = $('disbursement_id').value;
     args['store_credit_hash'] = $('store_credit_hash').value;
   }
   if($('covered') != null) {
@@ -307,6 +315,7 @@ function _add_gizmo_event_from_form()
     $('reason').value = $('reason').defaultValue;
     $('tester').value = $('tester').defaultValue;
     $('sale_id').value = $('sale_id').defaultValue;
+    $('disbursement_id').value = $('disbursement_id').defaultValue;
     $('store_credit_hash').value = $('store_credit_hash').defaultValue;
   }
   if($('covered') != null){
@@ -421,8 +430,10 @@ function returns_stuff(args,tr) {
   var reason = args['reason'];
   var tester = args['tester'];
   var sale_id = args['sale_id'];
+  var disbursement_id = args['disbursement_id'];
   var sc_hash = args['store_credit_hash'];
   tr.appendChild(make_hidden(args['prefix'], "return_sale_id", sale_id, sale_id, line_id));
+  tr.appendChild(make_hidden(args['prefix'], "return_disbursement_id", disbursement_id, disbursement_id, line_id));
   tr.appendChild(make_hidden(args['prefix'], "store_credit_hash", sc_hash, sc_hash, line_id));
   tr.appendChild(make_hidden(args['prefix'], "reason", reason.truncate(15), reason, line_id));
   tr.appendChild(make_hidden(args['prefix'], "tester", tester.truncate(15), tester, line_id));
@@ -602,6 +613,26 @@ function sale_exists(sale_id){
     new Ajax.Request(get_sale_exists_url + '?' + str, {asynchronous:false, evalScripts:true});
     sale_id_cache[sale_id] = internal_sale_exists;
     val = internal_sale_exists;
+  }
+  if(val == -2) {
+    alert("internal error");
+  }
+  return val;
+}
+
+function disbursement_exists(disbursement_id){
+  var val;
+  if(disbursement_id_cache[disbursement_id]) {
+    val = disbursement_id_cache[disbursement_id];
+  } else {
+    var myhash = new Hash();
+    internal_disbursement_exists = -2;
+    myhash.set('id', disbursement_id);
+    var str = myhash.toQueryString();
+    Element.show(line_item_loading_id);
+    new Ajax.Request(get_disbursement_exists_url + '?' + str, {asynchronous:false, evalScripts:true});
+    disbursement_id_cache[disbursement_id] = internal_disbursement_exists;
+    val = internal_disbursement_exists;
   }
   if(val == -2) {
     alert("internal error");
@@ -851,7 +882,7 @@ function is_last_enabled_visable_there_field_thing_in_line_item(name, names) {
 }
 
 function ge_linelist() {
-  return ['gizmo_type_id', 'gizmo_count', 'sale_id', 'store_credit_hash', 'reason', 'tester', 'system_id', 'contract_id','covered', 'unit_price'];
+  return ['gizmo_type_id', 'gizmo_count', 'sale_id', 'disbursement_id', 'store_credit_hash', 'reason', 'tester', 'system_id', 'contract_id','covered', 'unit_price'];
 }
 
 function disable_ge_entry_line(){
@@ -1111,11 +1142,17 @@ function gt_is_sc() {
 function gizmo_return_gizmo_type_selected() {
   if(gt_is_sc()) {
     $('sale_id').disabled = true;
+    $('disbursement_id').disabled = true;
     $('unit_price').disabled = true;
+    $('reason').disabled = true;
+    $('tester').disabled = true;
     $('store_credit_hash').disabled = false;
   } else {
     $('sale_id').disabled = false;
+    $('disbursement_id').disabled = false;
     $('unit_price').disabled = false;
+    $('reason').disabled = false;
+    $('tester').disabled = false;
     $('store_credit_hash').disabled = true;
     $('store_credit_hash').value = $('store_credit_hash').defaultValue;
   }

@@ -23,6 +23,7 @@
 <%= javascript_include_tag 'line_items' %>
 
 <%= javascript_tag "get_sale_exists_url = #{url_for(:action => "get_sale_exists").to_json}; sale_id_cache = new Array;" %>
+<%= javascript_tag "get_disbursement_exists_url = #{url_for(:action => "get_disbursement_exists").to_json}; disbursement_id_cache = new Array;" %>
 
 <% end %>
 

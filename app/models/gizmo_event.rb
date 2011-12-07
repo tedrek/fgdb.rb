@@ -157,8 +157,12 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     return_sale_id
   end
 
+  def original_disbursement_id
+    return_disbursement_id
+  end
+
   def attry_description(options = {})
-    junk = [:as_is, :size, :system_id, :original_sale_id].map{|x| x.to_s} - (options[:ignore] || [])
+    junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id].map{|x| x.to_s} - (options[:ignore] || [])
 
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 
