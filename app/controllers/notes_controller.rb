@@ -8,7 +8,7 @@ class NotesController < ApplicationController
   def new
     @note = Note.new
     @note.system = System.find_by_id(params[:system_id])
-    redirect :back if @note.system.nil?
+    redirect_to :back if @note.system.nil?
   end
 
   def edit

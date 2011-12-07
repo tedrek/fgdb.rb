@@ -1,4 +1,3 @@
-<% @main_system = System.find_by_id(params[:id]) %>
 <% for sys in @main_system ? @main_system.all_instances : [] %>
 <% @system = sys %>
 <h2>System #<%= @system.id %></h2>

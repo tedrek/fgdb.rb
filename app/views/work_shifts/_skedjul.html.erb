@@ -3,6 +3,8 @@
 <div class="skedj">
 <h2>Listing <%= params[:controller].humanize.downcase %></h2>
 
+<% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
+
 <% if skedj.opts[:presentation_mode]!='Preview' %>
 
 <% if skedj.opts[:conditions] %>

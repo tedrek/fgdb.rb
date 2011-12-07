@@ -26,7 +26,8 @@ Resources: <%= resources %><br />
 <% end %>
 </div>
 
+<% unless @readonly %>
 <div style="clear: left">
 <%= button_to_function "Multi-Edit", "do_multi_edit();" %>
 </div>
-
+<% end %>

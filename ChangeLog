@@ -1,9 +1,38 @@
-fgdb.rb (1.0.76) UNRELEASED; urgency=low
+fgdb.rb (1.0.79) UNRELEASED; urgency=low
+
+  * save the number of megabytes from the disktest to the disktest_runs
+    table [needs fgdiag update]
+  * Warn when a volunteer signs up for more than 2 shifts (Closes:
+    #25440)
+  * handle bad input from the users nicer
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Dec 2011 11:16:03 -0800
+
+fgdb.rb (1.0.78) released; urgency=low
+
+  * add a holiday announcer (Closes: #25504)
+  * add 'is pickup?' checkbox to donations, defaulting to false except
+    for previous donations that have service fees
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Nov 2011 15:52:11 -0800
+
+fgdb.rb (1.0.77) released; urgency=low
+
+  * add open_time/close_time to weekdays table in database and use that
+    in find_problems
+  * restrict the values of the start and end times to prevent scheduling
+    errors (Closes: #25438)
+  * add a read-only view, privilege and role for volunteer scheduling
+    (Closes: #25435)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 Nov 2011 22:16:29 -0800
+
+fgdb.rb (1.0.76) released; urgency=low
 
   * set WorkShifts.kind to be NOT NULL and default to StandardShift,
     fixing the work_shifts#new form
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Nov 2011 12:53:46 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 11 Nov 2011 20:38:18 -0800
 
 fgdb.rb (1.0.75) released; urgency=low
 

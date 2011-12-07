@@ -19,7 +19,7 @@
     <div class="task_info">
       <div class="form-element">
         <label for="volunteer_task_date_performed">what day?</label>
-        <%= calendar_box 'volunteer_task', 'date_performed',{:onchange => "foobarbaz();"},{:showOthers => true} %>
+        <%= calendar_box 'volunteer_task', 'date_performed',{:onchange => "update_task_types();"},{:showOthers => true} %>
       </div>
 
       <div class="form-element">

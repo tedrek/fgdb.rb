@@ -44,9 +44,12 @@ class SkedsController < ApplicationController
   end
 
   def create
+    list = params[:sked].delete(:roster_ids)
     @sked = Sked.new(params[:sked])
 
     if @sked.save
+      @sked.roster_ids = list
+      @sked.save
       flash[:notice] = 'Sked was successfully created.'
       redirect_to({:action => "show", :id => @sked.id})
     else

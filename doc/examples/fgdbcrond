@@ -3,8 +3,8 @@
 
 # milestone report
 0 21 * * 3 root /var/www/fgdb.rb/script/volunteer_milestones_report
-
-0 21 * * 2 root /var/www/fgdb.rb/script/overtime_report.rb | mail -s "Overtime Report" -c 'ryan@freegeek.org' hr@lists.freegeek.org
+0 8 * * * root /var/www/fgdb.rb/script/announce_holidays.rb
+0 21 * * 2 root /var/www/fgdb.rb/script/overtime_report.rb
 
 # staff hours reports
 0 0 * * * root /var/www/fgdb.rb/script/hours_poker --email
@@ -14,4 +14,4 @@
 17 *    * * *   root    flock -n /var/www/fgdb.rb/tmp/pids/backup.lock -c "timeout 10800 /var/www/fgdb.rb/doc/examples/db-backup-hourly"
 
 # TODO: move the mailing to sql_runner and grab from database
-0 7 * * 3,4,5,6,7 root /var/www/fgdb.rb/script/cashier_report.sql | mail -s "Cashiers Report" beancounters@lists.freegeek.org
+0 7 * * 3,4,5,6,7 root /var/www/fgdb.rb/script/cashier_report.sql --email "Cashiers Report" beancounters_mailing_list

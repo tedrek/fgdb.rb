@@ -145,7 +145,13 @@ class ReportsController < ApplicationController
 
   def income_report(thing = nil)
     @defaults = Conditions.new
-    @defaults.apply_conditions(thing || params[:defaults])
+    thing = thing || params[:defaults]
+    if thing.nil?
+      flash[:error] = "Select report conditions"
+      redirect_to :action => "income"
+      return
+    end
+    @defaults.apply_conditions(thing)
     @income_data = {}
     income_report_init #:MC: modifies @income_data
     @date_range_string = @defaults.to_s

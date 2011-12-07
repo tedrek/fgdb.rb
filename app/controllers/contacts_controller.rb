@@ -120,8 +120,12 @@ class ContactsController < ApplicationController
   end
 
   def update_display_area
-    @contact = Contact.find( params.fetch(:contact_id, '').strip )
-    render :partial => 'display', :locals => { :contact => @contact, :options => params['options'] || params}
+    @contact = Contact.find_by_id( params.fetch(:contact_id, '').strip.to_i )
+    if @contact.nil?
+      render :text => ""
+    else
+      render :partial => 'display', :locals => { :contact => @contact, :options => params['options'] || params}
+    end
   end
 
   def new

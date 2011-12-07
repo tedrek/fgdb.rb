@@ -10,7 +10,7 @@ none found
 <% else %>
 <ul>
   <% @conflicts.each do |x| %>
-    <li><%= "On #{link_to x["date"].to_s, :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x["date"], :shift_date_end_date => x["date"]}}, #{x["worker"]} is scheduled in #{x["job_1"]} and #{x["job_2"]} at the same time" %></li>
+    <li><%= "On #{link_to Date.parse(x["date"]).strftime("%a, %D"), :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x["date"], :shift_date_end_date => x["date"]}}, #{x["worker"]} is scheduled in #{x["job_1"]} and #{x["job_2"]} at the same time" %></li>
   <% end %>
 </ul>
 <% end %>
@@ -20,7 +20,7 @@ none found
 <% else %>
 <ul>
   <% @unassigned.each do |x| %>
-    <li><%= "On #{link_to x["date"].to_s, :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x["date"], :shift_date_end_date => x["date"]}}, a #{x["job"]} shift has no worker" %></li>
+    <li><%= "On #{link_to Date.parse(x["date"]).strftime("%a, %D"), :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x["date"], :shift_date_end_date => x["date"]}}, a #{x["job"]} shift has no worker" %></li>
   <% end %>
 </ul>
 <% end %>
@@ -36,7 +36,7 @@ none found
 <% end %>
 <ul>
 <% nobreak_found.sort_by(&:first).each do |x,w| %>
-<li>On <%= link_to "#{x.to_s}", :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x, :shift_date_end_date => x} %>, <%= w.name %> works all day with no break</li>
+<li>On <%= link_to "#{x.strftime("%a, %D")}", :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x, :shift_date_end_date => x} %>, <%= w.name %> works all day with no break</li>
 <% end %>
 </ul>
 <h2>Gaps in Fully Covered Jobs</h2>

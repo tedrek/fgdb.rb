@@ -65,7 +65,7 @@
                name="roles[]" value="<%= role.id %>"
                <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
                />
-        <label for="<%= h role.name %>"><%= (xx = /(.+)/.match(h(role.name))) ? xx[1] : h(role.name) %></label>
+        <label for="<%= h role.name %>"><%= (xx = /(.+)/.match(h(role.name))) ? xx[1] : h(role.name) %> (<%= role.privileges.map{|x| x.name}.join(", ") %>)</label>
       </div>
     <% end %>
   </div>

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+INCOME=/srv/data-extras/data-backups/
+LIST=$(ls $INCOME | grep .sql$)
+
+if [ ! -z "$LIST" ]; then
+   cd $INCOME
+   for FILE in $LIST; do
+      cat $FILE | bzip2 -c - > ${FILE}.bz2
+      rm -fr $FILE
+   done
+fi
+

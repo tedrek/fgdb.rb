@@ -8,6 +8,7 @@ class Assignment < ActiveRecord::Base
   belongs_to :attendance_type
   belongs_to :call_status_type
   validates_presence_of :set_date, :if => :volshift_stuck
+  validates_existence_of :contact, :allow_nil => true
 
   delegate :set_date, :set_date=, :to => :volunteer_shift
 
@@ -37,6 +38,7 @@ class Assignment < ActiveRecord::Base
       errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
       errors.add("volunteer_shift_id", "is already assigned during that time") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
      end
+    errors.add("end_time", "is before the start time") unless self.start_time < self.end_time
   end
 
   def date

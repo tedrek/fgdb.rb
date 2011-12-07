@@ -114,6 +114,9 @@ def sync_contact_from_civicrm(civicrm_id)
   civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params)["values"][civicrm_id]
   c.first_name = civicrm_contact["first_name"]
   c.created_by ||= 1
+  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}.r_to_params).inspect # will need to create/delete if needed
+  puts my_client.do_req("civicrm/note/get", {"contact_id" => civicrm_id, "subject" => "FGDB"}.r_to_params).inspect # delete, then re-create it
+  puts civicrm_contact.inspect
   c.surname = civicrm_contact["last_name"]
   c.is_organization = civicrm_contact["contact_type"] == "Organization"
   c.organization = civicrm_contact["organization_name"]

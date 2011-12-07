@@ -1,3 +1,4 @@
+<% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
 <div class="form-element">
   <%= conditions_html('defaults', ["occurred_at"]) %>
 </div>

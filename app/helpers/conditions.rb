@@ -2,7 +2,7 @@ class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
-      shift_date date updated_at occurred_at
+      shift_date date updated_at
   ]
 
   CONDS = (%w[
@@ -13,7 +13,7 @@ class Conditions < ConditionsBase
       empty disbursement_type_id store_credit_id organization
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
-      needs_checkin assigned attendance_type worker_type
+      needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
     ] + DATES).uniq
 
@@ -72,6 +72,8 @@ class Conditions < ConditionsBase
 
   attr_accessor :gizmo_type_id
 
+  attr_accessor :gizmo_type_group_id
+
   attr_accessor :gizmo_category_id
 
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
@@ -108,7 +110,7 @@ class Conditions < ConditionsBase
 
   def schedule_conditions(klass)
     in_clause = "(-1)"
-    s = Schedule.find_by_id(@schedule_id)
+    s = Schedule.find_by_id(@schedule_id.to_i)
     if s
       if @schedule_which_way == 'Solo'
         in_clause = s.in_clause_solo
@@ -139,15 +141,15 @@ class Conditions < ConditionsBase
   def worker_type_conditions(klass)
     search_date = klass.table_name + "." + klass.conditions_date_field
     search_worker_id = klass.table_name + ".worker_id"
-    ["(SELECT worker_type_id FROM workers_worker_types WHERE workers_worker_types.worker_id = #{search_worker_id} AND (#{search_date} >= workers_worker_types.effective_on OR workers_worker_types.effective_on IS NULL) AND (#{search_date} <= workers_worker_types.ineffective_on OR workers_worker_types.ineffective_on IS NULL) LIMIT 1) = ?", @worker_type_id]
+    ["(SELECT worker_type_id FROM workers_worker_types WHERE workers_worker_types.worker_id = #{search_worker_id} AND (#{search_date} >= workers_worker_types.effective_on OR workers_worker_types.effective_on IS NULL) AND (#{search_date} <= workers_worker_types.ineffective_on OR workers_worker_types.ineffective_on IS NULL) LIMIT 1) = ?", @worker_type_id.to_i]
   end
 
   def worker_conditions(klass)
-    return ["worker_id IN (?)", @worker_id]
+    return ["worker_id IN (?)", @worker_id.to_i]
   end
 
   def job_conditions(klass)
-    return ["job_id IN (?)", @job_id]
+    return ["job_id IN (?)", @job_id.to_i]
   end
 
   def empty_conditions(klass)
@@ -163,7 +165,7 @@ class Conditions < ConditionsBase
   end
 
   def attendance_type_conditions(klass)
-    return ["attendance_type_id = ?", @attendance_type_id]
+    return ["attendance_type_id = ?", @attendance_type_id.to_i]
   end
 
   def needs_checkin_conditions(klass)
@@ -193,17 +195,17 @@ class Conditions < ConditionsBase
   end
 
   def role_conditions(klass)
-    ["#{klass.table_name}.id IN (SELECT contact_id FROM users WHERE can_login = 't' AND id IN (SELECT user_id FROM roles_users WHERE role_id = ?))", @role]
+    ["#{klass.table_name}.id IN (SELECT contact_id FROM users WHERE can_login = 't' AND id IN (SELECT user_id FROM roles_users WHERE role_id = ?))", @role.to_i]
   end
 
   def action_conditions(klass)
     klass = BuilderTask if klass == SpecSheet
-    ["#{klass.table_name}.action_id = ?", @action]
+    ["#{klass.table_name}.action_id = ?", @action.to_i]
   end
 
   def type_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
-    ["#{klass.table_name}.type_id = ?", @type]
+    ["#{klass.table_name}.type_id = ?", @type.to_i]
   end
 
   def covered_conditions(klass)
@@ -236,7 +238,8 @@ class Conditions < ConditionsBase
   def volunteer_task_type_conditions(klass)
     tbl = klass.table_name
     tbl = "volunteer_shifts" if tbl == "assignments"
-    return ["#{tbl}.volunteer_task_type_id = ?", @volunteer_task_type_id]
+    tbl = "volunteer_default_shifts" if tbl == "default_assignments"
+    return ["#{tbl}.volunteer_task_type_id = ?", @volunteer_task_type_id.to_i]
   end
 
   def weekday_conditions(klass)
@@ -247,9 +250,9 @@ class Conditions < ConditionsBase
     klass = VolunteerEvent if klass == ResourcesVolunteerEvent
     klass = VolunteerEvent if klass == Assignment
     if klass == VolunteerEvent
-      return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", @weekday_id]
+      return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", @weekday_id.nil? ? -1 : @weekday_id]
     else
-      return ["#{klass.table_name}.weekday_id IN (?)", @weekday_id]
+      return ["#{klass.table_name}.weekday_id IN (?)", @weekday_id.nil? ? -1 : @weekday_id]
     end
   end
 
@@ -257,14 +260,14 @@ class Conditions < ConditionsBase
     klass = VolunteerShift if klass == Assignment
     klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    return ["#{tbl}.roster_id IN (?)", @roster_id]
+    return ["#{tbl}.roster_id IN (?)", @roster_id.to_i]
   end
 
   def sked_conditions(klass)
     klass = VolunteerShift if klass == Assignment
     klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    return ["#{tbl}.roster_id IN (SELECT roster_id FROM rosters_skeds WHERE sked_id = ?)", @sked_id]
+    return ["#{tbl}.roster_id IN (SELECT roster_id FROM rosters_skeds WHERE sked_id = ?)", @sked_id.to_i]
   end
 
   def volunteer_hours_conditions(klass)
@@ -289,17 +292,17 @@ class Conditions < ConditionsBase
 
   def contract_conditions(klass)
     if klass == GizmoEvent
-      ["(donations.contract_id = ? OR systems.contract_id = ? OR recycling_contract_id = ?)", @contract_id, @contract_id, @contract_id]
+      ["(donations.contract_id = ? OR systems.contract_id = ? OR recycling_contract_id = ?)", @contract_id.to_i, @contract_id.to_i, @contract_id.to_i]
     elsif klass == Donation
-      ["contract_id = ?", @contract_id]
+      ["contract_id = ?", @contract_id.to_i]
     else # recyclings and disbursements
-      ["(gizmo_events.system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR gizmo_events.recycling_contract_id = ?)", @contract_id, @contract_id]
+      ["(gizmo_events.system_id IN (SELECT id FROM systems WHERE contract_id = ?) OR gizmo_events.recycling_contract_id = ?)", @contract_id.to_i, @contract_id.to_i]
     end
   end
 
   def id_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
-    return ["#{klass.table_name}.id = ?", @id]
+    return ["#{klass.table_name}.id = ?", @id.to_i]
   end
 
   def postal_code_conditions(klass)
@@ -330,7 +333,7 @@ class Conditions < ConditionsBase
     else
       i = "contact_id"
     end
-    return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type]
+    return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type.to_i]
   end
 
   def organization_conditions(klass)
@@ -365,9 +368,9 @@ class Conditions < ConditionsBase
   def system_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
     if klass == Sale or klass == Disbursement
-      return ["? IN (gizmo_events.system_id)", @system_id]
+      return ["? IN (gizmo_events.system_id)", @system_id.to_i]
     else
-      return ["#{klass.table_name}.system_id = ?", @system_id]
+      return ["#{klass.table_name}.system_id = ?", @system_id.to_i]
     end
   end
 
@@ -411,6 +414,7 @@ class Conditions < ConditionsBase
   end
 
   def occurred_at_conditions(klass)
+    klass = GizmoEvent if [Recycling, Disbursement].include?(klass) # Donation, Sale, GizmoReturn
     date_range(klass, 'occurred_at', 'occurred_at')
   end
 
@@ -420,10 +424,6 @@ class Conditions < ConditionsBase
 
   def updated_at_conditions(klass)
     date_range(klass, 'updated_at', 'updated_at')
-  end
-
-  def occurred_at_conditions(klass)
-    date_range(klass, 'occurred_at', 'occurred_at')
   end
 
   def date_performed_conditions(klass)
@@ -504,23 +504,28 @@ class Conditions < ConditionsBase
 
   def contact_conditions(klass)
     klass = BuilderTask if klass == SpecSheet
+    @contact_id = @contact_id.to_i
     if klass == GizmoEvent
-      return ["(sales.contact_id = ? OR donations.contact_id = ? OR gizmo_returns.contact_id = ? OR disbursements.contact_id = ?)", contact_id, contact_id, contact_id, contact_id] # NOT OR recyclings.contact_id = ?
+      return ["(sales.contact_id = ? OR donations.contact_id = ? OR gizmo_returns.contact_id = ? OR disbursements.contact_id = ?)", contact_id.to_i, contact_id.to_i, contact_id.to_i, contact_id.to_i] # NOT OR recyclings.contact_id = ?
     else
-      return [ "#{klass.table_name}.contact_id = ?", contact_id ]
+      return [ "#{klass.table_name}.contact_id = ?", contact_id.to_i ]
     end
   end
 
   def payment_method_conditions(klass)
     if klass.new.respond_to?(:payments)
-      return [ "payments.payment_method_id = ?", payment_method_id ]
+      return [ "payments.payment_method_id = ?", payment_method_id.to_i ]
     else
       return [ "#{klass.table_name}.id IS NULL" ]
     end
   end
 
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id]
+    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id.to_i]
+  end
+
+  def gizmo_type_group_id_conditions(klass)
+    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", gizmo_type_group_id.to_i]
   end
 
   def serial_number_conditions(klass)
@@ -539,11 +544,11 @@ class Conditions < ConditionsBase
   end
 
   def gizmo_category_id_conditions(klass)
-    return ["(SELECT gizmo_category_id FROM gizmo_types WHERE id = gizmo_events.gizmo_type_id) = ?", gizmo_category_id]
+    return ["(SELECT gizmo_category_id FROM gizmo_types WHERE id = gizmo_events.gizmo_type_id) = ?", gizmo_category_id.to_i]
   end
 
   def disbursement_type_id_conditions(klass)
-    return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id]
+    return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id.to_i]
   end
 
   def store_credit_id_conditions(klass)
@@ -575,7 +580,7 @@ class Conditions < ConditionsBase
   def contact
     if contact_id && !contact_id.to_s.empty?
       if( (! @contact) || (contact_id != @contact.id) )
-        @contact = Contact.find(contact_id)
+        @contact = Contact.find_by_id(contact_id.to_i)
       end
     else
       @contact = nil
@@ -660,9 +665,9 @@ class Conditions < ConditionsBase
           v = ""
         else
           v = [self.send(ome)].flatten.map{|it|
-            obj = meo.classify.constantize.find_by_id(it)
+            obj = meo.classify.constantize.find_by_id(it.to_i)
             sendit = obj.respond_to?(:condition_to_s) ? :condition_to_s : obj.respond_to?(:description) ? :description : obj.respond_to?(:name) ? :name : :to_s
-            obj ? obj.send(sendit) : nil
+              obj.nil? ? nil : obj ? obj.send(sendit) : nil
           }.select{|x| !x.nil?}.join(",")
         end
       else

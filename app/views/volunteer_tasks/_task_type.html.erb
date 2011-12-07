@@ -3,7 +3,13 @@
         <% if @volunteer_task %>
           <% dropdown_list = @volunteer_task.show_for_me %>
         <% else %>
-          <% dropdown_list = VolunteerTaskType.instantiables.effective_on(params[:day]).sort_by{|x| x.description.downcase} %>
+          <% my_date = begin
+                         Date.parse(params[:day])
+                       rescue
+                         Date.today
+                       end
+                      %>
+          <% dropdown_list = VolunteerTaskType.instantiables.effective_on().sort_by{|x| x.description.downcase} %>
         <% end %>
         <select id="volunteer_task_volunteer_task_type" name="volunteer_task[volunteer_task_type_id]">
           <option value="">---</option>
