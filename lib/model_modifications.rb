@@ -22,7 +22,9 @@ module ActiveRecord
         validate :check_cashier
         def check_cashier
           if self.class.cashierable
-            self.errors.add('cashier_code', 'is not valid') if !current_cashier
+            if self.class != Contact || current_user.nil? || current_user.contact_id.nil? || current_user.contact_id != self.id
+              self.errors.add('cashier_code', 'is not valid') if !current_cashier
+            end
           end
         end
 
@@ -207,10 +209,15 @@ class ActiveRecord::Base
     return find_all - recs
   end
 
+  def self.cashierable_possible
+    cols = self.columns.map{|x| x.name}
+    cols.include?("cashier_updated_by") || columns.include?("cashier_created_by")
+  end
+
   def self.cashierable
-    columns = self.columns.map{|x| x.name}
-    avail = columns.include?("cashier_updated_by") || columns.include?("cashier_created_by")
-    return false if !avail
+    return false if !self.cashierable_possible
+    puts self.new.current_user.inspect
+    return true if self.new.current_user && self.new.current_user.shared
     return Default[self.class_name.tableize + "_require_cashier_code"] ? true : false
   end
 

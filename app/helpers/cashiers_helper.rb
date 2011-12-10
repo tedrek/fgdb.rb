@@ -2,7 +2,13 @@
 
 module CashiersHelper
   def cashierable
-    params[:controller].classify.constantize.cashierable
+    klass = params[:controller].classify.constantize
+    cash = klass.cashierable
+    if cash && klass == Contact && current_user && current_user.contact_id && current_user.contact_id == @contact.id
+      return false
+    else
+      return cash
+    end
   end
 
   def cashiers_field(force = false, pass_in = nil)

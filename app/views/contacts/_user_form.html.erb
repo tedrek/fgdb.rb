@@ -48,6 +48,11 @@
     </div>
 
     <div class='form-element'>
+      <label for="user_shared">shared login? (only allows read-only and cashier code protected actions)</label>
+      <%= check_box :user, :shared %>
+    </div>
+
+    <div class='form-element'>
       <label for="user_cashier_code">Cashier Code</label>
       <%= text_field :user, :cashier_code, :readonly => true %>
     </div>
