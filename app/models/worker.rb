@@ -64,29 +64,17 @@ class Worker < ActiveRecord::Base
 
   def effective_now?
     date = DateTime.now
-    self.effective_in_range?(date, nil)
+    wt = self.worker_type_on_day(date)
+    (wt && (wt.name != "inactive"))
   end
 
   def Worker.zero
     @@zero ||= Worker.find(:first, :conditions => 'id = 0')
   end
 
-  def effective_in_range?(start_d, end_d)
-    start_t = self.worker_type_on_day(start_d)
-    end_t = nil
-    if end_d && start_d != end_d
-      end_t = self.worker_type_on_day(end_d)
-    end
-    a = [start_t, end_t]
-    a = a.delete_if{|x| x.nil?}
-    a = a.map{|x| x.name}
-    a = a.uniq
-    a = a.delete_if{|x| x == "inactive"}
-    return (a.length > 0)
-  end
-
   named_scope :effective_in_range, lambda { |*args|
-    {:conditions => ['id IN (?)', Worker._effective_in_range(args)]}
+    start, fin = Worker._effective_in_range(args)
+    {:conditions => ["id IN (SELECT DISTINCT worker_id FROM workers_worker_types JOIN worker_types ON worker_type_id = worker_types.id WHERE worker_types.name != 'inactive' AND (((effective_on <= ? OR effective_on IS NULL) AND (ineffective_on > ? OR ineffective_on IS NULL)) OR (effective_on > ? AND ineffective_on <= ?) OR ((ineffective_on is NULL or ineffective_on > ?) AND (effective_on IS NULL or effective_on <= ?))))", start, start, start, fin, fin, fin]}
   }
 
   def self._effective_in_range(args)
@@ -103,7 +91,7 @@ class Worker < ActiveRecord::Base
     else
       raise ArgumentError
     end
-    Worker.all.select{|x| x.effective_in_range?(my_start, my_end)}.map{|x| x.id}
+    return [my_start, my_end]
   end
 
   named_scope :real_people, :conditions => {:virtual => false}

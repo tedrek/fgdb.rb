@@ -1,0 +1,5 @@
+<h1><%= @report.full_title %></h1>
+
+<% @report.display.each do |t,n| %>
+<%= render :partial => t, :locals => {:num => n} %>
+<% end %>

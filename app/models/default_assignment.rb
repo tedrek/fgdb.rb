@@ -3,6 +3,8 @@ class DefaultAssignment < ActiveRecord::Base
   belongs_to :volunteer_default_shift
   validates_presence_of :set_weekday_id, :if => :volshift_stuck
   delegate :set_weekday_id, :set_weekday_id=, :to => :volunteer_default_shift
+  delegate :effective_on, :effective_on=, :to => :volunteer_default_shift
+  delegate :ineffective_on, :ineffective_on=, :to => :volunteer_default_shift
   before_validation :set_values_if_stuck
 
   def set_values_if_stuck
@@ -39,8 +41,31 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def find_overlappers(type)
-    self.class.potential_overlappers(self).send(type, self).select{|x| self.does_conflict?(x)}
+    self.class.potential_overlappers(self).send(type, self).overlaps_effective(self).select{|x| self.does_conflict?(x)}
   end
+
+  named_scope :overlaps_effective, lambda {|assignment|
+    cond = ""
+    opts = []
+    if assignment.ineffective_on.nil? and assignment.effective_on.nil?
+      cond = "(ineffective_on IS NULL AND effective_on IS NULL)"
+    else
+      if !(assignment.ineffective_on.nil? or assignment.effective_on.nil?)
+        cond = "((ineffective_on IS NULL OR ineffective_on > ?) AND (effective_on < ? OR effective_on IS NULL))"
+        opts = [assignment.effective_on, assignment.ineffective_on]
+      end
+      if assignment.ineffective_on.nil?
+        cond = "(ineffective_on IS NULL OR ineffective_on > ?)"
+        opts = [assignment.effective_on]
+      end
+      if assignment.effective_on.nil?
+        cond = "(effective_on < ? OR effective_on IS NULL)"
+        opts = [assignment.ineffective_on]
+      end
+    end
+    opts.unshift("volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts WHERE #{cond})")
+    {:conditions => opts}
+  }
 
   named_scope :potential_overlappers, lambda{|assignment|
     tid = assignment.id
@@ -91,7 +116,7 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def display_name
-    ((!(self.volunteer_default_shift.description.nil? or self.volunteer_default_shift.description.blank?)) ? self.volunteer_default_shift.description + ": " : "") + self.contact_display
+   ((!(self.volunteer_default_shift.description.nil? or self.volunteer_default_shift.description.blank?)) ? self.volunteer_default_shift.description + ": " : "") + self.contact_display + ((self.volunteer_default_shift.effective_on.nil? and self.volunteer_default_shift.ineffective_on.nil?) ? "" : " (#{self.effective_on || "beginning of time"} till #{self.ineffective_on || "end of time"})")
   end
 
   def contact_display

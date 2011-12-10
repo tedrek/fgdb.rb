@@ -4,6 +4,8 @@
   <% end %>
 </div>
 
+<% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
+
 <h2>Show system history</h2>
 
 <% form_for "", nil, :url => {:action => "system" }, :html => {:method => "get"} do |f| %>
@@ -20,7 +22,7 @@
 <% end %>
 <% end %>
 
-<h2>Search for reports</h2>
+<h2>Search for spec sheets</h2>
 
 <% if @reports -%>
   <%= render :partial => 'list', :locals => {:reports => @reports} %>
@@ -44,8 +46,8 @@
   <%= submit_tag "Search", :class => "submit" %>
 <% end -%>
 <br />
-<%= link_to 'New report', {:action => "new"} %>
+<%= link_to 'New spec sheet', {:action => "new"} %>
 <% if has_required_privileges("show/sign_off") %>
-<br /><%= link_to 'New builder_task credit without report', {:action => "new", :controller => "builder_tasks"} %>
+<br /><%= link_to 'New builder task credit without spec sheet', {:action => "new", :controller => "builder_tasks"} %>
 <% end %>
 </div>

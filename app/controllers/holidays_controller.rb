@@ -3,10 +3,36 @@ class HolidaysController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['skedjulnator'], :except => ["is_holiday"]}
+    a << {:privileges => ['skedjulnator'], :except => ["is_holiday", "display", 'show_display']}
     a
   end
   public
+
+  def display
+    params[:start_date] = Date.today.to_s
+    show_display
+  end
+
+  def show_display
+    mstart = params[:start_date]
+    mend = params[:end_date]
+    mstart = Date.parse(mstart) if mstart
+    mend = Date.parse(mend) if mend
+    @range_to_s = (mstart ? mstart.to_s : "the beginning of time") + " to " + (mend ? mend.to_s : "the end of time")
+    cond_str = 'is_all_day = ?'
+    cond_opts = [true]
+    if mstart
+      cond_str += ' AND holiday_date >= ?'
+      cond_opts << mstart
+    end
+    if mend
+      cond_str += ' AND holiday_date <= ?'
+      cond_opts << mend
+    end
+    cond_opts.unshift(cond_str)
+    @holidays = Holiday.find(:all, :conditions => cond_opts).sort_by(&:holiday_date)
+    render :action => 'display'
+  end
 
   def is_holiday # used by meetme
     d = nil

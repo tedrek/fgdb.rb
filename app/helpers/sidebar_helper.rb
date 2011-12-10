@@ -63,6 +63,7 @@ module SidebarHelper
       sidebar_hash[disp][prep + "entry"] = {:c => pl}
       sidebar_hash[disp][prep + "search"] = {:c => pl, :a => 'search'}
     end
+    sidebar_hash["sales"]["store credits"] = {:c => "store_credits", :a => 'index'}
     # reports
     ["income", "gizmos", "volunteering", "top_contributors"].each do |x|
       sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => x.sub("ing", "s")}
@@ -80,9 +81,11 @@ module SidebarHelper
     sidebar_hash["sked admin"]["real sked"] = {:c => "volunteer_shifts"}
     sidebar_hash["sked admin"]["default assign"] = {:c => "default_assignments"}
     sidebar_hash["vol sked"]["schedule"] = {:c => "assignments"}
+    sidebar_hash["vol sked"]["view"] = {:c => "assignments", :a => "view"}
     sidebar_hash["vol sked"]["search"] = {:c => "assignments", :a => "search"}
     # staffsched
     sidebar_hash["staff"]["schedule"] = {:c => "work_shifts", :a => "staffsched"} if should_show_schedule
+    sidebar_hash["staff"]["holidays"] = {:c => "holidays", :a => "display"}
     sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule
     sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"}
     sidebar_hash["staff"]["individual report"] = {:c => "worked_shifts", :a => "individual"}

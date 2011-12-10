@@ -14,8 +14,8 @@ class Sale < ActiveRecord::Base
 
   before_save :add_contact_types
   before_save :unzero_contact_id
-  before_save :compute_fee_totals
   before_save :add_change_line_item
+  before_save :compute_fee_totals
   before_save :set_occurred_at_on_gizmo_events
   before_save :combine_cash_payments
   before_save :set_occurred_at_on_transaction
@@ -26,60 +26,80 @@ class Sale < ActiveRecord::Base
     super(*args)
   end
 
-  # Quick Testing: ./script/runner 'class F; include RawReceiptHelper; def session; {}; end; end; puts F.new.generate_raw_receipt(Sale.last.text_receipt_lines)'
+  def storecredit_alert_text
+    self.storecredits.select{|x| !x.spent?}.map{|credit|
+          "Store Credit Hash ##{StoreChecksum.new_from_result(credit.id).checksum}\n\nAmount: $#{credit.amount}\nExpires: #{credit.valid_until.strftime("%B %d, %Y")}"
+        }.join("\n\n\n")
+  end
 
-  # TODO list from Tony's notes:
-  # justify numbers right
-  # align all number columns and "Subtotal:", etc labels
-  # only show price after discount for unit and total
-  # if description is included, put it on the following line (attr_description kind of stuff)
-  # show "VOLUNTEER DISCOUNT" in flashing text if applied
-  # wrap words on word boundaries
-  # add the contact details for free geek
-  # replace the cashier's number with the customers, or anonymouse (zip)
-  # pad left side with some space
-  # center the FREE GEEK info at top
-  # s/receipt for sale/sale/
-  def text_receipt_lines
+  # Quick Testing: ./script/runner 'class F; include RawReceiptHelper; def session; {}; end; end; puts F.new.generate_raw_receipt(Sale.last.text_receipt_lines)'
+  def text_receipt_lines(fulllimit)
     store_credit_gizmo_events = self.gizmo_events.select{|x| x.gizmo_type.name == "store_credit"}
     other_gizmo_events = self.gizmo_events - store_credit_gizmo_events
-    gizmo_lines =  other_gizmo_events.map{|event| [ event.attry_description( :ignore => ['unit_price'] ), "$" + event.unit_price.to_s, event.gizmo_count, "$" + event.total_price_cents.to_dollars.to_s, event.percent_discount(self.discount_schedule).to_s + "%", "$" + event.discounted_price(self.discount_schedule).to_dollars.to_s ] }
+    gizmo_lines =  []
+    other_gizmo_events.each{|event|
+      iszero = event.percent_discount(self.discount_schedule) == 0
+      gizmo_lines << [ 'left', event.attry_description( :upcase => true, :ignore => ['unit_price'] ) ]
+      gizmo_lines << ['right', event.gizmo_count.to_s + ' @', event.unit_price.to_s, iszero ? '' : event.total_price_cents.to_dollars.to_s, iszero ? '' : ('less ' + event.percent_discount(self.discount_schedule).to_s + "%"), event.discounted_price(self.discount_schedule).to_dollars.to_s]
+    }
     store_credit_gizmo_events_total_cents = store_credit_gizmo_events.inject(0){|t,x| t+=x.total_price_cents} 
     gizmo_lines << []
-    payment_lines = [
-                     ["Subtotal:", "#{(self.calculated_subtotal_cents - store_credit_gizmo_events_total_cents).to_dollars}"],
-                     ["Discounted:", "#{self.calculated_discount_cents.to_dollars}"],
-                     ["Total:", "#{(self.calculated_total_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
-                    ]
+    payment_lines = []
+    unless self.calculated_discount_cents == 0
+      payment_lines << ['right', "Subtotal:", "#{(self.calculated_subtotal_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
+      payment_lines << ['right', "Discounted:", "#{self.calculated_discount_cents.to_dollars}"]
+    end
+    payment_lines << ['right', "Total:", "#{(self.calculated_total_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
     seen_sc = false
+    cash_back = (defined?(@cash_back) and @cash_back > 0) ? @cash_back : 0
     self.payments.each{|payment|
       amount = payment.amount_cents
       if payment.payment_method.name == "store_credit" and !seen_sc
         amount -= store_credit_gizmo_events_total_cents
         seen_sc = true
       end
-      payment_lines << [payment.payment_method.description + ":", amount.to_dollars]
+      payment_lines << ['right', payment.payment_method.description + ":", (amount + ((payment.payment_method.name == "cash") ? cash_back : 0)).to_dollars]
     }
+    if cash_back > 0
+      payment_lines << ['right', "change due:", "#{cash_back.to_dollars}"]
+    end
     if store_credit_gizmo_events_total_cents > 0 and !seen_sc
-      payment_lines << ["store credit:", (-1 * store_credit_gizmo_events_total_cents).to_dollars]
+      payment_lines << ['right', "store credit:", (-1 * store_credit_gizmo_events_total_cents).to_dollars]
     end
     if self.calculated_total_cents > self.money_tendered_cents && !self.invoice_resolved?
-      payment_lines << [    "Due by #{self.created_at.to_date + 30 }:", (self.calculated_total_cents - self.money_tendered_cents).to_dollars]
+      payment_lines << ['right',     "Due by #{self.created_at.to_date + 30 }:", (self.calculated_total_cents - self.money_tendered_cents).to_dollars]
     end
 
-    head_lines = [
-     ["FREE GEEK"],
-     [],
-     ["Receipt for sale ##{self.id}"],
-     ["Date: #{self.occurred_at.strftime("%m/%d/%Y")}"]]
+    head_lines =   ["+---------------------------+",
+    "| Free Geek Thrift Store    |",
+  "| 1731 SE 10th Ave. PDX     |",
+  "| 10-6 Tues. through Sat.   |",
+  "| freegeek.org/thrift-store |",
+   "+---------------------------+"].map{|x| ['center', x]}
+    head_lines = head_lines + [[],
+                               ['two', " #{self.occurred_at.strftime("%H:%M %p %m/%d/%y").downcase}", "sale: #{self.id}"],
+                               ['two', " cashier: #{User.find_by_id(self.read_attribute(:cashier_created_by)).contact_id}", "cust: #{self.contact_id || "anonymous"}"]]
     if self.discount_schedule.name != 'no_discount'
       percent = (100 - (100 * self.discount_schedule.discount_schedules_gizmo_types.find_by_gizmo_type_id(GizmoType.find_by_name_and_ineffective_on('gizmo', nil).id).multiplier)) # FIXME: ineffective_on shouldn't be nil, it should find was effective during the self.created at of this
-      head_lines << ["   ### #{sprintf('%d', percent)}% #{self.discount_schedule.name.upcase} DISCOUNT APPLIED ###"]
+      head_lines << []
+      head_lines << ['center', "### #{sprintf('%d', percent)}% #{self.discount_schedule.name.upcase} DISCOUNT APPLIED ###"]
     end
     head_lines << []
-     # TODO: create the actual return_policies and gizmo_type associations
-    footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| [x.full_text]}
-    head_lines + gizmo_lines + payment_lines + footer_lines
+    footer_lines = [[]] + self.gizmo_events.map(&:gizmo_type).map{|x| x.my_return_policy_id}.select{|x| !x.nil?}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| ['left', x.full_text]}
+    if self.comments and self.comments.length >= 1
+      footer_lines = [[], ['left', 'Comments: ' + self.comments]] + footer_lines
+    end
+    thanks = []
+    if fulllimit == 44
+thanks = [
+"      _                    _            ",
+"     | |                  | |        |||",
+" _|_ | |     __,   _  _   | |   ,    |||",
+"  |  |/ \\   /  |  / |/ |  |/_) / \\_  |||",
+"  |_/|   |_/\\_/|_/  |  |_/| \\_/ \\/   ooo"].map{|t| ['standard', t]}
+    end
+    final = head_lines + gizmo_lines + payment_lines + footer_lines + thanks
+    final
   end
 
   attr_accessor :contact_type  #anonymous or named
@@ -99,7 +119,7 @@ class Sale < ActiveRecord::Base
         errors.add("contact_id", "does not refer to any single, unique contact")
       end
     else
-      errors.add_on_empty("postal_code")
+      nil
     end
     end
     errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
@@ -250,5 +270,6 @@ class Sale < ActiveRecord::Base
       payments << Payment.new({:amount_cents => -cash_back,
                                 :payment_method => PaymentMethod.cash})
     end
+    @cash_back = cash_back
   end
 end

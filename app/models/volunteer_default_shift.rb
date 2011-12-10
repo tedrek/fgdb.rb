@@ -4,7 +4,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
   validates_presence_of :start_time
   validates_presence_of :slot_count
   validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
-
   belongs_to :volunteer_task_type
   belongs_to :volunteer_default_event
   belongs_to :program
@@ -12,9 +11,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
 
   has_many :default_assignments
 
-  named_scope :effective_at, lambda { |date|
-    { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
-  }
+#  named_scope :effective_at, lambda { |date|
+#    { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
+#  }
   named_scope :on_weekday, lambda { |wday|
     { :conditions => ['weekday_id = ?', wday] }
   }
@@ -92,14 +91,13 @@ class VolunteerDefaultShift < ActiveRecord::Base
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy if slots.include?(x.slot_number)}
       inputs = {}
       slots.each{|q|
-        inputs[q] = [[time_to_int(self.read_attribute(:start_time)), time_to_int(self.read_attribute(:end_time))]]
+        inputs[q] = [[(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]]
       }
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).each{|x|
-        inputs[x.slot_number].push([time_to_int(x.start_time), time_to_int(x.end_time)]) if slots.include?(x.slot_number)
+        inputs[x.slot_number].push([(x.start_time), (x.end_time)]) if slots.include?(x.slot_number)
       }
       slots.each{|q|
-        results = range_math(*inputs[q])
-        results = results.map{|a| a.map{|x| int_to_time(x)}}
+        results = self.class.range_math(*inputs[q])
         results.each{|x|
           a = DefaultAssignment.new
           a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
@@ -164,8 +162,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
       vs_conds.date_date = x
       VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event]).each{|y| y.destroy} # TODO: destroy_all with the :include somehow..
       ds_conds = gconditions.dup
-      ds_conds.effective_at_enabled = "true"
-      ds_conds.effective_at = x
+      ds_conds.effective_on_enabled = "true"
+      ds_conds.effective_on_start = x
+      ds_conds.effective_on_end = x + 1
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
       shifts = VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.roster_id, volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])

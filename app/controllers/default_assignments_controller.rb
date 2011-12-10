@@ -13,10 +13,14 @@ class DefaultAssignmentsController < ApplicationController
   helper :skedjul
 
   def index
+    @multi_enabled = true
     if params[:conditions]
       my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_default_shifts.roster_id), " : "volunteer_default_shifts.roster_id, "
     @skedj = Skedjul.new({
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "assigned", "weekday"],
+
+      :generate_param_key => "date_range",
+      :generate_conditions => ["sked", "roster"],
 
       :block_method_name => "volunteer_default_shifts.volunteer_default_events.weekday_id",
       :block_method_display => "volunteer_default_shifts.volunteer_default_events.weekdays.name",
@@ -31,7 +35,6 @@ class DefaultAssignmentsController < ApplicationController
                            :left_sort_value => "#{my_sort_prepend}(coalesce(volunteer_task_types.description, volunteer_default_events.description)), volunteer_default_shifts.description, default_assignments.slot_number",
                                :left_table_name => "volunteer_default_shifts",
                                :left_link_action => "assign",
-                               :left_link_id => "volunteer_default_shifts.description_and_slot",
                                :title_between => 'volunteer_default_shifts.rosters.name',
 #                               :break_between_difference => "default_assignments.slot_type_desc",
 
@@ -47,6 +50,9 @@ class DefaultAssignmentsController < ApplicationController
 
     @opts = @skedj.opts
     @conditions = @skedj.conditions
+      @conditions.effective_on_enabled = "true"
+      @conditions.effective_on_start = Date.today - 14
+      @conditions.effective_on_end = Date.today + 60
 
     @skedj.find({:conditions => @skedj.where_clause, :include => [:contact => [], :volunteer_default_shift => [:volunteer_task_type, :volunteer_default_event]]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar

@@ -46,6 +46,17 @@
        :update => component_id( refine_params ) do %>
       <% filters = [] %>
       <% filters << 'created_at' %>
+      <% filters << 'updated_at' %>
+      <% if @model.new.respond_to?( :recycled_at ) %>
+        <% filters << 'recycled_at' %>
+      <% end %>
+      <% if @model.new.respond_to?( :disbursed_at ) %>
+        <% filters << 'disbursed_at' %>
+      <% end %>
+
+      <% if @model.new.respond_to?( :occurred_at ) %>
+        <% filters << 'occurred_at' %>
+      <% end %>
       <% if @model.new.respond_to?( :contact_id ) %>
         <% filters << 'contact' %>
       <% end %>
@@ -67,6 +78,7 @@
         <% filters << 'payment_amount' %>
       <% end %>
       <% filters << 'gizmo_type_id' %>
+      <% filters << 'gizmo_type_group_id' %>
       <% filters << 'id' %>
       <% filters << 'needs_attention' %>
       <% filters << 'contribution' %>

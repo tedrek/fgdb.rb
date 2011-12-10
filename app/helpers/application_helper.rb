@@ -4,6 +4,18 @@ module ApplicationHelper
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end
 
+  def ltum(text, hash, condition = nil) # link_to_unless_me
+    hash[:action] ||= "index"
+    hash[:controller] ||= params[:controller]
+    me = params[:controller] + "/" + params[:action]
+    to = hash[:controller] + "/" + hash[:action]
+    if condition || (condition.nil? && me == to)
+      return text
+    else
+      return link_to text, hash
+    end
+  end
+
   def save_exception_data(e)
     exception_data = process_exception_data(e)
     tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
@@ -27,22 +39,28 @@ module ApplicationHelper
     :template => rescue_template,
     :status => ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[rescue_status],
     :response => rescue_status,
-    :controller => params[:controller],
-    :action => params[:action],
     :params => new_params,
     :clean_message => e.clean_message,
     :rails_env => RAILS_ENV,
     }
+    if defined?(params)
+      h[:controller] = params[:controller]
+      h[:action] = params[:action]
+    end
     if Thread.current['user']
       h[:user] = Thread.current['user'].login
     end
     if Thread.current['cashier']
       h[:cashier] = Thread.current['cashier'].login
     end
-    if request.env["HTTP_REFERER"]
+    if defined?(request) and request.env["HTTP_REFERER"]
       h[:referer] = request.env["HTTP_REFERER"]
     end
-    h[:client_ip] = request.remote_ip
+    if defined?(request)
+      h[:client_ip] = request.remote_ip
+    else
+      h[:client_ip] = "SOAP Client" # TODO: use the request object that SoapHandler has if it will let me
+    end
     h[:date] = DateTime.now.to_s
     eval("h = process_exception_data_#{rescue_template}(e, h)")
     h = JSON.parse(h.to_json)
@@ -62,10 +80,14 @@ module ApplicationHelper
     h[:full_backtrace] = e.clean_backtrace
     h[:response_headers] = {}
     h[:blame_trace] = e.describe_blame
-    if response
-      h[:response_headers] = response.headers.dup
+    if !defined?(request)
+# ?     h[:controller] = response.to_s
+    else
+      h[:session] = request.session.instance_variable_get("@data")
+      if response
+        h[:response_headers] = response.headers.dup
+      end
     end
-    h[:session] = request.session.instance_variable_get("@data")
     return h
   end
 

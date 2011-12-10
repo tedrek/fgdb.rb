@@ -1,29 +1,4 @@
 <center>
-<h1><%= @title %></h1>
-
-<%# generate teh graph %>
-<% tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp %>
-<% basename = File.basename(tempfile).sub(".", "$") %>
-<% gnuplot_stuff(tempfile) %>
-<img src="<%= url_for :action => "get_temp_file", :id => basename, :conditions => params[:conditions] %>" />
-<%# generate teh table %>
-<table style="border-collapse: collapse;" border="1" width="100%">
-  <tr>
-    <th>
-      <%= @broken_down_by.capitalize %><%= @broken_down_by.match(/of/) ? "" : " of" %>
-    </th>
-    <% @data.each do |k,v| %>
-        <th><%= k.to_s.titleize %></th>
-    <% end %>
-  </tr>
-  <% @x_axis.each_with_index do |x,i| %>
-    <tr>
-      <th><%= @table_x_axis[x] %></th>
-      <% @data.each do |k,v|%>
-        <td><%= v[i].tp %></td>
-      <% end %>
-    </tr>
-  <% end %>
-</table>
+<%= render :partial => 'results', :report => @report %>
 </center>
 

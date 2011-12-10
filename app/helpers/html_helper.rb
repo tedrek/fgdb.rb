@@ -1,6 +1,6 @@
 module HtmlHelper
   # due to prototype suckness, 'extend' may not be used as a choice name.
-  def select_visibility(obj_name, method_name, choices = [])
+  def select_visibility(obj_name, method_name, choices = [], html_opts = {})
     #:TODO: scrub this first
     obj = eval( "@#{obj_name}" )
 
@@ -8,7 +8,7 @@ module HtmlHelper
     display = %Q{ <div class="form-element"> %s %s </div> } %
       [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]}.sort_by(&:first) ),
         observe_field( "#{obj_name}_#{method_name}",
-                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value);",
+                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value); #{html_opts[:onchange].to_s}",
                        :with => method_name )]
 
     this_choice = obj.send(method_name)
@@ -18,7 +18,7 @@ module HtmlHelper
       else
         visibility = 'style="display:none;"'
       end
-      display += %Q{ <div id="%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, choice.to_s, visibility, content ]
+      display += %Q{ <div id="%s_%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, method_name, choice.to_s, visibility, content ]
     }
 
     display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s}.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")
@@ -43,7 +43,7 @@ module HtmlHelper
     end
     if mode == 'multi'
       choice_names = { }
-      choices.each {|k,v| choice_names[k] = (k).titleize}
+      choices.each {|k,v| choice_names[k] = (k == "updated_at" ? 'last_updated_at' : k).titleize}
       js = update_page do |page|
         page << "list_of_#{obj_name}_conditions = $H(#{choices.to_json.gsub("</script>", "<\\\/script>")});"
         page << "condition_#{obj_name}_display_names = $H(#{choice_names.to_json});"
@@ -53,7 +53,7 @@ module HtmlHelper
         for condition in choices.keys do
           page.insert_html(:bottom, obj_name + "_adder",
                            '<option id="%s_%s_option" value="%s">%s</option>' %
-                           [obj_name, condition, condition, (condition).titleize])
+                           [obj_name, condition, condition, choice_names[condition]])
           page << "if($('#{obj_name}_#{condition}_enabled').value == 'true'){add_condition('#{obj_name}', '#{condition}');}"
         end
       end

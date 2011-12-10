@@ -43,7 +43,7 @@ module ActiveRecord
       end
       cashier = current_cashier
       if respond_to?(:cashier_created_by) && cashier_created_by.nil?
-        if !cashier.nil? and self.class.cashierable
+        if !cashier.nil? #and self.class.cashierable
           self[:cashier_created_by] = cashier.id
         else
           self[:cashier_created_by] = self[:created_by]
@@ -109,8 +109,9 @@ module ActiveRecord
     end
 
     def logaction(action)
-      if self.class.table_name != "logs" && !self.id.nil?
+      if self.class.table_name != "logs" && !self.id.nil? # AND (!["spec_sheets", "builder_tasks"].include?(self.class.table_name)) && 
         user = Thread.current['user']
+#        raise "THIS IS YOUR INFO ... U: #{user.inspect} ... C: #{self.class.inspect} ... S: #{self.inspect}"
         cashier = Thread.current['cashier']
         l = Log.new
         l.table_name = self.class.table_name
@@ -285,16 +286,12 @@ class ActiveRecord::Base
 
   protected
 
-  # TODO: shift is 11 - 2
-  #       assignment is 12-3 (over the end)
-  # does not add an available for 11-12 as it should
-
-#  fstart, pstart, fend, pend
-
-  def range_math(*ranges)
+  def self.range_math(*ranges)
     frange = nil
     ranges.each{|a|
       pstart, pend = a
+      pstart = (pstart.hour * 60) + pstart.min
+      pend = (pend.hour * 60) + pend.min
       if frange.nil?
         frange = [[pstart, pend]]
       else
@@ -323,19 +320,12 @@ class ActiveRecord::Base
         frange = frange.select{|x| !(x.first.nil? or x.first == x.last or x.last < x.first)}.sort_by{|x| x.first}
       end
     }
-    return frange
+    return frange.map{|y| y.map{|x|
+        hours = (x / 60).floor
+        mins = x % 60
+        Time.parse("#{hours}:#{mins}")
+      }}
   end
-
-  def time_to_int(time)
-    (time.hour * 60) + time.min
-  end
-
-  def int_to_time(int)
-    hours = (int / 60).floor
-    mins = int % 60
-    Time.parse("#{hours}:#{mins}")
-  end
-
 end
 
 class Array

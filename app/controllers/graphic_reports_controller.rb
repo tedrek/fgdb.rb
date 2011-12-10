@@ -6,14 +6,21 @@
 # it could also help clean up getting the second date range and the
 # number between them, which are messy right now.
 
+require_dependency RAILS_ROOT + '/app/helpers/conditions.rb'
+require_dependency RAILS_ROOT + '/app/controllers/reports_controller.rb'
+
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
+  helper :conditions
 
-  def get_temp_file
+  def get_temp_file # TODO: move this all within?
     file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
     if !File.exists?(file)
-      generate_report_data
-      gnuplot_stuff(file)
+      find_report
+      @report = @klass.new
+      @report.set_conditions(params[:conditions])
+      @report.generate_report_data
+      @report.gnuplot_stuff(file, params[:graph_n].to_i)
     end
     respond_to do |format|
       format.jpeg { render :text => File.read(file) }
@@ -22,7 +29,14 @@ class GraphicReportsController < ApplicationController
   end
 
   def view
-    generate_report_data
+    if find_report.nil?
+      flash[:error] = "Select a report"
+      redirect_to :action => "index"
+      return
+    end
+    @report = @klass.new
+    @report.set_conditions(params[:conditions])
+    @report.generate_report_data
   end
 
   def index
@@ -30,21 +44,41 @@ class GraphicReportsController < ApplicationController
   end
 
   def index2
+    @multi_enabled = true
     @valid_conditions = []
-    get_title # sets @klass
+    if find_report.nil?
+      flash[:error] = "Select a report"
+      redirect_to :action => "index"
+      return
+    end
     @breakdown_types = @klass.breakdown_types
     @valid_conditions = @klass.valid_conditions
   end
 
+  #####################
+  # Report type stuff #
+  #####################
   private
-  helper_method :gnuplot_stuff
+  # list of report types
+  def report_types
+    return TrendReport.all_reports
+  end
 
-  def gnuplot_stuff(tempfile)
+  # returns the title for that report type
+  def find_report
+    return nil unless params[:conditions]
+    @klass ||= TrendReport.find_class(params[:conditions][:report_type])
+  end
+
+end
+
+class TrendReport
+  def gnuplot_stuff(tempfile, graph_n)
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
+        plot.set "title", self.graph_titles[graph_n]
         plot.set "terminal", "jpeg"
         plot.set "output", tempfile
-        plot.notitle
         plot.ylabel ""
         plot.xlabel ""
         plot.xtic "rotate by 90"
@@ -58,7 +92,7 @@ class GraphicReportsController < ApplicationController
         string += string_a.join(", ")
         string += ")"
         plot.xtics string
-        @data.each do |k,v|
+        @data[graph_n].each do |k,v|
           plot.data << Gnuplot::DataSet.new( [@graph_x_axis, v] ) do |ds|
             ds.with = "linespoints"
             ds.title = k.to_s.titleize
@@ -89,7 +123,7 @@ class GraphicReportsController < ApplicationController
   # convert a date object into the string that should be put on the x
   # axis
   def x_axis_for(date)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       "Week of " + date.to_s
     when "Quarterly"
@@ -122,7 +156,7 @@ class GraphicReportsController < ApplicationController
   # should return the total number of things that should be on the x
   # axis, minus one (this makes logical sense for simplicity)
   def number_between_them(end_date)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       (end_date - @start_date).to_i / 7
     when "Quarterly"
@@ -155,7 +189,7 @@ class GraphicReportsController < ApplicationController
   # this is pretty stupid, as it will require a lot of iterations for
   # nothing. but it works.
   def is_last_thing?(date)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       date.strftime("%a") == "Mon"
     when "Quarterly"
@@ -176,7 +210,7 @@ class GraphicReportsController < ApplicationController
   # return nil if you want that breakdown to be ignored (for example,
   # ignoring weekends on daily breakdown)
   def get_this_one(number)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       @start_date + (7*number)
     when "Quarterly"
@@ -214,7 +248,7 @@ class GraphicReportsController < ApplicationController
   # start date, and reformats it for the graph (as a number that will
   # be used to place it somewhere on the x axis)
   def graph_x_axis_for(x_axis, date)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Quarterly"
       x_axis.match(/-Q(.)/)
       x_axis.sub(/-Q.$/, "." + (($1.to_i - 1) * 25).to_s)
@@ -238,7 +272,7 @@ class GraphicReportsController < ApplicationController
 
   # get the last day in the range
   def second_timerange(first)
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Weekly"
       first + 6
     when "Quarterly"
@@ -266,7 +300,7 @@ class GraphicReportsController < ApplicationController
   ##################
 
   def extract_name_for_breakdown_type
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Day of week"
       return "DOW"
     when "Hour"
@@ -277,7 +311,7 @@ class GraphicReportsController < ApplicationController
   end
 
   def get_bar_list
-    case params[:conditions][:breakdown_type]
+    case @conditions[:breakdown_type]
     when "Day of week"
       v = 0..6
     when "Hour"
@@ -300,21 +334,6 @@ class GraphicReportsController < ApplicationController
     return false
   end
 
-  #####################
-  # Report type stuff #
-  #####################
-
-  # list of report types
-  def report_types
-    return TrendReport.all_reports
-  end
-
-  # returns the title for that report type
-  def get_title
-    @klass ||= TrendReport.find_class(params[:conditions][:report_type])
-    @klass.title
-  end
-
   # calls a method specific to that report that takes args, explained
   # below, and returns a hash (one element for each line) with the key
   # being the name of the line and the value the number to be plotted
@@ -326,19 +345,21 @@ class GraphicReportsController < ApplicationController
   # :extract_type - if also limiting by day of week, hour, etc, this will be not nil, so extract this and make sure it's equal to :extract_value
   # :extract_value - the value to make sure that the thing extracted from the date matches
   # :number_of_days - the numbef of days matching these criteria (for averaging, etc)
-  def get_thing_for_timerange(args)
-    @klass.set_conditions(params[:conditions])
-    @klass.get_for_timerange(args)
-  end
+#  def get_thing_for_timerange(args)
+#    set_conditions(params[:conditions]) # what's this?
+#    get_for_timerange(args)
+#  end
 
   ######################
   # Random helper crap #
   ######################
 
+  attr_accessor :broken_down_by, :x_axis, :data, :table_x_axis, :full_title, :graph_titles, :display, :table_data_types
+
   def generate_report_data
     list = []
-    @start_date = Date.parse(params[:conditions][:start_date])
-    end_date = Date.parse(params[:conditions][:end_date])
+    @start_date = Date.parse(@conditions[:start_date])
+    end_date = Date.parse(@conditions[:end_date])
     if is_line
       @start_date = back_up_to_last_thing(@start_date)
       end_date = back_up_to_last_thing(end_date)
@@ -356,13 +377,10 @@ class GraphicReportsController < ApplicationController
       raise NoMethodError
     end
     list.delete_if{|x| x.nil?}
-    @broken_down_by = params[:conditions][:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")
-    @title = get_title + " (broken down by #{@broken_down_by})"
-    @klass.set_conditions(params[:conditions])
-    cstr = @klass.conditions_to_s()
-    puts cstr
-    @title = @title + " (" + cstr + ")" if cstr.length > 0
-    @data = {}
+    @broken_down_by = @conditions[:breakdown_type].downcase.sub(/ly$/, "").sub(/i$/, "y")
+    @full_title = self.title + " (broken down by #{@broken_down_by})"
+    cstr = self.conditions_to_s()
+    @full_title = @full_title + " (" + cstr + ")" if cstr.length > 0
     @x_axis = []
     list.each{|x|
       @x_axis << x_axis_for(x)
@@ -408,20 +426,36 @@ class GraphicReportsController < ApplicationController
         raise NoMethodError
       end
     }
-    resultlist = list.map{|args|
-      get_thing_for_timerange(args)
+    generate_display_data(list)
+  end
+
+  # for single reports
+  def generate_display_data(argslist)
+    @data = []
+    @graph_titles = []
+    @data[0] = {}
+    @graph_titles[0] = self.title
+    resultlist = argslist.map{|args|
+      get_for_timerange(args)
     }
     lines = resultlist.map{|x| x.keys}.flatten.uniq
     lines.each{|x|
-      @data[x] = []
+      @data[0][x] = []
     }
     resultlist.each{|thing|
       lines.each{|k|
         v = thing[k]
         v = 0 if v.nil?
-        @data[k] << v
+        @data[0][k] << v
       }
     }
+    @table_data_types = []
+    @table_data_types[0] = self.default_table_data_types
+    @display = [["graph", 0], ["table", 0]]
+  end
+
+  def default_table_data_types
+    Hash.new("normal")
   end
 
   def array_of_dates(start, stop)
@@ -447,11 +481,11 @@ class GraphicReportsController < ApplicationController
   end
 
   def is_line
-    line_breakdown_types.include?(params[:conditions][:breakdown_type])
+    line_breakdown_types.include?(@conditions[:breakdown_type])
   end
 
   def is_bar
-    bar_breakdown_types.include?(params[:conditions][:breakdown_type])
+    bar_breakdown_types.include?(@conditions[:breakdown_type])
   end
 
   def back_up_to_last_thing(date)
@@ -471,10 +505,7 @@ class GraphicReportsController < ApplicationController
     end
     d
   end
-end
 
-class TrendReport
-  class << self
     def created_at_conditions_for_report(args)
       conditions_with_daterange_for_report(args, "created_at")
     end
@@ -531,12 +562,6 @@ class TrendReport
       n = Donation.number_by_conditions(c)
     end
 
-    def find_class(name)
-      found = all_reports.select{|x| x.name == name}
-      raise "Cannot find class named #{((name.underscore.parameterize.tableize + "_trend").classify.to_s)}" if found.length != 1
-      return found.first
-    end
-
     def breakdown_types # default
       line_breakdown_types + bar_breakdown_types
     end
@@ -553,16 +578,34 @@ class TrendReport
       ["Day of week", "Hour"]
     end
 
-    def name
-      self.to_s.sub("Trend", "").underscore.humanize.split(" ").map{|x| x.capitalize}.join(" ").singularize
+    def category # default
+      "Other"
     end
 
     def title
       "Report of " + self.name
     end
 
-    def category # default
-      "Other"
+    def valid_conditions # default
+      []
+    end
+
+  def child_report_for_argslist(report, argslist)
+    r = report.new
+    r.set_conditions(@conditions)
+    r.generate_display_data(argslist)
+    return r # manipulate its .data, etc
+  end
+
+  class << self
+    def name
+      self.to_s.sub("Trend", "").underscore.humanize.split(" ").map{|x| x.capitalize}.join(" ").singularize
+    end
+
+    def find_class(name)
+      found = all_reports.select{|x| x.name == name}
+      raise "Cannot find class named #{((name.underscore.parameterize.tableize + "_trend").classify.to_s)}" if found.length != 1
+      return found.first
     end
 
     def all_reports
@@ -573,20 +616,27 @@ class TrendReport
       return all_reports.map{|x| x.name}
     end
 
-    def get_conditions
-      valid_conditions
+    def valid_conditions
+      self.new.valid_conditions
     end
 
-    def valid_conditions # default
-      []
+    def title
+      self.new.title
+    end
+
+    def breakdown_types
+      self.new.breakdown_types
+    end
+
+    def category
+      self.new.category
     end
   end
 end
 
 class AverageFrontdeskIncomesTrend < TrendReport
-  class << self
     def category
-      "Front Desk"
+      "Transaction"
     end
 
     def title
@@ -612,13 +662,42 @@ class AverageFrontdeskIncomesTrend < TrendReport
       {:fees => fees, :suggested => suggested, :total => total}
     end
 
+    def default_table_data_types
+      Hash.new("money")
+    end
+
     def valid_conditions
       ["cashier_created_by"]
     end
+end
+class AverageSaleIncomesTrend < TrendReport
+    def category
+      "Transaction"
+    end
+
+    def title
+      "Report of Average Income for Sales"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
+    end
+
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( reported_amount_due_cents )/(100.0*COUNT(*)) AS amount
+  FROM sales WHERE " + sql_for_report(Sale, created_at_conditions_for_report(args)))
+      return {:total => res.first["amount"]}
   end
 end
 class IncomesTrend < TrendReport
-  class << self
+    def category
+      "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
+    end
+
     def get_for_timerange(args)
       thing = call_income_report(args)[:grand_totals]["total"]["total"][:total] / 100.0
       {:income => thing}
@@ -626,12 +705,14 @@ class IncomesTrend < TrendReport
     def title
       "Income report"
     end
-  end
 end
 class ActiveVolunteersTrend < TrendReport
-  class << self
     def category
       "Volunteer"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
     end
 
     def get_for_timerange(args)
@@ -657,12 +738,137 @@ class ActiveVolunteersTrend < TrendReport
     def breakdown_types
       line_breakdown_types
     end
+end
+class MasterGizmoFlowTrend < TrendReport
+  def category
+    "Combined"
+  end
+
+  # for single reports
+  def generate_display_data(argslist)
+    @data = []
+    @graph_titles = []
+    @table_data_types = []
+
+    donations = child_report_for_argslist(DonationsGizmoCountByTypesTrend, argslist)
+    sales = child_report_for_argslist(SalesGizmoCountByTypesTrend, argslist)
+    disbursements = child_report_for_argslist(DisbursementGizmoCountByTypesTrend, argslist)
+    recyclings = child_report_for_argslist(RecycledGizmoCountByTypesTrend, argslist)
+    returns = child_report_for_argslist(ReturnGizmoCountByTypesTrend, argslist)
+
+    dis_tot = []
+    disbursements.data[0].values.each{|a|
+      a.each_with_index{|x,i|
+        dis_tot[i] ||= 0
+        dis_tot[i] += x.to_i
+      }
+    }
+
+    @data[0] = {}
+    @data[0][:sold] = sales.data[0][:count]
+    @data[0][:donated] = donations.data[0][:count]
+    @data[0][:recycled] = recyclings.data[0][:count]
+    @data[0][:returned] = returns.data[0][:count]
+    @data[0][:disbursed] = dis_tot
+    @table_data_types[0] = sales.default_table_data_types
+
+    reuse_tot = []
+    for a in [@data[0][:sold], @data[0][:disbursed]]
+      a.each_with_index{|x,i|
+        reuse_tot[i] ||= 0
+        reuse_tot[i] += x.to_i
+      }
+    end
+    @data[0][:reused] = reuse_tot
+    @graph_titles[0] = self.title
+
+    @data[1] = disbursements.data[0]
+    @graph_titles[1] = disbursements.graph_titles[0]
+    @table_data_types[1] = disbursements.default_table_data_types
+
+    @data[2] = {}
+    @data[2][:recycled] = @data[0][:recycled]
+    @data[2][:reused] = @data[0][:reused]
+    @graph_titles[2] = "Recycle vs Reuse"
+    @table_data_types[2] = recyclings.default_table_data_types
+
+    @data[3] = OH.new
+    @data[3][:reused] = @data[0][:reused]
+    @data[3][:returned] = @data[0][:returned]
+    @data[3][:return_percentage] = []
+    @table_data_types[3] = recyclings.default_table_data_types.merge({:return_percentage => 'percentage'})
+    argslist.length.times do |i|
+      @data[3][:return_percentage][i] = 100 * (@data[3][:returned][i].to_f / @data[3][:reused][i].to_f)
+    end
+    @data[4] = {}
+    @data[4][:return_rate] = @data[3][:return_percentage]
+    @graph_titles[4] = "Return Rate"
+
+    @data[5] = OH.new
+    @data[5][:donated] = @data[0][:donated]
+    @data[5][:reused] = @data[0][:reused]
+    @data[5][:disbursed] = @data[0][:disbursed]
+    @data[5][:sold] = @data[0][:sold]
+    @table_data_types[5] = @table_data_types[0].merge({:reuse_percentage => 'percentage', :disbursement_percentage => 'percentage', :sales_percentage => 'percentage'})
+    for i in [:reuse_percentage, :disbursement_percentage, :sales_percentage]
+      @data[5][i] = []
+    end
+    argslist.length.times do |i|
+      divisor = @data[5][:donated][i].to_f
+      if divisor == 0.0
+        @data[5][:reuse_percentage][i] = @data[5][:disbursement_percentage][i] = @data[5][:sales_percentage][i] = 0
+      else
+        @data[5][:reuse_percentage][i] = 100 * (@data[5][:reused][i].to_f / divisor)
+        @data[5][:disbursement_percentage][i] = 100 * (@data[5][:disbursed][i].to_f / divisor)
+        @data[5][:sales_percentage][i] = 100 * (@data[5][:sold][i].to_f / divisor)
+      end
+    end
+    @data[6] = {:reuse_percentage => @data[5][:reuse_percentage]}
+    @data[7] = {:disbursement_percentage => @data[5][:disbursement_percentage]}
+    @data[8] = {:sales_percentage => @data[5][:sales_percentage]}
+    @graph_titles[6] = "Reuse Rate"
+    @graph_titles[7] = "Disbursement Rate"
+    @graph_titles[8] = "Sales Rate"
+
+    @data[9] = OH.new
+    sales_totals = child_report_for_argslist(SalesAmountByGizmoTypesTrend, argslist)
+    @data[9][:sales] = sales_totals.data[0][:amount]
+    @data[9][:sold] = @data[0][:sold]
+    @data[9][:avg_price] = []
+    @table_data_types[9] = sales_totals.table_data_types[0].merge(:sold => @table_data_types[0][:sold])
+    argslist.length.times do |i|
+      divisor = @data[9][:sold][i].to_f
+      if divisor == 0.0
+        @data[9][:avg_price][i] = 0.0
+      else
+        @data[9][:avg_price][i] = @data[9][:sales][i].to_f / divisor
+      end
+    end
+    @data[10] = {:sales => @data[9][:sales]}
+    @data[11] = {:sold => @data[9][:sold]}
+    @data[12] = {:avg_price => @data[9][:avg_price]}
+    @graph_titles[10] = "Total Sales Amount"
+    @graph_titles[11] = "Sales Count"
+    @graph_titles[12] = "Average Sale Price"
+
+    @display = [["graph", 0], ["table", 0], ["graph", 1], ["table", 1], ["graph", 10], ["graph", 11], ["graph", 12], ["table", 9], ["graph", 2], ["table", 2], ["graph", 4], ["table", 3], ["graph", 6], ["graph", 7], ["graph", 8], ["table", 5]]
+  end
+
+  def valid_conditions
+    ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
+  end
+
+  def title
+    "Master Gizmo Flow Report"
   end
 end
 class SalesTotalsTrend < TrendReport
-  class << self
     def category
-      "Store"
+      "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
     end
 
     def get_for_timerange(args)
@@ -674,12 +880,33 @@ class SalesTotalsTrend < TrendReport
     def title
       "Report of total sales in dollars"
     end
-  end
+end
+class DonationTotalsTrend < TrendReport
+    def category
+      "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
+    end
+
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( amount_cents )/100.0 AS amount
+  FROM payments JOIN donations ON payments.donation_id = donations.id WHERE " + sql_for_report(Donation, created_at_conditions_for_report(args)))
+      return {:total => res.first["amount"]}
+    end
+
+    def title
+      "Report of total donations in dollars"
+    end
 end
 class DonationsCountsTrend < TrendReport
-  class << self
     def category
-      "Front Desk"
+      "Transaction"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
     end
 
     def get_for_timerange(args)
@@ -689,10 +916,8 @@ class DonationsCountsTrend < TrendReport
     def title
       "Report of number of donations"
     end
-  end
 end
 class VolunteerHoursByProgramsTrend < TrendReport
-  class << self
     def category
       "Volunteer"
     end
@@ -715,16 +940,18 @@ class VolunteerHoursByProgramsTrend < TrendReport
     def breakdown_types
       super - ["Hour"]
     end
-  end
 end
 class DonationsGizmoCountByTypesTrend < TrendReport
-  class << self
     def category
-      "Front Desk"
+      "Gizmo"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos donated by type"
@@ -736,12 +963,94 @@ WHERE donation_id IS NOT NULL
 AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:count => res.first["count"]}
     end
+end
+
+class DisbursementGizmoCountByTypesTrend < TrendReport
+    def category
+      "Gizmo"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
+    end
+    def title
+      "Count of gizmos disbursed by type"
+    end
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( gizmo_count ) AS count, disbursement_types.description AS desc
+FROM gizmo_events
+JOIN disbursements ON gizmo_events.disbursement_id = disbursements.id
+JOIN disbursement_types ON disbursements.disbursement_type_id = disbursement_types.id
+WHERE disbursement_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}
+GROUP BY 2;")
+      ret = {}
+      res.each{|x|
+        ret[x["desc"]] = x["count"]
+      }
+      return ret
   end
 end
-class SalesGizmoCountByTypesTrend < TrendReport
-  class << self
+
+class RecycledGizmoCountByTypesTrend < TrendReport
     def category
-      "Store"
+      "Gizmo"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
+    end
+    def title
+      "Count of gizmos recycled by type"
+    end
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( gizmo_count ) AS count
+FROM gizmo_events
+WHERE recycling_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
+      return {:count => res.first["count"]}
+    end
+end
+
+class ReturnGizmoCountByTypesTrend < TrendReport
+    def category
+      "Gizmo"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
+    end
+    def title
+      "Count of gizmos returned by type"
+    end
+    def get_for_timerange(args)
+      res = DB.execute("SELECT SUM( gizmo_count ) AS count
+FROM gizmo_events
+WHERE gizmo_return_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
+      return {:count => res.first["count"]}
+    end
+end
+
+class SalesGizmoCountByTypesTrend < TrendReport
+    def category
+      "Gizmo"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
     end
 
     def get_for_timerange(args)
@@ -753,17 +1062,19 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Count of gizmos sold by type"
     end
-  end
 end
 class SalesAmountByGizmoTypesTrend < TrendReport
-  class << self
     def category
-      "Store"
+      "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
     end
 
     def get_for_timerange(args)
@@ -774,23 +1085,25 @@ AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:amount => res.first["due"]}
     end
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
     end
     def title
       "Sales amount by gizmo type"
-    end
   end
 end
 class NumberOfSalesByCashiersTrend < TrendReport
-  class << self
     def category
-      "Store"
+      "Transaction"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
     end
 
     def title
       "Number of sales by Cashier"
     end
-    def get_for_timerange(args) # TODO: other transaction types?
+    def get_for_timerange(args)
       where_clause = sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at"))
       res = DB.execute("SELECT count(*), users.login FROM sales
  LEFT JOIN users ON users.id = sales.cashier_created_by
@@ -800,12 +1113,14 @@ class NumberOfSalesByCashiersTrend < TrendReport
       Hash[*res.to_a.collect{|x| [x["login"], x["count"]]}.flatten]
     end
 
-  end
 end
 class TotalAmountOfSalesByCashiersTrend < TrendReport
-  class << self
     def category
-      "Store"
+      "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
     end
 
     def title
@@ -816,10 +1131,8 @@ class TotalAmountOfSalesByCashiersTrend < TrendReport
       res = DB.execute("SELECT users.login, SUM(payments.amount_cents) FROM payments INNER JOIN sales ON payments.sale_id = sales.id LEFT JOIN users ON users.id = sales.cashier_created_by WHERE #{where_clause} GROUP BY 1;")
       Hash[*res.to_a.collect{|x| [x["login"], x["sum"].to_i / 100.0]}.flatten]
     end
-  end
 end
 class NumberOfHoursWorkedByWorkersTrend < TrendReport
-  class << self
     def get_for_timerange(args)
       where_clause = sql_for_report(WorkedShift, conditions_with_daterange_for_report(args, "date_performed"))
       res = DB.execute("SELECT workers.name, SUM( duration )
@@ -830,11 +1143,13 @@ class NumberOfHoursWorkedByWorkersTrend < TrendReport
   ORDER BY workers.name;")
       Hash[*res.to_a.collect{|x| [x["name"], x["sum"]]}.flatten]
     end
+    def category
+      "Staff"
+    end
     def title
       "Report of hours worked by worker"
     end
     def valid_conditions
       ["job"]
     end
-  end
 end

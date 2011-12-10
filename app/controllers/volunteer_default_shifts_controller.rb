@@ -14,16 +14,24 @@ class VolunteerDefaultShiftsController < ApplicationController
   def generate
     gconditions = Conditions.new
     gconditions.apply_conditions(params[:gconditions])
+    begin
+      startd, endd = Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date])
+    rescue
+      flash[:error] = "Generate error: A valid date ranges was not given"
+      redirect_to :back
+      return
+    end
     if params[:date_range][:do_shifts] == "1"
-      VolunteerDefaultShift.generate(Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date]), gconditions)
+      VolunteerDefaultShift.generate(startd, endd, gconditions)
     end
     if params[:date_range][:do_resources] == "1"
-      ResourcesVolunteerDefaultEvent.generate(Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date]), gconditions)
+      ResourcesVolunteerDefaultEvent.generate(startd, endd, gconditions)
     end
     redirect_to :controller => 'assignments', :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
   end
 
   def index
+    @multi_enabled = true
     if params[:conditions]
     @skedj = Skedjul.new({
       :generate_param_key => "date_range",

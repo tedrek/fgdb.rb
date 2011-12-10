@@ -28,6 +28,7 @@
     <% end %>
     <% if show_return %>
       <th>sale id</th>
+      <th>disburse id</th>
       <th>checksum</th>
       <th>reason</th>
       <th>tested by</th>
@@ -43,7 +44,7 @@
     <% end %>
     <% if show_price %>
       <% if show_return %>
-      <th>amount paid</th>
+      <th>credit value</th>
       <% else %>
       <th>unit price</th>
       <% end %>
@@ -77,6 +78,7 @@
              hash[:reason] = line.reason if line.reason
              hash[:tester] = line.tester if line.tester
              hash[:sale_id] = line.return_sale_id if line.return_sale_id
+             hash[:disbursement_id] = line.return_disbursement_id if line.return_disbursement_id
              hash[:store_credit_hash] = line.store_credit_hash if line.store_credit_hash
            end
            hash[:contract_id] = line.recycling_contract_id if line.recycling_contract_id
@@ -98,8 +100,9 @@
     <% end %>
     <% if show_return %>
     <td><input name="sale_id" id="sale_id" size="6" onkeydown="return handle_ge(event);"></td>
+    <td><input name="disbursement_id" id="disbursement_id" size="6" onkeydown="return handle_ge(event);"></td>
     <td><input name="store_credit_hash" id="store_credit_hash" size="6" onkeydown="return handle_ge(event);" onchange="storecredit_selected();"></td>
-    <td><input name="reason" id="reason" size="10" onkeydown="return handle_ge(event);"></td>
+    <td><input name="reason" id="reason" size="8" onkeydown="return handle_ge(event);"></td>
     <td><input name="tester" id="tester" size="5" onkeydown="return handle_ge(event);"></td>
     <% end %>
     <% if show_system %>

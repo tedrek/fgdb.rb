@@ -1,11 +1,86 @@
-fgdb.rb (1.0.72) UNRELEASED; urgency=low
+fgdb.rb (1.0.80) UNRELEASED; urgency=low
 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 01 Oct 2011 00:30:26 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Dec 2011 00:30:21 -0800
+
+fgdb.rb (1.0.79) released; urgency=low
+
+  * save the number of megabytes from the disktest to the disktest_runs
+    table [needs fgdiag update]
+  * Warn when a volunteer signs up for more than 2 shifts (Closes:
+    #25440)
+  * handle bad input from the users nicer
+  * add disbursement id to returns interface (Closes: #14861)
+  * pass the cashier_id onto the contact
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Dec 2011 00:29:58 -0800
+
+fgdb.rb (1.0.78) released; urgency=low
+
+  * add a holiday announcer (Closes: #25504)
+  * add 'is pickup?' checkbox to donations, defaulting to false except
+    for previous donations that have service fees
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 23 Nov 2011 15:52:11 -0800
+
+fgdb.rb (1.0.77) released; urgency=low
+
+  * add open_time/close_time to weekdays table in database and use that
+    in find_problems
+  * restrict the values of the start and end times to prevent scheduling
+    errors (Closes: #25438)
+  * add a read-only view, privilege and role for volunteer scheduling
+    (Closes: #25435)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 Nov 2011 22:16:29 -0800
+
+fgdb.rb (1.0.76) released; urgency=low
+
+  * set WorkShifts.kind to be NOT NULL and default to StandardShift,
+    fixing the work_shifts#new form
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 11 Nov 2011 20:38:18 -0800
+
+fgdb.rb (1.0.75) released; urgency=low
+
+  * change distro cd to have AS IS in the description (Closes: #24801)
+  * add created/last updated/occurred conditions to all transactions,
+    and fix a bug to allow searching on multiple date type conditions at
+    the same time (Closes: #25258)
+  * add overtime report (Closes: #17255)
+  * show workers with no breaks in schedule problem finder (Closes: #25319)
+  * limit by real schedule assignments by weekday (Closes: #25290)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 Nov 2011 23:45:06 -0700
+
+fgdb.rb (1.0.74) released; urgency=low
+
+  * allow postal codes to be empty on sales and disable the field by
+    default
+  * add effective/ineffective dates to intern scheduling
+  * add generate widget to default_assignments view
+  * add a way to disable the rosters
+  * add a RECYCLING_ADMIN (Closes: #25253)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Oct 2011 01:46:41 -0700
+
+fgdb.rb (1.0.73) released; urgency=low
+
+  * add listing of upcoming holidays
+  * supports passenger deployment method (Closes: #24872)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Oct 2011 00:55:47 -0700
+
+fgdb.rb (1.0.72) released; urgency=low
+
+  * fix the payroll report to check if they were active
+    on any of the days within the range (Closes: #24863)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 08 Oct 2011 00:19:25 -0700
 
 fgdb.rb (1.0.71) released; urgency=low
 
-  * lame attempt at receipt printing
+  * thermal receipt printing (Closes: #24467)
   * add anonymous option on store returns (Closes: #24684)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 01 Oct 2011 00:30:11 -0700

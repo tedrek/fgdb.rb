@@ -38,7 +38,7 @@ class CiviCRMClient
     res = self.do_req("civicrm/CustomField/get", "")
     hash = {}
     res["values"].each{|k,v|
-      hash[v] = k
+      hash[v["name"]] = k
     }
     return hash[field_name]
   end
@@ -75,7 +75,7 @@ def sync_contact_from_fgdb(fgdb_id)
   hash = {}
   if c.is_organization
     hash[:contact_type] = "Organization"
-    hash[:organization] = c.organization
+    hash[:organization_name] = c.organization
   else
     hash[:contact_type] = "Individual"
     hash[:first_name] = c.first_name
@@ -84,6 +84,7 @@ def sync_contact_from_fgdb(fgdb_id)
   end
   if civicrm_id
     hash[:id] = civicrm_id
+    # TODO: return nil for FAIL if not success
     my_client.do_req("civicrm/contact/update", hash.r_to_params)
   else
     hash["custom_#{my_custom}"] = fgdb_id
@@ -113,8 +114,12 @@ def sync_contact_from_civicrm(civicrm_id)
   civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params)["values"][civicrm_id]
   c.first_name = civicrm_contact["first_name"]
   c.created_by ||= 1
+  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}.r_to_params).inspect # will need to create/delete if needed
+  puts my_client.do_req("civicrm/note/get", {"contact_id" => civicrm_id, "subject" => "FGDB"}.r_to_params).inspect # delete, then re-create it
+  puts civicrm_contact.inspect
   c.surname = civicrm_contact["last_name"]
   c.is_organization = civicrm_contact["contact_type"] == "Organization"
+  c.organization = civicrm_contact["organization_name"]
   c.postal_code = civicrm_contact["postal_code"]
   if @saved_civicrm
     c.postal_code ||= "CIVICRM_UNSETME"
@@ -167,7 +172,7 @@ def do_main
         system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception
       end
     else # source == "fgdb"
-###      system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception ### FIXME: uncomment this once it is actually doing some syncing
+      system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception
     end
   else
     system(ENV["SCRIPT"], "take_a_break") or raise Exception

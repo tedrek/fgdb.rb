@@ -4,6 +4,5 @@
   <%= f.submit 'Print Text Receipt to ', :name => 'print', :id => 'print_submit', :onclick => '$("receipt_mode").value = "print";' %>
   <%= f.select "printer", [["<Choose a Printer>", ""]] %>
   <%= f.hidden_field "mode", :value => 'print' %>
-  <%= f.submit 'Remember My Printer Choice', :name => 'set_default', :id => 'set_default_submit', :onclick => '$("receipt_mode").value = "default";' %>
 <%      end %>
-<%= javascript_include_tag("/jzebra/jzebra.js") + "<applet name='jzebra' code='jzebra.PrintApplet.class' alt='Error loading jZebra applet' archive='/jzebra/jzebra.jar' width=0 height=0 />" + javascript_tag("monitorLoadingThenCall('set_printers();');") %>
+<%= javascript_include_tag("/jzebra/jzebra.js") + "<applet name='jzebra' code='jzebra.PrintApplet.class' alt='Error loading jZebra applet, please install and enable Java for text receipt printing' archive='/jzebra/jzebra.jar' width=0 height=0 />" + javascript_tag("monitorLoadingThenCall('set_printers();');") %>

@@ -8,27 +8,13 @@ class TransactionController < ApplicationController
 
   include RawReceiptHelper
 
-  def enable_raw_printing
-    printer = (params[:receipt] ? params[:receipt][:printer] : "")
-    receipt_printer_set_default(printer)
-    redirect_to :back
-  end
-
   def raw_receipt
     printer = (params[:receipt] ? params[:receipt][:printer] : "")
-    set_default = (params[:receipt] && (params[:receipt][:mode] == "default"))
     render :update do |page|
-    if set_default
-      receipt_printer_set_default(printer)
-      page.reload
-    else
       raise unless params[:controller] == 'sales'
       s = Sale.find_by_id(params[:id])
-      res = generate_raw_receipt(s.text_receipt_lines, printer)
-      page << "print_text(#{res.to_json});"
-#      page << "alert(#{res.to_json});"
-    end
-      page.hide loading_indicator_id("raw_receipt")
+      receipt_printer_set_default(printer)
+      handle_java_print(page, generate_raw_receipt(printer) {|limit| s.text_receipt_lines(limit)}, {:alert => s.storecredit_alert_text, :loading => "raw_receipt_loading_indicator_id"})
     end
   end
 
@@ -115,6 +101,15 @@ class TransactionController < ApplicationController
     end
   end
 
+  def get_disbursement_exists
+    s = Disbursement.find_by_id(params[:id])
+    s = !! s
+    render :update do |page|
+      page << "internal_disbursement_exists = #{s.to_json};";
+      page.hide loading_indicator_id("line_item")
+    end
+  end
+
   def update_stuff
     @show_wrapper = false
     params[:continue] = false
@@ -175,8 +170,14 @@ class TransactionController < ApplicationController
     render :action => 'new'
   end
 
+  private
+  def new_trans_init_hook
+  end
+  public
+
   def new
     @transaction ||= model.new(params[@gizmo_context.name.to_sym])
+    new_trans_init_hook
     @successful ||= true
 
     @conditions = Conditions.new

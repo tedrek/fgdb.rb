@@ -1,6 +1,6 @@
 #!/bin/bash
 backup_dir=/usr/local/backup/
-sql_dump=$backup_dir/database.sql.gz
+sql_dump=$backup_dir/database_hourly_full.sql.gz
 log="/var/log/$(basename $0).log"
 export GZIP="--rsyncable"
 

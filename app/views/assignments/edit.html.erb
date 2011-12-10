@@ -7,8 +7,23 @@
 <% end %>
 <% end %>
 
+<%= javascript_tag "assignment_contact_id = #{@assignment.contact_id.to_json}; assignment_shift_limit = #{Default["volskedj_shift_limit"].to_i.to_json};" %>
+
+<%= javascript_tag "function check_contact_limit() {
+  var contact_shift_count = 0;
+  if($('contact__shift_count')) {
+    contact_shift_count = parseInt($('contact__shift_count').innerHTML);
+  }
+  if(parseInt($('assignment_contact_id').value) != assignment_contact_id && contact_shift_count >= assignment_shift_limit) {
+    contact_shift_count = contact_shift_count + 1;
+    return confirm('This contact will be scheduled for ' + contact_shift_count + ' future shifts now, which is over the limit of ' + assignment_shift_limit + ' shifts. Would you like to continue?');
+  } else {
+    return true;
+  }
+}" %>
+
 <fieldset>
-<% form_for(@assignment, :url => @my_url) do |f| %>
+<% form_for(@assignment, :url => @my_url, :html => ((@assignment.class == Assignment) ? {:onSubmit => "return check_contact_limit();"} : {})) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "assignments/form", :locals => {:f => f} %>

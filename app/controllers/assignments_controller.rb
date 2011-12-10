@@ -4,6 +4,7 @@ class AssignmentsController < ApplicationController
   def get_required_privileges
     a = super
     a << {:privileges => ['schedule_volunteers']}
+    a << {:only => ['view'], :privileges => ['schedule_volunteers', 'view_volunteer_schedule']}
     a
   end
   public
@@ -28,11 +29,18 @@ class AssignmentsController < ApplicationController
     end
   end
 
+  def view
+    params["opts"] = {:presentation_mode => "Display"}
+    @readonly = true
+    index
+  end
+
   def index
+    @multi_enabled = true
     if params[:conditions]
       my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_shifts.roster_id), " : "volunteer_shifts.roster_id, "
     @skedj = Skedjul.new({
-      :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned"],
+      :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned", "weekday"],
       :date_range_condition => "date",
                            :forced_condition => "cancelled",
 
@@ -48,12 +56,9 @@ class AssignmentsController < ApplicationController
                            :views => {
                              :by_slot =>
                              { :left_unique_value => "volunteer_shifts.left_unique_value", # model
-                               :left_method_name => "volunteer_shifts.left_method_name",
                                :left_sort_value => "#{my_sort_prepend}(coalesce(volunteer_task_types.description, volunteer_events.description)), volunteer_shifts.slot_number",
-                               :left_table_name => "volunteer_shifts",
-                               :left_link_action => "assign",
+                               :left_method_name => "volunteer_shifts.left_method_name",
                                :title_between => 'volunteer_shifts.rosters.name',
-                               :left_link_id => "volunteer_shifts.description_and_slot",
                                :break_between_difference => "assignments.slot_type_desc",
 
                                :thing_start_time => "assignments.start_time",
@@ -61,16 +66,13 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id_and_today], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
                              },
 
                              :call_list =>
                              { :left_unique_value => "volunteer_shifts.left_unique_value", # model
-                               :left_method_name => "volunteer_shifts.left_method_name",
                                :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_events.description)), volunteer_shifts.slot_number",
-                               :left_table_name => "volunteer_shifts",
-                               :left_link_action => "assign",
-                               :left_link_id => "volunteer_shifts.description_and_slot",
+                               :left_method_name => "volunteer_shifts.left_method_name",
                                :break_between_difference => "assignments.slot_type_desc",
 
                                :thing_start_time => "assignments.start_time",
@@ -86,8 +88,8 @@ class AssignmentsController < ApplicationController
                                :left_sort_value => "assignments.contacts.sort_name",
                                :left_method_name => "assignments.contact_display",
                                :left_table_name => "contacts",
-                               :left_link_action => "assignments",
-                               :left_link_id => "contacts.id",
+#                               :left_link_action => "assignments",
+#                               :left_link_id => "contacts.id", # TODO?
 
                                :thing_start_time => "assignments.start_time",
                                :thing_end_time => "assignments.end_time",
@@ -200,8 +202,14 @@ class AssignmentsController < ApplicationController
     if @assignment
       @assignments = [@assignment]
     else
-      @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
-      @assignment = @assignments.first
+      begin
+        @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
+        @assignment = @assignments.first
+      rescue
+        flash[:error] = $!.to_s
+        redirect_to :back
+        return
+      end
     end
     @referer = request.env["HTTP_REFERER"]
     @my_url ||= {:action => "update", :id => params[:id]}

@@ -7,6 +7,10 @@ require 'bytes'
 require 'json'
 require 'ostruct'
 require 'bluecloth'
+require RAILS_ROOT + '/lib/fix_stupid_rails.rb'
+require RAILS_ROOT + '/lib/model_modifications.rb'
+require RAILS_ROOT + '/lib/ordered_hash.rb'
+require_dependency RAILS_ROOT + '/lib/soap.rb'
 
 module ActionView
   module Helpers
