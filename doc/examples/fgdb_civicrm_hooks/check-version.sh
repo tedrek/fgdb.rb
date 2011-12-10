@@ -18,6 +18,6 @@ fi
 if [ "$CURRENT" != "$LATEST" ]; then
     echo "Upgrade from civicrm $CURRENT to $LATEST is needed"
     echo " To download run:     $(dirname $0)/download-civicrm-version.sh ${LATEST}"
-    echo " To install run:      rm ~/code/civicrm/current; ln -sf ~/code/civicrm/${LATEST} ~/code/civicrm/current"
+    echo " To install run:      rm ~/code/civicrm/current; ln -s ~/code/civicrm/${LATEST} ~/code/civicrm/current"
     echo " To upgrade, go to:   http://civicrm/drupal/?q=civicrm/upgrade&reset=1"
 fi
