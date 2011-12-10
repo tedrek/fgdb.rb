@@ -216,7 +216,6 @@ class ActiveRecord::Base
 
   def self.cashierable
     return false if !self.cashierable_possible
-    puts self.new.current_user.inspect
     return true if self.new.current_user && self.new.current_user.shared
     return Default[self.class_name.tableize + "_require_cashier_code"] ? true : false
   end
