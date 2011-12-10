@@ -521,7 +521,7 @@ class Conditions < ConditionsBase
   end
 
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id.to_i]
+    return ["gizmo_events.gizmo_type_id IN (?)", [gizmo_type_id].flatten.map{|x|x.to_i}]
   end
 
   def gizmo_type_group_id_conditions(klass)
