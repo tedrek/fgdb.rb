@@ -101,6 +101,15 @@ class TransactionController < ApplicationController
     end
   end
 
+  def get_disbursement_exists
+    s = Disbursement.find_by_id(params[:id])
+    s = !! s
+    render :update do |page|
+      page << "internal_disbursement_exists = #{s.to_json};";
+      page.hide loading_indicator_id("line_item")
+    end
+  end
+
   def update_stuff
     @show_wrapper = false
     params[:continue] = false

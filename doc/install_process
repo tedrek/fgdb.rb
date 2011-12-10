@@ -27,6 +27,7 @@ ryan52@chaos:~/fgdb.rb$ ./script/update-devel-data/update-devel-data
 ryan52@chaos:~/fgdb.rb$ make -C db commit
 
 Loading metadata and creating admin (Requires Basic install):
+ryan52@chaos:~/fgdb.rb$ rake db:create
 ryan52@chaos:~/fgdb.rb$ rake db:schema:load
 ryan52@chaos:~/fgdb.rb$ rake db:metadata:load
 ryan52@chaos:~/fgdb.rb$ ./script/make_admin

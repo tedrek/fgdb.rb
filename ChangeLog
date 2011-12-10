@@ -1,12 +1,19 @@
-fgdb.rb (1.0.79) UNRELEASED; urgency=low
+fgdb.rb (1.0.80) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Dec 2011 00:30:21 -0800
+
+fgdb.rb (1.0.79) released; urgency=low
 
   * save the number of megabytes from the disktest to the disktest_runs
     table [needs fgdiag update]
   * Warn when a volunteer signs up for more than 2 shifts (Closes:
     #25440)
   * handle bad input from the users nicer
+  * add disbursement id to returns interface (Closes: #14861)
+  * pass the cashier_id onto the contact
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Dec 2011 11:16:03 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Dec 2011 00:29:58 -0800
 
 fgdb.rb (1.0.78) released; urgency=low
 

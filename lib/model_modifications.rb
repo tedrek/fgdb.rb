@@ -43,7 +43,7 @@ module ActiveRecord
       end
       cashier = current_cashier
       if respond_to?(:cashier_created_by) && cashier_created_by.nil?
-        if !cashier.nil? and self.class.cashierable
+        if !cashier.nil? #and self.class.cashierable
           self[:cashier_created_by] = cashier.id
         else
           self[:cashier_created_by] = self[:created_by]
