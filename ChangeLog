@@ -7,6 +7,8 @@ fgdb.rb (1.0.79) released; urgency=low
   * handle bad input from the users nicer
   * add disbursement id to returns interface (Closes: #14861)
   * pass the cashier_id onto the contact
+  * e-mail a daily list of database errors to me, if there were any.
+    (Closes: #25668). this will be gradually improved.
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Dec 2011 00:29:58 -0800
 
