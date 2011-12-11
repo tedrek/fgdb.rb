@@ -1176,3 +1176,29 @@ class NumberOfSystemsByMostRecentQCTrend < TrendReport
       Hash.new("integer")
     end
 end
+
+class NumberOfSystemsDisbursedByCity < TrendReport
+    def get_for_timerange(args)
+      where_clause = sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))
+      res = DB.execute("SELECT COALESCE(postal_codes.city, 'Other') AS city_group, SUM(gizmo_events.gizmo_count) AS gizmo_count FROM gizmo_events INNER JOIN disbursements ON disbursements.id = gizmo_events.disbursement_id INNER JOIN contacts ON disbursements.contact_id = contacts.id INNER JOIN gizmo_types ON gizmo_type_id = gizmo_types.id INNER JOIN gizmo_categories ON gizmo_category_id = gizmo_categories.id LEFT OUTER JOIN postal_codes ON postal_codes.postal_code = split_part(contacts.postal_code, '-', 1) WHERE gizmo_categories.name = 'system' AND #{where_clause} GROUP BY 1;")
+      ret = {}
+      res.to_a.each{|x|
+        ret[x["city_group"]] = x["gizmo_count"]
+      }
+      return ret
+    end
+    def category
+      "Gizmo"
+    end
+    def title
+      "All system disbursements by postal code's city"
+    end
+    def valid_conditions
+      ["disbursement_type_id"]
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+end
+""
