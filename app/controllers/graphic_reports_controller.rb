@@ -1153,3 +1153,52 @@ class NumberOfHoursWorkedByWorkersTrend < TrendReport
       ["job"]
     end
 end
+class NumberOfSystemsByMostRecentQCTrend < TrendReport
+    def get_for_timerange(args)
+      where_clause = sql_for_report(SpecSheet, conditions_with_daterange_for_report(args, "created_at"))
+      res = DB.execute("SELECT count(*) AS count
+  FROM spec_sheets AS s
+  WHERE id = (SELECT MAX(s2.id) FROM spec_sheets AS s2 JOIN builder_tasks AS bt ON s.builder_task_id = bt.id JOIN actions AS a ON a.id = bt.action_id WHERE s2.system_id = s.system_id AND a.name = 'checker')
+  AND #{where_clause.gsub("spec_sheets.", "s.")};")
+      return res.to_a.first
+    end
+    def category
+      "Gizmo"
+    end
+    def title
+      "Report of System's by Most Recent QC Date"
+    end
+    def valid_conditions
+      ["type"]
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+end
+
+class NumberOfSystemsDisbursedByCity < TrendReport
+    def get_for_timerange(args)
+      where_clause = sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))
+      res = DB.execute("SELECT COALESCE(postal_codes.city, 'Other') AS city_group, SUM(gizmo_events.gizmo_count) AS gizmo_count FROM gizmo_events INNER JOIN disbursements ON disbursements.id = gizmo_events.disbursement_id INNER JOIN contacts ON disbursements.contact_id = contacts.id INNER JOIN gizmo_types ON gizmo_type_id = gizmo_types.id INNER JOIN gizmo_categories ON gizmo_category_id = gizmo_categories.id LEFT OUTER JOIN postal_codes ON postal_codes.postal_code = split_part(contacts.postal_code, '-', 1) WHERE gizmo_categories.name = 'system' AND #{where_clause} GROUP BY 1;")
+      ret = {}
+      res.to_a.each{|x|
+        ret[x["city_group"]] = x["gizmo_count"]
+      }
+      return ret
+    end
+    def category
+      "Gizmo"
+    end
+    def title
+      "All system disbursements by postal code's city"
+    end
+    def valid_conditions
+      ["disbursement_type_id"]
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+end
+""
