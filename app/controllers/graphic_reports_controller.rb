@@ -1153,3 +1153,26 @@ class NumberOfHoursWorkedByWorkersTrend < TrendReport
       ["job"]
     end
 end
+class NumberOfSystemsByMostRecentQCTrend < TrendReport
+    def get_for_timerange(args)
+      where_clause = sql_for_report(SpecSheet, conditions_with_daterange_for_report(args, "created_at"))
+      res = DB.execute("SELECT count(*) AS count
+  FROM spec_sheets AS s
+  WHERE id = (SELECT MAX(s2.id) FROM spec_sheets AS s2 JOIN builder_tasks AS bt ON s.builder_task_id = bt.id JOIN actions AS a ON a.id = bt.action_id WHERE s2.system_id = s.system_id AND a.name = 'checker')
+  AND #{where_clause.gsub("spec_sheets.", "s.")};")
+      return res.to_a.first
+    end
+    def category
+      "Volunteer"
+    end
+    def title
+      "Report of System's by Most Recent QC Date"
+    end
+    def valid_conditions
+      ["type"]
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+end
