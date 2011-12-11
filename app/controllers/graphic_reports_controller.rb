@@ -1163,7 +1163,7 @@ class NumberOfSystemsByMostRecentQCTrend < TrendReport
       return res.to_a.first
     end
     def category
-      "Volunteer"
+      "Gizmo"
     end
     def title
       "Report of System's by Most Recent QC Date"
