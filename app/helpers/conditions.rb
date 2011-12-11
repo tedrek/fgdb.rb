@@ -555,6 +555,7 @@ class Conditions < ConditionsBase
   end
 
   def disbursement_type_id_conditions(klass)
+    klass = Disbursement if klass == GizmoEvent
     return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id.to_i]
   end
 
