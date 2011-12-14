@@ -92,7 +92,7 @@ class WorkShift < ActiveRecord::Base
   end
 
   def name
-    self.job.name + ' ' + time_range_s
+    self.job.name + (training ? ' (Training)' : '') + ' ' + time_range_s
   end
 
   def to_worked_shift

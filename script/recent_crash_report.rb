@@ -3,12 +3,10 @@
 require 'json'
 require 'date'
 
-find_days = 1
-
-@found = `find /var/www/fgdb.rb/tmp/crash/ -ctime #{find_days}`.split("\n")
+@found = `find /var/www/fgdb.rb/tmp/crash/ -mtime 0 -type f`.split("\n")
 @found.map!{|x| j = JSON.parse(File.read(x))}
 @found = @found.sort_by{|j| Date.parse(j["date"])}.map{|j|
-  "#{j["date"]}: #{j["user"] ? (j["user"] + "@") : ""}#{j["controller"]}##{j["action"]}: #{j["clean_message"].gsub("\n", "\n                     ")}"
+  "#{j["date"]}: #{j["cashier"] || j["user"] || j["client_ip"]}@#{j["controller"]}##{j["action"]}: #{j["clean_message"].gsub("\n", "\n                     ")}"
 }
 
 if @found.length >= 1

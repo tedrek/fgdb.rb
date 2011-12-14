@@ -145,11 +145,11 @@ class Conditions < ConditionsBase
   end
 
   def worker_conditions(klass)
-    return ["worker_id IN (?)", @worker_id.to_i]
+    return ["worker_id IN (?)", _to_a(@worker_id, true)]
   end
 
   def job_conditions(klass)
-    return ["job_id IN (?)", @job_id.to_i]
+    return ["job_id IN (?)", _to_a(@job_id)]
   end
 
   def empty_conditions(klass)
@@ -249,10 +249,11 @@ class Conditions < ConditionsBase
     klass = VolunteerEvent if klass == VolunteerShift
     klass = VolunteerEvent if klass == ResourcesVolunteerEvent
     klass = VolunteerEvent if klass == Assignment
+    a = _to_a(@weekday_id)
     if klass == VolunteerEvent
-      return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", @weekday_id.nil? ? -1 : @weekday_id]
+      return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", a]
     else
-      return ["#{klass.table_name}.weekday_id IN (?)", @weekday_id.nil? ? -1 : @weekday_id]
+      return ["#{klass.table_name}.weekday_id IN (?)", a]
     end
   end
 
@@ -260,7 +261,7 @@ class Conditions < ConditionsBase
     klass = VolunteerShift if klass == Assignment
     klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    return ["#{tbl}.roster_id IN (?)", @roster_id.to_i]
+    return ["#{tbl}.roster_id IN (?)", _to_a(@roster_id)]
   end
 
   def sked_conditions(klass)
@@ -520,12 +521,18 @@ class Conditions < ConditionsBase
     end
   end
 
+  def _to_a(input, allow_zero = false)
+    list = [input].flatten.map{|x| x.to_i}.select{|x| (!x.nil?) and (allow_zero || x != 0)}
+    return [-1] if list.length == 0
+    list
+  end
+
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id.to_i]
+    return ["gizmo_events.gizmo_type_id IN (?)", _to_a(@gizmo_type_id)]
   end
 
   def gizmo_type_group_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", gizmo_type_group_id.to_i]
+    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", _to_a(gizmo_type_group_id)]
   end
 
   def serial_number_conditions(klass)
@@ -548,6 +555,7 @@ class Conditions < ConditionsBase
   end
 
   def disbursement_type_id_conditions(klass)
+    klass = Disbursement if klass == GizmoEvent
     return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id.to_i]
   end
 
