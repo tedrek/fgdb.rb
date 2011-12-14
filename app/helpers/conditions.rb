@@ -145,7 +145,7 @@ class Conditions < ConditionsBase
   end
 
   def worker_conditions(klass)
-    return ["worker_id IN (?)", _to_a(@worker_id)]
+    return ["worker_id IN (?)", _to_a(@worker_id, true)]
   end
 
   def job_conditions(klass)
@@ -521,8 +521,8 @@ class Conditions < ConditionsBase
     end
   end
 
-  def _to_a(input)
-    list = [input].flatten.map{|x| x.to_i}.select{|x| (!x.nil?) and x != 0}
+  def _to_a(input, allow_zero = false)
+    list = [input].flatten.map{|x| x.to_i}.select{|x| (!x.nil?) and (allow_zero || x != 0)}
     return [-1] if list.length == 0
     list
   end
