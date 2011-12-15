@@ -1,3 +1,6 @@
+require 'pdf/writer'
+require 'pdf/simpletable'
+
 class TransactionController < ApplicationController
   layout :check_for_receipt
 
@@ -302,6 +305,114 @@ class TransactionController < ApplicationController
     render :update do |page|
       page << "set_new_val($('#{@transaction_type}_discount_schedule_id'), '#{default_discount_schedule.id}');"
     end
+  end
+
+  # FIXME: this creates the basic structure, but needs work to conform to all of the behaviors
+  def pdf
+    @txn = @transaction = model.find(params[:id])
+    @context = @transaction_type
+
+    pdf = PDF::Writer.new
+    pdf.select_font("Helvetica")
+
+    pdf.start_columns 4, 0
+    pdf.image RAILS_ROOT + "/public/images/freegeeklogo.png", :justification => :left
+    pdf.start_new_page
+    pdf.image RAILS_ROOT + "/public/images/hdr-address.png", :justification => :left, :resize => 1.5
+    pdf.start_new_page
+    pdf.start_new_page
+    pdf.text "Anon - BLAH"
+    pdf.stop_columns
+
+    pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left
+
+    pdf.stroke_color! Color::RGB::Black
+    pdf.line(pdf.absolute_left_margin, pdf.y, pdf.absolute_right_margin, pdf.y).stroke
+
+    PDF::SimpleTable.new do |tab|
+      tab.font_size = 14
+        tab.width = pdf.absolute_right_margin - pdf.absolute_left_margin # (PDF::Writer::PAGE_SIZES["A4"][2].to_i - 60)
+        tab.column_order.push(*%w(one two three))
+
+        tab.columns["one"] = PDF::SimpleTable::Column.new("one") { |col|
+
+        }
+        tab.columns["two"] = PDF::SimpleTable::Column.new("two") { |col|
+        }
+        tab.columns["three"] = PDF::SimpleTable::Column.new("three") { |col|
+        col.justification = :left
+        }
+
+        tab.show_lines    = :none
+        tab.show_headings = false
+        tab.shade_rows  = :none
+        tab.orientation   = :center
+        tab.position      = :center
+
+        data = [
+                { "one" => "Donation Receipt", "three" => "Federal Tax I.D. 93-1292010" }, # TODO: pull tax id from Defaults ?
+                { "one" => "Created by #" }, # TODO: fixme
+                { "one" => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}", "two" => "Donation ##{@txn.id}"},
+          ]
+
+        tab.data.replace data
+        tab.render_on(pdf)
+      end
+
+    PDF::SimpleTable.new do |tab|
+      tab.font_size = 14
+        tab.width = pdf.absolute_right_margin - pdf.absolute_left_margin # (PDF::Writer::PAGE_SIZES["A4"][2].to_i - 60)
+        tab.column_order.push(*%w(qty desc val))
+
+        tab.columns["qty"] = PDF::SimpleTable::Column.new("qty") { |col|
+        col.heading = "Quantity:"
+        }
+        tab.columns["desc"] = PDF::SimpleTable::Column.new("desc") { |col|
+        col.heading = "Description:"
+        }
+        tab.columns["val"] = PDF::SimpleTable::Column.new("val") { |col|
+        col.heading = "Est Value:"
+        }
+
+        tab.show_lines    = :all
+        tab.show_headings = true
+
+        tab.orientation   = :center
+        tab.position      = :center
+      # TODO : compare all logic with actual receipt
+      data = @txn.gizmo_events.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => "______"}}
+      data << {"desc" => " "}
+      data << {"desc" => "Total Estimated Value (tax deductible):", "val" =>  "_________"}
+      data << {"desc" => "Cash:", "val" =>  "$3.00"} # FIXME: payments processing
+      data << {"desc" => "Donation Paid (tax deductible):", "val" =>  "$3.00"}
+      data << {"desc" => "Total Deductible Donation:", "val" =>  "_________"}
+
+        tab.data.replace data
+        tab.render_on(pdf)
+      end
+
+#    pdf.hline
+#    pdf.save_state
+#    pdf.stroke_style PDF::Writer::StrokeStyle::DEFAULT
+#    pdf.stroke_color! Color::RGB::Black
+#    
+#    pdf.stroke
+#    pdf.restore_state
+
+    pdf.text "Comments: BLAH IF SO", :font_size => 14
+    # <HR />, however..
+    pdf.y -= 5
+    pdf.stroke_color! Color::RGB::Black
+    pdf.line(pdf.absolute_left_margin, pdf.y, pdf.absolute_right_margin, pdf.y).stroke
+    pdf.text "We affirm that no goods or services were provided in return for the donation amounts listed above (required fees excepted).", :font_size => 14
+
+#    pdf.y -= 10
+#    pdf.text "Hello, Ruby.", :font_size => 72, :justification => :center
+
+#       pdf.save_as('public/output.pdf')
+
+    send_data pdf.render, :filename => "receipt_#{params[:id]}.pdf",
+                    :type => "application/pdf"
   end
 
   def receipt
