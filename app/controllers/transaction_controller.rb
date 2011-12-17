@@ -310,7 +310,8 @@ class TransactionController < ApplicationController
   def mail_pdf
     pdf = gen_pdf
     data = pdf.render
-    filename = "receipt_#{params[:id]}.pdf"
+    type = @txn.invoiced? ? "invoice" : "receipt"
+    filename = "donation_#{type}_#{params[:id]}.pdf"
     address = nil
     if params[:address_choice] == 'other'
       address = params[:address]
@@ -320,7 +321,7 @@ class TransactionController < ApplicationController
     else
       address = ContactMethod.find_by_id(params[:address_choice].sub(/contact_method_/, '')).value
     end
-    Notifier.deliver_donation_pdf(address, data, filename, @txn.invoiced? ? "invoice" : "receipt")
+    Notifier.deliver_donation_pdf(address, data, filename, type)
     @message = "Sent to #{address}"
     receipt
     render :action => 'receipt'
@@ -341,7 +342,7 @@ class TransactionController < ApplicationController
     pdf.image RAILS_ROOT + "/public/images/hdr-address.png", :justification => :left, :resize => 1.5
     pdf.start_new_page
     pdf.start_new_page
-    pdf.text "Anon - BLAH"
+    pdf.text @txn.hidable_contact_information
     pdf.stop_columns
 
     pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left
@@ -370,7 +371,7 @@ class TransactionController < ApplicationController
         tab.position      = :center
 
         data = [
-                { "one" => "Donation Receipt", "three" => "Federal Tax I.D. 93-1292010" }, # TODO: pull tax id from Defaults ?
+                { "one" => "Donation Receipt", "three" => Default["tax id"] },
                 { "one" => "Created by #" }, # TODO: fixme
                 { "one" => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}", "two" => "Donation ##{@txn.id}"},
           ]
@@ -435,7 +436,9 @@ class TransactionController < ApplicationController
   public
   def pdf
     pdf = gen_pdf
-    send_data pdf.render, :filename => "receipt_#{params[:id]}.pdf",
+    type = @txn.invoiced? ? "invoice" : "receipt"
+    filename = "donation_#{type}_#{params[:id]}.pdf"
+    send_data pdf.render, :filename => filename,
                     :type => "application/pdf"
   end
 
