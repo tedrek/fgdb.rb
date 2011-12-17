@@ -214,9 +214,13 @@ class ActiveRecord::Base
     cols.include?("cashier_updated_by") || columns.include?("cashier_created_by")
   end
 
+  def self.allow_shared
+    false
+  end
+
   def self.cashierable
     return false if !self.cashierable_possible
-    return true if self.new.current_user && self.new.current_user.shared
+    return true if self.new.current_user && self.new.current_user.shared && !self.allow_shared
     return Default[self.class_name.tableize + "_require_cashier_code"] ? true : false
   end
 

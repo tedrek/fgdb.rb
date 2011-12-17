@@ -43,6 +43,10 @@ class Contact < ActiveRecord::Base
     display_name
   end
 
+  def self.allow_shared
+    true
+  end
+
   def mailing_list_email
     list = ContactMethodType.email_types_ordered.map{|x| x.id}
     list = list.reverse if self.organization

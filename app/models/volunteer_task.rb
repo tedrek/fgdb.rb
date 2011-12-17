@@ -18,6 +18,10 @@ class VolunteerTask < ActiveRecord::Base
 
   named_scope :for_type_id, lambda{|opt| {:conditions => ['volunteer_task_type_id = ?', opt]}}
 
+  def self.allow_shared
+    true
+  end
+
   def set_contact_syseval_count
     self.contact.update_syseval_count
     self.contact.save! # , :autosave => true does not work?
