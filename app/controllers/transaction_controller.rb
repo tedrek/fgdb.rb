@@ -373,7 +373,7 @@ class TransactionController < ApplicationController
 
         data = [
                 { "one" => "Donation #{@txn.invoiced? ? "Invoice" : "Receipt"}", "three" => Default["tax id"] },
-                { "one" => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}" }, # TODO: fixme
+                { "one" => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}" },
                 { "one" => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}", "two" => "Donation ##{@txn.id}", "three" => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : ""},
           ]
 
