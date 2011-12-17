@@ -1,8 +1,9 @@
 fgdb.rb (1.0.81) UNRELEASED; urgency=low
 
   * rename cashier code to PIN, only in user displayed areas
+  * validate search conditions and handle errors nicely (Closes: #25801)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Dec 2011 10:41:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Dec 2011 12:53:03 -0800
 
 fgdb.rb (1.0.80) released; urgency=low
 
