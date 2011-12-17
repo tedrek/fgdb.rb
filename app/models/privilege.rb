@@ -2,7 +2,7 @@ class Privilege < ActiveRecord::Base
   has_and_belongs_to_many :roles
 
   def self.by_name(name)
-    Privilege.find_by_name(name) || Privilege.new(:name => name)
+    Privilege.find_by_name(name) || Privilege.new(:name => name, :restrict => false)
   end
 
   def children
