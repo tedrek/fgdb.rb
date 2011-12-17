@@ -647,7 +647,7 @@ class Conditions < ConditionsBase
   def skedj_to_s(style = "before", show_date = false, ignores = [])
     show_date = show_date || (style == "sentence")
     mea = self.methods
-    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"} # TODO: look at CONDS instead
+    ta = mea.select{|x| x != 'is_this_condition_enabled' && x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"} # TODO: look at CONDS instead
     dv = nil
     ret = ta.map{|t|
       meo = me = t.sub(/_enabled$/, "")

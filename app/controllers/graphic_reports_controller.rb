@@ -36,7 +36,15 @@ class GraphicReportsController < ApplicationController
     end
     @report = @klass.new
     @report.set_conditions(params[:conditions])
-    @report.generate_report_data
+    if ! @report.generate_report_data
+      @conditions = params[:conditions]
+      @conditions[:errors] = @report.conditions_errors.errors
+      def @conditions.method_missing(a)
+        self[a]
+      end
+      index2
+      render :action => "index2"
+    end
   end
 
   def index
@@ -358,8 +366,21 @@ class TrendReport
 
   def generate_report_data
     list = []
-    @start_date = Date.parse(@conditions[:start_date])
-    end_date = Date.parse(@conditions[:end_date])
+    err_conds = conditions_errors
+    errors = err_conds.errors
+    begin
+      @start_date = Date.parse(@conditions[:start_date])
+    rescue
+      errors.add('start_date', 'is not a valid date')
+    end
+    begin
+      end_date = Date.parse(@conditions[:end_date])
+    rescue
+      errors.add('end_date', 'is not a valid date')
+    end
+    if errors.length > 0
+      return false
+    end
     if is_line
       @start_date = back_up_to_last_thing(@start_date)
       end_date = back_up_to_last_thing(end_date)
@@ -427,6 +448,7 @@ class TrendReport
       end
     }
     generate_display_data(list)
+    true
   end
 
   # for single reports
@@ -521,6 +543,14 @@ class TrendReport
 
     def set_conditions(conds)
       @conditions = conds
+    end
+
+    def conditions_errors
+      return @conditions_errors if defined?(@conditions_errors)
+      c = Conditions.new
+      c.apply_conditions(usable_conditions)
+      @conditions_errors = c
+      return c
     end
 
     def conditions_to_s
