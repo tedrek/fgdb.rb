@@ -190,7 +190,15 @@ GROUP BY 1,2;")
   end
 
   def payroll_report
-    @enddate = Date.parse(params[:worked_shift][:end_date]) if params[:worked_shift].keys.include?("end_date") and params[:worked_shift][:end_date] != ""
+    begin
+      @enddate = Date.parse(params[:worked_shift][:end_date]) if params[:worked_shift].keys.include?("end_date") and params[:worked_shift][:end_date] != ""
+    rescue
+    end
+    if !defined?(@date)
+      flash[:error] = "The date entered was not a valid date"
+      redirect_to :back
+      return
+    end
     if @enddate
       @pay_periods = PayPeriod.find(:all, :conditions => ['start_date <= ? AND end_date >= ?', @enddate, @date]).sort_by(&:start_date)
     else
@@ -283,6 +291,9 @@ GROUP BY 1,2;")
   def common_logic
     return if ! params[:worked_shift]
     @worker = Worker.find_by_id(params[:worked_shift][:worker_id]) if params[:worked_shift].keys.include?("worker_id")
-    @date = Date.parse(params[:worked_shift][:date_performed]) if params[:worked_shift].keys.include?("date_performed")
+    begin
+      @date = Date.parse(params[:worked_shift][:date_performed]) if params[:worked_shift].keys.include?("date_performed")
+    rescue
+    end
   end
 end
