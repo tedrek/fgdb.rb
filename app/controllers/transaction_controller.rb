@@ -320,8 +320,8 @@ class TransactionController < ApplicationController
     else
       address = ContactMethod.find_by_id(params[:address_choice].sub(/contact_method_/, '')).value
     end
-    Notifier.deliver_donation_pdf(address, data, filename)
-    @message = "Sent receipt to #{address}"
+    Notifier.deliver_donation_pdf(address, data, filename, @txn.invoiced? ? "invoice" : "receipt")
+    @message = "Sent to #{address}"
     receipt
     render :action => 'receipt'
   end

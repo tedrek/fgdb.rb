@@ -7,16 +7,16 @@ class Notifier < ActionMailer::Base
     body :text => data
   end
 
-  def donation_pdf(to_address, data, filename)
+  def donation_pdf(to_address, data, filename, type)
     recipients to_address
     from Default['noreply_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
-    subject "Free Geek Donation Receipt"
+    subject "Free Geek Donation #{type.capitalize}"
     attachment "application/pdf" do |x|
       x.filename = filename
       x.body = data
     end
-    body
+    body :type => type
   end
 
   def holiday_announcement(subj, data)
