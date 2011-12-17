@@ -48,7 +48,7 @@
     </div>
 
     <div class='form-element'>
-      <label for="user_shared">shared login? (only allows read-only and cashier code protected actions)</label>
+      <label for="user_shared">shared login? (only allows read-only and cashier code protected actions, with exceptions)</label>
       <%= check_box :user, :shared %>
     </div>
 
@@ -70,8 +70,11 @@
                name="roles[]" value="<%= role.id %>"
                <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
                />
-        <label for="<%= h role.name %>"><%= (xx = /(.+)/.match(h(role.name))) ? xx[1] : h(role.name) %> (<%= role.privileges.map{|x| x.name}.join(", ") %>)</label>
+        <label for="<%= h role.name %>"><%= (xx = /(.+)/.match(h(role.name))) ? xx[1] : h(role.name) %> (<%= role.privileges.map{|x| x.name + (x.restrict ? '*' : '')}.join(", ") %>)</label>
       </div>
     <% end %>
+    <div class='form-element'>
+      * = privilege does not apply to shared login users
+    </div>
   </div>
 </div>
