@@ -34,6 +34,5 @@
 <% end %>
 </fieldset>
 
-<%= link_to 'Show', {:action => "show", :id => @assignment.id} %> |
 <%= link_to 'Back', sked_url(@referer, @assignment.class == Assignment ? @assignment.volunteer_shift.date_anchor : @assignment.volunteer_default_shift.weekday_name) %>
 
