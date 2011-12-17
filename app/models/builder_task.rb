@@ -15,7 +15,7 @@ class BuilderTask < ActiveRecord::Base
   end
 
   def signed_off_by
-    self.cashier_signed_off_by.nil? ? "Not signed off." : User.find(self.cashier_signed_off_by).contact.display_name
+    self.cashier_signed_off_by.nil? ? "Not signed off." : User.find(self.cashier_signed_off_by).contact_display_name
   end
 
   def signed_off_by=(user)

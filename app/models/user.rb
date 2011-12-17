@@ -35,6 +35,10 @@ class User < ActiveRecord::Base
     }
   end
 
+  def contact_display_name
+    self.contact ? self.contact.display_name : self.login
+  end
+
   def add_cashier_code
     reset_cashier_code if cashier_code.nil?
   end

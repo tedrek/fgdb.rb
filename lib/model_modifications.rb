@@ -14,6 +14,16 @@ module ActiveRecord
       base.class_eval do
         alias_method_chain :create, :user
         alias_method_chain :update, :user
+        class << self
+        def human_attribute_name_with_cashier_code(f)
+          if f == 'cashier_code'
+            return 'PIN'
+          else
+            return human_attribute_name_without_cashier_code(f)
+          end
+        end
+          alias_method_chain :human_attribute_name, :cashier_code
+        end
 
         belongs_to :creator, :foreign_key => "created_by", :class_name => "User"
         belongs_to :updator, :foreign_key => "created_by", :class_name => "User"
