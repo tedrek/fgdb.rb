@@ -108,8 +108,9 @@ class Conditions < ConditionsBase
     @assigned = true
   end
 
-  # in things using conditions, check conds.valid? before using conds.conditions, and also display error_messages_for in the form.
+  # in things using conditions, check conds.valid? before using conds.conditions (unless no results is intended), and also display error_messages_for in the form.
   def validate
+    @errors.add("phone_number", "is not ten digits long") if is_this_condition_enabled('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
   end
 
@@ -325,10 +326,6 @@ class Conditions < ConditionsBase
 
   def phone_number_conditions(klass)
     phone_number = @phone_number.to_s.gsub(/[^[:digit:]]/, "")
-    if phone_number.length != 10
-      @phone_number = "INVALID PHONE NUMBER(MUST BE 10 DIGITS LONG)...IGNORED"
-      return [""]
-    end
     phone_number = phone_number.sub(/^(.{3})(.{3})(.{4})$/, "%\\1%\\2%\\3%")
     return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE (description ILIKE '%phone%') OR (description ILIKE '%fax%')) AND value ILIKE ?)", phone_number]
   end

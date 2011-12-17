@@ -45,11 +45,11 @@ class ConditionsBase
 
   attr_writer :human_name
 
-  def human_name
+  def self.human_name
     @human_name || "Search conditions"
   end
 
-  def human_attribute_names(f)
+  def self.human_attribute_name(f)
     f.humanize
   end
 
