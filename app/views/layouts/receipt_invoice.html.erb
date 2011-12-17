@@ -61,6 +61,39 @@
         <% if params[:controller] == 'sales' %>
         <hr />
         <%= receipt_printer_html %>
+        <% elsif params[:controller] == 'donations' %>
+          <hr />
+          <%= button_to "View PDF", {:action => "pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]} %><br />
+          <% if defined?(@message) %>
+            <b><%= @message %></b>
+          <% end %>
+          <% form_tag({:action => "mail_pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]}) do %>
+            <% if @txn.contact_id %>
+              Choose an e-mail address to send to:</br >
+              <% @txn.contact.contact_methods.select{|x| x.contact_method_type.name.match(/email/)}.each do |x| %>
+                <div class='form-element'>
+                  <%= radio_button_tag('address_choice', "contact_method_#{x.id}", false) %><%= x.contact_method_type.description %><%= x.ok ? "" : " (not usable)" %>: <%= h x.value %><br />
+                </div>
+              <% end %>
+            <div class='form-element'>
+              <%= radio_button_tag('address_choice', 'other', true) %>
+            <% else %>
+              <div class='form-element'>
+                <%= hidden_field_tag('address_choice', 'other') %>
+            <% end %><label for="address">Enter an e-mail address: </label><%= text_field_tag 'address' %>
+            <% if @txn.contact_id %>
+              <label for="save">Save to contact record?</label> <%= check_box_tag "save" %>
+              <%= observe_field("save",
+                                :function => "{var x = $('contact_method_type_id'); if ($('save').checked) { x.show() } else { x.hide() }}"
+                                ) %>
+              <%= select_tag "contact_method_type_id", options_from_collection_for_select(ContactMethodType.find(:all).select{|x| x.name.match(/email/)}.sort_by(&:name), "id", "description"), :style => 'display: none' %>
+            <% end %>
+            </div>
+            <br />
+            <div class='form-element' style="clear:left">
+              <%= submit_tag "Send PDF" %>
+            </div>
+          <% end %>
         <% end %>
       </span>
     </p>

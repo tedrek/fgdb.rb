@@ -44,7 +44,7 @@ class TransactionController < ApplicationController
 
   def check_for_receipt
     case action_name
-    when /receipt/ then "receipt_invoice.html.erb"
+    when /(receipt|mail_pdf)/ then "receipt_invoice.html.erb"
     else                "with_sidebar.html.erb"
     end
   end
@@ -307,10 +307,30 @@ class TransactionController < ApplicationController
     end
   end
 
-  # FIXME: this creates the basic structure, but needs work to conform to all of the behaviors
-  def pdf
+  def mail_pdf
+    pdf = gen_pdf
+    data = pdf.render
+    filename = "receipt_#{params[:id]}.pdf"
+    address = nil
+    if params[:address_choice] == 'other'
+      address = params[:address]
+      if params[:save]
+        ContactMethod.new(:contact_id => @txn.contact_id, :contact_method_type_id => params[:contact_method_type_id], :value => address, :ok => true).save!
+      end
+    else
+      address = ContactMethod.find_by_id(params[:address_choice].sub(/contact_method_/, '')).value
+    end
+    Notifier.deliver_donation_pdf(address, data, filename)
+    @message = "Sent receipt to #{address}"
+    receipt
+    render :action => 'receipt'
+  end
+
+  protected
+  def gen_pdf
     @txn = @transaction = model.find(params[:id])
     @context = @transaction_type
+    raise unless @context == 'donation'
 
     pdf = PDF::Writer.new
     pdf.select_font("Helvetica")
@@ -410,7 +430,11 @@ class TransactionController < ApplicationController
 #    pdf.text "Hello, Ruby.", :font_size => 72, :justification => :center
 
 #       pdf.save_as('public/output.pdf')
-
+    return pdf
+  end
+  public
+  def pdf
+    pdf = gen_pdf
     send_data pdf.render, :filename => "receipt_#{params[:id]}.pdf",
                     :type => "application/pdf"
   end
