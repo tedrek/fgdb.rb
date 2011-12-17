@@ -328,6 +328,7 @@ class TransactionController < ApplicationController
   end
 
   protected
+  include ActionView::Helpers::NumberHelper
   def gen_pdf
     @txn = @transaction = model.find(params[:id])
     @context = @transaction_type
@@ -342,7 +343,7 @@ class TransactionController < ApplicationController
     pdf.image RAILS_ROOT + "/public/images/hdr-address.png", :justification => :left, :resize => 1.5
     pdf.start_new_page
     pdf.start_new_page
-    pdf.text @txn.hidable_contact_information
+    pdf.text @txn.contact_information + [@txn.hidable_contact_information].flatten
     pdf.stop_columns
 
     pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left
@@ -361,7 +362,7 @@ class TransactionController < ApplicationController
         tab.columns["two"] = PDF::SimpleTable::Column.new("two") { |col|
         }
         tab.columns["three"] = PDF::SimpleTable::Column.new("three") { |col|
-        col.justification = :left
+        col.justification = :right
         }
 
         tab.show_lines    = :none
@@ -371,9 +372,9 @@ class TransactionController < ApplicationController
         tab.position      = :center
 
         data = [
-                { "one" => "Donation Receipt", "three" => Default["tax id"] },
-                { "one" => "Created by #" }, # TODO: fixme
-                { "one" => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}", "two" => "Donation ##{@txn.id}"},
+                { "one" => "Donation #{@txn.invoiced? ? "Invoice" : "Receipt"}", "three" => Default["tax id"] },
+                { "one" => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}" }, # TODO: fixme
+                { "one" => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}", "two" => "Donation ##{@txn.id}", "three" => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : ""},
           ]
 
         tab.data.replace data
@@ -400,12 +401,37 @@ class TransactionController < ApplicationController
 
         tab.orientation   = :center
         tab.position      = :center
-      # TODO : compare all logic with actual receipt
-      data = @txn.gizmo_events.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => "______"}}
+      data = @txn.gizmo_events.select{|event| !GizmoType.fee?(event.gizmo_type)}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => "______"}}
       data << {"desc" => " "}
       data << {"desc" => "Total Estimated Value (tax deductible):", "val" =>  "_________"}
-      data << {"desc" => "Cash:", "val" =>  "$3.00"} # FIXME: payments processing
-      data << {"desc" => "Donation Paid (tax deductible):", "val" =>  "$3.00"}
+      data = data + @txn.gizmo_events.select{|event| (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => number_to_currency((x.gizmo_count * x.unit_price_cents)/100.0)}}
+      data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
+
+      if @txn.invoice_resolved?
+        data << {"desc" => "Required Fee Paid (NOT deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents + @txn.required_fee_owed_cents)/100.0) }
+        data << {"desc" => "Donation Paid (tax deductible):", "val" => number_to_currency((@txn.cash_donation_paid_cents + @txn.cash_donation_owed_cents)/100.0)}
+      else
+        if @txn.required_fee_paid_cents.nonzero?
+          data << {"desc" => "Required Fee Paid (NOT deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents)/100.0)}
+        end
+
+        if @txn.invoiced? and @txn.required_fee_owed_cents.nonzero?
+          data << {"desc" => "Required Fee Due (NOT deductible):", "val" => number_to_currency(@txn.required_fee_owed_cents/100.0) }
+        end
+
+        if @txn.invoiced?
+          data << {"desc" => " "}
+          data << {"desc" => "Total Amount Still Owed:", "val" => number_to_currency((@txn.amount_invoiced_cents)/100.0)}
+        end
+
+        if @txn.cash_donation_paid_cents.nonzero?
+          data << {"desc" => "Donation Paid (tax deductible):", "val" => number_to_currency(@txn.cash_donation_paid_cents/100.0) }
+        end
+        if @txn.invoiced? and @txn.cash_donation_owed_cents.nonzero?
+          data << {"desc" => "Cash Donation Owed (tax deductible AFTER PAYMENT)", "val" => number_to_currency(@txn.cash_donation_owed_cents/100.0)}
+        end
+      end
+
       data << {"desc" => "Total Deductible Donation:", "val" =>  "_________"}
 
         tab.data.replace data
@@ -420,7 +446,7 @@ class TransactionController < ApplicationController
 #    pdf.stroke
 #    pdf.restore_state
 
-    pdf.text "Comments: BLAH IF SO", :font_size => 14
+    pdf.text @txn.comments.to_s, :font_size => 14
     # <HR />, however..
     pdf.y -= 5
     pdf.stroke_color! Color::RGB::Black
