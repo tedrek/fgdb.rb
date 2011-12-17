@@ -159,9 +159,11 @@ GROUP BY 1,2;")
   public
   def index
     default_my_form
-    @shifts = @worker.shifts_for_day(@date)
-    @logged_already = @shifts.shift
-    @shifts = @shifts.select{|x| !(x.job_id.nil? && x.duration == 0)}
+    if @worker
+      @shifts = @worker.shifts_for_day(@date)
+      @logged_already = @shifts.shift
+      @shifts = @shifts.select{|x| !(x.job_id.nil? && x.duration == 0)}
+    end
   end
 
   def individual
