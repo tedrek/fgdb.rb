@@ -108,6 +108,11 @@ class Conditions < ConditionsBase
     @assigned = true
   end
 
+  # in things using conditions, check conds.valid? before using conds.conditions, and also display error_messages_for in the form.
+  def validate
+    # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
+  end
+
   def schedule_conditions(klass)
     in_clause = "(-1)"
     s = Schedule.find_by_id(@schedule_id.to_i)

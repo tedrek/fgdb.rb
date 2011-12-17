@@ -34,9 +34,47 @@ class ConditionsBase
     return my_data
   end
 
+  def is_this_condition_enabled(this_condition)
+    ["true", true].include?(instance_variable_get("@#{this_condition}_enabled"))
+  end
+
+  def valid?
+    _validate
+    @errors.length == 0
+  end
+
+  attr_writer :human_name
+
+  def human_name
+    @human_name || "Search conditions"
+  end
+
+  def human_attribute_names(f)
+    f.humanize
+  end
+
+  def _validate
+    if !defined?(@errors)
+      @errors = ActiveRecord::Errors.new(self)
+      self.validate
+    end
+  end
+
+  def validate
+    # in child class:    @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
+  end
+
+  def errors
+    _validate
+    @errors
+  end
+
   def conditions(klass)
+    if !self.valid?
+      return ["#{klass.table_name}.id = -1"]
+    end
     conds = self.class::CONDS.inject([""]) {|condition_array,this_condition|
-      if ["true", true].include?(instance_variable_get("@#{this_condition}_enabled"))
+      if is_this_condition_enabled(this_condition)
         join_conditions(condition_array,
                         _wrap_with_not(self.send("#{this_condition}_conditions",
                                                  klass), instance_variable_get("@#{this_condition}_excluded")))
