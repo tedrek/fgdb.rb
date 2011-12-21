@@ -326,9 +326,11 @@ class ReportsController < ApplicationController
   protected
 
   def common_hours
-    @defaults = Conditions.new
-    @defaults.contact_enabled = "true"
-    render :action => "volunteers"
+    if !params[:action].match(/_report/)
+      @defaults = Conditions.new
+      @defaults.contact_enabled = "true"
+    end
+    render :action => "volunteers", :layout => "reports_form.html.erb"
   end
 
   def pre_common_hours_report
@@ -347,9 +349,13 @@ class ReportsController < ApplicationController
   def common_hours_report
     pre_common_hours_report
 
-    @tasks = @klass.find_by_conditions(@defaults.conditions(@klass))
-    @data = volunteer_report_for(@tasks, @sections)
-    render :action => "volunteers_report"
+    if !@defaults.valid?
+      self.send(params[:action].sub(/_report/, ""))
+    else
+      @tasks = @klass.find_by_conditions(@defaults.conditions(@klass))
+      @data = volunteer_report_for(@tasks, @sections)
+      render :action => "volunteers_report"
+    end
   end
 
   def get_required_privileges

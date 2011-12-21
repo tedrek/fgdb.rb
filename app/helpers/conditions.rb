@@ -111,20 +111,23 @@ class Conditions < ConditionsBase
   # in things using conditions, check conds.valid? before using conds.conditions (unless no results is intended), and also display error_messages_for in the form.
   def validate
     @errors.add("phone_number", "is not ten digits long") if is_this_condition_enabled('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
-    parse_and_validate_list('worker', 'worker_id', true)
+    validate_exists('worker_id') if parse_and_validate_list('worker', 'worker_id', true)
     parse_and_validate_list('job', 'job_id')
     parse_and_validate_list('weekday', 'weekday_id')
     parse_and_validate_list('roster', 'roster_id')     # TODO: this _id needs to be consistent, really..
     parse_and_validate_list('gizmo_type_id')
     parse_and_validate_list('gizmo_type_group_id')
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
-    validate_integer('id', 'id')
-    validate_emptyness('email', 'email')
+    validate_integer('id')
+    validate_emptyness('email')
+    validate_emptyness('city')
+    validate_emptyness('postal_code')
+      validate_exists('contact_id') if validate_integer('contact', 'contact_id')
   end
 # TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
 #      contact_type needs_attention anonymous unresolved_invoices
 #      payment_method payment_amount  gizmo_category_id covered
-#      postal_code city contact volunteer_hours email
+#      volunteer_hours
 #      flagged system contract created_by cashier_created_by extract
 #      empty disbursement_type_id store_credit_id organization
 #      can_login role action  contribution serial_number 
@@ -136,9 +139,19 @@ class Conditions < ConditionsBase
     varname ||= name
     if is_this_condition_enabled(name)
       value = self.send(varname)
-      return if _empty_check(varname, value) # do not include other errors, if blank
+      return false if _empty_check(varname, value) # do not include other errors, if blank
       errors.add(varname, 'is not a whole number') if value.to_i.to_s != value.to_s.strip
       errors.add(varname, 'cannot be zero') if (!allowzero) and value.to_i == 0
+      return true
+    end
+    false
+  end
+
+  def validate_exists(name)
+    klass = name.sub(/_id/, "").classify.constantize
+    value = self.send(name)
+    for v in [value].flatten
+      errors.add(name, "cannot be found with id #{v}") if !klass.find_by_id(v)
     end
   end
 
@@ -146,8 +159,9 @@ class Conditions < ConditionsBase
     varname ||= name
     if is_this_condition_enabled(name)
       value = self.send(varname)
-      _empty_check(varname, value)
+      return ! _empty_check(varname, value)
     end
+    false
   end
 
   def _empty_check(varname, value)
@@ -161,8 +175,11 @@ class Conditions < ConditionsBase
       varname ||= name
       result = _to_a(self.send(varname), allowzero)
       self.send(varname + "=", result)
-      errors.add(varname, 'must have at least one choice selected') if result == [-1]
+      err = result == [-1]
+      errors.add(varname, 'must have at least one choice selected') if err
+      return !err
     end
+    false
   end
 
   def schedule_conditions(klass)
