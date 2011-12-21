@@ -111,7 +111,32 @@ class Conditions < ConditionsBase
   # in things using conditions, check conds.valid? before using conds.conditions (unless no results is intended), and also display error_messages_for in the form.
   def validate
     @errors.add("phone_number", "is not ten digits long") if is_this_condition_enabled('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
+    parse_and_validate_list('worker', 'worker_id', true)
+    parse_and_validate_list('job', 'job_id')
+    parse_and_validate_list('weekday', 'weekday_id')
+    parse_and_validate_list('roster', 'roster_id')     # TODO: this _id needs to be consistent, really..
+    parse_and_validate_list('gizmo_type_id')
+    parse_and_validate_list('gizmo_type_group_id')
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
+  end
+# TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
+#      id contact_type needs_attention anonymous unresolved_invoices
+#      payment_method payment_amount  gizmo_category_id covered
+#      postal_code city phone_number contact volunteer_hours email
+#      flagged system contract created_by cashier_created_by extract
+#      empty disbursement_type_id store_credit_id organization
+#      can_login role action  contribution serial_number 
+#      volunteer_task_type  sked  effective_at cancelled
+#      needs_checkin assigned attendance_type worker_type
+#      effective_on schedule type store_credit_redeemed volunteered_hours_in_days
+
+  def parse_and_validate_list(name, varname = nil, allowzero = false)
+    if is_this_condition_enabled(name)
+      varname ||= name
+      result = _to_a(self.send(varname), allowzero)
+      self.send(varname + "=", result)
+      errors.add(varname, 'must have at least one choice selected') if result == [-1]
+    end
   end
 
   def schedule_conditions(klass)
@@ -151,11 +176,11 @@ class Conditions < ConditionsBase
   end
 
   def worker_conditions(klass)
-    return ["worker_id IN (?)", _to_a(@worker_id, true)]
+    return ["worker_id IN (?)", (@worker_id)]
   end
 
   def job_conditions(klass)
-    return ["job_id IN (?)", _to_a(@job_id)]
+    return ["job_id IN (?)", (@job_id)]
   end
 
   def empty_conditions(klass)
@@ -255,7 +280,7 @@ class Conditions < ConditionsBase
     klass = VolunteerEvent if klass == VolunteerShift
     klass = VolunteerEvent if klass == ResourcesVolunteerEvent
     klass = VolunteerEvent if klass == Assignment
-    a = _to_a(@weekday_id)
+    a = (@weekday_id)
     if klass == VolunteerEvent
       return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", a]
     else
@@ -267,7 +292,7 @@ class Conditions < ConditionsBase
     klass = VolunteerShift if klass == Assignment
     klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    return ["#{tbl}.roster_id IN (?)", _to_a(@roster_id)]
+    return ["#{tbl}.roster_id IN (?)", (@roster_id)]
   end
 
   def sked_conditions(klass)
@@ -530,11 +555,11 @@ class Conditions < ConditionsBase
   end
 
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (?)", _to_a(@gizmo_type_id)]
+    return ["gizmo_events.gizmo_type_id IN (?)", (@gizmo_type_id)]
   end
 
   def gizmo_type_group_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", _to_a(gizmo_type_group_id)]
+    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", (gizmo_type_group_id)]
   end
 
   def serial_number_conditions(klass)
@@ -645,6 +670,9 @@ class Conditions < ConditionsBase
   end
 
   def skedj_to_s(style = "before", show_date = false, ignores = [])
+#    if !self.valid?
+#      return "with invalid search conditions"
+#    end
     show_date = show_date || (style == "sentence")
     mea = self.methods
     ta = mea.select{|x| x != 'is_this_condition_enabled' && x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"} # TODO: look at CONDS instead
