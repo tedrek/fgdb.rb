@@ -12,6 +12,8 @@ fgdb.rb (1.0.80) released; urgency=low
     #25510)
   * validate the user record when saving contacts, to prevent silent
     failures
+  * add option for LCD Monitor gizmoes on disbursement info section
+    of printme (Closes: #25988)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Dec 2011 02:45:21 -0800
 
