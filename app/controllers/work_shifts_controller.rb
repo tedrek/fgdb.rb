@@ -9,8 +9,13 @@ class WorkShiftsController < ApplicationController
 
   public
   def find_problems
-    @start_date = Date.parse(params[:start_date])
-    @end_date = Date.parse(params[:end_date])
+    begin
+      @start_date = Date.parse(params[:start_date])
+      @end_date = Date.parse(params[:end_date])
+    rescue
+      redirect_to :action => "index"
+      return
+    end
     @disp_end_date = @end_date
     max_end = WorkShift.maximum('shift_date')
     @end_date = max_end if @end_date > max_end
