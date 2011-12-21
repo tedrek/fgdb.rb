@@ -110,19 +110,19 @@ class Conditions < ConditionsBase
 
   # in things using conditions, check conds.valid? before using conds.conditions (unless no results is intended), and also display error_messages_for in the form.
   def validate
-    @errors.add("phone_number", "is not ten digits long") if is_this_condition_enabled('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
+    @errors.add("phone_number", "is not ten digits long") if validate_emptyness('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
     validate_exists('worker_id') if parse_and_validate_list('worker', 'worker_id', true)
-    parse_and_validate_list('job', 'job_id')
-    parse_and_validate_list('weekday', 'weekday_id')
-    parse_and_validate_list('roster', 'roster_id')     # TODO: this _id needs to be consistent, really..
-    parse_and_validate_list('gizmo_type_id')
-    parse_and_validate_list('gizmo_type_group_id')
+    validate_exists('job_id') if parse_and_validate_list('job', 'job_id')
+    validate_exists('weekday_id') if parse_and_validate_list('weekday', 'weekday_id')
+    validate_exists('roster_id') if parse_and_validate_list('roster', 'roster_id')     # TODO: this _id needs to be consistent, really..
+    validate_exists('gizmo_type_id') if parse_and_validate_list('gizmo_type_id')
+    validate_exists('gizmo_type_group_id') if parse_and_validate_list('gizmo_type_group_id')
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
     validate_integer('id')
     validate_emptyness('email')
     validate_emptyness('city')
     validate_emptyness('postal_code')
-      validate_exists('contact_id') if validate_integer('contact', 'contact_id')
+    validate_exists('contact_id') if validate_integer('contact', 'contact_id')
   end
 # TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
 #      contact_type needs_attention anonymous unresolved_invoices
