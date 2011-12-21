@@ -118,6 +118,7 @@ class Conditions < ConditionsBase
     parse_and_validate_list('gizmo_type_id')
     parse_and_validate_list('gizmo_type_group_id')
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
+    validate_integer('id', 'id')
   end
 # TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
 #      id contact_type needs_attention anonymous unresolved_invoices
@@ -129,6 +130,30 @@ class Conditions < ConditionsBase
 #      volunteer_task_type  sked  effective_at cancelled
 #      needs_checkin assigned attendance_type worker_type
 #      effective_on schedule type store_credit_redeemed volunteered_hours_in_days
+
+  def validate_integer(name, varname = nil, allowzero = false)
+    varname ||= name
+    if is_this_condition_enabled(name)
+      value = self.send(varname)
+      return if _empty_check(varname, value) # do not include other errors, if blank
+      errors.add(varname, 'is not a whole number') if value.to_i.to_s != value.to_s.strip
+      errors.add(varname, 'cannot be zero') if (!allowzero) and value.to_i == 0
+    end
+  end
+
+  def validate_emptyness(name, varname = nil) # UGH, varname and name need a better way of handling
+    varname ||= name
+    if is_this_condition_enabled(name)
+      value = self.send(varname)
+      _empty_check(varname, value)
+    end
+  end
+
+  def _empty_check(varname, value)
+    empty = (value.nil? or (value.class != Fixnum and value.empty?))
+    errors.add(varname, 'cannot be blank') if empty
+    empty
+  end
 
   def parse_and_validate_list(name, varname = nil, allowzero = false)
     if is_this_condition_enabled(name)
