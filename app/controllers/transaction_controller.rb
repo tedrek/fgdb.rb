@@ -343,7 +343,7 @@ class TransactionController < ApplicationController
     pdf.image RAILS_ROOT + "/public/images/hdr-address.png", :justification => :left, :resize => 1.5
     pdf.start_new_page
     pdf.start_new_page
-    pdf.text @txn.contact_information + [@txn.hidable_contact_information].flatten
+    pdf.text( ([@txn.contact_information, @txn.hidable_contact_information].flatten).map{|x| x || ""} )
     pdf.stop_columns
 
     pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left
