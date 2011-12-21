@@ -65,7 +65,9 @@
           <hr />
           <%= button_to "View PDF", {:action => "pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]} %><br />
           <% if defined?(@message) %>
-            <b><%= @message %></b>
+            <span class="<%= @is_err ? "error" : "" %>">
+              <b><%= @message %></b>
+            </span>
           <% end %>
           <% form_tag({:action => "mail_pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]}) do %>
             <% if @txn.contact_id %>

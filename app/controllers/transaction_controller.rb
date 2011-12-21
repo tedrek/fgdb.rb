@@ -315,14 +315,19 @@ class TransactionController < ApplicationController
     address = nil
     if params[:address_choice] == 'other'
       address = params[:address]
-      if params[:save]
-        ContactMethod.new(:contact_id => @txn.contact_id, :contact_method_type_id => params[:contact_method_type_id], :value => address, :ok => true).save!
-      end
     else
       address = ContactMethod.find_by_id(params[:address_choice].sub(/contact_method_/, '')).value
     end
-    Notifier.deliver_donation_pdf(address, data, filename, type)
-    @message = "Sent to #{address}"
+    if address.match(/\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i)
+      if params[:address_choice] == 'other'&& params[:save]
+        ContactMethod.new(:contact_id => @txn.contact_id, :contact_method_type_id => params[:contact_method_type_id], :value => address, :ok => true).save!
+      end
+      Notifier.deliver_donation_pdf(address, data, filename, type)
+      @message = "Sent to #{address}"
+    else
+      @message = "ERROR: invalid email address: #{address}"
+      @is_err = true
+    end
     receipt
     render :action => 'receipt'
   end
