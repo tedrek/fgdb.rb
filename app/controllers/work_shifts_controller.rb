@@ -31,6 +31,7 @@ class WorkShiftsController < ApplicationController
       }
     }
     all_shifts.each{|x|
+      next if x.training
       @shift_gap_hash[x.job_id][x.shift_date].push([x.start_time, x.end_time])
     }
     w_start = @start_date
