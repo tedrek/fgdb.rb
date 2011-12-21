@@ -57,6 +57,8 @@ class ApplicationController < ActionController::Base
   end
 
   def process_exception(exception)
+    authorize
+    set_cashier
     if rescue_as_normal
       return rescue_action(exception)
     else
