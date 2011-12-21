@@ -119,11 +119,12 @@ class Conditions < ConditionsBase
     parse_and_validate_list('gizmo_type_group_id')
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
     validate_integer('id', 'id')
+    validate_emptyness('email', 'email')
   end
 # TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
-#      id contact_type needs_attention anonymous unresolved_invoices
+#      contact_type needs_attention anonymous unresolved_invoices
 #      payment_method payment_amount  gizmo_category_id covered
-#      postal_code city phone_number contact volunteer_hours email
+#      postal_code city contact volunteer_hours email
 #      flagged system contract created_by cashier_created_by extract
 #      empty disbursement_type_id store_credit_id organization
 #      can_login role action  contribution serial_number 
