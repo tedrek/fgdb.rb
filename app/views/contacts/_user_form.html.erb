@@ -52,7 +52,7 @@
       <%= check_box :user, :shared %>
     </div>
 
-    <% unless @user.shared %>
+    <% unless @user and @user.shared %>
     <div class='form-element'>
       <label for="user_cashier_code">Cashier Code</label>
       <%= text_field :user, :cashier_code, :readonly => true %>
