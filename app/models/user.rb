@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   end
 
   def add_cashier_code
-    reset_cashier_code if cashier_code.nil?
+    reset_cashier_code if !self.shared and cashier_code.nil?
   end
 
   def reset_cashier_code

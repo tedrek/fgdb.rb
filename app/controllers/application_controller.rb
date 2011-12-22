@@ -98,7 +98,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_cashier
   def set_cashier
     uid = _set_cashier(params)
-    if uid && (u = User.find_by_cashier_code(uid.to_i))
+    if uid && (u = User.find_by_shared_and_cashier_code(false, uid.to_i))
       Thread.current['cashier'] = u
     else
       Thread.current['cashier'] = nil
