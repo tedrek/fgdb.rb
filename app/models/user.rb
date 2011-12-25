@@ -138,6 +138,7 @@ class User < ActiveRecord::Base
       olda = a.dup
       a << olda.map{|x| x.children}.flatten
       a = a.flatten.sort_by(&:name).uniq
+      a = a.select{|x| !x.restrict} if self.shared
     end
     a = a.map{|x| x.name}
     a
