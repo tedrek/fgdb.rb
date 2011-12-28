@@ -118,6 +118,8 @@ WHERE
         shift_style = 'meeting'
       elsif self.read_type == 'Unavailability'
         shift_style = 'unavailable'
+      elsif self.worker_id == 0
+        shift_style = 'unfilled'
       elsif overlap
         # can't seem to get this part quite right
         # i expect a stupid syntax error
