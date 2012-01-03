@@ -25,7 +25,7 @@ class Conditions < ConditionsBase
   end
 
   for i in DATES
-    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_quarter').to_sym
+    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, , (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
 
   attr_accessor :volunteer_hours_days, :volunteer_hours_minimum
@@ -468,7 +468,7 @@ class Conditions < ConditionsBase
       end_date = Time.local(end_year, end_month, 1)
     when 'quarterly'
       quarter = eval("@#{field}_quarter")
-      year = eval("@#{field}_year")
+      year = eval("@#{field}_year_q")
       start_date = Time.local(year, (quarter * 3) - 2, 1)
       end_year = year
       end_month = (quarter * 3) - 2
@@ -479,7 +479,7 @@ class Conditions < ConditionsBase
       end
       end_date = Time.local(end_year, end_month, 1)
     when 'yearly'
-      year = eval("@#{field}_year")
+      year = eval("@#{field}_year_only")
       start_date = Time.local(year, 1, 1)
       end_date = Time.local(year + 1, 1, 1)
     when 'arbitrary'
@@ -622,11 +622,11 @@ class Conditions < ConditionsBase
       start_date = Time.local(year, eval("@" + thing + "_month"), 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     when 'quarterly'
-      year = eval("@" + thing + "_year")
+      year = eval("@" + thing + "_year_q")
       quarter = eval("@" + thing + "_quarter")
       desc = 'quarter %i of %i' % [ quarter, year ]
     when 'yearly'
-      year = eval("@" + thing + "_year")
+      year = eval("@" + thing + "_year_only")
       desc = '%i' % [ year ]
     when 'arbitrary'
 #      start_date = Date.parse(eval("@" + thing + "_start_date").to_s)

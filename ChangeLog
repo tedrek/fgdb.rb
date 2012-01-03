@@ -8,6 +8,8 @@ fgdb.rb (1.0.80) released; urgency=low
   * add option for LCD Monitor gizmoes on disbursement info section
     of printme (Closes: #25988)
   * correct spelling of 'privileges' (Closes: #26065)
+  * fix handling of year dropdown in date_or_date_range_picker and
+    conditions (Closes: #26103)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Dec 2011 02:45:21 -0800
 
