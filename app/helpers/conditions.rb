@@ -25,7 +25,7 @@ class Conditions < ConditionsBase
   end
 
   for i in DATES
-    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, , (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
+    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
 
   attr_accessor :volunteer_hours_days, :volunteer_hours_minimum
