@@ -20,6 +20,8 @@ class ConditionsBase
       eval("@#{i}_date_type = 'daily'")
       eval("@#{i}_month = Date.today")
       eval("@#{i}_year = Date.today")
+      eval("@#{i}_year_only = Date.today")
+      eval("@#{i}_year_q = Date.today")
     end
 
     init_callback
