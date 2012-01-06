@@ -18,7 +18,8 @@
 <%= loading_indicator_tag("#{t_id}_loading") %>
 <% else %>
   <span id="<%= t_id %>_needs_attention_div" class="needs_attention">
-    <% if (transaction.needs_attention) %>
+    <% if transaction.respond_to?(:needs_attention) %>
+    <% if transaction.needs_attention %>
       <%= render :partial => "getting_attention" %>
     <% else %>
       <% attention_options = {:id => transaction.id, :action => 'needs_attention'} -%>
@@ -42,6 +43,7 @@
                             "Element.hide('#{t_id}_attention_div');",
                             "click"); %>
       </span>
+    <% end %>
     <% end %>
   </span>
 <% end %>
