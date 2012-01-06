@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
-  validates_uniqueness_of   :cashier_code
+  validates_uniqueness_of   :cashier_code, :if => :cashier_code
   before_save :encrypt_password
   before_save :add_cashier_code
 
@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   end
 
   def add_cashier_code
-    reset_cashier_code if cashier_code.nil?
+    reset_cashier_code if !self.shared and cashier_code.nil?
   end
 
   def reset_cashier_code
@@ -138,6 +138,7 @@ class User < ActiveRecord::Base
       olda = a.dup
       a << olda.map{|x| x.children}.flatten
       a = a.flatten.sort_by(&:name).uniq
+      a = a.select{|x| !x.restrict} if self.shared
     end
     a = a.map{|x| x.name}
     a

@@ -315,14 +315,19 @@ class TransactionController < ApplicationController
     address = nil
     if params[:address_choice] == 'other'
       address = params[:address]
-      if params[:save]
-        ContactMethod.new(:contact_id => @txn.contact_id, :contact_method_type_id => params[:contact_method_type_id], :value => address, :ok => true).save!
-      end
     else
       address = ContactMethod.find_by_id(params[:address_choice].sub(/contact_method_/, '')).value
     end
-    Notifier.deliver_donation_pdf(address, data, filename, type)
-    @message = "Sent to #{address}"
+    if address.match(/\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i)
+      if params[:address_choice] == 'other'&& params[:save]
+        ContactMethod.new(:contact_id => @txn.contact_id, :contact_method_type_id => params[:contact_method_type_id], :value => address, :ok => true).save!
+      end
+      Notifier.deliver_donation_pdf(address, data, filename, type)
+      @message = "Sent to #{address}"
+    else
+      @message = "ERROR: invalid email address: #{address}"
+      @is_err = true
+    end
     receipt
     render :action => 'receipt'
   end
@@ -343,7 +348,7 @@ class TransactionController < ApplicationController
     pdf.image RAILS_ROOT + "/public/images/hdr-address.png", :justification => :left, :resize => 1.5
     pdf.start_new_page
     pdf.start_new_page
-    pdf.text @txn.contact_information + [@txn.hidable_contact_information].flatten
+    pdf.text( ([@txn.contact_information, @txn.hidable_contact_information].flatten).map{|x| x || ""} )
     pdf.stop_columns
 
     pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left

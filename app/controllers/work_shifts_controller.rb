@@ -9,8 +9,13 @@ class WorkShiftsController < ApplicationController
 
   public
   def find_problems
-    @start_date = Date.parse(params[:start_date])
-    @end_date = Date.parse(params[:end_date])
+    begin
+      @start_date = Date.parse(params[:start_date])
+      @end_date = Date.parse(params[:end_date])
+    rescue
+      redirect_to :action => "index"
+      return
+    end
     @disp_end_date = @end_date
     max_end = WorkShift.maximum('shift_date')
     @end_date = max_end if @end_date > max_end
@@ -18,7 +23,7 @@ class WorkShiftsController < ApplicationController
     @unassigned = DB.exec(DB.prepare_sql("SELECT w1.shift_date AS date,COALESCE(job1.name,w1.meeting_name,w1.kind) || case training when 't' then ' (Training)' else '' end AS job FROM work_shifts AS w1 LEFT JOIN jobs AS job1 ON job1.id = w1.job_id WHERE w1.worker_id = 0 AND w1.shift_date >= ? AND w1.shift_date <= ? ORDER BY 1,2;", @start_date, @end_date)).to_a
     @all_dates = (@start_date..@end_date).to_a.select{|x| Weekday.find_by_id(x.wday).is_open}
     @jobs = Job.find_all_by_coverage_type_id(CoverageType.find_by_name("full").id)
-    all_shifts = WorkShift.find(:all, :conditions => ['job_id IN (?) AND shift_date >= ? AND shift_date <= ?', @jobs.map{|x| x.id}, @start_date, @end_date])
+    all_shifts = WorkShift.find(:all, :conditions => ['(training = \'f\' OR training IS NULL) AND job_id IN (?) AND shift_date >= ? AND shift_date <= ?', @jobs.map{|x| x.id}, @start_date, @end_date])
     @shift_gap_hash = {}
     weekday_times = {}
     Weekday.find(:all).each do |w|

@@ -1,4 +1,4 @@
-<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker.id, @date) %>
+<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker ? @worker.id : nil, @date) %>
 
 <% form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
 <% label :worked_shifts, :worker_id %>
@@ -8,6 +8,7 @@
 <%= submit_tag "Go" %>
 <% end %>
 
+<% if @worker %>
 <%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.id.to_json};" %>
 <% PayPeriod.find_for_date(@date) or raise "FIXME" %>
 <h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>
@@ -65,4 +66,4 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 <% end %>
 <% @shift_js += "shift_compute_totals();" %>
 <%= javascript_tag @shift_js %>
-
+<% end %>
