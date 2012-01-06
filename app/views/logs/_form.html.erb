@@ -1,0 +1,5 @@
+<% form_for "log", :url => {:action => "show_log"} do |f| %>
+<% params[:log] ||= {} %>
+<%= f.select "table", options_from_collection_for_select(ActiveRecord::Base.connection.tables.sort.map{|x| [x.to_s, x.singularize.humanize]}, "first", "last", :selected => params[:log][:table]) %> # <%= f.text_field "id", :value => params[:log][:id] %>
+<%= f.submit "Show Log" %>
+<% end %>
