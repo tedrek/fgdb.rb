@@ -16,11 +16,13 @@ class SpecSheetsController < ApplicationController
   MY_VERSION=9
 
   def sign_off
-    u = User.find_by_cashier_code(params[:cashier_code])
-    s = SpecSheet.find(params[:id])
-    if u.has_privileges(required_privileges("show/sign_off").flatten.first) # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
-      s.signed_off_by=(u)
-      s.save!
+    if params[:cashier_code] && params[:cashier_code].length == 4
+      u = User.find_by_cashier_code(params[:cashier_code])
+      s = SpecSheet.find(params[:id])
+      if u.has_privileges(required_privileges("show/sign_off").flatten.first) # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
+        s.signed_off_by=(u)
+        s.save!
+      end
     end
     redirect_to :back
   end
