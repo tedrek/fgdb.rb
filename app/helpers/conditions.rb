@@ -792,9 +792,9 @@ class Conditions < ConditionsBase
   end
 
   def skedj_to_s(style = "before", show_date = false, ignores = [])
-#    if !self.valid?
-#      return "with invalid search conditions"
-#    end
+    if !self.valid?
+      return "with invalid search conditions"
+    end
     show_date = show_date || (style == "sentence")
     mea = self.methods
     ta = mea.select{|x| x != 'is_this_condition_enabled' && x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"} # TODO: look at CONDS instead
