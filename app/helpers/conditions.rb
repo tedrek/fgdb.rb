@@ -143,6 +143,7 @@ class Conditions < ConditionsBase
       return false if _empty_check(varname, value) # do not include other errors, if blank
       errors.add(varname, 'is not a whole number') if value.to_i.to_s != value.to_s.strip
       errors.add(varname, 'cannot be zero') if (!allowzero) and value.to_i == 0
+      errors.add(varname, 'is not in the valid range of integer numbers') if value.to_i > 2147483647 || value.to_i < -2147483648
       return true
     end
     false
@@ -166,7 +167,7 @@ class Conditions < ConditionsBase
   end
 
   def _empty_check(varname, value)
-    empty = (value.nil? or (value.class != Fixnum and value.empty?))
+    empty = (value.nil? or (value.class.is_a?(Fixnum) and value.empty?))
     errors.add(varname, 'cannot be blank') if empty
     empty
   end

@@ -498,7 +498,7 @@ class Contact < ActiveRecord::Base
     protected
 
     def prepare_query(q)
-      if q.to_i.to_s == q
+      if q.to_i.to_s == q and q.to_i <= 2147483647 and q.to_i >= -2147483648
         return ["id = ?", q]
       end
       conds = [""]
