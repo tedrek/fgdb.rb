@@ -108,7 +108,6 @@ class Conditions < ConditionsBase
     @assigned = true
   end
 
-  # in things using conditions, check conds.valid? before using conds.conditions (unless no results is intended), and also display error_messages_for in the form.
   def validate
     @errors.add("phone_number", "is not ten digits long") if validate_emptyness('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
     validate_exists('worker_id') if parse_and_validate_list('worker', 'worker_id', true)
@@ -179,7 +178,6 @@ class Conditions < ConditionsBase
       validate_date_chooser(x)
     end
   end
-# TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
 
   def validate_date_chooser(name)
     return unless is_this_condition_enabled(name)
