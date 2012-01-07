@@ -100,6 +100,7 @@ class ContactsController < ApplicationController
     if params[:defaults] == nil
       params[:defaults] = {}
       params[:defaults][:created_at_enabled] = "true"
+      params[:defaults][:created_at_date] = Date.today.to_s
     end
 
     if params[:contact]
