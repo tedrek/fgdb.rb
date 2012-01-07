@@ -123,17 +123,18 @@ class Conditions < ConditionsBase
     validate_emptyness('city')
     validate_emptyness('postal_code')
     validate_exists('contact_id') if validate_integer('contact', 'contact_id')
+    validate_exists('sked_id') if validate_integer('sked', 'sked_id')
   end
 # TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
-#      contact_type needs_attention anonymous unresolved_invoices
-#      payment_method payment_amount  gizmo_category_id covered
+#      contact_type
+#      payment_method payment_amount  gizmo_category_id
 #      volunteer_hours
-#      flagged system contract created_by cashier_created_by extract
-#      empty disbursement_type_id store_credit_id organization
-#      can_login role action  contribution serial_number 
-#      volunteer_task_type  sked  effective_at cancelled
-#      needs_checkin assigned attendance_type worker_type
-#      effective_on schedule type store_credit_redeemed volunteered_hours_in_days
+#      system contract created_by cashier_created_by extract
+#      disbursement_type_id store_credit_id
+#      role action serial_number
+#      volunteer_task_type  effective_at
+#      attendance_type worker_type
+#      effective_on schedule type volunteered_hours_in_days
 
   def validate_integer(name, varname = nil, allowzero = false)
     varname ||= name
