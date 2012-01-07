@@ -124,14 +124,35 @@ class Conditions < ConditionsBase
     validate_emptyness('postal_code')
     validate_exists('contact_id') if validate_integer('contact', 'contact_id')
     validate_exists('sked_id') if validate_integer('sked', 'sked_id')
+    validate_exists('role') if validate_integer('role', 'role')
+    validate_exists('action') if validate_integer('action')
+    validate_exists('type') if validate_integer('type')
+    validate_exists('system_id') if validate_integer('system', 'system_id')
+    validate_exists('contract_id') if validate_integer('contract', 'contract_id')
+    validate_exists('payment_method_id') if validate_integer('payment_method', 'payment_method_id')
+    if is_this_condition_enabled('payment_amount')
+      case @payment_amount_type
+      when '>='
+        validate_integer('payment_amount', 'payment_amount_ge')
+      when '<='
+        validate_integer('payment_amount', 'payment_amount_le')
+      when 'exact'
+        validate_integer('payment_amount', 'payment_amount_exact')
+      when 'between'
+        validate_integer('payment_amount', 'payment_amount_low')
+        validate_integer('payment_amount', 'payment_amount_high')
+      else
+        errors.add('payment_amount_type', 'is not a valid search type')
+      end
+    end
   end
 # TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
 #      contact_type
-#      payment_method payment_amount  gizmo_category_id
+#      gizmo_category_id
 #      volunteer_hours
-#      system contract created_by cashier_created_by extract
+#      created_by cashier_created_by extract
 #      disbursement_type_id store_credit_id
-#      role action serial_number
+#      serial_number
 #      volunteer_task_type  effective_at
 #      attendance_type worker_type
 #      effective_on schedule type volunteered_hours_in_days
