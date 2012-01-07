@@ -127,48 +127,102 @@ class Conditions < ConditionsBase
     validate_exists('role') if validate_integer('role', 'role')
     validate_exists('action') if validate_integer('action')
     validate_exists('type') if validate_integer('type')
+    validate_exists('contact_type') if validate_integer('contact_type')
+    validate_exists('gizmo_category_id') if validate_integer('gizmo_category_id')
     validate_exists('system_id') if validate_integer('system', 'system_id')
     validate_exists('contract_id') if validate_integer('contract', 'contract_id')
+    validate_exists('disbursement_type_id') if validate_integer('disbursement_type_id')
+    validate_exists('contract_id') if validate_integer('contract', 'contract_id')
     validate_exists('payment_method_id') if validate_integer('payment_method', 'payment_method_id')
+    validate_exists('attendance_type_id') if validate_integer('attendance_type', 'attendance_type_id')
+    validate_exists('worker_type_id') if validate_integer('worker_type', 'worker_type_id')
+    validate_exists('volunteer_task_type_id') if validate_integer('volunteer_task_type', 'volunteer_task_type_id')
+    validate_exists('schedule_id') if validate_integer('schedule', 'schedule_id')
+    validate_emptyness('store_credit_id')
     if is_this_condition_enabled('payment_amount')
       case @payment_amount_type
       when '>='
-        validate_integer('payment_amount', 'payment_amount_ge')
+        validate_integer('payment_amount', 'payment_amount_ge', false, true)
       when '<='
-        validate_integer('payment_amount', 'payment_amount_le')
+        validate_integer('payment_amount', 'payment_amount_le', false, true)
       when 'exact'
-        validate_integer('payment_amount', 'payment_amount_exact')
+        validate_integer('payment_amount', 'payment_amount_exact', false, true)
       when 'between'
-        validate_integer('payment_amount', 'payment_amount_low')
-        validate_integer('payment_amount', 'payment_amount_high')
+        validate_integer('payment_amount', 'payment_amount_low', false, true)
+        validate_integer('payment_amount', 'payment_amount_high', false, true)
       else
         errors.add('payment_amount_type', 'is not a valid search type')
       end
     end
     validate_exists('created_by', 'users') if validate_integer('created_by')
     validate_exists('cashier_created_by', 'users') if validate_integer('cashier_created_by')
+    validate_integer('volunteered_hours_in_days', 'volunteer_hours_days')
+    validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', false, true)
+    if is_this_condition_enabled('volunteer_hours')
+      case @volunteer_hours_type
+      when '>='
+        validate_integer('volunteer_hours', 'volunteer_hours_ge', false, true)
+      when '<='
+        validate_integer('volunteer_hours', 'volunteer_hours_le', false, true)
+      when 'exact'
+        validate_integer('volunteer_hours', 'volunteer_hours_exact', false, true)
+      when 'between'
+        validate_integer('volunteer_hours', 'volunteer_hours_low', false, true)
+        validate_integer('volunteer_hours', 'volunteer_hours_high', false, true)
+      else
+        errors.add('volunteer_hours_type', 'is not a valid search type')
+      end
+    end
+    validate_date('effective_at')
+    validate_date('effective_on', 'effective_on_start', 'effective_on_end')
+    DATES.each do |x|
+      validate_date_chooser(x)
+    end
   end
 # TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
-#      contact_type
-#      gizmo_category_id
-#      volunteer_hours
-#      disbursement_type_id store_credit_id
-#      serial_number
-#      volunteer_task_type  effective_at
-#      attendance_type worker_type
-#      effective_on schedule volunteered_hours_in_days
 
-  def validate_integer(name, varname = nil, allowzero = false)
+  def validate_date_chooser(name)
+    return unless is_this_condition_enabled(name)
+    case self.send(name + "_date_type")
+      when 'arbitrary'
+      validate_date(name, name + "_start_date", name + "_end_date")
+      when 'daily'
+      validate_date(name, name + "_date")
+    end
+  end
+
+  def validate_integer(name, varname = nil, allowzero = false, not_i = false)
     varname ||= name
     if is_this_condition_enabled(name)
       value = self.send(varname)
       return false if _empty_check(varname, value) # do not include other errors, if blank
-      errors.add(varname, 'is not a whole number') if value.to_i.to_s != value.to_s.strip
       errors.add(varname, 'cannot be zero') if (!allowzero) and value.to_i == 0
-      errors.add(varname, 'is not in the valid range of integer numbers') if value.to_i > 2147483647 || value.to_i < -2147483648
+      unless not_i
+        errors.add(varname, 'is not a whole number') if value.to_i.to_s != value.to_s.strip
+        errors.add(varname, 'is not in the valid range of integer numbers') if value.to_i > 2147483647 || value.to_i < -2147483648
+      end
       return true
     end
     false
+  end
+
+  def validate_date(name, varname = nil, second = nil)
+    varname ||= name
+    if is_this_condition_enabled(name)
+      begin
+        start = Date.parse(self.send(varname))
+      rescue
+        errors.add(varname, 'is not a valid date')
+      end
+      if second
+        begin
+          fin = Date.parse(self.send(second))
+          errors.add(second, 'is before the start date') if start && fin && (fin < start)
+        rescue
+          errors.add(second, 'is not a valid date')
+        end
+      end
+    end
   end
 
   def validate_exists(name, klass = nil)
