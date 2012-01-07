@@ -145,17 +145,18 @@ class Conditions < ConditionsBase
         errors.add('payment_amount_type', 'is not a valid search type')
       end
     end
+    validate_exists('created_by', 'users') if validate_integer('created_by')
+    validate_exists('cashier_created_by', 'users') if validate_integer('cashier_created_by')
   end
 # TODO: add automatic validation for the DATE conditions and then also add validations for these remaining fields:
 #      contact_type
 #      gizmo_category_id
 #      volunteer_hours
-#      created_by cashier_created_by extract
 #      disbursement_type_id store_credit_id
 #      serial_number
 #      volunteer_task_type  effective_at
 #      attendance_type worker_type
-#      effective_on schedule type volunteered_hours_in_days
+#      effective_on schedule volunteered_hours_in_days
 
   def validate_integer(name, varname = nil, allowzero = false)
     varname ||= name
@@ -170,8 +171,8 @@ class Conditions < ConditionsBase
     false
   end
 
-  def validate_exists(name)
-    klass = name.sub(/_id/, "").classify.constantize
+  def validate_exists(name, klass = nil)
+    klass = (klass || name.sub(/_id/, "")).classify.constantize
     value = self.send(name)
     for v in [value].flatten
       errors.add(name, "cannot be found with id #{v}") if !klass.find_by_id(v)
@@ -188,7 +189,7 @@ class Conditions < ConditionsBase
   end
 
   def _empty_check(varname, value)
-    empty = (value.nil? or (value.class.is_a?(Fixnum) and value.empty?))
+    empty = (value.nil? or ((!value.is_a?(Fixnum)) and value.empty?))
     errors.add(varname, 'cannot be blank') if empty
     empty
   end
