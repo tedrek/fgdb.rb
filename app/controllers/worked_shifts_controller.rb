@@ -153,7 +153,7 @@ GROUP BY 1,2;")
     @gizmo_context = GizmoContext.new(:name => 'worked_shifts')
   end
   def default_my_form
-    @worker ||= @current_user.contact.worker
+    @worker ||= (@current_user.contact ? @current_user.contact.worker : nil)
     @date ||= Date.today
   end
   public
