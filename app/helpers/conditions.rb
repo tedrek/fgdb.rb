@@ -106,6 +106,9 @@ class Conditions < ConditionsBase
   def init_callback
     @payment_method_id = PaymentMethod.cash.id
     @assigned = true
+    DATES.each do |x|
+      self.send(x + "_date=", Date.today.to_s)
+    end
   end
 
   def validate
