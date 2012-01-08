@@ -51,8 +51,8 @@ class DefaultAssignmentsController < ApplicationController
     @opts = @skedj.opts
     @conditions = @skedj.conditions
       @conditions.effective_on_enabled = "true"
-      @conditions.effective_on_start = Date.today - 14
-      @conditions.effective_on_end = Date.today + 60
+      @conditions.effective_on_start = (Date.today - 14).to_s
+      @conditions.effective_on_end = (Date.today + 60).to_s
 
     @skedj.find({:conditions => @skedj.where_clause, :include => [:contact => [], :volunteer_default_shift => [:volunteer_task_type, :volunteer_default_event]]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
