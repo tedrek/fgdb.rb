@@ -3,7 +3,21 @@
 <div class="skedj">
 <h2>Listing <%= params[:controller].humanize.downcase %></h2>
 
-<% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
+<% if flash[:error] %><h2 class="error"><%= flash[:error] %></h2><% end %>
+
+<% if defined?( @skedj_error ) %><h2 class="error"><%= @skedj_error %></h2>
+<% if defined?(@events) %>
+
+<h3>The relevent events are:</h3>
+<ul>
+<% @events.each do |evt| %>
+  <li><%= evt %></li>
+<% end %>
+</ul>
+
+<% end %>
+
+<% end %>
 
 <% if skedj.opts[:presentation_mode]!='Preview' %>
 

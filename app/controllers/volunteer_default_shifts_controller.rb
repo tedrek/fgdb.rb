@@ -17,10 +17,34 @@ class VolunteerDefaultShiftsController < ApplicationController
     begin
       startd, endd = Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date])
     rescue
-      flash[:error] = "Generate error: A valid date ranges was not given"
+      flash[:error] = "Generate error: A valid date range was not given"
       redirect_to :back
       return
     end
+
+    # FIXME: DO THE SAME FOR RESOURCES, which I think aren't used...
+    vs_conds = gconditions.dup
+    vs_conds.date_enabled = "true"
+    vs_conds.date_date_type = 'arbitrary'
+    vs_conds.date_start_date = startd.to_s
+    vs_conds.date_end_date = endd.to_s
+    vs_conds.was_generated_from_ongoing_enabled = "true"
+    matches = VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event])
+    if matches.length > 0
+      if params[:date_range][:force_generate] == "1"
+        matches.each{|y| y.destroy} # TODO: destroy_all with the :include somehow..
+      else
+        params[:conditions] = params[:gconditions].dup
+        @skedj_error = "There are existing shifts that will be DESTROYED and overwritten by this generate. Any volunteers who have signed up for or changed shifts will be reverted. If you know what you are doing, you can continue by submitting your request again below to force overwriting the data."
+        @start_date = startd
+        @end_date = endd
+        @events = matches.map{|x| x.volunteer_event}.uniq.sort_by(&:date).map{|x| [x.date, x.description].join(" ")}
+        @force_generate = true
+        index
+        return
+      end
+    end
+
     if params[:date_range][:do_shifts] == "1"
       VolunteerDefaultShift.generate(startd, endd, gconditions)
     end

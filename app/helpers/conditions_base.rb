@@ -73,6 +73,7 @@ class ConditionsBase
 
   def conditions(klass)
     if !self.valid?
+#      raise self.errors.full_messages.to_s # TODO: DO THIS SOMEDAY
       return ["#{klass.table_name}.id = -1"]
     end
     conds = self.class::CONDS.inject([""]) {|condition_array,this_condition|

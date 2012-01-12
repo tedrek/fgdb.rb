@@ -156,11 +156,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
       next if Holiday.is_holiday?(x)
       w = Weekday.find(x.wday)
 #      next if !w.is_open
-      vs_conds = gconditions.dup
-      vs_conds.date_enabled = "true"
-      vs_conds.date_date_type = 'daily'
-      vs_conds.date_date = x
-      VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event]).each{|y| y.destroy} # TODO: destroy_all with the :include somehow..
       ds_conds = gconditions.dup
       ds_conds.effective_on_enabled = "true"
       ds_conds.effective_on_start = x
