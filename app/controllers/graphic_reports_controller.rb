@@ -892,6 +892,46 @@ class MasterGizmoFlowTrend < TrendReport
     "Master Gizmo Flow Report"
   end
 end
+class DisbursementAndSalesByGizmoTypeTrend < TrendReport
+  def category
+    "Combined"
+  end
+
+  # for single reports
+  def generate_display_data(argslist)
+    @data = []
+    @graph_titles = []
+    @table_data_types = []
+
+    sales = child_report_for_argslist(SalesGizmoCountByTypesTrend, argslist)
+    disbursements = child_report_for_argslist(DisbursementGizmoCountByTypesTrend, argslist)
+
+    dis_tot = []
+    disbursements.data[0].values.each{|a|
+      a.each_with_index{|x,i|
+        dis_tot[i] ||= 0
+        dis_tot[i] += x.to_i
+      }
+    }
+
+    @data[0] = {}
+    @data[0][:sold] = sales.data[0][:count]
+    @data[0][:disbursed] = dis_tot
+    @table_data_types[0] = sales.default_table_data_types
+
+    @graph_titles[0] = self.title
+
+    @display = [["graph", 0], ["table", 0]]
+  end
+
+  def valid_conditions
+    ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
+  end
+
+  def title
+    "Disbursement and Sales by Gizmo Type"
+  end
+end
 class SalesTotalsTrend < TrendReport
     def category
       "Income"
