@@ -5,6 +5,7 @@ fgdb.rb (1.0.81) released; urgency=low
   * implement record logs, to see the history of who has modified it
   * require user to force generating if it will overwrite events, also
     only overwrite events which were created by a previous generate
+  * add edit_disbursements to FRONT_DESK role (Closes: #26325)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 07 Jan 2012 02:02:34 -0800
 
