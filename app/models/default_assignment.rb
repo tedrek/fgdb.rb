@@ -6,6 +6,7 @@ class DefaultAssignment < ActiveRecord::Base
   delegate :effective_on, :effective_on=, :to => :volunteer_default_shift
   delegate :ineffective_on, :ineffective_on=, :to => :volunteer_default_shift
   before_validation :set_values_if_stuck
+  delegate :set_description, :set_description=, :to => :volunteer_shift
 
   def set_values_if_stuck
     return unless volshift_stuck

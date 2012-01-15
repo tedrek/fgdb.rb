@@ -11,6 +11,7 @@ class Assignment < ActiveRecord::Base
   validates_existence_of :contact, :allow_nil => true
 
   delegate :set_date, :set_date=, :to => :volunteer_shift
+  delegate :set_description, :set_description=, :to => :volunteer_shift
 
   before_validation :set_values_if_stuck
   def set_values_if_stuck

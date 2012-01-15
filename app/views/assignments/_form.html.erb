@@ -15,6 +15,10 @@
       <%= s.label :program_id %>
       <%= s.select("program_id", [Program.new(:name => ""),  Program.find(:all, :conditions => {:volunteer => true})].flatten.map{|x| [x.name, x.id]}) %>
     </p>
+    <p>
+      <%= s.label :set_description, "Description" %>
+      <%= s.text_field("set_description", :size => 10) %>
+    </p>
     <% if is_r %>
       <p>
         <%= f.label :set_date, "Date" %>

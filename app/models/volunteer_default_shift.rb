@@ -36,6 +36,15 @@ class VolunteerDefaultShift < ActiveRecord::Base
     end
   end
 
+
+  def set_description
+    self.description
+  end
+
+  def set_description=(desc)
+    self.description=(desc)
+  end
+
   def set_weekday_id=(val)
     @set_weekday_id_set = true
     @set_weekday_id = (val.nil? || val.blank?) ? nil : val.to_i
