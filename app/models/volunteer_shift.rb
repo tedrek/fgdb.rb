@@ -11,7 +11,15 @@ class VolunteerShift < ActiveRecord::Base
 
   belongs_to :volunteer_event
 
-    def set_date_set
+  def set_description
+    self.description
+  end
+
+  def set_description=(desc)
+    self.description=(desc)
+  end
+
+  def set_date_set
     @set_date_set
   end
 

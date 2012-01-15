@@ -15,6 +15,7 @@ class Conditions < ConditionsBase
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
+      was_generated_from_ongoing
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled assigned covered organization ]
@@ -211,13 +212,15 @@ class Conditions < ConditionsBase
     varname ||= name
     if is_this_condition_enabled(name)
       begin
-        start = Date.parse(self.send(varname))
+        val = self.send(varname)
+        start = val.class == Date ? val : Date.parse(val)
       rescue
         errors.add(varname, 'is not a valid date')
       end
       if second
         begin
-          fin = Date.parse(self.send(second))
+          val2 = self.send(second)
+          fin = val2.class == Date ? val2 : Date.parse(val2)
           errors.add(second, 'is before the start date') if start && fin && (fin < start)
         rescue
           errors.add(second, 'is not a valid date')
@@ -303,6 +306,11 @@ class Conditions < ConditionsBase
 
   def job_conditions(klass)
     return ["job_id IN (?)", (@job_id)]
+  end
+
+  def was_generated_from_ongoing_conditions(klass)
+    col = (klass == VolunteerShift ? "volunteer_default_shift_id" : "resources_volunteer_default_event_id")
+    return ["#{col} IS NOT NULL"]
   end
 
   def empty_conditions(klass)
