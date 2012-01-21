@@ -25,6 +25,7 @@ Hours have not yet been saved for this day. The jobs listed below are automatica
 Use "add break" below to insert a paid break, which should typically be 15 minutes long, during a shift. This is not for unpaid meal breaks.
 </pre>
 <% end %>
+<div style="max-width: 400px;">
 <% break_job = Job.find_by_name("Paid Break") %>
 <%= javascript_tag "paid_break_job_id = #{break_job.id.to_json}" if !break_job.nil? %>
 <%= javascript_tag "shift_do_ajax = 0;"%>
@@ -41,7 +42,7 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 
      <%= javascript_tag "shift_do_ajax = 1;" %>
 
-<div id="totals_div" class="totals line_item">
+<div id="totals_div" class="totals line_item" style="clear: left; float: left; align: left;">
   <table>
     <tr><td>Total for this day:</td><td id="total_today" class="amount">loading..</td></tr>
     <tr><td>Hours normally worked on <%= @date.strftime("%A") %>:</td><td class="amount" id="normally_worked">loading..</td></tr>
@@ -52,11 +53,14 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
     <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">loading..</td></tr>
   </table>
 </div>
+<div style="clear: left">
 <%= submit_tag("Save",
                :id => "commit",
                :onclick => "handle_shifts();") %>
+</div>
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
 <% end %>
 <%= javascript_tag  "shift_compute_totals();" %>
 <% end %>
+</div>
