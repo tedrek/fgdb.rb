@@ -1,11 +1,12 @@
 module TableHelper
-  def make_table(a, html_opts = {})
+  def make_table(a, html_opts = {}, full_width = true)
     trs = a.map_with_index{|x, i|
       subtype = "first"
       subtype = "all" if i == 0
       table_make_tr(subtype, x)
     }
-    HtmlTag.new("table", ({:width => "98%", :border => 1, :style => "border-collapse: collapse;"}).merge(html_opts), trs)
+    width = full_width ? {:width => "98%"} : {}
+    HtmlTag.new("table", width.merge({:border => 1, :style => "border-collapse: collapse;"}).merge(html_opts), trs)
   end
 
   def table_make_tr(type, a)

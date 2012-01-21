@@ -21,49 +21,46 @@ Editing already saved hours.
 <pre style="background: yellow">
 Hours have not yet been saved for this day. The jobs listed below are automatically guessed based on the staff schedule. You still need to save hours.
 </pre>
+<pre style="background: peachpuff">
+Use "add break" below to insert a paid break, which should typically be 15 minutes long, during a shift. This is not for unpaid meal breaks.
+</pre>
 <% end %>
+<div style="max-width: 400px;">
+<% break_job = Job.find_by_name("Paid Break") %>
+<%= javascript_tag "paid_break_job_id = #{break_job.id.to_json}" if !break_job.nil? %>
+<%= javascript_tag "shift_do_ajax = 0;"%>
+
 <% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
 <%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
-<table id="shifts_lines">
-  <tr>
-    <th>job</th>
-    <th>duration</th>
-    <th></th>
-  </tr>
-  <% @shift_js = "shift_do_ajax = 0;"
-     for i in @shifts
-       hash = {:job_id => i.job_id, :duration => i.duration.to_f}
-       hash[:id] = i.id if i.id
-       @shift_js += "add_shift(#{hash.to_json});"
-     end 
-     @shift_js += "shift_do_ajax = 1;"%>
-  <tr id="shifts_form">
-    <td><select id="job_id">
-        <%= options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") %>
-      </select>
-    </td>
-    <td><input name="duration" id="duration" size="6" onkeydown="return handle_s(event);"></td>
-  </tr>
-<tr><td colspan="2">
-<div id="totals_div" class="totals line_item">
+
+<% interface = OH.new %>
+<% interface[:job] = '<select id="job_id">' + options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") + '</select>' %>
+<% interface[:duration] = '<input name="duration" id="duration" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
+
+     <%= line_item("shifts", 'WorkedShiftFrontend', interface, @shifts.map{|i| hash = {:job_id => i.job_id, :duration => i.duration.to_f}; hash[:id] = i.id if  i.id; hash }) %>
+
+     <%= javascript_tag "shift_do_ajax = 1;" %>
+
+<div id="totals_div" class="totals line_item" style="clear: left; float: left; align: left;">
   <table>
     <tr><td>Total for this day:</td><td id="total_today" class="amount">loading..</td></tr>
     <tr><td>Hours normally worked on <%= @date.strftime("%A") %>:</td><td class="amount" id="normally_worked">loading..</td></tr>
     <tr><td>Total for this week:</td><td id="total_week" class="amount">loading..</td></tr>
+    <tr><td>Standard weekly hours:</td><td id="weekly_hours" class="amount">loading..</td></tr>
     <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">loading..</td></tr>
     <tr><td>Overtime:</td><td id="overtime" class="amount">loading..</td></tr>
     <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">loading..</td></tr>
   </table>
 </div>
-</td></tr>
-</table>
+<div style="clear: left">
 <%= submit_tag("Save",
                :id => "commit",
-               :onclick => "handle_shifts();") %>
+               :onclick => "add_all_line_items();") %>
+</div>
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
 <% end %>
-<% @shift_js += "shift_compute_totals();" %>
-<%= javascript_tag @shift_js %>
+<%= javascript_tag  "shift_compute_totals();" %>
 <% end %>
+</div>

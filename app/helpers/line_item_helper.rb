@@ -20,7 +20,7 @@ module LineItemHelper
 
   def line_item_form_for(prefix, form_oh, add_link = false)
     a = [(form_oh.keys.map{|x| x.to_s.titleize} + [""]), ([{:id => (prefix) + "_form"}] + form_oh.values.map{|x| x.to_s} + [add_link ? line_item_add_link(prefix) : ""])]
-    make_table(a, {:id => (prefix) + "_lines", :border => "0", :class => "line_item_table"})
+    make_table(a, {:id => (prefix) + "_lines", :border => "0", :class => "line_item_table"}, false)
   end
 
   def line_item_add_link(prefix)

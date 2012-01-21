@@ -20,7 +20,7 @@ class Contact < ActiveRecord::Base
   has_many :gizmo_returns
   has_one :worker
 
-  validates_presence_of :postal_code, :on => :create
+  validates_presence_of :postal_code, :on => :create, :unless => :foreign_person?
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
@@ -38,6 +38,10 @@ class Contact < ActiveRecord::Base
   validates_length_of :state_or_province, :maximum => 15
   validates_length_of :postal_code, :maximum => 25
   validates_length_of :country, :maximum => 100
+
+  def foreign_person?
+    Default["country"] != self.country
+  end
 
   def condition_to_s
     display_name

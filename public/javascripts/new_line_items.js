@@ -88,6 +88,9 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.update_hook();
   },
 
+  extra_link_hook: function(id, td, args) {
+  },
+
   add_line_item: function (args){
     var id = this.prefix + '_' + this.counter + '_line';
     tr = document.createElement("tr");
@@ -95,6 +98,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     tr.id = id;
     this.make_hidden_hook(args, tr);
     td = document.createElement("td");
+    this.extra_link_hook(id, td, args);
     a = document.createElement("a");
     var self = this;
     a.onclick = function () {
@@ -438,13 +442,21 @@ var ComponentLineItem = Class.create(LineItem, {
   }
 });
 
+// better way?
+function ryan_decode(str){
+  str = str.replace(/&quot;/g,'"');
+  str = str.replace(/&amp;/g,"&");
+  str = str.replace(/&lt;/g,"<");
+  str =  str.replace(/&gt;/g,">");
+  return str;
+}
 
 function get_name_from_select(select_id, value) {
   var hash = new Hash();
   var a = $(select_id).children;
   for(var i = 0; i < a.length; i++) {
     var x = a[i];
-    hash.set(x.value, x.innerHTML);
+    hash.set(x.value, ryan_decode(x.innerHTML));
   };
   return hash.get(value);
 }
@@ -487,7 +499,7 @@ var SelectBasedComponent = Class.create(LineItemComponent, {
 
   make_hidden_hook: function(args, tr) {
     var choosen_id = args[this.linelist[0]];
-    tr.appendChild(this.make_hidden("payment_type_id", get_name_from_select(this.linelist[0], choosen_id), choosen_id));
+    tr.appendChild(this.make_hidden(this.linelist[0], get_name_from_select(this.linelist[0], choosen_id), choosen_id));
   },
 
   set_args_from_form: function(args) {
@@ -727,5 +739,69 @@ var VolunteerResourceFrontend = Class.create(ComponentLineItem, {
   prefix: 'resources_volunteer_events',
   copyable: true,
   checkfor: [ResourceComponent, RosterComponent, StartTimeComponent, EndTimeComponent]
+});
+
+var DurationComponent = Class.create(InputBasedComponent, {
+  linelist: ['duration'],
+});
+
+var JobComponent = Class.create(SelectBasedComponent, {
+  linelist: ['job_id'],
+});
+
+function get_hours_today () {
+  var total = 0.0;
+  var arr = find_these_lines('shifts');
+  for (var x = 0; x < arr.length; x++) {
+    total += parseFloat(getValueBySelector(arr[x], "td.duration"));
+ }
+  return total;
+}
+
+function shift_compute_totals () {
+    if(shift_do_ajax == 0) {
+       return;
+    }
+  var today = get_hours_today();
+  var myhash = new Hash();
+  myhash.set('worked_shift[hours_today]', today);
+  myhash.set('worked_shift[date_performed]', shifts_date);
+  myhash.set('worked_shift[worker_id]', shifts_worker);
+  var str = myhash.toQueryString();
+  new Ajax.Request(update_shift_totals_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(shifts_totals_loading_id);}});
+}
+
+var WorkedShiftFrontend = Class.create(ComponentLineItem, {
+  prefix: 'shifts',
+  copyable: true,
+  checkfor: [JobComponent, DurationComponent],
+
+  update_hook: function() {
+    shift_compute_totals ();
+  },
+
+  extra_link_hook: function(line_id, td, args) {
+    a = document.createElement("a");
+    var that = this;
+    a.onclick = function () {
+      that.edit_hook(line_id);
+      that.editing_id = that.getValueBySelector($(line_id), ".id");
+      Element.remove(line_id);
+      $('duration').value = parseFloat($('duration').value) - 0.25;
+      that.add_from_form_hook();
+
+      $('duration').value = 0.25;
+      $('job_id').value = paid_break_job_id;
+      that.add_from_form_hook();
+
+      that.update_hook();
+    };
+    if(args['job_id'] != paid_break_job_id) {
+      a.appendChild(document.createTextNode('add break'));
+      a.className = 'disable_link';
+      td.appendChild(a);
+      td.appendChild(document.createTextNode(' | '));
+      }
+  },
 });
 
