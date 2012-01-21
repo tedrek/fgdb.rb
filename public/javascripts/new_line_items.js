@@ -749,10 +749,36 @@ var JobComponent = Class.create(SelectBasedComponent, {
   linelist: ['job_id'],
 });
 
+function get_hours_today () {
+  var total = 0.0;
+  var arr = find_these_lines('shifts');
+  for (var x = 0; x < arr.length; x++) {
+    total += parseFloat(getValueBySelector(arr[x], "td.duration"));
+ }
+  return total;
+}
+
+function shift_compute_totals () {
+    if(shift_do_ajax == 0) {
+       return;
+    }
+  var today = get_hours_today();
+  var myhash = new Hash();
+  myhash.set('worked_shift[hours_today]', today);
+  myhash.set('worked_shift[date_performed]', shifts_date);
+  myhash.set('worked_shift[worker_id]', shifts_worker);
+  var str = myhash.toQueryString();
+  new Ajax.Request(update_shift_totals_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(shifts_totals_loading_id);}});
+}
+
 var WorkedShiftFrontend = Class.create(ComponentLineItem, {
   prefix: 'shifts',
   copyable: true,
   checkfor: [JobComponent, DurationComponent],
+
+  update_hook: function() {
+    shift_compute_totals ();
+  },
 
   extra_link_hook: function(line_id, td, args) {
     a = document.createElement("a");
@@ -761,13 +787,14 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
       that.edit_hook(line_id);
       that.editing_id = that.getValueBySelector($(line_id), ".id");
       Element.remove(line_id);
-      that.update_hook();
       $('duration').value = parseFloat($('duration').value) - 0.25;
       that.add_from_form_hook();
 
       $('duration').value = 0.25;
       $('job_id').value = paid_break_job_id;
       that.add_from_form_hook();
+
+      that.update_hook();
     };
     if(args['job_id'] != paid_break_job_id) {
       a.appendChild(document.createTextNode('add break'));

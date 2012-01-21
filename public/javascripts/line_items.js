@@ -6,10 +6,6 @@ function handle_gizmo_events(){
   return _add_gizmo_event_from_form();
 }
 
-function handle_shifts() {
-  return add_shift_from_form();
-}
-
 function handle_payments(){
   return add_payment_from_form();
 }
@@ -198,14 +194,6 @@ function edit_gizmo_event(id) {
   $('gizmo_type_id').focus();
 }
 
-function edit_shift(id) {
-  thing = $(id);
-  $('job_id').value = getValueBySelector(thing, ".job_id");
-  $('duration').value = getValueBySelector(thing, ".duration");
-  $('job_id').focus();
-}
-
-
 function edit_payment(id) {
   thing = $(id);
   $('payment_method_id').value = getValueBySelector(thing, ".payment_method_id");
@@ -229,20 +217,6 @@ function update_amount_for_storecredit() {
   }
   $('payment_amount').value = a;
 //  alert_for_storecredit($('store_credit_id').value);
-}
-
-function add_shift_from_form() {
-  if($('job_id').selectedIndex == 0 || $('duration').value == '') {
-    return true;
-  }
-  var args = new Object();
-  args['duration'] = $('duration').value;
-  args['job_id'] = $('job_id').value;
-  add_shift(args);
-  $('job_id').selectedIndex = 0;
-  $('duration').value = $('duration').defaultValue;
-  $('job_id').focus();
-  return false;
 }
 
 function _add_gizmo_event_from_form()
@@ -463,15 +437,6 @@ function transaction_hooks(args, tr) {
   unit_price_stuff(args, tr);
 }
 
-function shift_hook(args, tr) {
-  var job_id = args['job_id'];
-  var duration = args['duration'];
-  var job = all_jobs[job_id];
-  var line_id = counters[args['prefix'] + '_line_id'];
-  tr.appendChild(make_hidden(args['prefix'], "job_id", job, job_id, line_id));
-  tr.appendChild(make_hidden(args['prefix'], "duration", duration, duration, line_id));
-}
-
 function payment_stuff(args, tr){
   var payment_amount = args['payment_amount'];
   var payment_method_id = args['payment_method_id'];
@@ -650,19 +615,6 @@ function alert_for_storecredit(id) {
   }
 }
 
-function shift_compute_totals () {
-    if(shift_do_ajax == 0) {
-       return;
-    }
-  var today = get_hours_today();
-  var myhash = new Hash();
-  myhash.set('worked_shift[hours_today]', today);
-  myhash.set('worked_shift[date_performed]', shifts_date);
-  myhash.set('worked_shift[worker_id]', shifts_worker);
-  var str = myhash.toQueryString();
-  new Ajax.Request(update_shift_totals_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(shifts_totals_loading_id);}});
-}
-
 function donation_compute_totals() {
   update_gizmo_events_totals();
 
@@ -794,15 +746,6 @@ function update_gizmo_events_totals() {
     var mystring = "$" + dollar_value(amount);
     thing.getElementsBySelector(".total_price").first().innerHTML = mystring;
   }
-}
-
-function get_hours_today () {
-  var total = 0.0;
-  var arr = find_these_lines('shifts');
-  for (var x = 0; x < arr.length; x++) {
-    total += parseFloat(getValueBySelector(arr[x], "td.duration"));
- }
-  return total;
 }
 
 function get_donation_totals() {
@@ -955,14 +898,6 @@ function handle_p(event) {
   }
 }
 
-function handle_s(event) {
-  if(is_tab(event)) {
-    if(event.target.onchange)
-      event.target.onchange();
-    return handle_shifts();
-  }
-}
-
 ///////////////////
 // ADD LINE ITEM //
 ///////////////////
@@ -1010,11 +945,6 @@ function add_sale_gizmo_event(args) {
     args['system_id'] = '';
   }
   add_line_item(args, transaction_hooks, sale_compute_totals, edit_gizmo_event);
-}
-
-function add_shift(args) {
-  args['prefix'] = 'shifts';
-  add_line_item(args, shift_hook, shift_compute_totals, edit_shift);
 }
 
 function add_gizmo_return_gizmo_event(args) {
