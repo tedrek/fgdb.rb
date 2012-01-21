@@ -442,13 +442,21 @@ var ComponentLineItem = Class.create(LineItem, {
   }
 });
 
+// better way?
+function ryan_decode(str){
+  str = str.replace(/&quot;/g,'"');
+  str = str.replace(/&amp;/g,"&");
+  str = str.replace(/&lt;/g,"<");
+  str =  str.replace(/&gt;/g,">");
+  return str;
+}
 
 function get_name_from_select(select_id, value) {
   var hash = new Hash();
   var a = $(select_id).children;
   for(var i = 0; i < a.length; i++) {
     var x = a[i];
-    hash.set(x.value, x.innerHTML);
+    hash.set(x.value, ryan_decode(x.innerHTML));
   };
   return hash.get(value);
 }
