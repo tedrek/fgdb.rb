@@ -37,7 +37,7 @@ Use "add break" to add a paid break, which should typically be 15 minutes, durin
 <% interface[:job] = '<select id="job_id">' + options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") + '</select>' %>
 <% interface[:duration] = '<input name="duration" id="duration" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
 
-     <%= line_item("shifts", 'WorkedShiftFrontend', interface, @shifts.map{|x| hash = {:job_id => i.job_id, :duration => i.duration.to_f}; hash[:id] = i.id if  i.id; hash }) %>
+     <%= line_item("shifts", 'WorkedShiftFrontend', interface, @shifts.map{|i| hash = {:job_id => i.job_id, :duration => i.duration.to_f}; hash[:id] = i.id if  i.id; hash }) %>
 
      <%= javascript_tag "shift_do_ajax = 1;" %>
 
