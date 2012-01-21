@@ -88,6 +88,9 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.update_hook();
   },
 
+  extra_link_hook: function(id, td, args) {
+  },
+
   add_line_item: function (args){
     var id = this.prefix + '_' + this.counter + '_line';
     tr = document.createElement("tr");
@@ -95,6 +98,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     tr.id = id;
     this.make_hidden_hook(args, tr);
     td = document.createElement("td");
+    this.extra_link_hook(id, td, args);
     a = document.createElement("a");
     var self = this;
     a.onclick = function () {
@@ -487,7 +491,7 @@ var SelectBasedComponent = Class.create(LineItemComponent, {
 
   make_hidden_hook: function(args, tr) {
     var choosen_id = args[this.linelist[0]];
-    tr.appendChild(this.make_hidden("payment_type_id", get_name_from_select(this.linelist[0], choosen_id), choosen_id));
+    tr.appendChild(this.make_hidden(this.linelist[0], get_name_from_select(this.linelist[0], choosen_id), choosen_id));
   },
 
   set_args_from_form: function(args) {
@@ -727,5 +731,42 @@ var VolunteerResourceFrontend = Class.create(ComponentLineItem, {
   prefix: 'resources_volunteer_events',
   copyable: true,
   checkfor: [ResourceComponent, RosterComponent, StartTimeComponent, EndTimeComponent]
+});
+
+var DurationComponent = Class.create(InputBasedComponent, {
+  linelist: ['duration'],
+});
+
+var JobComponent = Class.create(SelectBasedComponent, {
+  linelist: ['job_id'],
+});
+
+var WorkedShiftFrontend = Class.create(ComponentLineItem, {
+  prefix: 'shifts',
+  copyable: true,
+  checkfor: [JobComponent, DurationComponent],
+
+  extra_link_hook: function(line_id, td, args) {
+    a = document.createElement("a");
+    var that = this;
+    a.onclick = function () {
+      that.edit_hook(line_id);
+      that.editing_id = that.getValueBySelector($(line_id), ".id");
+      Element.remove(line_id);
+      that.update_hook();
+      $('duration').value = parseFloat($('duration').value) - 0.25;
+      that.add_from_form_hook();
+
+      $('duration').value = 0.25;
+      $('job_id').value = paid_break_job_id;
+      that.add_from_form_hook();
+    };
+    if(args['job_id'] != paid_break_job_id) {
+      a.appendChild(document.createTextNode('add break'));
+      a.className = 'disable_link';
+      td.appendChild(a);
+      td.appendChild(document.createTextNode(' | '));
+      }
+  },
 });
 
