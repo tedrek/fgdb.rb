@@ -47,6 +47,7 @@ class WorkShiftsController < ApplicationController
       w_start -= 1
     end
     @weeks = (w_start..w_end).to_a.select{|x| x.wday == 1}
+    puts @weeks.inspect
     @workers_week_hash = {}
     @workers_day_hash = {}
     @workers = []

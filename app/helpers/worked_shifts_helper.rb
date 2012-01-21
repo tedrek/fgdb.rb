@@ -13,7 +13,7 @@ module WorkedShiftsHelper
 
   def get_hash(*a)
     date, worker, hours = a
-    hashkeys = %w[total_today total_week max_week overtime total_pay_period normally_worked]
+    hashkeys = %w[total_today total_week max_week overtime total_pay_period normally_worked weekly_hours]
     hash = {}
     hashkeys.each{|x| hash[x.to_sym] = 0.0}
     if hours
@@ -26,6 +26,7 @@ module WorkedShiftsHelper
     end
     week.fill_in_workers_hours(worker)
     week.add_in_holidays(worker)
+    hash[:weekly_hours] = worker.weekly_work_hours
     hash[:total_week] = week.total
     hash[:max_week] = worker.ceiling_hours
     hash[:overtime] = [0.0, week.total - worker.ceiling_hours].max

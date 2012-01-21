@@ -66,6 +66,7 @@ none found
 <table class="awesome">
   <tr>
     <th>Worker</th>
+    <th>Weekly Work Hours</th>
     <% (@weeks).each do |x| %>
       <th><%= link_to "#{x.strftime("%D")} - #{(x + 6).strftime("%D")}", :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x, :shift_date_end_date => x + 6} %></th>
     <% end %>
@@ -73,6 +74,8 @@ none found
   <% @workers.sort_by(&:name).each do |worker| %>
   <tr>
     <th><%= worker.name %></th>
+
+    <td><%= worker.weekly_work_hours %></td>
 
     <% (@weeks).each do |w| %>
     <td>
