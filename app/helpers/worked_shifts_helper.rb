@@ -26,7 +26,7 @@ module WorkedShiftsHelper
     end
     week.fill_in_workers_hours(worker)
     week.add_in_holidays(worker)
-    hash[:weekly_hours] = worker.weekly_work_hours
+    hash[:weekly_hours] = worker.standard_weekly_hours
     hash[:total_week] = week.total
     hash[:max_week] = worker.ceiling_hours
     hash[:overtime] = [0.0, week.total - worker.ceiling_hours].max

@@ -285,7 +285,7 @@ class Worker < ActiveRecord::Base
 
   def holiday_credit_per_day(date)
     new_logic = (date >= Date.parse('2011-08-01'))
-    hours = (new_logic ? weekly_work_hours : ceiling_hours) / 5.0
+    hours = (new_logic ? standard_weekly_hours : ceiling_hours) / 5.0
     show = (new_logic ? (! ['substitude', 'inactive'].include?(worker_type_on_day(date).name)) : salaried)
     return ((show) ? (hours) : 0.0)
   end

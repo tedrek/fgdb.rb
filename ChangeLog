@@ -11,6 +11,8 @@ fgdb.rb (1.0.81) released; urgency=low
   * add weekly work hours to be displayed to user
   * add Break job type, switch the worked_shifts to new line item stuff
     and have add break link
+  * rename weekly work hours to standard weekly hours to match the
+    contract
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 07 Jan 2012 02:02:34 -0800
 
