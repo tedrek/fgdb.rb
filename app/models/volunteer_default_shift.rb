@@ -36,7 +36,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
     end
   end
 
-
   def set_description
     self.description
   end
@@ -152,6 +151,20 @@ class VolunteerDefaultShift < ActiveRecord::Base
   def time_shift(val)
     self.start_time += val
     self.end_time += val
+  end
+
+  def VolunteerDefaultShift.find_conflicts(startd, endd, gconditions = nil)
+    gconditions ||= Conditions.new
+    vs_conds = gconditions.dup
+    vs_conds.empty_enabled = "false"
+
+    vs_conds.date_enabled = "true"
+    vs_conds.date_date_type = 'arbitrary'
+    vs_conds.date_start_date = startd.to_s
+    vs_conds.date_end_date = endd.to_s
+    vs_conds.was_generated_from_ongoing_enabled = "true"
+
+    matches = VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event])
   end
 
   def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil)

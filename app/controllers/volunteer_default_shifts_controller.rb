@@ -11,6 +11,7 @@ class VolunteerDefaultShiftsController < ApplicationController
 
   helper :skedjul
 
+  # TODO: integrate code with the resources
   def generate
     gconditions = Conditions.new
     gconditions.apply_conditions(params[:gconditions])
@@ -22,22 +23,23 @@ class VolunteerDefaultShiftsController < ApplicationController
       return
     end
 
-    # FIXME: DO THE SAME FOR RESOURCES, which I think aren't used...
-    vs_conds = gconditions.dup
-    vs_conds.date_enabled = "true"
-    vs_conds.date_date_type = 'arbitrary'
-    vs_conds.date_start_date = startd.to_s
-    vs_conds.date_end_date = endd.to_s
-    vs_conds.was_generated_from_ongoing_enabled = "true"
-    matches = VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event])
+    do_shifts = params[:date_range][:do_shifts] == "1"
+    do_resources = params[:date_range][:do_resources] == "1"
+
+    matches = []
+    matches += VolunteerDefaultShift.find_conflicts(startd, endd, gconditions) if do_shifts
+    matches += ResourcesVolunteerDefaultEvent.find_conflicts(startd, endd, gconditions) if do_resources
+
     if matches.length > 0
       if params[:date_range][:force_generate] == "1"
         matches.each{|y| y.destroy} # TODO: destroy_all with the :include somehow..
       else
         params[:conditions] = params[:gconditions].dup
-        @skedj_error = "There are existing shifts that will be DESTROYED and overwritten by this generate. Any volunteers who have signed up for or changed shifts will be reverted. If you know what you are doing, you can continue by submitting your request again below to force overwriting the data."
+        @skedj_error = "There are existing scheduled items that will be DESTROYED and overwritten by this generate. Any volunteers who have signed up for or changed shifts will be reverted. If you know what you are doing, you can continue by submitting your request again below to force overwriting the data."
         @start_date = startd
         @end_date = endd
+        @do_resources = do_resources
+        @do_shifts = do_shifts
         @events = matches.map{|x| x.volunteer_event}.uniq.sort_by(&:date).map{|x| [x.date, x.description].join(" ")}
         @force_generate = true
         index
@@ -45,10 +47,10 @@ class VolunteerDefaultShiftsController < ApplicationController
       end
     end
 
-    if params[:date_range][:do_shifts] == "1"
+    if do_shifts
       VolunteerDefaultShift.generate(startd, endd, gconditions)
     end
-    if params[:date_range][:do_resources] == "1"
+    if do_resources
       ResourcesVolunteerDefaultEvent.generate(startd, endd, gconditions)
     end
     redirect_to :controller => 'assignments', :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
