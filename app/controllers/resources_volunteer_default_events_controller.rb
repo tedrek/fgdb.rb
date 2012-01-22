@@ -51,7 +51,7 @@ class ResourcesVolunteerDefaultEventsController < ApplicationController
       VolunteerDefaultShift.generate(startd, endd, gconditions)
     end
     if do_resources
-      ResourcesVolunteerDefaultEvent.generate(startd, endd), gconditions)
+      ResourcesVolunteerDefaultEvent.generate(startd, endd, gconditions)
     end
     redirect_to :controller => 'resources_volunteer_events', :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
   end
