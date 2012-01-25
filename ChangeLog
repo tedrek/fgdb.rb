@@ -14,6 +14,8 @@ fgdb.rb (1.0.81) released; urgency=low
   * rename weekly work hours to standard weekly hours to match the
     contract
   * do not require a postal code for foreign people (Closes: #26430)
+  * enable add_on_save through the new line item code for worked shifts
+    (Closes: #26467)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 07 Jan 2012 02:02:34 -0800
 

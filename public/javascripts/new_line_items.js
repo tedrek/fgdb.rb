@@ -776,6 +776,8 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
   copyable: true,
   checkfor: [JobComponent, DurationComponent],
 
+  add_on_save: true,
+
   update_hook: function() {
     shift_compute_totals ();
   },

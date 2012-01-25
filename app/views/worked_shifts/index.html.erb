@@ -1,6 +1,6 @@
 <% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker ? @worker.id : nil, @date) %>
 
-<% form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
+<% form_for :worked_shift, nil, :html =>{:onsubmit => "add_all_line_items();"}, :url => { :action => "index" } do |f| %>
 <% label :worked_shifts, :worker_id %>
 <%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
 <%# label :worked_shifts, :date_performed %>
@@ -55,8 +55,7 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 </div>
 <div style="clear: left">
 <%= submit_tag("Save",
-               :id => "commit",
-               :onclick => "add_all_line_items();") %>
+               :id => "commit") %>
 </div>
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
