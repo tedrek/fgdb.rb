@@ -6,8 +6,8 @@
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-hours_logged_since = Date.today - 2 # runs after midnight, checks for that previous day
-max = hours_logged_since + 2
+hours_logged_since = Date.today - 1 # runs after midnight, checks for that previous day
+max = hours_logged_since + 1
 
 fmt = "%-10s | %-15s | %11s | %11s\n"
 report = ""
