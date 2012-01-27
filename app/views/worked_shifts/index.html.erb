@@ -55,8 +55,8 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 </div>
 <div style="clear: left">
 <%= submit_tag("Save",
-               :id => "commit",
-               :onclick => "add_all_line_items();") %>
+:onclick => "add_all_line_items();",
+               :id => "commit") %>
 </div>
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>

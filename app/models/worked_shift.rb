@@ -1,5 +1,6 @@
 class WorkedShift < ActiveRecord::Base
   belongs_to :job
+  belongs_to :worker
 
   def self.conditions_date_field
     'date_performed'
