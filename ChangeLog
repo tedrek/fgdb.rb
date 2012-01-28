@@ -1,3 +1,8 @@
+fgdb.rb (1.0.83) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Jan 2012 00:47:22 -0800
+
 fgdb.rb (1.0.82) released; urgency=low
 
   * display non-printing conditions forms on gizmo and income reports
