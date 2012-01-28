@@ -47,6 +47,14 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     return;
   },
 
+  _update_hook_internal_enabled: true,
+
+  do_update_hook: function() {
+    if(this._update_hook_internal_enabled) {
+      this.update_hook();
+    }
+  },
+
   add: function (args) {
     args = this.add_hook(args);
     this.add_line_item(args);
@@ -56,7 +64,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.edit_hook(line_id);
     this.editing_id = this.getValueBySelector($(line_id), ".id"); // TODO: need to display the editing to user somehow, and allow them to clear it. (with an x next to the editing boxes)
     Element.remove(line_id);
-    this.update_hook();
+    this.do_update_hook();
   },
 
   copy: function (line_id) {
@@ -85,7 +93,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
   remove: function(line_id){
     Element.remove(line_id);
-    this.update_hook();
+    this.do_update_hook();
   },
 
   extra_link_hook: function(id, td, args) {
@@ -136,7 +144,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     tr.appendChild(this.make_hidden("id", "", args['id']));
     $(this.prefix + '_lines').lastChild.insertBefore(tr, $(this.prefix + '_form'));
     this.counter++;
-    this.update_hook();
+    this.do_update_hook();
     this.editing_id = undefined;
   },
 
@@ -786,6 +794,7 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
     a = document.createElement("a");
     var that = this;
     a.onclick = function () {
+      that._update_hook_internal_enabled = false;
       that.edit_hook(line_id);
       that.editing_id = that.getValueBySelector($(line_id), ".id");
       Element.remove(line_id);
@@ -795,8 +804,8 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
       $('duration').value = 0.25;
       $('job_id').value = paid_break_job_id;
       that.add_from_form_hook();
-
-      that.update_hook();
+      that._update_hook_internal_enabled = true;
+      that.do_update_hook();
     };
     if(args['job_id'] != paid_break_job_id) {
       a.appendChild(document.createTextNode('add break'));
