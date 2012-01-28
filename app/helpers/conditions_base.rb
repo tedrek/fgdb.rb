@@ -3,6 +3,8 @@ class ConditionsBase
   CONDS = []
 
   def apply_conditions(options)
+    @condition_applied = true
+    return options unless options
     options.each do |name,val|
       if val.class != Array
         val = val.to_i if( val.to_i.to_s == val )

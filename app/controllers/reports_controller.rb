@@ -1,14 +1,7 @@
 class ReportsController < ApplicationController
 
-  layout :report_layout_choice
+  layout :with_sidebar
   protected
-
-  def report_layout_choice
-    case action_name
-    when /report$/ then with_sidebar
-    else                'reports_form.html.erb'
-    end
-  end
 
   # fgss stuff, ignore it please
   # added so that rocky can be gotten rid of
@@ -33,12 +26,20 @@ class ReportsController < ApplicationController
   end
 
   def top_contributors_report
-    limit = params[:report][:amount]
     conds = Conditions.new
-    conds.apply_conditions(params[:conditions])
+    if params[:report]
+      @report = OpenStruct.new(params[:report])
+      conds.apply_conditions(params[:conditions])
+      limit = params[:report][:amount]
+    else
+      @report = OpenStruct.new
+      @report.amount = 5000
+    end
+    @conditions = conds
+    @title = "Top contributors" + conds.to_s
+    if conds.valid?
     limit = (limit.to_i * 100).to_i
     result = DB.exec("SELECT contact_id,SUM(amount_cents) as total FROM payments JOIN donations ON payments.donation_id = donations.id WHERE donation_id IS NOT NULL AND contact_id IS NOT NULL AND #{DB.prepare_sql(conds.conditions(Donation))} GROUP BY contact_id HAVING SUM(amount_cents) > #{limit.to_s} ORDER BY SUM(amount_cents) DESC;").to_a
-    @title = "Top contributors" + conds.to_s
     @result = [["Contact ID", "Contact Name", "Total Contribution"]]
     result.map{|x|
       cid = x["contact_id"]
@@ -46,6 +47,7 @@ class ReportsController < ApplicationController
       total = x["total"].to_i.to_dollars
       @result << [cid, cdisp, total]
     }
+    end
   end
 
   #####################
@@ -63,10 +65,12 @@ class ReportsController < ApplicationController
     @defaults = Conditions.new
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
-    gizmos_report_init
-    gizmo_ids = []
-    GizmoEvent.totals(@defaults.conditions(GizmoEvent)).each do |summation|
-      add_gizmo_to_data(summation, @gizmo_data)
+    if @defaults.valid?
+      gizmos_report_init
+      gizmo_ids = []
+      GizmoEvent.totals(@defaults.conditions(GizmoEvent)).each do |summation|
+        add_gizmo_to_data(summation, @gizmo_data)
+      end
     end
   end
 
@@ -330,7 +334,7 @@ class ReportsController < ApplicationController
       @defaults = Conditions.new
       @defaults.contact_enabled = "true"
     end
-    render :action => "volunteers", :layout => "reports_form.html.erb"
+    render :action => "volunteers"
   end
 
   def pre_common_hours_report
@@ -349,13 +353,11 @@ class ReportsController < ApplicationController
   def common_hours_report
     pre_common_hours_report
 
-    if !@defaults.valid?
-      self.send(params[:action].sub(/_report/, ""))
-    else
+    if @defaults.valid?
       @tasks = @klass.find_by_conditions(@defaults.conditions(@klass))
       @data = volunteer_report_for(@tasks, @sections)
-      render :action => "volunteers_report"
     end
+    render :action => "volunteers_report"
   end
 
   def get_required_privileges
@@ -389,6 +391,9 @@ class ReportsController < ApplicationController
     @sections = [:job, :income_stream, :wc_category, :program]
     @hours_type = "staff"
     @klass = WorkedShift
+    if has_required_privileges('/worker_condition')
+      @filters = ['worker', 'worker_type']
+    end
     common_hours_report
   end
 
@@ -396,6 +401,9 @@ class ReportsController < ApplicationController
     @sections = [:community_service_type, :volunteer_task_types]
     @hours_type = "volunteer"
     @klass = VolunteerTask
+    if has_required_privileges('/contact_condition')
+      @filters = ['contact']
+    end
     common_hours_report
   end
 

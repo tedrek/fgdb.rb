@@ -1,13 +1,13 @@
-<%= render :partial => 'sidebar_links/page_header' %>
+<div class="noprint">
 <% form_tag( { :controller => '/reports', :action => controller.action_name.sub(/_report$/, "") + "_report" } ) do %>
   <div id="<%= '#element_messages_id(???)' %>" class="messages-container"></div>
 
   <%= error_messages_for(:defaults, :header_message => "Invalid report conditions") %>
 
-  <%= @content_for_layout %>
+  <%= render :partial => name %>
 
   <p class="form-footer">
     <input type="submit" value="Generate Report" />
   </p>
 <% end %>
-<%= render :partial => 'sidebar_links/page_footer' %>
+</div>

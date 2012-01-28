@@ -1,6 +1,8 @@
+<h1>Income report <%= @date_range_string %></h1>
+<%= render :partial => 'form', :locals => {:name => 'income_form'} %>
+<% if @defaults.valid? %>
 <% methods = PaymentMethod.find(:all) %>
 <% table_width = @width + 2 %>
-<h1>Income report <%= @date_range_string %></h1>
 <% if @current_user %>
   <span class="print_only">
     Printed by <%= @current_user.login %><%= if @current_user.contact; " ( " + @current_user.contact.display_name + ")"; end %>
@@ -41,3 +43,4 @@
 
 
 <p class="timestamp"> - generated <%= Time.now %></p>
+<% end %>

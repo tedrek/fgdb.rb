@@ -3,6 +3,9 @@
       :locals => {:contact_information => @contact.nil? ? nil : @contact.display_name_address} %>
 </span>
   <h1>Report of <%= @hours_type %> hours worked <%= @date_range_string %></h1>
+  <%= render :partial => "form", :locals => {:name => "volunteers_form"} %>
+
+  <% if @defaults.valid? %>
 
 <% table_width = 2 %>
 <% for section,types in @data %>
@@ -24,3 +27,4 @@
 <% end %>
 
 <p class="timestamp"> - generated <%= Time.now %></p>
+<% end %>

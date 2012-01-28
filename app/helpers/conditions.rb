@@ -113,6 +113,13 @@ class Conditions < ConditionsBase
   end
 
   def validate
+    if ! @condition_applied
+      return
+    end
+    if CONDS.select{|x| is_this_condition_enabled(x)}.length == 0
+      @errors.add_to_base('Conditions have not been chosen')
+      return
+    end
     @errors.add("phone_number", "is not ten digits long") if validate_emptyness('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
     validate_exists('worker_id') if parse_and_validate_list('worker', 'worker_id', true)
     validate_exists('job_id') if parse_and_validate_list('job', 'job_id')
@@ -198,12 +205,22 @@ class Conditions < ConditionsBase
     if is_this_condition_enabled(name)
       value = self.send(varname)
       return false if _empty_check(varname, value) # do not include other errors, if blank
-      errors.add(varname, 'cannot be zero') if (!allowzero) and value.to_i == 0
-      unless not_i
-        errors.add(varname, 'is not a whole number') if value.to_i.to_s != value.to_s.strip
-        errors.add(varname, 'is not in the valid range of integer numbers') if value.to_i > 2147483647 || value.to_i < -2147483648
+      result = true
+      if (!allowzero) and value.to_i == 0
+        errors.add(varname, 'cannot be zero')
+        result = false
       end
-      return true
+      unless not_i
+        if value.to_i.to_s != value.to_s.strip
+          errors.add(varname, 'is not a whole number')
+          result = false
+        end
+          if value.to_i > 2147483647 || value.to_i < -2147483648
+            errors.add(varname, 'is not in the valid range of integer numbers')
+            result = false
+          end
+      end
+      return result
     end
     false
   end
