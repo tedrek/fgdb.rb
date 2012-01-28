@@ -9,6 +9,7 @@ class VolunteerEvent < ActiveRecord::Base
   end
 
   def time_range_s
+    return '0-0' if self.volunteer_shifts.length == 0
     my_start_time = self.volunteer_shifts.sort_by(&:start_time).first.start_time
     my_end_time = self.volunteer_shifts.sort_by(&:end_time).last.end_time
     (my_start_time.strftime("%I:%M") + ' - ' + my_end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")

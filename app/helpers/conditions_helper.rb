@@ -90,7 +90,7 @@ module ConditionsHelper
   end
 
   def html_for_type_condition(params_key)
-    collection_select(params_key, "type", Type.find(:all), "id", "description")
+    collection_select(params_key, "type_id", Type.find(:all), "id", "description")
   end
 
   def html_for_volunteered_hours_in_days_condition(params_key)

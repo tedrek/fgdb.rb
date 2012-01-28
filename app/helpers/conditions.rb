@@ -100,7 +100,7 @@ class Conditions < ConditionsBase
   attr_accessor :role
 
   attr_accessor :action
-  attr_accessor :type
+  attr_accessor :type_id
 
   attr_accessor :assigned
 
@@ -136,7 +136,7 @@ class Conditions < ConditionsBase
     validate_exists('sked_id') if validate_integer('sked', 'sked_id')
     validate_exists('role') if validate_integer('role', 'role')
     validate_exists('action') if validate_integer('action')
-    validate_exists('type') if validate_integer('type')
+    validate_exists('type_id') if validate_integer('type', 'type_id')
     validate_exists('contact_type') if validate_integer('contact_type')
     validate_exists('gizmo_category_id') if validate_integer('gizmo_category_id')
     validate_exists('system_id') if validate_integer('system', 'system_id')
@@ -383,7 +383,7 @@ class Conditions < ConditionsBase
 
   def type_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
-    ["#{klass.table_name}.type_id = ?", @type.to_i]
+    ["#{klass.table_name}.type_id = ?", @type_id.to_i]
   end
 
   def covered_conditions(klass)
@@ -712,9 +712,9 @@ class Conditions < ConditionsBase
   def serial_number_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
     if klass == SpecSheet
-      return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
+      return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number.to_s]
     elsif klass == DisktestRun
-      return ["serial_number = ?", @serial_number]
+      return ["serial_number = ?", @serial_number.to_s]
     else
       raise
     end
