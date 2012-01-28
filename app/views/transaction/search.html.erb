@@ -44,6 +44,7 @@
     <% form_remote_tag :url => { :action => 'component_update' },
        :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
        :update => component_id( refine_params ) do %>
+      <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
       <% filters = [] %>
       <% filters << 'created_at' %>
       <% filters << 'updated_at' %>

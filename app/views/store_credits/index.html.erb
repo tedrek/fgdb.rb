@@ -20,6 +20,7 @@
 
 <div id="main-section">
   <% form_tag :action => 'search' do -%>
+  <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
   <% filters = [] -%>
   <%# filters << 'contact' %>
   <% filters << 'store_credit_id' %>
