@@ -247,7 +247,7 @@ class Conditions < ConditionsBase
   end
 
   def _empty_check(varname, value)
-    empty = (value.nil? or ((!value.is_a?(Fixnum)) and value.empty?))
+    empty = (value.nil? or ((!value.is_a?(Fixnum)) and (!value.is_a?(Bignum)) and value.empty?))
     errors.add(varname, 'cannot be blank') if empty
     empty
   end
