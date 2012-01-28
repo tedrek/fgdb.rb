@@ -27,6 +27,10 @@ class WorkedShiftsController < ApplicationController
 
   def type_totals_report
     @defaults = Conditions.new
+    if params[:defaults].nil?
+      redirect_to :action => 'type_totals'
+      return
+    end
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
 
