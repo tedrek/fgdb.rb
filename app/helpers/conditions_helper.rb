@@ -235,10 +235,18 @@ module ConditionsHelper
   end
 
   def html_for_created_by_condition(params_key)
-    collection_select(params_key, "created_by", [User.new, User.find(:all)].flatten, "id", "login")
+    collection_select(params_key, "created_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
+  end
+
+  def html_for_updated_by_condition(params_key)
+    collection_select(params_key, "updated_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
+  end
+
+  def html_for_cashier_updated_by_condition(params_key)
+    collection_select(params_key, "cashier_updated_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
   end
 
   def html_for_cashier_created_by_condition(params_key)
-    collection_select(params_key, "cashier_created_by", [User.new, User.find(:all)].flatten, "id", "login")
+    collection_select(params_key, "cashier_created_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
   end
 end

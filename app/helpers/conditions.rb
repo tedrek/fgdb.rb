@@ -15,7 +15,7 @@ class Conditions < ConditionsBase
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
-      was_generated_from_ongoing
+      was_generated_from_ongoing updated_by cashier_updated_by
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled assigned covered organization ]
@@ -50,6 +50,7 @@ class Conditions < ConditionsBase
   attr_accessor :job_id
 
   attr_accessor :created_by, :cashier_created_by
+  attr_accessor :updated_by, :cashier_updated_by
 
   attr_accessor :covered
 
@@ -166,6 +167,8 @@ class Conditions < ConditionsBase
     end
     validate_exists('created_by', 'users') if validate_integer('created_by')
     validate_exists('cashier_created_by', 'users') if validate_integer('cashier_created_by')
+    validate_exists('updated_by', 'users') if validate_integer('updated_by')
+    validate_exists('cashier_updated_by', 'users') if validate_integer('cashier_updated_by')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_days')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', false, true)
     if is_this_condition_enabled('volunteer_hours')
@@ -615,6 +618,14 @@ class Conditions < ConditionsBase
 
   def created_by_conditions(klass)
     ["created_by = ?", @created_by]
+  end
+
+  def updated_by_conditions(klass)
+    ["updated_by = ?", @updated_by]
+  end
+
+  def cashier_updated_by_conditions(klass)
+    ["cashier_updated_by = ?", @cashier_updated_by]
   end
 
   def cashier_created_by_conditions(klass)

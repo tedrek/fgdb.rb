@@ -5,6 +5,9 @@ fgdb.rb (1.0.82) released; urgency=low
   * fix validation of trend reports when conditions are not selected, by
     validating the conditions_for_report which includes a dummy
     condition, instead of it's usable_conditions input (Closes: #26587)
+  * add updated_by conditions (caveat: only searches most recent
+    updator, like the updated_at conditions. the logs search interface
+    provides complete history) (Closes: #26159)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Jan 2012 00:47:02 -0800
 
