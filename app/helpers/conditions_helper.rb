@@ -185,6 +185,10 @@ module ConditionsHelper
     check_box(params_key,"is_organization")
   end
 
+  def html_for_is_pickup_condition(params_key)
+    check_box(params_key,"is_pickup")
+  end
+
   def html_for_contact_condition(params_key)
     if has_required_privileges('/contact_condition_everybody')
       contact_field('@' + params_key, 'contact_id',

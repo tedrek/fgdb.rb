@@ -78,7 +78,11 @@
         <% filters << 'unresolved_invoices' %>
         <% filters << 'payment_amount' %>
       <% end %>
+      <% if @model.new.respond_to?(:is_pickup) %>
+        <% filters << 'is_pickup' %>
+      <% end %>
       <% filters << 'gizmo_type_id' %>
+      <% filters << 'gizmo_category_id' %>
       <% filters << 'gizmo_type_group_id' %>
       <% filters << 'id' %>
       <% filters << 'needs_attention' %>

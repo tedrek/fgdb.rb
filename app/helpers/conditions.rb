@@ -15,10 +15,10 @@ class Conditions < ConditionsBase
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
-      was_generated_from_ongoing updated_by cashier_updated_by
+      was_generated_from_ongoing updated_by cashier_updated_by is_pickup
     ] + DATES).uniq
 
-  CHECKBOXES = %w[ cancelled assigned covered organization ]
+  CHECKBOXES = %w[ cancelled assigned covered organization is_pickup ]
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
@@ -83,6 +83,7 @@ class Conditions < ConditionsBase
   attr_accessor :contact_type
 
   attr_accessor :is_organization
+  attr_accessor :is_pickup
 
   attr_accessor :city, :postal_code, :phone_number, :email
 
@@ -521,6 +522,10 @@ class Conditions < ConditionsBase
       i = "contact_id"
     end
     return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", (@is_organization > 0) ? true : false]
+  end
+
+  def is_pickup_conditions(klass)
+    return ["#{klass.table_name}.is_pickup = ?", (@is_pickup > 0)]
   end
 
   def needs_attention_conditions(klass)
