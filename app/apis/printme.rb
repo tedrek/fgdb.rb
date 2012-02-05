@@ -35,6 +35,7 @@ class PrintmeAPI < SOAP::SoapsBase
     ["submit_notes", "notes_struct"],
     ["get_system_for_note", "note_id"],
     # Random Crap
+    ["get_extra_questions", "action_id", "type_id"],
     ["get_system_for_report", "report_id"],
     ["contract_label_for_system", "system_id"],
     ["type_description_for_system", "system_id"],
@@ -44,6 +45,14 @@ class PrintmeAPI < SOAP::SoapsBase
     ["is_system_gone", "system_id"],
     ["get_system_id", "xml"]
     ]
+  end
+
+  def get_extra_questions(action_id, type_id)
+    h = {}
+    SpecSheetQuestion.find_relevant(action_id, type_id).each{|x|
+      h[("id_" + x.id.to_s).to_sym] = x.question
+    }
+    h.to_a.map{|x| x.map{|y| y.to_s}}
   end
 
   ######################
@@ -64,7 +73,7 @@ class PrintmeAPI < SOAP::SoapsBase
     server_hash[version].class != Array || server_hash[version].include?(client_version)
   end
   def version
-    14
+    15
   end
   def bad_client_error
     "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."
@@ -93,6 +102,7 @@ class PrintmeAPI < SOAP::SoapsBase
     server_versions[12] = [12]    # new info collected, forced upgrade.
     server_versions[13] = [12,13]    # works fine.
     server_versions[14] = [14] # previous systems
+    server_versions[15] = [14,15] # previous systems
     server_versions
   end
 
@@ -131,7 +141,7 @@ class PrintmeAPI < SOAP::SoapsBase
   # Printme #
   ###########
 
-  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os, :covered)  if !defined?(PrintmeStruct)
+  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os, :covered, :questions)  if !defined?(PrintmeStruct)
 
   def empty_struct
     PrintmeStruct.new
