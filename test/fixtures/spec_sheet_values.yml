@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  spec_sheet_id: 1
+  spec_sheet_question_id: 1
+  value: MyString
+
+two:
+  spec_sheet_id: 1
+  spec_sheet_question_id: 1
+  value: MyString

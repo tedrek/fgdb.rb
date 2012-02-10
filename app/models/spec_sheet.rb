@@ -13,6 +13,26 @@ class SpecSheet < ActiveRecord::Base
 
   after_save :save_bt
 
+  has_many :spec_sheet_values
+
+  # is there already an inverse to Hash.to_a ?
+  def r_hash_parse(arr)
+    h = {}
+    arr.each{|x,y|
+      h[x] = y
+    }
+    h
+  end
+
+  def questions=(hash)
+    r_hash_parse(hash).each do |k,v|
+      sv = SpecSheetValue.new
+      sv.spec_sheet_question_id = k.to_s.sub(/^id_/, "").to_i
+      sv.value = v
+      self.spec_sheet_values << sv
+    end
+  end
+
   def save_bt
     self.builder_task.save!
   end
