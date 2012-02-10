@@ -4,6 +4,7 @@ class VolunteerDefaultEvent < ActiveRecord::Base
   belongs_to :weekday
   has_many :volunteer_default_shifts, :dependent => :destroy
   has_many :resources_volunteer_default_events, :dependent => :destroy
+  validates_associated :volunteer_default_shifts
 
   def merge_similar_shifts
       hash = {}

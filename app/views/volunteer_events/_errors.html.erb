@@ -1,0 +1,11 @@
+  <%= f.error_messages %>
+  <% if @volunteer_shifts %>
+    <% @volunteer_shifts.each do |x| %>
+      <%= @volunteer_shift = x; error_messages_for :volunteer_shift %>
+    <% end %>
+  <% end %>
+  <% if @resources %>
+    <% @resources.each do |x| %>
+      <%= @resource = x; error_messages_for :resource %>
+    <% end %>
+  <% end %>

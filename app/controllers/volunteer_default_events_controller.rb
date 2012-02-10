@@ -103,7 +103,7 @@ class VolunteerDefaultEventsController < ApplicationController
     @volunteer_default_event = VolunteerDefaultEvent.new(params[:volunteer_default_event])
 
     _save
-    if @volunteer_default_event.save
+    if @volunteer_shifts.select{|x| !x.valid?}.length == 0 && @resources.select{|x| !x.valid?}.length == 0 && @volunteer_default_event.valid? && @volunteer_default_event.save
       _after_save
       flash[:notice] = 'VolunteerDefaultEvent was successfully created.'
       redirect_to({:action => "show", :id => @volunteer_default_event.id})
@@ -117,7 +117,7 @@ class VolunteerDefaultEventsController < ApplicationController
     rt = params[:volunteer_default_event].delete(:redirect_to)
 
     _save
-    if @volunteer_default_event.update_attributes(params[:volunteer_default_event])
+    if @volunteer_shifts.select{|x| !x.valid?}.length == 0 && @resources.select{|x| !x.valid?}.length == 0 && @volunteer_default_event.valid? && @volunteer_default_event.update_attributes(params[:volunteer_default_event])
       _after_save
       flash[:notice] = 'VolunteerDefaultEvent was successfully updated.'
       redirect_skedj(rt, @volunteer_default_event.weekday.name)

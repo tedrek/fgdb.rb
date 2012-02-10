@@ -7,7 +7,7 @@
 <% interface[:end_time] = select_hour(0, {:twelve_hour => true, :field_name => "end_hour2", :include_blank => true}, kdh) + select_minute(0, {:field_name => "end_minute2", :include_blank => true, :minute_step => 15}, kdh) + ActionView::Helpers::DateTimeSelector.new(0, {:field_name => "end_ampm2", :include_blank => true}, kdh).select_ampm %>
 
 <% values = [] %>
-<% things = @volunteer_event.class == VolunteerEvent ? @volunteer_event.resources_volunteer_events : @volunteer_event.resources_volunteer_default_events %>
+<% things = (@resources || (@volunteer_event.class == VolunteerEvent ? @volunteer_event.resources_volunteer_events : @volunteer_event.resources_volunteer_default_events)) %>
 <% if things
     values = things.map{|x|
       x = x.to_hash(:id, :my_start_time, :my_end_time, :roster_id, :resource_id)
