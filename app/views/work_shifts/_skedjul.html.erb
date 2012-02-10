@@ -1,3 +1,6 @@
+<% if flash[:alert] %>
+  <%= javascript_tag "alert(#{flash[:alert].to_json});" %>
+<% end %>
 
 <% Thread.current['skedj_obj'] = skedj  %>
 <div class="skedj">

@@ -25,6 +25,8 @@ module HtmlHelper
     return display
   end
 
+  DISPLAY_ALIAS = {:updated_at => 'last_updated_at', :updated_by => 'last_updated_by', :cashier_updated_by => 'last_cashier_updated_by'}
+
   def multiselect_of_form_elements(obj_name, choices = {}, mode = "auto")
     html = "<div id='#{obj_name}_container' class='conditions'>"
     js = ""
@@ -43,7 +45,7 @@ module HtmlHelper
     end
     if mode == 'multi'
       choice_names = { }
-      choices.each {|k,v| choice_names[k] = (k == "updated_at" ? 'last_updated_at' : k).titleize}
+      choices.each {|k,v| choice_names[k] = (DISPLAY_ALIAS[k.to_sym] || k).titleize}
       js = update_page do |page|
         page << "list_of_#{obj_name}_conditions = $H(#{choices.to_json.gsub("</script>", "<\\\/script>")});"
         page << "condition_#{obj_name}_display_names = $H(#{choice_names.to_json});"

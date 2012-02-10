@@ -548,7 +548,7 @@ class TrendReport
     def conditions_errors
       return @conditions_errors if defined?(@conditions_errors)
       c = Conditions.new
-      c.apply_conditions(usable_conditions)
+      c.apply_conditions(conditions_for_report({}, ''))
       @conditions_errors = c
       return c
     end

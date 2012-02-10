@@ -3,6 +3,7 @@ class VolunteerEvent < ActiveRecord::Base
   validates_presence_of :date
   has_many :volunteer_shifts, :dependent => :destroy
   has_many :resources_volunteer_events, :dependent => :destroy
+  validates_associated :volunteer_shifts
 
   def date_anchor
     self.date.strftime('%Y%m%d')

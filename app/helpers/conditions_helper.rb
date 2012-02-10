@@ -185,6 +185,10 @@ module ConditionsHelper
     check_box(params_key,"is_organization")
   end
 
+  def html_for_is_pickup_condition(params_key)
+    check_box(params_key,"is_pickup")
+  end
+
   def html_for_contact_condition(params_key)
     if has_required_privileges('/contact_condition_everybody')
       contact_field('@' + params_key, 'contact_id',
@@ -235,10 +239,18 @@ module ConditionsHelper
   end
 
   def html_for_created_by_condition(params_key)
-    collection_select(params_key, "created_by", [User.new, User.find(:all)].flatten, "id", "login")
+    collection_select(params_key, "created_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
+  end
+
+  def html_for_updated_by_condition(params_key)
+    collection_select(params_key, "updated_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
+  end
+
+  def html_for_cashier_updated_by_condition(params_key)
+    collection_select(params_key, "cashier_updated_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
   end
 
   def html_for_cashier_created_by_condition(params_key)
-    collection_select(params_key, "cashier_created_by", [User.new, User.find(:all)].flatten, "id", "login")
+    collection_select(params_key, "cashier_created_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
   end
 end

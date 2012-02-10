@@ -15,10 +15,10 @@ class Conditions < ConditionsBase
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
-      was_generated_from_ongoing
+      was_generated_from_ongoing updated_by cashier_updated_by is_pickup
     ] + DATES).uniq
 
-  CHECKBOXES = %w[ cancelled assigned covered organization ]
+  CHECKBOXES = %w[ cancelled assigned covered organization is_pickup ]
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
@@ -50,6 +50,7 @@ class Conditions < ConditionsBase
   attr_accessor :job_id
 
   attr_accessor :created_by, :cashier_created_by
+  attr_accessor :updated_by, :cashier_updated_by
 
   attr_accessor :covered
 
@@ -82,6 +83,7 @@ class Conditions < ConditionsBase
   attr_accessor :contact_type
 
   attr_accessor :is_organization
+  attr_accessor :is_pickup
 
   attr_accessor :city, :postal_code, :phone_number, :email
 
@@ -166,6 +168,8 @@ class Conditions < ConditionsBase
     end
     validate_exists('created_by', 'users') if validate_integer('created_by')
     validate_exists('cashier_created_by', 'users') if validate_integer('cashier_created_by')
+    validate_exists('updated_by', 'users') if validate_integer('updated_by')
+    validate_exists('cashier_updated_by', 'users') if validate_integer('cashier_updated_by')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_days')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', false, true)
     if is_this_condition_enabled('volunteer_hours')
@@ -520,6 +524,10 @@ class Conditions < ConditionsBase
     return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", (@is_organization > 0) ? true : false]
   end
 
+  def is_pickup_conditions(klass)
+    return ["#{klass.table_name}.is_pickup = ?", (@is_pickup > 0)]
+  end
+
   def needs_attention_conditions(klass)
     return ["#{klass.table_name}.needs_attention = 't'"]
   end
@@ -615,6 +623,14 @@ class Conditions < ConditionsBase
 
   def created_by_conditions(klass)
     ["created_by = ?", @created_by]
+  end
+
+  def updated_by_conditions(klass)
+    ["updated_by = ?", @updated_by]
+  end
+
+  def cashier_updated_by_conditions(klass)
+    ["cashier_updated_by = ?", @cashier_updated_by]
   end
 
   def cashier_created_by_conditions(klass)

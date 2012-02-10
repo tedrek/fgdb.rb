@@ -121,23 +121,27 @@ class AssignmentsController < ApplicationController
     @assigned_orig = Assignment.find(assigned)
     @available = Assignment.find(available)
 
-    # for write
-    @assigned = Assignment.find(assigned)
-    @new = Assignment.new # available
+    if @available.volunteer_shift.stuck_to_assignment or @assigned_orig.volunteer_shift.stuck_to_assignment
+      flash[:alert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
+    else
+      # for write
+      @assigned = Assignment.find(assigned)
+      @new = Assignment.new # available
 
-    # do it
-    @assigned.volunteer_shift_id = @available.volunteer_shift_id
-    @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
-    @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
+      # do it
+      @assigned.volunteer_shift_id = @available.volunteer_shift_id
+      @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
+      @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
-    @new.start_time = @assigned_orig.start_time
-    @new.end_time = @assigned_orig.end_time
-    @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
+      @new.start_time = @assigned_orig.start_time
+      @new.end_time = @assigned_orig.end_time
+      @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
 
-    @assigned.save!
-    @new.save!
+      @assigned.save!
+      @new.save!
+    end
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assigned.volunteer_shift.date_anchor)
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig.volunteer_shift.date_anchor)
   end
 
   def split
