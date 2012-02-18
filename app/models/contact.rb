@@ -62,9 +62,11 @@ class Contact < ActiveRecord::Base
     ["contact_#{self.id}", "has_contact"]
   end
 
-  def update_syseval_count
-    vtt = VolunteerTaskType.evaluation_type
-    self.syseval_count = self.volunteer_tasks.for_type_id(vtt.id).count
+  def update_syseval_count(vid)
+    c = ContactVolunteerTaskTypeCount.find_or_create_by_contact_id_and_volunteer_task_type_id(self.id, vid)
+    vtt = VolunteerTaskType.find(vid)
+    c.count = self.volunteer_tasks.for_type_id(vtt.id).count
+    c.save!
   end
 
   def scheduled_shifts
