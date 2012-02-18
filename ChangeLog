@@ -1,8 +1,11 @@
 fgdb.rb (1.0.83) UNRELEASED; urgency=low
 
   * basic support for conditional questions
+  * only record {cashier_,}{updated,created}_by values if we are
+    recording timestamps, based on internal active record configuration
+    values, so that we can keep history intact while we do migrations
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 10 Feb 2012 14:48:17 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Feb 2012 18:31:02 -0800
 
 fgdb.rb (1.0.82) released; urgency=low
 

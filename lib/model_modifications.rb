@@ -49,30 +49,34 @@ module ActiveRecord
     end
 
     def create_with_user
-      user = current_user
-      if !user.nil?
-        self[:created_by] = user.id if respond_to?(:created_by) && created_by.nil?
-      end
-      cashier = current_cashier
-      if respond_to?(:cashier_created_by) && cashier_created_by.nil?
-        if !cashier.nil? #and self.class.cashierable
-          self[:cashier_created_by] = cashier.id
-        else
-          self[:cashier_created_by] = self[:created_by]
+      if ActiveRecord::Base.record_timestamps
+        user = current_user
+        if !user.nil?
+          self[:created_by] = user.id if respond_to?(:created_by) && created_by.nil?
+        end
+        cashier = current_cashier
+        if respond_to?(:cashier_created_by) && cashier_created_by.nil?
+          if !cashier.nil? #and self.class.cashierable
+            self[:cashier_created_by] = cashier.id
+          else
+            self[:cashier_created_by] = self[:created_by]
+          end
         end
       end
       create_without_user
     end
 
     def update_with_user
-      user = current_user
-      self[:updated_by] = user.id if respond_to?(:updated_by) and !user.nil?
-      cashier = current_cashier
-      if respond_to?(:cashier_updated_by)
-        if self.class.cashierable and !cashier.nil?
-          self[:cashier_updated_by] = cashier.id
-        else
-          self[:cashier_updated_by] = self[:updated_by]
+      if ActiveRecord::Base.record_timestamps
+        user = current_user
+        self[:updated_by] = user.id if respond_to?(:updated_by) and !user.nil?
+        cashier = current_cashier
+        if respond_to?(:cashier_updated_by)
+          if self.class.cashierable and !cashier.nil?
+            self[:cashier_updated_by] = cashier.id
+          else
+            self[:cashier_updated_by] = self[:updated_by]
+          end
         end
       end
       update_without_user
