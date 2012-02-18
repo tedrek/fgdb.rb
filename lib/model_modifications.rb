@@ -125,6 +125,7 @@ module ActiveRecord
     end
 
     def logaction(action)
+      return if ! ActiveRecord::Base.record_timestamps
       if self.class.table_name != "logs" && !self.id.nil? # AND (!["spec_sheets", "builder_tasks"].include?(self.class.table_name)) && 
         user = Thread.current['user']
 #        raise "THIS IS YOUR INFO ... U: #{user.inspect} ... C: #{self.class.inspect} ... S: #{self.inspect}"
