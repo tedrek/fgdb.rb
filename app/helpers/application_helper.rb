@@ -31,7 +31,7 @@ module ApplicationHelper
   def process_exception_data(e)
     rescue_template = ActionController::Rescue::DEFAULT_RESCUE_TEMPLATES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_TEMPLATE
     rescue_status = ActionController::Rescue::DEFAULT_RESCUE_RESPONSES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_RESPONSE
-    new_params = params.dup
+    new_params = (defined?(params) ? params.dup : {})
     new_params.delete("action")
     new_params.delete("controller")
     h = {:exception_class => e.class.name,

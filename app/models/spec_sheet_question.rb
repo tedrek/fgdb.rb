@@ -1,6 +1,5 @@
 class SpecSheetQuestion < ActiveRecord::Base
-  belongs_to :action
-  belongs_to :type
+  has_many :spec_sheet_question_conditions
 
   def self.find_relevant(action_id, type_id)
     (self.find_all_by_action_id_and_type_id(nil, type_id) +

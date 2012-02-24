@@ -35,7 +35,7 @@ class PrintmeAPI < SOAP::SoapsBase
     ["submit_notes", "notes_struct"],
     ["get_system_for_note", "note_id"],
     # Random Crap
-    ["get_extra_questions", "action_id", "type_id"],
+    ["get_extra_questions"],
     ["get_system_for_report", "report_id"],
     ["contract_label_for_system", "system_id"],
     ["type_description_for_system", "system_id"],
@@ -47,12 +47,16 @@ class PrintmeAPI < SOAP::SoapsBase
     ]
   end
 
-  def get_extra_questions(action_id, type_id)
-    h = {}
-    SpecSheetQuestion.find_relevant(action_id, type_id).each{|x|
-      h[("id_" + x.id.to_s).to_sym] = x.question
+  SpecSheetQuestionStruct = Struct.new(:id_name, :name, :question, :conditions) if !defined?(SpecSheetQuestionStruct)
+  SpecSheetConditionStruct = Struct.new(:field_name, :operator, :expected_value) if !defined?(SpecSheetConditionStruct)
+
+  def get_extra_questions
+    SpecSheetQuestion.find(:all).sort_by(&:id).map{|x|
+      a = x.spec_sheet_question_conditions.map{|y|
+        SpecSheetConditionStruct.new(y.field_name, y.operator, y.expected_value)
+      }
+      SpecSheetQuestionStruct.new("id_" + x.id.to_s, x.name.downcase, x.question, a)
     }
-    h.to_a.map{|x| x.map{|y| y.to_s}}
   end
 
   ######################
@@ -102,7 +106,7 @@ class PrintmeAPI < SOAP::SoapsBase
     server_versions[12] = [12]    # new info collected, forced upgrade.
     server_versions[13] = [12,13]    # works fine.
     server_versions[14] = [14] # previous systems
-    server_versions[15] = [14,15] # previous systems
+    server_versions[15] = [15] # previous systems
     server_versions
   end
 
