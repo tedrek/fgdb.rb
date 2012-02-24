@@ -143,6 +143,16 @@
       </td>
     </tr>
     <% end %>
+    <% @report.spec_sheet_values.each do |x| %>
+    <tr>
+      <td>
+        <%= x.spec_sheet_question.name %>:
+      </td>
+      <td>
+        <%= x.value %>
+      </td>
+    </tr>
+    <% end %>
     <tr>
       <td>
         Notes:
