@@ -1,6 +1,9 @@
 class VolunteerTaskType < ActiveRecord::Base
   belongs_to :program
 
+  has_many :contact_volunteer_task_type_counts
+# :primary_key => 'volunteer_task_type_id', :foreign_key => 'volunteer_task_type_id' # 
+
   def self.evaluation_type
     @@eval_type ||= VolunteerTaskType.find_by_name('evaluation')
   end

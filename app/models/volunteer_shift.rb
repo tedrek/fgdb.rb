@@ -11,6 +11,8 @@ class VolunteerShift < ActiveRecord::Base
 
   belongs_to :volunteer_event
 
+  has_many :contact_volunteer_task_type_counts, :primary_key => 'volunteer_task_type_id', :foreign_key => 'volunteer_task_type_id' #:through => :volunteer_task_type
+
   def set_description
     self.description
   end

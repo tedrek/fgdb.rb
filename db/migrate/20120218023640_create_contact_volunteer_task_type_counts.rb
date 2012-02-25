@@ -2,9 +2,6 @@ class CreateContactVolunteerTaskTypeCounts < ActiveRecord::Migration
   def self.up
     ActiveRecord::Base.record_timestamps = false
 
-    # :joins - Either an SQL fragment for additional jOIN comments ON comments.post_id = id" (rarely
-    # :select => "webpages.*, COUNT(webpage_hit.id) AS view_count",
-
     create_table :contact_volunteer_task_type_counts do |t|
       t.integer :contact_id
       t.integer :volunteer_task_type_id

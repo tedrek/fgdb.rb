@@ -107,7 +107,7 @@ class AssignmentsController < ApplicationController
       @page_title = @conditions.skedj_to_s("after", false, ["cancelled"])
       @page_title = "All schedules" if @page_title.length == 0
 
-    @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :contact => [], :volunteer_shift => [:volunteer_task_type, :volunteer_event, :roster]]})
+    @skedj.find({:conditions => @skedj.where_clause, :include => [:attendance_type => [], :volunteer_shift => [:volunteer_task_type, :volunteer_event, :roster], :contact => [], :contact_volunteer_task_type_count => []]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
     else
       render :partial => "index",  :layout => :with_sidebar

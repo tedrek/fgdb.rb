@@ -13,6 +13,12 @@ class Assignment < ActiveRecord::Base
   delegate :set_date, :set_date=, :to => :volunteer_shift
   delegate :set_description, :set_description=, :to => :volunteer_shift
 
+  has_one :contact_volunteer_task_type_count, :conditions => 'contact_volunteer_task_type_counts.contact_id = #{defined?(attributes) ? contact_id : "assignments.contact_id"}', :through => :volunteer_shift, :source => :contact_volunteer_task_type_counts
+
+  def voltask_count
+    self.contact_volunteer_task_type_count ? self.contact_volunteer_task_type_count.attributes["count"] : 0
+  end
+
   before_validation :set_values_if_stuck
   def set_values_if_stuck
     return unless volshift_stuck
@@ -131,11 +137,7 @@ class Assignment < ActiveRecord::Base
     if contact_id.nil?
       return "(available)"
     else
-      if self.volunteer_shift.volunteer_task_type_id == VolunteerTaskType.evaluation_type.id
-        return self.contact.display_name + "(#{self.contact.syseval_count})"
-      else
-        return self.contact.display_name
-      end
+      return self.contact.display_name + "(#{self.voltask_count})"
     end
   end
 
