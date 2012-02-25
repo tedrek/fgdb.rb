@@ -17,7 +17,7 @@ class CreateContactVolunteerTaskTypeCounts < ActiveRecord::Migration
       c.update_syseval_count(vttid)
     }
 
-    # TODO:       remove_column :contacts, :
+    remove_column :contacts, :syseval_count
   end
 
   def self.down
