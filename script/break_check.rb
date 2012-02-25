@@ -11,7 +11,7 @@ max = hours_logged_since + 1
 
 fmt = "%-10s | %-15s | %11s | %11s\n"
 report = ""
-results = DB.exec(["SELECT DISTINCT date_performed, worker_id FROM worked_shifts WHERE (created_at > ? AND created_at < ?) OR (updated_at > ? AND updated_at < ?) ORDER BY 1,2;", hours_logged_since, max, hours_logged_since, max]).to_a
+results = DB.exec(["SELECT DISTINCT date_performed, worker_id FROM worked_shifts WHERE job_id IS NOT NULL AND ((created_at > ? AND created_at < ?) OR (updated_at > ? AND updated_at < ?)) ORDER BY 1,2;", hours_logged_since, max, hours_logged_since, max]).to_a
 report += (fmt % ["Date", "Worker", "Total Hours", "Break Hours"])
 report += "--------------------------------------------------------\n"
 results.each{|x|

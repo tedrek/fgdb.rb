@@ -33,6 +33,9 @@ div.skedj_footer {
     font-weight: bold;
     text-align: right;
 }
+caption.blackout {
+    background: grey;
+}
 .skedj th {
     background: #FFCCCC;
     text-align: left;

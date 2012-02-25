@@ -96,7 +96,7 @@ class DefaultAssignment < ActiveRecord::Base
     if self.contact_id.nil?
       return 'available'
     end
-    if overlap
+    if overlap and !self.volshift_stuck
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_default_shift.send(:read_attribute, :end_time) or self.start_time < self.volunteer_default_shift.send(:read_attribute, :start_time)

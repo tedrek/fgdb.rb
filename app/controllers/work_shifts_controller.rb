@@ -8,6 +8,11 @@ class WorkShiftsController < ApplicationController
   end
 
   public
+  def update_rollout_date
+    Default["staffsched_rollout_until"] = params[:date]
+    redirect_to :back
+  end
+
   def find_problems
     begin
       @start_date = Date.parse(params[:start_date])
@@ -128,6 +133,8 @@ class WorkShiftsController < ApplicationController
     @skedj = Skedjul.new({
       :conditions => ["worker", "job"],
       :date_range_condition => "shift_date",
+      :rollout_default_name => "staffsched_rollout_until",
+      :rollout_default_action => "update_rollout_date",
 
       :block_method_name => "work_shifts.shift_date",
       :block_method_display => "work_shifts.shift_date_display",
@@ -151,7 +158,6 @@ class WorkShiftsController < ApplicationController
 
     @skedj.find({:include => [:job, :coverage_type, :worker, :weekday]})
   end
-
 
   def show
     @work_shift = WorkShift.find(params[:id])

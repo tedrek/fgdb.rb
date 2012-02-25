@@ -129,7 +129,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
   after_save :fill_in_available
 
   def skedj_style(overlap, last)
-    overlap ? 'hardconflict' : 'shift'
+    'shift'
   end
 
   def describe
