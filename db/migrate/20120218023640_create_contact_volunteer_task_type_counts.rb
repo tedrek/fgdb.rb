@@ -13,7 +13,7 @@ class CreateContactVolunteerTaskTypeCounts < ActiveRecord::Migration
       t.timestamps
     end
 
-    DB.execute("SELECT DISTINCT contact_id, volunteer_task_type_id FROM volunteer_tasks WHERE volunteer_task_type_id IS NOT NULL;").to_a.each{|h|
+    DB.execute("SELECT DISTINCT contact_id, volunteer_task_type_id FROM volunteer_tasks WHERE volunteer_task_type_id IS NOT NULL and contact_id IS NOT NULL;").to_a.each{|h|
       cid = h["contact_id"]
       vttid = h["volunteer_task_type_id"]
       c = Contact.find(cid)
