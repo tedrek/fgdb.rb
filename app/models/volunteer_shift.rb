@@ -57,6 +57,10 @@ class VolunteerShift < ActiveRecord::Base
     overlap ? 'hardconflict' : 'shift'
   end
 
+  def shift_display
+    time_range_s + ((!(self.description.nil? or self.description.blank?)) ? (": " + self.description) : "")
+  end
+
   def time_range_s
     return unless self.read_attribute(:start_time) and  self.read_attribute(:end_time)
     (self.my_start_time("%I:%M") + ' - ' + self.my_end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
