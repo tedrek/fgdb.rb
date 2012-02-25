@@ -5,8 +5,6 @@ fgdb.rb (1.0.83) UNRELEASED; urgency=low
     recording timestamps, based on internal active record configuration
     values, so that we can keep history intact while we do migrations
   * keeping counts on all volunteer task types, needs FIX
-  * Add Bulk gizmo_type for sales, should not be used for items we take
-    inventory on (Closes: #26756)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 24 Feb 2012 16:46:34 -0800
 
@@ -22,6 +20,8 @@ fgdb.rb (1.0.82) released; urgency=low
     provides complete history) (Closes: #26159)
   * add is_pickup and gizmo_category conditions to transactions
   * Allow skedjulers to set a date for finalized skedjul
+  * Add Bulk gizmo_type for sales, should not be used for items we take
+    inventory on (Closes: #26756)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Jan 2012 00:47:02 -0800
 
