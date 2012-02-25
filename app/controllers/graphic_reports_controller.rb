@@ -987,6 +987,29 @@ class DonationsCountsTrend < TrendReport
       "Report of number of donations"
     end
 end
+class DonationsCountsByZipCodeTrend < TrendReport
+    def category
+      "Transaction"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def get_for_timerange(args)
+      c = Conditions.new
+      h = {}
+      Donation.connection.execute("SELECT SUBSTR(COALESCE(COALESCE(contacts.postal_code, donations.postal_code), 'N/A'), 0, 4) AS postal_code, count(*) AS count FROM donations LEFT OUTER JOIN contacts ON donations.contact_id = contacts.id WHERE #{sql_for_report(Donation, created_at_conditions_for_report(args))} GROUP BY 1;").to_a.each{|x|
+        h[x["postal_code"]] = x["count"]
+      }
+      h
+      return h
+    end
+
+    def title
+      "Report of number of donations within each 3-digit zip code"
+    end
+end
 class VolunteerHoursByProgramsTrend < TrendReport
     def category
       "Volunteer"
