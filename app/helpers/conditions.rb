@@ -833,6 +833,7 @@ class Conditions < ConditionsBase
   end
 
   def skedj_to_s(style = "before", show_date = false, ignores = [])
+    return "" if CONDS.select{|x| is_this_condition_enabled(x)}.length == 0
     if !self.valid?
       return "with invalid search conditions"
     end
