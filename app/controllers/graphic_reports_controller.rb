@@ -998,11 +998,19 @@ class DonationsCountsByZipCodeTrend < TrendReport
 
     def get_for_timerange(args)
       c = Conditions.new
-      h = {}
+      a = []
       Donation.connection.execute("SELECT SUBSTR(COALESCE(COALESCE(contacts.postal_code, donations.postal_code), 'N/A'), 0, 4) AS postal_code, count(*) AS count FROM donations LEFT OUTER JOIN contacts ON donations.contact_id = contacts.id WHERE #{sql_for_report(Donation, created_at_conditions_for_report(args))} GROUP BY 1;").to_a.each{|x|
-        h[x["postal_code"]] = x["count"]
+        a << [x["postal_code"], x["count"].to_i]
       }
-      h
+      min_limit = 10
+      add_them = a.select{|x| x.last < min_limit && x.first != 'N/A'}
+      a = a - add_them
+      a << ["Misc", add_them.inject(0){|t,x| t+=x.last}]
+      a = a.sort_by(&:last)
+      h = OH.new
+      a.each{|x,y|
+        h[x] = y
+      }
       return h
     end
 
