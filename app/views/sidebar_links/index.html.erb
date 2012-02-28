@@ -1,7 +1,5 @@
 <h1 class="welcome">Welcome to the Free Geek Database</h1>
 
-<%= Assignment.find(:all).sort_by(&:updated_at).last.contact_volunteer_task_type_count %>
-
 <% if session[:unauthorized_error] %>
   <span class="error">You have insufficient privileges to access that!</span>
   <% if !logged_in? %>
