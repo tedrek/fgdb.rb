@@ -159,16 +159,20 @@ thanks = [
     end
 
     def totals(conditions)
+      bulk_id = ContactType.bulk_buyer.id
       connection.execute(
                          "SELECT payments.payment_method_id,
+                contact_types_contacts.contact_type_id IS NOT NULL AS is_bulk_buyer,
                 sum(payments.amount_cents) as amount,
                 count(*),
                 min(sales.id),
                 max(sales.id)
          FROM sales
          JOIN payments ON payments.sale_id = sales.id
+         LEFT OUTER JOIN contacts ON contacts.id = sales.contact_id
+         LEFT OUTER JOIN contact_types_contacts ON contact_types_contacts.contact_id = contacts.id AND contact_types_contacts.contact_type_id = #{bulk_id}
          WHERE #{sanitize_sql_for_conditions(conditions)}
-         GROUP BY payments.payment_method_id"
+         GROUP BY 1, 2"
                          )
     end
   end
