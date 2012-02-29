@@ -10,6 +10,10 @@ class ContactType < ActiveRecord::Base
     ContactType.find_instantiable.select{|x| x.name.match(/_build/) or x.name == "advanced_testing" or x.name.match(/completed_/)}
   end
 
+  def self.bulk_buyer
+    ContactType.find_by_name("bulk_buyer")
+  end
+
   def to_s
     description
   end

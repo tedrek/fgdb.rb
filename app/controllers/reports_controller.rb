@@ -17,6 +17,37 @@ class ReportsController < ApplicationController
 
   public
 
+  def donation_zip_areas
+    @report = OpenStruct.new
+    @report.min_limit = 10
+    @report.by_full_zip = false
+    @conditions = Conditions.new
+    @conditions.occurred_at_date_type = "yearly"
+  end
+
+  def donation_zip_areas_report
+    donation_zip_areas
+    @report = OpenStruct.new(params[:report])
+    @report.by_full_zip = (@report.by_full_zip == "1")
+    @report.min_limit = @report.min_limit.to_i
+    @conditions.apply_conditions(params[:conditions])
+    group_by = "CASE COALESCE(COALESCE(contacts.postal_code, donations.postal_code), 'N/A') WHEN '00000' THEN 'N/A' WHEN '0' THEN 'N/A' ELSE COALESCE(COALESCE(contacts.postal_code, donations.postal_code), 'N/A') END"
+    group_by = "SUBSTR(" + group_by + ", 0, 4)" unless @report.by_full_zip
+    a = []
+    Donation.connection.execute("SELECT #{group_by} AS postal_code, count(*) AS count FROM donations LEFT OUTER JOIN contacts ON donations.contact_id = contacts.id WHERE #{DB.prepare_sql(@conditions.conditions(Donation))} GROUP BY 1;").to_a.each{|x|
+      a << [x["postal_code"], x["count"].to_i]
+    }
+    add_them = a.select{|x| x.last < @report.min_limit && x.first != 'N/A'}
+    a = a - add_them
+    a << ["Misc", add_them.inject(0){|t,x| t+=x.last}] if add_them.length > 0
+    a = a.sort_by(&:last).reverse
+    total = a.inject(0){|t,x| t+=x.last}
+    append = (@report.by_full_zip ? "" : " Area")
+    a = [["Zip Code" + append, "Donation Receipt Count"]] + a + [["TOTAL", total]]
+    @title = "Report of Donation Zip Code" + append + "s" + @conditions.to_s
+    @result = a
+  end
+
   def top_contributors
     @conditions = Conditions.new
     @report = OpenStruct.new
@@ -199,7 +230,7 @@ class ReportsController < ApplicationController
     @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
-    @rows[:sales] = ['subtotals']
+    @rows[:sales] = ['retail', 'bulk', 'subtotals']
     @rows[:grand_totals] = ['total']
     @rows[:written_off_invoices] = ['donations', 'sales', 'total']
     @sections = [:donations, :sales, :grand_totals, :written_off_invoices]
@@ -286,9 +317,8 @@ class ReportsController < ApplicationController
   end
 
   def add_sale_summation_to_data(summation, income_data, ranges)
-    payment_method_id, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+    payment_method_id, is_bulk_buyer, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['is_bulk_buyer'], summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
-
 
     ranges[:sales][:min] = [ranges[:sales][:min], mn].min
     ranges[:sales][:max] = [ranges[:sales][:max], mx].max
@@ -297,18 +327,23 @@ class ReportsController < ApplicationController
 
     grand_totals = income_data[:grand_totals]
     column = income_data[:sales][payment_method]
+    sale_type = (is_bulk_buyer == 't') ? 'bulk' : 'retail'
+    update_totals(column[sale_type], amount_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     if PaymentMethod.is_money_method?(payment_method_id)
       total_real = income_data[:sales]['register total']
+      update_totals(total_real[sale_type], amount_cents, count)
       update_totals(total_real['subtotals'], amount_cents, count)
       update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
     if PaymentMethod.is_till_method?(payment_method_id)
       till_total = income_data[:sales]['till total']
+      update_totals(till_total[sale_type], amount_cents, count)
       update_totals(till_total['subtotals'], amount_cents, count)
       update_totals(grand_totals['till total']['total'], amount_cents, count)
     end
     totals = income_data[:sales]['total']
+    update_totals(totals[sale_type], amount_cents, count)
     update_totals(totals['subtotals'], amount_cents, count)
     update_totals(grand_totals['total']['total'], amount_cents, count)
     update_totals(grand_totals[payment_method]['total'], amount_cents, count)
