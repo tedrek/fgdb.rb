@@ -17,6 +17,38 @@ class ReportsController < ApplicationController
 
   public
 
+  def donation_zip_areas
+    @report = OpenStruct.new
+    @report.min_limit = 10
+    @report.by_full_zip = false
+    @conditions = Conditions.new
+    @conditions.occurred_at_date_type = "yearly"
+  end
+
+  def donation_zip_areas_report
+    donation_zip_areas
+    @report = OpenStruct.new(params[:report])
+    @report.by_full_zip = (@report.by_full_zip == "1")
+    @report.min_limit = @report.min_limit.to_i
+    @conditions.apply_conditions(params[:conditions])
+    group_by = "CASE COALESCE(COALESCE(contacts.postal_code, donations.postal_code), 'N/A') WHEN '00000' THEN 'N/A' WHEN '0' THEN 'N/A' ELSE COALESCE(COALESCE(contacts.postal_code, donations.postal_code), 'N/A') END"
+    group_by = "SUBSTR(" + group_by + ", 0, 4)" unless @report.by_full_zip
+    a = []
+    Donation.connection.execute("SELECT #{group_by} AS postal_code, count(*) AS count FROM donations LEFT OUTER JOIN contacts ON donations.contact_id = contacts.id WHERE #{DB.prepare_sql(@conditions.conditions(Donation))} GROUP BY 1;").to_a.each{|x|
+      puts "HERE"
+      a << [x["postal_code"], x["count"].to_i]
+    }
+    add_them = a.select{|x| x.last < @report.min_limit && x.first != 'N/A'}
+    a = a - add_them
+    a << ["Misc", add_them.inject(0){|t,x| t+=x.last}] if add_them.length > 0
+    a = a.sort_by(&:last).reverse
+    total = a.inject(0){|t,x| t+=x.last}
+    append = (@report.by_full_zip ? "" : " Area")
+    a = [["Zip Code" + append, "Donation Receipt Count"]] + a + [["TOTAL", total]]
+    @title = "Report of Donation Zip Code" + append + "s" + @conditions.to_s
+    @result = a
+  end
+
   def top_contributors
     @conditions = Conditions.new
     @report = OpenStruct.new
