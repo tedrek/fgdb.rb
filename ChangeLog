@@ -5,8 +5,9 @@ fgdb.rb (1.0.83) UNRELEASED; urgency=low
     recording timestamps, based on internal active record configuration
     values, so that we can keep history intact while we do migrations
   * keeping counts on all volunteer task types (Closes: #26710)
+  * add a javascript alert if a shift is being saved and has disappeared
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 24 Feb 2012 16:46:34 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 02 Mar 2012 13:32:32 -0800
 
 fgdb.rb (1.0.82) released; urgency=low
 

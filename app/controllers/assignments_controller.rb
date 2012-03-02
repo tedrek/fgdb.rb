@@ -222,7 +222,15 @@ class AssignmentsController < ApplicationController
 
   def update
     @my_url = {:action => "update", :id => params[:id]}
-    @assignments = params[:id].split(",").map{|x| Assignment.find(x)}
+    last_id = nil
+    begin
+      @assignments = params[:id].split(",").map{|x| last_id = x; Assignment.find(x)}
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{last_id.to_i.inspect}) seems to have disappeared or never existed. It is possible somebody else has modified or deleted it."
+      rt = params[:assignment].delete(:redirect_to)
+      redirect_skedj(rt, "")
+      return
+    end
     rt = params[:assignment].delete(:redirect_to)
 
     ret = true
