@@ -42,7 +42,8 @@ class AssignmentsController < ApplicationController
     @skedj = Skedjul.new({
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned", "weekday"],
       :date_range_condition => "date",
-                           :forced_condition => "cancelled",
+      :forced_condition => "cancelled",
+      :maximum_date => "VolunteerEvent.maximum(:date)",
 
       :block_method_name => "volunteer_shifts.volunteer_events.date",
       :block_anchor => 'volunteer_shifts.date_anchor',

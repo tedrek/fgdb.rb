@@ -9,7 +9,6 @@
 <% form_tag({:action => params[:action]}, {:method => "get"}) do %>
   <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi") %>
 
-
 <% force_conds = ["empty"] %>
 
 <% if skedj.opts[:date_range_condition] %>
@@ -26,6 +25,11 @@
   <%= conditions_html('conditions', force_conds)%>
 <% end %>
 
+<% if skedj.opts[:maximum_date] %>
+<div style="clear: left">
+(Latest Scheduled Date: <%= @maximum_date = eval(skedj.opts[:maximum_date]) %>)
+</div>
+<% end %>
 
 <% if skedj.opts[:date_range_condition] %>
   <script>

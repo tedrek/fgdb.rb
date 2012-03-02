@@ -111,4 +111,14 @@
 <% end %>
 </div>
 
+<% if skedj.opts[:maximum_date] &&  skedj.opts[:date_range_condition] %>
+  <% if params[:conditions] && Date.parse(params[:conditions][(skedj.opts[:date_range_condition] + "_end_date")]) < @maximum_date %>
+    <% newconds = params[:conditions].dup %>
+    <% newconds[(skedj.opts[:date_range_condition] + "_end_date")] = @maximum_date %>
+    <% newparams = params.dup %>
+    <% newparams[:conditions] = newconds %>
+    <%= link_to "View more (these and all future records through #{@maximum_date})", newparams %>
+  <% end %>
+<% end %>
+
 <% Thread.current['skedj_obj'] = nil  %>
