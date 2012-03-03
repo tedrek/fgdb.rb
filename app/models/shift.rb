@@ -1,4 +1,6 @@
 class Shift < ActiveRecord::Base
+  acts_as_userstamp
+
   belongs_to :job, :include => [:coverage_type]
   belongs_to :weekday
   belongs_to :worker
