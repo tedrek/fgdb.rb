@@ -260,7 +260,11 @@ GROUP BY 1,2;")
 #    @logged_already = true
 #    @shifts = process_shifts(params[:shifts])
 #    render :action => "edit"
-    process_shifts(params[:shifts])
+    if params[:worked_shift]
+      process_shifts(params[:shifts])
+    else
+      flash[:error] = "ERROR: Hours were not saved. Please choose a date to save hours for."
+    end
     redirect_to :action => "index"
   end
 

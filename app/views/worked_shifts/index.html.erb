@@ -1,5 +1,9 @@
 <% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker ? @worker.id : nil, @date) %>
 
+<span class="error">
+<%= flash[:error] %>
+</span>
+
 <% form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
 <% label :worked_shifts, :worker_id %>
 <%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
