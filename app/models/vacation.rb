@@ -1,6 +1,4 @@
 class Vacation < ActiveRecord::Base
-  acts_as_userstamp
-
   belongs_to :worker
 
   validate :worker_is_not_virtual

@@ -1,6 +1,4 @@
 class WorkShift < ActiveRecord::Base
-  acts_as_userstamp
-
   belongs_to :coverage_type
   belongs_to :job, :include => [:coverage_type]
   belongs_to :meeting
