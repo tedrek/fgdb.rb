@@ -1,4 +1,6 @@
 class Unavailability < Shift
+  acts_as_userstamp
+
   belongs_to :schedule
   belongs_to :weekday
   belongs_to :worker
