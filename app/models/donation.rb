@@ -3,8 +3,8 @@ class Donation < ActiveRecord::Base
 
   include GizmoTransaction
   belongs_to :contact
-  has_many :payments, :dependent => :destroy
-  has_many :gizmo_events, :dependent => :destroy
+  has_many :payments, :dependent => :destroy, :autosave => :true
+  has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
 
   def gizmo_context

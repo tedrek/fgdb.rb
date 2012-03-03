@@ -1,6 +1,6 @@
 class Recycling < ActiveRecord::Base
   include GizmoTransaction
-  has_many :gizmo_events, :dependent => :destroy
+  has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
   acts_as_userstamp
 

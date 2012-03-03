@@ -1,6 +1,6 @@
 class GizmoReturn < ActiveRecord::Base
   define_amount_methods_on("storecredit_difference")
-  has_many :gizmo_events, :dependent => :destroy
+  has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
   include GizmoTransaction
   belongs_to :contact
