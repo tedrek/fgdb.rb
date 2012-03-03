@@ -53,9 +53,9 @@ class PrintmeAPI < SOAP::SoapsBase
   def get_extra_questions
     SpecSheetQuestion.find(:all).sort_by(&:id).map{|x|
       a = x.spec_sheet_question_conditions.map{|y|
-        SpecSheetConditionStruct.new(y.field_name, y.operator, y.expected_value)
+        SpecSheetConditionStruct.new(y.name, y.operator, y.expected_value)
       }
-      SpecSheetQuestionStruct.new("id_" + x.id.to_s, x.name.downcase, x.question, a)
+      SpecSheetQuestionStruct.new("id_" + x.id.to_s, x.name.downcase.gsub(/ /, "_"), x.question, a)
     }
   end
 
