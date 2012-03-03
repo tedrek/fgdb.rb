@@ -35,6 +35,7 @@ class Donation < ActiveRecord::Base
   end
 
   def validate
+    validate_inventory_modifications
     unless is_adjustment?
     if contact_type == 'named'
       errors.add_on_empty("contact_id")

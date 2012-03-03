@@ -9,6 +9,7 @@ class Recycling < ActiveRecord::Base
   end
 
   def validate
+    validate_inventory_modifications
     errors.add_on_empty("gizmo_events")
     errors.add_on_empty("recycled_at", "when?")
   end

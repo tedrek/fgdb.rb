@@ -12,6 +12,10 @@
 </div>
 <div id="<%= form_tbody_id(params) %>">
 
+<% if @transaction.inventory_is_locked? %>
+<h2 style="color: red">WARNING: inventory for this transaction is locked, please only change gizmo counts if you are sure it is okay to change. Privileges will be required to modify gizmo counts, but other data can still be modified without restriction.</h2>
+<% end %>
+
 <% if @receipt %>
   <script>
     window.open('<%= url_for({:id => @receipt, :action => 'receipt'}) %>','Receipt_<%= @receipt %>','');

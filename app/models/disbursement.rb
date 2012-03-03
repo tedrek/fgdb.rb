@@ -11,6 +11,7 @@ class Disbursement < ActiveRecord::Base
   end
 
   def validate
+    validate_inventory_modifications
     unless is_adjustment?
     errors.add_on_empty("contact_id")
     if contact_id.to_i == 0

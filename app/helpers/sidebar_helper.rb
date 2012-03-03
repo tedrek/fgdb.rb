@@ -77,6 +77,7 @@ module SidebarHelper
     sidebar_hash["contacts"]["email list"] = {:c => 'contacts', :a => "email_list"}
     # bean counters
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"}
+    sidebar_hash["bean counters"]["inventory settings"] = {:c => "till_adjustments", :a => "inventory_settings"}
     # skedjuler
     sidebar_hash["sked admin"]["regular sked"] = {:c => "volunteer_default_shifts"}
     sidebar_hash["sked admin"]["real sked"] = {:c => "volunteer_shifts"}

@@ -294,7 +294,7 @@ class ActiveRecord::Base
     end
     h
   end
-  
+
   def attributes_with_editable=(hash)
     should_check = !editable?
     before = attributes.clone

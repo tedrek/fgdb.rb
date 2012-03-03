@@ -27,6 +27,7 @@ class GizmoEvent < ActiveRecord::Base
   before_save :set_storecredit_on_return
 
   def set_storecredit_on_return
+    raise
     if(@sc_id_set and @sc_id != self.return_store_credit_id)
       raise unless self.gizmo_context == GizmoContext.gizmo_return
       self.return_store_credit_id = @sc_id

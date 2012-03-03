@@ -8,7 +8,6 @@ class SidebarLinksController < ApplicationController
     a
   end
 
-
   public
   def recent_crash
     d = File.join(RAILS_ROOT, "tmp", "crash")

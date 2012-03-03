@@ -1,4 +1,33 @@
 module GizmoTransaction
+  def inventory_is_locked?
+    return false if self.id.nil? or Default["inventory_lock_end"].nil? or Default["inventory_lock_end"].length == 0
+    inventory_date = Date.parse(Default["inventory_lock_end"])
+    return (self.occurred_at < inventory_date)
+  end
+
+  def inventory_hash
+    hash = {}
+    self.gizmo_events.each{|x|
+      hash[x.gizmo_type_id] ||= 0
+      hash[x.gizmo_type_id] += x.gizmo_count
+    }
+    hash
+  end
+
+  def has_inventory_changed?
+    return false if self.id.nil?
+    original = self.class.find(self.id)
+    self.inventory_hash != original.inventory_hash
+  end
+
+  def validate_inventory_modifications
+    if self.inventory_is_locked? and self.has_inventory_changed?
+      unless ((Thread.current['cashier'] or Thread.current['user']) and (Thread.current['cashier'] || Thread.current['user']).has_privileges("modify_inventory"))
+        errors.add("gizmos", "has changed locked inventory values without administrator privileges")
+      end
+    end
+  end
+
   def usable_gizmo_types
     if self.gizmo_context == GizmoContext.gizmo_return
       return (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq

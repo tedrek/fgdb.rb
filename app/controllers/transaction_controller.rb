@@ -193,7 +193,7 @@ class TransactionController < ApplicationController
     begin
       @transaction = model.new(params[@transaction_type])
       _apply_line_item_data(@transaction)
-      @successful =  @transaction.save
+      @successful =  @transaction.valid? && @transaction.save
     rescue
       flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
@@ -205,7 +205,7 @@ class TransactionController < ApplicationController
     begin
       @transaction = model.new(params[@transaction_type])
       _apply_line_item_data(@transaction)
-      @successful =  @transaction.save
+      @successful =  @transaction.valid? && @transaction.save
     rescue
       flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
     end
@@ -240,7 +240,7 @@ class TransactionController < ApplicationController
       @transaction = model.find(params[:id])
       @transaction.attributes = params[@transaction_type]
       _apply_line_item_data(@transaction)
-      @successful =  @transaction.save
+      @successful =  @transaction.valid? && @transaction.save
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
     end
@@ -253,7 +253,7 @@ class TransactionController < ApplicationController
       @transaction = model.find(params[:id])
       @transaction.attributes = params[@transaction_type]
       _apply_line_item_data(@transaction)
-      @successful =  @transaction.save
+      @successful =  @transaction.valid? && @transaction.save
     rescue
       flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
     end
@@ -285,7 +285,7 @@ class TransactionController < ApplicationController
       @transaction = model.find(params[:id])
       @transaction.comments += "\nATTN: #{params[:comment]}"
       @transaction.needs_attention = true
-      @successful = @transaction.save
+      @successful =  @transaction.valid? && @transaction.save
     rescue
       flash[:error], @successful = $!.to_s, false
     end
@@ -509,6 +509,41 @@ class TransactionController < ApplicationController
     end
   end
 
+  def my_apply_line_item_data(object, prefix)
+    input = params[prefix]
+    arr = []
+    if input
+      for i in input.values
+
+    obj = nil
+    if hash[:id] and hash[:id].to_i != 0
+      obj = self.find(hash[:id].to_i)
+      hash.delete(:id)
+      obj.attributes_with_editable = hash
+    else
+      obj = self.new
+      hash.delete(:id)
+      obj.attributes = hash
+    end
+    return obj
+
+
+        t = thing_klass.new_or_edit(i)
+        arr << t
+      end
+    end
+    # loop through inputs, use assoc.build for all the new, loop through existing to find to update their values, or set mark_for_destruction if not found in inputs..
+
+
+    orig = object.send(tbl.to_sym).map{|x| x}
+    object.send((tbl + "=").to_sym, arr)
+    fkey_name = object.class.table_name.singularize + "_id"
+    orig.map{|x| thing_klass.find_by_id(x.id)}.select{|x| !x.nil?}.each{|x| x.destroy if x.send(fkey_name.to_sym).nil?}
+    arr
+
+    # move the delete_if processing to be in.. a before_save hook?
+  end
+
   def _apply_line_item_data(transaction)
     if transaction.respond_to?(:payments)
       @payments = []
@@ -518,14 +553,19 @@ class TransactionController < ApplicationController
         @payments << p
       end
       @transaction.payments = @payments
-      transaction.payments.delete_if {|pmt| pmt.mostly_empty?}
+      transaction.payments.delete_if {|pmt| pmt.mostly_empty?} ## move the delete_if processing to be in.. a before_save hook?
     end
-    params[:gizmo_events].values.each{|x| x[:gizmo_count] ||= 1} if @gizmo_context == GizmoContext.gizmo_return and params[:gizmo_events]
     if transaction.respond_to?(:gizmo_events)
+      if params[:gizmo_events]
+        params[:gizmo_events].values.each{|x|
+          x[:gizmo_count] ||= 1 if @gizmo_context == GizmoContext.gizmo_return
+          x[:gizmo_context] = @gizmo_context
+        }
+      end
       lines = params[:gizmo_events] || {}
       @lines = []
       for line in lines.values
-        @lines << GizmoEvent.new_or_edit(line.merge({:gizmo_context => @gizmo_context}))
+        @lines << GizmoEvent.new_or_edit(line)
       end
       @transaction.gizmo_events = @lines
     end
