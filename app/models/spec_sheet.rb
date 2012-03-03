@@ -26,8 +26,9 @@ class SpecSheet < ActiveRecord::Base
 
   def questions=(hash)
     r_hash_parse(hash).each do |k,v|
-      sv = SpecSheetValue.new
-      sv.spec_sheet_question_id = k.to_s.sub(/^id_/, "").to_i
+      tid = k.to_s.sub(/^id_/, "").to_i
+      sv = self.spec_sheet_values.select{|x| x.spec_sheet_question_id == tid}.first || SpecSheetValue.new
+      sv.spec_sheet_question_id = tid
       sv.value = v
       self.spec_sheet_values << sv
     end

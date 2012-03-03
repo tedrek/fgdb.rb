@@ -38,6 +38,11 @@
         <% elsif action_name == "edit" %>
           <tr><td><label for="report_flag">Flag:</label></td><td><%= check_box("report", :flag) %></td></tr>
         <% end %>
+        <% if action_name == "edit" %>
+          <% @report.spec_sheet_values.each do |x| %>
+            <tr><td><label for="report_questions_id_<%= x.spec_sheet_question.id %>"><%= x.spec_sheet_question.question %></label></td><td><%= text_field("report[questions]", "id_" + x.spec_sheet_question.id.to_s, :value => x.value) %></td></tr>
+          <% end %>
+        <% end %>
         <tr><td colspan="2"><%= submit_tag string %></td></tr>
       </table>
     <% end %>
