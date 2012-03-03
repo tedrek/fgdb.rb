@@ -43,6 +43,7 @@ class PrintmeAPI < SOAP::SoapsBase
     ["spec_sheet_url", "report_id"],
     ["system_url", "system_id"],
     ["is_system_gone", "system_id"],
+    ["question_defaults", "system_id"],
     ["get_system_id", "xml"]
     ]
   end
@@ -55,7 +56,7 @@ class PrintmeAPI < SOAP::SoapsBase
       a = x.spec_sheet_question_conditions.map{|y|
         SpecSheetConditionStruct.new(y.name, y.operator, y.expected_value)
       }
-      SpecSheetQuestionStruct.new("id_" + x.id.to_s, x.name.downcase.gsub(/ /, "_"), x.question, a)
+      SpecSheetQuestionStruct.new("id_" + x.id.to_s, x.real_name, x.question, a)
     }
   end
 
@@ -215,6 +216,15 @@ class PrintmeAPI < SOAP::SoapsBase
 
   def type_description_for_system(system_id)
     System.find_by_id(system_id).spec_sheets.sort_by{|x| x.created_at}.last.type.description
+  end
+
+  def question_defaults(system_id)
+    values = System.find_by_id(system_id).spec_sheets.sort_by{|x| x.created_at}.last.spec_sheet_values
+    hash = {}
+    values.each do |x|
+      hash[x.spec_sheet_question.real_name] = x.value
+    end
+    hash.to_a
   end
 
   def covered_for_system(system_id)
