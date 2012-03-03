@@ -48,7 +48,7 @@ class Donation < ActiveRecord::Base
       errors.add("contact_type", "should be one of 'named', 'anonymous', or 'dumped'")
     end
 
-    gizmo_events.each do |gizmo|
+    gizmo_events_actual.each do |gizmo|
       errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
     end
 
@@ -57,7 +57,7 @@ class Donation < ActiveRecord::Base
     #errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid? or contact_type == 'dumped')
 
     errors.add("payments", "or gizmos should include some reason to call this a donation") if
-      gizmo_events.empty? and payments.empty?
+      gizmo_events_actual.empty? and payments.empty?
 
     errors.add("payments", "may only have one invoice") if invoices.length > 1
 
@@ -70,7 +70,7 @@ class Donation < ActiveRecord::Base
     end
     covered = Default["fully_covered_contact_covered_gizmo"].to_i
     uncovered = Default["unfully_covered_contact_covered_gizmo"].to_i
-    num_choosen = self.gizmo_events.select{|x| x.covered}.collect{|x| x.gizmo_count}.inject(0){|x,y| x+y}
+    num_choosen = self.gizmo_events_actual.select{|x| x.covered}.collect{|x| x.gizmo_count}.inject(0){|x,y| x+y}
     type = ""
     if contact_type != 'named' || contact.nil?
       type = "anon"
@@ -234,14 +234,14 @@ class Donation < ActiveRecord::Base
   end
 
   def calculated_required_fee_cents
-    gizmo_events.inject(0) {|total, gizmo|
+    gizmo_events_actual.inject(0) {|total, gizmo|
       next if gizmo.mostly_empty?
       total + gizmo.required_fee_cents
     }
   end
 
   def calculated_suggested_fee_cents
-    gizmo_events.inject(0) {|total, gizmo|
+    gizmo_events_actual.inject(0) {|total, gizmo|
       total + gizmo.suggested_fee_cents
     }
   end
@@ -305,7 +305,7 @@ class Donation < ActiveRecord::Base
   def add_dead_beat_discount
     under_pay = (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
     if under_pay < 0:
-        gizmo_events << GizmoEvent.new({:unit_price_cents => under_pay,
+        gizmo_events.build({:unit_price_cents => under_pay,
                                          :gizmo_count => 1,
                                          :gizmo_type => GizmoType.fee_discount,
                                          :gizmo_context => GizmoContext.donation,

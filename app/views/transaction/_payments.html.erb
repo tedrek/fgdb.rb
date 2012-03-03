@@ -9,7 +9,7 @@
   <tr>
     <% if @transaction.payments %>
       <% @gizmos_and_payments_js ||= "" %>
-      <% for line in @transaction.payments %>
+      <% for line in @transaction.payments_actual %>
         <% hash = {} %>
         <% hash[:payment_method_id] = line.payment_method_id %>
         <% hash[:payment_amount] = line.amount %>

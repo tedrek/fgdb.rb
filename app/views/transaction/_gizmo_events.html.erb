@@ -53,7 +53,7 @@
     <th>total price</th>
     <% end %>
     <th></th>
-    <% if @transaction.gizmo_events %>
+    <% if @transaction.gizmo_events_actual %>
       <% @gizmos_and_payments_js ||= ""
          for line in @transaction.gizmo_events.not_discount
            price = 0

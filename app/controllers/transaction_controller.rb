@@ -511,49 +511,34 @@ class TransactionController < ApplicationController
 
   def my_apply_line_item_data(object, prefix)
     input = params[prefix]
-    arr = []
+    association = object.send(prefix)
+    seen = []
     if input
-      for i in input.values
-
-    obj = nil
-    if hash[:id] and hash[:id].to_i != 0
-      obj = self.find(hash[:id].to_i)
-      hash.delete(:id)
-      obj.attributes_with_editable = hash
-    else
-      obj = self.new
-      hash.delete(:id)
-      obj.attributes = hash
-    end
-    return obj
-
-
-        t = thing_klass.new_or_edit(i)
-        arr << t
+      for hash in input.values
+        obj = nil
+        if hash["id"] and hash["id"].to_i != 0
+          obj = association.select{|x| x.id == (hash["id"].to_i)}.first
+          seen << hash.delete("id").to_i
+          obj.attributes_with_editable = hash
+        else
+          obj = association.build
+          hash.delete("id")
+          obj.attributes = hash
+        end
       end
     end
-    # loop through inputs, use assoc.build for all the new, loop through existing to find to update their values, or set mark_for_destruction if not found in inputs..
-
-
-    orig = object.send(tbl.to_sym).map{|x| x}
-    object.send((tbl + "=").to_sym, arr)
-    fkey_name = object.class.table_name.singularize + "_id"
-    orig.map{|x| thing_klass.find_by_id(x.id)}.select{|x| !x.nil?}.each{|x| x.destroy if x.send(fkey_name.to_sym).nil?}
-    arr
-
-    # move the delete_if processing to be in.. a before_save hook?
+    association.each{|x|
+      unless x.id.nil? or seen.include?(x.id)
+        x.mark_for_destruction
+      end
+    }
+    association
   end
 
   def _apply_line_item_data(transaction)
     if transaction.respond_to?(:payments)
-      @payments = []
-      payments = params[:payments] || {}
-      for payment in payments.values
-        p = Payment.new(payment)
-        @payments << p
-      end
-      @transaction.payments = @payments
-      transaction.payments.delete_if {|pmt| pmt.mostly_empty?} ## move the delete_if processing to be in.. a before_save hook?
+      @payments = my_apply_line_item_data(transaction, :payments)
+      transaction.payments.select{|pmt| pmt.mostly_empty?}.each{|x| x.mark_for_destruction}
     end
     if transaction.respond_to?(:gizmo_events)
       if params[:gizmo_events]
@@ -562,13 +547,8 @@ class TransactionController < ApplicationController
           x[:gizmo_context] = @gizmo_context
         }
       end
-      lines = params[:gizmo_events] || {}
-      @lines = []
-      for line in lines.values
-        @lines << GizmoEvent.new_or_edit(line)
-      end
-      @transaction.gizmo_events = @lines
+      @lines = my_apply_line_item_data(transaction, :gizmo_events)
+      transaction.gizmo_events.select {|gizmo| gizmo.mostly_empty?}.each{|x| x.mark_for_destruction}
     end
-    transaction.gizmo_events.delete_if {|gizmo| gizmo.mostly_empty?}
   end
 end
