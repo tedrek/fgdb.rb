@@ -10,6 +10,7 @@ class SpecSheet < ActiveRecord::Base
   belongs_to :type
   has_one :contract, :through => :system
   validates_associated :builder_task
+  validates_associated :spec_sheet_values
 
   after_save :save_bt
 
