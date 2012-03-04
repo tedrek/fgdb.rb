@@ -21,7 +21,7 @@ fgdb.rb (1.0.82) released; urgency=low
     provides complete history) (Closes: #26159)
   * add is_pickup and gizmo_category conditions to transactions
   * Allow skedjulers to set a date for finalized skedjul
-  * split sales income report into retail and bulk
+  * split sales income report into retail and bulk (Closes: #26756)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Jan 2012 00:47:02 -0800
 
