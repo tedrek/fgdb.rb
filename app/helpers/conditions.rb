@@ -210,9 +210,11 @@ class Conditions < ConditionsBase
       value = self.send(varname)
       return false if _empty_check(varname, value) # do not include other errors, if blank
       result = true
-      if (!allowzero) and value.to_i == 0
-        errors.add(varname, 'cannot be zero')
-        result = false
+      unless allowzero
+        if value.to_f == 0.0
+          errors.add(varname, 'cannot be zero')
+          result = false
+        end
       end
       unless not_i
         if value.to_i.to_s != value.to_s.strip
