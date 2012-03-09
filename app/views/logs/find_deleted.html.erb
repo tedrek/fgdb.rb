@@ -1,0 +1,21 @@
+<h2>Find Deleted Records</h2>
+<% if defined?(@error) %>
+<span style="color: red;">
+  <%= @error %>
+</span>
+<% end %>
+<% form_tag() do %>
+  <%= label :search, :deleted_after %>
+  <%= calendar_box("search", "deleted_after") %>
+  <%= label :search, :created_before %>
+  <%= calendar_box("search", "created_before") %>
+  <%= label :search, :table_name %>
+  <%= select("search", "table_name", [["(all)", nil]] + ActiveRecord::Base.connection.tables.sort.collect{|x| [x.titleize, x]}) %>
+  <div style="clear: left">
+    <%= submit_tag "Search" %>
+  </div>
+<% end %>
+<% if defined?(@results) %>
+<%= make_table(@results) %>
+<%= will_paginate @logs, :params => {:search => params[:search]} %>
+<% end %>

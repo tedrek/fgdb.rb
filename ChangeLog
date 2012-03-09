@@ -5,8 +5,9 @@ fgdb.rb (1.0.84) UNRELEASED; urgency=low
     them privileges that the user has themselves. also changed user
     interface to make it clearer when roles cannot be modified. (Closes:
     #26885)
+  * add deleted record search page (Closes: #27127)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 12:47:10 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 13:58:25 -0800
 
 fgdb.rb (1.0.83) released; urgency=low
 
