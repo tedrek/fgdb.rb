@@ -6,6 +6,7 @@ fgdb.rb (1.0.83) released; urgency=low
     values, so that we can keep history intact while we do migrations
   * keeping counts on all volunteer task types (Closes: #26710)
   * add a javascript alert if a shift is being saved and has disappeared
+  * Allow floating point numbers when checking for zero (Closes: #27235)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Mar 2012 00:15:51 -0800
 
