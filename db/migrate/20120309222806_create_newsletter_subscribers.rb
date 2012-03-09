@@ -1,5 +1,6 @@
 class CreateNewsletterSubscribers < ActiveRecord::Migration
   def self.up
+    Default["newsletter_subscription_address"] = "e-newsletter-join@lists.freegeek.org"
     create_table :newsletter_subscribers do |t|
       t.string :email
 

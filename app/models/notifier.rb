@@ -7,6 +7,14 @@ class Notifier < ActionMailer::Base
     body :text => data
   end
 
+  def newsletter_subscribe(email_address)
+    recipients Default["newsletter_subscription_address"]
+    from email_address
+    headers 'return-path' => Default['return_path'] if Default['return_path']
+    subject "Automatic Subscription during Donation Receipt"
+    body
+  end
+
   def donation_pdf(to_address, data, filename, type)
     recipients to_address
     from Default['noreply_address']

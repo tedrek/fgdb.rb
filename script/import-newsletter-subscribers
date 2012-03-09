@@ -14,6 +14,7 @@ if emails.length < 100 # error detection! lol
 end
 
 emails.each{|e|
+  e = e.strip.downcase
   ns = NewsletterSubscriber.find_or_create_by_email(e)
   ns.updated_at_will_change!
   ns.save!
