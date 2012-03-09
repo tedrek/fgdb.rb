@@ -28,6 +28,10 @@ class User < ActiveRecord::Base
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation, :can_login, :shared
 
+  def grantable_roles
+    self.roles.include?(Role.find_by_name('ADMIN')) ? Role.find(:all) : self.roles
+  end
+
   def self.reset_all_cashier_codes
     self.find(:all).each{|x|
       x.reset_cashier_code

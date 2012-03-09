@@ -26,6 +26,7 @@ class ContactsController < ApplicationController
     a = super
     a << {:privileges => ['manage_contacts'], :except => ['check_cashier_code', 'civicrm_sync']}
     a << {:only => ['/admin_user_accounts'], :privileges => ['role_admin']}
+    a << {:only => ['/create_logins'], :privileges => ['can_create_logins']}
     a
   end
   public
@@ -145,11 +146,14 @@ class ContactsController < ApplicationController
     @contact = Contact.new(params[:contact])
 
     if params[:contact][:is_user].to_i != 0
-      if !has_required_privileges("/admin_user_accounts")
+      if !has_required_privileges("/create_logins")
         raise RuntimeError.new("You are not authorized to create a user login")
       end
       @contact.user = User.new(params[:user])
       @contact.user.roles = Role.find(params[:roles]) if params[:roles]
+      if (@contact.user.roles - current_user.grantable_roles).length > 0
+        raise RuntimeError.new("You are not authorized to grant those roles")
+      end
     end
     @user = @contact.user
     @successful = _save
@@ -178,15 +182,20 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if has_required_privileges("/admin_user_accounts") or has_privileges("contact_#{@contact.id}")
+      if has_required_privileges("/create_logins") or has_privileges("contact_#{@contact.id}")
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
           @contact.user.attributes = params[:user]
-          if has_required_privileges("/admin_user_accounts")
+          if has_required_privileges("/create_logins")
             if params[:roles]
-              @contact.user.roles = Role.find(params[:roles])
+              newroles = Role.find(params[:roles])
+              newroles = newroles + (@contact.user.roles - current_user.grantable_roles)
+              if (newroles - (@contact.user.roles + current_user.grantable_roles)).length > 0
+                raise RuntimeError.new("You are not authorized to grant those roles")
+              end
+              @contact.user.roles = newroles
             else
-              @contact.user.roles.clear
+              @contact.user.roles = @contact.user.roles - current_user.grantable_roles
             end
           end
         elsif (@contact.user)

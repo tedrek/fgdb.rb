@@ -1,8 +1,12 @@
 fgdb.rb (1.0.84) UNRELEASED; urgency=low
 
   * add feature to lock gizmo report data (Closes: #27157)
+  * add CREATE_LOGIN role which can be used to create users and grant
+    them privileges that the user has themselves. also changed user
+    interface to make it clearer when roles cannot be modified. (Closes:
+    #26885)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Mar 2012 00:18:28 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 12:47:10 -0800
 
 fgdb.rb (1.0.83) released; urgency=low
 

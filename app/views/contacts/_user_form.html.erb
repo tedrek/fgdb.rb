@@ -66,13 +66,20 @@
     <% end %>
     <% end %>
 
-    <% for role in Role.find(:all) %>
+    <% grantable = has_required_privileges('/create_logins') ? current_user.grantable_roles : [] %>
+    <h4 style="clear: left;">Roles user has:</h4>
+    <ul>
+    <% for role in @user.roles - grantable %>
+      <li><%= role.display_string %></li>
+    <% end %>
+    </ul>
+    <% for role in grantable %>
       <div class="form-element role-check-box">
         <input type="checkbox" id="<%= h role.name %>"
                name="roles[]" value="<%= role.id %>"
                <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
                />
-        <label for="<%= h role.name %>"><%= (xx = /(.+)/.match(h(role.name))) ? xx[1] : h(role.name) %> (<%= role.privileges.map{|x| x.name + (x.restrict ? '*' : '')}.join(", ") %>)</label>
+        <label for="<%= h role.name %>"><%= role.display_string %></label>
       </div>
     <% end %>
     <div class='form-element'>
