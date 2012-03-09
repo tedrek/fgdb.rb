@@ -16,6 +16,7 @@ class Conditions < ConditionsBase
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
       was_generated_from_ongoing updated_by cashier_updated_by is_pickup
+      logged_in_within
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled assigned covered organization is_pickup ]
@@ -30,6 +31,8 @@ class Conditions < ConditionsBase
   end
 
   attr_accessor :volunteer_hours_days, :volunteer_hours_minimum
+
+  attr_accessor :logged_in_within
 
   attr_accessor :cancelled
 
@@ -736,6 +739,10 @@ class Conditions < ConditionsBase
     else
       raise
     end
+  end
+
+  def logged_in_within_conditions(klass)
+    return ['id IN (SELECT contact_id FROM users WHERE contact_id IS NOT NULL AND last_logged_in >= ?)', @logged_in_within.months.ago.to_date]
   end
 
   def contribution_conditions(klass)

@@ -185,6 +185,10 @@ module ConditionsHelper
     check_box(params_key,"is_organization")
   end
 
+  def html_for_logged_in_within_condition(params_key)
+    text_field(params_key, 'logged_in_within', :size => 3) + " month(s)"
+  end
+
   def html_for_is_pickup_condition(params_key)
     check_box(params_key,"is_pickup")
   end
