@@ -25,9 +25,9 @@
   <%= conditions_html('conditions', force_conds)%>
 <% end %>
 
-<% if skedj.opts[:maximum_date] %>
+<% if skedj.opts[:maximum_date] && defined?(maximum_date) %>
 <div style="clear: left">
-(Latest Scheduled Date: <%= @maximum_date = eval(skedj.opts[:maximum_date]) %>)
+(Latest Scheduled Date: <%= maximum_date %>)
 </div>
 <% end %>
 

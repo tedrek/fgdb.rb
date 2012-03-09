@@ -22,10 +22,15 @@
 
 <% end %>
 
+<% maximum_date = nil %>
+<% if skedj.opts[:maximum_date] %>
+<% maximum_date = eval(skedj.opts[:maximum_date]) %>
+<% end %>
+
 <% if skedj.opts[:presentation_mode]!='Preview' %>
 
 <% if skedj.opts[:conditions] %>
-<%= render :partial => 'work_shifts/filter_criteria', :locals => {:skedj => skedj} %>
+<%= render :partial => 'work_shifts/filter_criteria', :locals => {:skedj => skedj, :maximum_date => maximum_date} %>
 <% else %>
 <%= render :partial => 'filter_criteria' %>
 <% end %>
@@ -35,7 +40,7 @@
 <% end %>
 <% end %>
 
-<%= render :partial => "skedj_links" %>
+<%= render :partial => "skedj_links", :locals => {:maximum_date => maximum_date} %>
 
 <% 
   # set up control variables and loop through all work shifts
@@ -111,13 +116,13 @@
 <% end %>
 </div>
 
-<% if skedj.opts[:maximum_date] &&  skedj.opts[:date_range_condition] %>
-  <% if params[:conditions] && Date.parse(params[:conditions][(skedj.opts[:date_range_condition] + "_end_date")]) < @maximum_date %>
+<% if defined?(maximum_date) && skedj.opts[:maximum_date] &&  skedj.opts[:date_range_condition] %>
+  <% if params[:conditions] && Date.parse(params[:conditions][(skedj.opts[:date_range_condition] + "_end_date")]) < maximum_date %>
     <% newconds = params[:conditions].dup %>
-    <% newconds[(skedj.opts[:date_range_condition] + "_end_date")] = @maximum_date %>
+    <% newconds[(skedj.opts[:date_range_condition] + "_end_date")] = maximum_date %>
     <% newparams = params.dup %>
     <% newparams[:conditions] = newconds %>
-    <%= link_to "View more (these and all future records through #{@maximum_date})", newparams %>
+    <%= link_to "View more (these and all future records through #{maximum_date})", newparams %>
   <% end %>
 <% end %>
 
