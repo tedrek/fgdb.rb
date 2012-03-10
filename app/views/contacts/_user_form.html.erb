@@ -69,7 +69,7 @@
     <% grantable = has_required_privileges('/create_logins') ? current_user.grantable_roles : [] %>
     <h4 style="clear: left;">Roles user has:</h4>
     <ul>
-    <% for role in @user.roles - grantable %>
+    <% for role in (@user ? @user.roles : []) - grantable %>
       <li><%= role.display_string %></li>
     <% end %>
     </ul>
