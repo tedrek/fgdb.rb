@@ -32,6 +32,10 @@ class User < ActiveRecord::Base
     self.roles.include?(Role.find_by_name('ADMIN')) ? Role.find(:all) : self.roles
   end
 
+  def to_s
+    login
+  end
+
   def self.reset_all_cashier_codes
     self.find(:all).each{|x|
       x.reset_cashier_code
