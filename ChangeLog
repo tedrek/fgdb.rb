@@ -6,7 +6,7 @@ fgdb.rb (1.0.84) UNRELEASED; urgency=low
     interface to make it clearer when roles cannot be modified. (Closes:
     #26885)
   * add deleted record search page (Closes: #27127)
-  * add ability to search by logged in date (Closes: #26791)
+  * add ability to search by logged in date (See ticket #26791)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 15:58:13 -0800
 
