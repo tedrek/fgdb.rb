@@ -96,7 +96,7 @@ class TransactionController < ApplicationController
   end
 
   def get_sale_exists
-    s = Sale.find_by_id(params[:id])
+    s = Sale.find_by_id(params[:id].to_i)
     s = !! s
     render :update do |page|
       page << "internal_sale_exists = #{s.to_json};";

@@ -1,4 +1,4 @@
-<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker ? @worker.id : nil, @date) %>
+<% @worked_shift = Struct.new(:worker_id, :date_performed, :password).new(@worker ? @worker.id : nil, @date, nil) %>
 
 <span class="error">
 <%= flash[:error] %>
@@ -9,10 +9,16 @@
 <%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
 <%# label :worked_shifts, :date_performed %>
 <%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
+<div style="clear: left">
+<% if !@session_allowed %>
+<%= label :worked_shift, :password, has_required_privileges('/modify_all_workers') ? "Your Password" : "Worker Password" %>
+<%= password_field("worked_shift", "password") %>
+<% end %>
+</div>
 <%= submit_tag "Go" %>
 <% end %>
 
-<% if @worker %>
+<% if @worker and @session_allowed %>
 <%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.id.to_json};" %>
 <% PayPeriod.find_for_date(@date) or raise "FIXME" %>
 <h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>

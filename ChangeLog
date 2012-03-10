@@ -16,6 +16,8 @@ fgdb.rb (1.0.84) released; urgency=low
     newsletter while e-mailing receipt (Closes: #26966)
   * display users for created_by/updated_by better on
     vacations/skedjulnator (Closes: #27323)
+  * require password and time out the session after 5 minutes for
+    logging staff hours
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 18:35:31 -0800
 
