@@ -7,10 +7,10 @@
 <% end %>
 
 <h1 style="color: red; font-size: 60px;"><%= @exception_data["status"] %> Error!</h1>
-<p>An error occurred that prevented fgdb.rb from completing the request.<b>To get this fixed, you can report this issue by creating a ticket in the Coding RT queue.</b></p>
+<p>An error occurred that prevented fgdb.rb from completing the request. <b>To get this fixed, you can report this issue by creating a ticket in the Coding RT queue.</b></p>
 
 <% if @fgdb_local_request %>
   <%= render :partial => "sidebar_links/exception_data", :locals => {:exception_data => @exception_data} %>
 <% else %>
-  <p>Some information about this error has been saved with the crash ID <b><%= @exception_data["crash_id"] %></b>.<b>Include this crash ID in any bug reports that you create about this issue.</b></p>
+  <p>Some information about this error has been saved with the crash ID <b><%= @exception_data["crash_id"] %></b>. <b>Include this crash ID in any bug reports that you create about this issue.</b></p>
 <% end %>
