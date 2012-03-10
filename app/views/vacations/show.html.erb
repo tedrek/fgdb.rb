@@ -1,6 +1,6 @@
 <% for column in Vacation.content_columns %>
 <p>
-  <b><%= column.human_name %>:</b> <%=h @vacation.send(column.name) %>
+  <b><%= column.human_name %>:</b> <%=h @vacation.send(column.name).to_s %>
 </p>
 <% end %>
 
