@@ -1,3 +1,8 @@
+fgdb.rb (1.0.85) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 18:36:06 -0800
+
 fgdb.rb (1.0.84) released; urgency=low
 
   * add feature to lock gizmo report data (Closes: #27157)
