@@ -1,7 +1,7 @@
 module ConditionsBaseHelper
   def conditions_html(params_key = "conditions", these_things = [], klass = Conditions, multiselect_mode = "auto")
     hash = {}
-    obj = eval("@#{params_key}")
+    obj = eval("@#{params_key}") || klass.new
     these_things.each{|x|
       if klass::DATES.include?(x)
         hash[x] = date_or_date_range_picker(params_key, x)

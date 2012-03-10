@@ -44,6 +44,9 @@
   <% filters << 'action' %>
   <% filters << 'type' %>
   <% filters << 'serial_number' %>
+  <% if has_required_privileges('show/sign_off') %>
+    <% filters << 'signed_off_by' %>
+  <% end %>
   <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>
 <% end -%>

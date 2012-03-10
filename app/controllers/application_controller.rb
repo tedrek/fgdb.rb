@@ -19,6 +19,10 @@ module ActionController
 end
 
 class ApplicationController < ActionController::Base
+  def update_skedjulnator_access_time
+    current_user.update_skedjulnator_access_time
+  end
+
   def redirect_skedj(referer, anchor)
     redirect_to(sked_url(referer, anchor))
   end

@@ -1,0 +1,8 @@
+<% found = SkedjulnatorAccess.find(:all, :conditions => ['updated_at >= ?', 1.hour.ago]) %>
+<% unless found.length == 1 and found.first.user == current_user %>
+<fieldset>
+<h2>Recent Skedjulers</h2>
+<%= found.sort_by(&:updated_at).map{|x| [x.user == current_user ? "you (#{x.user.login})" : x.user.login, x.updated_at.to_time.strftime("%r")].join(" #{x.user == current_user ? "are accessing" : "last accessed"} skedjulnator at ")}.join("<br />") %>
+</fieldset>
+<% end %>
+
