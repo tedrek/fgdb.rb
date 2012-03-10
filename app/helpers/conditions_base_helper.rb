@@ -1,6 +1,7 @@
 module ConditionsBaseHelper
   def conditions_html(params_key = "conditions", these_things = [], klass = Conditions, multiselect_mode = "auto")
     hash = {}
+    obj = eval("@#{params_key}")
     these_things.each{|x|
       if klass::DATES.include?(x)
         hash[x] = date_or_date_range_picker(params_key, x)
@@ -10,7 +11,7 @@ module ConditionsBaseHelper
       else
         raise "Unknown condition: #{x}"
       end
-      hash[x] = "<div style=\"display: inline-block;\">" + label_tag("#{params_key}[#{x}_excluded]", "Exclude?") + check_box_tag("#{params_key}[#{x}_excluded]", "#{x}_excluded", false) + "</div>" + hash[x] unless Conditions::CHECKBOXES.include?(x) or multiselect_mode == "force"
+      hash[x] = "<div style=\"display: inline-block;\">" + label_tag("#{params_key}[#{x}_excluded]", "Exclude?") + check_box_tag("#{params_key}[#{x}_excluded]", "#{x}_excluded", obj.send("#{x}_excluded")) + "</div>" + hash[x] unless Conditions::CHECKBOXES.include?(x) or multiselect_mode == "force"
     }
     multiselect_of_form_elements(params_key, hash, multiselect_mode)
   end
