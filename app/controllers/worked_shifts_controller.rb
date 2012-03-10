@@ -10,6 +10,7 @@ class WorkedShiftsController < ApplicationController
     a = super
     a << {:only => [:weekly_worker, :payroll, :type_totals], :privileges => ['manage_workers']}
     a << {:except => [:weekly_worker, :payroll, :type_totals], :privileges => ['staff']}
+    a << {:only => ['/modify_all_workers'], :privileges => ['log_all_workers_hours']}
     a
   end
   public
@@ -160,10 +161,43 @@ GROUP BY 1,2;")
     @worker ||= (@current_user.contact ? @current_user.contact.worker : nil)
     @date ||= Date.today
   end
+
+  private
+  def applied_user
+    has_required_privileges('/modify_all_workers') ? current_user : (@worker ? @worker.contact ? @worker.contact.user : nil : nil)
+  end
+
+  def mark_activity
+    session['worker_access_id'] = applied_user.id
+    session['worker_access_last'] = DateTime.now
+  end
+
+  def handle_session
+    value = session['worker_access_last']
+    @session_allowed = applied_user && (session['worker_access_id'] == applied_user.id) &&(value && (value >= eval(Default["staff_hours_timeout"])))
+  end
+
+  def authenticate
+    default_my_form
+    handle_session
+    user = applied_user
+    if user and User.authenticate(user.login, params[:worked_shift][:password])
+      mark_activity
+      @session_allowed = true
+    else
+      flash[:error] = user ? "Incorrect password for user #{user.login}" : "That worker has no user login"
+    end
+  end
+
   public
   def index
     default_my_form
-    if @worker
+    handle_session
+    if !@session_allowed and params[:worked_shift] and params[:worked_shift].keys.include?("password")
+      authenticate
+    end
+    if @worker and @session_allowed
+      mark_activity
       @shifts = @worker.shifts_for_day(@date)
       @logged_already = @shifts.shift
       @shifts = @shifts.select{|x| !(x.job_id.nil? && x.duration == 0)}
@@ -260,10 +294,16 @@ GROUP BY 1,2;")
 #    @logged_already = true
 #    @shifts = process_shifts(params[:shifts])
 #    render :action => "edit"
-    if params[:worked_shift]
-      process_shifts(params[:shifts])
+    handle_session
+    if @worker and @session_allowed
+      mark_activity
+      if params[:worked_shift]
+        process_shifts(params[:shifts])
+      else
+        flash[:error] = "ERROR: Hours were not saved. Please choose a date to save hours for."
+      end
     else
-      flash[:error] = "ERROR: Hours were not saved. Please choose a date to save hours for."
+      flash[:error] = "ERROR: Hours were not saved. Please choose a worker and authenticate."
     end
     redirect_to :action => "index"
   end
