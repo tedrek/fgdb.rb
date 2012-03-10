@@ -1,4 +1,4 @@
-fgdb.rb (1.0.84) UNRELEASED; urgency=low
+fgdb.rb (1.0.84) released; urgency=low
 
   * add feature to lock gizmo report data (Closes: #27157)
   * add CREATE_LOGIN role which can be used to create users and grant
@@ -10,7 +10,7 @@ fgdb.rb (1.0.84) UNRELEASED; urgency=low
   * Add checkbox and system integration to subscribe donors to
     newsletter while e-mailing receipt (Closes: #26966)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 17:11:59 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 18:35:31 -0800
 
 fgdb.rb (1.0.83) released; urgency=low
 
