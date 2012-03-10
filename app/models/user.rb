@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   before_save :add_cashier_code
 
   belongs_to :contact
+  has_one :skedjulnator_access
 
   ####################################################
   # I HAVE NO IDEA WHAT THIS IS HERE FOR, BUT IF YOU #
@@ -27,6 +28,12 @@ class User < ActiveRecord::Base
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation, :can_login, :shared
+
+  def update_skedjulnator_access_time
+    self.skedjulnator_access ||= SkedjulnatorAccess.new
+    self.skedjulnator_access.user_id_will_change!
+    self.skedjulnator_access.save!
+  end
 
   def grantable_roles
     self.roles.include?(Role.find_by_name('ADMIN')) ? Role.find(:all) : self.roles

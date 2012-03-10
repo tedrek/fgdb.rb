@@ -7,6 +7,8 @@ class WorkShiftsController < ApplicationController
     @multi_enabled = true
   end
 
+  before_filter :update_skedjulnator_access_time, :except => [:staffsched, :staffsched_publish]
+
   public
   def update_rollout_date
     Default["staffsched_rollout_until"] = params[:date]

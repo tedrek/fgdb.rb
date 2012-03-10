@@ -8,6 +8,8 @@ class MeetingsController < ApplicationController
   end
   public
 
+  before_filter :update_skedjulnator_access_time
+
   require_dependency 'shift'
   def index
     list

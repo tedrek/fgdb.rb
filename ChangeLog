@@ -13,6 +13,7 @@ fgdb.rb (1.0.84) released; urgency=low
     vacations/skedjulnator (Closes: #27323)
   * require password and time out the session after 5 minutes for
     logging staff hours
+  * add tracking for who's editing when there are multiple skedjulers
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 18:35:31 -0800
 

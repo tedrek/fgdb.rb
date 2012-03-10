@@ -8,6 +8,8 @@ class JobsController < ApplicationController
   end
   public
 
+  before_filter :update_skedjulnator_access_time
+
   def index
     list
     render :action => 'list'
