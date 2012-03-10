@@ -1,5 +1,6 @@
 class NewsletterSubscriber < ActiveRecord::Base
   def self.subscribe(address)
+    return if is_subscribed?(address)
     Notifier.deliver_newsletter_subscribe(address)
   end
 

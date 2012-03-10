@@ -59,6 +59,22 @@ class ContactsController < ApplicationController
     end
   end
 
+  def is_subscribed
+    address = params[:address]
+    subscribed = NewsletterSubscriber.is_subscribed?(address)
+    render :update do |page|
+      page.hide loading_indicator_id("subscription_loading")
+      if subscribed
+        page << "$('subscribe').checked = true;"
+        page << "$('subscribe_label').innerHTML = \"Already subscribed to newsletter.\";"
+      else
+        page << "$('subscribe').enable();"
+        page << "$('subscribe').checked = false;"
+        page << "$('subscribe_label').innerHTML = \"Subscribe to e-newsletter?\";"
+      end
+    end
+  end
+
   protected
   def be_stupid
     @gizmo_context = GizmoContext.new(:name => 'contact')
