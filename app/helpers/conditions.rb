@@ -16,7 +16,7 @@ class Conditions < ConditionsBase
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
       was_generated_from_ongoing updated_by cashier_updated_by is_pickup
-      logged_in_within
+      logged_in_within signed_off_by
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled assigned covered organization is_pickup ]
@@ -29,6 +29,8 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
+
+  attr_accessor :signed_off_by
 
   attr_accessor :volunteer_hours_days, :volunteer_hours_minimum
 
@@ -173,6 +175,7 @@ class Conditions < ConditionsBase
     validate_exists('cashier_created_by', 'users') if validate_integer('cashier_created_by')
     validate_exists('updated_by', 'users') if validate_integer('updated_by')
     validate_exists('cashier_updated_by', 'users') if validate_integer('cashier_updated_by')
+    validate_exists('signed_off_by', 'users') if validate_integer('signed_off_by')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_days')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', false, true)
     if is_this_condition_enabled('volunteer_hours')
@@ -628,6 +631,10 @@ class Conditions < ConditionsBase
 
   def created_by_conditions(klass)
     ["created_by = ?", @created_by]
+  end
+
+  def signed_off_by_conditions(klass)
+    ["cashier_signed_off_by = ?", @signed_off_by]
   end
 
   def updated_by_conditions(klass)

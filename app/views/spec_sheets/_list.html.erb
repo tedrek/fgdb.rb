@@ -40,7 +40,7 @@
       <% end %></td>
       <td><%= h builder_task.spec_sheet ? builder_task.spec_sheet.bug_correction : "" %></td>
       <td><%= h builder_task.notes %></td>
-      <td style="text-align: right"><%= builder_task.cashier_signed_off_by ? "User #" + builder_task.cashier_signed_off_by.to_s : "" %></td>
+      <td style="text-align: right"><%= builder_task.cashier_signed_off_by ? User.find(builder_task.cashier_signed_off_by).send((has_required_privileges('/view_contact_name')) ? :contact_display_name : :login) : "" %></td>
     </tr>
   <% end %>
 </table>
