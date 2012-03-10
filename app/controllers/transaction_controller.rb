@@ -226,6 +226,9 @@ class TransactionController < ApplicationController
       @initial_page_load = true
     rescue
       flash[:error], @successful = $!.to_s, false
+
+      @transaction = model.new(params[@gizmo_context.name.to_sym])
+      new_trans_init_hook
     end
 
     @return_to_search = params[:return_to_search] == "true"
@@ -233,6 +236,10 @@ class TransactionController < ApplicationController
     @conditions = Conditions.new
     @conditions.apply_conditions((default_condition + "_enabled") => "true")
     @transactions = model.find(:all, :conditions => @conditions.conditions(model), :limit => 15, :order => default_condition + " DESC")
+    if !@successful
+      render :action => "new"
+      @successful = true
+    end
   end
 
   def update
