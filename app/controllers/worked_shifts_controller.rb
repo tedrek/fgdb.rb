@@ -163,6 +163,9 @@ GROUP BY 1,2;")
   end
 
   private
+
+  filter_parameter_logging "password"
+
   def applied_user
     has_required_privileges('/modify_all_workers') ? current_user : (@worker ? @worker.contact ? @worker.contact.user : nil : nil)
   end
@@ -286,6 +289,10 @@ GROUP BY 1,2;")
   end
 
   def update_shift_totals
+    handle_session
+    if @worker and @session_allowed
+      mark_activity
+    end
     @hours = params[:worked_shift][:hours_today].to_f
     render :action => 'update_shift_totals.rjs'
   end
