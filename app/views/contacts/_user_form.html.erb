@@ -37,7 +37,7 @@
       <%= text_field :user, :email %>
     </div>
 
-    <% if @user.nil? or has_required_privileges('/admin_user_accounts') or has_privileges("contact_#{@contact.id}") or true %>
+    <% if @user.nil? or has_required_privileges('/admin_user_accounts') or has_privileges("contact_#{@contact.id}") %>
     <div class='password form-element'>
       <label for="user_password">Password</label>
       <%= password_field :user, :password %>
