@@ -788,6 +788,9 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
 
   update_hook: function() {
     shift_compute_totals ();
+    if(original_timeout_seconds > 0 && worked_shift_timeleft > 0) {
+      worked_shift_timeleft = original_timeout_seconds;
+    }
   },
 
   extra_link_hook: function(line_id, td, args) {
