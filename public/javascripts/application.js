@@ -3,6 +3,23 @@
 
 cashierable_enabled = true;
 
+function updateWorkedShiftTimeleft() {
+  worked_shift_timeleft -= 1;
+  var string = "" + ((worked_shift_timeleft - (worked_shift_timeleft % 60)) / 60);
+  string += ":";
+  var end = "" + (worked_shift_timeleft % 60);
+  if(end.length == 1)
+    string += "0";
+  string += end;
+  $('worked_shift_time_left_data').innerHTML = string;
+  if(worked_shift_timeleft > 0) {
+    setTimeout('updateWorkedShiftTimeleft();', 1000);
+  } else {
+    $('worked_shift_time_left_link').hide();
+    $('worked_shift_time_left_error').removeClassName('hidden');
+  }
+}
+
 function cleanup_hour_select(hour_id, start_hour, end_hour) {
   var e = $(hour_id);
   for(var hour = 0; hour <= 23; hour++) {
