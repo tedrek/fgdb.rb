@@ -201,6 +201,10 @@ class ContactsController < ApplicationController
       if has_required_privileges("/create_logins") or has_privileges("contact_#{@contact.id}")
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
+          unless has_required_privileges('/admin_user_accounts') or @contact.user.id.nil? or has_privileges("contact_#{@contact.id}")
+            params[:user].delete('password')
+            params[:user].delete('password_confirmation')
+          end
           @contact.user.attributes = params[:user]
           if has_required_privileges("/create_logins")
             if params[:roles]
