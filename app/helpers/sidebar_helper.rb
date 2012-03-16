@@ -79,9 +79,9 @@ module SidebarHelper
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"}
     sidebar_hash["bean counters"]["inventory settings"] = {:c => "till_adjustments", :a => "inventory_settings"}
     # skedjuler
-    sidebar_hash["sked admin"]["repeating slots"] = {:c => "volunteer_default_shifts"}
+    sidebar_hash["sked admin"]["repeat slots"] = {:c => "volunteer_default_shifts"}
     sidebar_hash["sked admin"]["actual slots"] = {:c => "volunteer_shifts"}
-    sidebar_hash["sked admin"]["repeating volunteers"] = {:c => "default_assignments"}
+    sidebar_hash["sked admin"]["repeat volunteers"] = {:c => "default_assignments"}
     sidebar_hash["vol sked"]["schedule"] = {:c => "assignments"}
     sidebar_hash["vol sked"]["view only"] = {:c => "assignments", :a => "view"}
     sidebar_hash["vol sked"]["search"] = {:c => "assignments", :a => "search"}
