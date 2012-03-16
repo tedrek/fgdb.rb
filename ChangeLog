@@ -1,8 +1,10 @@
 fgdb.rb (1.0.85) UNRELEASED; urgency=low
 
   * add printme questions for boot device and network boot bios keys
+  * change sidebar sked admin labels to use words: repeating, actual,
+    slots and volunteers, thanks to Darryl's suggestion (Closes: #27358)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Mar 2012 13:03:05 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 16 Mar 2012 13:07:43 -0700
 
 fgdb.rb (1.0.84) released; urgency=low
 

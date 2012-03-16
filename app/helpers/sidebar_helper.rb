@@ -79,11 +79,11 @@ module SidebarHelper
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"}
     sidebar_hash["bean counters"]["inventory settings"] = {:c => "till_adjustments", :a => "inventory_settings"}
     # skedjuler
-    sidebar_hash["sked admin"]["regular sked"] = {:c => "volunteer_default_shifts"}
-    sidebar_hash["sked admin"]["real sked"] = {:c => "volunteer_shifts"}
-    sidebar_hash["sked admin"]["default assign"] = {:c => "default_assignments"}
+    sidebar_hash["sked admin"]["repeating slots"] = {:c => "volunteer_default_shifts"}
+    sidebar_hash["sked admin"]["actual slots"] = {:c => "volunteer_shifts"}
+    sidebar_hash["sked admin"]["repeating volunteers"] = {:c => "default_assignments"}
     sidebar_hash["vol sked"]["schedule"] = {:c => "assignments"}
-    sidebar_hash["vol sked"]["view"] = {:c => "assignments", :a => "view"}
+    sidebar_hash["vol sked"]["view only"] = {:c => "assignments", :a => "view"}
     sidebar_hash["vol sked"]["search"] = {:c => "assignments", :a => "search"}
     # staffsched
     sidebar_hash["staff"]["schedule"] = {:c => "work_shifts", :a => "staffsched"} if should_show_schedule
