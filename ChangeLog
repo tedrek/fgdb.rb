@@ -24,6 +24,8 @@ fgdb.rb (1.0.84) released; urgency=low
   * add tracking for who's editing when there are multiple skedjulers
   * add signed off by condition and show the login or name of the person
     who signed the spec sheet off (Closes: #27330)
+  * In staff hours, show the time left to the user and allow for them to
+    restart the timer (Closes: #27366)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 18:35:31 -0800
 
