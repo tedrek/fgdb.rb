@@ -212,7 +212,7 @@ class AssignmentsController < ApplicationController
         @assignment = @assignments.first
       rescue
         flash[:error] = $!.to_s
-        redirect_to :back
+        redirect_skedj(request.env["HTTP_REFERER"], "")
         return
       end
     end
