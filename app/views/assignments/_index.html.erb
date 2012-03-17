@@ -1,5 +1,9 @@
 <h2><%= params[:controller].humanize %>:</h2>
 
+<span class="error">
+<%= flash[:error] %>
+</span>
+
 <% unless @readonly %>
 <%= has_privileges('admin_skedjul') ? (link_to "add intern", :action => "add_shift", :controller => (params[:controller] == "assignments") ? "volunteer_events" : "volunteer_default_events") : "" %>
 
