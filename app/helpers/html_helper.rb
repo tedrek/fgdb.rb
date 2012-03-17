@@ -10,7 +10,6 @@ module HtmlHelper
         observe_field( "#{obj_name}_#{method_name}",
                        :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value); #{html_opts[:onchange].to_s}",
                        :with => method_name )]
-
     this_choice = obj.send(method_name)
     choices.each {|choice, content|
       if this_choice.to_s == choice.to_s
@@ -18,7 +17,7 @@ module HtmlHelper
       else
         visibility = 'style="display:none;"'
       end
-      display += %Q{ <div id="%s_%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, method_name, choice.to_s, visibility, content ]
+      display += %Q{ <div id="%s_%s_%s_choice" style="clear: left" class="form-element" %s>%s</div> } % [ obj_name, method_name, choice.to_s, visibility, content ]
     }
 
     display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s}.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")

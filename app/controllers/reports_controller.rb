@@ -48,36 +48,69 @@ class ReportsController < ApplicationController
     @result = a
   end
 
-  def top_contributors
+  def top_donations
     @conditions = Conditions.new
     @report = OpenStruct.new
     @report.amount = 5000
+    @report.limit = 100
     @conditions = Conditions.new
     @conditions.occurred_at_date_type = "yearly"
   end
 
-  def top_contributors_report
+  def top_donations_report
     conds = Conditions.new
     if params[:report]
       @report = OpenStruct.new(params[:report])
       conds.apply_conditions(params[:conditions])
       limit = params[:report][:amount]
+      number = params[:report][:limit].to_i
     else
       @report = OpenStruct.new
       @report.amount = 5000
+      @report.report_type = "contributions"
     end
     @conditions = conds
-    @title = "Top contributors" + conds.to_s
+    type_name = ""
+    if @report.report_type == "contributions"
+      @title = "Top contributors" + conds.to_s
+    else
+      if @report.gizmo_type != "all"
+        g_id = @report.gizmo_type.sub(/^./, "").to_i
+        type_name = " "
+        if @report.gizmo_type[0..0] == "c"
+          conds.gizmo_category_id_enabled = true
+          conds.gizmo_category_id = g_id
+          type_name += GizmoCategory.find_by_id(g_id).description
+        elsif @report.gizmo_type[0..0] == "t"
+          conds.gizmo_type_id_enabled = true
+          conds.gizmo_type_id = g_id
+          type_name += GizmoType.find_by_id(g_id).description
+        elsif @report.gizmo_type[0..0] == "g"
+          conds.gizmo_type_group_id_enabled = true
+          conds.gizmo_type_group_id = g_id
+          type_name += GizmoTypeGroup.find_by_id(g_id).name
+        end
+      end
+      @title = "Top#{type_name} gizmo donors" + conds.to_s
+    end
     if conds.valid?
-    limit = (limit.to_i * 100).to_i
-    result = DB.exec("SELECT contact_id,SUM(amount_cents) as total FROM payments JOIN donations ON payments.donation_id = donations.id WHERE donation_id IS NOT NULL AND contact_id IS NOT NULL AND #{DB.prepare_sql(conds.conditions(Donation))} GROUP BY contact_id HAVING SUM(amount_cents) > #{limit.to_s} ORDER BY SUM(amount_cents) DESC;").to_a
-    @result = [["Contact ID", "Contact Name", "Total Contribution"]]
-    result.map{|x|
-      cid = x["contact_id"]
-      cdisp = Contact.find_by_id(cid).display_name
-      total = x["total"].to_i.to_dollars
-      @result << [cid, cdisp, total]
-    }
+      limit = (limit.to_i * 100)
+      if @report.report_type == "contributions"
+        result = DB.exec("SELECT contact_id,SUM(amount_cents) as total FROM payments JOIN donations ON payments.donation_id = donations.id WHERE donation_id IS NOT NULL AND contact_id IS NOT NULL AND #{DB.prepare_sql(conds.conditions(Donation))} GROUP BY contact_id HAVING SUM(amount_cents) >= #{limit.to_s} ORDER BY SUM(amount_cents) DESC;").to_a
+        @result = [["Contact ID", "Contact Name", "Total Contribution"]]
+      else
+        result = DB.exec("SELECT contact_id,SUM(gizmo_count) as total FROM gizmo_events JOIN donations ON gizmo_events.donation_id = donations.id WHERE donation_id IS NOT NULL AND contact_id IS NOT NULL AND #{DB.prepare_sql(conds.conditions(GizmoEvent))} GROUP BY contact_id ORDER BY SUM(gizmo_count) DESC LIMIT #{number.to_s};").to_a
+        @result = [["Contact ID", "Contact Name", "Total#{type_name} Gizmos Donated"]]
+      end
+      result.map{|x|
+        cid = x["contact_id"]
+        cdisp = Contact.find_by_id(cid).display_name
+        total = x["total"].to_i
+        if @report.report_type == "contributions"
+          total = total.to_dollars
+        end
+        @result << [cid, cdisp, total]
+      }
     end
   end
 
