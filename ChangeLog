@@ -9,6 +9,8 @@ fgdb.rb (1.0.85) released; urgency=low
   * change sidebar sked admin labels to use words: repeat, actual,
     slots and volunteers, thanks to Darryl's suggestion (Closes: #27358)
   * Pass :count with validates_length_of (Closes: #27161)
+  * Rename the top contributors report to top donations, and allow
+    getting data about gizmo donations (Closes: #27406)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Mar 2012 01:15:25 -0700
 
