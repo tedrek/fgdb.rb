@@ -9,6 +9,7 @@
 <%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
 <%# label :worked_shifts, :date_performed %>
 <%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
+<%= javascript_tag "$('worked_shift_date_performed').autocomplete = 'off';" %>
 <div style="clear: left">
 <% if !@session_allowed %>
 <%= label :worked_shift, :password, has_required_privileges('/modify_all_workers') ? "Your Password" : "Worker Password" %>
@@ -35,18 +36,26 @@ Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_secon
 <%= javascript_tag "original_timeout_seconds = worked_shift_timeleft = #{timeout_seconds.to_json}; updateWorkedShiftTimeleft();" %>
 <% end %>
 
+<div id="routine_blah">
 <% if @logged_already %>
 <pre style="background: yellow">
-Editing already saved hours.
+Editing hours that have already been saved.
 </pre>
 <% else %>
-<pre style="background: yellow">
+<pre style="background: orange">
 Hours have not yet been saved for this day. The jobs listed below are automatically guessed based on the staff schedule. You still need to save hours.
 </pre>
+<% end %>
+</div>
+<div id="you_have_changed" style="display: none">
+<pre style="background: orange">
+You are modifying hours for this day, but still need to save these hours.
+</pre>
+</div>
+
 <pre style="background: peachpuff">
 Use "add break" below to insert a paid break, which should typically be 15 minutes long, during a shift. This is not for unpaid meal breaks.
 </pre>
-<% end %>
 <div style="max-width: 400px;">
 <% break_job = Job.find_by_name("Paid Break") %>
 <%= javascript_tag "paid_break_job_id = #{break_job.id.to_json}" if !break_job.nil? %>
@@ -83,6 +92,6 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
 <% end %>
-<%= javascript_tag  "shift_compute_totals();" %>
+<%= javascript_tag  "shift_compute_totals(); trigger_worked_shifts_changed = true;" %>
 <% end %>
 </div>

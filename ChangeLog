@@ -1,7 +1,10 @@
 fgdb.rb (1.0.86) UNRELEASED; urgency=low
 
+  * disable password saving temporarily, at least (#27475)
+  * indicate with the color orange if hours have not been
+    saved, so staff know if they have submitted (Closes: #27445)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Mar 2012 01:15:57 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Mar 2012 16:41:32 -0700
 
 fgdb.rb (1.0.85) released; urgency=low
 
