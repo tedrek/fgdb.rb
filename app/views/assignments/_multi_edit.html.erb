@@ -1,8 +1,4 @@
 <%# todo: rename this file.. %>
-<% if flash[:jsalert] && !defined?(@js_alerted_already) %>
-  <% @js_alerted_already = true %>
-  <%= javascript_tag "alert(#{flash[:jsalert].to_json});" %>
-<% end %>
 
 <% is_r = params[:controller] == "assignments"%>
 <div>

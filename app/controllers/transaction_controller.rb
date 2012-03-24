@@ -255,7 +255,7 @@ class TransactionController < ApplicationController
     if @transaction
       render :action => 'update.rjs'
     else
-      flash[:error] = "Error: Record has vanished, Failed to save: " + flash[:error]
+      flash[:error] = "Error: Record has was already deleted, Failed to save: " + flash[:error]
       render :update do |page|
         page.redirect_to :action => "new"
       end
