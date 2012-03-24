@@ -182,9 +182,17 @@ class AssignmentsController < ApplicationController
   end
 
   def arrived
-    a = Assignment.find(params[:id])
-    a.attendance_type = AttendanceType.find_by_name("arrived")
-    a.save!
+    begin
+      a = Assignment.find(params[:id])
+      a.attendance_type = AttendanceType.find_by_name("arrived")
+      if !a.valid?
+        flash[:jsalert] = a.errors.full_messages.join(", ")
+      else
+        a.save!      # if !a.save ? flash[:error] = "Failed to save record as arrived for unknown reason"
+      end
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "Assignment disappeared before it could be marked as arrived"
+    end
     redirect_skedj(request.env["HTTP_REFERER"], a.volunteer_shift.date_anchor)
   end
 
