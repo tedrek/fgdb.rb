@@ -8,8 +8,9 @@ fgdb.rb (1.0.86) UNRELEASED; urgency=low
   * handle when the edited transaction disappears in the update action
   * better handle when assignments don't validate or if they don't exist,
     for whatever reason
+  * add income stream, workers comp and program to the jobs edit form
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Mar 2012 18:42:04 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Mar 2012 19:02:22 -0700
 
 fgdb.rb (1.0.85) released; urgency=low
 
