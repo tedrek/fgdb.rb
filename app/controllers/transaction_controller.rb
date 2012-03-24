@@ -249,10 +249,17 @@ class TransactionController < ApplicationController
       _apply_line_item_data(@transaction)
       @successful =  @transaction.valid? && @transaction.save
     rescue
-      flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
+      flash[:error], @successful  = $!.to_s, false #, false #+ "<hr />" + $!.backtrace.join("<br />").to_s
     end
 
-    render :action => 'update.rjs'
+    if @transaction
+      render :action => 'update.rjs'
+    else
+      flash[:error] = "Error: Record has vanished, Failed to save: " + flash[:error]
+      render :update do |page|
+        page.redirect_to :action => "new"
+      end
+    end
   end
 
   def update_without_ajax

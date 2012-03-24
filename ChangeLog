@@ -5,8 +5,9 @@ fgdb.rb (1.0.86) UNRELEASED; urgency=low
     saved, so staff know if they have submitted (Closes: #27445)
   * give them a password field when they run out of time (Closes:
     #27474)
+  * handle when the edited transaction disappears in the update action
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Mar 2012 16:57:24 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Mar 2012 18:31:41 -0700
 
 fgdb.rb (1.0.85) released; urgency=low
 
