@@ -9,6 +9,7 @@
 <%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
 <%# label :worked_shifts, :date_performed %>
 <%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
+<%= javascript_tag "$('worked_shift_date_performed').autocomplete = 'off';" %>
 <div style="clear: left">
 <% if !@session_allowed %>
 <%= label :worked_shift, :password, has_required_privileges('/modify_all_workers') ? "Your Password" : "Worker Password" %>
@@ -24,29 +25,26 @@
 <% PayPeriod.find_for_date(@date) or raise "FIXME" %>
 <h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>
 
-<% javascript_tag "original_timeout_seconds = 0;" %>
-<% if Default["staff_hours_timeout"] %>
-<div id="worked_shift_time_left">
-<% timeout_seconds = (eval(Default["staff_hours_timeout"].sub('.ago', ''))).seconds.to_i %>
-<%= link_to_function "Restart Timer", "shifts_instance.update_hook();", :id => "worked_shift_time_left_link" %>
-<span id="worked_shift_time_left_error" class="error hidden">ERROR: You have ran out of time, you must go back to enter your password again.</span><br />
-Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_seconds / 60, timeout_seconds % 60] %></span>
-</div>
-<%= javascript_tag "original_timeout_seconds = worked_shift_timeleft = #{timeout_seconds.to_json}; updateWorkedShiftTimeleft();" %>
-<% end %>
-
+<div id="routine_blah">
 <% if @logged_already %>
 <pre style="background: yellow">
-Editing already saved hours.
+Editing hours that have already been saved.
 </pre>
 <% else %>
-<pre style="background: yellow">
+<pre style="background: orange">
 Hours have not yet been saved for this day. The jobs listed below are automatically guessed based on the staff schedule. You still need to save hours.
 </pre>
+<% end %>
+</div>
+<div id="you_have_changed" style="display: none">
+<pre style="background: orange">
+You are modifying hours for this day, but still need to save these hours.
+</pre>
+</div>
+
 <pre style="background: peachpuff">
 Use "add break" below to insert a paid break, which should typically be 15 minutes long, during a shift. This is not for unpaid meal breaks.
 </pre>
-<% end %>
 <div style="max-width: 400px;">
 <% break_job = Job.find_by_name("Paid Break") %>
 <%= javascript_tag "paid_break_job_id = #{break_job.id.to_json}" if !break_job.nil? %>
@@ -55,6 +53,20 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 <% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
 <%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
+<% javascript_tag "original_timeout_seconds = 0;" %>
+<% if Default["staff_hours_timeout"] %>
+<div id="worked_shift_time_left">
+<% timeout_seconds = (eval(Default["staff_hours_timeout"].sub('.ago', ''))).seconds.to_i %>
+<%= link_to_function "Restart Timer", "shifts_instance.update_hook();", :id => "worked_shift_time_left_link" %>
+<span id="worked_shift_time_left_error" class="error hidden">ERROR: You have ran out of time, you must enter the password again.</span><br />
+Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_seconds / 60, timeout_seconds % 60] %></span>
+</div>
+<%= javascript_tag "original_timeout_seconds = worked_shift_timeleft = #{timeout_seconds.to_json}; updateWorkedShiftTimeleft();" %>
+<% end %>
+<div id="worked_shift_hidden_password" style="display: none">
+<%= label :worked_shift, :password, has_required_privileges('/modify_all_workers') ? "Your Password" : "Worker Password" %>
+<%= password_field("worked_shift", "password", {:disabled => "disabled"}) %>
+</div>
 
 <% interface = OH.new %>
 <% interface[:job] = '<select id="job_id">' + options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") + '</select>' %>
@@ -83,6 +95,6 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
 <% end %>
-<%= javascript_tag  "shift_compute_totals();" %>
+<%= javascript_tag  "shift_compute_totals(); trigger_worked_shifts_changed = true;" %>
 <% end %>
 </div>

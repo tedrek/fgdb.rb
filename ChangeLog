@@ -1,7 +1,21 @@
-fgdb.rb (1.0.86) UNRELEASED; urgency=low
+fgdb.rb (1.0.87) UNRELEASED; urgency=low
 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Mar 2012 01:15:57 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Mar 2012 00:05:02 -0700
+
+fgdb.rb (1.0.86) released; urgency=low
+
+  * disable password saving temporarily, at least (#27475)
+  * indicate with the color orange if hours have not been
+    saved, so staff know if they have submitted (Closes: #27445)
+  * give them a password field when they run out of time (Closes:
+    #27474)
+  * handle when the edited transaction disappears in the update action
+  * better handle when assignments don't validate or if they don't exist,
+    for whatever reason
+  * add income stream, workers comp and program to the jobs edit form
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Mar 2012 00:03:42 -0700
 
 fgdb.rb (1.0.85) released; urgency=low
 

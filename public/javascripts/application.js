@@ -2,6 +2,14 @@
 // This file is automatically included by javascript_include_tag :defaults
 
 cashierable_enabled = true;
+trigger_worked_shifts_changed = false;
+
+function show_worked_shifts_changed() {
+  if(trigger_worked_shifts_changed == true) {
+    $('routine_blah').hide();
+    $('you_have_changed').show();
+  }
+}
 
 function updateWorkedShiftTimeleft() {
   worked_shift_timeleft -= 1;
@@ -17,6 +25,8 @@ function updateWorkedShiftTimeleft() {
   } else {
     $('worked_shift_time_left_link').hide();
     $('worked_shift_time_left_error').removeClassName('hidden');
+    $('worked_shift_password').enable();
+    $('worked_shift_hidden_password').show();
   }
 }
 

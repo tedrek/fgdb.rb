@@ -10,6 +10,15 @@
 <p><label for="job_coverage_type_id">Coverage Type</label><br/>
 <%= select("job", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
+<p><label for="job_wc_category_id">Workers Comp Category</label><br/>
+<%= select("job", "wc_category_id", WcCategory.find(:all).collect {|c| [c.description, c.id] }, :include_blank => true) %></p>
+
+<p><label for="job_income_stream_id">Income Stream</label><br/>
+<%= select("job", "income_stream_id", IncomeStream.find(:all).collect {|c| [c.description, c.id] }, :include_blank => true) %></p>
+
+<p><label for="job_program_id">Program</label><br/>
+<%= select("job", "program_id", Program.find(:all).collect {|c| [c.description, c.id] }, :include_blank => true) %></p>
+
 <p><label for="workers">Workers:</label><br/>
 <ul>
 <% Worker.find(:all, :order => "name").each do |w| %>

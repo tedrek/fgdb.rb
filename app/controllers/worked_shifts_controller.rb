@@ -302,6 +302,10 @@ GROUP BY 1,2;")
 #    @shifts = process_shifts(params[:shifts])
 #    render :action => "edit"
     handle_session
+    if !@session_allowed and params[:worked_shift] and params[:worked_shift].keys.include?("password")
+      authenticate
+      params[:worked_shift].delete("password")
+    end
     if @worker and @session_allowed
       mark_activity
       if params[:worked_shift]

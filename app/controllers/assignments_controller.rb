@@ -123,7 +123,7 @@ class AssignmentsController < ApplicationController
     @available = Assignment.find(available)
 
     if @available.volunteer_shift.stuck_to_assignment or @assigned_orig.volunteer_shift.stuck_to_assignment
-      flash[:alert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
+      flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
     else
       # for write
       @assigned = Assignment.find(assigned)
@@ -182,10 +182,18 @@ class AssignmentsController < ApplicationController
   end
 
   def arrived
-    a = Assignment.find(params[:id])
-    a.attendance_type = AttendanceType.find_by_name("arrived")
-    a.save!
-    redirect_skedj(request.env["HTTP_REFERER"], a.volunteer_shift.date_anchor)
+    begin
+      a = Assignment.find(params[:id])
+      a.attendance_type = AttendanceType.find_by_name("arrived")
+      if !a.valid?
+        flash[:jsalert] = a.errors.full_messages.join(", ")
+      else
+        a.save!      # if !a.save ? flash[:error] = "Failed to save record as arrived for unknown reason"
+      end
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "Assignment was deleted before it could be marked as arrived"
+    end
+    redirect_skedj(request.env["HTTP_REFERER"], a ? a.volunteer_shift.date_anchor : "")
   end
 
   def search
@@ -252,9 +260,13 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
-    @assignment = Assignment.find(params[:id])
-    @assignment.destroy
+    begin
+      @assignment = Assignment.find(params[:id])
+      @assignment.destroy
+    rescue
+      flash[:jsalert] = "Record was already deleted"
+    end
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assignment.volunteer_shift.date_anchor)
+    redirect_skedj(request.env["HTTP_REFERER"], @assignment ? @assignment.volunteer_shift.date_anchor : "")
   end
 end
