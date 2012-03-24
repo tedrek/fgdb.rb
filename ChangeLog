@@ -14,6 +14,8 @@ fgdb.rb (1.0.86) released; urgency=low
   * better handle when assignments don't validate or if they don't exist,
     for whatever reason
   * add income stream, workers comp and program to the jobs edit form
+  * fix handling of displaying change due and other cash payments when
+    there is cash back
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Mar 2012 00:03:42 -0700
 

@@ -50,6 +50,7 @@ class Sale < ActiveRecord::Base
       payment_lines << ['right', "Discounted:", "#{self.calculated_discount_cents.to_dollars}"]
     end
     payment_lines << ['right', "Total:", "#{(self.calculated_total_cents - store_credit_gizmo_events_total_cents).to_dollars}"]
+    seen_cash = false
     seen_sc = false
     cash_back = (defined?(@cash_back) and @cash_back > 0) ? @cash_back : 0
     self.payments_actual.each{|payment|
@@ -58,7 +59,11 @@ class Sale < ActiveRecord::Base
         amount -= store_credit_gizmo_events_total_cents
         seen_sc = true
       end
-      payment_lines << ['right', payment.payment_method.description + ":", (amount + ((payment.payment_method.name == "cash") ? cash_back : 0)).to_dollars]
+      if payment.payment_method.name == "cash" && cash_back > 0 && !seen_cash
+        seen_cash = true
+        amount += cash_back
+      end
+      payment_lines << ['right', payment.payment_method.description + ":", amount.to_dollars]
     }
     if cash_back > 0
       payment_lines << ['right', "change due:", "#{cash_back.to_dollars}"]
