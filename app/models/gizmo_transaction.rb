@@ -183,6 +183,7 @@ module GizmoTransaction
         payments.build(cash.attributes)
       end
     end
+    cashes.each{|x| x.mark_for_destruction}
   end
 
   def has_some_uneditable
