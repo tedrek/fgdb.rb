@@ -25,6 +25,8 @@ function updateWorkedShiftTimeleft() {
   } else {
     $('worked_shift_time_left_link').hide();
     $('worked_shift_time_left_error').removeClassName('hidden');
+    $('worked_shift_password').enable();
+    $('worked_shift_hidden_password').show();
   }
 }
 

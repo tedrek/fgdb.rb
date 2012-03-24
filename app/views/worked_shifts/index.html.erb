@@ -25,17 +25,6 @@
 <% PayPeriod.find_for_date(@date) or raise "FIXME" %>
 <h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>
 
-<% javascript_tag "original_timeout_seconds = 0;" %>
-<% if Default["staff_hours_timeout"] %>
-<div id="worked_shift_time_left">
-<% timeout_seconds = (eval(Default["staff_hours_timeout"].sub('.ago', ''))).seconds.to_i %>
-<%= link_to_function "Restart Timer", "shifts_instance.update_hook();", :id => "worked_shift_time_left_link" %>
-<span id="worked_shift_time_left_error" class="error hidden">ERROR: You have ran out of time, you must go back to enter your password again.</span><br />
-Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_seconds / 60, timeout_seconds % 60] %></span>
-</div>
-<%= javascript_tag "original_timeout_seconds = worked_shift_timeleft = #{timeout_seconds.to_json}; updateWorkedShiftTimeleft();" %>
-<% end %>
-
 <div id="routine_blah">
 <% if @logged_already %>
 <pre style="background: yellow">
@@ -64,6 +53,20 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 <% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
 <%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
+<% javascript_tag "original_timeout_seconds = 0;" %>
+<% if Default["staff_hours_timeout"] %>
+<div id="worked_shift_time_left">
+<% timeout_seconds = (eval(Default["staff_hours_timeout"].sub('.ago', ''))).seconds.to_i %>
+<%= link_to_function "Restart Timer", "shifts_instance.update_hook();", :id => "worked_shift_time_left_link" %>
+<span id="worked_shift_time_left_error" class="error hidden">ERROR: You have ran out of time, you must enter the password again.</span><br />
+Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_seconds / 60, timeout_seconds % 60] %></span>
+</div>
+<%= javascript_tag "original_timeout_seconds = worked_shift_timeleft = #{timeout_seconds.to_json}; updateWorkedShiftTimeleft();" %>
+<% end %>
+<div id="worked_shift_hidden_password" style="display: none">
+<%= label :worked_shift, :password, has_required_privileges('/modify_all_workers') ? "Your Password" : "Worker Password" %>
+<%= password_field("worked_shift", "password", {:disabled => "disabled"}) %>
+</div>
 
 <% interface = OH.new %>
 <% interface[:job] = '<select id="job_id">' + options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") + '</select>' %>
