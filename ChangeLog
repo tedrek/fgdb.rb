@@ -1,4 +1,4 @@
-fgdb.rb (1.0.86) UNRELEASED; urgency=low
+fgdb.rb (1.0.86) released; urgency=low
 
   * disable password saving temporarily, at least (#27475)
   * indicate with the color orange if hours have not been
@@ -10,7 +10,7 @@ fgdb.rb (1.0.86) UNRELEASED; urgency=low
     for whatever reason
   * add income stream, workers comp and program to the jobs edit form
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 23 Mar 2012 19:02:22 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Mar 2012 00:03:42 -0700
 
 fgdb.rb (1.0.85) released; urgency=low
 
