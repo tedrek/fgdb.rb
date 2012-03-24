@@ -260,9 +260,13 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
-    @assignment = Assignment.find(params[:id])
-    @assignment.destroy
+    begin
+      @assignment = Assignment.find(params[:id])
+      @assignment.destroy
+    rescue
+      flash[:jsalert] = "Record was already deleted"
+    end
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assignment.volunteer_shift.date_anchor)
+    redirect_skedj(request.env["HTTP_REFERER"], @assignment ? @assignment.volunteer_shift.date_anchor : "")
   end
 end

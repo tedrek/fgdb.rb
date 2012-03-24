@@ -1,5 +1,9 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def do_jsalert
+    flash[:jsalert] ? javascript_tag("alert(#{flash[:jsalert].to_json});") : ""
+  end
+
   def gt_for_txn(thing)
     [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
   end

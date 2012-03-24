@@ -93,8 +93,13 @@ class VolunteerDefaultShiftsController < ApplicationController
   end
 
   def edit
-    @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
-    redirect_to({:controller => "volunteer_default_events", :action => "edit", :id => @volunteer_default_shift.volunteer_default_event_id})
+    begin
+      @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
+      redirect_to({:controller => "volunteer_default_events", :action => "edit", :id => @volunteer_default_shift.volunteer_default_event_id})
+    rescue
+      flash[:jsalert] = $!.to_s
+      redirect_to :back
+    end
   end
 
   def destroy
