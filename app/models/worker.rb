@@ -62,10 +62,13 @@ class Worker < ActiveRecord::Base
     true
   end
 
-  def effective_now?
-    date = DateTime.now
+  def effective?(date)
     wt = self.worker_type_on_day(date)
     (wt && (wt.name != "inactive"))
+  end
+
+  def effective_now?
+    self.effective?(DateTime.now)
   end
 
   def Worker.zero

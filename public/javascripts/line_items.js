@@ -12,7 +12,9 @@ function handle_payments(){
 
 function handle_all(){
   handle_gizmo_events();
-  handle_payments();
+  if($('payment_amount')) {
+    handle_payments();
+  }
 }
 
 /////////////////////

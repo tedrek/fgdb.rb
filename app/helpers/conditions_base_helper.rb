@@ -1,5 +1,6 @@
 module ConditionsBaseHelper
-  def conditions_html(params_key = "conditions", these_things = [], klass = Conditions, multiselect_mode = "auto")
+  def conditions_html(params_key = "conditions", these_things = [], klass = Conditions, multiselect_mode = "auto", date_range = nil)
+    @conditions_internal_date_range = date_range
     hash = {}
     obj = eval("@#{params_key}") || klass.new
     these_things.each{|x|
