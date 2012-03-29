@@ -16,6 +16,8 @@ fgdb.rb (1.0.86) released; urgency=low
   * add income stream, workers comp and program to the jobs edit form
   * fix handling of displaying change due and other cash payments when
     there is cash back
+  * use the date range to determine which workers to show (Closes:
+    #27567)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Mar 2012 00:03:42 -0700
 

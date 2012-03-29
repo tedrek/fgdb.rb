@@ -38,7 +38,12 @@ module ConditionsHelper
 
   def html_for_worker_condition(params_key)
     show_all = false
-    select(params_key, "worker_id", Worker.find(:all).select{|x| show_all or x.effective_now?}.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts)
+    if @conditions_internal_date_range and !show_all
+      workers = Worker.effective_in_range(*@conditions_internal_date_range)
+    else
+      workers = Worker.find(:all).select{|x| show_all or x.effective_now?}
+    end
+    select(params_key, "worker_id", workers.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts)
   end
 
   def _multi_html_opts
