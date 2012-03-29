@@ -33,6 +33,10 @@ class Assignment < ActiveRecord::Base
     self.volunteer_shift.attributes=(attrs) # just pass it up
   end
 
+  def not_assigned
+    contact_id.nil? and !closed
+  end
+
   def volshift_stuck
     self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
   end
@@ -40,6 +44,9 @@ class Assignment < ActiveRecord::Base
   def validate
     if self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
       errors.add("contact_id", "is empty for a assignment-based shift") if self.contact_id.nil?
+    end
+    if self.closed
+      errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
     end
     unless self.cancelled?
       errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
@@ -160,6 +167,9 @@ class Assignment < ActiveRecord::Base
 
   def skedj_style(overlap, last)
     if self.cancelled?
+      return 'cancelled'
+    end
+    if self.closed
       return 'cancelled'
     end
     if self.contact_id.nil?

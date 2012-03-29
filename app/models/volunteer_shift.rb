@@ -96,7 +96,7 @@ class VolunteerShift < ActiveRecord::Base
     end
     begin
       Thread.current['volskedj_fillin_processing'].push(self.id)
-      Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy}
+      Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| x.contact_id.nil? and !x.closed}.each{|x| x.destroy}
       inputs = [[(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]]
       Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| !x.cancelled?}.each{|x|
         inputs.push([(x.start_time), (x.end_time)])

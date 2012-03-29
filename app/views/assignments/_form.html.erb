@@ -71,6 +71,8 @@
                         :object_name => f.object_name.to_s,
                         :field_name => 'contact_id'
                       }}) %>
+      <%= f.label :closed, "Is this slot closed?" %>
+      <%= f.check_box :closed %>
   </div>
   <p>
     <%= f.label :start_time %><br />

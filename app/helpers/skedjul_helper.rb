@@ -174,7 +174,8 @@ module SkedjulHelper
       action = mya[0]
       type = mya[1]
       cond = mya[2]
-      letter = action.to_s.scan(/./).first
+      letter = mya[3]
+      letter ||= action.to_s.scan(/./).first
       html_opts = {:title => action}
       url_opts = { :controller => controller, :action => action, :id => tid }
       func = :link_to
