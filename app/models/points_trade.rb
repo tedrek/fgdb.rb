@@ -9,6 +9,10 @@ class PointsTrade < ActiveRecord::Base
   validates_presence_of :from_contact_id
   validates_presence_of :points
 
+  def self.allow_shared
+    true
+  end
+
   def points_okay
     return if !(self.from_contact && self.to_contact)
     errors.add("from_contact", "has negative points") if (self.from_contact.points(self.id) - self.points) < 0
