@@ -5,7 +5,7 @@ class AddQuestionAboutRamTypeAndSpeed < ActiveRecord::Migration
     bad_q.save!
 
     boot_k = SpecSheetQuestion.find_by_name("Boot Device Menu Key")
-    boot_k.question = "What is the BIOS key to select a boot device, if any? (or 'N/A', if none applies)"
+    boot_k.question = "What is the BIOS key to select a boot device? (or 'N/A', if none applies)"
     boot_k.save!
 
     ram = SpecSheetQuestion.new(:name => "RAM Type", :question => "What is the type and speed of the RAM it uses?")
