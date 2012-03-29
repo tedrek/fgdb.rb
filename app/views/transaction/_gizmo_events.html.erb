@@ -75,13 +75,13 @@
            hash[:unit_price] = price if (show_price)
            hash[:system_id] = line.system_id if line.system_id
            if show_return
-             hash[:reason] = line.reason if line.reason
-             hash[:tester] = line.tester if line.tester
-             hash[:sale_id] = line.return_sale_id if line.return_sale_id
-             hash[:disbursement_id] = line.return_disbursement_id if line.return_disbursement_id
-             hash[:store_credit_hash] = line.store_credit_hash if line.store_credit_hash
+             hash[:reason] = line.reason ? line.reason : ""
+             hash[:tester] = line.tester ? line.tester : ""
+             hash[:sale_id] = line.return_sale_id ? line.return_sale_id : ""
+             hash[:disbursement_id] = line.return_disbursement_id ? line.return_disbursement_id : ""
+             hash[:store_credit_hash] = line.store_credit_hash ? line.store_credit_hash : ""
            end
-           hash[:contract_id] = line.recycling_contract_id if line.recycling_contract_id
+           hash[:contract_id] = line.recycling_contract_id ? line.recycling_contract_id : ""
            hash[:covered] = line.covered.inspect if show_coveredness
            hash[:uneditable] = true if ! line.editable?
            hash[:id] = line.id
