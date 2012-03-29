@@ -3,8 +3,10 @@ fgdb.rb (1.0.87) UNRELEASED; urgency=low
   * bump printme version to 16, requires new printme to support new
     conditional questions
   * Modify and add general questions for desktop build
+  * Remove lines for written data from laptop spec sheet and add system
+    specific printme questions for laptops (Closes: #26673)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 29 Mar 2012 14:45:57 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 29 Mar 2012 15:07:47 -0700
 
 fgdb.rb (1.0.86) released; urgency=low
 
