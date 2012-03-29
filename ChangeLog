@@ -2,14 +2,20 @@ fgdb.rb (1.0.87) UNRELEASED; urgency=low
 
   * bump printme version to 16, requires new printme to support new
     conditional questions
-  * Modify and add general questions for desktop build
+  * Add a general question for desktop build
+    - Removed network boot key and rephrased boot menu questions
   * Remove lines for written data from laptop spec sheet and add system
     specific printme questions for laptops (Closes: #26673)
-  * staff hours password saving mostly working, except that it will ask
-    to save password by your worker id instead of login, and when the
-    dropdown gets changed you must select Go (fail password entry)
-    before Firefox will repopulate it (Closes: #27475)
+  * staff hours password saving mostly working (Closes: #27475)
+    - except that it will ask to save password by your worker id
+      instead of login
+    - and when the dropdown gets changed you must select Go (fail
+      password entry) before Firefox will repopulate it
   * Add proper ability to close shifts (Closes: #27415)
+    - new x link (o to open), or can use checkbox on edit, but must
+      delete or remove shifts assigned to contacts
+    - multi selecting many purple shifts and then using the checkbox
+      on the edit form will work if all shifts have same time range
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 29 Mar 2012 16:45:10 -0700
 
