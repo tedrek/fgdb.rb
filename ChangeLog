@@ -2,6 +2,7 @@ fgdb.rb (1.0.87) UNRELEASED; urgency=low
 
   * bump printme version to 16, requires new printme to support new
     conditional questions
+    - force updated freegeek-build-utils package
   * Add a general question for desktop build
     - Removed network boot key and rephrased boot menu questions
   * Remove lines for written data from laptop spec sheet and add system
