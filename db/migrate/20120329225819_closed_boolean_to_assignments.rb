@@ -8,6 +8,10 @@ class ClosedBooleanToAssignments < ActiveRecord::Migration
         puts "WARNING: Couldn't find no work contact ##{d}"
         next
       end
+      pt = [PointsTrade.find_all_by_from_contact_id(c.id), PointsTrade.find_all_by_to_contact_id(c.id)].flatten
+      pt.each{|x|
+        x.destroy
+      }
       DB.exec("UPDATE assignments SET contact_id = NULL, closed = 't' WHERE contact_id = #{c.id};")
       puts "Removing fake contact #{c.display_name}.."
       c.destroy
