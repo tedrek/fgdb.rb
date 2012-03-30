@@ -17,6 +17,7 @@ fgdb.rb (1.0.87) UNRELEASED; urgency=low
       delete or remove shifts assigned to contacts
     - multi selecting many purple shifts and then using the checkbox
       on the edit form will work if all shifts have same time range
+    - remove no work contacts
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 29 Mar 2012 16:45:10 -0700
 
