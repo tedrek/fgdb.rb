@@ -3,6 +3,10 @@ class ContactsController < ApplicationController
   layout :with_sidebar
   filter_parameter_logging "user_password", "user_password_confirmation"
 
+  def roles
+    @roles = Role.find(:all)
+  end
+
   def email_list
     @include_comma = (params[:include_comma] == "1")
     @show_email = (params[:show_email] == "1")
@@ -25,7 +29,7 @@ class ContactsController < ApplicationController
   def get_required_privileges
     a = super
     a << {:privileges => ['manage_contacts'], :except => ['check_cashier_code', 'civicrm_sync']}
-    a << {:only => ['email_list', '/admin_user_accounts'], :privileges => ['role_admin']}
+    a << {:only => ['email_list', 'roles', '/admin_user_accounts'], :privileges => ['role_admin']}
     a << {:only => ['/create_logins'], :privileges => ['can_create_logins']}
     a
   end

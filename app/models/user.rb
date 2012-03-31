@@ -29,6 +29,8 @@ class User < ActiveRecord::Base
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation, :can_login, :shared
 
+  named_scope :can_login, {:conditions => ["can_login = 't'"]}
+
   def update_skedjulnator_access_time
     self.skedjulnator_access ||= SkedjulnatorAccess.new
     self.skedjulnator_access.user_id_will_change!

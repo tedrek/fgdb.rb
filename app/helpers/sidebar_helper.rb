@@ -75,6 +75,7 @@ module SidebarHelper
     sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'}
     sidebar_hash["contacts"]["duplicates list"] = {:c => 'contact_duplicates', :a => "list_dups"}
     sidebar_hash["contacts"]["email list"] = {:c => 'contacts', :a => "email_list"}
+    sidebar_hash["contacts"]["roles"] = {:c => 'contacts', :a => "roles"}
     # bean counters
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"}
     sidebar_hash["bean counters"]["inventory settings"] = {:c => "till_adjustments", :a => "inventory_settings"}
