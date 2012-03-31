@@ -14,6 +14,12 @@ class ShiftsController < ApplicationController
 
   before_filter :update_skedjulnator_access_time
 
+  def find_problems
+    w = [Weekday.find_by_name("Sunday").id]
+    @weeks = w.map(&:id)
+    do_find_problems_report(Shift, "weekday_id", @weeks, w + [Weekday.find_by_name("Saturday").id], "s")
+  end
+
   def index
     list
     render :action => 'list'

@@ -56,7 +56,7 @@ class DefaultAssignment < ActiveRecord::Base
     cond = ""
     opts = []
     if assignment.ineffective_on.nil? and assignment.effective_on.nil?
-      cond = "(ineffective_on IS NULL AND effective_on IS NULL)"
+      cond = "1 = 1"
     else
       if !(assignment.ineffective_on.nil? or assignment.effective_on.nil?)
         cond = "((ineffective_on IS NULL OR ineffective_on > ?) AND (effective_on < ? OR effective_on IS NULL))"
