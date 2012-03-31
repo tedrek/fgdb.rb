@@ -72,7 +72,7 @@
     <h4 style="clear: left;">Roles user has:</h4>
     <ul>
     <% for role in (@user ? @user.roles : []) - grantable %>
-      <li><%= role.display_string %></li>
+      <li><%= role.display_string + (role.notes.to_s.length > 0 ? (" (" + roles.notes + ")") : "") %></li>
     <% end %>
     </ul>
     <% for role in grantable %>
