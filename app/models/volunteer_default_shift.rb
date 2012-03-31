@@ -219,7 +219,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.roster_id = ds.roster_id
           s.class_credit = ds.class_credit
           s.save!
-          mats = ds.default_assignments.select{|q| q.contact_id and ((s.slot_number.nil?) || (q.slot_number == num))}
+          mats = ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num))}
           if mats.length > 0
             mats.each{|da|
               a = Assignment.new
@@ -227,6 +227,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
               a.end_time = da.end_time
               a.volunteer_shift_id = s.id
               a.contact_id = da.contact_id
+              a.closed = da.closed
               a.save!
             }
           end
