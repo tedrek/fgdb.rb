@@ -2,11 +2,11 @@
 <table class="awesome">
 <% @roles.each do |role| %>
   <tr>
-  <th><%= role.display_string %></th>
+  <th><%= role.display_string %><br /><%= role.notes %></th>
   <td>
     <ul>
     <% role.users.can_login.sort_by(&:login).each do |user| %>
-      <li><%= user.login %> (<%= user.contact ? user.contact.display_name + " (#" + user.contact_id.to_s + ")" : "No Contact" %>)</li>
+      <li><%= link_to (user.login + " (" + (user.contact ? user.contact.display_name + " (#" + user.contact_id.to_s + ")" : "No Contact") + ")"), :action => "index", :contact_id => user.contact_id %></li>
     <% end %>
     </ul>
   </td>
