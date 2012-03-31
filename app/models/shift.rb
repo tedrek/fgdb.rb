@@ -48,7 +48,8 @@ class Shift < ActiveRecord::Base
         where_clause = <<WHERE
         (NOT actual) AND 
         #{sql_conditions}
-        ('#{day}' BETWEEN shifts.effective_date AND shifts.ineffective_date) AND
+        ((shifts.effective_date IS NULL OR '#{day}' >= shifts.effective_date)
+          AND (shifts.ineffective_date IS NULL OR '#{day}' < shifts.ineffective_date)) AND
         ( 
           ( shifts.shift_date = '#{day}' ) 
             OR
