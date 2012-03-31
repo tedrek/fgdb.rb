@@ -19,6 +19,66 @@ module ActionController
 end
 
 class ApplicationController < ActionController::Base
+  protected
+  def do_find_problems_report(klass, column, weeks, dates = [], mode = "ws")
+    @conflicts = DB.exec(DB.prepare_sql("SELECT w1.#{column} AS date,workers.name AS worker,COALESCE(job1.name,w1.meeting_name#{mode == "ws" ? ",w1.kind" : ""}) AS job_1,COALESCE(job2.name,w2.meeting_name#{mode == "ws" ? ",w2.kind" : ""}) AS job_2,w1.id AS shift_1,w2.id AS shift_2 FROM #{klass.table_name} AS w1 INNER JOIN #{klass.table_name} AS w2 ON w1.worker_id = w2.worker_id AND w1.#{column} = w2.#{column} AND ((w1.start_time < w2.end_time AND w2.start_time < w1.end_time) OR (w1.start_time > w2.end_time AND w2.start_time > w1.end_time)) AND w1.id < w2.id AND w1.worker_id != 0 LEFT JOIN jobs AS job1 ON job1.id = w1.job_id LEFT JOIN jobs AS job2 ON job2.id = w2.job_id LEFT JOIN workers ON w1.worker_id = workers.id WHERE w1.#{column} >= ? AND w1.#{column} <= ? ORDER BY 1,2;", @start_date, @end_date)).to_a
+    @unassigned = DB.exec(DB.prepare_sql("SELECT w1.#{column} AS date,COALESCE(job1.name,w1.meeting_name#{mode == "ws" ? ",w1.kind" : ""}) || case training when 't' then ' (Training)' else '' end AS job FROM #{klass.table_name} AS w1 LEFT JOIN jobs AS job1 ON job1.id = w1.job_id WHERE w1.worker_id = 0 AND w1.#{column} >= ? AND w1.#{column} <= ? ORDER BY 1,2;", @start_date, @end_date)).to_a
+    @all_dates = (dates.first..dates.last).to_a.select{|x| Weekday.find_by_id(mode == "ws" ? x.wday : x).is_open}
+    @jobs = Job.find_all_by_coverage_type_id(CoverageType.find_by_name("full").id)
+    all_shifts = klass.find(:all, :conditions => ["(training = 'f' OR training IS NULL) AND job_id IN (?) AND #{column} >= ? AND #{column} <= ?", @jobs.map{|x| x.id}, @start_date, @end_date])
+    @shift_gap_hash = {}
+    weekday_times = {}
+    Weekday.find(:all).each do |w|
+      weekday_times[w.id] = [w.open_time, w.close_time]
+    end
+    @jobs.each{|x|
+      @shift_gap_hash[x.id] = {}
+      @all_dates.each{|d|
+        @shift_gap_hash[x.id][d] = [weekday_times[mode == "ws" ? d.wday : d]]
+      }
+    }
+    all_shifts.each{|x|
+      @shift_gap_hash[x.job_id][x.send(column.to_sym)].push([x.start_time, x.end_time])
+    }
+    @workers_week_hash = {}
+    @workers_day_hash = {}
+    @workers = []
+    @workers_h = {}
+    all_scheduled = klass.find(:all, :conditions => ["#{column} >= ? AND #{column} <= ?#{mode == "ws" ? " AND kind NOT LIKE 'Unavailability'" : ""}", @weeks.first, (@weeks.last+6)], :order => "#{column} ASC")
+    cur_week = @weeks.first
+    all_scheduled.each{|w|
+      if !@workers.include?(w.worker)
+        @workers << w.worker
+        @workers_h[w.worker_id] = w.worker
+        @workers_week_hash[w.worker_id] = {}
+        @weeks.each{|week|
+          @workers_week_hash[w.worker_id][week] = 0.0
+        }
+        @workers_day_hash[w.worker_id] = {}
+        (@all_dates).each{|day|
+          @workers_day_hash[w.worker_id][day] = [weekday_times[mode == "ws" ? day.wday : day]]
+        }
+      end
+      if w.send(column.to_sym) > (cur_week + 6)
+        cur_week += 7
+      end
+      @workers_week_hash[w.worker_id][cur_week] += ((w.end_time - w.start_time)/3600.0)
+      if @all_dates.include?(w.send(column.to_sym))
+        @workers_day_hash[w.worker_id][w.send(column.to_sym)] << [w.start_time, w.end_time]
+      end
+    }
+    @workers_day_hash.keys.each{|w|
+      @workers_day_hash[w].keys.each{|d|
+        @workers_day_hash[w][d] = klass.range_math(*@workers_day_hash[w][d])
+      }
+    }
+    @shift_gap_hash.keys.each{|x|
+      @shift_gap_hash[x].keys.each{|d|
+        @shift_gap_hash[x][d] = klass.range_math(*@shift_gap_hash[x][d])
+      }
+    }
+  end
+
   def update_skedjulnator_access_time
     current_user.update_skedjulnator_access_time
   end
@@ -26,7 +86,6 @@ class ApplicationController < ActionController::Base
   def redirect_skedj(referer, anchor)
     redirect_to(sked_url(referer, anchor))
   end
-
 
   def sked_url(referer, anchor)
     (referer ? (referer + "#" + anchor) : ({:action => "index"}))
@@ -39,8 +98,6 @@ class ApplicationController < ActionController::Base
   helper :sidebar
   helper :line_item
   include LineItemHelper
-
-  protected
 
   def _civicrm_sync
     ProcessorDaemon.add_to(params[:controller], params[:id], "civicrm")

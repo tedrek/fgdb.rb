@@ -1,8 +1,9 @@
 fgdb.rb (1.0.88) UNRELEASED; urgency=low
 
   * add unique indexes to role and privilege system (Closes: #27470)
+  * implement schedule problem finder for ongoing schedule as well
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Mar 2012 10:15:18 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Mar 2012 11:03:51 -0700
 
 fgdb.rb (1.0.87) released; urgency=low
 
