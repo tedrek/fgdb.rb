@@ -97,6 +97,10 @@ class Assignment < ActiveRecord::Base
     ret
   }
 
+  def first_time_in_area?
+    self.contact and self.volunteer_shift and self.volunteer_shift.volunteer_task_type and !self.contact.volunteer_task_types.include?(self.volunteer_shift.volunteer_task_type) #  and self.contact_id_changed? moved outside because we use update_attributes
+  end
+
   def my_call_status
     self.call_status_type_id ? self.call_status_type.name : "not called yet"
   end
