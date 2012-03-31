@@ -35,6 +35,40 @@ class AssignmentsController < ApplicationController
     index
   end
 
+  def open
+    begin
+      a = Assignment.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "Assignment was deleted before it could be marked as open"
+    end
+    a.closed = false if a
+    if a && a.valid?
+      a.save!
+    else
+      flash[:jsalert] = "An unknown error prevented the shift from being marked open" if flash[:jsalert].nil?
+    end
+
+    redirect_skedj(request.env["HTTP_REFERER"], a ? a.volunteer_shift.date_anchor : "")
+  end
+
+  def close
+    begin
+      a = Assignment.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "Assignment was deleted before it could be marked as closed"
+    end
+    if a && a.contact_id
+      flash[:jsalert] = "Assignment which has a contact cannot be marked as closed"
+    end
+    a.closed = true if a
+    if a && a.valid?
+      a.save!
+    else
+      flash[:jsalert] = "An unknown error prevented the shift from being marked closed" if flash[:jsalert].nil?
+    end
+    redirect_skedj(request.env["HTTP_REFERER"], a ? a.volunteer_shift.date_anchor : "")
+  end
+
   def index
     @multi_enabled = true
     if params[:conditions]
@@ -67,7 +101,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id_and_today], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id_and_today], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
                              },
 
                              :call_list =>
@@ -81,7 +115,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name,display_call_status,display_phone_numbers",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -97,7 +131,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
@@ -246,7 +280,14 @@ class AssignmentsController < ApplicationController
     @assignments.each{|x|
       if ret
         @assignment = x
+        bc = x.contact_id
         ret = !!(x.update_attributes(params[:assignment]))
+        if bc != x.contact_id and x.first_time_in_area?
+          flash[:jsalert] = "#{x.contact.display_name} (##{x.contact_id}) has never logged hours for the #{x.volunteer_shift.volunteer_task_type.description} task type. Please remind the volunteer of the requirements for this area."
+          if x.volunteer_shift.volunteer_event and x.volunteer_shift.volunteer_event.notes and x.volunteer_shift.volunteer_event.notes.length > 0
+            flash[:jsalert] += "\n\nSome suggested notes saved in the database for this event are:\n" + x.volunteer_shift.volunteer_event.notes
+          end
+        end
       end
     }
 

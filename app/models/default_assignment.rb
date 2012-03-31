@@ -26,7 +26,14 @@ class DefaultAssignment < ActiveRecord::Base
   validates_presence_of :volunteer_default_shift
   validates_associated :volunteer_default_shift
 
+  def not_assigned
+    contact_id.nil? and !closed
+  end
+
   def validate
+    if self.closed
+      errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
+    end
     if self.volunteer_default_shift && self.volunteer_default_shift.stuck_to_assignment
       errors.add("contact_id", "is empty for a assignment-based shift") if self.contact_id.nil?
     end
@@ -93,6 +100,9 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def skedj_style(overlap, last)
+    if self.closed
+      return 'cancelled'
+    end
     if self.contact_id.nil?
       return 'available'
     end
@@ -121,7 +131,9 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def contact_display
-    if contact_id.nil?
+    if self.closed
+      return "(closed)"
+    elsif contact_id.nil?
       return "(available)"
     else
       return self.contact.display_name

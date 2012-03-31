@@ -10,6 +10,7 @@ class Contact < ActiveRecord::Base
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
   has_many :volunteer_tasks, :order => 'date_performed DESC'
+  has_many :volunteer_task_types, :through => :volunteer_tasks
   has_many :disbursements
   has_many :sales
   has_many :donations

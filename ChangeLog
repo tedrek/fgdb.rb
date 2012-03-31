@@ -1,7 +1,32 @@
-fgdb.rb (1.0.87) UNRELEASED; urgency=low
+fgdb.rb (1.0.88) UNRELEASED; urgency=low
 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Mar 2012 00:05:02 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Mar 2012 00:34:19 -0700
+
+fgdb.rb (1.0.87) released; urgency=low
+
+  * bump printme version to 16, requires new printme to support new
+    conditional questions
+    - force updated freegeek-build-utils package
+  * Add a general question for desktop build
+    - Removed network boot key and rephrased boot menu questions
+  * Remove lines for written data from laptop spec sheet and add system
+    specific printme questions for laptops (Closes: #26673)
+  * staff hours password saving mostly working (Closes: #27475)
+    - except that it will ask to save password by your worker id
+      instead of login
+    - and when the dropdown gets changed you must select Go (fail
+      password entry) before Firefox will repopulate it
+  * Add proper ability to close shifts (Closes: #27415)
+    - new x link (o to open), or can use checkbox on edit, but must
+      delete or remove shifts assigned to contacts
+    - multi selecting many purple shifts and then using the checkbox
+      on the edit form will work if all shifts have same time range
+    - remove no work contacts
+  * Add notice when scheduling volunteer for an area they haven't worked
+    in (Closes: #27448)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Mar 2012 00:32:27 -0700
 
 fgdb.rb (1.0.86) released; urgency=low
 

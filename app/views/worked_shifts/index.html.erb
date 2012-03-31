@@ -1,4 +1,5 @@
-<% @worked_shift = Struct.new(:worker_id, :date_performed, :password).new(@worker ? @worker.id : nil, @date, nil) %>
+<% l = @worker ? @worker.id : nil %>
+<% @worked_shift = Struct.new(:worker_id, :date_performed, :password, :L).new(l, @date, nil, l) %>
 
 <span class="error">
 <%= flash[:error] %>
@@ -6,10 +7,15 @@
 
 <% form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
 <% label :worked_shifts, :worker_id %>
-<%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
+<%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }, :onchange => "$('worked_shift_L').value = $('worked_shift_worker_id').value;") %>
 <%# label :worked_shifts, :date_performed %>
 <%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
-<%= javascript_tag "$('worked_shift_date_performed').autocomplete = 'off';" %>
+
+<div style="display: none">
+<%= text_field("worked_shift", "L") %>
+</div>
+<%# javascript_tag "$('worked_shift_date_performed').autocomplete = 'off';" %>
+
 <div style="clear: left">
 <% if !@session_allowed %>
 <%= label :worked_shift, :password, has_required_privileges('/modify_all_workers') ? "Your Password" : "Worker Password" %>
