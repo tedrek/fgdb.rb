@@ -9,25 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110820233219) do
+ActiveRecord::Schema.define(:version => 201011200924089) do
 
-  create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
-<<SQL_CODE
-DECLARE
-        result character varying ;
-BEGIN
-        result = '';
-        result = result || coalesce(' ' || $1, '');
-        result = result || coalesce(' ' || $2, '');
-        result = result || coalesce(' ' || $3, '');
-        result = result || coalesce(' ' || $4, '');
-        RETURN result;
-END;
-SQL_CODE
-  }
-  
-  create_proc(:contact_trigger, [], :return => :trigger, :lang => 'plpgsql') {
-<<SQL_CODE
+  create_proc(:contact_trigger, [], :return => :trigger, :resource => ['', '
+
+
 
 BEGIN
     NEW.sort_name := get_sort_name(NEW.is_organization, NEW.first_name, NEW.middle_name, NEW.surname, 
@@ -37,41 +23,10 @@ END;
 
 
 
-SQL_CODE
-  }
-  create_proc(:get_match_score, [:varchar, :varchar], :return => :int4, :lang => 'plpgsql') {
-<<SQL_CODE
-DECLARE
-        score integer ;
-        inwords ALIAS FOR $1 ;
-        interms ALIAS FOR $2 ;
-        words character varying [];
-        terms character varying [];
-        iterm integer;
-        iword integer;
-        term character varying ;
-        word character varying ;
-BEGIN
-        words = string_to_array(inwords, ' ');
-        terms = string_to_array(interms, ' ');
-        score = 0;
-        FOR iterm in 1 .. array_upper(terms, 1) LOOP
-              term = terms[ iterm ];
-              IF term <> '' AND array_upper(words, 1) > 1 THEN
-              FOR iword in 1 ..  array_upper(words, 1) LOOP
-              word = words[ iword ];
-              IF word <> '' AND word ILIKE '%' || term || '%' THEN
-                 score = score + 1;
-              END IF;
-              END LOOP;
-              END IF;
-        END LOOP;
-        RETURN score;
-END;
-SQL_CODE
-  }
-    create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
-<<SQL_CODE
+
+'], :lang => 'plpgsql')
+  create_proc(:get_sort_name, [:bool, :varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', '
+
 
 DECLARE
     IS_ORG ALIAS FOR $1 ;
@@ -102,10 +57,10 @@ END;
 
 
 
-SQL_CODE
-  }
-    create_proc(:uncertify_address, [], :return => :trigger, :lang => 'plpgsql') {
-<<SQL_CODE
+
+'], :lang => 'plpgsql')
+  create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', '
+
 BEGIN
   IF tg_op = 'UPDATE' THEN
     IF ((NEW.address IS NULL != OLD.address IS NULL
@@ -123,8 +78,47 @@ BEGIN
   END IF;
   RETURN NEW;
 END
-SQL_CODE
-    }
+
+'], :lang => 'plpgsql')
+  create_proc(:get_match_score, [:varchar, :varchar], :return => :int4, :resource => ['', 'DECLARE
+        score integer ;
+        inwords ALIAS FOR $1 ;
+        interms ALIAS FOR $2 ;
+        words character varying [];
+        terms character varying [];
+        iterm integer;
+        iword integer;
+        term character varying ;
+        word character varying ;
+BEGIN
+        words = string_to_array(inwords, ' ');
+        terms = string_to_array(interms, ' ');
+        score = 0;
+        FOR iterm in 1 .. array_upper(terms, 1) LOOP
+              term = terms[ iterm ];
+              IF term <> '' AND array_upper(words, 1) > 1 THEN
+              FOR iword in 1 ..  array_upper(words, 1) LOOP
+              word = words[ iword ];
+              IF word <> '' AND word ILIKE '%' || term || '%' THEN
+                 score = score + 1;
+              END IF;
+              END LOOP;
+              END IF;
+        END LOOP;
+        RETURN score;
+END;
+'], :lang => 'plpgsql')
+  create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', 'DECLARE
+        result character varying;
+BEGIN
+        result = '';
+        result = result || coalesce(' ' || $1, '');
+        result = result || coalesce(' ' || $2, '');
+        result = result || coalesce(' ' || $3, '');
+        result = result || coalesce(' ' || $4, '');
+        RETURN result;
+END;
+'], :lang => 'plpgsql')
   create_table "actions", :force => true do |t|
     t.string   "description"
     t.integer  "lock_version",               :default => 0, :null => false
@@ -148,6 +142,7 @@ SQL_CODE
     t.integer  "attendance_type_id"
     t.text     "notes"
     t.integer  "call_status_type_id"
+    t.boolean  "closed",              :default => false, :null => false
   end
 
   create_table "attendance_types", :force => true do |t|
@@ -233,6 +228,14 @@ SQL_CODE
 
   add_index "contact_types_contacts", ["contact_id", "contact_type_id"], :name => "contact_types_contacts_contact_id_key", :unique => true
 
+  create_table "contact_volunteer_task_type_counts", :force => true do |t|
+    t.integer  "contact_id"
+    t.integer  "volunteer_task_type_id"
+    t.integer  "count"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "contacts", :force => true do |t|
     t.boolean  "is_organization",                   :default => false
     t.string   "sort_name",          :limit => 100
@@ -258,7 +261,6 @@ SQL_CODE
     t.integer  "cashier_created_by"
     t.integer  "cashier_updated_by"
     t.boolean  "fully_covered"
-    t.integer  "syseval_count",                     :default => 0,     :null => false
   end
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"
@@ -276,7 +278,7 @@ SQL_CODE
     t.text     "response_note"
   end
 
-  add_index "contacts_mailings", ["mailing_id", "contact_id"], :name => "contacts_mailings_ak", :unique => true
+  add_index "contacts_mailings", ["contact_id", "mailing_id"], :name => "contacts_mailings_ak", :unique => true
   add_index "contacts_mailings", ["contact_id"], :name => "index_contacts_mailings_on_contact_id"
 
   create_table "contracts", :force => true do |t|
@@ -307,6 +309,7 @@ SQL_CODE
     t.time     "start_time"
     t.time     "end_time"
     t.integer  "slot_number"
+    t.boolean  "closed",                     :default => false, :null => false
   end
 
   create_table "defaults", :force => true do |t|
@@ -373,6 +376,7 @@ SQL_CODE
     t.string   "result"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "megabytes_size"
   end
 
   create_table "donations", :force => true do |t|
@@ -393,6 +397,7 @@ SQL_CODE
     t.integer  "cashier_updated_by"
     t.boolean  "adjustment",                                 :default => false, :null => false
     t.datetime "occurred_at",                                                   :null => false
+    t.boolean  "is_pickup",                                  :default => false, :null => false
   end
 
   add_index "donations", ["contract_id"], :name => "donations_contract_id"
@@ -468,6 +473,7 @@ SQL_CODE
     t.string   "tester"
     t.integer  "return_sale_id"
     t.integer  "return_store_credit_id"
+    t.integer  "return_disbursement_id"
   end
 
   add_index "gizmo_events", ["created_at"], :name => "gizmo_events_created_at_index"
@@ -488,8 +494,20 @@ SQL_CODE
     t.integer  "cashier_updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "adjustment",                   :default => false, :null => false
-    t.datetime "occurred_at",                                     :null => false
+    t.boolean  "adjustment",                                 :default => false, :null => false
+    t.datetime "occurred_at",                                                   :null => false
+    t.string   "postal_code",                  :limit => 25
+  end
+
+  create_table "gizmo_type_groups", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "gizmo_type_groups_gizmo_types", :id => false, :force => true do |t|
+    t.integer "gizmo_type_id"
+    t.integer "gizmo_type_group_id"
   end
 
   create_table "gizmo_types", :force => true do |t|
@@ -507,6 +525,7 @@ SQL_CODE
     t.datetime "ineffective_on"
     t.string   "parent_name"
     t.boolean  "needs_id",                           :default => false,                 :null => false
+    t.integer  "return_policy_id"
   end
 
   create_table "holidays", :force => true do |t|
@@ -570,28 +589,18 @@ SQL_CODE
     t.datetime "updated_at"
   end
 
-  create_table "meetings", :force => true do |t|
-    t.string  "name"
-    t.date    "meeting_date"
-    t.time    "start_time"
-    t.time    "end_time"
-    t.boolean "splitable"
-    t.boolean "mergeable"
-    t.boolean "resizable"
-    t.integer "coverage_type_id"
-    t.integer "frequency_type_id"
-    t.integer "schedule_id"
-    t.integer "weekday_id"
-    t.date    "effective_date"
-    t.date    "ineffective_date"
-  end
-
   create_table "meetings_workers", :id => false, :force => true do |t|
     t.integer "meeting_id"
     t.integer "worker_id"
   end
 
   add_index "meetings_workers", ["meeting_id", "worker_id"], :name => "meetings_workers_link", :unique => true
+
+  create_table "newsletter_subscribers", :force => true do |t|
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "notes", :force => true do |t|
     t.integer  "contact_id"
@@ -648,11 +657,21 @@ SQL_CODE
     t.datetime "updated_at"
   end
 
+  create_table "postal_codes", :force => true do |t|
+    t.string   "postal_code"
+    t.string   "city"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "privileges", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "restrict",   :default => true, :null => false
   end
+
+  add_index "privileges", ["name"], :name => "index_privileges_on_name", :unique => true
 
   create_table "privileges_roles", :id => false, :force => true do |t|
     t.integer  "privilege_id"
@@ -715,11 +734,21 @@ SQL_CODE
     t.datetime "updated_at"
   end
 
+  create_table "return_policies", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.text     "text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "roles", :force => true do |t|
     t.string   "name",       :limit => 40
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "roles", ["name"], :name => "index_roles_on_name", :unique => true
 
   create_table "roles_users", :id => false, :force => true do |t|
     t.integer "user_id"
@@ -732,6 +761,7 @@ SQL_CODE
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "enabled",    :default => true, :null => false
   end
 
   create_table "rosters_skeds", :id => false, :force => true do |t|
@@ -820,10 +850,6 @@ SQL_CODE
   add_index "schedules", ["lft"], :name => "index_schedules_on_lft"
   add_index "schedules", ["rgt"], :name => "index_schedules_on_rgt"
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
-  end
-
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
     t.text     "data"
@@ -835,32 +861,67 @@ SQL_CODE
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "shifts", :force => true do |t|
-    t.string  "type"
-    t.time    "start_time"
-    t.time    "end_time"
-    t.boolean "splitable"
-    t.boolean "mergeable"
-    t.boolean "resizable"
-    t.string  "meeting_name"
-    t.date    "shift_date"
-    t.date    "effective_date"
-    t.date    "ineffective_date"
-    t.boolean "all_day"
-    t.integer "repeats_every",     :default => 1
-    t.integer "repeats_on",        :default => 0
-    t.integer "coverage_type_id"
-    t.integer "frequency_type_id"
-    t.integer "job_id"
-    t.integer "meeting_id"
-    t.integer "schedule_id"
-    t.integer "weekday_id"
-    t.integer "worker_id",         :default => 0
-    t.boolean "actual",            :default => false
-    t.boolean "training",          :default => false
+    t.string   "type"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.boolean  "splitable"
+    t.boolean  "mergeable"
+    t.boolean  "resizable"
+    t.string   "meeting_name"
+    t.date     "shift_date"
+    t.date     "effective_date"
+    t.date     "ineffective_date"
+    t.boolean  "all_day"
+    t.integer  "repeats_every",     :default => 1
+    t.integer  "repeats_on",        :default => 0
+    t.integer  "coverage_type_id"
+    t.integer  "frequency_type_id"
+    t.integer  "job_id"
+    t.integer  "meeting_id"
+    t.integer  "schedule_id"
+    t.integer  "weekday_id"
+    t.integer  "worker_id",         :default => 0
+    t.boolean  "actual",            :default => false
+    t.boolean  "training",          :default => false
+    t.boolean  "proposed",          :default => false, :null => false
+    t.integer  "created_by"
+    t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "skedjulnator_accesses", :force => true do |t|
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "skeds", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "spec_sheet_question_conditions", :force => true do |t|
+    t.integer  "spec_sheet_question_id"
+    t.string   "name"
+    t.string   "operator"
+    t.string   "expected_value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "spec_sheet_questions", :force => true do |t|
+    t.string   "name"
+    t.string   "question"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "spec_sheet_values", :force => true do |t|
+    t.integer  "spec_sheet_id"
+    t.integer  "spec_sheet_question_id"
+    t.string   "value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -885,18 +946,22 @@ SQL_CODE
   add_index "spec_sheets", ["type_id"], :name => "reports_type_id_index"
 
   create_table "standard_shifts", :force => true do |t|
-    t.time    "start_time"
-    t.time    "end_time"
-    t.boolean "splitable"
-    t.boolean "mergeable"
-    t.boolean "resizable"
-    t.integer "coverage_type_id"
-    t.integer "job_id"
-    t.integer "meeting_id"
-    t.integer "schedule_id"
-    t.integer "weekday_id"
-    t.integer "worker_id",        :default => 0
-    t.date    "shift_date"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.boolean  "splitable"
+    t.boolean  "mergeable"
+    t.boolean  "resizable"
+    t.integer  "coverage_type_id"
+    t.integer  "job_id"
+    t.integer  "meeting_id"
+    t.integer  "schedule_id"
+    t.integer  "weekday_id"
+    t.integer  "worker_id",        :default => 0
+    t.date     "shift_date"
+    t.integer  "created_by"
+    t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "store_credits", :force => true do |t|
@@ -963,18 +1028,6 @@ SQL_CODE
   add_index "types", ["description"], :name => "types_name_index"
   add_index "types", ["name"], :name => "types_name_uk", :unique => true
 
-  create_table "unavailabilities", :force => true do |t|
-    t.date    "effective_date"
-    t.date    "ineffective_date"
-    t.boolean "all_day"
-    t.time    "start_time"
-    t.time    "end_time"
-    t.integer "repeats_every",    :default => 1
-    t.integer "repeats_on",       :default => 0
-    t.integer "weekday_id"
-    t.integer "worker_id"
-  end
-
   create_table "users", :force => true do |t|
     t.string   "login"
     t.string   "email"
@@ -985,20 +1038,25 @@ SQL_CODE
     t.string   "remember_token"
     t.datetime "remember_token_expires_at"
     t.integer  "contact_id"
-    t.integer  "created_by",                                                :null => false
+    t.integer  "created_by",                                                 :null => false
     t.integer  "updated_by"
     t.integer  "cashier_code"
-    t.boolean  "can_login",                               :default => true, :null => false
+    t.boolean  "can_login",                               :default => true,  :null => false
     t.date     "last_logged_in"
+    t.boolean  "shared",                                  :default => false, :null => false
   end
 
   create_table "vacations", :force => true do |t|
-    t.date    "effective_date"
-    t.date    "ineffective_date"
-    t.boolean "is_all_day"
-    t.time    "start_time"
-    t.time    "end_time"
-    t.integer "worker_id"
+    t.date     "effective_date"
+    t.date     "ineffective_date"
+    t.boolean  "is_all_day"
+    t.time     "start_time"
+    t.time     "end_time"
+    t.integer  "worker_id"
+    t.integer  "created_by"
+    t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "vacations", ["worker_id"], :name => "index_vacations_on_worker_id"
@@ -1012,8 +1070,6 @@ SQL_CODE
   end
 
   create_table "volunteer_default_shifts", :force => true do |t|
-    t.date     "effective_at"
-    t.date     "ineffective_at"
     t.time     "start_time"
     t.time     "end_time"
     t.integer  "slot_count"
@@ -1021,12 +1077,14 @@ SQL_CODE
     t.integer  "roster_id",                                     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "volunteer_default_event_id",                    :null => false
+    t.integer  "volunteer_default_event_id"
     t.boolean  "class_credit"
     t.string   "description"
     t.integer  "program_id"
     t.boolean  "not_numbered",               :default => false, :null => false
     t.boolean  "stuck_to_assignment",        :default => false, :null => false
+    t.date     "effective_on"
+    t.date     "ineffective_on"
   end
 
   create_table "volunteer_events", :force => true do |t|
@@ -1036,6 +1094,7 @@ SQL_CODE
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "notes"
+    t.string   "type"
   end
 
   create_table "volunteer_shifts", :force => true do |t|
@@ -1057,15 +1116,15 @@ SQL_CODE
 
   create_table "volunteer_task_types", :force => true do |t|
     t.string   "description",      :limit => 100
-    t.decimal  "hours_multiplier",                :precision => 10, :scale => 3, :default => 1.0,                   :null => false
-    t.boolean  "instantiable",                                                   :default => true,                  :null => false
-    t.integer  "lock_version",                                                   :default => 0,                     :null => false
+    t.decimal  "hours_multiplier",                :precision => 10, :scale => 3, :default => 1.0,  :null => false
+    t.boolean  "instantiable",                                                   :default => true, :null => false
+    t.integer  "lock_version",                                                   :default => 0,    :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.string   "name",             :limit => 40,                                                                    :null => false
-    t.datetime "effective_on",                                                   :default => '2009-10-02 22:40:21'
+    t.string   "name",             :limit => 40,                                                   :null => false
+    t.datetime "effective_on"
     t.datetime "ineffective_on"
-    t.integer  "program_id",                                                                                        :null => false
+    t.integer  "program_id",                                                                       :null => false
   end
 
   create_table "volunteer_tasks", :force => true do |t|
@@ -1104,33 +1163,39 @@ SQL_CODE
     t.boolean "is_open"
     t.time    "start_time"
     t.time    "end_time"
+    t.time    "open_time",  :null => false
+    t.time    "close_time", :null => false
   end
 
   create_table "work_shifts", :force => true do |t|
-    t.string  "kind"
-    t.time    "start_time"
-    t.time    "end_time"
-    t.boolean "splitable"
-    t.boolean "mergeable"
-    t.boolean "resizable"
-    t.string  "meeting_name"
-    t.date    "shift_date"
-    t.date    "effective_date"
-    t.date    "ineffective_date"
-    t.boolean "all_day"
-    t.integer "repeats_every",     :default => 1
-    t.integer "repeats_on",        :default => 0
-    t.integer "coverage_type_id"
-    t.integer "frequency_type_id"
-    t.integer "job_id"
-    t.integer "meeting_id"
-    t.integer "schedule_id"
-    t.integer "shift_id"
-    t.integer "weekday_id"
-    t.integer "worker_id",         :default => 0
-    t.boolean "actual",            :default => true
-    t.boolean "training",          :default => false
-    t.boolean "proposed"
+    t.string   "kind",              :default => "StandardShift", :null => false
+    t.time     "start_time"
+    t.time     "end_time"
+    t.boolean  "splitable"
+    t.boolean  "mergeable"
+    t.boolean  "resizable"
+    t.string   "meeting_name"
+    t.date     "shift_date"
+    t.date     "effective_date"
+    t.date     "ineffective_date"
+    t.boolean  "all_day"
+    t.integer  "repeats_every",     :default => 1
+    t.integer  "repeats_on",        :default => 0
+    t.integer  "coverage_type_id"
+    t.integer  "frequency_type_id"
+    t.integer  "job_id"
+    t.integer  "meeting_id"
+    t.integer  "schedule_id"
+    t.integer  "shift_id"
+    t.integer  "weekday_id"
+    t.integer  "worker_id",         :default => 0
+    t.boolean  "actual",            :default => true
+    t.boolean  "training",          :default => false
+    t.boolean  "proposed"
+    t.integer  "created_by"
+    t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "worked_shifts", :force => true do |t|
@@ -1149,7 +1214,7 @@ SQL_CODE
 
   create_table "workers", :force => true do |t|
     t.string  "name"
-    t.float   "weekly_work_hours"
+    t.float   "standard_weekly_hours"
     t.float   "weekly_admin_hours"
     t.integer "contact_id"
     t.float   "sunday"
@@ -1163,7 +1228,7 @@ SQL_CODE
     t.float   "pto_rate"
     t.float   "floor_hours"
     t.float   "ceiling_hours"
-    t.boolean "virtual",            :default => false, :null => false
+    t.boolean "virtual",               :default => false, :null => false
   end
 
   add_index "workers", ["contact_id"], :name => "index_workers_on_contact_id"
@@ -1180,13 +1245,13 @@ SQL_CODE
   add_foreign_key "actions", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "actions_created_by_fkey"
   add_foreign_key "actions", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "actions_updated_by_fkey"
 
+  add_foreign_key "assignments", ["volunteer_shift_id"], "volunteer_shifts", ["id"], :on_delete => :cascade, :name => "assignments_volunteer_shift_id_fkey"
+  add_foreign_key "assignments", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "assignments_contact_id_fkey"
   add_foreign_key "assignments", ["attendance_type_id"], "attendance_types", ["id"], :on_delete => :restrict, :name => "assignments_attendance_type_id_fkey"
   add_foreign_key "assignments", ["call_status_type_id"], "call_status_types", ["id"], :name => "assignments_call_status_type_id_fkey"
-  add_foreign_key "assignments", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "assignments_contact_id_fkey"
-  add_foreign_key "assignments", ["volunteer_shift_id"], "volunteer_shifts", ["id"], :on_delete => :cascade, :name => "assignments_volunteer_shift_id_fkey"
 
-  add_foreign_key "builder_tasks", ["action_id"], "actions", ["id"], :name => "builder_tasks_action_id_fkey"
   add_foreign_key "builder_tasks", ["cashier_signed_off_by"], "users", ["id"], :on_delete => :restrict, :name => "builder_tasks_cashier_signed_off_by_fkey"
+  add_foreign_key "builder_tasks", ["action_id"], "actions", ["id"], :name => "builder_tasks_action_id_fkey"
   add_foreign_key "builder_tasks", ["contact_id"], "contacts", ["id"], :name => "builder_tasks_contact_id_fkey"
 
   add_foreign_key "contact_duplicates", ["contact_id"], "contacts", ["id"], :name => "contact_duplicates_contact_id_fkey"
@@ -1199,11 +1264,11 @@ SQL_CODE
   add_foreign_key "contact_types_contacts", ["contact_type_id"], "contact_types", ["id"], :on_delete => :restrict, :name => "contact_types_contacts_contact_types_contacts_fk"
   add_foreign_key "contact_types_contacts", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "contact_types_contacts_contacts_fk"
 
-  add_foreign_key "contacts", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_cashier_created_by_fkey"
-  add_foreign_key "contacts", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_cashier_updated_by_fkey"
   add_foreign_key "contacts", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "contacts_contract_id_fkey"
   add_foreign_key "contacts", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_created_by_fkey"
   add_foreign_key "contacts", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_updated_by_fkey"
+  add_foreign_key "contacts", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_cashier_created_by_fkey"
+  add_foreign_key "contacts", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_cashier_updated_by_fkey"
 
   add_foreign_key "contacts_mailings", ["contact_id"], "contacts", ["id"], :name => "contacts_mailings_contact_id_fkey"
   add_foreign_key "contacts_mailings", ["mailing_id"], "mailings", ["id"], :name => "contacts_mailings_mailing_id_fkey"
@@ -1211,20 +1276,20 @@ SQL_CODE
   add_foreign_key "default_assignments", ["contact_id"], "contacts", ["id"], :on_delete => :restrict, :name => "default_assignments_contact_id_fkey"
   add_foreign_key "default_assignments", ["volunteer_default_shift_id"], "volunteer_default_shifts", ["id"], :on_delete => :restrict, :name => "default_assignments_volunteer_default_shift_id_fkey"
 
-  add_foreign_key "disbursements", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "disbursements_cashier_created_by_fkey"
-  add_foreign_key "disbursements", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "disbursements_cashier_updated_by_fkey"
   add_foreign_key "disbursements", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "disbursements_contacts_fk"
   add_foreign_key "disbursements", ["disbursement_type_id"], "disbursement_types", ["id"], :on_delete => :restrict, :name => "disbursements_disbursements_type_id_fk"
+  add_foreign_key "disbursements", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "disbursements_cashier_created_by_fkey"
+  add_foreign_key "disbursements", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "disbursements_cashier_updated_by_fkey"
 
   add_foreign_key "discount_schedules_gizmo_types", ["discount_schedule_id"], "discount_schedules", ["id"], :on_delete => :cascade, :name => "discount_schedules_gizmo_types_discount_schedules_fk"
   add_foreign_key "discount_schedules_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "discount_schedules_gizmo_types_gizmo_types_fk"
 
-  add_foreign_key "donations", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_cashier_created_by_fkey"
-  add_foreign_key "donations", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_cashier_updated_by_fkey"
   add_foreign_key "donations", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "donations_contacts_fk"
   add_foreign_key "donations", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "donations_contract_id_fkey"
   add_foreign_key "donations", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_created_by_fkey"
   add_foreign_key "donations", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_updated_by_fkey"
+  add_foreign_key "donations", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_cashier_created_by_fkey"
+  add_foreign_key "donations", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "donations_cashier_updated_by_fkey"
 
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_context_id"], "gizmo_contexts", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_contexts_fk"
   add_foreign_key "gizmo_contexts_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "gizmo_contexts_gizmo_types_gizmo_types_fk"
@@ -1236,15 +1301,18 @@ SQL_CODE
   add_foreign_key "gizmo_events", ["recycling_contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "gizmo_events_recycling_contract_id_fkey"
   add_foreign_key "gizmo_events", ["recycling_id"], "recyclings", ["id"], :on_delete => :set_null, :name => "gizmo_events_recyclings_fk"
   add_foreign_key "gizmo_events", ["return_sale_id"], "sales", ["id"], :on_delete => :restrict, :name => "gizmo_events_return_sale_id_fk"
-  add_foreign_key "gizmo_events", ["return_store_credit_id"], "store_credits", ["id"], :on_delete => :restrict, :name => "gizmo_events_return_store_credit_id_fkey"
   add_foreign_key "gizmo_events", ["sale_id"], "sales", ["id"], :on_delete => :set_null, :name => "gizmo_events_sales_fk"
   add_foreign_key "gizmo_events", ["system_id"], "systems", ["id"], :on_delete => :restrict, :name => "gizmo_events_system_id_fkey"
+  add_foreign_key "gizmo_events", ["return_store_credit_id"], "store_credits", ["id"], :on_delete => :restrict, :name => "gizmo_events_return_store_credit_id_fkey"
+  add_foreign_key "gizmo_events", ["return_disbursement_id"], "disbursements", ["id"], :on_delete => :restrict, :name => "gizmo_events_return_disbursement_id_fk"
 
-  add_foreign_key "gizmo_returns", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "gizmo_returns_cashier_created_by_fkey"
-  add_foreign_key "gizmo_returns", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "gizmo_returns_cashier_updated_by_fkey"
   add_foreign_key "gizmo_returns", ["contact_id"], "contacts", ["id"], :on_delete => :restrict, :name => "gizmo_returns_contact_id_fkey"
 
+  add_foreign_key "gizmo_type_groups_gizmo_types", ["gizmo_type_id"], "gizmo_types", ["id"], :on_delete => :cascade, :name => "gizmo_type_groups_gizmo_types_gizmo_type_id_fkey"
+  add_foreign_key "gizmo_type_groups_gizmo_types", ["gizmo_type_group_id"], "gizmo_type_groups", ["id"], :on_delete => :cascade, :name => "gizmo_type_groups_gizmo_types_gizmo_type_group_id_fkey"
+
   add_foreign_key "gizmo_types", ["gizmo_category_id"], "gizmo_categories", ["id"], :name => "gizmo_types_gizmo_categories_fk"
+  add_foreign_key "gizmo_types", ["return_policy_id"], "return_policies", ["id"], :name => "gizmo_types_return_policy_id_fkey"
 
   add_foreign_key "holidays", ["frequency_type_id"], "frequency_types", ["id"], :on_delete => :set_null, :name => "holidays_frequency_types"
   add_foreign_key "holidays", ["schedule_id"], "schedules", ["id"], :on_delete => :set_null, :name => "holidays_schedules"
@@ -1261,11 +1329,6 @@ SQL_CODE
   add_foreign_key "mailings", ["created_by"], "contacts", ["id"], :name => "mailings_created_by_fkey"
   add_foreign_key "mailings", ["updated_by"], "contacts", ["id"], :name => "mailings_updated_by_fkey"
 
-  add_foreign_key "meetings", ["coverage_type_id"], "coverage_types", ["id"], :on_delete => :set_null, :name => "meetings_coverage_types"
-  add_foreign_key "meetings", ["frequency_type_id"], "frequency_types", ["id"], :on_delete => :set_null, :name => "meetings_frequency_types"
-  add_foreign_key "meetings", ["schedule_id"], "schedules", ["id"], :on_delete => :set_null, :name => "meetings_schedules"
-  add_foreign_key "meetings", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "meetings_weekdays"
-
   add_foreign_key "meetings_workers", ["meeting_id"], "shifts", ["id"], :on_delete => :cascade, :name => "meetings_workers_meetings"
   add_foreign_key "meetings_workers", ["worker_id"], "workers", ["id"], :on_delete => :cascade, :name => "meetings_workers_workers"
 
@@ -1279,17 +1342,20 @@ SQL_CODE
   add_foreign_key "points_trades", ["from_contact_id"], "contacts", ["id"], :on_delete => :restrict, :name => "points_trades_from_contact_id_fkey"
   add_foreign_key "points_trades", ["to_contact_id"], "contacts", ["id"], :on_delete => :restrict, :name => "points_trades_to_contact_id_fkey"
 
+  add_foreign_key "privileges_roles", ["role_id"], "roles", ["id"], :on_delete => :cascade, :name => "privileges_roles_role_id_fkey"
+  add_foreign_key "privileges_roles", ["privilege_id"], "privileges", ["id"], :on_delete => :cascade, :name => "privileges_roles_privilege_id_fkey"
+
   add_foreign_key "recyclings", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "recyclings_cashier_created_by_fkey"
   add_foreign_key "recyclings", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "recyclings_cashier_updated_by_fkey"
 
+  add_foreign_key "resources_volunteer_default_events", ["roster_id"], "rosters", ["id"], :on_delete => :restrict, :name => "resources_volunteer_default_events_roster_id_fkey"
   add_foreign_key "resources_volunteer_default_events", ["volunteer_default_event_id"], "volunteer_default_events", ["id"], :on_delete => :cascade, :name => "resources_volunteer_default_eve_volunteer_default_event_id_fkey"
   add_foreign_key "resources_volunteer_default_events", ["resource_id"], "resources", ["id"], :on_delete => :restrict, :name => "resources_volunteer_default_events_resource_id_fkey"
-  add_foreign_key "resources_volunteer_default_events", ["roster_id"], "rosters", ["id"], :on_delete => :restrict, :name => "resources_volunteer_default_events_roster_id_fkey"
 
-  add_foreign_key "resources_volunteer_events", ["resource_id"], "resources", ["id"], :on_delete => :restrict, :name => "resources_volunteer_events_resource_id_fkey"
-  add_foreign_key "resources_volunteer_events", ["resources_volunteer_default_event_id"], "resources_volunteer_default_events", ["id"], :on_delete => :set_null, :name => "resources_volunteer_events_resources_volunteer_default_eve_fkey"
   add_foreign_key "resources_volunteer_events", ["roster_id"], "rosters", ["id"], :on_delete => :restrict, :name => "resources_volunteer_events_roster_id_fkey"
+  add_foreign_key "resources_volunteer_events", ["resources_volunteer_default_event_id"], "resources_volunteer_default_events", ["id"], :on_delete => :set_null, :name => "resources_volunteer_events_resources_volunteer_default_eve_fkey"
   add_foreign_key "resources_volunteer_events", ["volunteer_event_id"], "volunteer_events", ["id"], :on_delete => :cascade, :name => "resources_volunteer_events_volunteer_event_id_fkey"
+  add_foreign_key "resources_volunteer_events", ["resource_id"], "resources", ["id"], :on_delete => :restrict, :name => "resources_volunteer_events_resource_id_fkey"
 
   add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :on_delete => :cascade, :name => "roles_users_role_id_fkey"
   add_foreign_key "roles_users", ["user_id"], "users", ["id"], :on_delete => :cascade, :name => "roles_users_user_id_fkey"
@@ -1299,12 +1365,12 @@ SQL_CODE
 
   add_foreign_key "rr_items", ["rr_set_id"], "rr_sets", ["id"], :on_delete => :cascade, :name => "rr_items_rr_sets"
 
-  add_foreign_key "sales", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "sales_cashier_created_by_fkey"
-  add_foreign_key "sales", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "sales_cashier_updated_by_fkey"
   add_foreign_key "sales", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "sales_contacts_fk"
   add_foreign_key "sales", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "sales_created_by_fkey"
   add_foreign_key "sales", ["discount_schedule_id"], "discount_schedules", ["id"], :on_delete => :restrict, :name => "sales_discount_schedules_fk"
   add_foreign_key "sales", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "sales_updated_by_fkey"
+  add_foreign_key "sales", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "sales_cashier_created_by_fkey"
+  add_foreign_key "sales", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "sales_cashier_updated_by_fkey"
 
   add_foreign_key "schedules", ["parent_id"], "schedules", ["id"], :on_delete => :cascade, :name => "schedules_schedules"
 
@@ -1314,17 +1380,27 @@ SQL_CODE
   add_foreign_key "shifts", ["schedule_id"], "schedules", ["id"], :on_delete => :cascade, :name => "shifts_schedules"
   add_foreign_key "shifts", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "shifts_weekdays"
   add_foreign_key "shifts", ["worker_id"], "workers", ["id"], :on_delete => :set_null, :name => "shifts_workers"
+  add_foreign_key "shifts", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "shifts_created_by_fkey"
+  add_foreign_key "shifts", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "shifts_updated_by_fkey"
 
-  add_foreign_key "spec_sheets", ["builder_task_id"], "builder_tasks", ["id"], :name => "spec_sheets_builder_task_id_fkey"
+  add_foreign_key "skedjulnator_accesses", ["user_id"], "users", ["id"], :on_delete => :cascade, :name => "skedjulnator_accesses_user_id_fkey"
+
+  add_foreign_key "spec_sheet_question_conditions", ["spec_sheet_question_id"], "spec_sheet_questions", ["id"], :on_delete => :restrict, :name => "spec_sheet_question_conditions_spec_sheet_question_id_fkey"
+
+  add_foreign_key "spec_sheet_values", ["spec_sheet_id"], "spec_sheets", ["id"], :on_delete => :cascade, :name => "spec_sheet_values_spec_sheet_id_fkey"
+  add_foreign_key "spec_sheet_values", ["spec_sheet_question_id"], "spec_sheet_questions", ["id"], :on_delete => :cascade, :name => "spec_sheet_values_spec_sheet_question_id_fkey"
+
   add_foreign_key "spec_sheets", ["system_id"], "systems", ["id"], :name => "spec_sheets_system_id_fkey"
   add_foreign_key "spec_sheets", ["type_id"], "types", ["id"], :name => "spec_sheets_type_id_fkey"
+  add_foreign_key "spec_sheets", ["builder_task_id"], "builder_tasks", ["id"], :name => "spec_sheets_builder_task_id_fkey"
 
   add_foreign_key "standard_shifts", ["coverage_type_id"], "coverage_types", ["id"], :on_delete => :set_null, :name => "standard_shifts_coverage_types"
   add_foreign_key "standard_shifts", ["job_id"], "jobs", ["id"], :on_delete => :cascade, :name => "standard_shifts_jobs"
-  add_foreign_key "standard_shifts", ["meeting_id"], "meetings", ["id"], :on_delete => :cascade, :name => "standard_shifts_meetings"
   add_foreign_key "standard_shifts", ["schedule_id"], "schedules", ["id"], :on_delete => :cascade, :name => "standard_shifts_schedules"
   add_foreign_key "standard_shifts", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "standard_shifts_weekdays"
   add_foreign_key "standard_shifts", ["worker_id"], "workers", ["id"], :on_delete => :set_null, :name => "standard_shifts_workers"
+  add_foreign_key "standard_shifts", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "standard_shifts_created_by_fkey"
+  add_foreign_key "standard_shifts", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "standard_shifts_updated_by_fkey"
 
   add_foreign_key "store_credits", ["gizmo_event_id"], "gizmo_events", ["id"], :on_delete => :cascade, :name => "store_credits_gizmo_event_id_fkey"
   add_foreign_key "store_credits", ["gizmo_return_id"], "gizmo_returns", ["id"], :on_delete => :cascade, :name => "store_credits_gizmo_return_id_fkey"
@@ -1338,39 +1414,37 @@ SQL_CODE
   add_foreign_key "types", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "types_created_by_fkey"
   add_foreign_key "types", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "types_updated_by_fkey"
 
-  add_foreign_key "unavailabilities", ["weekday_id"], "weekdays", ["id"], :on_delete => :cascade, :name => "unavailabilities_weekdays"
-  add_foreign_key "unavailabilities", ["worker_id"], "workers", ["id"], :on_delete => :cascade, :name => "unavailabilities_workers"
-
   add_foreign_key "users", ["contact_id"], "contacts", ["id"], :name => "users_contacts_fk"
   add_foreign_key "users", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "users_created_by_fkey"
   add_foreign_key "users", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "users_updated_by_fkey"
 
   add_foreign_key "vacations", ["worker_id"], "workers", ["id"], :on_delete => :cascade, :name => "vacations_workers"
+  add_foreign_key "vacations", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "vacations_created_by_fkey"
+  add_foreign_key "vacations", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "vacations_updated_by_fkey"
 
-  add_foreign_key "volunteer_default_shifts", ["program_id"], "programs", ["id"], :on_delete => :set_null, :name => "volunteer_default_shifts_program_id_fkey"
   add_foreign_key "volunteer_default_shifts", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "volunteer_default_shifts_roster_id_fkey"
-  add_foreign_key "volunteer_default_shifts", ["volunteer_default_event_id"], "volunteer_default_events", ["id"], :on_delete => :cascade, :name => "volunteer_default_shifts_volunteer_default_event_id_fkey"
   add_foreign_key "volunteer_default_shifts", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_default_shifts_volunteer_task_type_id_fkey"
+  add_foreign_key "volunteer_default_shifts", ["volunteer_default_event_id"], "volunteer_default_events", ["id"], :on_delete => :cascade, :name => "volunteer_default_shifts_volunteer_default_event_id_fkey"
+  add_foreign_key "volunteer_default_shifts", ["program_id"], "programs", ["id"], :on_delete => :set_null, :name => "volunteer_default_shifts_program_id_fkey"
 
   add_foreign_key "volunteer_events", ["volunteer_default_event_id"], "volunteer_default_events", ["id"], :on_delete => :set_null, :name => "volunteer_events_volunteer_default_event_id_fkey"
 
-  add_foreign_key "volunteer_shifts", ["program_id"], "programs", ["id"], :on_delete => :set_null, :name => "volunteer_shifts_program_id_fkey"
-  add_foreign_key "volunteer_shifts", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "volunteer_shifts_roster_id_fkey"
   add_foreign_key "volunteer_shifts", ["volunteer_default_shift_id"], "volunteer_default_shifts", ["id"], :on_delete => :set_null, :name => "volunteer_shifts_volunteer_default_shift_id_fkey"
-  add_foreign_key "volunteer_shifts", ["volunteer_event_id"], "volunteer_events", ["id"], :on_delete => :cascade, :name => "volunteer_shifts_volunteer_event_id_fkey"
-  add_foreign_key "volunteer_shifts", ["volunteer_event_id"], "volunteer_events", ["id"], :on_delete => :cascade, :name => "volunteer_shifts_volunteer_event_id_fkey1"
+  add_foreign_key "volunteer_shifts", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "volunteer_shifts_roster_id_fkey"
   add_foreign_key "volunteer_shifts", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_shifts_volunteer_task_type_id_fkey"
+  add_foreign_key "volunteer_shifts", ["program_id"], "programs", ["id"], :on_delete => :set_null, :name => "volunteer_shifts_program_id_fkey"
+  add_foreign_key "volunteer_shifts", ["volunteer_event_id"], "volunteer_events", ["id"], :on_delete => :cascade, :name => "volunteer_shifts_volunteer_event_id_fkey"
 
   add_foreign_key "volunteer_task_types", ["program_id"], "programs", ["id"], :on_delete => :restrict, :name => "volunteer_task_types_program_id_fkey"
 
-  add_foreign_key "volunteer_tasks", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_cashier_created_by_fkey"
-  add_foreign_key "volunteer_tasks", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_cashier_updated_by_fkey"
   add_foreign_key "volunteer_tasks", ["community_service_type_id"], "community_service_types", ["id"], :on_delete => :set_null, :name => "volunteer_tasks_community_service_type_id_fkey"
   add_foreign_key "volunteer_tasks", ["contact_id"], "contacts", ["id"], :on_delete => :set_null, :name => "volunteer_tasks_contacts_fk"
   add_foreign_key "volunteer_tasks", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_created_by_fkey"
-  add_foreign_key "volunteer_tasks", ["program_id"], "programs", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_program_id_fkey"
   add_foreign_key "volunteer_tasks", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_updated_by_fkey"
   add_foreign_key "volunteer_tasks", ["volunteer_task_type_id"], "volunteer_task_types", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_volunteer_task_type_id_fk"
+  add_foreign_key "volunteer_tasks", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_cashier_created_by_fkey"
+  add_foreign_key "volunteer_tasks", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_cashier_updated_by_fkey"
+  add_foreign_key "volunteer_tasks", ["program_id"], "programs", ["id"], :on_delete => :restrict, :name => "volunteer_tasks_program_id_fkey"
 
   add_foreign_key "work_shifts", ["coverage_type_id"], "coverage_types", ["id"], :on_delete => :set_null, :name => "work_shifts_coverage_types"
   add_foreign_key "work_shifts", ["frequency_type_id"], "frequency_types", ["id"], :on_delete => :set_null, :name => "work_shifts_frequency_types"
@@ -1378,6 +1452,8 @@ SQL_CODE
   add_foreign_key "work_shifts", ["schedule_id"], "schedules", ["id"], :on_delete => :set_null, :name => "work_shifts_schedules"
   add_foreign_key "work_shifts", ["weekday_id"], "weekdays", ["id"], :on_delete => :set_null, :name => "work_shifts_weekdays"
   add_foreign_key "work_shifts", ["worker_id"], "workers", ["id"], :on_delete => :set_null, :name => "work_shifts_workers"
+  add_foreign_key "work_shifts", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "work_shifts_created_by_fkey"
+  add_foreign_key "work_shifts", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "work_shifts_updated_by_fkey"
 
   add_foreign_key "worked_shifts", ["job_id"], "jobs", ["id"], :on_delete => :restrict, :name => "worked_shifts_job_id_fkey"
   add_foreign_key "worked_shifts", ["worker_id"], "workers", ["id"], :on_delete => :restrict, :name => "worked_shifts_worker_id_fkey"
