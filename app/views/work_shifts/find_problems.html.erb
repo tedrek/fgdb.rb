@@ -26,7 +26,7 @@ none found
 <% else %>
 <ul>
   <% @conflicts.each do |x| %>
-    <li><%= "On #{link_to d_to_s(x["date"]), :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x["date"], :shift_date_end_date => x["date"]}}, #{x["worker"]} is scheduled in #{x["job_1"]} and #{x["job_2"]} at the same time" %></li>
+    <li><%= "On #{link_to d_to_s(x["date"].send(is_ws ? :to_s : :to_i)), :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x["date"], :shift_date_end_date => x["date"]}}, #{x["worker"]} is scheduled in #{x["job_1"]} and #{x["job_2"]} at the same time" %></li>
   <% end %>
 </ul>
 <% end %>
@@ -36,7 +36,7 @@ none found
 <% else %>
 <ul>
   <% @unassigned.each do |x| %>
-    <li><%= "On #{link_to d_to_s(x["date"]), :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x["date"], :shift_date_end_date => x["date"]}}, a #{x["job"]} shift has no worker" %></li>
+    <li><%= "On #{link_to d_to_s(x["date"].send(is_ws ? :to_s : :to_i)), :action => "index", :conditions => {:shift_date_enabled => true, :shift_date_start_date => x["date"], :shift_date_end_date => x["date"]}}, a #{x["job"]} shift has no worker" %></li>
   <% end %>
 </ul>
 <% end %>
