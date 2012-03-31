@@ -5,7 +5,7 @@
   <th><%= role.display_string %></th>
   <td>
     <ul>
-    <% Role.first.users.can_login.sort_by(&:login).each do |user| %>
+    <% role.users.can_login.sort_by(&:login).each do |user| %>
       <li><%= user.login %> (<%= user.contact ? user.contact.display_name + " (#" + user.contact_id.to_s + ")" : "No Contact" %>)</li>
     <% end %>
     </ul>
