@@ -100,7 +100,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
       Thread.current['volskedj2_fillin_processing'].push(self.id)
       slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
       slots = [nil] if self.not_numbered
-      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy if slots.include?(x.slot_number)}
+      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil? and !x.closed}.each{|x| x.destroy if slots.include?(x.slot_number)}
       inputs = {}
       slots.each{|q|
         inputs[q] = [[(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]]

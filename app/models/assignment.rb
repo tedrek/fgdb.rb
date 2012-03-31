@@ -141,7 +141,9 @@ class Assignment < ActiveRecord::Base
   end
 
   def contact_display
-    if contact_id.nil?
+    if self.closed
+      return "(closed)"
+    elsif contact_id.nil?
       return "(available)"
     else
       return self.contact.display_name + "(#{self.voltask_count})"
