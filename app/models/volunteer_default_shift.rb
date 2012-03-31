@@ -166,7 +166,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
     vs_conds.date_date_type = 'arbitrary'
     vs_conds.date_start_date = startd.to_s
     vs_conds.date_end_date = endd.to_s
-    vs_conds.was_generated_from_ongoing_enabled = "true"
 
     matches = VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event])
   end
