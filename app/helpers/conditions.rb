@@ -15,7 +15,7 @@ class Conditions < ConditionsBase
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
-      was_generated_from_ongoing updated_by cashier_updated_by is_pickup
+      updated_by cashier_updated_by is_pickup
       logged_in_within signed_off_by
     ] + DATES).uniq
 
@@ -335,11 +335,6 @@ class Conditions < ConditionsBase
 
   def job_conditions(klass)
     return ["job_id IN (?)", (@job_id)]
-  end
-
-  def was_generated_from_ongoing_conditions(klass)
-    col = (klass == VolunteerShift ? "volunteer_default_shift_id" : "resources_volunteer_default_event_id")
-    return ["#{col} IS NOT NULL"]
   end
 
   def empty_conditions(klass)
