@@ -13,8 +13,8 @@ class ClosedBooleanToAssignments < ActiveRecord::Migration
       pt.each{|x|
         x.destroy
       }
-      DB.exec("UPDATE assignments SET contact_id = NULL AND closed = 't' WHERE contact_id = #{c.id};")
-      DB.exec("UPDATE default_assignments SET contact_id = NULL AND closed = 't' WHERE contact_id = #{c.id};")
+      DB.exec("UPDATE assignments SET contact_id = NULL, closed = 't' WHERE contact_id = #{c.id};")
+      DB.exec("UPDATE default_assignments SET contact_id = NULL, closed = 't' WHERE contact_id = #{c.id};")
       puts "Removing fake contact #{c.display_name}.."
       c.destroy
     end
