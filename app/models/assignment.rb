@@ -33,6 +33,10 @@ class Assignment < ActiveRecord::Base
     self.volunteer_shift.attributes=(attrs) # just pass it up
   end
 
+  def if_builder_assigned
+    self.contact_id and self.volunteer_shift.volunteer_task_type_id and self.volunteer_shift.volunteer_task_type.program.name == 'build'
+  end
+
   def not_assigned
     contact_id.nil? and !closed
   end

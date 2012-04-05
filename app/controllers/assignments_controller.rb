@@ -13,6 +13,22 @@ class AssignmentsController < ApplicationController
 
   helper :skedjul
 
+  def builder_history
+    begin
+      a = Assignment.find(params[:id])
+    rescue
+      flash[:jsalert] = "Assignment was deleted before the status sheet could be loaded."
+      redirect_skedj(request.env["HTTP_REFERER"], a ? a.volunteer_shift.date_anchor : "")
+      return
+    end
+    if a.contact_id
+      redirect_to :action => "builder", :controller => "spec_sheets", :contact => {:id => a.contact_id}
+    else
+      flash[:jsalert] = "Assignment does not have a contact associated."
+      redirect_skedj(request.env["HTTP_REFERER"], a ? a.volunteer_shift.date_anchor : "")
+    end
+  end
+
   def notes
     a = Assignment.find_by_id(params[:id])
     c = nil
@@ -101,7 +117,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id_and_today], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
                              },
 
                              :call_list =>
@@ -115,7 +131,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name,display_call_status,display_phone_numbers",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
                              },
 
                              :by_worker =>
@@ -131,7 +147,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
                              }
                            },
 
