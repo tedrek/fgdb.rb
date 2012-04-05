@@ -4,8 +4,10 @@ fgdb.rb (1.0.88) UNRELEASED; urgency=low
   * implement schedule problem finder for ongoing schedule as well
   * add an admin report listing users for each role
   * add a link to the builder status sheet from the volunteer schedule
+  * add report of total volunteers during a time period to trend reports
+    (Closes: #27732)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 05 Apr 2012 11:56:53 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 05 Apr 2012 12:05:06 -0700
 
 fgdb.rb (1.0.87) released; urgency=low
 

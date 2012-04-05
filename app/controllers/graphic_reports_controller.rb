@@ -769,6 +769,29 @@ class ActiveVolunteersTrend < TrendReport
       line_breakdown_types
     end
 end
+
+class TotalVolunteersTrend < TrendReport
+    def category
+      "Volunteer"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def get_for_timerange(args)
+      res = DB.execute("SELECT COUNT(DISTINCT contact_id) AS vol_count FROM volunteer_tasks WHERE #{sql_for_report(VolunteerTask, conditions_for_report(args, "date_performed"))};")
+      final = 0
+      if res.first
+        final = res.first['vol_count']
+      end
+      return {:total => final}
+    end
+    def title
+      "Report of Number of Total Volunteers"
+    end
+end
+
 class MasterGizmoFlowTrend < TrendReport
   def category
     "Combined"
