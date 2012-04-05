@@ -2,7 +2,7 @@ class AddCategorizationToSchedules < ActiveRecord::Migration
   def self.up
     add_column :skeds, :category_type, :string
     Sked.find(:all).each do |x|
-      x.category_type = x.name.match(/Room/) ? "Area" : "Program"
+      x.category_type = x.name.match(/(Room|Prebuild)/) ? "Area" : "Program"
       x.save!
     end
   end
