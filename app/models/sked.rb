@@ -3,7 +3,7 @@ class Sked < ActiveRecord::Base
 
   # TODO: FIXME: REMOVE THIS DEBUG STATEMENT
   def category_type
-    self.name.match(/Room/) ? "Area" : "Program"
+    self.name.match(/(Room|Prebuild)/) ? "Area" : "Program"
   end
 
   def rosters_s
