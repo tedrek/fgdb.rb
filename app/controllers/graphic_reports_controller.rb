@@ -538,7 +538,7 @@ class TrendReport
 
     def conditions_with_daterange_for_report(args, field)
       h = {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
-      conditions_for_report(args, field, h)
+      conditions_without_a_daterange_for_report(args, field, h)
     end
 
     def set_conditions(conds)
@@ -548,7 +548,7 @@ class TrendReport
     def conditions_errors
       return @conditions_errors if defined?(@conditions_errors)
       c = Conditions.new
-      c.apply_conditions(conditions_for_report({}, ''))
+      c.apply_conditions(conditions_without_a_daterange_for_report({}, ''))
       @conditions_errors = c
       return c
     end
@@ -565,7 +565,7 @@ class TrendReport
       return DB.prepare_sql(c.conditions(model))
     end
 
-    def conditions_for_report(args, field, extra_conditions = {})
+    def conditions_without_a_daterange_for_report(args, field, extra_conditions = {})
       h = extra_conditions
       if args[:extract_type]
         h["extract_enabled"] = "true"
@@ -754,7 +754,7 @@ class ActiveVolunteersTrend < TrendReport
       WHERE xxx.date_performed BETWEEN
         ?::date AND ?::date
       GROUP BY xxx.contact_id
-      HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AND #{sql_for_report(VolunteerTask, conditions_for_report(args, "date_performed"))};", Date.strptime(args[:start_date]) - Default['days_for_discount'].to_f, args[:start_date])
+      HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AND #{sql_for_report(VolunteerTask, conditions_without_a_daterange_for_report(args, "date_performed"))};", Date.strptime(args[:start_date]) - Default['days_for_discount'].to_f, args[:start_date])
       final = 0
       if res.first
         final = res.first['vol_count']
@@ -780,13 +780,15 @@ class TotalVolunteersTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      res = DB.execute("SELECT COUNT(DISTINCT contact_id) AS vol_count FROM volunteer_tasks WHERE #{sql_for_report(VolunteerTask, conditions_for_report(args, "date_performed"))};")
+      res = DB.execute("SELECT COUNT(DISTINCT contact_id) AS vol_count FROM volunteer_tasks WHERE #{sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))};")
+      where_clause = sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))
       final = 0
       if res.first
         final = res.first['vol_count']
       end
       return {:total => final}
     end
+
     def title
       "Report of Number of Total Volunteers"
     end
