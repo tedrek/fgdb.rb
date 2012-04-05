@@ -2,6 +2,10 @@
     <%= f.label :name %><br />
     <%= f.text_field :name %>
   </p>
+  <p>
+    <%= f.label :category_type %><br />
+    <%= f.text_field :category_type %>
+  </p>
   <h2>Rosters:</h2>
   <% for roster in Roster.find(:all) %>
     <div>

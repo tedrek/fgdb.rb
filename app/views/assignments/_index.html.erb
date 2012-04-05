@@ -18,9 +18,14 @@
 
 <div>
 <h3>By Schedule</h3>
+<% c_last = "" %>
 <%= link_to "ALL", {:action => to_action, :conditions => {:empty_enabled => "true"}} %><br />
-<% Sked.find(:all).sort_by(&:name).each do |x| %>
-<%= link_to x.name, {:action => to_action, :conditions => {:sked_enabled => "true", :sked_id => x.id}} %><br />
+<% Sked.find(:all).sort{|x,y| q = (x.category_type || "") <=> (y.category_type || ""); q == 0 ? x.name <=> y.name: q}.each do |x| %>
+<% c_this = x.category_type.to_s %>
+<% if c_this != c_last %>
+<h4>Schedules By <%= c_last = c_this%></h4>
+<% end %>
+<%= link_to x.name, {:action => to_action, :conditions => {:sked_enabled => "true", :sked_id => x.id}} %> (Rosters included: <%= x.rosters_s %>)<br />
 <% end %>
 </div>
 
