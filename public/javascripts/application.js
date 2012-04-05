@@ -1,6 +1,21 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+// TODO: body onScroll=
+function handle_scroll() {
+  var arr = document.getElementsByClassName('follow_scroll');
+  for(var i = 0; i < arr.length; i++) {
+    move_to_top(arr[i]);
+  }
+}
+
+function move_to_top(object) {
+  var top = document.documentElement.scrollTop;
+  var current = object.positionedOffset()[1];
+  var change = top - current + 15;
+  new Effect.Move(object, {y: change, mode: 'relative'});
+}
+
 cashierable_enabled = true;
 trigger_worked_shifts_changed = false;
 
