@@ -120,12 +120,9 @@ class SpecSheetsController < ApplicationController
     @system_parser = SystemParser.parse(output)
     @mistake_title = "Things you might have done wrong: "
     @mistakes = []
-    if !@report.notes || @report.notes == ""
-      @mistakes << "You should include something in the notes<br />(anything out of the ordinary, the key to enter BIOS, etc)<br />Click Edit to add to the notes"
-    end
     if @report.contact
       if @report.contact.is_organization==true
-        @mistakes << "The technician that you entered is an organization<br />(an organization cannot be a technician)<br />Click Edit to change the technician"
+        @mistakes << "The technician that you entered is an organization<br />(an organization should normally not be a technician)<br />Click Edit to change the technician"
       end
     end
     @seen = []

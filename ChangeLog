@@ -7,8 +7,10 @@ fgdb.rb (1.0.88) UNRELEASED; urgency=low
   * add report of total volunteers during a time period to trend reports
     (Closes: #27732)
   * implement buttons that follow the user scrolling with animations
+  * remove warning if printme notes are empty since all areas are using
+    conditional questions for standard information now
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 05 Apr 2012 17:08:51 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 05 Apr 2012 17:11:05 -0700
 
 fgdb.rb (1.0.87) released; urgency=low
 
