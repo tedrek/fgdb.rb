@@ -2,7 +2,7 @@
 
 <% form_tag :action => 'update', :id => @meeting do %>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit' %>
+  <%= submit_tag 'Edit', :class => "follow_scroll right_side" %>
 <% end %>
 
 <%= link_to 'Show', :action => 'show', :id => @meeting %> |
