@@ -12,6 +12,8 @@ fgdb.rb (1.0.88) released; urgency=low
   * privilege roles can now have short notes describing their
     functionality show up underneath
   * add Printerland and Recycling Area schedules (Closes: #27731)
+  * list schedules broken out by whether they group a program or an area,
+    and list the included rosters next to it
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Apr 2012 23:02:10 -0700
 
