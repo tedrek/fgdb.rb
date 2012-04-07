@@ -13,7 +13,7 @@
   <% end %>
 
   <div id="contact_user" <%= @contact.is_user? or "style='display:none'"%>>
-  <% if @contact.is_user? %>
+  <% if @contact.is_user? and  has_required_privileges('/admin_user_accounts') %>
     <div class='form-element'>
       <label for="user_can_login">can login?</label>
       <%= check_box :user, :can_login %>
