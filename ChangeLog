@@ -1,4 +1,4 @@
-fgdb.rb (1.0.88) UNRELEASED; urgency=low
+fgdb.rb (1.0.88) released; urgency=low
 
   * add unique indexes to role and privilege system (Closes: #27470)
   * implement schedule problem finder for ongoing schedule as well
@@ -13,7 +13,7 @@ fgdb.rb (1.0.88) UNRELEASED; urgency=low
     functionality show up underneath
   * add Printerland and Recycling Area schedules (Closes: #27731)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Apr 2012 22:34:22 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Apr 2012 23:02:10 -0700
 
 fgdb.rb (1.0.87) released; urgency=low
 
