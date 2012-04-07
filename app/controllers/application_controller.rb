@@ -201,6 +201,17 @@ class ApplicationController < ActionController::Base
     Thread.current['user'] = @current_user
   end
 
+  def redirect_to_with_back_magic(*opts)
+    if opts[0] == :back
+      if !request.headers["Referer"]
+        opts[0] = "/"
+        flash[:jsalert] = "Your request completed successfully, but was unable to determine your previous location, so you have been sent here instead." if !flash[:jsalert]
+      end
+    end
+    redirect_to_without_back_magic(*opts)
+  end
+  alias_method_chain :redirect_to, :back_magic
+
   def required_privileges(action)
     requires = []
     base_action = action.split("/").first

@@ -2,6 +2,9 @@ fgdb.rb (1.0.89) UNRELEASED; urgency=low
 
   * add a big red Dev to the background of testing instances of the
     database so it is easy to see the difference
+  * when trying to redirect_to :back with no previous location, redirect
+    to the front page with a javascript alert instead of generating a
+    crash report
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 07 Apr 2012 13:28:01 -0700
 
