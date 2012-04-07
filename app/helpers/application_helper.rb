@@ -22,15 +22,15 @@ module ApplicationHelper
 
   def save_exception_data(e)
     exception_data = process_exception_data(e)
-    unless exception_data[:exception_class] == "ActionController::RoutingError" and exception_data[:message].match(/jzebra.PrintApplet.class/)
+    unless e.to_s.include?("jzebra.PrintApplet.class")
       tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
       crash_id = tempfile.match(/^.*\.([^.]+)$/)[1]
       exception_data["tempfile"] = tempfile
       exception_data["crash_id"] = crash_id
+      f = File.open(tempfile, "w")
+      f.write(exception_data.to_json)
+      f.close
     end
-    f = File.open(tempfile, "w")
-    f.write(exception_data.to_json)
-    f.close
     exception_data
   end
 
