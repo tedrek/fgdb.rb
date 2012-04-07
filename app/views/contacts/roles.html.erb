@@ -3,7 +3,6 @@
 <% @roles.sort_by(&:name).each do |role| %>
   <tr>
     <th><%= role.name %><%= (role.notes.to_s.length > 0 ? (": " + role.notes) : "") %><br />(<%= role.privilege_list %>)</th>
-    <%= role.name %>: + (role.notes.to_s.length > 0 ? ("<br />(" + role.notes + ")") : "") %>
   <td>
     <ul>
     <% role.users.can_login.sort_by(&:login).each do |user| %>
