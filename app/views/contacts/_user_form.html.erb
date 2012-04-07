@@ -72,7 +72,7 @@
     <h4 style="clear: left;">Roles user has:</h4>
     <ul>
     <% for role in ((@user ? @user.roles : []) - grantable).sort_by(&:name) %>
-      <li><%= role.display_string + (role.notes.to_s.length > 0 ? ("<br />(" + role.notes + ")") : "") %></li>
+      <li><%= role.name %><%= (role.notes.to_s.length > 0 ? (": " + role.notes) : "") %><br />(<%= role.privilege_list %>)</li>
     <% end %>
     </ul>
     <% for role in grantable.sort_by(&:name) %>
@@ -81,7 +81,7 @@
                name="roles[]" value="<%= role.id %>"
                <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
                />
-        <label for="<%= h role.name %>"><%= role.display_string  + (role.notes.to_s.length > 0 ? ("<br />(" + role.notes + ")") : "") %></label>
+        <label for="<%= h role.name %>"><%= role.name %><%= (role.notes.to_s.length > 0 ? (": " + role.notes) : "") %><br />(<%= role.privilege_list %>)</label>
       </div>
     <% end %>
     <div class='form-element'>
