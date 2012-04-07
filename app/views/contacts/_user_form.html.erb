@@ -69,7 +69,8 @@
     <% end %>
 
     <% grantable = has_required_privileges('/create_logins') ? current_user.grantable_roles : [] %>
-    <h4 style="clear: left;">Roles user has:</h4>
+    <h4 style="clear: left;"><a href="#" onClick="var r = $('roles_hidden_div'); if(r.style.display == 'none') { r.show(); } else { r.hide(); }">Roles user has:</a></h4>
+    <div id="roles_hidden_div" style="display: none">
     <ul>
     <% for role in ((@user ? @user.roles : []) - grantable).sort_by(&:name) %>
       <li><%= role.name %><%= (role.notes.to_s.length > 0 ? (": " + role.notes) : "") %><br />(<%= role.privilege_list %>)</li>
@@ -86,6 +87,7 @@
     <% end %>
     <div class='form-element'>
       * = privilege does not apply to shared login users
+    </div>
     </div>
   </div>
 </div>
