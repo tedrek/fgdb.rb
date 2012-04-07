@@ -22,7 +22,7 @@ module ApplicationHelper
 
   def save_exception_data(e)
     exception_data = process_exception_data(e)
-    unless exception_data[:exception_class].to_s == "ActionController::RoutingError" and exception_data[:message].include?("jzebra.PrintApplet.class")
+    unless e.to_s.include?("jzebra.PrintApplet.class")
       tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
       crash_id = tempfile.match(/^.*\.([^.]+)$/)[1]
       exception_data["tempfile"] = tempfile
