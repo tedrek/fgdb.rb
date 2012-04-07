@@ -1,3 +1,8 @@
+fgdb.rb (1.0.89) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Apr 2012 23:02:49 -0700
+
 fgdb.rb (1.0.88) released; urgency=low
 
   * add unique indexes to role and privilege system (Closes: #27470)
