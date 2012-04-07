@@ -12,5 +12,7 @@
 <% if @fgdb_local_request %>
   <%= render :partial => "sidebar_links/exception_data", :locals => {:exception_data => @exception_data} %>
 <% else %>
+<% if @exception_data["crash_id"] %>
   <p>Some information about this error has been saved with the crash ID <b><%= @exception_data["crash_id"] %></b>. <br /><b>Include this crash ID in any bug reports that you create about this issue.</b></p>
+<% end %>
 <% end %>
