@@ -51,7 +51,7 @@ module ActiveRecord
     end
 
     def create_with_user
-      if ActiveRecord::Base.record_timestamps
+      if self.class.record_timestamps
         user = current_user
         if !user.nil?
           self[:created_by] = user.id if respond_to?(:created_by) && created_by.nil?
@@ -68,8 +68,16 @@ module ActiveRecord
       create_without_user
     end
 
+    def will_not_updated_timestamps!
+      class << self
+        def record_timestamps
+          false
+        end
+      end
+    end
+
     def update_with_user
-      if ActiveRecord::Base.record_timestamps
+      if self.class.record_timestamps
         user = current_user
         self[:updated_by] = user.id if respond_to?(:updated_by) and !user.nil?
         cashier = current_cashier
@@ -127,7 +135,7 @@ module ActiveRecord
     end
 
     def logaction(action)
-      return if ! ActiveRecord::Base.record_timestamps
+      return if ! self.class.record_timestamps
       if self.class.table_name != "logs" && !self.id.nil? # AND (!["spec_sheets", "builder_tasks"].include?(self.class.table_name)) && 
         user = Thread.current['user']
 #        raise "THIS IS YOUR INFO ... U: #{user.inspect} ... C: #{self.class.inspect} ... S: #{self.inspect}"

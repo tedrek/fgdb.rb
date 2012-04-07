@@ -186,6 +186,9 @@ GROUP BY 1,2;")
     user = applied_user
     if user and User.authenticate(user.login, params[:worked_shift][:password])
       mark_activity
+      user.will_not_updated_timestamps!
+      user.last_logged_in = Date.today
+      user.save
       @session_allowed = true
     else
       flash[:error] = user ? "Incorrect password for user #{user.login}" : "That worker has no user login"

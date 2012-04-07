@@ -157,11 +157,17 @@ class ApplicationController < ActionController::Base
     verify :method => :post, :only => post_list, :redirect_to => {:controller => "sidebar_links", :action => "index"}
 =end
 
+  before_filter :authorize
+
   before_filter :set_cashier
+
   def set_cashier
     uid = _set_cashier(params)
     if uid && (u = User.find_by_shared_and_cashier_code(false, uid.to_i))
       Thread.current['cashier'] = u
+      u.will_not_updated_timestamps!
+      u.last_logged_in = Date.today
+      u.save
     else
       Thread.current['cashier'] = nil
       logger.warn "Cashier not found" # die better
@@ -184,8 +190,6 @@ class ApplicationController < ActionController::Base
   def with_sidebar
     "with_sidebar.html.erb"
   end
-
-  before_filter :authorize
 
   def authorize
     x = current_user()
