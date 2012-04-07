@@ -67,7 +67,7 @@ module ConditionsHelper
   end
 
   def html_for_sked_condition(params_key)
-    select(params_key, "sked_id", Sked.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]})
+    select(params_key, "sked_id", Sked.find(:all).sort_by(&:name).collect{|p| [ p.name + " (" + p.category_type.to_s + ")", p.id ]})
   end
 
   def html_for_volunteer_task_type_condition(params_key)
