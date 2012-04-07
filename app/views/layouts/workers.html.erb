@@ -9,6 +9,9 @@
   <%= stylesheet_link_tag 'schedule', :media => "all" %>
   <%= stylesheet_link_tag 'workers', :media => "all" %>
   <%= stylesheet_link_tag 'print', :media => "print" %>
+  <% if RAILS_ENV == "development" %>
+    <%= stylesheet_link_tag 'dev', :media => "all" %>
+  <% end %>
 
   <%= javascript_include_tag :defaults %>
   <%= javascript_include_tag 'lightwindow' %>
