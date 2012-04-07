@@ -11,8 +11,9 @@ fgdb.rb (1.0.88) UNRELEASED; urgency=low
     conditional questions for standard information now
   * privilege roles can now have short notes describing their
     functionality show up underneath
+  * add Printerland and Recycling Area schedules (Closes: #27731)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 05 Apr 2012 17:26:56 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Apr 2012 22:34:22 -0700
 
 fgdb.rb (1.0.87) released; urgency=low
 
