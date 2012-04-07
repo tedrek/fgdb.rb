@@ -71,17 +71,17 @@
     <% grantable = has_required_privileges('/create_logins') ? current_user.grantable_roles : [] %>
     <h4 style="clear: left;">Roles user has:</h4>
     <ul>
-    <% for role in (@user ? @user.roles : []) - grantable %>
-      <li><%= role.display_string + (role.notes.to_s.length > 0 ? (" (" + roles.notes + ")") : "") %></li>
+    <% for role in ((@user ? @user.roles : []) - grantable).sort_by(&:name) %>
+      <li><%= role.display_string + (role.notes.to_s.length > 0 ? ("<br />(" + role.notes + ")") : "") %></li>
     <% end %>
     </ul>
-    <% for role in grantable %>
+    <% for role in grantable.sort_by(&:name) %>
       <div class="form-element role-check-box">
         <input type="checkbox" id="<%= h role.name %>"
                name="roles[]" value="<%= role.id %>"
                <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
                />
-        <label for="<%= h role.name %>"><%= role.display_string %></label>
+        <label for="<%= h role.name %>"><%= role.display_string  + (role.notes.to_s.length > 0 ? ("<br />(" + role.notes + ")") : "") %></label>
       </div>
     <% end %>
     <div class='form-element'>

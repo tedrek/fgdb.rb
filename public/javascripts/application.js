@@ -1,7 +1,6 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-// TODO: body onScroll=
 function handle_scroll() {
   var arr = document.getElementsByClassName('follow_scroll');
   for(var i = 0; i < arr.length; i++) {
