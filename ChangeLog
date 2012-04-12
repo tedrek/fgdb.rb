@@ -17,7 +17,6 @@ fgdb.rb (1.0.88) released; urgency=low
   * add a board work category to volunteer scheduling (Closes: #27869)
   * add Mac As-is types for Laptops, Systems and Systems w/LCD (Closes:
     #27876)
-  * show holidays on volunteer schedule
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Apr 2012 23:02:10 -0700
 
