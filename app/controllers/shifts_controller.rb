@@ -77,7 +77,12 @@ class ShiftsController < ApplicationController
   end
 
   def destroy
-    Shift.find(params[:id]).destroy
+    begin
+      Shift.find(params[:id]).destroy
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "That shift is already gone."
+    end
+
     redirect_to :action => 'view_weekly_schedule'
   end
 
