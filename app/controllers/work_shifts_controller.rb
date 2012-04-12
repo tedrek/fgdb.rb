@@ -153,7 +153,11 @@ class WorkShiftsController < ApplicationController
   end
 
   def destroy
-    WorkShift.find(params[:id]).destroy
+    begin
+      WorkShift.find(params[:id]).destroy
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "That work shift is already gone."
+    end
     redirect_to :action => 'list'
   end
 end
