@@ -23,6 +23,10 @@ class Contact < ActiveRecord::Base
 
   has_many :disciplinary_actions
 
+  def disciplinary_action # TODO: FIXME: REMOVEME
+    self.disciplinary_action.first
+  end
+
   def has_areas_disciplined_from?
     self.areas_disciplined_from.length > 0
   end
