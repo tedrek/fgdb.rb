@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  notes: MyText
+  contact_id: 1
+  disabled: false
+
+two:
+  notes: MyText
+  contact_id: 1
+  disabled: false
