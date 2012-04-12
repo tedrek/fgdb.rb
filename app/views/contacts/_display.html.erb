@@ -116,6 +116,8 @@ Attended Classes:<br />
 <div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
 <div id="contact__contract" style="display: none"><%= @contact.contract.id %></div>
 <div id="contact__shift_count" style="display: none"><%= @contact.assignments.on_or_after_today.not_cancelled.length %></div>
+<div id="contact__has_areas_disciplined_from" style="display: none"><%= @contact.has_areas_disciplined_from? %></div>
+<div id="contact__areas_disciplined_from" style="display: none"><%= @contact.areas_disciplined_from.map(&:name).to_json %></div>
 </div>
 
 <%= javascript_tag(options[:on_display]) if options.has_key? :on_display %>

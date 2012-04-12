@@ -28,7 +28,7 @@ class Contact < ActiveRecord::Base
   end
 
   def areas_disciplined_from
-    self.disciplinary_actions.not_disabled.map(&:disciplinary_action_areas).uniq.sort
+    self.disciplinary_actions.not_disabled.map(&:disciplinary_action_areas).flatten.uniq.sort_by(&:name)
   end
 
   validates_presence_of :postal_code, :on => :create, :unless => :foreign_person?

@@ -1,6 +1,18 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function display_disciplinary_notes() {
+  if($('contact__has_areas_disciplined_from') && $('contact__has_areas_disciplined_from').innerHTML == "true") {
+    var str = "This volunteer may not work in the following areas:\n";
+    var a = eval($('contact__areas_disciplined_from').innerHTML);
+    for(var i = 0; i < a.length; i++) {
+      str = str + " * " + a[i] + "\n";
+    }
+    str = str + "Please check with the volunteer coordinator or a collective staff member for assistance.";
+    alert(str);
+  }
+}
+
 function handle_scroll() {
   var arr = document.getElementsByClassName('follow_scroll');
   for(var i = 0; i < arr.length; i++) {
