@@ -21,6 +21,16 @@ class Contact < ActiveRecord::Base
   has_many :gizmo_returns
   has_one :worker
 
+  has_many :disciplinary_actions
+
+  def has_areas_disciplined_from?
+    self.areas_disciplined_from.length > 0
+  end
+
+  def areas_disciplined_from
+    self.disciplinary_actions.not_disabled.map(&:disciplinary_action_areas).uniq.sort
+  end
+
   validates_presence_of :postal_code, :on => :create, :unless => :foreign_person?
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
