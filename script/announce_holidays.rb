@@ -13,7 +13,7 @@ def handle_holiday(holiday, num_weeks)
     i += 1
   end
   subj = "Closed for #{holiday.name} (#{num_weeks} week reminder)"
-  msg = "Free Geek will be closed #{i == 1 ? "on" : "starting"} #{holiday.holiday_date} for #{i} day#{i == 1 ? "" : "s"} for the #{holiday.name} holiday."
+  msg = "Free Geek will be closed #{holiday.is_all_day ? "" : "from #{holiday.start_time.strftime("%T")} to #{holiday.end_time.strftime("%T")} "}#{i == 1 ? "on" : "starting"} #{holiday.holiday_date} for #{i} day#{i == 1 ? "" : "s"} for the #{holiday.name} holiday."
   Notifier.deliver_holiday_announcement(subj, msg)
 end
 
