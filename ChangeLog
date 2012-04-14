@@ -1,4 +1,4 @@
-fgdb.rb (1.0.89) UNRELEASED; urgency=low
+fgdb.rb (1.0.89) released; urgency=low
 
   * add a big red Dev to the background of testing instances of the
     database so it is easy to see the difference
@@ -7,7 +7,7 @@ fgdb.rb (1.0.89) UNRELEASED; urgency=low
     crash report
   * add disciplinary actions (Closes: #27378)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 07 Apr 2012 13:28:01 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Apr 2012 09:13:50 -0700
 
 fgdb.rb (1.0.88) released; urgency=low
 
