@@ -15,8 +15,8 @@
       <% fields_for name.to_sym do |f| %>
       <% DisciplinaryActionArea.all.each do |a| %>
       <div class="form-element">
-        <%= label name, name + "_disciplinary_action_area_ids_#{a.id}", a.name %>
-        <%= check_box_tag "#{name}[disciplinary_action_area_ids][]", a.id, disciplinary_action.disciplinary_action_areas.include?(a) %>
+        <%= label_tag name + "_disciplinary_action_area_ids_#{a.id}", a.name %>
+        <%= check_box_tag "#{name}[disciplinary_action_area_ids][#{a.id}]", a.id, disciplinary_action.disciplinary_action_areas.include?(a) %>
       </div>
       <% end %>
       <div class="form-element">
