@@ -73,8 +73,6 @@ class VolunteerDefaultShiftsController < ApplicationController
       :left_method_name => "volunteer_default_shifts.left_method_name",
       :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_default_events.description)), volunteer_default_shifts.description",
       :left_table_name => "volunteer_task_types",
-      :left_link_action => "new_default_shift",
-      :left_link_id => "volunteer_task_types.id",
 
       :thing_start_time => "volunteer_default_shifts.start_time",
       :thing_end_time => "volunteer_default_shifts.end_time",
