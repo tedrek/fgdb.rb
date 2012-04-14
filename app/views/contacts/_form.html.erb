@@ -23,32 +23,12 @@
   <%= observe_field 'adopter', :function => check_vol % 'adopter' %>
   <%= observe_field 'offsite', :function => check_vol % 'offsite' %>
 
+  <% unless @contact.id.nil? %>
   <fieldset>
     <h3>Confidential Information</h3>
-    <div class="form-element">
-    (Imagine a magic PIN prompt here..)
-    (After that, imagine a link to add a disciplinary action to this record here..)
-    </div>
-    <% @contact.disciplinary_actions.each do |d| %>
-      <hr />
-      <% DisciplinaryActionArea.all.each do |a| %>
-      <div class="form-element">
-        <%= label 'disciplinary_action_1', "area_#{a.id}", a.name %>
-        <%= check_box 'disciplinary_action_1', "area_#{a.id}", {:checked => d.disciplinary_action_areas.include?(a)} %>
-      </div>
-      <% end %>
-      <div class="form-element">
-      <%= text_area 'disciplinary_action_1', 'notes' %>
-      </div>
-      <div class="form-element">
-      <%= label 'disciplinary_action_1', 'disabled', 'Disable this disciplinary action, allowing the volunteer back' %>
-      <%= check_box 'disciplinary_action_1', 'disabled' %>
-      </div>
-      <div class="form-element">
-      Link to Remove
-      </div>
-    <% end %>
+    <%= render :partial => "disciplinary_actions" %>
   </fieldset>
+  <% end %>
 
   <div style="clear: left;" class="organization form-element">
     <label for="contact_organization">Organization Name</label>

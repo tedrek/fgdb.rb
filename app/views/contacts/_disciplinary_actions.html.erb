@@ -1,0 +1,34 @@
+    <div id="confidential_information">
+    <%= loading_indicator_tag("confidential_information") %>
+    <div class="form-element">
+    <% if @contact %>
+      <% if @contact.has_areas_disciplined_from? %>
+        Not allowed to volunteer in the following areas: <%= @contact.areas_disciplined_from.map(&:name).join(", ") %>
+      <% end %>
+      <% @collective_cashier.contact_id = @contact.id %>
+    <% end %>
+    </div>
+    <div class="form-element">
+    <% fields_for :collective_cashier do |f| %>
+    <%= f.label :cashier_code, "Enter PIN for more information (collective only):" %>
+    <%= f.text_field :cashier_code, :autocomplete => :off %>
+    <%= button_to_function "Load Confidential Information", remote_function(
+          :url => {:controller => "contacts", :action => "load_confidential_information", :collective_cashier => {:contact_id => @collective_cashier.contact_id}},
+                          :loading => "Element.show('#{loading_indicator_id("confidential_information")}');",
+                          :with => "{this_cashier_code: $('collective_cashier_cashier_code').value}") %>
+    <% end %>
+    </div>
+    <% if @valid_cashier_code %>
+    <div class="form-element">
+      Has this many disciplinary actions associated: <%= @contact.disciplinary_actions.count %>
+      <br />
+      <%= link_to_function "Add New", "$('disciplinary_action_new_div').show(); $('disciplinary_action_new_add').checked = true;" %>
+    </div>
+    <div class="form-element" id="disciplinary_action_new_div" style="display: none">
+      <%= render :partial => "disciplinary_action_form", :locals => {:disciplinary_action => DisciplinaryAction.new} %>
+    </div>
+    <% @contact.disciplinary_actions.sort_by(&:created_at).reverse.each do |d| %>
+      <%= render :partial => "disciplinary_action_form", :locals => {:disciplinary_action => d} %>
+    <% end %>
+    <% end %>
+    </div>

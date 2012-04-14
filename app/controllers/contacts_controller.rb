@@ -3,6 +3,37 @@ class ContactsController < ApplicationController
   layout :with_sidebar
   filter_parameter_logging "user_password", "user_password_confirmation"
 
+  private
+  def set_collective_cashier
+    @collective_cashier = OpenStruct.new(params[:collective_cashier])
+  end
+  public
+  before_filter :set_collective_cashier
+
+  def load_confidential_information
+    @contact = Contact.find_by_id(@collective_cashier.contact_id.to_i)
+    @collective_cashier.cashier_code = params[:this_cashier_code] if params[:this_cashier_code]
+    uid = @collective_cashier.cashier_code
+    t = false
+    u = nil
+    if uid && (u = User.find_by_cashier_code(uid.to_i))
+      t = true
+
+      t = false if !u.can_login?
+
+      Thread.current['user'] = Thread.current['cashier']
+      t = false if ! u.can_view_disciplinary_information?
+    else
+      t = false
+    end
+    @valid_cashier_code = t
+    @collective_cashier.cashier_code = "" unless @valid_cashier_code
+    render :update do |page|
+      page.hide loading_indicator_id("confidential_information")
+      page.replace_html 'confidential_information', :partial => 'disciplinary_actions'
+    end
+  end
+
   def roles
     @roles = Role.find(:all)
   end
@@ -202,6 +233,20 @@ class ContactsController < ApplicationController
     begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
+      if (uid = @collective_cashier.cashier_code) && (u = User.find_by_cashier_code(uid.to_i)) && u.can_view_disciplinary_information?
+        if params[:disciplinary_action_new_add] == "1"
+          @contact.disciplinary_actions.build(params[:disciplinary_action_new])
+        end
+        @contact.disciplinary_actions.each do |da|
+          h = params[("disciplinary_action_" + (da.id || "new").to_s).to_sym]
+          if h["mark_for_destruction"] == "1"
+            h.delete("mark_for_destruction")
+            da.mark_for_destruction
+          else
+            da.attributes = h
+          end
+        end
+      end
       if has_required_privileges("/create_logins") or has_privileges("contact_#{@contact.id}")
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
@@ -274,6 +319,8 @@ class ContactsController < ApplicationController
     if success
       @contact_methods.each{|x| x.save}
     end
+    @contact.disciplinary_actions.select{|x| x.marked_for_destruction?}.each{|x| x.destroy}
+    @contact.disciplinary_actions.select{|x| !x.marked_for_destruction?}.each{|x| x.save!}
     return success
   end
 end

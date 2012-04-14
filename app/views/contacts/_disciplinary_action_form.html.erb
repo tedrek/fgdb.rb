@@ -1,0 +1,36 @@
+<div style="clear: left; float: left">
+      <hr />
+      <% if disciplinary_action.id.nil? %>
+        <h3>New Disciplinary Action</h3>
+      <% my_id = "new" %>
+      <div style="display: none">
+      <%= check_box_tag "disciplinary_action_new_add", "1", false %>
+      </div>
+      <% else %>
+        <h3>Disciplinary Action created on <%= disciplinary_action.created_at.strftime("%D") %></h3>
+      <% my_id = disciplinary_action.id.to_s %>
+      <% end %>
+      <% name = "disciplinary_action_#{my_id}" %>
+      <% eval("@#{name} = disciplinary_action") %>
+      <% fields_for name.to_sym do |f| %>
+      <% DisciplinaryActionArea.all.each do |a| %>
+      <div class="form-element">
+        <%= label name, name + "_disciplinary_action_area_ids_#{a.id}", a.name %>
+        <%= check_box_tag "#{name}[disciplinary_action_area_ids][]", a.id, disciplinary_action.disciplinary_action_areas.include?(a) %>
+      </div>
+      <% end %>
+      <div class="form-element">
+      <%= text_area name, 'notes' %>
+      </div>
+      <div class="form-element">
+      <%= label name, 'disabled', 'Disable this disciplinary action, allowing the volunteer back' %>
+      <%= check_box name, 'disabled' %>
+      </div>
+      <% unless disciplinary_action.id.nil? %>
+      <div class="form-element">
+      <%= label name, 'mark_for_destruction', 'Delete this disciplinary action, removing the record from the database' %>
+      <%= check_box_tag name + '[mark_for_destruction]', "1", false %>
+        </div>
+      <% end %>
+      <% end %>
+</div>
