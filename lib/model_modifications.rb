@@ -82,7 +82,7 @@ module ActiveRecord
         self[:updated_by] = user.id if respond_to?(:updated_by) and !user.nil?
         cashier = current_cashier
         if respond_to?(:cashier_updated_by)
-          if self.class.cashierable and !cashier.nil?
+          if !cashier.nil? and self.class.cashierable # TODO?
             self[:cashier_updated_by] = cashier.id
           else
             self[:cashier_updated_by] = self[:updated_by]

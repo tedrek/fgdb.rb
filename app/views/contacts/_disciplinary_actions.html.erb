@@ -3,7 +3,8 @@
     <div class="form-element">
     <% if @contact %>
       <% if @contact.has_areas_disciplined_from? %>
-        Not allowed to volunteer in the following areas: <%= @contact.areas_disciplined_from.map(&:name).join(", ") %>
+        Not allowed to volunteer in the following areas: <%= @contact.areas_disciplined_from.map(&:name).join(", ") %><br/>
+        Please check with the volunteer coordinator or a collective staff member for assistance.
       <% end %>
       <% @collective_cashier.contact_id = @contact.id %>
     <% end %>

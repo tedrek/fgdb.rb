@@ -25,10 +25,20 @@
     <%= h method.display %><br />
   <% end %>
 </div>
-<% if @contact.notes && @contact.notes != '' %>
+<% if @contact.has_areas_disciplined_from? or (@contact.notes && @contact.notes != '') %>
   <div class="contact_comments">
-    Notes:<br />
-    <%= h(@contact.notes).gsub(/\n/, "<br />") %>
+    <% if @contact.has_areas_disciplined_from? %>
+      Cannot volunteer in these areas (check with a collective staff member for assistance):<br />
+      <ul>
+        <% @contact.areas_disciplined_from.map(&:name).each do |d| %>
+          <li><%= d %></li>
+        <% end %>
+      </ul>
+    <% end %>
+    <% if @contact.notes && @contact.notes != '' %>
+      Notes:<br />
+      <%= h(@contact.notes).gsub(/\n/, "<br />") %>
+    <% end %>
   </div>
 <% end %>
 <% checked_since = @contact.spec_sheets_since_last_adoption("checker").length %>

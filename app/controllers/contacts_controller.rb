@@ -234,16 +234,24 @@ class ContactsController < ApplicationController
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
       if (uid = @collective_cashier.cashier_code) && (u = User.find_by_cashier_code(uid.to_i)) && u.can_view_disciplinary_information?
+        Thread.current['cashier'] = u
+        u.will_not_updated_timestamps!
+        u.last_logged_in = Date.today
+        u.save
+        @valid_cashier_code = true
+
         if params[:disciplinary_action_new_add] == "1"
           @contact.disciplinary_actions.build(params[:disciplinary_action_new])
         end
         @contact.disciplinary_actions.each do |da|
           h = params[("disciplinary_action_" + (da.id || "new").to_s).to_sym]
-          if h["mark_for_destruction"] == "1"
-            h.delete("mark_for_destruction")
-            da.mark_for_destruction
-          else
-            da.attributes = h
+          unless h.nil?
+            if h["mark_for_destruction"] == "1"
+              h.delete("mark_for_destruction")
+              da.mark_for_destruction
+            else
+              da.attributes = h
+            end
           end
         end
       end
@@ -319,8 +327,10 @@ class ContactsController < ApplicationController
     if success
       @contact_methods.each{|x| x.save}
     end
-    @contact.disciplinary_actions.select{|x| x.marked_for_destruction?}.each{|x| x.destroy}
-    @contact.disciplinary_actions.select{|x| !x.marked_for_destruction?}.each{|x| x.save!}
+    if @valid_cashier_code
+      @contact.disciplinary_actions.select{|x| x.marked_for_destruction?}.each{|x| x.destroy}
+      @contact.disciplinary_actions.select{|x| !x.marked_for_destruction?}.each{|x| x.save!}
+    end
     return success
   end
 end

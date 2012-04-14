@@ -7,7 +7,7 @@
       <%= check_box_tag "disciplinary_action_new_add", "1", false %>
       </div>
       <% else %>
-        <h3>Disciplinary Action created on <%= disciplinary_action.created_at.strftime("%D") %></h3>
+        <h3>Disciplinary Action created <%= disciplinary_action.created_at.strftime("%D") %><% unless disciplinary_action.updated_at.nil? %> and updated <%= disciplinary_action.updated_at.strftime("%D") %><% end %></h3>
       <% my_id = disciplinary_action.id.to_s %>
       <% end %>
       <% name = "disciplinary_action_#{my_id}" %>
@@ -15,8 +15,8 @@
       <% fields_for name.to_sym do |f| %>
       <% DisciplinaryActionArea.all.each do |a| %>
       <div class="form-element">
-        <%= label name, name + "_disciplinary_action_area_ids_#{a.id}", a.name %>
-        <%= check_box_tag "#{name}[disciplinary_action_area_ids][]", a.id, disciplinary_action.disciplinary_action_areas.include?(a) %>
+        <%= label_tag name + "_disciplinary_action_area_ids_#{a.id}", a.name %>
+        <%= check_box_tag "#{name}[disciplinary_action_area_ids][#{a.id}]", a.id, disciplinary_action.disciplinary_action_areas.include?(a) %>
       </div>
       <% end %>
       <div class="form-element">
