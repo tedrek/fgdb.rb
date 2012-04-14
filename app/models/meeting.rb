@@ -17,7 +17,8 @@ class Meeting < Shift
     #   check to see if its schedule prints this week
     #     (repeats_every and repeats_on), if not then
     #     skip
-    self.schedule.which_week( day ) == self.schedule.repeats_on and ((not self.shift_date) or self.shift_date == day)
+    n = (day.day/7.0).ceil
+    self.schedule.which_week( day ) == self.schedule.repeats_on and ((not self.shift_date) or self.shift_date == day) and self.send("week_#{n}_of_month")
   end
 
   def do_my_generate(day)

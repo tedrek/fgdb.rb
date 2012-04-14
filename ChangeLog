@@ -1,7 +1,8 @@
 fgdb.rb (1.0.90) UNRELEASED; urgency=low
 
+  * Support meetings that occur only on the N weeks of the month
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Apr 2012 09:14:35 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Apr 2012 14:58:43 -0700
 
 fgdb.rb (1.0.89) released; urgency=low
 

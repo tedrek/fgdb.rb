@@ -21,6 +21,12 @@
 <p><label for="meeting_weekday_id">Weekday</label><br/>
 <%= select("meeting", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
 
+<% 5.times do |n| %>
+<% n = n + 1 %>
+<p><label for="meeting_week_<%= n %>_of_month">Generate for Week <%= n %> of Month</label><br/>
+<%= check_box("meeting", "week_#{n}_of_month") %></p>
+<% end %>
+
 <p><label for="meeting_schedule_id">Schedule</label><br/>
 <%= select("meeting", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
