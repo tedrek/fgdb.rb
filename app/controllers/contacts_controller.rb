@@ -238,6 +238,7 @@ class ContactsController < ApplicationController
         u.will_not_updated_timestamps!
         u.last_logged_in = Date.today
         u.save
+        @valid_cashier_code = true
 
         if params[:disciplinary_action_new_add] == "1"
           @contact.disciplinary_actions.build(params[:disciplinary_action_new])
@@ -326,8 +327,10 @@ class ContactsController < ApplicationController
     if success
       @contact_methods.each{|x| x.save}
     end
-    @contact.disciplinary_actions.select{|x| x.marked_for_destruction?}.each{|x| x.destroy}
-    @contact.disciplinary_actions.select{|x| !x.marked_for_destruction?}.each{|x| x.save!}
+    if @valid_cashier_code
+      @contact.disciplinary_actions.select{|x| x.marked_for_destruction?}.each{|x| x.destroy}
+      @contact.disciplinary_actions.select{|x| !x.marked_for_destruction?}.each{|x| x.save!}
+    end
     return success
   end
 end
