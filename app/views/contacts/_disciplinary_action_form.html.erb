@@ -7,7 +7,7 @@
       <%= check_box_tag "disciplinary_action_new_add", "1", false %>
       </div>
       <% else %>
-        <h3>Disciplinary Action created on <%= disciplinary_action.created_at.strftime("%D") %><% unless disciplinary_action.updated_at.nil? %> and updated on <%= disciplinary_action.updated_at.strftime("%D") %><% end %></h3>
+        <h3>Disciplinary Action created <%= disciplinary_action.created_at.strftime("%D") %><% unless disciplinary_action.updated_at.nil? %> and updated <%= disciplinary_action.updated_at.strftime("%D") %><% end %></h3>
       <% my_id = disciplinary_action.id.to_s %>
       <% end %>
       <% name = "disciplinary_action_#{my_id}" %>
