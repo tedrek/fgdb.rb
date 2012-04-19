@@ -19,17 +19,6 @@
 <p><label for="job_program_id">Program</label><br/>
 <%= select("job", "program_id", Program.find(:all).collect {|c| [c.description, c.id] }, :include_blank => true) %></p>
 
-<p><label for="workers">Workers:</label><br/>
-<ul>
-<% Worker.find(:all, :order => "name").each do |w| %>
-   <li><input type="checkbox" name="job[worker_ids][]" 
-          value="<%= w.id %>" 
-          <% if @job.workers.include?(w) %> checked="checked" <% end %> />
-<%= w.name %></li>
-<% end %>
-</ul>
-</p>
-
   <div id="jobshifts" class="bottomleft">
   <p><label for="standard_shifts">Standard shifts:</label><br/>
   <ul>

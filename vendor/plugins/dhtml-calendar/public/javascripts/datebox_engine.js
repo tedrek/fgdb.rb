@@ -588,7 +588,7 @@ function magicDate(id, calendarIfFormat) {
         if (document.getElementById(messagespan)) document.getElementById(messagespan).className = 'normal';
     }
     catch (e) {
-        input.className = 'fieldWithErrors';
+        input.className = 'fieldWithOUTErrors'; // imagine evil laughter here..
         var message = e.message;
         // Fix for IE6 bug
         if (message.indexOf('is null or not an object') > -1) {

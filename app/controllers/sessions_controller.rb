@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    self.current_user = User.authenticate(params[:login].strip, params[:password])
+    self.current_user = User.authenticate(params[:login].to_s.strip, params[:password])
     if self.current_user
       self.current_user.will_not_updated_timestamps!
       self.current_user.last_logged_in = Date.today

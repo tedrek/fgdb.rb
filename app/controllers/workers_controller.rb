@@ -60,9 +60,6 @@ class WorkersController < ApplicationController
   def update
     @worker = Worker.find(params[:id])
     @worker.salaried = _parse_checkbox(params[:worker][:salaried])
-    if !params[:worker][:job_ids]
-      @worker.jobs.clear
-    end
     if @worker.update_attributes(params[:worker])
       flash[:notice] = 'Worker was successfully updated.'
       redirect_to :action => 'show', :id => @worker

@@ -1,18 +1,5 @@
 <%= error_messages_for 'worker' %>
 
-<div id="workerjobs" class="right">
-<p><label for="jobs">Jobs:</label><br/>
-<ul>
-<% Job.find(:all, :order => "name").each do |j| %>
-   <li><input type="checkbox" name="worker[job_ids][]" 
-          value="<%= j.id %>" 
-          <% if @worker.jobs.include?(j) %> checked="checked" <% end %> />
-<%= j.name %></li>
-<% end %>
-</ul>
-</p>
-</div>
-
 <div class="left">
   <div id="workerinfo" class="topleft">
   <!--[form:worker]-->
