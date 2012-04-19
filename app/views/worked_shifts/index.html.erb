@@ -1,13 +1,13 @@
-<% l = @worker ? @worker.id : nil %>
-<% @worked_shift = Struct.new(:worker_id, :date_performed, :password, :L).new(l, @date, nil, l) %>
+<% l = @worker ? @worker.contact_id : nil %>
+<% @worked_shift = Struct.new(:contact_id, :date_performed, :password, :L).new(l, @date, nil, l) %>
 
 <span class="error">
 <%= flash[:error] %>
 </span>
 
 <% form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
-<% label :worked_shifts, :worker_id %>
-<%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }, :onchange => "$('worked_shift_L').value = $('worked_shift_worker_id').value;") %>
+<% label :worked_shifts, :contact_id %>
+<%= select("worked_shift", "contact_id", Worker.real_people.select{|x| !!x.contact_id}.sort_by(&:name).collect {|p| [ p.name, p.contact_id ] }, :onchange => "$('worked_shift_L').value = $('worked_shift_contact_id').value;") %>
 <%# label :worked_shifts, :date_performed %>
 <%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
 
@@ -27,7 +27,7 @@
 
 <% if @worker and @session_allowed %>
 
-<%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.id.to_json};" %>
+<%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.contact_id.to_json};" %>
 <% PayPeriod.find_for_date(@date) or raise "FIXME" %>
 <h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>
 
@@ -58,7 +58,7 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 
 <% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
-<%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
+<%= hidden_field "worked_shift", "contact_id", :value => @worker.contact_id %>
 <% javascript_tag "original_timeout_seconds = 0;" %>
 <% if Default["staff_hours_timeout"] %>
 <div id="worked_shift_time_left">

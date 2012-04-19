@@ -1,8 +1,12 @@
 fgdb.rb (1.0.90) UNRELEASED; urgency=low
 
   * Support meetings that occur only on the N weeks of the month (Closes: #25691)
+  * Replace worker_id with contact_id on staff hours logging (workers
+    now require a contact to log hours, through they really did anyway for
+    the user account) and allow people to login using their contact id
+    number (also disallowing logins that are only numerical)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Apr 2012 14:58:43 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 19 Apr 2012 16:10:28 -0700
 
 fgdb.rb (1.0.89) released; urgency=low
 

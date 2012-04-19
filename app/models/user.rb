@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
   validates_uniqueness_of   :cashier_code, :if => :cashier_code
+  validates_format_of       :login, :with => /[^0-9]/, :message => "must contain a non-numeric character"
   before_save :encrypt_password
   before_save :add_cashier_code
 
@@ -85,7 +86,11 @@ class User < ActiveRecord::Base
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
-    u = find_by_login(login) # need to get the salt
+    if login.to_i.to_s == login
+      u = find_by_contact_id(login.to_i)
+    else
+      u = find_by_login(login) # need to get the salt
+    end
     return u if u && u.can_login && u.authenticated?(password)
     return nil
   end

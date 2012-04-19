@@ -2,6 +2,11 @@ class WorkedShift < ActiveRecord::Base
   belongs_to :job
   belongs_to :worker
 
+  def contact_id=(cid)
+    w = Worker.find_by_contact_id(cid)
+    w ? self.worker_id=(w.id) : nil
+  end
+
   def self.conditions_date_field
     'date_performed'
   end
