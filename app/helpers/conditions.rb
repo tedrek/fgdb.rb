@@ -330,11 +330,11 @@ class Conditions < ConditionsBase
   end
 
   def worker_conditions(klass)
-    return ["worker_id IN (?)", (@worker_id)]
+    return ["#{klass.table_name}.worker_id IN (?)", (@worker_id)]
   end
 
   def job_conditions(klass)
-    return ["job_id IN (?)", (@job_id)]
+    return ["#{klass.table_name}.job_id IN (?)", (@job_id)]
   end
 
   def empty_conditions(klass)
@@ -345,23 +345,23 @@ class Conditions < ConditionsBase
     if @cancelled == 1
       return ["1=1"]
     else
-      return ["(attendance_type_id IS NULL OR attendance_types.cancelled = false OR attendance_types.cancelled IS NULL)"]
+      return ["(#{klass.table_name}.attendance_type_id IS NULL OR attendance_types.cancelled = false OR attendance_types.cancelled IS NULL)"]
     end
   end
 
   def attendance_type_conditions(klass)
-    return ["attendance_type_id = ?", @attendance_type_id.to_i]
+    return ["#{klass.table_name}.attendance_type_id = ?", @attendance_type_id.to_i]
   end
 
   def needs_checkin_conditions(klass)
-    return ["attendance_type_id IS NULL"]
+    return ["#{klass.table_name}.attendance_type_id IS NULL"]
   end
 
   def assigned_conditions(klass)
     if @assigned
-      return ["contact_id IS NOT NULL"]
+      return ["#{klass.table_name}.contact_id IS NOT NULL"]
     else
-      return ["contact_id IS NULL"]
+      return ["#{klass.table_name}.contact_id IS NULL"]
     end
   end
 
@@ -625,23 +625,23 @@ class Conditions < ConditionsBase
   end
 
   def created_by_conditions(klass)
-    ["created_by = ?", @created_by]
+    ["#{klass.table_name}.created_by = ?", @created_by]
   end
 
   def signed_off_by_conditions(klass)
-    ["cashier_signed_off_by = ?", @signed_off_by]
+    ["#{klass.table_name}.cashier_signed_off_by = ?", @signed_off_by]
   end
 
   def updated_by_conditions(klass)
-    ["updated_by = ?", @updated_by]
+    ["#{klass.table_name}.updated_by = ?", @updated_by]
   end
 
   def cashier_updated_by_conditions(klass)
-    ["cashier_updated_by = ?", @cashier_updated_by]
+    ["#{klass.table_name}.cashier_updated_by = ?", @cashier_updated_by]
   end
 
   def cashier_created_by_conditions(klass)
-    ["cashier_created_by = ?", @cashier_created_by]
+    ["#{klass.table_name}.cashier_created_by = ?", @cashier_created_by]
   end
 
   # TODO: should this be in conditions_base? and the html part that's
