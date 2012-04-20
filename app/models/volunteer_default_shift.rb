@@ -170,7 +170,43 @@ class VolunteerDefaultShift < ActiveRecord::Base
     matches = VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event])
   end
 
-  def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil)
+  def VolunteerDefaultShift.find_conflicting_assignments(start_date, end_date, gconditions = nil)
+    ignore_these_shifts = VolunteerDefaultShift.find_conflicts(start_date, end_date, gconditions).map{|x| x.id}
+    if gconditions
+      gconditions = gconditions.dup
+      gconditions.empty_enabled = "false"
+    else
+      gconditions = Conditions.new
+    end
+    ret_arr = []
+    (start_date..end_date).map{|x|
+      next if Holiday.is_holiday?(x)
+      w = Weekday.find(x.wday)
+      ds_conds = gconditions.dup
+      ds_conds.effective_on_enabled = "true"
+      ds_conds.effective_on_start = x
+      ds_conds.effective_on_end = x + 1
+      ds_conds.weekday_enabled = "true"
+      ds_conds.weekday_id = w.id
+      VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.roster_id, volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event]).map{|ds|
+        ds.default_assignments
+      }.flatten.select{|q| q.contact_id and (!q.contact.is_organization?)}.map{|da|
+        a = Assignment.new
+        a.start_time = da.start_time
+        a.end_time = da.end_time
+        a.contact_id = da.contact_id
+        a.internal_date_hack_value = x
+        [x.strftime('%Y%m%d'), da, a.find_overlappers(:for_contact).select{|aa| !ignore_these_shifts.include?(aa.volunteer_shift_id)}]
+      }.each{|x|
+        if x.last.length > 0 # da will have conflicts
+          ret_arr << x
+        end
+      }
+    }
+    return ret_arr
+  end
+
+  def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil, skip_these = [])
     if gconditions
       gconditions = gconditions.dup
       gconditions.empty_enabled = "false"
@@ -180,7 +216,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
     (start_date..end_date).each{|x|
       next if Holiday.is_holiday?(x)
       w = Weekday.find(x.wday)
-#      next if !w.is_open
+      #      next if !w.is_open
       ds_conds = gconditions.dup
       ds_conds.effective_on_enabled = "true"
       ds_conds.effective_on_start = x
@@ -218,18 +254,15 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.roster_id = ds.roster_id
           s.class_credit = ds.class_credit
           s.save!
-          mats = ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num))}
-          if mats.length > 0
-            mats.each{|da|
-              a = Assignment.new
-              a.start_time = da.start_time
-              a.end_time = da.end_time
-              a.volunteer_shift_id = s.id
-              a.contact_id = da.contact_id
-              a.closed = da.closed
-              a.save!
-            }
-          end
+          ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num))}.select{|da| !skip_these.include?(da.id)}.each{|da|
+            a = Assignment.new
+            a.start_time = da.start_time
+            a.end_time = da.end_time
+            a.volunteer_shift_id = s.id
+            a.contact_id = da.contact_id
+            a.closed = da.closed
+            a.save!
+          }
           myl << slot_number
         }
       }

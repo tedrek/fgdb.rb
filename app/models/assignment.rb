@@ -53,7 +53,7 @@ class Assignment < ActiveRecord::Base
       errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
     end
     unless self.cancelled?
-      errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
+      errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact_id and !(self.contact.is_organization) and self.find_overlappers(:for_contact).length > 0
       errors.add("volunteer_shift_id", "is already assigned during that time") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
      end
     errors.add("end_time", "is before the start time") unless self.start_time < self.end_time
@@ -73,9 +73,15 @@ class Assignment < ActiveRecord::Base
 
   named_scope :not_yet_attended, :conditions => ['attendance_type_id IS NULL']
 
+  def internal_date_hacks
+    @internal_date_hack_value || self.volunteer_shift.volunteer_event.date
+  end
+
+  attr_writer :internal_date_hack_value
+
   named_scope :potential_overlappers, lambda{|assignment|
     tid = assignment.id
-    tdate = assignment.volunteer_shift.volunteer_event.date
+    tdate = assignment.internal_date_hacks
     { :conditions => ['(id != ? OR ? IS NULL) AND (attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\')) AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tid, tdate] }
   }
 

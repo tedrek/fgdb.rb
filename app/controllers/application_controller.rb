@@ -118,6 +118,82 @@ class ApplicationController < ActionController::Base
     return false
   end
 
+
+  def do_volskedj_generate(cname)
+    gconditions = Conditions.new
+    gconditions.apply_conditions(params[:gconditions])
+    params[:conditions] = params[:gconditions].dup
+    begin
+      startd, endd = Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date])
+    rescue
+      flash[:error] = "Generate error: A valid date range was not given"
+      redirect_to :back
+      return
+    end
+
+    do_shifts = params[:date_range][:do_shifts] == "1"
+    do_resources = params[:date_range][:do_resources] == "1"
+
+    @start_date = startd
+    @end_date = endd
+    @do_resources = do_resources
+    @do_shifts = do_shifts
+
+    in_error = false
+
+    overwrite_matches = []
+    overwrite_matches += VolunteerDefaultShift.find_conflicts(startd, endd, gconditions) if do_shifts
+    overwrite_matches += ResourcesVolunteerDefaultEvent.find_conflicts(startd, endd, gconditions) if do_resources
+
+
+    if overwrite_matches.length > 0
+      @force_generate = true
+      @skedj_error = "There are existing scheduled items that will be DESTROYED and overwritten by this generate. Any volunteers who have signed up for or changed shifts will be reverted. If you know what you are doing, you can continue by submitting your request again below to force overwriting the data."
+      @events = overwrite_matches.map{|x| x.volunteer_event}.uniq.sort_by(&:date).map{|x| [x.date, x.description].join(" ")}
+      if params[:date_range][:force_generate] != "1"
+        in_error = true
+      end
+    end
+
+    skip_these = []
+    destroy_these = []
+    if do_shifts
+      @conflicting_assignments = VolunteerDefaultShift.find_conflicting_assignments(startd, endd, gconditions)
+      @conflicting_assignments_responses = (params[:conflicting_assignments_responses] || {})
+      @conflicting_assignments.each{|c|
+        resp = @conflicting_assignments_responses["assignment_conflict_#{c[1].id}_#{c.first}"].to_s
+        if resp == "leave"
+          skip_these << c
+        elsif resp == "replace"
+          destroy_these << c
+        end
+      }
+      # we want to still display the choices for all conflicts, even if the user has already chosen for some of them
+      if (@conflicting_assignments - (skip_these + destroy_these)).length > 0
+        in_error = true
+        if !@skedj_error
+          @skedj_error = "Some conflicts prevented the generate you requested, see below to resolve the issue."
+        end
+      end
+    end
+
+    if in_error
+      index
+      return
+    end
+
+    if do_shifts
+      overwrite_matches.each{|y| y.destroy}
+      destroy_these.each{|x| x.last.each{|y| y.destroy}}
+      VolunteerDefaultShift.generate(startd, endd, gconditions, skip_these.map{|x| x[1].id})
+    end
+    if do_resources
+      ResourcesVolunteerDefaultEvent.generate(startd, endd, gconditions)
+    end
+
+    redirect_to :controller => cname, :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
+  end
+
   def process_exception(exception)
     authorize
     set_cashier

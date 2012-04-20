@@ -11,49 +11,8 @@ class ResourcesVolunteerDefaultEventsController < ApplicationController
 
   helper :skedjul
 
-  # TODO: integrate code with the shifts one, they are most equivalent except for different redirect)
   def generate
-    gconditions = Conditions.new
-    gconditions.apply_conditions(params[:gconditions])
-    begin
-      startd, endd = Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date])
-    rescue
-      flash[:error] = "Generate error: A valid date range was not given"
-      redirect_to :back
-      return
-    end
-
-    do_shifts = params[:date_range][:do_shifts] == "1"
-    do_resources = params[:date_range][:do_resources] == "1"
-
-    matches = []
-    matches += VolunteerDefaultShift.find_conflicts(startd, endd, gconditions) if do_shifts
-    matches += ResourcesVolunteerDefaultEvent.find_conflicts(startd, endd, gconditions) if do_resources
-
-    if matches.length > 0
-      if params[:date_range][:force_generate] == "1"
-        matches.each{|y| y.destroy} # TODO: destroy_all with the :include somehow..
-      else
-        params[:conditions] = params[:gconditions].dup
-        @skedj_error = "There are existing scheduled items that will be DESTROYED and overwritten by this generate. Any volunteers who have signed up for or changed shifts will be reverted. If you know what you are doing, you can continue by submitting your request again below to force overwriting the data."
-        @start_date = startd
-        @end_date = endd
-        @do_resources = do_resources
-        @do_shifts = do_shifts
-        @events = matches.map{|x| x.volunteer_event}.uniq.sort_by(&:date).map{|x| [x.date, x.description].join(" ")}
-        @force_generate = true
-        index
-        return
-      end
-    end
-
-    if do_shifts
-      VolunteerDefaultShift.generate(startd, endd, gconditions)
-    end
-    if do_resources
-      ResourcesVolunteerDefaultEvent.generate(startd, endd, gconditions)
-    end
-    redirect_to :controller => 'resources_volunteer_events', :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
+    do_volskedj_generate('resources_volunteer_events')
   end
 
   def index

@@ -15,6 +15,19 @@
   <% if forcing %>
     Force Generate <%= check_box_tag skedj.opts[:generate_param_key] + "[force_generate]", 1, true %>
   <% end %>
+  <% if defined?(@conflicting_assignments) and @conflicting_assignments.length > 0 %>
+    <h4 style='color: red'>Some shifts cannot be generated because it would create schedule conflicts for some contacts. Please choose what you would like to happen for these:</h4>
+    <% @conflicting_assignments.each do |arr| %>
+      <% day, da, a_list = arr.first, arr[1], arr.last %>
+      <div>
+        <% n = "assignment_conflict_#{da.id}_#{day}" %>
+        <% f = "conflicting_assignments_responses[#{n}]" %>
+        <label for="<%= f %>">During <%= a_list.map{|a| a.time_range_s}.join(", ") %> on <%= Date.parse(day).to_s %>, <%= da.contact.display_name %> (#<%= da.contact_id %>) is already scheduled in <%= a_list.map{|a| a.slot_type_desc}.join(", ") %> (A), so they cannot be added to <%= da.slot_type_desc %> (B).</label>
+        <%= radio_button_tag f, "leave", @conflicting_assignments_responses[n] == "leave" %> leave scheduled in A and skip generating B<br />
+        <%= radio_button_tag f, "replace", @conflicting_assignments_responses[n] == "replace" %> remove assignment to A while generating B
+      </div>
+    <% end %>
+  <% end %>
   <p><%= submit_tag forcing ? "FORCE Generate and OVERWRITE data" : "Generate" %></p>
 <% end %>
 </div>

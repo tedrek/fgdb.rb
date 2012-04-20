@@ -5,8 +5,10 @@ fgdb.rb (1.0.90) UNRELEASED; urgency=low
     now require a contact to log hours, through they really did anyway for
     the user account) and allow people to login using their contact id
     number (also disallowing logins that are only numerical)
+  * add an interface to display and resolve scheduling conflicts while
+    generating shifts
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 19 Apr 2012 16:10:28 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 15:01:04 -0700
 
 fgdb.rb (1.0.89) released; urgency=low
 
