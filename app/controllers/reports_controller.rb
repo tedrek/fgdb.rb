@@ -82,7 +82,7 @@ class ReportsController < ApplicationController
       else
         col_titles = cols.map{|x| x.to_s}
       end
-      this_table << [@row_breakdown.titleize, col_titles].flatten
+      this_table << [@row_breakdown.titleize] + col_titles
       this_table[0] << "#{@row_breakdown} subtotals".titleize if this_table[0].length > 2
       col_totals = (1..(cols.length)).to_a.map{|x| 0.0}
       table_data[table].keys.sort_by(&:to_s).each{|row|
