@@ -246,9 +246,10 @@ GROUP BY 1,2;")
     if @enddate
       @pay_periods = PayPeriod.find(:all, :conditions => ['start_date <= ? AND end_date >= ?', @enddate, @date]).sort_by(&:start_date)
     else
-      @pay_periods = [PayPeriod.find_for_date(@date) || raise]
+      @pay_periods = PayPeriod.find_for_date(@date)
+      @pay_periods = @pay_periods ? [@pay_periods] : []
     end
-    theworkers = Worker.effective_in_range(@pay_periods.first.start_date, @pay_periods.last.end_date).real_people.sort_by(&:sort_by)
+    theworkers = (@pay_periods.length > 0) ? Worker.effective_in_range(@pay_periods.first.start_date, @pay_periods.last.end_date).real_people.sort_by(&:sort_by) : []
     @workers = []
     @pay_periods.each{|p|
       myworkers = theworkers.map{|x| x.to_payroll_hash(p)}
