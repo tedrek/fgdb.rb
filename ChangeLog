@@ -1,4 +1,4 @@
-fgdb.rb (1.0.90) UNRELEASED; urgency=low
+fgdb.rb (1.0.90) released; urgency=low
 
   * Support meetings that occur only on the N weeks of the month (Closes: #25691)
   * Replace worker_id with contact_id on staff hours logging (workers
@@ -8,7 +8,7 @@ fgdb.rb (1.0.90) UNRELEASED; urgency=low
   * add an interface to display and resolve scheduling conflicts while
     generating shifts
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 15:01:04 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
 
 fgdb.rb (1.0.89) released; urgency=low
 
