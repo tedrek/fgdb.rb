@@ -122,6 +122,7 @@ class ReportsController < ApplicationController
   private
   def _wrap_link(date, worker, value)
     return value unless worker.contact_id
+    return value if worker == "Total of all Workers"
     [:a, {:action => "index", :controller => "worked_shifts", :worked_shift => {:contact_id => worker.contact_id, :date_performed => date}}, value]
   end
   public
