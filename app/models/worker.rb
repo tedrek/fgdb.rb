@@ -10,6 +10,10 @@ class Worker < ActiveRecord::Base
   validates_associated :workers_worker_types
   has_and_belongs_to_many :worker_types
 
+  def to_s
+    name
+  end
+
   def to_privileges
     "staff"
   end

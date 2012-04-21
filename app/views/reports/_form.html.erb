@@ -1,6 +1,6 @@
 <div class="noprint">
 <% form_tag( { :controller => '/reports', :action => controller.action_name.sub(/_report$/, "") + "_report" } ) do %>
-  <div id="<%= '#element_messages_id(???)' %>" class="messages-container"></div>
+  <div id="<%= '#element_messages_id(???)' %>" class="messages-container" style="color: red"><%= @report_error.to_s %></div>
 
   <%= error_messages_for(:defaults, :header_message => "Invalid report conditions") %>
 

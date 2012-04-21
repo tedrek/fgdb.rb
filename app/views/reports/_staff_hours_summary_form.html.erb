@@ -1,0 +1,9 @@
+<div class="form-element">
+  <%= label_tag "table_breakdown", "Break down into tables by:" %>
+  <%= select_tag "table_breakdown", options_from_collection_for_select(@col_options, "to_s", "titleize", :selected => @table_breakdown) %>
+  <%= label_tag "row_breakdown", "Break down into rows by:" %>
+  <%= select_tag "row_breakdown", options_from_collection_for_select(@col_options, "to_s", "titleize", :selected => @row_breakdown) %>
+</div>
+<div class="form-element">
+  <%= conditions_html('conditions', ["date_performed", "worker", "job"]) %>
+</div>

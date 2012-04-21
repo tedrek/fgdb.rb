@@ -7,6 +7,7 @@ fgdb.rb (1.0.90) released; urgency=low
     number (also disallowing logins that are only numerical)
   * add an interface to display and resolve scheduling conflicts while
     generating shifts
+  * add a report with a staff hours summary (Closes: #28033)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
 

@@ -1,0 +1,12 @@
+<%= render :partial => "form", :locals => {:name => "staff_hours_summary_form"} %>
+
+<div style="clear: left">
+<% if defined?(@report_title) %>
+<h1>Summary of Staff Hours <%= @report_title %></h1>
+<% end %>
+<% @tables.each do |a| %>
+<% table_name, table_data = a.first, a.last %>
+<h2><%= table_name %></h2>
+<%= make_table(table_data) %>
+<% end %>
+</div>

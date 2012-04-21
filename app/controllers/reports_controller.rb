@@ -17,6 +17,114 @@ class ReportsController < ApplicationController
 
   public
 
+  def staff_hours_summary
+    # opts: date, worker, job (by title)
+    @_col = {"worker" => "worker_id", "job" => "job_id", "date_performed" => "date_performed"}
+
+    # Table for each date "date_performed"
+    @table_breakdown = "date_performed"
+    # row for each worker, jobs across top then, subtotals on all corners
+    @row_breakdown = "worker"
+
+    @conditions = Conditions.new
+    @conditions.apply_conditions("date_performed_enabled" => "true", "worker_enabled" => "true")
+
+    @multi_enabled = true
+    @col_options = @_col.keys.sort
+  end
+
+  def staff_hours_summary_report
+    # columns related
+    staff_hours_summary
+    @tables = []
+    if params[:conditions]
+      @conditions = Conditions.new
+      @conditions.apply_conditions(params[:conditions])
+    end
+    @table_breakdown = params[:table_breakdown] || @table_breakdown
+    @row_breakdown = params[:row_breakdown] || @row_breakdown
+    # col, chosen automatically
+    left = (@_col.keys - [@table_breakdown, @row_breakdown])
+    @col_breakdown = left.first
+    unless @conditions.valid? and left.length == 1
+      @report_error = "Invalid report options."
+      return
+    end
+    @report_title = @conditions.to_s
+    @worked_shifts = WorkedShift.find(:all, :conditions => @conditions.conditions(WorkedShift), :order => "#{@_col[@table_breakdown]}, #{@_col[@row_breakdown]}", :include => [:job, :worker])
+    table_data = {}
+    summary_table = {}
+    @worked_shifts.each do |shift|
+      if shift.duration != 0.0
+        table_name = shift.send(@table_breakdown)
+        row_name = shift.send(@row_breakdown)
+        col_name = shift.send(@col_breakdown)
+
+        table_data[table_name] ||= {}
+        table_data[table_name][row_name] ||= {}
+        table_data[table_name][row_name][col_name] ||= 0.0
+        table_data[table_name][row_name][col_name] += shift.duration
+
+        summary_table[row_name] ||= {}
+        summary_table[row_name][col_name] ||= 0.0
+        summary_table[row_name][col_name] += shift.duration
+      end
+    end
+    table_data["Total of all #{@table_breakdown.titleize.pluralize.gsub(/Date Performeds/, "Dates Performed")}"] = summary_table if table_data.length > 1
+    table_data.keys.sort_by(&:to_s).each{|table|
+      this_table = []
+      cols = table_data[table].values.map{|h| h.keys}.flatten.uniq.sort_by(&:to_s)
+      if @col_breakdown == "date_performed" and @table_breakdown == "worker"
+        col_titles = cols.map{|col| _wrap_link(col, table, col.to_s)}
+      elsif @table_breakdown == "date_performed" and @col_breakdown == "worker"
+        col_titles = cols.map{|col| _wrap_link(table, col, col.to_s)}
+      else
+        col_titles = cols.map{|x| x.to_s}
+      end
+      this_table << [@row_breakdown.titleize, col_titles].flatten
+      this_table[0] << "#{@row_breakdown} subtotals".titleize if this_table[0].length > 2
+      col_totals = (1..(cols.length)).to_a.map{|x| 0.0}
+      table_data[table].keys.sort_by(&:to_s).each{|row|
+        row_total = 0.0
+        this_row = []
+        if @row_breakdown == "date_performed" and @table_breakdown == "worker"
+          this_row << _wrap_link(row, table, row.to_s)
+        elsif @table_breakdown == "date_performed" and @row_breakdown == "worker"
+          this_row << _wrap_link(table, row, row.to_s)
+        else
+          this_row << row.to_s
+        end
+        cols.each_with_index{|col,i|
+          val = table_data[table][row][col]
+          if val
+            if @col_breakdown == "date_performed" and @row_breakdown == "worker"
+              this_row << _wrap_link(col, row, val)
+            elsif @row_breakdown == "date_performed" and @col_breakdown == "worker"
+              this_row << _wrap_link(row, col, val)
+            else
+              this_row << val
+            end
+            col_totals[i] += val
+            row_total += val
+          else
+            this_row << ""
+          end
+        }
+        this_row << row_total if this_row.length > 2
+        this_table << this_row
+      }
+      this_table << ["#{@col_breakdown} subtotals".titleize, col_totals, col_totals.inject(0.0){|t,x| t+=x}].flatten if this_table.length > 2
+      @tables << [table.to_s, this_table]
+    }
+  end
+
+  private
+  def _wrap_link(date, worker, value)
+    return value unless worker.contact_id
+    [:a, {:action => "index", :controller => "worked_shifts", :worked_shift => {:contact_id => worker.contact_id, :date_performed => date}}, value]
+  end
+  public
+
   def donation_zip_areas
     @report = OpenStruct.new
     @report.min_limit = 10
@@ -433,6 +541,7 @@ class ReportsController < ApplicationController
     a << {:only => ["top_contributors", "top_contributors_report"], :privileges => ['manage_contacts']}
     a << {:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']}
     a << {:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']}
+    a << {:only => ["staff_hours_summary", "staff_hours_summary_report"], :privileges => ['staff_summary_report']}
     a << {:only => ["staff_hours", "staff_hours_report"], :privileges => ['staff']}
     return a
   end

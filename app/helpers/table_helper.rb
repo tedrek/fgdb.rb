@@ -24,6 +24,10 @@ module TableHelper
   end
 
   def table_make_td(type, value)
+    if value.class == Array and value[0] == :a
+      href = url_for(value[1])
+      return HtmlTag.new(type, {}, [HtmlTag.new(value[0].to_s, {:href => href}, [], value[2].to_s)])
+    end
     HtmlTag.new(type, {}, [], value)
   end
 end
