@@ -70,13 +70,14 @@ class ReportsController < ApplicationController
         summary_table[row_name][col_name] += shift.duration
       end
     end
-    table_data["Total of all #{@table_breakdown.titleize.pluralize.gsub(/Date Performeds/, "Dates Performed")}"] = summary_table if table_data.length > 1
+    total_title = "Total of all #{@table_breakdown.titleize.pluralize.gsub(/Date Performeds/, "Dates Performed")}"
+    table_data[total_title] = summary_table if table_data.length > 1
     table_data.keys.sort_by(&:to_s).each{|table|
       this_table = []
       cols = table_data[table].values.map{|h| h.keys}.flatten.uniq.sort_by(&:to_s)
-      if @col_breakdown == "date_performed" and @table_breakdown == "worker"
+      if table != total_title and @col_breakdown == "date_performed" and @table_breakdown == "worker"
         col_titles = cols.map{|col| _wrap_link(col, table, col.to_s)}
-      elsif @table_breakdown == "date_performed" and @col_breakdown == "worker"
+      elsif table != total_title and @table_breakdown == "date_performed" and @col_breakdown == "worker"
         col_titles = cols.map{|col| _wrap_link(table, col, col.to_s)}
       else
         col_titles = cols.map{|x| x.to_s}
@@ -87,9 +88,9 @@ class ReportsController < ApplicationController
       table_data[table].keys.sort_by(&:to_s).each{|row|
         row_total = 0.0
         this_row = []
-        if @row_breakdown == "date_performed" and @table_breakdown == "worker"
+        if table != total_title and @row_breakdown == "date_performed" and @table_breakdown == "worker"
           this_row << _wrap_link(row, table, row.to_s)
-        elsif @table_breakdown == "date_performed" and @row_breakdown == "worker"
+        elsif table != total_title and @table_breakdown == "date_performed" and @row_breakdown == "worker"
           this_row << _wrap_link(table, row, row.to_s)
         else
           this_row << row.to_s
@@ -97,9 +98,9 @@ class ReportsController < ApplicationController
         cols.each_with_index{|col,i|
           val = table_data[table][row][col]
           if val
-            if @col_breakdown == "date_performed" and @row_breakdown == "worker"
+            if table != total_title and @col_breakdown == "date_performed" and @row_breakdown == "worker"
               this_row << _wrap_link(col, row, val)
-            elsif @row_breakdown == "date_performed" and @col_breakdown == "worker"
+            elsif table != total_title and @row_breakdown == "date_performed" and @col_breakdown == "worker"
               this_row << _wrap_link(row, col, val)
             else
               this_row << val
