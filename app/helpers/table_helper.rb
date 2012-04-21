@@ -1,4 +1,5 @@
 module TableHelper
+  protected
   def make_table(a, html_opts = {}, full_width = true)
     trs = a.map_with_index{|x, i|
       subtype = "first"
