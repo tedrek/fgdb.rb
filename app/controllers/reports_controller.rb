@@ -85,7 +85,7 @@ class ReportsController < ApplicationController
       this_table << [@row_breakdown.titleize] + col_titles
       this_table[0] << "#{@row_breakdown} subtotals".titleize if this_table[0].length > 2
       col_totals = (1..(cols.length)).to_a.map{|x| 0.0}
-      table_data[table].keys.sort_by(&:to_s).each{|row|
+      table_data[table].keys.sort_by{|x| s = x.to_s.downcase; s == "total of all workers" ? "zzz #{s}" : s}.each{|row|
         row_total = 0.0
         this_row = []
         if table != total_title and @row_breakdown == "date_performed" and @table_breakdown == "worker"
