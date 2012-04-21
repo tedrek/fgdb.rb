@@ -2,7 +2,7 @@ class AddCollectiveLevelRole < ActiveRecord::Migration
   def self.up
     if Default.is_pdx
       ActiveRecord::Base.record_timestamps = false
-      r = Role.new(:name => "COLLETIVE", :notes => "This role will give access to a report which summarizes worked staff hours.")
+      r = Role.new(:name => "COLLECTIVE", :notes => "This role will give access to a report which summarizes worked staff hours.")
       p = Privilege.new(:name => 'staff_summary_report')
       p.save!
       r.privileges << p
@@ -18,5 +18,8 @@ class AddCollectiveLevelRole < ActiveRecord::Migration
   end
 
   def self.down
+    if Default.is_pdx
+      ActiveRecord::Base.record_timestamps = false
+      Role.find_by_name("COLLECTIVE").destroy
   end
 end
