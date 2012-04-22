@@ -7,11 +7,15 @@
   <th>Start</th>
   <th>End</th>
   <th>Weekday</th>
-  <th>Freq type</th>
+  <th>1st</th>
+  <th>2nd</th>
+  <th>3rd</th>
+  <th>4th</th>
+  <th>5th</th>
   <th>Schedule</th>
   <th colspan="5">&nbsp;</th>
   </tr>
-  
+
 <% for meeting in @meetings %>
   <tr>
     <td><%=h meeting.meeting_name %></td>
@@ -19,7 +23,11 @@
     <td><%=h meeting.start_time.strftime(" %I:%M").gsub( ' 0', '' ) %></td>
     <td><%=h meeting.end_time.strftime(" %I:%M").gsub( ' 0', '' ) %></td>
     <td><%=h meeting.weekday.short_name %></td>
-    <td><%=h meeting.frequency_type.name %></td>
+    <td><%= meeting.week_1_of_month ? "X" : "" %></td>
+    <td><%= meeting.week_2_of_month ? "X" : "" %></td>
+    <td><%= meeting.week_3_of_month ? "X" : "" %></td>
+    <td><%= meeting.week_4_of_month ? "X" : "" %></td>
+    <td><%= meeting.week_5_of_month ? "X" : "" %></td>
     <td><%=h meeting.schedule.name %></td>
     <td><%= link_to 'Show', :action => 'show', :id => meeting %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => meeting %></td>
