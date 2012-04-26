@@ -10,6 +10,8 @@ fgdb.rb (1.0.90) released; urgency=low
   * add a report with a staff hours summary (Closes: #28033)
   * indicate with an X which weeks meetings are generated on the list
     page (Closes: #28057)
+  * Fix ongoing find problems report to not display when nobodies meet
+    (Closes: #28079)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
 
