@@ -12,6 +12,8 @@ fgdb.rb (1.0.90) released; urgency=low
     page (Closes: #28057)
   * Fix ongoing find problems report to not display when nobodies meet
     (Closes: #28079)
+  * format dates with weekday on the hours summary report (Closes:
+    #28080)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
 

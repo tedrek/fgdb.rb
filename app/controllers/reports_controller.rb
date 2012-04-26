@@ -33,6 +33,14 @@ class ReportsController < ApplicationController
     @col_options = @_col.keys.sort
   end
 
+  private
+  def _to_s_or_d(input)
+    input.class == Date ?
+      input.strftime("%A, %D") :
+      input.to_s
+  end
+  public
+
   def staff_hours_summary_report
     # columns related
     staff_hours_summary
@@ -76,11 +84,11 @@ class ReportsController < ApplicationController
       this_table = []
       cols = table_data[table].values.map{|h| h.keys}.flatten.uniq.sort_by(&:to_s)
       if table != total_title and @col_breakdown == "date_performed" and @table_breakdown == "worker"
-        col_titles = cols.map{|col| _wrap_link(col, table, col.to_s)}
+        col_titles = cols.map{|col| _wrap_link(col, table, _to_s_or_d(col))}
       elsif table != total_title and @table_breakdown == "date_performed" and @col_breakdown == "worker"
-        col_titles = cols.map{|col| _wrap_link(table, col, col.to_s)}
+        col_titles = cols.map{|col| _wrap_link(table, col, _to_s_or_d(col))}
       else
-        col_titles = cols.map{|x| x.to_s}
+        col_titles = cols.map{|x| _to_s_or_d(x)}
       end
       this_table << [@row_breakdown.titleize] + col_titles
       this_table[0] << "#{@row_breakdown} subtotals".titleize if this_table[0].length > 2
@@ -89,11 +97,11 @@ class ReportsController < ApplicationController
         row_total = 0.0
         this_row = []
         if table != total_title and @row_breakdown == "date_performed" and @table_breakdown == "worker"
-          this_row << _wrap_link(row, table, row.to_s)
+          this_row << _wrap_link(row, table, _to_s_or_d(row))
         elsif table != total_title and @table_breakdown == "date_performed" and @row_breakdown == "worker"
-          this_row << _wrap_link(table, row, row.to_s)
+          this_row << _wrap_link(table, row, _to_s_or_d(row))
         else
-          this_row << row.to_s
+          this_row << _to_s_or_d(row)
         end
         cols.each_with_index{|col,i|
           val = table_data[table][row][col]
@@ -115,7 +123,7 @@ class ReportsController < ApplicationController
         this_table << this_row
       }
       this_table << ["#{@col_breakdown} subtotals".titleize, col_totals, col_totals.inject(0.0){|t,x| t+=x}].flatten if this_table.length > 2
-      @tables << [table.to_s, this_table]
+      @tables << [_to_s_or_d(table), this_table]
     }
   end
 
