@@ -354,6 +354,7 @@ GROUP BY 1,2;")
   def common_logic
     return if ! params[:worked_shift]
     @worker = Worker.find_by_contact_id(params[:worked_shift][:contact_id]) if params[:worked_shift].keys.include?("contact_id")
+    @worker = Worker.find_by_id(params[:worked_shift][:worker_id]) if params[:worked_shift].keys.include?("worker_id")
     begin
       @date = Date.parse(params[:worked_shift][:date_performed]) if params[:worked_shift].keys.include?("date_performed")
     rescue
