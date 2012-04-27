@@ -101,7 +101,7 @@ class DefaultAssignmentsController < ApplicationController
     @assigned_orig = DefaultAssignment.find(assigned)
     @available = DefaultAssignment.find(available)
 
-    if @available.volunteer_shift.stuck_to_assignment or @assigned_orig.volunteer_shift.stuck_to_assignment
+    if @available.volunteer_default_shift.stuck_to_assignment or @assigned_orig.volunteer_default_shift.stuck_to_assignment
       flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
     else
       # for write
