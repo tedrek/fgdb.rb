@@ -63,7 +63,7 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 <% if Default["staff_hours_timeout"] %>
 <div id="worked_shift_time_left">
 <% timeout_seconds = (eval(Default["staff_hours_timeout"].sub('.ago', ''))).seconds.to_i %>
-<%= link_to_function "Restart Timer", "shifts_instance.update_hook();", :id => "worked_shift_time_left_link" %>
+<%= link_to_function "Restart Timer", "shifts_instance.update_shift_totals();", :id => "worked_shift_time_left_link" %>
 <span id="worked_shift_time_left_error" class="error hidden">ERROR: You have ran out of time, you must enter the password again.</span><br />
 Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_seconds / 60, timeout_seconds % 60] %></span>
 </div>
