@@ -308,8 +308,8 @@ GROUP BY 1,2;")
     handle_session
     if !@session_allowed and params[:worked_shift] and params[:worked_shift].keys.include?("password")
       authenticate
-      params[:worked_shift].delete("password")
     end
+    params[:worked_shift].delete("password")
     if @worker and @session_allowed
       mark_activity
       if params[:worked_shift]

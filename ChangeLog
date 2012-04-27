@@ -14,6 +14,11 @@ fgdb.rb (1.0.90) released; urgency=low
     (Closes: #28079)
   * format dates with weekday on the hours summary report (Closes:
     #28080)
+  * fix crash reports: ongoing intern scheduling with no data, disallow
+    reassigning ongoing intern shifts, fix validation of assignments
+    when a non-ID is entered and fix when a staff person has already
+    entered their password (in another window, for example) but enters
+    it an extra time
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
 

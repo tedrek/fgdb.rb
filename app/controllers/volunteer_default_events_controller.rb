@@ -23,10 +23,11 @@ class VolunteerDefaultEventsController < ApplicationController
 
   def create_shift
     ve = nil
+    params["default_assignment"] ||= {}
     if !params["id"].blank?
       ve = VolunteerDefaultEvent.find(params["id"])
     else
-      if (params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"].blank? || params["default_assignment"]["set_weekday_id"].blank?)
+      if (params["default_assignment"]["volunteer_default_shift_attributes"].nil? || params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"].blank? || params["default_assignment"]["set_weekday_id"].blank?)
         ve = VolunteerDefaultEvent.new
       else
         ve = Roster.find_by_id(params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"]).vol_event_for_weekday(params["default_assignment"]["set_weekday_id"])
