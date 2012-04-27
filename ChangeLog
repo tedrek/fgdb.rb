@@ -12,6 +12,18 @@ fgdb.rb (1.0.90) released; urgency=low
     number (also disallowing logins that are only numerical)
   * add an interface to display and resolve scheduling conflicts while
     generating shifts
+  * add a report with a staff hours summary (Closes: #28033)
+  * indicate with an X which weeks meetings are generated on the list
+    page (Closes: #28057)
+  * Fix ongoing find problems report to not display when nobodies meet
+    (Closes: #28079)
+  * format dates with weekday on the hours summary report (Closes:
+    #28080)
+  * fix crash reports: ongoing intern scheduling with no data, disallow
+    reassigning ongoing intern shifts, fix validation of assignments
+    when a non-ID is entered and fix when a staff person has already
+    entered their password (in another window, for example) but enters
+    it an extra time
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
 

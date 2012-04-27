@@ -47,13 +47,13 @@ class Assignment < ActiveRecord::Base
 
   def validate
     if self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
-      errors.add("contact_id", "is empty for a assignment-based shift") if self.contact_id.nil?
+      errors.add("contact_id", "is empty for an assignment-based shift") if self.contact_id.nil?
     end
     if self.closed
       errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
     end
     unless self.cancelled?
-      errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact_id and !(self.contact.is_organization) and self.find_overlappers(:for_contact).length > 0
+      errors.add("contact_id", "is not an organization and is already scheduled during that time") if !(self.contact.nil?) and !(self.contact.is_organization) and self.find_overlappers(:for_contact).length > 0
       errors.add("volunteer_shift_id", "is already assigned during that time") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
      end
     errors.add("end_time", "is before the start time") unless self.start_time < self.end_time

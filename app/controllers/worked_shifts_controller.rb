@@ -246,9 +246,10 @@ GROUP BY 1,2;")
     if @enddate
       @pay_periods = PayPeriod.find(:all, :conditions => ['start_date <= ? AND end_date >= ?', @enddate, @date]).sort_by(&:start_date)
     else
-      @pay_periods = [PayPeriod.find_for_date(@date) || raise]
+      @pay_periods = PayPeriod.find_for_date(@date)
+      @pay_periods = @pay_periods ? [@pay_periods] : []
     end
-    theworkers = Worker.effective_in_range(@pay_periods.first.start_date, @pay_periods.last.end_date).real_people.sort_by(&:sort_by)
+    theworkers = (@pay_periods.length > 0) ? Worker.effective_in_range(@pay_periods.first.start_date, @pay_periods.last.end_date).real_people.sort_by(&:sort_by) : []
     @workers = []
     @pay_periods.each{|p|
       myworkers = theworkers.map{|x| x.to_payroll_hash(p)}
@@ -307,8 +308,8 @@ GROUP BY 1,2;")
     handle_session
     if !@session_allowed and params[:worked_shift] and params[:worked_shift].keys.include?("password")
       authenticate
-      params[:worked_shift].delete("password")
     end
+    params[:worked_shift].delete("password")
     if @worker and @session_allowed
       mark_activity
       if params[:worked_shift]
@@ -353,6 +354,7 @@ GROUP BY 1,2;")
   def common_logic
     return if ! params[:worked_shift]
     @worker = Worker.find_by_contact_id(params[:worked_shift][:contact_id]) if params[:worked_shift].keys.include?("contact_id")
+    @worker = Worker.find_by_id(params[:worked_shift][:worker_id]) if params[:worked_shift].keys.include?("worker_id")
     begin
       @date = Date.parse(params[:worked_shift][:date_performed]) if params[:worked_shift].keys.include?("date_performed")
     rescue

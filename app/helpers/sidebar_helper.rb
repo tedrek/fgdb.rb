@@ -96,6 +96,7 @@ module SidebarHelper
     sidebar_hash["staff"]["types report"] = {:c => "worked_shifts", :a => "type_totals"}
     sidebar_hash["staff"]["payroll report"] = {:c => "worked_shifts", :a => "payroll"}
     sidebar_hash["staff"]["weekly report"] = {:c => "worked_shifts", :a => "weekly_workers"}
+    sidebar_hash["staff"]["hours summary"] = {:a => 'staff_hours_summary', :c => "reports"}
     # library
 #    requires_librarian = ['overdue', 'labels', 'cataloging', 'borrowers', 'inventory']
 #    for i in ['lookup', 'overdue', 'inventory', 'cataloging', 'search', 'labels', 'borrowers'] do

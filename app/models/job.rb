@@ -7,6 +7,10 @@ class Job < ActiveRecord::Base
   belongs_to :income_stream
   named_scope :workable, :conditions => {:virtual => false}
 
+  def to_s
+    description
+  end
+
   def description
     read_attribute(:name)
   end

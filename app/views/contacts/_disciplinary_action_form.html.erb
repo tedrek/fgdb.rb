@@ -16,7 +16,7 @@
       <% DisciplinaryActionArea.all.each do |a| %>
       <div class="form-element">
         <%= label_tag name + "_disciplinary_action_area_ids_#{a.id}", a.name %>
-        <%= check_box_tag "#{name}[disciplinary_action_area_ids][#{a.id}]", a.id, disciplinary_action.disciplinary_action_areas.include?(a) %>
+        <%= check_box_tag "#{name}[disciplinary_action_area_ids][]", a.id, disciplinary_action.disciplinary_action_areas.include?(a) %>
       </div>
       <% end %>
       <div class="form-element">

@@ -1,4 +1,5 @@
 module TableHelper
+  protected
   def make_table(a, html_opts = {}, full_width = true)
     trs = a.map_with_index{|x, i|
       subtype = "first"
@@ -23,6 +24,10 @@ module TableHelper
   end
 
   def table_make_td(type, value)
+    if value.class == Array and value[0] == :a
+      href = url_for(value[1])
+      return HtmlTag.new(type, {}, [HtmlTag.new(value[0].to_s, {:href => href}, [], value[2].to_s)])
+    end
     HtmlTag.new(type, {}, [], value)
   end
 end

@@ -101,25 +101,29 @@ class DefaultAssignmentsController < ApplicationController
     @assigned_orig = DefaultAssignment.find(assigned)
     @available = DefaultAssignment.find(available)
 
-    # for write
-    @assigned = DefaultAssignment.find(assigned)
-    @new = DefaultAssignment.new # available
+    if @available.volunteer_shift.stuck_to_assignment or @assigned_orig.volunteer_shift.stuck_to_assignment
+      flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
+    else
+      # for write
+      @assigned = DefaultAssignment.find(assigned)
+      @new = DefaultAssignment.new # available
 
-    # do it
-    @assigned.volunteer_default_shift_id = @available.volunteer_default_shift_id
-    @assigned.slot_number = @available.slot_number
-    @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
-    @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
+      # do it
+      @assigned.volunteer_default_shift_id = @available.volunteer_default_shift_id
+      @assigned.slot_number = @available.slot_number
+      @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
+      @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
-    @new.start_time = @assigned_orig.start_time
-    @new.end_time = @assigned_orig.end_time
-    @new.volunteer_default_shift_id = @assigned_orig.volunteer_default_shift_id
-    @new.slot_number = @assigned_orig.slot_number
+      @new.start_time = @assigned_orig.start_time
+      @new.end_time = @assigned_orig.end_time
+      @new.volunteer_default_shift_id = @assigned_orig.volunteer_default_shift_id
+      @new.slot_number = @assigned_orig.slot_number
 
-    @assigned.save!
-    @new.save!
+      @assigned.save!
+      @new.save!
+    end
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assigned.volunteer_default_shift.volunteer_default_event.weekday.name)
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig.volunteer_default_shift.volunteer_default_event.weekday.name)
   end
 
   def split
