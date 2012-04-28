@@ -23,6 +23,7 @@ fgdb.rb (1.0.90) released; urgency=low
     name) and add better output during conflicts (Closes: #28153)
   * replace bad error handling in individual ajax actions with support
     for javascript popup responses by the crash report handling code
+    (Closes: #28133)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
 
