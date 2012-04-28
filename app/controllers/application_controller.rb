@@ -118,7 +118,6 @@ class ApplicationController < ActionController::Base
     return false
   end
 
-
   def do_volskedj_generate(cname)
     gconditions = Conditions.new
     gconditions.apply_conditions(params[:gconditions])
@@ -198,15 +197,21 @@ class ApplicationController < ActionController::Base
     authorize
     set_cashier
     if rescue_as_normal
-      return rescue_action(exception)
+      ret = rescue_action(exception)
     else
-      return rescue_action_locally(exception)
+      ret = rescue_action_locally(exception)
     end
+    if request and request.xhr?
+      response.content_type = Mime::JS
+    end
+    return ret
   end
 
   def rescues_path(thing)
     if rescue_as_normal
       return super(thing)
+    elsif request and request.xhr?
+      return "app/views/sidebar_links/error.rjs"
     elsif thing == "layout"
       return "app/views/layouts/application.html.erb"
     else

@@ -216,13 +216,9 @@ class ContactsController < ApplicationController
   end
 
   def edit
-    begin
       @contact = Contact.find(params[:id])
       @user = @contact.user or User.new
       @successful = !@contact.nil?
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
 
     @options = params.merge({ :action => "update", :id => params[:id] })
     @view_options = @options.merge(:action => "view")
@@ -230,7 +226,6 @@ class ContactsController < ApplicationController
   end
 
   def update
-    begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
       if (uid = @collective_cashier.cashier_code) && (u = User.find_by_cashier_code(uid.to_i)) && u.can_view_disciplinary_information?
@@ -282,19 +277,12 @@ class ContactsController < ApplicationController
       end
       @user = @contact.user
       @successful = _save
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
 
     render :action => 'update.rjs'
   end
 
   def destroy
-    begin
       @successful = Contact.find(params[:id]).destroy
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
 
     render :action => 'destroy.rjs'
   end
