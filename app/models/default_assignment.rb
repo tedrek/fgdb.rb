@@ -38,8 +38,8 @@ class DefaultAssignment < ActiveRecord::Base
     if self.volunteer_default_shift && self.volunteer_default_shift.stuck_to_assignment
       errors.add("contact_id", "is empty for an assignment-based shift") if self.contact_id.nil?
     end
-    errors.add("contact_id", "is not an organization and is already scheduled during that time (#{self.find_overlappers(:for_contact).map{|x| "during " + x.time_range_s + " in " + x.slot_type_desc}.join(", "))") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
-#    errors.add("volunteer_default_shift_id", "is already assigned during that time (#{self.find_overlappers(:for_slot).map{|x| "during " + x.time_range_s + " to " + x.contact_display}.join(", ")}") if self.volunteer_default_shift && !self.volunteer_default_shift.not_numbered && self.find_overlappers(:for_slot).length > 0 # TODO maybe?
+    errors.add("contact_id", "is not an organization and is already scheduled during that time (#{self.find_overlappers(:for_contact).map{|x| "during " + x.time_range_s + " in " + x.slot_type_desc}.join(", ")})") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
+#    errors.add("volunteer_default_shift_id", "is already assigned during that time (#{self.find_overlappers(:for_slot).map{|x| "during " + x.time_range_s + " to " + x.contact_display}.join(", ")})") if self.volunteer_default_shift && !self.volunteer_default_shift.not_numbered && self.find_overlappers(:for_slot).length > 0 # TODO maybe?
   end
 
   def does_conflict?(other)
