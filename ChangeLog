@@ -19,6 +19,8 @@ fgdb.rb (1.0.90) released; urgency=low
     when a non-ID is entered and fix when a staff person has already
     entered their password (in another window, for example) but enters
     it an extra time
+  * replace numbers for teaching slots with descriptions (of the class
+    name) and add better output during conflicts (Closes: #28153)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
 

@@ -191,7 +191,7 @@ class Assignment < ActiveRecord::Base
     if self.contact_id.nil?
       return 'available'
     end
-    if overlap and !(last.cancelled? or self.cancelled?) and !self.volshift_stuck# TODO: FIXME: BUGGY? need a order by cancelled too then probably..
+    if overlap and !(last.cancelled? or self.cancelled?) and !self.volunteer_shift.not_numbered # TODO: FIXME: BUGGY? need a order by cancelled too then probably..
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_shift.send(:read_attribute, :end_time) or self.start_time < self.volunteer_shift.send(:read_attribute, :start_time)
