@@ -1,8 +1,11 @@
 fgdb.rb (1.0.91) UNRELEASED; urgency=low
 
   * Rename support to tech support in volunteer tasks
+  * Remove an hour from the weekday metadata for skedjul display start
+    and end times, since we seem to need 8am-9am more than we need 7pm-
+    8pm
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Apr 2012 14:04:51 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 03 May 2012 11:47:00 -0700
 
 fgdb.rb (1.0.90) released; urgency=low
 
