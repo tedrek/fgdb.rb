@@ -84,7 +84,7 @@ class PrintmeAPI < SOAP::SoapsBase
     "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."
   end
   def bad_mac_client_error
-    "You need to update your version of printme\nTo do that, run update-printme and then run printme again.\n"
+    "You need to update your version of printme\nTo do that, see the instructions on the wiki at http://wiki.freegeek.org/index.php/Printme#Mac_Printme and then run printme again.\n"
   end
   def bad_server_error
     "The server is incompatible. exiting."
