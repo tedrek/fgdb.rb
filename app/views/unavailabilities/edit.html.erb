@@ -2,8 +2,10 @@
 
 <% form_tag :action => 'update', :id => @unavailability do %>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit', :class => "follow_scroll right_side" %>
+  <div class="follow_scroll right_side">
+    <%= submit_tag 'Edit' %> <br />
+    <%= link_to 'Show', :action => 'show', :id => @unavailability %> |
+    <%= link_to 'Back', :action => 'list' %>
+  </div>
 <% end %>
 
-<%= link_to 'Show', :action => 'show', :id => @unavailability %> |
-<%= link_to 'Back', :action => 'list' %>
