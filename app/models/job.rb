@@ -7,6 +7,10 @@ class Job < ActiveRecord::Base
   belongs_to :income_stream
   named_scope :workable, :conditions => {:virtual => false}
 
+  named_scope :effective_on, lambda { |date|
+    { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
+  }
+
   def to_s
     description
   end
