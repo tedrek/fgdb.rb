@@ -124,7 +124,7 @@ class VolunteerEventsController < ApplicationController
     else
       start_hour -= 12 if start_hour == 12
     end
-    start_time = Time.parse([start_hour, start_minute].join(":"))
+    start_time = Time.parse("2000-01-01 " + [start_hour, start_minute].join(":"))
     end_hour = c["end_time(4i)"].to_i
     end_minute = c["end_time(5i)"].to_i
     if c["end_time(7i)"].to_i == ActionView::Helpers::DateTimeSelector::PM
@@ -132,7 +132,7 @@ class VolunteerEventsController < ApplicationController
     else
       end_hour -= 12 if end_hour == 12
     end
-    end_time = Time.parse([end_hour, end_minute].join(":"))
+    end_time = Time.parse("2000-01-01 " + [end_hour, end_minute].join(":"))
     c["start_time"] = start_time
     c["end_time"] = end_time
     c["program"] = program
@@ -166,15 +166,17 @@ class VolunteerEventsController < ApplicationController
       a.end_time = end_time
       @volunteer_event.volunteer_shifts << a
     end
+    vtt_t = VolunteerTaskType.find_by_name("teaching")
     instructor.times do |i|
       a = VolunteerShift.new
       a.class_credit = false
-      a.volunteer_task_type = VolunteerTaskType.find_by_name("teaching")
-      a.slot_number = (i + 1)
+      a.volunteer_task_type = vtt_t
       a.roster_id = roster.id if roster
       a.program_id = program.id if program
       a.start_time = start_time
       a.end_time = end_time
+      a.not_numbered = true
+      a.description = @volunteer_event.description
       a.volunteer_event = @volunteer_event
       if contact and i == 0
         inst_shift = a

@@ -190,25 +190,18 @@ class TransactionController < ApplicationController
   end
 
   def create
-    begin
       @transaction = model.new(params[@transaction_type])
       _apply_line_item_data(@transaction)
       @successful =  @transaction.valid? && @transaction.save
-    rescue
-      flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
-    end
 
     render :action => 'create.rjs'
   end
 
   def create_without_ajax
-    begin
       @transaction = model.new(params[@transaction_type])
       _apply_line_item_data(@transaction)
       @successful =  @transaction.valid? && @transaction.save
-    rescue
-      flash[:error], @successful = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false
-    end
+
     if @successful
       if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
         @receipt = @transaction.id
@@ -220,16 +213,9 @@ class TransactionController < ApplicationController
   end
 
   def edit
-    begin
       @transaction = model.find(params[:id])
       @successful = !@transaction.nil?
       @initial_page_load = true
-    rescue
-      flash[:error], @successful = $!.to_s, false
-
-      @transaction = model.new(params[@gizmo_context.name.to_sym])
-      new_trans_init_hook
-    end
 
     @return_to_search = params[:return_to_search] == "true"
 
@@ -243,14 +229,10 @@ class TransactionController < ApplicationController
   end
 
   def update
-    begin
       @transaction = model.find(params[:id])
       @transaction.attributes = params[@transaction_type]
       _apply_line_item_data(@transaction)
       @successful =  @transaction.valid? && @transaction.save
-    rescue
-      flash[:error], @successful  = $!.to_s, false #, false #+ "<hr />" + $!.backtrace.join("<br />").to_s
-    end
 
     if @transaction
       render :action => 'update.rjs'
@@ -263,14 +245,10 @@ class TransactionController < ApplicationController
   end
 
   def update_without_ajax
-    begin
       @transaction = model.find(params[:id])
       @transaction.attributes = params[@transaction_type]
       _apply_line_item_data(@transaction)
       @successful =  @transaction.valid? && @transaction.save
-    rescue
-      flash[:error], @successful  = $!.to_s + "<hr />" + $!.backtrace.join("<br />").to_s, false #, false #
-    end
 
     if @successful
       if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
@@ -284,25 +262,15 @@ class TransactionController < ApplicationController
   end
 
   def destroy
-    begin
       @successful = model.find(params[:id]).destroy
-    rescue
-      @error = $!.to_s
-      @successful = false
-      flash[:error], @successful  = $!.to_s, false
-    end
     render :action => "destroy.rjs"
   end
 
   def needs_attention
-    begin
       @transaction = model.find(params[:id])
       @transaction.comments += "\nATTN: #{params[:comment]}"
       @transaction.needs_attention = true
       @successful =  @transaction.valid? && @transaction.save
-    rescue
-      flash[:error], @successful = $!.to_s, false
-    end
   end
 
   def cancel

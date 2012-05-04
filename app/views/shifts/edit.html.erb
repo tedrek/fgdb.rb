@@ -2,8 +2,10 @@
 
 <% form_tag :action => 'update', :id => @shift do %>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit', :class => "follow_scroll right_side" %>
+  <div class="follow_scroll right_side">
+    <%= submit_tag 'Edit' %><br />
+    <%= link_to 'Show', :action => 'show', :id => @shift %> |
+    <%= link_to 'Back', :action => 'view_weekly_schedule' %>
+  </div>
 <% end %>
 
-<%= link_to 'Show', :action => 'show', :id => @shift %> |
-<%= link_to 'Back', :action => 'view_weekly_schedule' %>
