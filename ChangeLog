@@ -7,6 +7,7 @@ fgdb.rb (1.0.91) released; urgency=low
   * add ability to make jobs disabled outside of a date range
   * float the back and show buttons along with the edit/new buttons
   * add jobs tracking to meetings
+  * make laptops count for volunteerr credit
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 May 2012 09:02:54 -0700
 
