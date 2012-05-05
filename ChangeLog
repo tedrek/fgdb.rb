@@ -8,6 +8,7 @@ fgdb.rb (1.0.91) released; urgency=low
   * float the back and show buttons along with the edit/new buttons
   * add jobs tracking to meetings
   * make laptops count for volunteerr credit
+  * update docs on how to install fgdb.rb (Closes: #14227)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 May 2012 09:02:54 -0700
 
