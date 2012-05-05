@@ -30,9 +30,6 @@
 <p><label for="meeting_schedule_id">Schedule</label><br/>
 <%= select("meeting", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
-<p><label for="meeting_frequency_type_id">Frequency type</label><br/>
-<%= select("meeting", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
-
 <p><label for="meeting_effective_date">Effective date</label><br/>
 <%= calendar_box 'meeting', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 

@@ -134,7 +134,6 @@ class WorkShift < ActiveRecord::Base
     ret.repeats_every = shift.repeats_every
     ret.repeats_on = shift.repeats_on
     ret.coverage_type_id = shift.coverage_type_id
-    ret.frequency_type_id = shift.frequency_type_id
     ret.job_id = shift.job_id
     ret.meeting_id = shift.meeting_id
     ret.schedule_id = shift.schedule_id

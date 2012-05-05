@@ -5,7 +5,6 @@ class Meeting < Shift
   belongs_to :worker
   belongs_to :weekday
   belongs_to :schedule
-  belongs_to :frequency_type
   belongs_to :coverage_type
 
   def name
