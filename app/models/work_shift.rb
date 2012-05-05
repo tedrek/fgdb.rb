@@ -99,14 +99,20 @@ class WorkShift < ActiveRecord::Base
 
   def to_worked_shift
     ws = WorkedShift.new({:worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
+    msgs = []
     if self.kind == "Meeting"
-      ws.job_id = self.job || Job.find_by_name("Meeting").id
+      if self.job
+        ws.job_id = self.job_id
+        msgs << "The \"#{self.meeting_name}\" meeting was recorded as a \"#{self.job.name}\" shift."
+      else
+        ws.job_id = Job.find_by_name("Meeting").id
+      end
     elsif self.kind == "StandardShift"
       ws.job_id = self.job_id
     else # Unavailability
-      return nil
+      return [nil, msgs]
     end
-    return ws
+    return [ws, msgs]
   end
 
   def WorkShift::create_from_shift( shift = Shift.new, date = Date.new )

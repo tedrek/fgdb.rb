@@ -9,7 +9,11 @@ class Meeting < Shift
   belongs_to :coverage_type
 
   def name
-    ret = meeting_name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
+    ret = meeting_name
+    if self.job_id
+      ret = ret + " [#{job.name}]"
+    end
+    ret = ret + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
     ret = ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
     if ! (self.week_1_of_month && self.week_2_of_month && self.week_3_of_month && self.week_4_of_month && self.week_5_of_month)
       ret = ret + " [weeks: #{(1..5).to_a.select{|n| self.send("week_#{n}_of_month")}.join(", ")}]"

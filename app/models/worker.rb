@@ -245,8 +245,11 @@ class Worker < ActiveRecord::Base
 
   def shifts_for_day(date)
     logged = logged_shifts_for_day(date)
-    return [true, logged].flatten if logged.length > 0
-    return [false, scheduled_shifts_for_day(date)].flatten
+    return [true, [], *logged] if logged.length > 0
+    scheduled = scheduled_shifts_for_day(date)
+    msgs = scheduled.last
+    scheduled = scheduled.first
+    return [false, msgs, *scheduled]
   end
 
   def work_shifts_for_day(date)
@@ -255,8 +258,10 @@ class Worker < ActiveRecord::Base
 
   def scheduled_shifts_for_day(date)
     shifts = self.work_shifts_for_day(date)
-    shifts = shifts.map{|x| x.to_worked_shift}.delete_if{|x| x == nil}
-    return shifts
+    shifts = shifts.map{|x| x.to_worked_shift}
+    msgs = shifts.map{|x| x.last}.delete_if{|x| x == nil}
+    shifts = shifts.map{|x| x.first}.delete_if{|x| x == nil}
+    return [shifts, msgs]
   end
 
   def logged_shifts_for_day(date)

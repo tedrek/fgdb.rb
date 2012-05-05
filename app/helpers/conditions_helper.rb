@@ -51,7 +51,17 @@ module ConditionsHelper
   end
 
   def html_for_job_condition(params_key)
-    select(params_key, "job_id", Job.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts)
+    show_all = false
+    if @conditions_internal_date_range and !show_all
+      jobs = Job.effective_in_range(*@conditions_internal_date_range)
+    else
+      if show_all
+        jobs = Job.find(:all)
+      else
+        jobs = Job.effective_on(Date.today)
+      end
+    end
+    select(params_key, "job_id", jobs.sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts)
   end
 
   def html_for_attendance_type_condition(params_key)
