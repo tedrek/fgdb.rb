@@ -1,7 +1,9 @@
 fgdb.rb (1.0.92) UNRELEASED; urgency=low
 
+  * Clean up negative volunteer tasks, replacing them with disbursement
+    records when appropriate (Closes: #20108)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 May 2012 09:03:35 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 May 2012 14:14:24 -0700
 
 fgdb.rb (1.0.91) released; urgency=low
 
