@@ -29,7 +29,7 @@
 <%= select("work_shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
 <p><label for="work_shift_job_id">Job</label><br/>
-<%= select("work_shift", "job_id", ["(No Job)", nil] + Job.workable.effective_on(@work_shift.shift_date || Date.today).collect {|c| [c.name, c.id] }).sort_by(&:first) %></p>
+<%= select("work_shift", "job_id", [["(No Job)", nil]] + Job.workable.effective_on(@work_shift.shift_date || Date.today).collect {|c| [c.name, c.id] }).sort_by(&:first) %></p>
 
 <p><label for="work_shift_worker_id">Worker</label><br/>
 <%= select("work_shift", "worker_id", Worker.on_date(@work_shift.shift_date).collect {|c| [c.name, c.id] }.sort_by(&:first)) %></p>

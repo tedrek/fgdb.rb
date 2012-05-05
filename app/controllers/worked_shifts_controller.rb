@@ -206,6 +206,7 @@ GROUP BY 1,2;")
       mark_activity
       @shifts = @worker.shifts_for_day(@date)
       @logged_already = @shifts.shift
+      @messages = @shifts.shift
       @shifts = @shifts.select{|x| !(x.job_id.nil? && x.duration == 0)}
     end
   end
