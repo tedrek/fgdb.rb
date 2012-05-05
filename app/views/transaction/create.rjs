@@ -4,11 +4,11 @@
 
 if @successful
   can_have_receipt = (@transaction_type == 'sale' and receipt_printer_enabled and params.include?("receipt_printer"))
-  printer = params["receipt_printer"]
+  printer = params["receipt_printer"].to_s
   if can_have_receipt
       receipt_printer_set_default(printer)
   end
-  is_receipt = (can_have_receipt and printer != "")
+  is_receipt = (can_have_receipt and printer.match(receipt_printer_regexp))
   return_url = url_for( ( { :action => 'new'} ) )
   if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped") or (@transaction_type == "gizmo_return" and @transaction.store_credit)
     if !is_receipt

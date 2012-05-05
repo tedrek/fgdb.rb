@@ -87,9 +87,6 @@ function monitorInitFinding() {
       var list = document.jzebra.getPrinters();
       list = list.split(",").select(function(n) {return (n != "null");})
       list.each(function(i){
-        if(i != 'zebra' && i != 'jzebra' && i != 'zebtest' && i != 'fakezebra') { // TODO: have a list from fgdb
-          return;
-        }
         e = document.createElement("option");
         e.text = e.value = i;
         $('receipt_printer').add(e, $('receipt_printer').options[0]);
