@@ -1,4 +1,4 @@
-fgdb.rb (1.0.91) UNRELEASED; urgency=low
+fgdb.rb (1.0.91) released; urgency=low
 
   * Rename support to tech support in volunteer tasks
   * Remove an hour from the weekday metadata for skedjul display start
@@ -8,7 +8,7 @@ fgdb.rb (1.0.91) UNRELEASED; urgency=low
   * float the back and show buttons along with the edit/new buttons
   * add jobs tracking to meetings
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 May 2012 17:37:51 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 May 2012 09:02:54 -0700
 
 fgdb.rb (1.0.90) released; urgency=low
 
