@@ -202,6 +202,11 @@ GROUP BY 1,2;")
     if !@session_allowed and params[:worked_shift] and params[:worked_shift].keys.include?("password")
       authenticate
     end
+    if request.method == :post and params[:worked_shift] and params[:worked_shift].keys.include?("password")
+      params[:worked_shift].delete("password")
+      params[:worked_shift].delete("L") # unimportant
+      redirect_to(params)
+    end
     if @worker and @session_allowed
       mark_activity
       @shifts = @worker.shifts_for_day(@date)
