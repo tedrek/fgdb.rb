@@ -5,7 +5,6 @@
   <% for column in Meeting.content_columns %>
     <th><%= column.human_name %></th>
   <% end %>
-  <th>Freq type</th>
   <th>Schedule</th>
   <th>Weekday</th>
   <th colspan="5">&nbsp;</th>
@@ -16,7 +15,6 @@
   <% for column in Meeting.content_columns %>
     <td><%=h meeting.send(column.name) %></td>
   <% end %>
-    <td><%=h meeting.frequency_type.name %></td>
     <td><%=h meeting.schedule.name %></td>
     <td><%=h meeting.weekday.short_name %></td>
     <td><%= link_to 'Show', :action => 'show', :id => meeting %></td>

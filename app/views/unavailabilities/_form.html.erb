@@ -31,7 +31,5 @@
 <p><label for="unavailability_schedule_id">Schedule</label><br/>
 <%= select("unavailability", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
-<p><label for="unavailability_frequency_type_id">Frequency type</label><br/>
-<%= select("unavailability", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
 <!--[eoform:unavailability]-->
 

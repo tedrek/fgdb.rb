@@ -1,95 +1,86 @@
 = _F_ree_G_eek _D_ata_B_ase in _R_u_B_y
 
-=================
-HEY! LOOK HERE!!!
-=================
-
-This file is outdated. We use git now.
-
-a work in progress version of new instructions is available in doc/install_process.
-
-== How stuff works
-
-this webapp is meant to keep track of two main areas:
-* volunteers and the time they work
-* gizmos and their flow through our organization
-
-in the near future i hope to add:
-* classes and who has completed them
-* projects (such as building and testing a computer) and who has worked on them
-
 == Install
 
-we made this on debian lenny systems. alteration may be needed on other distros.
+we made this on debian squeeze systems. alteration may be needed on other distros.
 
-To get the mr setup:
-
- $> apt-get install subversion mr # or, wget http://git.kitenet.net/?p=mr.git;a=blob_plain;f=mr -O /usr/local/bin/mr
- $> svn co http://dev.freegeek.org/svn/fgdb.rb/trunk/mr/ fgdb.rb
+ To get a source repository checkout:
+ $> sudo apt-get install -y git-core
+ $> git clone git://git.freegeek.org/git/fgdb.rb
  $> cd fgdb.rb
 
-If you are going to be doing development, you should use the latest (untested, unreleased, and possibly unusable) trunk:
- $> touch devel
-
-Checkout the sources (you first need to setup mr, see above):
- $> mr -c config update
-
-to setup a working environment on debian and ubuntu (skip this part on other distros):
-
- Add my repo (required to install thin) to your sources.list:
- $> (wget http://packages.ryan52.info/keyring.gpg && apt-key add keyring.gpg); rm -f keyring.gpg
- $> echo "deb http://repos.ryan52.info/thin/ sid main" >> /etc/apt/sources.list.d/ryan52.list
+ If you would like to use the latest stable release (for production
+ purposes), then look for the most recently released version number in
+ the ChangeLog file and use it in the following:
+ $> git checkout -b release_1.0.XX origin/release_1.0.XX
 
  Install stuff:
  $> apt-get update
- $> apt-get install ruby postgresql-8.1 libpgsql-ruby irb libxml-ruby xmlstarlet thin
- $> apt-get install rails #version 2.1
- $> ln -s /usr/share/rails vendor/rails
+
+ Install dependencies used by the system (make sure Rails 2.3 is installed):
+ $> sudo apt-get install -y postgresql-8.4 rails ruby1.8 libnokogiri-ruby libbarby-ruby librmagick-ruby  libjson-ruby1.8 xmlstarlet thin curl socat libgnuplot-ruby libpgsql-ruby1.8 ruby libpdf-writer-ruby1.8 libjson-ruby1.8 libbluecloth-ruby irb
+
+ Link to rails from within the fgdb.rb checkout:
+ $> ln -sf /usr/share/rails-ruby1.8/ vendor/rails
+
+ Install FG-specific package requirements:
+ $> echo 'deb http://apt.freegeek.org/ freegeek public debian' > /etc/apt/sources.list.d/freegeek_fgdb.list
+ $> sudo apt-get update
+ $> sudo apt-get install freegeek-archive-keyring libbytes-ruby1.8
 
 check if things are installed, and find out what you need to install:
 
  $> ./script/do_i_have_everything_installed_right
 
-you need to create and configure the databases:
+ Set up the database for use by at least yourself (needs admin privileges to manage databases):
+ $> sudo su - postgres -c "createuser -a $USER"
+ $> cp config/database.yml-example config/database.yml
+   ::: edit config/database.yml to match database config
 
- $> su - postgres -c 'createuser -P SOMEDBUSER'
-      # capable of creating databases, but nothing else
- $> createdb -h localhost -U SOMEDBUSER fgdb_production
- $> createdb -h localhost -U SOMEDBUSER fgdb_test
- $> createdb -h localhost -U SOMEDBUSER fgdb_development
- $> cd fgdb.rb/current
-   ::: edit config/database.yml-example to match and rename
-   ::: it (drop '-example')
+ If you would like to use a production database, first:
  $> export RAILS_ENV=production
+
+ Create the basic database structure:
+ $> rake db:create
  $> rake db:schema:load
 
-choose one of the following: skeletal metadata (for production databases), or full test data (for development databases):
+Choose one of the following:
 
+ Load skeletal metadata (for production databases):
  $> rake db:metadata:load
- $> ./script/make_admin # create the admin user (should only be used to create a contact for yourself, and turn yourself into an admin)
-   :OR:
- $> ./script/load_devel_data # the admin user's password is 'secret'
+ $> ./script/make_admin
 
-migrate the database:
+ OR: load full test data (for development databases, note that the 'admin' user login's password is 'secret'):
+ $> ./script/load_devel_data
+
+Migrate the database to the current schema:
 
  $> rake db:migrate
 
-run some tests to see if things look okay:
+Start the server and browse in to see things working:
 
- $> rake db:test:purge
- $> rake
-
-if you see any failures or errors,
-something is wrong that you should fix or tell us about.
-then start the server and browse in to see things working:
-
- $> thin &
+ $> ./script/server &
  $> iceweasel http://localhost:3000
 
-for a production server running nginx and thin,
-continue with the following:
+To set up the apache2 passenger production web server (not needed for development):
 
- $> apt-get install nginx
+ $> sudo apt-get install apache2 libapcache2-mod-passenger
+ $> sudo a2enmod headers
+ $> sudo a2enmod rewrite
+ $> sudo chown -R www-data public log tmp
+ $> sudo ln -s $(readlink -f doc/examples/apache2_sites-available_default) /etc/apache2/sites-enabled/
+ $> sudo ln -s $(readlink -f doc/examples/fgdb) /etc/logrotate.d/
+
+Start the server and browse in to see things working:
+
+ $> sudo invoke-rc.d apache2 restart
+ $> iceweasel http://localhost/
+
+For setting up a production server running nginx and thin (instead of
+apache), you can continue with the following setup procedure:
+[NOTE: This is no longer used by PDX, at least]
+
+ $> apt-get install nginx thin1.8
  $> ln -fs $(readlink -f doc/examples/web/fgdb.conf) /etc/nginx/sites-enabled/fgdb.conf
  $> ln -fs $(readlink -f doc/examples/web/fgdb.yml) /etc/thin/
  $> rm /etc/nginx/sites-enabled/default
@@ -99,16 +90,46 @@ continue with the following:
    ::: modify configs to taste :::
    ::: edit config/environment.rb to say "ENV['RAILS_ENV'] ||= 'production'" :::
 
+
+== Customizing defaults for new Free Geek locations
+
+The database table 'defaults' holds details which identify a Free Geek location.
+These details are initially automatically loaded from the file: db/metadata/defaults.sql
+
 == Upgrading to newest sprint
 
-To upgrade to the newest sprint release:
- $> mv current/public/_release.html current/public/release.html
- $> invoke-rc.d thin stop
- $> mr -c config update
- $> cd current
+To upgrade a development checkout on the master branch:
+ $> git pull
+ $> rake db:migrate
+
+To upgrade to the newest sprint release (every week or so):
+ $> mv fgdb.rb/public/_release.html fgdb.rb/public/release.html
+ $> invoke-rc.d apache2 stop
+ $> cd fgdb.rb
+ $> git checkout -b release_1.0.XX origin/release_1.0.XX
  $> RAILS_ENV=production rake db:migrate
- $> invoke-rc.d thin start
+ $> invoke-rc.d apache2 start
  $> mv public/release.html public/_release.html
+
+== Developer / Committer setup
+
+To set up your name and email within git:
+ $> git config --global user.email email@domain.com
+ $> git config --global user.name "John Doe"
+
+To set up ssh key access to the production database:
+ $> ssh-keygen -f ./script/update-devel-data/scp_key
+ $> ./script/update-devel-data/under-myagent ssh-copy-id tulip
+ $> ./script/update-devel-data/under-myagent ssh-copy-id devo
+ $> git remote add fg dev.freegeek.org:/git/fgdb.rb
+ $> git fetch fg
+ $> sed -i "s/remote = origin/remote = fg/" .git/config
+
+To update the mutated development data (on a dev server with ssh key
+access to the production data):
+ $> sudo apt-get install -y subversion
+ $> ./script/update-devel-data/update-devel-data
+ $> make -C db commit
 
 == THANKS
 
