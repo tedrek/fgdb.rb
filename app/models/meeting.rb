@@ -33,6 +33,7 @@ class Meeting < Shift
       if save_for_worker?(day, w)
         workshift = WorkShift.create_from_meeting( self, w, day )
         workshift.shift_id = self.id
+        workshift.job_id = self.job_id
         # workshift.worker_id = w.id
         workshift.save
       end

@@ -6,8 +6,9 @@ fgdb.rb (1.0.91) UNRELEASED; urgency=low
     8pm
   * add ability to make jobs disabled outside of a date range
   * float the back and show buttons along with the edit/new buttons
+  * add jobs tracking to meetings
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 May 2012 16:41:07 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 04 May 2012 17:37:51 -0700
 
 fgdb.rb (1.0.90) released; urgency=low
 

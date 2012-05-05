@@ -39,6 +39,9 @@
 <p><label for="meeting_ineffective_date">Ineffective date</label><br/>
 <%= calendar_box 'meeting', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
+<p><label for="meeting_job_id">Job</label><br/>
+<%= select("meeting", "job_id", ["(No Job)", nil] + Job.workable.effective_on(Date.today).collect {|c| [c.name, c.id] }) %></p>
+
 <p><label for="workers">Workers:</label><br/>
 <ul>
 
