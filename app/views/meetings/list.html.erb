@@ -3,6 +3,7 @@
 <table class="skedj">
   <tr>
   <th>Name</th>
+  <th>Job</th>
   <th>Date</th>
   <th>Start</th>
   <th>End</th>
@@ -19,6 +20,7 @@
 <% for meeting in @meetings %>
   <tr>
     <td><%=h meeting.meeting_name %></td>
+    <td><%=h meeting.job ? meeting.job.name : "" %></td>
     <td><%=h meeting.shift_date %></td>
     <td><%=h meeting.start_time.strftime(" %I:%M").gsub( ' 0', '' ) %></td>
     <td><%=h meeting.end_time.strftime(" %I:%M").gsub( ' 0', '' ) %></td>
