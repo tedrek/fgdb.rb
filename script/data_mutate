@@ -190,6 +190,8 @@ Contract.destroy_all "name != 'default'"
 
 DisciplinaryAction.destroy_all
 
+NewsletterSubscriber.destroy_all
+
 DB.execute("UPDATE assignments SET notes = '';")
 
 Default["is-pdx"] = "false"
