@@ -4,7 +4,7 @@ class CleanNegativeVoltaskDisbursements < ActiveRecord::Migration
 
     VolunteerTask.find(:all, :conditions => ['duration <= 0']).each do |vt|
       dt = nil
-      if [0, -12, -24, -36, -48, -60].include(vt.duration)
+      if [0, -12, -24, -36, -48, -60].include?(vt.duration)
         if vt.duration == 0
           if vt.contact and vt.contact.is_organization
             dt = DisbursementType.find_by_name("hardware_grants")
@@ -23,7 +23,7 @@ class CleanNegativeVoltaskDisbursements < ActiveRecord::Migration
         d.save!
       end
 
-      vt.destroy!
+      vt.destroy
     end
   end
 
