@@ -21,5 +21,6 @@ class AddCollectiveLevelRole < ActiveRecord::Migration
     if Default.is_pdx
       ActiveRecord::Base.record_timestamps = false
       Role.find_by_name("COLLECTIVE").destroy
+    end
   end
 end
