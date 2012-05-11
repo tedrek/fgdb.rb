@@ -90,6 +90,7 @@ class Contact < ActiveRecord::Base
   end
 
   def update_syseval_count(vid)
+    return unless vid
     c = ContactVolunteerTaskTypeCount.find_or_create_by_contact_id_and_volunteer_task_type_id(self.id, vid)
     vtt = VolunteerTaskType.find(vid)
     c.count = self.volunteer_tasks.for_type_id(vtt.id).count

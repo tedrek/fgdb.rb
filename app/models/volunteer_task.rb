@@ -14,7 +14,7 @@ class VolunteerTask < ActiveRecord::Base
 
   before_save :add_contact_types
   after_save :set_contact_syseval_count
-  after_destroy { |record| c = record.contact; c.update_syseval_count(record.volunteer_task_type_id);}
+  after_destroy { |record| c = record.contact; if c; c.update_syseval_count(record.volunteer_task_type_id); end}
 
   named_scope :for_type_id, lambda{|opt| {:conditions => ['volunteer_task_type_id = ?', opt]}}
 
