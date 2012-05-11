@@ -43,7 +43,11 @@ class Payment < ActiveRecord::Base
 
   def sc_ok
     return if ! is_storecredit?
-    errors.add("payment", "store credit was already spent") if self.store_credit.spent? && (self.sale.nil? || self.store_credit.spent_on.nil? || (self.store_credit.spent_on.sale.id != self.sale.id))
+    if self.store_credit
+      errors.add("payment", "store credit was already spent") if self.store_credit.spent? && (self.sale.nil? || self.store_credit.spent_on.nil? || (self.store_credit.spent_on.sale.id != self.sale.id))
+    else
+      errors.add("payment", "store credit hash is not valid")
+    end
   end
 
   def store_credit_id
