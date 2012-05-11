@@ -12,9 +12,11 @@ METADATATABLES = %w[
         gizmo_types payment_methods gizmo_categories
         volunteer_task_types disbursement_types defaults
         community_service_types roles actions types
-        coverage_types customizations frequency_types
+        coverage_types customizations return_policies
         holidays income_streams jobs programs till_types
-        wc_categories
+        wc_categories rosters skeds rosters_skeds gizmo_type_groups
+        spec_sheet_questions spec_sheet_question_conditions
+        postal_codes disciplinary_action_areas
 ]
 MIGRATIONDIR = 'db/migrate'
 
