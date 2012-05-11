@@ -19,12 +19,16 @@ class CleanNegativeVoltaskDisbursements < ActiveRecord::Migration
         d.comments = "Disbursement automatically created from volunteer task with #{vt.duration} hours"
         d.contact_id = vt.contact_id
         if d.contact_id.nil?
-          d.contact = Contact.find_or_create_by_organization('FGDB: Internal User For Historic Disbursements without Contacts')
-          if d.contact.id.nil?
+          internal = 'FGDB: Internal User For Historic Disbursements without Contacts'
+          d.contact = Contact.find_by_organization(internal)
+          if d.contact.nil?
+            d.contact = Contact.new
+            d.contact.organization = internal
             d.contact.is_organization = false
             d.contact.first_name = 'FGDB Internal User'
-            d.contact.last_name = 'For Historic Disbursements without Contacts'
+            d.contact.surname = 'For Historic Disbursements without Contacts'
             d.contact.postal_code = "97214"
+            d.contact.created_by = 1
             d.contact.save!
             d.contact_id = d.contact.id
           end
