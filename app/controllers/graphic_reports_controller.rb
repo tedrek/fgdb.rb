@@ -378,6 +378,8 @@ class TrendReport
     rescue
       errors.add('end_date', 'is not a valid date')
     end
+    errors.add('start_date', 'is out of range (past year 2038)') if @start_date.year >= 2038
+    errors.add('end_date', 'is out of range (past year 2038)') if end_date.year >= 2038
     if errors.length > 0
       return false
     end

@@ -36,6 +36,8 @@ class Contact < ActiveRecord::Base
 
   def is_old_enough?
     return true if self.birthday.nil? or self.class.born_on_or_before.nil?
+    ctt = ContactType.find_by_name('allow_without_adult')
+    return true if ctt and self.contact_types.include?(ctt)
     return self.birthday <= self.class.born_on_or_before
   end
 
