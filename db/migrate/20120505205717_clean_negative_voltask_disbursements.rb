@@ -16,7 +16,7 @@ class CleanNegativeVoltaskDisbursements < ActiveRecord::Migration
 
       if dt
         d = Disbursement.new
-        d.comments "Disbursement automatically created from volunteer task with #{vt.duration} hours"
+        d.comments = "Disbursement automatically created from volunteer task with #{vt.duration} hours"
         d.contact_id = vt.contact_id
         d.disbursement_type_id = dt.id
         d.disbursed_at = vt.date_performed
