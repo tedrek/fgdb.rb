@@ -1,7 +1,12 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   def do_jsalert
-    flash[:jsalert] ? javascript_tag("alert(#{flash[:jsalert].to_json});") : ""
+    return "" if ! flash[:jsalert]
+    s = ""
+    [flash[:jsalert]].flatten.each do |x|
+      s += "alert(#{x.to_json}); "
+    end
+    return javascript_tag(s)
   end
 
   def gt_for_txn(thing)

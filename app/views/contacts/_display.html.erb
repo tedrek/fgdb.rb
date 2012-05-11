@@ -10,6 +10,10 @@
     (id: <%= @contact.id %><%= ", login: #{h @contact.user.login}" if @contact.user %>)
   </div>
   <div class="name"><%= h @contact.display_name %></div>
+  <% if @contact.is_birthday? %>
+    <b class="id" style="color: blue">Birthday is today (<%= @contact.birthday %>),<br />Wish them a HAPPY BIRTHDAY!</b>
+    <br />
+  <% end %>
   <br />
   <% if @contact.is_person? %>
     <div class="hours_type">

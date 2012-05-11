@@ -23,6 +23,22 @@ class Contact < ActiveRecord::Base
 
   has_many :disciplinary_actions, :autosave => true
 
+  def self.born_on_or_before
+    return nil if not Default['minimum_volunteer_age']
+    Date.today.advance(:years => -1 * Default['minimum_volunteer_age'].to_i)
+  end
+
+  def is_birthday?
+    return false if self.birthday.nil?
+    tod = Date.today
+    tod.day == birthday.day and tod.month == birthday.month
+  end
+
+  def is_old_enough?
+    return true if self.birthday.nil? or self.class.born_on_or_before.nil?
+    return self.birthday <= self.class.born_on_or_before
+  end
+
   def has_areas_disciplined_from?
     self.areas_disciplined_from.length > 0
   end

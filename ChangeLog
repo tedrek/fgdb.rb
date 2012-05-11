@@ -2,8 +2,10 @@ fgdb.rb (1.0.92) UNRELEASED; urgency=low
 
   * Clean up negative volunteer tasks, replacing them with disbursement
     records when appropriate (Closes: #20108)
+  * Add handling for birthdays and alerts when scheduling underage
+    volunteers
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 May 2012 14:14:24 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 10 May 2012 17:30:15 -0700
 
 fgdb.rb (1.0.91) released; urgency=low
 

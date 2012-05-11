@@ -299,13 +299,24 @@ class AssignmentsController < ApplicationController
         bc = x.contact_id
         ret = !!(x.update_attributes(params[:assignment]))
         if bc != x.contact_id and x.first_time_in_area?
-          flash[:jsalert] = "#{x.contact.display_name} (##{x.contact_id}) has never logged hours for the #{x.volunteer_shift.volunteer_task_type.description} task type. Please remind the volunteer of the requirements for this area."
+          alert = "#{x.contact.display_name} (##{x.contact_id}) has never logged hours for the #{x.volunteer_shift.volunteer_task_type.description} task type. Please remind the volunteer of the requirements for this area."
           if x.volunteer_shift.volunteer_event and x.volunteer_shift.volunteer_event.notes and x.volunteer_shift.volunteer_event.notes.length > 0
-            flash[:jsalert] += "\n\nSome suggested notes saved in the database for this event are:\n" + x.volunteer_shift.volunteer_event.notes
+            alert += "\n\nSome suggested notes saved in the database for this event are:\n" + x.volunteer_shift.volunteer_event.notes
           end
+          flash[:jsalert] ||= []
+          flash[:jsalert] << alert
         end
       end
     }
+
+    if @assignment.contact and not @assignment.contact.is_old_enough?
+      msg = "This volunteer is not yet #{Default['minimum_volunteer_age']} years old (based on their saved birthday: #{@assignment.contact.birthday.to_s}).\nPlease remind the volunteer that they must have an adult with them to volunteer."
+      if flash[:jsalert]
+        flash[:jsalert].unshift(msg)
+      else
+        flash[:jsalert] = msg
+      end
+    end
 
     if ret
       flash[:notice] = 'Assignment was successfully updated.'
