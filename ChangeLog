@@ -1,11 +1,16 @@
-fgdb.rb (1.0.92) UNRELEASED; urgency=low
+fgdb.rb (1.0.93) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 May 2012 08:51:49 -0700
+
+fgdb.rb (1.0.92) released; urgency=low
 
   * Clean up negative volunteer tasks, replacing them with disbursement
     records when appropriate (Closes: #20108)
   * Add handling for birthdays and alerts when scheduling underage
     volunteers
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 10 May 2012 17:30:15 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 May 2012 08:51:19 -0700
 
 fgdb.rb (1.0.91) released; urgency=low
 
