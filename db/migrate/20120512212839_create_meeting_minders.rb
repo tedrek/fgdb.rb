@@ -10,6 +10,8 @@ class CreateMeetingMinders < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_foreign_key :meeting_minders, :meeting_id, :shifts, :id, :on_delete => :cascade
   end
 
   def self.down
