@@ -3,7 +3,7 @@
 --
 
 SET statement_timeout = 0;
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: wc_categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('wc_categories_id_seq', 8, true);
+SELECT pg_catalog.setval('wc_categories_id_seq', 9, true);
 
 
 --
@@ -32,6 +32,7 @@ COPY wc_categories (id, name, description, rate_cents, created_at, updated_at) F
 6	8264 10	Recycling Operation	531	2009-10-31 13:25:38.10489	2009-10-31 13:25:38.10489
 7	8810 03	Office Clerical	91	2009-10-31 13:25:38.10889	2009-10-31 13:25:38.10889
 8	5191 01	Computer Dev-Instl/Inspec/Ser/Repr	84	2009-10-31 13:25:38.10889	2009-10-31 13:25:38.10889
+9	n/a	Not Applicable	\N	2012-03-27 13:36:12.417194	2012-03-27 13:36:12.417194
 \.
 
 

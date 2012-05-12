@@ -3,7 +3,7 @@
 --
 
 SET statement_timeout = 0;
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: discount_schedules_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('discount_schedules_id_seq', 9, true);
+SELECT pg_catalog.setval('discount_schedules_id_seq', 10, true);
 
 
 --
@@ -31,6 +31,7 @@ COPY discount_schedules (id, description, lock_version, updated_at, created_at, 
 4	volunteer	0	2006-12-19 17:48:31	2006-12-19 17:48:31	volunteer
 8	bulk	0	2006-12-19 18:27:48	2006-12-19 18:27:48	bulk
 5	friend	1	2006-12-20 08:31:02	2006-12-19 17:51:03	friend
+10	coupon	0	2011-10-01 00:33:55.106911	2011-10-01 00:33:55.106911	coupon
 \.
 
 
