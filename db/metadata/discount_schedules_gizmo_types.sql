@@ -3,7 +3,7 @@
 --
 
 SET statement_timeout = 0;
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: discount_schedules_gizmo_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('discount_schedules_gizmo_types_id_seq', 289, true);
+SELECT pg_catalog.setval('discount_schedules_gizmo_types_id_seq', 290, true);
 
 
 --
@@ -51,6 +51,7 @@ COPY discount_schedules_gizmo_types (id, gizmo_type_id, discount_schedule_id, mu
 287	73	5	0.800	0	2009-10-09 12:28:01.970223	2009-10-09 12:28:01.970223
 288	73	8	1.000	0	2009-10-09 12:28:01.970223	2009-10-09 12:28:01.970223
 289	73	9	1.000	0	2009-10-09 12:28:01.970223	2009-10-09 12:28:01.970223
+290	73	10	0.750	0	2011-10-01 00:33:55.241252	2011-10-01 00:33:55.241252
 \.
 
 
