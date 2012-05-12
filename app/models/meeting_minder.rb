@@ -1,5 +1,5 @@
 class MeetingMinder < ActiveRecord::Base
-  # TODO: fgdb scaffold
+  # TODO: fgdb scaffold, explain variables in subject/body and the number of days before
   belongs_to :meeting
 
   validates_presence_of :subject
@@ -21,16 +21,23 @@ class MeetingMinder < ActiveRecord::Base
 
   # TODO: make a cron job for this
   def self.send_all
-    MeetingMinder.find(:all).each{|x|
+    Meeting.effective_in_range(Date.today, Date.today + 60).collect{|x| x.meeting_minders}.flatten.each{|x|
       x.deliver if x.deliver_today?
     }
   end
 
   def deliver_today?
-    false
+    check_date = Date.today #change for debugging
+    meeting_date = check_date + days_before
+    return false if meeting.effective_date and meeting.effective_date > meeting_date
+    return false if meeting.ineffective_date and meeting.ineffective_date < meeting_date
+    return false unless meeting_date.wday == meeting.weekday_id or meeting_date == meeting.shift_date
+    return false if Holiday.is_holiday?(meeting_date)
+    return self.meeting.generates_on_day?(meeting_date)
   end
 
   def deliver
+    puts "DELIVERY"; return
     Notifier.deliver_text_minder(recipient, processed_subject, processed_body, self.meeting.name)
   end
 
