@@ -1,0 +1,33 @@
+<p>
+  <b>Meeting:</b>
+  <%=h @meeting_minder.meeting_id %>
+</p>
+
+<p>
+  <b>Days before:</b>
+  <%=h @meeting_minder.days_before %>
+</p>
+
+<p>
+  <b>Recipient:</b>
+  <%=h @meeting_minder.recipient %>
+</p>
+
+<p>
+  <b>Subject:</b>
+  <%=h @meeting_minder.subject %>
+</p>
+
+<p>
+  <b>Script:</b>
+  <%=h @meeting_minder.script %>
+</p>
+
+<p>
+  <b>Body:</b>
+  <%=h @meeting_minder.body %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @meeting_minder.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

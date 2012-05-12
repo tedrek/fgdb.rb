@@ -1,0 +1,24 @@
+<table>
+  <tr>
+    <th>Meeting</th>
+    <th>Days before</th>
+    <th>Recipient</th>
+    <th>Subject</th>
+    <th>Script</th>
+    <th>Body</th>
+  </tr>
+
+<% for meeting_minder in @meeting_minders %>
+  <tr>
+    <td><%=h meeting_minder.meeting_id %></td>
+    <td><%=h meeting_minder.days_before %></td>
+    <td><%=h meeting_minder.recipient %></td>
+    <td><%=h meeting_minder.subject %></td>
+    <td><%=h meeting_minder.script %></td>
+    <td><%=h meeting_minder.body %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => meeting_minder.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => meeting_minder.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => meeting_minder.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>
