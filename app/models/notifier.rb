@@ -7,6 +7,18 @@ class Notifier < ActionMailer::Base
     body :text => data
   end
 
+  def text_minder(recipient, subj, data, meeting_name = nil)
+    recipients recipient
+    name = "Meeting Minder"
+    if meeting_name
+      name = meeting_name + " " + name
+    end
+    from name + " <" + Default['meeting_minder_address'] + ">"
+    headers 'return-path' => Default['return_path'] if Default['return_path']
+    subject subj
+    body :text => data
+  end
+
   def newsletter_subscribe(email_address)
     recipients Default["newsletter_subscription_address"]
     from email_address

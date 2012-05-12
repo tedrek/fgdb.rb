@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  meeting_id: 1
+  days_before: 1
+  recipient: MyString
+  subject: MyString
+  script: MyString
+  body: MyText
+
+two:
+  meeting_id: 1
+  days_before: 1
+  recipient: MyString
+  subject: MyString
+  script: MyString
+  body: MyText
