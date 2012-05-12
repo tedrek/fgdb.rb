@@ -19,15 +19,14 @@ class MeetingMinder < ActiveRecord::Base
     errors.add('body', 'should be specified if no script will be ran') if body.length == 0 and script_name.length == 0
   end
 
-  # TODO: make a cron job for this
-  def self.send_all
-    Meeting.effective_in_range(Date.today, Date.today + 60).collect{|x| x.meeting_minders}.flatten.each{|x|
-      x.deliver if x.deliver_today?
+  def self.send_all(today = nil)
+    today ||= Date.today
+    Meeting.effective_in_range(today, today + 60).collect{|x| x.meeting_minders}.flatten.each{|x|
+      x.deliver if x.deliver_today?(today)
     }
   end
 
-  def deliver_today?
-    check_date = Date.today #change for debugging
+  def deliver_today?(check_date)
     meeting_date = check_date + days_before
     return false if meeting.effective_date and meeting.effective_date > meeting_date
     return false if meeting.ineffective_date and meeting.ineffective_date < meeting_date

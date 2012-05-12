@@ -9,7 +9,7 @@ class Meeting < Shift
   has_many :meeting_minders
 
   named_scope :effective_in_range, lambda { |start, fin|
-    {:conditions => ["(((effective_on <= ? OR effective_on IS NULL) AND (ineffective_on > ? OR ineffective_on IS NULL)) OR (effective_on > ? AND ineffective_on <= ?) OR ((ineffective_on is NULL or ineffective_on > ?) AND (effective_on IS NULL or effective_on <= ?)))", start, start, start, fin, fin, fin]}
+    {:conditions => ["(((effective_date <= ? OR effective_date IS NULL) AND (ineffective_date > ? OR ineffective_date IS NULL)) OR (effective_date > ? AND ineffective_date <= ?) OR ((ineffective_date is NULL or ineffective_date > ?) AND (effective_date IS NULL or effective_date <= ?)))", start, start, start, fin, fin, fin]}
   }
 
   def name
