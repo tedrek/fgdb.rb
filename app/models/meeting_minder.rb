@@ -3,15 +3,13 @@ class MeetingMinder < ActiveRecord::Base
   belongs_to :meeting
 
   validates_presence_of :subject
+  validates_presence_of :days_before
   validates_presence_of :recipient
   validates_format_of :recipient, :with => /.+@[^.]+\..+/, :message => "must be a valid email address"
 
-  def minder_variables
-    # TODO: The database can then also export the meeting name, meeting
-    # date, today's date, number of days between, the scheduled meeting
-    # attendees, etc for use within the minders.
-    {}
-    # USE some .meeting from here
+  def minder_variables(today)
+    # are the scheduled meeting attendees important? could loop the work_shifts for the meeting_date
+    {:meeting_name => meeting.name, :meeting_date => today + days_before, :days_before => days_before, :todays_date => today}
   end
 
   def validate
@@ -22,7 +20,7 @@ class MeetingMinder < ActiveRecord::Base
   def self.send_all(today = nil)
     today ||= Date.today
     Meeting.effective_in_range(today, today + 60).collect{|x| x.meeting_minders}.flatten.each{|x|
-      x.deliver if x.deliver_today?(today)
+      x.deliver(today) if x.deliver_today?(today)
     }
   end
 
@@ -35,29 +33,29 @@ class MeetingMinder < ActiveRecord::Base
     return self.meeting.generates_on_day?(meeting_date)
   end
 
-  def deliver
+  def deliver(today)
     puts "DELIVERY"; return
-    Notifier.deliver_text_minder(recipient, processed_subject, processed_body, self.meeting.name)
+    Notifier.deliver_text_minder(recipient, processed_subject(today), processed_body(today), self.meeting.name)
   end
 
-  def _process(text)
+  def _process(text, today)
     text = text.dup
-    for k,v in minder_variables
+    for k,v in minder_variables(today)
       text.gsub(/%#{k.to_s.upcase}%/, v.to_s)
     end
     return text
   end
 
-  def processed_body
+  def processed_body(today)
     if self.body
-      return _process(self.body)
+      return _process(self.body, today)
     else
       envvars = minder_variables.collect{|k,v| "#{k.to_s.upcase}=\"#{v.to_s.gsub('"', '\"')}\""}.join(" ")
       return `env #{envvars} #{self.script_name}`
     end
   end
 
-  def processed_subject
-    return _process(self.subject)
+  def processed_subject(today)
+    return _process(self.subject, today)
   end
 end
