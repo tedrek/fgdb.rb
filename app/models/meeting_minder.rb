@@ -20,10 +20,21 @@ class MeetingMinder < ActiveRecord::Base
     errors.add('script_name', 'does not exist in the ASS meetings directory') if script_name.length > 0 and !File.exists?(self.script_filename)
   end
 
+  def self.minders_for_day(today)
+    Meeting.effective_in_range(today, today + 60).collect{|x| x.meeting_minders}.flatten.select{|x| x.deliver_today?(today)}
+  end
+
+  def self.deliveries_for_day(today)
+    MeetingMinder.minders_for_day(today).map{|x|
+      x.delivery(today)
+    }
+  end
+
   def self.send_all(today = nil)
     today ||= Date.today
-    Meeting.effective_in_range(today, today + 60).collect{|x| x.meeting_minders}.flatten.each{|x|
-      x.deliver(today) if x.deliver_today?(today)
+    MeetingMinder.deliveries_for_day(today).each{|x|
+      puts "DELIVERY: #{x.inspect}"
+      # TODO: Notifier.deliver_text_minder(*x)
     }
   end
 
@@ -36,9 +47,8 @@ class MeetingMinder < ActiveRecord::Base
     return self.meeting.generates_on_day?(meeting_date)
   end
 
-  def deliver(today)
-    puts "DELIVERY"; return
-    Notifier.deliver_text_minder(recipient, processed_subject(today), processed_body(today), self.meeting.name)
+  def delivery(today)
+    [recipient, processed_subject(today), processed_body(today), self.meeting.name]
   end
 
   def _process(text, today)
@@ -58,7 +68,7 @@ class MeetingMinder < ActiveRecord::Base
       return _process(self.body, today)
     else
       envvars = minder_variables.collect{|k,v| "#{k.to_s.upcase}=\"#{v.to_s.gsub('"', '\"')}\""}.join(" ")
-      return `env #{envvars} #{self.script_filename)}`
+      return `env #{envvars} #{self.script_filename}`
     end
   end
 
