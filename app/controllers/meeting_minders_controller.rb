@@ -20,6 +20,11 @@ class MeetingMindersController < ApplicationController
     @meeting_minder = MeetingMinder.find(params[:id])
   end
 
+  def show
+    @meeting_minder = MeetingMinder.find(params[:id])
+    @date = Date.parse(params[:date]) if params[:date]
+  end
+
   def create
     @meeting_minder = MeetingMinder.new(params[:meeting_minder])
 

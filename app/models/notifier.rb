@@ -7,7 +7,7 @@ class Notifier < ActionMailer::Base
     body :text => data
   end
 
-  def text_minder(recipient, subj, data, meeting_name = nil)
+  def text_minder(meeting_name, recipient, subj, data)
     recipients recipient
     name = "Meeting Minder"
     if meeting_name

@@ -15,7 +15,7 @@ class MeetingMinder < ActiveRecord::Base
 
   def minder_variables(today)
     # are the scheduled meeting attendees important? could loop the work_shifts for the meeting_date
-    {:meeting_name => meeting.name, :meeting_date => today + days_before, :days_before => days_before, :todays_date => today}
+    {:meeting_name => meeting.meeting_name, :meeting_date => today + days_before, :days_before => days_before, :todays_date => today}
   end
 
   def validate
@@ -38,9 +38,23 @@ class MeetingMinder < ActiveRecord::Base
   def self.send_all(today = nil)
     today ||= Date.today
     MeetingMinder.deliveries_for_day(today).each{|x|
-      puts "DELIVERY: #{x.inspect}"
-      # TODO: Notifier.deliver_text_minder(*x)
+      Notifier.deliver_text_minder(*x)
     }
+  end
+
+  def test_message
+    date = next_delivery
+    return date ? delivery(date) : nil
+  end
+
+  def next_delivery
+    if self.meeting.shift_date
+      return self.meeting.shift_date - self.days_before
+    end
+    (Date.today..(Date.today + 30)).each{|x|
+      return x if deliver_today?(x)
+    }
+    return nil
   end
 
   def deliver_today?(check_date)
@@ -53,13 +67,13 @@ class MeetingMinder < ActiveRecord::Base
   end
 
   def delivery(today)
-    [recipient, processed_subject(today), processed_body(today), self.meeting.name]
+    [self.meeting.meeting_name, recipient, processed_subject(today), processed_body(today)]
   end
 
   def _process(text, today)
     text = text.dup
     for k,v in minder_variables(today)
-      text.gsub(/%#{k.to_s.upcase}%/, v.to_s)
+      text.gsub!(/%#{k.to_s.upcase}%/, v.to_s)
     end
     return text
   end
