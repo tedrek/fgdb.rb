@@ -223,11 +223,6 @@ function reassign(assigned_id) {
     return;
   }
   var available_e = $(name + "_" + available_id);
-  if(available_e.old_class != "available") {
-    alert("The selected assignment is not available");
-    selection_toggle(assigned_id);
-    return;
-  }
   var arr = [assigned_id, available_id];
   arr = arr.join(",");
   window.location.href = "/" + controller + "/reassign/" + arr;

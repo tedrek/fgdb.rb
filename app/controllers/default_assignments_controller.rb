@@ -104,6 +104,12 @@ class DefaultAssignmentsController < ApplicationController
     if @available.volunteer_default_shift.stuck_to_assignment or @assigned_orig.volunteer_default_shift.stuck_to_assignment
       flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
     else
+      cid = @available.contact_id
+      if cid
+        @available.contact_id = nil
+        @available.save
+      end
+
       # for write
       @assigned = DefaultAssignment.find(assigned)
       @new = DefaultAssignment.new # available
@@ -114,10 +120,13 @@ class DefaultAssignmentsController < ApplicationController
       @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
       @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
-      @new.start_time = @assigned_orig.start_time
-      @new.end_time = @assigned_orig.end_time
+      @new.start_time = @available.start_time
+      @new.start_time = @assigned_orig.start_time if (@new.start_time < @assigned_orig.start_time) or (@new.start_time >= @assigned_orig.start_time)
+      @new.end_time = @available.start_time
+      @new.end_time = @assigned_orig.end_time if (@new.end_time > @assigned_orig.end_time) or (@new.end_time <= @assigned_orig.end_time)
       @new.volunteer_default_shift_id = @assigned_orig.volunteer_default_shift_id
       @new.slot_number = @assigned_orig.slot_number
+      @new.contact_id = cid
 
       @assigned.save!
       @new.save!
