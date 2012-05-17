@@ -1,8 +1,9 @@
 fgdb.rb (1.0.93) UNRELEASED; urgency=low
 
   * reassignments can now be used to switch an already assigned slot
+  * Meeting minders from the database (Closes: #17031)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 17 May 2012 12:14:52 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 17 May 2012 13:23:24 -0700
 
 fgdb.rb (1.0.92) released; urgency=low
 

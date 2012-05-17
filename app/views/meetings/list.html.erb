@@ -14,6 +14,7 @@
   <th>4th</th>
   <th>5th</th>
   <th>Schedule</th>
+  <th>Meeting Minders</th>
   <th colspan="5">&nbsp;</th>
   </tr>
 
@@ -31,6 +32,11 @@
     <td><%= meeting.week_4_of_month ? "X" : "" %></td>
     <td><%= meeting.week_5_of_month ? "X" : "" %></td>
     <td><%=h meeting.schedule.name %></td>
+    <td><% meeting.meeting_minders.each do |meeting_minder| %>
+        <%= link_to meeting_minder.short_desc, {:controller => "meeting_minders", :action => "edit", :id => meeting_minder.id} %><br />
+    <% end %>
+      <%= link_to "Add new minder", {:controller => "meeting_minders", :action => "new", :meeting_id => meeting.id} %>
+    </td>
     <td><%= link_to 'Show', :action => 'show', :id => meeting %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => meeting %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => meeting }, :confirm => 'WARNING! This will destroy all shifts related to this meeting! Are you sure you want to do this? (OK will destroy meeting and shifts. Cancel will abort.)', :method => :post %></td>

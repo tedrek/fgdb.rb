@@ -1,6 +1,5 @@
   <p>
-    <%= f.label :meeting_id %><br />
-    <%= f.text_field :meeting_id %>
+    <%= f.hidden_field :meeting_id %>
   </p>
   <p>
     <%= f.label :days_before %><br />
@@ -10,15 +9,38 @@
     <%= f.label :recipient %><br />
     <%= f.text_field :recipient %>
   </p>
+  <table class="awesome">
+    <caption>The following variables can be used in the body and subject and will also be exported to the script.</caption>
+    <tr>
+      <th>Variable Name</th>
+      <th>Meaning</th>
+    </tr>
+    <tr>
+      <td>%MEETING_NAME%</td>
+      <td>Skedjulnator's name for the meeting</td>
+    </tr>
+    <tr>
+      <td>%MEETING_DATE%</td>
+      <td>Date for the specific meeting</td>
+    </tr>
+    <tr>
+      <td>%DAYS_BEFORE%</td>
+      <td>Number of days the minder is sent before the meeting date</td>
+    </tr>
+    <tr>
+      <td>%TODAYS_DATE%</td>
+      <td>The current date which the minder is being sent on</td>
+    </tr>
+  </table>
   <p>
     <%= f.label :subject %><br />
     <%= f.text_field :subject %>
   </p>
   <p>
-    <%= f.label :script %><br />
+    <%= f.label :script, "Script (name of file from #{MeetingMinder.script_dir})" %><br />
     <%= f.text_field :script %>
   </p>
   <p>
     <%= f.label :body %><br />
-    <%= f.text_area :body %>
+    <%= f.text_area :body, :rows => 80, :cols => 50 %>
   </p>
