@@ -1,5 +1,14 @@
 class MeetingMindersController < ApplicationController
-  layout :with_sidebar
+  layout "skedjulnator"
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['skedjulnator']}
+    a
+  end
+  public
+
+  before_filter :update_skedjulnator_access_time
 
   def new
     @meeting_minder = MeetingMinder.new
