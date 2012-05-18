@@ -14,8 +14,14 @@ class DisktestAPI < SOAP::SoapsBase
     # Connection Testing
     ["ping"],
     # Lists
-    ["add_disktest_run", "vendor", "model", "serial_number", "size"],
+    ["add_disktest_started", "id", "started_at"],
+    ["add_disktest_completed", "id", "result", "completed_at", "details"],
+    ["new_disktest_run", "vendor", "model", "serial_number", "size", "bus_type"],
+    ["check_disktest_running", "vendor", "model", "serial_number"],
+
+     # TODO: remove this later
     ["add_disktest_result", "id", "status"],
+    ["add_disktest_run", "vendor", "model", "serial_number", "size"], 
     ]
   end
 
@@ -33,6 +39,38 @@ class DisktestAPI < SOAP::SoapsBase
   #########
 
   public
+  def check_disktest_running(vendor, model, serial_number)
+    return DisktestRun.is_running?(vendor, model, serial_number)
+  end
+
+  def add_disktest_started(id, started_at)
+    dr = DisktestRun.find(id.to_i)
+    dr.started_at = started_at
+    dr.save!
+    return
+  end
+
+  def add_disktest_completed(id, result, completed_at, details)
+    dr = DisktestRun.find(id.to_i)
+    dr.result = result
+    dr.completed_at = completed_at
+    dr.failure_details = completed_at
+    dr.save!
+    return
+  end
+
+  def new_disktest_run(vendor, model, serial_number, size, bus_type)
+    dr = DisktestRun.new
+    dr.vendor = vendor
+    dr.model = model
+    dr.serial_number = serial_number
+    dr.megabytes_size = size
+    dr.bus_type = bus_type
+    dr.save!
+    return dr.id
+  end
+
+  # TODO: REMOVE THIS
   def add_disktest_run(vendor, model, serial_number, size = nil)
     dr = DisktestRun.new
     dr.vendor = vendor
@@ -43,6 +81,7 @@ class DisktestAPI < SOAP::SoapsBase
     return dr.id
   end
 
+  # TODO: REMOVE THIS
   def add_disktest_result(id, result)
     dr = DisktestRun.find(id.to_i)
     dr.result = result
