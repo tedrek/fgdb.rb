@@ -2,6 +2,10 @@ fgdb.rb (1.0.93) UNRELEASED; urgency=low
 
   * reassignments can now be used to switch an already assigned slot
   * Meeting minders from the database (Closes: #17031)
+  * Track bus type, start time, and failure reason in disk testing
+  * Also, support checking if the drive has been tested in a machine
+    that was not properly shut down and have a new "STOPPED" status for
+    the tester to cancel testing after an initial check of smart status
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 17 May 2012 13:23:24 -0700
 
