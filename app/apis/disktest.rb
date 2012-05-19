@@ -77,6 +77,7 @@ class DisktestAPI < SOAP::SoapsBase
     dr.model = model
     dr.serial_number = serial_number
     dr.megabytes_size = size
+    dr.start_time = Time.now
     dr.save!
     return dr.id
   end
