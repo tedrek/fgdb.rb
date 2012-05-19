@@ -39,10 +39,12 @@
     </td>
     <td><%= link_to 'Show', :action => 'show', :id => meeting %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => meeting %></td>
-    <td><% form_tag :action => "replace", :id => meeting.id do %>
+    <td><% unless meeting.shift_date %>
+      <% form_tag :action => "replace", :id => meeting.id do %>
       <%= label_tag "meeting[date]", "Change After Effective Date:" %>
       <%= calendar_box "meeting_#{meeting.id}", 'date', :value => Default["staffsched_rollout_until"] %>
-      <%= submit_tag "Replace and Edit" %>
+      <%= submit_tag "Change Meeting" %>
+    <% end %>
     <% end %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => meeting }, :confirm => 'WARNING! This will destroy all shifts related to this meeting! Are you sure you want to do this? (OK will destroy meeting and shifts. Cancel will abort.)', :method => :post %></td>
     <td><%= link_to 'Copy', { :action => 'copy', :id => meeting.id }, :title => 'copy', :method => :post %></td>
