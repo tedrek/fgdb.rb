@@ -1,3 +1,8 @@
+fgdb.rb (1.0.94) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 May 2012 19:37:08 -0700
+
 fgdb.rb (1.0.93) released; urgency=low
 
   * reassignments can now be used to switch an already assigned slot
