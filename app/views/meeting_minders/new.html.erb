@@ -1,4 +1,4 @@
-<h1>New meeting_minder</h1>
+<h1>New meeting minder for <%= @meeting_minder.meeting.meeting_name %> meeting</h1>
 
 <% form_for(@meeting_minder, :url => {:action => "create"}) do |f| %>
   <%= f.error_messages %>

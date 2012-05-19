@@ -1,4 +1,4 @@
-<h1>Editing meeting_minder</h1>
+<h1>Editing meeting minder for <%= @meeting_minder.meeting.meeting_name %> meeting</h1>
 
 <% if date = @meeting_minder.next_delivery %>
 <%= link_to 'View a Test Message for This Minder', {:date => date, :action => "show", :id => @meeting_minder.id} %> | 
