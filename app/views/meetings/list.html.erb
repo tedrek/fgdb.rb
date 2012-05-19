@@ -13,9 +13,7 @@
   <th>3rd</th>
   <th>4th</th>
   <th>5th</th>
-  <th>Schedule</th>
-  <th>Meeting Minders</th>
-  <th colspan="5">&nbsp;</th>
+  <th colspan="2">&nbsp;</th>
   </tr>
 
 <% for meeting in @meetings %>
@@ -31,21 +29,23 @@
     <td><%= meeting.week_3_of_month ? "X" : "" %></td>
     <td><%= meeting.week_4_of_month ? "X" : "" %></td>
     <td><%= meeting.week_5_of_month ? "X" : "" %></td>
-    <td><%=h meeting.schedule.name %></td>
-    <td><% meeting.meeting_minders.each do |meeting_minder| %>
-        <%= link_to meeting_minder.short_desc, {:controller => "meeting_minders", :action => "edit", :id => meeting_minder.id} %><br />
-    <% end %>
-      <%= link_to "Add new minder", {:controller => "meeting_minders", :action => "new", :meeting_id => meeting.id} %>
-    </td>
-    <td><%= link_to 'Show', :action => 'show', :id => meeting %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :id => meeting %></td>
-    <td><%= link_to 'Destroy', { :action => 'destroy', :id => meeting }, :confirm => 'WARNING! This will destroy all shifts related to this meeting! Are you sure you want to do this? (OK will destroy meeting and shifts. Cancel will abort.)', :method => :post %></td>
-    <td><%= link_to 'Copy', { :action => 'copy', :id => meeting.id }, :title => 'copy', :method => :post %></td>
-    <td><% if meeting.shift_date %> 
+    <td><%= link_to 'Show', :action => 'show', :id => meeting %> <%= link_to 'Edit', :action => 'edit', :id => meeting %> <%= link_to 'Copy', { :action => 'copy', :id => meeting.id }, :title => 'copy', :method => :post %> <%= link_to 'Destroy', { :action => 'destroy', :id => meeting }, :confirm => 'WARNING! This will destroy all shifts related to this meeting! Are you sure you want to do this? (OK will destroy meeting and shifts. Cancel will abort.)', :method => :post %>
+<% if meeting.shift_date %> 
       <%= link_to 'Generate', { :action => 'generate', :id => meeting.id }, :title => 'generate', :method => :post %>
-    <% else %> 
-      &nbsp; 
-    <% end %></td>
+<% end %>
+      <%= link_to "Add minder", {:controller => "meeting_minders", :action => "new", :meeting_id => meeting.id} %>
+      <% meeting.meeting_minders.each do |meeting_minder| %>
+        <%= link_to "Edit " + meeting_minder.short_desc, {:controller => "meeting_minders", :action => "edit", :id => meeting_minder.id} %>
+    <% end %>
+    </td>
+    <td><% unless meeting.shift_date %>
+      <% form_tag :action => "replace", :id => meeting.id do %>
+      <%= label_tag "meeting_#{meeting.id}[date]", "Change After Effective Date:" %>
+      <%= calendar_box "meeting_#{meeting.id}", 'date', :value => Default["staffsched_rollout_until"] %>
+      <%= submit_tag "Change Meeting" %>
+    <% end %>
+    <% end %>
+    </td>
   </tr>
 <% end %>
 </table>
