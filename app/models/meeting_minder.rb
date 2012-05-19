@@ -8,7 +8,7 @@ class MeetingMinder < ActiveRecord::Base
   validates_format_of :recipient, :with => /^.+@[^.]+\..+$/, :message => "must be a valid email address"
 
   def short_desc
-    "reminder to #{recipient}, #{days_before} days prior"
+    "minder to #{recipient} #{days_before} days prior"
   end
 
   def minder_variables(today)
