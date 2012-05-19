@@ -54,7 +54,7 @@ class DisktestAPI < SOAP::SoapsBase
     dr = DisktestRun.find(id.to_i)
     dr.result = result
     dr.completed_at = completed_at
-    dr.failure_details = completed_at
+    dr.failure_details = details
     dr.save!
     return
   end
