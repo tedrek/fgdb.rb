@@ -1,6 +1,4 @@
 class MeetingMinder < ActiveRecord::Base
-  # explain variables in subject/body and the number of days before,
-  # TODO: also "test generate" a message including the script execution.
   belongs_to :meeting
 
   validates_presence_of :subject
