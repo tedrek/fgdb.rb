@@ -15,7 +15,7 @@
   <th>5th</th>
   <th>Schedule</th>
   <th>Meeting Minders</th>
-  <th colspan="5">&nbsp;</th>
+  <th colspan="6">&nbsp;</th>
   </tr>
 
 <% for meeting in @meetings %>
@@ -39,6 +39,11 @@
     </td>
     <td><%= link_to 'Show', :action => 'show', :id => meeting %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => meeting %></td>
+    <td><% form_tag :action => "replace", :id => meeting.id do %>
+      <%= label_tag "meeting[date]", "Change After Effective Date:" %>
+      <%= calendar_box "meeting_#{meeting.id}", 'date', :value => Default["staffsched_rollout_until"] %>
+      <%= submit_tag "Replace and Edit" %>
+    <% end %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => meeting }, :confirm => 'WARNING! This will destroy all shifts related to this meeting! Are you sure you want to do this? (OK will destroy meeting and shifts. Cancel will abort.)', :method => :post %></td>
     <td><%= link_to 'Copy', { :action => 'copy', :id => meeting.id }, :title => 'copy', :method => :post %></td>
     <td><% if meeting.shift_date %> 
