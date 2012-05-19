@@ -9,7 +9,7 @@ class DisktestRun < ActiveRecord::Base
   end
 
   def display_size
-    (2000*1024*1024).to_bytes(1, true, false)
+    megabytes_size ? (megabytes_size*1024*1024).to_bytes(1, true, false) : nil
   end
 
   def running?
