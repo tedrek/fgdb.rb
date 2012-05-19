@@ -95,7 +95,7 @@ class ContactsController < ApplicationController
   end
 
   def is_subscribed
-    address = params[:address]
+    address = params[:address].to_s
     subscribed = NewsletterSubscriber.is_subscribed?(address)
     render :update do |page|
       page.hide loading_indicator_id("subscription_loading")

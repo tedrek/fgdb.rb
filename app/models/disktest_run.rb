@@ -8,6 +8,10 @@ class DisktestRun < ActiveRecord::Base
     self.find_all_by_vendor_and_model_and_serial_number(vendor, model, serial).sort_by(&:created_at).last
   end
 
+  def display_size
+    megabytes_size ? (megabytes_size*1024*1024).to_bytes(1, true, false) : nil
+  end
+
   def running?
     result == nil
   end
