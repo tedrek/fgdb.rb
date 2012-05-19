@@ -1,4 +1,4 @@
-fgdb.rb (1.0.93) UNRELEASED; urgency=low
+fgdb.rb (1.0.93) released; urgency=low
 
   * reassignments can now be used to switch an already assigned slot
   * Meeting minders from the database (Closes: #17031)
@@ -8,7 +8,7 @@ fgdb.rb (1.0.93) UNRELEASED; urgency=low
     the tester to cancel testing after an initial check of smart status
   * update the displayed notes when disbursing fg-pdx systems (Closes: #28466)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 May 2012 19:25:50 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 May 2012 19:36:45 -0700
 
 fgdb.rb (1.0.92) released; urgency=low
 
