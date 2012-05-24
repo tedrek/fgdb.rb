@@ -50,6 +50,9 @@ class MeetingsController < ApplicationController
     @meeting = Meeting.find(params[:id])
     @meeting2 = @meeting.clone
     @meeting2.workers = @meeting.workers
+    @meeting.meeting_minders.each do |m|
+      @meeting2.meeting_minders << m.clone
+    end
     if @meeting2.save
       flash[:notice] = 'Meeting was successfully copied.'
       redirect_to :action => 'edit', :id => @meeting2.id
