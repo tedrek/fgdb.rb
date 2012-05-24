@@ -222,6 +222,7 @@ class Worker < ActiveRecord::Base
     cache = {}
     h = {}
     h[:name] = self.sort_by
+    h[:standard_weekly_hours] = self.standard_weekly_hours
     h[:type] = self.primary_worker_type_in_range(pay_period.start_date, pay_period.end_date).name
     h[:hours] = 0.0
     h[:holiday] = 0.0
