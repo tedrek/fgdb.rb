@@ -38,7 +38,7 @@
         <%= link_to "Edit " + meeting_minder.short_desc, {:controller => "meeting_minders", :action => "edit", :id => meeting_minder.id} %>
     <% end %>
     </td>
-    <td><% unless meeting.shift_date %>
+    <td><% unless meeting.shift_date or meeting.ineffective_date %>
       <% form_tag :action => "replace", :id => meeting.id do %>
       <%= label_tag "meeting_#{meeting.id}[date]", "Change After Effective Date:" %>
       <%= calendar_box "meeting_#{meeting.id}", 'date', :value => Default["staffsched_rollout_until"] %>
