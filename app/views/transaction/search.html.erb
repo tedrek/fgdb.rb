@@ -77,6 +77,7 @@
         <% filters << 'payment_method' %>
         <% filters << 'unresolved_invoices' %>
         <% filters << 'payment_amount' %>
+        <% filters << 'payment_total' %>
       <% end %>
       <% if @model.new.respond_to?(:is_pickup) %>
         <% filters << 'is_pickup' %>

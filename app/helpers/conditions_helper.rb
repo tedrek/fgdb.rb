@@ -160,6 +160,18 @@ module ConditionsHelper
                       ])
   end
 
+  def html_for_payment_total_condition(params_key)
+    select_visibility(
+                      params_key,
+                      'payment_total_type',
+                      [['exact', text_field(params_key, 'payment_total_exact')],
+                       ['between', "%s to %s" % [text_field(params_key, 'payment_total_low'),
+                                                 text_field(params_key, 'payment_total_high')]],
+                       ['>=', text_field(params_key, 'payment_total_ge')],
+                       ['<=', text_field(params_key, 'payment_total_le')],
+                      ])
+  end
+
   def html_for_gizmo_type_id_condition(params_key)
     select(params_key, 'gizmo_type_id', GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}, {}, _multi_html_opts)
   end
