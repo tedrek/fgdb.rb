@@ -14,11 +14,11 @@ ActiveRecord::Schema.define(:version => 20120505220904) do
   create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :resource => ['', 'DECLARE
         result character varying;
 BEGIN
-        result = '';
-        result = result || coalesce(' ' || $1, '');
-        result = result || coalesce(' ' || $2, '');
-        result = result || coalesce(' ' || $3, '');
-        result = result || coalesce(' ' || $4, '');
+        result = \'\';
+        result = result || coalesce(\' \' || $1, \'\');
+        result = result || coalesce(\' \' || $2, \'\');
+        result = result || coalesce(\' \' || $3, \'\');
+        result = result || coalesce(\' \' || $4, \'\');
         RETURN result;
 END;
 '], :lang => 'plpgsql')
@@ -46,15 +46,15 @@ END;
         term character varying ;
         word character varying ;
 BEGIN
-        words = string_to_array(inwords, ' ');
-        terms = string_to_array(interms, ' ');
+        words = string_to_array(inwords, \' \');
+        terms = string_to_array(interms, \' \');
         score = 0;
         FOR iterm in 1 .. array_upper(terms, 1) LOOP
               term = terms[ iterm ];
-              IF term <> '' AND array_upper(words, 1) > 1 THEN
+              IF term <> \'\' AND array_upper(words, 1) > 1 THEN
               FOR iword in 1 ..  array_upper(words, 1) LOOP
               word = words[ iword ];
-              IF word <> '' AND word ILIKE '%' || term || '%' THEN
+              IF word <> \'\' AND word ILIKE \'%\' || term || \'%\' THEN
                  score = score + 1;
               END IF;
               END LOOP;
@@ -74,15 +74,15 @@ DECLARE
     ORG_NAME ALIAS FOR $5 ;
 
 BEGIN
-    IF IS_ORG = 'f' THEN
+    IF IS_ORG = \'f\' THEN
        RETURN
          SUBSTR( TRIM( LOWER(
-           COALESCE(TRIM(LAST_NAME), '') ||
-           COALESCE(' ' || TRIM(FIRST_NAME), '') ||
-           COALESCE(' ' || TRIM(MIDDLE_NAME), '')
+           COALESCE(TRIM(LAST_NAME), \'\') ||
+           COALESCE(\' \' || TRIM(FIRST_NAME), \'\') ||
+           COALESCE(\' \' || TRIM(MIDDLE_NAME), \'\')
          )), 0, 25 );
     ELSE
-       IF TRIM(ORG_NAME) ILIKE 'THE %' THEN
+       IF TRIM(ORG_NAME) ILIKE \'THE %\' THEN
            -- maybe take into account A and AN as first words
            -- like this as well
            RETURN LOWER(SUBSTR(TRIM(ORG_NAME), 5, 25));
@@ -90,7 +90,7 @@ BEGIN
            RETURN SUBSTR(LOWER(TRIM(ORG_NAME)), 0, 25 );
        END IF;
     END IF;
-    RETURN '';
+    RETURN \'\';
 END;
 
 
@@ -98,7 +98,7 @@ END;
 '], :lang => 'plpgsql')
   create_proc(:uncertify_address, [], :return => :trigger, :resource => ['', '
 BEGIN
-  IF tg_op = 'UPDATE' THEN
+  IF tg_op = \'UPDATE\' THEN
     IF ((NEW.address IS NULL != OLD.address IS NULL
          OR NEW.address != OLD.address)
          OR (NEW.extra_address IS NULL != OLD.extra_address IS NULL
@@ -109,7 +109,7 @@ BEGIN
              OR NEW.state_or_province != OLD.state_or_province)
          OR (NEW.postal_code IS NULL != OLD.postal_code IS NULL
              OR NEW.postal_code != OLD.postal_code)) THEN
-      NEW.addr_certified = 'f';
+      NEW.addr_certified = \'f\';
     END IF;
   END IF;
   RETURN NEW;
