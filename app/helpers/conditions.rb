@@ -16,7 +16,7 @@ class Conditions < ConditionsBase
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
       updated_by cashier_updated_by is_pickup
-      logged_in_within signed_off_by
+      logged_in_within signed_off_by payment_total
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled assigned covered organization is_pickup ]
@@ -29,6 +29,7 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
+
 
   attr_accessor :signed_off_by
 
@@ -84,6 +85,7 @@ class Conditions < ConditionsBase
   attr_accessor :gizmo_category_id
 
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
+  attr_accessor :payment_total_type, :payment_total_exact, :payment_total_low, :payment_total_high, :payment_total_ge, :payment_total_le
 
   attr_accessor :contact_type
 
@@ -436,17 +438,20 @@ class Conditions < ConditionsBase
     # the to_s is required below because when a value of "6" is passed in
     # it is magically made into a Fixnum so the to_cents blows up
     # not sure where this magic comes from
+    orig_klass = klass
+    klass = Payment unless klass == StoreCredit
+    t = "(SELECT SUM(#{klass.table_name}.amount_cents) FROM #{klass.table_name} WHERE #{orig_klass.table_name.singularize}_id = #{orig_klass.table_name}.id)"
     case @payment_total_type
     when 'between'
-      return ["SUM(#{klass.table_name}.amount_cents) BETWEEN ? AND ?",
+      return ["#{t} BETWEEN ? AND ?",
               @payment_total_low.to_s.to_cents,
               @payment_total_high.to_s.to_cents]
     when '>='
-      return ["SUM(#{klass.table_name}.amount_cents) >= ?", @payment_total_ge.to_s.to_cents]
+      return ["#{t} >= ?", @payment_total_ge.to_s.to_cents]
     when '<='
-      return ["SUM(#{klass.table_name}.amount_cents) <= ?", @payment_total_le.to_s.to_cents]
+      return ["#{t} <= ?", @payment_total_le.to_s.to_cents]
     when 'exact'
-      return ["SUM(#{klass.table_name}.amount_cents) = ?", @payment_total_exact.to_s.to_cents]
+      return ["#{t} = ?", @payment_total_exact.to_s.to_cents]
     end
   end
 
