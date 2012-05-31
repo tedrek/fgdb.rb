@@ -20,6 +20,7 @@
     javascript_tag js %>
 
 <table id="gizmo_events_lines">
+  <tr><td colspan="20" style="text-align: right;"><a onclick="toggle_description();">toggle description</a></td></tr>
   <tr>
     <th>type</th>
     <th class="<%= description_class %>">detailed desc</th>
@@ -89,7 +90,6 @@
          end
          %>
     <% end %>
-
   <tr id="gizmo_events_form">
     <td><select id="gizmo_type_id" onchange="gizmo_type_selected();" name="gizmo_type_id">
         <%= gizmo_events_options_for_transaction %>
@@ -123,7 +123,7 @@
     <% if show_price %>
       <td><input name="unit_price" id="unit_price" size="6" onkeydown="if(is_tab(event)) {return handle_gizmo_events();}"></td>
     <% end %>
-    <td><a onclick="toggle_description();">toggle description</a><%= loading_indicator_tag "line_item" %>
+    <td><%= loading_indicator_tag "line_item" %>
       <%= javascript_tag "line_item_loading_id = #{loading_indicator_id("line_item").to_json}"; %>
       <% if @gizmo_context == GizmoContext.gizmo_return %>
 <%= javascript_tag "sc_loading_id = #{loading_indicator_id("line_item").to_json}"; %>
