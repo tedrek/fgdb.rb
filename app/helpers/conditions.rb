@@ -440,7 +440,7 @@ class Conditions < ConditionsBase
     # not sure where this magic comes from
     orig_klass = klass
     klass = Payment unless klass == StoreCredit
-    t = "(SELECT SUM(#{klass.table_name}.amount_cents) FROM #{klass.table_name} WHERE #{orig_klass.table_name.singularize}_id = #{orig_klass.table_name}.id)"
+    t = "COALESCE((SELECT SUM(#{klass.table_name}.amount_cents) FROM #{klass.table_name} WHERE #{orig_klass.table_name.singularize}_id = #{orig_klass.table_name}.id), 0)"
     case @payment_total_type
     when 'between'
       return ["#{t} BETWEEN ? AND ?",
