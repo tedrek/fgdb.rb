@@ -17,7 +17,7 @@ class Conditions < ConditionsBase
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
       updated_by cashier_updated_by is_pickup
       logged_in_within signed_off_by payment_total
-    ] + DATES).uniq.sort
+    ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled assigned covered organization is_pickup ]
 

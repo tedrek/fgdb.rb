@@ -3,7 +3,7 @@ module ConditionsBaseHelper
     @conditions_internal_date_range = date_range
     hash = {}
     obj = eval("@#{params_key}") || klass.new
-    these_things.each{|x|
+    these_things.sort.each{|x|
       if klass::DATES.include?(x)
         hash[x] = date_or_date_range_picker(params_key, x)
       elsif klass::CONDS.include?(x)
