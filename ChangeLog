@@ -7,6 +7,7 @@ fgdb.rb (1.0.93) released; urgency=low
     that was not properly shut down and have a new "STOPPED" status for
     the tester to cancel testing after an initial check of smart status
   * update the displayed notes when disbursing fg-pdx systems (Closes: #28466)
+  * Include all skedjulnator metadata tables in dumping (Closes: #13305)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 May 2012 19:36:45 -0700
 
