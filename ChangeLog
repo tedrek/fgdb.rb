@@ -3,6 +3,7 @@ fgdb.rb (1.0.94) UNRELEASED; urgency=low
   * Remove unused skedjul checkboxes (Closes: #28594)
   * Mention "volunteered hours in days" contacts condition,
 	added 'payment total' transaction condition
+	(and sorted all condition lists)
   * Add a link to show the description (Closes: #28598)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 31 May 2012 15:19:04 -0700
