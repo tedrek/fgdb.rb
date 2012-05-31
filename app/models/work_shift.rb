@@ -123,9 +123,6 @@ class WorkShift < ActiveRecord::Base
     ret.kind = shift.type
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
-    ret.splitable = shift.splitable
-    ret.mergeable = shift.mergeable
-    ret.resizable = shift.resizable
     ret.meeting_name = shift.meeting_name
     ret.shift_date = date
     ret.effective_date = shift.effective_date
@@ -150,9 +147,6 @@ class WorkShift < ActiveRecord::Base
     ret.shift_date = date
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
-    ret.splitable = shift.splitable
-    ret.mergeable = shift.mergeable
-    ret.resizable = shift.resizable
     ret.worker_id = shift.worker_id
     ret.training = shift.training
     #ret.coverage_type_id = shift.coverage_type_id
@@ -174,9 +168,6 @@ class WorkShift < ActiveRecord::Base
     ret.end_time = shift.end_time
     ret.effective_date = shift.effective_date
     ret.ineffective_date = shift.ineffective_date
-    ret.splitable = shift.splitable
-    ret.mergeable = shift.mergeable
-    ret.resizable = shift.resizable
     ret.worker_id = worker.id
     #ret.coverage_type_id = shift.coverage_type_id
     ret.schedule_id = shift.schedule_id

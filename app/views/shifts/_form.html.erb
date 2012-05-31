@@ -13,15 +13,6 @@
 <p><label for="shift_end_time">End time</label><br/>
 <%= time_select 'shift', 'end_time', {:minute_step => 15}  %></p>
 
-<p><%= check_box "shift", "splitable" %>
-<label for="shift_splitable">Splitable</label></p>
-
-<p><%= check_box "shift", "mergeable" %>
-<label for="shift_mergeable">Mergeable</label></p>
-
-<p><%= check_box "shift", "resizable" %>
-<label for="shift_resizable">Resizable</label></p>
-
 <p><label for="shift_meeting_name">Meeting name</label><br/>
 <%= text_field 'shift', 'meeting_name'  %></p>
 
