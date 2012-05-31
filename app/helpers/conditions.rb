@@ -171,6 +171,21 @@ class Conditions < ConditionsBase
         errors.add('payment_amount_type', 'is not a valid search type')
       end
     end
+    if is_this_condition_enabled('payment_total')
+      case @payment_total_type
+      when '>='
+        validate_integer('payment_total', 'payment_total_ge', true, true)
+      when '<='
+        validate_integer('payment_total', 'payment_total_le', true, true)
+      when 'exact'
+        validate_integer('payment_total', 'payment_total_exact', true, true)
+      when 'between'
+        validate_integer('payment_total', 'payment_total_low', true, true)
+        validate_integer('payment_total', 'payment_total_high', true, true)
+      else
+        errors.add('payment_total_type', 'is not a valid search type')
+      end
+    end
     validate_exists('created_by', 'users') if validate_integer('created_by')
     validate_exists('cashier_created_by', 'users') if validate_integer('cashier_created_by')
     validate_exists('updated_by', 'users') if validate_integer('updated_by')
@@ -413,6 +428,25 @@ class Conditions < ConditionsBase
       return ["#{klass.table_name}.amount_cents <= ?", @payment_amount_le.to_s.to_cents]
     when 'exact'
       return ["#{klass.table_name}.amount_cents = ?", @payment_amount_exact.to_s.to_cents]
+    end
+  end
+
+
+  def payment_total_conditions(klass)
+    # the to_s is required below because when a value of "6" is passed in
+    # it is magically made into a Fixnum so the to_cents blows up
+    # not sure where this magic comes from
+    case @payment_total_type
+    when 'between'
+      return ["SUM(#{klass.table_name}.amount_cents) BETWEEN ? AND ?",
+              @payment_total_low.to_s.to_cents,
+              @payment_total_high.to_s.to_cents]
+    when '>='
+      return ["SUM(#{klass.table_name}.amount_cents) >= ?", @payment_total_ge.to_s.to_cents]
+    when '<='
+      return ["SUM(#{klass.table_name}.amount_cents) <= ?", @payment_total_le.to_s.to_cents]
+    when 'exact'
+      return ["SUM(#{klass.table_name}.amount_cents) = ?", @payment_total_exact.to_s.to_cents]
     end
   end
 
