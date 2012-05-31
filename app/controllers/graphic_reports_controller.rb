@@ -370,16 +370,16 @@ class TrendReport
     errors = err_conds.errors
     begin
       @start_date = Date.parse(@conditions[:start_date])
+      errors.add('start_date', 'is out of range (past year 2038)') if @start_date.year >= 2038
     rescue
       errors.add('start_date', 'is not a valid date')
     end
     begin
       end_date = Date.parse(@conditions[:end_date])
+      errors.add('end_date', 'is out of range (past year 2038)') if end_date.year >= 2038
     rescue
       errors.add('end_date', 'is not a valid date')
     end
-    errors.add('start_date', 'is out of range (past year 2038)') if @start_date.year >= 2038
-    errors.add('end_date', 'is out of range (past year 2038)') if end_date.year >= 2038
     if errors.length > 0
       return false
     end
