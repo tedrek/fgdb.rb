@@ -31,8 +31,12 @@
 <p><label for="shift_coverage_type_id">Coverage Type</label><br/>
 <%= select("shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
+<% unless @shift.type == 'Unavailability' %>
+
 <p><label for="shift_job_id">Job</label><br/>
 <%= select("shift", "job_id", Job.workable.effective_on(@shift.shift_date || Date.today).collect {|c| [c.name, c.id] }).sort_by(&:first) %></p>
+
+<% end %>
 
 <p><label for="shift_worker_id">Worker</label><br/>
 <%= select("shift", "worker_id", Worker.on_or_after_date(@shift.shift_date || Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }) %></p>

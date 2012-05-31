@@ -13,7 +13,7 @@ class MeetingMinder < ActiveRecord::Base
 
   def minder_variables(today)
     # are the scheduled meeting attendees important? could loop the work_shifts for the meeting_date
-    {:meeting_name => meeting.meeting_name, :meeting_date => today + days_before, :days_before => days_before, :todays_date => today}
+    {:meeting_name => meeting.meeting_name, :meeting_date => (today + days_before).strftime("%a, %B %d %Y"), :days_before => days_before, :todays_date => today.strftime("%a, %B %e %Y")}
   end
 
   def validate
