@@ -51,7 +51,7 @@ module HtmlHelper
         page.insert_html(:bottom, obj_name + "_container",
                          :partial => 'helpers/multiselection_header',
                          :locals => {:obj_name => obj_name})
-        for condition in choices.keys do
+        for condition in choices.keys.sort_by{|x| choice_names[x]} do
           page.insert_html(:bottom, obj_name + "_adder",
                            '<option id="%s_%s_option" value="%s">%s</option>' %
                            [obj_name, condition, condition, choice_names[condition]])
