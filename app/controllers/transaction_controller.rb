@@ -322,6 +322,7 @@ class TransactionController < ApplicationController
   include ActionView::Helpers::NumberHelper
   def gen_pdf
     @txn = @transaction = model.find(params[:id])
+    show_suggested = (params[:show_suggested].to_s == "true")
     @context = @transaction_type
     raise unless @context == 'donation'
 
@@ -443,6 +444,10 @@ class TransactionController < ApplicationController
     pdf.stroke_color! Color::RGB::Black
     pdf.line(pdf.absolute_left_margin, pdf.y, pdf.absolute_right_margin, pdf.y).stroke
     pdf.text "We affirm that no goods or services were provided in return for the donation amounts listed above (required fees excepted).", :font_size => 14
+    if show_suggested
+      pdf.text "\n", :font_size => 14
+      pdf.text "There is a total suggested donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => 14
+    end
 
 #    pdf.y -= 10
 #    pdf.text "Hello, Ruby.", :font_size => 72, :justification => :center
