@@ -221,15 +221,17 @@ function update_amount_for_storecredit() {
 //  alert_for_storecredit($('store_credit_id').value);
 }
 
+systems_invalid = false;
+
 function _add_gizmo_event_from_form()
 {
-  if($('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && $('covered').selectedIndex == 0 && gizmo_context != "sale") || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
+  if(systems_invalid || $('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && $('covered').selectedIndex == 0 && gizmo_context != "sale") || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
     return true;
   }
   if($('system_id') != null && $('gizmo_count') != null) {
     var list = strlist_to_arr($('system_id').value);
-    if(parseInt($('gizmo_count').value) < list.length) {
-      alert("you gave more system ids than the number of gizmos, which can't work...please fix this and try again.");
+    if(parseInt($('gizmo_count').value) != list.length && list.length != 0) {
+      alert("you gave a different number of system ids than the number of gizmos. If you have systems without an ID they will need to be entered separately, please fix this and try again.");
       $('gizmo_type_id').focus();
       return true;
     }
@@ -922,6 +924,7 @@ function add_gizmo_event(args){
         }
         newargs['system_id'] = i;
         newargs['gizmo_count'] = 1;
+        newargs['covered'] = get_system_covered(i);
         add_gizmo_event(newargs);
         ni++;
       }
@@ -1014,10 +1017,26 @@ function coveredness_type_selected() {
   if($('covered') == null)
     return;
   contract_widget = $('contract_id') || $('donation_contract_id');
+  systems_invalid = false;
   if(gizmo_context == "sale" ? system_types.include($('gizmo_type_id').value) : gizmo_types_covered[$('gizmo_type_id').value] == true) {
     if(contract_widget && contract_widget.value != "1") {
       $('covered').disable();
       $('covered').value = "false";
+    } else if($('system_id') && $('system_id').value && is_a_list($('system_id').value)) {
+      $('covered').disable();
+      $('covered').value = "nil";
+
+      var list = strlist_to_arr("" + $('system_id').value);
+      var ni = 0;
+      while (ni < list.length) {
+        var i = list[ni];
+        var v = get_system_contract(i);
+        if(v == -1) {
+          systems_invalid = true;
+          alert('System ID #' + i + ' from system list is invalid, please remove or correct it.');
+        }
+        ni++;
+      }
     } else if($('system_id') && $('system_id').value && !is_a_list($('system_id').value) && get_system_covered($('system_id').value) != "nil") {
       $('covered').value = get_system_covered($('system_id').value);
       $('covered').disable();

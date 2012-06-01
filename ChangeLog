@@ -7,8 +7,10 @@ fgdb.rb (1.0.94) UNRELEASED; urgency=low
   * Renamed build in sidebar for clarity
   * Add a link to show the description (Closes: #28598)
   * Add option to display the suggested donation on the receipts as well
+  * Automatically figure out coveredness from systems when more than one
+    is supplied
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 31 May 2012 17:04:12 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 31 May 2012 17:35:42 -0700
 
 fgdb.rb (1.0.93) released; urgency=low
 
