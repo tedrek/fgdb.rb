@@ -1,4 +1,12 @@
 class DisktestBatchesController < ApplicationController
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['data_security']}
+    a
+  end
+  public
+
   layout :with_sidebar
 
   def search

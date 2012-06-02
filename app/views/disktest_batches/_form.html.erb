@@ -1,12 +1,12 @@
   <p>
-    <%= f.label :contact_id %><br />
-    <%= f.text_field :contact_id %>
-  </p>
-  <p>
     <%= f.label :name %><br />
     <%= f.text_field :name %>
   </p>
   <p>
     <%= f.label :date %><br />
-    <%= f.date_select :date %>
+    <%= calendar_box(f.object_name, :date) %>
+  </p>
+  <p>
+    <%= f.label :contact_id %><br />
+    <%= contact_field('@' + f.object_name, :contact_id) %>
   </p>
