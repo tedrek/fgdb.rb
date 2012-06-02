@@ -47,7 +47,7 @@
   <tr>
     <td></td>
     <td> Required Fee Paid
-      (<strong>not</strong> deductible): </td>
+      (<strong>not</strong> tax deductible): </td>
     <td><%= my_number_to_currency(@donation.required_fee_paid_cents + @donation.required_fee_owed_cents) %></font></td>
   </tr>
 
@@ -61,7 +61,7 @@
     <tr>
       <td></td>
       <td> Required Fee Paid
-        (<strong>not</strong> deductible): </td>
+        (<strong>not</strong> tax deductible): </td>
       <td><%= my_number_to_currency(@donation.required_fee_paid_cents) %></font></td>
     </tr>
   <% end %>
@@ -70,7 +70,7 @@
     <tr>
       <td></td>
       <td> Required Fee Due
-        (<strong>not</strong> deductible): </td>
+        (<strong>not</strong> tax deductible): </td>
       <td><%= my_number_to_currency(@donation.required_fee_owed_cents) %></font></td>
     </tr>
   <% end %>
@@ -101,7 +101,7 @@
 <% end %>
 <tr>
     <td></td>
-    <td>Total Deductible Donation:</td>
+    <td>Total Tax Deductible Donation:</td>
     <td>_________</td>
 </tr>
 
