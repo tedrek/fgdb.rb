@@ -1,6 +1,27 @@
-<h1>Listing disktest_batches</h1>
+<div id="form-header">
+  <% if @error!=nil %>
+    <span style="color: red">ERROR: <%= @error %></span>
+  <% end %>
+</div>
 
-<%= render :partial => "list" %>
+<h2>Search for disktest batches</h2>
+
+<% if @disktest_batches -%>
+  <%= render :partial => 'list', 'disktest_batches' => @disktest_batches %>
+<% end -%>
+
+<div id="main-section">
+  <% form_tag :action => 'search' do -%>
+  <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
+
+  <% filters = [] -%>
+  <% filters << 'created_at' %>
+  <% filters << 'serial_number' %>
+  <% filters << 'contact' %>
+  <%= conditions_html("conditions", filters) %>
+  <%= submit_tag "Search", :class => "submit" %>
+<% end -%>
+</div>
 
 <br />
 

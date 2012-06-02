@@ -1,8 +1,19 @@
 class DisktestBatchesController < ApplicationController
   layout :with_sidebar
 
+  def search
+    @error = params[:error]
+    if !params[:conditions]
+      params[:conditions] = {:created_at_enabled => "true"}
+    end
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    @disktest_batches = DisktestBatch.paginate(:page => params[:page], :conditions => @conditions.conditions(DisktestBatch), :order => "created_at ASC", :per_page => 50)
+    render :action => "index"
+  end
+
   def index
-    @disktest_batches = DisktestBatch.find(:all)
+    search
   end
 
   def show
