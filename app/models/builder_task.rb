@@ -14,6 +14,7 @@ class BuilderTask < ActiveRecord::Base
     self.updated_at = self.spec_sheet.updated_at
   end
 
+  # belongs_to :cashier_signed_off, :foreign_key => "cashier_signed_off_by", :class_name => "User"
   def signed_off_by
     self.cashier_signed_off_by.nil? ? "Not signed off." : User.find(self.cashier_signed_off_by).contact_display_name
   end

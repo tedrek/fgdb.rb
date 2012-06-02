@@ -1,0 +1,2 @@
+module DisktestBatchesHelper
+end

@@ -1,0 +1,18 @@
+<p>
+  <b>Contact:</b>
+  <%=h @disktest_batch.contact_id %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%=h @disktest_batch.name %>
+</p>
+
+<p>
+  <b>Date:</b>
+  <%=h @disktest_batch.date %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @disktest_batch.id} %> |
+<%= link_to 'Back', {:action => "index"} %>
