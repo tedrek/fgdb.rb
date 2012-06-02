@@ -1,5 +1,8 @@
 fgdb.rb (1.0.94) UNRELEASED; urgency=low
 
+  * Minor bug fixes and enhancements in many areas
+  * Copying meetings by effective date
+  * list standard weekly work hours on the payroll report
   * Remove unused skedjul checkboxes (Closes: #28594)
   * Mention "volunteered hours in days" contacts condition,
 	added 'payment total' transaction condition
