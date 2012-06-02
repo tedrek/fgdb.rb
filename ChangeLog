@@ -1,3 +1,8 @@
+fgdb.rb (1.0.95) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Jun 2012 18:52:48 -0700
+
 fgdb.rb (1.0.94) released; urgency=low
 
   * Minor bug fixes and enhancements in many areas
