@@ -1,5 +1,6 @@
 fgdb.rb (1.0.95) UNRELEASED; urgency=low
 
+  * Add disktest batch db schema for certificates of destruction
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Jun 2012 18:52:48 -0700
 
@@ -20,13 +21,8 @@ fgdb.rb (1.0.94) released; urgency=low
   * Add one time discount
   * disable a server build question for max processors and add one for
     cores per processor (Closes: #28434)
-  * Add disktest batch db schema for certificates of destruction
 
-<<<<<<< HEAD
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Jun 2012 12:36:52 -0700
-=======
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Jun 2012 18:52:18 -0700
->>>>>>> mux/remotes/fg/master
 
 fgdb.rb (1.0.93) released; urgency=low
 
