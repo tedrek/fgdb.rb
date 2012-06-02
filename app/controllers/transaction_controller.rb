@@ -326,6 +326,8 @@ class TransactionController < ApplicationController
     @context = @transaction_type
     raise unless @context == 'donation'
 
+    font_size = 12
+
     pdf = PDF::Writer.new
     pdf.select_font("Helvetica")
 
@@ -344,7 +346,7 @@ class TransactionController < ApplicationController
     pdf.line(pdf.absolute_left_margin, pdf.y, pdf.absolute_right_margin, pdf.y).stroke
 
     PDF::SimpleTable.new do |tab|
-      tab.font_size = 14
+      tab.font_size = font_size
         tab.width = pdf.absolute_right_margin - pdf.absolute_left_margin # (PDF::Writer::PAGE_SIZES["A4"][2].to_i - 60)
         tab.column_order.push(*%w(one two three))
 
@@ -374,7 +376,7 @@ class TransactionController < ApplicationController
       end
 
     PDF::SimpleTable.new do |tab|
-      tab.font_size = 14
+      tab.font_size = font_size
         tab.width = pdf.absolute_right_margin - pdf.absolute_left_margin # (PDF::Writer::PAGE_SIZES["A4"][2].to_i - 60)
         tab.column_order.push(*%w(qty desc val))
 
@@ -400,15 +402,15 @@ class TransactionController < ApplicationController
       data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
 
       if @txn.invoice_resolved?
-        data << {"desc" => "Required Fee Paid (NOT deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents + @txn.required_fee_owed_cents)/100.0) }
+        data << {"desc" => "Required Fee Paid (NOT tax deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents + @txn.required_fee_owed_cents)/100.0) }
         data << {"desc" => "Donation Paid (tax deductible):", "val" => number_to_currency((@txn.cash_donation_paid_cents + @txn.cash_donation_owed_cents)/100.0)}
       else
         if @txn.required_fee_paid_cents.nonzero?
-          data << {"desc" => "Required Fee Paid (NOT deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents)/100.0)}
+          data << {"desc" => "Required Fee Paid (NOT tax deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents)/100.0)}
         end
 
         if @txn.invoiced? and @txn.required_fee_owed_cents.nonzero?
-          data << {"desc" => "Required Fee Due (NOT deductible):", "val" => number_to_currency(@txn.required_fee_owed_cents/100.0) }
+          data << {"desc" => "Required Fee Due (NOT tax deductible):", "val" => number_to_currency(@txn.required_fee_owed_cents/100.0) }
         end
 
         if @txn.invoiced?
@@ -438,15 +440,15 @@ class TransactionController < ApplicationController
 #    pdf.stroke
 #    pdf.restore_state
 
-    pdf.text @txn.comments.to_s, :font_size => 14
+    pdf.text @txn.comments.to_s, :font_size => font_size
     # <HR />, however..
     pdf.y -= 5
     pdf.stroke_color! Color::RGB::Black
     pdf.line(pdf.absolute_left_margin, pdf.y, pdf.absolute_right_margin, pdf.y).stroke
-    pdf.text "We affirm that no goods or services were provided in return for the donation amounts listed above (required fees excepted).", :font_size => 14
+    pdf.text "We affirm that no goods or services were provided in return for the donation amounts listed above (required fees excepted).", :font_size => font_size
     if show_suggested
-      pdf.text "\n", :font_size => 14
-      pdf.text "There is a total suggested donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => 14
+      pdf.text "\n", :font_size => font_size
+      pdf.text "There is a suggested tax deductible donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
     end
 
 #    pdf.y -= 10
