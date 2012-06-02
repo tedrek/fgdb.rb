@@ -1,7 +1,6 @@
 fgdb.rb (1.0.95) UNRELEASED; urgency=low
 
   * Add disktest batch db schema for certificates of destruction
-  * Reduce invoice size and fix some text to say tax deductible
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Jun 2012 13:55:00 -0700
 
