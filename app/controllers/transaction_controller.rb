@@ -375,6 +375,11 @@ class TransactionController < ApplicationController
         tab.render_on(pdf)
       end
 
+    if show_suggested
+      pdf.text "There is a suggested tax deductible donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
+      pdf.y -= 3
+    end
+
     PDF::SimpleTable.new do |tab|
       tab.font_size = font_size
         tab.width = pdf.absolute_right_margin - pdf.absolute_left_margin # (PDF::Writer::PAGE_SIZES["A4"][2].to_i - 60)
@@ -446,10 +451,6 @@ class TransactionController < ApplicationController
     pdf.stroke_color! Color::RGB::Black
     pdf.line(pdf.absolute_left_margin, pdf.y, pdf.absolute_right_margin, pdf.y).stroke
     pdf.text "We affirm that no goods or services were provided in return for the donation amounts listed above (required fees excepted).", :font_size => font_size
-    if show_suggested
-      pdf.text "\n", :font_size => font_size
-      pdf.text "There is a suggested tax deductible donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
-    end
 
 #    pdf.y -= 10
 #    pdf.text "Hello, Ruby.", :font_size => 72, :justification => :center
