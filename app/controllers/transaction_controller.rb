@@ -426,7 +426,7 @@ class TransactionController < ApplicationController
         end
       end
 
-      data << {"desc" => "Total Deductible Donation:", "val" =>  "_________"}
+      data << {"desc" => "Total Tax Deductible Donation:", "val" =>  "_________"}
 
         tab.data.replace data
         tab.render_on(pdf)
