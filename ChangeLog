@@ -1,4 +1,4 @@
-fgdb.rb (1.0.94) UNRELEASED; urgency=low
+fgdb.rb (1.0.94) released; urgency=low
 
   * Minor bug fixes and enhancements in many areas
   * Copying meetings by effective date
@@ -16,7 +16,7 @@ fgdb.rb (1.0.94) UNRELEASED; urgency=low
   * disable a server build question for max processors and add one for
     cores per processor (Closes: #28434)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Jun 2012 18:08:03 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Jun 2012 18:52:18 -0700
 
 fgdb.rb (1.0.93) released; urgency=low
 
