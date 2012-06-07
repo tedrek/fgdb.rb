@@ -14,7 +14,7 @@ class SpecSheet < ActiveRecord::Base
 
   after_save :save_bt
 
-  has_many :spec_sheet_values
+  has_many :spec_sheet_values, :include => [:spec_sheet_question], :order => "spec_sheet_questions.position ASC"
 
   # is there already an inverse to Hash.to_a ?
   def r_hash_parse(arr)

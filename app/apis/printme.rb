@@ -52,7 +52,7 @@ class PrintmeAPI < SOAP::SoapsBase
   SpecSheetConditionStruct = Struct.new(:field_name, :operator, :expected_value) if !defined?(SpecSheetConditionStruct)
 
   def get_extra_questions
-    SpecSheetQuestion.find(:all).sort_by(&:id).map{|x|
+    SpecSheetQuestion.find(:all).sort_by(&:position).map{|x|
       a = x.spec_sheet_question_conditions.map{|y|
         SpecSheetConditionStruct.new(y.name, y.operator, y.expected_value)
       }

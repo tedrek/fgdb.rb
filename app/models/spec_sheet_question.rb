@@ -1,6 +1,8 @@
 class SpecSheetQuestion < ActiveRecord::Base
   has_many :spec_sheet_question_conditions
 
+  default_scope :order => 'position ASC'
+
   def real_name
     self.name.downcase.gsub(/ /, "_")
   end
