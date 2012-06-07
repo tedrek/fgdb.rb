@@ -19,7 +19,7 @@ class Conditions < ConditionsBase
       logged_in_within signed_off_by payment_total
     ] + DATES).uniq
 
-  CHECKBOXES = %w[ cancelled assigned covered organization is_pickup ]
+  CHECKBOXES = %w[ cancelled ]
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
@@ -58,8 +58,6 @@ class Conditions < ConditionsBase
   attr_accessor :created_by, :cashier_created_by
   attr_accessor :updated_by, :cashier_updated_by
 
-  attr_accessor :covered
-
   attr_accessor :serial_number
 
   attr_accessor :contact_id
@@ -89,9 +87,6 @@ class Conditions < ConditionsBase
 
   attr_accessor :contact_type
 
-  attr_accessor :is_organization
-  attr_accessor :is_pickup
-
   attr_accessor :city, :postal_code, :phone_number, :email
 
   attr_accessor :volunteer_hours_type, :volunteer_hours_exact, :volunteer_hours_low, :volunteer_hours_high, :volunteer_hours_ge, :volunteer_hours_le
@@ -111,11 +106,8 @@ class Conditions < ConditionsBase
   attr_accessor :action
   attr_accessor :type_id
 
-  attr_accessor :assigned
-
   def init_callback
     @payment_method_id = PaymentMethod.cash.id
-    @assigned = true
     DATES.each do |x|
       self.send(x + "_date=", Date.today.to_s)
     end
@@ -375,11 +367,7 @@ class Conditions < ConditionsBase
   end
 
   def assigned_conditions(klass)
-    if @assigned
-      return ["#{klass.table_name}.contact_id IS NOT NULL"]
-    else
-      return ["#{klass.table_name}.contact_id IS NULL"]
-    end
+    return ["#{klass.table_name}.contact_id IS NOT NULL"]
   end
 
   def join_conditions(conds_a, conds_b)
@@ -411,7 +399,7 @@ class Conditions < ConditionsBase
   end
 
   def covered_conditions(klass)
-    ["gizmo_events.covered = ?", @covered != 0]
+    ["gizmo_events.covered = ?", true]
   end
 
   def payment_amount_conditions(klass)
@@ -563,11 +551,11 @@ class Conditions < ConditionsBase
     else
       i = "contact_id"
     end
-    return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", (@is_organization > 0) ? true : false]
+    return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", true]
   end
 
   def is_pickup_conditions(klass)
-    return ["#{klass.table_name}.is_pickup = ?", (@is_pickup > 0)]
+    return ["#{klass.table_name}.is_pickup = ?", true]
   end
 
   def needs_attention_conditions(klass)

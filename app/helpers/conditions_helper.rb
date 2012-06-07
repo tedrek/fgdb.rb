@@ -8,7 +8,7 @@ module ConditionsHelper
   end
 
   def html_for_assigned_condition(params_key)
-    check_box params_key, "assigned"
+    ""
   end
 
   def html_for_needs_checkin_condition(params_key)
@@ -193,7 +193,7 @@ module ConditionsHelper
   end
 
   def html_for_covered_condition(params_key)
-    check_box(params_key, 'covered')
+    ""
   end
 
   def html_for_postal_code_condition(params_key)
@@ -209,7 +209,7 @@ module ConditionsHelper
   end
 
   def html_for_organization_condition(params_key)
-    check_box(params_key,"is_organization")
+    ""
   end
 
   def html_for_logged_in_within_condition(params_key)
@@ -217,7 +217,7 @@ module ConditionsHelper
   end
 
   def html_for_is_pickup_condition(params_key)
-    check_box(params_key,"is_pickup")
+    ""
   end
 
   def html_for_contact_condition(params_key)

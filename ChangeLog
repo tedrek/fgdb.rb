@@ -3,6 +3,9 @@ fgdb.rb (1.0.95) UNRELEASED; urgency=low
   * Add disktest batch db schema for certificates of destruction
   * Reformat receipts to use full width in the header and footer,
     to prevent text wrapping
+  * Remove checkboxes for the following search conditions:
+    covered organization is_pickup assigned
+    - And enable the Exclude checkbox for them to be reversed
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Jun 2012 15:14:23 -0700
 
