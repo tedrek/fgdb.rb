@@ -8,10 +8,15 @@ class DisktestBatchDrive < ActiveRecord::Base
   validates_existence_of :disktest_batch
 
   def disktest_run
-    result = DisktestRun.find_by_id(self.disktest_run_id)
-    if ! result
-      result = DisktestRun.find_all_by_serial_number(self.serial_number).select{|x| x.created_at >= self.date}.sort_by(&:created_at).last
-    end
-    return result
+    DisktestRun.find_by_id(self.disktest_run_id) || _find_run
+  end
+
+  def _find_run
+    DisktestRun.find_all_by_serial_number(self.serial_number).select{|x| x.created_at >= self.date}.sort_by(&:created_at).last
+  end
+
+  def finalize_run
+    run = _find_run
+    self.disktest_run_id = run ? run.id : nil
   end
 end

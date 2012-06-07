@@ -8,5 +8,5 @@
   </p>
   <p>
     <%= f.label :contact_id %><br />
-    <%= contact_field('@' + f.object_name, :contact_id) %>
+    <%= contact_field('@' + f.object_name, :contact_id, :locals => {:options => {:object_name => f.object_name, :field_name => 'contact_id'}}) %>
   </p>

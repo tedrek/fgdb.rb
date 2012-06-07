@@ -206,6 +206,7 @@ module ApplicationHelper
     (referer ? (referer + (anchor ? "#" + anchor : "")) : ({:action => "index"}))
   end
 
+  # TODO: pass :locals => {:options => {                        :object_name => obj_name,                        :field_name => field_name}
   def contact_field(obj_name, field_name, options = {})
     options[:locals] ||= {}
     options[:locals][:options] ||= {}
