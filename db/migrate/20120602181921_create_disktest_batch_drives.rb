@@ -12,7 +12,7 @@ class CreateDisktestBatchDrives < ActiveRecord::Migration
     end
 
     add_foreign_key :disktest_batch_drives, :disktest_run_id, :disktest_runs, :id, :on_delete => :restrict
-    add_foreign_key :disktest_batch_drives, :disktest_batch_id, :disktest_runs, :id, :on_delete => :cascade
+    add_foreign_key :disktest_batch_drives, :disktest_batch_id, :disktest_batches, :id, :on_delete => :cascade
     add_foreign_key :disktest_batch_drives, :user_destroyed_by_id, :users, :id, :on_delete => :restrict
   end
 

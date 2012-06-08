@@ -10,3 +10,18 @@
     <%= f.label :contact_id %><br />
     <%= contact_field('@' + f.object_name, :contact_id, :locals => {:options => {:object_name => f.object_name, :field_name => 'contact_id'}}) %>
   </p>
+
+  <% interface = OH.new %>
+  <% kdh = {:onkeydown => line_item_on_keydown("drives")} %>
+  <% interface[:serial] = text_field_tag('serial', "", kdh) %>
+  <% interface[:system_serial] = text_field_tag('system_serial', "", kdh) %>
+  <% interface[:status] = hidden_field_tag('status') %>
+
+  <%= line_item("drives", 'DriveFrontend', interface, @disktest_batch.disktest_batch_drives.map{|i| hash = {:serial => i.serial_number, :system_serial => i.system_serial_number, :status => "Not yet implemented."}; hash[:id] = i.id if  i.id; hash }) %>
+
+  <div id="toggle_serial_off">
+    <a href="#" onclick="$('system_serial').disable(); $('toggle_serial_off').hide(); $('toggle_serial_on').show();">Disable system serials</a>
+  </div>
+  <div id="toggle_serial_on" style="display: none">
+    <a href="#" onclick="$('system_serial').enable(); $('toggle_serial_on').hide(); $('toggle_serial_off').show();">Enable system serials</a>
+  </div>

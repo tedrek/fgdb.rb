@@ -538,6 +538,12 @@ var InputBasedComponent = Class.create(LineItemComponent, {
   },
 });
 
+var HiddenBasedComponent = Class.create(InputBasedComponent, {
+  add_from_form_reject: function() {
+    return false;
+  },
+});
+
 var VolunteerShiftFrontend = Class.create(LineItem, {
   prefix: 'volunteer_shifts',
   linelist: ['volunteer_task_type_id', 'contact_contact_id', 'class_credit', 'program_id', 'description', 'roster_id', 'slot_number', 'slot_count', 'date_start_hour', 'date_start_minute', 'date_start_ampm', 'date_end_hour', 'date_end_minute', 'date_end_ampm'],
@@ -824,3 +830,36 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
   },
 });
 
+var SerialComponent = Class.create(InputBasedComponent, {
+  linelist: ['serial'],
+});
+
+var SystemSerialComponent = Class.create(InputBasedComponent, {
+  linelist: ['system_serial'],
+});
+
+var StatusComponent = Class.create(HiddenBasedComponent, {
+  linelist: ['status'],
+});
+
+var DriveFrontend = Class.create(ComponentLineItem, {
+  prefix: 'drives',
+  copyable: true,
+  checkfor: [SerialComponent, SystemSerialComponent, StatusComponent],
+
+  extra_link_hook: function(line_id, td, args) {
+    a = document.createElement("a");
+    var that = this;
+    a.onclick = function () {
+      alert("Not implemented.");
+      // TODO: will show cahsier field and update the status
+    }
+    // if() { -- check if destroyed
+      a.appendChild(document.createTextNode('mark destroyed'));
+      a.className = 'disable_link';
+      td.appendChild(a);
+      td.appendChild(document.createTextNode(' | '));
+//      }
+  },
+  add_on_save: true,
+});
