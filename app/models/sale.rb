@@ -101,8 +101,13 @@ thanks = [
 "     | |                  | |        |||",
 " _|_ | |     __,   _  _   | |   ,    |||",
 "  |  |/ \\   /  |  / |/ |  |/_) / \\_  |||",
-"  |_/|   |_/\\_/|_/  |  |_/| \\_/ \\/   ooo"].map{|t| ['standard', t]}
+"  |_/|   |_/\\_/|_/  |  |_/| \\_/ \\/   ooo",
+""].map{|t| ['standard', t]}
     end
+    thanks << ['left', "Follow us on Twitter:"]
+    thanks << ['right', "twitter.com/freegeekpdx"]
+    thanks << ['left', "Like us on FaceBook:"]
+    thanks << ['right', "facebook.com/freegeekmothership"]
     final = head_lines + gizmo_lines + payment_lines + footer_lines + thanks
     final
   end
