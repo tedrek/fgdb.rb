@@ -35,7 +35,7 @@
   <% end -%>
 <% end -%>
 
-<% unless @donation.payments.length == 1 && payment.payment_method.description.downcase == "invoice" %>
+<% unless @donation.payments.length == 1 && @donation.payments.first.payment_method.description.downcase == "invoice" %>
 
 <% @donation.payments.each do |payment| %>
   <tr>
