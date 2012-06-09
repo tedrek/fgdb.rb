@@ -15,7 +15,7 @@
   <% kdh = {:onkeydown => line_item_on_keydown("drives")} %>
   <% interface[:serial] = text_field_tag('serial', "", kdh) %>
   <% interface[:system_serial] = text_field_tag('system_serial', "", kdh) %>
-  <% interface[:status] = hidden_field_tag('status') %>
+  <% interface[:status] = hidden_field_tag('status', '', :style => 'display: none;') %>
 
   <%= line_item("drives", 'DriveFrontend', interface, @disktest_batch.disktest_batch_drives.map{|i| hash = {:serial => i.serial_number, :system_serial => i.system_serial_number, :status => "Not yet implemented."}; hash[:id] = i.id if  i.id; hash }) %>
 

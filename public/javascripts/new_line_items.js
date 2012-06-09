@@ -179,11 +179,11 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     var names = this.linelist;
 
     var last = null;
-    for(var i in names) {
-      if(this.is_enabled_visable_there_field_thing(names[i])) {
-        last = names[i];
+    names.each(function(i) {
+      if(this.is_enabled_visable_there_field_thing(i)) {
+        last = i;
       }
-    }
+    }, this);
 
     return last == event.target.id;
   },
@@ -203,7 +203,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     if(el.disabled) {
       return false;
     }
-    if(!el.visible) {
+    if(!el.visible()) {
       return false;
     }
     return true;
@@ -836,6 +836,9 @@ var SerialComponent = Class.create(InputBasedComponent, {
 
 var SystemSerialComponent = Class.create(InputBasedComponent, {
   linelist: ['system_serial'],
+  add_from_form_reject: function() {
+    return false;
+  },
 });
 
 var StatusComponent = Class.create(HiddenBasedComponent, {
