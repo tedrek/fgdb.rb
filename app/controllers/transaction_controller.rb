@@ -404,7 +404,7 @@ class TransactionController < ApplicationController
       data << {"desc" => " "}
       data << {"desc" => "Total Estimated Value (tax deductible):", "val" =>  "_________"}
       data = data + @txn.gizmo_events.select{|event| (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => number_to_currency((x.gizmo_count * x.unit_price_cents)/100.0)}}
-      unless @txn.payments.length == 1 && payment.payment_method.description.downcase == "invoice"
+      unless @txn.payments.length == 1 && @txn.payments.first.payment_method.description.downcase == "invoice"
         data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
       end
 
