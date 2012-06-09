@@ -1,4 +1,4 @@
-fgdb.rb (1.0.95) UNRELEASED; urgency=low
+fgdb.rb (1.0.95) released; urgency=low
 
   * Add disktest batch db schema for certificates of destruction
   * Reformat receipts to use full width in the header and footer,
@@ -14,7 +14,7 @@ fgdb.rb (1.0.95) UNRELEASED; urgency=low
     fee total has the word Required in front of it (as well as not tax
     deductible)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:20:16 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:47:22 -0700
 
 fgdb.rb (1.0.94) released; urgency=low
 
