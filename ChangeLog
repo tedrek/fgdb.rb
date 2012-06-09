@@ -1,3 +1,8 @@
+fgdb.rb (1.0.96) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:47:41 -0700
+
 fgdb.rb (1.0.95) released; urgency=low
 
   * Add disktest batch db schema for certificates of destruction
