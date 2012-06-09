@@ -1,18 +1,50 @@
-<p>
-  <b>Contact:</b>
-  <%=h @disktest_batch.contact_id %>
-</p>
+<h1>Hard Drive Batch Report: <%=h @disktest_batch.name %></h1>
 
-<p>
-  <b>Name:</b>
-  <%=h @disktest_batch.name %>
-</p>
+Hard Drive Batch from <%=h @disktest_batch.contact.display_name %> on <%=h @disktest_batch.date %>.<br />
+<% if @disktest_batch.finalized? %>
+Report finalized by <%= @disktest_batch.user_finalized_by %> on <%= @disktest_batch.finalized_on %>.
+<% else %>
+Report not yet finalized.
+<% end %>
+<br />
+<br />
+<table class="awesome">
+  <tr>
+    <th>System Serial Number</th>
+    <th>Serial Number</th>
+    <th>Status</th>
+  </tr>
 
-<p>
-  <b>Date:</b>
-  <%=h @disktest_batch.date %>
-</p>
+<% @disktest_batch.disktest_batch_drives.sort_by{|x| [x.system_serial_number, x.serial_number].join("---")}.each do |d| %>
+  <tr>
+    <td><%= d.system_serial_number %></td>
+    <td><%= d.serial_number %></td>
+    <td><%= d.status %></td>
+  </tr>
+<% end %>
+</table>
+<br />
+<table class="awesome">
+  <tr>
+    <td>Hard drives successfully wiped:</td>
+    <td><%= @disktest_batch.count_number(:wiped?) %></td>
+  </tr>
+  <tr>
+    <td>Hard drives marked destroyed:</td>
+    <td><%= @disktest_batch.count_number(:destroyed?) %></td>
+  </tr>
+  <tr>
+    <td>Hard drives remaining:</td>
+    <td><%= @disktest_batch.count_number(:untested?) %></td>
+  </tr>
+  <tr>
+    <td>Total hard drives:</td>
+    <td><%= @disktest_batch.disktest_batch_drives.count %></td>
+  </tr>
 
 
+</table>
+<div class="noprint">
 <%= link_to 'Edit', {:action => "edit", :id => @disktest_batch.id} %> |
 <%= link_to 'Back', {:action => "index"} %>
+</div>

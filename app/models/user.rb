@@ -162,6 +162,7 @@ class User < ActiveRecord::Base
 
   def _privileges
     olda = []
+    return olda if !self.can_login
     a = [self, self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| x.to_privileges}.flatten.select{|x| !x.nil?}.map{|x| Privilege.by_name(x)}
     while olda != a
       a = a.select{|x| !x.restrict} if self.shared

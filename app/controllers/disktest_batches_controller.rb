@@ -39,7 +39,7 @@ class DisktestBatchesController < ApplicationController
   def create
     @disktest_batch = DisktestBatch.new(params[:disktest_batch])
 
-    apply_line_item_data(@disktest_batch, DisktestBatchDrive, 'drives')
+    my_apply_line_item_data(@disktest_batch, 'disktest_batch_drives', 'drives')
 
     if @disktest_batch.save
       flash[:notice] = 'DisktestBatch was successfully created.'
@@ -51,8 +51,8 @@ class DisktestBatchesController < ApplicationController
 
   def update
     @disktest_batch = DisktestBatch.find(params[:id])
-
-    apply_line_item_data(@disktest_batch, DisktestBatchDrive, 'drives')
+    # FIXME: consolidate these..
+    my_apply_line_item_data(@disktest_batch, 'disktest_batch_drives', 'drives')
 
     if @disktest_batch.update_attributes(params[:disktest_batch])
       flash[:notice] = 'DisktestBatch was successfully updated.'

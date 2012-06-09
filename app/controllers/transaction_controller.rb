@@ -404,7 +404,7 @@ class TransactionController < ApplicationController
       data << {"desc" => " "}
       data << {"desc" => "Total Estimated Value (tax deductible):", "val" =>  "_________"}
       data = data + @txn.gizmo_events.select{|event| (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => number_to_currency((x.gizmo_count * x.unit_price_cents)/100.0)}}
-      unless @txn.payments.length == 1 && payment.payment_method.description.downcase == "invoice"
+      unless @txn.payments.length == 1 && @txn.payments.first.payment_method.description.downcase == "invoice"
         data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
       end
 
@@ -504,32 +504,6 @@ class TransactionController < ApplicationController
     else
       raise "UNKNOWN TX-TYPE #{@transaction_type}"
     end
-  end
-
-  def my_apply_line_item_data(object, prefix)
-    input = params[prefix]
-    association = object.send(prefix)
-    seen = []
-    if input
-      for hash in input.values
-        obj = nil
-        if hash["id"] and hash["id"].to_i != 0
-          obj = association.select{|x| x.id == (hash["id"].to_i)}.first
-          seen << hash.delete("id").to_i
-          obj.attributes_with_editable = hash
-        else
-          obj = association.build
-          hash.delete("id")
-          obj.attributes = hash
-        end
-      end
-    end
-    association.each{|x|
-      unless x.id.nil? or seen.include?(x.id)
-        x.mark_for_destruction
-      end
-    }
-    association
   end
 
   def _apply_line_item_data(transaction)

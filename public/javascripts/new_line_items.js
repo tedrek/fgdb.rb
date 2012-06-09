@@ -179,11 +179,11 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     var names = this.linelist;
 
     var last = null;
-    for(var i in names) {
-      if(this.is_enabled_visable_there_field_thing(names[i])) {
-        last = names[i];
+    names.each(function(i) {
+      if(this.is_enabled_visable_there_field_thing(i)) {
+        last = i;
       }
-    }
+    }, this);
 
     return last == event.target.id;
   },
@@ -203,7 +203,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     if(el.disabled) {
       return false;
     }
-    if(!el.visible) {
+    if(!el.visible()) {
       return false;
     }
     return true;
@@ -831,11 +831,14 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
 });
 
 var SerialComponent = Class.create(InputBasedComponent, {
-  linelist: ['serial'],
+  linelist: ['serial_number'],
 });
 
 var SystemSerialComponent = Class.create(InputBasedComponent, {
-  linelist: ['system_serial'],
+  linelist: ['system_serial_number'],
+  add_from_form_reject: function() {
+    return false;
+  },
 });
 
 var StatusComponent = Class.create(HiddenBasedComponent, {
@@ -851,15 +854,21 @@ var DriveFrontend = Class.create(ComponentLineItem, {
     a = document.createElement("a");
     var that = this;
     a.onclick = function () {
-      alert("Not implemented.");
-      // TODO: will show cahsier field and update the status
+      that._update_hook_internal_enabled = false;
+      that.edit_hook(line_id);
+      that.editing_id = that.getValueBySelector($(line_id), ".id");
+      Element.remove(line_id);
+      $('status').value = "Will be marked destroyed";
+      that.add_from_form_hook();
+      that._update_hook_internal_enabled = true;
+      that.do_update_hook();
     }
-    // if() { -- check if destroyed
+    if(args['status'].search("Destroy") == -1 && args['status'].search("destroy") == -1) {
       a.appendChild(document.createTextNode('mark destroyed'));
       a.className = 'disable_link';
       td.appendChild(a);
       td.appendChild(document.createTextNode(' | '));
-//      }
+    }
   },
   add_on_save: true,
 });
