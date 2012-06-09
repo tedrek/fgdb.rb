@@ -831,11 +831,11 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
 });
 
 var SerialComponent = Class.create(InputBasedComponent, {
-  linelist: ['serial'],
+  linelist: ['serial_number'],
 });
 
 var SystemSerialComponent = Class.create(InputBasedComponent, {
-  linelist: ['system_serial'],
+  linelist: ['system_serial_number'],
   add_from_form_reject: function() {
     return false;
   },

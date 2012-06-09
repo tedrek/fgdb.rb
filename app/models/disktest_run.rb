@@ -15,4 +15,12 @@ class DisktestRun < ActiveRecord::Base
   def running?
     result == nil
   end
+
+  def status
+    if running?
+      "Testing since #{self.started_at.to_s}"
+    else
+      "#{self.result} at #{self.completed_at.to_s}"
+    end
+  end
 end
