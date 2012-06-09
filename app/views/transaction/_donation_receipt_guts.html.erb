@@ -35,12 +35,16 @@
   <% end -%>
 <% end -%>
 
+<% unless @donation.payments.length == 1 && payment.payment_method.description.downcase == "invoice" %>
+
 <% @donation.payments.each do |payment| %>
   <tr>
     <td>&nbsp;</td>
     <td align="left"><%= h(payment.payment_method.description).titleize %>:</td>
     <td><%= my_number_to_currency(payment.amount_cents) %></td>
   </tr>
+<% end %>
+
 <% end %>
 
 <% if @donation.invoice_resolved? -%>
@@ -99,10 +103,12 @@
     </tr>
   <% end -%>
 <% end %>
+<% unless @donation.payments.length == 0 %>
 <tr>
     <td></td>
     <td>Total Tax Deductible Donation:</td>
     <td>_________</td>
 </tr>
+<% end %>
 
 </tbody></table>

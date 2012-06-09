@@ -404,7 +404,9 @@ class TransactionController < ApplicationController
       data << {"desc" => " "}
       data << {"desc" => "Total Estimated Value (tax deductible):", "val" =>  "_________"}
       data = data + @txn.gizmo_events.select{|event| (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => number_to_currency((x.gizmo_count * x.unit_price_cents)/100.0)}}
-      data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
+      unless @txn.payments.length == 1 && payment.payment_method.description.downcase == "invoice"
+        data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
+      end
 
       if @txn.invoice_resolved?
         data << {"desc" => "Required Fee Paid (NOT tax deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents + @txn.required_fee_owed_cents)/100.0) }
@@ -431,7 +433,9 @@ class TransactionController < ApplicationController
         end
       end
 
-      data << {"desc" => "Total Tax Deductible Donation:", "val" =>  "_________"}
+      unless @txn.payments.length == 0
+        data << {"desc" => "Total Tax Deductible Donation:", "val" =>  "_________"}
+      end
 
         tab.data.replace data
         tab.render_on(pdf)

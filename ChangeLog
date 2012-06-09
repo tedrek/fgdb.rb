@@ -9,8 +9,12 @@ fgdb.rb (1.0.95) UNRELEASED; urgency=low
   * Move the cores per proc question under the processor question and a
     question for type of DIMM (Closes: #28823)
   * Add FB and Twitter to sales receipt
+  * Remove extra lines from the donation receipts and invoices when the
+    situation would show redundant information and ensure every fee and
+    fee total has the word Required in front of it (as well as not tax
+    deductible)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 07 Jun 2012 17:17:03 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:20:16 -0700
 
 fgdb.rb (1.0.94) released; urgency=low
 
