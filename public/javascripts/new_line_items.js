@@ -854,15 +854,21 @@ var DriveFrontend = Class.create(ComponentLineItem, {
     a = document.createElement("a");
     var that = this;
     a.onclick = function () {
-      alert("Not implemented.");
-      // TODO: will show cahsier field and update the status
+      that._update_hook_internal_enabled = false;
+      that.edit_hook(line_id);
+      that.editing_id = that.getValueBySelector($(line_id), ".id");
+      Element.remove(line_id);
+      $('status').value = "Will be marked destroyed";
+      that.add_from_form_hook();
+      that._update_hook_internal_enabled = true;
+      that.do_update_hook();
     }
-    // if() { -- check if destroyed
+    if(args['status'].search("Destroy") == -1 && args['status'].search("destroy") == -1) {
       a.appendChild(document.createTextNode('mark destroyed'));
       a.className = 'disable_link';
       td.appendChild(a);
       td.appendChild(document.createTextNode(' | '));
-//      }
+    }
   },
   add_on_save: true,
 });

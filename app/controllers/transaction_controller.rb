@@ -506,32 +506,6 @@ class TransactionController < ApplicationController
     end
   end
 
-  def my_apply_line_item_data(object, prefix)
-    input = params[prefix]
-    association = object.send(prefix)
-    seen = []
-    if input
-      for hash in input.values
-        obj = nil
-        if hash["id"] and hash["id"].to_i != 0
-          obj = association.select{|x| x.id == (hash["id"].to_i)}.first
-          seen << hash.delete("id").to_i
-          obj.attributes_with_editable = hash
-        else
-          obj = association.build
-          hash.delete("id")
-          obj.attributes = hash
-        end
-      end
-    end
-    association.each{|x|
-      unless x.id.nil? or seen.include?(x.id)
-        x.mark_for_destruction
-      end
-    }
-    association
-  end
-
   def _apply_line_item_data(transaction)
     if transaction.respond_to?(:payments)
       @payments = my_apply_line_item_data(transaction, :payments)

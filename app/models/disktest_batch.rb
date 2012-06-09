@@ -1,6 +1,6 @@
 class DisktestBatch < ActiveRecord::Base
   belongs_to :contact
-  has_many :disktest_batch_drives, :class_name => "DisktestBatchDrive"
+  has_many :disktest_batch_drives, :class_name => "DisktestBatchDrive", :autosave => true, :dependent => :destroy
   belongs_to :user_finalized_by, :class_name => "User"
 
   validates_presence_of :name
@@ -13,7 +13,8 @@ class DisktestBatch < ActiveRecord::Base
   end
 
   def validate
-    # TODO: validation if finalizing and any match this, count_number(:untested?) must be 0
+    errors.add('disktest_batch_drives', 'are not tested or destroyed, report cannot be finalized') if self.finalized? and self.count_number(:untested?) > 0
+    errors.add('user_finalized_by', 'is not authorized to finalize reports') unless self.user_finalized_by.nil? or self.user_finalized_by.has_privileges('data_security')
   end
 
   def finalized?
@@ -21,7 +22,7 @@ class DisktestBatch < ActiveRecord::Base
   end
 
   def mark_finalized
-    self.user_finalized_by = Thread.current['cashier']
+    self.user_finalized_by = Thread.current['user']
     self.finalized_on = Date.today
     self.disktest_batch_drives.each do |d|
       d.finalize_run
