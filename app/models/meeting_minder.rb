@@ -86,7 +86,7 @@ class MeetingMinder < ActiveRecord::Base
 
   def processed_body(today)
     if self.script.length > 0
-      envvars = minder_variables.collect{|k,v| "#{k.to_s.upcase}=\"#{v.to_s.gsub('"', '\"')}\""}.join(" ")
+      envvars = minder_variables(today).collect{|k,v| "#{k.to_s.upcase}=\"#{v.to_s.gsub('"', '\"')}\""}.join(" ")
       return `env #{envvars} #{self.script_filename}`
     else
       return _process(self.body, today)
