@@ -125,7 +125,7 @@
       </td>
     </tr>
     <% end %>
-    <% @report.spec_sheet_values.sort_by(&:spec_sheet_question_id).each do |x| %>
+    <% @report.spec_sheet_values.each do |x| %>
     <tr>
       <td>
         <%= x.spec_sheet_question.name %>:
