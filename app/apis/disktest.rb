@@ -15,12 +15,13 @@ class DisktestAPI < SOAP::SoapsBase
     ["ping"],
     # Lists
     ["add_disktest_started", "id", "started_at"],
-    ["add_disktest_completed", "id", "result", "completed_at", "details"],
+    ["add_disktest_completed_log", "id", "result", "completed_at", "details", "log"],
     ["new_disktest_run", "vendor", "model", "serial_number", "size", "bus_type"],
     ["check_disktest_running", "vendor", "model", "serial_number"],
 
      # TODO: remove this later
     ["add_disktest_result", "id", "status"],
+    ["add_disktest_completed", "id", "result", "completed_at", "details"],
     ["add_disktest_run", "vendor", "model", "serial_number", "size"], 
     ]
   end
@@ -50,11 +51,22 @@ class DisktestAPI < SOAP::SoapsBase
     return
   end
 
+  # TODO: remove this
   def add_disktest_completed(id, result, completed_at, details)
     dr = DisktestRun.find(id.to_i)
     dr.result = result
     dr.completed_at = completed_at
     dr.failure_details = details
+    dr.save!
+    return
+  end
+
+  def add_disktest_completed_log(id, result, completed_at, details, log)
+    dr = DisktestRun.find(id.to_i)
+    dr.result = result
+    dr.completed_at = completed_at
+    dr.failure_details = details
+    dr.log = log
     dr.save!
     return
   end
