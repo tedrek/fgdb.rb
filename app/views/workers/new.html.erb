@@ -1,10 +1,10 @@
 <h1>New worker</h1>
 
 <% form_tag :action => 'create' do %>
-  <%= render :partial => 'form' %>
   <div class="follow_scroll right_side">
     <%= submit_tag "Create" %><br />
     <%= link_to 'Back', :action => 'list' %>
   </div>
+  <%= render :partial => 'form' %>
 <% end %>
 
