@@ -1,11 +1,11 @@
 <h1>Editing worker</h1>
 
 <% form_tag :action => 'update', :id => @worker do %>
-  <%= render :partial => 'form' %>
   <div class="follow_scroll right_side">
     <%= submit_tag 'Edit' %> <br/>
     <%= link_to 'Show', :action => 'show', :id => @worker %> |
     <%= link_to 'Back', :action => 'list' %>
   </div>
+  <%= render :partial => 'form' %>
 <% end %>
 
