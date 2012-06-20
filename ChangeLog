@@ -15,6 +15,8 @@ fgdb.rb (1.0.95) released; urgency=low
     deductible)
   * Validate that birthday setting is not past year 2038
   * Add a confirmation when changing the rollout date in skedjulnator
+  * Also add a report mail to schedulers when the rollout date is changed
+    (Closes: #29003)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:47:22 -0700
 
