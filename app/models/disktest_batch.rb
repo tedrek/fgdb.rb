@@ -13,7 +13,7 @@ class DisktestBatch < ActiveRecord::Base
   end
 
   def validate
-    errors.add('disktest_batch_drives', 'are not tested or destroyed, report cannot be finalized') if self.finalized and self.count_number(:untested?) > 0
+    errors.add('disktest_batch_drives', 'are not all tested or destroyed, report cannot be finalized') if self.finalized and self.count_number(:untested?) > 0
     errors.add('user_finalized_by', 'is not authorized to finalize reports') unless self.user_finalized_by.nil? or self.user_finalized_by.has_privileges('data_security')
   end
 
@@ -22,7 +22,7 @@ class DisktestBatch < ActiveRecord::Base
   end
 
   def finalized=(value)
-    if finalized and finalized != "0"
+    if value and value == "1"
       self.user_finalized_by = Thread.current['user']
       self.finalized_on = Date.today
       self.disktest_batch_drives.each do |d|
@@ -32,7 +32,7 @@ class DisktestBatch < ActiveRecord::Base
       self.user_finalized_by = nil
       self.finalized_on = nil
       self.disktest_batch_drives.each do |d|
-        d.disktest_run_id = run
+        d.disktest_run_id = nil
       end
     end
   end
