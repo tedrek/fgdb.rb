@@ -22,6 +22,7 @@ fgdb.rb (1.0.95) released; urgency=low
   * Add a link from disktest_runs to show the full details of a run,
     including the log
   * Add finalized condition for disktest batches
+  * Add organization name search condition
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:47:22 -0700
 

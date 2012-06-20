@@ -16,7 +16,7 @@ class Conditions < ConditionsBase
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
       updated_by cashier_updated_by is_pickup finalized
-      logged_in_within signed_off_by payment_total
+      logged_in_within signed_off_by payment_total organization_name
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -30,6 +30,7 @@ class Conditions < ConditionsBase
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
 
+  attr_accessor :organization_name
 
   attr_accessor :signed_off_by
 
@@ -547,6 +548,10 @@ class Conditions < ConditionsBase
       i = "contact_id"
     end
     return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type.to_i]
+  end
+
+  def organization_name_conditions(klass)
+    return ["#{klass.table_name}.organization ILIKE ('%' || ? || '%')", @organization_name]
   end
 
   def organization_conditions(klass)
