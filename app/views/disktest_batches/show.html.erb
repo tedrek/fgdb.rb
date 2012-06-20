@@ -1,8 +1,8 @@
 <h1>Hard Drive Batch Report: <%=h @disktest_batch.name %></h1>
 
 Hard Drive Batch from <%=h @disktest_batch.contact.display_name %> on <%=h @disktest_batch.date %>.<br />
-<% if @disktest_batch.finalized? %>
-Report finalized by <%= @disktest_batch.user_finalized_by %> on <%= @disktest_batch.finalized_on %>.
+<% if @disktest_batch.finalized %>
+Report finalized by <%= @disktest_batch.user_finalized_by.contact_display_name %> on <%= @disktest_batch.finalized_on %>.
 <% else %>
 Report not yet finalized.
 <% end %>
@@ -18,7 +18,7 @@ Report not yet finalized.
 <% @disktest_batch.disktest_batch_drives.sort_by{|x| [x.system_serial_number, x.serial_number].join("---")}.each do |d| %>
   <tr>
     <td><%= d.system_serial_number %></td>
-    <td><%= d.serial_number %></td>
+    <td><%= link_to d.serial_number, {:controller => "disktest_runs", :action => "history", :serial => d.serial_number} %></td>
     <td><%= d.status %></td>
   </tr>
 <% end %>

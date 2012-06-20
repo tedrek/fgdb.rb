@@ -9,6 +9,11 @@ class DisktestRunsController < ApplicationController
     @disktest_run = DisktestRun.find(params[:id])
   end
 
+  def history
+    @serial = params[:serial]
+    @disktest_runs = DisktestRun.find_all_by_serial_number(@serial)
+  end
+
   def search
     @error = params[:error]
     if !params[:conditions]
