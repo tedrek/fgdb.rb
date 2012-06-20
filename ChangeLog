@@ -23,6 +23,7 @@ fgdb.rb (1.0.95) released; urgency=low
     including the log
   * Add finalized condition for disktest batches
   * Add organization name search condition
+  * Fix disciplinary action PIN input to hide password (Closes: #29095)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:47:22 -0700
 
