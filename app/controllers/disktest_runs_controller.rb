@@ -5,6 +5,10 @@ class DisktestRunsController < ApplicationController
     search
   end
 
+  def show
+    @disktest_run = DisktestRun.find(params[:id])
+  end
+
   def search
     @error = params[:error]
     if !params[:conditions]
