@@ -28,8 +28,8 @@
 
 <%= render :partial => "work_shifts/skedjulnator_footer" %>
 
-  <% if @readonly %>
-    <pre>Generated on <%= `date -R | sed s/,//` %></pre>
-  <% end %>
+<% if @readonly or (params[:controller] == "work_shifts"  and ["index", "list", "list_problems", "staffsched", "staffsched_publish"].include?(params[:action])) %>
+<pre style="clear: both;">Generated on <%= `date -R | sed s/,//` %></pre>
+<% end %>
 </body>
 </html>

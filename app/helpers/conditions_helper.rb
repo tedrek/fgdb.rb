@@ -3,8 +3,16 @@ module ConditionsHelper
 
   private
 
+  def html_for_organization_name_condition(params_key)
+    text_field(params_key, 'organization_name')
+  end
+
   def html_for_worker_type_condition(params_key)
     select(params_key, "worker_type_id", WorkerType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
+  end
+
+  def html_for_finalized_condition(params_key)
+    ""
   end
 
   def html_for_assigned_condition(params_key)

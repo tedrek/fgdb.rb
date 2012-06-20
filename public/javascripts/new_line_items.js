@@ -542,6 +542,10 @@ var HiddenBasedComponent = Class.create(InputBasedComponent, {
   add_from_form_reject: function() {
     return false;
   },
+
+  clear_widget: function() {
+    $(this.linelist[0]).value = "";
+  },
 });
 
 var VolunteerShiftFrontend = Class.create(LineItem, {
@@ -862,6 +866,7 @@ var DriveFrontend = Class.create(ComponentLineItem, {
       that.add_from_form_hook();
       that._update_hook_internal_enabled = true;
       that.do_update_hook();
+      $('status').value = "";
     }
     if(args['status'].search("Destroy") == -1 && args['status'].search("destroy") == -1) {
       a.appendChild(document.createTextNode('mark destroyed'));

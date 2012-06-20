@@ -16,7 +16,7 @@
   </tr>
   <% for dr in @disktest_runs %>
     <tr>
-      <td><%= h(dr.id) %></td>
+      <td><%= link_to h(dr.id), {:action => "show", :id => dr.id} %></td>
 
       <td><%= h(dr.vendor) %></td>
       <td><%= h(dr.display_size) %></td>

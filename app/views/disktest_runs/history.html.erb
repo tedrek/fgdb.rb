@@ -1,0 +1,10 @@
+<h1>Disktest history for <%= @serial %></h1>
+<% if @disktest_runs.length > 0 %>
+  <% for d in @disktest_runs %>
+    <%= render :partial => "show", :locals => {:disktest_run => d} %>
+    Disktest run #<%= link_to d.id, {:action => "show", :id => d.id} %>
+  <% end %>
+<% else %>
+  No disktest runs found.
+<% end %>
+

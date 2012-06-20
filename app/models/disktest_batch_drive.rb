@@ -12,7 +12,7 @@ class DisktestBatchDrive < ActiveRecord::Base
   end
 
   def disktest_run
-    DisktestRun.find_by_id(self.disktest_run_id) || (self.disktest_batch.finalized? ? nil : _find_run)
+    DisktestRun.find_by_id(self.disktest_run_id) || (self.disktest_batch.finalized ? nil : _find_run)
   end
 
   def _find_run
@@ -20,7 +20,7 @@ class DisktestBatchDrive < ActiveRecord::Base
   end
 
   def wiped?
-    (!self.destroyed_at) and self.disktest_run.result == "PASSED"
+    (!self.destroyed_at) and self.disktest_run and self.disktest_run.result == "PASSED"
   end
 
   def destroyed?

@@ -10,7 +10,7 @@
   <%= error_messages_for :defaults, :header_message  => "Invalid search conditions" %>
 
   <div class="form-element" style="width: 100%;">
-    <% list = ['created_at', 'worked_at', 'bought_at', 'donated_at', 'id', 'city', 'postal_code', 'received_at', 'phone_number', 'email', 'contact_type', 'volunteer_hours', 'organization', 'logged_in_within', 'volunteered_hours_in_days'] %>
+    <% list = ['created_at', 'worked_at', 'bought_at', 'donated_at', 'id', 'city', 'postal_code', 'received_at', 'phone_number', 'email', 'contact_type', 'volunteer_hours', 'organization', 'logged_in_within', 'volunteered_hours_in_days', 'organization_name'] %>
     <% list.push('can_login', 'role') if has_required_privileges('/create_logins') %>
     <%= conditions_html("defaults", list) %>
     <div class="form-footer">

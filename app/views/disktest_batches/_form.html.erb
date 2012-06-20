@@ -7,6 +7,10 @@
     <%= calendar_box(f.object_name, :date) %>
   </p>
   <p>
+    <%= f.label :finalized %><br />
+    <%= f.check_box(:finalized) %>
+  </p>
+  <p>
     <%= f.label :contact_id %><br />
     <%= contact_field('@' + f.object_name, :contact_id, :locals => {:options => {:object_name => f.object_name, :field_name => 'contact_id'}}) %>
   </p>

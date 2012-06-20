@@ -23,6 +23,11 @@ class Contact < ActiveRecord::Base
 
   has_many :disciplinary_actions, :autosave => true
 
+  validate :validate_bday
+  def validate_bday
+    errors.add('birthday', 'is out of range (past year 2038)') if self.birthday and self.birthday.year >= 2038
+  end
+
   def self.born_on_or_before
     return nil if not Default['minimum_volunteer_age']
     Date.today.advance(:years => -1 * Default['minimum_volunteer_age'].to_i)

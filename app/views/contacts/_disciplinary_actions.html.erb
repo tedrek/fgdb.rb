@@ -12,7 +12,7 @@
     <div class="form-element">
     <% fields_for :collective_cashier do |f| %>
     <%= f.label :cashier_code, "Enter PIN for more information (collective only):" %>
-    <%= f.text_field :cashier_code, :autocomplete => :off %>
+    <%= f.password_field :cashier_code, :autocomplete => :off %>
     <%= button_to_function "Load Confidential Information", remote_function(
           :url => {:controller => "contacts", :action => "load_confidential_information", :collective_cashier => {:contact_id => @collective_cashier.contact_id}},
                           :loading => "Element.show('#{loading_indicator_id("confidential_information")}');",

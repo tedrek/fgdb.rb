@@ -18,6 +18,7 @@
   <% filters << 'created_at' %>
   <% filters << 'serial_number' %>
   <% filters << 'contact' %>
+  <% filters << 'finalized' %>
   <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>
 <% end -%>
