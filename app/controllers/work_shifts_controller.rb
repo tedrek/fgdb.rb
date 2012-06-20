@@ -12,7 +12,7 @@ class WorkShiftsController < ApplicationController
   public
   def update_rollout_date
     Default["staffsched_rollout_until"] = params[:date]
-    text_report('scheduler_reports_to', "Schedule rolled out to #{params[:date]}", "The schedule rollout date was changed to #{params[:date]} by #{Thread.current['user'].to_s} at #{Time.now.strftime("%D %T")}.")
+    Notifier.deliver_text_report('scheduler_reports_to', "Schedule rolled out to #{params[:date]}", "The schedule rollout date was changed to #{params[:date]} by #{Thread.current['user'].to_s} at #{Time.now.strftime("%D %T")}.")
     redirect_to :back
   end
 
