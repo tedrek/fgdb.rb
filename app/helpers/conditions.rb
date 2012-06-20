@@ -15,7 +15,7 @@ class Conditions < ConditionsBase
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
-      updated_by cashier_updated_by is_pickup
+      updated_by cashier_updated_by is_pickup finalized
       logged_in_within signed_off_by payment_total
     ] + DATES).uniq
 
@@ -368,6 +368,10 @@ class Conditions < ConditionsBase
 
   def assigned_conditions(klass)
     return ["#{klass.table_name}.contact_id IS NOT NULL"]
+  end
+
+  def finalized_conditions(klass)
+    return ["#{klass.table_name}.finalized_on IS NOT NULL"]
   end
 
   def join_conditions(conds_a, conds_b)
