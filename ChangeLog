@@ -17,6 +17,8 @@ fgdb.rb (1.0.95) released; urgency=low
   * Add a confirmation when changing the rollout date in skedjulnator
   * Also add a report mail to schedulers when the rollout date is changed
     (Closes: #29003)
+  * Show the generated on at the end of the schedule and problems
+    reports regardless of readonly mode
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:47:22 -0700
 
