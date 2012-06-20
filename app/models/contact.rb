@@ -28,6 +28,12 @@ class Contact < ActiveRecord::Base
     errors.add('birthday', 'is out of range (past year 2038)') if self.birthday and self.birthday.year >= 2038
   end
 
+  validate :name_provided
+  def name_provided
+    errors.add('organization', 'name must be provided for organizations') if is_organization? and (organization.nil? or organization.empty?)
+    errors.add('first_name', 'or surname must be provided for individuals') if is_person? and (first_name.nil? or first_name.empty?) and (surname.nil? or surname.empty?)
+  end
+
   def self.born_on_or_before
     return nil if not Default['minimum_volunteer_age']
     Date.today.advance(:years => -1 * Default['minimum_volunteer_age'].to_i)
