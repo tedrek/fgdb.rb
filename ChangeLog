@@ -3,8 +3,9 @@ fgdb.rb (1.0.96) UNRELEASED; urgency=low
   * Validate that contact names are provided
   * Add feature to be able to preseed new organization names in addition
     to individual names based on the name searched for (Closes: #28968)
+  * Add staff adoption type (Closes: #28962)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 20 Jun 2012 17:07:42 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 20 Jun 2012 17:19:48 -0700
 
 fgdb.rb (1.0.95) released; urgency=low
 
