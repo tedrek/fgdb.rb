@@ -580,10 +580,6 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
   },
 
   add_from_form_hook: function() {
-    if((eexists('slot_number') && $('slot_number').value == '')) {
-      return true;
-    }
-
     args = new Object();
     if(eexists('slot_number')) {
       args['slot_number'] = $('slot_number').value;
