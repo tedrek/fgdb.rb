@@ -292,6 +292,10 @@ class AssignmentsController < ApplicationController
   end
 
   def update
+    unless params[:assignment]
+      redirect_to :action => "index"
+      return
+    end
     @my_url = {:action => "update", :id => params[:id]}
     last_id = nil
     begin
