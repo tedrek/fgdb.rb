@@ -343,6 +343,20 @@ function set_contact_name() {
   }
 }
 
+function set_organization_name() {
+  value = document.getElementsByClassName('contact_search_textbox')[0].value;
+  list = value.split(' ');
+  if(list.length == 2) {
+    if($('contact_first_name').value == list[0]) {
+      $('contact_first_name').value = "";
+    }
+    if($('contact_surname').value == list[1]) {
+      $('contact_surname').value = "";
+    }
+  }
+  $('contact_organization').value = value;
+}
+
 function process_hide(){
   if($('hideable_check').checked) {
     _hide_changes("hidden", "hideable", "show", "hide");

@@ -30,6 +30,3 @@
   <%= cashiers_javascript %>
 <% end %>
 <%= javascript_tag "Form.focusFirstElement('floating_form');" %>
-<% if @options[:action] == "new" %>
-  <%= javascript_tag("$('contact_first_name').value = $('#{contact_query_id(@options)}').value;") %>
-<% end %>
