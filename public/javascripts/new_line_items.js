@@ -850,6 +850,31 @@ var DriveFrontend = Class.create(ComponentLineItem, {
   copyable: true,
   checkfor: [SerialComponent, SystemSerialComponent, StatusComponent],
 
+//  update_all: function(args) {
+//    Element.show(batch_drive_loading_id);
+//    document.getElementsByTagName('form')[0].disable();
+//    var update = new Hash();
+//    var list = $$('table tr.line');
+//    for(var i = 0; i < list.length(); i++)
+//    {
+//      if(list[i].getElementsByClassName('status')[0].getElementsByTagName('input')[0].value != 'Will be marked destroyed') {
+//        update.set(list[i].id, list[i].getElementsByClassName('serial_number')[0].getElementsByTagName('input')[0].value);
+//      }
+//    }
+//    new Ajax.Request(update_all_drives_url + '?' + update.toQueryString(), {asynchronous:true, evalScripts:true});
+//  },
+
+  add_hook: function(args) {
+    if(args['status'] == '') {
+      Element.show(batch_drive_loading_id);
+      document.getElementsByTagName('form')[0].disable();
+      new Ajax.Request(update_one_drive_url + '?serial_number=' + args['serial_number'], {asynchronous:false, evalScripts:true});
+      args['status'] = updated_status;
+      Element.hide(batch_drive_loading_id);
+    }
+    return args;
+  },
+
   extra_link_hook: function(line_id, td, args) {
     a = document.createElement("a");
     var that = this;

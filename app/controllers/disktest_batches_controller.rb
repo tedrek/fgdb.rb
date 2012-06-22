@@ -7,6 +7,27 @@ class DisktestBatchesController < ApplicationController
   end
   public
 
+#  def update_all_drives
+#    @disktest_batch = DisktestBatch.find_by_id(params[:id]) || DisktestBatch.new(:date => Date.today)
+#    @drives = params.to_a.select{|x,y| ![:action, :id, :controller].include?(x)}
+#    render :update do |page|
+#      page.hide loading_indicator_id("batch_drive_line")
+#      @drives.each do |key, serial|
+#        page << "$(#{key.to_s}).getElementsByClassName('status')[0].getElementsByTagName('input')[0].value = #{@disktest_batch.fake_status(serial).to_json};"
+#      end
+#      page << "document.getElementsByTagName('form')[0].enable();"
+#    end
+#  end
+
+  def update_a_drive
+    @disktest_batch = DisktestBatch.find_by_id(params[:id]) || DisktestBatch.new(:date => Date.today)
+    render :update do |page|
+      page.hide loading_indicator_id("batch_drive_line")
+      page << "updated_status = #{@disktest_batch.fake_status(params[:serial_number]).to_json};"
+      page << "document.getElementsByTagName('form')[0].enable();"
+    end
+  end
+
   layout :with_sidebar
 
   def search

@@ -1,4 +1,6 @@
+<% unless params[:action] == "staffsched_publish" %>
 <%= link_to "Request schedule changes", "http://todo.freegeek.org/schedule/" %>
+<% end %>
 <% if has_required_privileges('edit') %>
 <br />
 <%= link_to "Find problems in the schedule", :action => "find_problems", :start_date => @skedj.conditions.shift_date_start_date, :end_date => @skedj.conditions.shift_date_end_date %>

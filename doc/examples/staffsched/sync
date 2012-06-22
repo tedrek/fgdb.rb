@@ -3,7 +3,8 @@
 set -e
 set -x
 
-SERVER=oahu.freegeek.org
+#SERVER=oahu.freegeek.org
+SERVER=todo.freegeek.org
 
 if ! grep -q "Database maintenance is happening" web/index.html; then
     rsync -azv web/ $SERVER:web/
