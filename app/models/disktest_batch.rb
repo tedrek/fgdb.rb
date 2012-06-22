@@ -10,6 +10,7 @@ class DisktestBatch < ActiveRecord::Base
 
   def fake_status(serial)
     drive = self.disktest_batch_drives.new(:serial_number => serial)
+    drive.disktest_batch = self
     drive.disktest_run = drive._find_run
     return drive.status
   end
