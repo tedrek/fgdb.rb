@@ -43,6 +43,7 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def does_conflict?(other)
+    return false if self.week.to_s.strip.length > 0 and other.week.to_s.strip.length > 0 and self.week.downcase != other.week.downcase
     arr = [self, other]
     arr = arr.sort_by(&:start_time)
     a, b = arr
@@ -97,7 +98,7 @@ class DefaultAssignment < ActiveRecord::Base
    end
 
   def description
-    self.volunteer_default_shift.volunteer_default_event.weekday.name + " " + self.time_range_s + " " + self.slot_type_desc
+    self.volunteer_default_shift.volunteer_default_event.weekday.name + " " + self.time_range_s + self.slot_type_desc
   end
 
   def skedj_style(overlap, last)
@@ -107,7 +108,7 @@ class DefaultAssignment < ActiveRecord::Base
     if self.contact_id.nil?
       return 'available'
     end
-    if overlap and !self.volshift_stuck
+    if overlap and !self.volshift_stuck and self.week.to_s.strip.length == 0
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_default_shift.send(:read_attribute, :end_time) or self.start_time < self.volunteer_default_shift.send(:read_attribute, :start_time)
@@ -124,7 +125,7 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def time_range_s
-    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
+    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "") + (self.week.to_s.strip.length > 0 ? " (week " + self.week + ")" : "")
   end
 
   def display_name

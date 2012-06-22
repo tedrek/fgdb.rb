@@ -13,6 +13,16 @@ class VolunteerShift < ActiveRecord::Base
 
   has_many :contact_volunteer_task_type_counts, :primary_key => 'volunteer_task_type_id', :foreign_key => 'volunteer_task_type_id' #:through => :volunteer_task_type
 
+  def self.week_for_date(d)
+    long_time_ago = Date.new(1901, 12, 22)
+    difference = (d - long_time_ago).to_int
+    ((difference / 7) % 2 ) == 0 ? "A" : "B"
+  end
+
+  def week
+    VolunteerShift.week_for_date(self.date)
+  end
+
   def slot_number=(a)
     write_attribute(:slot_number, a)
     self.not_numbered = (!slot_number)

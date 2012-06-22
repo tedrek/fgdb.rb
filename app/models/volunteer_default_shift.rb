@@ -101,21 +101,39 @@ class VolunteerDefaultShift < ActiveRecord::Base
       slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
       slots = [nil] if self.not_numbered
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil? and !x.closed}.each{|x| x.destroy if slots.include?(x.slot_number)}
-      inputs = {}
+      inputs_a = {}
+      inputs_b = {}
+      full = [(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]
       slots.each{|q|
-        inputs[q] = [[(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]]
+        inputs_a[q] = []
+        inputs_b[q] = []
       }
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).each{|x|
-        inputs[x.slot_number].push([(x.start_time), (x.end_time)]) if slots.include?(x.slot_number)
+        if slots.include?(x.slot_number)
+          if x.week.to_s.strip == '' or x.week.downcase == 'a'
+            inputs_a[x.slot_number].push([(x.start_time), (x.end_time)])
+          end
+          if x.week.to_s.strip == '' or x.week.downcase == 'b'
+            inputs_b[x.slot_number].push([(x.start_time), (x.end_time)])
+          end
+        end
       }
       slots.each{|q|
-        results = self.class.range_math(*inputs[q])
-        results.each{|x|
-          a = DefaultAssignment.new
-          a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
-          a.slot_number = q unless self.not_numbered
-          a.save!
-        }
+          a = inputs_a[q]
+          b = inputs_b[q]
+          both = a + b
+          both_results = self.class.range_math(full, *both)
+          a_result = self.class.range_math(full, *(both_results + a))
+          b_result = self.class.range_math(full, *(both_results + b))
+          [['', both_results], ['A', a_result], ['B', b_result]].each{|wk, results|
+            results.each{|x|
+              a = DefaultAssignment.new
+              a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
+              a.slot_number = q unless self.not_numbered
+              a.week = wk
+              a.save!
+            }
+          }
       }
     ensure
       Thread.current['volskedj2_fillin_processing'].delete(self.id)
@@ -254,7 +272,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.roster_id = ds.roster_id
           s.class_credit = ds.class_credit
           s.save!
-          ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num))}.select{|da| !skip_these.include?(da.id)}.each{|da|
+          tweek = s.week.downcase
+          ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num)) and (q.week.to_s.strip.length == 0 or q.week.downcase == tweek)}.select{|da| !skip_these.include?(da.id)}.each{|da|
             a = Assignment.new
             a.start_time = da.start_time
             a.end_time = da.end_time
