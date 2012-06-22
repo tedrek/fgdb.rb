@@ -16,6 +16,7 @@ class DisktestBatchDrive < ActiveRecord::Base
   end
 
   def _find_run
+    # Note: if this uses finalized ever, will need to change the ajax stuff
     DisktestRun.find_all_by_serial_number(self.serial_number).select{|x| x.created_at >= self.disktest_batch.date and x.result != 'UNTESTED'}.sort_by(&:created_at).last
   end
 

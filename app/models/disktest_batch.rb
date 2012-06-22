@@ -8,6 +8,12 @@ class DisktestBatch < ActiveRecord::Base
   validates_presence_of :contact_id
   validates_existence_of :contact
 
+  def fake_status(serial)
+    drive = self.disktest_batch_drives.new(:serial_number => serial)
+    drive.disktest_run = drive._find_run
+    return drive.status
+  end
+
   def count_number(sym)
     self.disktest_batch_drives.select{|x| x.send(sym)}.length
   end

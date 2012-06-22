@@ -3,7 +3,7 @@
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label :date %><br />
+    <%= f.label :date, "Date batch received" %><br />
     <%= calendar_box(f.object_name, :date) %>
   </p>
   <p>
@@ -21,11 +21,14 @@
   <% interface[:system_serial_number] = text_field_tag('system_serial_number', "", kdh) %>
   <% interface[:status] = hidden_field_tag('status', '', :style => 'display: none;') %>
 
-  <%= line_item("drives", 'DriveFrontend', interface, @disktest_batch.disktest_batch_drives.map{|i| hash = {:serial_number => i.serial_number, :system_serial_number => i.system_serial_number, :status => i.status}; hash[:id] = i.id if  i.id; hash }) %>
+  <%= line_item("drives", 'DriveFrontend', interface, @disktest_batch.disktest_batch_drives.map{|i| hash = {:serial_number => i.serial_number, :system_serial_number => i.system_serial_number, :status => i.status}; hash[:id] = i.id if  i.id; hash }) %><%= loading_indicator_tag("batch_drive_line") %>
 
+  <%= javascript_tag "batch_drive_loading_id = #{loading_indicator_id("batch_drive_line").to_json}; update_one_drive_url = #{url_for(:action => "update_a_drive", :id => params[:id]).to_json}; update_all_drives_url = #{url_for(:action => "update_all_drives", :id => params[:id]).to_json};" %>
+<%
   <div id="toggle_serial_off">
     <a href="#" onclick="$('system_serial_number').disable(); $('toggle_serial_off').hide(); $('toggle_serial_on').show();">Disable system serials</a>
   </div>
   <div id="toggle_serial_on" style="display: none">
     <a href="#" onclick="$('system_serial_number').enable(); $('toggle_serial_on').hide(); $('toggle_serial_off').show();">Enable system serials</a>
   </div>
+
