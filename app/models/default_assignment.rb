@@ -9,6 +9,19 @@ class DefaultAssignment < ActiveRecord::Base
   delegate :set_description, :set_description=, :to => :volunteer_shift
   validates_existence_of :contact, :allow_nil => true
 
+  def next_cycle_date
+    if self.week.to_s.strip.length == 0
+      return ""
+    end
+    d = Date.today
+    d += 1 while d.wday != self.set_weekday_id
+    return ((VolunteerShift.week_for_date(d).upcase == self.week.upcase) ? d : (d + 7)).to_s
+  end
+
+  def next_cycle_date=(d)
+    self.week = d.to_s.strip.length == 0 ? "" : VolunteerShift.week_for_date(Date.parse(d)).upcase
+  end
+
   def set_values_if_stuck
     return unless volshift_stuck
     volunteer_default_shift.set_values_if_stuck

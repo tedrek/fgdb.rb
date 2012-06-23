@@ -6,8 +6,9 @@ fgdb.rb (1.0.96) UNRELEASED; urgency=low
   * Add staff adoption type (Closes: #28962)
   * Allow empty slot numbers to be entered to make the shift
     not_numbered (Closes: #28922)
+  * Add support for default assignments which only repeat bi-weekly
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 20 Jun 2012 17:33:03 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 17:17:08 -0700
 
 fgdb.rb (1.0.95) released; urgency=low
 
