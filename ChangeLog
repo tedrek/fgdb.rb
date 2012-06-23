@@ -1,8 +1,9 @@
 fgdb.rb (1.0.97) UNRELEASED; urgency=low
 
   * Implement a sandbox volunteer schedule (Closes: #28524)
+  * Extract some systems data from spec_sheets
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jun 2012 12:56:12 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Jun 2012 14:46:01 -0700
 
 fgdb.rb (1.0.96) released; urgency=low
 
