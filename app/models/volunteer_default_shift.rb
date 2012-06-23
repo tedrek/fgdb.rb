@@ -282,6 +282,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
             a.closed = da.closed
             a.save!
           }
+          if s.assignments.length == 0
+            s.destroy
+          end
           myl << slot_number
         }
       }
