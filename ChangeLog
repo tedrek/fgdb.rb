@@ -11,8 +11,10 @@ fgdb.rb (1.0.96) UNRELEASED; urgency=low
     includes register money as well as invoices and online income, excluding
     only coupons and store credit, which is also now used by 3 of the income
     trend reports.
+  * Add extra hour to end of skedjuls to allow later events to be
+    scheduled
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 19:00:10 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 19:03:40 -0700
 
 fgdb.rb (1.0.95) released; urgency=low
 
