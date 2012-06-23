@@ -12,6 +12,12 @@ class Meeting < Shift
     {:conditions => ["(((effective_date <= ? OR effective_date IS NULL) AND (ineffective_date > ? OR ineffective_date IS NULL)) OR (effective_date > ? AND ineffective_date <= ?) OR ((ineffective_date is NULL or ineffective_date > ?) AND (effective_date IS NULL or effective_date <= ?)))", start, start, start, fin, fin, fin]}
   }
 
+  def last_meeting(today = nil)
+    today ||= Date.today
+    w = WorkShift.find(:first, :conditions => ['shift_id = ? AND shift_date < ?', self.id, today], :order => 'shift_date DESC')
+    w ? w.shift_date : nil
+  end
+
   def name
     ret = meeting_name
     if self.job_id
