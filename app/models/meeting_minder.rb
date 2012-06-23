@@ -4,6 +4,7 @@ class MeetingMinder < ActiveRecord::Base
   validates_presence_of :subject
   validates_presence_of :days_before
   validates_presence_of :recipient
+  validates_presence_of :hour
   validates_format_of :script, :with => /^[a-z-]*$/, :message => "can only contain letters and dashes"
   validates_format_of :recipient, :with => /^.+@[^.]+\..+$/, :message => "must be a valid email address"
 
@@ -13,7 +14,7 @@ class MeetingMinder < ActiveRecord::Base
 
   def minder_variables(today)
     # are the scheduled meeting attendees important? could loop the work_shifts for the meeting_date
-    {:meeting_name => meeting.meeting_name, :meeting_date => (today + days_before).strftime("%a, %B %d %Y"), :days_before => days_before, :todays_date => today.strftime("%a, %B %e %Y")}
+    {:meeting_name => meeting.meeting_name, :meeting_date => (today + days_before).strftime("%a, %B %d %Y"), :days_before => days_before, :todays_date => today.strftime("%a, %B %e %Y"), :last_meeting_date => meeting.last_meeting(today)}
   end
 
   def validate
@@ -23,19 +24,20 @@ class MeetingMinder < ActiveRecord::Base
     errors.add('script', 'does not exist in the ASS meetings directory') if script.length > 0 and !File.exists?(self.script_filename)
   end
 
-  def self.minders_for_day(today)
-    Meeting.effective_in_range(today, today + 60).collect{|x| x.meeting_minders}.flatten.select{|x| x.deliver_today?(today)}
+  def self.minders_for_day(today, time)
+    Meeting.effective_in_range(today, today + 60).collect{|x| x.meeting_minders}.flatten.select{|x| x.hour == time}.select{|x| x.deliver_today?(today)}
   end
 
-  def self.deliveries_for_day(today)
-    MeetingMinder.minders_for_day(today).map{|x|
+  def self.deliveries_for_day(today, time)
+    MeetingMinder.minders_for_day(today, time).map{|x|
       x.delivery(today)
     }
   end
 
-  def self.send_all(today = nil)
+  def self.send_all(time = nil, today = nil)
     today ||= Date.today
-    MeetingMinder.deliveries_for_day(today).each{|x|
+    time ||= Time.now.hour
+    MeetingMinder.deliveries_for_day(today, time).each{|x|
       Notifier.deliver_text_minder(*x)
     }
   end

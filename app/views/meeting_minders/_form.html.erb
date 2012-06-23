@@ -6,6 +6,10 @@
     <%= f.text_field :days_before %>
   </p>
   <p>
+    <%= f.label :hour, "Hour to send at" %><br />
+    <%= f.text_field :hour %>
+  </p>
+  <p>
     <%= f.label :recipient %><br />
     <%= f.text_field :recipient %>
   </p>
@@ -30,6 +34,10 @@
     <tr>
       <td>%TODAYS_DATE%</td>
       <td>The current date which the minder is being sent on</td>
+    </tr>
+    <tr>
+      <td>%LAST_MEETING_DATE%</td>
+      <td>Date of the last meeting</td>
     </tr>
   </table>
   <p>
