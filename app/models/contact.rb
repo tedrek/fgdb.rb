@@ -83,6 +83,10 @@ class Contact < ActiveRecord::Base
     Default["country"] != self.country
   end
 
+  def to_s
+    display_name
+  end
+
   def condition_to_s
     display_name
   end
