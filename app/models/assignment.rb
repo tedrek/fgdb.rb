@@ -123,7 +123,12 @@ class Assignment < ActiveRecord::Base
     self.contact_id ? self.contact.display_phone_numbers : ""
   end
 
+  def sandbox?
+    self.volunteer_shift.roster.name.downcase == 'sandbox'
+  end
+
   def does_conflict?(other)
+    return false if self.sandbox? or other.sandbox?
     arr = [self, other]
     arr = arr.sort_by(&:start_time)
     a, b = arr
