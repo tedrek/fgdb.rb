@@ -377,6 +377,7 @@ class ReportsController < ApplicationController
   def income_report_init
     @columns = PaymentMethod.till_methods.map(&:description) + ['till total'] +
       PaymentMethod.register_non_till_methods.map(&:description) + ['register total'] +
+      PaymentMethod.real_non_register_methods.map(&:description) + ['real total'] +
       PaymentMethod.non_register_methods.select{|x| x != PaymentMethod.written_off_invoice}.map(&:description) + ['total']
     @width = @columns.length
     @rows = {}
@@ -439,6 +440,16 @@ class ReportsController < ApplicationController
       update_totals(grand_totals['register total']['total'], amount_cents, count)
     end
 
+    if PaymentMethod.is_real_method?(payment_method_id)
+      total_real = income_data[:donations]['real total']
+
+      update_totals(total_real['fees'], required_cents, count)
+      update_totals(total_real['suggested'], suggested_cents, count)
+      update_totals(total_real['other'], gizmoless_cents, count)
+      update_totals(total_real['subtotals'], amount_cents, count)
+      update_totals(grand_totals['real total']['total'], amount_cents, count)
+    end
+
     if PaymentMethod.is_till_method?(payment_method_id)
       till_total = income_data[:donations]['till total']
 
@@ -481,6 +492,12 @@ class ReportsController < ApplicationController
     sale_type = (is_bulk_buyer == 't') ? 'bulk' : 'retail'
     update_totals(column[sale_type], amount_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
+    if PaymentMethod.is_real_method?(payment_method_id)
+      total_real = income_data[:sales]['real total']
+      update_totals(total_real[sale_type], amount_cents, count)
+      update_totals(total_real['subtotals'], amount_cents, count)
+      update_totals(grand_totals['real total']['total'], amount_cents, count)
+    end
     if PaymentMethod.is_money_method?(payment_method_id)
       total_real = income_data[:sales]['register total']
       update_totals(total_real[sale_type], amount_cents, count)

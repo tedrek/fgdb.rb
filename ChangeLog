@@ -7,8 +7,12 @@ fgdb.rb (1.0.96) UNRELEASED; urgency=low
   * Allow empty slot numbers to be entered to make the shift
     not_numbered (Closes: #28922)
   * Add support for default assignments which only repeat bi-weekly
+  * Implement a new column on the income reports for 'real total' that
+    includes register money as well as invoices and online income, excluding
+    only coupons and store credit, which is also now used by 3 of the income
+    trend reports.
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 17:17:08 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 19:00:10 -0700
 
 fgdb.rb (1.0.95) released; urgency=low
 

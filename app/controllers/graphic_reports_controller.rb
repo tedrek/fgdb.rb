@@ -677,7 +677,7 @@ class AverageFrontdeskIncomesTrend < TrendReport
 
     def get_for_timerange(args)
       thing = call_income_report(args)
-      thing = thing[:donations]["register total"] # WHY IS THERE A SPACE!?!?!
+      thing = thing[:donations]["real total"] # WHY IS THERE A SPACE!?!?!
       suggested = thing["suggested"][:total] / 100.0
       fees = thing["fees"][:total] / 100.0
       number = find_all_donations(args)
@@ -716,9 +716,11 @@ class AverageSaleIncomesTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      res = DB.execute("SELECT SUM( reported_amount_due_cents )/(100.0*COUNT(*)) AS amount
-  FROM sales WHERE " + sql_for_report(Sale, created_at_conditions_for_report(args)))
-      return {:total => res.first["amount"]}
+      thing = call_income_report(args)
+      thing = thing[:sales]["real total"] # WHY IS THERE A SPACE!?!?!
+      total = thing["subtotals"][:total] / 100.0
+      total = sprintf("%.2f", total).to_f
+      return {:total => total}
   end
 end
 class IncomesTrend < TrendReport
@@ -731,7 +733,7 @@ class IncomesTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      thing = call_income_report(args)[:grand_totals]["total"]["total"][:total] / 100.0
+      thing = call_income_report(args)[:grand_totals]["real total"]["total"][:total] / 100.0
       {:income => thing}
     end
     def title

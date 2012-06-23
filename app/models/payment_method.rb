@@ -43,6 +43,10 @@ class PaymentMethod < ActiveRecord::Base
     return (till_methods + register_non_till_methods).map(&:id).include?(id)
   end
 
+  def PaymentMethod.is_real_method?(id)
+    return (till_methods + register_non_till_methods + real_non_register_methods).map(&:id).include?(id)
+  end
+
   def PaymentMethod.is_fake_method?(id)
     return fake_money_methods.map(&:id).include?(id)
   end
@@ -57,8 +61,12 @@ class PaymentMethod < ActiveRecord::Base
     return [credit]
   end
 
+  def PaymentMethod.real_non_register_methods()
+    return [invoice, online]
+  end
+
   def PaymentMethod.non_register_methods()
-    return [written_off_invoice, invoice, online, coupon, store_credit]
+    return [written_off_invoice, coupon, store_credit]
   end
 
   def PaymentMethod.descriptions
