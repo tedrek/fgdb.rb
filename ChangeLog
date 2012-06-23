@@ -1,4 +1,4 @@
-fgdb.rb (1.0.96) UNRELEASED; urgency=low
+fgdb.rb (1.0.96) released; urgency=low
 
   * Validate that contact names are provided
   * Add feature to be able to preseed new organization names in addition
@@ -14,7 +14,7 @@ fgdb.rb (1.0.96) UNRELEASED; urgency=low
   * Add extra hour to end of skedjuls to allow later events to be
     scheduled
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 19:03:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 19:40:12 -0700
 
 fgdb.rb (1.0.95) released; urgency=low
 
