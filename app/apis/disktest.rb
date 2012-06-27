@@ -15,6 +15,7 @@ class DisktestAPI < SOAP::SoapsBase
     ["ping"],
     # Lists
     ["add_disktest_started", "id", "started_at"],
+    ["update_serial", "id", "serial"],
     ["add_disktest_completed_log", "id", "result", "completed_at", "details", "log"],
     ["new_disktest_run", "vendor", "model", "serial_number", "size", "bus_type"],
     ["check_disktest_running", "vendor", "model", "serial_number"],
@@ -40,6 +41,13 @@ class DisktestAPI < SOAP::SoapsBase
   #########
 
   public
+  def update_serial(id, serial)
+    dr = DisktestRun.find(id.to_i)
+    dr.serial_number = serial
+    dr.save!
+    return
+  end
+
   def check_disktest_running(vendor, model, serial_number)
     return DisktestRun.is_running?(vendor, model, serial_number)
   end
