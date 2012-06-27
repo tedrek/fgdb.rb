@@ -32,7 +32,7 @@ class Sale < ActiveRecord::Base
         }.join("\n\n\n")
   end
 
-  # Quick Testing: ./script/runner 'class F; include RawReceiptHelper; def session; {}; end; end; puts F.new.generate_raw_receipt(Sale.last.text_receipt_lines)'
+  # Quick Testing: ./script/runner 'class F; include RawReceiptHelper; def session; {}; end; end; puts F.new.generate_raw_receipt{|lim| Sale.last.text_receipt_lines(lim)}'
   def text_receipt_lines(fulllimit)
     store_credit_gizmo_events = self.gizmo_events_actual.select{|x| x.gizmo_type.name == "store_credit"}
     other_gizmo_events = self.gizmo_events_actual - store_credit_gizmo_events
@@ -104,8 +104,8 @@ thanks = [
 "  |_/|   |_/\\_/|_/  |  |_/| \\_/ \\/   ooo",
 ""].map{|t| ['standard', t]}
     end
-    thanks << ['left', "Follow us on Twitter:"]
-    thanks << ['right', "twitter.com/freegeekpdx"]
+    thanks << ['left', "Follow us on Twitter for New Items, Sales and Coupons:"]
+    thanks << ['right', "twitter.com/fgthriftstore"]
     thanks << ['left', "Like us on FaceBook:"]
     thanks << ['right', "facebook.com/freegeekmothership"]
     final = head_lines + gizmo_lines + payment_lines + footer_lines + thanks

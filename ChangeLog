@@ -22,6 +22,7 @@ fgdb.rb (1.0.96) released; urgency=low
     scheduled
   * Implement %LAST_MEETING_DATE% and hour to send at for meeting
     minders
+  * Update receipt to point to TS twitter
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 19:40:12 -0700
 
