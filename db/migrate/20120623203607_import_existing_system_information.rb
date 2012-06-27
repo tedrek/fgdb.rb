@@ -8,7 +8,7 @@ class ImportExistingSystemInformation < ActiveRecord::Migration
     sheets.each do |sheet|
       count += 1
       if (count % inc) == 0
-        puts "#{count / sheets.length}% complete"
+        puts "#{100 * count / sheets.length}% complete"
       end
       sheet.set_extra_system_information(sheet.parser)
       sheet.save
