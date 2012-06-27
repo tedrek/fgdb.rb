@@ -205,6 +205,9 @@ function edit_payment(id) {
   if($('store_credit_id')) {
     $('store_credit_id').value = getValueBySelector(thing, ".store_credit_id");
   }
+  if($('coupon_details')) {
+    $('coupon_details').value = getValueBySelector(thing, ".coupon_details");
+  }
   $('payment_method_id').focus();
 }
 
@@ -314,17 +317,26 @@ function add_payment_from_form() {
   if($('payment_method_id').selectedIndex == 0 || $('payment_amount').value == '') {
     return true;
   }
+  if($('coupon_details') && (!$('coupon_details').disabled) && $('coupon_details').value == '') {
+    return true;
+  }
   var args = new Object();
   args['payment_method_id'] = $('payment_method_id').value;
   args['payment_amount'] = $('payment_amount').value;
   if($('store_credit_id')) {
     args['store_credit_id'] = $('store_credit_id').value;
   }
+  if($('coupon_details')) {
+    args['coupon_details'] = $('coupon_details').value;
+  }
   add_payment(args);
   $('payment_method_id').selectedIndex = 0; //should be default, but it's yucky
   $('payment_amount').value = $('payment_amount').defaultValue;
   if($('store_credit_id')) {
     $('store_credit_id').value = $('store_credit_id').defaultValue;
+  }
+  if($('coupon_details')) {
+    $('coupon_details').value = $('coupon_details').defaultValue;
   }
   $('payment_method_id').focus();
   return false;
@@ -452,6 +464,10 @@ function payment_stuff(args, tr){
   if($('store_credit_id')) {
     var storecredit_id = args['store_credit_id'];
     tr.appendChild(make_hidden(args['prefix'], "store_credit_id", storecredit_id, storecredit_id, line_id));
+  }
+  if($('coupon_details')) {
+    var coupon_details = args['coupon_details'];
+    tr.appendChild(make_hidden(args['prefix'], "coupon_details", coupon_details, coupon_details, line_id));
   }
 }
 
@@ -872,7 +888,7 @@ function last_and_tab(event) {
 }
 
 function last_and_tab_p(event) {
-  linelist = ['payment_amount', 'store_credit_id'];
+  linelist = ['payment_amount', 'store_credit_id', 'coupon_details'];
   return is_tab(event) && is_last_enabled_visable_there_field_thing_in_line_item(event.target.id, linelist);
 }
 
@@ -1073,6 +1089,14 @@ function sale_payment_method_selected(){
     if((typeof(old_selected_payment_method) == "undefined") || old_selected_payment_method == "store credit") {
       $('payment_amount').value = "";
       $('store_credit_id').value = "";
+    }
+  }
+  if(get_name_of_selected('payment_method_id') == "coupon") {
+    $('coupon_details').enable();
+  } else {
+    $('coupon_details').disable();
+    if((typeof(old_selected_payment_method) == "undefined") || old_selected_payment_method == "coupon") {
+      $('coupon_details').value = "";
     }
   }
   old_selected_payment_method = get_name_of_selected('payment_method_id');
