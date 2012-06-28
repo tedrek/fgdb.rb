@@ -537,6 +537,28 @@ var InputBasedComponent = Class.create(LineItemComponent, {
     args[this.linelist[0]] = $(this.linelist[0]).value;
   },
 });
+var CheckBoxBasedComponent = Class.create(InputBasedComponent, {
+  add_from_form_reject: function() {
+    return false;
+  },
+
+  edit_hook: function(thing){
+    $(this.linelist[0]).checked = this.getValueBySelector(thing, "." + this.linelist[0]) == "true";
+  },
+
+  clear_widget: function() {
+    $(this.linelist[0]).checked = $(this.linelist[0]).defaultChecked;
+  },
+
+  make_hidden_hook: function(args, tr) {
+    var value = args[this.linelist[0]];
+    tr.appendChild(this.make_hidden(this.linelist[0], value, value));
+  },
+
+  set_args_from_form: function(args) {
+    args[this.linelist[0]] = $(this.linelist[0]).checked ? "true" : "false";
+  },
+});
 
 var HiddenBasedComponent = Class.create(InputBasedComponent, {
   add_from_form_reject: function() {
@@ -763,6 +785,10 @@ var JobComponent = Class.create(SelectBasedComponent, {
   linelist: ['job_id'],
 });
 
+var OffsiteComponent = Class.create(CheckBoxBasedComponent, {
+  linelist: ['offsite'],
+});
+
 function get_hours_today () {
   var total = 0.0;
   var arr = find_these_lines('shifts');
@@ -788,7 +814,7 @@ function shift_compute_totals () {
 var WorkedShiftFrontend = Class.create(ComponentLineItem, {
   prefix: 'shifts',
   copyable: true,
-  checkfor: [JobComponent, DurationComponent],
+  checkfor: [JobComponent, OffsiteComponent, DurationComponent],
 
   add_on_save: true,
 
@@ -812,11 +838,13 @@ var WorkedShiftFrontend = Class.create(ComponentLineItem, {
       that.edit_hook(line_id);
       that.editing_id = that.getValueBySelector($(line_id), ".id");
       Element.remove(line_id);
+      var checked = $('offsite').checked;
       $('duration').value = parseFloat($('duration').value) - 0.25;
       that.add_from_form_hook();
 
       $('duration').value = 0.25;
       $('job_id').value = paid_break_job_id;
+      $('offsite').checked = checked;
       that.add_from_form_hook();
       that._update_hook_internal_enabled = true;
       that.do_update_hook();

@@ -76,13 +76,14 @@ Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_secon
 
 <% interface = OH.new %>
 <% interface[:job] = '<select id="job_id">' + options_from_collection_for_select([Job.new(:name => ""),  Job.workable.effective_on(@date).sort_by(&:name)].flatten, "id", "name") + '</select>' %>
+<% interface[:offsite] = '<input type="checkbox" name="offsite" id="offsite" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
 <% interface[:duration] = '<input name="duration" id="duration" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
 
 <% @messages.each do |msg| %>
   <b><%= msg %></b><br />
 <% end %>
 
-     <%= line_item("shifts", 'WorkedShiftFrontend', interface, @shifts.map{|i| hash = {:job_id => i.job_id, :duration => i.duration.to_f}; hash[:id] = i.id if  i.id; hash }) %>
+     <%= line_item("shifts", 'WorkedShiftFrontend', interface, @shifts.map{|i| hash = {:job_id => i.job_id, :duration => i.duration.to_f, :offsite => i.offsite.to_s}; hash[:id] = i.id if  i.id; hash }) %>
 
      <%= javascript_tag "shift_do_ajax = 1;" %>
 

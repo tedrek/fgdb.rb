@@ -1,6 +1,9 @@
 <%= error_messages_for 'job' %>
 
 <!--[form:job]-->
+<p><%= check_box "work_shift", "offsite" %>
+<label for="work_shift_training">Offsite (by default)</label></p>
+
 <p><label for="job_name">Name</label><br/>
 <%= text_field 'job', 'name'  %></p>
 

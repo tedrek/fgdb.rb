@@ -27,6 +27,9 @@
 <p><label for="shift_job_id">Job</label><br/>
 <%= select("shift", "job_id", Job.workable.effective_on(@shift.shift_date || Date.today).collect {|c| [c.name, c.id] }).sort_by(&:first) %></p>
 
+<p><%= check_box "shift", "Offsite" %>
+<label for="shift_training">Offsite</label></p>
+
 <% end %>
 
 <p><label for="shift_worker_id">Worker</label><br/>
