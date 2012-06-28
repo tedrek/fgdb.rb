@@ -13,7 +13,7 @@ class StandardShift < Shift
 #  end
 
   def name
-    ret = self.job.name + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
+    ret = self.job.name  + (offsite ? ' (Offsite)' : '') + (training ? ' (Training)' : '') + ' ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )
   end
 

@@ -47,10 +47,11 @@
       javascript_tag js %>
 <% end -%>
 
-<% if ["worked_shifts"].include?(params[:controller]) %>
-  <%= js = "var all_jobs = new Array;"
+<% if ["worked_shifts", "shifts", "work_shifts"].include?(params[:controller]) %>
+  <%= js = "var all_jobs = new Array; var offsite_jobs = new Array;"
       for job in Job.find(:all).sort_by(&:name)
         js += "all_jobs[#{job.id}] = '#{job.name}';"
+        js += "offsite_jobs[#{job.id}] = '#{job.offsite.to_s}';"
       end
       javascript_tag js %>
 <% end %>

@@ -23,7 +23,7 @@
 <% unless @work_shift.kind == 'Unavailability' %>
 
 <p><label for="work_shift_job_id">Job</label><br/>
-<%= select("work_shift", "job_id", [["(No Job)", nil]] + Job.workable.effective_on(@work_shift.shift_date || Date.today).collect {|c| [c.name, c.id] }.sort_by(&:first)) %></p>
+<%= select("work_shift", "job_id", [["(No Job)", nil]] + Job.workable.effective_on(@work_shift.shift_date || Date.today).collect {|c| [c.name, c.id] }.sort_by(&:first), :onchange => "set_offsite_from_job('offsite', 'job_id');") %></p>
 
 <p><%= check_box "work_shift", "offsite" %>
 <label for="work_shift_training">Offsite</label></p>

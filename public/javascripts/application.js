@@ -1,6 +1,14 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function set_offsite_from_job_default() {
+  set_offsite_from_job("offsite", "job_id");
+}
+
+function set_offsite_from_job(offsite, job) {
+  $(offsite).checked = offsite_jobs[$(job).value] == "true";
+}
+
 function display_disciplinary_notes() {
   if($('contact__has_areas_disciplined_from') && $('contact__has_areas_disciplined_from').innerHTML == "true") {
     var str = "This volunteer may not work in the following areas:\n";

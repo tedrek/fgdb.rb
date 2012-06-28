@@ -94,11 +94,11 @@ class WorkShift < ActiveRecord::Base
   end
 
   def name
-    self.job.name + (training ? ' (Training)' : '') + ' ' + time_range_s
+    self.job.name + (offsite ? ' (Offsite)' : '') + (training ? ' (Training)' : '') + ' ' + time_range_s
   end
 
   def to_worked_shift
-    ws = WorkedShift.new({:worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
+    ws = WorkedShift.new({:offsite => self.offsite, :worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
     msgs = []
     if self.kind == "Meeting"
       if self.job
@@ -149,6 +149,7 @@ class WorkShift < ActiveRecord::Base
     ret.end_time = shift.end_time
     ret.worker_id = shift.worker_id
     ret.training = shift.training
+    ret.offsite = shift.offsite
     #ret.coverage_type_id = shift.coverage_type_id
     ret.job_id = shift.job_id
     ret.schedule_id = shift.schedule_id
