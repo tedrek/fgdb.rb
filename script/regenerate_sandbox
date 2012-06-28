@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+r = Roster.find_by_name('Sandbox')
+if r
+  c = Conditions.new
+  c.apply_conditions({})
+  c.roster_enabled = true
+  c.roster_id = r.id
+  VolunteerDefaultShift.generate(Date.today, Date.today + 30, c)
+else
+  puts "WARNING: Could not find sandbox"
+end

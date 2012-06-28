@@ -18,9 +18,9 @@
 0 7 * * 3,4,5,6,7 root /var/www/fgdb.rb/script/cashier_report.sql --email "Cashiers Report" beancounters_mailing_list
 
 0 0 * * * root /var/www/fgdb.rb/script/import-newsletter-subscribers
+0 0 * * * root /var/www/fgdb.rb/script/break_check.rb
+0 0 * * * root /var/www/fgdb.rb/script/regenerate_sandbox
 
 MAILTO=ryan52
 0 0 * * * root diff /etc/cron.d/fgdbcrond /var/www/fgdb.rb/doc/examples/fgdbcrond
 0 0 * * * root /var/www/fgdb.rb/script/recent_crash_report.rb
-0 0 * * * root /var/www/fgdb.rb/script/break_check.rb
-
