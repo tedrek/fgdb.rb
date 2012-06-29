@@ -7,6 +7,11 @@ class Shift < ActiveRecord::Base
   belongs_to :coverage_type
   belongs_to :schedule
 
+  before_save :set_standard_shift_if_none
+  def set_standard_shift_if_none
+    self.type ||= 'StandardShift' if self.class == Shift
+  end
+
   def Shift.and_sql_conds(conds)
     conds + (conds.empty? ? "" : " AND ")
   end

@@ -5,7 +5,7 @@ class AddOffsiteBoolToStaffSchedulingAndHours < ActiveRecord::Migration
     add_column :shifts, :offsite, :boolean, :null => false, :default => false
     add_column :worked_shifts, :offsite, :boolean
 
-    Job.each do |x|
+    Job.all.each do |x|
       if x.name.match(/off-?site/i)
         x.offsite = true
         x.save
@@ -14,5 +14,9 @@ class AddOffsiteBoolToStaffSchedulingAndHours < ActiveRecord::Migration
   end
 
   def self.down
+    remove_column :jobs, :offsite
+    remove_column :work_shifts, :offsite
+    remove_column :shifts, :offsite
+    remove_column :worked_shifts, :offsite
   end
 end
