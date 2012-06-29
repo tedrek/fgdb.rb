@@ -16,6 +16,7 @@
 
     <%= dhtml_calendar_includes %>
 
+    <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:gizmo_context => @gizmo_context} %>
 </head>
 <body onScroll="handle_scroll();" onLoad="handle_scroll();">
 <div class="header">
