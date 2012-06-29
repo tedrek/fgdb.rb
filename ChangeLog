@@ -5,8 +5,10 @@ fgdb.rb (1.0.97) UNRELEASED; urgency=low
   * Add tracking of coupon details
   * Add update_serial API for disktest users changing the serial number
   * Add an offsite boolean to staff hours tracking and scheduling
+  * Add volunteer appreciation disbursement and gizmo types (Closes:
+    #29178)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 27 Jun 2012 17:14:26 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 29 Jun 2012 16:45:15 -0700
 
 fgdb.rb (1.0.96) released; urgency=low
 
