@@ -11,6 +11,11 @@ class WorkShift < ActiveRecord::Base
 
   before_save :set_weekday_id
 
+  before_save :set_standard_shift_if_none
+  def set_standard_shift_if_none
+    self.kind ||= 'StandardShift'
+  end
+
   def shift_date_display
     self.shift_date.strftime('%A, %B %d, %Y').gsub( ' 0', ' ' )
   end
