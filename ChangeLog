@@ -1,4 +1,4 @@
-fgdb.rb (1.0.97) UNRELEASED; urgency=low
+fgdb.rb (1.0.97) released; urgency=low
 
   * Implement a sandbox volunteer schedule (Closes: #28524)
   * Add tracking of coupon details
@@ -9,7 +9,7 @@ fgdb.rb (1.0.97) UNRELEASED; urgency=low
   * Implement OR logic in conditions for staff scheduling, tho it could
     still be expanded for more complex situations (Closes: #28233)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 29 Jun 2012 20:45:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 29 Jun 2012 20:52:11 -0700
 
 fgdb.rb (1.0.96) released; urgency=low
 
