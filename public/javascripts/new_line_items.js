@@ -552,7 +552,7 @@ var CheckBoxBasedComponent = Class.create(InputBasedComponent, {
 
   make_hidden_hook: function(args, tr) {
     var value = args[this.linelist[0]];
-    tr.appendChild(this.make_hidden(this.linelist[0], value, value));
+    tr.appendChild(this.make_hidden(this.linelist[0], value == "true" ? "yes" : "no", value));
   },
 
   set_args_from_form: function(args) {
