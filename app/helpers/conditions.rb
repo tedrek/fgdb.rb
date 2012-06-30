@@ -1,8 +1,10 @@
 class Conditions < ConditionsBase
+  attr_accessor :data_type # hax
+
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
-      shift_date date updated_at
+      shift_date date updated_at last_build
   ]
 
   CONDS = (%w[
@@ -636,6 +638,10 @@ class Conditions < ConditionsBase
 
   def updated_at_conditions(klass)
     date_range(klass, 'updated_at', 'updated_at')
+  end
+
+  def last_build_conditions(klass)
+    date_range(klass, 'last_build', 'last_build')
   end
 
   def date_performed_conditions(klass)
