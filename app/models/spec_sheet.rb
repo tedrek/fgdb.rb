@@ -180,7 +180,7 @@ class SpecSheet < ActiveRecord::Base
   end
 
   def set_extra_system_information(parsed)
-    if most_recent_not_tech_support?
+    if most_recent_not_tech_support? and self.system
       self.system.last_build = self.created_at.nil? ? Date.today : self.created_at.to_date
       l = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :north_bridge]
       if parsed.klass != SystemHelper::PlistSystemParser
