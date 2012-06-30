@@ -124,7 +124,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def sandbox?
-    self.volunteer_shift.roster.name.downcase == 'sandbox'
+    self.volunteer_shift and self.volunteer_shift.roster and self.volunteer_shift.roster.name.downcase == 'sandbox'
   end
 
   def does_conflict?(other)
