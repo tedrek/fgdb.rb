@@ -375,16 +375,6 @@ class Conditions < ConditionsBase
     return ["#{klass.table_name}.finalized_on IS NOT NULL"]
   end
 
-  def join_conditions(conds_a, conds_b)
-    raise ArgumentError.new("'#{conds_a}' is empty") if conds_a.empty?
-    raise ArgumentError.new("'#{conds_b}' is empty") if conds_b.empty?
-    return [
-            conds_a[0].to_s +
-            (conds_a[0].empty? ? '' : ' AND ') +
-            conds_b[0].to_s
-           ] + conds_a[1..-1] + conds_b[1..-1]
-  end
-
   def can_login_conditions(klass)
     ["#{klass.table_name}.id IN (SELECT contact_id FROM users WHERE can_login = 't')"]
   end

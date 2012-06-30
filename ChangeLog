@@ -6,8 +6,10 @@ fgdb.rb (1.0.97) UNRELEASED; urgency=low
   * Add an offsite boolean to staff hours tracking and scheduling
   * Add volunteer appreciation disbursement and gizmo types (Closes:
     #29178)
+  * Implement OR logic in conditions for staff scheduling, tho it could
+    still be expanded for more complex situations (Closes: #28233)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 29 Jun 2012 16:45:15 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 29 Jun 2012 20:45:40 -0700
 
 fgdb.rb (1.0.96) released; urgency=low
 

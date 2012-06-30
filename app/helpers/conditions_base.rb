@@ -1,4 +1,7 @@
 class ConditionsBase
+  attr_accessor :mode
+  attr_accessor :forced_list
+
   DATES = []
   CONDS = []
 
@@ -6,10 +9,12 @@ class ConditionsBase
     @condition_applied = true
     return options unless options
     options.each do |name,val|
-      if val.class != Array
-        val = val.to_i if( val.to_i.to_s == val )
-      else
+      if val.class == Array
         val = val.map{|x| x.to_i.to_s == x ? x.to_i : x}
+      elsif val.is_a?(Hash)
+        nil # no op
+      else
+        val = val.to_i if( val.to_i.to_s == val )
       end
       self.send(name+"=", val)
     end
@@ -73,20 +78,43 @@ class ConditionsBase
     @errors
   end
 
+  def join_conditions(conds_a, conds_b, mode = "AND")
+    raise ArgumentError.new("'#{conds_a}' is empty") if conds_a.empty?
+    raise ArgumentError.new("'#{conds_b}' is empty") if conds_b.empty?
+    return [
+            (conds_a[0].empty? ? '' : '(') +
+            conds_a[0].to_s +
+            (conds_a[0].empty? ? '' : " #{mode} ") +
+            conds_b[0].to_s +
+            (conds_a[0].empty? ? '' : ')')
+           ] + conds_a[1..-1] + conds_b[1..-1]
+  end
+
   def conditions(klass)
+    addthese = []
+    list = @forced_list ? @forced_list.keys : []
     if !self.valid?
 #      raise self.errors.full_messages.to_s # TODO: DO THIS SOMEDAY
       return ["#{klass.table_name}.id = -1"]
     end
     conds = self.class::CONDS.inject([""]) {|condition_array,this_condition|
+      ret = condition_array
       if is_this_condition_enabled(this_condition)
-        join_conditions(condition_array,
-                        _wrap_with_not(self.send("#{this_condition}_conditions",
-                                                 klass), instance_variable_get("@#{this_condition}_excluded")))
-      else
-        condition_array
+        sql = _wrap_with_not(self.send("#{this_condition}_conditions",
+                                                 klass), instance_variable_get("@#{this_condition}_excluded"))
+        if list.include?(this_condition)
+          addthese << sql
+        else
+          ret = join_conditions(condition_array, sql,  @mode || "AND")
+        end
       end
+      ret
     }
+    puts conds.inspect
+    for sql in addthese
+      conds = join_conditions(conds, sql, "AND")
+    end
+    puts conds.inspect
     if conds[0].empty?
       conds[0]="#{klass.table_name}.id = -1"
     end
