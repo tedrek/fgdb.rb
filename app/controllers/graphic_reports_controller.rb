@@ -712,14 +712,15 @@ class PrintmeInfoTrend < TrendReport
     end
 
     def title
-      "Report of Spec Sheet Information"
+      "Report of Spec Sheet Information for #{@conditions[:data_type].to_s.humanize}"
     end
 
     def default_table_data_types
       Hash.new("integer")
     end
 
-    PRINTME_COLUMNS = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :processor_slot, :processor_product, :processor_speed, :north_bridge, :sixty_four_bit, :virtualization]
+    PRINTME_BOOLS = [:sixty_four_bit, :virtualization]
+    PRINTME_COLUMNS = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :processor_slot, :processor_product, :processor_speed, :north_bridge, *PRINTME_BOOLS]
     def self.extra_options(f)
       h = OH.new
       opts = PRINTME_COLUMNS.map(&:to_s).sort.map{|x| "<option value=\"#{x}\">#{x.humanize}</option>"}.join("")
@@ -727,7 +728,8 @@ class PrintmeInfoTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      res = DB.execute("SELECT #{@conditions[:data_type].to_s} AS value, COUNT(*) AS count FROM systems WHERE #{sql_for_report(System, conditions_with_daterange_for_report(args, "last_build"))} GROUP BY value;")
+      s = PRINTME_BOOLS.include?(@conditions[:data_type].to_sym) ? @conditions[:data_type].to_s : "COALESCE(#{@conditions[:data_type].to_s}, 'Unknown')"
+      res = DB.execute("SELECT #{s} AS value, COUNT(*) AS count FROM systems WHERE #{sql_for_report(System, conditions_with_daterange_for_report(args, "last_build"))} GROUP BY value;")
       result = {}
       res.each do |x|
         result[x['value']] = x['count']
