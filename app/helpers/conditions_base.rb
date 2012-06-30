@@ -110,11 +110,9 @@ class ConditionsBase
       end
       ret
     }
-    puts conds.inspect
     for sql in addthese
       conds = join_conditions(conds, sql, "AND")
     end
-    puts conds.inspect
     if conds[0].empty?
       conds[0]="#{klass.table_name}.id = -1"
     end
