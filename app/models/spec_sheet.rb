@@ -172,6 +172,37 @@ class SpecSheet < ActiveRecord::Base
     cleaned_valid || original_valid
   end
 
+  def most_recent_not_tech_support?
+    return false if self.action.name == "tech_support"
+    recent = self.system and self.system.spec_sheets.select{|x| x.action.name != "tech_support"}.sort_by(&:created_at).last
+    return true unless recent
+    return true if self.created_at.nil? or self.created_at >= recent.created_at
+  end
+
+  def set_extra_system_information(parsed)
+    if most_recent_not_tech_support?
+      self.system.last_build = self.created_at.nil? ? Date.today : self.created_at.to_date
+      l = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :north_bridge]
+      if parsed.klass != SystemHelper::PlistSystemParser
+        l = l + [:sixty_four_bit, :virtualization]
+      end
+      for i in l
+        self.system.send(i.to_s + "=", parsed.send(i))
+      end
+      proc = parsed.processors.first
+      if proc
+        for i in [:processor_slot, :processor_product, :processor_speed]
+          self.system.send(i.to_s + "=", proc.send(i.to_s.sub(/_product/, "").sub(/processor_/, "")))
+        end
+      end
+      self.system.save!
+    end
+  end
+
+  def parser
+    SystemParser.parse(lshw_output)
+  end
+
   def initialize(*args)
     super(*args)
 
@@ -180,8 +211,7 @@ class SpecSheet < ActiveRecord::Base
       return
     end
 
-    sp = SystemParser.parse(lshw_output)
-
+    sp = self.parser
     found_system = System.find_by_id(sp.find_system_id)
     if found_system and !found_system.gone?
       self.system = found_system
@@ -198,5 +228,6 @@ class SpecSheet < ActiveRecord::Base
       system.serial_number  = sp.serial_number
       system.vendor  = sp.vendor
     end
+    self.set_extra_system_information(sp)
   end
 end
