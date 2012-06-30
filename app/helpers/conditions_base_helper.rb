@@ -17,7 +17,7 @@ module ConditionsBaseHelper
     if enable_advanced
       return multiselect_of_form_elements(params_key, hash, multiselect_mode) + conditions_radio_button(params_key, obj, these_things, multiselect_mode) + hide_forced_conds(params_key, obj, these_things, multiselect_mode)
     else
-      return multiselect_of_form_elements(params_key, hash, multiselect_mode)
+      return multiselect_of_form_elements(params_key, hash, multiselect_mode) + hide_forced_conds(params_key, obj, these_things, multiselect_mode)
     end
   end
 

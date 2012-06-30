@@ -18,7 +18,7 @@
 
 <h3>Filter work shifts:</h3>
 <% form_tag({:action => params[:action]}, {:method => "get"}) do %>
-  <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi", date_range) %>
+  <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi", date_range, true) %>
 
 <% if skedj.opts[:forced_condition] %>
 <%  force_conds << skedj.opts[:forced_condition] %>
