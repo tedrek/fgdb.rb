@@ -720,7 +720,8 @@ class PrintmeInfoTrend < TrendReport
     end
 
     PRINTME_BOOLS = [:sixty_four_bit, :virtualization]
-    PRINTME_COLUMNS = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :processor_slot, :processor_product, :processor_speed, :north_bridge, *PRINTME_BOOLS]
+    PRINTME_OTHER = [:cpu_intel_product, :cpu_vendor]
+    PRINTME_COLUMNS = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :processor_slot, :processor_product, :processor_speed, :north_bridge] + PRINTME_BOOLS + PRINTME_OTHER
     def self.extra_options(f)
       h = OH.new
       opts = PRINTME_COLUMNS.map(&:to_s).sort.map{|x| "<option value=\"#{x}\">#{x.humanize}</option>"}.join("")
@@ -728,7 +729,16 @@ class PrintmeInfoTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      s = PRINTME_BOOLS.include?(@conditions[:data_type].to_sym) ? @conditions[:data_type].to_s : "COALESCE(#{@conditions[:data_type].to_s}, 'Unknown')"
+      s = nil
+      if PRINTME_OTHER.include?(@conditions[:data_type].to_sym)
+        if @conditions[:data_type].to_sym == :cpu_vendor
+          s = "CASE WHEN processor_product ILIKE '%%Amd%%' THEN 'AMD' WHEN processor_product ILIKE '%%Intel%%' THEN 'Intel' ELSE 'Other' END"
+        elsif @conditions[:data_type].to_sym == :cpu_intel_product
+          s = "CASE WHEN (processor_product ILIKE '%%Core 2%%' OR processor_product ILIKE '%%Core(Tm)2%%') THEN 'Core 2' WHEN processor_product ILIKE '%%Core%%' THEN 'Core' WHEN processor_product ILIKE '%%Pentium%%' THEN 'Pentium' WHEN processor_product NOT ILIKE 'Intel' Then 'Non-Intel' ELSE 'Other' END"
+        end
+      else
+        s = PRINTME_BOOLS.include?(@conditions[:data_type].to_sym) ? @conditions[:data_type].to_s : "COALESCE(#{@conditions[:data_type].to_s}, 'Unknown')"
+      end        
       res = DB.execute("SELECT #{s} AS value, COUNT(*) AS count FROM systems WHERE #{sql_for_report(System, conditions_with_daterange_for_report(args, "last_build"))} GROUP BY value;")
       result = {}
       res.each do |x|
