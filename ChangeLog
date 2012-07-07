@@ -6,6 +6,7 @@ fgdb.rb (1.0.99) UNRELEASED; urgency=low
 fgdb.rb (1.0.98) released; urgency=low
 
   * Extract some systems data from spec_sheets
+  * Add Borrowed disbursement type
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 07 Jul 2012 02:53:42 -0700
 

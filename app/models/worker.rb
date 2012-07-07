@@ -95,7 +95,8 @@ class Worker < ActiveRecord::Base
       my_start = args[0]
       my_end = args[1]
     else
-      raise ArgumentError
+      my_start = [Date.today]
+      my_end = [Date.today + 60]
     end
     return [my_start, my_end]
   end

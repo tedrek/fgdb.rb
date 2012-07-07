@@ -12,7 +12,7 @@
 <% if skedj.opts[:date_range_condition] %>
 <%  force_conds << skedj.opts[:date_range_condition] %>
 <% if @conditions and @conditions.send(skedj.opts[:date_range_condition] + "_enabled") %>
-<% date_range = ["_start_date", "_end_date"].map{|i| Date.parse(@conditions.send(skedj.opts[:date_range_condition] + i))} %>
+<% date_range = ["_start_date", "_end_date"].map{|i| begin Date.parse(@conditions.send(skedj.opts[:date_range_condition] + i)) rescue (@conditions.send(skedj.opts[:date_range_condition] + i)) end} %>
 <% end %>
 <% end %>
 

@@ -39,9 +39,12 @@
 <% end %>
 
 <%= render :partial => "skedj_links", :locals => {:skedj => skedj, :maximum_date => maximum_date} %>
-<% current_date = nil %>
 <% if skedj.opts[:date_range_condition]
+begin
       current_date = Date.parse(skedj.conditions.send(skedj.opts[:date_range_condition].to_s+"_start_date"))
+rescue
+current_date = nil
+end
 end %>
 <% 
   # set up control variables and loop through all work shifts
@@ -118,8 +121,13 @@ end %>
 %>
 <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.current, :thing_end_time), :new => skedj.get_method_value(skedj.current, :block_end_time) } %>
 <%= render :partial => 'work_shifts/table_footer' %>
-<% if current_date
-        %><%= render :partial => 'work_shifts/holidays', :locals => {:skedj => skedj, :current_date => current_date, :next_date => Date.parse(skedj.conditions.send(skedj.opts[:date_range_condition].to_s+"_end_date"))} %>
+<% begin
+next_date = Date.parse(skedj.conditions.send(skedj.opts[:date_range_condition].to_s+"_end_date"))
+rescue
+next_date = nil
+end %>
+<% if current_date and next_date
+        %><%= render :partial => 'work_shifts/holidays', :locals => {:skedj => skedj, :current_date => current_date, :next_date => next_date} %>
 <% end %>
 <% if skedj.opts[:presentation_mode]!='Preview' %>
   </div>
@@ -127,7 +135,7 @@ end %>
 </div>
 
 <% if defined?(maximum_date) && skedj.opts[:maximum_date] &&  skedj.opts[:date_range_condition] %>
-  <% if params[:conditions] && Date.parse(params[:conditions][(skedj.opts[:date_range_condition] + "_end_date")]) < maximum_date %>
+  <% if params[:conditions] && next_date && next_date < maximum_date %>
     <% newconds = params[:conditions].dup %>
     <% newconds[(skedj.opts[:date_range_condition] + "_end_date")] = maximum_date %>
     <% newparams = params.dup %>
