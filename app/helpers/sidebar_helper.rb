@@ -107,6 +107,8 @@ module SidebarHelper
     # fgss
     sidebar_hash["build"]["printme"] = {:c => 'spec_sheets'}
     sidebar_hash["build"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled
+    sidebar_hash["data sec"]["disktest runs"] = {:c => "disktest_runs"}
+    sidebar_hash["data sec"]["disktest batches"] = {:c => "disktest_batches"}
     # done
     sidebar_hash["admin"]["logs"] = {:c => "logs"}
     sidebar_hash["admin"]["deleted records"] = {:c => "logs", :a => "find_deleted"}
