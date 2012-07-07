@@ -707,6 +707,10 @@ class AverageFrontdeskIncomesTrend < TrendReport
     end
 end
 class PrintmeInfoTrend < TrendReport
+  def valid_conditions
+    ['gizmo_context_id']
+  end
+
     def category
       "Build"
     end

@@ -184,6 +184,10 @@ module ConditionsHelper
     select(params_key, 'gizmo_type_id', GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}, {}, _multi_html_opts)
   end
 
+  def html_for_gizmo_context_id_condition(params_key)
+    select(params_key, 'gizmo_context_id', GizmoContext.find(:all).select(&:has_system?).sort_by(&:description).collect(){|x|[x.description, x.id]}, {})
+  end
+
   def html_for_gizmo_type_group_id_condition(params_key)
     select(params_key, 'gizmo_type_group_id', GizmoTypeGroup.find(:all).sort_by(&:name).collect(){|x|[x.name + " (" + x.gizmo_type_list + ")", x.id]}, {}, _multi_html_opts)
   end

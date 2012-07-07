@@ -17,7 +17,7 @@ class Conditions < ConditionsBase
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
-      updated_by cashier_updated_by is_pickup finalized
+      updated_by cashier_updated_by is_pickup finalized gizmo_context_id
       logged_in_within signed_off_by payment_total organization_name
     ] + DATES).uniq
 
@@ -31,6 +31,8 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
+
+  attr_accessor :gizmo_context_id
 
   attr_accessor :organization_name
 
@@ -758,6 +760,11 @@ class Conditions < ConditionsBase
 
   def gizmo_type_id_conditions(klass)
     return ["gizmo_events.gizmo_type_id IN (?)", (@gizmo_type_id)]
+  end
+
+  def gizmo_context_id_conditions(klass)
+    raise unless klass == System
+    return ["id IN (SELECT DISTINCT system_id FROM gizmo_events WHERE gizmo_context_id = ?)", (@gizmo_context_id)]
   end
 
   def gizmo_type_group_id_conditions(klass)
