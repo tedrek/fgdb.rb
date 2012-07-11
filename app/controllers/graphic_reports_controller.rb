@@ -708,7 +708,7 @@ class AverageFrontdeskIncomesTrend < TrendReport
 end
 class PrintmeInfoTrend < TrendReport
   def valid_conditions
-    ['gizmo_context_id']
+    ['gizmo_context_id', 'type']
   end
 
     def category
@@ -743,7 +743,7 @@ class PrintmeInfoTrend < TrendReport
       else
         s = PRINTME_BOOLS.include?(@conditions[:data_type].to_sym) ? @conditions[:data_type].to_s : "COALESCE(#{@conditions[:data_type].to_s}, 'Unknown')"
       end        
-      res = DB.execute("SELECT #{s} AS value, COUNT(*) AS count FROM systems WHERE #{sql_for_report(System, conditions_with_daterange_for_report(args, "last_build"))} GROUP BY value;")
+      res = DB.execute("SELECT #{s} AS value, COUNT(*) AS count FROM systems RIGHT OUTER JOIN spec_sheets ON spec_sheets.system_id = systems.id AND spec_sheets.created_at = (SELECT MAX(created_at) FROM spec_sheets WHERE system_id = systems.id) WHERE #{sql_for_report(System, conditions_with_daterange_for_report(args, "last_build"))} GROUP BY value;")
       result = {}
       res.each do |x|
         result[x['value']] = x['count']

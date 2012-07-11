@@ -394,6 +394,7 @@ class Conditions < ConditionsBase
 
   def type_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
+    klass = SpecSheet if klass == System
     ["#{klass.table_name}.type_id = ?", @type_id.to_i]
   end
 
