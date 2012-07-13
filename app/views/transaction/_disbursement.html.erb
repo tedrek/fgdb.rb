@@ -15,5 +15,8 @@
     <%= loading_indicator_tag("disbursement_#{disbursement.id}_loading") %>
     <%= render :partial => "edit_update_transaction",
         :locals => {:transaction => disbursement}%>
+    <% if GizmoReturnsController.sb_has_required_privileges("new") %>
+      <%= link_to("Return", {:action => "new", :controller => "gizmo_returns", :disbursement_id => disbursement.id}) %>
+    <% end %>
  </td>
 </tr>

@@ -56,7 +56,7 @@
     <th></th>
     <% if @transaction.gizmo_events_actual %>
       <% @gizmos_and_payments_js ||= ""
-         for line in @transaction.gizmo_events.not_discount
+         for line in @transaction.gizmo_events.select{|x| x.not_discount?}
            price = 0
            description = ''
            if has_unit_price

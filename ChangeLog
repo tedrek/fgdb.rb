@@ -1,8 +1,10 @@
 fgdb.rb (1.0.99) UNRELEASED; urgency=low
 
   * Give FRONT_DESK privileges for gizmo_returns
+  * Add a return button for disbursements to automatically fill the new
+    return
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Jul 2012 11:01:29 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 13 Jul 2012 12:01:21 -0700
 
 fgdb.rb (1.0.98) released; urgency=low
 
