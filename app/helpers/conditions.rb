@@ -765,7 +765,7 @@ class Conditions < ConditionsBase
 
   def gizmo_context_id_conditions(klass)
     raise unless klass == System
-    return ["id IN (SELECT DISTINCT system_id FROM gizmo_events WHERE gizmo_context_id = ?)", (@gizmo_context_id)]
+    return ["#{klass.table_name}.id IN (SELECT DISTINCT system_id FROM gizmo_events WHERE gizmo_context_id = ?)", (@gizmo_context_id)]
   end
 
   def gizmo_type_group_id_conditions(klass)
