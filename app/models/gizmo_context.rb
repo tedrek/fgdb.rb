@@ -1,6 +1,10 @@
 class GizmoContext < ActiveRecord::Base
   has_and_belongs_to_many  :gizmo_types
 
+  def has_system?
+    self == GizmoContext.sale or self == GizmoContext.gizmo_return or self == GizmoContext.disbursement
+  end
+
   def to_s
     description
   end

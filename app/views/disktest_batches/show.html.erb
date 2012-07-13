@@ -1,6 +1,6 @@
-<h1>Hard Drive Batch Report: <%=h @disktest_batch.name %></h1>
+<h1>Data Sanitization Report for <%=h @disktest_batch.name %></h1>
 
-Hard Drive Batch from <%=h @disktest_batch.contact.display_name %> on <%=h @disktest_batch.date %>.<br />
+Hard Drives from <%=h @disktest_batch.contact.display_name %> on <%=h @disktest_batch.date %>.<br />
 <% if @disktest_batch.finalized %>
 Report finalized by <%= @disktest_batch.user_finalized_by.contact_display_name %> on <%= @disktest_batch.finalized_on %>.
 <% else %>
