@@ -4,7 +4,7 @@ class AddCannotLogHoursForStaffFrontdeskJobs < ActiveRecord::Migration
 
     if Default.is_pdx
       j = Job.find_by_name("Front Desk")
-      j.reason_cannot_log_hours = "Please track your hours using the Donor Desk and Volunteer Desk jobs."
+      j.reason_cannot_log_hours = "Please track these hours using the \"Donor Desk\" and \"Volunteer Desk\" jobs."
       j.save!
 
       j = Job.new

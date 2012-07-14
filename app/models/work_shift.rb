@@ -114,6 +114,9 @@ class WorkShift < ActiveRecord::Base
       end
     elsif self.kind == "StandardShift"
       ws.job_id = self.job_id
+      if ws.job.reason_cannot_log_hours
+        return [nil, "A \"#{ws.job.name}\" shift lasting #{ws.duration} hours could not be added using that job: #{ws.job.reason_cannot_log_hours}"]
+      end
     else # Unavailability
       return [nil, msgs]
     end
