@@ -1,33 +1,72 @@
 <% @donation = donation %>
+<% @extras = @donation.supersedes %>
 <div class="item_list">
 <table bgcolor="#cccccc" width="100%" align="center" border="1">
 <tbody><tr>
-    <td width="15%"><strong>Quantity:</strong></td>
+<% l = "15" %>
+<% if @extras.length > 0 %>
+<% l = "10" %>
+    <td width="10%"><strong>Date:</strong></td>
+    <td width="10%"><strong>Invoice #:</strong></td>
+<% end %>
+    <td width="<%= l %>%"><strong>Quantity:</strong></td>
     <td width="60%"><strong>Description:</strong></td>
-    <td width="15%"><strong>Est Value:</strong></td>
+    <td width="<%= l %>%"><strong>Est Value:</strong></td>
 </tr>
 
-<% @donation.gizmo_events.each do |event| -%>
+<% ge = (@extras.map(&:gizmo_events).map{|y| y.select{|x| x.gizmo_type.name != 'invoice_resolved'}} + [@donation.gizmo_events]).flatten %>
+
+<% ge.each do |event| -%>
   <% if !GizmoType.fee?(event.gizmo_type) -%>
   <tr>
+    <% if @extras.length > 0 %>
+      <% if event.donation_id != @donation.id %>
+        <td><%= event.donation.occurred_at.to_date %></td>
+        <td>#<%= event.donation_id %></td>
+      <% else %>
+        <td></td>
+        <td></td>
+      <% end %>
+    <% end %>
     <td> <%= event.gizmo_count %> </td>
     <td> <%= h event.attry_description %> </td>
-    <td>______</td>
+    <% if event.gizmo_type.name == 'invoice_resolved' %>
+      <td><%= event.invoice_amount %></td>
+    <% else %>
+      <td>______</td>
+    <% end %>
   </tr>
   <% end -%>
 <% end -%>
 
-<tr><td colspan="4">&nbsp;</td></tr>
+<% if @extras.length > 0 %>
+  <tr><td colspan="6">&nbsp;</td></tr>
+<% else %>
+  <tr><td colspan="4">&nbsp;</td></tr>
+<% end %>
 
 <tr>
-    <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
     <td>Total Estimated Value (tax deductible):</td>
     <td>_________</td>
 </tr>
 
-<% @donation.gizmo_events.each do |event| -%>
+<% ge.each do |event| -%>
   <% if (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered -%>
   <tr>
+    <% if @extras.length > 0 %>
+      <% if event.donation_id != @donation.id %>
+        <td><%= event.donation.occurred_at %></td>
+        <td>#<%= event.donation_id %></td>
+      <% else %>
+        <td></td>
+        <td></td>
+      <% end %>
+    <% end %>
     <td><%= event.gizmo_count %> </td>
     <td><%= h event.attry_description %> </td>
     <td><%= my_number_to_currency(event.gizmo_count * event.unit_price_cents) %></td>
@@ -39,7 +78,11 @@
 
 <% @donation.payments.each do |payment| %>
   <tr>
-    <td>&nbsp;</td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
     <td align="left"><%= h(payment.payment_method.description).titleize %>:</td>
     <td><%= my_number_to_currency(payment.amount_cents) %></td>
   </tr>
@@ -49,21 +92,33 @@
 
 <% if @donation.invoice_resolved? -%>
   <tr>
-    <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
     <td> Required Fee Paid
       (<strong>not</strong> tax deductible): </td>
     <td><%= my_number_to_currency(@donation.required_fee_paid_cents + @donation.required_fee_owed_cents) %></font></td>
   </tr>
 
     <tr>
-      <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
       <td> Donation Paid (tax deductible): </td>
       <td><%= my_number_to_currency(@donation.cash_donation_paid_cents + @donation.cash_donation_owed_cents) %></td>
     </tr>
 <% else -%>
   <% if @donation.required_fee_paid_cents.nonzero? %>
     <tr>
-      <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
       <td> Required Fee Paid
         (<strong>not</strong> tax deductible): </td>
       <td><%= my_number_to_currency(@donation.required_fee_paid_cents) %></font></td>
@@ -72,7 +127,11 @@
 
   <% if @donation.invoiced? and @donation.required_fee_owed_cents.nonzero? %>
     <tr>
-      <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
       <td> Required Fee Due
         (<strong>not</strong> tax deductible): </td>
       <td><%= my_number_to_currency(@donation.required_fee_owed_cents) %></font></td>
@@ -82,7 +141,11 @@
   <% if @donation.invoiced? %>
     <tr><td colspan="4">&nbsp;</td></tr>
     <tr>
-        <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
         <td><strong>Total Amount Still Owed:</strong></td>
         <td><strong><%= my_number_to_currency(@donation.amount_invoiced_cents) %></strong></td>
     </tr>
@@ -90,14 +153,22 @@
 
   <% if @donation.cash_donation_paid_cents.nonzero? %>
     <tr>
-      <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
       <td> Donation Paid (tax deductible): </td>
       <td><%= my_number_to_currency(@donation.cash_donation_paid_cents) %></td>
     </tr>
   <% end %>
   <% if @donation.invoiced? and @donation.cash_donation_owed_cents.nonzero? %>
     <tr>
-      <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
       <td> Cash Donation Owed (tax deductible <strong>after payment</strong>) </td>
       <td><%= my_number_to_currency(@donation.cash_donation_owed_cents) %></td>
     </tr>
@@ -105,10 +176,20 @@
 <% end %>
 <% unless @donation.payments.length == 0 %>
 <tr>
-    <td></td>
+    <% if @extras.length > 0 %>
+      <td colspan="3">&nbsp;</td>
+    <% else %>
+      <td>&nbsp;</td>
+    <% end %>
     <td>Total Tax Deductible Donation:</td>
     <td>_________</td>
 </tr>
 <% end %>
 
 </tbody></table>
+<% if @donation.superseded? %>
+  <b>This invoice is superseded by receipt <%= link_to "#" + @donation.superseded_by.id.to_s, params.merge({:id => @donation.superseded_by.id}) %>.</b><br />
+<% end %>
+<% if @extras.length > 0 %>
+  This invoice receipt includes and supersedes invoice<%= @extras.length > 1 ? "s" : "" %> <%= @extras.map(&:id).map{|x| "#" + x.to_s}.to_sentence %>.
+<% end %>

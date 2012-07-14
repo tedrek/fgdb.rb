@@ -230,6 +230,21 @@ class ActiveRecord::Base
     self.module_eval(code)
   end
 
+  def self.define_amount_methods_on_fake_attr(method_name)
+    code = "def #{method_name}
+        ((#{method_name}_cents)||0).to_dollars
+      end
+
+      def #{method_name}=(value)
+        if value.kind_of? String
+          self.send(:#{method_name}_cents=, value.to_cents)
+        else
+          raise TypeError.new(\"Integer math only. Use strings.\")
+        end
+      end"
+    self.module_eval(code)
+  end
+
   def self.find_all_except(*recs)
     return find_all - recs
   end

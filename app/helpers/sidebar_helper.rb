@@ -62,6 +62,9 @@ module SidebarHelper
       disp = pl.sub("gizmo_returns", "sales")
       prep = ([:sale, :gizmo_return].include?(i) ? pl.sub("gizmo_", "") + " " : "")
       sidebar_hash[disp][prep + "entry"] = {:c => pl}
+      if [:donation].include?(i) # TODO: , :sale
+        sidebar_hash[disp][prep + "invoices"] = {:c => pl, :a => "invoices"}
+      end
       sidebar_hash[disp][prep + "search"] = {:c => pl, :a => 'search'}
     end
     sidebar_hash["sales"]["store credits"] = {:c => "store_credits", :a => 'index'}

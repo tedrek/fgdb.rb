@@ -4,8 +4,42 @@ class Donation < ActiveRecord::Base
   include GizmoTransaction
   belongs_to :contact
   has_many :payments, :dependent => :destroy, :autosave => :true
+  has_many :payment_methods, :through => :payments
   has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
+  has_one :resolved_by_gizmo_event, :class_name => "GizmoEvent", :foreign_key => :invoice_donation_id
+# Doesn't work, rails generates invalid SQL:
+#  named_scope :with_unresolved_invoice, :joins => [:payment_methods], :conditions => ["invoice_resolved_at IS NULL AND payment_methods.name LIKE 'invoice'"]
+#  named_scope :for_contact, lambda{|cid| {:conditions => ["contact_id = ?", cid]}}
+  define_amount_methods_on_fake_attr :invoice_amount
+
+  def calculated_under_pay
+    (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
+  end
+
+  def invoice_amount_cents
+    payments.select{|x| x.payment_method == PaymentMethod.invoice}.inject(0){|t,x| t+=x.amount_cents}
+  end
+
+  def supersedes
+    self.gizmo_events.collect{|x| x.invoice_donation}.uniq.select{|x| !!x}.sort_by(&:occurred_at)
+  end
+
+  def superseded?
+    !! resolved_by_gizmo_event
+  end
+
+  def superseded_by
+    resolved_by_gizmo_event.donation
+  end
+
+  def has_unresolved_invoice?
+    payment_methods.include?(PaymentMethod.invoice) and !resolved?
+  end
+
+  def resolved?
+    !! invoice_resolved_at
+  end
 
   def gizmo_context
     GizmoContext.donation
@@ -303,7 +337,7 @@ class Donation < ActiveRecord::Base
   end
 
   def add_dead_beat_discount
-    under_pay = (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
+    under_pay = calculated_under_pay
     if under_pay < 0:
         gizmo_events.build({:unit_price_cents => under_pay,
                                          :gizmo_count => 1,

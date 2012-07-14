@@ -15,12 +15,19 @@ class GizmoEvent < ActiveRecord::Base
   belongs_to :gizmo_context
   belongs_to :system
   has_many :store_credits
+  belongs_to :invoice_donation, :class_name => "Donation"
 
   validates_presence_of :gizmo_count
   validates_presence_of :gizmo_type_id
   validates_presence_of :gizmo_context_id
 
   before_save :set_storecredit_difference_cents, :if => :is_store_credit
+  before_save :resolve_invoice, :if => :resolves_invoice?
+
+  def resolve_invoice
+    self.invoice_donation.invoice_resolved_at = self.occurred_at
+    self.invoice_donation.save
+  end
 
   define_amount_methods_on("unit_price")
 
@@ -91,8 +98,12 @@ class GizmoEvent < ActiveRecord::Base
     }
   end
 
+  def resolves_invoice?
+    self.gizmo_type.name == "invoice_resolved"
+  end
+
   def editable
-    self.gizmo_type.name != "store_credit" || !self.spent?
+    (!resolves_invoice?) && (self.gizmo_type.name != "store_credit" || !self.spent?)
   end
 
   def spent?
@@ -165,8 +176,17 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     return_disbursement_id
   end
 
+  def invoice_id
+    t = self.invoice_donation_id # TODO: ||
+    t ? "#" + t.to_s : nil
+  end
+
+  def invoice_amount
+    self.invoice_id ? "$" + self.invoice_donation.invoice_amount : nil
+  end
+
   def attry_description(options = {})
-    junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id].map{|x| x.to_s} - (options[:ignore] || [])
+    junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id, :invoice_id].map{|x| x.to_s} - (options[:ignore] || [])
 
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 
@@ -207,7 +227,7 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
   end
 
   def required_fee_cents
-    if !covered && gizmo_type.required_fee_cents != 0 || gizmo_type.name == "fee_discount"
+    if (!covered && gizmo_type.required_fee_cents != 0) || gizmo_type.name == "fee_discount" || gizmo_type.name == "invoice_resolved"
       gizmo_count.to_i * (unit_price_cents || gizmo_type.required_fee_cents)
     else
       0

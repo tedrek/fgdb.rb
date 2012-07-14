@@ -28,6 +28,10 @@ class Contact < ActiveRecord::Base
     errors.add('birthday', 'is out of range (past year 2038)') if self.birthday and self.birthday.year >= 2038
   end
 
+  def unresolved_donations
+    donations.select(&:has_unresolved_invoice?)
+  end
+
   validate :name_provided
   def name_provided
     errors.add('organization', 'name must be provided for organizations') if is_organization? and (organization.nil? or organization.empty?)

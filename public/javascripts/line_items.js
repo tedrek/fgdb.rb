@@ -636,6 +636,10 @@ function alert_for_storecredit(id) {
 }
 
 function donation_compute_totals() {
+  if($("gizmo_events_lines") == null) {
+    // TODO: code that computes invoice payments goes here.
+    return;
+  }
   update_gizmo_events_totals();
 
   var totals = get_donation_totals();
@@ -751,6 +755,9 @@ function get_not_storecredit(){
 }
 
 function update_gizmo_events_totals() {
+  if($("gizmo_events_lines") == null) {
+    return;
+  }
   gizmo_events = find_these_lines('gizmo_events');
   for (var i = 0; i < gizmo_events.length; i++)
   {
@@ -769,6 +776,9 @@ function update_gizmo_events_totals() {
 }
 
 function get_donation_totals() {
+  if($("gizmo_events_lines") == null) {
+    return;
+  }
   var totals = new Object();
   totals['required'] = 0;
   totals['suggested'] = 0;
