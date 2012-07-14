@@ -49,9 +49,9 @@ class DefaultAssignment < ActiveRecord::Base
     shift_id = assignment.volunteer_default_shift_id || assignment.volunteer_default_shift.id
     week = assignment.week.to_s.strip
     if week.length > 0
-      ret = {:conditions => ["slot_number = ? AND volunteer_default_shift_id = ? AND (week IS NULL OR week IN ('', ' ', ?))", slot, shift_id, week]}
+      ret = {:conditions => ["contact_id IS NOT NULL AND slot_number = ? AND volunteer_default_shift_id = ? AND (week IS NULL OR week IN ('', ' ', ?))", slot, shift_id, week]}
     else
-      ret = {:conditions => ["slot_number = ? AND volunteer_default_shift_id = ?", slot, shift_id]}
+      ret = {:conditions => ["contact_id IS NOT NULL AND slot_number = ? AND volunteer_default_shift_id = ?", slot, shift_id]}
     end
     ret
   }
