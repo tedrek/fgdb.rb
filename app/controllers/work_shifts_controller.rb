@@ -78,7 +78,7 @@ class WorkShiftsController < ApplicationController
     session["shift_return_action"] = "list"
 
     @skedj = Skedjul.new({
-      :conditions => ["worker", "job"],
+      :conditions => ["worker", "job", "shift_type"],
       :date_range_condition => "shift_date",
       :rollout_default_name => "staffsched_rollout_until",
       :rollout_default_action => "update_rollout_date",

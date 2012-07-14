@@ -289,6 +289,10 @@ module ConditionsHelper
     collection_select(params_key, "signed_off_by", [User.new, (Privilege.find_by_name('sign_off_spec_sheets').roles + Role.find_by_name('ADMIN').to_a).collect{|x| x.users}.flatten.uniq.select{|x| x.can_login}.sort_by{|x| x.contact_display_name.downcase}].flatten, "id", "contact_display_name")
   end
 
+  def html_for_shift_type_condition(params_key)
+    collection_select(params_key, "shift_type", ['StandardShift', 'Meeting', 'Unavailability'], "to_s", "to_s")
+  end
+
   def html_for_updated_by_condition(params_key)
     collection_select(params_key, "updated_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
   end

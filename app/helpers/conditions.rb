@@ -12,7 +12,7 @@ class Conditions < ConditionsBase
       payment_method payment_amount gizmo_type_id gizmo_category_id covered
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
-      empty disbursement_type_id store_credit_id organization
+      empty disbursement_type_id store_credit_id organization shift_type
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
@@ -31,6 +31,8 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
+
+  attr_accessor :shift_type
 
   attr_accessor :gizmo_context_id
 
@@ -323,6 +325,11 @@ class Conditions < ConditionsBase
     return ["#{klass.table_name}.schedule_id IN #{in_clause}"]
   end
 
+  def shift_type_conditions(klass)
+    col = klass == WorkShift ? "kind" : "type"
+    return ["#{klass.table_name}.#{col} LIKE ?", @shift_type]
+  end
+
   def store_credit_redeemed_conditions(klass)
     raise unless klass == GizmoReturn
     return ["#{klass.table_name}.id IN (SELECT gizmo_return_id FROM store_credits WHERE gizmo_return_id IS NOT NULL AND (payment_id IS NOT NULL OR id IN (SELECT return_store_credit_id FROM gizmo_events WHERE return_store_credit_id IS NOT NULL)))"]
@@ -348,7 +355,7 @@ class Conditions < ConditionsBase
   end
 
   def job_conditions(klass)
-    return ["#{klass.table_name}.job_id IN (?)", (@job_id)]
+    return ["#{klass.table_name}.job_id IN (?) AND (#{klass.table_name}.meeting_name IS NULL OR #{klass.table_name}.meeting_name LIKE '')", (@job_id)]
   end
 
   def empty_conditions(klass)
