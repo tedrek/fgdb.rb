@@ -25,6 +25,18 @@ class Donation < ActiveRecord::Base
     self.gizmo_events.collect{|x| x.invoice_donation}.uniq.select{|x| !!x}.sort_by(&:occurred_at)
   end
 
+  def all_recursive_supersedes
+    extras = supersedes
+    oldlen = 0
+    len = extras.length
+    while oldlen < len
+      oldlen = len
+      extras = ([extras] + extras.map{|x| x.supersedes}).flatten.uniq
+      len = extras.length
+    end
+    return extras.sort_by(&:occurred_at)
+  end
+
   def superseded?
     !! resolved_by_gizmo_event
   end

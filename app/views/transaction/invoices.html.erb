@@ -1,4 +1,7 @@
 <H2>Paying <%= @transaction_type.titleize %> Invoices<%= @contact ? " for #{@contact.display_name} (##{@contact.id})" : "" %></H2>
+<% if defined?(@show_id) %>
+  <%= javascript_tag "window.open('#{url_for({:action => "receipt", :id => @show_id})}','Receipt_#{@show_id}','');" %>
+<% end %>
 <div id="transaction_info">
   <% if defined?(@contact) && @contact %>
     <%= error_messages_for :transaction %>
