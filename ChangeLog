@@ -1,4 +1,4 @@
-fgdb.rb (1.0.99) UNRELEASED; urgency=low
+fgdb.rb (1.0.99) released; urgency=low
 
   * Give FRONT_DESK privileges for gizmo_returns
   * Add a return button for disbursements to automatically fill the new
@@ -6,7 +6,7 @@ fgdb.rb (1.0.99) UNRELEASED; urgency=low
   * Add an interface for resolving donation invoices (Closes: #29551)
   * Replace the Front Desk type with volunteer and donor desk types
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Jul 2012 09:04:29 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Jul 2012 09:06:20 -0700
 
 fgdb.rb (1.0.98) released; urgency=low
 
