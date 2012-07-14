@@ -96,7 +96,7 @@ class ShiftsController < ApplicationController
       :generate_param_key => "date_range",
                            :generate_gen_sched_form_controller => "work_shifts",
                            :forced_condition => "schedule",
-                           :conditions => ["job", "worker"],
+                           :conditions => ["job", "worker", "shift_type"],
 
       :block_method_name => "shifts.weekday_id",
       :block_method_display => "weekdays.name",
