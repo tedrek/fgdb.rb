@@ -45,6 +45,12 @@
        :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
        :update => component_id( refine_params ) do %>
       <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
+    <% if !@transactions.nil? && @transactions.length >= 1 %>
+      <div style="float: right">
+      <%= label_tag 'per_page', 'Results per Page' %>
+      <%= text_field_tag 'per_page', @per_page, :size => 6 %>
+    </div>
+    <% end %>
       <% filters = [] %>
       <% filters << 'created_at' %>
       <% filters << 'updated_at' %>
@@ -104,7 +110,7 @@
       <% end %>
       <%= conditions_html("conditions", filters) %>
 
-      <div class="form-footer">
+      <div class="form-footer" style="float: right; clear: right;">
         <%= submit_tag "Refine", :class => "submit" %>
         <%= loading_indicator_tag("refine_#{@transaction_type}_loading") %>
       </div>

@@ -20,6 +20,13 @@ end
 
 class ApplicationController < ActionController::Base
   protected
+  def determine_per_page
+    session[:per_page] ||= 20
+    session[:per_page] = params[:per_page] if params[:per_page]
+    session[:per_page] = "500" if session[:per_page].to_i > 500
+    return session[:per_page]
+  end
+
   def my_apply_line_item_data(object, prefix, param = nil)
     input = params[param || prefix]
     association = object.send(prefix)

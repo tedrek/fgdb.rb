@@ -145,9 +145,10 @@ class TransactionController < ApplicationController
       @sort_sql = @model.default_sort_sql
       @conditions.apply_conditions(params[:conditions])
 
+      @per_page = determine_per_page
       search_options = {
         :order => @sort_sql,
-        :per_page => 20,
+        :per_page => @per_page,
         :include => [:gizmo_events],
         :conditions => @conditions.conditions(@model),
         :page => params[:page]
