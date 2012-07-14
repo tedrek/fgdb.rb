@@ -1,5 +1,5 @@
 <% @donation = donation %>
-<% @extras = @donation.supersedes %>
+<% @extras = @donation.all_recursive_supersedes %>
 <div class="item_list">
 <table bgcolor="#cccccc" width="100%" align="center" border="1">
 <tbody><tr>
@@ -14,27 +14,22 @@
     <td width="<%= l %>%"><strong>Est Value:</strong></td>
 </tr>
 
-<% ge = (@extras.map(&:gizmo_events).map{|y| y.select{|x| x.gizmo_type.name != 'invoice_resolved'}} + [@donation.gizmo_events]).flatten %>
+<% ge = (@extras.map(&:gizmo_events) + [@donation.gizmo_events]).flatten %>
 
 <% ge.each do |event| -%>
-  <% if !GizmoType.fee?(event.gizmo_type) -%>
+  <% if !GizmoType.fee?(event.gizmo_type) and event.gizmo_type.name != 'invoice_resolved' -%>
   <tr>
     <% if @extras.length > 0 %>
       <% if event.donation_id != @donation.id %>
         <td><%= event.donation.occurred_at.to_date %></td>
         <td>#<%= event.donation_id %></td>
       <% else %>
-        <td></td>
-        <td></td>
+        <td colspan="2">&nbsp;</td>
       <% end %>
     <% end %>
     <td> <%= event.gizmo_count %> </td>
     <td> <%= h event.attry_description %> </td>
-    <% if event.gizmo_type.name == 'invoice_resolved' %>
-      <td><%= event.invoice_amount %></td>
-    <% else %>
-      <td>______</td>
-    <% end %>
+    <td>______</td>
   </tr>
   <% end -%>
 <% end -%>
@@ -60,11 +55,10 @@
   <tr>
     <% if @extras.length > 0 %>
       <% if event.donation_id != @donation.id %>
-        <td><%= event.donation.occurred_at %></td>
-        <td>#<%= event.donation_id %></td>
-      <% else %>
-        <td></td>
-        <td></td>
+        <td><%= event.donation.occurred_at.to_date %></td>
+        <td>#<%= event.donation_id %></td> 
+     <% else %>
+        <td colspan="2">&nbsp;</td>
       <% end %>
     <% end %>
     <td><%= event.gizmo_count %> </td>
@@ -74,12 +68,20 @@
   <% end -%>
 <% end -%>
 
-<% unless @donation.payments.length == 1 && @donation.payments.first.payment_method.description.downcase == "invoice" %>
+<% payments = (@extras.map(&:payments) + [@donation.payments]).flatten %>
 
-<% @donation.payments.each do |payment| %>
+<% unless payments.length == 1 && payments.first.payment_method.description.downcase == "invoice" %>
+
+<% payments.each do |payment| %>
   <tr>
     <% if @extras.length > 0 %>
-      <td colspan="3">&nbsp;</td>
+      <% if payment.donation_id != @donation.id %>
+        <td><%= payment.donation.occurred_at.to_date %></td>
+        <td>#<%= payment.donation_id %></td>
+        <td>&nbsp;</td>
+        <% else %>
+        <td colspan="3">&nbsp;</td>
+      <% end %>
     <% else %>
       <td>&nbsp;</td>
     <% end %>
@@ -174,7 +176,7 @@
     </tr>
   <% end -%>
 <% end %>
-<% unless @donation.payments.length == 0 %>
+<% unless payments.length == 0 %>
 <tr>
     <% if @extras.length > 0 %>
       <td colspan="3">&nbsp;</td>

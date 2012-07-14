@@ -19,13 +19,14 @@ class DonationsController < TransactionController
       end
       @transaction.valid? # add errors, otherwise mine below will prevent the check
       # TODO: CHECK OTHER THINGS: ..?
-      if false
-        @transaction.errors.add('foo', 'is bar')
+      for i in @transaction.gizmo_events
+        @transaction.errors.add('invoices', 'are already resolved') if i.invoice_donation.resolved?
       end
       # NOTE: not valid?, as I am adding errors manually after
       if @transaction.errors.length == 0
         @transaction.save
-        redirect_to :action => "invoices"
+        @show_id = @transaction.id
+        @contact = nil
       end
     end
   end
