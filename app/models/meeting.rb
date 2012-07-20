@@ -34,6 +34,9 @@ class Meeting < Shift
     if ! every_week?
       ret = ret + " [weeks: #{(1..5).to_a.select{|n| self.send("week_#{n}_of_month")}.join(", ")}]"
     end
+    if repeats_every_months != 1
+      ret = ret + " [every #{repeats_every_months} months]"
+    end
     ret
   end
 
@@ -42,7 +45,7 @@ class Meeting < Shift
     #     (repeats_every and repeats_on), if not then
     #     skip
     n = (day.day/7.0).ceil
-    self.schedule.which_week( day ) == self.schedule.repeats_on and ((not self.shift_date) or self.shift_date == day) and self.send("week_#{n}_of_month")
+    self.schedule.which_week( day ) == self.schedule.repeats_on and ((not self.shift_date) or self.shift_date == day) and self.send("week_#{n}_of_month") and repeats_on_months == (_calculate_d(day) % repeats_every_months)
   end
 
   def do_my_generate(day)

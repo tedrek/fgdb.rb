@@ -27,6 +27,12 @@
 <%= check_box("meeting", "week_#{n}_of_month") %></p>
 <% end %>
 
+<p><label for="meeting_repeats_every_months">Repeats every X months (default: 1 for every month)</label><br/>
+<%= text_field 'meeting', 'repeats_every_months'  %></p>
+
+<p><label for="meeting_repeats_on_day">Month to repeat meeting (if repeats every X > 1 months)</label><br/>
+<%= calendar_box 'meeting', 'repeats_on_day', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+
 <p><label for="meeting_schedule_id">Schedule</label><br/>
 <%= select("meeting", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
 

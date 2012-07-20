@@ -7,6 +7,39 @@ class Shift < ActiveRecord::Base
   belongs_to :coverage_type
   belongs_to :schedule
 
+  def months_to_s
+    "every #{self.repeats_every_months} months, repeating on month of #{self.repeats_on_day}"
+  end
+
+  def repeats_on_day
+    if defined?(@set_repeats_on_day)
+      return @set_repeats_on_day
+    end
+    add_this = (repeats_on_months - (_calculate_d(Date.today) % repeats_every_months)) % repeats_every_months
+    d = Date.today + add_this.months
+    Date.new(d.year, d.month, 1)
+  end
+
+  def repeats_on_day=(date)
+    @set_repeats_on_day = date
+  end
+
+  before_save :set_repeats_on_months
+  def _calculate_d(d)
+    d = Date.parse(d) if d.class == String
+    (d.month + (d.year * 12))
+  end
+
+  def set_repeats_on_months
+    if defined?(@set_repeats_on_day)
+      begin
+        d = @set_repeats_on_day.class == String ? Date.parse(@set_repeats_on_day): @set_repeats_on_day
+        write_attribute(:repeats_on_months, _calculate_d(d) % repeats_every_months) if d
+      rescue
+      end
+    end
+  end
+
   before_save :set_standard_shift_if_none
   def set_standard_shift_if_none
     self.type ||= 'StandardShift' if self.class == Shift

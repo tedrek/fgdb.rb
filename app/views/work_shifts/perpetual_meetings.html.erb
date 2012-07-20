@@ -20,7 +20,7 @@ Wednesday.)<br />
 <% last_w = m.weekday_id %>
 <h3><%= m.weekday.name %></h3>
 <% end %>
-<%= m.meeting_name %> <%= m.start_time.strftime("%l:%M %p") %> - <%= m.end_time.strftime("%l:%M %p") %> (<%= m.every_week? ? "weekly" : (1..5).to_a.select{|n| m.send("week_#{n}_of_month")}.map{|x| x.ordinalize}.to_sentence + " " + m.weekday.name + " of month" %>)<br />
+<%= m.meeting_name %> <%= m.start_time.strftime("%l:%M %p") %> - <%= m.end_time.strftime("%l:%M %p") %> (<%= m.every_week? ? (m.repeats_every_months == 1 ? "weekly" : "weekly " + m.months_to_s) : (1..5).to_a.select{|n| m.send("week_#{n}_of_month")}.map{|x| x.ordinalize}.to_sentence + " " + m.weekday.name + " of #{m.repeats_every_months == 1 ? "month" : m.months_to_s}" %><%=  %>)<br />
 <% end %>
 
 <h2>List of Meetings and Attenders (Staff Only)</h2>
