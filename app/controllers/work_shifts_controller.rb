@@ -1,6 +1,12 @@
 class WorkShiftsController < ApplicationController
   layout "skedjulnator"
 
+  def perpetual_meetings_publish
+    @readonly = true
+    perpetual_meetings
+    render :action => 'perpetual_meetings'
+  end
+
   def perpetual_meetings
     @meetings = Meeting.perpetual.effective_in_range(Date.today, Date.today + 30)
   end
@@ -11,7 +17,7 @@ class WorkShiftsController < ApplicationController
     @multi_enabled = true
   end
 
-  before_filter :update_skedjulnator_access_time, :except => [:staffsched, :perpetual_meetings, :staffsched_publish]
+  before_filter :update_skedjulnator_access_time, :except => [:staffsched, :perpetual_meetings, :staffsched_publish, :perpetual_meetings_publish]
 
   public
   def update_rollout_date
@@ -45,7 +51,7 @@ class WorkShiftsController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'perpetual_meetings', 'staffsched_publish']}
+    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'perpetual_meetings', 'staffsched_publish', 'perpetual_meetings_publish']}
     a
   end
 

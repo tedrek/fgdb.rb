@@ -4,6 +4,10 @@
 <% if has_required_privileges('edit') %>
 <br />
 <%= link_to "Find problems in the schedule", :action => "find_problems", :start_date => @skedj.conditions.shift_date_start_date, :end_date => @skedj.conditions.shift_date_end_date %>
+<% unless params[:action].match(/publish/) %>
+<br />
+<%= link_to 'View Perpetual Meeting Calendar', :action => 'perpetual_meetings', :controller => 'work_shifts' %>
+<% end %>
 <%= render :partial => "last_access" %>
 <% end %>
 <%= render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj } %>

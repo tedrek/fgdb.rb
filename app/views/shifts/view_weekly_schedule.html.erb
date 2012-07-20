@@ -1,4 +1,6 @@
 <%= link_to "Find problems in the schedule", :action => "find_problems" %>
+<br />
+<%= link_to 'View Perpetual Meeting Calendar', :action => 'perpetual_meetings', :controller => 'work_shifts' %>
 <%= render :partial => "work_shifts/last_access" %>
 <%= render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj } %>
 

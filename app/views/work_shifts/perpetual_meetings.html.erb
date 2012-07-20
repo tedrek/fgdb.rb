@@ -3,6 +3,10 @@ This page shows regular Free Geek meetings as they are normally
 scheduled, but the actual schedule may differ due to holidays,
 vacations, and other circumstances.<br />
 
+<% if ! @readonly %>
+<%= link_to 'Back to Actual Schedule', :action => 'staffsched' %><br />
+<% end %>
+
 <h2>Meeting Calendar</h2>
 Meetings occur as regular monthly events rather than every other
 week. (For example, a meeting will occur on the first and third
@@ -30,8 +34,4 @@ staff schedule.<br />
 <% m.workers.sort_by(&:name).each do |w| %>
 <%= w.name %><br />
 <% end %>
-<% end %>
-
-<% if ! @readonly %>
-<%= link_to 'Back to Actual Schedule', :action => 'staffsched' %>
 <% end %>
