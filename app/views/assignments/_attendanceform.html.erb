@@ -1,0 +1,9 @@
+<h2>Take attendance</h2>
+<% remote_form_for :attendance, nil, :url => {:action => "doattendance", :id => @assignment.id}, :loading => "$(#{ loading_indicator_id("attendance_assignment_form").to_json }).show();" do |f| %>
+<%= f.label :attendance_type_id %>
+<%= f.select("attendance_type_id", AttendanceType.find(:all).sort_by(&:id).collect {|p| [ p.name, p.id ] }, :include_blank => true, :selected => @assignment.attendance_type_id) %>
+<%= f.submit "Save" %>
+<%= loading_indicator_tag("attendance_assignment_form") %>
+<% end %>
+
+

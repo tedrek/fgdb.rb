@@ -117,7 +117,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:attendance, :remote, :contact_id, :t]],
                              },
 
                              :call_list =>
@@ -131,7 +131,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name,display_call_status,display_phone_numbers",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed]],
                              },
 
                              :by_worker =>
@@ -147,7 +147,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed]],
                              }
                            },
 
@@ -202,6 +202,36 @@ class AssignmentsController < ApplicationController
     end
 
     redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig.volunteer_shift.date_anchor)
+  end
+
+  def attendance
+    @assignment = Assignment.find(params[:id])
+    render :update do |page|
+      page.hide loading_indicator_id("skedjul_#{params[:skedjul_loading_indicator_id]}_loading")
+      page << "show_message(#{(render :partial => "attendanceform").to_json});"
+    end
+  end
+
+  def doattendance
+    success = false
+    begin
+      @assignment = Assignment.find(params[:id])
+    rescue
+    end
+    if @assignment
+      @assignment.attendance_type_id = params[:attendance][:attendance_type_id] if params[:attendance]
+      success = @assignment.save
+    end
+    render :update do |page|
+      if success
+        page.reload
+#        page << "selection_toggle(#{params[:id]});"
+#        page << "popup1.hide();"
+      else
+        page << "alert('attendance change failed. the record may be gone.');"
+      end
+      page.hide loading_indicator_id("attendance_assignment_form")
+    end
   end
 
   def split
@@ -341,16 +371,5 @@ class AssignmentsController < ApplicationController
       @referer = rt
       render :action => "edit"
     end
-  end
-
-  def destroy
-    begin
-      @assignment = Assignment.find(params[:id])
-      @assignment.destroy
-    rescue
-      flash[:jsalert] = "Record was already deleted"
-    end
-
-    redirect_skedj(request.env["HTTP_REFERER"], @assignment ? @assignment.volunteer_shift.date_anchor : "")
   end
 end

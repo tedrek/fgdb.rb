@@ -4,8 +4,10 @@ fgdb.rb (1.0.100) UNRELEASED; urgency=low
     of results per page (Closes: #29542)
   * Change some text on the donations receipt
   * Add functionality for meetings which will only happen on every X months
+  * Replace destroy functionality from volskedj with a interface over
+    ajax for setting the attendance type
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 14:36:15 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 16:01:11 -0700
 
 fgdb.rb (1.0.99) released; urgency=low
 
