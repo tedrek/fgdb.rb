@@ -8,6 +8,7 @@ SERVER=localhost
 mkdir -p ~/web
 cd ~/web
 wget http://$SERVER/work_shifts/staffsched_publish -O index.html
+wget http://$SERVER/work_shifts/perpetual_meetings_publish -O meetings.html
 mkdir -p stylesheets
 for i in schedule print scaffold; do
     wget http://$SERVER/stylesheets/$i.css -O stylesheets/$i.css
