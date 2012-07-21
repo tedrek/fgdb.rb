@@ -88,6 +88,7 @@ module SidebarHelper
     sidebar_hash["sked admin"]["repeat volunteers"] = {:c => "default_assignments"}
     sidebar_hash["vol sked"]["schedule"] = {:c => "assignments"}
     sidebar_hash["vol sked"]["view only"] = {:c => "assignments", :a => "view"}
+    sidebar_hash["vol sked"]["no shows"] = {:c => "assignments", :a => "noshows"}
     sidebar_hash["vol sked"]["search"] = {:c => "assignments", :a => "search"}
     # staffsched
     sidebar_hash["staff"]["schedule"] = {:c => "work_shifts", :a => "staffsched"} if should_show_schedule

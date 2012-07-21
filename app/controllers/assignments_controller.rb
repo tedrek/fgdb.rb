@@ -9,6 +9,78 @@ class AssignmentsController < ApplicationController
   end
   public
 
+  def noshows
+    @attendance_types = AttendanceType.find(:all).sort_by(&:id)
+    @noshow_attendance_types = [AttendanceType.find_by_name('no call no show').id]
+    @arrived_attendance_types = (AttendanceType.find_all_by_cancelled(nil) + AttendanceType.find_all_by_cancelled(false)).map(&:id)
+  end
+
+  def noshows_report
+    @date1 = params[:start_date]
+    @date2 = params[:end_date]
+
+    @attendance_types = AttendanceType.find(:all).sort_by(&:id)
+    @noshow_attendance_types = params[:noshow_attendance_types].map(&:to_i)
+    @arrived_attendance_types = params[:arrived_attendance_types].map(&:to_i)
+
+    @percent = params[:percent]
+    @count = params[:count]
+
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+
+    baseopts = [@date1, @date2]
+    conds = "volunteer_events.date >= ? AND volunteer_events.date <= ? AND attendance_type_id IN (?)"
+    full_conds = "attendance_type_id IN (?)"
+
+    if false
+      full_conds += ""
+      conds += ""
+    end
+
+    fullopts = [@noshow_attendance_types]
+    fullgoodopts = [@arrived_attendance_types]
+    opts = baseopts + fullopts
+    goodopts = baseopts + fullgoodopts
+
+    @noshows = DB.exec(["SELECT assignments.contact_id AS contact_id, COUNT(*) FROM assignments JOIN volunteer_shifts ON volunteer_shift_id=volunteer_shifts.id JOIN volunteer_events ON volunteer_event_id=volunteer_events.id WHERE #{conds} GROUP BY 1 ORDER BY 2 DESC;", *opts]).to_a
+
+    @contact_ids = @noshows.map{|x| x["contact_id"]}
+    goodopts << @contact_ids
+    fullopts << @contact_ids
+    fullgoodopts << @contact_ids
+
+    @arrived = DB.exec(["SELECT assignments.contact_id AS contact_id, COUNT(*) FROM assignments JOIN volunteer_shifts ON volunteer_shift_id=volunteer_shifts.id JOIN volunteer_events ON volunteer_event_id=volunteer_events.id WHERE #{conds} AND contact_id IN (?) GROUP BY 1 ORDER BY 2 DESC;", *goodopts]).to_a
+    @fullnoshows = DB.exec(["SELECT assignments.contact_id AS contact_id, COUNT(*) FROM assignments WHERE #{full_conds} AND contact_id IN (?) GROUP BY 1 ORDER BY 2 DESC;", *fullopts]).to_a
+    @fullarrived = DB.exec(["SELECT assignments.contact_id AS contact_id, COUNT(*) FROM assignments WHERE #{full_conds} AND contact_id IN (?) GROUP BY 1 ORDER BY 2 DESC;", *fullgoodopts]).to_a
+
+    @contacts = {}
+    @list = []
+    @noshows.each do |noshow|
+      @list << noshow["contact_id"]
+      @contacts[noshow["contact_id"]] = {:contact_id => noshow["contact_id"].to_i, :noshow => noshow["count"].to_i, :contact => Contact.find_by_id(noshow["contact_id"])}
+    end
+    @arrived.each do |noshow|
+      @contacts[noshow["contact_id"]][:arrived] = noshow["count"].to_i
+    end
+    @fullnoshows.each do |noshow|
+      @contacts[noshow["contact_id"]][:fullnoshows] = noshow["count"].to_i
+    end
+    @fullarrived.each do |noshow|
+      @contacts[noshow["contact_id"]][:fullarrived] = noshow["count"].to_i
+    end
+    @list.each do |cid|
+      c = @contacts[cid]
+
+      n = c[:noshow].to_i
+      c[:noshow_percentage] = 100.0 * n / (n + c[:arrived].to_i)
+
+      n = c[:fullnoshows].to_i
+      c[:fullnoshows_percentage] = 100.0 * n / (n + c[:fullarrived].to_i)
+    end
+    # TODO: filter the results
+  end
+
   layout :with_sidebar
 
   helper :skedjul

@@ -1,0 +1,24 @@
+<table class="awesome">
+<tr>
+  <th>Contact #</th>
+  <th>Contact Name</th>
+  <th>No shows in date range</th>
+  <th>No shows percentage in date range</th>
+  <th>No shows ever</th>
+  <th>No shows percentage over lifetime</th>
+</tr>
+<% @list.each do |cid| %>
+<% d = @contacts[cid] %>
+<% c = d[:contact] %>
+<tr>
+  <td>#<%= c.id %></td>
+  <td><%= c.display_name %></td>
+  <td><%= d[:noshow] %></td>
+  <td><%= d[:noshow_percentage] %></td>
+  <td><%= d[:fullnoshows] %></td>
+  <td><%= d[:fullnoshows_percentage] %></td>
+</tr>
+<% end %>
+</table>
+
+<%= render :partial => 'noshowform' %>

@@ -6,6 +6,8 @@ fgdb.rb (1.0.100) UNRELEASED; urgency=low
   * Add functionality for meetings which will only happen on every X months
   * Replace destroy functionality from volskedj with a interface over
     ajax for setting the attendance type
+  * Add a no show report for finding volunteers who don't cancel
+    (Closes: #28394)"
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 16:01:11 -0700
 
