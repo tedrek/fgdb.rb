@@ -4,7 +4,7 @@ class GizmoReturn < ActiveRecord::Base
   has_many :gizmo_types, :through => :gizmo_events
   include GizmoTransaction
   belongs_to :contact
-  has_one :store_credit
+  has_one :store_credit, :autosave => :true
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
   define_amount_methods_on("storecredit_difference")
