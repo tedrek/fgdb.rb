@@ -5,9 +5,7 @@ From:
 <%= calendar_box '', 'start_date', :value => @date1 %><br />
 To:
 <%= calendar_box '', 'end_date', :value => @date2 %><br /><br />
-<% if false %>
 <%= conditions_html('conditions', ['roster', 'sked']) %>
-<% end %>
 </fieldset>
 
 <fieldset>
@@ -16,12 +14,10 @@ Attendance types to consider no show:
 <%= f.select("noshow_attendance_types", @attendance_types.collect {|p| [ p.name, p.id ] }, {:selected => @noshow_attendance_types}, {:multiple => true, :size => 5}) %><br />
 Attendance types to consider arrived:
 <%= f.select("arrived_attendance_types", @attendance_types.collect {|p| [ p.name, p.id ] }, {:selected => @arrived_attendance_types}, {:multiple => true, :size => 5}) %><br /><br />
-<% if false %>
 Limit to minimum % of no shows:
 <%= f.text_field "percent", :size => 7, :value => @percent %><br />
 Limit to minimum # of no shows:
 <%= f.text_field "count", :size => 7, :value => @count %><br />
-<% end %>
 </fieldset>
 <%= submit_tag 'Run Report' %>
 <% end %>
