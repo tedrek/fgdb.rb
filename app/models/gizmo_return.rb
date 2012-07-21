@@ -28,7 +28,7 @@ class GizmoReturn < ActiveRecord::Base
   end
 
   def storecredits
-    [self.store_credit]
+    self.store_credit ? [self.store_credit] : []
   end
 
   def self.default_sort_sql
