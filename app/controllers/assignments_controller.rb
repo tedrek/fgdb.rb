@@ -5,6 +5,7 @@ class AssignmentsController < ApplicationController
     a = super
     a << {:privileges => ['schedule_volunteers']}
     a << {:only => ['view'], :privileges => ['schedule_volunteers', 'view_volunteer_schedule']}
+    a << {:only => ['noshows', 'noshows_report'], :privileges => ['role_admin']}
     a
   end
   public
