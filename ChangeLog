@@ -1,3 +1,8 @@
+fgdb.rb (1.0.101) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 22:08:37 -0700
+
 fgdb.rb (1.0.100) released; urgency=low
 
   * Add a form widget to transaction search pages to change the number
