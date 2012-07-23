@@ -1,27 +1,31 @@
 <% form_for "", nil, :url => {:action => "noshows_report" }, :html => {:method => "get"} do |f| %>
 <fieldset>
 <b>Run Report for:</b><br />
-From:
+<%= f.label "start_date", "From:" %>
 <%= calendar_box '', 'start_date', :value => @date1 %><br />
-To:
+<%= f.label "end_date", "To:" %>
 <%= calendar_box '', 'end_date', :value => @date2 %><br /><br />
-<% if false %>
 <%= conditions_html('conditions', ['roster', 'sked']) %>
-<% end %>
 </fieldset>
 
 <fieldset>
 <b>Result Settings:</b><br />
-Attendance types to consider no show:
+<%= f.label "noshow_attendance_types", "Attendance types to consider no show:" %>
 <%= f.select("noshow_attendance_types", @attendance_types.collect {|p| [ p.name, p.id ] }, {:selected => @noshow_attendance_types}, {:multiple => true, :size => 5}) %><br />
-Attendance types to consider arrived:
+<%= f.label("arrived_attendance_types", "Attendance types to consider arrived:") %>
 <%= f.select("arrived_attendance_types", @attendance_types.collect {|p| [ p.name, p.id ] }, {:selected => @arrived_attendance_types}, {:multiple => true, :size => 5}) %><br /><br />
-<% if false %>
-Limit to minimum % of no shows:
+<%= f.label "percent", "Limit to minimum % of no shows:" %>
 <%= f.text_field "percent", :size => 7, :value => @percent %><br />
-Limit to minimum # of no shows:
+<%= f.label "count", "Limit to minimum # of no shows:" %>
 <%= f.text_field "count", :size => 7, :value => @count %><br />
-<% end %>
+<%= f.label "sort_by", "Sort by:" %>
+<% sort_opts = OH.new
+[:noshow, :noshow_percentage, :fullnoshows, :fullnoshows_percentage].each{|p|
+   p = p.to_s
+   sort_opts[(p.match(/percent/) ? "% " : "") + "No Shows" + (p.match(/full/) ? " Ever" : "")] = p
+}
+%>
+<%= f.select("sort_by", options_for_select(sort_opts, @sort_by.to_s)) %>
 </fieldset>
 <%= submit_tag 'Run Report' %>
 <% end %>
