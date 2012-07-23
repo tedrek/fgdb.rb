@@ -63,7 +63,7 @@ class AssignmentsController < ApplicationController
     @contacts = {}
     @list = []
     @noshows.each do |noshow|
-      @list << noshow["contact_id"]
+      @list << noshow["contact_id"] if noshow["contact_id"]
       @contacts[noshow["contact_id"]] = {:contact_id => noshow["contact_id"].to_i, :noshow => noshow["count"].to_i, :contact => Contact.find_by_id(noshow["contact_id"]), :arrived => 0, :fullnoshows => 0, :fullarrived => 0, :shifts => []}
     end
     @arrived.each do |noshow|
@@ -88,7 +88,7 @@ class AssignmentsController < ApplicationController
     end
 
     # filter the results
-    if params[:count].to_f > 0.0
+    if params[:count].to_f > 1.0
       f = params[:count].to_f
       @list = @list.select{|x| @contacts[x][:noshow] >= f}
     end
