@@ -1,4 +1,6 @@
 class OrderedHash
+  include Enumerable
+
   def initialize(*args)
     @hash = {}
     @arr = []

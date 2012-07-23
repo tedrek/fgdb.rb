@@ -14,6 +14,7 @@ class AssignmentsController < ApplicationController
     @attendance_types = AttendanceType.find(:all).sort_by(&:id)
     @noshow_attendance_types = [AttendanceType.find_by_name('no call no show').id]
     @arrived_attendance_types = (AttendanceType.find_all_by_cancelled(nil) + AttendanceType.find_all_by_cancelled(false)).map(&:id)
+    @sort_by = :noshow
   end
 
   def noshows_report
@@ -61,7 +62,7 @@ class AssignmentsController < ApplicationController
     @list = []
     @noshows.each do |noshow|
       @list << noshow["contact_id"]
-      @contacts[noshow["contact_id"]] = {:contact_id => noshow["contact_id"].to_i, :noshow => noshow["count"].to_i, :contact => Contact.find_by_id(noshow["contact_id"])}
+      @contacts[noshow["contact_id"]] = {:contact_id => noshow["contact_id"].to_i, :noshow => noshow["count"].to_i, :contact => Contact.find_by_id(noshow["contact_id"]), :arrived => 0, :fullnoshows => 0, :fullarrived => 0, :shifts => []}
     end
     @arrived.each do |noshow|
       @contacts[noshow["contact_id"]][:arrived] = noshow["count"].to_i
@@ -77,13 +78,11 @@ class AssignmentsController < ApplicationController
     @list.each do |cid|
       c = @contacts[cid]
 
-      n = c[:noshow].to_i
-      c[:noshow_percentage] = 100.0 * n / (n + c[:arrived].to_i)
+      n = c[:noshow]
+      c[:noshow_percentage] = 100.0 * n / (n + c[:arrived])
 
-      n = c[:fullnoshows].to_i
-      c[:fullnoshows_percentage] = 100.0 * n / (n + c[:fullarrived].to_i)
-
-      c[:shifts] = []
+      n = c[:fullnoshows]
+      c[:fullnoshows_percentage] = 100.0 * n / (n + c[:fullarrived])
     end
 
     # filter the results
@@ -96,10 +95,13 @@ class AssignmentsController < ApplicationController
       @list = @list.select{|x| @contacts[x][:noshow_percentage] >= f}
     end
 
-    @assignments = Assignment.find(:all, :conditions => [conds, opts].flatten, :include => [:volunteer_shift => [:volunteer_event]])
+    @assignments = Assignment.find(:all, :conditions => [conds, opts].flatten, :include => [:volunteer_shift => [:volunteer_event]], :order => 'volunteer_events.date ASC')
     @assignments.each do |a|
-      @contacts[a.contact_id.to_s][:shifts] << a.description
+      @contacts[a.contact_id.to_s][:shifts] << a.description if a.contact_id
     end
+
+    @sort_by = (params[:sort_by] || "noshow").to_sym
+    @list = @list.sort_by{|x| @contacts[x][@sort_by]}.reverse
   end
 
   layout :with_sidebar
