@@ -15,6 +15,8 @@ class AssignmentsController < ApplicationController
     @noshow_attendance_types = [AttendanceType.find_by_name('no call no show').id]
     @arrived_attendance_types = (AttendanceType.find_all_by_cancelled(nil) + AttendanceType.find_all_by_cancelled(false)).map(&:id)
     @sort_by = :noshow
+    @percent = 0
+    @count = 1
   end
 
   def noshows_report
