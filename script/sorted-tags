@@ -1,3 +1,16 @@
-#!/bin/sh
+#!/usr/bin/ruby
 
-git tag | sed -e 's/1\./1000/' -e 's/0\./0000/' | sort -n | sed 's/^10000000/1.0./'
+list = `git tag`.split("\n")
+
+puts list.sort{|a, b|
+  a_arr = a.split(".")
+  b_arr = b.split(".")
+
+  ret = 0
+  while (ret == 0) and (a_arr.length > 0 or b_arr.length > 0)
+    ret = -1 if a_arr.length == 0
+    ret = 1 if b_arr.length == 0
+    ret = a_arr.shift.to_i <=> b_arr.shift.to_i if ret == 0
+  end
+  ret
+}
