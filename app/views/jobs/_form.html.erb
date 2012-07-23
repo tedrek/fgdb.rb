@@ -32,7 +32,7 @@
   <p><label for="standard_shifts">Standard shifts:</label><br/>
   <ul>
   <% StandardShift.find(:all, :order => "weekday_id, start_time", :conditions => ["job_id = ?", @job.id]).each do |s| %>
-    <li><%= link_to s.job_name, { :action => "edit", :controller => "standard_shifts", :id => s.id }, :popup => true %></li>
+    <li><%= link_to s.job_name, { :action => "edit", :controller => "shifts", :id => s.id }, :popup => true %></li>
   <% end %>
   </ul>
   </div>
