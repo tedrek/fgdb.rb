@@ -41,4 +41,8 @@ class SidebarLinksController < ApplicationController
   def staffsched_moved
     render :layout => false
   end
+
+  def supplies_moved # or never existed here, actually..
+    redirect_to "http://supplies.freegeek.org/"
+  end
 end

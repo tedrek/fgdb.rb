@@ -48,6 +48,7 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
+  map.connect 'supplies', :controller => "sidebar_links", :action => "supplies_moved"
   map.connect 'staffsched', :controller => "work_shifts", :action => "staffsched"
   map.connect 'barcode/:id.:format', :controller => "barcode", :action => "barcode"
 end
