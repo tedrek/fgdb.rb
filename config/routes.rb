@@ -48,7 +48,22 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
-  map.connect 'supplies', :controller => "sidebar_links", :action => "supplies_moved"
-  map.connect 'staffsched', :controller => "work_shifts", :action => "staffsched"
   map.connect 'barcode/:id.:format', :controller => "barcode", :action => "barcode"
+
+  map.connect 'todo', :controller => "sidebar_links", :action => "todo_moved"
+  map.connect 'mail', :controller => "sidebar_links", :action => "mail_moved"
+  map.connect 'deadtrees', :controller => "sidebar_links", :action => "deadtrees_moved"
+  map.connect 'dead trees', :controller => "sidebar_links", :action => "deadtrees_moved"
+
+  map.connect 'supplies', :controller => "sidebar_links", :action => "supplies_moved"
+  map.connect 'recent_crash', :controller => "sidebar_links", :action => "recent_crash"
+
+  map.connect 'staffsched', :controller => "work_shifts", :action => "staffsched"
+  map.connect 'staff_sched', :controller => "work_shifts", :action => "staffsched"
+  map.connect 'staffschedule', :controller => "work_shifts", :action => "staffsched"
+  map.connect 'worksched', :controller => "work_shifts", :action => "staffsched"
+
+# try levenshtein maybe, on 404 routing failure?
+#  map.connect 'gizmo_return'
+#  map.connect 'metings'
 end
