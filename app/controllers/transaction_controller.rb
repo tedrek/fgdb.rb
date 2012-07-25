@@ -1,5 +1,4 @@
-require 'pdf/writer'
-require 'pdf/simpletable'
+require 'prawn'
 
 class TransactionController < ApplicationController
   layout :check_for_receipt
@@ -330,78 +329,27 @@ class TransactionController < ApplicationController
 
     font_size = 12
 
-    pdf = PDF::Writer.new
-    pdf.select_font("Helvetica")
+    pdf = Prawn::Document.new
 
-    pdf.start_columns 4, 0
-    pdf.image RAILS_ROOT + "/public/images/freegeeklogo.png", :justification => :left
-    pdf.start_new_page
-    pdf.image RAILS_ROOT + "/public/images/hdr-address.png", :justification => :left, :resize => 1.5
-    pdf.start_new_page
-    pdf.start_new_page
-    pdf.text( ([@txn.contact_information, @txn.hidable_contact_information].flatten).map{|x| x || ""} )
-    pdf.stop_columns
+    pdf.font("Helvetica")
 
+    w = 540/4.0
+    pdf.table([[{:image => RAILS_ROOT + "/public/images/freegeeklogo.png", :position => :left}, {:image => RAILS_ROOT + "/public/images/hdr-address.png", :position => :left, :scale => 1}, {:border_width => 0, :content => ""}, {:content => ([@txn.contact_information, @txn.hidable_contact_information].flatten).map{|x| x || ""}.join("\n")}]], :column_widths => [w, w, w, w], :cell_style => {:border_width => 0})
     pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left
 
-    pdf.stroke_color! Color::RGB::Black
-    pdf.line(pdf.absolute_left_margin, pdf.y, pdf.absolute_right_margin, pdf.y).stroke
+    pdf.stroke_horizontal_rule
 
-    PDF::SimpleTable.new do |tab|
-      tab.font_size = font_size
-        tab.width = pdf.absolute_right_margin - pdf.absolute_left_margin # (PDF::Writer::PAGE_SIZES["A4"][2].to_i - 60)
-        tab.column_order.push(*%w(one two three))
-
-        tab.columns["one"] = PDF::SimpleTable::Column.new("one") { |col|
-
-        }
-        tab.columns["two"] = PDF::SimpleTable::Column.new("two") { |col|
-        }
-        tab.columns["three"] = PDF::SimpleTable::Column.new("three") { |col|
-        col.justification = :right
-        }
-
-        tab.show_lines    = :none
-        tab.show_headings = false
-        tab.shade_rows  = :none
-        tab.orientation   = :center
-        tab.position      = :center
-
-        data = [
-                { "one" => "Donation #{@txn.invoiced? ? "Invoice" : "Receipt"}", "three" => Default["tax id"] },
-                { "one" => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}" },
-                { "one" => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}", "two" => "Donation ##{@txn.id}", "three" => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : ""},
-          ]
-
-        tab.data.replace data
-        tab.render_on(pdf)
-      end
+    w = 540/3.0
+    pdf.table(    [[{:content => "Donation #{@txn.invoiced? ? "Invoice" : "Receipt"}"}, {:content => ""}, {:content => Default["tax id"], :align => :right}],
+     [{:content => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}"}],
+     [{:content => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}"}, {:content => "Donation ##{@txn.id}"}, {:content => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : "", :align => :right}]], :column_widths => [w, w, w], :cell_style => {:border_width => 0, :padding => 0})
 
     if show_suggested
       pdf.text "There is a suggested tax deductible donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
       pdf.y -= 3
     end
 
-    PDF::SimpleTable.new do |tab|
-      tab.font_size = font_size
-        tab.width = pdf.absolute_right_margin - pdf.absolute_left_margin # (PDF::Writer::PAGE_SIZES["A4"][2].to_i - 60)
-        tab.column_order.push(*%w(qty desc val))
 
-        tab.columns["qty"] = PDF::SimpleTable::Column.new("qty") { |col|
-        col.heading = "Quantity:"
-        }
-        tab.columns["desc"] = PDF::SimpleTable::Column.new("desc") { |col|
-        col.heading = "Description:"
-        }
-        tab.columns["val"] = PDF::SimpleTable::Column.new("val") { |col|
-        col.heading = "Est Value:"
-        }
-
-        tab.show_lines    = :all
-        tab.show_headings = true
-
-        tab.orientation   = :center
-        tab.position      = :center
       data = @txn.gizmo_events.select{|event| !GizmoType.fee?(event.gizmo_type)}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => "______"}}
       data << {"desc" => " "}
       data << {"desc" => "Total Estimated Value (tax deductible):", "val" =>  "_________"}
@@ -439,29 +387,28 @@ class TransactionController < ApplicationController
         data << {"desc" => "Total Tax Deductible Donation:", "val" =>  "_________"}
       end
 
-        tab.data.replace data
-        tab.render_on(pdf)
+    a = %w(qty desc val)
+    arranged_data = [["Quantity:", "Description:", "Est Value:"]]
+    data.each do |x|
+      newarr = []
+      a.each_with_index do |y,i|
+        newarr[i] = x[y]
       end
+      arranged_data << newarr
+    end
 
-#    pdf.hline
-#    pdf.save_state
-#    pdf.stroke_style PDF::Writer::StrokeStyle::DEFAULT
-#    pdf.stroke_color! Color::RGB::Black
-#    
-#    pdf.stroke
-#    pdf.restore_state
+    w = 540/9.0
+    pdf.table(arranged_data, :column_widths => [w, 7*w, w], :cell_style => {:padding => 0}, :row_colors => ["F0F0F0", "FFFFCC"])
 
-    pdf.text @txn.comments.to_s, :font_size => font_size
-    # <HR />, however..
+
+    pdf.text @txn.comments.to_s
+
+    pdf.stroke_horizontal_rule
     pdf.y -= 5
-    pdf.stroke_color! Color::RGB::Black
-    pdf.line(pdf.absolute_left_margin, pdf.y, pdf.absolute_right_margin, pdf.y).stroke
     pdf.text "We affirm that no goods or services were provided in return for the donation amounts listed above (required fees excepted).", :font_size => font_size
 
-#    pdf.y -= 10
-#    pdf.text "Hello, Ruby.", :font_size => 72, :justification => :center
+#pdf.start_new_page
 
-#       pdf.save_as('public/output.pdf')
     return pdf
   end
   public
