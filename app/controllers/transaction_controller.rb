@@ -398,7 +398,7 @@ class TransactionController < ApplicationController
     end
 
     w = 540/9.0
-    pdf.table(arranged_data, :column_widths => [w, 7*w, w], :cell_style => {:padding => 0}, :row_colors => ["F0F0F0", "FFFFCC"])
+    pdf.table(arranged_data, :column_widths => [2*w, 5*w, 2*w], :cell_style => {:padding => 1}, :row_colors => ["B0B0B0", "FFFFFF"])
 
 
     pdf.text @txn.comments.to_s
