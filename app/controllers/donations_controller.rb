@@ -17,6 +17,7 @@ class DonationsController < TransactionController
       if @transaction.calculated_under_pay < 0
         @transaction.payments << Payment.new(:amount_cents => -1 * @transaction.calculated_under_pay, :payment_method => PaymentMethod.invoice)
       end
+      Thread.current['cashier'] = Thread.current['user']
       @transaction.valid? # add errors, otherwise mine below will prevent the check
       # TODO: CHECK OTHER THINGS: ..?
       for i in @transaction.gizmo_events

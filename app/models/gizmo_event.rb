@@ -23,9 +23,15 @@ class GizmoEvent < ActiveRecord::Base
 
   before_save :set_storecredit_difference_cents, :if => :is_store_credit
   before_save :resolve_invoice, :if => :resolves_invoice?
+  after_destroy :unresolve_invoice, :if => :resolves_invoice?
 
   def resolve_invoice
     self.invoice_donation.invoice_resolved_at = self.occurred_at
+    self.invoice_donation.save
+  end
+
+  def unresolve_invoice
+    self.invoice_donation.invoice_resolved_at = nil
     self.invoice_donation.save
   end
 

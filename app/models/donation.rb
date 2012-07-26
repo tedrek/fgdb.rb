@@ -12,6 +12,7 @@ class Donation < ActiveRecord::Base
 #  named_scope :with_unresolved_invoice, :joins => [:payment_methods], :conditions => ["invoice_resolved_at IS NULL AND payment_methods.name LIKE 'invoice'"]
 #  named_scope :for_contact, lambda{|cid| {:conditions => ["contact_id = ?", cid]}}
   define_amount_methods_on_fake_attr :invoice_amount
+  after_destroy {|rec| Thread.current['cashier'] ||= Thread.current['user']; rec.resolves.each do |d| d.invoice_resolved_at = nil; d.save!; end } # FIXME: ask for cashier code on destroy
 
   def calculated_under_pay
     (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
@@ -19,6 +20,10 @@ class Donation < ActiveRecord::Base
 
   def invoice_amount_cents
     payments.select{|x| x.payment_method == PaymentMethod.invoice}.inject(0){|t,x| t+=x.amount_cents}
+  end
+
+  def resolves
+    supersedes
   end
 
   def supersedes
