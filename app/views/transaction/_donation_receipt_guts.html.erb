@@ -63,7 +63,7 @@
     <% end %>
     <td><%= event.gizmo_count %> </td>
     <td><%= h event.attry_description %> </td>
-    <td><%= my_number_to_currency(event.gizmo_count * event.unit_price_cents) %></td>
+    <td><%= my_number_to_currency(-1*event.gizmo_count * event.unit_price_cents) %></td>
   </tr>
   <% end -%>
 <% end -%>
@@ -86,7 +86,7 @@
       <td>&nbsp;</td>
     <% end %>
     <td align="left"><%= payment.payment_method.description.match("invoice") ? "<b>" : "" %><%= h(payment.payment_method.description).titleize %> <%= payment.payment_method.description.match("invoice") ? "Total" : "Paid" %>:<%= payment.payment_method.description.match("invoice") ? "</b>" : "" %></td>
-    <td><%= my_number_to_currency(payment.amount_cents) %></td>
+    <td><%= my_number_to_currency((payment.payment_method.description.match("invoice") ? -1 : 1)*payment.amount_cents) %></td>
   </tr>
 <% end %>
 
@@ -101,7 +101,7 @@
     <% end %>
     <td> Required Fee Paid
       (<strong>not</strong> tax deductible): </td>
-    <td><%= my_number_to_currency(@donation.required_fee_paid_cents + @donation.required_fee_owed_cents) %></font></td>
+    <td><%= my_number_to_currency(-1*@donation.required_fee_paid_cents + @donation.required_fee_owed_cents) %></font></td>
   </tr>
 
     <tr>
@@ -123,7 +123,7 @@
     <% end %>
       <td> Required Fee Paid
         (<strong>not</strong> tax deductible): </td>
-      <td><%= my_number_to_currency(@donation.required_fee_paid_cents) %></font></td>
+      <td><%= my_number_to_currency(-1 * @donation.required_fee_paid_cents) %></font></td>
     </tr>
   <% end %>
 
@@ -136,7 +136,7 @@
     <% end %>
       <td> Required Fee Due
         (<strong>not</strong> tax deductible): </td>
-      <td><%= my_number_to_currency(@donation.required_fee_owed_cents) %></font></td>
+      <td><%= my_number_to_currency(-1 * @donation.required_fee_owed_cents) %></font></td>
     </tr>
   <% end %>
 
