@@ -355,12 +355,12 @@ class TransactionController < ApplicationController
       data << {"desc" => "Total Estimated Value (tax deductible):", "val" =>  "_________"}
       data = data + @txn.gizmo_events.select{|event| (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => number_to_currency((x.gizmo_count * x.unit_price_cents)/100.0)}}
       unless @txn.payments.length == 1 && @txn.payments.first.payment_method.description.downcase == "invoice"
-        data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
+        data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + (payment.payment_method.description.match("invoice") ? " Total" : " Paid") + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
       end
 
       if @txn.invoice_resolved?
         data << {"desc" => "Required Fee Paid (NOT tax deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents + @txn.required_fee_owed_cents)/100.0) }
-        data << {"desc" => "Donation Paid (tax deductible):", "val" => number_to_currency((@txn.cash_donation_paid_cents + @txn.cash_donation_owed_cents)/100.0)}
+        data << {"desc" => "Contribution Paid (tax deductible):", "val" => number_to_currency((@txn.cash_donation_paid_cents + @txn.cash_donation_owed_cents)/100.0)}
       else
         if @txn.required_fee_paid_cents.nonzero?
           data << {"desc" => "Required Fee Paid (NOT tax deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents)/100.0)}
@@ -376,15 +376,15 @@ class TransactionController < ApplicationController
         end
 
         if @txn.cash_donation_paid_cents.nonzero?
-          data << {"desc" => "Donation Paid (tax deductible):", "val" => number_to_currency(@txn.cash_donation_paid_cents/100.0) }
+          data << {"desc" => "Contribution Paid (tax deductible):", "val" => number_to_currency(@txn.cash_donation_paid_cents/100.0) }
         end
         if @txn.invoiced? and @txn.cash_donation_owed_cents.nonzero?
-          data << {"desc" => "Cash Donation Owed (tax deductible AFTER PAYMENT)", "val" => number_to_currency(@txn.cash_donation_owed_cents/100.0)}
+          data << {"desc" => "Cash Contribution Owed (tax deductible AFTER PAYMENT)", "val" => number_to_currency(@txn.cash_donation_owed_cents/100.0)}
         end
       end
 
       unless @txn.payments.length == 0
-        data << {"desc" => "Total Tax Deductible Donation:", "val" =>  "_________"}
+        data << {"desc" => "Total Tax Deductible Contribution:", "val" =>  "_________"}
       end
 
     a = %w(qty desc val)
@@ -405,7 +405,7 @@ class TransactionController < ApplicationController
 
     pdf.stroke_horizontal_rule
     pdf.y -= 5
-    pdf.text "We affirm that no goods or services were provided in return for the donation amounts listed above (required fees excepted).", :font_size => font_size
+    pdf.text "We affirm that no goods or services were provided in return for the contribution amounts listed above (required fees excepted).", :font_size => font_size
 
 #pdf.start_new_page
 
