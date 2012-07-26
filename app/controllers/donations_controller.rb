@@ -8,6 +8,12 @@ class DonationsController < TransactionController
       @transaction = Donation.new(:contact => @contact)
     end
     if @contact and params[:invoices]
+      begin
+        @resolved_date = Date.parse(params[:donation][:invoice_resolved_at])
+      rescue
+        @resolved_date = Date.today
+      end
+      @transaction.occurred_at = @resolved_date
       _apply_line_item_data(@transaction)
       gt = GizmoType.find_by_name("invoice_resolved")
       params[:invoices].each do |k|
@@ -29,6 +35,8 @@ class DonationsController < TransactionController
         @show_id = @transaction.id
         @contact = nil
       end
+    else
+      @resolved_date = Date.today
     end
   end
 

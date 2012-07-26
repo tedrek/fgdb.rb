@@ -4,8 +4,9 @@ fgdb.rb (1.0.101) UNRELEASED; urgency=low
   * Port donation receipt text changes (s/donations/contributions/, etc)
     on the HTML receipt from last week to the PDF version too
   * Negative some things on the donations receipts for clarity
+  * Include a resolved date on the invoices interface
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 25 Jul 2012 17:37:36 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 25 Jul 2012 18:19:35 -0700
 
 fgdb.rb (1.0.100) released; urgency=low
 

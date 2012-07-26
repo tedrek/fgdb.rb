@@ -14,6 +14,10 @@
           <%= javascript_tag "has_a_price = 1;" %>
           <%= render :partial => 'payments' %>
         </div>
+        <div class="form-element">
+          <label for="donation_invoice_resolved_at">Mark invoices resolved on date:</label>
+          <%= calendar_box('donation', 'invoice_resolved_at', :value => @resolved_date) %>
+        </div>
         <% js = "invoice_amounts = new Hash();" %>
         <% @invoices.each do |invoice| %>
           <% js += "invoice_amounts.set(#{invoice.id.to_json}, #{invoice.invoice_amount_cents.to_json});" %>
