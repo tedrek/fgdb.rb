@@ -6,7 +6,7 @@
   <th>Total Worked Hours</th>
   <th>Total Break Hours</th>
 </tr>
-<% @workers.each do |y| %>
+<% @workers.sort_by(&:name).each do |y| %>
 <tr>
   <td><%= y.name %></td>
   <td><%= @t[y.id] || 0.0 %></td>
