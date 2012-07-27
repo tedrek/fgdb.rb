@@ -96,6 +96,7 @@ module SidebarHelper
     sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule
     sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"}
     sidebar_hash["staff"]["individual report"] = {:c => "worked_shifts", :a => "individual"}
+    sidebar_hash["staff"]["breaks report"] = {:c => "worked_shifts", :a => "breaks"}
     sidebar_hash["staff"]["jobs report"] = {:c => "reports", :a => "staff_hours"}
     sidebar_hash["staff"]["types report"] = {:c => "worked_shifts", :a => "type_totals"}
     sidebar_hash["staff"]["payroll report"] = {:c => "worked_shifts", :a => "payroll"}

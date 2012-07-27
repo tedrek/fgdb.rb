@@ -8,8 +8,8 @@ class WorkedShiftsController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:only => [:weekly_worker, :payroll, :type_totals], :privileges => ['manage_workers']}
-    a << {:except => [:weekly_worker, :payroll, :type_totals], :privileges => ['staff']}
+    a << {:only => [:weekly_worker, :payroll, :type_totals, :breaks, :breaks_report], :privileges => ['manage_workers']}
+    a << {:except => [:weekly_worker, :payroll, :type_totals, :breaks, :breaks_report], :privileges => ['staff']}
     a << {:only => ['/modify_all_workers'], :privileges => ['log_all_workers_hours']}
     a
   end
@@ -21,6 +21,30 @@ class WorkedShiftsController < ApplicationController
     "income_streams" => "description",
     "worker_types" => "name",
     "workers" => "name"}
+
+  def breaks
+    @conditions = Conditions.new
+  end
+
+  def breaks_report
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    @worked = WorkedShift.find(:all, :conditions => @conditions.conditions(WorkedShift))
+
+    @workers = []
+    @b = {}
+    @t = {}
+    @worked.each do |y|
+      @workers << y.worker unless @workers.include?(y.worker)
+      if y.job.name == 'Paid Break'
+        @b[y.worker_id] ||= 0.0
+        @b[y.worker_id] += y.duration
+      else
+        @t[y.worker_id] ||= 0.0
+        @t[y.worker_id] += y.duration
+      end
+    end
+  end
 
   def type_totals
     @types_of_types = NH.keys
