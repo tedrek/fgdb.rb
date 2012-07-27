@@ -19,7 +19,12 @@
 <div>
 <h3>By Schedule</h3>
 <% c_last = "" %>
-<%= link_to "ALL", {:action => to_action, :conditions => {:empty_enabled => "true"}} %><br />
+<% if s = Sked.find_by_name("Sandbox") %>
+<% conds = {:sked_enabled => "true", :sked_id => s.id, :sked_excluded => "sked_excluded"} %>
+<% else %>
+<% conds = {:empty_enabled => "true"} %>
+<% end %>
+<%= link_to "ALL", {:action => to_action, :conditions => conds} %><br />
 <% s = Sked.find(:all) %>
 <% s.select{|x| x.category_type.to_s.strip.length == 0 }.each do |x| %>
 <%= link_to x.name, {:action => to_action, :conditions => {:sked_enabled => "true", :sked_id => x.id}} %> (Rosters included: <%= x.rosters_s %>)<br />
