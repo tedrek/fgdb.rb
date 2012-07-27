@@ -35,6 +35,7 @@ class WorkedShiftsController < ApplicationController
     @b = {}
     @t = {}
     @worked.each do |y|
+      next unless y.job_id
       @workers << y.worker unless @workers.include?(y.worker)
       if y.job.name == 'Paid Break'
         @b[y.worker_id] ||= 0.0
