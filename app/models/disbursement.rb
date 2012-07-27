@@ -6,6 +6,23 @@ class Disbursement < ActiveRecord::Base
   has_many :gizmo_types, :through => :gizmo_events
   acts_as_userstamp
 
+  def is_fully_returned?
+    gts = {}
+    first = self.gizmo_events
+    first.each do |x|
+      gts[x.gizmo_type_id] ||= 0
+      gts[x.gizmo_type_id] += x.gizmo_count
+    end
+    second = GizmoEvent.find_all_by_return_disbursement_id(self.id)
+    second.each do |x|
+      gts[x.gizmo_type_id] ||= 0
+      gts[x.gizmo_type_id] -= x.gizmo_count
+    end
+    gts.to_a.select{|k,v|
+      v > 0
+    }.length == 0
+  end
+
   def gizmo_context
     GizmoContext.disbursement
   end
