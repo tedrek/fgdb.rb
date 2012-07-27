@@ -30,7 +30,7 @@ class WorkedShiftsController < ApplicationController
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
     conds = @conditions.conditions(WorkedShift)
-    conds[0] = "SELECT workers.name, SUM(CASE WHEN(jobs.description LIKE 'Paid Break') THEN 0.0 ELSE duration END) AS total, SUM(CASE WHEN(jobs.description LIKE 'Paid Break') THEN duration ELSE 0.0 END) AS breaks FROM worked_shifts JOIN jobs ON worked_shifts.job_id = jobs.id  JOIN workers ON worked_shifts.worker_id = workers.id WHERE #{conds[0]} GROUP BY 1 ORDER BY 1;"
+    conds[0] = "SELECT workers.name, SUM(CASE WHEN(jobs.name LIKE 'Paid Break') THEN 0.0 ELSE duration END) AS total, SUM(CASE WHEN(jobs.name LIKE 'Paid Break') THEN duration ELSE 0.0 END) AS breaks FROM worked_shifts JOIN jobs ON worked_shifts.job_id = jobs.id  JOIN workers ON worked_shifts.worker_id = workers.id WHERE #{conds[0]} GROUP BY 1 ORDER BY 1;"
     @result = DB.exec(conds)
   end
 
