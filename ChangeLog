@@ -9,6 +9,7 @@ fgdb.rb (1.0.100) released; urgency=low
   * Add a no show report for finding volunteers who don't cancel
     (Closes: #28394)"
   * Add some redirects to the database for everything
+  * Add a breaks report
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 22:08:10 -0700
 
