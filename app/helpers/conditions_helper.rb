@@ -244,7 +244,7 @@ module ConditionsHelper
                         :display_create => false,
                         :show_label => false,
                       },
-                      :contact => eval("@" + params_key).contact
+                      :contact => eval("@" + params_key).nil? ? nil : eval("@" + params_key).contact
                     } )
     elsif has_privileges("has_contact")
       "Me" + hidden_field(params_key, 'contact_id', :value => @current_user.contact_id)
