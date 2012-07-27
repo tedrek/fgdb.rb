@@ -29,22 +29,9 @@ class WorkedShiftsController < ApplicationController
   def breaks_report
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
-    @worked = WorkedShift.find(:all, :conditions => @conditions.conditions(WorkedShift))
-
-    @workers = []
-    @b = {}
-    @t = {}
-    @worked.each do |y|
-      next unless y.job_id
-      @workers << y.worker unless @workers.include?(y.worker)
-      if y.job.name == 'Paid Break'
-        @b[y.worker_id] ||= 0.0
-        @b[y.worker_id] += y.duration
-      else
-        @t[y.worker_id] ||= 0.0
-        @t[y.worker_id] += y.duration
-      end
-    end
+    conds = @conditions.conditions(WorkedShift)
+    conds[0] = "SELECT workers.name, SUM(CASE WHEN(jobs.description LIKE 'Paid Break') THEN 0.0 ELSE duration END) AS total, SUM(CASE WHEN(jobs.description LIKE 'Paid Break') THEN duration ELSE 0.0 END) AS breaks FROM worked_shifts JOIN jobs ON worked_shifts.job_id = jobs.id  JOIN workers ON worked_shifts.worker_id = workers.id WHERE #{conds[0]} GROUP BY 1 ORDER BY 1;"
+    @result = DB.exec(conds)
   end
 
   def type_totals
