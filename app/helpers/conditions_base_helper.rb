@@ -12,7 +12,7 @@ module ConditionsBaseHelper
       else
         raise "Unknown condition: #{x}"
       end
-      hash[x] = "<div style=\"display: inline-block;\">" + label_tag("#{params_key}[#{x}_excluded]", "Exclude?") + check_box_tag("#{params_key}[#{x}_excluded]", "#{x}_excluded", obj.send("#{x}_excluded")) + "</div>" + hash[x] unless Conditions::CHECKBOXES.include?(x) or x == "empty" or multiselect_mode == "force"
+      hash[x] = "<div style=\"display: inline-block; float: left;\">" + label_tag("#{params_key}[#{x}_excluded]", "Exclude?") + check_box_tag("#{params_key}[#{x}_excluded]", "#{x}_excluded", obj.send("#{x}_excluded")) + "</div>" + hash[x] unless Conditions::CHECKBOXES.include?(x) or x == "empty" or multiselect_mode == "force"
     }
     if enable_advanced
       return multiselect_of_form_elements(params_key, hash, multiselect_mode) + conditions_radio_button(params_key, obj, these_things, multiselect_mode) + hide_forced_conds(params_key, obj, these_things, multiselect_mode)
