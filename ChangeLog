@@ -12,6 +12,8 @@ fgdb.rb (1.0.100) released; urgency=low
   * Add a breaks report
   * Add a new page for tech support to generate the return using only the
     system ID # (Closes: #29647)
+  * Add checkboxes for cancelling other shifts or closing the shift when
+    setting attendance type to a cancel type
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 22:08:10 -0700
 
