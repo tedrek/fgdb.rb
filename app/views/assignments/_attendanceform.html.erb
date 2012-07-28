@@ -3,7 +3,8 @@
 <%= f.label :attendance_type_id %>
 <% t = Time.now.to_i%>
 <%= f.select("attendance_type_id", AttendanceType.find(:all).sort_by(&:id).collect {|p| [ p.name, p.id ] }, {:include_blank => true, :selected => @assignment.attendance_type_id}, :id => "attendance_attendance_type_id_#{t}", :onchange => "show_cancellable(self, #{t.to_json});") %>
-<div id="cancellable_assignments_<%= t %>" style="display: none">
+<br />
+<div id="cancellable_assignments_<%= t %>" style="display: none; max-height: 200px; overflow: auto;">
 <% @assignment.contact.future_shifts.select{|x| x.attendance_type_id.nil?}.select{|x| x.id != @assignment.id}.each do |assignment| %>
 <div class="form-element" style="float: left">
 <label for="cancel_<%= assignment.id %>_<%= t %>">Also cancel shift for <%= assignment.description %>:</label>
