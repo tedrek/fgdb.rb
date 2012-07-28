@@ -63,6 +63,10 @@
       javascript_tag js %>
 <% end -%>
 
+<% if ["assignments", "default_assignments"].include?(params[:controller]) %>
+<%= javascript_tag "cancelled_attendance_types = #{AttendanceType.find_all_by_cancelled(true).map(&:id).to_json};" %>
+<% end %>
+
 <%= js = "var contact_method_types = new Array;"
     for contact_method_type in ContactMethodType.find(:all).sort_by(&:description)
       js += "contact_method_types[#{contact_method_type.id}] = '#{contact_method_type.description}';"

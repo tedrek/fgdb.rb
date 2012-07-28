@@ -118,8 +118,12 @@ class Contact < ActiveRecord::Base
     c.save!
   end
 
+  def future_shifts
+    self.assignments.on_or_after_today.not_cancelled.sort{|a,b| t = a.date <=> b.date; t == 0 ? a.start_time <=> b.start_time : t}
+  end
+
   def scheduled_shifts
-    a = self.assignments.on_or_after_today.not_cancelled.sort{|a,b| t = a.date <=> b.date; t == 0 ? a.start_time <=> b.start_time : t}
+    a = future_shifts
     more = false
     if a.length > 5
       a = a[0,5]

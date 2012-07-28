@@ -25,6 +25,11 @@ class GizmoEvent < ActiveRecord::Base
   before_save :resolve_invoice, :if => :resolves_invoice?
   after_destroy :unresolve_invoice, :if => :resolves_invoice?
 
+  def to_return_event(trans)
+    # TODO: when doing for store credit, will need to set :unit_price_cents
+    GizmoEvent.new(:gizmo_type_id => self.gizmo_type_id, :return_disbursement_id => self.disbursement_id, :return_sale_id => self.sale_id, :description => self.description, :system_id => self.system_id, :unit_price_cents => 0, :gizmo_return => trans, :gizmo_type => self.gizmo_type, :gizmo_context => GizmoContext.gizmo_return, :gizmo_count => 1)
+  end
+
   def resolve_invoice
     self.invoice_donation.invoice_resolved_at = self.occurred_at
     self.invoice_donation.save

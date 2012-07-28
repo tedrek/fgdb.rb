@@ -319,6 +319,24 @@ class AssignmentsController < ApplicationController
       @assignment.attendance_type_id = params[:attendance][:attendance_type_id] if params[:attendance]
       success = @assignment.save
     end
+    if success and params[:cancel]
+      at = AttendanceType.find_by_name("cancelled")
+      params[:cancel].each do |i|
+        assignment = Assignment.find_by_id(i)
+        if assignment
+          assignment.attendance_type = at
+          assignment.save
+        end
+      end
+    end
+    if success and params[:close_shift] and params[:close_shift] == "1"
+      a = Assignment.new
+      a.volunteer_shift_id = @assignment.volunteer_shift_id
+      a.start_time = @assignment.start_time
+      a.end_time = @assignment.end_time
+      a.closed = true
+      a.save
+    end
     render :update do |page|
       if success
         page.reload

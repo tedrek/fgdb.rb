@@ -1,6 +1,14 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function show_cancellable(obj, t) {
+  if(cancelled_attendance_types.include(parseInt($("attendance_attendance_type_id_" + t).value))) {
+    $("cancellable_assignments_" + t).show();
+  } else {
+    $("cancellable_assignments_" + t).hide();
+  }
+}
+
 function set_offsite_from_job_default() {
   set_offsite_from_job("offsite", "job_id");
 }
