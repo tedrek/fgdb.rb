@@ -16,6 +16,8 @@ fgdb.rb (1.0.100) released; urgency=low
     setting attendance type to a cancel type
   * restrict arrived link in volskedj to shifts that are not in the
     future
+  * Change slot conflict checking to treat rosters self contained, only
+    looking for conflicts in the same roster
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 22:08:10 -0700
 
