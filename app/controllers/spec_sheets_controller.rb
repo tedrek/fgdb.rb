@@ -20,6 +20,14 @@ class SpecSheetsController < ApplicationController
   include SystemHelper
   MY_VERSION=9
 
+  def pricing
+    @system = System.find_by_id(params[:id])
+    if @system
+      @spec_sheet = @system.spec_sheets.last
+      @values = @spec_sheet.pricing_values
+    end
+  end
+
   def sign_off
     if params[:cashier_code] && params[:cashier_code].length == 4
       u = User.find_by_cashier_code(params[:cashier_code])

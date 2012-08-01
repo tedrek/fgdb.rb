@@ -21,6 +21,36 @@ module SystemHelper
       return sp
     end
 
+    def pricing_values
+      o = OH.new
+
+      # "Processor Description" (vendor & product) ..?
+      o[:processor_product] = @processors.first.processor
+
+      # "Running Speed",
+      # "Real Speed" (DISPLAY WARNING if different)
+      o[:running_processor_speed] = @processors.first.speed
+      m = o[:processor_product].match(/([0-9.]+\s*GHZ)/i)
+      o[:product_processor_speed] = m ? m[0] : nil
+
+      # "Max L2/L3 cache" (Add  all 'em up, but use only L3 if it's there else L2.)
+      o[:max_L2_L3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total)
+
+      # FIXME: "RAM Size"
+      # AND "RAM total", cause it can differ? DISPLAY WARNING)
+      o[:total_ram] = @total_memory
+
+      o[:individual_ram_total] = @added_total.to_bytes
+
+      # "HD Size" (first, for now at least),
+      o[:hd_size] = @harddrives.first.size
+
+      # Laptop Battery Life (mins)
+      o[:battery_life] = @battery_life
+
+      return o
+    end
+
     def klass
       self.class
     end
@@ -30,6 +60,7 @@ module SystemHelper
 
       @parser = load_xml(@string) or raise SystemParserException
 
+      @added_total = 0
       @sixty_four_bit = false
       @virtualization = false
       @north_bridge = "Unknown"
@@ -117,6 +148,10 @@ module SystemHelper
 
   class FgdbPrintmeExtrasSystemParser < SystemParser
     include XmlHelper
+
+    def pricing_values
+      @real_system_parser.pricing_values
+    end
 
     def self.match_string
       "fgdb_printme"
@@ -253,7 +288,11 @@ module SystemHelper
         m = OpenStruct.new
         m.bank = @parser.xml_value_of("@id").sub(/^bank:/, "")
         m.description = @parser.xml_value_of("description")
-        m.size = @parser.xml_value_of("size").to_bytes if @parser.xml_if("size")
+        if @parser.xml_if("size")
+          s = @parser.xml_value_of("size")
+          @added_total += s.to_i
+          m.size = s.to_bytes
+        end
         @memories << m
       end
 

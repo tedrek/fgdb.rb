@@ -16,6 +16,10 @@ class SpecSheet < ActiveRecord::Base
 
   has_many :spec_sheet_values, :include => [:spec_sheet_question], :order => "spec_sheet_questions.position ASC"
 
+  def pricing_values
+    self.parser.pricing_values
+  end
+
   # is there already an inverse to Hash.to_a ?
   def r_hash_parse(arr)
     h = {}

@@ -1,0 +1,26 @@
+<h1>System Pricing</h1>
+<div class="noprint">
+<% form_for "", nil, :url => { :action => "pricing" } do |f| %>
+<div class="form-element">
+<%= f.label :id, "System #" %>
+<%= f.text_field :id, :size => 10 %>
+</div>
+<div class="form-element" style="clear: left">
+<%= f.submit "Pull Up System Information" %>
+</div>
+<% end %>
+</div>
+
+<% if @system %>
+<fieldset style="clear: left" width="100%">
+<h2>Pricing Information for System #<%= @system.id %></h2><br />
+<table class="awesome" width="100%">
+  <% @values.each do |k, v| %>
+  <tr>
+    <th><%= k.to_s.titleize %>:</th>
+    <td><%= v %></td>
+  </tr>
+  <% end %>
+</table>
+</fieldset>
+<% end %>

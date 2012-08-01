@@ -8,8 +8,10 @@ fgdb.rb (1.0.101) UNRELEASED; urgency=low
   * Limit contact results on search pages to contacts with the
     contact_type they would have if they would return results (Closes:
     #29643)
+  * Add a pricing page to pull the information for the pricing sheet, so
+    far
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 01 Aug 2012 11:59:47 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 01 Aug 2012 16:10:52 -0700
 
 fgdb.rb (1.0.100) released; urgency=low
 
