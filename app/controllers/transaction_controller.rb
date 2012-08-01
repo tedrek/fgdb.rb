@@ -110,7 +110,7 @@ class TransactionController < ApplicationController
   end
 
   def get_disbursement_exists
-    s = Disbursement.find_by_id(params[:id])
+    s = Disbursement.find_by_id(params[:id].to_i)
     s = !! s
     render :update do |page|
       page << "internal_disbursement_exists = #{s.to_json};";
@@ -470,6 +470,12 @@ class TransactionController < ApplicationController
         params[:gizmo_events].values.each{|x|
           x[:gizmo_count] ||= 1 if @gizmo_context == GizmoContext.gizmo_return
           x[:gizmo_context] = @gizmo_context
+          # TODO: move this processing to entire db?
+          for k in x.keys
+            if x[k] == "undefined"
+              x[k] = nil
+            end
+          end
         }
       end
       @lines = my_apply_line_item_data(transaction, :gizmo_events)
