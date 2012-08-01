@@ -190,6 +190,7 @@ class AssignmentsController < ApplicationController
     @multi_enabled = true
     if params[:conditions]
       my_sort_prepend = params[:conditions][:sked_enabled] == "true" ? "(SELECT position FROM rosters_skeds WHERE sked_id = #{params[:conditions][:sked_id]} AND roster_id = volunteer_shifts.roster_id), " : "volunteer_shifts.roster_id, "
+      links = [[:arrived, :link, :contact_id_and_by_today], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:attendance, :remote, :contact_id, :t]]
     @skedj = Skedjul.new({
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned", "weekday"],
       :date_range_condition => "date",
@@ -218,7 +219,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:attendance, :remote, :contact_id, :t]],
+                               :thing_links => links,
                              },
 
                              :call_list =>
@@ -232,7 +233,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,display_name,display_call_status,display_phone_numbers",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed]],
+                               :thing_links => links,
                              },
 
                              :by_worker =>
@@ -248,7 +249,7 @@ class AssignmentsController < ApplicationController
                                :thing_table_name => "assignments",
                                :thing_description => "time_range_s,volunteer_shifts.left_method_name",
                                :thing_link_id => "assignments.id",
-                               :thing_links => [[:arrived, :link, :contact_id], [:reassign, :function, :contact_id], [:split, :remote, :contact_id], [:notes, :remote, :has_notes], [:edit, :link], [:builder_history, :link, :if_builder_assigned], [:copy, :link, :volshift_stuck], [:close, :link, :not_assigned, :x], [:open, :link, :closed]],
+                               :thing_links => links,
                              }
                            },
 

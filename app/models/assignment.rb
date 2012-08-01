@@ -15,6 +15,11 @@ class Assignment < ActiveRecord::Base
 
   has_one :contact_volunteer_task_type_count, :conditions => 'contact_volunteer_task_type_counts.contact_id = #{defined?(attributes) ? contact_id : "assignments.contact_id"}', :through => :volunteer_shift, :source => :contact_volunteer_task_type_counts
 
+  def contact_id_and_by_today
+    # Unless the contact id is empty, or the event date is after today.
+    !(contact_id.nil? || self.volunteer_shift.volunteer_event.date > Date.today)
+  end
+
   def voltask_count
     self.contact_volunteer_task_type_count ? self.contact_volunteer_task_type_count.attributes["count"] : 0
   end
@@ -96,13 +101,15 @@ class Assignment < ActiveRecord::Base
     has_task_type = ! assignment.volunteer_shift.volunteer_task_type_id.nil?
     ret = nil
     if has_task_type
+      rid = assignment.volunteer_shift.roster_id
       tslot = assignment.volunteer_shift.slot_number
       ttid = assignment.volunteer_shift.volunteer_task_type_id
-      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_task_type_id = ?)', tslot, ttid]}
+      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_task_type_id = ? AND roster_id = ?)', tslot, ttid, rid]}
     else
+      rid = assignment.volunteer_shift.roster_id
       tslot = assignment.volunteer_shift.slot_number
       teid = assignment.volunteer_shift.volunteer_event_id
-      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL)', tslot, teid]}
+      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL AND roster_id = ?)', tslot, teid, rid]}
     end
     ret
   }
