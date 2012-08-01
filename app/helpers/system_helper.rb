@@ -36,7 +36,6 @@ module SystemHelper
       # "Max L2/L3 cache" (Add  all 'em up, but use only L3 if it's there else L2.)
       o[:max_L2_L3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total)
 
-      # FIXME: "RAM Size"
       # AND "RAM total", cause it can differ? DISPLAY WARNING)
       o[:total_ram] = @total_memory
 
@@ -150,7 +149,9 @@ module SystemHelper
     include XmlHelper
 
     def pricing_values
-      @real_system_parser.pricing_values
+      h = @real_system_parser.pricing_values
+      h[:battery_life] = @battery_life
+      h
     end
 
     def self.match_string
