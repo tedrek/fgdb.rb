@@ -101,13 +101,15 @@ class Assignment < ActiveRecord::Base
     has_task_type = ! assignment.volunteer_shift.volunteer_task_type_id.nil?
     ret = nil
     if has_task_type
+      rid = assignment.volunteer_shift.roster_id
       tslot = assignment.volunteer_shift.slot_number
       ttid = assignment.volunteer_shift.volunteer_task_type_id
-      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_task_type_id = ?)', tslot, ttid]}
+      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_task_type_id = ? AND roster_id = ?)', tslot, ttid, rid]}
     else
+      rid = assignment.volunteer_shift.roster_id
       tslot = assignment.volunteer_shift.slot_number
       teid = assignment.volunteer_shift.volunteer_event_id
-      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL)', tslot, teid]}
+      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL AND roster_id = ?)', tslot, teid, rid]}
     end
     ret
   }
