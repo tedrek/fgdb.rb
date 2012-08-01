@@ -47,6 +47,8 @@ module SystemHelper
       # Laptop Battery Life (mins)
       o[:battery_life] = @battery_life
 
+      o[:optical_drive] = @opticals.collect{|x| x.capabilities}.join(", ")
+
       return o
     end
 
@@ -150,7 +152,10 @@ module SystemHelper
 
     def pricing_values
       h = @real_system_parser.pricing_values
-      h[:battery_life] = @battery_life
+      m = @battery_life.match(/battery lasted ([0-9]+ minutes)/)
+      if m
+        h[:battery_life] = m[1]
+      end
       h
     end
 
