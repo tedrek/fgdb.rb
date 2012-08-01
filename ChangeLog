@@ -5,8 +5,11 @@ fgdb.rb (1.0.101) UNRELEASED; urgency=low
     on the HTML receipt from last week to the PDF version too
   * Negative some things on the donations receipts for clarity
   * Include a resolved date on the invoices interface
+  * Limit contact results on search pages to contacts with the
+    contact_type they would have if they would return results (Closes:
+    #29643)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 25 Jul 2012 18:19:35 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 01 Aug 2012 11:59:47 -0700
 
 fgdb.rb (1.0.100) released; urgency=low
 

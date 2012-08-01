@@ -541,21 +541,27 @@ class Contact < ActiveRecord::Base
       # wildcards and join with ANDs.
       return [] unless query and query.length > 0
       conditions = prepare_query(query)
-      find(:all, {:limit => 5, :conditions => conditions, :order => "sort_name"}.merge(options))
+      find_by_conds(conditions, options)
     end
 
-    def search_by_type(type, query, options = {})
+    def search_by_type(types, query, options = {})
+      return [] unless query and query.length > 0
       if query.to_i.to_s == query
         # allow searches by id
         search(query, options)
       else
-        query = prepare_query(query)
-        query += " AND types:\"*#{type}*\""
-        search(query, options)
+        conditions = prepare_query(query)
+        conditions[0] += " AND contact_types.id IN (?)"
+        conditions.push([types].flatten)
+        return find_by_conds(conditions, options.merge(:joins => [:contact_types]))
       end
     end
 
     protected
+
+    def find_by_conds(conditions, options)
+      find(:all, {:limit => 5, :conditions => conditions, :order => "sort_name"}.merge(options))
+    end
 
     def prepare_query(q)
       if q.to_i.to_s == q and q.to_i <= 2147483647 and q.to_i >= -2147483648

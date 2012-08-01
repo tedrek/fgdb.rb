@@ -1,5 +1,9 @@
 class AssignmentsController < ApplicationController
   protected
+  before_filter :set_my_contact_context, :only => ["search"]
+  def set_my_contact_context
+    set_contact_context(ContactType.find_by_name('volunteer'))
+  end
 
   def get_required_privileges
     a = super

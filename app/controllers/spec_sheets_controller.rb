@@ -9,6 +9,11 @@ class SpecSheetsController < ApplicationController
     a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
     return a
   end
+
+  before_filter :set_my_contact_context, :only => ["search"]
+  def set_my_contact_context
+    set_contact_context(ContactType.find_by_name('build'))
+  end
   public
 
   helper :system

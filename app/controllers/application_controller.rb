@@ -20,6 +20,21 @@ end
 
 class ApplicationController < ActionController::Base
   protected
+  before_filter :set_contact_context
+  def set_contact_context(value = nil)
+    if value.class == Array
+      if value.length == 0
+        value = nil
+      else
+        value = value.map(&:id) if value.length > 0 and value.first.class == ContactType
+        value = value.join(",")
+      end
+    elsif value.class == ContactType
+      value = value.id.to_s
+    end
+    Thread.current['contact-context'] = value
+  end
+
   def determine_per_page
     session[:per_page] ||= 20
     session[:per_page] = params[:per_page] if params[:per_page]

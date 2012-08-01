@@ -294,7 +294,13 @@ class ContactsController < ApplicationController
 
   def method_missing(symbol, *args)
     if /^auto_complete_for/.match(symbol.to_s)
-      @contacts = Contact.search(params[params["object_name"]][params[:field_name]].strip, :limit => 10)
+      n = params[params["object_name"]][params[:field_name]].strip
+      if params[:contact_context] and params[:contact_context].to_s.length > 0
+        l = params[:contact_context].to_s.split(/ ,/).map(&:to_i)
+        @contacts = Contact.search_by_type(l, n, :limit => 10)
+      else
+        @contacts = Contact.search(n, :limit => 10)
+      end
       render :partial => 'auto_complete_list'
     else
       super
