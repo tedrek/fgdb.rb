@@ -15,6 +15,11 @@ class Assignment < ActiveRecord::Base
 
   has_one :contact_volunteer_task_type_count, :conditions => 'contact_volunteer_task_type_counts.contact_id = #{defined?(attributes) ? contact_id : "assignments.contact_id"}', :through => :volunteer_shift, :source => :contact_volunteer_task_type_counts
 
+  def contact_id_and_by_today
+    # Unless the contact id is empty, or the event date is after today.
+    !(contact_id.nil? || self.volunteer_shift.volunteer_event.date > Date.today)
+  end
+
   def voltask_count
     self.contact_volunteer_task_type_count ? self.contact_volunteer_task_type_count.attributes["count"] : 0
   end
