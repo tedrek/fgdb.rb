@@ -25,27 +25,46 @@ module SystemHelper
       o = OH.new
 
       # "Processor Description" (vendor & product) ..?
-      o[:processor_product] = @processors.first.processor
+      o[:processor_product] = @processors.first.processor if @processors.first
 
       # "Running Speed",
       # "Real Speed" (DISPLAY WARNING if different)
-      o[:running_processor_speed] = @processors.first.speed
+      o[:running_processor_speed] = @processors.first.speed.downcase if @processors.first
       m = o[:processor_product].match(/([0-9.]+\s*GHZ)/i)
-      o[:product_processor_speed] = m ? m[0] : nil
+      o[:product_processor_speed] = m ? m[0].downcase : nil
 
       # "Max L2/L3 cache" (Add  all 'em up, but use only L3 if it's there else L2.)
-      o[:max_L2_L3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total)
+      o[:max_L2_L3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total).downcase.sub(/kb/, "k")
 
       # AND "RAM total", cause it can differ? DISPLAY WARNING)
-      o[:total_ram] = @total_memory
-
-      o[:individual_ram_total] = @added_total.to_bytes
+      o[:total_ram] = @total_memory.downcase
+      o[:individual_ram_total] = @added_total.to_bytes(1).downcase
 
       # "HD Size" (first, for now at least),
-      o[:hd_size] = @harddrives.first.size
+      if @harddrives.first
+        o[:hd_size] = @harddrives.first.size
+        o[:hd_size].downcase! unless o[:hd_size].match(/TB/)
+      end
 
-      o[:optical_drive] = @opticals.collect{|x| x.capabilities.split(/, (?:and )?/)}.flatten.uniq.to_sentence
-
+      optic_cap = @opticals.collect{|x| x.capabilities.split(/, (?:and )?/)}.flatten.uniq.to_sentence
+      cdrw = optic_cap.match(/CD-RW burning/)
+      dvdrw = optic_cap.match(/DVD-RW burning/) # FIXME test
+      cdrom = optic_cap.match(/read CD-ROMs/)
+      dvd = optic_cap.match(/DVD playback/)
+      if dvdrw
+        o[:optical_drive] = "DVD/RW"
+      elsif cdrw and dvd
+        o[:optical_drive] = "Combo DVD CD/RW"
+      elsif cdrw
+        o[:optical_drive] = "CD/RW"
+      elsif dvd
+        o[:optical_drive] = "DVD ROM"
+      elsif  cdrom
+        o[:optical_drive] = "CD Rom"
+      else
+        o[:optical_drive] = "N/A"
+      end
+        
       # Laptop Battery Life (mins)
       o[:battery_life] = @battery_life
 

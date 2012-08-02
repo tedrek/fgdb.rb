@@ -21,7 +21,7 @@ class SpecSheetsController < ApplicationController
   MY_VERSION=9
 
   def pricing
-    @system = System.find_by_id(params[:id])
+    @system = System.find_by_id(params[:id].to_i)
     if @system
       @spec_sheet = @system.spec_sheets.last
       @values = @spec_sheet.pricing_values
