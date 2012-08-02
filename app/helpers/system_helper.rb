@@ -44,10 +44,10 @@ module SystemHelper
       # "HD Size" (first, for now at least),
       o[:hd_size] = @harddrives.first.size
 
+      o[:optical_drive] = @opticals.collect{|x| x.capabilities}.join(", ")
+
       # Laptop Battery Life (mins)
       o[:battery_life] = @battery_life
-
-      o[:optical_drive] = @opticals.collect{|x| x.capabilities}.join(", ")
 
       return o
     end
