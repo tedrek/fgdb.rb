@@ -44,7 +44,7 @@ module SystemHelper
       # "HD Size" (first, for now at least),
       o[:hd_size] = @harddrives.first.size
 
-      o[:optical_drive] = @opticals.collect{|x| x.capabilities}.join(", ")
+      o[:optical_drive] = @opticals.collect{|x| x.capabilities.split(/, (?:and )?/)}.flatten.uniq.to_sentence
 
       # Laptop Battery Life (mins)
       o[:battery_life] = @battery_life
