@@ -10,12 +10,12 @@ class SystemPricing < ActiveRecord::Base
 
   def spec_sheet
     s = read_attribute(:spec_sheet_id)
-    return SpecSheet.find(s) if defined?(@found_spec_sheet)
+    return SpecSheet.find_by_id(s) if defined?(@found_spec_sheet)
     if s.nil? and self.system and self.system.spec_sheets.last
       s = self.spec_sheet_id = self.system.spec_sheets.last.id
     end
     @found_spec_sheet = true # or at least tried.
-    return SpecSheet.find(s)
+    return SpecSheet.find_by_id(s)
   end
 
   def valid?
