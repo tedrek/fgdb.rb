@@ -30,7 +30,7 @@ module SystemHelper
       # "Running Speed",
       # "Real Speed" (DISPLAY WARNING if different)
       o[:running_processor_speed] = @processors.first.speed.downcase if @processors.first
-      m = o[:processor_product].match(/([0-9.]+\s*GHZ)/i)
+      m = o[:processor_product].match(/([0-9.]+\s*[GM]HZ)/i)
       o[:product_processor_speed] = m ? m[0].downcase : nil
 
       # "Max L2/L3 cache" (Add  all 'em up, but use only L3 if it's there else L2.)
@@ -47,10 +47,11 @@ module SystemHelper
       end
 
       optic_cap = @opticals.collect{|x| x.capabilities.split(/, (?:and )?/)}.flatten.uniq.to_sentence
-      cdrw = optic_cap.match(/CD-RW burning/)
-      dvdrw = optic_cap.match(/DVD-RW burning/) # FIXME test
-      cdrom = optic_cap.match(/read CD-ROMs/)
-      dvd = optic_cap.match(/DVD playback/)
+      optic_models = @opticals.collect{|x| x.model}.uniq.to_sentence
+      cdrw = optic_cap.match(/CD-RW burning/) || optic_models.match(/CD-R(?!ead|OM)/)
+      dvdrw = optic_cap.match(/DVD-RW burning/) || optic_models.match(/DVD-R(?!ead|OM)/)
+      cdrom = optic_cap.match(/read CD-ROMs/) || optic_models.match(/CD/)
+      dvd = optic_cap.match(/DVD playback/) || optic_models.match(/DVD/)
       if dvdrw
         o[:optical_drive] = "DVD/RW"
       elsif cdrw and dvd
@@ -59,12 +60,12 @@ module SystemHelper
         o[:optical_drive] = "CD/RW"
       elsif dvd
         o[:optical_drive] = "DVD ROM"
-      elsif  cdrom
+      elsif cdrom
         o[:optical_drive] = "CD Rom"
       else
         o[:optical_drive] = "N/A"
       end
-        
+
       # Laptop Battery Life (mins)
       o[:battery_life] = @battery_life
 
