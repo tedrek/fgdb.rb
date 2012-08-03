@@ -1,0 +1,38 @@
+<p>
+  <b>Pricing component:</b>
+  <%=h @pricing_value.pricing_component_id %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%=h @pricing_value.name %>
+</p>
+
+<p>
+  <b>Matcher:</b>
+  <%=h @pricing_value.matcher %>
+</p>
+
+<p>
+  <b>Minimum:</b>
+  <%=h @pricing_value.minimum %>
+</p>
+
+<p>
+  <b>Maximum:</b>
+  <%=h @pricing_value.maximum %>
+</p>
+
+<p>
+  <b>Value cents:</b>
+  <%=h @pricing_value.value_cents %>
+</p>
+
+<p>
+  <b>Active:</b>
+  <%=h @pricing_value.active %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @pricing_value.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

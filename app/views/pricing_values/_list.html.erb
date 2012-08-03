@@ -1,0 +1,26 @@
+<table>
+  <tr>
+    <th>Pricing component</th>
+    <th>Name</th>
+    <th>Matcher</th>
+    <th>Minimum</th>
+    <th>Maximum</th>
+    <th>Value cents</th>
+    <th>Active</th>
+  </tr>
+
+<% for pricing_value in @pricing_values %>
+  <tr>
+    <td><%=h pricing_value.pricing_component_id %></td>
+    <td><%=h pricing_value.name %></td>
+    <td><%=h pricing_value.matcher %></td>
+    <td><%=h pricing_value.minimum %></td>
+    <td><%=h pricing_value.maximum %></td>
+    <td><%=h pricing_value.value_cents %></td>
+    <td><%=h pricing_value.active %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => pricing_value.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => pricing_value.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => pricing_value.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

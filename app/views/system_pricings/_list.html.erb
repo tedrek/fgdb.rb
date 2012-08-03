@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <th>System</th>
+    <th>Spec sheet</th>
+    <th>Pricing set</th>
+    <th>Notes</th>
+  </tr>
+
+<% for system_pricing in @system_pricings %>
+  <tr>
+    <td><%=h system_pricing.system_id %></td>
+    <td><%=h system_pricing.spec_sheet_id %></td>
+    <td><%=h system_pricing.pricing_set_id %></td>
+    <td><%=h system_pricing.notes %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => system_pricing.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => system_pricing.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => system_pricing.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

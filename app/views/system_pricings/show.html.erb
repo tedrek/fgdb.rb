@@ -1,0 +1,23 @@
+<p>
+  <b>System:</b>
+  <%=h @system_pricing.system_id %>
+</p>
+
+<p>
+  <b>Spec sheet:</b>
+  <%=h @system_pricing.spec_sheet_id %>
+</p>
+
+<p>
+  <b>Pricing set:</b>
+  <%=h @system_pricing.pricing_set_id %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%=h @system_pricing.notes %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @system_pricing.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

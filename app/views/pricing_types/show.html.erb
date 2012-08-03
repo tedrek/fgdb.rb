@@ -1,0 +1,33 @@
+<p>
+  <b>Name:</b>
+  <%=h @pricing_type.name %>
+</p>
+
+<p>
+  <b>Type:</b>
+  <%=h @pricing_type.type_id %>
+</p>
+
+<p>
+  <b>Pull from:</b>
+  <%=h @pricing_type.pull_from %>
+</p>
+
+<p>
+  <b>Matcher:</b>
+  <%=h @pricing_type.matcher %>
+</p>
+
+<p>
+  <b>Base value cents:</b>
+  <%=h @pricing_type.base_value_cents %>
+</p>
+
+<p>
+  <b>Active:</b>
+  <%=h @pricing_type.active %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @pricing_type.id} %> |
+<%= link_to 'Back', {:action => "index"} %>
