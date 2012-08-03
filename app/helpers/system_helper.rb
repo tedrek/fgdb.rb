@@ -48,7 +48,7 @@ module SystemHelper
 
       optic_cap = @opticals.collect{|x| x.capabilities.split(/, (?:and )?/)}.flatten.uniq.to_sentence
       optic_models = @opticals.collect{|x| x.model}.uniq.to_sentence
-      cdrw = optic_cap.match(/CD-RW burning/) || optic_models.match(/CD-R(?!ead|OM)/)
+      cdrw = optic_cap.match(/CD-RW burning/) || optic_models.match(/CD-R(?!ead|OM)/) || optic_models.match(/CD-?RW/)
       dvdrw = optic_cap.match(/DVD-RW burning/) || optic_models.match(/DVD-R(?!ead|OM)/)
       cdrom = optic_cap.match(/read CD-ROMs/) || optic_models.match(/CD/)
       dvd = optic_cap.match(/DVD playback/) || optic_models.match(/DVD/)
