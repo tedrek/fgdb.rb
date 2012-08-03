@@ -37,7 +37,7 @@ module SystemHelper
       o[:max_L2_L3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total).downcase.sub(/kb/, "k")
 
       # AND "RAM total", cause it can differ? DISPLAY WARNING)
-      o[:total_ram] = @total_memory.downcase
+      o[:total_ram] = @total_memory ? @total_memory.downcase : ""
       o[:individual_ram_total] = @added_total.to_bytes(1).downcase
 
       # "HD Size" (first, for now at least),

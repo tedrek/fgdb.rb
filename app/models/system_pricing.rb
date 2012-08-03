@@ -19,11 +19,11 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def valid?
-    if self.spec_sheet.pricing_values[:product_processor_speed].length > 0 and (self.spec_sheet.pricing_values[:running_processor_speed] != self.spec_sheet.pricing_values[:product_processor_speed])
+    if self.spec_sheet.pricing_values[:product_processor_speed] and self.spec_sheet.pricing_values[:product_processor_speed].length > 0 and (self.spec_sheet.pricing_values[:running_processor_speed] != self.spec_sheet.pricing_values[:product_processor_speed])
       errors.add('spec_sheet_id', "detected a different running speed (#{self.spec_sheet.pricing_values[:running_processor_speed]}) than the processor product speed (#{self.spec_sheet.pricing_values[:product_processor_speed]})")
       @needs_override = true
     end
-    if self.spec_sheet.pricing_values[:total_ram] != self.spec_sheet.pricing_values[:individual_ram_total]
+    if self.spec_sheet.pricing_values[:total_ram] and self.spec_sheet.pricing_values[:total_ram].length > 0 and (self.spec_sheet.pricing_values[:total_ram] != self.spec_sheet.pricing_values[:individual_ram_total])
       errors.add('spec_sheet_id', "detected a different total amount of memory (#{self.spec_sheet.pricing_values[:total_ram]}) than the sum of the individual banks (#{self.spec_sheet.pricing_values[:individual_ram_total]})")
       @needs_override = true
     end
@@ -39,8 +39,11 @@ class SystemPricing < ActiveRecord::Base
                               h[k] = v
                             end
                           end
-                          h[:processor_speed] = oh[:product_processor_speed].length > 0 ? oh[:product_processor_speed] : oh[:running_processor_speed]
-                          h[:memory_amount] = oh[:total_ram]
+                          h[:processor_speed] = (oh[:product_processor_speed] and oh[:product_processor_speed].length > 0) ? oh[:product_processor_speed] : oh[:running_processor_speed]
+                          h[:memory_amount] = (oh[:total_ram] and oh[:total_ram].length > 0) ? oh[:total_ram] : oh[:individual_ram_total]
+                          unless h[:battery_life] and h[:battery_life].length > 0
+                            h[:battery_life] = "N/A"
+                          end
                           h
                         end
   end
