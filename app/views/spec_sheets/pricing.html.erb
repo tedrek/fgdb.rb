@@ -3,7 +3,7 @@
 <% form_for "", nil, :url => { :action => "pricing" } do |f| %>
 <div class="form-element">
 <%= f.label :id, "System #" %>
-<%= f.text_field :id, :size => 10 %>
+<%= f.text_field :id, :size => 10, :value => @system.nil? ? "" : @system.id %>
 </div>
 <div class="form-element" style="clear: left">
 <%= f.submit "Pull Up System Information" %>
@@ -13,7 +13,8 @@
 
 <% if @system %>
 <fieldset style="clear: left" width="100%">
-<h2>Pricing Information for System #<%= @system.id %></h2><br />
+<h2>Pricing Information for <%= link_to "System ##{@system.id}", {:controller => "spec_sheets", :action => "system", :id => @system.id} %></h2>
+Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:controller => "spec_sheets", :action => "show", :id => @spec_sheet.id} %>:
 <table class="awesome" width="100%">
   <% @values.each do |k, v| %>
   <tr>
@@ -24,3 +25,4 @@
 </table>
 </fieldset>
 <% end %>
+
