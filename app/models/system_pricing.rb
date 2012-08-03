@@ -8,14 +8,11 @@ class SystemPricing < ActiveRecord::Base
     !! @needs_override
   end
 
-  def spec_sheet
-    return @this_found_spec_sheet if defined?(@found_spec_sheet)
-    s = read_attribute(:spec_sheet_id)
-    if s.nil? and self.system and self.system.spec_sheets.last
-      s = self.spec_sheet_id = self.system.spec_sheets.last.id
+  def system_id=(number)
+    write_attribute(:system_id, number)
+    if sys = System.find_by_id(number) and sys.spec_sheets.last
+      self.spec_sheet = sys.spec_sheets.last
     end
-    @found_spec_sheet = true # or at least tried.
-    self.spec_sheet = @this_found_spec_sheet = SpecSheet.find_by_id(s)
   end
 
   def valid?
