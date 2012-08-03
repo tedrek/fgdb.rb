@@ -17,11 +17,13 @@ class SpecSheet < ActiveRecord::Base
   has_many :spec_sheet_values, :include => [:spec_sheet_question], :order => "spec_sheet_questions.position ASC"
 
   def pricing_values
-    h = self.parser.pricing_values
-    h[:build_type] = self.type ? self.type.name : nil
-    a = h.instance_variable_get("@arr")
-    a.unshift(a.pop)
-    h
+    @pricing_values ||= begin
+                          h = self.parser.pricing_values
+                          h[:build_type] = self.type ? self.type.name : nil
+                          a = h.instance_variable_get("@arr")
+                          a.unshift(a.pop)
+                          h
+                        end
   end
 
   # is there already an inverse to Hash.to_a ?

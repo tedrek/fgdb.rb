@@ -21,10 +21,11 @@ class SpecSheetsController < ApplicationController
   MY_VERSION=9
 
   def pricing
-    @system = System.find_by_id(params[:id].to_i)
+    @system_pricing = SystemPricing.new(:system_id => params[:id].to_i)
+    @system = @system_pricing.system
     if @system
-      @spec_sheet = @system.spec_sheets.last
-      @values = @spec_sheet.pricing_values
+      @spec_sheet = @system_pricing.spec_sheet
+      @values = @system_pricing.pricing_values
     end
   end
 
