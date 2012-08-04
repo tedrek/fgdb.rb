@@ -48,8 +48,8 @@ module SystemHelper
 
       optic_cap = @opticals.collect{|x| (x.capabilities || "").split(/, (?:and )?/)}.flatten.uniq.to_sentence
       optic_models = @opticals.collect{|x| x.model}.uniq.to_sentence
-      cdrw = optic_cap.match(/CD-RW? burning/i) || optic_models.match(/CD-R(?!ead|OM)/i) || optic_models.match(/CD-?RW/i)
-      dvdrw = optic_cap.match(/DVD[-+]RW? burning/i) || optic_models.match(/DVD-R(?!ead|OM)/i)
+      cdrw = optic_cap.match(/CD[- ]RW? burning/i) || optic_models.match(/CD[ -]R(?!ead|OM)/i) || optic_models.match(/CD[ -]?RW/i)
+      dvdrw = optic_cap.match(/DVD[-+ ]RW? burning/i) || optic_models.match(/DVD[- +]R(?!ead|OM)/i)
       cdrom = optic_cap.match(/read CD-ROMs/i) || optic_models.match(/CD/i)
       dvd = optic_cap.match(/DVD playback/i) || optic_models.match(/DVD/i)
       if dvdrw
@@ -172,7 +172,7 @@ module SystemHelper
 
     def pricing_values
       h = @real_system_parser.pricing_values
-      m = @battery_life.match(/battery lasted ([0-9]+ minutes)/)
+      m = @battery_life.match(/battery lasted ([0-9]+ minutes)/) if @battery_life
       if m
         h[:battery_life] = m[1]
       end
