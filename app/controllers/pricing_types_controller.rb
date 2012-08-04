@@ -22,7 +22,7 @@ class PricingTypesController < ApplicationController
 
     if @pricing_type.save
       flash[:notice] = 'PricingType was successfully created.'
-      redirect_to({:action => "show", :id => @pricing_type.id})
+      redirect_to({:action => "edit", :id => @pricing_type.id})
     else
       render :action => "new"
     end

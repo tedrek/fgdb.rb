@@ -7,6 +7,11 @@ class System < ActiveRecord::Base
   has_many :spec_sheets
   has_many :notes
   has_many :gizmo_events
+  has_many :system_pricings, :order => 'created_at ASC'
+
+  def pricing
+    system_pricings.last
+  end
 
   def previous
     self.class.find(previous_id) if previous_id

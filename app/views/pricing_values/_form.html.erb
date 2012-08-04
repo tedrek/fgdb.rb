@@ -1,15 +1,8 @@
   <p>
-    <%= f.label :pricing_component_id %><br />
-    <%= f.text_field :pricing_component_id %>
-  </p>
-  <p>
-    <%= f.label :name %><br />
+    <%= f.label :name, "Display Name" %><br />
     <%= f.text_field :name %>
   </p>
-  <p>
-    <%= f.label :matcher %><br />
-    <%= f.text_field :matcher %>
-  </p>
+  <% if self.pricing_component.numerical? %>
   <p>
     <%= f.label :minimum %><br />
     <%= f.text_field :minimum %>
@@ -18,11 +11,13 @@
     <%= f.label :maximum %><br />
     <%= f.text_field :maximum %>
   </p>
+  <% else %>
   <p>
-    <%= f.label :value_cents %><br />
-    <%= f.text_field :value_cents %>
+    <%= f.label :matcher, "Value to Match Pulled Value Against (only if different from display name)" %><br />
+    <%= f.text_field :matcher %>
   </p>
+  <% end %>
   <p>
-    <%= f.label :active %><br />
-    <%= f.check_box :active %>
+    <%= f.label :value %><br />
+    <%= f.text_field :value %>
   </p>

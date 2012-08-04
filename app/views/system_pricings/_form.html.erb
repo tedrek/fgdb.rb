@@ -9,7 +9,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
 <% @system_pricing.extra_valid? %>
 <%= error_messages_for :system_pricing, :header_message => "Some problems were found with this system's pricing" %>
 <table class="awesome" width="100%">
-  <% SystemPricing.valid_pulls.each do |k| %>
+  <% SystemPricing.display_pulls.each do |k| %>
   <tr>
     <th><%= k.to_s.titleize %>:</th>
     <td><%= @values[k] %></td>

@@ -3,11 +3,43 @@ class SystemPricing < ActiveRecord::Base
   belongs_to :system
   belongs_to :spec_sheet
   belongs_to :pricing_type
+  define_amount_methods_on :calculated_price
+
+  before_save :set_calculated_price
+  def set_calculated_price
+    self.calculated_price_cents = calculate_price_cents
+  end
+
+  def cents_step_ceil(number, step)
+    float = number / 100.0
+    int = float.ceil
+    mod = (int % step)
+    if mod == 0
+      return int
+    else
+      return int + (step - mod)
+    end
+  end
+
+  def calculate_price_cents
+    total = self.base_value_cents
+    self.pricing_values.each do |value|
+      total += value.value_cents
+    end
+    total = total * self.multiplier
+    total = cents_step_ceil(total, self.round_by)
+  end
 
   def system_id=(number)
     write_attribute(:system_id, number)
     if sys = System.find_by_id(number) and sys.spec_sheets.last
       self.spec_sheet = sys.spec_sheets.last
+    end
+    PricingTypes.automatic.each do |pt|
+      if pt.matches?(self.pricing_values)
+        self.pricing_type = pt
+        break
+      end
     end
   end
 
@@ -40,7 +72,11 @@ class SystemPricing < ActiveRecord::Base
                         end
   end
 
+  def self.display_pulls
+    [:build_type] + valid_pulls
+  end
+
   def self.valid_pulls
-    [:build_type, :processor_product, :processor_speed, :max_L2_L3_cache, :memory_amount, :hd_size, :optical_drive, :battery_life]
+    [:processor_product, :processor_speed, :max_L2_L3_cache, :memory_amount, :hd_size, :optical_drive, :battery_life]
   end
 end
