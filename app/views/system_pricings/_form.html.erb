@@ -4,7 +4,7 @@
   </p>
   <% if @system %>
 <fieldset style="clear: left" width="100%">
-<h2>Pricing Information for <%= link_to "System ##{@system.id}", {:controller => "spec_sheets", :action => "system", :id => @system.id} %></h2>
+<h2>Information from <%= link_to "System ##{@system.id}", {:controller => "spec_sheets", :action => "system", :id => @system.id} %></h2>
 Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:controller => "spec_sheets", :action => "show", :id => @spec_sheet.id} %>:
 <% @system_pricing.extra_valid? %>
 <%= error_messages_for :system_pricing, :header_message => "Some problems were found with this system's pricing" %>
@@ -18,8 +18,13 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
 </table>
 </fieldset>
   <p>
-    <%= f.label :pricing_type_id %><br />
-    <%= f.select :pricing_type_id, PricingType.all.map{|x| [x.name, x.id]} %>
+    <table class="awesome" width="100%">
+      <caption>Components for Pricing:</caption>
+      <tr>
+        <th><%= f.label :pricing_type_id %></th>
+        <td><%= f.select :pricing_type_id, PricingType.all.map{|x| [x.name, x.id]} %></td>
+      </tr>
+    </table>
   </p>
   <% end %>
 <% if @system_pricing.pricing_type %>
