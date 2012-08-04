@@ -4,7 +4,7 @@
   </p>
   <p>
     <%= f.label :pull_from %><br />
-    <%= f.text_field :pull_from %>
+    <%= f.select :pull_from, SystemPricing.valid_pulls.map{|x| [x.to_s.titleize, x.to_s]} %>
   </p>
   <p>
     <%= f.label :numerical %><br />

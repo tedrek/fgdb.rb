@@ -1,16 +1,19 @@
   <p>
+  Page 1:
     <%= f.label :system_id %><br />
     <%= f.text_field :system_id %>
   </p>
   <p>
+  Page 2:
     <%= f.label :spec_sheet_id %><br />
     <%= f.text_field :spec_sheet_id %>
   </p>
   <p>
-    <%= f.label :pricing_set_id %><br />
-    <%= f.text_field :pricing_set_id %>
+    <%= f.label :pricing_type_id %><br />
+    <%= f.select :pricing_type_id, PricingType.all.map{|x| [x.name, x.id]} %>
   </p>
   <p>
+  Page 3:
     <%= f.label :notes %><br />
     <%= f.text_area :notes %>
   </p>
