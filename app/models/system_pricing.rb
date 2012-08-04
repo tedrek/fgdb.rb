@@ -11,6 +11,8 @@ class SystemPricing < ActiveRecord::Base
     end
   end
 
+  attr_accessor :magic_bit
+
   def extra_valid?
     if self.spec_sheet.pricing_values[:product_processor_speed] and self.spec_sheet.pricing_values[:product_processor_speed].length > 0 and (self.spec_sheet.pricing_values[:running_processor_speed] != self.spec_sheet.pricing_values[:product_processor_speed])
       errors.add('spec_sheet_id', "detected a different running speed (#{self.spec_sheet.pricing_values[:running_processor_speed]}) than the processor product speed (#{self.spec_sheet.pricing_values[:product_processor_speed]})")

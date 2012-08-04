@@ -38,7 +38,7 @@ class SystemPricingsController < ApplicationController
       @values = @system_pricing.pricing_values
     end
 
-    if @system_pricing.pricing_type and @system_pricing.save
+    if @system_pricing.magic_bit and @system_pricing.save
       flash[:notice] = 'SystemPricing was successfully created.'
       redirect_to({:action => "show", :id => @system_pricing.id})
     else

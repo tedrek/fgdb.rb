@@ -21,10 +21,10 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
     <%= f.label :pricing_type_id %><br />
     <%= f.select :pricing_type_id, PricingType.all.map{|x| [x.name, x.id]} %>
   </p>
-  <p>
   <% end %>
 <% if @system_pricing.pricing_type %>
-  Page 3:
+  <%= f.hidden_field :magic_bit, {:valud => "1"} %>
+  <p>
     <%= f.label :notes %><br />
     <%= f.text_area :notes %>
   </p>
