@@ -48,10 +48,10 @@ module SystemHelper
 
       optic_cap = @opticals.collect{|x| x.capabilities.split(/, (?:and )?/)}.flatten.uniq.to_sentence
       optic_models = @opticals.collect{|x| x.model}.uniq.to_sentence
-      cdrw = optic_cap.match(/CD-RW burning/) || optic_models.match(/CD-R(?!ead|OM)/) || optic_models.match(/CD-?RW/)
-      dvdrw = optic_cap.match(/DVD-RW burning/) || optic_models.match(/DVD-R(?!ead|OM)/)
-      cdrom = optic_cap.match(/read CD-ROMs/) || optic_models.match(/CD/)
-      dvd = optic_cap.match(/DVD playback/) || optic_models.match(/DVD/)
+      cdrw = optic_cap.match(/CD-RW? burning/i) || optic_models.match(/CD-R(?!ead|OM)/i) || optic_models.match(/CD-?RW/i)
+      dvdrw = optic_cap.match(/DVD[-+]RW? burning/i) || optic_models.match(/DVD-R(?!ead|OM)/i)
+      cdrom = optic_cap.match(/read CD-ROMs/i) || optic_models.match(/CD/i)
+      dvd = optic_cap.match(/DVD playback/i) || optic_models.match(/DVD/i)
       if dvdrw
         o[:optical_drive] = "DVD/RW"
       elsif cdrw and dvd
@@ -331,7 +331,7 @@ module SystemHelper
         @parser.xml_foreach("capabilities/capability") do
           a << [@parser.xml_value_of("."), @parser.xml_value_of("@id")]
         end
-        a = a.select{|a| a[1].match(/(cd|dvd)/)}
+        a = a.select{|a| a[1].match(/(cd|dvd)/i)}
         h.capabilities = a.map{|x| x[0]}.to_sentence
         h.my_type = (@parser.do_with_parent do @parser.xml_value_of("product") + @parser.xml_value_of("description") end).match(/(scsi|sata|ide)/i) ? $1.upcase : "Unknown"
         h.model = @parser.xml_value_of("product")
