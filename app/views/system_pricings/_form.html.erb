@@ -1,6 +1,11 @@
   <p>
+  <% if @system %>
+    <b>System ID #<%= @system_pricing.system_id %></b>
+    <%= f.hidden_field :system_id, {:value => @system_pricing.system_id} %></td>
+  <% else %>
     <%= f.label :system_id, "System ID#" %><br />
     <%= f.text_field :system_id, :size => 10 %>
+  <% end %>
   </p>
   <% if @system %>
 <fieldset style="clear: left" width="100%">
