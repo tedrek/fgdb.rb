@@ -46,6 +46,6 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def self.valid_pulls
-    [:processor_product, :processor_speed, :max_L2_L3_cache, :memory_amount, :hd_size, :optical_drive, :battery_life]
+    [:build_type, :processor_product, :processor_speed, :max_L2_L3_cache, :memory_amount, :hd_size, :optical_drive, :battery_life]
   end
 end
