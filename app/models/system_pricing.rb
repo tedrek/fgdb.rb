@@ -63,7 +63,7 @@ class SystemPricing < ActiveRecord::Base
                           h = {} # TODO: Remove all OH ordered hash processing, it is useless with pull list.
                           oh = self.spec_sheet.pricing_values
                           oh.each do |k, v|
-                            if self.class.valid_pulls.include?(k)
+                            if self.class.display_pulls.include?(k)
                               h[k] = v
                             end
                           end
