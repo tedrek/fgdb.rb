@@ -1,19 +1,31 @@
   <p>
-  Page 1:
-    <%= f.label :system_id %><br />
-    <%= f.text_field :system_id %>
+    <%= f.label :system_id, "System ID#" %><br />
+    <%= f.text_field :system_id, :size => 10 %>
   </p>
-  <p>
-  Page 2:
-    <%= f.label :spec_sheet_id %><br />
-    <%= f.text_field :spec_sheet_id %>
-  </p>
+  <% if @system %>
+<fieldset style="clear: left" width="100%">
+<h2>Pricing Information for <%= link_to "System ##{@system.id}", {:controller => "spec_sheets", :action => "system", :id => @system.id} %></h2>
+Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:controller => "spec_sheets", :action => "show", :id => @spec_sheet.id} %>:
+<% @system_pricing.extra_valid? %>
+<%= error_messages_for :system_pricing, :header_message => "Some problems were found with this system's pricing" %>
+<table class="awesome" width="100%">
+  <% SystemPricing.valid_pulls.each do |k| %>
+  <tr>
+    <th><%= k.to_s.titleize %>:</th>
+    <td><%= @values[k] %></td>
+  </tr>
+  <% end %>
+</table>
+</fieldset>
   <p>
     <%= f.label :pricing_type_id %><br />
     <%= f.select :pricing_type_id, PricingType.all.map{|x| [x.name, x.id]} %>
   </p>
   <p>
+  <% end %>
+<% if @system_pricing.pricing_type %>
   Page 3:
     <%= f.label :notes %><br />
     <%= f.text_area :notes %>
   </p>
+<% end %>

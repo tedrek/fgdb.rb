@@ -7,6 +7,12 @@ class SystemPricingsController < ApplicationController
 
   def show
     @system_pricing = SystemPricing.find(params[:id])
+
+    @system = @system_pricing.system
+    if @system
+      @spec_sheet = @system_pricing.spec_sheet
+      @values = @system_pricing.pricing_values
+    end
   end
 
   def new
@@ -15,12 +21,24 @@ class SystemPricingsController < ApplicationController
 
   def edit
     @system_pricing = SystemPricing.find(params[:id])
+
+    @system = @system_pricing.system
+    if @system
+      @spec_sheet = @system_pricing.spec_sheet
+      @values = @system_pricing.pricing_values
+    end
   end
 
   def create
     @system_pricing = SystemPricing.new(params[:system_pricing])
 
-    if @system_pricing.save
+    @system = @system_pricing.system
+    if @system
+      @spec_sheet = @system_pricing.spec_sheet
+      @values = @system_pricing.pricing_values
+    end
+
+    if @system_pricing.pricing_type and @system_pricing.save
       flash[:notice] = 'SystemPricing was successfully created.'
       redirect_to({:action => "show", :id => @system_pricing.id})
     else
@@ -30,6 +48,12 @@ class SystemPricingsController < ApplicationController
 
   def update
     @system_pricing = SystemPricing.find(params[:id])
+
+    @system = @system_pricing.system
+    if @system
+      @spec_sheet = @system_pricing.spec_sheet
+      @values = @system_pricing.pricing_values
+    end
 
     if @system_pricing.update_attributes(params[:system_pricing])
       flash[:notice] = 'SystemPricing was successfully updated.'
