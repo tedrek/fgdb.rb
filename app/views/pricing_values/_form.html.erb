@@ -2,7 +2,8 @@
     <%= f.label :name, "Display Name" %><br />
     <%= f.text_field :name %>
   </p>
-  <% if self.pricing_component.numerical? %>
+  <% if f.object.pricing_component and f.object.pricing_component.pull_from %>
+  <% if f.object.pricing_component.numerical? %>
   <p>
     <%= f.label :minimum %><br />
     <%= f.text_field :minimum %>
@@ -16,6 +17,7 @@
     <%= f.label :matcher, "Value to Match Pulled Value Against (only if different from display name)" %><br />
     <%= f.text_field :matcher %>
   </p>
+  <% end %>
   <% end %>
   <p>
     <%= f.label :value %><br />

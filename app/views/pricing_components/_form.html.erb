@@ -3,8 +3,8 @@
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label :pull_from, "Pulled Value to Match Against (optional for automatic detection)" %><br />
-    <%= f.select :pull_from, ["<none>", nil] + SystemPricing.valid_pulls.map{|x| [x.to_s.titleize, x.to_s]} %>
+    <%= f.label :pull_from, "Pulled Value to Match Against" %><br />
+    <%= f.select :pull_from, [["<optional for automatic detection>", nil]] + SystemPricing.valid_pulls.map{|x| [x.to_s.titleize, x.to_s]} %>
   </p>
   <p>
     <%= f.label :numerical %><br />
