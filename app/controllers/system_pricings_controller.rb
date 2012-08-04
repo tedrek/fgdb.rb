@@ -11,7 +11,7 @@ class SystemPricingsController < ApplicationController
     @system = @system_pricing.system
     if @system
       @spec_sheet = @system_pricing.spec_sheet
-      @values = @system_pricing.pricing_values
+      @values = @system_pricing.pricing_hash
     end
   end
 
@@ -25,7 +25,7 @@ class SystemPricingsController < ApplicationController
     @system = @system_pricing.system
     if @system
       @spec_sheet = @system_pricing.spec_sheet
-      @values = @system_pricing.pricing_values
+      @values = @system_pricing.pricing_hash
     end
   end
 
@@ -35,7 +35,7 @@ class SystemPricingsController < ApplicationController
     @system = @system_pricing.system
     if @system
       @spec_sheet = @system_pricing.spec_sheet
-      @values = @system_pricing.pricing_values
+      @values = @system_pricing.pricing_hash
     end
 
     if @system_pricing.magic_bit and @system_pricing.save
@@ -52,7 +52,7 @@ class SystemPricingsController < ApplicationController
     @system = @system_pricing.system
     if @system
       @spec_sheet = @system_pricing.spec_sheet
-      @values = @system_pricing.pricing_values
+      @values = @system_pricing.pricing_hash
     end
 
     if @system_pricing.update_attributes(params[:system_pricing])

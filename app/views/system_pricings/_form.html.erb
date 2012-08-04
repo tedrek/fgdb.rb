@@ -23,12 +23,19 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
       <tr>
 <% if @system_pricing.pricing_type %>
         <th>Pricing Type:</th>
-        <td><%= @system_pricing.pricing_type.name %></td>
+        <td><%= @system_pricing.pricing_type.name %> <%= f.hidden_field :pricing_type_id, {:value => @system_pricing.pricing_type_id} %></td>
 <% else %>
         <th><%= f.label :pricing_type_id, "Choose a Pricing Type:" %></th>
         <td><%= f.select :pricing_type_id, PricingType.all.map{|x| [x.name, x.id]} %></td>
 <% end %>
       </tr>
+      <% if @system_pricing.pricing_type %>
+        <% (@system_pricing.pricing_values.map{|x| x.pricing_component} + @system_pricing.pricing_type.pricing_components).uniq.each do |pc| %>
+          <tr>
+            <th><%= pc.name %></th>
+          </tr>
+        <% end %>
+      <% end %>
     </table>
   </p>
   <% end %>

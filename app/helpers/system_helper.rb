@@ -21,8 +21,8 @@ module SystemHelper
       return sp
     end
 
-    def pricing_values
-      o = OH.new
+    def pricing_hash
+      o = {}
 
       # "Processor Description" (vendor & product) ..?
       o[:processor_product] = @processors.first.processor if @processors.first
@@ -170,8 +170,8 @@ module SystemHelper
   class FgdbPrintmeExtrasSystemParser < SystemParser
     include XmlHelper
 
-    def pricing_values
-      h = @real_system_parser.pricing_values
+    def pricing_hash
+      h = @real_system_parser.pricing_hash
       m = @battery_life.match(/battery lasted ([0-9]+ minutes)/) if @battery_life
       if m
         h[:battery_life] = m[1]

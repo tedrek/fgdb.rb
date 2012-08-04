@@ -16,12 +16,10 @@ class SpecSheet < ActiveRecord::Base
 
   has_many :spec_sheet_values, :include => [:spec_sheet_question], :order => "spec_sheet_questions.position ASC"
 
-  def pricing_values
-    @pricing_values ||= begin
-                          h = self.parser.pricing_values
+  def pricing_hash
+    @pricing_hash ||= begin
+                          h = self.parser.pricing_hash
                           h[:build_type] = self.type ? self.type.name : nil
-                          a = h.instance_variable_get("@arr")
-                          a.unshift(a.pop)
                           h
                         end
   end

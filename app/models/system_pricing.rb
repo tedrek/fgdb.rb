@@ -17,6 +17,7 @@ class SystemPricing < ActiveRecord::Base
   def cents_step_ceil(number, step)
     float = number / 100.0
     int = float.ceil
+    return int if step.nil? or step <= 1
     mod = (int % step)
     if mod == 0
       return int
@@ -26,12 +27,12 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def calculate_price_cents
-    total = self.base_value_cents
+    total = self.pricing_type.base_value_cents
     self.pricing_values.each do |value|
       total += value.value_cents
     end
-    total = total * self.multiplier
-    total = cents_step_ceil(total, self.round_by)
+    total = total * self.pricing_type.multiplier_cents
+    total = cents_step_ceil(total, self.pricing_type.round_by)
   end
 
   def system_id=(number)
@@ -40,7 +41,7 @@ class SystemPricing < ActiveRecord::Base
       self.spec_sheet = sys.spec_sheets.last
     end
     PricingType.automatic.each do |pt|
-      if pt.matches?(self.pricing_values)
+      if pt.matches?(self.pricing_hash)
         self.pricing_type = pt
         break
       end
@@ -50,18 +51,18 @@ class SystemPricing < ActiveRecord::Base
   attr_accessor :magic_bit
 
   def extra_valid?
-    if self.spec_sheet.pricing_values[:product_processor_speed] and self.spec_sheet.pricing_values[:product_processor_speed].length > 0 and (self.spec_sheet.pricing_values[:running_processor_speed] != self.spec_sheet.pricing_values[:product_processor_speed])
-      errors.add('spec_sheet_id', "detected a different running speed (#{self.spec_sheet.pricing_values[:running_processor_speed]}) than the processor product speed (#{self.spec_sheet.pricing_values[:product_processor_speed]})")
+    if self.spec_sheet.pricing_hash[:product_processor_speed] and self.spec_sheet.pricing_hash[:product_processor_speed].length > 0 and (self.spec_sheet.pricing_hash[:running_processor_speed] != self.spec_sheet.pricing_hash[:product_processor_speed])
+      errors.add('spec_sheet_id', "detected a different running speed (#{self.spec_sheet.pricing_hash[:running_processor_speed]}) than the processor product speed (#{self.spec_sheet.pricing_hash[:product_processor_speed]})")
     end
-    if self.spec_sheet.pricing_values[:total_ram] and self.spec_sheet.pricing_values[:total_ram].length > 0 and (self.spec_sheet.pricing_values[:total_ram] != self.spec_sheet.pricing_values[:individual_ram_total])
-      errors.add('spec_sheet_id', "detected a different total amount of memory (#{self.spec_sheet.pricing_values[:total_ram]}) than the sum of the individual banks (#{self.spec_sheet.pricing_values[:individual_ram_total]})")
+    if self.spec_sheet.pricing_hash[:total_ram] and self.spec_sheet.pricing_hash[:total_ram].length > 0 and (self.spec_sheet.pricing_hash[:total_ram] != self.spec_sheet.pricing_hash[:individual_ram_total])
+      errors.add('spec_sheet_id', "detected a different total amount of memory (#{self.spec_sheet.pricing_hash[:total_ram]}) than the sum of the individual banks (#{self.spec_sheet.pricing_hash[:individual_ram_total]})")
     end
   end
 
-  def pricing_values
-    @pricing_values ||= begin
+  def pricing_hash
+    @pricing_hash ||= begin
                           h = {} # TODO: Remove all OH ordered hash processing, it is useless with pull list.
-                          oh = self.spec_sheet.pricing_values
+                          oh = self.spec_sheet.pricing_hash
                           oh.each do |k, v|
                             if self.class.display_pulls.include?(k)
                               h[k] = v
