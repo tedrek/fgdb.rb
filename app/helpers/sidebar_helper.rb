@@ -23,7 +23,6 @@ module SidebarHelper
     h = OH.new
     h.default_class = OH
     h["gizmo_returns"]["system"] = "tech support"
-    h["spec_sheets"]["pricing"] = "sales"
     h
   end
 
@@ -54,6 +53,10 @@ module SidebarHelper
     "volunteer_default_shifts" => "sked admin",
     "assignments" => "vol sked",
     "logs" => "admin",
+    "system_pricings" => "sales",
+    "pricing_types" => "sales",
+    "pricing_components" => "sales",
+    "pricing_values" => "sales" # Going away?
     }
   end
 
@@ -78,6 +81,7 @@ module SidebarHelper
     end
     sidebar_hash["sales"]["store credits"] = {:c => "store_credits", :a => 'index'}
     sidebar_hash["sales"]["pricing"] = {:c => "system_pricings", :a => "new"}
+    sidebar_hash["sales"]["pricing admin"] = {:c => "pricing_types", :a => "index"}
     # reports
     ["income", "gizmos", "volunteering", "top_donations", "donation_areas"].each do |x|
       sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => ((x == "donation_areas") ? "donation_zip_areas" : x.sub("ing", "s"))}
