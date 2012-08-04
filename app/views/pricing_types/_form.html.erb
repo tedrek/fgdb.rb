@@ -3,6 +3,10 @@
     <%= f.text_field :name %>
   </p>
   <p>
+    <%= f.label :gizmo_type_id, "Gizmo Type" %><br />
+    <%= f.select :gizmo_type_id, [["<to set automatically during sales entry>", nil]] + GizmoContext.sale.gizmo_types.for_systems.sort_by(&:description).map{|x| [x.description, x.id]} %>
+  </p>
+  <p>
     <%= f.label :base_value, "Base Price (before multiplier)" %><br />
     <%= f.text_field :base_value %>
   </p>

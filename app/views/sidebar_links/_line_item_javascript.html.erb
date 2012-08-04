@@ -28,6 +28,7 @@
 
 <% if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller]) %>
   <%= javascript_tag "get_system_contract_url = #{url_for(:action => "get_system_contract").to_json}; system_contract_cache = new Array; system_covered_cache = new Array;" %>
+  <%= javascript_tag "get_system_pricing_url = #{url_for(:action => "get_system_pricing").to_json}; system_pricing_cache = new Array; system_pricing_price_cache = new Array; system_pricing_type_cache = new Array;" %>
 <% end %>
 
 <% if ["sales", "gizmo_returns"].include?(params[:controller]) %>

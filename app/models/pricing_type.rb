@@ -1,5 +1,6 @@
 class PricingType < ActiveRecord::Base
   belongs_to :type
+  belongs_to :gizmo_type
   has_and_belongs_to_many :pricing_components
   define_amount_methods_on :base_value
   define_amount_methods_on :multiplier

@@ -3,6 +3,7 @@ class SystemPricing < ActiveRecord::Base
   belongs_to :system
   belongs_to :spec_sheet
   belongs_to :pricing_type
+  has_one :gizmo_type, :through => :pricing_type
   define_amount_methods_on :calculated_price
 
   def self.does_match?(matcher, value)

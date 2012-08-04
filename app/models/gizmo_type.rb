@@ -18,6 +18,8 @@ class GizmoType < ActiveRecord::Base
     { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
   }
 
+  named_scope :for_systems, :conditions => ["needs_id = 't'"]
+
   def GizmoType.fee?(type)
     return type == service_fee || type == fee_discount
   end
