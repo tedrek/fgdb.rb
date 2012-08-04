@@ -220,7 +220,9 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def question_defaults(system_id)
-    values = System.find_by_id(system_id).spec_sheets.sort_by{|x| x.created_at}.last.spec_sheet_values
+    sys = System.find_by_id(system_id)
+    spec = sys ? sys.spec_sheets.sort_by{|x| x.created_at}.last : nil
+    values = spec ? spec.spec_sheet_values : []
     hash = {}
     values.each do |x|
       hash[x.spec_sheet_question.real_name] = x.value
