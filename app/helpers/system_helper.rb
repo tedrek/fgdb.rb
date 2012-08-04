@@ -46,7 +46,7 @@ module SystemHelper
         o[:hd_size].downcase! unless o[:hd_size].match(/TB/)
       end
 
-      optic_cap = @opticals.collect{|x| x.capabilities.split(/, (?:and )?/)}.flatten.uniq.to_sentence
+      optic_cap = @opticals.collect{|x| (x.capabilities || "").split(/, (?:and )?/)}.flatten.uniq.to_sentence
       optic_models = @opticals.collect{|x| x.model}.uniq.to_sentence
       cdrw = optic_cap.match(/CD-RW? burning/i) || optic_models.match(/CD-R(?!ead|OM)/i) || optic_models.match(/CD-?RW/i)
       dvdrw = optic_cap.match(/DVD[-+]RW? burning/i) || optic_models.match(/DVD-R(?!ead|OM)/i)
