@@ -5,6 +5,10 @@ class SystemPricing < ActiveRecord::Base
   belongs_to :pricing_type
   define_amount_methods_on :calculated_price
 
+  def self.does_match?(matcher, value)
+    matcher.split(/\s+/).select{|x| !value.match(x)}.length == 0
+  end
+
   before_save :set_calculated_price
   def set_calculated_price
     self.calculated_price_cents = calculate_price_cents
@@ -35,7 +39,7 @@ class SystemPricing < ActiveRecord::Base
     if sys = System.find_by_id(number) and sys.spec_sheets.last
       self.spec_sheet = sys.spec_sheets.last
     end
-    PricingTypes.automatic.each do |pt|
+    PricingType.automatic.each do |pt|
       if pt.matches?(self.pricing_values)
         self.pricing_type = pt
         break
