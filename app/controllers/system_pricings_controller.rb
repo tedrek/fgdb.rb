@@ -33,8 +33,12 @@ class SystemPricingsController < ApplicationController
     @system_pricing = SystemPricing.new(params[:system_pricing])
 
     @system = @system_pricing.system
-    unless @system_pricing.magic_bit
+
+    unless @system_pricing.spec_sheet
       @system_pricing.autodetect_spec_sheet
+    end
+
+    unless @system_pricing.pricing_type
       @system_pricing.autodetect_type_and_values
     end
 
