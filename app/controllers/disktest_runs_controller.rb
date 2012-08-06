@@ -14,6 +14,12 @@ class DisktestRunsController < ApplicationController
     @disktest_runs = DisktestRun.find_all_by_serial_number(@serial)
   end
 
+  def check_passed
+    @serial = params[:id]
+    result = !!DisktestRun.find_by_serial_number_and_result(@serial, 'PASSED')
+    render :text => result.inspect
+  end
+
   def search
     @error = params[:error]
     if !params[:conditions]
