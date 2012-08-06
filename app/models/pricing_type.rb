@@ -24,7 +24,7 @@ class PricingType < ActiveRecord::Base
       matches = pricing_hash[:build_type] == self.type.name
       checked = true
     end
-    if matches && self.pull_from
+    if matches && self.pull_from && self.pull_from.length > 0
       matches = SystemPricing.does_match?(self.matcher, pricing_hash[self.pull_from.to_sym])
       checked = true
     end
