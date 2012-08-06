@@ -38,6 +38,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
         <% (@system_pricing.pricing_values.map{|x| x.pricing_component} + @system_pricing.pricing_type.pricing_components).uniq.each do |pc| %>
           <tr>
             <th><%= pc.name %></th>
+            <td>Something Here.</td>
           </tr>
         <% end %>
       <% end %>

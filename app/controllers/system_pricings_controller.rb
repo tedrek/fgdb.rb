@@ -33,12 +33,17 @@ class SystemPricingsController < ApplicationController
     @system_pricing = SystemPricing.new(params[:system_pricing])
 
     @system = @system_pricing.system
+    unless @system_pricing.magic_bit
+      @system_pricing.autodetect_spec_sheet
+      @system_pricing.autodetect_type_and_values
+    end
+
     if @system
       @spec_sheet = @system_pricing.spec_sheet
       @values = @system_pricing.pricing_hash
     end
 
-    if @system_pricing.magic_bit and @system_pricing.save
+    if @system_pricing.magic_bit && @system_pricing.save
       flash[:notice] = 'SystemPricing was successfully created.'
       redirect_to({:action => "show", :id => @system_pricing.id})
     else

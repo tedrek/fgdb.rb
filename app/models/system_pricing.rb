@@ -36,14 +36,24 @@ class SystemPricing < ActiveRecord::Base
     total = cents_step_ceil(total, self.pricing_type.round_by)
   end
 
-  def system_id=(number)
-    write_attribute(:system_id, number)
-    if sys = System.find_by_id(number) and sys.spec_sheets.last
+  def autodetect_values
+    self.pricing_type.pricing_components.each do |c|
+      match = c.matched_pricing_value(self.pricing_hash)
+      self.pricing_values << match if match
+    end
+  end
+
+  def autodetect_spec_sheet
+    if sys = System.find_by_id(self.system_id) and sys.spec_sheets.last
       self.spec_sheet = sys.spec_sheets.last
     end
+  end
+
+  def autodetect_type_and_values
     PricingType.automatic.each do |pt|
       if pt.matches?(self.pricing_hash)
         self.pricing_type = pt
+        self.autodetect_values
         break
       end
     end
