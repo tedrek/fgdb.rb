@@ -14,9 +14,15 @@
   <% form_tag :action => 'search' do -%>
   <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
 
-  <% filters = [] -%>
-  <% filters << 'created_at' %>
-  <% filters << 'serial_number' %>
+  <% filters = []
+     filters << 'megabytes_size'
+     filters << 'interface_type'
+     filters << 'vendor'
+     filters << 'model'
+     filters << 'serial_number'
+     filters << 'result'
+     filters << 'created_at' %>
+
   <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>
 <% end -%>

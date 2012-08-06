@@ -19,6 +19,7 @@ class Conditions < ConditionsBase
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
       updated_by cashier_updated_by is_pickup finalized gizmo_context_id
       logged_in_within signed_off_by payment_total organization_name
+      model vendor result interface_type megabytes_size
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -33,6 +34,8 @@ class Conditions < ConditionsBase
   end
 
   attr_accessor :shift_type
+
+  attr_accessor :model, :vendor, :interface_type, :result
 
   attr_accessor :gizmo_context_id
 
@@ -89,6 +92,7 @@ class Conditions < ConditionsBase
 
   attr_accessor :gizmo_category_id
 
+  attr_accessor :megabytes_size_type, :megabytes_size_exact, :megabytes_size_low, :megabytes_size_high, :megabytes_size_ge, :megabytes_size_le
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
   attr_accessor :payment_total_type, :payment_total_exact, :payment_total_low, :payment_total_high, :payment_total_ge, :payment_total_le
 
@@ -779,12 +783,43 @@ class Conditions < ConditionsBase
     return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", (gizmo_type_group_id)]
   end
 
+  def vendor_conditions(klass)
+    return ['vendor ILIKE ?', @vendor.to_s]
+  end
+
+  def model_conditions(klass)
+    return ['model ILIKE ?', @model.to_s]
+  end
+
+  def interface_type_conditions(klass)
+    return ['bus_type LIKE ?', @interface_type.to_s]
+  end
+
+  def result_conditions(klass)
+    return ['result LIKE ?', @result.to_s]
+  end
+
+  def megabytes_size_conditions(klass)
+    case @megabytes_size_type
+    when 'between'
+      return ["#{klass.table_name}.megabytes_size BETWEEN ? AND ?",
+              @megabytes_size_low.to_s,
+              @megabytes_size_high.to_s]
+    when '>='
+      return ["#{klass.table_name}.megabytes_size >= ?", @megabytes_size_ge.to_s]
+    when '<='
+      return ["#{klass.table_name}.megabytes_size <= ?", @megabytes_size_le.to_s]
+    when 'exact'
+      return ["#{klass.table_name}.megabytes_size = ?", @megabytes_size_exact.to_s]
+    end
+  end
+
   def serial_number_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
     if klass == SpecSheet
       return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number.to_s]
     elsif klass == DisktestRun
-      return ["serial_number = ?", @serial_number.to_s]
+      return ["serial_number ILIKE ?", @serial_number.to_s]
     else
       raise
     end

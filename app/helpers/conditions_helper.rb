@@ -265,6 +265,34 @@ module ConditionsHelper
                       ])
   end
 
+  def html_for_megabytes_size_condition(params_key)
+    select_visibility(
+                      params_key,
+                      'megabytes_size_type',
+                      [['exact', text_field(params_key, 'megabytes_size_exact')],
+                       ['between', "%s to %s" % [text_field(params_key, 'megabytes_size_low'),
+                                                 text_field(params_key, 'megabytes_size_high')]],
+                       ['>=', text_field(params_key, 'megabytes_size_ge')],
+                       ['<=', text_field(params_key, 'megabytes_size_le')],
+                      ])
+  end
+
+  def html_for_result_condition(params_key)
+    collection_select(params_key, "result", ['PASSED', 'FAILED', 'ABORTED', 'STOPPED', 'UNTESTED'].sort, "to_s", "to_s")
+  end
+
+  def html_for_interface_type_condition(params_key)
+    collection_select(params_key, "interface_type", ['IDE', 'SATA', 'SCSI'], "to_s", "to_s")
+  end
+
+  def html_for_vendor_condition(params_key)
+    text_field(params_key, 'vendor')
+  end
+
+  def html_for_model_condition(params_key)
+    text_field(params_key, 'model')
+  end
+
   def html_for_email_condition(params_key)
     text_field(params_key, 'email')
   end
