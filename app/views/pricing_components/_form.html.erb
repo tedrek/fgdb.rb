@@ -23,4 +23,5 @@
 <% if f.object.id %>
 <% @pricing_values = f.object.pricing_values %>
 <%= render :partial => "pricing_values/list" %>
+<%= link_to "Add new pricing value", {:controller => "pricing_values", :action => "new", :pricing_component_id => @pricing_component.id} %>
 <% end %>

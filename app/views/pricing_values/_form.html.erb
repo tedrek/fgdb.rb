@@ -1,3 +1,6 @@
+<% unless f.object.id %>
+<%= hidden_field_tag :pricing_component_id, @pricing_component.id %>
+<% end %>
   <p>
     <%= f.label :name, "Display Name" %><br />
     <%= f.text_field :name %>

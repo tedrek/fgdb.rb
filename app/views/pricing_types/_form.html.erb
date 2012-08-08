@@ -26,10 +26,10 @@
     <%= f.label :matcher, "Value to Match Pulled Value Against (if a pulled value is chosen)" %><br />
     <%= f.text_field :matcher %>
   </p>
+<% if f.object.id %>
 <div class="form-element" style="clear: both">
   To add a new or existing component to this pricing type:
 </div>
-<% if f.object.id %>
   <% PricingComponent.all.each do |x| %>
       <% field_id = "pricing_component_#{x.id}" %>
       <div class="form-element" style="clear: both">

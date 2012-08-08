@@ -1,20 +1,13 @@
-<table>
+<table class="awesome">
   <tr>
     <th>Name</th>
-    <th>Type</th>
-    <th>Pull from</th>
-    <th>Matcher</th>
-    <th>Base value cents</th>
+    <th>Gizmo Type</th>
   </tr>
 
 <% for pricing_type in @pricing_types %>
   <tr>
     <td><%=h pricing_type.name %></td>
-    <td><%=h pricing_type.type_id %></td>
-    <td><%=h pricing_type.pull_from %></td>
-    <td><%=h pricing_type.matcher %></td>
-    <td><%=h pricing_type.base_value_cents %></td>
-    <td><%= link_to 'Show', {:action => "show", :id => pricing_type.id} %></td>
+    <td><%=h pricing_type.gizmo_type.description %></td>
     <td><%= link_to 'Edit', {:action => "edit", :id => pricing_type.id} %></td>
     <td><%= link_to 'Destroy', {:action => "destroy", :id => pricing_type.id}, :confirm => 'Are you sure?' %></td>
   </tr>

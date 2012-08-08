@@ -8,6 +8,7 @@ class PricingComponentsController < ApplicationController
   end
 
   def edit
+    session[:pricing_refer] = request.env["HTTP_REFERER"]
     @pricing_component = PricingComponent.find(params[:id])
   end
 
@@ -18,7 +19,7 @@ class PricingComponentsController < ApplicationController
 
     if @pricing_component.save
       flash[:notice] = 'PricingComponent was successfully created.'
-      redirect_to({:action => "show", :id => @pricing_component.id})
+      redirect_to({:action => "edit", :controller => "pricing_types", :id => @pricing_type.id})
     else
       render :action => "new"
     end
@@ -29,7 +30,8 @@ class PricingComponentsController < ApplicationController
 
     if @pricing_component.update_attributes(params[:pricing_component])
       flash[:notice] = 'PricingComponent was successfully updated.'
-      redirect_to({:action => "show", :id => @pricing_component.id})
+      redirect_to(session[:pricing_refer] || {:controller => "pricing_types"})
+      session.delete(:pricing_refer)
     else
       render :action => "edit"
     end
@@ -39,6 +41,6 @@ class PricingComponentsController < ApplicationController
     @pricing_component = PricingComponent.find(params[:id])
     @pricing_component.destroy
 
-    redirect_to({:action => "index"})
+    redirect_to({:action => "edit", :controller => "pricing_types", :id => @pricing_type.id})
   end
 end

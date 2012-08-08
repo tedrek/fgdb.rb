@@ -2,7 +2,7 @@ class PricingTypesController < ApplicationController
   layout :with_sidebar
 
   def index
-    @pricing_types = PricingType.find(:all)
+    @pricing_types = PricingType.active
   end
 
   def new
@@ -25,11 +25,15 @@ class PricingTypesController < ApplicationController
   end
 
   def update
-    @pricing_type = PricingType.find(params[:id])
+    orig_pricing_type = PricingType.find(params[:id])
+    @pricing_type = orig_pricing_type.clone
 
-    if @pricing_type.update_attributes(params[:pricing_type])
+    if @pricing_type.update_attributes(params[:pricing_type]) && @pricing_type.save
+      orig_pricing_type.replaced_by_id = @pricing_type.id
+      orig_pricing_type.ineffective_on = DateTime.now
+      orig_pricing_type.save!
       flash[:notice] = 'PricingType was successfully updated.'
-      redirect_to({:action => "show", :id => @pricing_type.id})
+      redirect_to({:action => "edit", :id => @pricing_type.id})
     else
       render :action => "edit"
     end
@@ -37,7 +41,8 @@ class PricingTypesController < ApplicationController
 
   def destroy
     @pricing_type = PricingType.find(params[:id])
-    @pricing_type.destroy
+    @pricing_type.ineffective_on = DateTime.now
+    @pricing_type.save!
 
     redirect_to({:action => "index"})
   end

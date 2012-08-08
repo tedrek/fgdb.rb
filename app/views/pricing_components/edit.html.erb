@@ -1,4 +1,4 @@
-<h1>Editing pricing_component</h1>
+<h1>Editing pricing component</h1>
 
 <% form_for(@pricing_component, :url => {:action => "update", :id => @pricing_component.id}) do |f| %>
   <%= f.error_messages %>
@@ -10,5 +10,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Show', {:action => "show", :id => @pricing_component.id} %> |
-<%= link_to 'Back', {:action => "index"} %>
+<%= link_to 'Back', session[:pricing_refer] || {:controller => "pricing_types"} %>
