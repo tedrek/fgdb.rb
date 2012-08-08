@@ -10,10 +10,10 @@
     <%= f.select :pull_from, [["<optional for automatic detection>", nil]] + SystemPricing.valid_pulls.map{|x| [x.to_s.titleize, x.to_s]} %>
   </p>
   <p>
-    <%= f.label :numerical %><br />
+    <%= f.label :numerical, "Handle Pulled Value as Number? (to match against ranges)" %><br />
     <%= f.check_box :numerical %>
   </p>
   <p>
-    <%= f.label :multiple %><br />
+    <%= f.label :multiple, "Allow multiple selected? (as optional field)" %><br />
     <%= f.check_box :multiple %>
   </p>
