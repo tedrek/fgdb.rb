@@ -1,6 +1,9 @@
 <p>
   Note: This component is part of the following Pricing Types: <%= f.object.pricing_types.map(&:name).join(", ")%>
 </p>
+<% unless f.object.id %>
+<%= hidden_field_tag :pricing_type_id, @pricing_type.id %>
+<% end %>
   <p>
     <%= f.label :name %><br />
     <%= f.text_field :name %>
@@ -17,3 +20,7 @@
     <%= f.label :multiple, "Allow multiple selected? (as optional field)" %><br />
     <%= f.check_box :multiple %>
   </p>
+<% if f.object.id %>
+<% @pricing_values = f.object.pricing_values %>
+<%= render :partial => "pricing_values/list" %>
+<% end %>

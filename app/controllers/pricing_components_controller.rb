@@ -10,7 +10,9 @@ class PricingComponentsController < ApplicationController
   end
 
   def new
+    @pricing_type = PricingType.find(params[:pricing_type_id])
     @pricing_component = PricingComponent.new
+    @pricing_component.pricing_types << @pricing_type
   end
 
   def edit
@@ -18,7 +20,9 @@ class PricingComponentsController < ApplicationController
   end
 
   def create
+    @pricing_type = PricingType.find(params[:pricing_type_id])
     @pricing_component = PricingComponent.new(params[:pricing_component])
+    @pricing_component.pricing_types << @pricing_type
 
     if @pricing_component.save
       flash[:notice] = 'PricingComponent was successfully created.'
