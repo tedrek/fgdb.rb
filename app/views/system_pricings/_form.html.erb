@@ -37,8 +37,8 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
       <% if @system_pricing.pricing_type %>
         <% (@system_pricing.pricing_values.map{|x| x.pricing_component} + @system_pricing.pricing_type.pricing_components).uniq.each do |pc| %>
           <tr>
-            <th><%= pc.name %></th>
-            <td><%= collection_select :system_pricing, :pricing_value_ids, [[nil, "<Select One>"]] + pc.pricing_values.map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :multiple => false, :name => 'system_pricing[pricing_value_ids][]' } -%></td>
+            <th><%= pc.name %><% unless pc.required? %> (optional)<% end %></th>
+            <td><%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]' } -%></td>
           </tr>
         <% end %>
       <% end %>

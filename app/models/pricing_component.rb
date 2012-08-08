@@ -3,13 +3,18 @@ class PricingComponent < ActiveRecord::Base
   has_and_belongs_to_many :pricing_types
 
   def matched_pricing_value(pricing_hash)
-    return nil unless self.pull_from and self.pull_from.length > 0
+    return [] unless self.pull_from and self.pull_from.length > 0
+    list = []
     self.pricing_values.each do |x|
       if x.matches?(pricing_hash[self.pull_from.to_sym])
-        return x
+        if self.required?
+          return [x]
+        else
+          list << x
+        end
       end
     end
-    return nil
+    return list
   end
 
   def required?

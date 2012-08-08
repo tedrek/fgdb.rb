@@ -39,7 +39,9 @@ class SystemPricing < ActiveRecord::Base
   def autodetect_values
     self.pricing_type.pricing_components.each do |c|
       match = c.matched_pricing_value(self.pricing_hash)
-      self.pricing_values << match if match
+      match.each do |m|
+        self.pricing_values << m
+      end
     end
   end
 
@@ -56,6 +58,16 @@ class SystemPricing < ActiveRecord::Base
         self.pricing_type = pt
         self.autodetect_values
         break
+      end
+    end
+  end
+
+  validate :validate_required_components
+  def validate_required_components
+    found = self.pricing_values.map(&:pricing_component)
+    self.pricing_type.pricing_components.each do |pc|
+      if pc.required?
+        errors.add("#{pc.name}_pricing_value", "has not been chosen, but it is a required component") unless found.include?(pc)
       end
     end
   end
