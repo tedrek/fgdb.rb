@@ -18,6 +18,8 @@ fgdb.rb (1.0.100) released; urgency=low
     future
   * Change slot conflict checking to treat rosters self contained, only
     looking for conflicts in the same roster
+  * Fix bug on worked_shifts save page when no parameters are supplied
+    (Crash ID dO7i3B)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 22:08:10 -0700
 
