@@ -2,7 +2,7 @@ class SystemPricingsController < ApplicationController
   layout :with_sidebar
 
   def index
-    @system_pricings = SystemPricing.find(:all)
+    @system_pricings = SystemPricing.find(:all, :conditions => ['id IN (SELECT DISTINCT system_id FROM system_pricings) AND id NOT IN (SELECT DISTINCT system_id FROM gizmo_events)'])
   end
 
   def show

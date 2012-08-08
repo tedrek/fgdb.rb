@@ -5,10 +5,6 @@ class PricingTypesController < ApplicationController
     @pricing_types = PricingType.find(:all)
   end
 
-  def show
-    @pricing_type = PricingType.find(params[:id])
-  end
-
   def new
     @pricing_type = PricingType.new
   end

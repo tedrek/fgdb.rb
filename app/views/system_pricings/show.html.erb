@@ -8,6 +8,13 @@
   <%=h @system_pricing.pricing_type.name %>
 </p>
 
+<% @system_pricing.pricing_values.each do |pv| %>
+<p>
+  <b><%= pv.pricing_component.name %>:</b>
+  <%= pv.name %>
+</p>
+<% end %>
+
 <p>
   <b>Calculated Price:</b>
   $<%=h @system_pricing.calculated_price %>

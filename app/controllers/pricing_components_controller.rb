@@ -1,14 +1,6 @@
 class PricingComponentsController < ApplicationController
   layout :with_sidebar
 
-  def index
-    @pricing_components = PricingComponent.find(:all)
-  end
-
-  def show
-    @pricing_component = PricingComponent.find(params[:id])
-  end
-
   def new
     @pricing_type = PricingType.find(params[:pricing_type_id])
     @pricing_component = PricingComponent.new

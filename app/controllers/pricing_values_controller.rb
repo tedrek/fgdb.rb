@@ -1,14 +1,6 @@
 class PricingValuesController < ApplicationController
   layout :with_sidebar
 
-  def index
-    @pricing_values = PricingValue.find(:all)
-  end
-
-  def show
-    @pricing_value = PricingValue.find(params[:id])
-  end
-
   def new
     @pricing_value = PricingValue.new
   end
