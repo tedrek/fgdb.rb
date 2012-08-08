@@ -1,5 +1,5 @@
 <p>
-  Note: This component is part of the following Pricing Types: <%= f.object.pricing_types.active.map(&:name).join(", ")%>
+  Note: This component is part of the following Pricing Types: <%= f.object.pricing_types.map(&:name).join(", ")%>
 </p>
   <p>
     <%= f.label :name %><br />
