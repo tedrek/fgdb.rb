@@ -20,10 +20,6 @@
     <%= f.label :multiple, "Allow multiple selected? (as optional field)" %><br />
     <%= f.check_box :multiple %>
   </p>
-  <p>
-    <%= f.label :after_multiplier, "Add value after multiplying multiplier? (instead of before, do not change existing component)" %><br />
-    <%= f.check_box :after_multiplier %>
-  </p>
 <% if f.object.id %>
 <% @pricing_values = f.object.pricing_values %>
 <%= render :partial => "pricing_values/list" %>

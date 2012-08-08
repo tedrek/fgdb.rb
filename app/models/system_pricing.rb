@@ -29,16 +29,10 @@ class SystemPricing < ActiveRecord::Base
 
   def calculate_price_cents
     total = self.pricing_type.base_value_cents
-    after = 0
     self.pricing_values.each do |value|
-      if value.pricing_component.nil? or value.pricing_component.after_multiplier
-        after += value.value_cents
-      else
-        total += value.value_cents
-      end
+      total += value.value_cents
     end
     total = total * self.pricing_type.multiplier_cents
-    total += after
     total = cents_step_ceil(total, self.pricing_type.round_by)
   end
 
