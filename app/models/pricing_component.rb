@@ -3,6 +3,12 @@ class PricingComponent < ActiveRecord::Base
   has_and_belongs_to_many :pricing_types, :conditions => 'pricing_types.ineffective_on IS NULL'
   validates_presence_of :name
 
+  def display_name
+    n = self.name
+    n += " (#{self.pricing_types.map(&:name).join(", ")})" if self.pricing_types.length > 0
+    return n
+  end
+
   def matched_pricing_value(pricing_hash)
     return [] unless self.pull_from and self.pull_from.length > 0
     list = []

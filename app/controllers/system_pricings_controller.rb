@@ -35,12 +35,12 @@ class SystemPricingsController < ApplicationController
       @system_pricing.autodetect_spec_sheet
     end
 
-    unless @system_pricing.pricing_type
-      @system_pricing.autodetect_type_and_values
-    end
-
     if @system_pricing.pricing_type && params[:system_pricing][:pricing_value_ids].nil?
       @system_pricing.autodetect_values
+    end
+
+    unless @system_pricing.pricing_type
+      @system_pricing.autodetect_type_and_values
     end
 
     if @system

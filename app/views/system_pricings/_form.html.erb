@@ -44,6 +44,12 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
           </tr>
         <% end %>
       <% end %>
+<% if @system_pricing.pricing_type %>
+<tr>
+        <th>Calculated Price:</th>
+        <td>$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></td>
+</tr>
+<% end %>
     </table>
   </p>
   <% end %>

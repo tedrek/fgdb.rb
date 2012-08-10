@@ -29,6 +29,7 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def calculate_price_cents
+    return 0 unless self.pricing_type
     total = self.pricing_type.base_value_cents
     self.pricing_values.each do |value|
       total += value.value_cents

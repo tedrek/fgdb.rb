@@ -38,7 +38,7 @@
       <% field_id = "pricing_component_#{x.id}" %>
       <div class="form-element" style="clear: both">
       <%= check_box_tag "#{f.object_name}[pricing_component_ids][]", x.id, f.object.pricing_components.include?(x), {:id => field_id} -%>
-      <%= label_tag field_id, x.name -%>
+      <%= label_tag field_id, x.display_name -%>
       <%= link_to "Edit", :action => "edit", :id => x.id, :controller => "pricing_components" %>
       </div><br />
   <% end %>

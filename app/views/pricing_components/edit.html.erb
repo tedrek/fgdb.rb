@@ -1,4 +1,4 @@
-<h1>Editing pricing component</h1>
+<h1>Editing <%= @pricing_component.display_name %> pricing component</h1>
 
 <% form_for(@pricing_component, :url => {:action => "update", :id => @pricing_component.id}) do |f| %>
   <%= f.error_messages %>
