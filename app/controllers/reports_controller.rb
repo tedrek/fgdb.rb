@@ -79,6 +79,7 @@ class ReportsController < ApplicationController
       end
     end
     total_title = "Total of all #{@table_breakdown.titleize.pluralize.gsub(/Date Performeds/, "Dates Performed")}"
+    last = nil
     table_data[total_title] = summary_table if table_data.length > 1
     table_data.keys.sort_by(&:to_s).each{|table|
       this_table = []
@@ -123,9 +124,15 @@ class ReportsController < ApplicationController
         this_table << this_row
       }
       this_table << ["#{@col_breakdown} subtotals".titleize, col_totals, col_totals.inject(0.0){|t,x| t+=x}].flatten if this_table.length > 2
-      @tables << [_to_s_or_d(table), this_table]
+      if total_title == table
+        last = [_to_s_or_d(table), this_table]
+      else
+        @tables << [_to_s_or_d(table), this_table]
+      end
     }
+    @tables << last if last
   end
+
 
   private
   def _wrap_link(date, worker, value)

@@ -359,7 +359,8 @@ class Conditions < ConditionsBase
   end
 
   def job_conditions(klass)
-    return ["#{klass.table_name}.job_id IN (?) AND (#{klass.table_name}.meeting_name IS NULL OR #{klass.table_name}.meeting_name LIKE '')", (@job_id)]
+    extra = [WorkShift, Shift, StandardShift].include?(klass) ? " AND (#{klass.table_name}.meeting_name IS NULL OR #{klass.table_name}.meeting_name LIKE '')" : ""
+    return ["#{klass.table_name}.job_id IN (?)#{extra}", (@job_id)]
   end
 
   def empty_conditions(klass)
