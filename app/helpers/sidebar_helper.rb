@@ -80,7 +80,7 @@ module SidebarHelper
       sidebar_hash[disp][prep + "search"] = {:c => pl, :a => 'search'}
     end
     sidebar_hash["sales"]["store credits"] = {:c => "store_credits", :a => 'index'}
-    sidebar_hash["sales"]["pricing"] = {:c => "system_pricings", :a => "new"}
+    sidebar_hash["sales"]["pricing"] = {:c => "system_pricings", :a => "index"}
     sidebar_hash["sales"]["pricing admin"] = {:c => "pricing_types", :a => "index"}
     # reports
     ["income", "gizmos", "volunteering", "top_donations", "donation_areas"].each do |x|
