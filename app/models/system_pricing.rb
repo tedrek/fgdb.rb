@@ -6,6 +6,16 @@ class SystemPricing < ActiveRecord::Base
   has_one :gizmo_type, :through => :pricing_type
   define_amount_methods_on :calculated_price
 
+  def gizmo_type
+    if self.pricing_type && self.pricing_type.gizmo_type
+      return self.pricing_type.gizmo_type
+    end
+    if self.spec_sheet && self.spec_sheet.type && self.spec_sheet.type.gizmo_type
+      return self.spec_sheet.type.gizmo_type
+    end
+    return nil
+  end
+
   def self.does_match?(matcher, value)
     value ||= ""
     matcher.split(/\s+/).select{|x| !value.match(x)}.length == 0
