@@ -3,7 +3,7 @@
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label :gizmo_type_id, "Gizmo Type" %><br />
+    <%= f.label :gizmo_type_id, "Gizmo Type (falls back to printme type if blank)" %><br />
     <%= f.select :gizmo_type_id, [["<to set automatically during sales entry>", nil]] + GizmoContext.sale.gizmo_types.sort_by(&:description).map{|x| [x.description, x.id]} %>
   </p>
   <p>
