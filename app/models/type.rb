@@ -1,4 +1,4 @@
 class Type < ActiveRecord::Base
   named_scope :usable
-  belongs_to :pricing_type
+  has_and_belongs_to_many :pricing_types
 end

@@ -1,5 +1,5 @@
 class PricingType < ActiveRecord::Base
-  has_many :types
+  has_and_belongs_to_many :types
   belongs_to :gizmo_type
   has_and_belongs_to_many :pricing_components
   define_amount_methods_on :base_value
@@ -11,7 +11,7 @@ class PricingType < ActiveRecord::Base
   validates_presence_of :pull_from, :if => Proc.new{|t| !t.matcher.blank?}, :message => "is required if there is a value to match"
 
   named_scope :active, :conditions => ['ineffective_on IS NULL']
-  named_scope :automatic, :conditions => ["(pull_from IS NOT NULL AND pull_from <> '') OR id IN (SELECT pricing_type_id FROM types)"]
+  named_scope :automatic, :conditions => ["(pull_from IS NOT NULL AND pull_from <> '') OR id IN (SELECT pricing_type_id FROM pricing_types_types)"]
 
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
 
@@ -33,7 +33,7 @@ class PricingType < ActiveRecord::Base
   def matches?(pricing_hash)
     matches = true
     checked = false
-    if matches && self.type_id
+    if matches && self.types.length > 0
       matches = self.types.map(&:name).include?(pricing_hash[:build_type])
       checked = true
     end
