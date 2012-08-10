@@ -34,7 +34,7 @@ module SystemHelper
       o[:product_processor_speed] = m ? m[0].downcase : nil
 
       # "Max L2/L3 cache" (Add  all 'em up, but use only L3 if it's there else L2.)
-      o[:max_L2_L3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total).downcase.sub(/kb/, "k")
+      o[:max_l2_l3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total).downcase.sub(/kb/, "k")
 
       # AND "RAM total", cause it can differ? DISPLAY WARNING)
       o[:total_ram] = @total_memory ? @total_memory.downcase : ""

@@ -7,6 +7,7 @@ class SystemPricing < ActiveRecord::Base
   define_amount_methods_on :calculated_price
 
   def self.does_match?(matcher, value)
+    value ||= ""
     matcher.split(/\s+/).select{|x| !value.match(x)}.length == 0
   end
 
@@ -33,7 +34,8 @@ class SystemPricing < ActiveRecord::Base
       total += value.value_cents
     end
     total = total * self.pricing_type.multiplier_cents
-    total = cents_step_ceil(total, self.pricing_type.round_by)
+    total = cents_step_ceil(total, self.pricing_type.round_by * 100) if self.pricing_type.round_by
+    return total
   end
 
   def autodetect_values
@@ -111,6 +113,6 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def self.valid_pulls
-    [:processor_product, :processor_speed, :max_L2_L3_cache, :memory_amount, :hd_size, :optical_drive, :battery_life]
+    [:processor_product, :processor_speed, :max_l2_l3_cache, :memory_amount, :hd_size, :optical_drive, :battery_life]
   end
 end

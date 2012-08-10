@@ -13,6 +13,6 @@ class PricingValue < ActiveRecord::Base
 
   def matches?(value)
     match_against = (self.matcher && self.matcher.length > 0) ? self.matcher : self.name
-    SystemPricing.does_match?(self.matcher, value)
+    SystemPricing.does_match?(match_against, value)
   end
 end
