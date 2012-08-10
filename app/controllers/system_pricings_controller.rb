@@ -1,6 +1,14 @@
 class SystemPricingsController < ApplicationController
   layout :with_sidebar
 
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['price_systems']}
+    return a
+  end
+  public
+
   def index
     @system_pricing = SystemPricing.new
     @system_pricings = SystemPricing.find(:all, :conditions => ['id IN (SELECT DISTINCT system_id FROM system_pricings) AND id NOT IN (SELECT DISTINCT system_id FROM gizmo_events)'])

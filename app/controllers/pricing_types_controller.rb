@@ -1,6 +1,14 @@
 class PricingTypesController < ApplicationController
   layout :with_sidebar
 
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['manage_pricing']}
+    return a
+  end
+  public
+
   def index
     @pricing_types = PricingType.active
   end

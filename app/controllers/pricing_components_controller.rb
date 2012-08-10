@@ -1,6 +1,14 @@
 class PricingComponentsController < ApplicationController
   layout :with_sidebar
 
+  protected
+  def get_required_privileges
+    a = super
+    a << {:privileges => ['manage_pricing']}
+    return a
+  end
+  public
+
   def new
     @pricing_type = PricingType.find(params[:pricing_type_id])
     @pricing_component = PricingComponent.new
