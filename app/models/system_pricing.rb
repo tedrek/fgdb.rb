@@ -56,7 +56,7 @@ class SystemPricing < ActiveRecord::Base
 
   def autodetect_type_and_values
     return unless self.spec_sheet
-    PricingType.active.automatic.each do |pt|
+    PricingType.active.automatic.sort_by(&:matching_conds).reverse.each do |pt|
       if pt.matches?(self.pricing_hash)
         self.pricing_type = pt
         self.autodetect_values

@@ -1,13 +1,82 @@
 class AddStorePricingCheatData < ActiveRecord::Migration
   def self.up
+    types = {}
+
+    pt = PricingType.new
+    pt.name = "Intel"
+    pt.pull_from = "processor_product"
+    pt.matcher = "Intel"
+    pt.base_value_cents = 0
+    pt.multiplier_cents = 92
+    pt.round_by_cents = 500
+    pt.gizmo_type = GizmoType.find_by_name('system')
+    types[:intel] = pt
+    pt.save!
+
+    pt = PricingType.new
+    pt.name = "Intel Laptop"
+    pt.pull_from = "processor_product"
+    pt.matcher = "Intel"
+    pt.type = Type.find_by_name("laptop")
+    pt.base_value_cents = 7000
+    pt.multiplier_cents = 85
+    pt.round_by_cents = 500
+    pt.gizmo_type = GizmoType.find_by_name('laptop')
+    types[:intel_laptop] = pt
+    pt.save!
+
+    pt = PricingType.new
+    pt.name = "AMD"
+    pt.pull_from = "processor_product"
+    pt.matcher = "AMD"
+    pt.base_value_cents = 0
+    pt.multiplier_cents = 93
+    pt.round_by_cents = 500
+    pt.gizmo_type = GizmoType.find_by_name('system')
+    types[:amd] = pt
+    pt.save!
+
+    pt = PricingType.new
+    pt.name = "AMD Laptop"
+    pt.pull_from = "processor_product"
+    pt.matcher = "AMD"
+    pt.type = Type.find_by_name("laptop")
+    pt.base_value_cents = 7000
+    pt.multiplier_cents = 90
+    pt.round_by_cents = 500
+    pt.gizmo_type = GizmoType.find_by_name('laptop')
+    types[:amd_laptop] = pt
+    pt.save!
+
+    pt = PricingType.new
+    pt.name = "Mac"
+    pt.type = Type.find_by_name("apple")
+    pt.base_value_cents = 0
+    pt.multiplier_cents = 87
+    pt.round_by_cents = 500
+    pt.gizmo_type = GizmoType.find_by_name('system_mac')
+    types[:mac] = pt
+    pt.save!
+
+    pt = PricingType.new
+    pt.name = "Mac As-Is"
+    pt.base_value_cents = 0
+    pt.multiplier_cents = 150
+    pt.round_by_cents = 500
+    pt.gizmo_type = GizmoType.find_by_name('system_mac_as_is')
+    types[:mac_as_is] = pt
+    pt.save!
+
     list = []
     names = {}
     pulls = {}
     values = {}
+    members = {}
 
     list << :cpu
     names[:cpu] = "CPU"
     pulls[:cpu] = "processor_product"
+    members[:cpu] = [:intel, :intel_laptop]
     values[:cpu] = [["Core i7", 17500],
                     ["Core i5", 11500],
                     ["Core 2 Quad", 8000],
@@ -26,6 +95,7 @@ class AddStorePricingCheatData < ActiveRecord::Migration
     list << :clock_speed
     names[:clock_speed] = "Clock Speed"
     pulls[:clock_speed] = "processor_speed"
+    members[:clock_speed] = [:intel, :intel_laptop]
     values[:clock_speed] = [["3.80ghz", 3500],
                             ["3.60ghz", 3000],
                             ["3.40ghz", 2800],
@@ -53,6 +123,7 @@ class AddStorePricingCheatData < ActiveRecord::Migration
                             ["1.40ghz", 200],
                             ["1.20ghz", 100]]
     list << :"l2/l3_cache"
+    members[:"l2/l3_cache"] = [:intel, :intel_laptop, :amd, :amd_laptop]
     names[:"l2/l3_cache"] = "L2/L3 Cache"
     pulls[:"l2/l3_cache"] = "max_l2_l3_cache"
     values[:"l2/l3_cache"] = [["8mb", 11500],
@@ -67,6 +138,7 @@ class AddStorePricingCheatData < ActiveRecord::Migration
                               ["128k", 500]]
     list << :ram_size
     names[:ram_size] = "RAM Size"
+    members[:ram_size] = [:intel, :intel_laptop, :amd, :amd_laptop, :mac]
     pulls[:ram_size] = "memory_amount"
     values[:ram_size] = [["8.0 gb", 12000],
                          ["6.0 gb", 7800],
@@ -80,6 +152,7 @@ class AddStorePricingCheatData < ActiveRecord::Migration
                          ["768 mb", 900],
                          ["512 mb", 400]]
     list << :hd_size
+    members[:hd_size] = [:intel, :intel_laptop, :amd, :amd_laptop, :mac]
     names[:hd_size] = "HD Size"
     pulls[:hd_size] = "hd_size"
     values[:hd_size] = [["2TB", 9000],
@@ -116,6 +189,7 @@ class AddStorePricingCheatData < ActiveRecord::Migration
                         ["40gb", 200],
                         ["30gb", 0]]
     list << :optical_drive
+    members[:optical_drive] = [:intel, :intel_laptop, :amd, :amd_laptop, :mac]
     names[:optical_drive] = "Optical Drive"
     pulls[:optical_drive] = "optical_drive"
     values[:optical_drive] = [["DVD/RW", 1500],
@@ -125,21 +199,11 @@ class AddStorePricingCheatData < ActiveRecord::Migration
                               ["CD/RW", 0],
                               ["N/A", 0]]
 
-    pt = PricingType.new
-    pt.name = "Intel"
-    pt.pull_from = "processor_product"
-    pt.matcher = "Intel"
-    pt.base_value_cents = 0
-    pt.multiplier_cents = 92
-    pt.round_by_cents = 500
-    pt.gizmo_type = GizmoType.find_by_name('system')
-    pt.save!
-
     list.each do |pc_n|
       pc = PricingComponent.new
       pc.name = names[pc_n]
       pc.pull_from = pulls[pc_n]
-      pc.pricing_types = [pt]
+      pc.pricing_types = members[pc_n].map{|x| types[x]}
       pc.save!
 
       values[pc_n].each do |record|
