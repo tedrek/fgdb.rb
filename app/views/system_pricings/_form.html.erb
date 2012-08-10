@@ -55,6 +55,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   </p>
   <% end %>
 <% if @system_pricing.pricing_type %>
+  <%= javascript_tag "update_calculated_price($(#{(f.object.id.nil? ? "new_system_pricing" : "edit_system_pricing_#{f.object.id}").inspect}));" %>
   <%= f.hidden_field :magic_bit, {:valud => "1"} %>
   <p>
     <%= f.label :notes %><br />
