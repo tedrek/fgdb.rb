@@ -131,7 +131,7 @@ class AddStorePricingCheatData < ActiveRecord::Migration
     pt.matcher = "Intel"
     pt.base_value_cents = 0
     pt.multiplier_cents = 92
-    pt.round_by = 5
+    pt.round_by_cents = 500
     pt.gizmo_type = GizmoType.find_by_name('system')
     pt.save!
 
@@ -154,8 +154,8 @@ class AddStorePricingCheatData < ActiveRecord::Migration
 
   def self.down
     SystemPricing.destroy_all
-    PricingComponent.destroy_all
     PricingValue.destroy_all
+    PricingComponent.destroy_all
     PricingType.destroy_all
   end
 end

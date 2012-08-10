@@ -4,6 +4,7 @@ class PricingType < ActiveRecord::Base
   has_and_belongs_to_many :pricing_components
   define_amount_methods_on :base_value
   define_amount_methods_on :multiplier
+  define_amount_methods_on :round_by
   belongs_to :replaced_by, :foreign_key => "replaced_by_id", :class_name => "PricingType"
   validates_presence_of :name
   validates_presence_of :matcher, :if => Proc.new{|t| !t.pull_from.blank?}, :message => "is required if there is a pulled value"

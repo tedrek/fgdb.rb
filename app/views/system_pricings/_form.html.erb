@@ -3,11 +3,12 @@
     <b>System ID #<%= @system_pricing.system_id %></b>
     <%= f.hidden_field :system_id, {:value => @system_pricing.system_id} %></td>
   <% else %>
-    <%= f.label :system_id, "System ID#" %><br />
+    <%= f.label :system_id, "System ID# (blank if none)" %><br />
     <%= f.text_field :system_id, :size => 10 %>
   <% end %>
   </p>
-  <% if @system %>
+  <% if params[:action] != "index" %>
+<% if @system %>
 <fieldset style="clear: left" width="100%">
 <h2>Information from <%= link_to "System ##{@system.id}", {:controller => "spec_sheets", :action => "system", :id => @system.id} %></h2>
 Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:controller => "spec_sheets", :action => "show", :id => @spec_sheet.id} %>:
@@ -22,6 +23,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   <% end %>
 </table>
 </fieldset>
+<% end %>
   <p>
     <table class="awesome" width="100%">
       <caption>Components for Pricing:</caption>

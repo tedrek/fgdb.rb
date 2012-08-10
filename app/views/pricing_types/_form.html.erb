@@ -15,6 +15,10 @@
     <%= f.text_field :multiplier %>
   </p>
   <p>
+    <%= f.label :multiplier, "Round By (dollar increments, or $0.00 for no rounding)" %><br />
+    <%= f.text_field :multiplier %>
+  </p>
+  <p>
     <%= f.label :type_id, "Build Type" %><br />
     <%= f.select :type_id, [["<optional for automatic detection>", nil]] + Type.all.map{|x| [x.name.titleize, x.id]} %>
   </p>

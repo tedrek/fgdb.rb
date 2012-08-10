@@ -34,7 +34,7 @@ class SystemPricing < ActiveRecord::Base
       total += value.value_cents
     end
     total = total * self.pricing_type.multiplier_cents
-    total = cents_step_ceil(total, self.pricing_type.round_by * 100) if self.pricing_type.round_by
+    total = cents_step_ceil(total, self.pricing_type.round_by_cents) if self.pricing_type.round_by_cents
     return total
   end
 
@@ -86,23 +86,22 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def pricing_hash
+    return {} unless self.spec_sheet
     @pricing_hash ||= begin
                           h = {}
                           self.class.display_pulls.each do |pull|
                             h[pull] = "N/A"
                           end
-                          if self.spec_sheet
-                            oh = self.spec_sheet.pricing_hash
-                            oh.each do |k, v|
-                              if self.class.display_pulls.include?(k)
-                                h[k] = v
-                              end
+                          oh = self.spec_sheet.pricing_hash
+                          oh.each do |k, v|
+                            if self.class.display_pulls.include?(k)
+                              h[k] = v
                             end
-                            h[:processor_speed] = (oh[:product_processor_speed] and oh[:product_processor_speed].length > 0) ? oh[:product_processor_speed] : oh[:running_processor_speed]
-                            h[:memory_amount] = (oh[:total_ram] and oh[:total_ram].length > 0) ? oh[:total_ram] : oh[:individual_ram_total]
-                            unless h[:battery_life] and h[:battery_life].length > 0
-                              h[:battery_life] = "N/A"
-                            end
+                          end
+                          h[:processor_speed] = (oh[:product_processor_speed] and oh[:product_processor_speed].length > 0) ? oh[:product_processor_speed] : oh[:running_processor_speed]
+                          h[:memory_amount] = (oh[:total_ram] and oh[:total_ram].length > 0) ? oh[:total_ram] : oh[:individual_ram_total]
+                          unless h[:battery_life] and h[:battery_life].length > 0
+                            h[:battery_life] = "N/A"
                           end
                           h
                         end

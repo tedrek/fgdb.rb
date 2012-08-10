@@ -2,6 +2,7 @@ class SystemPricingsController < ApplicationController
   layout :with_sidebar
 
   def index
+    @system_pricing = SystemPricing.new
     @system_pricings = SystemPricing.find(:all, :conditions => ['id IN (SELECT DISTINCT system_id FROM system_pricings) AND id NOT IN (SELECT DISTINCT system_id FROM gizmo_events)'])
   end
 
@@ -13,10 +14,6 @@ class SystemPricingsController < ApplicationController
       @spec_sheet = @system_pricing.spec_sheet
       @values = @system_pricing.pricing_hash
     end
-  end
-
-  def new
-    @system_pricing = SystemPricing.new
   end
 
   def edit
