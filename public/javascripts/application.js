@@ -1,6 +1,11 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function update_calculated_price() {
+  var str = document.getElementsByTagName("form")[0].serialize();
+  new Ajax.Request(update_calc_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(calculated_price_loading_id);}});
+}
+
 function show_cancellable(obj, t) {
   if(cancelled_attendance_types.include(parseInt($("attendance_attendance_type_id_" + t).value))) {
     $("cancellable_assignments_" + t).show();

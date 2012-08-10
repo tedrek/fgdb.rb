@@ -6,6 +6,15 @@ class SystemPricingsController < ApplicationController
     @system_pricings = SystemPricing.find(:all, :conditions => ['id IN (SELECT DISTINCT system_id FROM system_pricings) AND id NOT IN (SELECT DISTINCT system_id FROM gizmo_events)'])
   end
 
+  def calculate
+    @system_pricing = SystemPricing.new(params[:system_pricing])
+    @system_pricing.set_calculated_price
+    render :update do |page|
+      page.hide loading_indicator_id("calculated_price")
+      page << '$("calculated_price").innerHTML = "$' + @system_pricing.calculated_price + '";'
+    end
+  end
+
   def show
     @system_pricing = SystemPricing.find(params[:id])
 

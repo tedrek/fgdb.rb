@@ -40,17 +40,18 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
         <% (@system_pricing.pricing_type.pricing_components + @system_pricing.pricing_values.map{|x| x.pricing_component}).uniq.each do |pc| %>
           <tr>
             <th><%= pc.name %><% unless pc.required? %> (optional)<% end %></th>
-            <td><%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.sort_by(&:value_cents).map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]' } -%></td>
+            <td><%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.sort_by(&:value_cents).map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]', :onchange =>  "update_calculated_price();"} -%></td>
           </tr>
         <% end %>
       <% end %>
 <% if @system_pricing.pricing_type %>
 <tr>
         <th>Calculated Price:</th>
-        <td>$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></td>
+        <td><span id="calculated_price">$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></span><%= loading_indicator_tag("calculated_price") %></td>
 </tr>
 <% end %>
     </table>
+    <%= javascript_tag "update_calc_url = #{url_for(:action => "calculate").to_json}; calculated_price_loading_id = #{loading_indicator_id("calculated_price").inspect};" %>
   </p>
   <% end %>
 <% if @system_pricing.pricing_type %>
