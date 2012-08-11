@@ -87,7 +87,8 @@ class ApplicationController < ActionController::Base
       }
     }
     all_shifts.each{|x|
-      @shift_gap_hash[x.job_id][x.send(column.to_sym)].push([x.start_time, x.end_time])
+      k = x.send(column.to_sym)
+      @shift_gap_hash[x.job_id][k].push([x.start_time, x.end_time]) if @shift_gap_hash[x.job_id].keys.include?(k)
     }
     @workers_week_hash = {}
     @workers_day_hash = {}
