@@ -176,6 +176,21 @@ class Conditions < ConditionsBase
         errors.add('payment_amount_type', 'is not a valid search type')
       end
     end
+    if is_this_condition_enabled('megabytes_size')
+      case @megabytes_size_type
+      when '>='
+        validate_integer('megabytes_size', 'megabytes_size_ge')
+      when '<='
+        validate_integer('megabytes_size', 'megabytes_size_le')
+      when 'exact'
+        validate_integer('megabytes_size', 'megabytes_size_exact')
+      when 'between'
+        validate_integer('megabytes_size', 'megabytes_size_low')
+        validate_integer('megabytes_size', 'megabytes_size_high')
+      else
+        errors.add('megabytes_size_type', 'is not a valid search type')
+      end
+    end
     if is_this_condition_enabled('payment_total')
       case @payment_total_type
       when '>='
@@ -804,14 +819,14 @@ class Conditions < ConditionsBase
     case @megabytes_size_type
     when 'between'
       return ["#{klass.table_name}.megabytes_size BETWEEN ? AND ?",
-              @megabytes_size_low.to_s,
-              @megabytes_size_high.to_s]
+              @megabytes_size_low.to_i,
+              @megabytes_size_high.to_i]
     when '>='
-      return ["#{klass.table_name}.megabytes_size >= ?", @megabytes_size_ge.to_s]
+      return ["#{klass.table_name}.megabytes_size >= ?", @megabytes_size_ge.to_i]
     when '<='
-      return ["#{klass.table_name}.megabytes_size <= ?", @megabytes_size_le.to_s]
+      return ["#{klass.table_name}.megabytes_size <= ?", @megabytes_size_le.to_i]
     when 'exact'
-      return ["#{klass.table_name}.megabytes_size = ?", @megabytes_size_exact.to_s]
+      return ["#{klass.table_name}.megabytes_size = ?", @megabytes_size_exact.to_i]
     end
   end
 
