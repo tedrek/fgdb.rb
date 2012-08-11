@@ -2,6 +2,11 @@ class SystemPricingsController < ApplicationController
   layout :with_sidebar
 
   protected
+  before_filter :fix_pricing_values_multiselect
+  def fix_pricing_values_multiselect
+    params[:system_pricing][:pricing_value_ids] = [params[:system_pricing][:pricing_value_ids]].flatten.map{|x| x.split(",")}.flatten if params[:system_pricing] and params[:system_pricing][:pricing_value_ids]
+  end
+
   def get_required_privileges
     a = super
     a << {:privileges => ['price_systems']}
