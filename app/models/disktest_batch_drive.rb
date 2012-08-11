@@ -12,7 +12,7 @@ class DisktestBatchDrive < ActiveRecord::Base
   end
 
   def disktest_run
-    DisktestRun.find_by_id(self.disktest_run_id) || (self.disktest_batch.finalized ? nil : _find_run)
+    DisktestRun.find_by_id(self.disktest_run_id) || (self.disktest_batch and self.disktest_batch.finalized ? nil : _find_run)
   end
 
   def _find_run
