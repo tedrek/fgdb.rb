@@ -1,3 +1,8 @@
+fgdb.rb (1.0.102) UNRELEASED; urgency=low
+
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 11 Aug 2012 08:36:21 -0700
+
 fgdb.rb (1.0.101) released; urgency=low
 
   * Replace pdf-writer with prawn (Closes: #28888)
