@@ -1,4 +1,4 @@
-fgdb.rb (1.0.101) UNRELEASED; urgency=low
+fgdb.rb (1.0.101) released; urgency=low
 
   * Replace pdf-writer with prawn (Closes: #28888)
   * Port donation receipt text changes (s/donations/contributions/, etc)
@@ -11,7 +11,7 @@ fgdb.rb (1.0.101) UNRELEASED; urgency=low
   * Add new filters to the disktest run search page (Closes: #29822)
   * Add check_passed API (for ticket #29547)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 05 Aug 2012 21:57:49 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 11 Aug 2012 08:35:49 -0700
 
 fgdb.rb (1.0.100) released; urgency=low
 
