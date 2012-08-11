@@ -12,6 +12,7 @@ fgdb.rb (1.0.101) released; urgency=low
   * Add check_passed API (for ticket #29547)
   * fix new condition: validate integers and also to_i the input to
     prevent crashes (Closes: #30108)
+  * Fix bug in transaction search, crash ID Y2qYwR (Closes: #30114)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 11 Aug 2012 08:35:49 -0700
 
