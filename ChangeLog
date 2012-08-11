@@ -3,7 +3,6 @@ fgdb.rb (1.0.101) UNRELEASED; urgency=low
   * Replace pdf-writer with prawn (Closes: #28888)
   * Port donation receipt text changes (s/donations/contributions/, etc)
     on the HTML receipt from last week to the PDF version too
-  * Negative some things on the donations receipts for clarity
   * Include a resolved date on the invoices interface
   * Limit contact results on search pages to contacts with the
     contact_type they would have if they would return results (Closes:
