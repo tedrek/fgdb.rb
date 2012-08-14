@@ -13,6 +13,9 @@ fgdb.rb (1.0.101) released; urgency=low
   * fix new condition: validate integers and also to_i the input to
     prevent crashes (Closes: #30108)
   * Fix bug in transaction search, crash ID Y2qYwR (Closes: #30114)
+  * Fix type detection for existing systems to return the default type
+    when there are no spec_sheets (Closes: #30140)
+    - Also fix to not create a system record if spec_sheet is unsuccessful
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 11 Aug 2012 08:35:49 -0700
 
