@@ -203,7 +203,7 @@ class SpecSheet < ActiveRecord::Base
           self.system.send(i.to_s + "=", proc.send(i.to_s.sub(/_product/, "").sub(/processor_/, "")))
         end
       end
-      self.system.save!
+      self.system.save! if self.system.id
     end
   end
 

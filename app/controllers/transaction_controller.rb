@@ -24,7 +24,7 @@ class TransactionController < ApplicationController
 
   before_filter :set_transaction_contact_context, :only => ["search"]
   def set_transaction_contact_context
-    set_contact_context(@gizmo_context.model.new.required_contact_type)
+    set_contact_context(@gizmo_context.model.new.send(:required_contact_type))
   end
 
   def set_defaults

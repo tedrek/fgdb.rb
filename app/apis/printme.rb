@@ -216,7 +216,13 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def type_description_for_system(system_id)
-    System.find_by_id(system_id).spec_sheets.sort_by{|x| x.created_at}.last.type.description
+    sys = System.find_by_id(system_id)
+    spec = sys ? sys.spec_sheets.sort_by{|x| x.created_at}.last : nil
+    if spec
+      return spec.type.description
+    else
+      return default_type_description
+    end
   end
 
   def question_defaults(system_id)
