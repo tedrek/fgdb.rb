@@ -16,6 +16,7 @@ fgdb.rb (1.0.101) released; urgency=low
   * Fix type detection for existing systems to return the default type
     when there are no spec_sheets (Closes: #30140)
     - Also fix to not create a system record if spec_sheet is unsuccessful
+  * Fix vol appreciation gizmo types to be in misc gizmo category
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 11 Aug 2012 08:35:49 -0700
 
