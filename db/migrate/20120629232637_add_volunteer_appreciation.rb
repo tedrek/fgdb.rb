@@ -16,7 +16,7 @@ class AddVolunteerAppreciation < ActiveRecord::Migration
         end
         g.required_fee_cents = 0
         g.suggested_fee_cents = 0
-        g.gizmo_category_id = GizmoCategory.find_by_name('misc')
+        g.gizmo_category_id = GizmoCategory.find_by_name('misc').id
         g.covered = false
         g.rank = 99
         g.parent_name = "gizmo"
