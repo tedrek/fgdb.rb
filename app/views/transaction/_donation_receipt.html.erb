@@ -1,7 +1,20 @@
 <% @donation = donation %>
-<%= render :partial => "donation_receipt_guts", :locals => {:donation => @donation} %>
+<% c = 0 %>
+<% @donation.receipt_types.each do |rt| %>
+<% if c > 0 %>
+<div class="noprint" style="clear: left;">
+<hr />
+<hr />
+<hr />
+</div>
+<% end %>
+<% c += 1 %>
+<%= render :partial => 'transaction/receipt_layout', :locals => {:receipt_type => rt} %>
+<%= render :partial => "donation_receipt_guts", :locals => {:donation => @donation, :receipt_type => rt} %>
 
 <p><%= h @donation.comments %></p>
 <hr />
-<p class="footer longfooter">We affirm that no goods or services were provided in return for the contribution amounts listed above (required fees excepted).</p>
+<p class="footer longfooter" style="page-break-after: always;">We affirm that no goods or services were provided in return for the contribution amounts listed above (required fees excepted).</p>
 </div>
+<% end %>
+<%= render :partial => 'transaction/receipt_footer' %>

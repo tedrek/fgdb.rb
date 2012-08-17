@@ -1,5 +1,5 @@
 <% @sale = sale %>
-
+<%= render :partial => 'transaction/receipt_layout' %>
 <%= render :partial => "sale_receipt_guts", :locals => {:sale => @sale} %>
 
 <%= render :partial => "storecredits_receipt" %>
@@ -29,3 +29,4 @@
     System Warranty is available on request in the Thrift Store, or online
     at www.freegeek.org/thrift-store/system-warranty/
 </div>
+<%= render :partial => 'transaction/receipt_footer' %>

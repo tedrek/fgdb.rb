@@ -8,8 +8,6 @@
     <td width="<%= l %>%"><strong>Est Value:</strong></td>
 </tr>
 
-<% receipt_type = 'receipt' %>
-
 <% ge = @donation.find_lines(:is_gizmo_line?) %>
 <% if receipt_type == 'receipt' && ge.length > 0 %>
 
@@ -73,7 +71,7 @@
   </tr>
   <% end %>
 
-  <% if @donation.cash_donation_paid_cents.nonzero? %>
+  <% if @donation.cash_donation_paid_cents.nonzero? && receipt_type == 'receipt' %>
     <tr>
       <td>&nbsp;</td>
       <td> Total Contribution Paid (tax deductible): </td>
@@ -89,7 +87,7 @@
     </tr>
   <% end %>
 
-<% unless ge.length == 0 || @donation.cash_donation_paid_cents == 0 %>
+<% unless receipt_type != 'receipt' || ge.length == 0 || @donation.cash_donation_paid_cents == 0 %>
 <tr>
       <td>&nbsp;</td>
     <td>Total Tax Deductible Contribution:<br />(Estimated Value + Contribution Paid)</td>

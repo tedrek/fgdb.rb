@@ -1,0 +1,93 @@
+    <p>
+      <div id="button_span" class="noprint">
+        <INPUT type="button" id="print_button" value="Print"
+               onclick="window.print(); window.close();" >
+
+        <INPUT type="button" id="restart_button" value="Start Over"
+               onclick="window.close()" >
+
+        <% if params[:controller] == 'sales' %>
+        <hr />
+        <%= receipt_printer_html %>
+        <% elsif params[:controller] == 'donations' %>
+          <hr />
+          <% if @donation.invoiced? and @donation.reported_suggested_fee_cents > 0 %>
+            <div id="sugg_fee_show">
+            <%= link_to_function "Show Suggested Fee", "$('suggested_fee').show(); $('sugg_fee_hide').show(); $('sugg_fee_show').hide(); $('show_suggested_1').value = 'true'; $('show_suggested_2').value = 'true';" %>
+            </div>
+            <div id="sugg_fee_hide" style="display: none">
+            <%= link_to_function "Hide Suggested Fee", "$('suggested_fee').hide(); $('sugg_fee_show').show(); $('sugg_fee_hide').hide(); $('show_suggested_1').value = 'false'; $('show_suggested_2').value = 'false';" %>
+            </div>
+          <% end %>
+          <% form_tag({:action => "pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]}) do %>
+            <%= hidden_field_tag('show_suggested', 'false', {:id => "show_suggested_1"}) %>
+            <%= submit_tag "View PDF" %><br />
+          <% end %>
+          <% if defined?(@message) %>
+            <span class="<%= @is_err ? "error" : "" %>">
+              <b><%= @message %></b>
+            </span>
+          <% end %>
+          <% form_tag({:action => "mail_pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]}) do %>
+            <%= hidden_field_tag('show_suggested', 'false', {:id => "show_suggested_2"}) %>
+            <%= hash = {} %>
+            <% if @txn.contact_id %>
+              Choose an e-mail address to send to:</br >
+              <% @txn.contact.contact_methods.select{|x| x.contact_method_type.name.match(/email/)}.each do |x| %>
+                <div class='form-element'>
+                  <% hash["contact_method_#{x.id}"] = x.value %>
+                  <%= radio_button_tag('address_choice', "contact_method_#{x.id}", false, {:class => "address_choices", :onchange => "check_contact_subscribed(get_chosen_address());"}) %><%= x.contact_method_type.description %><%= x.ok ? "" : " (not usable)" %>: <%= h x.value %><br />
+                </div>
+              <% end %>
+            <div class='form-element'>
+              <%= radio_button_tag('address_choice', 'other', true, {:class => "address_choices", :onchange => "check_contact_subscribed(get_chosen_address());"}) %>
+            <% else %>
+
+              <div class='form-element'>
+                <%= hidden_field_tag('address_choice', 'other', {:class => "address_choices"}) %>
+            <% end %>
+
+
+    <%= javascript_tag "
+contact_methods_hash = #{hash.to_json};
+
+function check_contact_subscribed(address) {
+" + remote_function(
+          :url => {:controller => "contacts", :action => "is_subscribed"},
+                          :loading => "$('subscribe').disable(); Element.show('#{loading_indicator_id("subscription_loading")}');",
+                          :with => "{address: address}") + "
+}
+function get_chosen_address() {
+    var list = $$('.address_choices');
+    for(var i = 0; i < list.size(); i++) {
+      if(list[i].checked) {
+        if(list[i].value == 'other') {
+          return $('address').value;
+        } else {
+          return contact_methods_hash[list[i].value];
+        }
+      }
+    }
+}
+" %>
+            <label for="address">Enter an e-mail address: </label><%= text_field_tag 'address', nil, {:onchange => "check_contact_subscribed(get_chosen_address());"} %>
+            <% if @txn.contact_id %>
+              <label for="save">Save to contact record?</label> <%= check_box_tag "save" %>
+              <%= observe_field("save",
+                                :function => "{var x = $('contact_method_type_id'); if ($('save').checked) { x.show() } else { x.hide() }}"
+                                ) %>
+              <%= select_tag "contact_method_type_id", options_from_collection_for_select(ContactMethodType.find(:all).select{|x| x.name.match(/email/)}.sort_by(&:name), "id", "description"), :style => 'display: none' %>
+            <% end %>
+            </div>
+            <br />
+            <div class='form-element' style="clear:left">
+            <%= loading_indicator_tag('subscription_loading') %>
+            <label id="subscribe_label" for="subscribe">Subscribe to e-newsletter?</label> <%= check_box_tag "subscribe" %>
+            </div>
+            <div class='form-element' style="clear:left">
+              <%= submit_tag "Send PDF" %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </p>
