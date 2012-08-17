@@ -8,19 +8,20 @@
     <td width="<%= l %>%"><strong>Est Value:</strong></td>
 </tr>
 
-<% ge = @donation.gizmo_events %>
+<% receipt_type = 'receipt' %>
+
+<% ge = @donation.find_lines(:is_gizmo_line?) %>
+<% if receipt_type == 'receipt' && ge.length > 0 %>
+
+  <tr><th colspan="4">Items Donated</th></tr>
 
 <% ge.each do |event| -%>
-  <% if !GizmoType.fee?(event.gizmo_type) and event.gizmo_type.name != 'invoice_resolved' -%>
   <tr>
     <td> <%= event.gizmo_count %> </td>
     <td> <%= h event.attry_description %> </td>
     <td>______</td>
   </tr>
-  <% end -%>
 <% end -%>
-
-  <tr><td colspan="4">&nbsp;</td></tr>
 
 <tr>
       <td>&nbsp;</td>
@@ -28,21 +29,34 @@
     <td>_________</td>
 </tr>
 
-<% ge.each do |event| -%>
-  <% if (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered -%>
+  <tr><td colspan="4">&nbsp;</td></tr>
+
+<% end %>
+
+<% fees_ge = @donation.find_lines(:is_fee_line?) %>
+<% if fees_ge.length > 0 %>
+  <tr><th colspan="4">Required Fees</th></tr>
+<% fees_ge.each do |event| -%>
   <tr>
     <td><%= event.gizmo_count %> </td>
     <td><%= h event.attry_description %> </td>
     <td><%= my_number_to_currency(event.gizmo_count * event.unit_price_cents) %></td>
   </tr>
-  <% end -%>
 <% end -%>
+    <tr>
+      <td>&nbsp;</td>
+      <td> Total Required Fees
+        (<strong>not</strong> tax deductible): </td>
+      <td><%= my_number_to_currency(@donation.calculated_required_fee_cents) %></font></td>
+    </tr>
+  <tr><td colspan="4">&nbsp;</td></tr>
+<% end %>
 
 <% payments = @donation.payments %>
 
-<% unless payments.length == 1 && payments.first.payment_method.description.downcase == "invoice" %>
+  <tr><th colspan="4">Summary</th></tr>
 
-<% payments.each do |payment| %>
+<% payments.select{|x| x.payment_method.description.downcase != "invoice"}.each do |payment| %>
   <tr>
       <td>&nbsp;</td>
     <td align="left"><%= payment.payment_method.description.match("invoice") ? "<b>" : "" %><%= h(payment.payment_method.description).titleize %> <%= payment.payment_method.description.match("invoice") ? "Total" : "Paid" %>:<%= payment.payment_method.description.match("invoice") ? "</b>" : "" %></td>
@@ -50,42 +64,24 @@
   </tr>
 <% end %>
 
-<% end %>
-
-<% if @donation.invoice_resolved? -%>
+  <% if @donation.required_fee_owed_cents.nonzero? or @donation.required_fee_paid_cents.nonzero? %>
   <tr>
       <td>&nbsp;</td>
-    <td> Required Fee Paid
+    <td> Required Fees
       (<strong>not</strong> tax deductible): </td>
-    <td><%= my_number_to_currency(@donation.required_fee_paid_cents + @donation.required_fee_owed_cents) %></font></td>
+    <td><%= my_number_to_currency(-1 * (@donation.required_fee_paid_cents + @donation.required_fee_owed_cents)) %></font></td>
   </tr>
-
-    <tr>
-      <td>&nbsp;</td>
-      <td> Contribution Paid (tax deductible): </td>
-      <td><%= my_number_to_currency(@donation.cash_donation_paid_cents + @donation.cash_donation_owed_cents) %></td>
-    </tr>
-<% else -%>
-  <% if @donation.required_fee_paid_cents.nonzero? %>
-    <tr>
-      <td>&nbsp;</td>
-      <td> Required Fee Paid
-        (<strong>not</strong> tax deductible): </td>
-      <td><%= my_number_to_currency(@donation.required_fee_paid_cents) %></font></td>
-    </tr>
   <% end %>
 
-  <% if @donation.invoiced? and @donation.required_fee_owed_cents.nonzero? %>
+  <% if @donation.cash_donation_paid_cents.nonzero? %>
     <tr>
       <td>&nbsp;</td>
-      <td> Required Fee Due
-        (<strong>not</strong> tax deductible): </td>
-      <td><%= my_number_to_currency(@donation.required_fee_owed_cents) %></font></td>
+      <td> Total Contribution Paid (tax deductible): </td>
+      <td><%= my_number_to_currency(@donation.cash_donation_paid_cents) %></td>
     </tr>
   <% end %>
 
   <% if @donation.invoiced? %>
-    <tr><td colspan="4">&nbsp;</td></tr>
     <tr>
       <td>&nbsp;</td>
         <td><strong>Total Amount Still Owed:</strong></td>
@@ -93,25 +89,10 @@
     </tr>
   <% end %>
 
-  <% if @donation.cash_donation_paid_cents.nonzero? %>
-    <tr>
-      <td>&nbsp;</td>
-      <td> Contribution Paid (tax deductible): </td>
-      <td><%= my_number_to_currency(@donation.cash_donation_paid_cents) %></td>
-    </tr>
-  <% end %>
-  <% if @donation.invoiced? and @donation.cash_donation_owed_cents.nonzero? %>
-    <tr>
-      <td>&nbsp;</td>
-      <td> Cash Contribution Owed (tax deductible <strong>after payment</strong>) </td>
-      <td><%= my_number_to_currency(@donation.cash_donation_owed_cents) %></td>
-    </tr>
-  <% end -%>
-<% end %>
-<% unless payments.length == 0 %>
+<% unless ge.length == 0 || @donation.cash_donation_paid_cents == 0 %>
 <tr>
       <td>&nbsp;</td>
-    <td>Total Tax Deductible Contribution:</td>
+    <td>Total Tax Deductible Contribution:<br />(Estimated Value + Contribution Paid)</td>
     <td>_________</td>
 </tr>
 <% end %>

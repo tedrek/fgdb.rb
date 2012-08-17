@@ -14,6 +14,18 @@ class Donation < ActiveRecord::Base
   define_amount_methods_on_fake_attr :invoice_amount
   after_destroy {|rec| Thread.current['cashier'] ||= Thread.current['user']; rec.resolves.each do |d| d.invoice_resolved_at = nil; d.save!; end } # FIXME: ask for cashier code on destroy
 
+  def needs_invoice?
+    invoiced?
+  end
+
+  def needs_receipt?
+    (!invoiced?) or (self.payments.select{|x| x.payment_method != PaymentMethod.invoice}.length > 0) or (find_lines(:is_gizmo_line?).length > 0)
+  end
+
+  def find_lines(type)
+    self.gizmo_events.select{|event| GizmoEvent.send(type, event)}
+  end
+
   def calculated_under_pay
     (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
   end
