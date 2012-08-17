@@ -1,8 +1,8 @@
 fgdb.rb (1.0.102) UNRELEASED; urgency=low
 
   * Add new types for Tablet, PDA, Smart Phone and eReader
-  * New layout for receipts that makes more sense
-  * Print a separate invoice and receipt for donations which need both
+  * New layout for receipts that makes more sense (Closes: #29551)
+    - Print a separate invoice and receipt for donations which need both
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Aug 2012 15:30:05 -0700
 
