@@ -1,15 +1,18 @@
 <% @donation = donation %>
 <div class="item_list">
 <table bgcolor="#cccccc" width="100%" align="center" border="1">
+
+<% ge = @donation.find_lines(:is_gizmo_line?) %>
+<% show_est = receipt_type == 'receipt' && ge.length > 0 %>
+
 <tbody><tr>
 <% l = "15" %>
     <td width="<%= l %>%"><strong>Quantity:</strong></td>
     <td width="60%"><strong>Description:</strong></td>
-    <td width="<%= l %>%"><strong>Est Value:</strong></td>
+    <td width="<%= l %>%"><strong><%= show_est ? "Est Value:" : "Amount:" %></strong></td>
 </tr>
 
-<% ge = @donation.find_lines(:is_gizmo_line?) %>
-<% if receipt_type == 'receipt' && ge.length > 0 %>
+<% if show_est %>
 
   <tr><th colspan="4">Items Donated</th></tr>
 
@@ -31,13 +34,15 @@
 
 <% end %>
 
+<% if receipt_type == 'receipt' %>
+
 <% fees_ge = @donation.find_lines(:is_fee_line?) %>
 <% if fees_ge.length > 0 %>
   <tr><th colspan="4">Required Fees</th></tr>
 <% fees_ge.each do |event| -%>
   <tr>
     <td><%= event.gizmo_count %> </td>
-    <td><%= h event.attry_description %> </td>
+    <td><%= n = event.attry_description; n += " Processing" unless n.match(/(Fee|Invoice)/); h n %> </td>
     <td><%= my_number_to_currency(event.gizmo_count * event.unit_price_cents) %></td>
   </tr>
 <% end -%>
@@ -53,6 +58,10 @@
 <% payments = @donation.payments %>
 
   <tr><th colspan="4">Summary</th></tr>
+
+<% end %>
+
+<% if receipt_type == 'receipt' %>
 
 <% payments.select{|x| x.payment_method.description.downcase != "invoice"}.each do |payment| %>
   <tr>
@@ -79,10 +88,12 @@
     </tr>
   <% end %>
 
+<% end %>
+
   <% if @donation.invoiced? %>
     <tr>
       <td>&nbsp;</td>
-        <td><strong>Total Amount Still Owed:</strong></td>
+        <td><strong>Amount Still Due:</strong></td>
         <td><strong><%= my_number_to_currency(@donation.amount_invoiced_cents) %></strong></td>
     </tr>
   <% end %>
@@ -100,6 +111,6 @@
   <b>This invoice is superseded by receipt <%= link_to "#" + @donation.superseded_by.id.to_s, params.merge({:id => @donation.superseded_by.id}) %>.</b><br />
 <% end %>
 <% extras = @donation.supersedes %>
-<% if extras.length > 0 %>
+<% if receipt_type == 'receipt' && extras.length > 0 %>
   This receipt supersedes invoice<%= extras.length > 1 ? "s" : "" %> <%= extras.map(&:id).map{|x| "#" + x.to_s}.to_sentence %>.
 <% end %>

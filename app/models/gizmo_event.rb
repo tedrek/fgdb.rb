@@ -200,16 +200,12 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     t ? "#" + t.to_s : nil
   end
 
-  def amount
-    self.invoice_id ? "$" + self.invoice_donation.invoice_amount : nil
-  end
-
   def date
     self.invoice_donation ? self.invoice_donation.occurred_at.strftime("%D") : nil
   end
 
   def attry_description(options = {})
-    junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id, :invoice_id, :amount, :date].map{|x| x.to_s} - (options[:ignore] || [])
+    junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id, :invoice_id, :date].map{|x| x.to_s} - (options[:ignore] || [])
 
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 

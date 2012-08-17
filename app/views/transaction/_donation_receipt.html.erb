@@ -14,7 +14,14 @@
 
 <p><%= h @donation.comments %></p>
 <hr />
-<p class="footer longfooter" style="page-break-after: always;">We affirm that no goods or services were provided in return for the contribution amounts listed above (required fees excepted).</p>
+<p class="footer longfooter" style="page-break-after: always;">
+<% if rt == 'receipt' %>
+We affirm that no goods or services were provided in return for the contribution amounts listed above (required fees excepted).<br/><br/>
+Retain this receipt for your taxes.
+<% else %>
+Please return a copy of this invoice with payment.
+<% end %>
+</p>
 </div>
 <% end %>
 <%= render :partial => 'transaction/receipt_footer' %>
