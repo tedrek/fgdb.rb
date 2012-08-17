@@ -10,7 +10,7 @@ module ApplicationHelper
   end
 
   def gt_for_txn(thing)
-    [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
+    [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types.sort_by(&:downcase_desc)
   end
 
   def ltum(text, hash, condition = nil) # link_to_unless_me

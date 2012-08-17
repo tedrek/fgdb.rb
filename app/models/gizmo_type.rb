@@ -20,6 +20,10 @@ class GizmoType < ActiveRecord::Base
 
   named_scope :for_systems, :conditions => ["needs_id = 't'"]
 
+  def downcase_desc
+    description.to_s.downcase
+  end
+
   def GizmoType.fee?(type)
     return type == service_fee || type == fee_discount
   end
