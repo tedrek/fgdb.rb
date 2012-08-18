@@ -75,25 +75,33 @@ class SystemPricing < ActiveRecord::Base
     end
   end
 
+  def missing_required
+    @missing_required ||= nil
+  end
+
   validate :validate_required_components
   def validate_required_components
+    @missing_required ||= []
     found = self.pricing_values.map(&:pricing_component)
     self.pricing_type.pricing_components.each do |pc|
-      if pc.required?
-        errors.add("#{pc.name}_pricing_value", "has not been chosen, but it is a required component") unless found.include?(pc)
+      if pc.required? && !found.include?(pc)
+        @missing_required << pc.name
+        errors.add("#{pc.name}_pricing_value", "has not been chosen, but it is a required component")
       end
     end
   end
 
   attr_accessor :magic_bit
 
-  def extra_valid?
+  def field_errors
+    errors = {}
     if self.spec_sheet.pricing_hash[:product_processor_speed] and self.spec_sheet.pricing_hash[:product_processor_speed].length > 0 and (self.spec_sheet.pricing_hash[:running_processor_speed] != self.spec_sheet.pricing_hash[:product_processor_speed])
-      errors.add('spec_sheet_id', "detected a different running speed (#{self.spec_sheet.pricing_hash[:running_processor_speed]}) than the processor product speed (#{self.spec_sheet.pricing_hash[:product_processor_speed]})")
+      errors[:processor_speed] = "Spec sheet detected a different running speed (#{self.spec_sheet.pricing_hash[:running_processor_speed]}) than the processor product speed (#{self.spec_sheet.pricing_hash[:product_processor_speed]})"
     end
     if self.spec_sheet.pricing_hash[:total_ram] and self.spec_sheet.pricing_hash[:total_ram].length > 0 and (self.spec_sheet.pricing_hash[:total_ram] != self.spec_sheet.pricing_hash[:individual_ram_total])
-      errors.add('spec_sheet_id', "detected a different total amount of memory (#{self.spec_sheet.pricing_hash[:total_ram]}) than the sum of the individual banks (#{self.spec_sheet.pricing_hash[:individual_ram_total]})")
+      errors[:memory_amount] = "Spec sheet detected a different total amount of memory (#{self.spec_sheet.pricing_hash[:total_ram]}) than the sum of the individual banks (#{self.spec_sheet.pricing_hash[:individual_ram_total]})"
     end
+    return errors
   end
 
   def pricing_hash
