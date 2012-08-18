@@ -15,7 +15,30 @@ class ReportsController < ApplicationController
     end
   end
 
+  protected
+  def _suggested_query(conds, having)
+    DB.exec("SELECT count(*), SUM(reported_suggested_fee_cents) AS suggested_fee_cents, SUM(contribution_cents) AS contribution_cents FROM (SELECT donations.id,
+reported_suggested_fee_cents, reported_required_fee_cents, CASE WHEN ((CASE WHEN SUM(payments.amount_cents) IS NULL THEN 0 ELSE SUM(payments.amount_cents) END) - reported_required_fee_cents) > 0 THEN ((CASE WHEN SUM(payments.amount_cents) IS NULL THEN 0 ELSE SUM(payments.amount_cents) END) - reported_required_fee_cents) ELSE 0 END AS contribution_cents, SUM(payments.amount_cents) AS
+payment_cents FROM donations LEFT OUTER JOIN payments ON payments.donation_id =
+donations.id LEFT OUTER JOIN gizmo_events ON gizmo_events.donation_id = donations.id
+WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{having}) AS r;")
+  end
+
   public
+
+  def suggested_contributions
+    @conditions = Conditions.new
+  end
+
+  def suggested_contributions_report
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    conds = @conditions.conditions(Donation)
+    contributed = "HAVING SUM(payments.amount_cents) > reported_required_fee_cents"
+    not_contributed = "HAVING SUM(payments.amount_cents) IS NULL OR SUM(payments.amount_cents) <= reported_required_fee_cents"
+    @with = _suggested_query(conds, contributed).to_a.first
+    @without = _suggested_query(conds, not_contributed).to_a.first
+  end
 
   def staff_hours_summary
     # opts: date, worker, job (by title)

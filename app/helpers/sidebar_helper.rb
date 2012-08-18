@@ -83,8 +83,8 @@ module SidebarHelper
     sidebar_hash["sales"]["pricing"] = {:c => "system_pricings", :a => "index"}
     sidebar_hash["sales"]["pricing admin"] = {:c => "pricing_types", :a => "index"}
     # reports
-    ["income", "gizmos", "volunteering", "top_donations", "donation_areas"].each do |x|
-      sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => ((x == "donation_areas") ? "donation_zip_areas" : x.sub("ing", "s"))}
+    ["income", "gizmos", "volunteering", "top_donations", "donation_areas", "contributions"].each do |x|
+      sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => ((x == "contributions") ? "suggested_contributions" : (x == "donation_areas") ? "donation_zip_areas" : x.sub("ing", "s"))}
     end
     sidebar_hash["tech support"]["system returns"] = {:c => "gizmo_returns", :a => "system"}
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}

@@ -1,5 +1,9 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def my_number_to_currency(value)
+    number_to_currency(value.to_f/100.0)
+  end
+
   def do_jsalert
     return "" if ! flash[:jsalert]
     s = ""

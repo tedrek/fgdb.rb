@@ -1,0 +1,39 @@
+<h2>Suggested contributions report for <%= @conditions.to_s %></h2>
+
+<table class="awesome" style="clear: left">
+<tr>
+  <th>Type</th>
+  <th>Count</th>
+  <th>% of results</th>
+  <th>Suggested Fee</th>
+  <th>Contribution</th>
+  <th>% of Suggested</th>
+</tr>
+<% total = @with["count"].to_i + @without["count"].to_i %>
+<tr>
+  <td>With Contribution</td>
+  <td><%= @with["count"] %></td>
+  <td><%= sprintf "%.2f", 100 * @with["count"].to_f / total %></td>
+  <td><%= my_number_to_currency(@with["suggested_fee_cents"]) %></td>
+  <td><%= my_number_to_currency(@with["contribution_cents"]) %></td>
+  <td><%= sprintf "%.2f", 100 * @with["contribution_cents"].to_f / @with["suggested_fee_cents"].to_f %></td>
+</tr>
+<tr>
+  <td>Without Contribution</td>
+  <td><%= @without["count"] %></td>
+  <td><%= sprintf "%.2f", 100 * @without["count"].to_f / total %></td>
+  <td><%= my_number_to_currency(@without["suggested_fee_cents"]) %></td>
+  <td><%= my_number_to_currency(@without["contribution_cents"]) %></td>
+  <td><%= sprintf "%.2f", 100 * @without["contribution_cents"].to_f / @without["suggested_fee_cents"].to_f %></td>
+</tr>
+<tr>
+  <td>Total</td>
+  <td><%= total %></td>
+  <td>100.00</td>
+  <td><%= s = @with["suggested_fee_cents"].to_i + @without["suggested_fee_cents"].to_i; my_number_to_currency(s) %></td>
+  <td><%= c = @with["contribution_cents"].to_i + @without["contribution_cents"].to_i; my_number_to_currency(c) %></td>
+  <td><%= sprintf "%.2f", 100 * c / s.to_f %></td>
+</table>
+
+<%= render :partial => "form", :locals => {:name => "suggested_contributions_form"} %>
+
