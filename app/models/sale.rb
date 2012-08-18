@@ -277,6 +277,7 @@ thanks = [
       gizmo_events.build({:unit_price_cents => storecredit_back,
                             :gizmo_count => 1,
                             :gizmo_type => GizmoType.find_by_name("store_credit"),
+                           :covered => false,
                                        :gizmo_context => self.gizmo_context})
 # <Ryan52> so it should just recalculate the expire date always? <store> yeah, that's it
 #                            :expire_date => store_credits_spent.map{|x| x.store_credit.expire_date}.uniq.select{|x| !x.nil?}.sort.last}) # WTF? something sets gizmo_context on *everything* else. why doesn't it set it on this one? hm...I can't find that code anyway.
