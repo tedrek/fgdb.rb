@@ -356,7 +356,7 @@ class TransactionController < ApplicationController
      [{:content => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}"}, {:content => "Donation ##{@txn.id}"}, {:content => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : "", :align => :right}]], :column_widths => [w, w, w], :cell_style => {:border_width => 0, :padding => 0})
 
     if show_suggested
-      pdf.text "There is a suggested tax deductible donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
+      pdf.text "There is a suggested tax deductible contribution of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
       pdf.y -= 3
     end
   end
