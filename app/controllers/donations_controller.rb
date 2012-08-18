@@ -18,7 +18,7 @@ class DonationsController < TransactionController
       gt = GizmoType.find_by_name("invoice_resolved")
       params[:invoices].each do |k|
         d = Donation.find_by_id(k)
-        @transaction.gizmo_events << GizmoEvent.new(:gizmo_type => gt, :unit_price_cents => d.invoice_amount_cents, :invoice_donation => d, :gizmo_count => 1, :gizmo_context => @gizmo_context)
+        @transaction.gizmo_events << GizmoEvent.new(:gizmo_type => gt, :unit_price_cents => d.invoice_amount_cents, :invoice_donation => d, :gizmo_count => 1, :gizmo_context => @gizmo_context, :covered => false)
       end
       if @transaction.calculated_under_pay < 0
         @transaction.payments << Payment.new(:amount_cents => -1 * @transaction.calculated_under_pay, :payment_method => PaymentMethod.invoice)

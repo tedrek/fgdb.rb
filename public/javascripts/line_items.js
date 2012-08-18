@@ -228,7 +228,7 @@ systems_invalid = false;
 
 function _add_gizmo_event_from_form()
 {
-  if(systems_invalid || $('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && (!$('covered').disabled) && $('covered').selectedIndex == 0 && gizmo_context != "sale") || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
+  if(systems_invalid || $('gizmo_type_id').selectedIndex == 0 || ($('covered') != null && (!$('covered').disabled) && $('covered').selectedIndex == 0) || ($('unit_price') != null && $('unit_price').value == '') || ($('gizmo_count') != null && $('gizmo_count').value == '')) {
     return true;
   }
   if($('system_id') != null && $('gizmo_count') != null) {
