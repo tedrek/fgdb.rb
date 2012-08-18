@@ -4,6 +4,7 @@ class SalesController < TransactionController
   private
   def get_required_privileges
     a = super
+    a = a.select{|x| x[:only].nil? or x[:only] != ["/show_created_and_updated_by"]}
     a << {:only => ["/show_created_and_updated_by"], :privileges => ['role_store_admin']}
     return a
   end
