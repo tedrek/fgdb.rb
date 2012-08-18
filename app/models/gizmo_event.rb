@@ -204,6 +204,10 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     self.invoice_donation ? self.invoice_donation.occurred_at.strftime("%D") : nil
   end
 
+  def attry_processing_description
+    n = self.attry_description; n += " Processing" unless n.match(/(Fee|Invoice)/); return n
+  end
+
   def attry_description(options = {})
     junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id, :invoice_id, :date].map{|x| x.to_s} - (options[:ignore] || [])
 

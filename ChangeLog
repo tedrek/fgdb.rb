@@ -3,6 +3,7 @@ fgdb.rb (1.0.102) released; urgency=low
   * Add new types for Tablet, PDA, Smart Phone and eReader
   * New layout for receipts that makes more sense (Closes: #29551)
     - Print a separate invoice and receipt for donations which need both
+    - Update the PDF donation receipt, too
   * Add a suggested contributions report (Closes: #30243)
   * Allow the STORE_ADMIN role to see created and updated by conditions
     (Closes: #30212)

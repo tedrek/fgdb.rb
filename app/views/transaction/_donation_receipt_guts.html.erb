@@ -42,7 +42,7 @@
 <% fees_ge.each do |event| -%>
   <tr>
     <td><%= event.gizmo_count %> </td>
-    <td><%= n = event.attry_description; n += " Processing" unless n.match(/(Fee|Invoice)/); h n %> </td>
+    <td><%= event.attry_processing_description %> </td>
     <td><%= my_number_to_currency(event.gizmo_count * event.unit_price_cents) %></td>
   </tr>
 <% end -%>

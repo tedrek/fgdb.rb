@@ -343,6 +343,26 @@ class TransactionController < ApplicationController
 
   protected
   include ActionView::Helpers::NumberHelper
+  def gen_pdf_header(pdf, show_suggested, receipt_type)
+    w = 540/4.0
+    pdf.table([[{:image => RAILS_ROOT + "/public/images/freegeeklogo.png", :position => :left}, {:image => RAILS_ROOT + "/public/images/hdr-address.png", :position => :left, :scale => 1}, {:border_width => 0, :content => ""}, {:content => ([@txn.contact_information, @txn.hidable_contact_information].flatten).map{|x| x || ""}.join("\n")}]], :column_widths => [w, w, w, w], :cell_style => {:border_width => 0})
+    pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left
+
+    pdf.stroke_horizontal_rule
+
+    w = 540/3.0
+    pdf.table(    [[{:content => "#{(@txn.invoiced? && receipt_type == 'invoice') ? "Invoice" : "Donation Receipt"}"}, {:content => ""}, {:content => Default["tax id"], :align => :right}],
+     [{:content => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}"}],
+     [{:content => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}"}, {:content => "Donation ##{@txn.id}"}, {:content => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : "", :align => :right}]], :column_widths => [w, w, w], :cell_style => {:border_width => 0, :padding => 0})
+
+    if show_suggested
+      pdf.text "There is a suggested tax deductible donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
+      pdf.y -= 3
+    end
+  end
+
+  include ApplicationHelper
+
   def gen_pdf
     @txn = @transaction = model.find(params[:id])
     show_suggested = (params[:show_suggested].to_s == "true")
@@ -355,81 +375,101 @@ class TransactionController < ApplicationController
 
     pdf.font("Helvetica")
 
-    w = 540/4.0
-    pdf.table([[{:image => RAILS_ROOT + "/public/images/freegeeklogo.png", :position => :left}, {:image => RAILS_ROOT + "/public/images/hdr-address.png", :position => :left, :scale => 1}, {:border_width => 0, :content => ""}, {:content => ([@txn.contact_information, @txn.hidable_contact_information].flatten).map{|x| x || ""}.join("\n")}]], :column_widths => [w, w, w, w], :cell_style => {:border_width => 0})
-    pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left
+    count = 1
 
-    pdf.stroke_horizontal_rule
+    @txn.receipt_types.each do |receipt_type|
+      est_value = "Amount:"
 
-    w = 540/3.0
-    pdf.table(    [[{:content => "Donation #{@txn.invoiced? ? "Invoice" : "Receipt"}"}, {:content => ""}, {:content => Default["tax id"], :align => :right}],
-     [{:content => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}"}],
-     [{:content => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}"}, {:content => "Donation ##{@txn.id}"}, {:content => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : "", :align => :right}]], :column_widths => [w, w, w], :cell_style => {:border_width => 0, :padding => 0})
+      pdf.start_new_page unless count == 1
+      count += 1
 
-    if show_suggested
-      pdf.text "There is a suggested tax deductible donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
-      pdf.y -= 3
-    end
+      gen_pdf_header(pdf, show_suggested && receipt_type == 'invoice', receipt_type)
 
+      ge = @txn.find_lines(:is_gizmo_line?)
+      show_est = receipt_type == 'receipt' && ge.length > 0
 
-      data = @txn.gizmo_events.select{|event| !GizmoType.fee?(event.gizmo_type)}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => "______"}}
-      data << {"desc" => " "}
+      data = []
+      if show_est
+      est_value = "Est Value:"
+        data += @txn.gizmo_events.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => "______"}}
+      data.unshift({"desc" => "Items Donated", "bold" => true})
       data << {"desc" => "Total Estimated Value (tax deductible):", "val" =>  "_________"}
-      data = data + @txn.gizmo_events.select{|event| (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0)) && !event.covered}.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_description, "val" => number_to_currency((x.gizmo_count * x.unit_price_cents)/100.0)}}
-      unless @txn.payments.length == 1 && @txn.payments.first.payment_method.description.downcase == "invoice"
-        data = data + @txn.payments.map{|payment| {"desc" => payment.payment_method.description.titleize + (payment.payment_method.description.match("invoice") ? " Total" : " Paid") + ":", "val" => number_to_currency(payment.amount_cents/100.0)}}
+      data << {"desc" => " "}
       end
 
-      if @txn.invoice_resolved?
-        data << {"desc" => "Required Fee Paid (NOT tax deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents + @txn.required_fee_owed_cents)/100.0) }
-        data << {"desc" => "Contribution Paid (tax deductible):", "val" => number_to_currency((@txn.cash_donation_paid_cents + @txn.cash_donation_owed_cents)/100.0)}
-      else
-        if @txn.required_fee_paid_cents.nonzero?
-          data << {"desc" => "Required Fee Paid (NOT tax deductible):", "val" => number_to_currency((@txn.required_fee_paid_cents)/100.0)}
-        end
-
-        if @txn.invoiced? and @txn.required_fee_owed_cents.nonzero?
-          data << {"desc" => "Required Fee Due (NOT tax deductible):", "val" => number_to_currency(@txn.required_fee_owed_cents/100.0) }
-        end
-
-        if @txn.invoiced?
+      if receipt_type == 'receipt'
+        fees_ge = @txn.find_lines(:is_fee_line?)
+        if fees_ge.length > 0
+          data << {"desc" => "Required Fees", "bold" => true}
+          data += @txn.gizmo_events.map{|x| {"qty" => x.gizmo_count, "desc" => x.attry_processing_description, "val" => my_number_to_currency(x.gizmo_count * x.unit_price_cents)}}
+          data << {"desc" => "Total Required Fees (NOT tax deductible):", "val" => my_number_to_currency(@txn.calculated_required_fee_cents)}
           data << {"desc" => " "}
-          data << {"desc" => "Total Amount Still Owed:", "val" => number_to_currency((@txn.amount_invoiced_cents)/100.0)}
-        end
-
-        if @txn.cash_donation_paid_cents.nonzero?
-          data << {"desc" => "Contribution Paid (tax deductible):", "val" => number_to_currency(@txn.cash_donation_paid_cents/100.0) }
-        end
-        if @txn.invoiced? and @txn.cash_donation_owed_cents.nonzero?
-          data << {"desc" => "Cash Contribution Owed (tax deductible AFTER PAYMENT)", "val" => number_to_currency(@txn.cash_donation_owed_cents/100.0)}
         end
       end
 
-      unless @txn.payments.length == 0
-        data << {"desc" => "Total Tax Deductible Contribution:", "val" =>  "_________"}
+      data << {"desc" => "Summary", "bold" => true}
+
+      payments = @txn.payments
+
+      if receipt_type == 'receipt'
+        payments.select{|x| x.payment_method.description.downcase != "invoice"}.each do |payment|
+          data << {"desc" => (payment.payment_method.description).titleize + (payment.payment_method.description.match("invoice") ? " Total" : " Paid"), "val" => my_number_to_currency(payment.amount_cents)}
+        end
+
+      if @txn.required_fee_owed_cents.nonzero? or @txn.required_fee_paid_cents.nonzero?
+        data << {"desc" => "Required Fees (NOT tax deductible):", "val" => my_number_to_currency(-1 * (@txn.required_fee_paid_cents + @txn.required_fee_owed_cents))}
       end
 
-    a = %w(qty desc val)
-    arranged_data = [["Quantity:", "Description:", "Est Value:"]]
-    data.each do |x|
-      newarr = []
-      a.each_with_index do |y,i|
-        newarr[i] = x[y]
+      if @txn.cash_donation_paid_cents.nonzero? && receipt_type == 'receipt'
+        data << {"desc" => "Total Contribution Paid (tax deductible):", "val" => my_number_to_currency(@txn.cash_donation_paid_cents)}
       end
-      arranged_data << newarr
-    end
+      end
+
+      if @txn.invoiced?
+        data << {"desc" => "Amount Still Due:", "val" => my_number_to_currency(@txn.amount_invoiced_cents)}
+      end
+
+      unless receipt_type != 'receipt' || ge.length == 0 || @txn.cash_donation_paid_cents == 0
+        data << {"desc" => "Total Tax Deductible Contribution:\n(Estimated Value + Contribution Paid)", "val" =>  "_________"}
+      end
+
+      a = %w(qty desc val)
+      headers = []
+      arranged_data = [["Quantity:", "Description:", est_value]]
+      count = 1
+      data.each do |x|
+        newarr = []
+        a.each_with_index do |y,i|
+          if i == 1 and x["bold"]
+            headers << count
+          end
+          newarr[i] = x[y]
+        end
+        arranged_data << newarr
+        count += 1
+      end
 
     w = 540/9.0
-    pdf.table(arranged_data, :column_widths => [2*w, 5*w, 2*w], :cell_style => {:padding => 1}, :row_colors => ["B0B0B0", "FFFFFF"])
-
+      table = pdf.make_table(arranged_data, :column_widths => [2*w, 5*w, 2*w], :cell_style => {:padding => 1}, :row_colors => ["B0B0B0", "FFFFFF"])
+      for i in headers
+        table.row(i).column(1).font_style = :bold
+      end
+      table.draw
 
     pdf.text @txn.comments.to_s
 
     pdf.stroke_horizontal_rule
     pdf.y -= 5
-    pdf.text "We affirm that no goods or services were provided in return for the contribution amounts listed above (required fees excepted).", :font_size => font_size
+      if receipt_type == 'receipt'
+        pdf.text "We affirm that no goods or services were provided in return for the contribution amounts listed above (required fees excepted).", :font_size => font_size
+        pdf.y -= 5
+        pdf.y -= 5
+        pdf.text "Retain this receipt for your taxes.", :font_size => font_size
+      else
+        pdf.text "Please return a copy of this invoice with payment."
+      end
 
-#pdf.start_new_page
+    end
 
     return pdf
   end
