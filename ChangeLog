@@ -1,4 +1,4 @@
-fgdb.rb (1.0.102) UNRELEASED; urgency=low
+fgdb.rb (1.0.102) released; urgency=low
 
   * Add new types for Tablet, PDA, Smart Phone and eReader
   * New layout for receipts that makes more sense (Closes: #29551)
@@ -8,7 +8,7 @@ fgdb.rb (1.0.102) UNRELEASED; urgency=low
     (Closes: #30212)
   * Fix covered to be required chosen (Closes: #30229)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Aug 2012 17:53:10 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Aug 2012 20:33:18 -0700
 
 fgdb.rb (1.0.101) released; urgency=low
 
