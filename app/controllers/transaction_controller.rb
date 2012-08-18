@@ -421,7 +421,7 @@ class TransactionController < ApplicationController
         data << {"desc" => "Required Fees (NOT tax deductible):", "val" => my_number_to_currency(-1 * (@txn.required_fee_paid_cents + @txn.required_fee_owed_cents))}
       end
 
-      if @txn.cash_donation_paid_cents.nonzero? && receipt_type == 'receipt'
+      if (@txn.cash_donation_paid_cents.nonzero? or (@txn.calculated_required_fee_cents.nonzero? && !@txn.invoiced?)) && receipt_type == 'receipt'
         data << {"desc" => "Total Contribution Paid (tax deductible):", "val" => my_number_to_currency(@txn.cash_donation_paid_cents)}
       end
       end
