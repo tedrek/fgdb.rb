@@ -35,6 +35,7 @@ class SystemPricingsController < ApplicationController
     if @system
       @spec_sheet = @system_pricing.spec_sheet
       @values = @system_pricing.pricing_hash
+      @field_errors = @system_pricing.field_errors
     end
   end
 
@@ -45,6 +46,7 @@ class SystemPricingsController < ApplicationController
     if @system
       @spec_sheet = @system_pricing.spec_sheet
       @values = @system_pricing.pricing_hash
+      @field_errors = @system_pricing.field_errors
     end
   end
 
@@ -68,6 +70,7 @@ class SystemPricingsController < ApplicationController
     if @system
       @spec_sheet = @system_pricing.spec_sheet
       @values = @system_pricing.pricing_hash
+      @field_errors = @system_pricing.field_errors
     end
 
     if @system_pricing.magic_bit && @system_pricing.save
@@ -85,6 +88,7 @@ class SystemPricingsController < ApplicationController
     if @system
       @spec_sheet = @system_pricing.spec_sheet
       @values = @system_pricing.pricing_hash
+      @field_errors = @system_pricing.field_errors
     end
 
     if @system_pricing.update_attributes(params[:system_pricing])
