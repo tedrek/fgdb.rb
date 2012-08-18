@@ -6,8 +6,10 @@ fgdb.rb (1.0.102) UNRELEASED; urgency=low
   * Add a suggested contributions report (Closes: #30243)
   * Allow the STORE_ADMIN role to see created and updated by conditions
     (Closes: #30212)
+  * Fix covered to be required chosen except for on sales, where it is
+    intentionally not required (Closes: #30229)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Aug 2012 17:40:25 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Aug 2012 17:53:10 -0700
 
 fgdb.rb (1.0.101) released; urgency=low
 
