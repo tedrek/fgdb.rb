@@ -468,6 +468,11 @@ class TransactionController < ApplicationController
         pdf.text "Retain this receipt for your taxes.", :font_size => font_size
       else
         pdf.text "Please return a copy of this invoice with payment."
+        if Default["contribution_blurb"]
+          pdf.y -= 5
+          pdf.y -= 5
+          pdf.text Default["contribution_blurb"]
+        end
       end
 
     end

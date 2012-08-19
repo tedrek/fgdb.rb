@@ -20,6 +20,11 @@ We affirm that no goods or services were provided in return for the contribution
 Retain this receipt for your taxes.
 <% else %>
 Please return a copy of this invoice with payment.
+<% if Default["contribution_blurb"] %>
+<br /><br />
+<%= Default["contribution_blurb"] %>
+<% end %>
+
 <% end %>
 </p>
 </div>
