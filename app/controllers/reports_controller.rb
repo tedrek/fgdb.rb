@@ -37,7 +37,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
       @records =  DB.exec("SELECT
                COALESCE(
                  volunteer_task_types.description,
-                 'Attendee')
+                 'attending')
                AS volunteer_type,
                rosters.name AS roster,
                COALESCE(attendance_types.name, 'not checked in') AS attendance_type,
