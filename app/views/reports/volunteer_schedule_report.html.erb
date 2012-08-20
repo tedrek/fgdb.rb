@@ -19,7 +19,7 @@
         <tr>
           <td><%= roster_key %></td>
           <% attendance_type_keys.each do |at| %>
-            <td><%= roster[at] %></td>
+            <td><%= roster[at] || 0%></td>
           <% end %>
           <td><%= roster["total"] %></td>
           <td><%= roster["total_hours"] %></td>
