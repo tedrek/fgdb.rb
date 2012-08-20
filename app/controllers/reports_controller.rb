@@ -36,9 +36,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
     if @conditions.valid?
       @records =  DB.exec("SELECT
                COALESCE(
-                 COALESCE(
-                   volunteer_task_types.description,
-                   volunteer_shifts.description),
+                 volunteer_task_types.description,
                  'Attendee')
                AS volunteer_type,
                rosters.name AS roster,
