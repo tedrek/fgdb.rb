@@ -1,0 +1,50 @@
+<h2><%= Sked.find_by_id(@conditions.sked_id).to_s %> Volunteer Schedule Report <%= @conditions.skedj_to_s("sentence", false, ['sked']) %></h2>
+<% if @result %>
+  <% @result.keys.sort.each do |result_key| %>
+    <% result = @result[result_key] %>
+    <h3><%= result["name"] %></h3>
+    <h4>Counts</h4>
+    <% attendance_type_keys = result["attendance_types"].sort %>
+    <table class="awesome">
+      <tr>
+        <th>Roster Name</th>
+        <% attendance_type_keys.each do |at| %>
+          <th># <%= at %></th>
+        <% end %>
+        <th># total</th>
+        <th>Total hours</th>
+      </tr>
+      <% result["rosters"].keys.sort.each do |roster_key| %>
+        <% roster = result["rosters"][roster_key] %>
+        <tr>
+          <td><%= roster_key %></td>
+          <% attendance_type_keys.each do |at| %>
+            <td><%= roster[at] %></td>
+          <% end %>
+          <td><%= roster["total"] %></td>
+          <td><%= roster["total_hours"] %></td>
+        </tr>
+      <% end %>
+    </table>
+    <h4>Volunteers</h4>
+    <table class="awesome">
+      <% class_keys = result["classes"].keys.sort %>
+      <tr>
+        <th>Event</th>
+        <% attendance_type_keys.each do |klass| %>
+          <th><%= klass %></th>
+        <% end %>
+      </tr>
+      <% class_keys.each do |klass_key| %>
+        <% klass = result["classes"][klass_key] %>
+        <tr>
+          <td><%= klass_key %></td>
+          <% attendance_type_keys.each do |at| %>
+            <td><%= (klass[at] || []).map{|x| @contacts[x].display_name + " (##{x})"}.sort.join("<br />") %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+<% end %>
+<%= render :partial => "form", :locals => {:name => "volunteer_schedule_form"} %>

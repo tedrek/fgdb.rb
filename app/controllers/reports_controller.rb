@@ -26,6 +26,62 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
 
   public
 
+  def volunteer_schedule
+    @conditions = Conditions.new
+  end
+
+  def volunteer_schedule_report
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    if @conditions.valid?
+      @records =  DB.exec("SELECT
+               COALESCE(
+                 COALESCE(
+                   volunteer_task_types.description,
+                   volunteer_shifts.description),
+                 'Attendee')
+               AS volunteer_type,
+               rosters.name AS roster,
+               COALESCE(attendance_types.name, 'Not checked in') AS attendance_type,
+               (EXTRACT(HOURS FROM assignments.end_time - assignments.start_time) + EXTRACT(MINUTES FROM assignments.end_time - assignments.start_time)/60) AS hours,
+               volunteer_events.description AS event_name,
+               volunteer_events.date AS event_date,
+               contact_id
+               FROM assignments
+               JOIN volunteer_shifts ON volunteer_shift_id = volunteer_shifts.id
+               JOIN volunteer_events ON volunteer_event_id = volunteer_events.id
+               JOIN contacts ON contact_id = contacts.id
+               LEFT OUTER JOIN volunteer_task_types ON volunteer_task_type_id = volunteer_task_types.id
+               LEFT OUTER JOIN rosters ON roster_id = rosters.id
+               LEFT OUTER JOIN attendance_types ON attendance_type_id = attendance_types.id
+               WHERE #{DB.send(:sanitize_sql_for_conditions, @conditions.conditions(Assignment))}")
+      @result = {}
+      @contacts = {}
+      @records.to_a.each do |l|
+        unless @result[l["volunteer_type"]]
+          @result[l["volunteer_type"]] = {"classes" => {}, "rosters" => {}, "attendance_types" => [], "name" => l["volunteer_type"]}
+        end
+        result = @result[l["volunteer_type"]]
+        class_name = "#{l["event_date"]}, #{l["event_name"]}"
+        result["attendance_types"] << l["attendance_type"] unless result["attendance_types"].include?(l["attendance_type"])
+        roster = l['roster']
+        unless result["rosters"][roster]
+          result["rosters"][roster] = {"total" => 0, "total_hours" => 0.0}
+        end
+        result["rosters"][roster]["total"] += 1
+        result["rosters"][roster][l["attendance_type"]] ||= 0
+        result["rosters"][roster][l["attendance_type"]] += 1
+        result["rosters"][roster]["total_hours"] += l["hours"].to_f
+        result["classes"][class_name] ||= {}
+        result["classes"][class_name][l["attendance_type"]] ||= []
+        result["classes"][class_name][l["attendance_type"]] << l["contact_id"]
+        unless @contacts[l["contact_id"]]
+          @contacts[l["contact_id"]] = Contact.find_by_id(l["contact_id"])
+        end
+      end
+    end
+  end
+
   def suggested_contributions
     @conditions = Conditions.new
   end
