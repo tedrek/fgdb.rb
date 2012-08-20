@@ -351,12 +351,13 @@ class TransactionController < ApplicationController
     pdf.stroke_horizontal_rule
 
     w = 540/3.0
-    pdf.table(    [[{:content => "#{(@txn.invoiced? && receipt_type == 'invoice') ? "Invoice" : "Donation Receipt"}"}, {:content => ""}, {:content => Default["tax id"], :align => :right}],
+    show_context = @txn.class != Donation || (receipt_type == 'receipt' && (@txn.find_lines(:is_gizmo_line?).length > 0 || @txn.cash_donation_paid_cents > 0))
+    pdf.table(    [[{:content => "#{(@txn.invoiced? && receipt_type == 'invoice') ? "Invoice" : show_context ? "Donation Receipt" : "Invoice Receipt"}"}, {:content => ""}, {:content => Default["tax id"], :align => :right}],
      [{:content => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}"}],
-     [{:content => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}"}, {:content => "Donation ##{@txn.id}"}, {:content => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : "", :align => :right}]], :column_widths => [w, w, w], :cell_style => {:border_width => 0, :padding => 0})
+                   [{:content => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}"}, {:content => "#{show_context ? "Donation" : "Invoice"} ##{@txn.id}"}, {:content => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : "", :align => :right}]], :column_widths => [w, w, w], :cell_style => {:border_width => 0, :padding => 0})
 
     if show_suggested
-      pdf.text "There is a suggested tax deductible donation of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
+      pdf.text "There is a suggested tax deductible contribution of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
       pdf.y -= 3
     end
   end
@@ -420,7 +421,7 @@ class TransactionController < ApplicationController
         data << {"desc" => "Required Fees (NOT tax deductible):", "val" => my_number_to_currency(-1 * (@txn.required_fee_paid_cents + @txn.required_fee_owed_cents))}
       end
 
-      if @txn.cash_donation_paid_cents.nonzero? && receipt_type == 'receipt'
+      if (@txn.cash_donation_paid_cents.nonzero? or (@txn.calculated_required_fee_cents.nonzero? && !@txn.invoiced?)) && receipt_type == 'receipt'
         data << {"desc" => "Total Contribution Paid (tax deductible):", "val" => my_number_to_currency(@txn.cash_donation_paid_cents)}
       end
       end
@@ -467,6 +468,11 @@ class TransactionController < ApplicationController
         pdf.text "Retain this receipt for your taxes.", :font_size => font_size
       else
         pdf.text "Please return a copy of this invoice with payment."
+        if Default["contribution_blurb"]
+          pdf.y -= 5
+          pdf.y -= 5
+          pdf.text Default["contribution_blurb"]
+        end
       end
 
     end

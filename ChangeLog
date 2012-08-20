@@ -16,6 +16,10 @@ fgdb.rb (1.0.102) released; urgency=low
   * Allow the STORE_ADMIN role to see created and updated by conditions
     (Closes: #30212)
   * Fix covered to be required chosen (Closes: #30229)
+  * Add a blurb of text encouraging contributions
+  * Add a general volunteer schedule report, providing the data
+    requested for Darren's Student report for any schedule (Closes:
+    #30055)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Aug 2012 20:33:18 -0700
 

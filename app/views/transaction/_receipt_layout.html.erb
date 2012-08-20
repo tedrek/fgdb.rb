@@ -9,8 +9,11 @@
 
     <tr>
       <td colspan="2">
-        <% if @transaction.class != Donation || receipt_type == 'receipt' %>
+        <% show_context = @transaction.class != Donation || (receipt_type == 'receipt' && (@transaction.find_lines(:is_gizmo_line?).length > 0 || @transaction.cash_donation_paid_cents > 0)) %>
+        <% if show_context %>
         <%= @context.titleize %>
+        <% elsif receipt_type == 'receipt' %>
+          Invoice
         <% end %>
         <strong>
           <% if @txn.invoiced? && (@transaction.class != Donation || receipt_type == 'invoice') %>
@@ -32,7 +35,10 @@
     <tr>
       <td>Date: <%= @txn.occurred_at.strftime("%m/%d/%Y") %></td>
       <td align="center">
-        <%= @context.titleize %> <strong><%= "# " + @txn.id.to_s %></strong>
+                <% if show_context %><%= @context.titleize %>
+                  <% else %>Invoice
+                    <% end %>
+                <strong><%= "# " + @txn.id.to_s %></strong>
       </td>
       <td align="right">
         <% if @txn.invoiced? %>
@@ -44,9 +50,9 @@
     </tr>
 
     <% if params[:controller] == 'donations' && receipt_type == 'invoice' %>
-    <tr id="suggested_fee" style="display: none">
+    <tr id="suggested_fee">
       <td colspan="4">
-        There is a suggested tax deductible donation of $<%= @donation.reported_suggested_fee %> for these items.
+        There is a suggested tax deductible contribution of $<%= @donation.reported_suggested_fee %> for these items.
       </td>
     </tr>
     <% end %>

@@ -80,7 +80,7 @@
   </tr>
   <% end %>
 
-  <% if @donation.cash_donation_paid_cents.nonzero? && receipt_type == 'receipt' %>
+  <% if (@donation.cash_donation_paid_cents.nonzero? or (@donation.calculated_required_fee_cents.nonzero? && !@donation.invoiced?)) && receipt_type == 'receipt' %>
     <tr>
       <td>&nbsp;</td>
       <td> Total Contribution Paid (tax deductible): </td>
