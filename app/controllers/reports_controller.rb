@@ -59,7 +59,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
       @contacts = {}
       @records.to_a.each do |l|
         unless @result[l["volunteer_type"]]
-          @result[l["volunteer_type"]] = {"classes" => {}, "rosters" => {}, "attendance_types" => [], "name" => l["volunteer_type"]}
+          @result[l["volunteer_type"]] = {"classes" => {}, "rosters" => {}, "rosters_total" => {"total" => 0, "total_hours" => 0.0}, "attendance_types" => [], "name" => l["volunteer_type"]}
         end
         result = @result[l["volunteer_type"]]
         class_name = "#{l["event_date"]}, #{l["event_name"]}"

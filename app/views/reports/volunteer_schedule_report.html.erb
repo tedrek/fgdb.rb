@@ -25,6 +25,15 @@
           <td><%= roster["total_hours"] %></td>
         </tr>
       <% end %>
+        <% roster = result["rosters_total"] %>
+        <tr>
+          <td>Total</td>
+          <% attendance_type_keys.each do |at| %>
+            <td><%= roster[at] || 0%></td>
+          <% end %>
+          <td><%= roster["total"] %></td>
+          <td><%= roster["total_hours"] %></td>
+        </tr>
     </table>
     <h4>Volunteers</h4>
     <table class="awesome">
