@@ -2,8 +2,7 @@
 <% if @result %>
   <% @result.keys.sort.each do |result_key| %>
     <% result = @result[result_key] %>
-    <h3><%= result["name"] %></h3>
-    <h4>Counts</h4>
+    <h3>Counts of "<%= result["name"] %>" volunteers:</h3>
     <% attendance_type_keys = result["attendance_types"].sort %>
     <table class="awesome">
       <tr>
@@ -19,14 +18,23 @@
         <tr>
           <td><%= roster_key %></td>
           <% attendance_type_keys.each do |at| %>
-            <td><%= roster[at] %></td>
+            <td><%= roster[at] || 0%></td>
           <% end %>
           <td><%= roster["total"] %></td>
           <td><%= roster["total_hours"] %></td>
         </tr>
       <% end %>
+        <% roster = result["rosters_total"] %>
+        <tr>
+          <td>Total</td>
+          <% attendance_type_keys.each do |at| %>
+            <td><%= roster[at] || 0%></td>
+          <% end %>
+          <td><%= roster["total"] %></td>
+          <td><%= roster["total_hours"] %></td>
+        </tr>
     </table>
-    <h4>Volunteers</h4>
+    <h3>Lists of "<%= result["name"] %>" volunteers:</h3>
     <table class="awesome">
       <% class_keys = result["classes"].keys.sort %>
       <tr>

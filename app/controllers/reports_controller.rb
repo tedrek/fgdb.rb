@@ -36,13 +36,11 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
     if @conditions.valid?
       @records =  DB.exec("SELECT
                COALESCE(
-                 COALESCE(
-                   volunteer_task_types.description,
-                   volunteer_shifts.description),
-                 'Attendee')
+                 volunteer_task_types.description,
+                 'attending')
                AS volunteer_type,
                rosters.name AS roster,
-               COALESCE(attendance_types.name, 'Not checked in') AS attendance_type,
+               COALESCE(attendance_types.name, 'not checked in') AS attendance_type,
                (EXTRACT(HOURS FROM assignments.end_time - assignments.start_time) + EXTRACT(MINUTES FROM assignments.end_time - assignments.start_time)/60) AS hours,
                volunteer_events.description AS event_name,
                volunteer_events.date AS event_date,
@@ -59,7 +57,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
       @contacts = {}
       @records.to_a.each do |l|
         unless @result[l["volunteer_type"]]
-          @result[l["volunteer_type"]] = {"classes" => {}, "rosters" => {}, "attendance_types" => [], "name" => l["volunteer_type"]}
+          @result[l["volunteer_type"]] = {"classes" => {}, "rosters" => {}, "rosters_total" => {"total" => 0, "total_hours" => 0.0}, "attendance_types" => [], "name" => l["volunteer_type"]}
         end
         result = @result[l["volunteer_type"]]
         class_name = "#{l["event_date"]}, #{l["event_name"]}"
@@ -72,6 +70,10 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
         result["rosters"][roster][l["attendance_type"]] ||= 0
         result["rosters"][roster][l["attendance_type"]] += 1
         result["rosters"][roster]["total_hours"] += l["hours"].to_f
+        result["rosters_total"]["total"] += 1
+        result["rosters_total"][l["attendance_type"]] ||= 0
+        result["rosters_total"][l["attendance_type"]] += 1
+        result["rosters_total"]["total_hours"] += l["hours"].to_f
         result["classes"][class_name] ||= {}
         result["classes"][class_name][l["attendance_type"]] ||= []
         result["classes"][class_name][l["attendance_type"]] << l["contact_id"]
@@ -655,6 +657,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
     a << {:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']}
     a << {:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["staff_hours_summary", "staff_hours_summary_report"], :privileges => ['staff_summary_report']}
+    a << {:only => ["volunteer_schedule", "volunteer_schedule_report"], :privileges => ['admin_skedjul']}
     a << {:only => ["staff_hours", "staff_hours_report"], :privileges => ['staff']}
     return a
   end
