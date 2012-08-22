@@ -13,11 +13,26 @@ module GizmoTransaction
     return (self.occurred_at < inventory_date)
   end
 
+  def till_is_locked?
+    return false if self.id.nil? or Default["till_lock_end"].nil? or Default["till_lock_end"].length == 0
+    till_date = Date.parse(Default["till_lock_end"])
+    return (self.occurred_at < till_date)
+  end
+
   def inventory_hash
     hash = {}
     self.gizmo_events_actual.each{|x|
       hash[x.gizmo_type_id] ||= 0
       hash[x.gizmo_type_id] += x.gizmo_count
+    }
+    hash
+  end
+
+  def till_hash
+    hash = {}
+    self.payments_actual.each{|x|
+      hash[x.payment_method_id] ||= 0
+      hash[x.payment_method_id] += x.amount_cents
     }
     hash
   end
@@ -28,10 +43,21 @@ module GizmoTransaction
     self.inventory_hash != original.inventory_hash
   end
 
+  def has_till_changed?
+    return false if self.id.nil?
+    original = self.class.find(self.id)
+    self.till_hash != original.till_hash
+  end
+
   def validate_inventory_modifications
     if self.inventory_is_locked? and self.has_inventory_changed?
       unless ((Thread.current['cashier'] or Thread.current['user']) and (Thread.current['cashier'] || Thread.current['user']).has_privileges("modify_inventory"))
         errors.add("gizmos", "has changed locked inventory values without administrator privileges")
+      end
+    end
+    if self.till_is_locked? and self.has_till_changed?
+      unless ((Thread.current['cashier'] or Thread.current['user']) and (Thread.current['cashier'] || Thread.current['user']).has_privileges("modify_inventory"))
+        errors.add("payments", "has changed locked till income values without administrator privileges")
       end
     end
   end

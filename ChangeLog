@@ -4,8 +4,9 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
     requested for Darren's Student report for any schedule (Closes:
     #30055)
   * Add form factor tracking for disktest runs
+  * Implement locking till at midnight (Closes: #30248)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 22 Aug 2012 12:48:04 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 22 Aug 2012 13:37:06 -0700
 
 fgdb.rb (1.0.102) released; urgency=low
 
