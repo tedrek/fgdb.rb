@@ -285,7 +285,22 @@ class TransactionController < ApplicationController
   end
 
   def destroy
-      @successful = model.find(params[:id]).destroy
+    @transaction = model.find(params[:id])
+    @successful = !! @transaction
+    unless @transaction.user_is_bean_counter? || !@successful
+      list = []
+      if (@transaction.till_is_locked? && @transaction.till_hash.length > 0)
+        list << 'till'
+      end
+      if (@transaction.inventory_is_locked? && @transaction.inventory_hash.length > 0)
+        list << 'inventory'
+      end
+      if list.length > 0
+        flash[:error] = "This transaction cannot be removed because it includes locked #{list.join(" and ")} values without privileges"
+        @successful = false
+      end
+    end
+    @successful = @transaction.destroy if @successful
     render :action => "destroy.rjs"
   end
 

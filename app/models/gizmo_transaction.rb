@@ -49,14 +49,18 @@ module GizmoTransaction
     self.till_hash != original.till_hash
   end
 
+  def user_is_bean_counter?
+    ((Thread.current['cashier'] or Thread.current['user']) and (Thread.current['cashier'] || Thread.current['user']).has_privileges("modify_inventory"))
+  end
+
   def validate_inventory_modifications
     if self.inventory_is_locked? and self.has_inventory_changed?
-      unless ((Thread.current['cashier'] or Thread.current['user']) and (Thread.current['cashier'] || Thread.current['user']).has_privileges("modify_inventory"))
+      unless user_is_bean_counter?
         errors.add("gizmos", "has changed locked inventory values without administrator privileges")
       end
     end
     if self.till_is_locked? and self.has_till_changed?
-      unless ((Thread.current['cashier'] or Thread.current['user']) and (Thread.current['cashier'] || Thread.current['user']).has_privileges("modify_inventory"))
+      unless user_is_bean_counter?
         errors.add("payments", "has changed locked till income values without administrator privileges")
       end
     end
