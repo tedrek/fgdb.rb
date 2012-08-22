@@ -19,11 +19,13 @@ class DisktestAPI < SOAP::SoapsBase
     ["add_disktest_completed_log", "id", "result", "completed_at", "details", "log"],
     ["new_disktest_run", "vendor", "model", "serial_number", "size", "bus_type"],
     ["check_disktest_running", "vendor", "model", "serial_number"],
+    ["get_form_factor", "vendor", "model"],
+    ["set_form_factor", "id", "form_factor"],
 
      # TODO: remove this later
     ["add_disktest_result", "id", "status"],
     ["add_disktest_completed", "id", "result", "completed_at", "details"],
-    ["add_disktest_run", "vendor", "model", "serial_number", "size"], 
+    ["add_disktest_run", "vendor", "model", "serial_number", "size"],
     ]
   end
 
@@ -41,6 +43,18 @@ class DisktestAPI < SOAP::SoapsBase
   #########
 
   public
+  def get_form_factor(vendor, model)
+    dr = DisktestRun.find(:first, :conditions => ["vendor ILIKE ? AND model ILIKE ? AND form_factor IS NOT NULL AND form_factor <> ''", vendor, model], :order => "created_at DESC")
+    return dr ? dr.form_factor : dr
+  end
+
+  def set_form_factor(id, form_factor)
+    dr = DisktestRun.find(id.to_i)
+    dr.form_factor = form_factor
+    dr.save!
+    return
+  end
+
   def update_serial(id, serial)
     dr = DisktestRun.find(id.to_i)
     dr.serial_number = serial
