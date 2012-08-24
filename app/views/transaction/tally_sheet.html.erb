@@ -1,0 +1,21 @@
+<h1>Donations Tally Sheet</h1>
+<% seen = false %>
+<% last = nil %>
+<% last_r = nil %>
+<table class="awesome">
+<% @results.each do |r| %>
+  <% current = r["covered"] %>
+  <% current_r = r["required"] %>
+  <% if seen and (last != current or current_r != last_r)  %>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+    </tr>
+  <% end %>
+  <tr>
+    <td><%= r["description"] %></td>
+    <td>$<%= r["amount"] %></td>
+  </tr>
+  <% seen = true %>
+  <% last = current %>
+  <% last_r = current_r %>
+<% end %>

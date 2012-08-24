@@ -76,6 +76,7 @@ module SidebarHelper
       sidebar_hash[disp][prep + "entry"] = {:c => pl}
       if [:donation].include?(i) # TODO: , :sale
         sidebar_hash[disp][prep + "invoices"] = {:c => pl, :a => "invoices"}
+        sidebar_hash[disp]["tally sheet"] = {:c => pl, :a => "tally_sheet"}
       end
       sidebar_hash[disp][prep + "search"] = {:c => pl, :a => 'search'}
     end
