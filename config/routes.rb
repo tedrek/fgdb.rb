@@ -63,6 +63,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'staffschedule', :controller => "work_shifts", :action => "staffsched"
   map.connect 'worksched', :controller => "work_shifts", :action => "staffsched"
 
+  map.connect 'build', :controller => "spec_sheets"
+
 # try levenshtein maybe, on 404 routing failure?
 #  map.connect 'gizmo_return'
 #  map.connect 'metings'
