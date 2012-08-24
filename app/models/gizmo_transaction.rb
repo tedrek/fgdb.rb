@@ -30,6 +30,7 @@ module GizmoTransaction
 
   def till_hash
     hash = {}
+    return hash unless self.respond_to?(:payments)
     self.payments_actual.each{|x|
       hash[x.payment_method_id] ||= 0
       hash[x.payment_method_id] += x.amount_cents
