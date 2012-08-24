@@ -2,13 +2,14 @@
 
 ENV['RAILS_ENV']="production"
 
-require File.dirname(__FILE__) + '/../config/boot'
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+require File.dirname(File.readlink(__FILE__)) + '/../config/boot'
+require File.expand_path(File.dirname(File.readlink(__FILE__)) + "/../config/environment")
 
 s = ARGV.shift
 success = false
 
 if s
+  s = File.basename(s)
   m = MeetingMinder.find_last_by_script(s)
   if m
     d = m.next_delivery
