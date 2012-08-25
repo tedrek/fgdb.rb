@@ -1,21 +1,39 @@
-<h1>Donations Tally Sheet</h1>
+<center>
+<h3>FREE GEEK DONATION SLIP</h3>
+<b>Please note: This is not a receipt!</b><br />
+Please bring this form along with any monetary contributions to the front desk for processing. Thanks for your hardware donation!<br />
 <% seen = false %>
 <% last = nil %>
 <% last_r = nil %>
 <table class="awesome">
+  <tr>
+    <td width="30">C</td>
+    <td width="30">UC</td>
+    <td>Description</td>
+    <td>Amount</td>
+  </tr>
 <% @results.each do |r| %>
   <% current = r["covered"] %>
   <% current_r = r["required"] %>
+  <% style = "" %>
   <% if seen and (last != current or current_r != last_r)  %>
-    <tr>
-      <td colspan="2">&nbsp;</td>
-    </tr>
+    <% style = "border-width: 4px 1px 0 0;" %>
   <% end %>
   <tr>
-    <td><%= r["description"] %></td>
-    <td>$<%= r["amount"] %></td>
+    <% if current == "t" %>
+      <td width="30" style="<%= style %>">&nbsp;</td>
+      <td width="30" style="<%= style %>">&nbsp;</td>
+    <% else %>
+      <td style="<%= style %>" colspan="2">&nbsp;</td>
+    <% end %>
+    <td style="<%= style %>"><%= r["description"] %></td>
+    <td style="<%= style %>">$<%= r["amount"] %></td>
   </tr>
   <% seen = true %>
   <% last = current %>
   <% last_r = current_r %>
 <% end %>
+</table>
+<i>Note: The first seven devices covered by Oregon eCycles do not require a mandatory fee. Covered devices with CRTs beyond that may require a fee. If you are unsure if this applies to your situation, ask at the front desk.</i><br />
+FD# _________________________
+</center>
