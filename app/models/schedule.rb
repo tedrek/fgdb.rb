@@ -26,7 +26,7 @@ class Schedule < ActiveRecord::Base
     end
     self.children.each do |x|
       y = x.copy(newname + " " + x.name)
-      y.parent = newsched
+      y.parent_id = newsched.id
       y.save!
     end
     return newsched
