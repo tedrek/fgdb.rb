@@ -436,9 +436,12 @@ module SystemHelper
         d.bank = x["_name"]
         d.description = x["dimm_type"] == "empty" ? x["dimm_type"] : [x["dimm_type"], x["dimm_speed"]].join(" ")
         d.size = x["dimm_size"]
-        d
+        i = x["dimm_size"].to_i
+        i *= (1024*1024) if x["dimm_size"].match(/m/i)
+        i *= (1024*1024*1024) if x["dimm_size"].match(/g/i)
+        @added_total += i
       }
-      @total_memory = items.select{|x| x["physical_memory"]}.first["physical_memory"]
+      @total_memory = items.select{|x| x["physical_memory"]}.first["physical_memory"].sub(/ /, "").sub(/^([0-9]+)gb/i) {$1 + ".0gb"}
       @l2_cache = items.select{|x| x["l2_cache_size"]}.map{|x| x["l2_cache_size"]}
       @l3_cache = items.select{|x| x["l3_cache_size"]}.map{|x| x["l3_cache_size"]}
 
@@ -451,7 +454,7 @@ module SystemHelper
         d = OpenStruct.new
         d.name = x["bsd_name"]
         d.model = x["device_model"]
-        d.size = x["size"]
+        d.size = x["size"].sub(/ /, "")
         d.my_type = x["spata_protocol"]
 #        d.vendor is in the model string
         d.volumes = []
@@ -467,7 +470,7 @@ module SystemHelper
       @system_serial_number = items.select{|x| x["serial_number"]}.map{|x| x["serial_number"]}.first
       numtimes.to_i.times do
         p = OpenStruct.new
-        p.speed = items.select{|x| x["current_processor_speed"]}.map{|x| x["current_processor_speed"]}.first
+        p.speed = items.select{|x| x["current_processor_speed"]}.map{|x| x["current_processor_speed"]}.first.sub(/ /, "").sub(/^([0-9]+)ghz/i) {$1 + ".00ghz"}.sub(/^([0-9]+.[0-9])ghz/i) {$1 + "0ghz"}
         p.processor = items.select{|x| x["cpu_type"]}.map{|x| x["cpu_type"]}.first
         p.slot = "Unknown"
         p.supports = []

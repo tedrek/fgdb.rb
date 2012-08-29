@@ -18,7 +18,7 @@ class SystemPricing < ActiveRecord::Base
 
   def self.does_match?(matcher, value)
     value ||= ""
-    matcher.split(/\s+/).select{|x| !value.match(x)}.length == 0
+    matcher.split(/[\s-]+/).select{|x| !value.match(x)}.length == 0
   end
 
   before_save :set_calculated_price

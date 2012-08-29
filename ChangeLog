@@ -16,6 +16,9 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
     - Split out sales marked as online to their own line on the income
       report
   * Add an absent link near names on the staff schedule (Closes: #25693)
+  * Add some regexps and other pattern matching changes to better support
+    Mac systems that are generated using PList output on Mac OS X
+    (Closes: #30245)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 15:26:41 -0700
 
