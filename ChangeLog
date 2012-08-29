@@ -10,6 +10,7 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
   * Add a tally sheet to donations
   * Change the suggested contribution and the blurb to display on
     invoices by default and be optional for receipts
+  * add description to the list of gizmos in transaction search results
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 22 Aug 2012 13:57:05 -0700
 

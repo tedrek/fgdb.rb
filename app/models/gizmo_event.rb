@@ -172,6 +172,7 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
   def display_name
     rstr = "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
     rstr += " (#{self.system_id ? "#" + system_id.to_s : "unknown"})" if self.gizmo_type.needs_id
+    rstr += " (#{self.description})" if self.description && self.description.length > 0
     rstr
   end
 
