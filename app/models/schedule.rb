@@ -5,6 +5,33 @@ class Schedule < ActiveRecord::Base
   has_many :meetings
   has_many :work_shifts
 
+  def copy(newname)
+    newsched = self.clone
+    newsched.name = newname
+    newsched.save!
+    self.standard_shifts.each do |x|
+      y = x.clone
+      y.schedule = newsched
+      y.save!
+    end
+    self.meetings.each do |x|
+      y = x.clone
+      y.schedule = newsched
+      y.save!
+    end
+    self.holidays.each do |x|
+      y = x.clone
+      y.schedule = newsched
+      y.save!
+    end
+    self.children.each do |x|
+      y = x.copy(newname + " " + x.name)
+      y.parent = newsched
+      y.save!
+    end
+    return newsched
+  end
+
   def which_week( date = Date.today.to_date )
     if self.repeats_every > 1
       long_time_ago = Date.new(1901, 12, 22)
