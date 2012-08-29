@@ -4,6 +4,7 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
     requested for Darren's Student report for any schedule (Closes:
     #30055)
   * Add a tally sheet to donations
+  * add description to the list of gizmos in transaction search results
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 22 Aug 2012 12:48:04 -0700
 
