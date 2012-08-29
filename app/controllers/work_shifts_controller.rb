@@ -105,7 +105,7 @@ class WorkShiftsController < ApplicationController
       :left_link_id => "workers.id",
       :left_extra_link_letter => "a",
       :left_extra_link_action => "absent",
-      :left_extra_link_confirm => "Are you sure you want to mark them absent?",
+      :left_extra_link_confirm => "Are you sure you want to remove them from the schedule?",
 
       :thing_start_time => "work_shifts.start_time",
       :thing_end_time => "work_shifts.end_time",
