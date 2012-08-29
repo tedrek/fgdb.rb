@@ -371,7 +371,7 @@ class TransactionController < ApplicationController
      [{:content => "Created by ##{User.find_by_id(@transaction.cashier_created_by).contact_id}"}],
                    [{:content => "Date: #{@txn.occurred_at.strftime("%m/%d/%Y")}"}, {:content => "#{show_context ? "Donation" : "Invoice"} ##{@txn.id}"}, {:content => @txn.invoiced? ? "Due: #{@transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y")}" : "", :align => :right}]], :column_widths => [w, w, w], :cell_style => {:border_width => 0, :padding => 0})
 
-    if show_suggested
+    if show_suggested and @txn.reported_suggested_fee_cents > 0
       pdf.text "There is a suggested tax deductible contribution of $#{@txn.reported_suggested_fee} for these items.", :font_size => font_size
       pdf.y -= 3
     end
@@ -399,7 +399,7 @@ class TransactionController < ApplicationController
       pdf.start_new_page unless count == 1
       count += 1
 
-      gen_pdf_header(pdf, show_suggested && receipt_type == 'invoice', receipt_type, font_size)
+      gen_pdf_header(pdf, show_suggested && (receipt_type == 'invoice' || @txn.receipt_types.length == 1), receipt_type, font_size)
 
       ge = @txn.find_lines(:is_gizmo_line?)
       show_est = receipt_type == 'receipt' && ge.length > 0
@@ -483,13 +483,14 @@ class TransactionController < ApplicationController
         pdf.text "Retain this receipt for your taxes.", :font_size => font_size
       else
         pdf.text "Please return a copy of this invoice with payment."
-        if Default["contribution_blurb"]
+      end
+      if receipt_type == 'invoice' || @txn.receipt_types.length == 1
+        if Default["contribution_blurb"] and show_suggested
           pdf.y -= 5
           pdf.y -= 5
           pdf.text Default["contribution_blurb"]
         end
       end
-
     end
 
     return pdf

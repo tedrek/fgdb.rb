@@ -49,8 +49,8 @@
       </td>
     </tr>
 
-    <% if params[:controller] == 'donations' && receipt_type == 'invoice' %>
-    <tr id="suggested_fee">
+    <% if params[:controller] == 'donations' && (receipt_type == 'invoice' || @donation.receipt_types.length == 1) && @donation.reported_suggested_fee_cents > 0 %>
+    <tr id="suggested_fee" <%= @donation.invoiced? ? '' : 'style="display: none"' %>>
       <td colspan="4">
         There is a suggested tax deductible contribution of $<%= @donation.reported_suggested_fee %> for these items.
       </td>

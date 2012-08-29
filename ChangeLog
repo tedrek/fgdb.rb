@@ -7,6 +7,9 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
   * Implement locking till at midnight (Closes: #30248)
   * implement inventory and till lock privilege checking on the destroy
     action
+  * Add a tally sheet to donations
+  * Change the suggested contribution and the blurb to display on
+    invoices by default and be optional for receipts
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 22 Aug 2012 13:57:05 -0700
 

@@ -11,16 +11,16 @@
         <%= receipt_printer_html %>
         <% elsif params[:controller] == 'donations' %>
           <hr />
-          <% if @donation.invoiced? and @donation.reported_suggested_fee_cents > 0 %>
-            <div id="sugg_fee_show"  style="display: none">
-            <%= link_to_function "Show Suggested Fee", "$('suggested_fee').show(); $('sugg_fee_hide').show(); $('sugg_fee_show').hide(); $('show_suggested_1').value = 'true'; $('show_suggested_2').value = 'true';" %>
+          <% if @donation.reported_suggested_fee_cents > 0 %>
+            <div id="sugg_fee_show" <%= @donation.invoiced? ? 'style="display: none"' : '' %>>
+            <%= link_to_function "Show Suggested Fee", "$('suggested_fee').show(); $('contribution_blurb').show(); $('sugg_fee_hide').show(); $('sugg_fee_show').hide(); $('show_suggested_1').value = 'true'; $('show_suggested_2').value = 'true';" %>
             </div>
-            <div id="sugg_fee_hide">
-            <%= link_to_function "Hide Suggested Fee", "$('suggested_fee').hide(); $('sugg_fee_show').show(); $('sugg_fee_hide').hide(); $('show_suggested_1').value = 'false'; $('show_suggested_2').value = 'false';" %>
+            <div id="sugg_fee_hide" <%= @donation.invoiced? ? '' : 'style="display: none"' %>>
+            <%= link_to_function "Hide Suggested Fee", "$('suggested_fee').hide(); $('contribution_blurb').hide(); $('sugg_fee_show').show(); $('sugg_fee_hide').hide(); $('show_suggested_1').value = 'false'; $('show_suggested_2').value = 'false';" %>
             </div>
           <% end %>
           <% form_tag({:action => "pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]}) do %>
-            <%= hidden_field_tag('show_suggested', 'true', {:id => "show_suggested_1"}) %>
+            <%= hidden_field_tag('show_suggested', @donation.invoiced? ? 'true' : 'false', {:id => "show_suggested_1"}) %>
             <%= submit_tag "View PDF" %><br />
           <% end %>
           <% if defined?(@message) %>
@@ -29,7 +29,7 @@
             </span>
           <% end %>
           <% form_tag({:action => "mail_pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]}) do %>
-            <%= hidden_field_tag('show_suggested', 'true', {:id => "show_suggested_2"}) %>
+            <%= hidden_field_tag('show_suggested', @donation.invoiced? ? 'true' : 'false', {:id => "show_suggested_2"}) %>
             <%= hash = {} %>
             <% if @txn.contact_id %>
               Choose an e-mail address to send to:</br >
