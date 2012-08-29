@@ -13,8 +13,10 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
   * add description to the list of gizmos in transaction search results
   * Add a new 'online sale?' checkbox to the sales screen, disabled by
     default
+  * Split out sales marked as online to their own line on the income
+    report
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 14:52:22 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 14:57:34 -0700
 
 fgdb.rb (1.0.102) released; urgency=low
 
