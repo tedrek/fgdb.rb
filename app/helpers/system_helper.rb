@@ -59,7 +59,7 @@ module SystemHelper
       elsif cdrw
         o[:optical_drive] = "CD/RW"
       elsif dvd
-        o[:optical_drive] = "DVD ROM"
+        o[:optical_drive] = "DVD Rom"
       elsif cdrom
         o[:optical_drive] = "CD Rom"
       else
