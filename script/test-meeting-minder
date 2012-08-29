@@ -1,0 +1,31 @@
+#!/usr/bin/ruby
+
+ENV['RAILS_ENV']="production"
+
+require File.dirname(File.readlink(__FILE__)) + '/../config/boot'
+require File.expand_path(File.dirname(File.readlink(__FILE__)) + "/../config/environment")
+
+s = ARGV.shift
+success = false
+
+if s
+  s = File.basename(s)
+  m = MeetingMinder.find_last_by_script(s)
+  if m
+    d = m.next_delivery
+    if d
+      a = m.delivery(d)
+      success = true
+      puts "To: " + a[1]
+      puts "Date: " + d.to_s
+      puts "Subject: " + a[2]
+      puts ""
+      puts a[3]
+    end
+  end
+end
+
+unless success
+  puts "Could not find meeting minder named #{s.inspect}"
+  exit 1
+end
