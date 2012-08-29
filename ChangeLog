@@ -1,13 +1,13 @@
 fgdb.rb (1.0.103) UNRELEASED; urgency=low
 
+  * Add a tally sheet to donations
+  * Add form factor tracking for disktest runs
   * Add a general volunteer schedule report, providing the data
     requested for Darren's Student report for any schedule (Closes:
     #30055)
-  * Add form factor tracking for disktest runs
   * Implement locking till at midnight (Closes: #30248)
   * implement inventory and till lock privilege checking on the destroy
     action
-  * Add a tally sheet to donations
   * Change the suggested contribution and the blurb to display on
     invoices by default and be optional for receipts
   * add description to the list of gizmos in transaction search results
