@@ -24,6 +24,8 @@ fgdb.rb (1.0.102) released; urgency=low
   * Add a general volunteer schedule report, providing the data
     requested for Darren's Student report for any schedule (Closes:
     #30055)
+  * Add form factor tracking for disktest runs
+  * Add a tally sheet to donations
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Aug 2012 20:33:18 -0700
 
