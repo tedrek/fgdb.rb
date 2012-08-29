@@ -5,6 +5,10 @@ class Schedule < ActiveRecord::Base
   has_many :meetings
   has_many :work_shifts
 
+  def self.generate_from
+    find_by_name("main")
+  end
+
   def copy(newname)
     newsched = self.clone
     newsched.name = newname
@@ -26,7 +30,7 @@ class Schedule < ActiveRecord::Base
     end
     self.children.each do |x|
       y = x.copy(newname + " " + x.name)
-      y.parent_id = newsched.id
+      y.move_to_child_of(newsched)
       y.save!
     end
     return newsched
