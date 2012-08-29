@@ -103,6 +103,9 @@ class WorkShiftsController < ApplicationController
       :left_table_name => "workers",
       :left_link_action => "edit",
       :left_link_id => "workers.id",
+      :left_extra_link_letter => "a",
+      :left_extra_link_action => "absent",
+      :left_extra_link_confirm => "Are you sure you want to mark them absent?",
 
       :thing_start_time => "work_shifts.start_time",
       :thing_end_time => "work_shifts.end_time",
@@ -114,6 +117,17 @@ class WorkShiftsController < ApplicationController
       }, params)
 
     @skedj.find({:include => [:job, :coverage_type, :worker, :weekday]})
+  end
+
+  def absent
+    w = Worker.find_by_id(params[:id])
+    d = nil
+    begin
+      d = Date.parse(params[:date])
+    rescue
+    end
+    w.work_shifts_for_day(d).each(&:on_vacation) if w and d
+    redirect_to :action => "list"
   end
 
   def show

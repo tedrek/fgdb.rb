@@ -15,8 +15,9 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
     default (Closes: #30465)
     - Split out sales marked as online to their own line on the income
       report
+  * Add an absent link near names on the staff schedule (Closes: #25693)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 14:57:34 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 15:26:41 -0700
 
 fgdb.rb (1.0.102) released; urgency=low
 
