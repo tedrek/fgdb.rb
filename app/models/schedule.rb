@@ -6,12 +6,13 @@ class Schedule < ActiveRecord::Base
   has_many :work_shifts
 
   def self.generate_from
-    find_by_name("main")
+    find_by_generate_from(true)
   end
 
   def copy(newname)
     newsched = self.clone
     newsched.name = newname
+    newsched.generate_from = false
     newsched.save!
     self.standard_shifts.each do |x|
       y = x.clone

@@ -19,8 +19,10 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
   * Add some regexps and other pattern matching changes to better support
     Mac systems that are generated using PList output on Mac OS X
     (Closes: #30245)
+  * Add frontend for copying schedules and setting one to be the default
+    generated from (Closes: #30242)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 15:26:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 16:32:25 -0700
 
 fgdb.rb (1.0.102) released; urgency=low
 
