@@ -129,7 +129,7 @@ class ShiftsController < ApplicationController
     stop = Date.strptime(end_date, date_format) 
 
     Shift.destroy_in_range(start, stop)
-    Shift.generate(start, stop, "proposed = 'f'")
+    Shift.generate(start, stop, "proposed = 'f' AND schedule_id IN #{Schedule.generate_from.in_clause_family}")
 
       redirect_to :action => 'list', :controller => 'work_shifts', :start_date => start, :end_date => stop
   end

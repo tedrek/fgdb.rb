@@ -15,6 +15,23 @@ class SchedulesController < ApplicationController
     render :action => 'list'
   end
 
+  def copy
+    s = Schedule.find_by_id(params[:id])
+    n = s.copy(params[:schedule][:name])
+    redirect_to :action => 'edit', :id => n.id
+  end
+
+  def set_generate_from
+    n = Schedule.find(params[:id])
+    if s = Schedule.generate_from
+      s.generate_from = false
+      s.save
+    end
+    n.generate_from = true
+    n.save
+    redirect_to :back
+  end
+
 #  def index(id = params[:node])
 #    respond_to do |format|
 #      format.html # render static index.html.erb

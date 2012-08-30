@@ -1,3 +1,12 @@
+<fieldset>
+<h3>Copy this schedule</h3>
+<% form_for @schedule, :url => {:action => "copy", :id => @schedule.id} do |f| %>
+<%= f.label :name, "Name of new schedule:" %>
+<%= f.text_field :name %>
+<%= f.submit "Copy Schedule" %>
+<% end %>
+</fieldset>
+
 <% for column in Schedule.content_columns %>
 <p>
   <b><%= column.human_name %>:</b> <%=h @schedule.send(column.name) %>

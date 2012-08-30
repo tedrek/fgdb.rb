@@ -17,6 +17,9 @@
     <td><%= link_to 'Edit', :action => 'edit', :id => schedule %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => schedule }, :confirm => 'WARNING! This will destroy all shifts related to this schedule! Are you sure you want to do this? (OK will destroy schedule and shifts. Cancel will abort.)', :method => :post %></td>
     <td><%= link_to 'Add child', :action => 'create_child', :id => schedule %></td>
+    <% unless schedule.generate_from or schedule.parent %>
+    <td><%= link_to 'Set to Generate From', :action => 'set_generate_from', :id => schedule %></td>
+    <% end %>
   </tr>
 <% end %>
 </table>

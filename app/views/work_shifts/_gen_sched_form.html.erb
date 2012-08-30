@@ -1,6 +1,14 @@
 <!-- TODO: this breaks the filter_criteria conditions_html. I don't think it can be used multiple times on a page. needs some refactoring probably. -->
 <div class='generate'>
 <h3>Generate:</h3>
+<% if ['shifts'].include?(params[:controller]) %>
+<% if Schedule.generate_from %>
+Configured to generate from the "<%= Schedule.generate_from.name %>" schedule.<br />
+<% else %>
+Error: No schedule is chosen to be generated from.
+<% end %>
+The schedule used to generate can be chosen on the 'schedules' page.
+<% end %>
 <% form_tag :action => 'generate' do %>
   <p><label for="start_start_date">Start date:</label> <%= calendar_box skedj.opts[:generate_param_key], :start_date %></p>
   <p><label for="end_end_date">End date:</label> <%= calendar_box skedj.opts[:generate_param_key], :end_date %></p>
