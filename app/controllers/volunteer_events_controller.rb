@@ -9,7 +9,8 @@ class VolunteerEventsController < ApplicationController
   layout :with_sidebar
 
   def index
-    @volunteer_events = VolunteerEvent.find(:all)
+    redirect_to :controller => "assignments"
+    # @volunteer_events = VolunteerEvent.find(:all)
   end
 
   def add_shift
@@ -197,6 +198,7 @@ class VolunteerEventsController < ApplicationController
         a.contact_id = contact.id
         a.save
       end
+      @notice_id = @volunteer_event.id
       @volunteer_event = VolunteerEvent.new
       @notice = "\"#{c[:description]}\" created successfully"
       render :action => "new_class"

@@ -2,6 +2,7 @@
 
 <% if @notice.length > 0 %>
 <h3 style="color: green;"><%= @notice %></h3>
+<%= link_to "Click here to edit the new class", {:action => "edit", :id => @notice_id} %>
 <% end %>
 
 <%= error_messages_for :volunteer_event %>

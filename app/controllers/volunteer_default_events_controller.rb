@@ -80,7 +80,8 @@ class VolunteerDefaultEventsController < ApplicationController
   layout :with_sidebar
 
   def index
-    @volunteer_default_events = VolunteerDefaultEvent.find(:all)
+#    @volunteer_default_events = VolunteerDefaultEvent.find(:all)
+    redirect_to :controller => "default_assignments"
   end
 
   def show

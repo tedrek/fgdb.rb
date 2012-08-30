@@ -71,7 +71,7 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def skedj_style(overlap, last)
-    overlap ? 'hardconflict' : 'shift'
+    (overlap && !not_numbered) ? 'hardconflict' : 'shift'
   end
 
   def shift_display
