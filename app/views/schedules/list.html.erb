@@ -13,7 +13,7 @@
   <% for column in Schedule.content_columns %>
     <td><%=h schedule.send(column.name) %></td>
   <% end %>
-    <td><%= link_to 'Show', :action => 'show', :id => schedule %></td>
+    <td><%= link_to 'Show / Copy', :action => 'show', :id => schedule %></td>
     <td><%= link_to 'Edit', :action => 'edit', :id => schedule %></td>
     <td><%= link_to 'Destroy', { :action => 'destroy', :id => schedule }, :confirm => 'WARNING! This will destroy all shifts related to this schedule! Are you sure you want to do this? (OK will destroy schedule and shifts. Cancel will abort.)', :method => :post %></td>
     <td><%= link_to 'Add child', :action => 'create_child', :id => schedule %></td>
