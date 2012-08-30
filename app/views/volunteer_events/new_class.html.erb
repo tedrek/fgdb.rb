@@ -36,6 +36,10 @@
 <%= contact_field('@klass', 'contact_id') %>
 </p>
 
+<p>
+<%= contact_field('@klass', 'contact2_id', :locals => {:options => {:field_name => "contact2_id"}}) %>
+</p>
+
   <p>
     <%= f.label :roster_id %><br />
     <%= f.select("roster_id", [Roster.new(:name => ""),  Roster.find(:all)].flatten.map{|x| [x.name, x.id]}) %>

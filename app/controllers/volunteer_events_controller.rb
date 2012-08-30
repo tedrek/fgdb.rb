@@ -107,6 +107,7 @@ class VolunteerEventsController < ApplicationController
       return
     end
     c[:contact_id] = params["contact"]["id"] if params["contact"] and params["contact"]["id"]
+    c[:contact2_id] = params["contact"]["contact2_id"] if params["contact"] and params["contact"]["contact2_id"]
     normal = c[:student_slot_count].to_i || 0
     instructor = c[:instructor_slot_count].to_i || 0
     audit = c[:audit_slot_count].to_i || 0
@@ -114,6 +115,7 @@ class VolunteerEventsController < ApplicationController
     program = Program.find_by_id(c[:program_id].to_i)
     resource = Resource.find_by_id(c[:resource_id].to_i)
     contact = Contact.find_by_id(c[:contact_id].to_i)
+    contact2 = Contact.find_by_id(c[:contact2_id].to_i)
 #    if roster.nil? or program.nil?
 #      redirect_to :action => "new_class"
 #      return
@@ -141,11 +143,13 @@ class VolunteerEventsController < ApplicationController
     c["resource"] = resource
     params["contact"] ||= {}
     params["contact"]["id"] = contact.id if contact
+    params["contact"]["contact2_id"] = contact2.id if contact2
     @volunteer_event = VolunteerEvent.new
     @volunteer_event.description = c[:description]
     @volunteer_event.date = c[:date]
     @volunteer_event.notes = c[:notes]
     inst_shift = nil
+    inst_shift2 = nil
     normal.times do |i|
       a = VolunteerShift.new
       a.class_credit = true
@@ -182,6 +186,9 @@ class VolunteerEventsController < ApplicationController
       if contact and i == 0
         inst_shift = a
       end
+      if contact2 and i == 1
+        inst_shift2 = a
+      end
       @volunteer_event.volunteer_shifts << a
     end
     if resource
@@ -196,6 +203,11 @@ class VolunteerEventsController < ApplicationController
       if inst_shift
         a = inst_shift.assignments.first
         a.contact_id = contact.id
+        a.save
+      end
+      if inst_shift2
+        a = inst_shift2.assignments.first
+        a.contact_id = contact2.id
         a.save
       end
       @notice_id = @volunteer_event.id
