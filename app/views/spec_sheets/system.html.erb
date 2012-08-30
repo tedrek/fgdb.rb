@@ -1,3 +1,7 @@
+<% unless @main_system %>
+<%= render :partial => 'system_form' %>
+<% end %>
+
 <% for sys in @main_system ? @main_system.all_instances : [] %>
 <% @system = sys %>
 <h2>System #<%= @system.id %></h2>

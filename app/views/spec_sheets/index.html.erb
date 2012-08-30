@@ -6,12 +6,7 @@
 
 <% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
 
-<h2>Show system history</h2>
-
-<% form_for "", nil, :url => {:action => "system" }, :html => {:method => "get"} do |f| %>
-<%= (f.text_field "id").sub(/\[id\]/, "id") %>
-<%= submit_tag 'Show' %>
-<% end %>
+<%= render :partial => 'system_form' %>
 
 <% if has_required_privileges("builder") %>
 <h2>Show builder status sheet</h2>

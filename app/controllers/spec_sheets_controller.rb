@@ -86,12 +86,30 @@ class SpecSheetsController < ApplicationController
 
   def system
     @main_system = System.find_by_id(params[:id].to_i)
-    if !@main_system
-      flash[:error] = "System id ##{params[:id]} could not be found"
-      redirect_to :action => "index"
-      return
+    if flash[:error]
+      @error = flash[:error]
+    end
+    if params[:id] && !@main_system
+      @error = "System id ##{params[:id]} could not be found"
     end
   end
+
+  def latest
+    @main_system = System.find_by_id(params[:id].to_i)
+    if !@main_system
+      flash[:error] = "System id ##{params[:id]} could not be found"
+      redirect_to :action => 'system'
+      return
+    end
+    @system = @main_system.all_instances.select{|x| x.spec_sheets.length > 1}.sort_by(&:created_at).last
+    if !@system
+      flash[:error] = "System id ##{params[:id]} has no spec sheets"
+      redirect_to :action => 'system'
+      return
+    end
+    redirect_to :action => "show", :controller => "spec_sheets", :id => @system.spec_sheets.sort_by(&:created_at).last.id
+  end
+
 
   def search
     @error = params[:error]
