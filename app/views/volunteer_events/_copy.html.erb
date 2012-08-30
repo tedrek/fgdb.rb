@@ -7,6 +7,10 @@
     <%= select("copy", "weekday_id", Weekday.find(:all).sort_by(&:id).collect{|p| [p.name, p.id]}, :include_blank => true) %>
 <% else %>
 <%= calendar_box "copy", "date" %>
+<% @volunteer_event.volunteer_shifts.map{|x| x.volunteer_task_type}.uniq.each do |vtt| %>
+<%= label_tag "copy_for_#{vtt ? vtt.id.to_s : "nil"}", "Also copy assignments for #{vtt ? vtt.description : "attending"} shifts?" %>
+<%= check_box_tag "copy_for_#{vtt ? vtt.id.to_s : "nil"}" %>
+<% end %>
 <% end %>
 <%= label "sign", "Time change" %>
 <%= select("copy", "sign", {"+" => "+", "-" => "-"}) + text_field("copy", "hours", :size => 2) + ":" + text_field("copy", "minutes", :size => 2) %>

@@ -51,15 +51,26 @@ class VolunteerEvent < ActiveRecord::Base
       }
   end
 
-  def copy_to(date, time_shift)
+  def copy_to(date, time_shift, copy_for)
     new = self.class.new(self.attributes)
-    new.volunteer_shifts = self.volunteer_shifts.map{|x| x.class.new(x.attributes)}
+    assigns = []
+    new.volunteer_shifts = self.volunteer_shifts.map{|x|
+      n = x.class.new(x.attributes); n.time_shift(time_shift);
+      if copy_for.include?(n.volunteer_task_type_id)
+        x.assignments.select{|x| x.contact_id}.each do |y|
+          a = y.class.new(y.attributes)
+          a.volunteer_shift = n
+          assigns << a
+        end
+      end
+      n
+    }
 #    new.resources = self.resources.map{|x| x.class.new(x.attributes)}
     new.date = date
-    new.volunteer_shifts.each{|x| x.time_shift(time_shift)}
 #    new.resources.each{|x| x.time_shift(time_shift)}
     new.save!
     new.volunteer_shifts.each{|x| x.save!}
+    assigns.each{|x| x.save!}
     return new
   end
 end

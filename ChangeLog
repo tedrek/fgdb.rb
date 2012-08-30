@@ -21,8 +21,11 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
     (Closes: #30245)
   * Add frontend for copying schedules and setting one to be the default
     generated from (Closes: #30242)
+  * Implement optionally copying assignments for certain task types
+    within an event, and some improvements to the new class page
+    (Closes: #30460)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 16:32:25 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 29 Aug 2012 17:49:29 -0700
 
 fgdb.rb (1.0.102) released; urgency=low
 

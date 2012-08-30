@@ -228,7 +228,15 @@ class VolunteerEventsController < ApplicationController
   end
 
   def copy
-    redirect_to :action => "show", :id => VolunteerEvent.find_by_id(params[:id]).copy_to(Date.parse(params[:copy][:date]), hours_val(params[:copy])).id
+    old = VolunteerEvent.find_by_id(params[:id])
+    copy_for = []
+    old.volunteer_shifts.map{|x| x.volunteer_task_type}.uniq.each do |vtt|
+      if params["copy_for_#{vtt ? vtt.id.to_s : "nil"}"] == "1"
+        copy_for << (vtt ? vtt.id : nil)
+      end
+    end
+    new = old.copy_to(Date.parse(params[:copy][:date]), hours_val(params[:copy]), copy_for)
+    redirect_to :action => "show", :id => new.id
   end
 
   def edit
