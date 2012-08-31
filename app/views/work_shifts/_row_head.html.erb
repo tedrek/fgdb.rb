@@ -24,7 +24,7 @@
       <% else %>
         <%= link_to skedj.get_method_value(skedj.current, :left_method_name), { :action => skedj.opts[:left_link_action], :controller => skedj.opts[:left_table_name], :id => skedj.get_method_value(skedj.current, :left_link_id) }, :title => skedj.opts[:left_link_action], :popup => true %>
         <% if skedj.opts[:left_extra_link_letter] %>
-          [<%= link_to skedj.opts[:left_extra_link_letter], {:id => skedj.get_method_value(skedj.current, :left_link_id), :date => skedj.get_method_value(skedj.current, :date_range_condition), :action => skedj.opts[:left_extra_link_action]}, {:confirm => skedj.opts[:left_extra_link_confirm] + " (#{skedj.get_method_value(skedj.current, :left_method_name)}, #{skedj.get_method_value(skedj.current, :date_range_condition)})"} %>]
+          [<%= link_to skedj.opts[:left_extra_link_letter], {:id => skedj.get_method_value(skedj.current, :left_link_id), :date => skedj.get_method_value(skedj.current, :date_range_condition), :action => skedj.opts[:left_extra_link_action]}, {:confirm => skedj.opts[:left_extra_link_confirm] + " (#{skedj.get_method_value(skedj.current, :left_method_name)}, #{skedj.get_method_value(skedj.current, :date_range_condition)})", :title => skedj.opts[:left_extra_link_action]} %>]
         <% end %>
       <% end %>
     </th>
