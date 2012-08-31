@@ -440,6 +440,7 @@ module SystemHelper
         i *= (1024*1024) if x["dimm_size"].match(/m/i)
         i *= (1024*1024*1024) if x["dimm_size"].match(/g/i)
         @added_total += i
+        d
       }
       @total_memory = items.select{|x| x["physical_memory"]}.first["physical_memory"].sub(/ /, "").sub(/^([0-9]+)gb/i) {$1 + ".0gb"}
       @l2_cache = items.select{|x| x["l2_cache_size"]}.map{|x| x["l2_cache_size"]}
