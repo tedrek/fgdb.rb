@@ -59,6 +59,7 @@ class VolunteerEvent < ActiveRecord::Base
       if copy_for.include?(n.volunteer_task_type_id)
         x.assignments.select{|x| x.contact_id}.each do |y|
           a = y.class.new(y.attributes)
+          a.time_shift(time_shift)
           a.volunteer_shift = n
           assigns << a
         end
