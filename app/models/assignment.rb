@@ -50,6 +50,11 @@ class Assignment < ActiveRecord::Base
     self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
   end
 
+  def time_shift(val)
+    self.start_time += val
+    self.end_time += val
+  end
+
   def validate
     if self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
       errors.add("contact_id", "is empty for an assignment-based shift") if self.contact_id.nil?
