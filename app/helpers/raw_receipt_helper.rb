@@ -36,7 +36,7 @@ module RawReceiptHelper
   end
 
   def receipt_printer_html
-    if receipt_printer_enabled
+    if receipt_printer_enabled and params[:action] != 'display'
       return render(:partial => 'raw_receipt_form')
     end
   end

@@ -1,10 +1,12 @@
     <p>
       <div id="button_span" class="noprint">
+        <% unless params[:action] == 'display' %>
         <INPUT type="button" id="print_button" value="Print"
                onclick="window.print(); window.close();" >
 
         <INPUT type="button" id="restart_button" value="Start Over"
                onclick="window.close()" >
+        <% end %>
 
         <% if params[:controller] == 'sales' %>
         <hr />

@@ -25,9 +25,11 @@ fgdb.rb (1.0.103) UNRELEASED; urgency=low
     within an event, and some improvements to the new class page
     (Closes: #30460)
   * Add a separate page for tech support system history and a form to
-    show the latest printme for a system
+    show the latest printme for a system (Closes: #30506)
+    - Also add a Show page to display a transaction without printing the
+      receipt
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Aug 2012 16:54:29 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Aug 2012 18:43:16 -0700
 
 fgdb.rb (1.0.102) released; urgency=low
 
