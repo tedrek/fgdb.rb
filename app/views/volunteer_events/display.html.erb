@@ -9,7 +9,7 @@ Notes: <%= @volunteer_event.notes %><br />
 ID: #<%= a.contact_id %><br />
 Name: <%= a.contact.display_name %><br />
 <% if a.volunteer_shift.roster.name == 'Getting Started Classes' %>
-Address: <%= a.contact.display_address.join(" ") %><br />
+Address: <%= a.contact.display_address.join(", ") %><br />
 Eligible for computer disbursement today: <%= (a.contact.points >= Default['max_effective_hours'].to_f) ? 'Y' : 'N' %><br />
 <% end %>
 Notes: <%= a.notes %>
