@@ -1,0 +1,18 @@
+<h2><%= @volunteer_event.description %> Student List</h2>
+
+Date: <%= @volunteer_event.date %><br />
+Notes: <%= @volunteer_event.notes %><br />
+
+<% @volunteer_event.volunteer_shifts.select{|x| x.volunteer_task_type_id.nil?}.map{|x| x.assignments}.flatten.select{|x| x.contact_id}.each do |a| %>
+
+<fieldset>
+ID: #<%= a.contact_id %><br />
+Name: <%= a.contact.display_name %><br />
+<% if a.volunteer_shift.roster == 'Adoption Classes' %><br />
+Address: <%= a.contact.display_address.join(" ") %><br />
+Eligible for computer disbursement today: <%= (a.contact.points >= Default['max_effective_hours'].to_f) ? 'Y' : 'N' %><br />
+<% end %>
+Notes: <%= a.notes %>
+</fieldset>
+
+<% end %>

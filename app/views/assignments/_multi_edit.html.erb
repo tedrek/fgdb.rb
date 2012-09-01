@@ -18,6 +18,9 @@
 <% next if resources.length == 0 and x.description.match(/^Roster #/) %>
 <fieldset style="float: left">
 <h4><%= x.description %> (<%= x.time_range_s %>) <%= has_privileges('admin_skedjul') ? (link_to "a", :action => "add_shift", :id => x.id, :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %> <%= has_privileges('admin_skedjul') ? (link_to "e", :action => "edit", :id => x.id, :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %></h4>
+<% if is_r && x.volunteer_shifts.select{|y| y.volunteer_task_type_id.nil? }.length > 0 %>
+<%= link_to "View Student List", {:controller => "volunteer_events", :action => "display", :id => x.id} %>
+<% end %>
 <% resources = resources.map{|q| q.resource.name}.join(", ") %>
 <% if resources.length > 0 %>
 Resources: <%= resources %><br />

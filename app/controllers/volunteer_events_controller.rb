@@ -99,6 +99,10 @@ class VolunteerEventsController < ApplicationController
     @volunteer_event = VolunteerEvent.find(params[:id])
   end
 
+  def display
+    @volunteer_event = VolunteerEvent.find(params[:id])
+  end
+
   def new_class
     @notice = ""
     c = params[:klass]
