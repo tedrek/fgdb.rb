@@ -25,4 +25,4 @@ MAILTO=ryan52
 0 0 * * * root diff /etc/cron.d/fgdbcrond /var/www/fgdb.rb/doc/examples/fgdbcrond
 0 0 * * * root /var/www/fgdb.rb/script/recent_crash_report.rb
 # Set the till to be locked at midnight
-0 0 * * * root ./script/runner 'Default["till_lock_end"] = Date.yesterday'
+0 0 * * * root /var/www/fgdb.rb/script/runner 'Default["till_lock_end"] = Date.yesterday'
