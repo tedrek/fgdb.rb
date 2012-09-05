@@ -8,7 +8,10 @@
 <%= text_field 'job', 'name'  %></p>
 
 <p><label for="job_description">Description</label><br/>
-<%= text_area 'job', 'full_description', :cols => 50, :rows => 10 %></p>
+<%= text_area 'job', 'description', :cols => 50, :rows => 10 %></p>
+
+<p><label for="job_reason_cannot_log_hours">Reason cannot log hours (optional to disable hours logging)</label><br/>
+<%= text_area 'job', 'reason_cannot_log_hours', :cols => 50, :rows => 10 %></p>
 
 <p><label for="job_effective_on">Effective Starting (empty for forever)</label><br/>
 <%= calendar_box 'job', 'effective_on'  %></p>

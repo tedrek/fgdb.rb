@@ -6,7 +6,7 @@ class Job < ActiveRecord::Base
   belongs_to :wc_category
   belongs_to :income_stream
   named_scope :workable, :conditions => {:virtual => false}
-  named_scope :logable, :conditions => ['reason_cannot_log_hours IS NULL']
+  named_scope :logable, :conditions => ["reason_cannot_log_hours IS NULL OR reason_cannot_log_hours <> ''"]
 
   named_scope :effective_on, lambda { |date|
     { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
