@@ -82,20 +82,54 @@ class ApplicationController < ActionController::Base
     copts = [@jobs.map{|x| x.id}, @start_date, @end_date]
     copts << schedule_id if schedule_id
     all_shifts = klass.find(:all, :conditions => ["#{mode == "ws" ? "" : " shift_date IS NULL AND (ineffective_date IS NULL OR ineffective_date >= '" + Date.today.to_s + "') AND "} (training = 'f' OR training IS NULL) AND job_id IN (?) AND #{column} >= ? AND #{column} <= ? #{schedule_id ? ' AND schedule_id = ?' : ''}", *copts])
-    @shift_gap_hash = {}
     weekday_times = {}
     Weekday.find(:all).each do |w|
       weekday_times[w.id] = [w.open_time, w.close_time]
     end
+    @shift_gap_hash = {}
+    @shift_gap_found_hash = {}
     @jobs.each{|x|
       @shift_gap_hash[x.id] = {}
+      @shift_gap_found_hash[x.id] = {}
+
+      weekdays = {}
+      Weekday.find(:all).each{|w|
+        weekdays[w.id] = Shift.find(:all, :conditions => ["shift_date IS NULL AND (ineffective_date IS NULL OR ineffective_date >= ?) AND (training = 'f' OR training IS NULL) AND job_id IN (?) AND weekday_id = ? AND schedule_id = ?", Date.today.to_s, [x.id], w.id, Schedule.reference_from.id]).map{|y| [y.start_time, y.end_time]}
+      }
+      
       @all_dates.each{|d|
-        @shift_gap_hash[x.id][d] = [weekday_times[mode == "ws" ? d.wday : d]]
+        @shift_gap_hash[x.id][d] = weekdays[mode == "ws" ? d.wday : d].dup
+        @shift_gap_found_hash[x.id][d] = []
       }
     }
     all_shifts.each{|x|
       k = x.send(column.to_sym)
-      @shift_gap_hash[x.job_id][k].push([x.start_time, x.end_time]) if @shift_gap_hash[x.job_id].keys.include?(k)
+      @shift_gap_found_hash[x.job_id][k].push([x.start_time, x.end_time]) if @shift_gap_hash[x.job_id].keys.include?(k)
+    }
+    @shift_gap_hash.keys.each{|x|
+      @shift_gap_hash[x].keys.each{|d|
+        remove_these = @shift_gap_found_hash[x][d]
+        while remove_these.length > 0
+          found = remove_these.pop
+          remaining = []
+          @shift_gap_hash[x][d].each do |expected|
+            if found
+              left = klass.range_math(found, expected)
+              holes = klass.range_math(expected, found)
+              found = left.pop
+              left.each do |f|
+                remove_these.push(f)
+              end
+              holes.each do |h|
+                remaining << h
+              end
+            else
+              remaining << expected
+            end
+          end
+          @shift_gap_hash[x][d] = remaining
+        end
+      }
     }
     @workers_week_hash = {}
     @workers_day_hash = {}
@@ -131,11 +165,6 @@ class ApplicationController < ActionController::Base
     @workers_day_hash.keys.each{|w|
       @workers_day_hash[w].keys.each{|d|
         @workers_day_hash[w][d] = klass.range_math(*@workers_day_hash[w][d])
-      }
-    }
-    @shift_gap_hash.keys.each{|x|
-      @shift_gap_hash[x].keys.each{|d|
-        @shift_gap_hash[x][d] = klass.range_math(*@shift_gap_hash[x][d])
       }
     }
   end

@@ -20,6 +20,9 @@
     <% unless schedule.generate_from or schedule.parent %>
     <td><%= link_to 'Set to Generate From', :action => 'set_generate_from', :id => schedule %></td>
     <% end %>
+    <% unless schedule.reference_from or schedule.parent %>
+    <td><%= link_to 'Set to Reference From', :action => 'set_reference_from', :id => schedule %></td>
+    <% end %>
   </tr>
 <% end %>
 </table>
