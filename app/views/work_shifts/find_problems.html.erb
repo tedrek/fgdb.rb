@@ -12,22 +12,18 @@ end %>
 <% if is_ws %>
 <h1>Report of schedule problems between <%= @start_date.to_s %> and <%= @disp_end_date.to_s %></h1>
 <% else %>
-<h1>Report of schedule problems in the "<%= @schedule.name %>" schedule</h1>
+<h1>Report of schedule problems</h1>
 <% end %>
 
 <%= render :partial => "work_shifts/last_access" %>
 
+<% if is_ws %>
 
 <% form_tag do %>
-<% if is_ws %>
-  <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @disp_end_date) %>
-<% else %>
-  <%= label_tag :schedule_id %>
-<%= select_tag :schedule_id, options_for_select(Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] }, @schedule ? @schedule.id : nil) %>
-<% end %>
-<%= submit_tag "Find Problems" %>
+  <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @disp_end_date) %> <%= submit_tag "Find Problems" %>
 <% end %>
 
+<% end %>
 
 <h2>Worker Conflicts</h2>
 <% if @conflicts.length == 0 %>
@@ -65,7 +61,7 @@ none found
 <% end %>
 </ul>
 <h2>Gaps in Fully Covered Jobs</h2>
-Compared to reference schedule "<%= Schedule.reference_from.name %>".
+
 <table class="awesome">
   <tr>
     <th>Fully Covered Jobs</th>
