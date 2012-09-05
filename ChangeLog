@@ -1,8 +1,10 @@
 fgdb.rb (1.0.104) UNRELEASED; urgency=low
 
   * Add a student list printout for adoption classes (Closes: #30543)
+  * Add support for setting up ongoing volunteer events occurring every
+    other week (Closes: #30491)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 31 Aug 2012 17:25:02 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Sep 2012 15:25:46 -0700
 
 fgdb.rb (1.0.103) released; urgency=low
 

@@ -19,7 +19,7 @@ class Conditions < ConditionsBase
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
       updated_by cashier_updated_by is_pickup finalized gizmo_context_id
       logged_in_within signed_off_by payment_total organization_name
-      model vendor result interface_type megabytes_size
+      model vendor result interface_type megabytes_size week
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -34,6 +34,8 @@ class Conditions < ConditionsBase
   end
 
   attr_accessor :shift_type
+
+  attr_accessor :week
 
   attr_accessor :model, :vendor, :interface_type, :result
 
@@ -326,6 +328,11 @@ class Conditions < ConditionsBase
       return !err
     end
     false
+  end
+
+  def week_conditions(klass)
+    klass = VolunteerDefaultEvent if klass == VolunteerDefaultShift
+    return ["(#{klass.table_name}.week IS NULL OR #{klass.table_name}.week LIKE ' ' OR #{klass.table_name}.week LIKE '' OR #{klass.table_name}.week ILIKE ?)", @week]
   end
 
   def schedule_conditions(klass)

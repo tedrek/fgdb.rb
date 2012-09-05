@@ -206,6 +206,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
       ds_conds.effective_on_end = x + 1
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
+      ds_conds.week_enabled = "true"
+      ds_conds.week = VolunteerShift.week_for_date(x)
       VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.roster_id, volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event]).map{|ds|
         ds.default_assignments
       }.flatten.select{|q| q.contact_id and (!q.contact.is_organization?)}.map{|da|
@@ -241,6 +243,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
       ds_conds.effective_on_end = x + 1
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
+      ds_conds.week_enabled = "true"
+      ds_conds.week = VolunteerShift.week_for_date(x)
       shifts = VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.roster_id, volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])
       shifts.each{|ds|
         ve = VolunteerEvent.find(:all, :conditions => ["volunteer_default_event_id = ? AND date = ?", ds.volunteer_default_event_id, x]).first
