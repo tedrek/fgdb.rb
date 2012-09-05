@@ -32,17 +32,6 @@ class SchedulesController < ApplicationController
     redirect_to :back
   end
 
-  def set_reference_from
-    n = Schedule.find(params[:id])
-    if s = Schedule.reference_from
-      s.reference_from = false
-      s.save
-    end
-    n.reference_from = true
-    n.save
-    redirect_to :back
-  end
-
 #  def index(id = params[:node])
 #    respond_to do |format|
 #      format.html # render static index.html.erb

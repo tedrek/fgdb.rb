@@ -17,12 +17,7 @@ class ShiftsController < ApplicationController
   def find_problems
     w = [Weekday.find_by_name("Sunday").id]
     @weeks = w.map(&:id)
-    @schedule = Schedule.find_by_id(params[:schedule_id])
-    if @schedule
-      do_find_problems_report(Shift, "weekday_id", @weeks, w + [Weekday.find_by_name("Saturday").id], "s", @schedule.id)
-    else
-      redirect_to :action => "view_weekly_schedule"
-    end
+    do_find_problems_report(Shift, "weekday_id", @weeks, w + [Weekday.find_by_name("Saturday").id], "s")
   end
 
   def index

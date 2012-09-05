@@ -9,10 +9,6 @@ class Schedule < ActiveRecord::Base
     find_by_generate_from(true)
   end
 
-  def self.reference_from
-    find_by_reference_from(true)
-  end
-
   def copy(newname)
     newsched = self.clone
     newsched.name = newname
