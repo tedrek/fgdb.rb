@@ -34,6 +34,8 @@ fgdb.rb (1.0.103) released; urgency=low
     show the latest printme for a system (Closes: #30506)
     - Also add a Show page to display a transaction without printing the
       receipt
+  * Implement the fully covered check against an ideal reference schedule
+    (Closes: #30493)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Aug 2012 18:46:35 -0700
 
