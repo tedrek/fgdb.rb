@@ -12,18 +12,22 @@ end %>
 <% if is_ws %>
 <h1>Report of schedule problems between <%= @start_date.to_s %> and <%= @disp_end_date.to_s %></h1>
 <% else %>
-<h1>Report of schedule problems</h1>
+<h1>Report of schedule problems in the "<%= @schedule.name %>" schedule</h1>
 <% end %>
 
 <%= render :partial => "work_shifts/last_access" %>
 
-<% if is_ws %>
 
 <% form_tag do %>
-  <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @disp_end_date) %> <%= submit_tag "Find Problems" %>
+<% if is_ws %>
+  <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @disp_end_date) %>
+<% else %>
+  <%= label nil, :schedule_id %>
+<%= select nil, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] } %>
+<% end %>
+<%= submit_tag "Find Problems" %>
 <% end %>
 
-<% end %>
 
 <h2>Worker Conflicts</h2>
 <% if @conflicts.length == 0 %>
