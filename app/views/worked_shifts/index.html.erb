@@ -87,8 +87,6 @@ Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_secon
 
      <%= line_item("shifts", 'WorkedShiftFrontend', interface, @shifts.map{|i| hash = {:job_id => i.job_id, :duration => i.duration.to_f, :offsite => i.offsite.to_s}; hash[:id] = i.id if  i.id; hash }) %>
 
-     <%= javascript_tag "shift_do_ajax = 1;" %>
-
 <div id="totals_div" class="totals line_item" style="clear: left; float: left; align: left;">
   <table>
     <tr><td>Total for this day:</td><td id="total_today" class="amount">loading..</td></tr>
@@ -108,6 +106,14 @@ Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_secon
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
 <% end %>
-<%= javascript_tag  "shift_compute_totals(); trigger_worked_shifts_changed = true;" %>
 <% end %>
 </div>
+
+<%= javascript_tag "
+Event.observe(window, 'load', function() {
+  shift_do_ajax = 1;
+  shift_compute_totals();
+  trigger_worked_shifts_changed = true;
+});
+" %>
+

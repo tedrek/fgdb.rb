@@ -5,8 +5,11 @@ fgdb.rb (1.0.104) UNRELEASED; urgency=low
     other week (Closes: #30491)
   * Implement the fully covered check against an ideal reference schedule
     (Closes: #30493)
+  * Move the initial AJAX hook calculation to observe the load event
+    instead of being executed inline, hoping to get rid of whatever race
+    condition exists here (Closes: #30555)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Sep 2012 15:25:46 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Sep 2012 16:46:51 -0700
 
 fgdb.rb (1.0.103) released; urgency=low
 
