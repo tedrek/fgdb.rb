@@ -22,8 +22,8 @@ end %>
 <% if is_ws %>
   <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @disp_end_date) %>
 <% else %>
-  <%= label nil, :schedule_id %>
-<%= select nil, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] } %>
+  <%= label_tag :schedule_id %>
+<%= select_tag :schedule_id, options_for_select(Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] }, @schedule ? @schedule.id : nil) %>
 <% end %>
 <%= submit_tag "Find Problems" %>
 <% end %>
