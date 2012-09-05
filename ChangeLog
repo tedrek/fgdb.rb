@@ -1,6 +1,8 @@
 fgdb.rb (1.0.104) UNRELEASED; urgency=low
 
   * Add a student list printout for adoption classes (Closes: #30543)
+  * Implement the fully covered check against an ideal reference schedule
+    (Closes: #30493)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 31 Aug 2012 17:25:02 -0700
 
