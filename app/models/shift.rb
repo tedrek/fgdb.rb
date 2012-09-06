@@ -40,6 +40,19 @@ class Shift < ActiveRecord::Base
     end
   end
 
+  def next_cycle_date
+    if self.week.to_s.strip.length == 0
+      return ""
+    end
+    d = Date.today
+    d += 1 while d.wday != self.weekday_id
+    return ((VolunteerShift.week_for_date(d).upcase == self.week.upcase) ? d : (d + 7)).to_s
+  end
+
+  def next_cycle_date=(d)
+    self.week = d.to_s.strip.length == 0 ? "" : VolunteerShift.week_for_date(Date.parse(d)).upcase
+  end
+
   before_save :set_standard_shift_if_none
   def set_standard_shift_if_none
     self.type ||= 'StandardShift' if self.class == Shift
@@ -74,6 +87,7 @@ class Shift < ActiveRecord::Base
       else
           # check to see if the schedule displays on that
           #   weekday, if not then skip
+        week_letter = VolunteerShift.week_for_date(day)
         weekday_id = day.strftime( '%w' )
         weekday = Weekday.find(:first, :conditions => ["id = ?", weekday_id])
           # get standard shifts that match the day of week
@@ -88,6 +102,7 @@ class Shift < ActiveRecord::Base
         #{sql_conditions}
         ((shifts.effective_date IS NULL OR '#{day}' >= shifts.effective_date)
           AND (shifts.ineffective_date IS NULL OR '#{day}' < shifts.ineffective_date)) AND
+         (week IS NULL OR week LIKE ' ' OR week ILIKE '#{week_letter}') AND
         ( 
           ( shifts.shift_date = '#{day}' ) 
             OR
