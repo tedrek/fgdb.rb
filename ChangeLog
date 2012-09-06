@@ -8,8 +8,10 @@ fgdb.rb (1.0.104) UNRELEASED; urgency=low
   * Move the initial AJAX hook calculation to observe the load event
     instead of being executed inline, hoping to get rid of whatever race
     condition exists here (Closes: #30555)
+  * Remove permission restriction on searching for transactions by
+    cashier/created/updated_by
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Sep 2012 16:46:51 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Sep 2012 17:02:08 -0700
 
 fgdb.rb (1.0.103) released; urgency=low
 

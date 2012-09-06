@@ -39,7 +39,6 @@ class TransactionController < ApplicationController
   def get_required_privileges
     a = super
     fn = self.class.to_s.tableize.gsub(/_controllers$/, "")
-    a << {:only => ["/show_created_and_updated_by"], :privileges => ['role_admin']}
     a << {:only => ["search", "component_update", "receipt"], :privileges => ["view_#{fn}"]}
     a << {:only => ["edit", "destroy", "update"], :privileges => ["change_#{fn}"]}
     a << {:only => ["invoices"], :privileges => ["pay_invoices"]}

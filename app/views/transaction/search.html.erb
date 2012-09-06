@@ -97,14 +97,12 @@
       <% filters << 'contract' %>
       <% filters << 'contact_type' %>
       <% filters << 'organization' %>
-      <% if has_required_privileges("/show_created_and_updated_by") %>
         <% filters << 'created_by' %>
         <% filters << 'updated_by' %>
         <% if cashierable %>
           <% filters << 'cashier_created_by' %>
           <% filters << 'cashier_updated_by' %>
         <% end %>
-      <% end %>
       <% if @model == Sale or @model == Disbursement %>
         <% filters << 'system' %>
       <% end %>
