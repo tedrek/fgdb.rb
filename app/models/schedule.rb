@@ -87,28 +87,7 @@ class Schedule < ActiveRecord::Base
     start_id.to_i == 0 ? root_nodes : find(start_id).direct_children
   end
 
-  def in_clause_family
-    # returns a sql ready string in parens, a comma delimited list of ids
-    # such as "(1, 50, 51)"
-    family = Array.new
-    self.root.full_set.each do |node|
-      family << node.id
-    end
-    ret = family.join(',')
-    "( #{ret} )"
-  end
-
-  def in_clause_root_plus
-    # returns a sql ready string in parens, a comma delimited list of ids
-    # such as "(1, 51)"
-    ret = '('
-    ret += self.id.to_s
-    ret += ','
-    ret += self.root.id.to_s
-    ret += ')'
-  end
-
-  def in_clause_solo
+  def in_clause
     # returns a sql ready string in parens, a comma delimited list of ids
     # such as "(50)"
     ret = '('

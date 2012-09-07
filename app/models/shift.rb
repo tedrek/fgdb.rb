@@ -96,7 +96,7 @@ class Shift < ActiveRecord::Base
             #   either the weekday_id is null
             #   or the shift_date is null
         root_sched = Schedule.find( :first, :conditions => ["? BETWEEN effective_date AND ineffective_date AND parent_id IS NULL", day] )
-        in_clause = root_sched.in_clause_family
+        in_clause = root_sched.in_clause
         where_clause = <<WHERE
         (NOT actual) AND 
         #{sql_conditions}

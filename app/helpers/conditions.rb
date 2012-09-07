@@ -57,7 +57,7 @@ class Conditions < ConditionsBase
   attr_accessor :roster_id
   attr_accessor :sked_id
 
-  attr_accessor :schedule_id, :schedule_which_way
+  attr_accessor :schedule_id
 
   attr_accessor :effective_at
 
@@ -339,13 +339,7 @@ class Conditions < ConditionsBase
     in_clause = "(-1)"
     s = Schedule.find_by_id(@schedule_id.to_i)
     if s
-      if @schedule_which_way == 'Solo'
-        in_clause = s.in_clause_solo
-      elsif @schedule_which_way == 'Solo + root'
-        in_clause = s.in_clause_root_plus
-      else # @schedule_which_way == 'Family'
-        in_clause = s.in_clause_family
-      end
+      in_clause = s.in_clause
     end
     in_clause += " AND (NOT actual) AND (shift_date IS NULL) AND ('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)" if klass == Shift
     return ["#{klass.table_name}.schedule_id IN #{in_clause}"]

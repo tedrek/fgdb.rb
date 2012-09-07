@@ -32,14 +32,7 @@ module ConditionsHelper
   end
 
   def html_for_schedule_condition(params_key)
-    which_way = (params[params_key] ? params[params_key][:schedule_which_way] : nil) || 'Family'
-    if !['Family', 'Solo', 'Solo + root'].include?(which_way)
-      which_way = 'Family'
-    end
-    ((select params_key, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] }) +
-    (radio_button params_key, :schedule_which_way, 'Family', :checked => (which_way=='Family')) + "Family" +
-    (radio_button params_key, :schedule_which_way, 'Solo', :checked => (which_way=='Solo')) + "Solo" +
-    (radio_button params_key, :schedule_which_way, 'Solo + root', :checked => (which_way=='Solo + root')) + "Solo + root")
+    (select params_key, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] })
   end
 
   attr_accessor :multi_enabled
