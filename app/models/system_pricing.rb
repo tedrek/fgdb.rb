@@ -55,6 +55,7 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def autodetect_values
+    return unless self.pricing_type
     self.pricing_type.pricing_components.each do |c|
       match = c.matched_pricing_value(self.pricing_hash)
       match.each do |m|
@@ -84,8 +85,11 @@ class SystemPricing < ActiveRecord::Base
     @missing_required ||= nil
   end
 
+  validates_presence_of :pricing_type
+
   validate :validate_required_components
   def validate_required_components
+    return unless self.pricing_type
     @missing_required ||= []
     found = self.pricing_values.map(&:pricing_component)
     self.pricing_type.pricing_components.each do |pc|
