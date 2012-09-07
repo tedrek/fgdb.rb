@@ -44,7 +44,7 @@ class DisktestAPI < SOAP::SoapsBase
 
   public
   def get_form_factor(vendor, model)
-    dr = DisktestRun.find(:first, :conditions => ["vendor ILIKE ? AND model ILIKE ? AND form_factor IS NOT NULL AND form_factor <> ''", vendor, model], :order => "created_at DESC")
+    dr = DisktestRun.find(:first, :conditions => ["vendor ILIKE ? AND model ILIKE ? AND form_factor IS NOT NULL AND form_factor <> ''", vendor, model], :order => "updated_at DESC")
     return dr ? dr.form_factor : dr
   end
 
