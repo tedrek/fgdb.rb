@@ -151,8 +151,9 @@ WHERE
 
   def display_name
     skedj = Thread.current['skedj_obj']
-    s = " (" + self.schedule.name + ")" if self.schedule.id != skedj.conditions.schedule_id
-    s ||= ""
+    s = ""
+    #schedule.id != skedj.conditions.schedule_id
+    s = " (" + self.week.upcase + ")" if self.week.to_s.strip.length > 0
     self.name + s
   end
 
