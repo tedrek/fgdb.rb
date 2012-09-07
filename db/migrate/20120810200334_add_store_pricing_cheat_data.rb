@@ -150,7 +150,7 @@ class AddStorePricingCheatData < ActiveRecord::Migration
                     ["Core 2 Duo", 6000],
                     ["Core Duo", 4000],
                     ["Core i3", 3500],
-                    ["Pentium Dual-Core", 2700],
+                    ["Pentium Dual", 2700],
                     ["Pentium M", 1800],
                     ["Pentium D", 1700],
                     ["Atom", 1500],
