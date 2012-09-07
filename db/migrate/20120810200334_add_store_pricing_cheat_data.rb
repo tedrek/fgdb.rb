@@ -268,17 +268,17 @@ class AddStorePricingCheatData < ActiveRecord::Migration
     names[:ram_size] = "RAM Size"
     members[:ram_size] = [:intel, :intel_laptop, :amd, :amd_laptop, :mac]
     pulls[:ram_size] = "memory_amount"
-    values[:ram_size] = [["8.0 gb", 12000],
-                         ["6.0 gb", 7800],
-                         ["4.0 gb", 5800],
-                         ["3.0 gb", 4200],
-                         ["2.5 gb", 3300],
-                         ["2.0 gb", 2800],
-                         ["1.5 gb", 2300],
-                         ["1.2 gb", 1800],
-                         ["1.0 gb", 1300],
-                         ["768 mb", 900],
-                         ["512 mb", 400]]
+    values[:ram_size] = [["8.0gb", 12000],
+                         ["6.0gb", 7800],
+                         ["4.0gb", 5800],
+                         ["3.0gb", 4200],
+                         ["2.5gb", 3300],
+                         ["2.0gb", 2800],
+                         ["1.5gb", 2300],
+                         ["1.2gb", 1800],
+                         ["1.0gb", 1300],
+                         ["768mb", 900],
+                         ["512mb", 400]]
     list << :hd_size
     members[:hd_size] = [:intel, :intel_laptop, :amd, :amd_laptop, :mac]
     names[:hd_size] = "HD Size"
