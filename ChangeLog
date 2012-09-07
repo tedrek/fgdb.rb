@@ -28,6 +28,7 @@ fgdb.rb (1.0.103) released; urgency=low
     show the latest printme for a system (Closes: #30506)
     - Also add a Show page to display a transaction without printing the
       receipt
+  * Fix some handling of the store pricing stuff
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Aug 2012 18:46:35 -0700
 

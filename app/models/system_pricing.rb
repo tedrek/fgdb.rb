@@ -18,7 +18,12 @@ class SystemPricing < ActiveRecord::Base
 
   def self.does_match?(matcher, value)
     value ||= ""
-    matcher.split(/[\s-]+/).select{|x| !value.match(x)}.length == 0
+    values = [value.downcase]
+    for i in [/\s/, "-", ")", "("]
+      values = values.map{|v| v.split(i)}.flatten
+    end
+    puts values.inspect
+    matcher.split(/[\s-]+/).map(&:downcase).select{|x| !values.include?(x)}.length == 0
   end
 
   before_save :set_calculated_price
