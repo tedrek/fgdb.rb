@@ -11,6 +11,8 @@ fgdb.rb (1.0.104) UNRELEASED; urgency=low
   * Remove permission restriction on searching for transactions by
     cashier/created/updated_by
   * Implement every other week in staff scheduling using normal shifts
+    - remove the unused A/B-week schedules from the main schedule during
+      migration (Closes: #30612)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Sep 2012 18:00:27 -0700
 
