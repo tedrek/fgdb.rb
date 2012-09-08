@@ -13,8 +13,9 @@ fgdb.rb (1.0.104) UNRELEASED; urgency=low
   * Implement every other week in staff scheduling using normal shifts
     - remove the unused A/B-week schedules from the main schedule during
       migration (Closes: #30612)
+  * Remove now unused betternestedset plugin
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 05 Sep 2012 18:00:27 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 07 Sep 2012 17:43:41 -0700
 
 fgdb.rb (1.0.103) released; urgency=low
 
