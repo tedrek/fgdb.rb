@@ -76,18 +76,6 @@ class SchedulesController < ApplicationController
     end
   end
 
-  def create_child(parent = Schedule.find( :first, :order => 'lft DESC', :conditions => 'parent_id IS NULL')
-)
-    @schedule = Schedule.new(params[:schedule])
-    if @schedule.save
-      @schedule.move_to_child_of(parent)
-      flash[:notice] = 'Schedule was successfully created.'
-      redirect_to :action => 'list'
-    else
-      render :action => 'new'
-    end
-  end
-
   def edit
     @schedule = Schedule.find(params[:id])
   end

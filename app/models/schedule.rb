@@ -1,10 +1,10 @@
 class Schedule < ActiveRecord::Base
-  acts_as_nested_set
   has_many :standard_shifts
   has_many :holidays
   has_many :meetings
   has_many :work_shifts
 
+# find( :first, :conditions => ["? BETWEEN effective_date AND ineffective_date AND parent_id IS NULL", day] )
   def self.generate_from
     find_by_generate_from(true)
   end
@@ -31,11 +31,6 @@ class Schedule < ActiveRecord::Base
     self.holidays.each do |x|
       y = x.clone
       y.schedule = newsched
-      y.save!
-    end
-    self.children.each do |x|
-      y = x.copy(newname + " " + x.name)
-      y.move_to_child_of(newsched)
       y.save!
     end
     return newsched
@@ -65,28 +60,6 @@ class Schedule < ActiveRecord::Base
     ret
   end
 
-  def relatives
-    ret = 'ahem! '
-    self.self_and_siblings do |relative|
-      ret += (relative.id.to_s + ', ')
-    end
-    self.parent do |relative|
-      ret += (relative.id.to_s + ', ')
-    end
-    self.children do |relative|
-      ret += (relative.id.to_s + ', ')
-    end
-    ret
-  end
-
-  def self.root_nodes
-    find(:all, :conditions => 'parent_id IS NULL')
-  end
-
-  def self.find_children(start_id = nil)
-    start_id.to_i == 0 ? root_nodes : find(start_id).direct_children
-  end
-
   def in_clause
     # returns a sql ready string in parens, a comma delimited list of ids
     # such as "(50)"
@@ -97,10 +70,6 @@ class Schedule < ActiveRecord::Base
 
   def full_name
     ret = self.name
-    if not self.root?
-      ret += ' [' + self.root.name + ']'
-    end
-    ret
   end
 
   def date_range
@@ -108,5 +77,4 @@ class Schedule < ActiveRecord::Base
     end_date = Date.new(1973, 2, 2)
     (start_date..end_date)
   end
-
 end
