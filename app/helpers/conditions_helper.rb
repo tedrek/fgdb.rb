@@ -32,7 +32,7 @@ module ConditionsHelper
   end
 
   def html_for_schedule_condition(params_key)
-    (select params_key, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] })
+    (select params_key, :schedule_id, Schedule.find(:all, :order => "name").collect {|c| [c.full_name, c.id] })
   end
 
   attr_accessor :multi_enabled

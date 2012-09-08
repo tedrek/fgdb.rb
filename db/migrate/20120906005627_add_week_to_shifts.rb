@@ -11,8 +11,12 @@ class AddWeekToShifts < ActiveRecord::Migration
       end
       desc.each(&:destroy)
     end
+    remove_column :schedules, :parent_id
+    remove_column :schedules, :lft
+    remove_column :schedules, :rgt
   end
 
   def self.down
+    remove_column :shifts, :week
   end
 end

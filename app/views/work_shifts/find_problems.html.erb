@@ -23,7 +23,7 @@ end %>
   <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @disp_end_date) %>
 <% else %>
   <%= label_tag :schedule_id %>
-<%= select_tag :schedule_id, options_for_select(Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] }, @schedule ? @schedule.id : nil) %>
+<%= select_tag :schedule_id, options_for_select(Schedule.find(:all, :order => "name").collect {|c| [c.full_name, c.id] }, @schedule ? @schedule.id : nil) %>
 <% end %>
 <%= submit_tag "Find Problems" %>
 <% end %>
