@@ -1,0 +1,5 @@
+<%= note ? note.note.gsub(/\n/, '<br />') + '<br />' : '' %>
+<% if display_link %>
+<%= loading_indicator_tag "footnote-#{current_date}" %>
+<%= link_to_remote note ? 'Edit Footnote' : 'Add Footnote', :url => {:action => 'edit_footnote', :date => current_date}, :loading => "Element.show('#{loading_indicator_id("footnote-#{current_date}")}');" %>
+<% end %>

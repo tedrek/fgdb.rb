@@ -29,6 +29,7 @@ fgdb.rb (1.0.103) released; urgency=low
     - Also add a Show page to display a transaction without printing the
       receipt
   * Fix some handling of the store pricing stuff
+  * Add support for footnotes on the skedjulnator (Closes: #30765)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Aug 2012 18:46:35 -0700
 

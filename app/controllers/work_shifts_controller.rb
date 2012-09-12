@@ -20,6 +20,30 @@ class WorkShiftsController < ApplicationController
   before_filter :update_skedjulnator_access_time, :except => [:staffsched, :perpetual_meetings, :staffsched_publish, :perpetual_meetings_publish]
 
   public
+  def edit_footnote
+    @date = params[:date]
+    @footnote = WorkShiftFootnote.find_by_date(@date) || WorkShiftFootnote.new(:date => @date)
+    render :update do |page|
+      page.hide loading_indicator_id("footnote-#{params[:date]}")
+      page.replace_html "fieldset-footnote-#{params[:date]}", :partial => "footnote_form"
+    end
+  end
+
+  def save_footnote
+    unless params[:work_shift_footnote]
+      redirect_to :action => 'edit_footnote'
+      return
+    end
+    @date = params[:work_shift_footnote][:date].to_date
+    @footnote = WorkShiftFootnote.find_or_create_by_date(@date)
+    @footnote.note = params[:work_shift_footnote][:note]
+    @footnote.save
+    render :update do |page|
+      page.hide loading_indicator_id("footnote-#{@date}")
+      page.replace_html "fieldset-footnote-#{@date}", :partial => "footnote", :locals => {:display_link => true, :note => @footnote, :current_date => @date}
+    end
+  end
+
   def update_rollout_date
     Default["staffsched_rollout_until"] = params[:date]
     Notifier.deliver_text_report('scheduler_reports_to', "Schedule rolled out to #{params[:date]}", "The schedule rollout date was changed to #{params[:date]} by #{Thread.current['user'].to_s} at #{Time.now.strftime("%D %T")}.")
