@@ -12,6 +12,14 @@ class ShiftsController < ApplicationController
   end
   public
 
+  def edit_footnote
+    super
+  end
+
+  def save_footnote
+    super
+  end
+
   before_filter :update_skedjulnator_access_time
 
   def find_problems

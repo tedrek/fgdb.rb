@@ -20,6 +20,45 @@ end
 
 class ApplicationController < ActionController::Base
   protected
+  def edit_footnote
+    @date = params[:date]
+    if params[:controller] == 'shifts'
+      @schedule = params[:schedule_id]
+      @footnote = ShiftFootnote.find_by_weekday_id_and_schedule_id(@date, @schedule) || ShiftFootnote.new(:weekday_id => @date, :schedule_id => @schedule)
+    else
+      @footnote = WorkShiftFootnote.find_by_date(@date) || WorkShiftFootnote.new(:date => @date)
+    end
+    render :update do |page|
+      page.hide loading_indicator_id("footnote-#{params[:date]}")
+      page.replace_html "fieldset-footnote-#{params[:date]}", :partial => "work_shifts/footnote_form"
+    end
+  end
+
+  def save_footnote
+    p = params[:controller] == 'shifts' ? params[:shift_footnote] : params[:work_shift_footnote]
+    unless p
+      redirect_to :action => 'edit_footnote'
+      return
+    end
+    @date = p[:date]
+    if params[:controller] == 'shifts'
+      @schedule = p[:schedule_id]
+      @footnote = ShiftFootnote.find_or_create_by_weekday_id_and_schedule_id(@date, @schedule)
+    else
+      @footnote = WorkShiftFootnote.find_or_create_by_date(@date)
+    end
+    @footnote.note = p[:note]
+    if @footnote.note.strip.empty?
+      @footnote.destroy if @footnote.id
+    else
+      @footnote.save
+    end
+    render :update do |page|
+      page.hide loading_indicator_id("footnote-#{@date}")
+      page.replace_html "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule}
+    end
+  end
+
   before_filter :set_contact_context
   def set_contact_context(value = nil)
     if value.class == Array

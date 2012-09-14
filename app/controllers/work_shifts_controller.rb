@@ -20,32 +20,13 @@ class WorkShiftsController < ApplicationController
   before_filter :update_skedjulnator_access_time, :except => [:staffsched, :perpetual_meetings, :staffsched_publish, :perpetual_meetings_publish]
 
   public
+
   def edit_footnote
-    @date = params[:date]
-    @footnote = WorkShiftFootnote.find_by_date(@date) || WorkShiftFootnote.new(:date => @date)
-    render :update do |page|
-      page.hide loading_indicator_id("footnote-#{params[:date]}")
-      page.replace_html "fieldset-footnote-#{params[:date]}", :partial => "footnote_form"
-    end
+    super
   end
 
   def save_footnote
-    unless params[:work_shift_footnote]
-      redirect_to :action => 'edit_footnote'
-      return
-    end
-    @date = params[:work_shift_footnote][:date].to_date
-    @footnote = WorkShiftFootnote.find_or_create_by_date(@date)
-    @footnote.note = params[:work_shift_footnote][:note]
-    if @footnote.note.strip.empty?
-      @footnote.destroy if @footnote.id
-    else
-      @footnote.save
-    end
-    render :update do |page|
-      page.hide loading_indicator_id("footnote-#{@date}")
-      page.replace_html "fieldset-footnote-#{@date}", :partial => "footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date}
-    end
+    super
   end
 
   def update_rollout_date

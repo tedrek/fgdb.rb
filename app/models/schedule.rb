@@ -3,6 +3,7 @@ class Schedule < ActiveRecord::Base
   has_many :holidays
   has_many :meetings
   has_many :work_shifts
+  has_many :shift_footnotes
 
 # find( :first, :conditions => ["? BETWEEN effective_date AND ineffective_date AND parent_id IS NULL", day] )
   def self.generate_from
@@ -29,6 +30,11 @@ class Schedule < ActiveRecord::Base
       y.save!
     end
     self.holidays.each do |x|
+      y = x.clone
+      y.schedule = newsched
+      y.save!
+    end
+    self.shift_footnotes.each do |x|
       y = x.clone
       y.schedule = newsched
       y.save!

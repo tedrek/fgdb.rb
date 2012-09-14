@@ -14,8 +14,10 @@ fgdb.rb (1.0.104) UNRELEASED; urgency=low
     - remove the unused A/B-week schedules from the main schedule during
       migration (Closes: #30612)
   * Remove now unused betternestedset plugin
+  * Implement footnotes on the ongoing schedule as well (with generating
+    and copying support)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 07 Sep 2012 17:43:41 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 14 Sep 2012 16:01:36 -0700
 
 fgdb.rb (1.0.103) released; urgency=low
 

@@ -1,5 +1,8 @@
 <% remote_form_for @footnote, :url => {:action => 'save_footnote'}, :loading => "Element.show('#{loading_indicator_id("footnote-#{@date}")}');" do |f| %>
 <%= f.text_area :note, :rows => 3 %>
+<% if params[:controller] == 'shifts' %>
+<%= f.hidden_field :schedule_id %>
+<% end %>
 <%= f.hidden_field :date %><br />
 <%= loading_indicator_tag "footnote-#{@date}" %>
 <%= f.submit 'Save' %>

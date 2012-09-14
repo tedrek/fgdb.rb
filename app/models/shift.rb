@@ -97,6 +97,15 @@ class Shift < ActiveRecord::Base
             #   or the shift_date is null
         root_sched = Schedule.generate_from
         in_clause = root_sched.in_clause
+        if footnote = ShiftFootnote.find_by_schedule_id_and_weekday_id(root_sched.id, weekday_id)
+          wsf = WorkShiftFootnote.new
+          wsf.note = footnote.note
+          wsf.date = day
+          wsf.save!
+        else
+          wsf = WorkShiftFootnote.find_by_date(day)
+          wsf.destroy if wsf
+        end
         where_clause = <<WHERE
         (NOT actual) AND 
         #{sql_conditions}
