@@ -9,6 +9,14 @@
     <% end %>
     </tr>
 </table>
+<% if params[:controller] == "work_shifts" %>
+<% a = WorkShiftFootnote.find_by_date(current_date) %>
+<% if skedj.opts[:presentation_mode] == 'Edit' || a %>
+<fieldset id="fieldset-footnote-<%= current_date %>">
+<%= render :partial => 'footnote', :locals => {:note => a, :skedj => skedj, :current_date => current_date, :display_link => skedj.opts[:presentation_mode] == 'Edit'} %>
+</fieldset>
+<% end %>
+<% end %>
 <br/>
 <br/>
 

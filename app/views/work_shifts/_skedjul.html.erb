@@ -91,7 +91,7 @@ end %>
     if start_day
       if not start_schedule
         %> <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.last, :thing_end_time), :new => skedj.get_method_value(skedj.last, :block_end_time) } %>
-        <%= render :partial => 'work_shifts/table_footer' %> <%
+        <%= render :partial => 'work_shifts/table_footer', :locals => { :current_date => current_date, :skedj => skedj } %> <%
       end 
       if current_date
         next_date = skedj.get_method_value(thing, :block_method_name)
@@ -120,7 +120,8 @@ end %>
   end
 %>
 <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.current, :thing_end_time), :new => skedj.get_method_value(skedj.current, :block_end_time) } %>
-<%= render :partial => 'work_shifts/table_footer' %>
+<%= render :partial => 'work_shifts/table_footer', :locals => { :current_date => current_date, :skedj => skedj } %>
+
 <% begin
 next_date = Date.parse(skedj.conditions.send(skedj.opts[:date_range_condition].to_s+"_end_date"))
 rescue
