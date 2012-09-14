@@ -16,8 +16,10 @@ fgdb.rb (1.0.104) UNRELEASED; urgency=low
   * Remove now unused betternestedset plugin
   * Implement footnotes on the ongoing schedule as well (with generating
     and copying support)
+  * Add support for job and worker conditions to the type totals staff
+    report
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 14 Sep 2012 16:01:36 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 14 Sep 2012 16:25:59 -0700
 
 fgdb.rb (1.0.103) released; urgency=low
 

@@ -36,6 +36,7 @@ class WorkedShiftsController < ApplicationController
 
   def type_totals
     @types_of_types = NH.keys
+    @multi_enabled = true
   end
 
   def type_totals_report
