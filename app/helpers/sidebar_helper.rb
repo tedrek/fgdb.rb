@@ -88,6 +88,7 @@ module SidebarHelper
     ["income", "gizmos", "volunteering", "top_donations", "donation_areas", "contributions", "volunteer_schedule"].each do |x|
       sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => ((x == "contributions") ? "suggested_contributions" : (x == "donation_areas") ? "donation_zip_areas" : x.sub("ing", "s"))}
     end
+    sidebar_hash["recyclings"]["shipments"] = {:c => "recycling_shipments"}
     sidebar_hash["tech support"]["system returns"] = {:c => "gizmo_returns", :a => "system"}
     sidebar_hash["tech support"]["system history"] = {:c => "spec_sheets", :action => "system"}
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}

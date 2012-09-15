@@ -1,0 +1,28 @@
+<p>
+  <b>Contact:</b>
+  <%=h @recycling_shipment.contact_id %>
+</p>
+
+<p>
+  <b>Bill of lading:</b>
+  <%=h @recycling_shipment.bill_of_lading %>
+</p>
+
+<p>
+  <b>Received at:</b>
+  <%=h @recycling_shipment.received_at %>
+</p>
+
+<p>
+  <b>Resolved at:</b>
+  <%=h @recycling_shipment.resolved_at %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%=h @recycling_shipment.notes %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @recycling_shipment.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

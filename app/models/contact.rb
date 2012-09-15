@@ -188,6 +188,7 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE workers SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE points_trades SET from_contact_id = #{self.id} WHERE from_contact_id = #{other.id}")
       connection.execute("UPDATE points_trades SET to_contact_id = #{self.id} WHERE to_contact_id = #{other.id}")
+      connection.execute("UPDATE recycling_shipments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts_mailings SET contact_id = NULL WHERE contact_id = #{other.id} AND mailing_id IN (SELECT mailing_id FROM contacts_mailings WHERE contact_id IN (#{self.id}, #{other.id}) GROUP BY mailing_id HAVING count(*) > 1)")
       connection.execute("UPDATE contacts_mailings SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts SET created_at = (SELECT min(created_at) FROM contacts WHERE id IN (#{self.id}, #{other.id})) WHERE id = #{self.id}")
