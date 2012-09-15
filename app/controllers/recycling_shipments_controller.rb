@@ -8,7 +8,16 @@ class RecyclingShipmentsController < ApplicationController
   layout :with_sidebar
 
   def index
-    @recycling_shipments = RecyclingShipment.find(:all)
+    @conditions = Conditions.new
+    @conditions.unresolved_shipment_enabled = true
+    @recycling_shipments = RecyclingShipment.paginate(:page => params[:page], :conditions => @conditions.conditions(RecyclingShipment), :order => "created_at ASC", :per_page => 50)
+  end
+
+  def search
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    @recycling_shipments = RecyclingShipment.paginate(:page => params[:page], :conditions => @conditions.conditions(RecyclingShipment), :order => "created_at ASC", :per_page => 50)
+    render :action => "index"
   end
 
   def show

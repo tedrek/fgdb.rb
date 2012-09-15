@@ -140,6 +140,10 @@ module ConditionsHelper
     ""
   end
 
+  def html_for_unresolved_shipment_condition(params_key)
+    ""
+  end
+
   def html_for_payment_method_condition(params_key)
     render( :partial => 'transaction/payment_method_select',
             :locals => {:field_id_prefix => params_key,

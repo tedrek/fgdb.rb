@@ -19,7 +19,7 @@ class Conditions < ConditionsBase
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
       updated_by cashier_updated_by is_pickup finalized gizmo_context_id
       logged_in_within signed_off_by payment_total organization_name
-      model vendor result interface_type megabytes_size week
+      model vendor result interface_type megabytes_size week unresolved_shipment
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -87,6 +87,8 @@ class Conditions < ConditionsBase
   attr_accessor :anonymous
 
   attr_accessor :unresolved_invoices
+
+  attr_accessor :unresolved_shipment
 
   attr_accessor :gizmo_type_id
 
@@ -596,6 +598,10 @@ class Conditions < ConditionsBase
 
   def anonymous_conditions(klass)
     return ["#{klass.table_name}.postal_code IS NOT NULL AND #{klass.table_name}.contact_id IS NULL"]
+  end
+
+  def unresolved_shipment_conditions(klass)
+    return ["#{klass.table_name}.resolved_at IS NULL"]
   end
 
   def unresolved_invoices_conditions(klass)
