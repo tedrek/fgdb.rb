@@ -2,6 +2,9 @@
 
 Date: <%= @volunteer_event.date %><br />
 Notes: <%= @volunteer_event.notes %><br />
+<% @volunteer_event.resources_volunteer_events.each do |x| %>
+Resource: <%= x.resource.name %><br />
+<% end %>
 
 <% @volunteer_event.volunteer_shifts.select{|x| x.volunteer_task_type_id.nil?}.map{|x| x.assignments}.flatten.select{|x| x.contact_id}.each do |a| %>
 
