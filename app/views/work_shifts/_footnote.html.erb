@@ -3,3 +3,11 @@
 <%= loading_indicator_tag "footnote-#{current_date}" %>
 <%= link_to_remote note ? 'Edit Footnote' : 'Add Footnote', :url => {:action => 'edit_footnote', :date => current_date, :schedule_id => schedule_id}, :loading => "Element.show('#{loading_indicator_id("footnote-#{current_date}")}');" %>
 <% end %>
+<% if vacs.length > 0 %>
+<h3>On Vacation:</h3>
+<ul>
+<% vacs.each do |x| %>
+<li><%= x.worker.name %></li>
+<% end %>
+</ul>
+<% end %>

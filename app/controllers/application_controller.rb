@@ -44,7 +44,9 @@ class ApplicationController < ActionController::Base
     if params[:controller] == 'shifts'
       @schedule = p[:schedule_id]
       @footnote = ShiftFootnote.find_or_create_by_weekday_id_and_schedule_id(@date, @schedule)
+      @vacs = []
     else
+      @vacs = Vacation.on_date(last_date)
       @footnote = WorkShiftFootnote.find_or_create_by_date(@date)
     end
     @footnote.note = p[:note]
@@ -55,7 +57,7 @@ class ApplicationController < ActionController::Base
     end
     render :update do |page|
       page.hide loading_indicator_id("footnote-#{@date}")
-      page.replace_html "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule}
+      page.replace_html "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
     end
   end
 

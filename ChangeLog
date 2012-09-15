@@ -16,6 +16,7 @@ fgdb.rb (1.0.104) UNRELEASED; urgency=low
   * Remove now unused betternestedset plugin
   * Implement footnotes on the ongoing schedule as well (with generating
     and copying support)
+    - Show vacations in the footnotes
   * Add support for job and worker conditions to the type totals staff
     report
   * Add support for tracking recycling shipments in the database
