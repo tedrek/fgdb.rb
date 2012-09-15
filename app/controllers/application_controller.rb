@@ -137,9 +137,8 @@ class ApplicationController < ActionController::Base
 
       weekdays = {}
       Weekday.find(:all).each{|w|
-        weekdays[w.id] = Shift.find(:all, :conditions => ["shift_date IS NULL AND (ineffective_date IS NULL OR ineffective_date >= ?) AND (training = 'f' OR training IS NULL) AND job_id IN (?) AND weekday_id = ? AND schedule_id = ?", Date.today.to_s, [x.id], w.id, Schedule.reference_from.id]).map{|y| [y.start_time, y.end_time]}
+        weekdays[w.id] = Shift.find(:all, :conditions => ["shift_date IS NULL AND (ineffective_date IS NULL OR ineffective_date >= ?) AND (training = 'f' OR training IS NULL) AND job_id IN (?) AND weekday_id = ? AND schedule_id = ?", Date.today.to_s, [x.id], w.id, Schedule.reference_from ? Schedule.reference_from.id : -1]).map{|y| [y.start_time, y.end_time]}
       }
-      
       @all_dates.each{|d|
         @shift_gap_hash[x.id][d] = weekdays[mode == "ws" ? d.wday : d].dup
         @shift_gap_found_hash[x.id][d] = []
