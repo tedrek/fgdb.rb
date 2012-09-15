@@ -2,7 +2,8 @@ class VolunteerEventsController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['admin_skedjul']}
+    a << {:privileges => ['admin_skedjul'], :except => ['display']}
+    a << {:privileges => ['schedule_volunteers'], :only => ['display']}
     a
   end
   public
