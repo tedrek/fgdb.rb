@@ -18,6 +18,7 @@ class Schedule < ActiveRecord::Base
     newsched = self.clone
     newsched.name = newname
     newsched.generate_from = false
+    newsched.reference_from = false
     newsched.save!
     self.standard_shifts.each do |x|
       y = x.clone
