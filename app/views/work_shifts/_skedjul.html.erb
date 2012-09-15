@@ -120,7 +120,9 @@ end %>
   end
 %>
 <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.current, :thing_end_time), :new => skedj.get_method_value(skedj.current, :block_end_time) } %>
+<% if skedj.current %>
 <%= render :partial => 'work_shifts/table_footer', :locals => { :current_date => current_date, :skedj => skedj, :last_date => skedj.get_method_value(skedj.current, :block_method_name) } %>
+<% end %>
 
 <% begin
 next_date = Date.parse(skedj.conditions.send(skedj.opts[:date_range_condition].to_s+"_end_date"))
