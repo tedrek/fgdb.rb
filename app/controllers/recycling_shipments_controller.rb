@@ -20,10 +20,6 @@ class RecyclingShipmentsController < ApplicationController
     render :action => "index"
   end
 
-  def show
-    @recycling_shipment = RecyclingShipment.find(params[:id])
-  end
-
   def new
     @recycling_shipment = RecyclingShipment.new
   end
@@ -37,7 +33,7 @@ class RecyclingShipmentsController < ApplicationController
 
     if @recycling_shipment.save
       flash[:notice] = 'RecyclingShipment was successfully created.'
-      redirect_to({:action => "show", :id => @recycling_shipment.id})
+      redirect_to({:action => "index"})
     else
       render :action => "new"
     end
@@ -48,7 +44,7 @@ class RecyclingShipmentsController < ApplicationController
 
     if @recycling_shipment.update_attributes(params[:recycling_shipment])
       flash[:notice] = 'RecyclingShipment was successfully updated.'
-      redirect_to({:action => "show", :id => @recycling_shipment.id})
+      redirect_to({:action => "index"})
     else
       render :action => "edit"
     end
