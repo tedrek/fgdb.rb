@@ -14,7 +14,8 @@
 
 <p><%= h @donation.comments %></p>
 <hr />
-<p class="footer longfooter" style="page-break-after: always;">
+<div style="page-break-after: always;">
+<p class="footer longfooter">
 <% if rt == 'receipt' %>
 We affirm that no goods or services were provided in return for the contribution amounts listed above (required fees excepted).<br/><br/>
 Retain this receipt for your taxes.
@@ -28,7 +29,22 @@ Please return a copy of this invoice with payment.
 <% end %>
 <% end %>
 </div>
+        <% if params[:controller] == 'donations' && @donation.created_at.to_date == Date.today && (rt == 'receipt') %>
+<br />
+<fieldset style="border-color: 000000;">
+Show this coupon to save 10% in the Free Geek Thrift Store, located next door.<br /><br />
+<b>Coupon valid today only: <%= @donation.created_at.to_date.strftime("%D") %></b><br /><br />
+
+<span style="font-size: small;">
+This is one small way we'd like to say <b>THANK YOU</b> for donating your
+used equipment. Your financial and equipment donations help us teach
+thousands in our community valuable work skills while diverting
+e-waste from our landfills.
+</span>
+</fieldset>
+        <% end %>
 </p>
+</div>
 </div>
 <% end %>
 <%= render :partial => 'transaction/receipt_footer' %>

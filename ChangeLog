@@ -19,8 +19,9 @@ fgdb.rb (1.0.104) UNRELEASED; urgency=low
   * Add support for job and worker conditions to the type totals staff
     report
   * Add support for tracking recycling shipments in the database
+  * Add a 10% coupon to the donation receipts (Closes: 30671)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 14 Sep 2012 17:31:44 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Sep 2012 08:22:14 -0700
 
 fgdb.rb (1.0.103) released; urgency=low
 
