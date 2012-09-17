@@ -1,6 +1,8 @@
 <h2><%= @volunteer_event.description %> Student List</h2>
 
-<INPUT type="button" id="print_button" value="Print" onclick="window.print();" >
+<div class="noprint">
+  <INPUT type="button" id="print_button" value="Print" onclick="window.print();" >
+</div>
 
 Date: <%= @volunteer_event.date %><br />
 Notes: <%= @volunteer_event.notes %><br />
