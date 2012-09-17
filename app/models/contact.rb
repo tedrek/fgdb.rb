@@ -311,7 +311,7 @@ class Contact < ActiveRecord::Base
   end
 
   def points_traded_since_last_adoption(type, trade_id = nil)
-    find_volunteer_tasks(date_of_last_adoption, PointsTrade, type, "created_at").delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|
+    find_volunteer_tasks(date_of_last_adoption + 1, PointsTrade, type, "created_at").delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|
       t += r.points
     end
   end
