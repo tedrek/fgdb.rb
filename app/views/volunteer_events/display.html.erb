@@ -1,5 +1,7 @@
 <h2><%= @volunteer_event.description %> Student List</h2>
 
+<INPUT type="button" id="print_button" value="Print" onclick="window.print();" >
+
 Date: <%= @volunteer_event.date %><br />
 Notes: <%= @volunteer_event.notes %><br />
 <% @volunteer_event.resources_volunteer_events.each do |x| %>
