@@ -1,7 +1,8 @@
 fgdb.rb (1.0.105) UNRELEASED; urgency=low
 
+  * Add a list of jobs to the hours logging interface (Closes: #30614)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Sep 2012 08:42:03 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 16 Sep 2012 21:06:22 -0700
 
 fgdb.rb (1.0.104) released; urgency=low
 

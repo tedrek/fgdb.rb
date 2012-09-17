@@ -26,6 +26,8 @@
 <% end %>
 
 <% if @worker and @session_allowed %>
+<% jobs = Job.workable.logable.effective_on(@date) %>
+<% jobs = (jobs + @shifts.map(&:job)).uniq %>
 
 <%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.contact_id.to_json};" %>
 <% PayPeriod.find_for_date(@date) or raise "FIXME" %>
@@ -51,6 +53,16 @@ You are modifying hours for this day, but still need to save these hours.
 <pre style="background: peachpuff">
 Use "add break" below to insert a paid break, which should typically be 15 minutes long, during a shift. This is not for unpaid meal breaks.
 </pre>
+
+<div style="clear: right; float: right;">
+<h2>Job List</h2>
+<ul>
+<% jobs.each do |job| %>
+<li><%= job.name %>: <%= job.description %></li>
+<% end %>
+</ul>
+</div>
+
 <div style="max-width: 400px;">
 <% break_job = Job.find_by_name("Paid Break") %>
 <%= javascript_tag "paid_break_job_id = #{break_job.id.to_json}" if !break_job.nil? %>
@@ -75,8 +87,6 @@ Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_secon
 </div>
 
 <% interface = OH.new %>
-<% jobs = Job.workable.logable.effective_on(@date) %>
-<% jobs = (jobs + @shifts.map(&:job)).uniq %>
 <% interface[:job] = '<select onchange="set_offsite_from_job_default();" id="job_id">' + options_from_collection_for_select([Job.new(:name => ""),  jobs.sort_by(&:name)].flatten, "id", "name") + '</select>' %>
 <% interface[:offsite] = '<input type="checkbox" name="offsite" id="offsite" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
 <% interface[:duration] = '<input name="duration" id="duration" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
