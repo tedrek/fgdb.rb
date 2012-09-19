@@ -321,6 +321,10 @@ GROUP BY 1,2;")
   end
 
   def save
+    if !params[:worked_shift]
+      redirect_to :action => "index"
+      return
+    end
 #    @logged_already = true
 #    @shifts = process_shifts(params[:shifts])
 #    render :action => "edit"
