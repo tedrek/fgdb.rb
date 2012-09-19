@@ -9,7 +9,7 @@
 
 <% for recycling_shipment in @recycling_shipments %>
   <tr>
-    <td><%=h recycling_shipment.contact_id %></td>
+    <td><%=h recycling_shipment.contact.display_name %></td>
     <td><%=h recycling_shipment.bill_of_lading %></td>
     <td><%=h recycling_shipment.received_at %></td>
     <td><%=h recycling_shipment.resolved_at %></td>
