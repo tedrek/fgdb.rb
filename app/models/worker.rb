@@ -233,7 +233,7 @@ class Worker < ActiveRecord::Base
     (pay_period.start_date..pay_period.end_date).to_a.select{|x| x.wday == 0}.each{|endit|
       startit = endit - 6
       weeks += 1
-      h[:holiday] += (holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", startit, endit]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)})
+      h[:holiday] += (holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't' AND schedule_id = ?", startit, endit, Schedule.generate_from ? Schedule.generate_from.id : -1]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)})
       h[:hours] += (logged = (startit..endit).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)})
       total = holidays + logged
       h[:overtime] += total - self.ceiling_hours if total > self.ceiling_hours
