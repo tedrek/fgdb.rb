@@ -21,7 +21,7 @@ class MeetingsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @meetings = Meeting.paginate :order => 'shift_date DESC, weekday_id', :conditions => ["(shift_date IS NULL OR shift_date >= ?) AND (ineffective_date IS NULL OR ineffective_date >= ?)", Date.today, Date.today], :per_page => 30, :page => params[:page]
+    @meetings = Meeting.paginate :order => 'shift_date DESC, weekday_id', :conditions => ["(shift_date IS NULL OR shift_date >= ?) AND (ineffective_date IS NULL OR ineffective_date >= ?) AND schedule_id = ?", Date.today, Date.today, Schedule.generate_from ? Schedule.generate_from.id : -1], :per_page => 30, :page => params[:page]
   end
 
   def full_list
