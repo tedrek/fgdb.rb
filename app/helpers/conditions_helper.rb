@@ -194,7 +194,7 @@ module ConditionsHelper
   end
 
   def html_for_disbursement_type_id_condition(params_key)
-    select(params_key, 'disbursement_type_id', DisbursementType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]})
+    select(params_key, 'disbursement_type_id', DisbursementType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}, {}, _multi_html_opts)
   end
 
   def html_for_store_credit_id_condition(params_key)

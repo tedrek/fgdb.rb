@@ -157,7 +157,7 @@ class Conditions < ConditionsBase
     validate_exists('gizmo_category_id') if validate_integer('gizmo_category_id')
     validate_exists('system_id') if validate_integer('system', 'system_id')
     validate_exists('contract_id') if validate_integer('contract', 'contract_id')
-    validate_exists('disbursement_type_id') if validate_integer('disbursement_type_id')
+    validate_exists('disbursement_type_id') if parse_and_validate_list('disbursement_type_id')
     validate_exists('contract_id') if validate_integer('contract', 'contract_id')
     validate_exists('payment_method_id') if validate_integer('payment_method', 'payment_method_id')
     validate_exists('attendance_type_id') if validate_integer('attendance_type', 'attendance_type_id')
@@ -862,7 +862,7 @@ class Conditions < ConditionsBase
 
   def disbursement_type_id_conditions(klass)
     klass = Disbursement if klass == GizmoEvent
-    return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id.to_i]
+    return ["#{klass.table_name}.disbursement_type_id IN (?)", disbursement_type_id]
   end
 
   def store_credit_id_conditions(klass)

@@ -1339,7 +1339,7 @@ class NumberOfSystemsDisbursedByCity < TrendReport
       "Gizmo"
     end
     def title
-      "All system disbursements by postal code's city"
+      "All system disbursements by city containing postal code"
     end
     def valid_conditions
       ["disbursement_type_id"]
@@ -1349,4 +1349,39 @@ class NumberOfSystemsDisbursedByCity < TrendReport
       Hash.new("integer")
     end
 end
-""
+
+class NumberOfGizmosDisbursedByTypeAndCity < TrendReport
+  def get_for_timerange(args)
+    where_clause = sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))
+    ret = {}
+    res = DB.execute("SELECT SUM( gizmo_count ) AS count,
+disbursement_types.description AS desc,
+COALESCE(postal_codes.city, 'Other') AS city_group
+FROM gizmo_events
+INNER JOIN disbursements ON gizmo_events.disbursement_id = disbursements.id
+INNER JOIN disbursement_types ON disbursements.disbursement_type_id = disbursement_types.id
+INNER JOIN contacts ON disbursements.contact_id = contacts.id
+INNER JOIN gizmo_types ON gizmo_type_id = gizmo_types.id
+INNER JOIN gizmo_categories ON gizmo_category_id = gizmo_categories.id
+LEFT OUTER JOIN postal_codes ON postal_codes.postal_code = split_part(contacts.postal_code, '-', 1)
+WHERE #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}
+GROUP BY 2, 3;")
+    res.each{|x|
+      ret[x["desc"] + ", " + x["city_group"]] = x["count"]
+    }
+    return ret
+  end
+    def category
+      "Gizmo"
+    end
+    def title
+      "All gizmo disbursements by type and city containing postal code"
+    end
+    def default_table_data_types
+      Hash.new("integer")
+    end
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id", "disbursement_type_id"]
+    end
+end
+
