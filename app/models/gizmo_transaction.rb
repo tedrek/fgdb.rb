@@ -227,10 +227,16 @@ module GizmoTransaction
 
   def editable_explaination
     str = ""
+    part2 = ""
+    if self.class != Donation
+      part2 = "store credit has already been spent"
+    else
+      part2 = "invoice has been resolved"
+    end
     if ! self.editable?
-      str = "This #{self.hooman_class_name} is not editable because its associated store credit has already been spent"
+      str = "This #{self.hooman_class_name} is not editable because its associated #{part2}"
     elsif self.has_some_uneditable
-      str = "Some pieces of this #{self.hooman_class_name} are not editable because their associated store credit has already been spent"
+      str = "Some pieces of this #{self.hooman_class_name} are not editable because their associated #{part2}"
     end
     return str
   end
