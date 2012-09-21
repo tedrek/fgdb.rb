@@ -17,6 +17,6 @@
 <%= time_select 'vacation', 'end_time', {:minute_step => 15}  %></p>
 
 <p><label for="vacation_worker_id">Worker</label><br/>
-<%= select("vacation", "worker_id", Worker.on_or_after_date(Date.today).collect {|c| [c.name, c.id] }.sort_by(&:first)) %></p>
+<%= select("vacation", "worker_id", Worker.on_or_after_date(Date.today).collect {|c| [c.name, c.id] }.sort_by(&:first), {}, {:onkeyup => "magic_onkeyscroll(event);"}) %></p>
 <!--[eoform:vacation]-->
 

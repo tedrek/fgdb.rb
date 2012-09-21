@@ -26,6 +26,7 @@ fgdb.rb (1.0.104) released; urgency=low
   * Add new NumberOfGizmosDisbursedByTypeAndCity trend report (Closes:
     #30975)
   * Add a volunteer task type for facilities (Closes: #30955)
+  * Add some magic to auto scroll a select option to the top
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Sep 2012 08:41:21 -0700
 

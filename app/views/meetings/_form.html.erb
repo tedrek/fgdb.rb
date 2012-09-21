@@ -43,7 +43,7 @@
 <%= calendar_box 'meeting', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><label for="meeting_job_id">Job</label><br/>
-<%= select("meeting", "job_id", [["(No Job)", nil]] + Job.workable.effective_on(Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }) %></p>
+<%= select("meeting", "job_id", [["(No Job)", nil]] + Job.workable.effective_on(Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }, {}, {:onkeyup => "magic_onkeyscroll(event);"}) %></p>
 
 <p><label for="workers">Workers:</label><br/>
 <ul>
