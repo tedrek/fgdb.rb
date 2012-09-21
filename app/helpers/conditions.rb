@@ -1008,7 +1008,7 @@ class Conditions < ConditionsBase
         if style == "before"
           res = (meo.humanize + ": " + v.to_s)
         else
-          if meo.include?(['volunteered_hours_in_days', 'volunteered_non_court_hours_in_days'])
+          if ['volunteered_hours_in_days', 'volunteered_non_court_hours_in_days'].include?(meo)
             res = v.to_s
           else
             res = (v.to_s + " (" + meo.humanize + ")")
