@@ -116,6 +116,13 @@ module ConditionsHelper
     text_field(params_key, 'volunteer_hours_days')
   end
 
+  def html_for_volunteered_non_court_hours_in_days_condition(params_key)
+    label(params_key, 'volunteer_non_court_hours_minimum', "Minimum number of non-court hours volunteered:") +
+    text_field(params_key, 'volunteer_non_court_hours_minimum') +
+    label(params_key, 'volunteer_non_court_hours_minimum', "Within number of days:") +
+    text_field(params_key, 'volunteer_non_court_hours_days')
+  end
+
   def html_for_id_condition(params_key)
     text_field(params_key, 'id')
   end
