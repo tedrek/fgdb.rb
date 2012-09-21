@@ -46,6 +46,7 @@ class ApplicationController < ActionController::Base
       @footnote = ShiftFootnote.find_or_create_by_weekday_id_and_schedule_id(@date, @schedule)
       @vacs = []
     else
+      @date = @date.to_date
       @vacs = Vacation.on_date(@date)
       @footnote = WorkShiftFootnote.find_or_create_by_date(@date)
     end
