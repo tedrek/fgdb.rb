@@ -1,0 +1,8 @@
+<% if vacs.length > 0 %>
+<h3>On Vacation:</h3>
+<ul>
+<% vacs.each do |x| %>
+<li><%= x.worker.name %></li>
+<% end %>
+</ul>
+<% end %>

@@ -27,6 +27,15 @@ fgdb.rb (1.0.104) released; urgency=low
     report
   * Add support for tracking recycling shipments in the database
   * Add a 10% coupon to the donation receipts (Closes: 30671)
+  * Fix the handling of holidays in the payroll report to not count
+    holidays multiple times (Closes: #30889)
+  * Add new NumberOfGizmosDisbursedByTypeAndCity trend report (Closes:
+    #30975)
+  * Add a volunteer task type for facilities (Closes: #30955)
+  * Add some magic to auto scroll a select option to the top
+  * Add a new condition called 'volunteered non court hours in days' for
+    finding volunteers who have at least X non-Court hours in X days
+    (Closes: #30953)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Sep 2012 08:41:21 -0700
 

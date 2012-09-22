@@ -28,7 +28,7 @@
 <% unless @shift.type == 'Unavailability' %>
 
 <p><label for="shift_job_id">Job</label><br/>
-<%= select("shift", "job_id", Job.workable.effective_on(@shift.shift_date || Date.today).collect {|c| [c.name, c.id] }.sort_by(&:first), {}, {:onchange => "set_offsite_from_job('shift_offsite', 'shift_job_id');"}) %></p>
+<%= select("shift", "job_id", Job.workable.effective_on(@shift.shift_date || Date.today).collect {|c| [c.name, c.id] }.sort_by(&:first), {}, {:onchange => "set_offsite_from_job('shift_offsite', 'shift_job_id');", :onkeyup => "magic_onkeyscroll(event);"}) %></p>
 
 <p><%= check_box "shift", "offsite" %>
 <label for="shift_training">Offsite</label></p>
@@ -36,7 +36,7 @@
 <% end %>
 
 <p><label for="shift_worker_id">Worker</label><br/>
-<%= select("shift", "worker_id", Worker.on_or_after_date(@shift.shift_date || Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }) %></p>
+<%= select("shift", "worker_id", Worker.on_or_after_date(@shift.shift_date || Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }, {}, {:onkeyup => "magic_onkeyscroll(event);"}) %></p>
 <p><label for="shift_weekday_id">Weekday</label><br/>
 <%= select("shift", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
 

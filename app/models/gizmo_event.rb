@@ -32,6 +32,11 @@ class GizmoEvent < ActiveRecord::Base
   before_save :set_storecredit_difference_cents, :if => :is_store_credit
   before_save :resolve_invoice, :if => :resolves_invoice?
   after_destroy :unresolve_invoice, :if => :resolves_invoice?
+  before_save :set_empty_description
+
+  def set_empty_description
+    self.description ||= ""
+  end
 
   def to_return_event(trans)
     # TODO: when doing for store credit, will need to set :unit_price_cents

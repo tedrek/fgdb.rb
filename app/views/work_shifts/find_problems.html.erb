@@ -65,7 +65,11 @@ none found
 <% end %>
 </ul>
 <h2>Gaps in Fully Covered Jobs</h2>
+<% if Schedule.reference_from %>
 Compared to reference schedule "<%= Schedule.reference_from.name %>".
+<% else %>
+<span style="color: red;">Error: There is no reference schedule to compare with, please choose one first on the schedules page linked below.</span>
+<% end %>
 <table class="awesome">
   <tr>
     <th>Fully Covered Jobs</th>

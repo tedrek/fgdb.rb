@@ -20,6 +20,7 @@ class Conditions < ConditionsBase
       updated_by cashier_updated_by is_pickup finalized gizmo_context_id
       logged_in_within signed_off_by payment_total organization_name
       model vendor result interface_type megabytes_size week unresolved_shipment
+      volunteered_non_court_hours_in_days
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -46,6 +47,7 @@ class Conditions < ConditionsBase
   attr_accessor :signed_off_by
 
   attr_accessor :volunteer_hours_days, :volunteer_hours_minimum
+  attr_accessor :volunteer_non_court_hours_days, :volunteer_non_court_hours_minimum
 
   attr_accessor :logged_in_within
 
@@ -157,7 +159,7 @@ class Conditions < ConditionsBase
     validate_exists('gizmo_category_id') if validate_integer('gizmo_category_id')
     validate_exists('system_id') if validate_integer('system', 'system_id')
     validate_exists('contract_id') if validate_integer('contract', 'contract_id')
-    validate_exists('disbursement_type_id') if validate_integer('disbursement_type_id')
+    validate_exists('disbursement_type_id') if parse_and_validate_list('disbursement_type_id')
     validate_exists('contract_id') if validate_integer('contract', 'contract_id')
     validate_exists('payment_method_id') if validate_integer('payment_method', 'payment_method_id')
     validate_exists('attendance_type_id') if validate_integer('attendance_type', 'attendance_type_id')
@@ -217,6 +219,8 @@ class Conditions < ConditionsBase
     validate_exists('signed_off_by', 'users') if validate_integer('signed_off_by')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_days')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', false, true)
+    validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_days')
+    validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_minimum', false, true)
     if is_this_condition_enabled('volunteer_hours')
       case @volunteer_hours_type
       when '>='
@@ -531,6 +535,10 @@ class Conditions < ConditionsBase
 
   def volunteered_hours_in_days_conditions(klass)
     ['contacts.id IN (SELECT contact_id FROM volunteer_tasks WHERE date_performed >= ? GROUP BY contact_id HAVING SUM(duration) >= ?)', Date.today - @volunteer_hours_days.to_i, @volunteer_hours_minimum.to_i]
+  end
+
+  def volunteered_non_court_hours_in_days_conditions(klass)
+    ['contacts.id IN (SELECT contact_id FROM volunteer_tasks LEFT OUTER JOIN community_service_types ON community_service_types.id = community_service_type_id WHERE date_performed >= ? GROUP BY contact_id HAVING SUM(duration * COALESCE(community_service_types.hours_multiplier, 1)) >= ?)', Date.today - @volunteer_non_court_hours_days.to_i, @volunteer_non_court_hours_minimum.to_i]
   end
 
   def contract_conditions(klass)
@@ -862,7 +870,7 @@ class Conditions < ConditionsBase
 
   def disbursement_type_id_conditions(klass)
     klass = Disbursement if klass == GizmoEvent
-    return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id.to_i]
+    return ["#{klass.table_name}.disbursement_type_id IN (?)", disbursement_type_id]
   end
 
   def store_credit_id_conditions(klass)
@@ -974,6 +982,8 @@ class Conditions < ConditionsBase
         v = self.send(me) == 1
       elsif me == 'volunteered_hours_in_days'
         v = "volunteering #{@volunteer_hours_minimum} hours in last #{@volunteer_hours_days} days"
+      elsif me == 'volunteered_non_court_hours_in_days'
+        v = "volunteering #{@volunteer_hours_minimum} non-court hours in last #{@volunteer_hours_days} days"
       elsif meo == 'contact' or meo == 'worker' or meo == 'contact_type' or !mea.include?(me) or meo.match(/_id/)
         ome = me.dup
         me += "_id" unless me.match(/_id/)
@@ -998,7 +1008,7 @@ class Conditions < ConditionsBase
         if style == "before"
           res = (meo.humanize + ": " + v.to_s)
         else
-          if meo == 'volunteered_hours_in_days'
+          if ['volunteered_hours_in_days', 'volunteered_non_court_hours_in_days'].include?(meo)
             res = v.to_s
           else
             res = (v.to_s + " (" + meo.humanize + ")")

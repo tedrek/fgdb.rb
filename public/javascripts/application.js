@@ -1,6 +1,18 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function magic_onkeyscroll(event) {
+  var target = event.target;
+  if(event.ctrlKey)
+    return;
+  var s = target.selectedIndex;
+  var o = s;
+  while(s + 1 < target.length && target.options[s + 1].text[0] == target.options[o].text[0])
+    s = s + 1;
+  target.value = target.options[s].value;
+  target.value = target.options[o].value;
+}
+
 function update_calculated_price(form) {
   var str = form.serialize();
   new Ajax.Request(update_calc_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(calculated_price_loading_id);}});

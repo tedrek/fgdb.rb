@@ -32,7 +32,7 @@ module ConditionsHelper
   end
 
   def html_for_schedule_condition(params_key)
-    (select params_key, :schedule_id, Schedule.find(:all, :order => "name").collect {|c| [c.full_name, c.id] })
+    (select params_key, :schedule_id, Schedule.find(:all, :order => "generate_from != 't', name").collect {|c| [c.full_name, c.id] })
   end
 
   attr_accessor :multi_enabled
@@ -44,7 +44,7 @@ module ConditionsHelper
     else
       workers = Worker.find(:all).select{|x| show_all or x.effective_now?}
     end
-    select(params_key, "worker_id", workers.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts)
+    select(params_key, "worker_id", workers.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts.merge(:onkeyup => "magic_onkeyscroll(event);"))
   end
 
   def _multi_html_opts
@@ -62,7 +62,7 @@ module ConditionsHelper
         jobs = Job.effective_on(Date.today)
       end
     end
-    select(params_key, "job_id", jobs.sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts)
+    select(params_key, "job_id", jobs.sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts.merge(:onkeyup => "magic_onkeyscroll(event);"))
   end
 
   def html_for_attendance_type_condition(params_key)
@@ -114,6 +114,13 @@ module ConditionsHelper
     text_field(params_key, 'volunteer_hours_minimum') +
     label(params_key, 'volunteer_hours_minimum', "Within number of days:") +
     text_field(params_key, 'volunteer_hours_days')
+  end
+
+  def html_for_volunteered_non_court_hours_in_days_condition(params_key)
+    label(params_key, 'volunteer_non_court_hours_minimum', "Minimum number of non-court hours volunteered:") +
+    text_field(params_key, 'volunteer_non_court_hours_minimum') +
+    label(params_key, 'volunteer_non_court_hours_minimum', "Within number of days:") +
+    text_field(params_key, 'volunteer_non_court_hours_days')
   end
 
   def html_for_id_condition(params_key)
@@ -194,7 +201,7 @@ module ConditionsHelper
   end
 
   def html_for_disbursement_type_id_condition(params_key)
-    select(params_key, 'disbursement_type_id', DisbursementType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]})
+    select(params_key, 'disbursement_type_id', DisbursementType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}, {}, _multi_html_opts)
   end
 
   def html_for_store_credit_id_condition(params_key)

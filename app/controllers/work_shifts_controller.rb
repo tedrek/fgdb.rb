@@ -8,7 +8,7 @@ class WorkShiftsController < ApplicationController
   end
 
   def perpetual_meetings
-    @meetings = Meeting.perpetual.effective_in_range(Date.today, Date.today + 30)
+    @meetings = Meeting.perpetual.effective_in_range(Date.today, Date.today + 30).generated
   end
 
   protected
