@@ -10,13 +10,13 @@ class RecyclingShipmentsController < ApplicationController
   def index
     @conditions = Conditions.new
     @conditions.unresolved_shipment_enabled = true
-    @recycling_shipments = RecyclingShipment.paginate(:page => params[:page], :conditions => @conditions.conditions(RecyclingShipment), :order => "created_at ASC", :per_page => 50)
+    @recycling_shipments = RecyclingShipment.paginate(:page => params[:page], :conditions => @conditions.conditions(RecyclingShipment), :order => "contacts.sort_name, received_at ASC", :per_page => 50, :include => [:contact])
   end
 
   def search
     @conditions = Conditions.new
     @conditions.apply_conditions(params[:conditions])
-    @recycling_shipments = RecyclingShipment.paginate(:page => params[:page], :conditions => @conditions.conditions(RecyclingShipment), :order => "created_at ASC", :per_page => 50)
+    @recycling_shipments = RecyclingShipment.paginate(:page => params[:page], :conditions => @conditions.conditions(RecyclingShipment), :order => "contacts.sort_name, received_at ASC", :per_page => 50, :include => [:contact])
     render :action => "index"
   end
 
