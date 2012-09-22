@@ -38,7 +38,7 @@
               <% @txn.contact.contact_methods.select{|x| x.contact_method_type.name.match(/email/)}.each do |x| %>
                 <div class='form-element'>
                   <% hash["contact_method_#{x.id}"] = x.value %>
-                  <%= radio_button_tag('address_choice', "contact_method_#{x.id}", false, {:class => "address_choices", :onchange => "check_contact_subscribed(get_chosen_address());"}) %><%= x.contact_method_type.description %><%= x.ok ? "" : " (not usable)" %>: <%= h x.value %><br />
+                  <%= radio_button_tag('address_choice', x.value, false, {:class => "address_choices", :onchange => "check_contact_subscribed(get_chosen_address());"}) %><%= x.contact_method_type.description %><%= x.ok ? "" : " (not usable)" %>: <%= h x.value %><br />
                 </div>
               <% end %>
             <div class='form-element'>

@@ -333,10 +333,13 @@ class TransactionController < ApplicationController
     type = @txn.invoiced? ? "invoice" : "receipt"
     filename = "donation_#{type}_#{params[:id]}.pdf"
     address = nil
-    if params[:address_choice] == 'other'
+    if params[:address_choice].nil?
+      redirect_to :action => "receipt", :id => params[:id]
+      return
+    elsif params[:address_choice] == 'other'
       address = params[:address]
     else
-      address = ContactMethod.find_by_id(params[:address_choice].sub(/contact_method_/, '')).value
+      address = params[:address_choice]
     end
     if address.match(/\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i)
       if params[:address_choice] == 'other'&& params[:save]
