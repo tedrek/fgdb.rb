@@ -57,7 +57,7 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 <div style="clear: right; float: right;">
 <h2>Job List</h2>
 <ul>
-<% jobs.each do |job| %>
+<% jobs.sort_by(&:name).each do |job| %>
 <li><%= job.name %>: <%= job.description %></li>
 <% end %>
 </ul>
