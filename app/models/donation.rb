@@ -195,14 +195,17 @@ class Donation < ActiveRecord::Base
       }
       self.connection.execute(
                               "SELECT payments.payment_method_id,
-                sum(payments.amount_cents) as amount,
-                sum(donations.reported_required_fee_cents) as required,
+                sum(payments.amount_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as amount,
+                sum(donations.reported_required_fee_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as required,
                 sum(donations.reported_suggested_fee_cents) as suggested,
                 count(*),
                 min(donations.id),
                 max(donations.id)
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types ON gizmo_types.name = 'invoice_resolved'
+         LEFT OUTER JOIN gizmo_events ON gizmo_events.gizmo_type_id = gizmo_types.id
+                                      AND gizmo_events.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          GROUP BY payments.payment_method_id"
@@ -212,9 +215,12 @@ class Donation < ActiveRecord::Base
         total_data[summation['payment_method_id'].to_i] = d
       }
        self.connection.execute("SELECT payments.payment_method_id,
-                sum(payments.amount_cents) as amount
+                sum(payments.amount_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as amount
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types ON gizmo_types.name = 'invoice_resolved'
+         LEFT OUTER JOIN gizmo_events ON gizmo_events.gizmo_type_id = gizmo_types.id
+                                      AND gizmo_events.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          AND (SELECT count(*) FROM gizmo_events WHERE gizmo_events.donation_id = donations.id) = 0
@@ -228,24 +234,36 @@ class Donation < ActiveRecord::Base
       }
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
+        required_as_invoice = donation.gizmo_events.select{|x| x.gizmo_type.name == 'invoice_resolved'}.inject(0){|t, x| t += x.unit_price_cents}
+        required_to_be_paid -= required_as_invoice
         donation.payments.sort_by(&:payment_method_id).each {|payment|
           #total paid
+          amount = payment.amount_cents
+          if required_as_invoice > 0
+            if required_as_invoice > amount
+              required_as_invoice -= amount
+              amount = 0
+            else
+              amount -= required_as_invoice
+              required_as_invoice = 0
+            end
+          end
           total_data[payment.payment_method_id]['count'] += 1
-          total_data[payment.payment_method_id]['amount'] += payment.amount_cents
+          total_data[payment.payment_method_id]['amount'] += amount
           if donation.gizmo_events.length > 0
             if required_to_be_paid > 0
-              if required_to_be_paid > payment.amount_cents
-                total_data[payment.payment_method_id]['required'] += payment.amount_cents
+              if required_to_be_paid > amount
+                total_data[payment.payment_method_id]['required'] += amount
               else
                 total_data[payment.payment_method_id]['required'] += required_to_be_paid
-                total_data[payment.payment_method_id]['suggested'] += (payment.amount_cents - required_to_be_paid)
+                total_data[payment.payment_method_id]['suggested'] += (amount - required_to_be_paid)
               end
-              required_to_be_paid -= payment.amount_cents
+              required_to_be_paid -= amount
             else
-              total_data[payment.payment_method_id]['suggested'] += payment.amount_cents
+              total_data[payment.payment_method_id]['suggested'] += amount
             end
           else
-            total_data[payment.payment_method_id]['gizmoless_cents'] += payment.amount_cents
+            total_data[payment.payment_method_id]['gizmoless_cents'] += amount
           end
 
           total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'],
