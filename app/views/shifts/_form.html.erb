@@ -22,9 +22,6 @@
 <p><label for="shift_next_cycle_date">Repeat next cycle on date (to generate every other week)</label><br/>
 <%= calendar_box 'shift', 'next_cycle_date' %></p>
 
-<p><label for="shift_coverage_type_id">Coverage Type</label><br/>
-<%= select("shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
-
 <% unless @shift.type == 'Unavailability' %>
 
 <p><label for="shift_job_id">Job</label><br/>

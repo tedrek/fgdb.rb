@@ -131,7 +131,7 @@ class ShiftsController < ApplicationController
 
       }, params)
 
-    @skedj.find({:include => [:weekday, :job, :worker, :coverage_type, :schedule]})
+    @skedj.find({:include => [:weekday, :job, :worker, :schedule]})
   end
 
   def generate

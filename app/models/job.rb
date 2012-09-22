@@ -1,7 +1,6 @@
 class Job < ActiveRecord::Base
   has_many :standard_shifts
   has_many :work_shifts
-  belongs_to :coverage_type
   belongs_to :program
   belongs_to :wc_category
   belongs_to :income_stream

@@ -122,7 +122,7 @@ class ApplicationController < ActionController::Base
     zopts << schedule_id if schedule_id
     @unassigned = DB.exec(DB.prepare_sql("SELECT w1.#{column} AS date,COALESCE(job1.name,w1.meeting_name,w1.#{mode == "ws" ? "kind" : "type"}) || case training when 't' then ' (Training)' else '' end AS job FROM #{klass.table_name} AS w1 LEFT JOIN jobs AS job1 ON job1.id = w1.job_id WHERE #{klass == Shift ? "type NOT LIKE 'Meeting' AND" : ""} w1.worker_id = 0 #{mode == "ws" ? "" : " AND w1.shift_date IS NULL  AND (w1.ineffective_date IS NULL OR w1.ineffective_date >= '" + Date.today.to_s + "')"} AND w1.#{column} >= ? AND w1.#{column} <= ? #{schedule_id ? " AND w1.schedule_id = ?" : ""} ORDER BY 1,2;", *zopts)).to_a
     @all_dates = (dates.first..dates.last).to_a.select{|x| Weekday.find_by_id(mode == "ws" ? x.wday : x).is_open}
-    @jobs = Job.find_all_by_coverage_type_id(CoverageType.find_by_name("full").id)
+    @jobs = Job.find_all_by_fully_covered(true)
     copts = [@jobs.map{|x| x.id}, @start_date, @end_date]
     copts << schedule_id if schedule_id
     all_shifts = klass.find(:all, :conditions => ["#{mode == "ws" ? "" : " shift_date IS NULL AND (ineffective_date IS NULL OR ineffective_date >= '" + Date.today.to_s + "') AND "} (training = 'f' OR training IS NULL) AND job_id IN (?) AND #{column} >= ? AND #{column} <= ? #{schedule_id ? ' AND schedule_id = ?' : ''}", *copts])
@@ -525,7 +525,7 @@ class ApplicationController < ActionController::Base
   end
 
   def fix_null_date
-    return if !([:volunteer_default_shifts, :volunteer_shifts, :coverage_types, :customizations, :holidays, :jobs, :meetings, :rr_items, :rr_sets, :schedules, :shifts, :standard_shifts, :unavailabilities, :vacations, :weekdays, :workers, :worker_types, :work_shifts].map{|x| x.to_s}.include?(params[:controller]) && ["update","create"].include?(params[:action]))
+    return if !([:volunteer_default_shifts, :volunteer_shifts, :customizations, :holidays, :jobs, :meetings, :rr_items, :rr_sets, :schedules, :shifts, :standard_shifts, :unavailabilities, :vacations, :weekdays, :workers, :worker_types, :work_shifts].map{|x| x.to_s}.include?(params[:controller]) && ["update","create"].include?(params[:action]))
     # fields to check. these are date fields that allow NULL
     # values in the database. the dhtml-calendar plugin passes an
     # empty string when the date is left blank, this turns into

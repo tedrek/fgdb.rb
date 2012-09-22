@@ -5,7 +5,6 @@ class Meeting < Shift
   belongs_to :worker
   belongs_to :weekday
   belongs_to :schedule
-  belongs_to :coverage_type
   has_many :meeting_minders
 
   named_scope :perpetual, :conditions => ['shift_date IS NULL']

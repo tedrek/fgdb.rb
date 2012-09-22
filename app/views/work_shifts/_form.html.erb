@@ -16,10 +16,6 @@
 <p><label for="work_shift_end_time">End time</label><br/>
 <%= time_select 'work_shift', 'end_time', {:minute_step => 15}  %></p>
 
-
-<p><label for="work_shift_coverage_type_id">Coverage Type</label><br/>
-<%= select("work_shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
-
 <% unless @work_shift.kind == 'Unavailability' %>
 
 <p><label for="work_shift_job_id">Job</label><br/>

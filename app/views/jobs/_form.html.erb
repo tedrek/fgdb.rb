@@ -19,8 +19,8 @@
 <p><label for="job_ineffective_on">Ineffective Starting (empty for forever)</label><br/>
 <%= calendar_box 'job', 'ineffective_on'  %></p>
 
-<p><label for="job_coverage_type_id">Coverage Type</label><br/>
-<%= select("job", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+<p><label for="job_fully_covered">Fully Covered</label><br/>
+<%= check_box("job", "fully_covered") %></p>
 
 <p><label for="job_wc_category_id">Workers Comp Category</label><br/>
 <%= select("job", "wc_category_id", WcCategory.find(:all).collect {|c| [c.description, c.id] }, :include_blank => true) %></p>

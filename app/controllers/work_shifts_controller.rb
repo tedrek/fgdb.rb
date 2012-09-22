@@ -125,7 +125,7 @@ class WorkShiftsController < ApplicationController
 
       }, params)
 
-    @skedj.find({:include => [:job, :coverage_type, :worker, :weekday]})
+    @skedj.find({:include => [:job, :worker, :weekday]})
   end
 
   def absent

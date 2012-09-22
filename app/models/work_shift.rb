@@ -1,8 +1,7 @@
 class WorkShift < ActiveRecord::Base
   acts_as_userstamp
 
-  belongs_to :coverage_type
-  belongs_to :job, :include => [:coverage_type]
+  belongs_to :job
   belongs_to :meeting
   belongs_to :schedule
   belongs_to :standard_shift
@@ -58,34 +57,10 @@ class WorkShift < ActiveRecord::Base
     elsif self.worker_id == 0
       shift_style = 'unfilled'
     elsif overlap
-        # can't seem to get this part quite right
-        # i expect a stupid syntax error
-        # what should happen:
-        # two overlapping anchored shifts should result 
-        #   in hardconflict
-        # two overlapping shifts where only one is anchored 
-        #   should result in mediumconflict
-        # other overlapping shifts should result in 
-        #   softconflict
-        # can't figure out if a shift is anchored?
-        #   pretend it is anchored
-        if (last.coverage_type ? last.coverage_type.name : 'anchored') == 'anchored'
-          if not self.coverage_type
-            shift_style = 'hardconflict'
-          elsif self.coverage_type.name == 'anchored'
-            shift_style = 'hardconflict'
-          else
-            shift_style = 'mediumconflict'
-          end
-        elsif self.coverage_type && self.coverage_type.name == 'anchored'
-          shift_style = 'mediumconflict'
-        else
-          shift_style = 'softconflict'
-        end
-        # end of problem code
-      else
-        shift_style = self.proposed ? 'proposed' : self.training ? 'training' : 'shift'
-      end
+      shift_style = 'hardconflict'
+    else
+      shift_style = self.proposed ? 'proposed' : self.training ? 'training' : 'shift'
+    end
     return shift_style
   end
 
@@ -138,7 +113,6 @@ class WorkShift < ActiveRecord::Base
     ret.all_day = shift.all_day
     ret.repeats_every = shift.repeats_every
     ret.repeats_on = shift.repeats_on
-    ret.coverage_type_id = shift.coverage_type_id
     ret.job_id = shift.job_id
     ret.meeting_id = shift.meeting_id
     ret.schedule_id = shift.schedule_id
@@ -158,7 +132,6 @@ class WorkShift < ActiveRecord::Base
     ret.worker_id = shift.worker_id
     ret.training = shift.training
     ret.offsite = shift.offsite
-    #ret.coverage_type_id = shift.coverage_type_id
     ret.job_id = shift.job_id
     ret.schedule_id = shift.schedule_id
     #ret.standard_shift_id = shift.id
@@ -171,14 +144,13 @@ class WorkShift < ActiveRecord::Base
     ret = WorkShift.new
     ret.actual = true
     ret.kind = 'Meeting'
-    ret.meeting_id = shift.id 
+    ret.meeting_id = shift.id
     ret.shift_date = date
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
     ret.effective_date = shift.effective_date
     ret.ineffective_date = shift.ineffective_date
     ret.worker_id = worker.id
-    #ret.coverage_type_id = shift.coverage_type_id
     ret.schedule_id = shift.schedule_id
     ret.weekday_id = shift.weekday_id
     ret.meeting_name = shift.meeting_name
@@ -194,7 +166,6 @@ class WorkShift < ActiveRecord::Base
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
     ret.worker_id = shift.worker_id
-    #ret.coverage_type_id = shift.coverage_type_id
     ret.weekday_id = shift.weekday_id
     ret
   end

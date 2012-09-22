@@ -1,8 +1,10 @@
 fgdb.rb (1.0.105) UNRELEASED; urgency=low
 
   * Add a list of jobs to the hours logging interface (Closes: #30614)
+  * Replace coverage types with a fully covered boolean, treating all
+    conflicts as hard
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 16 Sep 2012 21:06:22 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Sep 2012 13:25:00 -0700
 
 fgdb.rb (1.0.104) released; urgency=low
 
