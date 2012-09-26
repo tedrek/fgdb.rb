@@ -26,13 +26,16 @@
           <%= hidden_field 'sale', 'discount_schedule_id', {:id => 'sale_discount_schedule_id_hidden', :onchange => "sale_compute_totals();"} %>
           <label for="sale_discount_schedule_id" onclick="toggle_disabled_with_hidden('sale_discount_schedule_id');">Discount schedule</label>
           <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]" onChange="sale_compute_totals();" class="always_disabled" disabled="disabled">
-            <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "description", @sale.discount_schedule_id || DiscountSchedule.no_discount.id) %>
+            <%= options_from_collection_for_select((DiscountSchedule.find_all_by_instantiable(true) + [DiscountSchedule.find_by_id(@sale.discount_schedule_id)]).uniq.sort_by(&:description), "id", "description", @sale.discount_schedule_id || DiscountSchedule.no_discount.id) %>
           </select>
         </div>
 
         <div class="form-element">
-          <label for="sale_online" onclick="$('sale_online').enable();">Online sale?</label>
-          <%= check_box 'sale', 'online', {:disabled => 'disabled', :class => 'always_disabled'} %>
+          <%= hidden_field 'sale', 'sale_type_id', {:id => 'sale_sale_type_id_hidden'} %>
+          <label for="sale_sale_type_id" onclick="toggle_disabled_with_hidden('sale_sale_type_id');">Sale type</label>
+          <select id="sale_sale_type_id" name="sale[sale_type_id]" class="always_disabled" disabled="disabled">
+            <%= options_from_collection_for_select(SaleType.find(:all).sort_by(&:description), "id", "description", @sale.sale_type_id) %>
+          </select>
         </div>
 
         <div class="form-element">

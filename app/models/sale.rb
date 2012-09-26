@@ -173,18 +173,16 @@ thanks = [
       bulk_id = ContactType.bulk_buyer.id
       connection.execute(
                          "SELECT payments.payment_method_id,
-                online,
-                contact_types_contacts.contact_type_id IS NOT NULL AS is_bulk_buyer,
+                sale_types.description AS sale_type,
                 sum(payments.amount_cents) as amount,
                 count(*),
                 min(sales.id),
                 max(sales.id)
          FROM sales
          JOIN payments ON payments.sale_id = sales.id
-         LEFT OUTER JOIN contacts ON contacts.id = sales.contact_id
-         LEFT OUTER JOIN contact_types_contacts ON contact_types_contacts.contact_id = contacts.id AND contact_types_contacts.contact_type_id = #{bulk_id}
+         JOIN sale_types ON sale_types.id = sale_type_id
          WHERE #{sanitize_sql_for_conditions(conditions)}
-         GROUP BY 1, 2, 3"
+         GROUP BY 1, 2"
                          )
     end
   end

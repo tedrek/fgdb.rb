@@ -3,8 +3,11 @@ fgdb.rb (1.0.105) UNRELEASED; urgency=low
   * Add a list of jobs to the hours logging interface (Closes: #30614)
   * Replace coverage types with a fully covered boolean, treating all
     conflicts as hard
+  * Reimplement bulk (all 3 kinds..) and online sale tracking as a new
+    SaleType option table, which then gets split out on the income
+    report (Closes: #31060)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 22 Sep 2012 13:25:00 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 26 Sep 2012 15:04:33 -0700
 
 fgdb.rb (1.0.104) released; urgency=low
 

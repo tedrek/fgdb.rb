@@ -470,7 +470,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
     @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
-    @rows[:sales] = ['retail', 'online', 'bulk', 'subtotals']
+    @rows[:sales] = ['Retail'] + (SaleType.all.map(&:description) - ['Retail']).sort + ['subtotals']
     @rows[:grand_totals] = ['total']
     @rows[:written_off_invoices] = ['donations', 'sales', 'total']
     @sections = [:donations, :sales, :grand_totals, :written_off_invoices]
@@ -567,7 +567,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
   end
 
   def add_sale_summation_to_data(summation, income_data, ranges)
-    payment_method_id, online, is_bulk_buyer, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['online'], summation['is_bulk_buyer'], summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
+    payment_method_id, sale_type, amount_cents, count, mn, mx = summation['payment_method_id'].to_i, summation['sale_type'], summation['amount'].to_i, summation['count'].to_i, summation['min'].to_i, summation['max'].to_i
     return unless payment_method_id and payment_method_id != 0
 
     ranges[:sales][:min] = [ranges[:sales][:min], mn].min
@@ -577,7 +577,6 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
 
     grand_totals = income_data[:grand_totals]
     column = income_data[:sales][payment_method]
-    sale_type = (is_bulk_buyer == 't') ? 'bulk' : (online == 't') ? 'online' : 'retail'
     update_totals(column[sale_type], amount_cents, count)
     update_totals(column['subtotals'], amount_cents, count)
     if PaymentMethod.is_real_method?(payment_method_id)
