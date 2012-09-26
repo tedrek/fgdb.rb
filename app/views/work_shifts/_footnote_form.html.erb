@@ -7,5 +7,7 @@
 <%= loading_indicator_tag "footnote-#{@date}" %>
 <%= f.submit 'Save' %>
 <% end %>
-<% vacs = params[:controller] == "shifts" ? [] : Vacation.on_date(@date) %>
+<% if params[:controller] == "work_shifts" %>
+<% vacs = Vacation.on_date(@date) %>
 <%= render :partial => 'vacations', :locals => {:vacs => vacs} %>
+<% end %>

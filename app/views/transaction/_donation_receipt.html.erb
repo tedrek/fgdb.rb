@@ -29,7 +29,7 @@ Please return a copy of this invoice with payment.
 <% end %>
 <% end %>
 </div>
-        <% if params[:controller] == 'donations' && @donation.created_at.to_date == Date.today && (rt == 'receipt') %>
+        <% if params[:controller] == 'donations' && @donation.created_at.to_date == Date.today && (rt == 'receipt') && !@donation.is_pickup %>
 <br />
 <fieldset style="border-color: 000000;">
 Show this coupon to save 10% in the Free Geek Thrift Store, located next door.<br /><br />
