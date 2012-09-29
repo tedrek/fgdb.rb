@@ -14,6 +14,8 @@ fgdb.rb (1.0.105) released; urgency=low
       was in the HTML version; another reason to only maintain one copy
   * Do not require entering password in staff hours immediately
     following login
+  * Replace the job list on staff hours with a tooltip displaying the
+    description within the select dropdown
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 21:47:54 -0700
 
