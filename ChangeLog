@@ -6,8 +6,10 @@ fgdb.rb (1.0.105) UNRELEASED; urgency=low
   * Reimplement bulk (all 3 kinds..) and online sale tracking as a new
     SaleType option table, which then gets split out on the income
     report (Closes: #31060)
+  * Check for and alert when total hours try to exceed 24 while logging
+    staff hours (Closes: #31143)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 26 Sep 2012 15:04:33 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 19:44:47 -0700
 
 fgdb.rb (1.0.104) released; urgency=low
 

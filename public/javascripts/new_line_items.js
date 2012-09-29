@@ -779,6 +779,14 @@ var VolunteerResourceFrontend = Class.create(ComponentLineItem, {
 
 var DurationComponent = Class.create(InputBasedComponent, {
   linelist: ['duration'],
+  add_from_form_reject: function() {
+    var newTotal = parseFloat($(this.linelist[0]).value) + parseFloat($('total_today').innerHTML);
+    var ret = newTotal > 24;
+    if(ret) {
+      alert("You cannot log more than 24 hours in a day.");
+    }
+    return ret;
+  },
 });
 
 var JobComponent = Class.create(SelectBasedComponent, {
