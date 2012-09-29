@@ -470,7 +470,11 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
     @width = @columns.length
     @rows = {}
     @rows[:donations] = ['fees', 'suggested', 'other', 'subtotals']
-    @rows[:sales] = ['Retail'] + (SaleType.all.map(&:description) - ['Retail']).sort + ['subtotals']
+    r_name = SaleType.find_by_name("retail")
+    @rows[:sales] = SaleType.all.map(&:description).sort + ['subtotals']
+    if r_name and @rows[:sales].include?(r_name.description)
+      @rows[:sales] = [r_name.description] + (@rows[:sales] - [r_name.description])
+    end
     @rows[:grand_totals] = ['total']
     @rows[:written_off_invoices] = ['donations', 'sales', 'total']
     @sections = [:donations, :sales, :grand_totals, :written_off_invoices]
