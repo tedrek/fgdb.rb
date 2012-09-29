@@ -1,4 +1,4 @@
-fgdb.rb (1.0.105) UNRELEASED; urgency=low
+fgdb.rb (1.0.105) released; urgency=low
 
   * Add a list of jobs to the hours logging interface (Closes: #30614)
   * Replace coverage types with a fully covered boolean, treating all
@@ -15,7 +15,7 @@ fgdb.rb (1.0.105) UNRELEASED; urgency=low
   * Do not require entering password in staff hours immediately
     following login
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 21:44:56 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 21:47:54 -0700
 
 fgdb.rb (1.0.104) released; urgency=low
 
