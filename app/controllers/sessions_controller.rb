@@ -12,6 +12,7 @@ class SessionsController < ApplicationController
       self.current_user.will_not_updated_timestamps!
       self.current_user.last_logged_in = Date.today
       self.current_user.save
+      mark_login_activity
     end
     flash[:error] = "invalid username/password" unless logged_in?
     rerender()
@@ -27,6 +28,13 @@ class SessionsController < ApplicationController
   end
 
   protected
+
+  def mark_login_activity
+    if current_user
+      session['worker_access_id'] = current_user.id
+      session['worker_access_last'] = DateTime.now
+    end
+  end
 
   def rerender
     render :update do |page|
