@@ -8,8 +8,12 @@ fgdb.rb (1.0.105) UNRELEASED; urgency=low
     report (Closes: #31060)
   * Check for and alert when total hours try to exceed 24 while logging
     staff hours (Closes: #31143)
+  * Consolidate the HTML receipt text involving return policies to use
+    the version from the database like the text receipts (Closes: #30683)
+    - Fix the system warranty URL in the new text to be correct, like it
+      was in the HTML version; another reason to only maintain one copy
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 19:44:47 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 21:37:34 -0700
 
 fgdb.rb (1.0.104) released; urgency=low
 

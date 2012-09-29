@@ -90,7 +90,7 @@ class Sale < ActiveRecord::Base
       head_lines << ['center', "### #{sprintf('%d', percent)}% #{self.discount_schedule.name.upcase} DISCOUNT APPLIED ###"]
     end
     head_lines << []
-    footer_lines = [[]] + self.gizmo_events_actual.map(&:gizmo_type).map{|x| x.my_return_policy_id}.select{|x| !x.nil?}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}.map{|x| ['left', x.full_text]}
+    footer_lines = [[]] + self.display_return_policies.map{|x| ['left', x.full_text]}
     if self.comments and self.comments.length >= 1
       footer_lines = [[], ['left', 'Comments: ' + self.comments]] + footer_lines
     end
@@ -110,6 +110,10 @@ thanks = [
     thanks << ['right', "facebook.com/freegeekmothership"]
     final = head_lines + gizmo_lines + payment_lines + footer_lines + thanks
     final
+  end
+
+  def display_return_policies
+    self.gizmo_events_actual.map(&:gizmo_type).map{|x| x.my_return_policy_id}.select{|x| !x.nil?}.uniq.sort.map{|x| ReturnPolicy.find_by_id(x)}
   end
 
   attr_accessor :contact_type  #anonymous or named
