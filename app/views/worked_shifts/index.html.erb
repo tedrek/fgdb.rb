@@ -78,7 +78,7 @@ Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_secon
 </div>
 
 <% interface = OH.new %>
-<% interface[:job] = '<select onchange="set_offsite_from_job_default();" id="job_id">' + [Job.new(:name => ""),  jobs.sort_by(&:name)].flatten.map{|j| "<option value=\"#{j.id}\" title=\"#{j.full_description}\">#{j.name}</option>"}.join("") + '</select>' %>
+<% interface[:job] = '<select onchange="set_offsite_from_job_default();" id="job_id">' + [Job.new(:name => ""),  jobs.sort_by(&:name)].flatten.map{|j| "<option value=\"#{j.id}\" title=\"#{j.description}\">#{j.name}</option>"}.join("") + '</select>' %>
 <% interface[:offsite] = '<input type="checkbox" name="offsite" id="offsite" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
 <% interface[:duration] = '<input name="duration" id="duration" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
 

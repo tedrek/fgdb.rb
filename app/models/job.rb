@@ -17,19 +17,7 @@ class Job < ActiveRecord::Base
   }
 
   def to_s
-    description
-  end
-
-  def description
-    read_attribute(:name)
-  end
-
-  def full_description
-    read_attribute(:description)
-  end
-
-  def full_description=(a)
-    self.description = a
+    name
   end
 end
 
