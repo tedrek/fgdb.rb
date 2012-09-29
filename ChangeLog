@@ -1,7 +1,9 @@
 fgdb.rb (1.0.106) UNRELEASED; urgency=low
 
+  * Allow volunteer shifts without class credit or a volunteer task
+    type, to allow for classes without class credit
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 21:48:43 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Sep 2012 14:52:41 -0700
 
 fgdb.rb (1.0.105) released; urgency=low
 

@@ -3,7 +3,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
   validates_presence_of :end_time
   validates_presence_of :start_time
   validates_presence_of :slot_count
-  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
   belongs_to :volunteer_task_type
   belongs_to :volunteer_default_event
   belongs_to :program

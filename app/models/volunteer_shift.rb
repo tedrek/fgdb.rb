@@ -1,5 +1,4 @@
 class VolunteerShift < ActiveRecord::Base
-  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
   validates_presence_of :roster_id
   validates_presence_of :end_time
   validates_presence_of :start_time
