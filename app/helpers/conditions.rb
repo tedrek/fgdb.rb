@@ -218,9 +218,9 @@ class Conditions < ConditionsBase
     validate_exists('cashier_updated_by', 'users') if validate_integer('cashier_updated_by')
     validate_exists('signed_off_by', 'users') if validate_integer('signed_off_by')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_days')
-    validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', false, true)
+    validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', true, true)
     validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_days')
-    validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_minimum', false, true)
+    validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_minimum', true, true)
     if is_this_condition_enabled('volunteer_hours')
       case @volunteer_hours_type
       when '>='

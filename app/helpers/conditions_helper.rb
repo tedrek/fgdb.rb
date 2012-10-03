@@ -110,14 +110,14 @@ module ConditionsHelper
   end
 
   def html_for_volunteered_hours_in_days_condition(params_key)
-    label(params_key, 'volunteer_hours_minimum', "Minimum number of hours volunteered:") +
+    label(params_key, 'volunteer_hours_minimum', "Minimum number of hours volunteered (enter 0 for any):") +
     text_field(params_key, 'volunteer_hours_minimum') +
     label(params_key, 'volunteer_hours_minimum', "Within number of days:") +
     text_field(params_key, 'volunteer_hours_days')
   end
 
   def html_for_volunteered_non_court_hours_in_days_condition(params_key)
-    label(params_key, 'volunteer_non_court_hours_minimum', "Minimum number of non-court hours volunteered:") +
+    label(params_key, 'volunteer_non_court_hours_minimum', "Minimum number of non-court hours volunteered (enter 0 for any):") +
     text_field(params_key, 'volunteer_non_court_hours_minimum') +
     label(params_key, 'volunteer_non_court_hours_minimum', "Within number of days:") +
     text_field(params_key, 'volunteer_non_court_hours_days')
