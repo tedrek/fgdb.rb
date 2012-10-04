@@ -4,7 +4,7 @@ class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
-      shift_date date updated_at last_build
+      shift_date date updated_at last_build last_volunteer_date
   ]
 
   CONDS = (%w[
@@ -683,6 +683,12 @@ class Conditions < ConditionsBase
 
   def updated_at_conditions(klass)
     date_range(klass, 'updated_at', 'updated_at')
+  end
+
+  def last_volunteer_date_conditions(klass)
+    ret = date_range(klass, 'MAX(date_performed)', 'last_volunteer_date')
+    ret[0] = "id IN (SELECT contact_id FROM volunteer_tasks GROUP BY contact_id HAVING #{ret[0].gsub(/contacts.MAX/, "MAX")})"
+    return ret
   end
 
   def last_build_conditions(klass)

@@ -3,7 +3,7 @@
 <% form_tag do %>
 <%= check_box_tag 'include_comma', "1", @include_comma %><%= label_tag 'include_comma' %><br />
 <%= check_box_tag 'show_email', "1", @show_email %><%= label_tag 'show_email' %><br />
-<%= conditions_html("conditions", ['contact_type', 'volunteered_hours_in_days']) %>
+<%= conditions_html("conditions", ['contact_type', 'volunteered_hours_in_days', 'last_volunteer_date']) %>
 <%= submit_tag 'View Email List' %>
 <% end %>
 
