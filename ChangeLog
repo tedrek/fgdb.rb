@@ -16,6 +16,8 @@ fgdb.rb (1.0.105) released; urgency=low
     following login
   * Replace the job list on staff hours with a tooltip displaying the
     description within the select dropdown
+  * Change the disktest search conditions to include partial matches
+    (Closes: #31226)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 21:47:54 -0700
 

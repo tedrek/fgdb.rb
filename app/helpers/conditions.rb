@@ -821,11 +821,11 @@ class Conditions < ConditionsBase
   end
 
   def vendor_conditions(klass)
-    return ['vendor ILIKE ?', @vendor.to_s]
+    return ['vendor ILIKE ?', '%' + @vendor.to_s + '%']
   end
 
   def model_conditions(klass)
-    return ['model ILIKE ?', @model.to_s]
+    return ['model ILIKE ?', '%' + @model.to_s + '%']
   end
 
   def interface_type_conditions(klass)
@@ -856,7 +856,7 @@ class Conditions < ConditionsBase
     if klass == SpecSheet
       return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number.to_s]
     elsif klass == DisktestRun
-      return ["serial_number ILIKE ?", @serial_number.to_s]
+      return ["serial_number ILIKE ?", '%' + @serial_number.to_s + '%']
     else
       raise
     end
