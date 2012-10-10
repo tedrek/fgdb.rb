@@ -18,7 +18,7 @@ Name: <%= a.contact.display_name %><br />
 <% if a.volunteer_shift.roster.name == 'Getting Started Classes' %>
 Address: <%= a.contact.display_address.join(", ") %><br />
 <% p = a.contact.points %>
-Eligible for computer disbursement today: <%= (p >= Default['max_effective_hours'].to_f) ? 'Y' : 'N' %>, <%= p %> points<br />
+Eligible for computer disbursement today: <%= (p >= Default['max_effective_hours'].to_f) ? 'Yes' : 'No' %>, <%= p %> points<br />
 <% end %>
 Notes: <%= a.notes %>
 </fieldset>
