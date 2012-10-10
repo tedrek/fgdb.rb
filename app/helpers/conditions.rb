@@ -4,7 +4,7 @@ class Conditions < ConditionsBase
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
-      shift_date date updated_at last_build
+      shift_date date updated_at last_build last_volunteer_date
   ]
 
   CONDS = (%w[
@@ -218,9 +218,9 @@ class Conditions < ConditionsBase
     validate_exists('cashier_updated_by', 'users') if validate_integer('cashier_updated_by')
     validate_exists('signed_off_by', 'users') if validate_integer('signed_off_by')
     validate_integer('volunteered_hours_in_days', 'volunteer_hours_days')
-    validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', false, true)
+    validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', true, true)
     validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_days')
-    validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_minimum', false, true)
+    validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_minimum', true, true)
     if is_this_condition_enabled('volunteer_hours')
       case @volunteer_hours_type
       when '>='
@@ -685,6 +685,12 @@ class Conditions < ConditionsBase
     date_range(klass, 'updated_at', 'updated_at')
   end
 
+  def last_volunteer_date_conditions(klass)
+    ret = date_range(klass, 'MAX(date_performed)', 'last_volunteer_date')
+    ret[0] = "id IN (SELECT contact_id FROM volunteer_tasks GROUP BY contact_id HAVING #{ret[0].gsub(/contacts.MAX/, "MAX")})"
+    return ret
+  end
+
   def last_build_conditions(klass)
     date_range(klass, 'last_build', 'last_build')
   end
@@ -815,11 +821,11 @@ class Conditions < ConditionsBase
   end
 
   def vendor_conditions(klass)
-    return ['vendor ILIKE ?', @vendor.to_s]
+    return ['vendor ILIKE ?', '%' + @vendor.to_s + '%']
   end
 
   def model_conditions(klass)
-    return ['model ILIKE ?', @model.to_s]
+    return ['model ILIKE ?', '%' + @model.to_s + '%']
   end
 
   def interface_type_conditions(klass)
@@ -850,7 +856,7 @@ class Conditions < ConditionsBase
     if klass == SpecSheet
       return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number.to_s]
     elsif klass == DisktestRun
-      return ["serial_number ILIKE ?", @serial_number.to_s]
+      return ["serial_number ILIKE ?", '%' + @serial_number.to_s + '%']
     else
       raise
     end

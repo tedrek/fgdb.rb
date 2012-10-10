@@ -41,8 +41,12 @@ class ContactsController < ApplicationController
   def email_list
     @include_comma = (params[:include_comma] == "1")
     @show_email = (params[:show_email] == "1")
+    @hide_full_name = (params[:hide_full_name] == "1")
+    @include_first_name = (params[:include_first_name] == "1")
+    @include_last_volunteer_date = (params[:include_last_volunteer_date] == "1")
+
+    @conditions = Conditions.new
     if params[:conditions]
-      @conditions = Conditions.new
       @conditions.apply_conditions(params[:conditions])
       @contacts = Contact.find(:all, :conditions => @conditions.conditions(Contact))
     else
@@ -60,7 +64,8 @@ class ContactsController < ApplicationController
   def get_required_privileges
     a = super
     a << {:privileges => ['manage_contacts'], :except => ['check_cashier_code', 'civicrm_sync']}
-    a << {:only => ['email_list', 'roles', '/admin_user_accounts'], :privileges => ['role_admin']}
+    a << {:only => ['roles', '/admin_user_accounts'], :privileges => ['role_admin']}
+    a << {:only => ['email_list'], :privileges => ['staff']}
     a << {:only => ['/create_logins'], :privileges => ['can_create_logins']}
     a
   end
