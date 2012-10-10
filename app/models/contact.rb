@@ -372,6 +372,31 @@ class Contact < ActiveRecord::Base
     display_name
   end
 
+  def last_volunteered_date
+    begin
+      raise ArgumentError unless self.id
+      return Date.parse(DB.exec("SELECT MAX(date_performed) AS max FROM volunteer_tasks WHERE contact_id = ?", self.id).to_a.first["max"]).to_s
+    rescue ArgumentError
+      return nil
+    end
+  end
+
+  def first_name_or_organization
+    if is_organization
+      return organization
+    else
+      return first_name
+    end
+  end
+
+  def display_last_name_first
+    if is_organization
+      return organization
+    else
+      return "#{surname}, #{first_name}"
+    end
+  end
+
   def display_name
     if is_person?
       if(self.first_name || self.middle_name || self.surname)

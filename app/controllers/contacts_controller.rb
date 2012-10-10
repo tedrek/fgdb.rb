@@ -41,6 +41,10 @@ class ContactsController < ApplicationController
   def email_list
     @include_comma = (params[:include_comma] == "1")
     @show_email = (params[:show_email] == "1")
+    @hide_full_name = (params[:hide_full_name] == "1")
+    @include_first_name = (params[:include_first_name] == "1")
+    @include_last_volunteer_date = (params[:include_last_volunteer_date] == "1")
+
     @conditions = Conditions.new
     if params[:conditions]
       @conditions.apply_conditions(params[:conditions])
