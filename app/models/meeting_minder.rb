@@ -51,7 +51,7 @@ class MeetingMinder < ActiveRecord::Base
     if self.meeting.shift_date
       return self.meeting.shift_date - self.days_before
     end
-    (Date.today..(Date.today + 30)).each{|x|
+    (Date.today..(Date.today + 45)).each{|x|
       return x if deliver_today?(x)
     }
     return nil
