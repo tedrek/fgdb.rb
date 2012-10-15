@@ -780,6 +780,9 @@ var VolunteerResourceFrontend = Class.create(ComponentLineItem, {
 var DurationComponent = Class.create(InputBasedComponent, {
   linelist: ['duration'],
   add_from_form_reject: function() {
+    if($(this.linelist[0]).value == $(this.linelist[0]).defaultValue) {
+      return true;
+    }
     var newTotal = parseFloat($(this.linelist[0]).value) + parseFloat($('total_today').innerHTML);
     var ret = newTotal > 24;
     if(ret) {
