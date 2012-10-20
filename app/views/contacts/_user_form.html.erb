@@ -6,7 +6,7 @@
                       "contact_is_user",
                       :function => "{var x = $('contact_user'); if ($('contact_is_user').checked) { x.show() } else { x.hide() }}"
                       ) %>
-    <label for="contact_is_user">can login?</label>
+    <label for="contact_is_user">can authenticate to database?</label>
   </div>
   <% else %>
     <%= hidden_field "contact", "is_user", :value => 1 %>
@@ -15,7 +15,7 @@
   <div id="contact_user" <%= @contact.is_user? or "style='display:none'"%>>
   <% if @contact.is_user? and  has_required_privileges('/admin_user_accounts') %>
     <div class='form-element'>
-      <label for="user_can_login">can login?</label>
+      <label for="user_can_login">can authenticate to database?</label>
       <%= check_box :user, :can_login %>
     </div>
   <% end %>
