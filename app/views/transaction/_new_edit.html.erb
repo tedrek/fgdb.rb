@@ -30,7 +30,7 @@
   <div id="<%= h element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
 
     <% form_remote_tag :url => @options.merge(:controller => base_controller),
-       :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}'); Form.disable('#{element_form_id(@options)}');",
+       :create => "Form.disable('#{element_form_id(@options)}'); Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}');",
        :html => { :class => "cashierable_form", :href => url_for(@options.merge(:controller => base_controller)),
          :id => element_form_id(@options) } do %>
     <%# form_for @transaction, :url => @options.merge(:controller => base_controller), :html => {:method => 'POST'} do %>
