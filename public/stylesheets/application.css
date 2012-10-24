@@ -604,10 +604,22 @@ padding:0;
 @media print {
 .noprint { display: none; }
 }
+.onlyprint { display: none; }
+@media print {
+.onlyprint { display: inline; }
+}
 
 .hidden { display: none; }
 
 table.line_item_table tr th, table.line_item_table tr td {
 text-align: right;
 align: right;
+}
+
+.largetable td {
+font-size: 16pt;
+}
+
+.largetable td:last-child {
+text-align: right
 }
