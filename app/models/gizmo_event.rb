@@ -21,6 +21,7 @@ class GizmoEvent < ActiveRecord::Base
   belongs_to :gizmo_type
   belongs_to :gizmo_category
   belongs_to :gizmo_context
+  belongs_to :discount_percentage
   belongs_to :system
   has_many :store_credits
   belongs_to :invoice_donation, :class_name => "Donation"
@@ -214,6 +215,10 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     n = self.attry_description; n += " Processing" unless n.match(/(Fee|Invoice)/); return n
   end
 
+  def discount_percentage_s # TODO: add this to attry_desc?
+    self.discount_percentage ? self.discount_percentage.percentage.to_s + "%" : nil
+  end
+
   def attry_description(options = {})
     junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id, :invoice_id, :date].map{|x| x.to_s} - (options[:ignore] || [])
 
@@ -232,19 +237,19 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     end
   end
 
-  def percent_discount(schedule)
-    return 0 unless schedule && gizmo_type
-    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) ) * 100 ).ceil
-  end
-
   def total_price_cents
     return 0 unless unit_price_cents and gizmo_count
     unit_price_cents * gizmo_count
   end
 
-  def discounted_price(schedule)
-    return total_price_cents unless schedule && gizmo_type
-    (total_price_cents * (gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) * 100).to_i)/100
+  def percent_discount
+    return 0 unless self.gizmo_type
+    return self.gizmo_type.not_discounted ? 0 : self.discount_percentage ? self.discount_percentage.percentage : self.sale.discount_percentage.percentage
+  end
+
+  def discounted_price # FIXME
+    return total_price_cents unless self.gizmo_type
+    (total_price_cents * (100 - self.percent_discount))/100
   end
 
   def mostly_empty?

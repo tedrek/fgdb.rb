@@ -21,8 +21,8 @@
           <td> <%= my_number_to_currency event.unit_price_cents %> </td>
           <td> <%= event.gizmo_count %> </td>
           <td> <%= my_number_to_currency event.total_price_cents %> </td>
-          <td> <%= number_to_percentage(event.percent_discount(@sale.discount_schedule), :precision => 0) %></td>
-          <td> <%= my_number_to_currency event.discounted_price(@sale.discount_schedule) %> </td>
+          <td> <%= number_to_percentage(event.percent_discount, :precision => 0) %></td>
+          <td> <%= my_number_to_currency event.discounted_price %> </td>
         </tr>
       <% end %>
 

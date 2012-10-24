@@ -4,7 +4,7 @@ class Sale < ActiveRecord::Base
   include GizmoTransaction
   belongs_to :contact
   has_many :payments, :dependent => :destroy, :autosave => :true
-  belongs_to :discount_schedule
+  belongs_to :discount_percentage
   belongs_to :discount_name
   has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
@@ -39,9 +39,9 @@ class Sale < ActiveRecord::Base
     other_gizmo_events = self.gizmo_events_actual - store_credit_gizmo_events
     gizmo_lines =  []
     other_gizmo_events.each{|event|
-      iszero = event.percent_discount(self.discount_schedule) == 0
+      iszero = event.percent_discount == 0
       gizmo_lines << [ 'left', event.attry_description( :upcase => true, :ignore => ['unit_price'] ) ]
-      gizmo_lines << ['right', event.gizmo_count.to_s + ' @', event.unit_price.to_s, iszero ? '' : event.total_price_cents.to_dollars.to_s, iszero ? '' : ('less ' + event.percent_discount(self.discount_schedule).to_s + "%"), event.discounted_price(self.discount_schedule).to_dollars.to_s]
+      gizmo_lines << ['right', event.gizmo_count.to_s + ' @', event.unit_price.to_s, iszero ? '' : event.total_price_cents.to_dollars.to_s, iszero ? '' : ('less ' + event.percent_discount.to_s + "%"), event.discounted_price.to_dollars.to_s]
     }
     store_credit_gizmo_events_total_cents = store_credit_gizmo_events.inject(0){|t,x| t+=x.total_price_cents} 
     gizmo_lines << []
@@ -85,10 +85,10 @@ class Sale < ActiveRecord::Base
     head_lines = head_lines + [[],
                                ['two', " #{self.occurred_at.strftime("%H:%M %p %m/%d/%y").downcase}", "sale: #{self.id}"],
                                ['two', " cashier: #{User.find_by_id(self.read_attribute(:cashier_created_by)).contact_id}", "cust: #{self.contact_id || "anonymous"}"]]
-    if self.discount_schedule.name != 'no_discount'
-      percent = (100 - (100 * self.discount_schedule.discount_schedules_gizmo_types.find_by_gizmo_type_id(GizmoType.find_by_name_and_ineffective_on('gizmo', nil).id).multiplier)) # FIXME: ineffective_on shouldn't be nil, it should find was effective during the self.created at of this
+    percent = self.discount_percentage.percentage
+    if percent != 0
       head_lines << []
-      head_lines << ['center', "### #{sprintf('%d', percent)}% #{self.discount_schedule.name.upcase} DISCOUNT APPLIED ###"]
+      head_lines << ['center', "### #{sprintf('%d', percent)}% #{self.discount_name.description.upcase} DISCOUNT APPLIED ###"]
     end
     head_lines << []
     footer_lines = [[]] + self.display_return_policies.map{|x| ['left', x.full_text]}
@@ -207,14 +207,10 @@ thanks = [
   end
 
   def calculated_total_cents
-    if discount_schedule
-      gizmo_events_actual.inject(0) {|tot,gizmo|
-        gizmo.sale = self
-        tot + gizmo.discounted_price(discount_schedule)
-      }
-    else
-      calculated_subtotal_cents
-    end
+    gizmo_events_actual.inject(0) {|tot,gizmo|
+      gizmo.sale = self
+      tot + gizmo.discounted_price
+    }
   end
 
   def calculated_discount_cents
