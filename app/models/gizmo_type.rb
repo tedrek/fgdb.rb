@@ -1,8 +1,4 @@
 class GizmoType < ActiveRecord::Base
-#  acts_as_tree # no, lets not
-  has_many  :discount_schedules_gizmo_types,
-  :dependent => :destroy
-  has_many  :discount_schedules, :through => :discount_schedules_gizmo_types
   has_and_belongs_to_many    :gizmo_contexts
   belongs_to :return_policy
 
@@ -48,10 +44,6 @@ class GizmoType < ActiveRecord::Base
 
   def to_s
     description
-  end
-
-  def displayed_discounts
-    discount_schedules_gizmo_types.map {|bridge| "%s: %0.2f" % [bridge.discount_schedule.name, bridge.multiplier]}.join(', ')
   end
 
   def parent(date)

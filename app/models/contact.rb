@@ -454,12 +454,10 @@ class Contact < ActiveRecord::Base
   end
 
   def default_discount_schedule
-    if contact_types.include?(ContactType.find_by_name("bulk_buyer"))
-      DiscountSchedule.find_by_name("bulk")
-    elsif effective_discount_hours >= Default['hours_for_discount'].to_f or self.has_worker?
-      DiscountSchedule.find_by_name("volunteer")
+    if effective_discount_hours >= Default['hours_for_discount'].to_f or self.has_worker?
+      return "volunteer"
     else
-      DiscountSchedule.find_by_name("no_discount")
+      return "no_discount"
     end
   end
 
