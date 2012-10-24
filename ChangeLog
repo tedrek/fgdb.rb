@@ -5,7 +5,7 @@ fgdb.rb (1.0.106) UNRELEASED; urgency=low
     - Also update past Monthly Classes to no longer show up as credit
   * Show the number of points and exclude cancelled assignments on the
     class list (Closes: #31363)
-  * Add barebones system type to sales screen (Closes: #31551)
+  * Add barebones system type to sales screen
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 24 Oct 2012 03:24:58 -0700
 
