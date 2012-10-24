@@ -22,6 +22,10 @@ class Sale < ActiveRecord::Base
   before_save :set_occurred_at_on_transaction
   before_save :strip_postal_code
 
+  def self.number_by_conditions(c)
+    Sale.connection.execute("SELECT count(*) FROM sales WHERE #{sanitize_sql_for_conditions(c.conditions(Sale))}").to_a[0]["count"].to_i
+  end
+
   def initialize(*args)
     @contact_type = 'anonymous'
     super(*args)
