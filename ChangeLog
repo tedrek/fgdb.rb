@@ -2,6 +2,8 @@ fgdb.rb (1.0.106) UNRELEASED; urgency=low
 
   * Allow volunteer shifts without class credit or a volunteer task
     type, to allow for classes without class credit
+  * Show the number of points and exclude cancelled assignments on the
+    class list (Closes: #31363)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Sep 2012 14:52:41 -0700
 
@@ -25,8 +27,6 @@ fgdb.rb (1.0.105) released; urgency=low
     description within the select dropdown
   * Change the disktest search conditions to include partial matches
     (Closes: #31226)
-  * Show the number of points and exclude cancelled assignments on the
-    class list (Closes: #31363)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 21:47:54 -0700
 
