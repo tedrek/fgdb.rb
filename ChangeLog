@@ -1,7 +1,8 @@
 fgdb.rb (1.0.106) UNRELEASED; urgency=low
 
   * Allow volunteer shifts without class credit or a volunteer task
-    type, to allow for classes without class credit
+    type, to allow for classes without class credit (Closes: #31552)
+    - Also update past Monthly Classes to no longer show up as credit
   * Show the number of points and exclude cancelled assignments on the
     class list (Closes: #31363)
 
