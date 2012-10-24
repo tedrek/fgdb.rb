@@ -237,13 +237,26 @@ function selection_toggle(id) {
 }
 
 function toggle_disabled_with_hidden(field_id) {
+  toggle_disabled_with_hidden_and(field_id, undefined);
+}
+
+function toggle_disabled_with_hidden_and(field_id, other_id) {
   var r_field  = $(field_id);
+  var o_field  = (other_id != undefined) ? $(other_id) : undefined;
   r_field.disabled = !r_field.disabled;
+  if(other_id != undefined) {
+    o_field.disabled = r_field.disabled;
+  }
   if(r_field.disabled) {
     var h_field = $(field_id + "_hidden");
     h_field.value = r_field.value;
   }
+  if(other_id != undefined && r_field.disabled) {
+    var ho_field = $(other_id + "_hidden");
+    ho_field.value = o_field.value;
+  }
 }
+
 
 function reassign(assigned_id) {
   var is_r = !window.location.href.match("default_assignments");

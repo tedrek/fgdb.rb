@@ -9,7 +9,7 @@
 
 <% if defined?(@gizmo_context) %>
 <script>
-  var discount_schedules;
+  var not_discounted;
   var counters = new Array();
   counters['gizmo_events_line_id'] = <%= defined?(@lines) ? @lines.length : 0 %>;
   counters['payments_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
@@ -124,13 +124,10 @@
 <%=
    case params[:controller]
    when 'sales'
-     js = "var discount_schedules = new Array;"
-     gizmo_types = GizmoType.find(:all)
-     for discount_schedule in DiscountSchedule.find(:all)
-       js += "discount_schedules[#{discount_schedule.id}] = new Array;"
-       for gizmo_type in gizmo_types
-         js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule, @transaction ? @transaction.occurred_at : DateTime.now)};"
-       end
+     js = "var not_discounted = new Array;"
+     gizmo_types = GizmoType.find_all_by_not_discounted(true)
+     for gt in gizmo_types
+       js += "not_discounted[#{gt.id}] = true;"
      end
      javascript_tag js
    when 'donations'

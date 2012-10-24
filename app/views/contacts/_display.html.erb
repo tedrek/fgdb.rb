@@ -127,7 +127,13 @@ Attended Classes:<br />
         :confirm => 'Are REALLY you sure you want to kill this person?',
         :loading => "Element.show('#{loading_indicator_id("contact_#{contact.id}_loading")}');" } %>
 <% end %>
-<div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
+<% if @contact.default_discount_schedule == "volunteer" %>
+<div id="contact__default_discount_name" style="display: none"><%= DiscountName.find(Default["discount_name_id_for_volunteer_discount"]).id %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= DiscountPercentage.find(Default["discount_percentage_id_for_volunteer_discount"]).id %></div>
+<% else %>
+<div id="contact__default_discount_name" style="display: none"><%= Sale.new.discount_name.id %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= Sale.new.discount_percentage.id %></div>
+<% end %>
 <div id="contact__contract" style="display: none"><%= @contact.contract.id %></div>
 <div id="contact__shift_count" style="display: none"><%= @contact.assignments.on_or_after_today.not_cancelled.length %></div>
 <div id="contact__has_areas_disciplined_from" style="display: none"><%= @contact.has_areas_disciplined_from? %></div>
