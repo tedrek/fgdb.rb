@@ -668,3 +668,12 @@ function toggle_description(evt) {
   }
   return true;
 }
+
+function toggle_discount(evt) {
+  discount_visible++;
+  var arr = document.getElementsByClassName('discount');
+  for (var i = 0; i < arr.length; i++) {
+    set_visibility(arr[i], discount_visible & 1)
+  }
+  return true;
+}

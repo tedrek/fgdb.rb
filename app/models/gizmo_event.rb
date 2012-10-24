@@ -215,8 +215,12 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     n = self.attry_description; n += " Processing" unless n.match(/(Fee|Invoice)/); return n
   end
 
-  def discount_percentage_s # TODO: add this to attry_desc?
-    self.discount_percentage ? self.discount_percentage.percentage.to_s + "%" : nil
+  def discount=(new_id)
+    if new_id == ""
+      self.discount_percentage_id = nil
+    else
+      self.discount_percentage_id = new_id.to_i
+    end
   end
 
   def attry_description(options = {})
@@ -247,7 +251,7 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     return self.gizmo_type.not_discounted ? 0 : self.discount_percentage ? self.discount_percentage.percentage : self.sale.discount_percentage.percentage
   end
 
-  def discounted_price # FIXME
+  def discounted_price
     return total_price_cents unless self.gizmo_type
     (total_price_cents * (100 - self.percent_discount))/100
   end

@@ -192,6 +192,9 @@ function edit_gizmo_event(id) {
     $('disbursement_id').value = getValueBySelector(thing, ".return_disbursement_id");
     $('store_credit_hash').value = getValueBySelector(thing, ".store_credit_hash");
   }
+  if($('discount') != null) {
+    $('discount').value = getValueBySelector(thing, ".discount");
+  }
   $('description').value = getValueBySelector(thing, ".description");
   $('gizmo_type_id').focus();
 }
@@ -248,6 +251,10 @@ function _add_gizmo_event_from_form()
   if($('unit_price') != null) {
     args['unit_price'] = $('unit_price').value;
   }
+  if($('discount') != null) {
+    args['discount'] = $('discount').options[$('discount').selectedIndex].text;
+    args['discount_id'] = $('discount').value;
+  }
   if($('system_id') != null) {
     args['system_id'] = $('system_id').value;
   }
@@ -298,6 +305,9 @@ function _add_gizmo_event_from_form()
     $('sale_id').value = $('sale_id').defaultValue;
     $('disbursement_id').value = $('disbursement_id').defaultValue;
     $('store_credit_hash').value = $('store_credit_hash').defaultValue;
+  }
+  if($('discount') != null) {
+    $('discount').selectedIndex = 0;
   }
   if($('covered') != null){
     $('covered').selectedIndex = 0;
@@ -405,6 +415,11 @@ function unit_price_stuff(args, tr){
     return;
   var line_id = counters[args['prefix'] + '_line_id'];
   tr.appendChild(make_hidden(args['prefix'], "unit_price", args['unit_price'], args['unit_price'], line_id));
+  if($('discount') != null) {
+    var dis = make_hidden(args['prefix'], "discount", args['discount'], args['discount_id'], line_id);
+    tr.appendChild(dis);
+    set_visibility(dis, discount_visible & 1);
+  }
   if($('gizmo_count') != null) {
     td = document.createElement("td");
     td.appendChild(make_hidden(args['prefix'], "total_price", "$0.00", "$0.00", line_id));
@@ -701,7 +716,7 @@ function sale_compute_totals() {
   var payment = get_total_payment();
 
   $('subtotal').innerHTML = dollar_value(subtotal);
-  $('discount').innerHTML = dollar_value(discount);
+  $('discount_amt').innerHTML = dollar_value(discount);
   $('grand_total').innerHTML = dollar_value(grand_total);
   $('total_payments').innerHTML = dollar_value(payment);
   var storecredit_left = store_credit - grand_total;
@@ -793,10 +808,16 @@ function update_gizmo_events_totals() {
   {
     thing = gizmo_events[i];
 
-    var multiplier = !(not_discounted[parseInt(getValueBySelector(thing, ".gizmo_type_id"))]) ?
-      (100 - get_percentage_field_value('sale_discount_percentage_id')) / 100
-: 1;
-;
+    var multiplier = 1;
+    if($('sale_discount_percentage_id') != null) {
+      var percent = get_percentage_field_value('sale_discount_percentage_id');
+      if(get_node_value(thing, ".discount") != "sale") {
+        percent = parseInt(get_node_value(thing, ".discount"));
+      }
+
+      multiplier = !(not_discounted[parseInt(getValueBySelector(thing, ".gizmo_type_id"))]) ? (100 - percent) / 100 : 1;
+    }
+
     var amount_b4_discount = cent_value(get_node_value(thing, ".unit_price")) * Math.floor(getValueBySelector(thing, ".gizmo_count"));
     var amount = multiplier * amount_b4_discount;
     if (isNaN(amount))
