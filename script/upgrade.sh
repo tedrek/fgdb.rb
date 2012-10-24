@@ -24,7 +24,7 @@ sudo git checkout db/schema.rb
 sudo git checkout -b release_1.0.$NEW origin/release_1.0.$NEW
 sudo env RAILS_ENV=production rake db:migrate
 sudo git checkout db/schema.rb
-pg_dump fgdb_production > $BACKUP_DIR/post-sprint-$NEW.sql.bz2
+pg_dump fgdb_production > $BACKUP_DIR/post-sprint-$NEW.sql
 
 #sudo invoke-rc.d thin start
 sudo rm tmp/release.txt
