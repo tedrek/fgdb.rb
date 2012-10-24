@@ -8,6 +8,8 @@
 
 require_dependency RAILS_ROOT + '/app/helpers/conditions.rb'
 require_dependency RAILS_ROOT + '/app/controllers/reports_controller.rb'
+require_dependency RAILS_ROOT + '/app/models/sale.rb'
+require_dependency RAILS_ROOT + '/app/models/donation.rb'
 
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
@@ -598,6 +600,12 @@ class TrendReport
       n = Donation.number_by_conditions(c)
     end
 
+    def find_all_sales(args)
+      c = Conditions.new
+      c.apply_conditions(created_at_conditions_for_report(args))
+      n = Sale.number_by_conditions(c)
+    end
+
     def breakdown_types # default
       line_breakdown_types + bar_breakdown_types
     end
@@ -1063,6 +1071,23 @@ class DonationsCountsTrend < TrendReport
 
     def title
       "Report of number of donations"
+    end
+end
+class SalesCountsTrend < TrendReport
+    def category
+      "Transaction"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def get_for_timerange(args)
+      return {:count => find_all_sales(args).to_s}
+    end
+
+    def title
+      "Report of number of sales"
     end
 end
 class VolunteerHoursByProgramsTrend < TrendReport

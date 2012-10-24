@@ -16,6 +16,10 @@ class Job < ActiveRecord::Base
     {:conditions => ["(((effective_on <= ? OR effective_on IS NULL) AND (ineffective_on > ? OR ineffective_on IS NULL)) OR (effective_on > ? AND ineffective_on <= ?) OR ((ineffective_on is NULL or ineffective_on > ?) AND (effective_on IS NULL or effective_on <= ?)))", start, start, start, fin, fin, fin]}
   }
 
+  def description
+    read_attribute(:description) || ""
+  end
+
   def to_s
     name
   end
