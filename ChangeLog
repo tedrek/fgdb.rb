@@ -6,6 +6,7 @@ fgdb.rb (1.0.106) UNRELEASED; urgency=low
   * Show the number of points and exclude cancelled assignments on the
     class list (Closes: #31363)
   * Add barebones system type to sales screen
+  * New system for discounts (Closes: #31136)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 24 Oct 2012 03:24:58 -0700
 
