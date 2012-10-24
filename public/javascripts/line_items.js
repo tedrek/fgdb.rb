@@ -793,9 +793,10 @@ function update_gizmo_events_totals() {
   {
     thing = gizmo_events[i];
 
-    var multiplier = defined(discount_schedules)
-      ? (discount_schedules[$('sale_discount_schedule_id').value][parseInt(getValueBySelector(thing, ".gizmo_type_id"))])
-      : 1;
+    var multiplier = !(not_discounted[parseInt(getValueBySelector(thing, ".gizmo_type_id"))]) ?
+      (100 - get_percentage_field_value('sale_discount_percentage_id')) / 100
+: 1;
+;
     var amount_b4_discount = cent_value(get_node_value(thing, ".unit_price")) * Math.floor(getValueBySelector(thing, ".gizmo_count"));
     var amount = multiplier * amount_b4_discount;
     if (isNaN(amount))

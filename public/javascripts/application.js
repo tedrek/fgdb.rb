@@ -612,26 +612,8 @@ function trigger_change_on(element) {
   element.dispatchEvent(event);
 }
 
-function update_all_gizmo_totals(){
-    var myotherarray = document.getElementsByClassName('total_price_div');
-    for(var i5=0; i5 < myotherarray.length; i5++) {
-        this_child = myotherarray[i5];
-        name = this_child.childNodes[3].id.match(/(.*)_total_price/)[1];
-        if (name)
-          update_gizmo_totals(name);
-    }
-}
-
-function update_gizmo_totals (id_thing) {
-  var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][$(id_thing + '_gizmo_type_id').value]) || 0;
-  var amount_b4_discount = (Math.floor($(id_thing + '_unit_price').value*100) * Math.floor($(id_thing + '_gizmo_count').value)) || 0;
-  var amount = multiplier * amount_b4_discount;
-  if (isNaN(amount))
-      amount = 0;
-  amount = Math.floor(amount)/100.0;
-  var mystring = "$" + amount;
-  $(id_thing + '_total_price').value = mystring;
-  $(id_thing + '_total_price').defaultValue = mystring;
+function get_percentage_field_value(field_id) {
+  return parseInt($(field_id).options[$(field_id).selectedIndex].text);
 }
 
 function remove_condition(obj_name, value)
