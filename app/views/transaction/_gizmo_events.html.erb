@@ -50,6 +50,9 @@
       <th>unit price</th>
       <% end %>
     <% end %>
+    <% if my_cont == "sales" %>
+      <th>discount</th>
+    <% end %>
     <% if show_price && show_qty %>
     <th>total price</th>
     <% end %>
@@ -122,6 +125,11 @@
     <% end %>
     <% if show_price %>
       <td><input name="unit_price" id="unit_price" size="6" onkeydown="if(is_tab(event)) {return handle_gizmo_events();}"></td>
+    <% end %>
+    <% if my_cont == "sales" %>
+      <td><select>
+          <%= options_from_collection_for_select([DiscountPercentage.new] + (DiscountPercentage.find_all_by_available(true) + @sale.gizmo_events.map{|x| x.discount_percentage}).uniq.select{|x| !!x}, "id", "description") %>
+        </select></td>
     <% end %>
     <td><%= loading_indicator_tag "line_item" %>
       <%= javascript_tag "line_item_loading_id = #{loading_indicator_id("line_item").to_json}"; %>

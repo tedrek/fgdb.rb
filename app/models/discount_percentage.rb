@@ -1,5 +1,5 @@
 class DiscountPercentage < ActiveRecord::Base
   def description
-    self.percentage.to_s+'%'
+    self.percentage ? self.percentage.to_s+'%' : "Sale"
   end
 end
