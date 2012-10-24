@@ -5,7 +5,6 @@ class Sale < ActiveRecord::Base
   belongs_to :contact
   has_many :payments, :dependent => :destroy, :autosave => :true
   belongs_to :discount_schedule
-  belongs_to :discount_name
   has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
 

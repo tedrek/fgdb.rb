@@ -1,9 +1,0 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  percentage: 1
-  available: false
-
-two:
-  percentage: 1
-  available: false
