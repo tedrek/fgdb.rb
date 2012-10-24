@@ -1,4 +1,4 @@
-fgdb.rb (1.0.106) UNRELEASED; urgency=low
+fgdb.rb (1.0.106) released; urgency=low
 
   * Allow volunteer shifts without class credit or a volunteer task
     type, to allow for classes without class credit (Closes: #31552)
@@ -8,7 +8,7 @@ fgdb.rb (1.0.106) UNRELEASED; urgency=low
   * Add barebones system type to sales screen
   * New system for discounts (Closes: #31136)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 24 Oct 2012 03:24:58 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 24 Oct 2012 04:29:30 -0700
 
 fgdb.rb (1.0.105) released; urgency=low
 
