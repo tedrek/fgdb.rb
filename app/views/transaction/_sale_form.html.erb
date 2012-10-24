@@ -40,9 +40,14 @@
         <div class="form-element">
           <%= hidden_field 'sale', 'discount_name_id', {:id => 'sale_discount_name_id_hidden'} %>
           <label for="sale_discount_name_id" onclick="toggle_disabled_with_hidden_and('sale_discount_name_id', 'sale_discount_percentage_id');">Discount name</label>
-          <select id="sale_discount_name_id" name="sale[discount_name_id]" class="always_disabled" disabled="disabled">
+          <select id="sale_discount_name_id" name="sale[discount_name_id]" class="always_disabled" disabled="disabled" onChange="$('discount_name_extra_div').style.display = $('sale_discount_name_id').value == '' ? '' : 'none';">
             <%= options_from_collection_for_select(([@sale.discount_name] + DiscountName.find_all_by_available(true)).uniq.select{|x| !!x} + [DiscountName.new(:description => 'Other')], "id", "description", @sale.discount_name_id) %>
           </select>
+        </div>
+
+        <div class="form-element" style="display: none" id="discount_name_extra_div">
+          <label for="sale_discount_name_name">Other discount name:</label>
+          <%= text_field 'sale', 'discount_name_name' %>
         </div>
 
         <div class="form-element">

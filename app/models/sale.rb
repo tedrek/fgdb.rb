@@ -27,6 +27,21 @@ class Sale < ActiveRecord::Base
     super(*args)
   end
 
+  def discount_name_name
+    ""
+  end
+
+  def discount_name_name=(text)
+    if text != ""
+      self.discount_name = DiscountName.find_by_description(text)
+      if ! self.discount_name
+        self.discount_name = DiscountName.new
+        self.discount_name.available = false # default to not available
+        self.discount_name.description = text
+      end
+    end
+  end
+
   def storecredit_alert_text
     self.storecredits.select{|x| !x.spent?}.map{|credit|
           "Store Credit Hash ##{StoreChecksum.new_from_result(credit.id).checksum}\n\nAmount: $#{credit.amount}\nExpires: #{credit.valid_until.strftime("%B %d, %Y")}"
