@@ -37,6 +37,7 @@ $data{"Email"} = $ticket->cf('Email');
 $data{"Type of Box"} = $ticket->cf('Type of Box');
 $data{"System ID"} = $ticket->cf('SystemID');
 $data{"Warranty"} = $ticket->cf('Warranty');
+$data{"Issues"} = join ", ", @{$ticket->cf('Tech Support Issue')};
 $data{"Initial Content"} = $content;
 
 my $json = JSON->new->allow_nonref;
