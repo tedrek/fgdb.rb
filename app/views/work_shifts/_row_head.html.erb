@@ -23,8 +23,11 @@
         <%= skedj.get_method_value(skedj.current, :left_method_name) %>
       <% else %>
         <%= link_to skedj.get_method_value(skedj.current, :left_method_name), { :action => skedj.opts[:left_link_action], :controller => skedj.opts[:left_table_name], :id => skedj.get_method_value(skedj.current, :left_link_id) }, :title => skedj.opts[:left_link_action], :popup => true %>
-        <% if skedj.opts[:left_extra_link_letter] && skedj.opts[:presentation_mode]=='Edit' %>
-          [<%= link_to skedj.opts[:left_extra_link_letter], {:id => skedj.get_method_value(skedj.current, :left_link_id), :date => skedj.get_method_value(skedj.current, :date_range_condition), :action => skedj.opts[:left_extra_link_action]}, {:confirm => skedj.opts[:left_extra_link_confirm] + " (#{skedj.get_method_value(skedj.current, :left_method_name)}, #{skedj.get_method_value(skedj.current, :date_range_condition)})", :title => skedj.opts[:left_extra_link_action]} %>]
+        <% if skedj.opts[:left_extra_link_actions] && skedj.opts[:presentation_mode]=='Edit' %>
+          <% skedj.opts[:left_extra_link_actions].each do |action| %>
+            <% letter = action.first %>
+            [<%= link_to letter, {:id => skedj.get_method_value(skedj.current, :left_link_id), :date => skedj.get_method_value(skedj.current, :date_range_condition), :action => action}, {:confirm => skedj.opts[:left_extra_link_confirm] + " (#{skedj.get_method_value(skedj.current, :left_method_name)}, #{skedj.get_method_value(skedj.current, :date_range_condition)})", :title => action} %>] 
+          <% end %>
         <% end %>
       <% end %>
     </th>
