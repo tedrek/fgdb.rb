@@ -8,6 +8,8 @@ fgdb.rb (1.0.107) released; urgency=low
     - Allow selecting different units for the megabytes size condition
     - Also add a condition to spec_sheets and a link for finding hard
       drives in printme records from their disktest_run serial number
+  * Add a new link for adding a vacation for a day for a contact and
+    also add a footnote when marking somebody as absent (Closes: #31549)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:16 -0700
 

@@ -15,6 +15,15 @@ class Vacation < ActiveRecord::Base
     errors.add_on_blank("ineffective_date")
   end
 
+  def generate
+    w = self.worker
+    (self.effective_date..self.ineffective_date).each{|x|
+      w.work_shifts_for_day(x).each{|x|
+        x.on_vacation
+      }
+    }
+  end
+
   def name
     effective_date.strftime("%a, %b %d, %Y") + ' to ' + ineffective_date.strftime("%a, %b %d, %Y")
   end

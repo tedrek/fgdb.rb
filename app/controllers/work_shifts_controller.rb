@@ -112,8 +112,7 @@ class WorkShiftsController < ApplicationController
       :left_table_name => "workers",
       :left_link_action => "edit",
       :left_link_id => "workers.id",
-      :left_extra_link_letter => "a",
-      :left_extra_link_action => "absent",
+      :left_extra_link_actions => ["absent", "vacation"],
       :left_extra_link_confirm => "Are you sure you want to remove them from the schedule?",
 
       :thing_start_time => "work_shifts.start_time",
@@ -135,7 +134,25 @@ class WorkShiftsController < ApplicationController
       d = Date.parse(params[:date])
     rescue
     end
-    w.work_shifts_for_day(d).each(&:on_vacation) if w and d
+    if w and d
+      w.work_shifts_for_day(d).each(&:on_vacation)
+      WorkShiftFootnote.add_to_footnote(d, "#{w.name} is out.")
+    end
+    redirect_to :action => "list"
+  end
+
+  def vacation
+    w = Worker.find_by_id(params[:id])
+    d = nil
+    begin
+      d = Date.parse(params[:date])
+    rescue
+    end
+    if w and d
+      v = Vacation.new(:effective_date => d, :ineffective_date => d, :worker => w, :is_all_day => true)
+      v.save!
+      v.generate
+    end
     redirect_to :action => "list"
   end
 
