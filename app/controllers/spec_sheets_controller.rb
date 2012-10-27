@@ -30,7 +30,11 @@ class SpecSheetsController < ApplicationController
         return
       end
       json = `#{RAILS_ROOT}/script/fetch_ts_data.pl #{params[:id].to_i}`
-      @data = JSON.parse(json)
+      begin
+        @data = JSON.parse(json)
+      rescue
+        @data = nil
+      end
       if @data && @data["ID"].to_i != params[:id].to_i
         @data = nil
         @error = "The provided ticket number does not exist."
