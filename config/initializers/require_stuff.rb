@@ -25,6 +25,7 @@ module WillPaginate
     def will_paginate_with_total_results(will = nil, *opts)
       ret = will_paginate_without_total_results(will, *opts)
       if will
+        ret ||= ""
         start = (will.current_page-1)*will.per_page + 1
         finish = start + will.size - 1
         if finish == 0
