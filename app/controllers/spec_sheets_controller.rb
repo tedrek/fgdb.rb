@@ -35,7 +35,7 @@ class SpecSheetsController < ApplicationController
       rescue
         @data = nil
       end
-      if @data && @data["ID"].to_i != params[:id].to_i
+      if @data.nil? || @data["ID"].to_i != params[:id].to_i
         @data = nil
         @error = "The provided ticket number does not exist."
         return
