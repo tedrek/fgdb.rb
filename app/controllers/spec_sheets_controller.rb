@@ -19,7 +19,7 @@ class SpecSheetsController < ApplicationController
 
   def workorder
     if params[:id]
-      if !(@contact = Contact.find_by_id(params[:contact_id]))
+      if !(@contact = Contact.find_by_id(params[:contact_id].to_i))
         @data = nil
         @error = "The provided technician contact doesn't exist."
         return

@@ -37,7 +37,12 @@ $data{"Email"} = $ticket->cf('Email');
 $data{"Type of Box"} = $ticket->cf('Type of Box');
 $data{"System ID"} = $ticket->cf('SystemID');
 $data{"Warranty"} = $ticket->cf('Warranty');
-$data{"Issues"} = join ", ", @{$ticket->cf('Tech Support Issue')};
+my $issue = $ticket->cf('Tech Support Issue');
+if(ref($issue) =~ /ARRAY/) {
+    $data{"Issues"} = join ", ", @{$issue};
+} else {
+    $data{"Issues"} = $issue;
+}
 $data{"Initial Content"} = $content;
 
 my $json = JSON->new->allow_nonref;
