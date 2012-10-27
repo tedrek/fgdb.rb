@@ -6,6 +6,7 @@ class SpecSheetsController < ApplicationController
     a << {:only => ["builder", "/view_contact_name"], :privileges => ['manage_contacts']}
     a << {:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["show/sign_off"], :privileges => ['sign_off_spec_sheets']}
+    a << {:only => ["workorder"], :privileges => ['role_tech_support']}
     a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
     return a
   end
@@ -15,6 +16,23 @@ class SpecSheetsController < ApplicationController
     set_contact_context(ContactType.find_by_name('build'))
   end
   public
+
+  def workorder
+    if params[:id]
+      json = `#{RAILS_ROOT}/script/fetch_ts_data.pl #{params[:id].to_i}`
+      @data = JSON.parse(json)
+      if @data && @data["ID"].to_i != params[:id].to_i
+        @data = nil
+        @error = "The provided ticket number does not exist."
+        return
+      end
+      if @data && @data["Queue"] != "TechSupport"
+        @data = nil
+        @error = "The provided ticket number does not reference a valid TechSupport ticket."
+        return
+      end
+    end
+  end
 
   helper :system
   include SystemHelper

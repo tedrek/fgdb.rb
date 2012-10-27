@@ -1,0 +1,44 @@
+<div class="noprint">
+<% if @error %>
+<span class="error"><%= @error %><br /><br /></span>
+<% end %>
+<% form_for "", nil, :url => {:action => "workorder" }, :html => {:method => "get"} do |f| %>
+<%= f.label(:id, "RT Ticket #").sub(/\[id\]/, "id") %>
+<%= (f.text_field "id").sub(/\[id\]/, "id") %>
+<%= submit_tag 'Show Work Order' %>
+<% end %>
+</div>
+<% if @data %>
+<span class="onlyprint" style="float: left; clear: left;">
+<img src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
+</span>
+<center><h1>Tech Support Work Order<br /><br />Help Ticket #<%= @data["ID"] %></h1></center>
+<% def value_or_none(val)
+   value = @data[val]
+   value.length > 0 ? value : "(No #{val})"
+end
+%>
+<table width="100%" class="largetable">
+<tr>
+<td><%= value_or_none("Adopter Name") %></td>
+<td><%= value_or_none("Type of Box") %></td>
+</tr>
+<tr>
+<td><%= value_or_none("Adopter ID") %></td>
+<td><%= value_or_none("System ID") %></td>
+</tr>
+<tr>
+<td><%= value_or_none("Phone") %></td>
+<td><%= value_or_none("Warranty") %></td>
+</tr>
+<tr>
+<td><%= value_or_none("Email") %></td>
+<td></td>
+</tr>
+</table><br />
+<div style="font-size: 16pt;">
+Problems/Diagnosis: <%= value_or_none("Subject") %><br />
+<%= value_or_none("Initial Content") %>
+</div>
+<% end %>
+
