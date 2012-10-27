@@ -283,7 +283,8 @@ module ConditionsHelper
                                                  text_field(params_key, 'megabytes_size_high')]],
                        ['>=', text_field(params_key, 'megabytes_size_ge')],
                        ['<=', text_field(params_key, 'megabytes_size_le')],
-                      ])
+                      ]) +
+      select(params_key, "megabytes_size_units", Conditions::MEGABYTES_UNITS.to_a.sort_by(&:last).collect {|p| [ p.first, p.first ] })
   end
 
   def html_for_result_condition(params_key)

@@ -100,7 +100,7 @@ class Conditions < ConditionsBase
 
   attr_accessor :gizmo_category_id
 
-  attr_accessor :megabytes_size_type, :megabytes_size_exact, :megabytes_size_low, :megabytes_size_high, :megabytes_size_ge, :megabytes_size_le
+  attr_accessor :megabytes_size_type, :megabytes_size_exact, :megabytes_size_low, :megabytes_size_high, :megabytes_size_ge, :megabytes_size_le, :megabytes_size_units
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
   attr_accessor :payment_total_type, :payment_total_exact, :payment_total_low, :payment_total_high, :payment_total_ge, :payment_total_le
 
@@ -187,14 +187,14 @@ class Conditions < ConditionsBase
     if is_this_condition_enabled('megabytes_size')
       case @megabytes_size_type
       when '>='
-        validate_integer('megabytes_size', 'megabytes_size_ge')
+        validate_integer('megabytes_size', 'megabytes_size_ge', true, true)
       when '<='
-        validate_integer('megabytes_size', 'megabytes_size_le')
+        validate_integer('megabytes_size', 'megabytes_size_le', false, true)
       when 'exact'
-        validate_integer('megabytes_size', 'megabytes_size_exact')
+        validate_integer('megabytes_size', 'megabytes_size_exact', false, true)
       when 'between'
-        validate_integer('megabytes_size', 'megabytes_size_low')
-        validate_integer('megabytes_size', 'megabytes_size_high')
+        validate_integer('megabytes_size', 'megabytes_size_low', false, true)
+        validate_integer('megabytes_size', 'megabytes_size_high', true, true)
       else
         errors.add('megabytes_size_type', 'is not a valid search type')
       end
@@ -842,18 +842,20 @@ class Conditions < ConditionsBase
     return ['result LIKE ?', @result.to_s]
   end
 
+  MEGABYTES_UNITS = {"MB" => 1, "GB" => 1000, "TB" => (1000 * 1000)}
   def megabytes_size_conditions(klass)
+    factor = MEGABYTES_UNITS[@megabytes_size_units]
     case @megabytes_size_type
     when 'between'
       return ["#{klass.table_name}.megabytes_size BETWEEN ? AND ?",
-              @megabytes_size_low.to_i,
-              @megabytes_size_high.to_i]
+              @megabytes_size_low.to_f * factor,
+              @megabytes_size_high.to_f * factor]
     when '>='
-      return ["#{klass.table_name}.megabytes_size >= ?", @megabytes_size_ge.to_i]
+      return ["#{klass.table_name}.megabytes_size >= ?", @megabytes_size_ge.to_f * factor]
     when '<='
-      return ["#{klass.table_name}.megabytes_size <= ?", @megabytes_size_le.to_i]
+      return ["#{klass.table_name}.megabytes_size <= ?", @megabytes_size_le.to_f * factor]
     when 'exact'
-      return ["#{klass.table_name}.megabytes_size = ?", @megabytes_size_exact.to_i]
+      return ["#{klass.table_name}.megabytes_size = ?", @megabytes_size_exact.to_f * factor]
     end
   end
 
