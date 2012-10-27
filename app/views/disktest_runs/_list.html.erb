@@ -3,6 +3,7 @@
     <th>Disktest Run ID</th>
 
     <th>Vendor</th>
+    <th>Form Factor</th>
     <th>Size</th>
     <th>Type</th>
     <th>Model</th>
@@ -19,6 +20,7 @@
       <td><%= link_to h(dr.id), {:action => "show", :id => dr.id} %></td>
 
       <td><%= h(dr.vendor) %></td>
+      <td><%= h(dr.form_factor) %></td>
       <td><%= h(dr.display_size) %></td>
       <td><%= h(dr.bus_type) %></td>
       <td><%= h(dr.model) %></td>

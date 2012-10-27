@@ -2,8 +2,10 @@ fgdb.rb (1.0.107) UNRELEASED; urgency=low
 
   * Wrap around will_paginate to make all search results automatically
     include a string such as 'Results 1 - 20 of 55764' (Closes: #31637)
+  * Add a search condition for form_factor in disktest_runs (Closes:
+    #31638)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 26 Oct 2012 19:33:06 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 26 Oct 2012 19:40:55 -0700
 
 fgdb.rb (1.0.106) released; urgency=low
 

@@ -65,6 +65,11 @@ module ConditionsHelper
     select(params_key, "job_id", jobs.sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts.merge(:onkeyup => "magic_onkeyscroll(event);"))
   end
 
+  def html_for_form_factor_condition(params_key)
+    form_factors = ['Other', '2.5"', '3.5"']
+    select(params_key, "form_factor", form_factors.collect {|p| [ p, p ] })
+  end
+
   def html_for_attendance_type_condition(params_key)
     select(params_key, "attendance_type_id", AttendanceType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
   end

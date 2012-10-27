@@ -20,7 +20,7 @@ class Conditions < ConditionsBase
       updated_by cashier_updated_by is_pickup finalized gizmo_context_id
       logged_in_within signed_off_by payment_total organization_name
       model vendor result interface_type megabytes_size week unresolved_shipment
-      volunteered_non_court_hours_in_days
+      volunteered_non_court_hours_in_days form_factor
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -35,6 +35,8 @@ class Conditions < ConditionsBase
   end
 
   attr_accessor :shift_type
+
+  attr_accessor :form_factor
 
   attr_accessor :week
 
@@ -395,6 +397,10 @@ class Conditions < ConditionsBase
     else
       return ["(#{klass.table_name}.attendance_type_id IS NULL OR attendance_types.cancelled = false OR attendance_types.cancelled IS NULL)"]
     end
+  end
+
+  def form_factor_conditions(klass)
+    return ["#{klass.table_name}.form_factor LIKE ?", @form_factor]
   end
 
   def attendance_type_conditions(klass)
