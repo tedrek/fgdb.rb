@@ -6,6 +6,8 @@ fgdb.rb (1.0.107) UNRELEASED; urgency=low
     #31638)
     - Display the form factor in search results
     - Allow selecting different units for the megabytes size condition
+    - Also add a condition to spec_sheets and a link for finding hard
+      drives in printme records from their disktest_run serial number
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 26 Oct 2012 19:40:55 -0700
 

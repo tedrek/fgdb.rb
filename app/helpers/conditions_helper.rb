@@ -287,6 +287,10 @@ module ConditionsHelper
       select(params_key, "megabytes_size_units", Conditions::MEGABYTES_UNITS.to_a.sort_by(&:last).collect {|p| [ p.first, p.first ] })
   end
 
+  def html_for_hard_drive_serial_number_condition(params_key)
+    text_field(params_key, 'hard_drive_serial_number')
+  end
+
   def html_for_result_condition(params_key)
     collection_select(params_key, "result", ['PASSED', 'FAILED', 'ABORTED', 'STOPPED', 'UNTESTED'].sort, "to_s", "to_s")
   end

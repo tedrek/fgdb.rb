@@ -20,7 +20,7 @@ class Conditions < ConditionsBase
       updated_by cashier_updated_by is_pickup finalized gizmo_context_id
       logged_in_within signed_off_by payment_total organization_name
       model vendor result interface_type megabytes_size week unresolved_shipment
-      volunteered_non_court_hours_in_days form_factor
+      volunteered_non_court_hours_in_days form_factor hard_drive_serial_number
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -33,6 +33,8 @@ class Conditions < ConditionsBase
   for i in DATES
     attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
+
+  attr_accessor :hard_drive_serial_number
 
   attr_accessor :shift_type
 
@@ -336,6 +338,11 @@ class Conditions < ConditionsBase
       return !err
     end
     false
+  end
+
+  def hard_drive_serial_number_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
+    return ["#{klass.table_name}.cleaned_output ILIKE ?", '%' + @hard_drive_serial_number + '%']
   end
 
   def week_conditions(klass)

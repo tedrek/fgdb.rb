@@ -39,6 +39,7 @@
   <% filters << 'action' %>
   <% filters << 'type' %>
   <% filters << 'serial_number' %>
+  <% filters << 'hard_drive_serial_number' %>
   <% if has_required_privileges('show/sign_off') %>
     <% filters << 'signed_off_by' %>
   <% end %>

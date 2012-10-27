@@ -14,6 +14,7 @@
 
     <th>Status</th>
     <th>Failure Reason</th>
+    <th>Find in Systems</th>
   </tr>
   <% for dr in @disktest_runs %>
     <tr>
@@ -31,6 +32,7 @@
 
       <td><%= h(dr.result) %></td>
       <td><%= h(dr.failure_details) %></td>
+      <td><%= link_to "Find in Systems", {:controller => "spec_sheets", :action => "search", :conditions => {:hard_drive_serial_number_enabled => true, :hard_drive_serial_number => dr.serial_number}} %></td>
     </tr>
   <% end %>
 </table>
