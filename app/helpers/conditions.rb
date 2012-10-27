@@ -342,7 +342,7 @@ class Conditions < ConditionsBase
 
   def hard_drive_serial_number_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
-    return ["#{klass.table_name}.cleaned_output ILIKE ?", '%' + @hard_drive_serial_number + '%']
+    return ["#{klass.table_name}.cleaned_output ILIKE ?", '%<serial>' + @hard_drive_serial_number + '</serial>%']
   end
 
   def week_conditions(klass)
