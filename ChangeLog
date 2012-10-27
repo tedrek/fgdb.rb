@@ -1,7 +1,20 @@
-fgdb.rb (1.0.107) UNRELEASED; urgency=low
+fgdb.rb (1.0.108) UNRELEASED; urgency=low
 
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 24 Oct 2012 04:30:29 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:47 -0700
+
+fgdb.rb (1.0.107) released; urgency=low
+
+  * Wrap around will_paginate to make all search results automatically
+    include a string such as 'Results 1 - 20 of 55764' (Closes: #31637)
+  * Add a search condition for form_factor in disktest_runs (Closes:
+    #31638)
+    - Display the form factor in search results
+    - Allow selecting different units for the megabytes size condition
+    - Also add a condition to spec_sheets and a link for finding hard
+      drives in printme records from their disktest_run serial number
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:16 -0700
 
 fgdb.rb (1.0.106) released; urgency=low
 
