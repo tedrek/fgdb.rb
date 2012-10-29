@@ -1,0 +1,4 @@
+<% @disbursement = disbursement %>
+<%= render :partial => 'transaction/receipt_layout' %>
+<%= render :partial => "disbursement_receipt_guts", :locals => {:disbursement => disbursement} %>
+<%= render :partial => 'transaction/receipt_footer' %>

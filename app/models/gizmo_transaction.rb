@@ -183,8 +183,9 @@ module GizmoTransaction
     end
   end
 
+  # contact address data from receipt, by default
   def should_i_hide_it?
-    if gizmo_context == GizmoContext.donation or gizmo_context == GizmoContext.gizmo_return
+    if gizmo_context == GizmoContext.donation or gizmo_context == GizmoContext.gizmo_return or gizmo_context == GizmoContext.disbursement
       return true
     elsif gizmo_context == GizmoContext.sale
       return false

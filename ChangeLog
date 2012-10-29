@@ -15,6 +15,9 @@ fgdb.rb (1.0.107) released; urgency=low
       drives in printme records from their disktest_run serial number
   * Add a new link for adding a vacation for a day for a contact and
     also add a footnote when marking somebody as absent (Closes: #31549)
+  * Add a link to crash reports for creating an RT ticket (Closes:
+    #27160)
+  * Add a printer friendly receipt for disbursements (Closes: #31636)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:16 -0700
 
