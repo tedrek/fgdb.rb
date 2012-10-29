@@ -7,16 +7,16 @@
 <% end %>
 
 <h1 style="color: red; font-size: 60px;"><%= @exception_data["status"] %> Error!</h1>
-<p>An error occurred that prevented fgdb.rb from completing the request. <br /><b>To get this fixed, report this issue by creating a ticket in the Coding RT queue.
-<% if !@fgdb_local_request %>
+<p>An error occurred that prevented fgdb.rb from completing the request. <br /><b>To get this fixed, report this issue by creating a ticket in the Coding RT queue
+:<% if @exception_data["crash_id"] && !@fgdb_local_request %>
 <% subj = "Crash Report: ID #{@exception_data["crash_id"]} from #{@exception_data["user"] || @exception_data["client_ip"]}@#{@exception_data["controller"]}/#{@exception_data["action"]}#{@exception_data["referer"] ? " via " + @exception_data["referer"] : ""}" %>
 <% body = "Crash message: Exception: #{@exception_data["clean_message"]}
 Traceback summary:
 #{ (@exception_data["application_backtrace"] || [])[0..2].join("\n") }
 Request parameters:
 #{@exception_data["params"].inspect.gsub(", ", ",\n ")}" %>
-<% url = "http://todo.freegeek.org/index.html?QuickCreate=1&Subject=#{subj}&Queue=Coding&Owner=#{Default["coding_ticket_owner"]}&Requestors=#{current_user ? current_user.email || ""}&Content=#{body}"%>
-  <%= link_to "Click Here to Automatically Report This Issue Now", url %>
+<% url = "http://todo.freegeek.org/index.html?QuickCreate=1&Subject=#{subj}&Queue=Coding&Owner=#{Default['coding_ticket_owner'].to_s}&Content=#{body}" %>
+<br />  <%= link_to "Click Here to Automatically Report This Issue Now", url %>
 <% end %>
 </b></p>
 
