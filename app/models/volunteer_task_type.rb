@@ -30,4 +30,8 @@ class VolunteerTaskType < ActiveRecord::Base
     end
     return disp
   end
+
+  def to_s
+    description
+  end
 end
