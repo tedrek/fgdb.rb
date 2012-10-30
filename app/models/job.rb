@@ -23,5 +23,9 @@ class Job < ActiveRecord::Base
   def to_s
     name
   end
+
+  def condition_to_s
+    to_s
+  end
 end
 

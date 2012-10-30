@@ -710,7 +710,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
     sections.each {|section|
       data[section] = {}
       eval((section).to_s.classify).find(:all).each {|type|
-        data[section][type.description] = 0.0
+        data[section][type.to_s] = 0.0
       }
       data[section]['Total'] = 0.0
       data[section]['(none)'] = 0.0
