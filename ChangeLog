@@ -15,6 +15,7 @@ fgdb.rb (1.0.107) released; urgency=low
   * Add a printer friendly receipt for disbursements (Closes: #31636)
   * Fix copying assignments with events to reset attendance and call
     status to none (Closes: #31745)
+  * Provide a new printme API allowing to check if contact exists
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:16 -0700
 
