@@ -3,7 +3,7 @@
 if @successful
   page.remove element_row_id(@options)
 else
-  page.hide loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")
+  page.hide loading_indicator_id("volunteer_task_#{@volunteer_task.id}_loading")
 end
 
 page.replace_html messages_id(@options), :partial => 'messages'

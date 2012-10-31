@@ -26,6 +26,7 @@
 <% end %>
 
 <% if @worker and @session_allowed %>
+<% if @worker.effective?(@date) %>
 <% jobs = Job.workable.logable.effective_on(@date) %>
 <% jobs = (jobs + @shifts.map(&:job)).uniq %>
 
@@ -106,6 +107,9 @@ Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_secon
 </div>
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
+<% end %>
+<% else %>
+  <span class="error">Cannot log hours for that day: <%= @worker.name %> is set as an inactive worker on <%= @date %>.</span>
 <% end %>
 <% end %>
 </div>
