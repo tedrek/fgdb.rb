@@ -60,6 +60,8 @@ class VolunteerEvent < ActiveRecord::Base
         x.assignments.select{|x| x.contact_id}.each do |y|
           a = y.class.new(y.attributes)
           a.time_shift(time_shift)
+          a.call_status_type_id = nil
+          a.attendance_type_id = nil
           a.volunteer_shift = n
           assigns << a
         end
