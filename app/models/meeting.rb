@@ -7,6 +7,8 @@ class Meeting < Shift
   belongs_to :schedule
   has_many :meeting_minders
 
+  validates_presence_of :repeats_every_months
+
   named_scope :perpetual, :conditions => ['shift_date IS NULL']
   named_scope :generated, :conditions => ['schedule_id = ?', Schedule.generate_from.id]
   named_scope :effective_in_range, lambda { |start, fin|
