@@ -1,5 +1,12 @@
 fgdb.rb (1.0.108) UNRELEASED; urgency=low
 
+	NOTE: due to printme API change, must release fg-build-utils too
+
+  * Add a link to crash reports for creating an RT ticket (Closes:
+    #27160)
+  * Provide a new printme API allowing to check if contact exists
+  * Add a printer friendly receipt for disbursements (Closes: #31636)
+  * Tech support work order printouts are usable and formatted
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:47 -0700
 
@@ -15,12 +22,8 @@ fgdb.rb (1.0.107) released; urgency=low
       drives in printme records from their disktest_run serial number
   * Add a new link for adding a vacation for a day for a contact and
     also add a footnote when marking somebody as absent (Closes: #31549)
-  * Add a link to crash reports for creating an RT ticket (Closes:
-    #27160)
-  * Add a printer friendly receipt for disbursements (Closes: #31636)
   * Fix copying assignments with events to reset attendance and call
     status to none (Closes: #31745)
-  * Provide a new printme API allowing to check if contact exists
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:16 -0700
 
