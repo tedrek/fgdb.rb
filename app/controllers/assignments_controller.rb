@@ -478,7 +478,10 @@ class AssignmentsController < ApplicationController
     if @assignment.contact and not @assignment.contact.is_old_enough?
       msg = "This volunteer is not yet #{Default['minimum_volunteer_age']} years old (based on their saved birthday: #{@assignment.contact.birthday.to_s}).\nPlease remind the volunteer that they must have an adult with them to volunteer."
       if flash[:jsalert]
-        flash[:jsalert].unshift(msg)
+        if flash[:jsalert].class != Array
+          flash[:jslalert] = [flash[:jslalert]]
+        end
+        flash[:jslalert].unshift(msg)
       else
         flash[:jsalert] = msg
       end
