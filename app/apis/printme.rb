@@ -44,13 +44,8 @@ class PrintmeAPI < SOAP::SoapsBase
     ["system_url", "system_id"],
     ["is_system_gone", "system_id"],
     ["question_defaults", "system_id"],
-    ["get_system_id", "xml"],
-    ["is_valid_contact", "contact_id"]
+    ["get_system_id", "xml"]
     ]
-  end
-
-  def is_valid_contact(contact_id)
-    !! Contact.find_by_id(contact_id.to_i)
   end
 
   SpecSheetQuestionStruct = Struct.new(:id_name, :name, :question, :conditions) if !defined?(SpecSheetQuestionStruct)
@@ -83,7 +78,7 @@ class PrintmeAPI < SOAP::SoapsBase
     server_hash[version].class != Array || server_hash[version].include?(client_version)
   end
   def version
-    17
+    16
   end
   def bad_client_error
     "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."
@@ -114,7 +109,6 @@ class PrintmeAPI < SOAP::SoapsBase
     server_versions[14] = [14] # previous systems
     server_versions[15] = [15] # conditional Q's
     server_versions[16] = [16] # OR'ed conditional Q's
-    server_versions[17] = [16,17]
     server_versions
   end
 
