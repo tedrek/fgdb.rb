@@ -7,10 +7,10 @@ if [ "$(cat .git/HEAD)" != "ref: refs/heads/master" ]; then
     exit 1
 fi
 
-if [ ! -f .git/refs/remotes/fg/master -o ! -f .git/refs/remotes/origin/master ]; then
-    echo "Need to have a fg and an origin remote branch" >&2
-    exit 1
-fi
+#if [ ! -f .git/refs/remotes/fg/master -o ! -f .git/refs/remotes/origin/master ]; then
+#    echo "Need to have a fg and an origin remote branch" >&2
+#    exit 1
+#fi
 
 if [ -z "$IGNORE_FIXME" ]; then
     ACK_DIFF="$(dirname $0)/ack-the-diff"
