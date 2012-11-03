@@ -1,9 +1,9 @@
 class AddTshirtType < ActiveRecord::Migration
   def self.up
     if Default.is_pdx
-      schwag = GizmoType.find_by_name('schwag')
+      schwag = GizmoType.find_by_name_and_ineffective_on('schwag', false)
       schwag.description = "Sticker"
-      schwag.save!
+      schwag.save
 
       {"t_shirt" => "T-Shirt", "tote_bag" => "Tote Bag"}.each do |k,v|
         new = GizmoType.new
