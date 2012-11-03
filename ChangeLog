@@ -1,7 +1,5 @@
 fgdb.rb (1.0.108) released; urgency=low
 
-	NOTE: due to printme API change, must release fg-build-utils too
-
   * Add a link to crash reports for creating an RT ticket (Closes:
     #27160)
   * Provide a new printme API allowing to check if contact exists
