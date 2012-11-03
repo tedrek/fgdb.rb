@@ -26,6 +26,10 @@ class PricingType < ActiveRecord::Base
     return count
   end
 
+  def replaced?
+    !! self.replaced_by
+  end
+
   def finally_replaced_by
     self.replaced_by ? self.replaced_by.finally_replaced_by : self
   end

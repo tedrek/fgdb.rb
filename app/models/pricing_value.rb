@@ -7,6 +7,10 @@ class PricingValue < ActiveRecord::Base
   validates_presence_of :name
   validates_presence_of :value_cents
 
+  def replaced?
+    !! self.replaced_by
+  end
+
   def finally_replaced_by
     self.replaced_by ? self.replaced_by.finally_replaced_by : self
   end
