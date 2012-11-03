@@ -3,6 +3,11 @@ class PricingComponent < ActiveRecord::Base
   has_and_belongs_to_many :pricing_types, :conditions => 'pricing_types.ineffective_on IS NULL'
   validates_presence_of :name
 
+  def to_equation_text
+    added = self.name.downcase.gsub(" ", "_").gsub("/", "_")
+    return multiplier != 1.0 ? "(#{self.multiplier} * #{added})" : added
+  end
+
   def to_equation(pv)
     all_mine = pv.select{|x| x.pricing_component == self }
     return "0" if all_mine.length == 0

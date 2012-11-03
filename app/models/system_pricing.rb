@@ -62,6 +62,10 @@ class SystemPricing < ActiveRecord::Base
     self.pricing_type.multiplier + ' * (' + self.pricing_type.pricing_expressions.map{|x| x.to_equation(self.pricing_values)}.join(' + ') + ') = ' + (pre_round_cents/10000.0).to_s
   end
 
+  def to_equation_text
+    self.pricing_type.multiplier + ' * (' + self.pricing_type.pricing_expressions.map{|x| x.to_equation_text}.join(' + ') + ')'
+  end
+
   def autodetect_values
     return unless self.pricing_type
     self.pricing_type.pricing_components.each do |c|
