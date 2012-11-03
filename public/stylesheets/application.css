@@ -623,3 +623,13 @@ font-size: 16pt;
 .largetable td:last-child {
 text-align: right
 }
+
+table.badge td, table.badge th {
+  width: 2.4in;
+  vertical-align: top;
+  text-align: center;
+}
+
+table.badge tr {
+  height: 3.1in;
+}
