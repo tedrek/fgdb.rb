@@ -1,4 +1,4 @@
-fgdb.rb (1.0.108) UNRELEASED; urgency=low
+fgdb.rb (1.0.108) released; urgency=low
 
 	NOTE: due to printme API change, must release fg-build-utils too
 
@@ -8,7 +8,7 @@ fgdb.rb (1.0.108) UNRELEASED; urgency=low
   * Add a printer friendly receipt for disbursements (Closes: #31636)
   * Tech support work order printouts are usable and formatted
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:47 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
 
 fgdb.rb (1.0.107) released; urgency=low
 
