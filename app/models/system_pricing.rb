@@ -22,7 +22,6 @@ class SystemPricing < ActiveRecord::Base
     for i in [/\s/, "-", ")", "("]
       values = values.map{|v| v.split(i)}.flatten
     end
-    puts values.inspect
     matcher.split(/[\s-]+/).map(&:downcase).select{|x| !values.include?(x)}.length == 0
   end
 

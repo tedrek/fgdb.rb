@@ -1,7 +1,7 @@
 class PricingType < ActiveRecord::Base
   has_and_belongs_to_many :types
   belongs_to :gizmo_type
-  has_and_belongs_to_many :pricing_components
+  has_many :pricing_expressions
   define_amount_methods_on :base_value
   define_amount_methods_on :multiplier
   define_amount_methods_on :round_by
@@ -14,6 +14,10 @@ class PricingType < ActiveRecord::Base
   named_scope :automatic, :conditions => ["(pull_from IS NOT NULL AND pull_from <> '') OR id IN (SELECT pricing_type_id FROM pricing_types_types)"]
 
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
+
+  def pricing_components # FIXME
+    self.pricing_expressions.map(&:pricing_components).flatten.uniq
+  end
 
   def matching_conds
     count = 0
