@@ -1,0 +1,27 @@
+<table class="awesome badge">
+<% 3.times do %>
+<tr>
+<% 3.times do %>
+<td>
+
+<h1 style="vertical-align: center; clear: left; float: left; width: 1em; font-size: 3.3em; line-height: 0.75em; letter-spacing: 20px;">S T A F F</h1>
+<img style="float: left; clear: left;" width="92px;" height="88px;" src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
+
+<img width="160px;" height="200px" src="/images/rails.png" />
+
+<div style="float: left; text-align: center; width: 60%;">
+<% e_name = "Ryan Niebur" %>
+<div style="height: 2em;">
+<span style="font-size: 16pt"><%= e_name %></span>
+</div>
+<br />
+<% e_id = 55010 %>
+<%= barcode(e_id) %><br />
+#<%= e_id %>
+</div>
+
+</td>
+<% end %>
+</tr>
+<% end %>
+</table>
