@@ -458,6 +458,8 @@ class AssignmentsController < ApplicationController
     end
     rt = params[:assignment].delete(:redirect_to)
 
+    js_alert = nil
+
     ret = true
     @assignments.each{|x|
       if ret
@@ -469,23 +471,21 @@ class AssignmentsController < ApplicationController
           if x.volunteer_shift.volunteer_event and x.volunteer_shift.volunteer_event.notes and x.volunteer_shift.volunteer_event.notes.length > 0
             alert += "\n\nSome suggested notes saved in the database for this event are:\n" + x.volunteer_shift.volunteer_event.notes
           end
-          flash[:jsalert] ||= []
-          flash[:jsalert] << alert
+          js_alert = alert
         end
       end
     }
 
     if @assignment.contact and not @assignment.contact.is_old_enough?
       msg = "This volunteer is not yet #{Default['minimum_volunteer_age']} years old (based on their saved birthday: #{@assignment.contact.birthday.to_s}).\nPlease remind the volunteer that they must have an adult with them to volunteer."
-      if flash[:jsalert] != nil
-        if flash[:jsalert].class != Array
-          flash[:jslalert] = [flash[:jslalert]]
-        end
-        flash[:jslalert].unshift(msg)
+      if js_alert == nil
+        js_alert = msg
       else
-        flash[:jsalert] = msg
+        js_alert = msg + "\n\n" + js_alert
       end
     end
+
+    flash[:jsalert] = js_alert if js_alert
 
     if ret
       flash[:notice] = 'Assignment was successfully updated.'
