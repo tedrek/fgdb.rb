@@ -16,6 +16,11 @@
 <% end %>
 
 <p>
+  <b>Equation:</b>
+  <%=h @system_pricing.to_equation %>
+</p>
+
+<p>
   <b>Calculated Price:</b>
   $<%=h @system_pricing.calculated_price %>
 </p>

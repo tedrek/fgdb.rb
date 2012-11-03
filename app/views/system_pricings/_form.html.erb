@@ -50,6 +50,10 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
       <% end %>
 <% if @system_pricing.pricing_type %>
 <tr>
+        <th>Equation Used:</th>
+        <td><span id="equation">$<%= @system_pricing.to_equation %></span></td>
+</tr>
+<tr>
         <th>Calculated Price:</th>
         <td><span id="calculated_price">$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></span><%= loading_indicator_tag("calculated_price") %></td>
 </tr>

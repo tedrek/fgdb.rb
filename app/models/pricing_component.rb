@@ -3,6 +3,13 @@ class PricingComponent < ActiveRecord::Base
   has_and_belongs_to_many :pricing_types, :conditions => 'pricing_types.ineffective_on IS NULL'
   validates_presence_of :name
 
+  def to_equation(pv)
+    all_mine = pv.select{|x| x.pricing_component == self }
+    return "0" if all_mine.length == 0
+    added = all_mine.length == 1 ? all_mine.first.value : '(' + all_mine.map{|x| x.value}.join(" + ") + ')'
+    return multiplier != 1.0 ? "(#{self.multiplier} * #{added})" : added
+  end
+
   def display_name
     n = self.name
     n += " (#{self.pricing_types.map(&:name).join(", ")})" if self.pricing_types.length > 0
