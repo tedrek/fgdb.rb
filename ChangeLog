@@ -5,13 +5,12 @@ fgdb.rb (1.0.109) UNRELEASED; urgency=low
 
 fgdb.rb (1.0.108) released; urgency=low
 
-	NOTE: due to printme API change, must release fg-build-utils too
-
   * Add a link to crash reports for creating an RT ticket (Closes:
     #27160)
   * Provide a new printme API allowing to check if contact exists
   * Add a printer friendly receipt for disbursements (Closes: #31636)
   * Tech support work order printouts are usable and formatted
+  * Add T-Shirt and Tote Bag types to sales (Closes: #30244)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
 
