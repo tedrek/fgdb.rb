@@ -2,6 +2,19 @@ class PricingComponent < ActiveRecord::Base
   has_many :pricing_values, :order => 'value_cents DESC', :conditions => 'pricing_values.ineffective_on IS NULL'
   has_and_belongs_to_many :pricing_types, :conditions => 'pricing_types.ineffective_on IS NULL'
   validates_presence_of :name
+  define_amount_methods_on :multiplier
+
+  def to_equation_text
+    added = self.name.downcase.gsub(" ", "_").gsub("/", "_")
+    return multiplier_cents != 100 ? "(#{self.multiplier} * #{added})" : added
+  end
+
+  def to_equation(pv)
+    all_mine = pv.select{|x| x.pricing_component == self }
+    return "0" if all_mine.length == 0
+    added = all_mine.length == 1 ? all_mine.first.value : '(' + all_mine.map{|x| x.value}.join(" + ") + ')'
+    return multiplier_cents != 100 ? "(#{self.multiplier} * #{added})" : added
+  end
 
   def display_name
     n = self.name

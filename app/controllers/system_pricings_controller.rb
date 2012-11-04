@@ -25,6 +25,7 @@ class SystemPricingsController < ApplicationController
     render :update do |page|
       page.hide loading_indicator_id("calculated_price")
       page << '$("calculated_price").innerHTML = "$' + @system_pricing.calculated_price + '";'
+      page << '$("equation").innerHTML = "' + @system_pricing.to_equation + '";'
     end
   end
 

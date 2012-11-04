@@ -1,7 +1,7 @@
 class PricingType < ActiveRecord::Base
   has_and_belongs_to_many :types
   belongs_to :gizmo_type
-  has_and_belongs_to_many :pricing_components
+  has_many :pricing_expressions
   define_amount_methods_on :base_value
   define_amount_methods_on :multiplier
   define_amount_methods_on :round_by
@@ -15,11 +15,19 @@ class PricingType < ActiveRecord::Base
 
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
 
+  def pricing_components # FIXME
+    self.pricing_expressions.map(&:pricing_components).flatten.uniq
+  end
+
   def matching_conds
     count = 0
     count += 1 if self.pull_from and self.pull_from != ""
     count += 1 if self.types.length > 0
     return count
+  end
+
+  def replaced?
+    !! self.replaced_by
   end
 
   def finally_replaced_by
