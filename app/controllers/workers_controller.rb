@@ -20,8 +20,13 @@ class WorkersController < ApplicationController
 
   def upload
     @worker = Worker.find_by_id(params[:id])
-    if (io = params[:picture])
-      filename = RAILS_ROOT + "/public/images/workers/#{@worker.id}.png"
+    dir = RAILS_ROOT + "/public/images/workers/"
+    filename = dir + "#{@worker.id}.png"
+    if !File.writable?(dir)
+      @error = "Cannot write to #{filename}"
+    end
+    if @error.nil? && (io = params[:picture])
+      File.unlink(filename) if File.exists?(filename)
       File.open(filename, 'w') do |f|
         f.write(io.read)
       end
