@@ -12,6 +12,22 @@ class WorkersController < ApplicationController
     render :action => 'list'
   end
 
+  def badge
+    if params[:workers]
+      @workers = Worker.find_all_by_id(params[:workers].map{|x| x.first.to_i}).sort_by(&:name)
+    end
+  end
+
+  def upload
+    @worker = Worker.find_by_id(params[:id])
+    if (io = params[:picture])
+      filename = RAILS_ROOT + "/public/images/workers/#{@worker.id}.png"
+      File.open(filename, 'w') do |f|
+        f.write(io.read)
+      end
+    end
+  end
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }

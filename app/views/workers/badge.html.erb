@@ -1,23 +1,50 @@
-<table class="awesome badge">
-<% 3.times do %>
-<tr>
-<% 3.times do %>
-<td>
+<div class="noprint">
+<% form_tag(:action => "badge") do %>
+<div>
+Select workers:
+</div>
+<% Worker.on_date.sort_by(&:name).each do |w| %>
+<div class="form-element">
+<%= check_box_tag "workers[#{w.id}]", w.id, @workers && @workers.include?(w) %><%= label_tag "workers[#{w.id}]", w.name %>
+</div>
+<% end %>
+<br />
+<div style="clear: left">
+<%= submit_tag "Generate Badges" %>
+</div>
 
+<% if @workers %>
+<% @workers.each do |x| %>
+<%= link_to "Upload image for #{x.name}", {:action => "upload", :id => x.id}, :target => "_blank" %>
+<% end %>
+<% end %>
+
+<% end %>
+</div>
+
+<% if @workers %>
+<table class="awesome badge">
+<% while @workers.length > 0 %>
+<% c = 0 %>
+<tr>
+<% while c < 3 %>
+<% c = c + 1 %>
+<td>
+<% worker = @workers.shift %>
 <h1 style="vertical-align: center; clear: left; float: left; width: 1em; font-size: 3.3em; line-height: 0.75em; letter-spacing: 20px;">S T A F F</h1>
 <img style="float: left; clear: left;" width="92px;" height="88px;" src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
 
-<img width="160px;" height="200px" src="/images/rails.png" />
+<img width="160px;" height="200px" src="/images/workers/<%= worker ? worker.id : 0 %>.png" />
 
 <div style="float: left; text-align: center; width: 60%;">
-<% e_name = "Ryan Niebur" %>
 <div style="height: 2em;">
-<span style="font-size: 16pt"><%= e_name %></span>
+<span style="font-size: 16pt"><%= worker ? (worker.contact ? worker.contact.display_name : worker.name) : "No Worker" %></span>
 </div>
 <br />
-<% e_id = 55010 %>
-<%= barcode(e_id) %><br />
-#<%= e_id %>
+<% if worker && worker.contact %>
+<%= barcode(worker.contact_id) %><br />
+#<%= worker.contact_id %>
+<% end %>
 </div>
 
 </td>
@@ -25,3 +52,5 @@
 </tr>
 <% end %>
 </table>
+<% end %>
+
