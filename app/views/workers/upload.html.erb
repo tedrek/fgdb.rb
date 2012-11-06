@@ -7,7 +7,7 @@ Current image:
 <br />
 <br />
 
-Upload a .png image:
+Upload a .png image (will be displayed using 160x200 pixels):
 <% form_tag({:action => "upload", :id => @worker.id}, :multipart => true) do %>
   <%= file_field_tag 'picture' %>
   <%= submit_tag "Upload" %>
