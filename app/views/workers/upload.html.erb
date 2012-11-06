@@ -1,5 +1,11 @@
 <h2>Uploading picture for <%= @worker.name %></h2>
 
+<% if @error %>
+<span class="error">
+Error: <%= @error %><br /><br />
+</span>
+<% end %>
+
 Current image:
 <img width="160px;" height="200px" src="/images/workers/<%= @worker ? @worker.id : 0 %>.png" alt="none" />
 
