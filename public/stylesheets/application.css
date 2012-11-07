@@ -627,14 +627,17 @@ text-align: right
 table.badge {
   margin-top: 0.2in;
   margin-left: 0.45in;
+  border-color: transparent;
 }
 
 table.badge td, table.badge th {
   width: 2.18in;
   vertical-align: top;
   text-align: center;
+  border-color: transparent;
 }
 
 table.badge tr {
   height: 3.5in;
+  border-color: transparent;
 }

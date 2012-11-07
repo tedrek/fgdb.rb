@@ -23,11 +23,17 @@ Select workers:
 </div>
 
 <% if @workers %>
-<table class="awesome badge">
+<% cols = 4 %>
+<% rows = 2 %>
+
 <% while @workers.length > 0 %>
+<% r = 0 %>
+<table class="awesome badge">
+<% while @workers.length > 0 && r < rows %>
+<% r = r + 1 %>
 <% c = 0 %>
 <tr>
-<% while c < 4 %>
+<% while c < cols %>
 <% c = c + 1 %>
 <td>
 <% worker = @workers.shift %>
@@ -53,5 +59,9 @@ Select workers:
 </tr>
 <% end %>
 </table>
+<div class="noprint" style="page-break-before: always;">
+&nbsp;
+</div>
+<% end %>
 <% end %>
 
