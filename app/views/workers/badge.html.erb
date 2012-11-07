@@ -23,21 +23,28 @@ Select workers:
 </div>
 
 <% if @workers %>
-<table class="awesome badge">
+<% cols = 4 %>
+<% rows = 2 %>
+
 <% while @workers.length > 0 %>
+<% r = 0 %>
+<table class="awesome badge">
+<% while @workers.length > 0 && r < rows %>
+<% r = r + 1 %>
 <% c = 0 %>
 <tr>
-<% while c < 3 %>
+<% while c < cols %>
 <% c = c + 1 %>
 <td>
 <% worker = @workers.shift %>
-<h1 style="vertical-align: center; clear: left; float: left; width: 1em; font-size: 3.3em; line-height: 0.75em; letter-spacing: 20px;">S T A F F</h1>
-<img style="float: left; clear: left;" width="92px;" height="88px;" src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
+<% if worker %>
+<h1 style="vertical-align: center; clear: left; float: left; width: 1em; font-size: 3.3em; line-height: 0.75em; letter-spacing: 20px; margin-left: 5px;">S T A F F</h1>
+<img style="float: left; clear: left; margin-left: 5px; margin-top: 30px;" width="70px;" height="74px;" src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
 
 <img width="160px;" height="200px" src="/images/workers/<%= worker ? worker.id : 0 %>.png" />
 
-<div style="float: left; text-align: center; width: 60%;">
-<div style="height: 2em;">
+<div style="float: left; text-align: center; width: 60%; margin-top: 10px; margin-left: 5px;">
+<div style="height: 2em; margin-bottom: 5px;">
 <span style="font-size: 16pt"><%= worker ? (worker.contact ? worker.contact.display_name : worker.name) : "No Worker" %></span>
 </div>
 <br />
@@ -46,11 +53,15 @@ Select workers:
 #<%= worker.contact_id %>
 <% end %>
 </div>
-
+<% end %>
 </td>
 <% end %>
 </tr>
 <% end %>
 </table>
+<div class="noprint" style="page-break-before: always;">
+&nbsp;
+</div>
+<% end %>
 <% end %>
 
