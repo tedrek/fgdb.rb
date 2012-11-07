@@ -625,12 +625,12 @@ text-align: right
 }
 
 table.badge {
-  margin-top: 0.3in;
+  margin-top: 0.2in;
   margin-left: 0.5in;
 }
 
 table.badge td, table.badge th {
-  width: 2.25in;
+  width: 2.18in;
   vertical-align: top;
   text-align: center;
 }
