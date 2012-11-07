@@ -71,9 +71,14 @@ class VolunteerEvent < ActiveRecord::Base
     new.resources_volunteer_events = self.resources_volunteer_events.map{|x| x.class.new(x.attributes)}
     new.date = date
     new.resources_volunteer_events.each{|x| x.time_shift(time_shift)}
-    new.save!
-    new.volunteer_shifts.each{|x| x.save!}
-    assigns.each{|x| x.save!}
-    return new
+    conflictors = assigns.select{|x| !x.valid?}
+    if conflictors.length == 0
+      new.save!
+      new.volunteer_shifts.each{|x| x.save!}
+      assigns.each{|x| x.save!}
+      return new
+    else
+      return conflictors
+    end
   end
 end
