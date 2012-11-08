@@ -25,10 +25,12 @@ Select workers:
 <% if @workers %>
 <% cols = 4 %>
 <% rows = 2 %>
+<% t = 0 %>
 
 <% while @workers.length > 0 %>
 <% r = 0 %>
-<table class="awesome badge">
+<% t = t + 1 %>
+<table class="awesome badge <%= t > 1 ? "badgepage2" : "badgepage1" %>">
 <% while @workers.length > 0 && r < rows %>
 <% r = r + 1 %>
 <% c = 0 %>
@@ -45,7 +47,7 @@ Select workers:
 
 <div style="float: left; text-align: center; width: 60%; margin-top: 10px; margin-left: 5px;">
 <div style="height: 2em; margin-bottom: 5px;">
-<span style="font-size: 16pt"><%= worker ? (worker.contact ? worker.contact.display_name : worker.name) : "No Worker" %></span>
+<span style="font-size: 16pt"><%= worker ? (worker.contact ? worker.contact.first_name + "<br />" + worker.contact.surname : worker.name.sub(" ", "<br />")) : "No Worker" %></span>
 </div>
 <br />
 <% if worker && worker.contact %>
@@ -59,7 +61,7 @@ Select workers:
 </tr>
 <% end %>
 </table>
-<div class="noprint" style="page-break-before: always;">
+<div style="page-break-after: always;">
 &nbsp;
 </div>
 <% end %>

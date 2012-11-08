@@ -625,9 +625,16 @@ text-align: right
 }
 
 table.badge {
-  margin-top: 0.2in;
   margin-left: 0.45in;
   border-color: transparent;
+}
+
+table.badgepage1 {
+  margin-top: 0.2in;
+}
+
+table.badgepage2 {
+  margin-top: 0.45in;
 }
 
 table.badge td, table.badge th {
