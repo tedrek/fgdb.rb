@@ -78,6 +78,7 @@ class VolunteerEvent < ActiveRecord::Base
       assigns.each{|x| x.save!}
       return new
     else
+      new.destroy if new.id
       return conflictors
     end
   end
