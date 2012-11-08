@@ -71,7 +71,7 @@ class VolunteerEvent < ActiveRecord::Base
     new.resources_volunteer_events = self.resources_volunteer_events.map{|x| x.class.new(x.attributes)}
     new.date = date
     new.resources_volunteer_events.each{|x| x.time_shift(time_shift)}
-    conflictors = assigns.select{|x| !x.valid?}
+    conflictors = assigns.select{|x| x.find_overlappers(:for_contact).length > 0}
     if conflictors.length == 0
       new.save!
       new.volunteer_shifts.each{|x| x.save!}
