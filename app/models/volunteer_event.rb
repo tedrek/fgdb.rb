@@ -57,7 +57,7 @@ class VolunteerEvent < ActiveRecord::Base
     new.volunteer_shifts = self.volunteer_shifts.map{|x|
       n = x.class.new(x.attributes); n.time_shift(time_shift);
       if copy_for.include?(n.volunteer_task_type_id)
-        x.assignments.select{|x| x.contact_id}.each do |y|
+        x.assignments.select{|x| x.contact_id && (!x.cancelled?)}.each do |y|
           a = y.class.new(y.attributes)
           a.time_shift(time_shift)
           a.call_status_type_id = nil
