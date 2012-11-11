@@ -26,6 +26,30 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
 
   public
 
+  def cashier_contributions
+    @conditions = Conditions.new
+  end
+
+  def cashier_contributions_report
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    sql = DB.send(:sanitize_sql_for_conditions, @conditions.conditions(Donation))
+    @results = DB.exec("SELECT
+contacts.first_name || ' ' || contacts.surname AS name,
+users.contact_id, users.login, COUNT(donations.id) AS donation_count,
+trim(to_char(SUM(reported_suggested_fee_cents)/100,'99999999999999999D99')) AS total_suggested,
+trim(to_char((SUM(payments.amount_cents) - SUM(reported_required_fee_cents))/100,'99999999999999999D99')) AS total_contributions,
+CASE WHEN SUM(reported_suggested_fee_cents) = 0 THEN '0' ELSE 100 * (SUM(payments.amount_cents) - SUM(reported_required_fee_cents)) / SUM(reported_suggested_fee_cents) END as percentage,
+trim(to_char((SUM(payments.amount_cents) - SUM(reported_required_fee_cents) - SUM(reported_suggested_fee_cents))/100, '99999999999999999D99')) as difference
+FROM users
+LEFT JOIN donations ON donations.cashier_created_by = users.id
+LEFT JOIN contacts ON users.contact_id = contacts.id
+LEFT JOIN payments ON donations.id = payments.donation_id
+WHERE #{sql}
+AND donations.adjustment = 'f'
+GROUP BY 1, 2, 3;").to_a
+  end
+
   def volunteer_schedule
     @conditions = Conditions.new
   end
@@ -657,6 +681,7 @@ WHERE #{Donation.send(:sanitize_sql_for_conditions, conds)} GROUP BY 1, 2, 3 #{h
   def get_required_privileges
     a = super
     a << {:only => ["top_contributors", "top_contributors_report"], :privileges => ['manage_contacts']}
+    a << {:only => ["cashier_contributions", "cashier_contributions_report"], :privileges => ['staff']}
     a << {:only => ["/worker_condition"], :privileges => ['manage_workers', 'staff']}
     a << {:only => ["/contact_condition"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["staff_hours_summary", "staff_hours_summary_report"], :privileges => ['staff_summary_report']}

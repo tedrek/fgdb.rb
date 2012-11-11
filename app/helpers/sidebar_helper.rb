@@ -94,6 +94,7 @@ module SidebarHelper
     sidebar_hash["tech support"]["system history"] = {:c => "spec_sheets", :action => "system"}
     sidebar_hash["tech support"]["work orders"] = {:c => "spec_sheets", :action => "workorder"}
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
+    sidebar_hash["reports"]["cashier contributions"] = {:c => 'reports', :action => "cashier_contributions"}
     # contacts
     sidebar_hash["contacts"]["contacts"] = {:c => "contacts"}
     sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'}
