@@ -27,6 +27,22 @@ javascript_tag "volunteer_task_programs = #{h.to_json};" %>
 
     <%= dhtml_calendar_includes %>
       <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:gizmo_context => @gizmo_context} %>
+
+
+<% if params[:action] == "badge" %>
+      <style tyle="text/css">
+<!--
+@page {
+ size: landscape
+ margin-left: 0.25in;
+ margin-right: 0.25in;
+ margin-top: 0.20in;
+ margin-bottom: 0.20in;
+}
+-->
+</style>
+<% end %>
+
   </head>
   <body onScroll="handle_scroll();" onLoad="handle_scroll();">
 

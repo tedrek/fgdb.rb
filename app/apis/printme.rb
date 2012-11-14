@@ -114,7 +114,7 @@ class PrintmeAPI < SOAP::SoapsBase
     server_versions[14] = [14] # previous systems
     server_versions[15] = [15] # conditional Q's
     server_versions[16] = [16] # OR'ed conditional Q's
-    server_versions[17] = [16,17]
+    server_versions[17] = [17]
     server_versions
   end
 
