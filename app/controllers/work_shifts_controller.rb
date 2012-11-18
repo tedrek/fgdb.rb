@@ -97,6 +97,28 @@ class WorkShiftsController < ApplicationController
     session["shift_return_action"] = "list"
 
     @skedj = Skedjul.new({
+      :default_view => "by_worker",
+                           :views => {
+                             :by_job => {
+      :left_unique_value => "job_id",
+      :left_sort_value => "jobs.name",
+                               :left_method_name => "name_part",
+      :left_table_name => "jobs",
+      :thing_description => "display_worker_skedj",
+
+                             },
+                             :by_worker => {
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :thing_description => "display_name_skedj",
+      :left_extra_link_actions => ["absent", "vacation"],
+      :left_extra_link_confirm => "Are you sure you want to remove them from the schedule?",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
+                             }
+                           },
+
       :conditions => ["worker", "job", "shift_type"],
       :date_range_condition => "shift_date",
       :rollout_default_name => "staffsched_rollout_until",
@@ -106,14 +128,6 @@ class WorkShiftsController < ApplicationController
       :block_method_display => "work_shifts.shift_date_display",
       :block_start_time => "weekdays.start_time",
       :block_end_time => "weekdays.end_time",
-
-      :left_unique_value => "worker_id",
-      :left_method_name => "workers.name",
-      :left_table_name => "workers",
-      :left_link_action => "edit",
-      :left_link_id => "workers.id",
-      :left_extra_link_actions => ["absent", "vacation"],
-      :left_extra_link_confirm => "Are you sure you want to remove them from the schedule?",
 
       :thing_start_time => "work_shifts.start_time",
       :thing_end_time => "work_shifts.end_time",
