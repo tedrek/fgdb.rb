@@ -88,7 +88,7 @@ class WorkShift < ActiveRecord::Base
   end
 
   def name_part
-    self.job.name + (offsite ? ' (Offsite)' : '') + (training ? ' (Training)' : '')
+    (self.job ? job.name: '(no job)') + (offsite ? ' (Offsite)' : '') + (training ? ' (Training)' : '')
   end
 
   def to_worked_shift
