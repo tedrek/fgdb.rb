@@ -59,6 +59,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'recent_crash', :controller => "sidebar_links", :action => "recent_crash"
 
   map.connect 'staffsched', :controller => "work_shifts", :action => "staffsched"
+  map.connect 'schedule', :controller => "work_shifts", :action => "staffsched"
   map.connect 'staff_sched', :controller => "work_shifts", :action => "staffsched"
   map.connect 'staffschedule', :controller => "work_shifts", :action => "staffsched"
   map.connect 'worksched', :controller => "work_shifts", :action => "staffsched"

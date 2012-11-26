@@ -157,6 +157,16 @@ WHERE
     prepend + display_name
   end
 
+  def display_worker_skedj
+    skedj = Thread.current['skedj_obj']
+    raise if skedj.nil?
+    prepend = ""
+    if skedj.opts[:presentation_mode] == "Edit"
+      prepend = "[#{self.id}] "
+    end
+    prepend + self.worker.name
+  end
+
   def display_name
     skedj = Thread.current['skedj_obj']
     s = ""

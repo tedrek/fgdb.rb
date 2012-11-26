@@ -1,2 +1,2 @@
-*/30 1-23 * * * ryan52 /home/ryan52/fgdb.rb/script/update-devel-data/rsync-to-xyzzy
-0 0 * * * ryan52 /home/ryan52/fgdb.rb/script/update-devel-data/rsync-to-xyzzy --force
+*/30 1-23 * * * mirror-daemon /home/mirror-daemon/fgdb.rb/script/update-devel-data/rsync-to-xyzzy
+0 0 * * * mirror-daemon /home/mirror-daemon/fgdb.rb/script/update-devel-data/rsync-to-xyzzy --force
