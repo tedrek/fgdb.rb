@@ -1,7 +1,8 @@
 fgdb.rb (1.0.109) UNRELEASED; urgency=low
 
+  * Complete the cashier contributions report (Closes: #31828)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:49 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 25 Nov 2012 21:46:19 -0800
 
 fgdb.rb (1.0.108) released; urgency=low
 
