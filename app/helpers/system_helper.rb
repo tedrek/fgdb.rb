@@ -428,7 +428,7 @@ module SystemHelper
 
     def do_work
       @result = Nokogiri::PList::Parser.parse(@parser.my_node)
-      items = @items = @result.map{|x| x["_items"]}.flatten
+      items = @items = @result.map{|x| x["_items"]}.flatten.select{|x| x}
       t = items.select{|x| x["_name"] == "Built-in Ethernet"}.first
       @macaddr =  t["Ethernet"]["MAC Address"] if t && t["Ethernet"] && t["Ethernet"]["MAC Address"]
       @memories = items.select{|x| x["dimm_status"]}.map{|x|

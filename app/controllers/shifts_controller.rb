@@ -111,21 +111,35 @@ class ShiftsController < ApplicationController
                            :forced_condition => "schedule",
                            :conditions => ["job", "worker", "shift_type"],
 
+      :default_view => "by_worker",
+                           :views => {
+                             :by_job => {
+      :left_unique_value => "job_id",
+      :left_sort_value => "jobs.name",
+                               :left_method_name => "name_part",
+      :left_table_name => "jobs",
+      :thing_description => "display_worker_skedj",
+
+                             },
+                             :by_worker => {
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :thing_description => "display_name_skedj",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
+
+                             }
+                           },
+
       :block_method_name => "shifts.weekday_id",
       :block_method_display => "weekdays.name",
       :block_start_time => "weekdays.start_time",
       :block_end_time => "weekdays.end_time",
 
-      :left_unique_value => "worker_id",
-      :left_method_name => "workers.name",
-      :left_table_name => "workers",
-      :left_link_action => "edit",
-      :left_link_id => "workers.id",
-
       :thing_start_time => "shifts.start_time",
       :thing_end_time => "shifts.end_time",
       :thing_table_name => "shifts",
-      :thing_description => "display_name_skedj",
       :thing_link_id => "shifts.id",
       :thing_links => [[:copy, :popup, :has_copy], [:edit, :popup], [:destroy, :confirm]]
 

@@ -3,6 +3,10 @@ class Unavailability < Shift
   belongs_to :weekday
   belongs_to :worker
 
+  def name_part
+    '(unavailable) '
+  end
+
   def name
     ret = '(unavailable) ' + start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")
     ret.gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' )

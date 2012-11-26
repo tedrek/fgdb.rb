@@ -29,6 +29,16 @@ class WorkShift < ActiveRecord::Base
     prepend + display_name
   end
 
+  def display_worker_skedj
+    skedj = Thread.current['skedj_obj']
+    raise if skedj.nil?
+    prepend = ""
+    if skedj.opts[:presentation_mode] == "Edit"
+      prepend = "[#{self.id}] "
+    end
+    prepend + self.worker.name
+  end
+
   def on_vacation
     if ["Meeting", "Unavailability"].include?(self.kind)
       self.destroy
@@ -74,7 +84,11 @@ class WorkShift < ActiveRecord::Base
   end
 
   def name
-    self.job.name + (offsite ? ' (Offsite)' : '') + (training ? ' (Training)' : '') + ' ' + time_range_s
+    name_part + ' ' + time_range_s
+  end
+
+  def name_part
+    (self.job ? job.name: '(no job)') + (offsite ? ' (Offsite)' : '') + (training ? ' (Training)' : '')
   end
 
   def to_worked_shift

@@ -1,0 +1,24 @@
+<h2>Contributions by Cashier Report for <%= @conditions.to_s %></h2>
+
+<%= render :partial => "form", :locals => {:name => "cashier_contributions_form"} %>
+
+<table class="awesome" style="clear: left">
+  <tr>
+    <th>Cashier Name</th>
+    <th>Donation Count</th>
+    <th>Total Suggested</th>
+    <th>Total Contributed</th>
+    <th>Percentage</th>
+    <th>Difference</th>
+  </tr>
+  <% @results.each do |r| %>
+  <tr>
+    <td><%= r['name'] %></td>
+    <td><%= r['count'] %></td>
+    <td><%= r['total_suggested'] %></td>
+    <td><%= r['total_contributed'] %></td>
+    <td><%= r['percentage'] %></td>
+    <td><%= r['difference'] %></td>
+  </tr>
+  <% end %>
+</table>
