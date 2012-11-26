@@ -1,6 +1,7 @@
 class WorkShift < ActiveRecord::Base
-  belongs_to :coverage_type
-  belongs_to :job, :include => [:coverage_type]
+  acts_as_userstamp
+
+  belongs_to :job
   belongs_to :meeting
   belongs_to :schedule
   belongs_to :standard_shift
@@ -8,6 +9,11 @@ class WorkShift < ActiveRecord::Base
   belongs_to :worker
 
   before_save :set_weekday_id
+
+  before_save :set_standard_shift_if_none
+  def set_standard_shift_if_none
+    self.kind ||= 'StandardShift'
+  end
 
   def shift_date_display
     self.shift_date.strftime('%A, %B %d, %Y').gsub( ' 0', ' ' )
@@ -21,6 +27,16 @@ class WorkShift < ActiveRecord::Base
       prepend = "[#{self.id}] "
     end
     prepend + display_name
+  end
+
+  def display_worker_skedj
+    skedj = Thread.current['skedj_obj']
+    raise if skedj.nil?
+    prepend = ""
+    if skedj.opts[:presentation_mode] == "Edit"
+      prepend = "[#{self.id}] "
+    end
+    prepend + self.worker.name
   end
 
   def on_vacation
@@ -51,34 +67,10 @@ class WorkShift < ActiveRecord::Base
     elsif self.worker_id == 0
       shift_style = 'unfilled'
     elsif overlap
-        # can't seem to get this part quite right
-        # i expect a stupid syntax error
-        # what should happen:
-        # two overlapping anchored shifts should result 
-        #   in hardconflict
-        # two overlapping shifts where only one is anchored 
-        #   should result in mediumconflict
-        # other overlapping shifts should result in 
-        #   softconflict
-        # can't figure out if a shift is anchored?
-        #   pretend it is anchored
-        if (last.coverage_type ? last.coverage_type.name : 'anchored') == 'anchored'
-          if not self.coverage_type
-            shift_style = 'hardconflict'
-          elsif self.coverage_type.name == 'anchored'
-            shift_style = 'hardconflict'
-          else
-            shift_style = 'mediumconflict'
-          end
-        elsif self.coverage_type && self.coverage_type.name == 'anchored'
-          shift_style = 'mediumconflict'
-        else
-          shift_style = 'softconflict'
-        end
-        # end of problem code
-      else
-        shift_style = self.proposed ? 'proposed' : self.training ? 'training' : 'shift'
-      end
+      shift_style = 'hardconflict'
+    else
+      shift_style = self.proposed ? 'proposed' : self.training ? 'training' : 'shift'
+    end
     return shift_style
   end
 
@@ -92,19 +84,32 @@ class WorkShift < ActiveRecord::Base
   end
 
   def name
-    self.job.name + ' ' + time_range_s
+    name_part + ' ' + time_range_s
+  end
+
+  def name_part
+    (self.job ? job.name: '(no job)') + (offsite ? ' (Offsite)' : '') + (training ? ' (Training)' : '')
   end
 
   def to_worked_shift
-    ws = WorkedShift.new({:worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
+    ws = WorkedShift.new({:offsite => self.offsite, :worker_id => self.worker_id, :duration => ((self.end_time - self.start_time) / 3600).to_f, :date_performed => self.shift_date})
+    msgs = []
     if self.kind == "Meeting"
-      ws.job_id = Job.find_by_name("Meeting").id
+      if self.job
+        ws.job_id = self.job_id
+        msgs << "The \"#{self.meeting_name}\" meeting was recorded as a \"#{self.job.name}\" shift."
+      else
+        ws.job_id = Job.find_by_name("Meeting").id
+      end
     elsif self.kind == "StandardShift"
       ws.job_id = self.job_id
+      if ws.job.reason_cannot_log_hours
+        return [nil, "A \"#{ws.job.name}\" shift lasting #{ws.duration} hours could not be added using that job: #{ws.job.reason_cannot_log_hours}"]
+      end
     else # Unavailability
-      return nil
+      return [nil, msgs]
     end
-    return ws
+    return [ws, msgs]
   end
 
   def WorkShift::create_from_shift( shift = Shift.new, date = Date.new )
@@ -115,9 +120,6 @@ class WorkShift < ActiveRecord::Base
     ret.kind = shift.type
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
-    ret.splitable = shift.splitable
-    ret.mergeable = shift.mergeable
-    ret.resizable = shift.resizable
     ret.meeting_name = shift.meeting_name
     ret.shift_date = date
     ret.effective_date = shift.effective_date
@@ -125,8 +127,6 @@ class WorkShift < ActiveRecord::Base
     ret.all_day = shift.all_day
     ret.repeats_every = shift.repeats_every
     ret.repeats_on = shift.repeats_on
-    ret.coverage_type_id = shift.coverage_type_id
-    ret.frequency_type_id = shift.frequency_type_id
     ret.job_id = shift.job_id
     ret.meeting_id = shift.meeting_id
     ret.schedule_id = shift.schedule_id
@@ -143,12 +143,9 @@ class WorkShift < ActiveRecord::Base
     ret.shift_date = date
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
-    ret.splitable = shift.splitable
-    ret.mergeable = shift.mergeable
-    ret.resizable = shift.resizable
     ret.worker_id = shift.worker_id
     ret.training = shift.training
-    #ret.coverage_type_id = shift.coverage_type_id
+    ret.offsite = shift.offsite
     ret.job_id = shift.job_id
     ret.schedule_id = shift.schedule_id
     #ret.standard_shift_id = shift.id
@@ -161,17 +158,13 @@ class WorkShift < ActiveRecord::Base
     ret = WorkShift.new
     ret.actual = true
     ret.kind = 'Meeting'
-    ret.meeting_id = shift.id 
+    ret.meeting_id = shift.id
     ret.shift_date = date
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
     ret.effective_date = shift.effective_date
     ret.ineffective_date = shift.ineffective_date
-    ret.splitable = shift.splitable
-    ret.mergeable = shift.mergeable
-    ret.resizable = shift.resizable
     ret.worker_id = worker.id
-    #ret.coverage_type_id = shift.coverage_type_id
     ret.schedule_id = shift.schedule_id
     ret.weekday_id = shift.weekday_id
     ret.meeting_name = shift.meeting_name
@@ -187,7 +180,6 @@ class WorkShift < ActiveRecord::Base
     ret.start_time = shift.start_time
     ret.end_time = shift.end_time
     ret.worker_id = shift.worker_id
-    #ret.coverage_type_id = shift.coverage_type_id
     ret.weekday_id = shift.weekday_id
     ret
   end

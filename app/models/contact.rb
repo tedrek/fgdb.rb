@@ -10,6 +10,7 @@ class Contact < ActiveRecord::Base
   has_many :contact_methods
   has_many :contact_method_types, :through => :contact_methods
   has_many :volunteer_tasks, :order => 'date_performed DESC'
+  has_many :volunteer_task_types, :through => :volunteer_tasks
   has_many :disbursements
   has_many :sales
   has_many :donations
@@ -20,12 +21,55 @@ class Contact < ActiveRecord::Base
   has_many :gizmo_returns
   has_one :worker
 
-  validates_presence_of :postal_code, :on => :create
+  has_many :disciplinary_actions, :autosave => true
+
+  validate :validate_bday
+  def validate_bday
+    errors.add('birthday', 'is out of range (past year 2038)') if self.birthday and self.birthday.year >= 2038
+  end
+
+  def unresolved_donations
+    donations.select(&:has_unresolved_invoice?)
+  end
+
+  validate :name_provided
+  def name_provided
+    errors.add('organization', 'name must be provided for organizations') if is_organization? and (organization.nil? or organization.empty?)
+    errors.add('first_name', 'or surname must be provided for individuals') if is_person? and (first_name.nil? or first_name.empty?) and (surname.nil? or surname.empty?)
+  end
+
+  def self.born_on_or_before
+    return nil if not Default['minimum_volunteer_age']
+    Date.today.advance(:years => -1 * Default['minimum_volunteer_age'].to_i)
+  end
+
+  def is_birthday?
+    return false if self.birthday.nil?
+    tod = Date.today
+    tod.day == birthday.day and tod.month == birthday.month
+  end
+
+  def is_old_enough?
+    return true if self.birthday.nil? or self.class.born_on_or_before.nil?
+    ctt = ContactType.find_by_name('allow_without_adult')
+    return true if ctt and self.contact_types.include?(ctt)
+    return self.birthday <= self.class.born_on_or_before
+  end
+
+  def has_areas_disciplined_from?
+    self.areas_disciplined_from.length > 0
+  end
+
+  def areas_disciplined_from
+    self.disciplinary_actions.not_disabled.map(&:disciplinary_action_areas).flatten.uniq.sort_by(&:name)
+  end
+
+  validates_presence_of :postal_code, :on => :create, :unless => :foreign_person?
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
   before_save :strip_some_fields
-
+  validates_associated :user
   after_save :add_to_processor_daemon
 
   validates_length_of :first_name, :maximum => 25
@@ -39,8 +83,20 @@ class Contact < ActiveRecord::Base
   validates_length_of :postal_code, :maximum => 25
   validates_length_of :country, :maximum => 100
 
+  def foreign_person?
+    Default["country"] != self.country
+  end
+
+  def to_s
+    display_name
+  end
+
   def condition_to_s
     display_name
+  end
+
+  def self.allow_shared
+    true
   end
 
   def mailing_list_email
@@ -54,13 +110,20 @@ class Contact < ActiveRecord::Base
     ["contact_#{self.id}", "has_contact"]
   end
 
-  def update_syseval_count
-    vtt = VolunteerTaskType.evaluation_type
-    self.syseval_count = self.volunteer_tasks.for_type_id(vtt.id).count
+  def update_syseval_count(vid)
+    return unless vid
+    c = ContactVolunteerTaskTypeCount.find_or_create_by_contact_id_and_volunteer_task_type_id(self.id, vid)
+    vtt = VolunteerTaskType.find(vid)
+    c.count = self.volunteer_tasks.for_type_id(vtt.id).count
+    c.save!
+  end
+
+  def future_shifts
+    self.assignments.on_or_after_today.not_cancelled.sort{|a,b| t = a.date <=> b.date; t == 0 ? a.start_time <=> b.start_time : t}
   end
 
   def scheduled_shifts
-    a = self.assignments.on_or_after_today.not_cancelled.sort{|a,b| t = a.date <=> b.date; t == 0 ? a.start_time <=> b.start_time : t}
+    a = future_shifts
     more = false
     if a.length > 5
       a = a[0,5]
@@ -116,6 +179,7 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE disciplinary_actions SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE default_assignments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE gizmo_returns SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
@@ -124,6 +188,7 @@ class Contact < ActiveRecord::Base
       connection.execute("UPDATE workers SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE points_trades SET from_contact_id = #{self.id} WHERE from_contact_id = #{other.id}")
       connection.execute("UPDATE points_trades SET to_contact_id = #{self.id} WHERE to_contact_id = #{other.id}")
+      connection.execute("UPDATE recycling_shipments SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts_mailings SET contact_id = NULL WHERE contact_id = #{other.id} AND mailing_id IN (SELECT mailing_id FROM contacts_mailings WHERE contact_id IN (#{self.id}, #{other.id}) GROUP BY mailing_id HAVING count(*) > 1)")
       connection.execute("UPDATE contacts_mailings SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE contacts SET created_at = (SELECT min(created_at) FROM contacts WHERE id IN (#{self.id}, #{other.id})) WHERE id = #{self.id}")
@@ -246,7 +311,7 @@ class Contact < ActiveRecord::Base
   end
 
   def points_traded_since_last_adoption(type, trade_id = nil)
-    find_volunteer_tasks(date_of_last_adoption, PointsTrade, type, "created_at").delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|
+    find_volunteer_tasks(date_of_last_adoption ? date_of_last_adoption + 1 : nil, PointsTrade, type, "created_at").delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|
       t += r.points
     end
   end
@@ -307,6 +372,31 @@ class Contact < ActiveRecord::Base
     display_name
   end
 
+  def last_volunteered_date
+    begin
+      raise ArgumentError unless self.id
+      return Date.parse(DB.exec("SELECT MAX(date_performed) AS max FROM volunteer_tasks WHERE contact_id = ?", self.id).to_a.first["max"]).to_s
+    rescue ArgumentError
+      return nil
+    end
+  end
+
+  def first_name_or_organization
+    if is_organization
+      return organization
+    else
+      return first_name
+    end
+  end
+
+  def display_last_name_first
+    if is_organization
+      return organization
+    else
+      return "#{surname}, #{first_name}"
+    end
+  end
+
   def display_name
     if is_person?
       if(self.first_name || self.middle_name || self.surname)
@@ -364,12 +454,10 @@ class Contact < ActiveRecord::Base
   end
 
   def default_discount_schedule
-    if contact_types.include?(ContactType.find_by_name("bulk_buyer"))
-      DiscountSchedule.find_by_name("bulk")
-    elsif effective_discount_hours >= Default['hours_for_discount'].to_f or self.has_worker?
-      DiscountSchedule.find_by_name("volunteer")
+    if effective_discount_hours >= Default['hours_for_discount'].to_f or self.has_worker?
+      return "volunteer"
     else
-      DiscountSchedule.find_by_name("no_discount")
+      return "no_discount"
     end
   end
 
@@ -477,24 +565,30 @@ class Contact < ActiveRecord::Base
       # wildcards and join with ANDs.
       return [] unless query and query.length > 0
       conditions = prepare_query(query)
-      find(:all, {:limit => 5, :conditions => conditions, :order => "sort_name"}.merge(options))
+      find_by_conds(conditions, options)
     end
 
-    def search_by_type(type, query, options = {})
+    def search_by_type(types, query, options = {})
+      return [] unless query and query.length > 0
       if query.to_i.to_s == query
         # allow searches by id
         search(query, options)
       else
-        query = prepare_query(query)
-        query += " AND types:\"*#{type}*\""
-        search(query, options)
+        conditions = prepare_query(query)
+        conditions[0] += " AND contact_types.id IN (?)"
+        conditions.push([types].flatten)
+        return find_by_conds(conditions, options.merge(:joins => [:contact_types]))
       end
     end
 
     protected
 
+    def find_by_conds(conditions, options)
+      find(:all, {:limit => 5, :conditions => conditions, :order => "sort_name"}.merge(options))
+    end
+
     def prepare_query(q)
-      if q.to_i.to_s == q
+      if q.to_i.to_s == q and q.to_i <= 2147483647 and q.to_i >= -2147483648
         return ["id = ?", q]
       end
       conds = [""]

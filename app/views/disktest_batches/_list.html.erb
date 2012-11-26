@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <th>Contact</th>
+    <th>Name</th>
+    <th>Date</th>
+    <th>Drive Count</th>
+  </tr>
+
+<% for disktest_batch in @disktest_batches %>
+  <tr>
+    <td><%=h disktest_batch.contact %></td>
+    <td><%=h disktest_batch.name %></td>
+    <td><%=h disktest_batch.date %></td>
+    <td><%=h disktest_batch.disktest_batch_drives.count %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => disktest_batch.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => disktest_batch.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => disktest_batch.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

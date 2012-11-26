@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  system_id: 1
+  spec_sheet_id: 1
+  pricing_set_id: 1
+  notes: MyText
+
+two:
+  system_id: 1
+  spec_sheet_id: 1
+  pricing_set_id: 1
+  notes: MyText

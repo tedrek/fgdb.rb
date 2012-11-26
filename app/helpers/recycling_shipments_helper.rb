@@ -1,0 +1,2 @@
+module RecyclingShipmentsHelper
+end

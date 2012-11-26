@@ -1,0 +1,7 @@
+<div class="form-element">
+  <%= conditions_html('conditions', ["occurred_at"]) %>
+  <%= label "report", "min_limit", "Minimum count to include" %>
+  <%= text_field('report', 'min_limit') %>
+  <%= label "report", "by_full_zip", "Group by full zip code" %>
+  <%= check_box('report', 'by_full_zip') %>
+</div>

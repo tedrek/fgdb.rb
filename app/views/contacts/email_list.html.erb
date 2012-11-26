@@ -3,7 +3,10 @@
 <% form_tag do %>
 <%= check_box_tag 'include_comma', "1", @include_comma %><%= label_tag 'include_comma' %><br />
 <%= check_box_tag 'show_email', "1", @show_email %><%= label_tag 'show_email' %><br />
-<%= conditions_html("conditions", ['contact_type', 'volunteered_hours_in_days']) %>
+<%= check_box_tag 'hide_full_name', "1", @hide_full_name %><%= label_tag 'hide_full_name' %><br />
+<%= check_box_tag 'include_first_name', "1", @include_first_name %><%= label_tag 'include_first_name' %><br />
+<%= check_box_tag 'include_last_volunteer_date', "1", @include_last_volunteer_date %><%= label_tag 'include_last_volunteer_date' %><br />
+<%= conditions_html("conditions", ['contact_type', 'volunteered_hours_in_days', 'last_volunteer_date', 'organization']) %>
 <%= submit_tag 'View Email List' %>
 <% end %>
 
@@ -12,32 +15,77 @@
 <% if @show_email %>
 <% notfound = [] %>
 <% found = [] %>
+
+<% is_table = @include_first_name || @include_last_volunteer_date %>
+
 <h3>Matching contacts with email addresses:</h3>
-<% for i in @contacts; if ( e = i.mailing_list_email ); found << "#{i.display_name} &lt;#{e}&gt;#{@include_comma ? "," : ""}"; else; notfound << "#{i.display_name} (##{ i.id })"; end; end %>
+<% for i in @contacts;
+     v = ""
+     e = nil
+     if ( e = i.mailing_list_email );
+       v = (@hide_full_name ? e.strip : "#{i.display_name} &lt;#{e.strip}&gt;") + "#{@include_comma ? "," : ""}"
+     else;
+       v = "#{i.display_name} (##{ i.id })";
+     end;
+     v = [v] if is_table
+     v = v + [i.first_name_or_organization] if @include_first_name
+     v = v + [i.last_volunteered_date] if @include_last_volunteer_date
+     if e
+       found << v;
+     else
+       notfound << v
+     end
+   end %>
+<% if is_table %>
+<table width="100%" class="awesome">
+  <tr>
+    <th>Email</th>
+    <% if @include_first_name %>
+      <th>First Name</th>
+    <% end %>
+    <% if @include_last_volunteer_date %>
+      <th>Last Volunteered</th>
+    <% end %>
+  </tr>
+<% else %>
 <pre>
-<% for i in found -%>
-<%= i %>
-<% end %>
+<% end %><% for i in found -%>
+<%= is_table ? ("<tr>" + i.map{|x| "<td>" + x + "</td>"}.join("") + "</tr>") :  i %>
+<% end %><% if is_table %>
+</table>
+<% else %>
 </pre>
+<% end %>
 
 <% if notfound.length > 0 %>
 <h3>Matches without email addresses:</h3>
-<pre>
+<% if is_table %>
+<table width="100%" class="awesome">
+  <tr>
+    <th>Name</th>
+    <% if @include_first_name %>
+      <th>First Name</th>
+    <% end %>
+    <% if @include_last_volunteer_date %>
+      <th>Last Volunteered</th>
+    <% end %>
+  </tr>
+<% else %>
+<pre><% end %>
 <% for i in notfound -%>
-<%= i %>
-<% end %>
+<%= is_table ? ("<tr>" + i.map{|x| "<td>" + x + "</td>"}.join("") + "</tr>") :  i %>
+<% end %><% if is_table %>
+</table>
+<% else %>
 </pre>
+<% end %>
 <% end %>
 <% else %>
 
 <h3>Matches:</h3>
 <pre>
 <% for i in @contacts.sort_by(&:sort_name)  -%>
-<% if i.is_organization -%>
-<%= i.organization %><%= @include_comma ? "," : "" %>
-<% else -%>
-<%= i.surname %>, <%= i.first_name %><%= @include_comma ? "," : "" %>
-<% end -%>
+<%= i.display_last_name_first %><%= @include_comma ? "," : "" %>
 <% end %>
 </pre>
 

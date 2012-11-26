@@ -3,11 +3,50 @@ class ContactsController < ApplicationController
   layout :with_sidebar
   filter_parameter_logging "user_password", "user_password_confirmation"
 
+  private
+  def set_collective_cashier
+    @collective_cashier = OpenStruct.new(params[:collective_cashier])
+  end
+  public
+  before_filter :set_collective_cashier
+
+  def load_confidential_information
+    @contact = Contact.find_by_id(@collective_cashier.contact_id.to_i)
+    @collective_cashier.cashier_code = params[:this_cashier_code] if params[:this_cashier_code]
+    uid = @collective_cashier.cashier_code
+    t = false
+    u = nil
+    if uid && (u = User.find_by_cashier_code(uid.to_i))
+      t = true
+
+      t = false if !u.can_login?
+
+      Thread.current['user'] = Thread.current['cashier']
+      t = false if ! u.can_view_disciplinary_information?
+    else
+      t = false
+    end
+    @valid_cashier_code = t
+    @collective_cashier.cashier_code = "" unless @valid_cashier_code
+    render :update do |page|
+      page.hide loading_indicator_id("confidential_information")
+      page.replace_html 'confidential_information', :partial => 'disciplinary_actions'
+    end
+  end
+
+  def roles
+    @roles = Role.find(:all)
+  end
+
   def email_list
     @include_comma = (params[:include_comma] == "1")
     @show_email = (params[:show_email] == "1")
+    @hide_full_name = (params[:hide_full_name] == "1")
+    @include_first_name = (params[:include_first_name] == "1")
+    @include_last_volunteer_date = (params[:include_last_volunteer_date] == "1")
+
+    @conditions = Conditions.new
     if params[:conditions]
-      @conditions = Conditions.new
       @conditions.apply_conditions(params[:conditions])
       @contacts = Contact.find(:all, :conditions => @conditions.conditions(Contact))
     else
@@ -25,7 +64,9 @@ class ContactsController < ApplicationController
   def get_required_privileges
     a = super
     a << {:privileges => ['manage_contacts'], :except => ['check_cashier_code', 'civicrm_sync']}
-    a << {:only => ['/admin_user_accounts'], :privileges => ['role_admin']}
+    a << {:only => ['roles', '/admin_user_accounts'], :privileges => ['role_admin']}
+    a << {:only => ['email_list'], :privileges => ['staff']}
+    a << {:only => ['/create_logins'], :privileges => ['can_create_logins']}
     a
   end
   public
@@ -55,6 +96,22 @@ class ContactsController < ApplicationController
     render :update do |page|
       page.hide loading_indicator_id("cashier_loading")
       page << (t ? "enable" : "disable") + "_cashierable();"
+    end
+  end
+
+  def is_subscribed
+    address = params[:address].to_s
+    subscribed = NewsletterSubscriber.is_subscribed?(address)
+    render :update do |page|
+      page.hide loading_indicator_id("subscription_loading")
+      if subscribed
+        page << "$('subscribe').checked = true;"
+        page << "$('subscribe_label').innerHTML = \"Already subscribed to newsletter.\";"
+      else
+        page << "$('subscribe').enable();"
+        page << "$('subscribe').checked = false;"
+        page << "$('subscribe_label').innerHTML = \"Subscribe to e-newsletter?\";"
+      end
     end
   end
 
@@ -100,6 +157,7 @@ class ContactsController < ApplicationController
     if params[:defaults] == nil
       params[:defaults] = {}
       params[:defaults][:created_at_enabled] = "true"
+      params[:defaults][:created_at_date] = Date.today.to_s
     end
 
     if params[:contact]
@@ -144,11 +202,14 @@ class ContactsController < ApplicationController
     @contact = Contact.new(params[:contact])
 
     if params[:contact][:is_user].to_i != 0
-      if !has_required_privileges("/admin_user_accounts")
+      if !has_required_privileges("/create_logins")
         raise RuntimeError.new("You are not authorized to create a user login")
       end
       @contact.user = User.new(params[:user])
       @contact.user.roles = Role.find(params[:roles]) if params[:roles]
+      if (@contact.user.roles - current_user.grantable_roles).length > 0
+        raise RuntimeError.new("You are not authorized to grant those roles")
+      end
     end
     @user = @contact.user
     @successful = _save
@@ -160,13 +221,9 @@ class ContactsController < ApplicationController
   end
 
   def edit
-    begin
       @contact = Contact.find(params[:id])
       @user = @contact.user or User.new
       @successful = !@contact.nil?
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
 
     @options = params.merge({ :action => "update", :id => params[:id] })
     @view_options = @options.merge(:action => "view")
@@ -174,18 +231,48 @@ class ContactsController < ApplicationController
   end
 
   def update
-    begin
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if has_required_privileges("/admin_user_accounts") or has_privileges("contact_#{@contact.id}")
+      if (uid = @collective_cashier.cashier_code) && (u = User.find_by_cashier_code(uid.to_i)) && u.can_view_disciplinary_information?
+        Thread.current['cashier'] = u
+        u.will_not_updated_timestamps!
+        u.last_logged_in = Date.today
+        u.save
+        @valid_cashier_code = true
+
+        if params[:disciplinary_action_new_add] == "1"
+          @contact.disciplinary_actions.build(params[:disciplinary_action_new])
+        end
+        @contact.disciplinary_actions.each do |da|
+          h = params[("disciplinary_action_" + (da.id || "new").to_s).to_sym]
+          unless h.nil?
+            if h["mark_for_destruction"] == "1"
+              h.delete("mark_for_destruction")
+              da.mark_for_destruction
+            else
+              da.attributes = h
+            end
+          end
+        end
+      end
+      if has_required_privileges("/create_logins") or has_privileges("contact_#{@contact.id}")
         if (params[:contact][:is_user].to_i != 0)
           @contact.user = User.new if !@contact.user
+          unless has_required_privileges('/admin_user_accounts') or @contact.user.id.nil? or has_privileges("contact_#{@contact.id}")
+            params[:user].delete('password')
+            params[:user].delete('password_confirmation')
+          end
           @contact.user.attributes = params[:user]
-          if has_required_privileges("/admin_user_accounts")
+          if has_required_privileges("/create_logins")
             if params[:roles]
-              @contact.user.roles = Role.find(params[:roles])
+              newroles = Role.find(params[:roles])
+              newroles = newroles + (@contact.user.roles - current_user.grantable_roles)
+              if (newroles - (@contact.user.roles + current_user.grantable_roles)).length > 0
+                raise RuntimeError.new("You are not authorized to grant those roles")
+              end
+              @contact.user.roles = newroles
             else
-              @contact.user.roles.clear
+              @contact.user.roles = @contact.user.roles - current_user.grantable_roles
             end
           end
         elsif (@contact.user)
@@ -195,19 +282,12 @@ class ContactsController < ApplicationController
       end
       @user = @contact.user
       @successful = _save
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
 
     render :action => 'update.rjs'
   end
 
   def destroy
-    begin
       @successful = Contact.find(params[:id]).destroy
-    rescue
-      flash[:error], @successful  = $!.to_s, false
-    end
 
     render :action => 'destroy.rjs'
   end
@@ -219,7 +299,13 @@ class ContactsController < ApplicationController
 
   def method_missing(symbol, *args)
     if /^auto_complete_for/.match(symbol.to_s)
-      @contacts = Contact.search(params[params["object_name"]][params[:field_name]].strip, :limit => 10)
+      n = params[params["object_name"]][params[:field_name]].strip
+      if params[:contact_context] and params[:contact_context].to_s.length > 0
+        l = params[:contact_context].to_s.split(/ ,/).map(&:to_i)
+        @contacts = Contact.search_by_type(l, n, :limit => 10)
+      else
+        @contacts = Contact.search(n, :limit => 10)
+      end
       render :partial => 'auto_complete_list'
     else
       super
@@ -239,6 +325,10 @@ class ContactsController < ApplicationController
     end
     if success
       @contact_methods.each{|x| x.save}
+    end
+    if @valid_cashier_code
+      @contact.disciplinary_actions.select{|x| x.marked_for_destruction?}.each{|x| x.destroy}
+      @contact.disciplinary_actions.select{|x| !x.marked_for_destruction?}.each{|x| x.save!}
     end
     return success
   end

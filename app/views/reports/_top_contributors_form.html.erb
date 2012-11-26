@@ -1,0 +1,25 @@
+<div class="form-element">
+  <%= conditions_html('conditions', ["occurred_at"]) %>
+  <%= label("report", "report_type", "Report Type", {:style => "clear: left"}) %>
+  <%= select_visibility('report', 'report_type',
+                        [
+                         ["contributions", (
+                                            label("report", "amount", "Starting dollar amount to include") +
+                                            text_field('report', 'amount'))
+                         ],
+                         ["gizmos", (
+                                     label("report", "limit", "Limit to # results") +
+                                     text_field('report', 'limit') +
+                                     label("report", "gizmo_type", "Gizmo types to count") +
+                                     select("report", "gizmo_type", grouped_options_for_select(
+                                                                                               {
+                                                                                                 "All" => [["All Gizmo Types", "all"]],
+                                                                                                 "Gizmo Categories" => GizmoCategory.find(:all).sort_by(&:description).collect(){|x|[x.description, "c" + x.id.to_s]},
+                                                                                                 "Gizmo Type Groups" => GizmoTypeGroup.find(:all).sort_by(&:name).collect(){|x|[x.name + " (" + x.gizmo_type_list + ")", "g" + x.id.to_s]},
+                                                                                                 "Gizmo Types" => GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, "t" + x.id.to_s]}
+                                                                                               }, :selected => @report.gizmo_type),
+                                            :value => @report.gizmo_type)
+                                     )]
+                         ])
+                        %>
+</div>

@@ -1,0 +1,48 @@
+<H2>Paying <%= @transaction_type.titleize %> Invoices<%= @contact ? " for #{@contact.display_name} (##{@contact.id})" : "" %></H2>
+<% if defined?(@show_id) %>
+  <%= javascript_tag "window.open('#{url_for({:action => "receipt", :id => @show_id})}','Receipt_#{@show_id}','');" %>
+<% end %>
+<div id="transaction_info">
+  <% if defined?(@contact) && @contact %>
+    <%= error_messages_for :transaction %>
+    <% if @invoices.length == 0 %>
+      No unresolved invoices found.<br />
+    <% else %>
+      <% form_for "", nil, :html => {:method => "post"} do |f| %>
+        <%= hidden_field('contact', 'id', :value => @contact.id) %>
+        <div class="form-element">
+          <%= javascript_tag "has_a_price = 1;" %>
+          <%= render :partial => 'payments' %>
+        </div>
+        <div class="form-element">
+          <label for="donation_invoice_resolved_at">Mark invoices resolved on date:</label>
+          <%= calendar_box('donation', 'invoice_resolved_at', :value => @resolved_date) %>
+        </div>
+        <% js = "invoice_amounts = new Hash();" %>
+        <% @invoices.each do |invoice| %>
+          <% js += "invoice_amounts.set(#{invoice.id.to_json}, #{invoice.invoice_amount_cents.to_json});" %>
+          <div class="form-element">
+            <label for="invoices_<%= invoice.id %>">Apply to invoice #<%= invoice.id %> from <%= invoice.occurred_at.to_date %> for $<%= invoice.invoice_amount %>:</label>
+            <%= check_box_tag "invoices[]", invoice.id, :id => "invoices_#{invoice.id}" %>
+            <br />
+          </div>
+        <% end %>
+        <%= javascript_tag js %>
+        <div class="form-element">
+          <br /><%= submit_tag "Pay invoices" %>
+        </div>
+      <% end %>
+    <% end %>
+  <% else %>
+    <% form_for "", nil, :html => {:method => "get"} do |f| %>
+      <%= contact_field('@nil', 'contact_id') %>
+      <%= submit_tag "Load unresolved #{ @transaction_type } invoices" %>
+    <% end %>
+  <% end %>
+  <% unless @contact.nil? %>
+    <div class="form-element">
+      <br />
+      <%= link_to 'Back to pay other invoices', {:action => "invoices"} %>
+    </div>
+  <% end %>
+</div>

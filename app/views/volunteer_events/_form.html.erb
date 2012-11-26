@@ -1,3 +1,4 @@
+  <%= render :partial => "volunteer_events/errors", :locals => {:f => f}%>
 <% if f.object.id and @referer %>
   <%= f.hidden_field :redirect_to, :value => @referer %>
 <% end %>

@@ -1,8 +1,4 @@
 class GizmoType < ActiveRecord::Base
-#  acts_as_tree # no, lets not
-  has_many  :discount_schedules_gizmo_types,
-  :dependent => :destroy
-  has_many  :discount_schedules, :through => :discount_schedules_gizmo_types
   has_and_belongs_to_many    :gizmo_contexts
   belongs_to :return_policy
 
@@ -17,6 +13,12 @@ class GizmoType < ActiveRecord::Base
   named_scope :effective_on, lambda { |date|
     { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
   }
+
+  named_scope :for_systems, :conditions => ["needs_id = 't'"]
+
+  def downcase_desc
+    description.to_s.downcase
+  end
 
   def GizmoType.fee?(type)
     return type == service_fee || type == fee_discount
@@ -42,10 +44,6 @@ class GizmoType < ActiveRecord::Base
 
   def to_s
     description
-  end
-
-  def displayed_discounts
-    discount_schedules_gizmo_types.map {|bridge| "%s: %0.2f" % [bridge.discount_schedule.name, bridge.multiplier]}.join(', ')
   end
 
   def parent(date)

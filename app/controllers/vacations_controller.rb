@@ -12,6 +12,8 @@ class VacationsController < ApplicationController
     render :action => 'list'
   end
 
+  before_filter :update_skedjulnator_access_time
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -30,12 +32,7 @@ class VacationsController < ApplicationController
 
   def generate
     @vacation = Vacation.find(params[:id])
-    w = @vacation.worker
-    (@vacation.effective_date..@vacation.ineffective_date).each{|x|
-      w.work_shifts_for_day(x).each{|x|
-        x.on_vacation
-      }
-    }
+    @vacation.generate
     redirect_to :back
   end
 

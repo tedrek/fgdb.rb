@@ -11,7 +11,7 @@
     <th>Go Somewhere</th>
     <th>Bug Correction</th>
     <th>Notes</th>
-    <th>Cashier signed off by</th>
+    <th>Signed off by</th>
   </tr>
   <% for builder_task in reports %>
     <tr>
@@ -40,7 +40,15 @@
       <% end %></td>
       <td><%= h builder_task.spec_sheet ? builder_task.spec_sheet.bug_correction : "" %></td>
       <td><%= h builder_task.notes %></td>
-      <td style="text-align: right"><%= builder_task.cashier_signed_off_by ? "User #" + builder_task.cashier_signed_off_by.to_s : "" %></td>
+      <td style="text-align: right">
+        <% signer = builder_task.cashier_signed_off_by && User.find(builder_task.cashier_signed_off_by) %>
+        <% string = signer ? signer.send((has_required_privileges('/view_contact_name')) ? :contact_display_name : :login) : "" %>
+        <% if signer and has_required_privileges('show/sign_off') %>
+          <%= link_to h(string), {:action => "search", :conditions => {:signed_off_by_enabled => true, :signed_off_by => builder_task.cashier_signed_off_by}} %>
+        <% else %>
+          <%= h(string) %>
+        <% end %>
+      </td>
     </tr>
   <% end %>
 </table>

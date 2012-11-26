@@ -1,0 +1,12 @@
+<fieldset>
+<% message = @meeting_minder.delivery(@date) %>
+<%= message.shift %> Meeting Minder (Test Message):
+<pre>
+To: <%= message.shift %>
+Subject: <%= message.shift %>
+Date: <%= @date %>
+
+<%= message.shift %>
+</pre>
+</fieldset>
+<%= link_to 'Back', {:action => "edit", :id => @meeting_minder.id} %>

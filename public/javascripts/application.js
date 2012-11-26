@@ -1,7 +1,93 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function magic_onkeyscroll(event) {
+  var target = event.target;
+  if(event.ctrlKey)
+    return;
+  var s = target.selectedIndex;
+  var o = s;
+  while(s + 1 < target.length && target.options[s + 1].text[0] == target.options[o].text[0])
+    s = s + 1;
+  target.value = target.options[s].value;
+  target.value = target.options[o].value;
+}
+
+function update_calculated_price(form) {
+  var str = form.serialize();
+  new Ajax.Request(update_calc_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(calculated_price_loading_id);}});
+}
+
+function show_cancellable(obj, t) {
+  if(cancelled_attendance_types.include(parseInt($("attendance_attendance_type_id_" + t).value))) {
+    $("cancellable_assignments_" + t).show();
+  } else {
+    $("cancellable_assignments_" + t).hide();
+  }
+}
+
+function set_offsite_from_job_default() {
+  set_offsite_from_job("offsite", "job_id");
+}
+
+function set_offsite_from_job(offsite, job) {
+  $(offsite).checked = offsite_jobs[$(job).value] == "true";
+}
+
+function display_disciplinary_notes() {
+  if($('contact__has_areas_disciplined_from') && $('contact__has_areas_disciplined_from').innerHTML == "true") {
+    var str = "This volunteer may not work in the following areas:\n";
+    var a = eval($('contact__areas_disciplined_from').innerHTML);
+    for(var i = 0; i < a.length; i++) {
+      str = str + " * " + a[i] + "\n";
+    }
+    str = str + "Please check with the volunteer coordinator or a collective staff member for assistance.";
+    alert(str);
+  }
+}
+
+function handle_scroll() {
+  var arr = document.getElementsByClassName('follow_scroll');
+  for(var i = 0; i < arr.length; i++) {
+    move_to_top(arr[i]);
+  }
+}
+
+function move_to_top(object) {
+  var top = document.documentElement.scrollTop;
+  var current = object.positionedOffset()[1];
+  var change = top - current + 15;
+  new Effect.Move(object, {y: change, mode: 'relative'});
+}
+
 cashierable_enabled = true;
+trigger_worked_shifts_changed = false;
+
+function show_worked_shifts_changed() {
+  if(trigger_worked_shifts_changed == true) {
+    $('routine_blah').hide();
+    $('you_have_changed').show();
+  }
+}
+
+function updateWorkedShiftTimeleft() {
+  worked_shift_timeleft -= 1;
+  var string = "" + ((worked_shift_timeleft - (worked_shift_timeleft % 60)) / 60);
+  string += ":";
+  var end = "" + (worked_shift_timeleft % 60);
+  if(end.length == 1)
+    string += "0";
+  string += end;
+  $('worked_shift_time_left_data').innerHTML = string;
+  if(worked_shift_timeleft > 0) {
+    setTimeout('updateWorkedShiftTimeleft();', 1000);
+  } else {
+    $('worked_shift_time_left_link').hide();
+    $('worked_shift_time_left_error').removeClassName('hidden');
+    $('worked_shift_password').enable();
+    $('worked_shift_hidden_password').show();
+  }
+}
 
 function cleanup_hour_select(hour_id, start_hour, end_hour) {
   var e = $(hour_id);
@@ -34,9 +120,6 @@ function monitorInitFinding() {
       var list = document.jzebra.getPrinters();
       list = list.split(",").select(function(n) {return (n != "null");})
       list.each(function(i){
-        if(i != 'zebra' && i != 'jzebra' && i != 'zebtest' && i != 'fakezebra') { // TODO: have a list from fgdb
-          return;
-        }
         e = document.createElement("option");
         e.text = e.value = i;
         $('receipt_printer').add(e, $('receipt_printer').options[0]);
@@ -154,13 +237,26 @@ function selection_toggle(id) {
 }
 
 function toggle_disabled_with_hidden(field_id) {
+  toggle_disabled_with_hidden_and(field_id, undefined);
+}
+
+function toggle_disabled_with_hidden_and(field_id, other_id) {
   var r_field  = $(field_id);
+  var o_field  = (other_id != undefined) ? $(other_id) : undefined;
   r_field.disabled = !r_field.disabled;
+  if(other_id != undefined) {
+    o_field.disabled = r_field.disabled;
+  }
   if(r_field.disabled) {
     var h_field = $(field_id + "_hidden");
     h_field.value = r_field.value;
   }
+  if(other_id != undefined && r_field.disabled) {
+    var ho_field = $(other_id + "_hidden");
+    ho_field.value = o_field.value;
+  }
 }
+
 
 function reassign(assigned_id) {
   var is_r = !window.location.href.match("default_assignments");
@@ -173,11 +269,6 @@ function reassign(assigned_id) {
     return;
   }
   var available_e = $(name + "_" + available_id);
-  if(available_e.old_class != "available") {
-    alert("The selected assignment is not available");
-    selection_toggle(assigned_id);
-    return;
-  }
   var arr = [assigned_id, available_id];
   arr = arr.join(",");
   window.location.href = "/" + controller + "/reassign/" + arr;
@@ -296,6 +387,20 @@ function set_contact_name() {
     $('contact_first_name').value = list[0];
     $('contact_surname').value = list[1];
   }
+}
+
+function set_organization_name() {
+  value = document.getElementsByClassName('contact_search_textbox')[0].value;
+  list = value.split(' ');
+  if(list.length == 2) {
+    if($('contact_first_name').value == list[0]) {
+      $('contact_first_name').value = "";
+    }
+    if($('contact_surname').value == list[1]) {
+      $('contact_surname').value = "";
+    }
+  }
+  $('contact_organization').value = value;
 }
 
 function process_hide(){
@@ -507,26 +612,8 @@ function trigger_change_on(element) {
   element.dispatchEvent(event);
 }
 
-function update_all_gizmo_totals(){
-    var myotherarray = document.getElementsByClassName('total_price_div');
-    for(var i5=0; i5 < myotherarray.length; i5++) {
-        this_child = myotherarray[i5];
-        name = this_child.childNodes[3].id.match(/(.*)_total_price/)[1];
-        if (name)
-          update_gizmo_totals(name);
-    }
-}
-
-function update_gizmo_totals (id_thing) {
-  var multiplier = (discount_schedules[$('sale_discount_schedule_id').value][$(id_thing + '_gizmo_type_id').value]) || 0;
-  var amount_b4_discount = (Math.floor($(id_thing + '_unit_price').value*100) * Math.floor($(id_thing + '_gizmo_count').value)) || 0;
-  var amount = multiplier * amount_b4_discount;
-  if (isNaN(amount))
-      amount = 0;
-  amount = Math.floor(amount)/100.0;
-  var mystring = "$" + amount;
-  $(id_thing + '_total_price').value = mystring;
-  $(id_thing + '_total_price').defaultValue = mystring;
+function get_percentage_field_value(field_id) {
+  return parseInt($(field_id).options[$(field_id).selectedIndex].text);
 }
 
 function remove_condition(obj_name, value)
@@ -578,6 +665,15 @@ function toggle_description(evt) {
   var arr = document.getElementsByClassName('description');
   for (var i = 0; i < arr.length; i++) {
     set_visibility(arr[i], show_description & 1)
+  }
+  return true;
+}
+
+function toggle_discount(evt) {
+  discount_visible++;
+  var arr = document.getElementsByClassName('discount');
+  for (var i = 0; i < arr.length; i++) {
+    set_visibility(arr[i], discount_visible & 1)
   }
   return true;
 }

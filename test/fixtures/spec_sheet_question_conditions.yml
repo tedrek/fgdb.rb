@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  spec_sheet_question_id: 1
+  name: MyString
+  operator: MyString
+  expected_value: MyString
+
+two:
+  spec_sheet_question_id: 1
+  name: MyString
+  operator: MyString
+  expected_value: MyString

@@ -8,6 +8,8 @@
 
 require_dependency RAILS_ROOT + '/app/helpers/conditions.rb'
 require_dependency RAILS_ROOT + '/app/controllers/reports_controller.rb'
+require_dependency RAILS_ROOT + '/app/models/sale.rb'
+require_dependency RAILS_ROOT + '/app/models/donation.rb'
 
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
@@ -36,7 +38,15 @@ class GraphicReportsController < ApplicationController
     end
     @report = @klass.new
     @report.set_conditions(params[:conditions])
-    @report.generate_report_data
+    if ! @report.generate_report_data
+      @conditions = params[:conditions]
+      @conditions[:errors] = @report.conditions_errors.errors
+      def @conditions.method_missing(a)
+        self[a]
+      end
+      index2
+      render :action => "index2"
+    end
   end
 
   def index
@@ -73,6 +83,10 @@ class GraphicReportsController < ApplicationController
 end
 
 class TrendReport
+  def self.extra_options(f)
+    ""
+  end
+
   def gnuplot_stuff(tempfile, graph_n)
     Gnuplot.open do |gp|
       Gnuplot::Plot.new( gp ) do |plot|
@@ -358,8 +372,23 @@ class TrendReport
 
   def generate_report_data
     list = []
-    @start_date = Date.parse(@conditions[:start_date])
-    end_date = Date.parse(@conditions[:end_date])
+    err_conds = conditions_errors
+    errors = err_conds.errors
+    begin
+      @start_date = Date.parse(@conditions[:start_date])
+      errors.add('start_date', 'is out of range (past year 2038)') if @start_date.year >= 2038
+    rescue
+      errors.add('start_date', 'is not a valid date')
+    end
+    begin
+      end_date = Date.parse(@conditions[:end_date])
+      errors.add('end_date', 'is out of range (past year 2038)') if end_date.year >= 2038
+    rescue
+      errors.add('end_date', 'is not a valid date')
+    end
+    if errors.length > 0
+      return false
+    end
     if is_line
       @start_date = back_up_to_last_thing(@start_date)
       end_date = back_up_to_last_thing(end_date)
@@ -427,6 +456,7 @@ class TrendReport
       end
     }
     generate_display_data(list)
+    true
   end
 
   # for single reports
@@ -516,11 +546,19 @@ class TrendReport
 
     def conditions_with_daterange_for_report(args, field)
       h = {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
-      conditions_for_report(args, field, h)
+      conditions_without_a_daterange_for_report(args, field, h)
     end
 
     def set_conditions(conds)
       @conditions = conds
+    end
+
+    def conditions_errors
+      return @conditions_errors if defined?(@conditions_errors)
+      c = Conditions.new
+      c.apply_conditions(conditions_without_a_daterange_for_report({}, ''))
+      @conditions_errors = c
+      return c
     end
 
     def conditions_to_s
@@ -535,7 +573,7 @@ class TrendReport
       return DB.prepare_sql(c.conditions(model))
     end
 
-    def conditions_for_report(args, field, extra_conditions = {})
+    def conditions_without_a_daterange_for_report(args, field, extra_conditions = {})
       h = extra_conditions
       if args[:extract_type]
         h["extract_enabled"] = "true"
@@ -560,6 +598,12 @@ class TrendReport
       c = Conditions.new
       c.apply_conditions(created_at_conditions_for_report(args))
       n = Donation.number_by_conditions(c)
+    end
+
+    def find_all_sales(args)
+      c = Conditions.new
+      c.apply_conditions(created_at_conditions_for_report(args))
+      n = Sale.number_by_conditions(c)
     end
 
     def breakdown_types # default
@@ -645,7 +689,7 @@ class AverageFrontdeskIncomesTrend < TrendReport
 
     def get_for_timerange(args)
       thing = call_income_report(args)
-      thing = thing[:donations]["register total"] # WHY IS THERE A SPACE!?!?!
+      thing = thing[:donations]["real total"] # WHY IS THERE A SPACE!?!?!
       suggested = thing["suggested"][:total] / 100.0
       fees = thing["fees"][:total] / 100.0
       number = find_all_donations(args)
@@ -670,6 +714,51 @@ class AverageFrontdeskIncomesTrend < TrendReport
       ["cashier_created_by"]
     end
 end
+class PrintmeInfoTrend < TrendReport
+  def valid_conditions
+    ['gizmo_context_id', 'type']
+  end
+
+    def category
+      "Build"
+    end
+
+    def title
+      "Report of Spec Sheet Information for #{@conditions[:data_type].to_s.humanize}"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    PRINTME_BOOLS = [:sixty_four_bit, :virtualization]
+    PRINTME_OTHER = [:cpu_intel_product, :cpu_vendor]
+    PRINTME_COLUMNS = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :processor_slot, :processor_product, :processor_speed, :north_bridge] + PRINTME_BOOLS + PRINTME_OTHER
+    def self.extra_options(f)
+      h = OH.new
+      opts = PRINTME_COLUMNS.map(&:to_s).sort.map{|x| "<option value=\"#{x}\">#{x.humanize}</option>"}.join("")
+      f.label(:data_type) + f.select("data_type", opts)
+    end
+
+    def get_for_timerange(args)
+      s = nil
+      if PRINTME_OTHER.include?(@conditions[:data_type].to_sym)
+        if @conditions[:data_type].to_sym == :cpu_vendor
+          s = "CASE WHEN processor_product ILIKE '%%Amd%%' THEN 'AMD' WHEN processor_product ILIKE '%%Intel%%' THEN 'Intel' ELSE 'Other' END"
+        elsif @conditions[:data_type].to_sym == :cpu_intel_product
+          s = "CASE WHEN (processor_product ILIKE '%%Core 2%%' OR processor_product ILIKE '%%Core(Tm)2%%') THEN 'Core 2' WHEN processor_product ILIKE '%%Core%%' THEN 'Core' WHEN processor_product ILIKE '%%Pentium%%' THEN 'Pentium' WHEN processor_product NOT ILIKE 'Intel' Then 'Non-Intel' ELSE 'Other' END"
+        end
+      else
+        s = PRINTME_BOOLS.include?(@conditions[:data_type].to_sym) ? @conditions[:data_type].to_s : "COALESCE(#{@conditions[:data_type].to_s}, 'Unknown')"
+      end        
+      res = DB.execute("SELECT #{s} AS value, COUNT(*) AS count FROM systems RIGHT OUTER JOIN spec_sheets ON spec_sheets.system_id = systems.id AND spec_sheets.created_at = (SELECT MAX(created_at) FROM spec_sheets WHERE system_id = systems.id) WHERE #{sql_for_report(System, conditions_with_daterange_for_report(args, "last_build"))} GROUP BY value;")
+      result = {}
+      res.each do |x|
+        result[x['value']] = x['count']
+      end
+      return result
+  end
+end
 class AverageSaleIncomesTrend < TrendReport
     def category
       "Transaction"
@@ -684,9 +773,11 @@ class AverageSaleIncomesTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      res = DB.execute("SELECT SUM( reported_amount_due_cents )/(100.0*COUNT(*)) AS amount
-  FROM sales WHERE " + sql_for_report(Sale, created_at_conditions_for_report(args)))
-      return {:total => res.first["amount"]}
+      thing = call_income_report(args)
+      thing = thing[:sales]["real total"] # WHY IS THERE A SPACE!?!?!
+      total = thing["subtotals"][:total] / 100.0
+      total = sprintf("%.2f", total).to_f
+      return {:total => total}
   end
 end
 class IncomesTrend < TrendReport
@@ -699,7 +790,7 @@ class IncomesTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      thing = call_income_report(args)[:grand_totals]["total"]["total"][:total] / 100.0
+      thing = call_income_report(args)[:grand_totals]["real total"]["total"][:total] / 100.0
       {:income => thing}
     end
     def title
@@ -724,7 +815,7 @@ class ActiveVolunteersTrend < TrendReport
       WHERE xxx.date_performed BETWEEN
         ?::date AND ?::date
       GROUP BY xxx.contact_id
-      HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AND #{sql_for_report(VolunteerTask, conditions_for_report(args, "date_performed"))};", Date.strptime(args[:start_date]) - Default['days_for_discount'].to_f, args[:start_date])
+      HAVING SUM(xxx.duration) > #{Default['hours_for_discount'].to_f}) AND #{sql_for_report(VolunteerTask, conditions_without_a_daterange_for_report(args, "date_performed"))};", Date.strptime(args[:start_date]) - Default['days_for_discount'].to_f, args[:start_date])
       final = 0
       if res.first
         final = res.first['vol_count']
@@ -739,6 +830,31 @@ class ActiveVolunteersTrend < TrendReport
       line_breakdown_types
     end
 end
+
+class TotalVolunteersTrend < TrendReport
+    def category
+      "Volunteer"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def get_for_timerange(args)
+      res = DB.execute("SELECT COUNT(DISTINCT contact_id) AS vol_count FROM volunteer_tasks WHERE #{sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))};")
+      where_clause = sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))
+      final = 0
+      if res.first
+        final = res.first['vol_count']
+      end
+      return {:total => final}
+    end
+
+    def title
+      "Report of Number of Total Volunteers"
+    end
+end
+
 class MasterGizmoFlowTrend < TrendReport
   def category
     "Combined"
@@ -862,6 +978,46 @@ class MasterGizmoFlowTrend < TrendReport
     "Master Gizmo Flow Report"
   end
 end
+class DisbursementAndSalesByGizmoTypeTrend < TrendReport
+  def category
+    "Combined"
+  end
+
+  # for single reports
+  def generate_display_data(argslist)
+    @data = []
+    @graph_titles = []
+    @table_data_types = []
+
+    sales = child_report_for_argslist(SalesGizmoCountByTypesTrend, argslist)
+    disbursements = child_report_for_argslist(DisbursementGizmoCountByTypesTrend, argslist)
+
+    dis_tot = []
+    disbursements.data[0].values.each{|a|
+      a.each_with_index{|x,i|
+        dis_tot[i] ||= 0
+        dis_tot[i] += x.to_i
+      }
+    }
+
+    @data[0] = {}
+    @data[0][:sold] = sales.data[0][:count]
+    @data[0][:disbursed] = dis_tot
+    @table_data_types[0] = sales.default_table_data_types
+
+    @graph_titles[0] = self.title
+
+    @display = [["graph", 0], ["table", 0]]
+  end
+
+  def valid_conditions
+    ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
+  end
+
+  def title
+    "Disbursement and Sales by Gizmo Type"
+  end
+end
 class SalesTotalsTrend < TrendReport
     def category
       "Income"
@@ -915,6 +1071,23 @@ class DonationsCountsTrend < TrendReport
 
     def title
       "Report of number of donations"
+    end
+end
+class SalesCountsTrend < TrendReport
+    def category
+      "Transaction"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def get_for_timerange(args)
+      return {:count => find_all_sales(args).to_s}
+    end
+
+    def title
+      "Report of number of sales"
     end
 end
 class VolunteerHoursByProgramsTrend < TrendReport
@@ -1153,3 +1326,87 @@ class NumberOfHoursWorkedByWorkersTrend < TrendReport
       ["job"]
     end
 end
+class NumberOfSystemsByMostRecentQCTrend < TrendReport
+    def get_for_timerange(args)
+      where_clause = sql_for_report(SpecSheet, conditions_with_daterange_for_report(args, "created_at"))
+      res = DB.execute("SELECT count(*) AS count
+  FROM spec_sheets AS s
+  WHERE id = (SELECT MAX(s2.id) FROM spec_sheets AS s2 JOIN builder_tasks AS bt ON s.builder_task_id = bt.id JOIN actions AS a ON a.id = bt.action_id WHERE s2.system_id = s.system_id AND a.name = 'checker')
+  AND #{where_clause.gsub("spec_sheets.", "s.")};")
+      return res.to_a.first
+    end
+    def category
+      "Gizmo"
+    end
+    def title
+      "Report of System's by Most Recent QC Date"
+    end
+    def valid_conditions
+      ["type"]
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+end
+
+class NumberOfSystemsDisbursedByCity < TrendReport
+    def get_for_timerange(args)
+      where_clause = sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))
+      res = DB.execute("SELECT COALESCE(postal_codes.city, 'Other') AS city_group, SUM(gizmo_events.gizmo_count) AS gizmo_count FROM gizmo_events INNER JOIN disbursements ON disbursements.id = gizmo_events.disbursement_id INNER JOIN contacts ON disbursements.contact_id = contacts.id INNER JOIN gizmo_types ON gizmo_type_id = gizmo_types.id INNER JOIN gizmo_categories ON gizmo_category_id = gizmo_categories.id LEFT OUTER JOIN postal_codes ON postal_codes.postal_code = split_part(contacts.postal_code, '-', 1) WHERE gizmo_categories.name = 'system' AND #{where_clause} GROUP BY 1;")
+      ret = {}
+      res.to_a.each{|x|
+        ret[x["city_group"]] = x["gizmo_count"]
+      }
+      return ret
+    end
+    def category
+      "Gizmo"
+    end
+    def title
+      "All system disbursements by city containing postal code"
+    end
+    def valid_conditions
+      ["disbursement_type_id"]
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+end
+
+class NumberOfGizmosDisbursedByTypeAndCity < TrendReport
+  def get_for_timerange(args)
+    where_clause = sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))
+    ret = {}
+    res = DB.execute("SELECT SUM( gizmo_count ) AS count,
+disbursement_types.description AS desc,
+COALESCE(postal_codes.city, 'Other') AS city_group
+FROM gizmo_events
+INNER JOIN disbursements ON gizmo_events.disbursement_id = disbursements.id
+INNER JOIN disbursement_types ON disbursements.disbursement_type_id = disbursement_types.id
+INNER JOIN contacts ON disbursements.contact_id = contacts.id
+INNER JOIN gizmo_types ON gizmo_type_id = gizmo_types.id
+INNER JOIN gizmo_categories ON gizmo_category_id = gizmo_categories.id
+LEFT OUTER JOIN postal_codes ON postal_codes.postal_code = split_part(contacts.postal_code, '-', 1)
+WHERE #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}
+GROUP BY 2, 3;")
+    res.each{|x|
+      ret[x["desc"] + ", " + x["city_group"]] = x["count"]
+    }
+    return ret
+  end
+    def category
+      "Gizmo"
+    end
+    def title
+      "All gizmo disbursements by type and city containing postal code"
+    end
+    def default_table_data_types
+      Hash.new("integer")
+    end
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id", "disbursement_type_id"]
+    end
+end
+

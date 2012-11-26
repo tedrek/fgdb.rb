@@ -1,0 +1,6 @@
+<div class="form-element">
+  <% filters = ["occurred_at", "contract" ] %>
+  <% filters << "covered" if coveredness_enabled %>
+  <% filters << "contact" if has_required_privileges('/contact_condition') %>
+  <%= conditions_html('defaults', filters) %>
+</div>

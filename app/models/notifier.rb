@@ -7,6 +7,38 @@ class Notifier < ActionMailer::Base
     body :text => data
   end
 
+  def text_minder(meeting_name, recipient, subj, data)
+    recipients recipient
+    name = "Meeting Minder"
+    if meeting_name
+      name = meeting_name + " " + name
+    end
+    from name + " <" + Default['meeting_minder_address'] + ">"
+    headers 'return-path' => Default['return_path'] if Default['return_path']
+    subject subj
+    body :text => data
+  end
+
+  def newsletter_subscribe(email_address)
+    recipients Default["newsletter_subscription_address"]
+    from email_address
+    headers 'return-path' => Default['return_path'] if Default['return_path']
+    subject "Automatic Subscription during Donation Receipt"
+    body
+  end
+
+  def donation_pdf(to_address, data, filename, type)
+    recipients to_address
+    from Default['noreply_address']
+    headers 'return-path' => Default['return_path'] if Default['return_path']
+    subject "Free Geek Donation #{type.capitalize}"
+    attachment "application/pdf" do |x|
+      x.filename = filename
+      x.body = data
+    end
+    body :type => type
+  end
+
   def holiday_announcement(subj, data)
     recipients Default['staff_mailing_list']
     from Default['my_email_address']

@@ -1,0 +1,27 @@
+<p>
+  Note: This component is part of the following Pricing Types: <%= f.object.pricing_types.map(&:name).join(", ")%>
+</p>
+<% unless f.object.id %>
+<%= hidden_field_tag :pricing_type_id, @pricing_type.id %>
+<% end %>
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :pull_from, "Pulled Value to Match Against" %><br />
+    <%= f.select :pull_from, [["<optional for automatic detection>", nil]] + SystemPricing.valid_pulls.map{|x| [x.to_s.titleize, x.to_s]} %>
+  </p>
+  <p>
+    <%= f.label :numerical, "Handle Pulled Value as Number? (to match against ranges)" %><br />
+    <%= f.check_box :numerical %>
+  </p>
+  <p>
+    <%= f.label :multiple, "Allow multiple selected? (as optional field)" %><br />
+    <%= f.check_box :multiple %>
+  </p>
+<% if f.object.id %>
+<% @pricing_values = f.object.pricing_values %>
+<%= render :partial => "pricing_values/list" %>
+<%= link_to "Add new pricing value", {:controller => "pricing_values", :action => "new", :pricing_component_id => @pricing_component.id} %>
+<% end %>

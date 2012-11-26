@@ -3,9 +3,76 @@ class Donation < ActiveRecord::Base
 
   include GizmoTransaction
   belongs_to :contact
-  has_many :payments, :dependent => :destroy
-  has_many :gizmo_events, :dependent => :destroy
+  has_many :payments, :dependent => :destroy, :autosave => :true
+  has_many :payment_methods, :through => :payments
+  has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
+  has_one :resolved_by_gizmo_event, :class_name => "GizmoEvent", :foreign_key => :invoice_donation_id
+# Doesn't work, rails generates invalid SQL:
+#  named_scope :with_unresolved_invoice, :joins => [:payment_methods], :conditions => ["invoice_resolved_at IS NULL AND payment_methods.name LIKE 'invoice'"]
+#  named_scope :for_contact, lambda{|cid| {:conditions => ["contact_id = ?", cid]}}
+  define_amount_methods_on_fake_attr :invoice_amount
+  after_destroy {|rec| Thread.current['cashier'] ||= Thread.current['user']; rec.resolves.each do |d| d.invoice_resolved_at = nil; d.save!; end } # FIXME: ask for cashier code on destroy
+
+  def receipt_types
+    ['invoice', 'receipt'].reverse.select{|x| self.send('needs_' + x + '?')}
+  end
+
+  def needs_invoice?
+    invoiced?
+  end
+
+  def needs_receipt?
+    (!invoiced?) or (self.payments.select{|x| x.payment_method != PaymentMethod.invoice}.length > 0) or (find_lines(:is_gizmo_line?).length > 0)
+  end
+
+  def find_lines(type)
+    self.gizmo_events.select{|event| GizmoEvent.send(type, event)}
+  end
+
+  def calculated_under_pay
+    (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
+  end
+
+  def invoice_amount_cents
+    payments.select{|x| x.payment_method == PaymentMethod.invoice}.inject(0){|t,x| t+=x.amount_cents}
+  end
+
+  def resolves
+    supersedes
+  end
+
+  def supersedes
+    self.gizmo_events.collect{|x| x.invoice_donation}.uniq.select{|x| !!x}.sort_by(&:occurred_at)
+  end
+
+  def all_recursive_supersedes
+    extras = supersedes
+    oldlen = 0
+    len = extras.length
+    while oldlen < len
+      oldlen = len
+      extras = ([extras] + extras.map{|x| x.supersedes}).flatten.uniq
+      len = extras.length
+    end
+    return extras.sort_by(&:occurred_at)
+  end
+
+  def superseded?
+    !! resolved_by_gizmo_event
+  end
+
+  def superseded_by
+    resolved_by_gizmo_event.donation
+  end
+
+  def has_unresolved_invoice?
+    payment_methods.include?(PaymentMethod.invoice) and !resolved?
+  end
+
+  def resolved?
+    !! invoice_resolved_at
+  end
 
   def gizmo_context
     GizmoContext.donation
@@ -35,6 +102,7 @@ class Donation < ActiveRecord::Base
   end
 
   def validate
+    validate_inventory_modifications
     unless is_adjustment?
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
@@ -47,7 +115,7 @@ class Donation < ActiveRecord::Base
       errors.add("contact_type", "should be one of 'named', 'anonymous', or 'dumped'")
     end
 
-    gizmo_events.each do |gizmo|
+    gizmo_events_actual.each do |gizmo|
       errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
     end
 
@@ -56,7 +124,7 @@ class Donation < ActiveRecord::Base
     #errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid? or contact_type == 'dumped')
 
     errors.add("payments", "or gizmos should include some reason to call this a donation") if
-      gizmo_events.empty? and payments.empty?
+      gizmo_events_actual.empty? and payments.empty?
 
     errors.add("payments", "may only have one invoice") if invoices.length > 1
 
@@ -69,7 +137,7 @@ class Donation < ActiveRecord::Base
     end
     covered = Default["fully_covered_contact_covered_gizmo"].to_i
     uncovered = Default["unfully_covered_contact_covered_gizmo"].to_i
-    num_choosen = self.gizmo_events.select{|x| x.covered}.collect{|x| x.gizmo_count}.inject(0){|x,y| x+y}
+    num_choosen = self.gizmo_events_actual.select{|x| x.covered}.collect{|x| x.gizmo_count}.inject(0){|x,y| x+y}
     type = ""
     if contact_type != 'named' || contact.nil?
       type = "anon"
@@ -127,14 +195,17 @@ class Donation < ActiveRecord::Base
       }
       self.connection.execute(
                               "SELECT payments.payment_method_id,
-                sum(payments.amount_cents) as amount,
-                sum(donations.reported_required_fee_cents) as required,
+                sum(payments.amount_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as amount,
+                sum(donations.reported_required_fee_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as required,
                 sum(donations.reported_suggested_fee_cents) as suggested,
                 count(*),
                 min(donations.id),
                 max(donations.id)
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types ON gizmo_types.name = 'invoice_resolved'
+         LEFT OUTER JOIN gizmo_events ON gizmo_events.gizmo_type_id = gizmo_types.id
+                                      AND gizmo_events.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          GROUP BY payments.payment_method_id"
@@ -144,9 +215,12 @@ class Donation < ActiveRecord::Base
         total_data[summation['payment_method_id'].to_i] = d
       }
        self.connection.execute("SELECT payments.payment_method_id,
-                sum(payments.amount_cents) as amount
+                sum(payments.amount_cents) - sum(COALESCE(gizmo_events.unit_price_cents, 0)) as amount
          FROM donations
          JOIN payments ON payments.donation_id = donations.id
+         LEFT OUTER JOIN gizmo_types ON gizmo_types.name = 'invoice_resolved'
+         LEFT OUTER JOIN gizmo_events ON gizmo_events.gizmo_type_id = gizmo_types.id
+                                      AND gizmo_events.donation_id = donations.id
          WHERE #{sanitize_sql_for_conditions(conditions)}
          AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) = 1
          AND (SELECT count(*) FROM gizmo_events WHERE gizmo_events.donation_id = donations.id) = 0
@@ -160,24 +234,36 @@ class Donation < ActiveRecord::Base
       }
       Donation.paid_by_multiple_payments(conditions).each {|donation|
         required_to_be_paid = donation.reported_required_fee_cents
+        required_as_invoice = donation.gizmo_events.select{|x| x.gizmo_type.name == 'invoice_resolved'}.inject(0){|t, x| t += x.unit_price_cents}
+        required_to_be_paid -= required_as_invoice
         donation.payments.sort_by(&:payment_method_id).each {|payment|
           #total paid
+          amount = payment.amount_cents
+          if required_as_invoice > 0
+            if required_as_invoice > amount
+              required_as_invoice -= amount
+              amount = 0
+            else
+              amount -= required_as_invoice
+              required_as_invoice = 0
+            end
+          end
           total_data[payment.payment_method_id]['count'] += 1
-          total_data[payment.payment_method_id]['amount'] += payment.amount_cents
+          total_data[payment.payment_method_id]['amount'] += amount
           if donation.gizmo_events.length > 0
             if required_to_be_paid > 0
-              if required_to_be_paid > payment.amount_cents
-                total_data[payment.payment_method_id]['required'] += payment.amount_cents
+              if required_to_be_paid > amount
+                total_data[payment.payment_method_id]['required'] += amount
               else
                 total_data[payment.payment_method_id]['required'] += required_to_be_paid
-                total_data[payment.payment_method_id]['suggested'] += (payment.amount_cents - required_to_be_paid)
+                total_data[payment.payment_method_id]['suggested'] += (amount - required_to_be_paid)
               end
-              required_to_be_paid -= payment.amount_cents
+              required_to_be_paid -= amount
             else
-              total_data[payment.payment_method_id]['suggested'] += payment.amount_cents
+              total_data[payment.payment_method_id]['suggested'] += amount
             end
           else
-            total_data[payment.payment_method_id]['gizmoless_cents'] += payment.amount_cents
+            total_data[payment.payment_method_id]['gizmoless_cents'] += amount
           end
 
           total_data[payment.payment_method_id]['min'] = [total_data[payment.payment_method_id]['min'],
@@ -233,14 +319,14 @@ class Donation < ActiveRecord::Base
   end
 
   def calculated_required_fee_cents
-    gizmo_events.inject(0) {|total, gizmo|
+    gizmo_events_actual.inject(0) {|total, gizmo|
       next if gizmo.mostly_empty?
       total + gizmo.required_fee_cents
     }
   end
 
   def calculated_suggested_fee_cents
-    gizmo_events.inject(0) {|total, gizmo|
+    gizmo_events_actual.inject(0) {|total, gizmo|
       total + gizmo.suggested_fee_cents
     }
   end
@@ -302,9 +388,9 @@ class Donation < ActiveRecord::Base
   end
 
   def add_dead_beat_discount
-    under_pay = (money_tendered_cents + amount_invoiced_cents) - calculated_required_fee_cents
+    under_pay = calculated_under_pay
     if under_pay < 0:
-        gizmo_events << GizmoEvent.new({:unit_price_cents => under_pay,
+        gizmo_events.build({:unit_price_cents => under_pay,
                                          :gizmo_count => 1,
                                          :gizmo_type => GizmoType.fee_discount,
                                          :gizmo_context => GizmoContext.donation,

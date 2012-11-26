@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), "rails_fix.rb")
+
 class ProcessorDaemon
   def self.add_to(type, tid, source = "fgdb")
     return if Default['civicrm_server'].nil?
@@ -14,6 +16,16 @@ module ActiveRecord
       base.class_eval do
         alias_method_chain :create, :user
         alias_method_chain :update, :user
+        class << self
+        def human_attribute_name_with_cashier_code(f)
+          if f == 'cashier_code'
+            return 'PIN'
+          else
+            return human_attribute_name_without_cashier_code(f)
+          end
+        end
+          alias_method_chain :human_attribute_name, :cashier_code
+        end
 
         belongs_to :creator, :foreign_key => "created_by", :class_name => "User"
         belongs_to :updator, :foreign_key => "created_by", :class_name => "User"
@@ -22,7 +34,9 @@ module ActiveRecord
         validate :check_cashier
         def check_cashier
           if self.class.cashierable
-            self.errors.add('cashier_code', 'is not valid') if !current_cashier
+            if self.class != Contact || current_user.nil? || current_user.contact_id.nil? || current_user.contact_id != self.id
+              self.errors.add('cashier_code', 'is not valid') if !current_cashier
+            end
           end
         end
 
@@ -37,30 +51,42 @@ module ActiveRecord
     end
 
     def create_with_user
-      user = current_user
-      if !user.nil?
-        self[:created_by] = user.id if respond_to?(:created_by) && created_by.nil?
-      end
-      cashier = current_cashier
-      if respond_to?(:cashier_created_by) && cashier_created_by.nil?
-        if !cashier.nil? #and self.class.cashierable
-          self[:cashier_created_by] = cashier.id
-        else
-          self[:cashier_created_by] = self[:created_by]
+      if self.class.record_timestamps
+        user = current_user
+        if !user.nil?
+          self[:created_by] = user.id if respond_to?(:created_by) && created_by.nil?
+        end
+        cashier = current_cashier
+        if respond_to?(:cashier_created_by) && cashier_created_by.nil?
+          if !cashier.nil? #and self.class.cashierable
+            self[:cashier_created_by] = cashier.id
+          else
+            self[:cashier_created_by] = self[:created_by]
+          end
         end
       end
       create_without_user
     end
 
+    def will_not_updated_timestamps!
+      class << self
+        def record_timestamps
+          false
+        end
+      end
+    end
+
     def update_with_user
-      user = current_user
-      self[:updated_by] = user.id if respond_to?(:updated_by) and !user.nil?
-      cashier = current_cashier
-      if respond_to?(:cashier_updated_by)
-        if self.class.cashierable and !cashier.nil?
-          self[:cashier_updated_by] = cashier.id
-        else
-          self[:cashier_updated_by] = self[:updated_by]
+      if self.class.record_timestamps
+        user = current_user
+        self[:updated_by] = user.id if respond_to?(:updated_by) and !user.nil?
+        cashier = current_cashier
+        if respond_to?(:cashier_updated_by)
+          if !cashier.nil? and self.class.cashierable # TODO?
+            self[:cashier_updated_by] = cashier.id
+          else
+            self[:cashier_updated_by] = self[:updated_by]
+          end
         end
       end
       update_without_user
@@ -109,6 +135,7 @@ module ActiveRecord
     end
 
     def logaction(action)
+      return if ! self.class.record_timestamps
       if self.class.table_name != "logs" && !self.id.nil? # AND (!["spec_sheets", "builder_tasks"].include?(self.class.table_name)) && 
         user = Thread.current['user']
 #        raise "THIS IS YOUR INFO ... U: #{user.inspect} ... C: #{self.class.inspect} ... S: #{self.inspect}"
@@ -203,14 +230,37 @@ class ActiveRecord::Base
     self.module_eval(code)
   end
 
+  def self.define_amount_methods_on_fake_attr(method_name)
+    code = "def #{method_name}
+        ((#{method_name}_cents)||0).to_dollars
+      end
+
+      def #{method_name}=(value)
+        if value.kind_of? String
+          self.send(:#{method_name}_cents=, value.to_cents)
+        else
+          raise TypeError.new(\"Integer math only. Use strings.\")
+        end
+      end"
+    self.module_eval(code)
+  end
+
   def self.find_all_except(*recs)
     return find_all - recs
   end
 
+  def self.cashierable_possible
+    cols = self.columns.map{|x| x.name}
+    cols.include?("cashier_updated_by") || columns.include?("cashier_created_by")
+  end
+
+  def self.allow_shared
+    false
+  end
+
   def self.cashierable
-    columns = self.columns.map{|x| x.name}
-    avail = columns.include?("cashier_updated_by") || columns.include?("cashier_created_by")
-    return false if !avail
+    return false if !self.cashierable_possible
+    return true if self.new.current_user && self.new.current_user.shared && !self.allow_shared
     return Default[self.class_name.tableize + "_require_cashier_code"] ? true : false
   end
 
@@ -267,7 +317,7 @@ class ActiveRecord::Base
     end
     h
   end
-  
+
   def attributes_with_editable=(hash)
     should_check = !editable?
     before = attributes.clone

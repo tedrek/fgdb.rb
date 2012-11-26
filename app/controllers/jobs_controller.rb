@@ -8,6 +8,8 @@ class JobsController < ApplicationController
   end
   public
 
+  before_filter :update_skedjulnator_access_time
+
   def index
     list
     render :action => 'list'
@@ -48,9 +50,6 @@ class JobsController < ApplicationController
 
   def update
     @job = Job.find(params[:id])
-    if !params[:job][:worker_ids]
-      @job.workers.clear
-    end
     if @job.update_attributes(params[:job])
       flash[:notice] = 'Job was successfully updated.'
       redirect_to :action => 'show', :id => @job

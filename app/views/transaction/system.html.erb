@@ -1,0 +1,12 @@
+<h1>Tech Support Return using System ID</h1>
+<div class="noprint">
+<% form_for "", nil, :url => { :action => "new" } do |f| %>
+<div class="form-element">
+<%= f.label :system_id, "System #" %>
+<%= f.text_field :system_id, :size => 10 %>
+</div>
+<div class="form-element" style="clear: left">
+<%= f.submit "Return System" %>
+</div>
+<% end %>
+</div>

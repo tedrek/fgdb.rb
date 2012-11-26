@@ -5,12 +5,11 @@
                           :with => "{cashier_code: code, append_this: append}") + "
 }" %>
 
-
 <% @gizmo_contact = gizmo_context if defined?(gizmo_context) %>
 
 <% if defined?(@gizmo_context) %>
 <script>
-  var discount_schedules;
+  var not_discounted;
   var counters = new Array();
   counters['gizmo_events_line_id'] = <%= defined?(@lines) ? @lines.length : 0 %>;
   counters['payments_line_id'] = <%= defined?(@payment_lines) ? @payment_lines.length : 0 %>;
@@ -29,6 +28,7 @@
 
 <% if ["sales", "disbursements", "gizmo_returns"].include?(params[:controller]) %>
   <%= javascript_tag "get_system_contract_url = #{url_for(:action => "get_system_contract").to_json}; system_contract_cache = new Array; system_covered_cache = new Array;" %>
+  <%= javascript_tag "get_system_pricing_url = #{url_for(:action => "get_system_pricing").to_json}; system_pricing_cache = new Array; system_pricing_price_cache = new Array; system_pricing_type_cache = new Array;" %>
 <% end %>
 
 <% if ["sales", "gizmo_returns"].include?(params[:controller]) %>
@@ -48,10 +48,11 @@
       javascript_tag js %>
 <% end -%>
 
-<% if ["worked_shifts"].include?(params[:controller]) %>
-  <%= js = "var all_jobs = new Array;"
+<% if ["worked_shifts", "shifts", "work_shifts"].include?(params[:controller]) %>
+  <%= js = "var all_jobs = new Array; var offsite_jobs = new Array;"
       for job in Job.find(:all).sort_by(&:name)
         js += "all_jobs[#{job.id}] = '#{job.name}';"
+        js += "offsite_jobs[#{job.id}] = '#{job.offsite.to_s}';"
       end
       javascript_tag js %>
 <% end %>
@@ -62,6 +63,10 @@
       end
       javascript_tag js %>
 <% end -%>
+
+<% if ["assignments", "default_assignments"].include?(params[:controller]) %>
+<%= javascript_tag "cancelled_attendance_types = #{AttendanceType.find_all_by_cancelled(true).map(&:id).to_json};" %>
+<% end %>
 
 <%= js = "var contact_method_types = new Array;"
     for contact_method_type in ContactMethodType.find(:all).sort_by(&:description)
@@ -119,13 +124,10 @@
 <%=
    case params[:controller]
    when 'sales'
-     js = "var discount_schedules = new Array;"
-     gizmo_types = GizmoType.find(:all)
-     for discount_schedule in DiscountSchedule.find(:all)
-       js += "discount_schedules[#{discount_schedule.id}] = new Array;"
-       for gizmo_type in gizmo_types
-         js += "discount_schedules[#{discount_schedule.id}][#{gizmo_type.id}] = #{gizmo_type.multiplier_to_apply(discount_schedule, @transaction ? @transaction.occurred_at : DateTime.now)};"
-       end
+     js = "var not_discounted = new Array;"
+     gizmo_types = GizmoType.find_all_by_not_discounted(true)
+     for gt in gizmo_types
+       js += "not_discounted[#{gt.id}] = true;"
      end
      javascript_tag js
    when 'donations'

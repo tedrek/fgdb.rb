@@ -34,9 +34,9 @@ module ActiveRecord::Validations::ClassMethods
 	      value = value.to_s if value.kind_of?(NilClass)
               value = value.split(//) if value.kind_of?(String)
               if value.size < option_value.begin
-                record.errors.add(attr, too_short)
+                record.errors.add(attr, too_short, :count => option_value.begin)
               elsif value.size > option_value.end
-                record.errors.add(attr, too_long)
+                record.errors.add(attr, too_long, :count => option_value.end)
               end
             end
           when :is, :minimum, :maximum
@@ -51,7 +51,7 @@ module ActiveRecord::Validations::ClassMethods
             validates_each(attrs, options) do |record, attr, value|
 	      value = value.to_s if value.kind_of?(NilClass)
               value = value.split(//) if value.kind_of?(String)
-              record.errors.add(attr, message) unless value.size.method(validity_checks[option])[option_value]
+              record.errors.add(attr, message, :count => option_value) unless value.size.method(validity_checks[option])[option_value]
             end
         end
       end

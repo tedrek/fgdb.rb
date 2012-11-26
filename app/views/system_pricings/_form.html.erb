@@ -1,0 +1,76 @@
+  <p>
+  <% if @system %>
+    <b>System ID #<%= @system_pricing.system_id %></b>
+    <%= f.hidden_field :system_id, {:value => @system_pricing.system_id} %></td>
+  <% else %>
+    <%= f.label :system_id, "System ID# (blank if none)" %><br />
+    <%= f.text_field :system_id, :size => 10 %>
+  <% end %>
+  </p>
+  <% if params[:action] != "index" %>
+<% if @system %>
+<fieldset style="clear: left" width="100%">
+<h2>Information from <%= link_to "System ##{@system.id}", {:controller => "spec_sheets", :action => "system", :id => @system.id} %></h2>
+Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:controller => "spec_sheets", :action => "show", :id => @spec_sheet.id} %>:
+<table class="awesome" width="100%">
+  <% SystemPricing.display_pulls.each do |k| %>
+  <tr>
+    <th><%= k.to_s.titleize %>:</th>
+    <td><%= @values[k] %><% if @field_errors && @field_errors[k] %><br /><b><span class="error">(Warning: <%= @field_errors[k] %>)</span><% end %></b></td>
+  </tr>
+  <% end %>
+</table>
+</fieldset>
+<% end %>
+  <p>
+    <% @system_pricing.valid? %>
+    <%= error_messages_for :system_pricing, :header_message => "Some problems were found with this system's pricing" %>
+    <table class="awesome" width="100%">
+      <caption>Components for Pricing:</caption>
+      <tr>
+<% if @system_pricing.pricing_type %>
+        <th>Pricing Type:</th>
+        <td><%= @system_pricing.pricing_type.name %> <%= f.hidden_field :pricing_type_id, {:value => @system_pricing.pricing_type_id} %>
+          <% if @system_pricing.pricing_type.replaced? or @system_pricing.pricing_values.select{|x| x.replaced?}.length > 0 %>
+            <br /><b><span class="error">Warning: The pricing information used for this system is outdated.</span>
+          <% end %>
+        </td>
+<% else %>
+        <th><%= f.label :pricing_type_id, "Choose a Pricing Type:" %></th>
+        <td><%= f.select :pricing_type_id, PricingType.active.map{|x| [x.name, x.id]} %></td>
+<% end %>
+      </tr>
+      <% if @system_pricing.pricing_type %>
+        <% (@system_pricing.pricing_type.pricing_components + @system_pricing.pricing_values.map{|x| x.pricing_component}).uniq.each do |pc| %>
+          <tr>
+            <th><%= pc.name %><% unless pc.required? %> (optional)<% end %></th>
+            <td><%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.sort_by(&:value_cents).map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]', :onchange =>  "update_calculated_price(event.target.form);", :class => (@system_pricing.missing_required.include?(pc.name)) ? 'fieldWithErrors' : ''} -%></td>
+          </tr>
+        <% end %>
+      <% end %>
+<% if @system_pricing.pricing_type %>
+<tr>
+        <th>Pricing Equation:</th>
+        <td><span id="equation_used"><%= @system_pricing.to_equation_text %></span></td>
+</tr>
+<tr>
+        <th>Calculation:</th>
+        <td><span id="equation"><%= @system_pricing.to_equation %></span></td>
+</tr>
+<tr>
+        <th>Calculated Price:</th>
+        <td><span id="calculated_price">$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></span><%= loading_indicator_tag("calculated_price") %></td>
+</tr>
+<% end %>
+    </table>
+    <%= javascript_tag "update_calc_url = #{url_for(:action => "calculate").to_json}; calculated_price_loading_id = #{loading_indicator_id("calculated_price").inspect};" %>
+  </p>
+  <% end %>
+<% if @system_pricing.pricing_type %>
+  <%= javascript_tag "update_calculated_price($(#{(f.object.id.nil? ? "new_system_pricing" : "edit_system_pricing_#{f.object.id}").inspect}));" %>
+  <%= f.hidden_field :magic_bit, {:valud => "1"} %>
+  <p>
+    <%= f.label :notes %><br />
+    <%= f.text_area :notes %>
+  </p>
+<% end %>

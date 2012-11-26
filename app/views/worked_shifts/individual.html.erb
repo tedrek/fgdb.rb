@@ -1,4 +1,4 @@
-<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker.id, @date) %>
+<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker ? @worker.id : nil, @date) %>
 
 <% form_for :worked_shift, nil, :url => { :action => "individual" } do |f| %>
 <% label :worked_shifts, :worker_id %>
@@ -8,6 +8,7 @@
 <%= submit_tag "Go" %>
 <% end %>
 
+<% if @worker %>
 <% hash = get_hash(@date, @worker) %>
 <% pay_period = hash[:pay_period] %>
 <h1>Staff hours for <%= @worker.name %> in pay period between <%= pay_period.range.min %> and <%= pay_period.range.max %></h1>
@@ -23,3 +24,4 @@
 <tr><td><%= v %>:</td><td style="text-align: right;"><%= sprintf("%.2f", hash[k]) %></td></tr>
 <% end %>
 </table>
+<% end %>

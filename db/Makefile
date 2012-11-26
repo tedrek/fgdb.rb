@@ -74,7 +74,7 @@ tmp/devel_data/dir:
 	mkdir -p $@
 
 tmp/devel_data/database.sql.gz: tmp/devel_data/dir
-	under-myagent scp $(REMOTE_SOURCE) ./tmp/devel_data/
+	under-myagent scp $(REMOTE_SOURCE) ./tmp/devel_data/database.sql.gz
 
 tmp/devel_data/database.sql: tmp/devel_data/database.sql.gz
 	zcat tmp/devel_data/database.sql.gz > tmp/devel_data/database.sql

@@ -11,13 +11,13 @@ LATEST_D=$(curl -s "http://drupal.org/project/drupal" | grep "http://ftp.drupal.
 if [ "$CURRENT_D" != "$LATEST_D" ]; then
     echo "Upgrade from drupal $CURRENT_D to $LATEST_D is needed"
     echo " To download run:     $(dirname $0)/download-drupal-version.sh ${LATEST_D}"
-    echo " To install run:      ln -sf ~/code/drupal/${LATEST_D} ~/code/drupal/current"
+    echo " To install run:      rm ~/code/drupal/current; ln -s ${LATEST_D} ~/code/drupal/current"
     echo " To upgrade, go to:   http://civicrm/drupal/update.php"
 fi
 
 if [ "$CURRENT" != "$LATEST" ]; then
     echo "Upgrade from civicrm $CURRENT to $LATEST is needed"
     echo " To download run:     $(dirname $0)/download-civicrm-version.sh ${LATEST}"
-    echo " To install run:      ln -sf ~/code/civicrm/${LATEST} ~/code/civicrm/current"
+    echo " To install run:      rm ~/code/civicrm/current; ln -s ${LATEST} ~/code/civicrm/current"
     echo " To upgrade, go to:   http://civicrm/drupal/?q=civicrm/upgrade&reset=1"
 fi

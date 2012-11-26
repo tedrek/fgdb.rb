@@ -10,11 +10,17 @@
                                :anonymous => render( :partial => 'anonymous', :locals => {:disabled_code => true} ),
                                :named => render( :partial => 'contact_search',
                                                  :locals => {:options => {
-                                                     :on_display => "if($('contact__default_discount_schedule')) {
-                                              set_new_val($('sale_discount_schedule_id'),
-                                                          parseInt($('contact__default_discount_schedule').innerHTML));
-                                              set_new_val($('sale_discount_schedule_id_hidden'),
-                                                          parseInt($('contact__default_discount_schedule').innerHTML));
+                                                     :on_display => "if($('contact__default_discount_name')) {
+                                              set_new_val($('sale_discount_name_id'),
+                                                          parseInt($('contact__default_discount_name').innerHTML));
+                                              set_new_val($('sale_discount_name_id_hidden'),
+                                                          parseInt($('contact__default_discount_name').innerHTML));
+                                            }
+                                            if($('contact__default_discount_percentage')) {
+                                              set_new_val($('sale_discount_percentage_id'),
+                                                          parseInt($('contact__default_discount_percentage').innerHTML));
+                                              set_new_val($('sale_discount_percentage_id_hidden'),
+                                                          parseInt($('contact__default_discount_percentage').innerHTML));
                                             }",
                                                    }}
                                                  )}, {:onchange => "if($('sale_contact_type').value == 'named') {$('sale_contact_id').focus();};"}
@@ -22,11 +28,33 @@
       </div>
 
       <div class="form-extras">
+
         <div class="form-element">
-          <%= hidden_field 'sale', 'discount_schedule_id', {:id => 'sale_discount_schedule_id_hidden', :onchange => "sale_compute_totals();"} %>
-          <label for="sale_discount_schedule_id" onclick="toggle_disabled_with_hidden('sale_discount_schedule_id');">Discount schedule</label>
-          <select id="sale_discount_schedule_id" name="sale[discount_schedule_id]" onChange="sale_compute_totals();" class="always_disabled" disabled="disabled">
-            <%= options_from_collection_for_select(DiscountSchedule.find(:all), "id", "description", @sale.discount_schedule_id || DiscountSchedule.no_discount.id) %>
+          <%= hidden_field 'sale', 'discount_percentage_id', {:id => 'sale_discount_percentage_id_hidden', :onchange => "sale_compute_totals();"} %>
+          <label for="sale_discount_percentage_id" onclick="toggle_disabled_with_hidden_and('sale_discount_percentage_id', 'sale_discount_name_id');">Discount percentage</label>
+          <select id="sale_discount_percentage_id" name="sale[discount_percentage_id]" onChange="sale_compute_totals();" class="always_disabled" disabled="disabled">
+            <%= options_from_collection_for_select(([@sale.discount_percentage] + DiscountPercentage.find_all_by_available(true)).uniq.select{|x| !!x}, "id", "description", @sale.discount_percentage_id) %>
+          </select>
+        </div>
+
+        <div class="form-element">
+          <%= hidden_field 'sale', 'discount_name_id', {:id => 'sale_discount_name_id_hidden'} %>
+          <label for="sale_discount_name_id" onclick="toggle_disabled_with_hidden_and('sale_discount_name_id', 'sale_discount_percentage_id');">Discount name</label>
+          <select id="sale_discount_name_id" name="sale[discount_name_id]" class="always_disabled" disabled="disabled" onChange="$('discount_name_extra_div').style.display = $('sale_discount_name_id').value == '' ? '' : 'none';">
+            <%= options_from_collection_for_select(([@sale.discount_name] + DiscountName.find_all_by_available(true)).uniq.select{|x| !!x} + [DiscountName.new(:description => 'Other')], "id", "description", @sale.discount_name_id) %>
+          </select>
+        </div>
+
+        <div class="form-element" style="display: none" id="discount_name_extra_div">
+          <label for="sale_discount_name_name">Other discount name:</label>
+          <%= text_field 'sale', 'discount_name_name' %>
+        </div>
+
+        <div class="form-element">
+          <%= hidden_field 'sale', 'sale_type_id', {:id => 'sale_sale_type_id_hidden'} %>
+          <label for="sale_sale_type_id" onclick="toggle_disabled_with_hidden('sale_sale_type_id');">Sale type</label>
+          <select id="sale_sale_type_id" name="sale[sale_type_id]" class="always_disabled" disabled="disabled">
+            <%= options_from_collection_for_select(SaleType.find(:all).sort_by(&:description), "id", "description", @sale.sale_type_id) %>
           </select>
         </div>
 

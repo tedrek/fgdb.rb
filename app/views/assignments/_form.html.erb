@@ -1,19 +1,27 @@
 <div style="float: right; text-align: right;">
   <% is_r = @assignment.class == Assignment %>
   <% shift = is_r ? f.object.volunteer_shift : f.object.volunteer_default_shift %>
+  <% if (!is_r) && f.object.volunteer_default_shift.volunteer_default_event.week.to_s.strip.length == 0 %>
+  <%= f.label :next_cycle_date, "Week of next cycle (to generate every other week)" %>
+  <%= calendar_box f.object_name, :next_cycle_date, :value => f.object.next_cycle_date %>
+  <% end %>
 <% if shift.stuck_to_assignment %>
   <% f.fields_for is_r ? :volunteer_shift : :volunteer_default_shift do |s| %>
     <p>
       <%= s.label :volunteer_task_type_id %>
-      <%= s.select("volunteer_task_type_id", [VolunteerTaskType.new(:description => ""),  VolunteerTaskType.instantiables.effective_on(Date.today)].flatten.map{|x| [x.description, x.id]}) %>
+      <%= s.select("volunteer_task_type_id", [VolunteerTaskType.new(:description => ""),  VolunteerTaskType.instantiables.effective_on(Date.today)].flatten.map{|x| [x.description, x.id]}.sort_by(&:first)) %>
     </p>
     <p>
       <%= s.label :roster_id %>
-      <%= s.select("roster_id", [Roster.new(:name => ""),  Roster.find(:all)].flatten.map{|x| [x.name, x.id]}) %>
+      <%= s.select("roster_id", [Roster.new(:name => ""),  Roster.find(:all, :order => 'name')].flatten.map{|x| [x.name, x.id]}) %>
     </p>
     <p>
       <%= s.label :program_id %>
-      <%= s.select("program_id", [Program.new(:name => ""),  Program.find(:all, :conditions => {:volunteer => true})].flatten.map{|x| [x.name, x.id]}) %>
+      <%= s.select("program_id", [Program.new(:name => ""),  Program.find(:all, :conditions => {:volunteer => true}, :order => 'name')].flatten.map{|x| [x.name, x.id]}) %>
+    </p>
+    <p>
+      <%= s.label :set_description, "Description" %>
+      <%= s.text_field("set_description", :size => 10) %>
     </p>
     <% if is_r %>
       <p>
@@ -65,8 +73,11 @@
       <%= contact_field("@obj", "contact_id",
                     :locals => {:options => {
                         :object_name => f.object_name.to_s,
-                        :field_name => 'contact_id'
+                        :field_name => 'contact_id',
+                        :on_display => 'display_disciplinary_notes();'
                       }}) %>
+      <%= f.label :closed, "Is this slot closed?" %>
+      <%= f.check_box :closed %>
   </div>
   <p>
     <%= f.label :start_time %><br />

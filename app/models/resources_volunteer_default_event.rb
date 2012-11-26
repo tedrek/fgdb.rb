@@ -10,6 +10,19 @@ class ResourcesVolunteerDefaultEvent < ActiveRecord::Base
     (self.my_start_time("%I:%M") + ' - ' + self.my_end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end
 
+  def ResourcesVolunteerDefaultEvent.find_conflicts(startd, endd, gconditions = nil)
+    gconditions ||= Conditions.new
+    vs_conds = gconditions.dup
+    vs_conds.empty_enabled = "false"
+
+    vs_conds.date_enabled = "true"
+    vs_conds.date_date_type = 'arbitrary'
+    vs_conds.date_start_date = startd.to_s
+    vs_conds.date_end_date = endd.to_s
+
+    matches = ResourcesVolunteerEvent.find(:all, :conditions => vs_conds.conditions(ResourcesVolunteerEvent), :include => [:volunteer_event])
+  end
+
   def ResourcesVolunteerDefaultEvent.generate(start_date, end_date, gconditions = nil)
     if gconditions
       gconditions = gconditions.dup
@@ -21,11 +34,6 @@ class ResourcesVolunteerDefaultEvent < ActiveRecord::Base
       next if Holiday.is_holiday?(x)
       w = Weekday.find(x.wday)
       next if !w.is_open
-      vs_conds = gconditions.dup
-      vs_conds.date_enabled = "true"
-      vs_conds.date_date_type = 'daily'
-      vs_conds.date_date = x
-      ResourcesVolunteerEvent.find(:all, :conditions => vs_conds.conditions(ResourcesVolunteerEvent), :include => [:volunteer_event]).each{|y| y.destroy}
       ds_conds = gconditions.dup
       ds_conds.effective_at_enabled = "true"
       ds_conds.effective_at = x

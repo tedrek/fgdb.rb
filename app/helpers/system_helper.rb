@@ -1,10 +1,12 @@
 module SystemHelper
   class SystemParser
-    attr_reader :processors, :l2_cache, :bios, :usb_supports, :drive_supports
+    attr_reader :processors, :bios, :usb_supports, :drive_supports
+    attr_reader :l1_cache, :l2_cache, :l3_cache, :l1_cache_total, :l2_cache_total, :l3_cache_total
     attr_reader :total_memory, :maximum_memory, :memories, :harddrives, :opticals, :pcis
     attr_reader :system_model, :system_serial_number, :system_vendor, :mobo_model, :mobo_serial_number, :mobo_vendor, :macaddr
     attr_reader :model, :vendor, :serial_number
     attr_reader :battery_life
+    attr_reader :sixty_four_bit, :virtualization, :north_bridge
 
     include XmlHelper
 
@@ -19,18 +21,82 @@ module SystemHelper
       return sp
     end
 
+    def pricing_hash
+      o = {}
+
+      # "Processor Description" (vendor & product) ..?
+      o[:processor_product] = @processors.first.processor if @processors.first
+
+      # "Running Speed",
+      # "Real Speed" (DISPLAY WARNING if different)
+      o[:running_processor_speed] = @processors.first.speed.downcase if @processors.first
+      m = o[:processor_product].match(/([0-9.]+\s*[GM]HZ)/i)
+      o[:product_processor_speed] = m ? m[0].downcase : nil
+
+      # "Max L2/L3 cache" (Add  all 'em up, but use only L3 if it's there else L2.)
+      o[:max_l2_l3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total).downcase.sub(/kb/, "k")
+
+      # AND "RAM total", cause it can differ? DISPLAY WARNING)
+      o[:total_ram] = @total_memory ? @total_memory.downcase : ""
+      o[:individual_ram_total] = @added_total.to_bytes(1).downcase
+
+      # "HD Size" (first, for now at least),
+      if @harddrives.first
+        o[:hd_size] = @harddrives.first.size
+        o[:hd_size].downcase! unless o[:hd_size].match(/TB/)
+      end
+
+      optic_cap = @opticals.collect{|x| (x.capabilities || "").split(/, (?:and )?/)}.flatten.uniq.to_sentence
+      optic_models = @opticals.collect{|x| x.model}.uniq.to_sentence
+      cdrw = optic_cap.match(/CD[- ]RW? burning/i) || optic_models.match(/CD[ -]R(?!ead|OM)/i) || optic_models.match(/CD[ -]?RW/i)
+      dvdrw = optic_cap.match(/DVD[-+ ]RW? burning/i) || optic_models.match(/DVD[- +]R(?!ead|OM)/i)
+      cdrom = optic_cap.match(/read CD-ROMs/i) || optic_models.match(/CD/i)
+      dvd = optic_cap.match(/DVD playback/i) || optic_models.match(/DVD/i)
+      if dvdrw
+        o[:optical_drive] = "DVD/RW"
+      elsif cdrw and dvd
+        o[:optical_drive] = "Combo DVD CD/RW"
+      elsif cdrw
+        o[:optical_drive] = "CD/RW"
+      elsif dvd
+        o[:optical_drive] = "DVD Rom"
+      elsif cdrom
+        o[:optical_drive] = "CD Rom"
+      else
+        o[:optical_drive] = "N/A"
+      end
+
+      # Laptop Battery Life (mins)
+      o[:battery_life] = @battery_life
+
+      return o
+    end
+
+    def klass
+      self.class
+    end
+
     def initialize(in_string)
       @string = in_string
 
       @parser = load_xml(@string) or raise SystemParserException
 
+      @added_total = 0
+      @sixty_four_bit = false
+      @virtualization = false
+      @north_bridge = "Unknown"
       @processors = []
       @drive_supports = []
+      @l1_cache = []
       @l2_cache = []
+      @l3_cache = []
       @harddrives = []
       @memories = []
       @opticals = []
       @pcis = []
+      @l1_cache_total = 0
+      @l2_cache_total = 0
+      @l3_cache_total = 0
 
       do_work
 
@@ -104,8 +170,21 @@ module SystemHelper
   class FgdbPrintmeExtrasSystemParser < SystemParser
     include XmlHelper
 
+    def pricing_hash
+      h = @real_system_parser.pricing_hash
+      m = @battery_life.match(/battery lasted ([0-9]+ minutes)/) if @battery_life
+      if m
+        h[:battery_life] = m[1]
+      end
+      h
+    end
+
     def self.match_string
       "fgdb_printme"
+    end
+
+    def klass
+      @real_system_parser.klass
     end
 
     def do_work
@@ -150,17 +229,28 @@ module SystemHelper
       @parser.xml_foreach("//*[@class='processor']") do
         if @parser.xml_if("product")
           h = OpenStruct.new
+          h.slot = @parser.xml_value_of("slot")
           h.processor = @parser.xml_value_of("product")
           h.speed = (@parser.xml_if("capacity") && false ? @parser.xml_value_of("capacity") : @parser.xml_value_of("size")).to_hertz if @parser.xml_if("capacity") || @parser.xml_if("size")
 
           h.supports = []
-          find_these = ["lm", "svm", "vmx", "x86-64"]
+          virts = ["svm", "vmx"]
+          sixtyfours = ["lm", "x86-64"]
+          find_these = virts + sixtyfours
           @parser.xml_foreach("capabilities/capability") do
             if find_these.include?(@parser.xml_value_of("@id"))
               h.supports << @parser.xml_value_of(".")
             end
+            @virtualization = true if virts.include?(@parser.xml_value_of("@id"))
+            @sixty_four_bit = true if sixtyfours.include?(@parser.xml_value_of("@id"))
           end
           @processors << h
+        end
+      end
+
+      @parser.xml_foreach("//*[@handle='PCIBUS:0000:00']") do
+        if @parser.xml_if("product")
+          @north_bridge = @parser.xml_value_of("product")
         end
       end
 
@@ -176,10 +266,23 @@ module SystemHelper
       end
 
       @parser.xml_foreach("//*[@class='memory']") do
+        if @parser.xml_value_of("description") == "L1 cache"
+          @l1_cache_total += @parser.xml_value_of("size").to_i
+          @l1_cache << @parser.xml_value_of("size").to_bytes
+        end
         if @parser.xml_value_of("description") == "L2 cache"
+          @l2_cache_total += @parser.xml_value_of("size").to_i
           @l2_cache << @parser.xml_value_of("size").to_bytes # the description is always L2 cache
         end
+        if @parser.xml_value_of("description") == "L3 cache"
+          @l3_cache_total += @parser.xml_value_of("size").to_i
+          @l3_cache << @parser.xml_value_of("size").to_bytes
+        end
       end
+
+      @l1_cache_total = @l1_cache_total.to_bytes
+      @l2_cache_total = @l2_cache_total.to_bytes
+      @l3_cache_total = @l3_cache_total.to_bytes
 
       # hard drives
       @parser.xml_foreach("//*[contains(@id, 'disk')]") do
@@ -207,12 +310,15 @@ module SystemHelper
         end
       end
 
-
       @parser.xml_foreach(".//*[contains(@id, 'bank')]") do
         m = OpenStruct.new
         m.bank = @parser.xml_value_of("@id").sub(/^bank:/, "")
         m.description = @parser.xml_value_of("description")
-        m.size = @parser.xml_value_of("size").to_bytes if @parser.xml_if("size")
+        if @parser.xml_if("size")
+          s = @parser.xml_value_of("size")
+          @added_total += s.to_i
+          m.size = s.to_bytes
+        end
         @memories << m
       end
 
@@ -225,7 +331,7 @@ module SystemHelper
         @parser.xml_foreach("capabilities/capability") do
           a << [@parser.xml_value_of("."), @parser.xml_value_of("@id")]
         end
-        a = a.select{|a| a[1].match(/(cd|dvd)/)}
+        a = a.select{|a| a[1].match(/(cd|dvd)/i)}
         h.capabilities = a.map{|x| x[0]}.to_sentence
         h.my_type = (@parser.do_with_parent do @parser.xml_value_of("product") + @parser.xml_value_of("description") end).match(/(scsi|sata|ide)/i) ? $1.upcase : "Unknown"
         h.model = @parser.xml_value_of("product")
@@ -322,7 +428,7 @@ module SystemHelper
 
     def do_work
       @result = Nokogiri::PList::Parser.parse(@parser.my_node)
-      items = @items = @result.map{|x| x["_items"]}.flatten
+      items = @items = @result.map{|x| x["_items"]}.flatten.select{|x| x}
       t = items.select{|x| x["_name"] == "Built-in Ethernet"}.first
       @macaddr =  t["Ethernet"]["MAC Address"] if t && t["Ethernet"] && t["Ethernet"]["MAC Address"]
       @memories = items.select{|x| x["dimm_status"]}.map{|x|
@@ -330,15 +436,26 @@ module SystemHelper
         d.bank = x["_name"]
         d.description = x["dimm_type"] == "empty" ? x["dimm_type"] : [x["dimm_type"], x["dimm_speed"]].join(" ")
         d.size = x["dimm_size"]
+        i = x["dimm_size"].to_i
+        i *= (1024*1024) if x["dimm_size"].match(/m/i)
+        i *= (1024*1024*1024) if x["dimm_size"].match(/g/i)
+        @added_total += i
         d
       }
-      @total_memory = items.select{|x| x["physical_memory"]}.first["physical_memory"]
+      @total_memory = items.select{|x| x["physical_memory"]}.first["physical_memory"].sub(/ /, "").sub(/^([0-9]+)gb/i) {$1 + ".0gb"}
       @l2_cache = items.select{|x| x["l2_cache_size"]}.map{|x| x["l2_cache_size"]}
+      @l3_cache = items.select{|x| x["l3_cache_size"]}.map{|x| x["l3_cache_size"]}
+
+      @l1_cache_total = "Unknown"
+      @l2_cache_total = (@l2_cache.first || 0.to_bytes).gsub(/ /, "")
+      @l3_cache_total = (@l3_cache.first || 0.to_bytes).gsub(/ /, "")
+
       items_items = items.map{|x| x["_items"]}.flatten.select{|x| !x.nil?}
       @harddrives = items_items.select{|x| x["removable_media"] == "no"}.map{|x|
         d = OpenStruct.new
         d.name = x["bsd_name"]
         d.model = x["device_model"]
+        d.size = x["size"].sub(/ /, "")
         d.my_type = x["spata_protocol"]
 #        d.vendor is in the model string
         d.volumes = []
@@ -354,8 +471,9 @@ module SystemHelper
       @system_serial_number = items.select{|x| x["serial_number"]}.map{|x| x["serial_number"]}.first
       numtimes.to_i.times do
         p = OpenStruct.new
-        p.speed = items.select{|x| x["current_processor_speed"]}.map{|x| x["current_processor_speed"]}.first
+        p.speed = items.select{|x| x["current_processor_speed"]}.map{|x| x["current_processor_speed"]}.first.sub(/ /, "").sub(/^([0-9]+)ghz/i) {$1 + ".00ghz"}.sub(/^([0-9]+.[0-9])ghz/i) {$1 + "0ghz"}
         p.processor = items.select{|x| x["cpu_type"]}.map{|x| x["cpu_type"]}.first
+        p.slot = "Unknown"
         p.supports = []
         @processors << p
       end

@@ -6,7 +6,7 @@
         %>&nbsp;<label class="checkbox" for="contact_is_organization">organization</label>
   </div>
 
-  <%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" %>
+  <%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" + (@contact.id.nil? ? "if($('contact_is_organization').checked){ set_organization_name();}" : "") %>
   <%= javascript_tag "contact_form_org_toggle();" %>
 
   <% for contact_type in ContactType.find_instantiable %>
@@ -22,6 +22,13 @@
   <%= observe_field 'build', :function => check_vol % 'build' %>
   <%= observe_field 'adopter', :function => check_vol % 'adopter' %>
   <%= observe_field 'offsite', :function => check_vol % 'offsite' %>
+
+  <% unless @contact.id.nil? %>
+  <fieldset>
+    <h3>Confidential Information</h3>
+    <%= render :partial => "disciplinary_actions" %>
+  </fieldset>
+  <% end %>
 
   <div style="clear: left;" class="organization form-element">
     <label for="contact_organization">Organization Name</label>
@@ -96,11 +103,16 @@
   </div>
 
   <div class="form-element">
+    <label for="contact_birthday">Birthday</label>
+    <%= calendar_box 'contact', 'birthday'  %>
+  </div>
+
+  <div class="form-element">
     <%= render :partial => 'contact_methods' %>
   </div>
 
   <div class="form-element person">
-    <%= render(:partial => "user_form") if has_required_privileges("/admin_user_accounts") or has_privileges("contact_#{@contact.id}") %>
+    <%= render(:partial => "user_form") if has_required_privileges('/create_logins') or has_privileges("contact_#{@contact.id}") %>
   </div>
 
   <!--[eoform:contact]-->

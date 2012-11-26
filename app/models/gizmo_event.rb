@@ -1,6 +1,18 @@
 class GizmoEvent < ActiveRecord::Base
   named_scope :not_discount, :conditions => ["gizmo_type_id != ?", GizmoType.find_by_name("fee_discount").id]
 
+  def GizmoEvent.is_gizmo_line?(event)
+    !GizmoType.fee?(event.gizmo_type) && event.gizmo_type.name != 'invoice_resolved'
+  end
+
+  def GizmoEvent.is_fee_line?(event)
+    (GizmoType.fee?(event.gizmo_type) || (event.gizmo_type.required_fee_cents > 0  && !event.covered) || event.gizmo_type.name == 'invoice_resolved')
+  end
+
+  def not_discount?
+    gizmo_type_id != GizmoType.find_by_name("fee_discount").id
+  end
+
   belongs_to :donation
   belongs_to :sale
   belongs_to :gizmo_return
@@ -9,14 +21,38 @@ class GizmoEvent < ActiveRecord::Base
   belongs_to :gizmo_type
   belongs_to :gizmo_category
   belongs_to :gizmo_context
+  belongs_to :discount_percentage
   belongs_to :system
   has_many :store_credits
+  belongs_to :invoice_donation, :class_name => "Donation"
 
   validates_presence_of :gizmo_count
   validates_presence_of :gizmo_type_id
   validates_presence_of :gizmo_context_id
 
   before_save :set_storecredit_difference_cents, :if => :is_store_credit
+  before_save :resolve_invoice, :if => :resolves_invoice?
+  after_destroy :unresolve_invoice, :if => :resolves_invoice?
+  before_save :set_empty_description
+
+  def set_empty_description
+    self.description ||= ""
+  end
+
+  def to_return_event(trans)
+    # TODO: when doing for store credit, will need to set :unit_price_cents
+    GizmoEvent.new(:gizmo_type_id => self.gizmo_type_id, :return_disbursement_id => self.disbursement_id, :return_sale_id => self.sale_id, :description => self.description, :system_id => self.system_id, :unit_price_cents => 0, :gizmo_return => trans, :gizmo_type => self.gizmo_type, :gizmo_context => GizmoContext.gizmo_return, :gizmo_count => 1)
+  end
+
+  def resolve_invoice
+    self.invoice_donation.invoice_resolved_at = self.occurred_at
+    self.invoice_donation.save
+  end
+
+  def unresolve_invoice
+    self.invoice_donation.invoice_resolved_at = nil
+    self.invoice_donation.save
+  end
 
   define_amount_methods_on("unit_price")
 
@@ -87,8 +123,12 @@ class GizmoEvent < ActiveRecord::Base
     }
   end
 
+  def resolves_invoice?
+    self.gizmo_type.name == "invoice_resolved"
+  end
+
   def editable
-    self.gizmo_type.name != "store_credit" || !self.spent?
+    (!resolves_invoice?) && (self.gizmo_type.name != "store_credit" || !self.spent?)
   end
 
   def spent?
@@ -138,6 +178,7 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
   def display_name
     rstr = "%i %s%s" % [gizmo_count, gizmo_type.description, gizmo_count > 1 ? 's' : '']
     rstr += " (#{self.system_id ? "#" + system_id.to_s : "unknown"})" if self.gizmo_type.needs_id
+    rstr += " (#{self.description})" if self.description && self.description.length > 0
     rstr
   end
 
@@ -161,8 +202,29 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     return_disbursement_id
   end
 
+  def invoice_id
+    t = self.invoice_donation_id # TODO: ||
+    t ? "#" + t.to_s : nil
+  end
+
+  def date
+    self.invoice_donation ? self.invoice_donation.occurred_at.strftime("%D") : nil
+  end
+
+  def attry_processing_description
+    n = self.attry_description; n += " Processing" unless n.match(/(Fee|Invoice)/); return n
+  end
+
+  def discount=(new_id)
+    if new_id == ""
+      self.discount_percentage_id = nil
+    else
+      self.discount_percentage_id = new_id.to_i
+    end
+  end
+
   def attry_description(options = {})
-    junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id].map{|x| x.to_s} - (options[:ignore] || [])
+    junk = [:as_is, :size, :system_id, :original_sale_id, :original_disbursement_id, :invoice_id, :date].map{|x| x.to_s} - (options[:ignore] || [])
 
     junk.reject!{|x| z = eval("self.#{x}"); z.nil? || z.to_s.empty?}
 
@@ -179,19 +241,19 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
     end
   end
 
-  def percent_discount(schedule)
-    return 0 unless schedule && gizmo_type
-    ( ( 1.0 - gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) ) * 100 ).ceil
-  end
-
   def total_price_cents
     return 0 unless unit_price_cents and gizmo_count
     unit_price_cents * gizmo_count
   end
 
-  def discounted_price(schedule)
-    return total_price_cents unless schedule && gizmo_type
-    (total_price_cents * (gizmo_type.multiplier_to_apply(schedule, self.my_transaction.occurred_at) * 100).to_i)/100
+  def percent_discount
+    return 0 unless self.gizmo_type
+    return self.gizmo_type.not_discounted ? 0 : self.discount_percentage ? self.discount_percentage.percentage : self.sale.discount_percentage.percentage
+  end
+
+  def discounted_price
+    return total_price_cents unless self.gizmo_type
+    (total_price_cents * (100 - self.percent_discount))/100
   end
 
   def mostly_empty?
@@ -203,7 +265,7 @@ LEFT JOIN recyclings ON gizmo_events.recycling_id = recyclings.id
   end
 
   def required_fee_cents
-    if !covered && gizmo_type.required_fee_cents != 0 || gizmo_type.name == "fee_discount"
+    if (!covered && gizmo_type.required_fee_cents != 0) || gizmo_type.name == "fee_discount" || gizmo_type.name == "invoice_resolved"
       gizmo_count.to_i * (unit_price_cents || gizmo_type.required_fee_cents)
     else
       0

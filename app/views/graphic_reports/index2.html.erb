@@ -1,4 +1,5 @@
 <% form_for :conditions, :url => {:action => "view"} do |f| %>
+<%= f.error_messages :header_message => "Invalid report conditions" %>
 <%= f.label "report_type", "Report Type" %>
 <%= f.text_field "report_type", :value => params[:conditions][:report_type], :readonly => "readonly" %>
 <%= f.label "breakdown_type", "Breakdown Type" %>
@@ -7,6 +8,7 @@
 <%= calendar_box("conditions", "start_date") %>
 <%= f.label "end_date", "End Date" %>
 <%= calendar_box("conditions", "end_date") %>
+<%= @klass.extra_options(f) %>
 <% if @valid_conditions.length > 0 %>
 <%= f.label "conditions" %>
 <%= conditions_html("conditions", @valid_conditions, Conditions, "multi") %>

@@ -1,31 +1,18 @@
 <% @sale = sale %>
-
+<%= render :partial => 'transaction/receipt_layout' %>
 <%= render :partial => "sale_receipt_guts", :locals => {:sale => @sale} %>
 
 <%= render :partial => "storecredits_receipt" %>
 
 <div style="font-size: 70%">
+  <% policies = @sale.display_return_policies %>
+  <% if policies.length > 0 %>
   <b>Return Policy</b>
   <br />
-  <b>As-Is:</b> Items sold "As-Is" will be labeled as such on the sales receipt. As-Is
-    items cannot be exchanged or returned for any reason.
+  <% policies.each do |pol| %>
+  <b><%= pol.normal_description %>:</b> <%= pol.text %>
   <br />
-  <b>Returns:</b> In order to return an item, you must present your receipt at the
-    time of return. The item must have original stickers attached, and
-    must be returned in the same condition as originally sold. We do
-    not offer refunds for any reason. In some circumstances, we do
-    provide in-store credit, which is valid for a period of one year
-    from the date of issue. We cannot provide duplicate copies of
-    store credits; if you lose a store credit, you are out of
-    luck.
-  <br />
-  <b>14-Day Exchange:</b> Most items in the store are returnable for a period of 14 calendar days from the
-    date of purchase for in-store credit.
-  <br />
-  <b>30-Day Warranty on LCD Monitors:</b> LCD monitors may be returned for a period of 30 calendar days from the date of
-    purchase for in-store credit.
-  <br />
-  <b>90-Day System Warranty:</b> Systems are covered by our 90-Day System Warranty. Full text of our
-    System Warranty is available on request in the Thrift Store, or online
-    at www.freegeek.org/thrift-store/system-warranty/
+  <% end %>
+  <% end %>
 </div>
+<%= render :partial => 'transaction/receipt_footer' %>

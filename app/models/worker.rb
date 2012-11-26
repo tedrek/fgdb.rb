@@ -1,6 +1,5 @@
 class Worker < ActiveRecord::Base
   has_many :standard_shifts
-  has_and_belongs_to_many :jobs
   belongs_to :worker_type
   has_and_belongs_to_many :meetings
   has_many :work_shifts
@@ -10,6 +9,10 @@ class Worker < ActiveRecord::Base
   has_many :workers_worker_types
   validates_associated :workers_worker_types
   has_and_belongs_to_many :worker_types
+
+  def to_s
+    name
+  end
 
   def to_privileges
     "staff"
@@ -62,10 +65,13 @@ class Worker < ActiveRecord::Base
     true
   end
 
-  def effective_now?
-    date = DateTime.now
+  def effective?(date)
     wt = self.worker_type_on_day(date)
     (wt && (wt.name != "inactive"))
+  end
+
+  def effective_now?
+    self.effective?(DateTime.now)
   end
 
   def Worker.zero
@@ -89,7 +95,8 @@ class Worker < ActiveRecord::Base
       my_start = args[0]
       my_end = args[1]
     else
-      raise ArgumentError
+      my_start = [Date.today]
+      my_end = [Date.today + 60]
     end
     return [my_start, my_end]
   end
@@ -216,6 +223,7 @@ class Worker < ActiveRecord::Base
     cache = {}
     h = {}
     h[:name] = self.sort_by
+    h[:standard_weekly_hours] = self.standard_weekly_hours
     h[:type] = self.primary_worker_type_in_range(pay_period.start_date, pay_period.end_date).name
     h[:hours] = 0.0
     h[:holiday] = 0.0
@@ -225,7 +233,7 @@ class Worker < ActiveRecord::Base
     (pay_period.start_date..pay_period.end_date).to_a.select{|x| x.wday == 0}.each{|endit|
       startit = endit - 6
       weeks += 1
-      h[:holiday] += (holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't'", startit, endit]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)})
+      h[:holiday] += (holidays = Holiday.find(:all, :conditions => ["holiday_date >= ? AND holiday_date <= ? AND is_all_day = 't' AND schedule_id = ?", startit, endit, Schedule.generate_from ? Schedule.generate_from.id : -1]).inject(0.0){|t,x| t+=self.holiday_credit_per_day(x.holiday_date)})
       h[:hours] += (logged = (startit..endit).to_a.inject(0.0){|t, x| t+= self.hours_worked_on_day_caching(cache, x)})
       total = holidays + logged
       h[:overtime] += total - self.ceiling_hours if total > self.ceiling_hours
@@ -239,8 +247,11 @@ class Worker < ActiveRecord::Base
 
   def shifts_for_day(date)
     logged = logged_shifts_for_day(date)
-    return [true, logged].flatten if logged.length > 0
-    return [false, scheduled_shifts_for_day(date)].flatten
+    return [true, [], *logged] if logged.length > 0
+    scheduled = scheduled_shifts_for_day(date)
+    msgs = scheduled.last
+    scheduled = scheduled.first
+    return [false, msgs, *scheduled]
   end
 
   def work_shifts_for_day(date)
@@ -249,8 +260,10 @@ class Worker < ActiveRecord::Base
 
   def scheduled_shifts_for_day(date)
     shifts = self.work_shifts_for_day(date)
-    shifts = shifts.map{|x| x.to_worked_shift}.delete_if{|x| x == nil}
-    return shifts
+    shifts = shifts.map{|x| x.to_worked_shift}
+    msgs = shifts.map{|x| x.last}.delete_if{|x| x == nil}
+    shifts = shifts.map{|x| x.first}.delete_if{|x| x == nil}
+    return [shifts, msgs]
   end
 
   def logged_shifts_for_day(date)
@@ -285,7 +298,7 @@ class Worker < ActiveRecord::Base
 
   def holiday_credit_per_day(date)
     new_logic = (date >= Date.parse('2011-08-01'))
-    hours = (new_logic ? weekly_work_hours : ceiling_hours) / 5.0
+    hours = (new_logic ? standard_weekly_hours : ceiling_hours) / 5.0
     show = (new_logic ? (! ['substitude', 'inactive'].include?(worker_type_on_day(date).name)) : salaried)
     return ((show) ? (hours) : 0.0)
   end

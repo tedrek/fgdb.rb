@@ -1,5 +1,4 @@
 class VolunteerShift < ActiveRecord::Base
-  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
   validates_presence_of :roster_id
   validates_presence_of :end_time
   validates_presence_of :start_time
@@ -11,7 +10,32 @@ class VolunteerShift < ActiveRecord::Base
 
   belongs_to :volunteer_event
 
-    def set_date_set
+  has_many :contact_volunteer_task_type_counts, :primary_key => 'volunteer_task_type_id', :foreign_key => 'volunteer_task_type_id' #:through => :volunteer_task_type
+
+  def self.week_for_date(d)
+    long_time_ago = Date.new(1901, 12, 22)
+    difference = (d - long_time_ago).to_int
+    ((difference / 7) % 2 ) == 0 ? "A" : "B"
+  end
+
+  def week
+    VolunteerShift.week_for_date(self.date)
+  end
+
+  def slot_number=(a)
+    write_attribute(:slot_number, a)
+    self.not_numbered = (!slot_number)
+  end
+
+  def set_description
+    self.description
+  end
+
+  def set_description=(desc)
+    self.description=(desc)
+  end
+
+  def set_date_set
     @set_date_set
   end
 
@@ -46,7 +70,11 @@ class VolunteerShift < ActiveRecord::Base
   end
 
   def skedj_style(overlap, last)
-    overlap ? 'hardconflict' : 'shift'
+    (overlap && !not_numbered) ? 'hardconflict' : 'shift'
+  end
+
+  def shift_display
+    time_range_s + ((!(self.description.nil? or self.description.blank?)) ? (": " + self.description) : "")
   end
 
   def time_range_s
@@ -82,7 +110,7 @@ class VolunteerShift < ActiveRecord::Base
     end
     begin
       Thread.current['volskedj_fillin_processing'].push(self.id)
-      Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy}
+      Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| x.contact_id.nil? and !x.closed}.each{|x| x.destroy}
       inputs = [[(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]]
       Assignment.find_all_by_volunteer_shift_id(self.id).select{|x| !x.cancelled?}.each{|x|
         inputs.push([(x.start_time), (x.end_time)])

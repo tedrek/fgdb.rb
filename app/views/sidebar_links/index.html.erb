@@ -1,7 +1,7 @@
 <h1 class="welcome">Welcome to the Free Geek Database</h1>
 
 <% if session[:unauthorized_error] %>
-  <span class="error">You have insufficient privilages to access that!</span>
+  <span class="error">You have insufficient privileges to access that!</span>
   <% if !logged_in? %>
     <br />
     Please log in:
@@ -18,6 +18,8 @@
   <span class="info">You have been logged out!</span>
   <% session[:logout_message] = false %>
 <% end %>
+
+<%= do_jsalert %>
 
 <p class="welcome">This is the release <%= FGDB_VERSION %>. Please
   report any problems you find. You will need authorization to do much

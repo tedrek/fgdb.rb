@@ -22,7 +22,7 @@
 <% interface[:end_time] = select_hour(o, {:twelve_hour => true, :field_name => "end_hour", :include_blank => true}, kdh) + select_minute(o, {:field_name => "end_minute", :include_blank => true, :minute_step => 15}, kdh) + ActionView::Helpers::DateTimeSelector.new(o, {:field_name => "end_ampm", :include_blank => true}, kdh).select_ampm %>
 
 <% values = [] %>
-<% things = @volunteer_event.class == VolunteerEvent ? @volunteer_event.volunteer_shifts : @volunteer_event.volunteer_default_shifts%>
+<% things = (@volunteer_shifts || (@volunteer_event.class == VolunteerEvent ? @volunteer_event.volunteer_shifts : @volunteer_event.volunteer_default_shifts)) %>
 
 <% if things
     values = things.map{|x|

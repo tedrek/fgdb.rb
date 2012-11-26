@@ -1,0 +1,16 @@
+<h2>Breaks Report for <%= @conditions.to_s %></h2>
+<%= render :partial => 'break_form' %>
+<table class="awesome" style="clear: left">
+<tr>
+  <th>Worker Name</th>
+  <th>Total Worked Hours</th>
+  <th>Total Break Hours</th>
+</tr>
+<% @result.each do |y| %>
+<tr>
+  <td><%= y["name"] %></td>
+  <td><%= y["total"] %></td>
+  <td><%= y["breaks"] %></td>
+</tr>
+<% end %>
+</table>

@@ -1,0 +1,37 @@
+<h1>Perpetual Meeting Calendar</h1>
+This page shows regular Free Geek meetings as they are normally
+scheduled, but the actual schedule may differ due to holidays,
+vacations, and other circumstances.<br />
+
+<% if ! @readonly %>
+<%= link_to 'Back to Actual Schedule', :action => 'staffsched' %><br />
+<% end %>
+
+<h2>Meeting Calendar</h2>
+Meetings occur as regular monthly events rather than every other
+week. (For example, a meeting will occur on the first and third
+Wednesday of the month, which is different than every other
+Wednesday.)<br />
+
+<% last_w = -1 %>
+
+<% @meetings.sort {|a, b| r = a.weekday_id <=> b.weekday_id; r == 0 ? a.meeting_name <=> b.meeting_name : r}.each do |m| %>
+<% if last_w != m.weekday_id %>
+<% last_w = m.weekday_id %>
+<h3><%= m.weekday.name %></h3>
+<% end %>
+<%= m.meeting_name %> <%= m.start_time.strftime("%l:%M %p") %> - <%= m.end_time.strftime("%l:%M %p") %> (<%= m.every_week? ? (m.repeats_every_months == 1 ? "weekly" : "weekly " + m.months_to_s) : (1..5).to_a.select{|n| m.send("week_#{n}_of_month")}.map{|x| x.ordinalize}.to_sentence + " " + m.weekday.name + " of #{m.repeats_every_months == 1 ? "month" : m.months_to_s}" %><%=  %>)<br />
+<% end %>
+
+<h2>List of Meetings and Attenders (Staff Only)</h2>
+This is a list of meetings and who (from staff) regularly attends
+them. Many of these meetings have volunteer attenders as well, but
+this list is oriented towards staff so we can easily fill out the
+staff schedule.<br />
+
+<% @meetings.sort_by(&:meeting_name).each do |m| %>
+<h3><%= m.meeting_name %></h3>
+<% m.workers.sort_by(&:name).each do |w| %>
+<%= w.name %><br />
+<% end %>
+<% end %>

@@ -130,9 +130,9 @@ class VolunteerTasksController < ApplicationController
 
   def destroy
     begin
-      task = VolunteerTask.find(params[:id])
-      @contact = task.contact
-      @successful = task.destroy
+      @volunteer_task = VolunteerTask.find(params[:id])
+      @contact = @volunteer_task.contact
+      @successful = @volunteer_task.destroy
     rescue
       flash[:error], @successful  = $!.to_s, false
     end

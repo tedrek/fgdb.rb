@@ -8,9 +8,39 @@ class SchedulesController < ApplicationController
   end
   public
 
+  before_filter :update_skedjulnator_access_time
+
   def index
     list
     render :action => 'list'
+  end
+
+  def copy
+    s = Schedule.find_by_id(params[:id])
+    n = s.copy(params[:schedule][:name])
+    redirect_to :action => 'edit', :id => n.id
+  end
+
+  def set_generate_from
+    n = Schedule.find(params[:id])
+    if s = Schedule.generate_from
+      s.generate_from = false
+      s.save
+    end
+    n.generate_from = true
+    n.save
+    redirect_to :back
+  end
+
+  def set_reference_from
+    n = Schedule.find(params[:id])
+    if s = Schedule.reference_from
+      s.reference_from = false
+      s.save
+    end
+    n.reference_from = true
+    n.save
+    redirect_to :back
   end
 
 #  def index(id = params[:node])
@@ -39,18 +69,6 @@ class SchedulesController < ApplicationController
   def create
     @schedule = Schedule.new(params[:schedule])
     if @schedule.save
-      flash[:notice] = 'Schedule was successfully created.'
-      redirect_to :action => 'list'
-    else
-      render :action => 'new'
-    end
-  end
-
-  def create_child(parent = Schedule.find( :first, :order => 'lft DESC', :conditions => 'parent_id IS NULL')
-)
-    @schedule = Schedule.new(params[:schedule])
-    if @schedule.save
-      @schedule.move_to_child_of(parent)
       flash[:notice] = 'Schedule was successfully created.'
       redirect_to :action => 'list'
     else

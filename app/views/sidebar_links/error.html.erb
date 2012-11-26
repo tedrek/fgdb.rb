@@ -7,10 +7,25 @@
 <% end %>
 
 <h1 style="color: red; font-size: 60px;"><%= @exception_data["status"] %> Error!</h1>
-<p>An error occurred that prevented fgdb.rb from completing the request.</p>
+<p>An error occurred that prevented fgdb.rb from completing the request. <br /><b>To get this fixed, report this issue by creating a ticket in the Coding RT queue
+:<% if @exception_data["crash_id"] && !@fgdb_local_request %>
+<% subj = "Crash Report: ID #{@exception_data["crash_id"]} from #{@exception_data["user"] || @exception_data["client_ip"]}@#{@exception_data["controller"]}/#{@exception_data["action"]}#{@exception_data["referer"] ? " via " + @exception_data["referer"] : ""}" %>
+<% body = "Crash message: Exception: #{@exception_data["clean_message"]}
+Traceback summary:
+#{ (@exception_data["application_backtrace"] || [])[0..2].join("\n") }
+Request parameters:
+#{@exception_data["params"].inspect.gsub(", ", ",\n ")}
+Admin link to crash:
+http://data/sidebar_links/crash/#{@exception_data["crash_id"]}" %>
+<% url = "http://todo.freegeek.org/index.html?QuickCreate=1&Subject=#{subj}&Queue=Coding&Owner=#{Default['coding_ticket_owner'].to_s}&Content=#{body}" %>
+<br />  <%= link_to "Click Here to Automatically Report This Issue Now", url %>
+<% end %>
+</b></p>
 
 <% if @fgdb_local_request %>
   <%= render :partial => "sidebar_links/exception_data", :locals => {:exception_data => @exception_data} %>
 <% else %>
-  <p>Some information about this error has been saved with the crash ID <b><%= @exception_data["crash_id"] %></b>. Save this and include it in any bug reports that you create about this issue.</p>
+<% if @exception_data["crash_id"] %>
+  <p>Some information about this error has been saved with the crash ID <b><%= @exception_data["crash_id"] %></b>. <br /><b>Include this crash ID in any bug reports that you create about this issue.</b></p>
+<% end %>
 <% end %>

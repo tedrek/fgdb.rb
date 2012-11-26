@@ -23,10 +23,11 @@ class VolunteerDefaultEventsController < ApplicationController
 
   def create_shift
     ve = nil
+    params["default_assignment"] ||= {}
     if !params["id"].blank?
       ve = VolunteerDefaultEvent.find(params["id"])
     else
-      if (params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"].blank? || params["default_assignment"]["set_weekday_id"].blank?)
+      if (params["default_assignment"]["volunteer_default_shift_attributes"].nil? || params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"].blank? || params["default_assignment"]["set_weekday_id"].blank?)
         ve = VolunteerDefaultEvent.new
       else
         ve = Roster.find_by_id(params["default_assignment"]["volunteer_default_shift_attributes"]["roster_id"]).vol_event_for_weekday(params["default_assignment"]["set_weekday_id"])
@@ -79,7 +80,8 @@ class VolunteerDefaultEventsController < ApplicationController
   layout :with_sidebar
 
   def index
-    @volunteer_default_events = VolunteerDefaultEvent.find(:all)
+#    @volunteer_default_events = VolunteerDefaultEvent.find(:all)
+    redirect_to :controller => "default_assignments"
   end
 
   def show
@@ -96,14 +98,29 @@ class VolunteerDefaultEventsController < ApplicationController
   end
 
   def copy
-    redirect_to :action => "show", :id => VolunteerDefaultEvent.find_by_id(params[:id]).copy_to(Weekday.find_by_id(params[:copy][:weekday_id]), hours_val(params[:copy])).id
+    begin
+      vol_event = VolunteerDefaultEvent.find_by_id(params[:id])
+    rescue
+      flash[:error] = "Could not find volunteer event"
+      redirect_to :back
+      return
+    end
+    begin
+      weekday = Weekday.find_by_id(params[:copy][:weekday_id])
+    rescue
+      flash[:error] = "Could not find weekday, please select one"
+      redirect_to :back
+      return
+    end
+    new_event = vol_event.copy_to(weekday, hours_val(params[:copy]))
+    redirect_to :action => "show", :id => new_event.id
   end
 
   def create
     @volunteer_default_event = VolunteerDefaultEvent.new(params[:volunteer_default_event])
 
     _save
-    if @volunteer_default_event.save
+    if @volunteer_shifts.select{|x| !x.valid?}.length == 0 && @resources.select{|x| !x.valid?}.length == 0 && @volunteer_default_event.valid? && @volunteer_default_event.save
       _after_save
       flash[:notice] = 'VolunteerDefaultEvent was successfully created.'
       redirect_to({:action => "show", :id => @volunteer_default_event.id})
@@ -117,7 +134,7 @@ class VolunteerDefaultEventsController < ApplicationController
     rt = params[:volunteer_default_event].delete(:redirect_to)
 
     _save
-    if @volunteer_default_event.update_attributes(params[:volunteer_default_event])
+    if @volunteer_shifts.select{|x| !x.valid?}.length == 0 && @resources.select{|x| !x.valid?}.length == 0 && @volunteer_default_event.valid? && @volunteer_default_event.update_attributes(params[:volunteer_default_event])
       _after_save
       flash[:notice] = 'VolunteerDefaultEvent was successfully updated.'
       redirect_skedj(rt, @volunteer_default_event.weekday.name)

@@ -1,14 +1,34 @@
+<%= do_jsalert %>
 
 <% Thread.current['skedj_obj'] = skedj  %>
 <div class="skedj">
 <h2>Listing <%= params[:controller].humanize.downcase %></h2>
 
-<% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
+<% if flash[:error] %><h2 class="error"><%= flash[:error] %></h2><% end %>
+
+<% if defined?( @skedj_error ) %><h2 class="error"><%= @skedj_error %></h2>
+<% if defined?(@events) %>
+
+<h3>The relevent events are:</h3>
+<ul>
+<% @events.each do |evt| %>
+  <li><%= evt %></li>
+<% end %>
+</ul>
+
+<% end %>
+
+<% end %>
+
+<% maximum_date = nil %>
+<% if skedj.opts[:maximum_date] %>
+<% maximum_date = eval(skedj.opts[:maximum_date]) %>
+<% end %>
 
 <% if skedj.opts[:presentation_mode]!='Preview' %>
 
 <% if skedj.opts[:conditions] %>
-<%= render :partial => 'work_shifts/filter_criteria', :locals => {:skedj => skedj} %>
+<%= render :partial => 'work_shifts/filter_criteria', :locals => {:skedj => skedj, :maximum_date => maximum_date} %>
 <% else %>
 <%= render :partial => 'filter_criteria' %>
 <% end %>
@@ -18,8 +38,14 @@
 <% end %>
 <% end %>
 
-<%= render :partial => "skedj_links" %>
-
+<%= render :partial => "skedj_links", :locals => {:skedj => skedj, :maximum_date => maximum_date} %>
+<% if skedj.opts[:date_range_condition]
+begin
+      current_date = Date.parse(skedj.conditions.send(skedj.opts[:date_range_condition].to_s+"_start_date"))
+rescue
+current_date = nil
+end
+end %>
 <% 
   # set up control variables and loop through all work shifts
   #  in proper order (weekday, worker.name, start_time)
@@ -65,9 +91,15 @@
     if start_day
       if not start_schedule
         %> <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.last, :thing_end_time), :new => skedj.get_method_value(skedj.last, :block_end_time) } %>
-        <%= render :partial => 'work_shifts/table_footer' %> <%
+        <%= render :partial => 'work_shifts/table_footer', :locals => { :current_date => current_date, :skedj => skedj, :last_date => skedj.get_method_value(skedj.last, :block_method_name) } %> <%
       end 
-      %> <%= render :partial => 'work_shifts/table_head', :locals => {:skedj => skedj } %> <%
+      if current_date
+        next_date = skedj.get_method_value(thing, :block_method_name)
+        %><%= render :partial => 'work_shifts/holidays', :locals => {:skedj => skedj, :current_date => current_date, :next_date => next_date} %><%
+        current_date = next_date + 1
+      end
+      %>
+      <%= render :partial => 'work_shifts/table_head', :locals => {:skedj => skedj } %> <%
     end
     if start_worker
       if not start_day
@@ -88,10 +120,33 @@
   end
 %>
 <%= render :partial => 'work_shifts/row_footer', :locals => { :old => skedj.get_method_value(skedj.current, :thing_end_time), :new => skedj.get_method_value(skedj.current, :block_end_time) } %>
-<%= render :partial => 'work_shifts/table_footer' %>
+<% if skedj.current %>
+<%= render :partial => 'work_shifts/table_footer', :locals => { :current_date => current_date, :skedj => skedj, :last_date => skedj.get_method_value(skedj.current, :block_method_name) } %>
+<% end %>
+
+<% begin
+next_date = Date.parse(skedj.conditions.send(skedj.opts[:date_range_condition].to_s+"_end_date"))
+rescue
+next_date = nil
+end %>
+<% if current_date and next_date
+        %><%= render :partial => 'work_shifts/holidays', :locals => {:skedj => skedj, :current_date => current_date, :next_date => next_date} %>
+<% end %>
 <% if skedj.opts[:presentation_mode]!='Preview' %>
   </div>
 <% end %>
 </div>
+
+<% if defined?(maximum_date) && skedj.opts[:maximum_date] &&  skedj.opts[:date_range_condition] %>
+  <% if params[:conditions] && next_date && next_date < maximum_date %>
+    <% newconds = params[:conditions].dup %>
+    <% newconds[(skedj.opts[:date_range_condition] + "_end_date")] = maximum_date %>
+    <% newparams = params.dup %>
+    <% newparams[:conditions] = newconds %>
+    <span style="clear: left; float: left;">
+      <%= link_to "View more (these and all future records through #{maximum_date})", newparams %>
+    </span>
+  <% end %>
+<% end %>
 
 <% Thread.current['skedj_obj'] = nil  %>

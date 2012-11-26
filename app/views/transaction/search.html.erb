@@ -44,6 +44,13 @@
     <% form_remote_tag :url => { :action => 'component_update' },
        :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
        :update => component_id( refine_params ) do %>
+      <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
+    <% if !@transactions.nil? && @transactions.length >= 1 %>
+      <div style="float: right">
+      <%= label_tag 'per_page', 'Results per Page' %>
+      <%= text_field_tag 'per_page', @per_page, :size => 6 %>
+    </div>
+    <% end %>
       <% filters = [] %>
       <% filters << 'created_at' %>
       <% filters << 'updated_at' %>
@@ -76,8 +83,13 @@
         <% filters << 'payment_method' %>
         <% filters << 'unresolved_invoices' %>
         <% filters << 'payment_amount' %>
+        <% filters << 'payment_total' %>
+      <% end %>
+      <% if @model.new.respond_to?(:is_pickup) %>
+        <% filters << 'is_pickup' %>
       <% end %>
       <% filters << 'gizmo_type_id' %>
+      <% filters << 'gizmo_category_id' %>
       <% filters << 'gizmo_type_group_id' %>
       <% filters << 'id' %>
       <% filters << 'needs_attention' %>
@@ -85,18 +97,18 @@
       <% filters << 'contract' %>
       <% filters << 'contact_type' %>
       <% filters << 'organization' %>
-      <% if has_required_privileges("/show_created_and_updated_by") %>
         <% filters << 'created_by' %>
+        <% filters << 'updated_by' %>
         <% if cashierable %>
           <% filters << 'cashier_created_by' %>
+          <% filters << 'cashier_updated_by' %>
         <% end %>
-      <% end %>
       <% if @model == Sale or @model == Disbursement %>
         <% filters << 'system' %>
       <% end %>
       <%= conditions_html("conditions", filters) %>
 
-      <div class="form-footer">
+      <div class="form-footer" style="float: right; clear: right;">
         <%= submit_tag "Refine", :class => "submit" %>
         <%= loading_indicator_tag("refine_#{@transaction_type}_loading") %>
       </div>

@@ -1,3 +1,5 @@
+<% action_name = "new" if action_name == "create" %>
+<% action_name = "edit" if action_name == "update" %>
 <div id="form-header">
   <% if action_name == "new" %>
     <h1>New report</h1>
@@ -18,6 +20,9 @@
       <% string = "Update" %>
     <% end %>
     <% form_tag(form_opts, {:multipart => true}) do %>
+      <%= error_messages_for :report %>
+      <%= error_messages_for :builder_task, :object => @report.builder_task %>
+      <%= error_messages_for :spec_sheet_value, :object => @report.spec_sheet_values %>
       <table>
         <tr><td><label for="report_contact_id">Volunteer ID:</label></td><td><%= text_field("report", :contact_id) %></td></tr>
         <tr><td><label for="report_action_id">Job:</label></td><td><%= select("report", "action_id", Action.find(:all).collect {|p| [p.description, p.id] }) %></td></tr>
@@ -37,6 +42,11 @@
           <tr><td><label for="report_my_file">File:</label></td><td><%= file_field("report", :my_file) %></td></tr>
         <% elsif action_name == "edit" %>
           <tr><td><label for="report_flag">Flag:</label></td><td><%= check_box("report", :flag) %></td></tr>
+        <% end %>
+        <% if action_name == "edit" %>
+          <% @report.spec_sheet_values.sort_by(&:spec_sheet_question_id).each do |x| %>
+            <tr><td><label for="report_questions_id_<%= x.spec_sheet_question.id %>"><%= x.spec_sheet_question.question %></label></td><td><%= text_field("report[questions]", "id_" + x.spec_sheet_question.id.to_s, :value => x.value) %></td></tr>
+          <% end %>
         <% end %>
         <tr><td colspan="2"><%= submit_tag string %></td></tr>
       </table>

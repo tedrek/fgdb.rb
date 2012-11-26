@@ -7,7 +7,9 @@
       <%= (controller.class.name).titleize.sub(/ Controller/, '') %>:
       <%= (controller.action_name).titleize %> <% end %>
     </title>
-    <%= stylesheet_link_tag 'scaffold', 'lightwindow', 'application', 'common', :media => 'all' %>
+    <% css_list = ['scaffold', 'lightwindow', 'application', 'common'] %>
+    <% css_list << 'dev' if RAILS_ENV == "development" %>
+    <%= stylesheet_link_tag *(css_list + [{:media => 'all'}]) %>
     <%= stylesheet_link_tag 'no_print', :media => 'print' %>
     <%= javascript_include_tag :defaults %>
     <%= javascript_include_tag 'lightwindow' %>
@@ -25,8 +27,24 @@ javascript_tag "volunteer_task_programs = #{h.to_json};" %>
 
     <%= dhtml_calendar_includes %>
       <%= render :partial => 'sidebar_links/line_item_javascript', :locals => {:gizmo_context => @gizmo_context} %>
+
+
+<% if params[:action] == "badge" %>
+      <style tyle="text/css">
+<!--
+@page {
+ size: landscape
+ margin-left: 0.25in;
+ margin-right: 0.25in;
+ margin-top: 0.20in;
+ margin-bottom: 0.20in;
+}
+-->
+</style>
+<% end %>
+
   </head>
-  <body>
+  <body onScroll="handle_scroll();" onLoad="handle_scroll();">
 
     <div id="logo">
       <a href="/"><img src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png" class="image-link"/></a>

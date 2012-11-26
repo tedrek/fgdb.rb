@@ -6,12 +6,7 @@
 
 <% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
 
-<h2>Show system history</h2>
-
-<% form_for "", nil, :url => {:action => "system" }, :html => {:method => "get"} do |f| %>
-<%= (f.text_field "id").sub(/\[id\]/, "id") %>
-<%= submit_tag 'Show' %>
-<% end %>
+<%= render :partial => 'system_form' %>
 
 <% if has_required_privileges("builder") %>
 <h2>Show builder status sheet</h2>
@@ -31,6 +26,8 @@
 
 <div id="main-section">
   <% form_tag :action => 'search' do -%>
+  <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
+
   <% filters = [] -%>
   <% filters << 'flagged' -%>
   <% if has_required_privileges('/search_by_contact') %>
@@ -42,6 +39,10 @@
   <% filters << 'action' %>
   <% filters << 'type' %>
   <% filters << 'serial_number' %>
+  <% filters << 'hard_drive_serial_number' %>
+  <% if has_required_privileges('show/sign_off') %>
+    <% filters << 'signed_off_by' %>
+  <% end %>
   <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>
 <% end -%>

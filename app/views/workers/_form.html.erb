@@ -1,18 +1,5 @@
 <%= error_messages_for 'worker' %>
 
-<div id="workerjobs" class="right">
-<p><label for="jobs">Jobs:</label><br/>
-<ul>
-<% Job.find(:all, :order => "name").each do |j| %>
-   <li><input type="checkbox" name="worker[job_ids][]" 
-          value="<%= j.id %>" 
-          <% if @worker.jobs.include?(j) %> checked="checked" <% end %> />
-<%= j.name %></li>
-<% end %>
-</ul>
-</p>
-</div>
-
 <div class="left">
   <div id="workerinfo" class="topleft">
   <!--[form:worker]-->
@@ -48,8 +35,8 @@
     Effective: <%= calendar_box 'worker', "change_worker_type_date",{},{:showOthers => true} %>
   <% end %></p>
   
-  <p><label for="worker_weekly_work_hours">Weekly work hours</label><br/>
-  <%= text_field 'worker', 'weekly_work_hours'  %></p>
+  <p><label for="worker_standard_weekly_hours">Standard weekly hours</label><br/>
+  <%= text_field 'worker', 'standard_weekly_hours'  %></p>
   
   <p><label for="worker_weekly_admin_hours">Weekly admin hours</label><br/>
   <%= text_field 'worker', 'weekly_admin_hours'  %></p>
@@ -106,7 +93,7 @@
   <p><label for="standard_shifts">Standard shifts:</label><br/>
   <ul>
   <% StandardShift.find(:all, :order => "weekday_id, start_time", :conditions => ["worker_id = ?", @worker.id]).each do |s| %>
-    <li><%= link_to s.long_name, { :action => "edit", :controller => "standard_shifts", :id => s.id } %></li>
+    <li><%= link_to s.long_name, { :action => "edit", :controller => "shifts", :id => s.id } %></li>
   <% end %>
   </ul>
   </div>

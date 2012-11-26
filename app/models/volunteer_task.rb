@@ -14,13 +14,17 @@ class VolunteerTask < ActiveRecord::Base
 
   before_save :add_contact_types
   after_save :set_contact_syseval_count
-  after_destroy { |record| c = record.contact; c.update_syseval_count; c.save!}
+  after_destroy { |record| c = record.contact; if c; c.update_syseval_count(record.volunteer_task_type_id); end}
 
   named_scope :for_type_id, lambda{|opt| {:conditions => ['volunteer_task_type_id = ?', opt]}}
 
+  def self.allow_shared
+    true
+  end
+
   def set_contact_syseval_count
-    self.contact.update_syseval_count
-    self.contact.save! # , :autosave => true does not work?
+    self.contact.update_syseval_count(self.volunteer_task_type_id)
+#    self.contact.save! # , :autosave => true does not work?
   end
 
   def self.find_by_conditions(conditions)
@@ -43,7 +47,7 @@ class VolunteerTask < ActiveRecord::Base
 
   def effective_duration
     d = duration
-    if !self.program.adoption_credit
+    if !((self.volunteer_task_type.nil? or self.volunteer_task_type.adoption_credit.nil?) ? self.program.adoption_credit : self.volunteer_task_type.adoption_credit)
       return 0.0
     end
     if volunteer_task_type

@@ -1,5 +1,7 @@
-<% table_width = @columns.length + 2 %>
 <h1>Gizmo report <%= @date_range_string %></h1>
+<%= render :partial => "form", :locals => {:name => "gizmo_form"} %>
+<% if @defaults.valid? %>
+<% table_width = @columns.length + 2 %>
 <script>
   var disbursements_toggle = 0;
   <% for c in @rows
@@ -8,7 +10,7 @@
     <%end%>
     <%end%>
 </script>
-<table class="report">
+<table class="report" style="clear: left">
 
   <tr>
     <th class="section_header" colspan="<%= table_width %>">Gizmo Flow</th>
@@ -56,5 +58,5 @@
 
 </table>
 
-
 <p class="timestamp"> - generated <%= Time.now %></p>
+<% end %>

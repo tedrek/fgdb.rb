@@ -3,7 +3,7 @@
 --
 
 SET statement_timeout = 0;
-SET client_encoding = 'SQL_ASCII';
+SET client_encoding = 'UTF8';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
@@ -180,6 +180,9 @@ COPY gizmo_contexts_gizmo_types (gizmo_context_id, gizmo_type_id, lock_version, 
 3	90	0	2006-10-19 09:45:49	2006-10-19 09:45:49
 2	90	0	2006-10-10 12:11:56	2006-10-10 12:11:56
 5	90	0	2009-08-12 01:46:00.963953	2009-08-12 01:46:00.963953
+2	92	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	93	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	94	0	2006-10-10 12:11:56	2006-10-10 12:11:56
 \.
 
 

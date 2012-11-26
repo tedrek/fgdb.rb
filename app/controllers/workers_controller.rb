@@ -12,6 +12,27 @@ class WorkersController < ApplicationController
     render :action => 'list'
   end
 
+  def badge
+    if params[:workers]
+      @workers = Worker.find_all_by_id(params[:workers].map{|x| x.first.to_i}).sort_by(&:name)
+    end
+  end
+
+  def upload
+    @worker = Worker.find_by_id(params[:id])
+    dir = RAILS_ROOT + "/public/images/workers/"
+    filename = dir + "#{@worker.id}.png"
+    if !File.writable?(dir)
+      @error = "Cannot write to #{filename}"
+    end
+    if @error.nil? && (io = params[:picture])
+      File.unlink(filename) if File.exists?(filename)
+      File.open(filename, 'w') do |f|
+        f.write(io.read)
+      end
+    end
+  end
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -60,9 +81,6 @@ class WorkersController < ApplicationController
   def update
     @worker = Worker.find(params[:id])
     @worker.salaried = _parse_checkbox(params[:worker][:salaried])
-    if !params[:worker][:job_ids]
-      @worker.jobs.clear
-    end
     if @worker.update_attributes(params[:worker])
       flash[:notice] = 'Worker was successfully updated.'
       redirect_to :action => 'show', :id => @worker

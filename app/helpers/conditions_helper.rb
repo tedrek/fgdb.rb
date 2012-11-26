@@ -3,12 +3,20 @@ module ConditionsHelper
 
   private
 
+  def html_for_organization_name_condition(params_key)
+    text_field(params_key, 'organization_name')
+  end
+
   def html_for_worker_type_condition(params_key)
     select(params_key, "worker_type_id", WorkerType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
   end
 
+  def html_for_finalized_condition(params_key)
+    ""
+  end
+
   def html_for_assigned_condition(params_key)
-    check_box params_key, "assigned"
+    ""
   end
 
   def html_for_needs_checkin_condition(params_key)
@@ -24,21 +32,19 @@ module ConditionsHelper
   end
 
   def html_for_schedule_condition(params_key)
-    which_way = (params[params_key] ? params[params_key][:schedule_which_way] : nil) || 'Family'
-    if !['Family', 'Solo', 'Solo + root'].include?(which_way)
-      which_way = 'Family'
-    end
-    ((select params_key, :schedule_id, Schedule.find(:all, :order => "lft").collect {|c| [c.full_name, c.id] }) +
-    (radio_button params_key, :schedule_which_way, 'Family', :checked => (which_way=='Family')) + "Family" +
-    (radio_button params_key, :schedule_which_way, 'Solo', :checked => (which_way=='Solo')) + "Solo" +
-    (radio_button params_key, :schedule_which_way, 'Solo + root', :checked => (which_way=='Solo + root')) + "Solo + root")
+    (select params_key, :schedule_id, Schedule.find(:all, :order => "generate_from != 't', name").collect {|c| [c.full_name, c.id] })
   end
 
   attr_accessor :multi_enabled
 
   def html_for_worker_condition(params_key)
     show_all = false
-    select(params_key, "worker_id", Worker.find(:all).select{|x| show_all or x.effective_now?}.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts)
+    if @conditions_internal_date_range and !show_all
+      workers = Worker.effective_in_range(*@conditions_internal_date_range)
+    else
+      workers = Worker.find(:all).select{|x| show_all or x.effective_now?}
+    end
+    select(params_key, "worker_id", workers.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts.merge(:onkeyup => "magic_onkeyscroll(event);"))
   end
 
   def _multi_html_opts
@@ -46,7 +52,22 @@ module ConditionsHelper
   end
 
   def html_for_job_condition(params_key)
-    select(params_key, "job_id", Job.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts)
+    show_all = false
+    if @conditions_internal_date_range and !show_all
+      jobs = Job.effective_in_range(*@conditions_internal_date_range)
+    else
+      if show_all
+        jobs = Job.find(:all)
+      else
+        jobs = Job.effective_on(Date.today)
+      end
+    end
+    select(params_key, "job_id", jobs.sort_by(&:name).collect {|p| [ p.name, p.id ] }, {}, _multi_html_opts.merge(:onkeyup => "magic_onkeyscroll(event);"))
+  end
+
+  def html_for_form_factor_condition(params_key)
+    form_factors = ['Other', '2.5"', '3.5"']
+    select(params_key, "form_factor", form_factors.collect {|p| [ p, p ] })
   end
 
   def html_for_attendance_type_condition(params_key)
@@ -62,7 +83,7 @@ module ConditionsHelper
   end
 
   def html_for_sked_condition(params_key)
-    select(params_key, "sked_id", Sked.find(:all).sort_by(&:name).collect{|p| [ p.name, p.id ]})
+    select(params_key, "sked_id", Sked.find(:all).sort_by(&:name).collect{|p| [ p.to_s, p.id ]})
   end
 
   def html_for_volunteer_task_type_condition(params_key)
@@ -90,14 +111,21 @@ module ConditionsHelper
   end
 
   def html_for_type_condition(params_key)
-    collection_select(params_key, "type", Type.find(:all), "id", "description")
+    collection_select(params_key, "type_id", Type.find(:all), "id", "description")
   end
 
   def html_for_volunteered_hours_in_days_condition(params_key)
-    label(params_key, 'volunteer_hours_minimum', "Minimum number of hours volunteered:") +
+    label(params_key, 'volunteer_hours_minimum', "Minimum number of hours volunteered (enter 0 for any):") +
     text_field(params_key, 'volunteer_hours_minimum') +
     label(params_key, 'volunteer_hours_minimum', "Within number of days:") +
     text_field(params_key, 'volunteer_hours_days')
+  end
+
+  def html_for_volunteered_non_court_hours_in_days_condition(params_key)
+    label(params_key, 'volunteer_non_court_hours_minimum', "Minimum number of non-court hours volunteered (enter 0 for any):") +
+    text_field(params_key, 'volunteer_non_court_hours_minimum') +
+    label(params_key, 'volunteer_non_court_hours_minimum', "Within number of days:") +
+    text_field(params_key, 'volunteer_non_court_hours_days')
   end
 
   def html_for_id_condition(params_key)
@@ -124,6 +152,10 @@ module ConditionsHelper
     ""
   end
 
+  def html_for_unresolved_shipment_condition(params_key)
+    ""
+  end
+
   def html_for_payment_method_condition(params_key)
     render( :partial => 'transaction/payment_method_select',
             :locals => {:field_id_prefix => params_key,
@@ -145,8 +177,24 @@ module ConditionsHelper
                       ])
   end
 
+  def html_for_payment_total_condition(params_key)
+    select_visibility(
+                      params_key,
+                      'payment_total_type',
+                      [['exact', text_field(params_key, 'payment_total_exact')],
+                       ['between', "%s to %s" % [text_field(params_key, 'payment_total_low'),
+                                                 text_field(params_key, 'payment_total_high')]],
+                       ['>=', text_field(params_key, 'payment_total_ge')],
+                       ['<=', text_field(params_key, 'payment_total_le')],
+                      ])
+  end
+
   def html_for_gizmo_type_id_condition(params_key)
     select(params_key, 'gizmo_type_id', GizmoType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}, {}, _multi_html_opts)
+  end
+
+  def html_for_gizmo_context_id_condition(params_key)
+    select(params_key, 'gizmo_context_id', GizmoContext.find(:all).select(&:has_system?).sort_by(&:description).collect(){|x|[x.description, x.id]}, {})
   end
 
   def html_for_gizmo_type_group_id_condition(params_key)
@@ -158,7 +206,7 @@ module ConditionsHelper
   end
 
   def html_for_disbursement_type_id_condition(params_key)
-    select(params_key, 'disbursement_type_id', DisbursementType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]})
+    select(params_key, 'disbursement_type_id', DisbursementType.find(:all).sort_by(&:description).collect(){|x|[x.description, x.id]}, {}, _multi_html_opts)
   end
 
   def html_for_store_credit_id_condition(params_key)
@@ -166,7 +214,7 @@ module ConditionsHelper
   end
 
   def html_for_covered_condition(params_key)
-    check_box(params_key, 'covered')
+    ""
   end
 
   def html_for_postal_code_condition(params_key)
@@ -182,7 +230,15 @@ module ConditionsHelper
   end
 
   def html_for_organization_condition(params_key)
-    check_box(params_key,"is_organization")
+    ""
+  end
+
+  def html_for_logged_in_within_condition(params_key)
+    text_field(params_key, 'logged_in_within', :size => 3) + " month(s)"
+  end
+
+  def html_for_is_pickup_condition(params_key)
+    ""
   end
 
   def html_for_contact_condition(params_key)
@@ -197,7 +253,7 @@ module ConditionsHelper
                         :display_create => false,
                         :show_label => false,
                       },
-                      :contact => eval("@" + params_key).contact
+                      :contact => eval("@" + params_key).nil? ? nil : eval("@" + params_key).contact
                     } )
     elsif has_privileges("has_contact")
       "Me" + hidden_field(params_key, 'contact_id', :value => @current_user.contact_id)
@@ -218,6 +274,39 @@ module ConditionsHelper
                       ])
   end
 
+  def html_for_megabytes_size_condition(params_key)
+    select_visibility(
+                      params_key,
+                      'megabytes_size_type',
+                      [['exact', text_field(params_key, 'megabytes_size_exact')],
+                       ['between', "%s to %s" % [text_field(params_key, 'megabytes_size_low'),
+                                                 text_field(params_key, 'megabytes_size_high')]],
+                       ['>=', text_field(params_key, 'megabytes_size_ge')],
+                       ['<=', text_field(params_key, 'megabytes_size_le')],
+                      ]) +
+      select(params_key, "megabytes_size_units", Conditions::MEGABYTES_UNITS.to_a.sort_by(&:last).collect {|p| [ p.first, p.first ] })
+  end
+
+  def html_for_hard_drive_serial_number_condition(params_key)
+    text_field(params_key, 'hard_drive_serial_number')
+  end
+
+  def html_for_result_condition(params_key)
+    collection_select(params_key, "result", ['PASSED', 'FAILED', 'ABORTED', 'STOPPED', 'UNTESTED'].sort, "to_s", "to_s")
+  end
+
+  def html_for_interface_type_condition(params_key)
+    collection_select(params_key, "interface_type", ['IDE', 'SATA', 'SCSI'], "to_s", "to_s")
+  end
+
+  def html_for_vendor_condition(params_key)
+    text_field(params_key, 'vendor')
+  end
+
+  def html_for_model_condition(params_key)
+    text_field(params_key, 'model')
+  end
+
   def html_for_email_condition(params_key)
     text_field(params_key, 'email')
   end
@@ -235,10 +324,26 @@ module ConditionsHelper
   end
 
   def html_for_created_by_condition(params_key)
-    collection_select(params_key, "created_by", [User.new, User.find(:all)].flatten, "id", "login")
+    collection_select(params_key, "created_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
+  end
+
+  def html_for_signed_off_by_condition(params_key)
+    collection_select(params_key, "signed_off_by", [User.new, (Privilege.find_by_name('sign_off_spec_sheets').roles + Role.find_by_name('ADMIN').to_a).collect{|x| x.users}.flatten.uniq.select{|x| x.can_login}.sort_by{|x| x.contact_display_name.downcase}].flatten, "id", "contact_display_name")
+  end
+
+  def html_for_shift_type_condition(params_key)
+    collection_select(params_key, "shift_type", ['StandardShift', 'Meeting', 'Unavailability'], "to_s", "to_s")
+  end
+
+  def html_for_updated_by_condition(params_key)
+    collection_select(params_key, "updated_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
+  end
+
+  def html_for_cashier_updated_by_condition(params_key)
+    collection_select(params_key, "cashier_updated_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
   end
 
   def html_for_cashier_created_by_condition(params_key)
-    collection_select(params_key, "cashier_created_by", [User.new, User.find(:all)].flatten, "id", "login")
+    collection_select(params_key, "cashier_created_by", [User.new, User.find(:all).sort_by(&:login)].flatten, "id", "login")
   end
 end

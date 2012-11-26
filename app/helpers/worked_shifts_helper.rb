@@ -1,9 +1,9 @@
 module WorkedShiftsHelper
   def url_for_log(worker, date, controller = nil)
-    worker = worker.id if worker.class == Worker
+    worker = worker.contact_id if worker.class == Worker
     date = date.to_date if date.class == DateTime
     date = date.to_s if date.class == Date
-    h = {:controller => "worked_shifts", :action => "index", :worked_shift => {:worker_id => worker, :date_performed => date}}
+    h = {:controller => "worked_shifts", :action => "index", :worked_shift => {:contact_id => worker, :date_performed => date}}
     if controller
       return controller.url_for h
     else
@@ -13,7 +13,7 @@ module WorkedShiftsHelper
 
   def get_hash(*a)
     date, worker, hours = a
-    hashkeys = %w[total_today total_week max_week overtime total_pay_period normally_worked]
+    hashkeys = %w[total_today total_week max_week overtime total_pay_period normally_worked weekly_hours]
     hash = {}
     hashkeys.each{|x| hash[x.to_sym] = 0.0}
     if hours
@@ -26,6 +26,7 @@ module WorkedShiftsHelper
     end
     week.fill_in_workers_hours(worker)
     week.add_in_holidays(worker)
+    hash[:weekly_hours] = worker.standard_weekly_hours
     hash[:total_week] = week.total
     hash[:max_week] = worker.ceiling_hours
     hash[:overtime] = [0.0, week.total - worker.ceiling_hours].max

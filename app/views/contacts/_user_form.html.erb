@@ -6,16 +6,16 @@
                       "contact_is_user",
                       :function => "{var x = $('contact_user'); if ($('contact_is_user').checked) { x.show() } else { x.hide() }}"
                       ) %>
-    <label for="contact_is_user">can login?</label>
+    <label for="contact_is_user">can authenticate to database?</label>
   </div>
   <% else %>
     <%= hidden_field "contact", "is_user", :value => 1 %>
   <% end %>
 
   <div id="contact_user" <%= @contact.is_user? or "style='display:none'"%>>
-  <% if @contact.is_user? %>
+  <% if @contact.is_user? and  has_required_privileges('/admin_user_accounts') %>
     <div class='form-element'>
-      <label for="user_can_login">can login?</label>
+      <label for="user_can_login">can authenticate to database?</label>
       <%= check_box :user, :can_login %>
     </div>
   <% end %>
@@ -37,6 +37,7 @@
       <%= text_field :user, :email %>
     </div>
 
+    <% if @user.nil? or has_required_privileges('/admin_user_accounts') or has_privileges("contact_#{@contact.id}") %>
     <div class='password form-element'>
       <label for="user_password">Password</label>
       <%= password_field :user, :password %>
@@ -46,27 +47,47 @@
       <label for="user_password_confirmation">Confirm Password</label>
       <%= password_field :user, :password_confirmation %>
     </div>
+    <% end %>
 
     <div class='form-element'>
-      <label for="user_cashier_code">Cashier Code</label>
+      <label for="user_shared">shared login? (only allows read-only and PIN protected actions, with exceptions)</label>
+      <%= check_box :user, :shared %>
+    </div>
+
+    <% unless @user and @user.shared %>
+    <div class='form-element'>
+      <label for="user_cashier_code">PIN</label>
       <%= text_field :user, :cashier_code, :readonly => true %>
     </div>
 
     <% if @contact.is_user? %>
       <div class='form-element'>
-        <%= button_to_function "Reset Cashier Code", remote_function({:url => {:action => :reset_cashier_code, :id => @user.id}, :loading => "Element.show('#{loading_indicator_id("cashier_code")}');"}) %>
+        <%= button_to_function "Reset PIN", remote_function({:url => {:action => :reset_cashier_code, :id => @user.id}, :loading => "Element.show('#{loading_indicator_id("cashier_code")}');"}) %>
         <%= loading_indicator_tag("cashier_code") %>
       </div>
     <% end %>
+    <% end %>
 
-    <% for role in Role.find(:all) %>
+    <% grantable = has_required_privileges('/create_logins') ? current_user.grantable_roles : [] %>
+    <h4 style="clear: left;"><a href="#" onClick="var r = $('roles_hidden_div'); if(r.style.display == 'none') { r.show(); } else { r.hide(); }">Roles user has:</a></h4>
+    <div id="roles_hidden_div" style="display: none">
+    <ul>
+    <% for role in ((@user ? @user.roles : []) - grantable).sort_by(&:name) %>
+      <li><%= role.name %><%= (role.notes.to_s.length > 0 ? (": " + role.notes) : "") %><br />(<%= role.privilege_list %>)</li>
+    <% end %>
+    </ul>
+    <% for role in grantable.sort_by(&:name) %>
       <div class="form-element role-check-box">
         <input type="checkbox" id="<%= h role.name %>"
                name="roles[]" value="<%= role.id %>"
                <%= (@user and @user.roles.include?(role)) ? 'checked' : '' %>
                />
-        <label for="<%= h role.name %>"><%= (xx = /(.+)/.match(h(role.name))) ? xx[1] : h(role.name) %> (<%= role.privileges.map{|x| x.name}.join(", ") %>)</label>
+        <label for="<%= h role.name %>"><%= role.name %><%= (role.notes.to_s.length > 0 ? (": " + role.notes) : "") %><br />(<%= role.privilege_list %>)</label>
       </div>
     <% end %>
+    <div class='form-element'>
+      * = privilege does not apply to shared login users
+    </div>
+    </div>
   </div>
 </div>

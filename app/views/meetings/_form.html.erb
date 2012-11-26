@@ -21,17 +21,29 @@
 <p><label for="meeting_weekday_id">Weekday</label><br/>
 <%= select("meeting", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
 
+<% 5.times do |n| %>
+<% n = n + 1 %>
+<p><label for="meeting_week_<%= n %>_of_month">Generate for Week <%= n %> of Month</label><br/>
+<%= check_box("meeting", "week_#{n}_of_month") %></p>
+<% end %>
+
+<p><label for="meeting_repeats_every_months">Repeats every X months (default: 1 for every month)</label><br/>
+<%= text_field 'meeting', 'repeats_every_months'  %></p>
+
+<p><label for="meeting_repeats_on_day">Month to repeat meeting (if repeats every X > 1 months)</label><br/>
+<%= calendar_box 'meeting', 'repeats_on_day', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+
 <p><label for="meeting_schedule_id">Schedule</label><br/>
 <%= select("meeting", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
-
-<p><label for="meeting_frequency_type_id">Frequency type</label><br/>
-<%= select("meeting", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
 <p><label for="meeting_effective_date">Effective date</label><br/>
 <%= calendar_box 'meeting', 'effective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
 
 <p><label for="meeting_ineffective_date">Ineffective date</label><br/>
 <%= calendar_box 'meeting', 'ineffective_date', { :include_blank => true, :default => nil, :format => 'us' }  %></p>
+
+<p><label for="meeting_job_id">Job</label><br/>
+<%= select("meeting", "job_id", [["(No Job)", nil]] + Job.workable.effective_on(Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }, {}, {:onkeyup => "magic_onkeyscroll(event);"}) %></p>
 
 <p><label for="workers">Workers:</label><br/>
 <ul>

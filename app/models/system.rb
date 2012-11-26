@@ -7,6 +7,11 @@ class System < ActiveRecord::Base
   has_many :spec_sheets
   has_many :notes
   has_many :gizmo_events
+  has_many :system_pricings, :order => 'created_at ASC'
+
+  def pricing
+    system_pricings.last
+  end
 
   def previous
     self.class.find(previous_id) if previous_id
@@ -14,6 +19,49 @@ class System < ActiveRecord::Base
 
   def next
     self.class.find_by_previous_id(self.id)
+  end
+
+  def last_gizmo_event
+    self.all_instances.map{|x| x.gizmo_events}.flatten.select{|x| (!x.sale_id.nil?) or (!x.disbursement_id.nil?) }.sort_by(&:occurred_at).last
+  end
+
+  def went_out_date
+    gt = last_gizmo_event
+    if gt
+      starting_date = gt.occurred_at.to_date
+      return starting_date
+    else
+      return nil
+    end
+  end
+
+  def tech_support_source
+    gt = last_gizmo_event
+    if gt
+      if gt.sale_id.nil?
+        dtd = gt.disbursement.disbursement_type.description
+        if ["Adoption", "Build", "Hardware Grants"].include?(dtd)
+          return dtd.singularize
+        else
+          return nil
+        end
+      else
+        return "Store"
+      end
+    else
+      return nil
+    end
+  end
+
+  def warranty_date
+    gt = last_gizmo_event
+    if gt
+      starting_date = gt.occurred_at
+      warranty_date = starting_date + ( gt.sale_id.nil? ? 1.year : 6.months )
+      return warranty_date.to_date
+    else
+      return nil
+    end
   end
 
   def all_instances

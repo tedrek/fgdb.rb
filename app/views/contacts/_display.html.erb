@@ -10,6 +10,10 @@
     (id: <%= @contact.id %><%= ", login: #{h @contact.user.login}" if @contact.user %>)
   </div>
   <div class="name"><%= h @contact.display_name %></div>
+  <% if @contact.is_birthday? %>
+    <b class="id" style="color: blue">Birthday is today (<%= @contact.birthday %>),<br />Wish them a HAPPY BIRTHDAY!</b>
+    <br />
+  <% end %>
   <br />
   <% if @contact.is_person? %>
     <div class="hours_type">
@@ -25,10 +29,20 @@
     <%= h method.display %><br />
   <% end %>
 </div>
-<% if @contact.notes && @contact.notes != '' %>
+<% if @contact.has_areas_disciplined_from? or (@contact.notes && @contact.notes != '') %>
   <div class="contact_comments">
-    Notes:<br />
-    <%= h(@contact.notes).gsub(/\n/, "<br />") %>
+    <% if @contact.has_areas_disciplined_from? %>
+      Cannot volunteer in these areas (check with a collective staff member for assistance):<br />
+      <ul>
+        <% @contact.areas_disciplined_from.map(&:name).each do |d| %>
+          <li><%= d %></li>
+        <% end %>
+      </ul>
+    <% end %>
+    <% if @contact.notes && @contact.notes != '' %>
+      Notes:<br />
+      <%= h(@contact.notes).gsub(/\n/, "<br />") %>
+    <% end %>
   </div>
 <% end %>
 <% checked_since = @contact.spec_sheets_since_last_adoption("checker").length %>
@@ -113,9 +127,17 @@ Attended Classes:<br />
         :confirm => 'Are REALLY you sure you want to kill this person?',
         :loading => "Element.show('#{loading_indicator_id("contact_#{contact.id}_loading")}');" } %>
 <% end %>
-<div id="contact__default_discount_schedule" style="display: none"><%= @contact.default_discount_schedule.id %></div>
+<% if @contact.default_discount_schedule == "volunteer" %>
+<div id="contact__default_discount_name" style="display: none"><%= DiscountName.find(Default["discount_name_id_for_volunteer_discount"]).id %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= DiscountPercentage.find(Default["discount_percentage_id_for_volunteer_discount"]).id %></div>
+<% else %>
+<div id="contact__default_discount_name" style="display: none"><%= Sale.new.discount_name.id %></div>
+<div id="contact__default_discount_percentage" style="display: none"><%= Sale.new.discount_percentage.id %></div>
+<% end %>
 <div id="contact__contract" style="display: none"><%= @contact.contract.id %></div>
 <div id="contact__shift_count" style="display: none"><%= @contact.assignments.on_or_after_today.not_cancelled.length %></div>
+<div id="contact__has_areas_disciplined_from" style="display: none"><%= @contact.has_areas_disciplined_from? %></div>
+<div id="contact__areas_disciplined_from" style="display: none"><%= @contact.areas_disciplined_from.map(&:name).to_json %></div>
 </div>
 
 <%= javascript_tag(options[:on_display]) if options.has_key? :on_display %>

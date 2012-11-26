@@ -1,3 +1,7 @@
+<% unless @main_system %>
+<%= render :partial => 'system_form' %>
+<% end %>
+
 <% for sys in @main_system ? @main_system.all_instances : [] %>
 <% @system = sys %>
 <h2>System #<%= @system.id %></h2>
@@ -23,6 +27,9 @@
         Bug Correction: <%= thing.bug_correction %><br />
         <% end %>
         Notes: <%= thing.notes %>
+        <% if thing.class == SpecSheet %>
+          <br />Signed off by: <%= thing.signed_off_by %>
+        <% end %>
       <% end %>
     </div>
     <br />

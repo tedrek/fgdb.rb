@@ -4,16 +4,18 @@
     <th>Amount</th>
     <% if @gizmo_context == GizmoContext.sale %>
       <th>Storecredit Hash</th>
+      <th>Coupon Details</th>
     <% end %>
     <th></th>
   <tr>
     <% if @transaction.payments %>
       <% @gizmos_and_payments_js ||= "" %>
-      <% for line in @transaction.payments %>
+      <% for line in @transaction.payments_actual %>
         <% hash = {} %>
         <% hash[:payment_method_id] = line.payment_method_id %>
         <% hash[:payment_amount] = line.amount %>
         <% hash[:store_credit_id] = line.store_credit ? line.store_credit_id : nil %>
+        <% hash[:coupon_details] = line.coupon_details.to_s %>
         <% hash[:uneditable] = true if !line.editable? %>
         <% hash[:id] = line.id %>
         <% @gizmos_and_payments_js += "add_payment(#{hash.to_json});" %>
@@ -24,9 +26,10 @@
     <td><select id="payment_method_id" onchange="<%= h @gizmo_context.name %>_payment_method_selected();" name="payment_method_id">
         <%= options_from_collection_for_select([GizmoType.new(:id=>1, :description=>"pick a payment type")] + (PaymentMethod.find(:all) - (@gizmo_context.name == "donation" ? [PaymentMethod.find_by_name("store_credit")] : [])).sort_by(&:description), "id", "description") %>
       </select></td>
-    <td><input id="payment_amount" name="payment_amount" onkeydown="return handle_p(event);"/></td>
+    <td><input id="payment_amount" size="10" name="payment_amount" onkeydown="return handle_p(event);"/></td>
     <% if @gizmo_context == GizmoContext.sale %>
-      <td><input id="store_credit_id" name="store_credit_id" onkeydown="return handle_p(event);"/></td>
+      <td><input id="store_credit_id" size="10" name="store_credit_id" onkeydown="return handle_p(event);"/></td>
+      <td><input id="coupon_details" name="coupon_details" onkeydown="return handle_p(event);"/></td>
     <% end %>
     <td><%= loading_indicator_tag "payment_line_item" %>
 <%= javascript_tag "payment_line_item_loading_id = #{loading_indicator_id("payment_line_item").to_json}"; %>

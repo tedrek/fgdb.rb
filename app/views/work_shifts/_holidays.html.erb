@@ -1,0 +1,10 @@
+<%
+        (current_date..next_date).each do |check|
+          if h = Holiday.find_by_holiday_date(check)
+            %> <fieldset style="clear: left">
+  <h2>Closed for <%= h.name %> on <%= check.strftime("%A") %>, <%= check %><% unless h.is_all_day %>, from <%= h.start_time.strftime("%T") %> to <%= h.end_time.strftime("%T") %><% end %></h2>
+</fieldset><br /><br /><%
+          end
+        end
+%>
+

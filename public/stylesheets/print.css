@@ -10,10 +10,6 @@ div.filter {
 div.generate {
     display: none;
 }
-div.content {
-    position: absolute;
-    margin-top: 20px;
-}
 td.shift {
     background-color: #FFFFFF;
 }

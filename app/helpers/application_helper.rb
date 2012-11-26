@@ -1,7 +1,20 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def my_number_to_currency(value)
+    number_to_currency(value.to_f/100.0)
+  end
+
+  def do_jsalert
+    return "" if ! flash[:jsalert]
+    s = ""
+    [flash[:jsalert]].flatten.each do |x|
+      s += "alert(#{x.to_json}); "
+    end
+    return javascript_tag(s)
+  end
+
   def gt_for_txn(thing)
-    [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types
+    [GizmoType.new(:id=>1, :description=>"pick a gizmo")] + thing.showable_gizmo_types.sort_by(&:downcase_desc)
   end
 
   def ltum(text, hash, condition = nil) # link_to_unless_me
@@ -18,20 +31,22 @@ module ApplicationHelper
 
   def save_exception_data(e)
     exception_data = process_exception_data(e)
-    tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
-    crash_id = tempfile.match(/^.*\.([^.]+)$/)[1]
-    exception_data["tempfile"] = tempfile
-    exception_data["crash_id"] = crash_id
-    f = File.open(tempfile, "w")
-    f.write(exception_data.to_json)
-    f.close
+    unless e.to_s.include?("jzebra.PrintApplet.class") or e.to_s.include?("/images/workers/")
+      tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
+      crash_id = tempfile.match(/^.*\.([^.]+)$/)[1]
+      exception_data["tempfile"] = tempfile
+      exception_data["crash_id"] = crash_id
+      f = File.open(tempfile, "w")
+      f.write(exception_data.to_json)
+      f.close
+    end
     exception_data
   end
 
   def process_exception_data(e)
     rescue_template = ActionController::Rescue::DEFAULT_RESCUE_TEMPLATES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_TEMPLATE
     rescue_status = ActionController::Rescue::DEFAULT_RESCUE_RESPONSES[e.class.name] || ActionController::Rescue::DEFAULT_RESCUE_RESPONSE
-    new_params = params.dup
+    new_params = (defined?(params) ? params.dup : {})
     new_params.delete("action")
     new_params.delete("controller")
     h = {:exception_class => e.class.name,
@@ -195,6 +210,7 @@ module ApplicationHelper
     (referer ? (referer + (anchor ? "#" + anchor : "")) : ({:action => "index"}))
   end
 
+  # TODO: pass :locals => {:options => {                        :object_name => obj_name,                        :field_name => field_name}
   def contact_field(obj_name, field_name, options = {})
     options[:locals] ||= {}
     options[:locals][:options] ||= {}

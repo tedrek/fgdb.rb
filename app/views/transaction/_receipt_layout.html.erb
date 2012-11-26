@@ -1,0 +1,63 @@
+  <table  width="100%">
+    <tr>
+      <td colspan="3"><%= render :partial=>"helpers/letter_head",
+                          :locals=> {:contact_information => @txn.contact_information, :hidable_contact_information => @transaction.hidable_contact_information, :hideit => @transaction.should_i_hide_it?}%></td>
+    </tr>
+    <tr>
+      <td colspan="3"><hr /></td>
+    </tr>
+
+    <tr>
+      <td colspan="2">
+        <% show_context = @transaction.class != Donation || (receipt_type == 'receipt' && (@transaction.find_lines(:is_gizmo_line?).length > 0 || @transaction.cash_donation_paid_cents > 0)) %>
+        <% if show_context %>
+        <%= @context.titleize %>
+        <% elsif receipt_type == 'receipt' %>
+          Invoice
+        <% end %>
+        <% if @transaction.class == Disbursement %>
+          Transaction Record
+        <% else %>
+        <strong>
+          <% if @txn.invoiced? && (@transaction.class != Donation || receipt_type == 'invoice') %>
+            <font color="#FF0000" size="+2"><%= @txn.invoice_resolved_at.nil? ? "" : "Paid " %>Invoice</font>
+          <% else %>
+            Receipt
+          <% end %>
+        </strong>
+        <% end %>
+      </td>
+      <% if @context == 'donation' %>
+        <td align="right"><%= h Default['tax id'] %></td>
+      <% else %>
+        <td align="right"><%= h Default['business id'] %></td>
+      <% end %>
+    </tr>
+    <tr>
+      <td colspan="3">Created by #<%=h User.find_by_id(@transaction.cashier_created_by).contact_id %></td>
+    </tr>
+    <tr>
+      <td>Date: <%= @txn.occurred_at.strftime("%m/%d/%Y") %></td>
+      <td align="center">
+                <% if show_context %><%= @context.titleize %>
+                  <% else %>Invoice
+                    <% end %>
+                <strong><%= "# " + @txn.id.to_s %></strong>
+      </td>
+      <td align="right">
+        <% if @txn.invoiced? %>
+          <strong>
+            Due: <%= @transaction.created_at.+(60*60*24*30).strftime("%m/%d/%Y") %>
+          </strong>
+        <% end %>
+      </td>
+    </tr>
+
+    <% if params[:controller] == 'donations' && (receipt_type == 'invoice' || @donation.receipt_types.length == 1) && @donation.reported_suggested_fee_cents > 0 %>
+    <tr id="suggested_fee" <%= @donation.invoiced? ? '' : 'style="display: none"' %>>
+      <td colspan="4">
+        There is a suggested tax deductible contribution of $<%= @donation.reported_suggested_fee %> for these items.
+      </td>
+    </tr>
+    <% end %>
+</table>

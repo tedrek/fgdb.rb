@@ -1,0 +1,13 @@
+<div class="noprint">
+<% form_tag( { :controller => '/reports', :action => controller.action_name.sub(/_report$/, "") + "_report" } ) do %>
+  <div id="<%= '#element_messages_id(???)' %>" class="messages-container" style="color: red"><%= @report_error.to_s %></div>
+
+  <%= error_messages_for(:defaults, :header_message => "Invalid report conditions") %>
+
+  <%= render :partial => name %>
+
+  <p class="form-footer">
+    <input type="submit" value="Generate Report" />
+  </p>
+<% end %>
+</div>

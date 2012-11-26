@@ -1,0 +1,27 @@
+<h1>No Show Volunteer Shift Report</h1>
+<table class="awesome">
+<tr>
+  <th>Contact #</th>
+  <th>Contact Name</th>
+  <th>No shows in report</th>
+  <th>% in report</th>
+  <th>No shows ever</th>
+  <th>% ever</th>
+  <th>Shifts in report date range</th>
+</tr>
+<% @list.each do |cid| %>
+<% d = @contacts[cid] %>
+<% c = d[:contact] %>
+<tr>
+  <td>#<%= c.id %></td>
+  <td><%= c.display_name %></td>
+  <td style="text-align: right;"><%= d[:noshow] %></td>
+  <td style="text-align: right;"><%= "%.2f%%" % d[:noshow_percentage] %></td>
+  <td style="text-align: right;"><%= d[:fullnoshows] %></td>
+  <td style="text-align: right;"><%= "%.2f%%" % d[:fullnoshows_percentage] %></td>
+  <td><%= d[:shifts].join("<br />") %></td>
+</tr>
+<% end %>
+</table>
+
+<%= render :partial => 'noshowform' %>

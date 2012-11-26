@@ -1,4 +1,5 @@
 <%# todo: rename this file.. %>
+
 <% is_r = params[:controller] == "assignments"%>
 <div>
 <% if is_r %>
@@ -17,6 +18,9 @@
 <% next if resources.length == 0 and x.description.match(/^Roster #/) %>
 <fieldset style="float: left">
 <h4><%= x.description %> (<%= x.time_range_s %>) <%= has_privileges('admin_skedjul') ? (link_to "a", :action => "add_shift", :id => x.id, :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %> <%= has_privileges('admin_skedjul') ? (link_to "e", :action => "edit", :id => x.id, :controller => is_r ? "volunteer_events" : "volunteer_default_events") : "" %></h4>
+<% if is_r && x.volunteer_shifts.select{|y| y.volunteer_task_type_id.nil? }.length > 0 %>
+<%= link_to "View Student List", {:controller => "volunteer_events", :action => "display", :id => x.id} %><br />
+<% end %>
 <% resources = resources.map{|q| q.resource.name}.join(", ") %>
 <% if resources.length > 0 %>
 Resources: <%= resources %><br />
@@ -31,3 +35,17 @@ Resources: <%= resources %><br />
 <%= button_to_function "Multi-Edit", "do_multi_edit();" %>
 </div>
 <% end %>
+
+<div class="skedj">
+<fieldset>
+<h3>Shift Background Legend</h3>
+<table cellpadding="10" cellspacing="5"><tr>
+<td class="available">Available</td>
+<td class="checked_in">Checked In</td>
+<td class="shift">Filled Shift</td>
+<td class="hardconflict">Conflict</td>
+<td class="mediumconflict">Beyond Shift Time</td>
+<td class="cancelled">Cancelled</td>
+</tr></table>
+</fieldset>
+</div>

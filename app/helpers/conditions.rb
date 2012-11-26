@@ -1,8 +1,10 @@
 class Conditions < ConditionsBase
+  attr_accessor :data_type # hax
+
   DATES = %w[
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
-      shift_date date updated_at
+      shift_date date updated_at last_build last_volunteer_date
   ]
 
   CONDS = (%w[
@@ -10,14 +12,18 @@ class Conditions < ConditionsBase
       payment_method payment_amount gizmo_type_id gizmo_category_id covered
       postal_code city phone_number contact volunteer_hours email
       flagged system contract created_by cashier_created_by extract
-      empty disbursement_type_id store_credit_id organization
+      empty disbursement_type_id store_credit_id organization shift_type
       can_login role action worker contribution serial_number job
       volunteer_task_type weekday sked roster effective_at cancelled
       needs_checkin assigned attendance_type worker_type gizmo_type_group_id
       effective_on schedule type store_credit_redeemed volunteered_hours_in_days
+      updated_by cashier_updated_by is_pickup finalized gizmo_context_id
+      logged_in_within signed_off_by payment_total organization_name
+      model vendor result interface_type megabytes_size week unresolved_shipment
+      volunteered_non_court_hours_in_days form_factor hard_drive_serial_number
     ] + DATES).uniq
 
-  CHECKBOXES = %w[ cancelled assigned covered organization ]
+  CHECKBOXES = %w[ cancelled ]
 
   for i in CONDS
     attr_accessor (i + "_enabled").to_sym
@@ -25,10 +31,29 @@ class Conditions < ConditionsBase
   end
 
   for i in DATES
-    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_quarter').to_sym
+    attr_accessor (i + '_date').to_sym, (i + '_date_type').to_sym, (i + '_start_date').to_sym, (i + '_end_date').to_sym, (i + '_month').to_sym, (i + '_year').to_sym, (i + '_year_only').to_sym, (i + '_year_q').to_sym, (i + '_quarter').to_sym
   end
 
+  attr_accessor :hard_drive_serial_number
+
+  attr_accessor :shift_type
+
+  attr_accessor :form_factor
+
+  attr_accessor :week
+
+  attr_accessor :model, :vendor, :interface_type, :result
+
+  attr_accessor :gizmo_context_id
+
+  attr_accessor :organization_name
+
+  attr_accessor :signed_off_by
+
   attr_accessor :volunteer_hours_days, :volunteer_hours_minimum
+  attr_accessor :volunteer_non_court_hours_days, :volunteer_non_court_hours_minimum
+
+  attr_accessor :logged_in_within
 
   attr_accessor :cancelled
 
@@ -38,7 +63,7 @@ class Conditions < ConditionsBase
   attr_accessor :roster_id
   attr_accessor :sked_id
 
-  attr_accessor :schedule_id, :schedule_which_way
+  attr_accessor :schedule_id
 
   attr_accessor :effective_at
 
@@ -49,8 +74,7 @@ class Conditions < ConditionsBase
   attr_accessor :job_id
 
   attr_accessor :created_by, :cashier_created_by
-
-  attr_accessor :covered
+  attr_accessor :updated_by, :cashier_updated_by
 
   attr_accessor :serial_number
 
@@ -70,17 +94,19 @@ class Conditions < ConditionsBase
 
   attr_accessor :unresolved_invoices
 
+  attr_accessor :unresolved_shipment
+
   attr_accessor :gizmo_type_id
 
   attr_accessor :gizmo_type_group_id
 
   attr_accessor :gizmo_category_id
 
+  attr_accessor :megabytes_size_type, :megabytes_size_exact, :megabytes_size_low, :megabytes_size_high, :megabytes_size_ge, :megabytes_size_le, :megabytes_size_units
   attr_accessor :payment_amount_type, :payment_amount_exact, :payment_amount_low, :payment_amount_high, :payment_amount_ge, :payment_amount_le
+  attr_accessor :payment_total_type, :payment_total_exact, :payment_total_low, :payment_total_high, :payment_total_ge, :payment_total_le
 
   attr_accessor :contact_type
-
-  attr_accessor :is_organization
 
   attr_accessor :city, :postal_code, :phone_number, :email
 
@@ -99,29 +125,244 @@ class Conditions < ConditionsBase
   attr_accessor :role
 
   attr_accessor :action
-  attr_accessor :type
-
-  attr_accessor :assigned
+  attr_accessor :type_id
 
   def init_callback
     @payment_method_id = PaymentMethod.cash.id
-    @assigned = true
+    DATES.each do |x|
+      self.send(x + "_date=", Date.today.to_s)
+    end
+  end
+
+  def validate
+    if ! @condition_applied
+      return
+    end
+    if CONDS.select{|x| is_this_condition_enabled(x)}.length == 0
+      @errors.add_to_base('Conditions have not been chosen')
+      return
+    end
+    @errors.add("phone_number", "is not ten digits long") if validate_emptyness('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
+    validate_exists('worker_id') if parse_and_validate_list('worker', 'worker_id', true)
+    validate_exists('job_id') if parse_and_validate_list('job', 'job_id')
+    validate_exists('weekday_id') if parse_and_validate_list('weekday', 'weekday_id')
+    validate_exists('roster_id') if parse_and_validate_list('roster', 'roster_id')     # TODO: this _id needs to be consistent, really..
+    validate_exists('gizmo_type_id') if parse_and_validate_list('gizmo_type_id')
+    validate_exists('gizmo_type_group_id') if parse_and_validate_list('gizmo_type_group_id')
+    # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
+    validate_integer('id')
+    validate_emptyness('email')
+    validate_emptyness('city')
+    validate_emptyness('postal_code')
+    validate_exists('contact_id') if validate_integer('contact', 'contact_id')
+    validate_exists('sked_id') if validate_integer('sked', 'sked_id')
+    validate_exists('role') if validate_integer('role', 'role')
+    validate_exists('action') if validate_integer('action')
+    validate_exists('type_id') if validate_integer('type', 'type_id')
+    validate_exists('contact_type') if validate_integer('contact_type')
+    validate_exists('gizmo_category_id') if validate_integer('gizmo_category_id')
+    validate_exists('system_id') if validate_integer('system', 'system_id')
+    validate_exists('contract_id') if validate_integer('contract', 'contract_id')
+    validate_exists('disbursement_type_id') if parse_and_validate_list('disbursement_type_id')
+    validate_exists('contract_id') if validate_integer('contract', 'contract_id')
+    validate_exists('payment_method_id') if validate_integer('payment_method', 'payment_method_id')
+    validate_exists('attendance_type_id') if validate_integer('attendance_type', 'attendance_type_id')
+    validate_exists('worker_type_id') if validate_integer('worker_type', 'worker_type_id')
+    validate_exists('volunteer_task_type_id') if validate_integer('volunteer_task_type', 'volunteer_task_type_id')
+    validate_exists('schedule_id') if validate_integer('schedule', 'schedule_id')
+    validate_emptyness('store_credit_id')
+    if is_this_condition_enabled('payment_amount')
+      case @payment_amount_type
+      when '>='
+        validate_integer('payment_amount', 'payment_amount_ge', false, true)
+      when '<='
+        validate_integer('payment_amount', 'payment_amount_le', false, true)
+      when 'exact'
+        validate_integer('payment_amount', 'payment_amount_exact', false, true)
+      when 'between'
+        validate_integer('payment_amount', 'payment_amount_low', false, true)
+        validate_integer('payment_amount', 'payment_amount_high', false, true)
+      else
+        errors.add('payment_amount_type', 'is not a valid search type')
+      end
+    end
+    if is_this_condition_enabled('megabytes_size')
+      case @megabytes_size_type
+      when '>='
+        validate_integer('megabytes_size', 'megabytes_size_ge', true, true)
+      when '<='
+        validate_integer('megabytes_size', 'megabytes_size_le', false, true)
+      when 'exact'
+        validate_integer('megabytes_size', 'megabytes_size_exact', false, true)
+      when 'between'
+        validate_integer('megabytes_size', 'megabytes_size_low', false, true)
+        validate_integer('megabytes_size', 'megabytes_size_high', true, true)
+      else
+        errors.add('megabytes_size_type', 'is not a valid search type')
+      end
+    end
+    if is_this_condition_enabled('payment_total')
+      case @payment_total_type
+      when '>='
+        validate_integer('payment_total', 'payment_total_ge', true, true)
+      when '<='
+        validate_integer('payment_total', 'payment_total_le', true, true)
+      when 'exact'
+        validate_integer('payment_total', 'payment_total_exact', true, true)
+      when 'between'
+        validate_integer('payment_total', 'payment_total_low', true, true)
+        validate_integer('payment_total', 'payment_total_high', true, true)
+      else
+        errors.add('payment_total_type', 'is not a valid search type')
+      end
+    end
+    validate_exists('created_by', 'users') if validate_integer('created_by')
+    validate_exists('cashier_created_by', 'users') if validate_integer('cashier_created_by')
+    validate_exists('updated_by', 'users') if validate_integer('updated_by')
+    validate_exists('cashier_updated_by', 'users') if validate_integer('cashier_updated_by')
+    validate_exists('signed_off_by', 'users') if validate_integer('signed_off_by')
+    validate_integer('volunteered_hours_in_days', 'volunteer_hours_days')
+    validate_integer('volunteered_hours_in_days', 'volunteer_hours_minimum', true, true)
+    validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_days')
+    validate_integer('volunteered_non_court_hours_in_days', 'volunteer_non_court_hours_minimum', true, true)
+    if is_this_condition_enabled('volunteer_hours')
+      case @volunteer_hours_type
+      when '>='
+        validate_integer('volunteer_hours', 'volunteer_hours_ge', false, true)
+      when '<='
+        validate_integer('volunteer_hours', 'volunteer_hours_le', false, true)
+      when 'exact'
+        validate_integer('volunteer_hours', 'volunteer_hours_exact', false, true)
+      when 'between'
+        validate_integer('volunteer_hours', 'volunteer_hours_low', false, true)
+        validate_integer('volunteer_hours', 'volunteer_hours_high', false, true)
+      else
+        errors.add('volunteer_hours_type', 'is not a valid search type')
+      end
+    end
+    validate_date('effective_at')
+    validate_date('effective_on', 'effective_on_start', 'effective_on_end')
+    DATES.each do |x|
+      validate_date_chooser(x)
+    end
+  end
+
+  def validate_date_chooser(name)
+    return unless is_this_condition_enabled(name)
+    case self.send(name + "_date_type")
+      when 'arbitrary'
+      validate_date(name, name + "_start_date", name + "_end_date")
+      when 'daily'
+      validate_date(name, name + "_date")
+    end
+  end
+
+  def validate_integer(name, varname = nil, allowzero = false, not_i = false)
+    varname ||= name
+    if is_this_condition_enabled(name)
+      value = self.send(varname)
+      return false if _empty_check(varname, value) # do not include other errors, if blank
+      result = true
+      unless allowzero
+        if value.to_f == 0.0
+          errors.add(varname, 'cannot be zero')
+          result = false
+        end
+      end
+      unless not_i
+        if value.to_i.to_s != value.to_s.strip
+          errors.add(varname, 'is not a whole number')
+          result = false
+        end
+          if value.to_i > 2147483647 || value.to_i < -2147483648
+            errors.add(varname, 'is not in the valid range of integer numbers')
+            result = false
+          end
+      end
+      return result
+    end
+    false
+  end
+
+  def validate_date(name, varname = nil, second = nil)
+    varname ||= name
+    if is_this_condition_enabled(name)
+      begin
+        val = self.send(varname)
+        start = val.class == Date ? val : Date.parse(val)
+      rescue
+        errors.add(varname, 'is not a valid date')
+      end
+      if second
+        begin
+          val2 = self.send(second)
+          fin = val2.class == Date ? val2 : Date.parse(val2)
+          errors.add(second, 'is before the start date') if start && fin && (fin < start)
+        rescue
+          errors.add(second, 'is not a valid date')
+        end
+      end
+    end
+  end
+
+  def validate_exists(name, klass = nil)
+    klass = (klass || name.sub(/_id/, "")).classify.constantize
+    value = self.send(name)
+    for v in [value].flatten
+      errors.add(name, "cannot be found with id #{v}") if !klass.find_by_id(v)
+    end
+  end
+
+  def validate_emptyness(name, varname = nil) # UGH, varname and name need a better way of handling
+    varname ||= name
+    if is_this_condition_enabled(name)
+      value = self.send(varname)
+      return ! _empty_check(varname, value)
+    end
+    false
+  end
+
+  def _empty_check(varname, value)
+    empty = (value.nil? or ((!value.is_a?(Fixnum)) and (!value.is_a?(Bignum)) and value.empty?))
+    errors.add(varname, 'cannot be blank') if empty
+    empty
+  end
+
+  def parse_and_validate_list(name, varname = nil, allowzero = false)
+    if is_this_condition_enabled(name)
+      varname ||= name
+      result = _to_a(self.send(varname), allowzero)
+      self.send(varname + "=", result)
+      err = result == [-1]
+      errors.add(varname, 'must have at least one choice selected') if err
+      return !err
+    end
+    false
+  end
+
+  def hard_drive_serial_number_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
+    return ["#{klass.table_name}.cleaned_output ILIKE ?", '%<serial>' + @hard_drive_serial_number + '</serial>%']
+  end
+
+  def week_conditions(klass)
+    klass = VolunteerDefaultEvent if klass == VolunteerDefaultShift
+    return ["(#{klass.table_name}.week IS NULL OR #{klass.table_name}.week LIKE ' ' OR #{klass.table_name}.week LIKE '' OR #{klass.table_name}.week ILIKE ?)", @week]
   end
 
   def schedule_conditions(klass)
     in_clause = "(-1)"
     s = Schedule.find_by_id(@schedule_id.to_i)
     if s
-      if @schedule_which_way == 'Solo'
-        in_clause = s.in_clause_solo
-      elsif @schedule_which_way == 'Solo + root'
-        in_clause = s.in_clause_root_plus
-      else # @schedule_which_way == 'Family'
-        in_clause = s.in_clause_family
-      end
+      in_clause = s.in_clause
     end
     in_clause += " AND (NOT actual) AND (shift_date IS NULL) AND ('#{Date.today}' BETWEEN shifts.effective_date AND shifts.ineffective_date OR shifts.ineffective_date IS NULL)" if klass == Shift
     return ["#{klass.table_name}.schedule_id IN #{in_clause}"]
+  end
+
+  def shift_type_conditions(klass)
+    col = klass == WorkShift ? "kind" : "type"
+    return ["#{klass.table_name}.#{col} LIKE ?", @shift_type]
   end
 
   def store_credit_redeemed_conditions(klass)
@@ -145,11 +386,12 @@ class Conditions < ConditionsBase
   end
 
   def worker_conditions(klass)
-    return ["worker_id IN (?)", @worker_id.to_i]
+    return ["#{klass.table_name}.worker_id IN (?)", (@worker_id)]
   end
 
   def job_conditions(klass)
-    return ["job_id IN (?)", @job_id.to_i]
+    extra = [WorkShift, Shift, StandardShift].include?(klass) ? " AND (#{klass.table_name}.meeting_name IS NULL OR #{klass.table_name}.meeting_name LIKE '')" : ""
+    return ["#{klass.table_name}.job_id IN (?)#{extra}", (@job_id)]
   end
 
   def empty_conditions(klass)
@@ -160,34 +402,28 @@ class Conditions < ConditionsBase
     if @cancelled == 1
       return ["1=1"]
     else
-      return ["(attendance_type_id IS NULL OR attendance_types.cancelled = false OR attendance_types.cancelled IS NULL)"]
+      return ["(#{klass.table_name}.attendance_type_id IS NULL OR attendance_types.cancelled = false OR attendance_types.cancelled IS NULL)"]
     end
+  end
+
+  def form_factor_conditions(klass)
+    return ["#{klass.table_name}.form_factor LIKE ?", @form_factor]
   end
 
   def attendance_type_conditions(klass)
-    return ["attendance_type_id = ?", @attendance_type_id.to_i]
+    return ["#{klass.table_name}.attendance_type_id = ?", @attendance_type_id.to_i]
   end
 
   def needs_checkin_conditions(klass)
-    return ["attendance_type_id IS NULL"]
+    return ["#{klass.table_name}.attendance_type_id IS NULL"]
   end
 
   def assigned_conditions(klass)
-    if @assigned
-      return ["contact_id IS NOT NULL"]
-    else
-      return ["contact_id IS NULL"]
-    end
+    return ["#{klass.table_name}.contact_id IS NOT NULL"]
   end
 
-  def join_conditions(conds_a, conds_b)
-    raise ArgumentError.new("'#{conds_a}' is empty") if conds_a.empty?
-    raise ArgumentError.new("'#{conds_b}' is empty") if conds_b.empty?
-    return [
-            conds_a[0].to_s +
-            (conds_a[0].empty? ? '' : ' AND ') +
-            conds_b[0].to_s
-           ] + conds_a[1..-1] + conds_b[1..-1]
+  def finalized_conditions(klass)
+    return ["#{klass.table_name}.finalized_on IS NOT NULL"]
   end
 
   def can_login_conditions(klass)
@@ -205,11 +441,12 @@ class Conditions < ConditionsBase
 
   def type_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
-    ["#{klass.table_name}.type_id = ?", @type.to_i]
+    klass = SpecSheet if klass == System
+    ["#{klass.table_name}.type_id = ?", @type_id.to_i]
   end
 
   def covered_conditions(klass)
-    ["gizmo_events.covered = ?", @covered != 0]
+    ["gizmo_events.covered = ?", true]
   end
 
   def payment_amount_conditions(klass)
@@ -231,6 +468,28 @@ class Conditions < ConditionsBase
     end
   end
 
+
+  def payment_total_conditions(klass)
+    # the to_s is required below because when a value of "6" is passed in
+    # it is magically made into a Fixnum so the to_cents blows up
+    # not sure where this magic comes from
+    orig_klass = klass
+    klass = Payment unless klass == StoreCredit
+    t = "COALESCE((SELECT SUM(#{klass.table_name}.amount_cents) FROM #{klass.table_name} WHERE #{orig_klass.table_name.singularize}_id = #{orig_klass.table_name}.id), 0)"
+    case @payment_total_type
+    when 'between'
+      return ["#{t} BETWEEN ? AND ?",
+              @payment_total_low.to_s.to_cents,
+              @payment_total_high.to_s.to_cents]
+    when '>='
+      return ["#{t} >= ?", @payment_total_ge.to_s.to_cents]
+    when '<='
+      return ["#{t} <= ?", @payment_total_le.to_s.to_cents]
+    when 'exact'
+      return ["#{t} = ?", @payment_total_exact.to_s.to_cents]
+    end
+  end
+
   def extract_conditions(klass)
     return ["EXTRACT( #{@extract_type} FROM #{klass.table_name}.#{@extract_field} ) = ?", @extract_value]
   end
@@ -249,10 +508,11 @@ class Conditions < ConditionsBase
     klass = VolunteerEvent if klass == VolunteerShift
     klass = VolunteerEvent if klass == ResourcesVolunteerEvent
     klass = VolunteerEvent if klass == Assignment
+    a = (@weekday_id)
     if klass == VolunteerEvent
-      return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", @weekday_id.nil? ? -1 : @weekday_id]
+      return ["EXTRACT(dow FROM #{klass.table_name}.date) IN (?)", a]
     else
-      return ["#{klass.table_name}.weekday_id IN (?)", @weekday_id.nil? ? -1 : @weekday_id]
+      return ["#{klass.table_name}.weekday_id IN (?)", a]
     end
   end
 
@@ -260,7 +520,7 @@ class Conditions < ConditionsBase
     klass = VolunteerShift if klass == Assignment
     klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    return ["#{tbl}.roster_id IN (?)", @roster_id.to_i]
+    return ["#{tbl}.roster_id IN (?)", (@roster_id)]
   end
 
   def sked_conditions(klass)
@@ -288,6 +548,10 @@ class Conditions < ConditionsBase
 
   def volunteered_hours_in_days_conditions(klass)
     ['contacts.id IN (SELECT contact_id FROM volunteer_tasks WHERE date_performed >= ? GROUP BY contact_id HAVING SUM(duration) >= ?)', Date.today - @volunteer_hours_days.to_i, @volunteer_hours_minimum.to_i]
+  end
+
+  def volunteered_non_court_hours_in_days_conditions(klass)
+    ['contacts.id IN (SELECT contact_id FROM volunteer_tasks LEFT OUTER JOIN community_service_types ON community_service_types.id = community_service_type_id WHERE date_performed >= ? GROUP BY contact_id HAVING SUM(duration * COALESCE(community_service_types.hours_multiplier, 1)) >= ?)', Date.today - @volunteer_non_court_hours_days.to_i, @volunteer_non_court_hours_minimum.to_i]
   end
 
   def contract_conditions(klass)
@@ -319,10 +583,6 @@ class Conditions < ConditionsBase
 
   def phone_number_conditions(klass)
     phone_number = @phone_number.to_s.gsub(/[^[:digit:]]/, "")
-    if phone_number.length != 10
-      @phone_number = "INVALID PHONE NUMBER(MUST BE 10 DIGITS LONG)...IGNORED"
-      return [""]
-    end
     phone_number = phone_number.sub(/^(.{3})(.{3})(.{4})$/, "%\\1%\\2%\\3%")
     return ["#{klass.table_name}.id IN (SELECT contact_id FROM contact_methods WHERE contact_method_type_id IN (SELECT id FROM contact_method_types WHERE (description ILIKE '%phone%') OR (description ILIKE '%fax%')) AND value ILIKE ?)", phone_number]
   end
@@ -336,13 +596,21 @@ class Conditions < ConditionsBase
     return ["#{klass.table_name}.#{i} IN (SELECT contact_id FROM contact_types_contacts WHERE contact_type_id = ?)", @contact_type.to_i]
   end
 
+  def organization_name_conditions(klass)
+    return ["#{klass.table_name}.organization ILIKE ('%' || ? || '%')", @organization_name]
+  end
+
   def organization_conditions(klass)
     if klass == Contact
       i = "id"
     else
       i = "contact_id"
     end
-    return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", (@is_organization > 0) ? true : false]
+    return ["#{klass.table_name}.#{i} IN (SELECT id FROM contacts WHERE is_organization = ?)", true]
+  end
+
+  def is_pickup_conditions(klass)
+    return ["#{klass.table_name}.is_pickup = ?", true]
   end
 
   def needs_attention_conditions(klass)
@@ -351,6 +619,10 @@ class Conditions < ConditionsBase
 
   def anonymous_conditions(klass)
     return ["#{klass.table_name}.postal_code IS NOT NULL AND #{klass.table_name}.contact_id IS NULL"]
+  end
+
+  def unresolved_shipment_conditions(klass)
+    return ["#{klass.table_name}.resolved_at IS NULL"]
   end
 
   def unresolved_invoices_conditions(klass)
@@ -426,6 +698,16 @@ class Conditions < ConditionsBase
     date_range(klass, 'updated_at', 'updated_at')
   end
 
+  def last_volunteer_date_conditions(klass)
+    ret = date_range(klass, 'MAX(date_performed)', 'last_volunteer_date')
+    ret[0] = "id IN (SELECT contact_id FROM volunteer_tasks GROUP BY contact_id HAVING #{ret[0].gsub(/contacts.MAX/, "MAX")})"
+    return ret
+  end
+
+  def last_build_conditions(klass)
+    date_range(klass, 'last_build', 'last_build')
+  end
+
   def date_performed_conditions(klass)
     date_range(klass, 'date_performed', 'date_performed')
   end
@@ -439,11 +721,23 @@ class Conditions < ConditionsBase
   end
 
   def created_by_conditions(klass)
-    ["created_by = ?", @created_by]
+    ["#{klass.table_name}.created_by = ?", @created_by]
+  end
+
+  def signed_off_by_conditions(klass)
+    ["#{klass.table_name}.cashier_signed_off_by = ?", @signed_off_by]
+  end
+
+  def updated_by_conditions(klass)
+    ["#{klass.table_name}.updated_by = ?", @updated_by]
+  end
+
+  def cashier_updated_by_conditions(klass)
+    ["#{klass.table_name}.cashier_updated_by = ?", @cashier_updated_by]
   end
 
   def cashier_created_by_conditions(klass)
-    ["cashier_created_by = ?", @cashier_created_by]
+    ["#{klass.table_name}.cashier_created_by = ?", @cashier_created_by]
   end
 
   # TODO: should this be in conditions_base? and the html part that's
@@ -467,7 +761,7 @@ class Conditions < ConditionsBase
       end_date = Time.local(end_year, end_month, 1)
     when 'quarterly'
       quarter = eval("@#{field}_quarter")
-      year = eval("@#{field}_year")
+      year = eval("@#{field}_year_q")
       start_date = Time.local(year, (quarter * 3) - 2, 1)
       end_year = year
       end_month = (quarter * 3) - 2
@@ -478,7 +772,7 @@ class Conditions < ConditionsBase
       end
       end_date = Time.local(end_year, end_month, 1)
     when 'yearly'
-      year = eval("@#{field}_year")
+      year = eval("@#{field}_year_only")
       start_date = Time.local(year, 1, 1)
       end_date = Time.local(year + 1, 1, 1)
     when 'arbitrary'
@@ -520,23 +814,71 @@ class Conditions < ConditionsBase
     end
   end
 
+  def _to_a(input, allow_zero = false)
+    list = [input].flatten.map{|x| x.to_i}.select{|x| (!x.nil?) and (allow_zero || x != 0)}
+    return [-1] if list.length == 0
+    list
+  end
+
   def gizmo_type_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (?)", gizmo_type_id.to_i]
+    return ["gizmo_events.gizmo_type_id IN (?)", (@gizmo_type_id)]
+  end
+
+  def gizmo_context_id_conditions(klass)
+    raise unless klass == System
+    return ["#{klass.table_name}.id IN (SELECT DISTINCT system_id FROM gizmo_events WHERE gizmo_context_id = ?)", (@gizmo_context_id)]
   end
 
   def gizmo_type_group_id_conditions(klass)
-    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", gizmo_type_group_id.to_i]
+    return ["gizmo_events.gizmo_type_id IN (SELECT gizmo_type_id FROM gizmo_type_groups_gizmo_types WHERE gizmo_type_group_id IN (?))", (gizmo_type_group_id)]
+  end
+
+  def vendor_conditions(klass)
+    return ['vendor ILIKE ?', '%' + @vendor.to_s + '%']
+  end
+
+  def model_conditions(klass)
+    return ['model ILIKE ?', '%' + @model.to_s + '%']
+  end
+
+  def interface_type_conditions(klass)
+    return ['bus_type LIKE ?', @interface_type.to_s]
+  end
+
+  def result_conditions(klass)
+    return ['result LIKE ?', @result.to_s]
+  end
+
+  MEGABYTES_UNITS = {"MB" => 1, "GB" => 1000, "TB" => (1000 * 1000)}
+  def megabytes_size_conditions(klass)
+    factor = MEGABYTES_UNITS[@megabytes_size_units]
+    case @megabytes_size_type
+    when 'between'
+      return ["#{klass.table_name}.megabytes_size BETWEEN ? AND ?",
+              @megabytes_size_low.to_f * factor,
+              @megabytes_size_high.to_f * factor]
+    when '>='
+      return ["#{klass.table_name}.megabytes_size >= ?", @megabytes_size_ge.to_f * factor]
+    when '<='
+      return ["#{klass.table_name}.megabytes_size <= ?", @megabytes_size_le.to_f * factor]
+    when 'exact'
+      return ["#{klass.table_name}.megabytes_size = ?", @megabytes_size_exact.to_f * factor]
+    end
   end
 
   def serial_number_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
     if klass == SpecSheet
-      return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number]
+      return ["#{klass.table_name}.system_id IN (SELECT id FROM systems WHERE ? IN (system_serial_number, mobo_serial_number, serial_number))", @serial_number.to_s]
     elsif klass == DisktestRun
-      return ["serial_number = ?", @serial_number]
+      return ["serial_number ILIKE ?", '%' + @serial_number.to_s + '%']
     else
       raise
     end
+  end
+
+  def logged_in_within_conditions(klass)
+    return ['id IN (SELECT contact_id FROM users WHERE contact_id IS NOT NULL AND last_logged_in >= ?)', @logged_in_within.months.ago.to_date]
   end
 
   def contribution_conditions(klass)
@@ -548,7 +890,8 @@ class Conditions < ConditionsBase
   end
 
   def disbursement_type_id_conditions(klass)
-    return ["#{klass.table_name}.disbursement_type_id = ?", disbursement_type_id.to_i]
+    klass = Disbursement if klass == GizmoEvent
+    return ["#{klass.table_name}.disbursement_type_id IN (?)", disbursement_type_id]
   end
 
   def store_credit_id_conditions(klass)
@@ -614,11 +957,11 @@ class Conditions < ConditionsBase
       start_date = Time.local(year, eval("@" + thing + "_month"), 1)
       desc = "%s, %i" % [ Date::MONTHNAMES[start_date.month], year ]
     when 'quarterly'
-      year = eval("@" + thing + "_year")
+      year = eval("@" + thing + "_year_q")
       quarter = eval("@" + thing + "_quarter")
       desc = 'quarter %i of %i' % [ quarter, year ]
     when 'yearly'
-      year = eval("@" + thing + "_year")
+      year = eval("@" + thing + "_year_only")
       desc = '%i' % [ year ]
     when 'arbitrary'
 #      start_date = Date.parse(eval("@" + thing + "_start_date").to_s)
@@ -635,9 +978,13 @@ class Conditions < ConditionsBase
   end
 
   def skedj_to_s(style = "before", show_date = false, ignores = [])
+    return "" if CONDS.select{|x| is_this_condition_enabled(x)}.length == 0
+    if !self.valid?
+      return "with invalid search conditions"
+    end
     show_date = show_date || (style == "sentence")
     mea = self.methods
-    ta = mea.select{|x| x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"} # TODO: look at CONDS instead
+    ta = mea.select{|x| x != 'is_this_condition_enabled' && x.match(/_enabled$/)}.select{|x| self.send(x.to_sym) == "true"} # TODO: look at CONDS instead
     dv = nil
     ret = ta.map{|t|
       meo = me = t.sub(/_enabled$/, "")
@@ -656,6 +1003,8 @@ class Conditions < ConditionsBase
         v = self.send(me) == 1
       elsif me == 'volunteered_hours_in_days'
         v = "volunteering #{@volunteer_hours_minimum} hours in last #{@volunteer_hours_days} days"
+      elsif me == 'volunteered_non_court_hours_in_days'
+        v = "volunteering #{@volunteer_hours_minimum} non-court hours in last #{@volunteer_hours_days} days"
       elsif meo == 'contact' or meo == 'worker' or meo == 'contact_type' or !mea.include?(me) or meo.match(/_id/)
         ome = me.dup
         me += "_id" unless me.match(/_id/)
@@ -680,7 +1029,7 @@ class Conditions < ConditionsBase
         if style == "before"
           res = (meo.humanize + ": " + v.to_s)
         else
-          if meo == 'volunteered_hours_in_days'
+          if ['volunteered_hours_in_days', 'volunteered_non_court_hours_in_days'].include?(meo)
             res = v.to_s
           else
             res = (v.to_s + " (" + meo.humanize + ")")

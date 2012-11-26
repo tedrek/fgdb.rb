@@ -6,21 +6,63 @@ class SpecSheetsController < ApplicationController
     a << {:only => ["builder", "/view_contact_name"], :privileges => ['manage_contacts']}
     a << {:only => ["/search_by_contact"], :privileges => ['manage_contacts', 'has_contact']}
     a << {:only => ["show/sign_off"], :privileges => ['sign_off_spec_sheets']}
+    a << {:only => ["workorder"], :privileges => ['role_tech_support']}
     a << {:only => ["fix_contract", "fix_contract_edit", "fix_contract_save"], :privileges => ['role_admin']}
     return a
   end
+
+  before_filter :set_my_contact_context, :only => ["search"]
+  def set_my_contact_context
+    set_contact_context(ContactType.find_by_name('build'))
+  end
   public
+
+  def workorder
+    if params[:id]
+      if !(@contact = Contact.find_by_id(params[:contact_id].to_i))
+        @data = nil
+        @error = "The provided technician contact doesn't exist."
+        return
+      end
+      if (!@contact.user) or (!@contact.user.grantable_roles.include?(Role.find_by_name("TECH_SUPPORT")))
+        @data = nil
+        @error = "The provided technician contact doesn't have the tech support role."
+        return
+      end
+      json = `#{RAILS_ROOT}/script/fetch_ts_data.pl #{params[:id].to_i}`
+      begin
+        @data = JSON.parse(json)
+      rescue
+        @data = nil
+      end
+      if @data.nil? || @data["ID"].to_i != params[:id].to_i
+        @data = nil
+        @error = "The provided ticket number does not exist."
+        return
+      end
+      if @data && @data["Queue"] != "TechSupport"
+        @data = nil
+        @error = "The provided ticket number does not reference a valid TechSupport ticket."
+        return
+      end
+      if @data && @data["System ID"]
+        @system = System.find_by_id(@data["System ID"].to_i)
+      end
+    end
+  end
 
   helper :system
   include SystemHelper
   MY_VERSION=9
 
   def sign_off
-    u = User.find_by_cashier_code(params[:cashier_code])
-    s = SpecSheet.find(params[:id])
-    if u.has_privileges(required_privileges("show/sign_off").flatten.first) # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
-      s.signed_off_by=(u)
-      s.save!
+    if params[:cashier_code] && params[:cashier_code].length == 4
+      u = User.find_by_cashier_code(params[:cashier_code])
+      s = SpecSheet.find(params[:id])
+      if u.has_privileges(required_privileges("show/sign_off").flatten.first) # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
+        s.signed_off_by=(u)
+        s.save!
+      end
     end
     redirect_to :back
   end
@@ -79,12 +121,30 @@ class SpecSheetsController < ApplicationController
 
   def system
     @main_system = System.find_by_id(params[:id].to_i)
-    if !@main_system
-      flash[:error] = "System id ##{params[:id]} could not be found"
-      redirect_to :action => "index"
-      return
+    if flash[:error]
+      @error = flash[:error]
+    end
+    if params[:id] && !@main_system
+      @error = "System id ##{params[:id]} could not be found"
     end
   end
+
+  def latest
+    @main_system = System.find_by_id(params[:id].to_i)
+    if !@main_system
+      flash[:error] = "System id ##{params[:id]} could not be found"
+      redirect_to :action => 'system'
+      return
+    end
+    @system = @main_system.all_instances.select{|x| x.spec_sheets.length > 1}.sort_by(&:created_at).last
+    if !@system
+      flash[:error] = "System id ##{params[:id]} has no spec sheets"
+      redirect_to :action => 'system'
+      return
+    end
+    redirect_to :action => "show", :controller => "spec_sheets", :id => @system.spec_sheets.sort_by(&:created_at).last.id
+  end
+
 
   def search
     @error = params[:error]
@@ -118,12 +178,9 @@ class SpecSheetsController < ApplicationController
     @system_parser = SystemParser.parse(output)
     @mistake_title = "Things you might have done wrong: "
     @mistakes = []
-    if !@report.notes || @report.notes == ""
-      @mistakes << "You should include something in the notes<br />(anything out of the ordinary, the key to enter BIOS, etc)<br />Click Edit to add to the notes"
-    end
     if @report.contact
       if @report.contact.is_organization==true
-        @mistakes << "The technician that you entered is an organization<br />(an organization cannot be a technician)<br />Click Edit to change the technician"
+        @mistakes << "The technician that you entered is an organization<br />(an organization should normally not be a technician)<br />Click Edit to change the technician"
       end
     end
     @seen = []

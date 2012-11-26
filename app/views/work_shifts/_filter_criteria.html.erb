@@ -5,27 +5,36 @@
     @conditions = skedj.conditions
 %>
 
-<h3>Filter work shifts:</h3>
-<% form_tag({:action => params[:action]}, {:method => "get"}) do %>
-  <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi") %>
-
-
 <% force_conds = ["empty"] %>
+
+<% date_range = nil %>
 
 <% if skedj.opts[:date_range_condition] %>
 <%  force_conds << skedj.opts[:date_range_condition] %>
+<% if @conditions and @conditions.send(skedj.opts[:date_range_condition] + "_enabled") %>
+<% date_range = ["_start_date", "_end_date"].map{|i| begin Date.parse(@conditions.send(skedj.opts[:date_range_condition] + i)) rescue (@conditions.send(skedj.opts[:date_range_condition] + i)) end} %>
 <% end %>
+<% end %>
+
+<h3>Filter work shifts:</h3>
+<% form_tag({:action => params[:action]}, {:method => "get"}) do %>
+  <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi", date_range, true) %>
 
 <% if skedj.opts[:forced_condition] %>
 <%  force_conds << skedj.opts[:forced_condition] %>
 <% end %>
 
 <% if force_conds.size > 1 %>
-  <%= conditions_html('conditions', force_conds, Conditions, "force").gsub(/To:/, "<br />To:") %>
+  <%= conditions_html('conditions', force_conds, Conditions, "force", date_range).gsub(/To:/, "<br />To:") %>
 <% else %>
-  <%= conditions_html('conditions', force_conds)%>
+  <%= conditions_html('conditions', force_conds, Conditions, "auto", date_range)%>
 <% end %>
 
+<% if skedj.opts[:maximum_date] && defined?(maximum_date) %>
+<div style="clear: left">
+(Latest Scheduled Date: <%= maximum_date %>)
+</div>
+<% end %>
 
 <% if skedj.opts[:date_range_condition] %>
   <script>

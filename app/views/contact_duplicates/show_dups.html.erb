@@ -138,6 +138,17 @@
 
     <tr>
       <th width="10%">
+        Birthday
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= h(c.birthday) %>
+        </td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <th width="10%">
         Organization
       </th>
       <% for c in @contacts %>

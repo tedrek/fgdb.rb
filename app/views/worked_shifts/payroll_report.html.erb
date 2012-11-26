@@ -1,10 +1,10 @@
-<h1>Payroll Report for Period of <%= @pay_periods.first.start_date.to_s %> to <%= @pay_periods.last.end_date.to_s %></h1>
+<h1>Payroll Report for <% if @pay_periods.length > 0 %>Period of <%= @pay_periods.first.start_date.to_s %> to <%= @pay_periods.last.end_date.to_s %><% else %>No Pay Periods<% end %></h1>
   <table style="border-collapse: collapse;" border="1">
-    <tr><th>name</th><th>percent</th><th>regular</th><th>pto</th><th>overtime</th><th>holiday</th></tr>
 <% {"Workers" => @workers, "Summary" => @types}.each do |t,x| %>
     <tr><th colspan="5"><%= t %></th></tr>
+    <tr><th>name</th><th><%= t == "Workers" ? "standard weekly hours" : "percent" %></th><th>regular</th><th>pto</th><th>overtime</th><th>holiday</th></tr>
     <% x.each do |y| %>
-      <tr><td><%= y[:name] %></td><td><%= y[:percent] ? (y[:percent] * 100).tp + "%" : "" %></td><td><%= y[:hours].tp %></td><td><%= y[:pto].tp %></td><td><%= y[:overtime].tp %></td><td><%= y[:holiday].tp %></td></tr>
+      <tr><td><%= y[:name] %></td><td><%= y[:percent] ? (y[:percent] * 100).tp + "%" : y[:standard_weekly_hours] %></td><td><%= y[:hours].tp %></td><td><%= y[:pto].tp %></td><td><%= y[:overtime].tp %></td><td><%= y[:holiday].tp %></td></tr>
     <% end %>
 <% end %>
   </table>

@@ -1,5 +1,5 @@
   <% if current_user and (current_user.roles.include?(Role.find_by_name('SKEDJULNATOR')) or current_user.roles.include?(Role.find_by_name('ADMIN'))) and ! @readonly %>
-  <div class="skedj_footer">
+  <div class="skedj_footer noprint">
     <a href='/holidays'>holidays</a>
     <a href='/meetings'>meetings</a>
     <a href='/vacations'>vacations</a>
@@ -12,8 +12,6 @@
     <a href='/workers'>workers</a>
     <a href='/unavailabilities'>unavailabilities</a>
     <br/>
-    <a href='/coverage_types'>coverage types</a>
-    <a href='/frequency_types'>frequency types</a>
     <a href='/worker_types'>worker types</a>
   </div>
   <% end %>

@@ -9,6 +9,10 @@
   <%= stylesheet_link_tag 'schedule', :media => "all" %>
   <%= stylesheet_link_tag 'workers', :media => "all" %>
   <%= stylesheet_link_tag 'print', :media => "print" %>
+  <%= stylesheet_link_tag 'common', :media => "all" %>
+  <% if RAILS_ENV == "development" %>
+    <%= stylesheet_link_tag 'dev', :media => "all" %>
+  <% end %>
 
   <%= javascript_include_tag :defaults %>
   <%= javascript_include_tag 'lightwindow' %>
@@ -17,7 +21,7 @@
   <%= dhtml_calendar_includes %>
 
 </head>
-<body>
+<body onScroll="handle_scroll();" onLoad="handle_scroll();">
 <div class="header">
   <h1>The Skedjulnator!</h1>
 </div>

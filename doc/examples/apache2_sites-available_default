@@ -3,6 +3,7 @@
         DocumentRoot /var/www/fgdb.rb/public
 #        RailsEnv production
         RailsSpawnMethod conservative
+	PassengerMaxPoolSize 30
 
         # BEGIN maintenance handling, thanks http://zebert.blogspot.com/2007/12/maintenance-mode-for-apache.html
         # Note: Requires modules, run a2enmod for headers and rewrite

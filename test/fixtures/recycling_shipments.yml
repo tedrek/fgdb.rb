@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  contact_id: 1
+  bill_of_lading: MyString
+  received_at: 2012-09-14
+  resolved_at: 2012-09-14
+  notes: MyText
+
+two:
+  contact_id: 1
+  bill_of_lading: MyString
+  received_at: 2012-09-14
+  resolved_at: 2012-09-14
+  notes: MyText

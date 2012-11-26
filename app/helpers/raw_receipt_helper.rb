@@ -9,9 +9,13 @@ module RawReceiptHelper
     Default.is_pdx
   end
 
+  def receipt_printer_regexp
+    Default["raw_receipt_printer_regexp"].nil? ? /^#{Default["raw_receipt_printer_default"]}$/ : /#{Default["raw_receipt_printer_regexp"]}/
+  end
+
   def receipt_printer_default
     if ((!session.keys.include?('raw_receipt_printer')) and receipt_printer_enabled)
-      session['raw_receipt_printer'] = "zebra" # TODO: Default["raw_receipt_printer"] database someday, see above
+      session['raw_receipt_printer'] = Default["raw_receipt_printer_default"]
     end
     session['raw_receipt_printer']
   end
@@ -32,7 +36,7 @@ module RawReceiptHelper
   end
 
   def receipt_printer_html
-    if receipt_printer_enabled
+    if receipt_printer_enabled and params[:action] != 'display'
       return render(:partial => 'raw_receipt_form')
     end
   end

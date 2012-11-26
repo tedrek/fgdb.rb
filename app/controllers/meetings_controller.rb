@@ -8,6 +8,8 @@ class MeetingsController < ApplicationController
   end
   public
 
+  before_filter :update_skedjulnator_access_time
+
   require_dependency 'shift'
   def index
     list
@@ -19,7 +21,7 @@ class MeetingsController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @meetings = Meeting.paginate :order => 'shift_date DESC, weekday_id', :conditions => ["(shift_date IS NULL OR shift_date >= ?) AND ineffective_date >= ?", Date.today, Date.today], :per_page => 30, :page => params[:page]
+    @meetings = Meeting.paginate :order => 'shift_date DESC, weekday_id', :conditions => ["(shift_date IS NULL OR shift_date >= ?) AND (ineffective_date IS NULL OR ineffective_date >= ?) AND schedule_id = ?", Date.today, Date.today, Schedule.generate_from ? Schedule.generate_from.id : -1], :per_page => 30, :page => params[:page]
   end
 
   def full_list
@@ -48,6 +50,25 @@ class MeetingsController < ApplicationController
     @meeting = Meeting.find(params[:id])
     @meeting2 = @meeting.clone
     @meeting2.workers = @meeting.workers
+    @meeting.meeting_minders.each do |m|
+      @meeting2.meeting_minders << m.clone
+    end
+    if @meeting2.save
+      flash[:notice] = 'Meeting was successfully copied.'
+      redirect_to :action => 'edit', :id => @meeting2.id
+    else
+      render :action => 'new'
+    end
+  end
+
+  def replace
+    @meeting = Meeting.find(params[:id])
+    h = params["meeting_#{@meeting.id}"]
+    @date = h ? h[:date] : nil
+    @meeting2 = @meeting.clone
+    @meeting2.workers = @meeting.workers
+    @meeting.ineffective_date = @meeting2.effective_date = @date
+    @meeting.save
     if @meeting2.save
       flash[:notice] = 'Meeting was successfully copied.'
       redirect_to :action => 'edit', :id => @meeting2.id

@@ -9,6 +9,15 @@
     <% end %>
     </tr>
 </table>
+<% if ["work_shifts", "shifts"].include?(params[:controller]) %>
+<% a = params[:controller] == "shifts" ? ShiftFootnote.find_by_weekday_id_and_schedule_id(last_date, skedj.conditions.schedule_id) : WorkShiftFootnote.find_by_date(last_date) %>
+<% vacs = params[:controller] == "shifts" ? [] : Vacation.on_date(last_date) %>
+<% if skedj.opts[:presentation_mode] == 'Edit' || a || vacs.length > 0 %>
+<fieldset id="fieldset-footnote-<%= last_date %>">
+<%= render :partial => 'work_shifts/footnote', :locals => {:note => a, :skedj => skedj, :current_date => last_date, :display_link => skedj.opts[:presentation_mode] == 'Edit', :schedule_id => skedj.conditions.schedule_id, :vacs => vacs} %>
+</fieldset>
+<% end %>
+<% end %>
 <br/>
 <br/>
 

@@ -12,6 +12,39 @@ class DefaultAssignmentsController < ApplicationController
 
   helper :skedjul
 
+  def open
+    begin
+      a = DefaultAssignment.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "Assignment was deleted before it could be marked as open"
+    end
+    a.closed = false if a
+    if a && a.valid?
+      a.save!
+    else
+      flash[:jsalert] = "An unknown error prevented the shift from being marked open" if flash[:jsalert].nil?
+    end
+    redirect_skedj(request.env["HTTP_REFERER"], a ? a.volunteer_default_shift.volunteer_default_event.weekday.name : "")
+  end
+
+  def close
+    begin
+      a = DefaultAssignment.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "Assignment was deleted before it could be marked as closed"
+    end
+    if a && a.contact_id
+      flash[:jsalert] = "Assignment which has a contact cannot be marked as closed"
+    end
+    a.closed = true if a
+    if a && a.valid?
+      a.save!
+    else
+      flash[:jsalert] = "An unknown error prevented the shift from being marked closed" if flash[:jsalert].nil?
+    end
+    redirect_skedj(request.env["HTTP_REFERER"], a ? a.volunteer_default_shift.volunteer_default_event.weekday.name : "")
+  end
+
   def index
     @multi_enabled = true
     if params[:conditions]
@@ -43,7 +76,7 @@ class DefaultAssignmentsController < ApplicationController
                                :thing_table_name => "default_assignments",
                                :thing_description => "time_range_s,display_name",
                                :thing_link_id => "default_assignments.id",
-                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id],[:edit, :link], [:copy, :link, :volshift_stuck], [:destroy, :confirm, :contact_id]],
+                               :thing_links => [[:reassign, :function, :contact_id], [:split, :remote, :contact_id],[:edit, :link], [:copy, :link, :volshift_stuck],  [:close, :link, :not_assigned, :x], [:open, :link, :closed], [:destroy, :confirm, :contact_id]],
 
 
       }, params)
@@ -51,8 +84,8 @@ class DefaultAssignmentsController < ApplicationController
     @opts = @skedj.opts
     @conditions = @skedj.conditions
       @conditions.effective_on_enabled = "true"
-      @conditions.effective_on_start = Date.today - 14
-      @conditions.effective_on_end = Date.today + 60
+      @conditions.effective_on_start = (Date.today - 14).to_s
+      @conditions.effective_on_end = (Date.today + 60).to_s
 
     @skedj.find({:conditions => @skedj.where_clause, :include => [:contact => [], :volunteer_default_shift => [:volunteer_task_type, :volunteer_default_event]]})
     render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
@@ -68,25 +101,38 @@ class DefaultAssignmentsController < ApplicationController
     @assigned_orig = DefaultAssignment.find(assigned)
     @available = DefaultAssignment.find(available)
 
-    # for write
-    @assigned = DefaultAssignment.find(assigned)
-    @new = DefaultAssignment.new # available
+    if @available.volunteer_default_shift.stuck_to_assignment or @assigned_orig.volunteer_default_shift.stuck_to_assignment
+      flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
+    else
+      cid = @available.contact_id
+      if cid
+        @available.contact_id = nil
+        @available.save
+      end
 
-    # do it
-    @assigned.volunteer_default_shift_id = @available.volunteer_default_shift_id
-    @assigned.slot_number = @available.slot_number
-    @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
-    @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
+      # for write
+      @assigned = DefaultAssignment.find(assigned)
+      @new = DefaultAssignment.new # available
 
-    @new.start_time = @assigned_orig.start_time
-    @new.end_time = @assigned_orig.end_time
-    @new.volunteer_default_shift_id = @assigned_orig.volunteer_default_shift_id
-    @new.slot_number = @assigned_orig.slot_number
+      # do it
+      @assigned.volunteer_default_shift_id = @available.volunteer_default_shift_id
+      @assigned.slot_number = @available.slot_number
+      @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
+      @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
-    @assigned.save!
-    @new.save!
+      @new.start_time = @available.start_time
+      @new.start_time = @assigned_orig.start_time if (@new.start_time < @assigned_orig.start_time) or (@new.start_time >= @assigned_orig.start_time)
+      @new.end_time = @available.start_time
+      @new.end_time = @assigned_orig.end_time if (@new.end_time > @assigned_orig.end_time) or (@new.end_time <= @assigned_orig.end_time)
+      @new.volunteer_default_shift_id = @assigned_orig.volunteer_default_shift_id
+      @new.slot_number = @assigned_orig.slot_number
+      @new.contact_id = cid
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assigned.volunteer_default_shift.volunteer_default_event.weekday.name)
+      @assigned.save!
+      @new.save!
+    end
+
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig.volunteer_default_shift.volunteer_default_event.weekday.name)
   end
 
   def split

@@ -1,0 +1,23 @@
+<h2>Take attendance</h2>
+<% remote_form_for :attendance, nil, :url => {:action => "doattendance", :id => @assignment.id}, :loading => "$(#{ loading_indicator_id("attendance_assignment_form").to_json }).show();" do |f| %>
+<%= f.label :attendance_type_id %>
+<% t = Time.now.to_i%>
+<%= f.select("attendance_type_id", AttendanceType.find(:all).sort_by(&:id).collect {|p| [ p.name, p.id ] }, {:include_blank => true, :selected => @assignment.attendance_type_id}, :id => "attendance_attendance_type_id_#{t}", :onchange => "show_cancellable(self, #{t.to_json});") %>
+<br />
+<div id="cancellable_assignments_<%= t %>" style="display: none; max-height: 200px; max-width: 400px; overflow: auto;">
+<% @assignment.contact.future_shifts.select{|x| x.attendance_type_id.nil?}.select{|x| x.id != @assignment.id}.each do |assignment| %>
+<div class="form-element" style="float: left">
+<label for="cancel_<%= assignment.id %>_<%= t %>">Also cancel shift for <%= assignment.description %>:</label>
+<%= check_box_tag "cancel[]", assignment.id, false, :id => "cancel_#{assignment.id}_#{t}" %>
+</div><br />
+<% end %>
+<% unless @assignment.volunteer_shift.stuck_to_assignment %>
+<label for="close_shift_<%= t %>">Also close this shift:</label>
+<%= check_box_tag "close_shift", "1", false, :id => "close_shift_#{t}" %>
+<% end %>
+</div>
+<%= f.submit "Save" %>
+<%= loading_indicator_tag("attendance_assignment_form") %>
+<% end %>
+
+

@@ -1,4 +1,72 @@
 module GizmoTransaction
+  def gizmo_events_actual
+    gizmo_events.select{|x| !x.marked_for_destruction?}
+  end
+
+  def payments_actual
+    payments.select{|x| !x.marked_for_destruction?}
+  end
+
+  def inventory_is_locked?
+    return false if self.id.nil? or Default["inventory_lock_end"].nil? or Default["inventory_lock_end"].length == 0
+    inventory_date = Date.parse(Default["inventory_lock_end"])
+    return (self.occurred_at < inventory_date)
+  end
+
+  def till_is_locked?
+    return false if self.id.nil? or Default["till_lock_end"].nil? or Default["till_lock_end"].length == 0
+    till_date = Date.parse(Default["till_lock_end"])
+    return (self.occurred_at < till_date)
+  end
+
+  def inventory_hash
+    hash = {}
+    self.gizmo_events_actual.each{|x|
+      hash[x.gizmo_type_id] ||= 0
+      hash[x.gizmo_type_id] += x.gizmo_count
+    }
+    hash
+  end
+
+  def till_hash
+    hash = {}
+    return hash unless self.respond_to?(:payments)
+    self.payments_actual.each{|x|
+      hash[x.payment_method_id] ||= 0
+      hash[x.payment_method_id] += x.amount_cents
+    }
+    hash
+  end
+
+  def has_inventory_changed?
+    return false if self.id.nil?
+    original = self.class.find(self.id)
+    self.inventory_hash != original.inventory_hash
+  end
+
+  def has_till_changed?
+    return false if self.id.nil?
+    original = self.class.find(self.id)
+    self.till_hash != original.till_hash
+  end
+
+  def user_is_bean_counter?
+    ((Thread.current['cashier'] or Thread.current['user']) and (Thread.current['cashier'] || Thread.current['user']).has_privileges("modify_inventory"))
+  end
+
+  def validate_inventory_modifications
+    if self.inventory_is_locked? and self.has_inventory_changed?
+      unless user_is_bean_counter?
+        errors.add("gizmos", "has changed locked inventory values without administrator privileges")
+      end
+    end
+    if self.till_is_locked? and self.has_till_changed?
+      unless user_is_bean_counter?
+        errors.add("payments", "has changed locked till income values without administrator privileges")
+      end
+    end
+  end
+
   def usable_gizmo_types
     if self.gizmo_context == GizmoContext.gizmo_return
       return (GizmoContext.disbursement.gizmo_types + GizmoContext.sale.gizmo_types).uniq
@@ -16,29 +84,29 @@ module GizmoTransaction
   end
 
   def gizmos
-    gizmo_events.map {|ge| ge.display_name}.join(', ')
+    gizmo_events_actual.map {|ge| ge.display_name}.join(', ')
   end
 
   def payment
-    if payments.empty?
+    if payments_actual.empty?
       "free"
     else
-      payments.join( ", " )
+      payments_actual.join( ", " )
     end
   end
 
   def calculated_subtotal_cents
-    gizmo_events.inject(0) {|tot,gizmo|
+    gizmo_events_actual.inject(0) {|tot,gizmo|
       tot + gizmo.total_price_cents
     }
   end
 
   def real_payments
-    payments.select {|payment| payment.payment_method_id != PaymentMethod.invoice.id}
+    payments_actual.select {|payment| payment.payment_method_id != PaymentMethod.invoice.id}
   end
 
   def displayed_payment_method
-    found = payments.map {|payment| payment.type_description}.uniq
+    found = payments_actual.map {|payment| payment.type_description}.uniq
     t = ""
     if found.length > 1
       t = "mixed"
@@ -55,7 +123,7 @@ module GizmoTransaction
   end
 
   def invoices
-    payments.select {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
+    payments_actual.select {|payment| payment.payment_method_id == PaymentMethod.invoice.id}
   end
 
   def money_tendered_cents
@@ -72,7 +140,7 @@ module GizmoTransaction
 
   def invoiced?
     return if ! self.respond_to?(:payments)
-    payments.detect {|payment| payment.payment_method.name.match(/invoice/)}
+    payments_actual.detect {|payment| payment.payment_method.name.match(/invoice/)}
   end
 
   def invoice_resolved?
@@ -115,8 +183,9 @@ module GizmoTransaction
     end
   end
 
+  # contact address data from receipt, by default
   def should_i_hide_it?
-    if gizmo_context == GizmoContext.donation or gizmo_context == GizmoContext.gizmo_return
+    if gizmo_context == GizmoContext.donation or gizmo_context == GizmoContext.gizmo_return or gizmo_context == GizmoContext.disbursement
       return true
     elsif gizmo_context == GizmoContext.sale
       return false
@@ -130,7 +199,7 @@ module GizmoTransaction
   end
 
   def combine_cash_payments
-    cashes = payments.find_all{|x| x.payment_method.name == "cash"}
+    cashes = payments_actual.find_all{|x| x.payment_method.name == "cash"}
     if cashes.length > 0
       cash = Payment.new
       cash.payment_method = PaymentMethod.cash
@@ -139,11 +208,14 @@ module GizmoTransaction
         cash.amount_cents += i.amount_cents
         i.destroy
       end
-      payments.reject!{|x|
+      payments_actual.reject!{|x|
         x.payment_method.name == "cash"
       }
-      payments << cash if cash.amount_cents > 0
+      if cash.amount_cents > 0
+        payments.build(cash.attributes)
+      end
     end
+    cashes.each{|x| x.mark_for_destruction}
   end
 
   def has_some_uneditable
@@ -156,10 +228,16 @@ module GizmoTransaction
 
   def editable_explaination
     str = ""
+    part2 = ""
+    if self.class != Donation
+      part2 = "store credit has already been spent"
+    else
+      part2 = "invoice has been resolved"
+    end
     if ! self.editable?
-      str = "This #{self.hooman_class_name} is not editable because its associated store credit has already been spent"
+      str = "This #{self.hooman_class_name} is not editable because its associated #{part2}"
     elsif self.has_some_uneditable
-      str = "Some pieces of this #{self.hooman_class_name} are not editable because their associated store credit has already been spent"
+      str = "Some pieces of this #{self.hooman_class_name} are not editable because their associated #{part2}"
     end
     return str
   end
@@ -200,7 +278,7 @@ module GizmoTransaction
   end
 
   def set_occurred_at_on_gizmo_events
-    self.gizmo_events.each {|event| event.occurred_at = self.occurred_at; event.save! unless event.id.nil?} # stupid has_many relationships...
+    self.gizmo_events_actual.each {|event| event.occurred_at = self.occurred_at; event.save! unless event.id.nil?} # stupid has_many relationships...
   end
 
   #########

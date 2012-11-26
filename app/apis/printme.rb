@@ -35,6 +35,7 @@ class PrintmeAPI < SOAP::SoapsBase
     ["submit_notes", "notes_struct"],
     ["get_system_for_note", "note_id"],
     # Random Crap
+    ["get_extra_questions"],
     ["get_system_for_report", "report_id"],
     ["contract_label_for_system", "system_id"],
     ["type_description_for_system", "system_id"],
@@ -42,8 +43,26 @@ class PrintmeAPI < SOAP::SoapsBase
     ["spec_sheet_url", "report_id"],
     ["system_url", "system_id"],
     ["is_system_gone", "system_id"],
-    ["get_system_id", "xml"]
+    ["question_defaults", "system_id"],
+    ["get_system_id", "xml"],
+    ["is_valid_contact", "contact_id"]
     ]
+  end
+
+  def is_valid_contact(contact_id)
+    !! Contact.find_by_id(contact_id.to_i)
+  end
+
+  SpecSheetQuestionStruct = Struct.new(:id_name, :name, :question, :conditions) if !defined?(SpecSheetQuestionStruct)
+  SpecSheetConditionStruct = Struct.new(:field_name, :operator, :expected_value) if !defined?(SpecSheetConditionStruct)
+
+  def get_extra_questions
+    SpecSheetQuestion.find(:all).sort_by(&:position).map{|x|
+      a = x.spec_sheet_question_conditions.map{|y|
+        SpecSheetConditionStruct.new(y.name, y.operator, y.expected_value)
+      }
+      SpecSheetQuestionStruct.new("id_" + x.id.to_s, x.real_name, x.question, a)
+    }
   end
 
   ######################
@@ -64,13 +83,13 @@ class PrintmeAPI < SOAP::SoapsBase
     server_hash[version].class != Array || server_hash[version].include?(client_version)
   end
   def version
-    14
+    17
   end
   def bad_client_error
     "You need to update your version of printme\nTo do that, go to System, then Administration, then Update Manager. When update manager comes up, click Check and then click Install Updates.\nAfter that finishes, run printme again."
   end
   def bad_mac_client_error
-    "You need to update your version of printme\nTo do that, run update-printme and then run printme again.\n"
+    "You need to update your version of printme\nTo do that, see the instructions on the wiki at http://wiki.freegeek.org/index.php/Printme#Mac_Printme and then run printme again.\n"
   end
   def bad_server_error
     "The server is incompatible. exiting."
@@ -93,6 +112,9 @@ class PrintmeAPI < SOAP::SoapsBase
     server_versions[12] = [12]    # new info collected, forced upgrade.
     server_versions[13] = [12,13]    # works fine.
     server_versions[14] = [14] # previous systems
+    server_versions[15] = [15] # conditional Q's
+    server_versions[16] = [16] # OR'ed conditional Q's
+    server_versions[17] = [17]
     server_versions
   end
 
@@ -131,7 +153,7 @@ class PrintmeAPI < SOAP::SoapsBase
   # Printme #
   ###########
 
-  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os, :covered)  if !defined?(PrintmeStruct)
+  PrintmeStruct = Struct.new(:contract_id, :action_id, :type_id, :contact_id, :old_id, :notes, :lshw_output, :os, :covered, :questions)  if !defined?(PrintmeStruct)
 
   def empty_struct
     PrintmeStruct.new
@@ -200,7 +222,24 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def type_description_for_system(system_id)
-    System.find_by_id(system_id).spec_sheets.sort_by{|x| x.created_at}.last.type.description
+    sys = System.find_by_id(system_id)
+    spec = sys ? sys.spec_sheets.sort_by{|x| x.created_at}.last : nil
+    if spec
+      return spec.type.description
+    else
+      return default_type_description
+    end
+  end
+
+  def question_defaults(system_id)
+    sys = System.find_by_id(system_id)
+    spec = sys ? sys.spec_sheets.sort_by{|x| x.created_at}.last : nil
+    values = spec ? spec.spec_sheet_values : []
+    hash = {}
+    values.each do |x|
+      hash[x.spec_sheet_question.real_name] = x.value
+    end
+    hash.to_a
   end
 
   def covered_for_system(system_id)

@@ -3,12 +3,14 @@ class VolunteerEvent < ActiveRecord::Base
   validates_presence_of :date
   has_many :volunteer_shifts, :dependent => :destroy
   has_many :resources_volunteer_events, :dependent => :destroy
+  validates_associated :volunteer_shifts
 
   def date_anchor
     self.date.strftime('%Y%m%d')
   end
 
   def time_range_s
+    return '0-0' if self.volunteer_shifts.length == 0
     my_start_time = self.volunteer_shifts.sort_by(&:start_time).first.start_time
     my_end_time = self.volunteer_shifts.sort_by(&:end_time).last.end_time
     (my_start_time.strftime("%I:%M") + ' - ' + my_end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
@@ -49,15 +51,35 @@ class VolunteerEvent < ActiveRecord::Base
       }
   end
 
-  def copy_to(date, time_shift)
+  def copy_to(date, time_shift, copy_for)
     new = self.class.new(self.attributes)
-    new.volunteer_shifts = self.volunteer_shifts.map{|x| x.class.new(x.attributes)}
-#    new.resources = self.resources.map{|x| x.class.new(x.attributes)}
+    assigns = []
+    new.volunteer_shifts = self.volunteer_shifts.map{|x|
+      n = x.class.new(x.attributes); n.time_shift(time_shift);
+      if copy_for.include?(n.volunteer_task_type_id)
+        x.assignments.select{|x| x.contact_id && (!x.cancelled?)}.each do |y|
+          a = y.class.new(y.attributes)
+          a.time_shift(time_shift)
+          a.call_status_type_id = nil
+          a.attendance_type_id = nil
+          a.volunteer_shift = n
+          assigns << a
+        end
+      end
+      n
+    }
+    new.resources_volunteer_events = self.resources_volunteer_events.map{|x| x.class.new(x.attributes)}
     new.date = date
-    new.volunteer_shifts.each{|x| x.time_shift(time_shift)}
-#    new.resources.each{|x| x.time_shift(time_shift)}
-    new.save!
-    new.volunteer_shifts.each{|x| x.save!}
-    return new
+    new.resources_volunteer_events.each{|x| x.time_shift(time_shift)}
+    conflictors = assigns.select{|x| x.internal_date_hack_value = date; (!x.contact.nil?) && (!x.contact.is_organization) && x.find_overlappers(:for_contact).length > 0}
+    if conflictors.length == 0
+      new.save!
+      new.volunteer_shifts.each{|x| x.save!}
+      assigns.each{|x| x.save!}
+      return new
+    else
+      new.destroy if new.id
+      return conflictors
+    end
   end
 end

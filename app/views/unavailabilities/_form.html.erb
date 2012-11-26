@@ -23,7 +23,7 @@
 <%= text_field 'unavailability', 'repeats_on'  %></p>
 
 <p><label for="unavailability_worker_id">Worker</label><br/>
-<%= select("unavailability", "worker_id", Worker.on_or_after_date(Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }) %></p>
+<%= select("unavailability", "worker_id", Worker.on_or_after_date(Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }, {}, {:onkeyup => "magic_onkeyscroll(event);"}) %></p>
 
 <p><label for="unavailability_weekday_id">Weekday</label><br/>
 <%= select("unavailability", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
@@ -31,7 +31,5 @@
 <p><label for="unavailability_schedule_id">Schedule</label><br/>
 <%= select("unavailability", "schedule_id", Schedule.find(:all).collect {|c| [c.name, c.id] }) %></p>
 
-<p><label for="unavailability_frequency_type_id">Frequency type</label><br/>
-<%= select("unavailability", "frequency_type_id", FrequencyType.find(:all).collect {|c| [c.name, c.id] }) %></p>
 <!--[eoform:unavailability]-->
 

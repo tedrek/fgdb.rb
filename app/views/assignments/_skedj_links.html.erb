@@ -13,4 +13,11 @@
      <% newparams[:conditions][:date_start_date] = Date.today %>
      <%= link_to "Show Next Two Weeks", newparams %>
 <% end %>
+<% unless skedj.opts[:maximum_date].nil? or (!defined?(maximum_date)) or (maximum_date < Date.today) or (params[:conditions][:date_end_date] == (maximum_date).to_s and params[:conditions][:date_start_date] == (Date.today).to_s) %>
+     <% newparams = params.dup %>
+     <% newparams[:conditions] = newparams[:conditions].dup %>
+     <% newparams[:conditions][:date_end_date] = maximum_date %>
+     <% newparams[:conditions][:date_start_date] = Date.today %>
+     <%= link_to "Show Whole Future Schedule (ends at #{maximum_date})", newparams %>
+<% end %>
 </div>

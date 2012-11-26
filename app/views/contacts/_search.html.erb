@@ -33,7 +33,8 @@
                                   },
                                   :object_name => contact_object_name(options),
                                   :controller => 'contacts',
-                                  :field_name => contact_field_name(options)
+                                  :field_name => contact_field_name(options),
+                                  :contact_context => Thread.current['contact-context'].to_s
                                   ) %>
 <%= loading_indicator_tag("#{contact_query_id(options)}_contact_autocomplete_loading") %>
 

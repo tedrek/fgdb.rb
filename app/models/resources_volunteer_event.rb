@@ -23,6 +23,11 @@ class ResourcesVolunteerEvent < ActiveRecord::Base
     Weekday.find_by_id(self.date.strftime("%w"))
   end
 
+  def time_shift(val)
+    self.start_time += val
+    self.end_time += val
+  end
+
   def time_range_s
     (self.my_start_time("%I:%M") + ' - ' + self.my_end_time("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
   end

@@ -1,0 +1,15 @@
+<h1>List of database privilege roles</h1>
+<table class="awesome">
+<% @roles.sort_by(&:name).each do |role| %>
+  <tr>
+    <th><%= role.name %><%= (role.notes.to_s.length > 0 ? (": " + role.notes) : "") %><br />(<%= role.privilege_list %>)</th>
+  <td>
+    <ul>
+    <% role.users.can_login.sort_by(&:login).each do |user| %>
+      <li><%= link_to (user.login + " (" + (user.contact ? user.contact.display_name + " (#" + user.contact_id.to_s + ")" : "No Contact") + ")"), :action => "index", :contact_id => user.contact_id %></li>
+    <% end %>
+    </ul>
+  </td>
+  </tr>
+<% end %>
+</table>

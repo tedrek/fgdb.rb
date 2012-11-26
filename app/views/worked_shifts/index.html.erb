@@ -1,68 +1,124 @@
-<% @worked_shift = Struct.new(:worker_id, :date_performed).new(@worker.id, @date) %>
+<% l = @worker ? @worker.contact_id : nil %>
+<% @worked_shift = Struct.new(:contact_id, :date_performed, :password, :L).new(l, @date, nil, l) %>
+
+<span class="error">
+<%= flash[:error] %>
+</span>
 
 <% form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
-<% label :worked_shifts, :worker_id %>
-<%= select("worked_shift", "worker_id", Worker.real_people.sort_by(&:name).collect {|p| [ p.name, p.id ] }) %>
+<% label :worked_shifts, :contact_id %>
+<%= select("worked_shift", "contact_id", Worker.real_people.select{|x| !!x.contact_id}.sort_by(&:name).collect {|p| [ p.name, p.contact_id ] }, :onchange => "$('worked_shift_L').value = $('worked_shift_contact_id').value;") %>
 <%# label :worked_shifts, :date_performed %>
 <%= calendar_box('worked_shift', 'date_performed',{},{:showOthers => true}) %>
+
+<div style="display: none">
+<%= text_field("worked_shift", "L") %>
+</div>
+<%# javascript_tag "$('worked_shift_date_performed').autocomplete = 'off';" %>
+
+<div style="clear: left">
+<% if !@session_allowed %>
+<%= label :worked_shift, :password, has_required_privileges('/modify_all_workers') ? "Your Password" : "Worker Password" %>
+<%= password_field("worked_shift", "password") %>
+<% end %>
+</div>
 <%= submit_tag "Go" %>
 <% end %>
 
-<%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.id.to_json};" %>
+<% if @worker and @session_allowed %>
+<% if @worker.effective?(@date) %>
+<% jobs = Job.workable.logable.effective_on(@date) %>
+<% jobs = (jobs + @shifts.map(&:job)).uniq %>
+
+<%= javascript_tag "update_shift_totals_url = #{url_for({:action => "update_shift_totals"}).to_json}; shifts_date = #{@date.to_s.to_json}; shifts_worker = #{@worker.contact_id.to_json};" %>
 <% PayPeriod.find_for_date(@date) or raise "FIXME" %>
 <h1>Logging staff hours for <%= @worker.name %> on <%= @date %> (<%= @date.strftime("%A")%>)</h1>
 
+<div id="routine_blah">
 <% if @logged_already %>
 <pre style="background: yellow">
-Editing already saved hours.
+Editing hours that have already been saved.
 </pre>
 <% else %>
-<pre style="background: yellow">
+<pre style="background: orange">
 Hours have not yet been saved for this day. The jobs listed below are automatically guessed based on the staff schedule. You still need to save hours.
 </pre>
 <% end %>
+</div>
+<div id="you_have_changed" style="display: none">
+<pre style="background: orange">
+You are modifying hours for this day, but still need to save these hours.
+</pre>
+</div>
+
+<pre style="background: peachpuff">
+Use "add break" below to insert a paid break, which should typically be 15 minutes long, during a shift. This is not for unpaid meal breaks.
+</pre>
+
+<div style="max-width: 400px;">
+<% break_job = Job.find_by_name("Paid Break") %>
+<%= javascript_tag "paid_break_job_id = #{break_job.id.to_json}" if !break_job.nil? %>
+<%= javascript_tag "shift_do_ajax = 0;"%>
+
 <% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
-<%= hidden_field "worked_shift", "worker_id", :value => @worker.id %>
-<table id="shifts_lines">
-  <tr>
-    <th>job</th>
-    <th>duration</th>
-    <th></th>
-  </tr>
-  <% @shift_js = "shift_do_ajax = 0;"
-     for i in @shifts
-       hash = {:job_id => i.job_id, :duration => i.duration.to_f}
-       hash[:id] = i.id if i.id
-       @shift_js += "add_shift(#{hash.to_json});"
-     end 
-     @shift_js += "shift_do_ajax = 1;"%>
-  <tr id="shifts_form">
-    <td><select id="job_id">
-        <%= options_from_collection_for_select([Job.new(:name => ""),  Job.workable.sort_by(&:name)].flatten, "id", "name") %>
-      </select>
-    </td>
-    <td><input name="duration" id="duration" size="6" onkeydown="return handle_s(event);"></td>
-  </tr>
-<tr><td colspan="2">
-<div id="totals_div" class="totals line_item">
+<%= hidden_field "worked_shift", "contact_id", :value => @worker.contact_id %>
+<% javascript_tag "original_timeout_seconds = 0;" %>
+<% if Default["staff_hours_timeout"] %>
+<div id="worked_shift_time_left">
+<% timeout_seconds = (eval(Default["staff_hours_timeout"].sub('.ago', ''))).seconds.to_i %>
+<%= link_to_function "Restart Timer", "shifts_instance.update_shift_totals();", :id => "worked_shift_time_left_link" %>
+<span id="worked_shift_time_left_error" class="error hidden">ERROR: You have run out of time, you must enter the password again.</span><br />
+Time left: <span id="worked_shift_time_left_data"><%= "%2d:%2d" % [timeout_seconds / 60, timeout_seconds % 60] %></span>
+</div>
+<%= javascript_tag "original_timeout_seconds = worked_shift_timeleft = #{timeout_seconds.to_json}; updateWorkedShiftTimeleft();" %>
+<% end %>
+<div id="worked_shift_hidden_password" style="display: none">
+<%= label :worked_shift, :password, has_required_privileges('/modify_all_workers') ? "Your Password" : "Worker Password" %>
+<%= password_field("worked_shift", "password", {:disabled => "disabled"}) %>
+</div>
+
+<% interface = OH.new %>
+<% interface[:job] = '<select onchange="set_offsite_from_job_default();" id="job_id">' + [Job.new(:name => ""),  jobs.sort_by(&:name)].flatten.map{|j| "<option value=\"#{j.id}\" title=\"#{j.description}\">#{j.name}</option>"}.join("") + '</select>' %>
+<% interface[:offsite] = '<input type="checkbox" name="offsite" id="offsite" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
+<% interface[:duration] = '<input name="duration" id="duration" size="6" onkeydown="' + line_item_on_keydown("shifts") + '">' %>
+
+<% @messages.each do |msg| %>
+  <b><%= msg %></b><br />
+<% end %>
+
+     <%= line_item("shifts", 'WorkedShiftFrontend', interface, @shifts.map{|i| hash = {:job_id => i.job_id, :duration => i.duration.to_f, :offsite => i.offsite.to_s}; hash[:id] = i.id if  i.id; hash }) %>
+
+<div id="totals_div" class="totals line_item" style="clear: left; float: left; align: left;">
   <table>
     <tr><td>Total for this day:</td><td id="total_today" class="amount">loading..</td></tr>
     <tr><td>Hours normally worked on <%= @date.strftime("%A") %>:</td><td class="amount" id="normally_worked">loading..</td></tr>
     <tr><td>Total for this week:</td><td id="total_week" class="amount">loading..</td></tr>
+    <tr><td>Standard weekly hours:</td><td id="weekly_hours" class="amount">loading..</td></tr>
     <tr><td>Maximum hours for this week:</td><td id="max_week" class="amount">loading..</td></tr>
     <tr><td>Overtime:</td><td id="overtime" class="amount">loading..</td></tr>
     <tr><td>Hours this far in pay period:</td><td id="total_pay_period"  class="amount">loading..</td></tr>
   </table>
 </div>
-</td></tr>
-</table>
+<div style="clear: left">
 <%= submit_tag("Save",
-               :id => "commit",
-               :onclick => "handle_shifts();") %>
+:onclick => "add_all_line_items();",
+               :id => "commit") %>
+</div>
 <%= loading_indicator_tag "shifts_totals" %>
 <%= javascript_tag "shifts_totals_loading_id = #{loading_indicator_id("shifts_totals").to_json}"; %>
 <% end %>
-<% @shift_js += "shift_compute_totals();" %>
-<%= javascript_tag @shift_js %>
+<% else %>
+  <span class="error">Cannot log hours for that day: <%= @worker.name %> is set as an inactive worker on <%= @date %>.</span>
+<% end %>
+<% end %>
+</div>
+
+<%= javascript_tag "
+Event.observe(window, 'load', function() {
+  shift_do_ajax = 1;
+  shift_compute_totals();
+  trigger_worked_shifts_changed = true;
+});
+" %>
 

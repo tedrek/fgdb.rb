@@ -1,0 +1,26 @@
+<h2><%= @volunteer_event.description %> Student List</h2>
+
+<div class="noprint">
+  <INPUT type="button" id="print_button" value="Print" onclick="window.print();" >
+</div>
+
+Date: <%= @volunteer_event.date %><br />
+Notes: <%= @volunteer_event.notes %><br />
+<% @volunteer_event.resources_volunteer_events.each do |x| %>
+Resource: <%= x.resource.name %><br />
+<% end %>
+
+<% @volunteer_event.volunteer_shifts.select{|x| x.volunteer_task_type_id.nil?}.map{|x| x.assignments.not_cancelled}.flatten.select{|x| x.contact_id}.each do |a| %>
+
+<fieldset>
+ID: #<%= a.contact_id %><br />
+Name: <%= a.contact.display_name %><br />
+<% if a.volunteer_shift.roster.name == 'Getting Started Classes' %>
+Address: <%= a.contact.display_address.join(", ") %><br />
+<% p = a.contact.points %>
+Eligible for computer disbursement today: <%= (p >= Default['max_effective_hours'].to_f) ? 'Yes' : 'No' %>, <%= p %> points<br />
+<% end %>
+Notes: <%= a.notes %>
+</fieldset>
+
+<% end %>

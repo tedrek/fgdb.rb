@@ -5,7 +5,7 @@
 <label for="work_shift_training">Training</label></p>
 
 <p><%= check_box "work_shift", "proposed" %>
-<label for="work_shift_training">Proposed</label></p>
+<label for="work_shift_proposed">Proposed</label></p>
 
 <p><label for="work_shift_shift_date">Shift date</label><br/>
 <%= calendar_box 'work_shift', 'shift_date'  %></p>
@@ -16,23 +16,18 @@
 <p><label for="work_shift_end_time">End time</label><br/>
 <%= time_select 'work_shift', 'end_time', {:minute_step => 15}  %></p>
 
-<p><label for="work_shift_splitable">Splitable</label><br/>
-<select id="work_shift_splitable" name="work_shift[splitable]"><option value="false">False</option><option value="true">True</option></select></p>
-
-<p><label for="work_shift_mergeable">Mergeable</label><br/>
-<select id="work_shift_mergeable" name="work_shift[mergeable]"><option value="false">False</option><option value="true">True</option></select></p>
-
-<p><label for="work_shift_resizable">Resizable</label><br/>
-<select id="work_shift_resizable" name="work_shift[resizable]"><option value="false">False</option><option value="true">True</option></select></p>
-
-<p><label for="work_shift_coverage_type_id">Coverage Type</label><br/>
-<%= select("work_shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+<% unless @work_shift.kind == 'Unavailability' %>
 
 <p><label for="work_shift_job_id">Job</label><br/>
-<%= select("work_shift", "job_id", Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+<%= select("work_shift", "job_id", [["(No Job)", nil]] + Job.workable.effective_on(@work_shift.shift_date || Date.today).collect {|c| [c.name, c.id] }.sort_by(&:first), {}, {:onchange => "set_offsite_from_job('work_shift_offsite', 'work_shift_job_id');", :onkeyup => "magic_onkeyscroll(event);"}) %></p>
+
+<p><%= check_box "work_shift", "offsite" %>
+<label for="work_shift_training">Offsite</label></p>
+
+<% end %>
 
 <p><label for="work_shift_worker_id">Worker</label><br/>
-<%= select("work_shift", "worker_id", Worker.on_date(@work_shift.shift_date).collect {|c| [c.name, c.id] }.sort_by(&:first)) %></p>
+<%= select("work_shift", "worker_id", Worker.on_date(@work_shift.shift_date).collect {|c| [c.name, c.id] }.sort_by(&:first), {}, {:onkeyup => "magic_onkeyscroll(event);"}) %></p>
 
 <p><label for="work_shift_weekday_id">Weekday</label><br/>
 <%= select("work_shift", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>

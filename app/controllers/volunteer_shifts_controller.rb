@@ -25,16 +25,14 @@ class VolunteerShiftsController < ApplicationController
       :block_end_time => "volunteer_shifts.weekdays.end_time",
 
       :left_unique_value => "volunteer_shifts.left_unique_value", # model
-      :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_events.description)), volunteer_shifts.slot_number, volunteer_shifts.description",
+      :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_events.description)), volunteer_shifts.slot_number",
       :left_method_name => "volunteer_shifts.left_method_name",
       :left_table_name => "volunteer_shifts",
-      :left_link_action => "new_ds",
-      :left_link_id => "volunteer_shifts.description_and_slot",
 
       :thing_start_time => "volunteer_shifts.start_time",
       :thing_end_time => "volunteer_shifts.end_time",
       :thing_table_name => "volunteer_shifts",
-      :thing_description => "volunteer_shifts.time_range_s",
+      :thing_description => "volunteer_shifts.shift_display",
       :thing_link_id => "volunteer_shifts.id",
       :thing_links => [[:edit, :popup], [:destroy, :confirm]] # TODO: impliment [:copy, :popup], that works across multiple events
 

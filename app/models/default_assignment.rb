@@ -6,6 +6,21 @@ class DefaultAssignment < ActiveRecord::Base
   delegate :effective_on, :effective_on=, :to => :volunteer_default_shift
   delegate :ineffective_on, :ineffective_on=, :to => :volunteer_default_shift
   before_validation :set_values_if_stuck
+  delegate :set_description, :set_description=, :to => :volunteer_shift
+  validates_existence_of :contact, :allow_nil => true
+
+  def next_cycle_date
+    if self.week.to_s.strip.length == 0
+      return ""
+    end
+    d = Date.today
+    d += 1 while d.wday != self.set_weekday_id
+    return ((VolunteerShift.week_for_date(d).upcase == self.week.upcase) ? d : (d + 7)).to_s
+  end
+
+  def next_cycle_date=(d)
+    self.week = d.to_s.strip.length == 0 ? "" : VolunteerShift.week_for_date(Date.parse(d)).upcase
+  end
 
   def set_values_if_stuck
     return unless volshift_stuck
@@ -25,15 +40,35 @@ class DefaultAssignment < ActiveRecord::Base
   validates_presence_of :volunteer_default_shift
   validates_associated :volunteer_default_shift
 
-  def validate
-    if self.volunteer_default_shift && self.volunteer_default_shift.stuck_to_assignment
-      errors.add("contact_id", "is empty for a assignment-based shift") if self.contact_id.nil?
+  def not_assigned
+    contact_id.nil? and !closed
+  end
+
+  named_scope :for_slot, lambda{|assignment|
+    slot = assignment.slot_number
+    shift_id = assignment.volunteer_default_shift_id || assignment.volunteer_default_shift.id
+    week = assignment.week.to_s.strip
+    if week.length > 0
+      ret = {:conditions => ["contact_id IS NOT NULL AND slot_number = ? AND volunteer_default_shift_id = ? AND (week IS NULL OR week IN ('', ' ', ?))", slot, shift_id, week]}
+    else
+      ret = {:conditions => ["contact_id IS NOT NULL AND slot_number = ? AND volunteer_default_shift_id = ?", slot, shift_id]}
     end
-    errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
-#    errors.add("volunteer_default_shift_id", "is already assigned during that time") if self.volunteer_default_shift && !self.volunteer_default_shift.not_numbered && self.find_overlappers(:for_slot).length > 0 # TODO maybe?
+    ret
+  }
+
+  def validate
+    if self.closed
+      errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
+    end
+    if self.volunteer_default_shift && self.volunteer_default_shift.stuck_to_assignment
+      errors.add("contact_id", "is empty for an assignment-based shift") if self.contact_id.nil?
+    end
+    errors.add("contact_id", "is not an organization and is already scheduled during that time (#{self.find_overlappers(:for_contact).map{|x| "during " + x.time_range_s + " in " + x.slot_type_desc}.join(", ")})") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
+    errors.add("volunteer_default_shift_id", "is already assigned during that time (#{self.find_overlappers(:for_slot).map{|x| "during " + x.time_range_s + " to " + x.contact_display}.join(", ")})") if self.volunteer_default_shift && !(self.volunteer_default_shift.not_numbered) && self.find_overlappers(:for_slot).length > 0
   end
 
   def does_conflict?(other)
+    return false if self.week.to_s.strip.length > 0 and other.week.to_s.strip.length > 0 and self.week.downcase != other.week.downcase
     arr = [self, other]
     arr = arr.sort_by(&:start_time)
     a, b = arr
@@ -48,7 +83,7 @@ class DefaultAssignment < ActiveRecord::Base
     cond = ""
     opts = []
     if assignment.ineffective_on.nil? and assignment.effective_on.nil?
-      cond = "(ineffective_on IS NULL AND effective_on IS NULL)"
+      cond = "1 = 1"
     else
       if !(assignment.ineffective_on.nil? or assignment.effective_on.nil?)
         cond = "((ineffective_on IS NULL OR ineffective_on > ?) AND (effective_on < ? OR effective_on IS NULL))"
@@ -88,14 +123,17 @@ class DefaultAssignment < ActiveRecord::Base
    end
 
   def description
-    self.volunteer_default_shift.volunteer_default_event.weekday.name + " " + self.time_range_s + " " + self.slot_type_desc
+    self.volunteer_default_shift.volunteer_default_event.weekday.name + " " + self.time_range_s + self.slot_type_desc
   end
 
   def skedj_style(overlap, last)
+    if self.closed
+      return 'cancelled'
+    end
     if self.contact_id.nil?
       return 'available'
     end
-    if overlap
+    if overlap and !self.volshift_stuck and self.week.to_s.strip.length == 0
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_default_shift.send(:read_attribute, :end_time) or self.start_time < self.volunteer_default_shift.send(:read_attribute, :start_time)
@@ -112,7 +150,7 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def time_range_s
-    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "")
+    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "") + (self.week.to_s.strip.length > 0 ? " (week " + self.week + ")" : "")
   end
 
   def display_name
@@ -120,7 +158,9 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def contact_display
-    if contact_id.nil?
+    if self.closed
+      return "(closed)"
+    elsif contact_id.nil?
       return "(available)"
     else
       return self.contact.display_name

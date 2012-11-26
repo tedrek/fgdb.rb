@@ -10,7 +10,6 @@ module HtmlHelper
         observe_field( "#{obj_name}_#{method_name}",
                        :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value); #{html_opts[:onchange].to_s}",
                        :with => method_name )]
-
     this_choice = obj.send(method_name)
     choices.each {|choice, content|
       if this_choice.to_s == choice.to_s
@@ -18,12 +17,14 @@ module HtmlHelper
       else
         visibility = 'style="display:none;"'
       end
-      display += %Q{ <div id="%s_%s_%s_choice" class="form-element" %s>%s</div> } % [ obj_name, method_name, choice.to_s, visibility, content ]
+      display += %Q{ <div id="%s_%s_%s_choice" style="clear: left" class="form-element" %s>%s</div> } % [ obj_name, method_name, choice.to_s, visibility, content ]
     }
 
     display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s}.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")
     return display
   end
+
+  DISPLAY_ALIAS = {:updated_at => 'last_updated_at', :updated_by => 'last_updated_by', :cashier_updated_by => 'last_cashier_updated_by'}
 
   def multiselect_of_form_elements(obj_name, choices = {}, mode = "auto")
     html = "<div id='#{obj_name}_container' class='conditions'>"
@@ -43,14 +44,14 @@ module HtmlHelper
     end
     if mode == 'multi'
       choice_names = { }
-      choices.each {|k,v| choice_names[k] = (k == "updated_at" ? 'last_updated_at' : k).titleize}
+      choices.each {|k,v| choice_names[k] = (DISPLAY_ALIAS[k.to_sym] || k).titleize}
       js = update_page do |page|
         page << "list_of_#{obj_name}_conditions = $H(#{choices.to_json.gsub("</script>", "<\\\/script>")});"
         page << "condition_#{obj_name}_display_names = $H(#{choice_names.to_json});"
         page.insert_html(:bottom, obj_name + "_container",
                          :partial => 'helpers/multiselection_header',
                          :locals => {:obj_name => obj_name})
-        for condition in choices.keys do
+        for condition in choices.keys.sort_by{|x| choice_names[x]} do
           page.insert_html(:bottom, obj_name + "_adder",
                            '<option id="%s_%s_option" value="%s">%s</option>' %
                            [obj_name, condition, condition, choice_names[condition]])
@@ -82,8 +83,8 @@ module HtmlHelper
     # monthly
     date_types << ['monthly', select_month(obj.send(field_name + '_month'), :field_name => field_name + '_month', :prefix => obj_name) +
                    select_year(obj.send(field_name + '_year'), :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year)]
-    date_types << ['quarterly', select(obj_name, field_name + '_quarter', (1..4).map{|x| ["Q" + x.to_s, x]})+ select_year(obj.send(field_name + '_year'), :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year)]
-    date_types << ['yearly', select_year(obj.send(field_name + '_year'), :prefix => obj_name, :field_name => field_name + '_year', :start_year => 2000, :end_year => Date.today.year)]
+    date_types << ['quarterly', select(obj_name, field_name + '_quarter', (1..4).map{|x| ["Q" + x.to_s, x]})+ select_year(obj.send(field_name + '_year_q'), :prefix => obj_name, :field_name => field_name + '_year_q', :start_year => 2000, :end_year => Date.today.year)]
+    date_types << ['yearly', select_year(obj.send(field_name + '_year_only'), :prefix => obj_name, :field_name => field_name + '_year_only', :start_year => 2000, :end_year => Date.today.year)]
     # arbitrary
     date_types << ['arbitrary', "From: %s To: %s" %
                    [ calendar_box(obj_name, field_name + '_start_date',{},{:showOthers => true}),

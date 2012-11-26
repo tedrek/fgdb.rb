@@ -8,8 +8,9 @@ class WorkedShiftsController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:only => [:weekly_worker, :payroll, :type_totals], :privileges => ['manage_workers']}
-    a << {:except => [:weekly_worker, :payroll, :type_totals], :privileges => ['staff']}
+    a << {:only => [:weekly_worker, :payroll, :type_totals, :breaks, :breaks_report], :privileges => ['manage_workers']}
+    a << {:except => [:weekly_worker, :payroll, :type_totals, :breaks, :breaks_report], :privileges => ['staff']}
+    a << {:only => ['/modify_all_workers'], :privileges => ['log_all_workers_hours']}
     a
   end
   public
@@ -21,12 +22,29 @@ class WorkedShiftsController < ApplicationController
     "worker_types" => "name",
     "workers" => "name"}
 
+  def breaks
+    @conditions = Conditions.new
+  end
+
+  def breaks_report
+    @conditions = Conditions.new
+    @conditions.apply_conditions(params[:conditions])
+    conds = @conditions.conditions(WorkedShift)
+    conds[0] = "SELECT workers.name, SUM(CASE WHEN(jobs.name LIKE 'Paid Break') THEN 0.0 ELSE duration END) AS total, SUM(CASE WHEN(jobs.name LIKE 'Paid Break') THEN duration ELSE 0.0 END) AS breaks FROM worked_shifts JOIN jobs ON worked_shifts.job_id = jobs.id  JOIN workers ON worked_shifts.worker_id = workers.id WHERE #{conds[0]} GROUP BY 1 ORDER BY 1;"
+    @result = DB.exec(conds)
+  end
+
   def type_totals
     @types_of_types = NH.keys
+    @multi_enabled = true
   end
 
   def type_totals_report
     @defaults = Conditions.new
+    if params[:defaults].nil?
+      redirect_to :action => 'type_totals'
+      return
+    end
     @defaults.apply_conditions(params[:defaults])
     @date_range_string = @defaults.to_s
 
@@ -153,15 +171,62 @@ GROUP BY 1,2;")
     @gizmo_context = GizmoContext.new(:name => 'worked_shifts')
   end
   def default_my_form
-    @worker ||= @current_user.contact.worker
+    @worker ||= (@current_user.contact ? @current_user.contact.worker : nil)
     @date ||= Date.today
   end
+
+  private
+
+  filter_parameter_logging "password"
+
+  def applied_user
+    has_required_privileges('/modify_all_workers') ? current_user : (@worker ? @worker.contact ? @worker.contact.user : nil : nil)
+  end
+
+  def mark_activity
+    session['worker_access_id'] = applied_user.id
+    session['worker_access_last'] = DateTime.now
+  end
+
+  def handle_session
+    value = session['worker_access_last']
+    @session_allowed = applied_user && (session['worker_access_id'] == applied_user.id) &&(value && (value >= eval(Default["staff_hours_timeout"])))
+  end
+
+  def authenticate
+    default_my_form
+    handle_session
+    user = applied_user
+    if user and User.authenticate(user.login, params[:worked_shift][:password])
+      mark_activity
+      user.will_not_updated_timestamps!
+      user.last_logged_in = Date.today
+      user.save
+      @session_allowed = true
+    else
+      flash[:error] = user ? "Incorrect password for user #{user.login}" : "That worker has no user login"
+    end
+  end
+
   public
   def index
     default_my_form
-    @shifts = @worker.shifts_for_day(@date)
-    @logged_already = @shifts.shift
-    @shifts = @shifts.select{|x| !(x.job_id.nil? && x.duration == 0)}
+    handle_session
+    if !@session_allowed and params[:worked_shift] and params[:worked_shift].keys.include?("password")
+      authenticate
+    end
+    if request.method == :post and params[:worked_shift] and params[:worked_shift].keys.include?("password")
+      params[:worked_shift].delete("password")
+      params[:worked_shift].delete("L") # unimportant
+      redirect_to(params)
+    end
+    if @worker and @session_allowed
+      mark_activity
+      @shifts = @worker.shifts_for_day(@date)
+      @logged_already = @shifts.shift
+      @messages = @shifts.shift
+      @shifts = @shifts.select{|x| !(x.job_id.nil? && x.duration == 0)}
+    end
   end
 
   def individual
@@ -188,13 +253,22 @@ GROUP BY 1,2;")
   end
 
   def payroll_report
-    @enddate = Date.parse(params[:worked_shift][:end_date]) if params[:worked_shift].keys.include?("end_date") and params[:worked_shift][:end_date] != ""
+    begin
+      @enddate = Date.parse(params[:worked_shift][:end_date]) if params[:worked_shift].keys.include?("end_date") and params[:worked_shift][:end_date] != ""
+    rescue
+    end
+    if !defined?(@date)
+      flash[:error] = "The date entered was not a valid date"
+      redirect_to :back
+      return
+    end
     if @enddate
       @pay_periods = PayPeriod.find(:all, :conditions => ['start_date <= ? AND end_date >= ?', @enddate, @date]).sort_by(&:start_date)
     else
-      @pay_periods = [PayPeriod.find_for_date(@date) || raise]
+      @pay_periods = PayPeriod.find_for_date(@date)
+      @pay_periods = @pay_periods ? [@pay_periods] : []
     end
-    theworkers = Worker.effective_in_range(@pay_periods.first.start_date, @pay_periods.last.end_date).real_people.sort_by(&:sort_by)
+    theworkers = (@pay_periods.length > 0) ? Worker.effective_in_range(@pay_periods.first.start_date, @pay_periods.last.end_date).real_people.sort_by(&:sort_by) : []
     @workers = []
     @pay_periods.each{|p|
       myworkers = theworkers.map{|x| x.to_payroll_hash(p)}
@@ -238,15 +312,37 @@ GROUP BY 1,2;")
   end
 
   def update_shift_totals
+    handle_session
+    if @worker and @session_allowed
+      mark_activity
+    end
     @hours = params[:worked_shift][:hours_today].to_f
     render :action => 'update_shift_totals.rjs'
   end
 
   def save
+    if !params[:worked_shift]
+      redirect_to :action => "index"
+      return
+    end
 #    @logged_already = true
 #    @shifts = process_shifts(params[:shifts])
 #    render :action => "edit"
-    process_shifts(params[:shifts])
+    handle_session
+    if !@session_allowed and params[:worked_shift] and params[:worked_shift].keys.include?("password")
+      authenticate
+    end
+    params[:worked_shift].delete("password")
+    if @worker and @session_allowed
+      mark_activity
+      if params[:worked_shift]
+        process_shifts(params[:shifts])
+      else
+        flash[:error] = "ERROR: Hours were not saved. Please choose a date to save hours for."
+      end
+    else
+      flash[:error] = "ERROR: Hours were not saved. Please choose a worker and authenticate."
+    end
     redirect_to :action => "index"
   end
 
@@ -280,7 +376,11 @@ GROUP BY 1,2;")
 
   def common_logic
     return if ! params[:worked_shift]
+    @worker = Worker.find_by_contact_id(params[:worked_shift][:contact_id]) if params[:worked_shift].keys.include?("contact_id")
     @worker = Worker.find_by_id(params[:worked_shift][:worker_id]) if params[:worked_shift].keys.include?("worker_id")
-    @date = Date.parse(params[:worked_shift][:date_performed]) if params[:worked_shift].keys.include?("date_performed")
+    begin
+      @date = Date.parse(params[:worked_shift][:date_performed]) if params[:worked_shift].keys.include?("date_performed")
+    rescue
+    end
   end
 end

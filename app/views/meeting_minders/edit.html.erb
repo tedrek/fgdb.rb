@@ -1,0 +1,17 @@
+<h1>Editing meeting minder for <%= @meeting_minder.meeting.meeting_name %> meeting</h1>
+
+<% if date = @meeting_minder.next_delivery %>
+<%= link_to 'View a Test Message for This Minder', {:date => date, :action => "show", :id => @meeting_minder.id} %> | 
+<% end %>
+<%= link_to 'Destroy This Minder', {:action => "destroy", :id => @meeting_minder.id}, :confirm => 'Are you sure?' %>
+
+
+<% form_for(@meeting_minder, :url => {:action => "update", :id => @meeting_minder.id}) do |f| %>
+  <%= f.error_messages %>
+
+  <%= render :partial => "form", :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit "Update", :class => 'follow_scroll right_side' %>
+  </p>
+<% end %>

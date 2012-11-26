@@ -4,9 +4,25 @@ class TillAdjustmentsController < ApplicationController
   def get_required_privileges
     a = super
     a << {:privileges => ['till_adjustments']}
+    a << {:privileges => ['modify_inventory'], :only => ["inventory_settings", "save_inventory_settings"]}
     a
   end
   public
+  def inventory_settings
+    @date = _parse_date(Default["inventory_lock_end"])
+    @settings = OpenStruct.new({:date => @date})
+  end
+  def _parse_date(d)
+    return "" if d.nil? or (!d) or d.length == 0
+    Date.parse(d).to_s
+  end
+  def save_inventory_settings
+    @date = _parse_date(params[:settings] && params[:settings][:date])
+    Default["inventory_lock_end"] = @date
+    @settings = OpenStruct.new({:date => @date})
+    render :action => "inventory_settings"
+  end
+
   # GET /till_adjustments
   # GET /till_adjustments.xml
   def index

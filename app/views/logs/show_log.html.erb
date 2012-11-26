@@ -1,0 +1,7 @@
+<h1>View database record log for <%= params[:log][:table].humanize.singularize %> # <%= params[:log][:id].to_i %></h1>
+<ul>
+<% Log.find_all_by_table_name_and_thing_id(params[:log][:table], params[:log][:id].to_i).sort_by(&:date).each do |x| %>
+  <li><%= x.string %></li>
+<% end %>
+</ul>
+<%= render :partial => "form" %>

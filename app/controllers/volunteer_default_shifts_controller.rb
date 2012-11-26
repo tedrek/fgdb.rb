@@ -12,22 +12,7 @@ class VolunteerDefaultShiftsController < ApplicationController
   helper :skedjul
 
   def generate
-    gconditions = Conditions.new
-    gconditions.apply_conditions(params[:gconditions])
-    begin
-      startd, endd = Date.parse(params[:date_range][:start_date]), Date.parse(params[:date_range][:end_date])
-    rescue
-      flash[:error] = "Generate error: A valid date ranges was not given"
-      redirect_to :back
-      return
-    end
-    if params[:date_range][:do_shifts] == "1"
-      VolunteerDefaultShift.generate(startd, endd, gconditions)
-    end
-    if params[:date_range][:do_resources] == "1"
-      ResourcesVolunteerDefaultEvent.generate(startd, endd, gconditions)
-    end
-    redirect_to :controller => 'assignments', :action => "index", :conditions => params[:gconditions].merge({:date_start_date => params[:date_range][:start_date], :date_end_date => params[:date_range][:end_date], :date_date_type => "arbitrary", :date_enabled => "true"})
+    do_volskedj_generate('assignments')
   end
 
   def index
@@ -47,8 +32,6 @@ class VolunteerDefaultShiftsController < ApplicationController
       :left_method_name => "volunteer_default_shifts.left_method_name",
       :left_sort_value => "(coalesce(volunteer_task_types.description, volunteer_default_events.description)), volunteer_default_shifts.description",
       :left_table_name => "volunteer_task_types",
-      :left_link_action => "new_default_shift",
-      :left_link_id => "volunteer_task_types.id",
 
       :thing_start_time => "volunteer_default_shifts.start_time",
       :thing_end_time => "volunteer_default_shifts.end_time",
@@ -67,8 +50,13 @@ class VolunteerDefaultShiftsController < ApplicationController
   end
 
   def edit
-    @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
-    redirect_to({:controller => "volunteer_default_events", :action => "edit", :id => @volunteer_default_shift.volunteer_default_event_id})
+    begin
+      @volunteer_default_shift = VolunteerDefaultShift.find(params[:id])
+      redirect_to({:controller => "volunteer_default_events", :action => "edit", :id => @volunteer_default_shift.volunteer_default_event_id})
+    rescue
+      flash[:jsalert] = $!.to_s
+      redirect_to :back
+    end
   end
 
   def destroy

@@ -18,6 +18,16 @@ module SidebarHelper
     true
   end
 
+  # exceptions
+  def controller_and_action_to_section
+    h = OH.new
+    h.default_class = OH
+    h["gizmo_returns"]["system"] = "tech support"
+    h["spec_sheets"]["system"] = "tech support"
+    h["spec_sheets"]["workorder"] = "tech support"
+    h
+  end
+
   def controller_to_section
     {"recyclings" => "recyclings",
     "volunteer_tasks" => "hours",
@@ -44,6 +54,11 @@ module SidebarHelper
     "rosters" => "sked admin",
     "volunteer_default_shifts" => "sked admin",
     "assignments" => "vol sked",
+    "logs" => "admin",
+    "system_pricings" => "sales",
+    "pricing_types" => "sales",
+    "pricing_components" => "sales",
+    "pricing_values" => "sales" # Going away?
     }
   end
 
@@ -61,27 +76,41 @@ module SidebarHelper
       disp = pl.sub("gizmo_returns", "sales")
       prep = ([:sale, :gizmo_return].include?(i) ? pl.sub("gizmo_", "") + " " : "")
       sidebar_hash[disp][prep + "entry"] = {:c => pl}
+      if [:donation].include?(i) # TODO: , :sale
+        sidebar_hash[disp][prep + "invoices"] = {:c => pl, :a => "invoices"}
+        sidebar_hash[disp]["tally sheet"] = {:c => pl, :a => "tally_sheet"}
+      end
       sidebar_hash[disp][prep + "search"] = {:c => pl, :a => 'search'}
     end
     sidebar_hash["sales"]["store credits"] = {:c => "store_credits", :a => 'index'}
+    sidebar_hash["sales"]["pricing"] = {:c => "system_pricings", :a => "index"}
+    sidebar_hash["sales"]["pricing admin"] = {:c => "pricing_types", :a => "index"}
     # reports
-    ["income", "gizmos", "volunteering", "top_contributors"].each do |x|
-      sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => x.sub("ing", "s")}
+    ["income", "gizmos", "volunteering", "top_donations", "donation_areas", "contributions", "volunteer_schedule"].each do |x|
+      sidebar_hash["reports"][x.gsub(/_/, " ")] = {:c => "reports", :a => ((x == "contributions") ? "suggested_contributions" : (x == "donation_areas") ? "donation_zip_areas" : x.sub("ing", "s"))}
     end
+    sidebar_hash["recyclings"]["shipments"] = {:c => "recycling_shipments"}
+    sidebar_hash["tech support"]["system returns"] = {:c => "gizmo_returns", :a => "system"}
+    sidebar_hash["tech support"]["system history"] = {:c => "spec_sheets", :action => "system"}
+    sidebar_hash["tech support"]["work orders"] = {:c => "spec_sheets", :action => "workorder"}
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
+    sidebar_hash["reports"]["cashier contributions"] = {:c => 'reports', :action => "cashier_contributions"}
     # contacts
     sidebar_hash["contacts"]["contacts"] = {:c => "contacts"}
     sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'}
     sidebar_hash["contacts"]["duplicates list"] = {:c => 'contact_duplicates', :a => "list_dups"}
     sidebar_hash["contacts"]["email list"] = {:c => 'contacts', :a => "email_list"}
+    sidebar_hash["contacts"]["roles"] = {:c => 'contacts', :a => "roles"}
     # bean counters
     sidebar_hash["bean counters"]["till adjustments"] = {:c => "till_adjustments"}
+    sidebar_hash["bean counters"]["inventory settings"] = {:c => "till_adjustments", :a => "inventory_settings"}
     # skedjuler
-    sidebar_hash["sked admin"]["regular sked"] = {:c => "volunteer_default_shifts"}
-    sidebar_hash["sked admin"]["real sked"] = {:c => "volunteer_shifts"}
-    sidebar_hash["sked admin"]["default assign"] = {:c => "default_assignments"}
+    sidebar_hash["sked admin"]["repeat slots"] = {:c => "volunteer_default_shifts"}
+    sidebar_hash["sked admin"]["actual slots"] = {:c => "volunteer_shifts"}
+    sidebar_hash["sked admin"]["repeat volunteers"] = {:c => "default_assignments"}
     sidebar_hash["vol sked"]["schedule"] = {:c => "assignments"}
-    sidebar_hash["vol sked"]["view"] = {:c => "assignments", :a => "view"}
+    sidebar_hash["vol sked"]["view only"] = {:c => "assignments", :a => "view"}
+    sidebar_hash["vol sked"]["no shows"] = {:c => "assignments", :a => "noshows"}
     sidebar_hash["vol sked"]["search"] = {:c => "assignments", :a => "search"}
     # staffsched
     sidebar_hash["staff"]["schedule"] = {:c => "work_shifts", :a => "staffsched"} if should_show_schedule
@@ -89,10 +118,13 @@ module SidebarHelper
     sidebar_hash["staff"]["edit schedule"] = {:c => "work_shifts"} if should_show_edit_schedule
     sidebar_hash["staff"]["staff hours"] = {:c => "worked_shifts"}
     sidebar_hash["staff"]["individual report"] = {:c => "worked_shifts", :a => "individual"}
+    sidebar_hash["staff"]["breaks report"] = {:c => "worked_shifts", :a => "breaks"}
     sidebar_hash["staff"]["jobs report"] = {:c => "reports", :a => "staff_hours"}
     sidebar_hash["staff"]["types report"] = {:c => "worked_shifts", :a => "type_totals"}
     sidebar_hash["staff"]["payroll report"] = {:c => "worked_shifts", :a => "payroll"}
     sidebar_hash["staff"]["weekly report"] = {:c => "worked_shifts", :a => "weekly_workers"}
+    sidebar_hash["staff"]["hours summary"] = {:a => 'staff_hours_summary', :c => "reports"}
+    sidebar_hash["staff"]["badges"] = {:a => 'badge', :c => "workers"}
     # library
 #    requires_librarian = ['overdue', 'labels', 'cataloging', 'borrowers', 'inventory']
 #    for i in ['lookup', 'overdue', 'inventory', 'cataloging', 'search', 'labels', 'borrowers'] do
@@ -101,9 +133,13 @@ module SidebarHelper
 #      end
 #    end
     # fgss
-    sidebar_hash["fgss"]["printme"] = {:c => 'spec_sheets'}
-    sidebar_hash["fgss"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled
+    sidebar_hash["build"]["printme"] = {:c => 'spec_sheets'}
+    sidebar_hash["build"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled
+    sidebar_hash["data sec"]["disktest runs"] = {:c => "disktest_runs"}
+    sidebar_hash["data sec"]["disktest batches"] = {:c => "disktest_batches"}
     # done
+    sidebar_hash["admin"]["logs"] = {:c => "logs"}
+    sidebar_hash["admin"]["deleted records"] = {:c => "logs", :a => "find_deleted"}
     return aliases, sidebar_hash
   end
 end

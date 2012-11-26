@@ -1,3 +1,8 @@
+.right_side {
+  float: right;
+  clear: both;
+  margin-right: 5px;
+}
 table.awesome {
 border-collapse: collapse;
 border-width: 0 0 1px 1px;

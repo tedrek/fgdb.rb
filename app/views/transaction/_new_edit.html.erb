@@ -12,6 +12,14 @@
 </div>
 <div id="<%= form_tbody_id(params) %>">
 
+<% if @transaction.inventory_is_locked? %>
+<h2 style="color: red">WARNING: inventory for this transaction is locked, please only change gizmo counts if you are sure it is okay to change. Privileges will be required to modify gizmo counts, but other data can still be modified without restriction.</h2>
+<% end %>
+
+<% if @transaction.till_is_locked? %>
+<h2 style="color: red">WARNING: till income for this transaction is locked, please only change payments if you are sure it is okay to change. Privileges will be required to modify payments, but other data can still be modified without restriction.</h2>
+<% end %>
+
 <% if @receipt %>
   <script>
     window.open('<%= url_for({:id => @receipt, :action => 'receipt'}) %>','Receipt_<%= @receipt %>','');
@@ -22,7 +30,7 @@
   <div id="<%= h element_cell_id(@options) %>" class="<%= @options[:action] %>" colspan="<%= num_columns %>">
 
     <% form_remote_tag :url => @options.merge(:controller => base_controller),
-       :loading => "Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}'); Form.disable('#{element_form_id(@options)}');",
+       :create => "Form.disable('#{element_form_id(@options)}'); Element.show('#{loading_indicator_id("form_for_#{@transaction_type}_loading")}');",
        :html => { :class => "cashierable_form", :href => url_for(@options.merge(:controller => base_controller)),
          :id => element_form_id(@options) } do %>
     <%# form_for @transaction, :url => @options.merge(:controller => base_controller), :html => {:method => 'POST'} do %>
@@ -38,6 +46,12 @@
       <div id="<%= element_messages_id(@options) %>" class="messages-container"></div>
     <% else %>
       <%= render :partial => 'form_messages' %>
+    <% end %>
+
+    <% if defined?(@extra_message) %>
+      <pre style="background: yellow">
+<%= @extra_message %>
+      </pre>
     <% end %>
 
     <% if contract_enabled %>

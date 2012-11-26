@@ -10,8 +10,38 @@ class SpecSheet < ActiveRecord::Base
   belongs_to :type
   has_one :contract, :through => :system
   validates_associated :builder_task
+  validates_associated :spec_sheet_values
 
   after_save :save_bt
+
+  has_many :spec_sheet_values, :include => [:spec_sheet_question], :order => "spec_sheet_questions.position ASC"
+
+  def pricing_hash
+    @pricing_hash ||= begin
+                          h = self.parser.pricing_hash
+                          h[:build_type] = self.type ? self.type.name : nil
+                          h
+                        end
+  end
+
+  # is there already an inverse to Hash.to_a ?
+  def r_hash_parse(arr)
+    h = {}
+    arr.each{|x,y|
+      h[x] = y
+    }
+    h
+  end
+
+  def questions=(hash)
+    r_hash_parse(hash).each do |k,v|
+      tid = k.to_s.sub(/^id_/, "").to_i
+      sv = self.spec_sheet_values.select{|x| x.spec_sheet_question_id == tid}.first || SpecSheetValue.new
+      sv.spec_sheet_question_id = tid
+      sv.value = v
+      self.spec_sheet_values << sv
+    end
+  end
 
   def save_bt
     self.builder_task.save!
@@ -150,6 +180,37 @@ class SpecSheet < ActiveRecord::Base
     cleaned_valid || original_valid
   end
 
+  def most_recent_not_tech_support?
+    return false if self.action.name == "tech_support"
+    recent = self.system and self.system.spec_sheets.select{|x| x.action.name != "tech_support"}.sort_by(&:created_at).last
+    return true unless recent
+    return true if self.created_at.nil? or self.created_at >= recent.created_at
+  end
+
+  def set_extra_system_information(parsed)
+    if most_recent_not_tech_support? and self.system
+      self.system.last_build = self.created_at.nil? ? Date.today : self.created_at.to_date
+      l = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :north_bridge]
+      if parsed.klass != SystemHelper::PlistSystemParser
+        l = l + [:sixty_four_bit, :virtualization]
+      end
+      for i in l
+        self.system.send(i.to_s + "=", parsed.send(i))
+      end
+      proc = parsed.processors.first
+      if proc
+        for i in [:processor_slot, :processor_product, :processor_speed]
+          self.system.send(i.to_s + "=", proc.send(i.to_s.sub(/_product/, "").sub(/processor_/, "")))
+        end
+      end
+      self.system.save! if self.system.id
+    end
+  end
+
+  def parser
+    SystemParser.parse(lshw_output)
+  end
+
   def initialize(*args)
     super(*args)
 
@@ -158,8 +219,7 @@ class SpecSheet < ActiveRecord::Base
       return
     end
 
-    sp = SystemParser.parse(lshw_output)
-
+    sp = self.parser
     found_system = System.find_by_id(sp.find_system_id)
     if found_system and !found_system.gone?
       self.system = found_system
@@ -176,5 +236,6 @@ class SpecSheet < ActiveRecord::Base
       system.serial_number  = sp.serial_number
       system.vendor  = sp.vendor
     end
+    self.set_extra_system_information(sp)
   end
 end

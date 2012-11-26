@@ -4,20 +4,14 @@
 <p><%= check_box "shift", "training" %>
 <label for="shift_training">Training</label></p>
 
+<p><%= check_box "shift", "proposed" %>
+<label for="shift_proposed">Proposed</label></p>
+
 <p><label for="shift_start_time">Start time</label><br/>
 <%= time_select 'shift', 'start_time', {:minute_step => 15}  %></p>
 
 <p><label for="shift_end_time">End time</label><br/>
 <%= time_select 'shift', 'end_time', {:minute_step => 15}  %></p>
-
-<p><%= check_box "shift", "splitable" %>
-<label for="shift_splitable">Splitable</label></p>
-
-<p><%= check_box "shift", "mergeable" %>
-<label for="shift_mergeable">Mergeable</label></p>
-
-<p><%= check_box "shift", "resizable" %>
-<label for="shift_resizable">Resizable</label></p>
 
 <p><label for="shift_meeting_name">Meeting name</label><br/>
 <%= text_field 'shift', 'meeting_name'  %></p>
@@ -25,14 +19,21 @@
 <p><label for="shift_shift_date">Shift date</label><br/>
 <%= calendar_box 'shift', 'shift_date' %></p>
 
-<p><label for="shift_coverage_type_id">Coverage Type</label><br/>
-<%= select("shift", "coverage_type_id", CoverageType.find(:all).collect {|c| [c.name, c.id] }) %></p>
+<p><label for="shift_next_cycle_date">Repeat next cycle on date (to generate every other week)</label><br/>
+<%= calendar_box 'shift', 'next_cycle_date' %></p>
+
+<% unless @shift.type == 'Unavailability' %>
 
 <p><label for="shift_job_id">Job</label><br/>
-<%= select("shift", "job_id", Job.find(:all, :order => "name").collect {|c| [c.name, c.id] }) %></p>
+<%= select("shift", "job_id", Job.workable.effective_on(@shift.shift_date || Date.today).collect {|c| [c.name, c.id] }.sort_by(&:first), {}, {:onchange => "set_offsite_from_job('shift_offsite', 'shift_job_id');", :onkeyup => "magic_onkeyscroll(event);"}) %></p>
+
+<p><%= check_box "shift", "offsite" %>
+<label for="shift_training">Offsite</label></p>
+
+<% end %>
 
 <p><label for="shift_worker_id">Worker</label><br/>
-<%= select("shift", "worker_id", Worker.on_or_after_date(@shift.shift_date || Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }) %></p>
+<%= select("shift", "worker_id", Worker.on_or_after_date(@shift.shift_date || Date.today).sort_by(&:name).collect {|c| [c.name, c.id] }, {}, {:onkeyup => "magic_onkeyscroll(event);"}) %></p>
 <p><label for="shift_weekday_id">Weekday</label><br/>
 <%= select("shift", "weekday_id", Weekday.find(:all, :order => "id").collect {|c| [c.name, c.id] }) %></p>
 

@@ -5,6 +5,8 @@
 <p><%= f.label "col_name", "Column Name" %><%= select("worked_shift", "col_name", select_stuff) %></p>
 <p><%= f.label "by_percentage", "By Percentage (rows)" %><%= check_box("worked_shift", "by_percentage") %></p>
 <p><%= f.label "include_empty", "Include Empty (rows and columns)" %><%= check_box("worked_shift", "include_empty") %></p>
-<p><%= f.label "date_performed", "Date Performed" %><%= conditions_html('defaults', ["date_performed"]) %></p><br />
+<p><%= f.label "date_performed", "Date Performed" %></p>
+<%= conditions_html('defaults', ["date_performed"], Conditions, 'force') %>
+<%= conditions_html('defaults', ["job", "worker"], Conditions, 'multi') %><br />
 <p><%= submit_tag "Go" %></p>
 <% end %>

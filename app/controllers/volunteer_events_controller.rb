@@ -2,14 +2,16 @@ class VolunteerEventsController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['admin_skedjul']}
+    a << {:privileges => ['admin_skedjul'], :except => ['display']}
+    a << {:privileges => ['schedule_volunteers'], :only => ['display']}
     a
   end
   public
   layout :with_sidebar
 
   def index
-    @volunteer_events = VolunteerEvent.find(:all)
+    redirect_to :controller => "assignments"
+    # @volunteer_events = VolunteerEvent.find(:all)
   end
 
   def add_shift
@@ -98,6 +100,10 @@ class VolunteerEventsController < ApplicationController
     @volunteer_event = VolunteerEvent.find(params[:id])
   end
 
+  def display
+    @volunteer_event = VolunteerEvent.find(params[:id])
+  end
+
   def new_class
     @notice = ""
     c = params[:klass]
@@ -106,6 +112,7 @@ class VolunteerEventsController < ApplicationController
       return
     end
     c[:contact_id] = params["contact"]["id"] if params["contact"] and params["contact"]["id"]
+    c[:contact2_id] = params["contact"]["contact2_id"] if params["contact"] and params["contact"]["contact2_id"]
     normal = c[:student_slot_count].to_i || 0
     instructor = c[:instructor_slot_count].to_i || 0
     audit = c[:audit_slot_count].to_i || 0
@@ -113,6 +120,7 @@ class VolunteerEventsController < ApplicationController
     program = Program.find_by_id(c[:program_id].to_i)
     resource = Resource.find_by_id(c[:resource_id].to_i)
     contact = Contact.find_by_id(c[:contact_id].to_i)
+    contact2 = Contact.find_by_id(c[:contact2_id].to_i)
 #    if roster.nil? or program.nil?
 #      redirect_to :action => "new_class"
 #      return
@@ -124,7 +132,7 @@ class VolunteerEventsController < ApplicationController
     else
       start_hour -= 12 if start_hour == 12
     end
-    start_time = Time.parse([start_hour, start_minute].join(":"))
+    start_time = Time.parse("2000-01-01 " + [start_hour, start_minute].join(":"))
     end_hour = c["end_time(4i)"].to_i
     end_minute = c["end_time(5i)"].to_i
     if c["end_time(7i)"].to_i == ActionView::Helpers::DateTimeSelector::PM
@@ -132,7 +140,7 @@ class VolunteerEventsController < ApplicationController
     else
       end_hour -= 12 if end_hour == 12
     end
-    end_time = Time.parse([end_hour, end_minute].join(":"))
+    end_time = Time.parse("2000-01-01 " + [end_hour, end_minute].join(":"))
     c["start_time"] = start_time
     c["end_time"] = end_time
     c["program"] = program
@@ -140,11 +148,13 @@ class VolunteerEventsController < ApplicationController
     c["resource"] = resource
     params["contact"] ||= {}
     params["contact"]["id"] = contact.id if contact
+    params["contact"]["contact2_id"] = contact2.id if contact2
     @volunteer_event = VolunteerEvent.new
     @volunteer_event.description = c[:description]
     @volunteer_event.date = c[:date]
     @volunteer_event.notes = c[:notes]
     inst_shift = nil
+    inst_shift2 = nil
     normal.times do |i|
       a = VolunteerShift.new
       a.class_credit = true
@@ -166,18 +176,23 @@ class VolunteerEventsController < ApplicationController
       a.end_time = end_time
       @volunteer_event.volunteer_shifts << a
     end
+    vtt_t = VolunteerTaskType.find_by_name("teaching")
     instructor.times do |i|
       a = VolunteerShift.new
       a.class_credit = false
-      a.volunteer_task_type = VolunteerTaskType.find_by_name("teaching")
-      a.slot_number = (i + 1)
+      a.volunteer_task_type = vtt_t
       a.roster_id = roster.id if roster
       a.program_id = program.id if program
       a.start_time = start_time
       a.end_time = end_time
+      a.not_numbered = true
+      a.description = @volunteer_event.description
       a.volunteer_event = @volunteer_event
       if contact and i == 0
         inst_shift = a
+      end
+      if contact2 and i == 1
+        inst_shift2 = a
       end
       @volunteer_event.volunteer_shifts << a
     end
@@ -195,6 +210,12 @@ class VolunteerEventsController < ApplicationController
         a.contact_id = contact.id
         a.save
       end
+      if inst_shift2
+        a = inst_shift2.assignments.first
+        a.contact_id = contact2.id
+        a.save
+      end
+      @notice_id = @volunteer_event.id
       @volunteer_event = VolunteerEvent.new
       @notice = "\"#{c[:description]}\" created successfully"
       render :action => "new_class"
@@ -212,7 +233,20 @@ class VolunteerEventsController < ApplicationController
   end
 
   def copy
-    redirect_to :action => "show", :id => VolunteerEvent.find_by_id(params[:id]).copy_to(Date.parse(params[:copy][:date]), hours_val(params[:copy])).id
+    old = VolunteerEvent.find_by_id(params[:id])
+    copy_for = []
+    old.volunteer_shifts.map{|x| x.volunteer_task_type}.uniq.each do |vtt|
+      if params["copy_for_#{vtt ? vtt.id.to_s : "nil"}"] == "1"
+        copy_for << (vtt ? vtt.id : nil)
+      end
+    end
+    new = old.copy_to(Date.parse(params[:copy][:date]), hours_val(params[:copy]), copy_for)
+    if new.class == VolunteerEvent
+      redirect_to :action => "show", :id => new.id
+    else
+      flash[:error] = "The following volunteers are already scheduled during that time: #{new.map{|x| x.contact.display_name}.join(", ")}"
+      redirect_to :back
+    end
   end
 
   def edit
@@ -224,7 +258,7 @@ class VolunteerEventsController < ApplicationController
     @volunteer_event = VolunteerEvent.new(params[:volunteer_event])
 
     _save
-    if @volunteer_event.save
+    if @volunteer_shifts.select{|x| !x.valid?}.length == 0 && @resources.select{|x| !x.valid?}.length == 0 && @volunteer_event.valid? && @volunteer_event.save
       _after_save
       flash[:notice] = 'VolunteerEvent was successfully created.'
       redirect_to({:action => "show", :id => @volunteer_event.id})
@@ -238,7 +272,7 @@ class VolunteerEventsController < ApplicationController
     rt = params[:volunteer_event].delete(:redirect_to)
 
     _save
-    if @volunteer_event.update_attributes(params[:volunteer_event])
+    if @volunteer_shifts.select{|x| !x.valid?}.length == 0 && @resources.select{|x| !x.valid?}.length == 0 && @volunteer_event.valid? && @volunteer_event.update_attributes(params[:volunteer_event])
       _after_save
       flash[:notice] = 'VolunteerEvent was successfully updated.'
       redirect_skedj(rt, @volunteer_event.date_anchor)

@@ -1,0 +1,28 @@
+<h2><%= disktest_run.vendor %> <%= disktest_run.model %> <%= disktest_run.display_size %> <%= disktest_run.form_factor %> <%= disktest_run.bus_type %></h2>
+
+Serial Number: <%= disktest_run.serial_number %><br />
+<br />
+
+Result: <%= disktest_run.result || "No result." %><br />
+<br />
+
+<% if disktest_run.started_at %>
+Started at: <%= disktest_run.started_at %><br />
+<br />
+<% end %>
+
+<% if disktest_run.completed_at %>
+Completed at: <%= disktest_run.completed_at %><br />
+<br />
+<% end %>
+
+<% if disktest_run.failure_details %>
+Failure Details: <%= disktest_run.failure_details %><br />
+<br />
+<% end %>
+
+<% if disktest_run.log %>
+Log:<br /><pre><%= disktest_run.log %></pre>
+<% end %>
+
+<%= link_to "Find in Systems", {:controller => "spec_sheets", :action => "search", :conditions => {:hard_drive_serial_number_enabled => true, :hard_drive_serial_number => disktest_run.serial_number}} %>

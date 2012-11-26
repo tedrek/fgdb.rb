@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+ENV['RAILS_ENV']||="production"
+
+require File.dirname(__FILE__) + '/../config/boot'
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+emails = `ssh -i /root/.ssh/wasp_key root@wasp /usr/sbin/list_members e-newsletter`.split("\n")
+
+if emails.length < 100 # error detection! lol
+  puts "ERROR: " + emails.join("\n")
+  exit 1
+end
+
+emails.each{|e|
+  e = e.strip.downcase
+  ns = NewsletterSubscriber.find_or_create_by_email(e)
+  ns.updated_at_will_change!
+  ns.save!
+}
+
+NewsletterSubscriber.destroy_all ['updated_at <= ?', 1.day.ago]

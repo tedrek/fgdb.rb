@@ -5,7 +5,20 @@
 <table class="skedj" border="0" width="100%" summary="<%=h skedj.get_method_value(skedj.current,:block_method_display) %>">
 <% day_length = (( skedj.get_method_value(skedj.current, :block_end_time) - skedj.get_method_value(skedj.current, :block_start_time) ) / ( 60 * 30 )).to_int %>
 
-    <caption><%=h skedj.get_method_value(skedj.current, :block_method_display) %> (<%= skedj.conditions.skedj_to_s("before", false, ["cancelled"]) %>)</caption>
+<% if skedj.opts.include?(:rollout_default_name) %>
+<% @rollout_until ||= Date.parse(Default[skedj.opts[:rollout_default_name]] || Date.today.to_s) %>
+<% end %>
+
+<% if @rollout_until && @rollout_until < skedj.current.shift_date %>
+    <caption class="blackout"><span style="color: red;">WARNING: Not Finalized &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<% else %>
+    <caption>
+<% end %>
+
+<% if @rollout_until  && skedj.opts[:presentation_mode] == 'Edit' && @rollout_until   != skedj.current.shift_date %>
+  <%= link_to "Roll #{@rollout_until  > skedj.current.shift_date ? "back" : "out"} schedule to this day", {:action => skedj.opts[:rollout_default_action], :date => skedj.current.shift_date}, {:confirm => "Are you sure you want to roll the schedule to " + skedj.current.shift_date.strftime("%a, %D") + "?"} %>
+<% end %>
+      <%=h skedj.get_method_value(skedj.current, :block_method_display) %> (<%= skedj.conditions.skedj_to_s("before", false, ["cancelled"]) %>)</caption>
     <tr>
     <th width="10%">&nbsp;</th>
     <% for i in (0..(@day_length-1)) %>

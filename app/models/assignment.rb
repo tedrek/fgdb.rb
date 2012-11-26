@@ -11,6 +11,18 @@ class Assignment < ActiveRecord::Base
   validates_existence_of :contact, :allow_nil => true
 
   delegate :set_date, :set_date=, :to => :volunteer_shift
+  delegate :set_description, :set_description=, :to => :volunteer_shift
+
+  has_one :contact_volunteer_task_type_count, :conditions => 'contact_volunteer_task_type_counts.contact_id = #{defined?(attributes) ? contact_id : "assignments.contact_id"}', :through => :volunteer_shift, :source => :contact_volunteer_task_type_counts
+
+  def contact_id_and_by_today
+    # Unless the contact id is empty, or the event date is after today.
+    !(contact_id.nil? || self.volunteer_shift.volunteer_event.date > Date.today)
+  end
+
+  def voltask_count
+    self.contact_volunteer_task_type_count ? self.contact_volunteer_task_type_count.attributes["count"] : 0
+  end
 
   before_validation :set_values_if_stuck
   def set_values_if_stuck
@@ -26,17 +38,33 @@ class Assignment < ActiveRecord::Base
     self.volunteer_shift.attributes=(attrs) # just pass it up
   end
 
+  def if_builder_assigned
+    self.contact_id and self.volunteer_shift.volunteer_task_type_id and self.volunteer_shift.volunteer_task_type.program.name == 'build'
+  end
+
+  def not_assigned
+    contact_id.nil? and !closed
+  end
+
   def volshift_stuck
     self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
   end
 
+  def time_shift(val)
+    self.start_time += val
+    self.end_time += val
+  end
+
   def validate
     if self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
-      errors.add("contact_id", "is empty for a assignment-based shift") if self.contact_id.nil?
+      errors.add("contact_id", "is empty for an assignment-based shift") if self.contact_id.nil?
+    end
+    if self.closed
+      errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
     end
     unless self.cancelled?
-      errors.add("contact_id", "is not an organization and is already scheduled during that time") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
-      errors.add("volunteer_shift_id", "is already assigned during that time") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
+      errors.add("contact_id", "is not an organization and is already scheduled during that time (#{self.find_overlappers(:for_contact).map{|x| "during " + x.time_range_s + " in " + x.slot_type_desc}.join(", ")})") if !(self.contact.nil?) and !(self.contact.is_organization) and self.find_overlappers(:for_contact).length > 0
+      errors.add("volunteer_shift_id", "is already assigned during that time (#{self.find_overlappers(:for_slot).map{|x| "during " + x.time_range_s + " to " + x.contact_display}.join(", ")})") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
      end
     errors.add("end_time", "is before the start time") unless self.start_time < self.end_time
   end
@@ -55,9 +83,15 @@ class Assignment < ActiveRecord::Base
 
   named_scope :not_yet_attended, :conditions => ['attendance_type_id IS NULL']
 
+  def internal_date_hacks
+    @internal_date_hack_value || self.volunteer_shift.volunteer_event.date
+  end
+
+  attr_writer :internal_date_hack_value
+
   named_scope :potential_overlappers, lambda{|assignment|
     tid = assignment.id
-    tdate = assignment.volunteer_shift.volunteer_event.date
+    tdate = assignment.internal_date_hacks
     { :conditions => ['(id != ? OR ? IS NULL) AND (attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\')) AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tid, tdate] }
   }
 
@@ -72,16 +106,22 @@ class Assignment < ActiveRecord::Base
     has_task_type = ! assignment.volunteer_shift.volunteer_task_type_id.nil?
     ret = nil
     if has_task_type
+      rid = assignment.volunteer_shift.roster_id
       tslot = assignment.volunteer_shift.slot_number
       ttid = assignment.volunteer_shift.volunteer_task_type_id
-      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_task_type_id = ?)', tslot, ttid]}
+      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_task_type_id = ? AND roster_id = ?)', tslot, ttid, rid]}
     else
+      rid = assignment.volunteer_shift.roster_id
       tslot = assignment.volunteer_shift.slot_number
       teid = assignment.volunteer_shift.volunteer_event_id
-      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL)', tslot, teid]}
+      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL AND roster_id = ?)', tslot, teid, rid]}
     end
     ret
   }
+
+  def first_time_in_area?
+    self.contact and self.volunteer_shift and self.volunteer_shift.volunteer_task_type and !self.contact.volunteer_task_types.include?(self.volunteer_shift.volunteer_task_type) #  and self.contact_id_changed? moved outside because we use update_attributes
+  end
 
   def my_call_status
     self.call_status_type_id ? self.call_status_type.name : "not called yet"
@@ -95,7 +135,12 @@ class Assignment < ActiveRecord::Base
     self.contact_id ? self.contact.display_phone_numbers : ""
   end
 
+  def sandbox?
+    self.volunteer_shift and self.volunteer_shift.roster and self.volunteer_shift.roster.name.downcase == 'sandbox'
+  end
+
   def does_conflict?(other)
+    return false if self.sandbox? or other.sandbox?
     arr = [self, other]
     arr = arr.sort_by(&:start_time)
     a, b = arr
@@ -127,14 +172,12 @@ class Assignment < ActiveRecord::Base
   end
 
   def contact_display
-    if contact_id.nil?
+    if self.closed
+      return "(closed)"
+    elsif contact_id.nil?
       return "(available)"
     else
-      if self.volunteer_shift.volunteer_task_type_id == VolunteerTaskType.evaluation_type.id
-        return self.contact.display_name + "(#{self.contact.syseval_count})"
-      else
-        return self.contact.display_name
-      end
+      return self.contact.display_name + "(#{self.voltask_count})"
     end
   end
 
@@ -159,10 +202,13 @@ class Assignment < ActiveRecord::Base
     if self.cancelled?
       return 'cancelled'
     end
+    if self.closed
+      return 'cancelled'
+    end
     if self.contact_id.nil?
       return 'available'
     end
-    if overlap and !(last.cancelled? or self.cancelled?) and !self.volshift_stuck# TODO: FIXME: BUGGY? need a order by cancelled too then probably..
+    if overlap and !(last.cancelled? or self.cancelled?) and !self.volunteer_shift.not_numbered # TODO: FIXME: BUGGY? need a order by cancelled too then probably..
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_shift.send(:read_attribute, :end_time) or self.start_time < self.volunteer_shift.send(:read_attribute, :start_time)

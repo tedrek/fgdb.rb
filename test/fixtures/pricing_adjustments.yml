@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  system_pricing_id: 1
+  note: MyString
+  amount_cents: 1
+
+two:
+  system_pricing_id: 1
+  note: MyString
+  amount_cents: 1

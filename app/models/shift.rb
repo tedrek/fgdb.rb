@@ -1,9 +1,61 @@
 class Shift < ActiveRecord::Base
-  belongs_to :job, :include => [:coverage_type]
+  acts_as_userstamp
+
+  belongs_to :job
   belongs_to :weekday
   belongs_to :worker
-  belongs_to :coverage_type
   belongs_to :schedule
+
+  def months_to_s
+    "every #{self.repeats_every_months} months, repeating on month of #{self.repeats_on_day}"
+  end
+
+  def repeats_on_day
+    if defined?(@set_repeats_on_day)
+      return @set_repeats_on_day
+    end
+    add_this = (repeats_on_months - (_calculate_d(Date.today) % repeats_every_months)) % repeats_every_months
+    d = Date.today + add_this.months
+    Date.new(d.year, d.month, 1)
+  end
+
+  def repeats_on_day=(date)
+    @set_repeats_on_day = date
+  end
+
+  before_save :set_repeats_on_months
+  def _calculate_d(d)
+    d = Date.parse(d) if d.class == String
+    (d.month + (d.year * 12))
+  end
+
+  def set_repeats_on_months
+    if defined?(@set_repeats_on_day)
+      begin
+        d = @set_repeats_on_day.class == String ? Date.parse(@set_repeats_on_day): @set_repeats_on_day
+        write_attribute(:repeats_on_months, _calculate_d(d) % repeats_every_months) if d
+      rescue
+      end
+    end
+  end
+
+  def next_cycle_date
+    if self.week.to_s.strip.length == 0
+      return ""
+    end
+    d = Date.today
+    d += 1 while d.wday != self.weekday_id
+    return ((VolunteerShift.week_for_date(d).upcase == self.week.upcase) ? d : (d + 7)).to_s
+  end
+
+  def next_cycle_date=(d)
+    self.week = d.to_s.strip.length == 0 ? "" : VolunteerShift.week_for_date(Date.parse(d)).upcase
+  end
+
+  before_save :set_standard_shift_if_none
+  def set_standard_shift_if_none
+    self.type ||= 'StandardShift' if self.class == Shift
+  end
 
   def Shift.and_sql_conds(conds)
     conds + (conds.empty? ? "" : " AND ")
@@ -34,6 +86,7 @@ class Shift < ActiveRecord::Base
       else
           # check to see if the schedule displays on that
           #   weekday, if not then skip
+        week_letter = VolunteerShift.week_for_date(day)
         weekday_id = day.strftime( '%w' )
         weekday = Weekday.find(:first, :conditions => ["id = ?", weekday_id])
           # get standard shifts that match the day of week
@@ -41,12 +94,23 @@ class Shift < ActiveRecord::Base
             # ASSUMPTION: 
             #   either the weekday_id is null
             #   or the shift_date is null
-        root_sched = Schedule.find( :first, :conditions => ["? BETWEEN effective_date AND ineffective_date AND parent_id IS NULL", day] )
-        in_clause = root_sched.in_clause_family
+        root_sched = Schedule.generate_from
+        in_clause = root_sched.in_clause
+        if footnote = ShiftFootnote.find_by_schedule_id_and_weekday_id(root_sched.id, weekday_id)
+          wsf = WorkShiftFootnote.new
+          wsf.note = footnote.note
+          wsf.date = day
+          wsf.save!
+        else
+          wsf = WorkShiftFootnote.find_by_date(day)
+          wsf.destroy if wsf
+        end
         where_clause = <<WHERE
         (NOT actual) AND 
         #{sql_conditions}
-        ('#{day}' BETWEEN shifts.effective_date AND shifts.ineffective_date) AND
+        ((shifts.effective_date IS NULL OR '#{day}' >= shifts.effective_date)
+          AND (shifts.ineffective_date IS NULL OR '#{day}' < shifts.ineffective_date)) AND
+         (week IS NULL OR week LIKE ' ' OR week ILIKE '#{week_letter}') AND
         ( 
           ( shifts.shift_date = '#{day}' ) 
             OR
@@ -93,10 +157,21 @@ WHERE
     prepend + display_name
   end
 
+  def display_worker_skedj
+    skedj = Thread.current['skedj_obj']
+    raise if skedj.nil?
+    prepend = ""
+    if skedj.opts[:presentation_mode] == "Edit"
+      prepend = "[#{self.id}] "
+    end
+    prepend + self.worker.name
+  end
+
   def display_name
     skedj = Thread.current['skedj_obj']
-    s = " (" + self.schedule.name + ")" if self.schedule.id != skedj.conditions.schedule_id
-    s ||= ""
+    s = ""
+    #schedule.id != skedj.conditions.schedule_id
+    s = " (" + self.week.upcase + ")" if self.week.to_s.strip.length > 0
     self.name + s
   end
 
@@ -121,33 +196,9 @@ WHERE
       elsif self.worker_id == 0
         shift_style = 'unfilled'
       elsif overlap
-        # can't seem to get this part quite right
-        # i expect a stupid syntax error
-        # what should happen:
-        # two overlapping anchored shifts should result 
-        #   in hardconflict
-        # two overlapping shifts where only one is anchored 
-        #   should result in mediumconflict
-        # other overlapping shifts should result in 
-        #   softconflict
-        # can't figure out if a shift is anchored?
-        #   pretend it is anchored
-        if (last.coverage_type ? last.coverage_type.name : 'anchored') == 'anchored'
-          if not self.coverage_type
-            shift_style = 'hardconflict'
-          elsif self.coverage_type.name == 'anchored'
-            shift_style = 'hardconflict'
-          else
-            shift_style = 'mediumconflict'
-          end
-        elsif self.coverage_type.name == 'anchored'
-          shift_style = 'mediumconflict'
-        else
-          shift_style = 'softconflict'
-        end
-        # end of problem code
+        shift_style = 'hardconflict'
       else
-        shift_style = self.training ? 'training' : 'shift'
+        shift_style = self.proposed ? 'proposed' : self.training ? 'training' : 'shift'
       end
       return shift_style
     end

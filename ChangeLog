@@ -1,7 +1,556 @@
-fgdb.rb (1.0.80) UNRELEASED; urgency=low
+fgdb.rb (1.0.109) UNRELEASED; urgency=low
 
+  * Complete the cashier contributions report (Closes: #31828)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Dec 2011 00:30:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 25 Nov 2012 21:46:19 -0800
+
+fgdb.rb (1.0.108) released; urgency=low
+
+  * Add a link to crash reports for creating an RT ticket (Closes:
+    #27160)
+  * Provide a new printme API allowing to check if contact exists
+  * Add a printer friendly receipt for disbursements (Closes: #31636)
+  * Tech support work order printouts are usable and formatted
+  * Add T-Shirt and Tote Bag types to sales (Closes: #30244)
+  * Fix bug in assignments update (Closes: #31824)
+  * Support for generating worker ID badges on cardstock (Closes:
+    #31779)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
+
+fgdb.rb (1.0.107) released; urgency=low
+
+  * Wrap around will_paginate to make all search results automatically
+    include a string such as 'Results 1 - 20 of 55764' (Closes: #31637)
+  * Add a search condition for form_factor in disktest_runs (Closes:
+    #31638)
+    - Display the form factor in search results
+    - Allow selecting different units for the megabytes size condition
+    - Also add a condition to spec_sheets and a link for finding hard
+      drives in printme records from their disktest_run serial number
+  * Add a new link for adding a vacation for a day for a contact and
+    also add a footnote when marking somebody as absent (Closes: #31549)
+  * Fix copying assignments with events to reset attendance and call
+    status to none (Closes: #31745)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Oct 2012 08:56:16 -0700
+
+fgdb.rb (1.0.106) released; urgency=low
+
+  * Allow volunteer shifts without class credit or a volunteer task
+    type, to allow for classes without class credit (Closes: #31552)
+    - Also update past Monthly Classes to no longer show up as credit
+  * Show the number of points and exclude cancelled assignments on the
+    class list (Closes: #31363)
+  * Add barebones system type to sales screen
+  * New system for discounts (Closes: #31136)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 24 Oct 2012 04:29:30 -0700
+
+fgdb.rb (1.0.105) released; urgency=low
+
+  * Add a list of jobs to the hours logging interface (Closes: #30614)
+  * Replace coverage types with a fully covered boolean, treating all
+    conflicts as hard
+  * Reimplement bulk (all 3 kinds..) and online sale tracking as a new
+    SaleType option table, which then gets split out on the income
+    report (Closes: #31060)
+  * Check for and alert when total hours try to exceed 24 while logging
+    staff hours (Closes: #31143)
+  * Consolidate the HTML receipt text involving return policies to use
+    the version from the database like the text receipts (Closes: #30683)
+    - Fix the system warranty URL in the new text to be correct, like it
+      was in the HTML version; another reason to only maintain one copy
+  * Do not require entering password in staff hours immediately
+    following login
+  * Replace the job list on staff hours with a tooltip displaying the
+    description within the select dropdown
+  * Change the disktest search conditions to include partial matches
+    (Closes: #31226)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 28 Sep 2012 21:47:54 -0700
+
+fgdb.rb (1.0.104) released; urgency=low
+
+  * Add a student list printout for adoption classes (Closes: #30543)
+  * Add support for setting up ongoing volunteer events occurring every
+    other week (Closes: #30491)
+  * Implement the fully covered check against an ideal reference schedule
+    (Closes: #30493)
+  * Move the initial AJAX hook calculation to observe the load event
+    instead of being executed inline, hoping to get rid of whatever race
+    condition exists here (Closes: #30555)
+  * Remove permission restriction on searching for transactions by
+    cashier/created/updated_by
+  * Implement every other week in staff scheduling using normal shifts
+    - remove the unused A/B-week schedules from the main schedule during
+      migration (Closes: #30612)
+  * Remove now unused betternestedset plugin
+  * Implement footnotes on the ongoing schedule as well (with generating
+    and copying support)
+    - Show vacations in the footnotes
+  * Add support for job and worker conditions to the type totals staff
+    report
+  * Add support for tracking recycling shipments in the database
+  * Add a 10% coupon to the donation receipts (Closes: 30671)
+  * Fix the handling of holidays in the payroll report to not count
+    holidays multiple times (Closes: #30889)
+  * Add new NumberOfGizmosDisbursedByTypeAndCity trend report (Closes:
+    #30975)
+  * Add a volunteer task type for facilities (Closes: #30955)
+  * Add some magic to auto scroll a select option to the top
+  * Add a new condition called 'volunteered non court hours in days' for
+    finding volunteers who have at least X non-Court hours in X days
+    (Closes: #30953)
+  * Improve the ordering of the RecyclingShipment records (Closes:
+    #30948)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Sep 2012 08:41:21 -0700
+
+fgdb.rb (1.0.103) released; urgency=low
+
+  * Add a tally sheet to donations
+  * Add form factor tracking for disktest runs
+  * Add a general volunteer schedule report, providing the data
+    requested for Darren's Student report for any schedule (Closes:
+    #30055)
+  * Implement locking till at midnight (Closes: #30248)
+  * implement inventory and till lock privilege checking on the destroy
+    action
+  * Change the suggested contribution and the blurb to display on
+    invoices by default and be optional for receipts
+  * add description to the list of gizmos in transaction search results
+  * Add a new 'online sale?' checkbox to the sales screen, disabled by
+    default (Closes: #30465)
+    - Split out sales marked as online to their own line on the income
+      report
+  * Add an absent link near names on the staff schedule (Closes: #25693)
+  * Add some regexps and other pattern matching changes to better support
+    Mac systems that are generated using PList output on Mac OS X
+    (Closes: #30245)
+  * Add frontend for copying schedules and setting one to be the default
+    generated from (Closes: #30242)
+  * Implement optionally copying assignments for certain task types
+    within an event, and some improvements to the new class page
+    (Closes: #30460)
+  * Add a separate page for tech support system history and a form to
+    show the latest printme for a system (Closes: #30506)
+    - Also add a Show page to display a transaction without printing the
+      receipt
+  * Fix some handling of the store pricing stuff
+  * Add support for footnotes on the skedjulnator (Closes: #30765)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 30 Aug 2012 18:46:35 -0700
+
+fgdb.rb (1.0.102) released; urgency=low
+
+  * Add new types for Tablet, PDA, Smart Phone and eReader
+  * New layout for receipts that makes more sense (Closes: #29551)
+    - Print a separate invoice and receipt for donations which need both
+    - Update the PDF donation receipt, too
+  * Add a suggested contributions report (Closes: #30243)
+  * Allow the STORE_ADMIN role to see created and updated by conditions
+    (Closes: #30212)
+  * Fix covered to be required chosen (Closes: #30229)
+  * Add a blurb of text encouraging contributions
+  * Add a general volunteer schedule report, providing the data
+    requested for Darren's Student report for any schedule (Closes:
+    #30055)
+  * Add form factor tracking for disktest runs
+  * Add a tally sheet to donations
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 17 Aug 2012 20:33:18 -0700
+
+fgdb.rb (1.0.101) released; urgency=low
+
+  * Replace pdf-writer with prawn (Closes: #28888)
+  * Port donation receipt text changes (s/donations/contributions/, etc)
+    on the HTML receipt from last week to the PDF version too
+  * Include a resolved date on the invoices interface
+  * Limit contact results on search pages to contacts with the
+    contact_type they would have if they would return results (Closes:
+    #29643)
+  * Implement the store pricing cheat in the db (Closes: #29558)
+  * Add new filters to the disktest run search page (Closes: #29822)
+  * Add check_passed API (for ticket #29547)
+  * fix new condition: validate integers and also to_i the input to
+    prevent crashes (Closes: #30108)
+  * Fix bug in transaction search, crash ID Y2qYwR (Closes: #30114)
+  * Fix type detection for existing systems to return the default type
+    when there are no spec_sheets (Closes: #30140)
+    - Also fix to not create a system record if spec_sheet is unsuccessful
+  * Fix vol appreciation gizmo types to be in misc gizmo category
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 11 Aug 2012 08:35:49 -0700
+
+fgdb.rb (1.0.100) released; urgency=low
+
+  * Add a form widget to transaction search pages to change the number
+    of results per page (Closes: #29542)
+  * Change some text on the donations receipt
+  * Add functionality for meetings which will only happen on every X months
+  * Replace destroy functionality from volskedj with a interface over
+    ajax for setting the attendance type
+  * Add a no show report for finding volunteers who don't cancel
+    (Closes: #28394)"
+  * Add some redirects to the database for everything
+  * Add a breaks report
+  * Add a new page for tech support to generate the return using only the
+    system ID # (Closes: #29647)
+  * Add checkboxes for cancelling other shifts or closing the shift when
+    setting attendance type to a cancel type
+  * restrict arrived link in volskedj to shifts that are not in the
+    future
+  * Change slot conflict checking to treat rosters self contained, only
+    looking for conflicts in the same roster
+  * Fix bug on worked_shifts save page when no parameters are supplied
+    (Crash ID dO7i3B)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Jul 2012 22:08:10 -0700
+
+fgdb.rb (1.0.99) released; urgency=low
+
+  * Give FRONT_DESK privileges for gizmo_returns
+  * Add a return button for disbursements to automatically fill the new
+    return
+  * Add an interface for resolving donation invoices (Closes: #29551)
+  * Replace the Front Desk type with volunteer and donor desk types
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Jul 2012 09:06:20 -0700
+
+fgdb.rb (1.0.98) released; urgency=low
+
+  * Extract some systems data from spec_sheets
+  * Add Borrowed disbursement type
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 07 Jul 2012 02:53:42 -0700
+
+fgdb.rb (1.0.97) released; urgency=low
+
+  * Implement a sandbox volunteer schedule (Closes: #28524)
+  * Add tracking of coupon details
+  * Add update_serial API for disktest users changing the serial number
+  * Add an offsite boolean to staff hours tracking and scheduling
+  * Add volunteer appreciation disbursement and gizmo types (Closes:
+    #29178)
+  * Implement OR logic in conditions for staff scheduling, tho it could
+    still be expanded for more complex situations (Closes: #28233)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 29 Jun 2012 20:52:11 -0700
+
+fgdb.rb (1.0.96) released; urgency=low
+
+  * Validate that contact names are provided
+  * Add feature to be able to preseed new organization names in addition
+    to individual names based on the name searched for (Closes: #28968)
+  * Add staff adoption type (Closes: #28962)
+  * Allow empty slot numbers to be entered to make the shift
+    not_numbered (Closes: #28922)
+  * Add support for default assignments which only repeat bi-weekly
+  * Implement a new column on the income reports for 'real total' that
+    includes register money as well as invoices and online income, excluding
+    only coupons and store credit, which is also now used by 3 of the income
+    trend reports.
+  * Add extra hour to end of skedjuls to allow later events to be
+    scheduled
+  * Implement %LAST_MEETING_DATE% and hour to send at for meeting
+    minders
+  * Update receipt to point to TS twitter
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 22 Jun 2012 19:40:12 -0700
+
+fgdb.rb (1.0.95) released; urgency=low
+
+  * Add disktest batch db schema for certificates of destruction
+  * Reformat receipts to use full width in the header and footer,
+    to prevent text wrapping
+  * Remove checkboxes for the following search conditions:
+    covered organization is_pickup assigned
+    - And enable the Exclude checkbox for them to be reversed
+  * Move the cores per proc question under the processor question and a
+    question for type of DIMM (Closes: #28823)
+  * Add FB and Twitter to sales receipt
+  * Remove extra lines from the donation receipts and invoices when the
+    situation would show redundant information and ensure every fee and
+    fee total has the word Required in front of it (as well as not tax
+    deductible)
+  * Validate that birthday setting is not past year 2038
+  * Add a confirmation when changing the rollout date in skedjulnator
+  * Also add a report mail to schedulers when the rollout date is changed
+    (Closes: #29003)
+  * Show the generated on at the end of the schedule and problems
+    reports regardless of readonly mode
+  * Add a link from disktest_runs to show the full details of a run,
+    including the log
+  * Add finalized condition for disktest batches
+  * Add organization name search condition
+  * Fix disciplinary action PIN input to hide password (Closes: #29095)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 08 Jun 2012 18:47:22 -0700
+
+fgdb.rb (1.0.94) released; urgency=low
+
+  * Minor bug fixes and enhancements in many areas
+  * Copying meetings by effective date
+  * list standard weekly work hours on the payroll report
+  * Remove unused skedjul checkboxes (Closes: #28594)
+  * Mention "volunteered hours in days" contacts condition,
+	added 'payment total' transaction condition
+	(and sorted all condition lists)
+  * Renamed build in sidebar for clarity
+  * Add a link to show the description (Closes: #28598)
+  * Add option to display the suggested donation on the receipts as well
+  * Automatically figure out coveredness from systems when more than one
+    is supplied
+  * Add one time discount
+  * disable a server build question for max processors and add one for
+    cores per processor (Closes: #28434)
+  * Reduce invoice size and fix some text to say tax deductible
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 01 Jun 2012 18:52:18 -0700
+
+fgdb.rb (1.0.93) released; urgency=low
+
+  * reassignments can now be used to switch an already assigned slot
+  * Meeting minders from the database (Closes: #17031)
+  * Track bus type, start time, and failure reason in disk testing
+  * Also, support checking if the drive has been tested in a machine
+    that was not properly shut down and have a new "STOPPED" status for
+    the tester to cancel testing after an initial check of smart status
+  * update the displayed notes when disbursing fg-pdx systems (Closes: #28466)
+  * Include all skedjulnator metadata tables in dumping (Closes: #13305)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 18 May 2012 19:36:45 -0700
+
+fgdb.rb (1.0.92) released; urgency=low
+
+  * Clean up negative volunteer tasks, replacing them with disbursement
+    records when appropriate (Closes: #20108)
+  * Add handling for birthdays and alerts when scheduling underage
+    volunteers
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 12 May 2012 08:51:19 -0700
+
+fgdb.rb (1.0.91) released; urgency=low
+
+  * Rename support to tech support in volunteer tasks
+  * Remove an hour from the weekday metadata for skedjul display start
+    and end times, since we seem to need 8am-9am more than we need 7pm-
+    8pm
+  * add ability to make jobs disabled outside of a date range
+  * float the back and show buttons along with the edit/new buttons
+  * add jobs tracking to meetings
+  * make laptops count for volunteerr credit
+  * update docs on how to install fgdb.rb (Closes: #14227)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 May 2012 09:02:54 -0700
+
+fgdb.rb (1.0.90) released; urgency=low
+
+  * Support meetings that occur only on the N weeks of the month (Closes: #25691)
+  * Replace worker_id with contact_id on staff hours logging (workers
+    now require a contact to log hours, through they really did anyway for
+    the user account) and allow people to login using their contact id
+    number (also disallowing logins that are only numerical)
+  * add an interface to display and resolve scheduling conflicts while
+    generating shifts
+  * add a report with a staff hours summary (Closes: #28033)
+  * indicate with an X which weeks meetings are generated on the list
+    page (Closes: #28057)
+  * Fix ongoing find problems report to not display when nobodies meet
+    (Closes: #28079)
+  * format dates with weekday on the hours summary report (Closes:
+    #28080)
+  * fix crash reports: ongoing intern scheduling with no data, disallow
+    reassigning ongoing intern shifts, fix validation of assignments
+    when a non-ID is entered and fix when a staff person has already
+    entered their password (in another window, for example) but enters
+    it an extra time
+  * replace numbers for teaching slots with descriptions (of the class
+    name) and add better output during conflicts (Closes: #28153)
+  * replace bad error handling in individual ajax actions with support
+    for javascript popup responses by the crash report handling code
+    (Closes: #28133)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 20 Apr 2012 19:15:04 -0700
+
+fgdb.rb (1.0.89) released; urgency=low
+
+  * add a big red Dev to the background of testing instances of the
+    database so it is easy to see the difference
+  * when trying to redirect_to :back with no previous location, redirect
+    to the front page with a javascript alert instead of generating a
+    crash report
+  * add disciplinary actions (Closes: #27378)
+  * Remove habtm association between jobs and workers
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 14 Apr 2012 09:13:50 -0700
+
+fgdb.rb (1.0.88) released; urgency=low
+
+  * add unique indexes to role and privilege system (Closes: #27470)
+  * implement schedule problem finder for ongoing schedule as well
+  * add an admin report listing users for each role
+  * add a link to the builder status sheet from the volunteer schedule
+  * add report of total volunteers during a time period to trend reports
+    (Closes: #27732)
+  * implement buttons that follow the user scrolling with animations
+  * remove warning if printme notes are empty since all areas are using
+    conditional questions for standard information now
+  * list schedules broken out by whether they group a program or an area,
+    and list the included rosters next to it
+  * privilege roles can now have short notes describing their
+    functionality show up underneath
+  * add Printerland and Recycling Area schedules (Closes: #27731)
+  * list schedules broken out by whether they group a program or an area,
+    and list the included rosters next to it
+  * add a board work category to volunteer scheduling (Closes: #27869)
+  * add Mac As-is types for Laptops, Systems and Systems w/LCD (Closes:
+    #27876)
+  * show holidays on volunteer schedule
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 06 Apr 2012 23:02:10 -0700
+
+fgdb.rb (1.0.87) released; urgency=low
+
+  * bump printme version to 16, requires new printme to support new
+    conditional questions
+    - force updated freegeek-build-utils package
+  * Add a general question for desktop build
+    - Removed network boot key and rephrased boot menu questions
+  * Remove lines for written data from laptop spec sheet and add system
+    specific printme questions for laptops (Closes: #26673)
+  * staff hours password saving mostly working (Closes: #27475)
+    - except that it will ask to save password by your worker id
+      instead of login
+    - and when the dropdown gets changed you must select Go (fail
+      password entry) before Firefox will repopulate it
+  * Add proper ability to close shifts (Closes: #27415)
+    - new x link (o to open), or can use checkbox on edit, but must
+      delete or remove shifts assigned to contacts
+    - multi selecting many purple shifts and then using the checkbox
+      on the edit form will work if all shifts have same time range
+    - remove no work contacts
+  * Add notice when scheduling volunteer for an area they haven't worked
+    in (Closes: #27448)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 31 Mar 2012 00:32:27 -0700
+
+fgdb.rb (1.0.86) released; urgency=low
+
+  * disable password saving temporarily, at least (#27475)
+  * indicate with the color orange if hours have not been
+    saved, so staff know if they have submitted (Closes: #27445)
+  * give them a password field when they run out of time (Closes:
+    #27474)
+  * handle when the edited transaction disappears in the update action
+  * better handle when assignments don't validate or if they don't exist,
+    for whatever reason
+  * add income stream, workers comp and program to the jobs edit form
+  * fix handling of displaying change due and other cash payments when
+    there is cash back
+  * use the date range to determine which workers to show (Closes:
+    #27567)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 24 Mar 2012 00:03:42 -0700
+
+fgdb.rb (1.0.85) released; urgency=low
+
+  * add printme questions for boot device and network boot bios keys
+  * change sidebar sked admin labels to use words: repeat, actual,
+    slots and volunteers, thanks to Darryl's suggestion (Closes: #27358)
+  * Pass :count with validates_length_of (Closes: #27161)
+  * Rename the top contributors report to top donations, and allow
+    getting data about gizmo donations (Closes: #27406)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Mar 2012 01:15:25 -0700
+
+fgdb.rb (1.0.84) released; urgency=low
+
+  * add feature to lock gizmo report data (Closes: #27157)
+  * add CREATE_LOGIN role which can be used to create users and grant
+    them privileges that the user has themselves. also changed user
+    interface to make it clearer when roles cannot be modified. (Closes:
+    #26885)
+  * add deleted record search page (Closes: #27127)
+  * add ability to search by logged in date (See ticket #26791)
+  * Add checkbox and system integration to subscribe donors to
+    newsletter while e-mailing receipt (Closes: #26966)
+  * display users for created_by/updated_by better on
+    vacations/skedjulnator (Closes: #27323)
+  * require password and time out the session after 5 minutes for
+    logging staff hours
+  * add tracking for who's editing when there are multiple skedjulers
+  * add signed off by condition and show the login or name of the person
+    who signed the spec sheet off (Closes: #27330)
+  * In staff hours, show the time left to the user and allow for them to
+    restart the timer (Closes: #27366)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 09 Mar 2012 18:35:31 -0800
+
+fgdb.rb (1.0.83) released; urgency=low
+
+  * basic support for conditional questions, and added server build Q's
+  * only record {cashier_,}{updated,created}_by values if we are
+    recording timestamps, based on internal active record configuration
+    values, so that we can keep history intact while we do migrations
+  * keeping counts on all volunteer task types (Closes: #26710)
+  * add a javascript alert if a shift is being saved and has disappeared
+  * Allow floating point numbers when checking for zero (Closes: #27235)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Mar 2012 00:15:51 -0800
+
+fgdb.rb (1.0.82) released; urgency=low
+
+  * display non-printing conditions forms on gizmo and income reports
+    (Closes: #26158)
+  * fix validation of trend reports when conditions are not selected, by
+    validating the conditions_for_report which includes a dummy
+    condition, instead of it's usable_conditions input (Closes: #26587)
+  * add updated_by conditions (caveat: only searches most recent
+    updator, like the updated_at conditions. the logs search interface
+    provides complete history) (Closes: #26159)
+  * add is_pickup and gizmo_category conditions to transactions
+  * Allow skedjulers to set a date for finalized skedjul
+  * split sales income report into retail and bulk (Closes: #26756)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 28 Jan 2012 00:47:02 -0800
+
+fgdb.rb (1.0.81) released; urgency=low
+
+  * rename cashier code to PIN, only in user displayed areas
+  * validate search conditions and handle errors nicely (Closes: #25801)
+  * implement record logs, to see the history of who has modified it
+  * require user to force generating if it will overwrite events, also
+    only overwrite events which were created by a previous generate
+  * add edit_disbursements to FRONT_DESK role (Closes: #26325)
+  * remove the CRT Monitor option on disbursement info section in
+    spec_sheet and add Uncovered Monitor (Closes: #26355)
+  * add weekly work hours to be displayed to user
+  * add Break job type, switch the worked_shifts to new line item stuff
+    and have add break link
+  * rename weekly work hours to standard weekly hours to match the
+    contract
+  * do not require a postal code for foreign people (Closes: #26430)
+  * enable add_on_save through the new line item code for worked shifts
+    (Closes: #26467)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 07 Jan 2012 02:02:34 -0800
+
+fgdb.rb (1.0.80) released; urgency=low
+
+  * add shared logins (Closes: 18046)
+  * add ability to email a pdf version of donation receipts (Closes:
+    #25510)
+  * validate the user record when saving contacts, to prevent silent
+    failures
+  * add option for LCD Monitor gizmoes on disbursement info section
+    of printme (Closes: #25988)
+  * correct spelling of 'privileges' (Closes: #26065)
+  * fix handling of year dropdown in date_or_date_range_picker and
+    conditions (Closes: #26103)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 17 Dec 2011 02:45:21 -0800
 
 fgdb.rb (1.0.79) released; urgency=low
 
@@ -12,6 +561,10 @@ fgdb.rb (1.0.79) released; urgency=low
   * handle bad input from the users nicer
   * add disbursement id to returns interface (Closes: #14861)
   * pass the cashier_id onto the contact
+  * e-mail a daily list of database errors to me, if there were any.
+    (Closes: #25668). this will be gradually improved.
+  * Report of all system disbursements by postal code's city (Closes:
+    #25799)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 10 Dec 2011 00:29:58 -0800
 

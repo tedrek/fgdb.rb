@@ -54,6 +54,9 @@ width: 65%;
 p.footer {
 width: 65%;
 }
+p.longfooter {
+width: 100%;
+}
 
 /* ===================================
          General Stuff */
@@ -601,10 +604,47 @@ padding:0;
 @media print {
 .noprint { display: none; }
 }
+.onlyprint { display: none; }
+@media print {
+.onlyprint { display: inline; }
+}
 
 .hidden { display: none; }
 
 table.line_item_table tr th, table.line_item_table tr td {
 text-align: right;
 align: right;
+}
+
+.largetable td {
+font-size: 16pt;
+}
+
+.largetable td:last-child {
+text-align: right
+}
+
+table.badge {
+  margin-left: 0.45in;
+  border-color: transparent;
+}
+
+table.badgepage1 {
+  margin-top: 0.2in;
+}
+
+table.badgepage2 {
+  margin-top: 0.08in;
+}
+
+table.badge td, table.badge th {
+  width: 2.18in;
+  vertical-align: top;
+  text-align: center;
+  border-color: transparent;
+}
+
+table.badge tr {
+  height: 3.5in;
+  border-color: transparent;
 }

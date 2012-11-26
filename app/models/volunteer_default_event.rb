@@ -4,6 +4,24 @@ class VolunteerDefaultEvent < ActiveRecord::Base
   belongs_to :weekday
   has_many :volunteer_default_shifts, :dependent => :destroy
   has_many :resources_volunteer_default_events, :dependent => :destroy
+  validates_associated :volunteer_default_shifts
+
+  def validate
+    errors.add('next_cycle_date', 'cannot be set on a roster event') if self.week and self.week.length > 1 and self.description.match(/Roster #/)
+  end
+
+  def next_cycle_date
+    if self.week.to_s.strip.length == 0
+      return ""
+    end
+    d = Date.today
+    d += 1 while d.wday != self.weekday_id if self.weekday_id
+    return ((VolunteerShift.week_for_date(d).upcase == self.week.upcase) ? d : (d + 7)).to_s
+  end
+
+  def next_cycle_date=(d)
+    self.week = d.to_s.strip.length == 0 ? "" : VolunteerShift.week_for_date(Date.parse(d)).upcase
+  end
 
   def merge_similar_shifts
       hash = {}

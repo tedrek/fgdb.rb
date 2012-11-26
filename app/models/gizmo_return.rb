@@ -1,10 +1,10 @@
 class GizmoReturn < ActiveRecord::Base
   define_amount_methods_on("storecredit_difference")
-  has_many :gizmo_events, :dependent => :destroy
+  has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
   include GizmoTransaction
   belongs_to :contact
-  has_one :store_credit
+  has_one :store_credit, :autosave => :true
   before_save :set_storecredit_difference_cents
   before_save :set_occurred_at_on_gizmo_events
   define_amount_methods_on("storecredit_difference")
@@ -28,7 +28,7 @@ class GizmoReturn < ActiveRecord::Base
   end
 
   def storecredits
-    [self.store_credit]
+    self.store_credit ? [self.store_credit] : []
   end
 
   def self.default_sort_sql
@@ -36,6 +36,7 @@ class GizmoReturn < ActiveRecord::Base
   end
 
   def validate
+    validate_inventory_modifications
     if contact_type == 'named'
       errors.add_on_empty("contact_id")
       if contact_id.to_i == 0 or !Contact.exists?(contact_id)
@@ -44,7 +45,7 @@ class GizmoReturn < ActiveRecord::Base
     else
       errors.add_on_empty("postal_code")
     end
-    errors.add("gizmos", "should include something") if gizmo_events.empty?
+    errors.add("gizmos", "should include something") if gizmo_events_actual.empty?
     storecredit_priv_check if self.store_credit and self.store_credit.amount_cents_changed? and self.store_credit.amount_cents > 0
   end
 

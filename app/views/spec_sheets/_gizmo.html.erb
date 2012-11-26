@@ -114,24 +114,6 @@
           <% end %>
         </td>
       </tr>
-      <tr>
-        <td class="line_label">
-          Suspend States:
-        </td>
-        <td>
-          <br />
-          _________________________
-        </td>
-      </tr>
-      <tr>
-        <td class="line_label">
-          Wireless Capabilities:
-        </td>
-        <td>
-          <br />
-          _________________________
-        </td>
-      </tr>
     <% end %>
     <% if @report.bug_correction and @report.bug_correction.length > 0 %>
     <tr>
@@ -140,6 +122,16 @@
       </td>
       <td>
         <b><%= h(@report.bug_correction) %></b>
+      </td>
+    </tr>
+    <% end %>
+    <% @report.spec_sheet_values.each do |x| %>
+    <tr>
+      <td>
+        <%= x.spec_sheet_question.name %>:
+      </td>
+      <td>
+        <%= x.value %>
       </td>
     </tr>
     <% end %>

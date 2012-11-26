@@ -13,11 +13,13 @@ class User < ActiveRecord::Base
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
   validates_uniqueness_of   :login, :email, :case_sensitive => false
-  validates_uniqueness_of   :cashier_code
+  validates_uniqueness_of   :cashier_code, :if => :cashier_code
+  validates_format_of       :login, :with => /[^0-9]/, :message => "must contain a non-numeric character"
   before_save :encrypt_password
   before_save :add_cashier_code
 
   belongs_to :contact
+  has_one :skedjulnator_access
 
   ####################################################
   # I HAVE NO IDEA WHAT THIS IS HERE FOR, BUT IF YOU #
@@ -26,7 +28,27 @@ class User < ActiveRecord::Base
   ####################################################
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :password, :password_confirmation, :can_login
+  attr_accessible :login, :email, :password, :password_confirmation, :can_login, :shared
+
+  named_scope :can_login, {:conditions => ["can_login = 't'"]}
+
+  def can_view_disciplinary_information?
+    !! (self.contact and self.contact.worker and self.contact.worker.worker_type_today and self.contact.worker.worker_type_today.name == 'collective')
+  end
+
+  def update_skedjulnator_access_time
+    self.skedjulnator_access ||= SkedjulnatorAccess.new
+    self.skedjulnator_access.user_id_will_change!
+    self.skedjulnator_access.save!
+  end
+
+  def grantable_roles
+    self.roles.include?(Role.find_by_name('ADMIN')) ? Role.find(:all) : self.roles
+  end
+
+  def to_s
+    login
+  end
 
   def self.reset_all_cashier_codes
     self.find(:all).each{|x|
@@ -35,8 +57,12 @@ class User < ActiveRecord::Base
     }
   end
 
+  def contact_display_name
+    self.contact ? self.contact.display_name : self.login
+  end
+
   def add_cashier_code
-    reset_cashier_code if cashier_code.nil?
+    reset_cashier_code if !self.shared and cashier_code.nil?
   end
 
   def reset_cashier_code
@@ -60,7 +86,11 @@ class User < ActiveRecord::Base
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
-    u = find_by_login(login) # need to get the salt
+    if login.to_i.to_s == login
+      u = find_by_contact_id(login.to_i)
+    else
+      u = find_by_login(login) # need to get the salt
+    end
     return u if u && u.can_login && u.authenticated?(password)
     return nil
   end
@@ -132,11 +162,14 @@ class User < ActiveRecord::Base
 
   def _privileges
     olda = []
+    return olda if !self.can_login
     a = [self, self.contact, self.contact ? self.contact.worker : nil, self.roles].flatten.select{|x| !x.nil?}.map{|x| x.to_privileges}.flatten.select{|x| !x.nil?}.map{|x| Privilege.by_name(x)}
     while olda != a
+      a = a.select{|x| !x.restrict} if self.shared
       olda = a.dup
       a << olda.map{|x| x.children}.flatten
       a = a.flatten.sort_by(&:name).uniq
+      a = a.select{|x| !x.restrict} if self.shared
     end
     a = a.map{|x| x.name}
     a

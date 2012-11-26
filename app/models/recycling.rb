@@ -1,6 +1,6 @@
 class Recycling < ActiveRecord::Base
   include GizmoTransaction
-  has_many :gizmo_events, :dependent => :destroy
+  has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
   acts_as_userstamp
 
@@ -9,6 +9,7 @@ class Recycling < ActiveRecord::Base
   end
 
   def validate
+    validate_inventory_modifications
     errors.add_on_empty("gizmo_events")
     errors.add_on_empty("recycled_at", "when?")
   end

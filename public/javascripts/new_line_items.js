@@ -47,6 +47,14 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     return;
   },
 
+  _update_hook_internal_enabled: true,
+
+  do_update_hook: function() {
+    if(this._update_hook_internal_enabled) {
+      this.update_hook();
+    }
+  },
+
   add: function (args) {
     args = this.add_hook(args);
     this.add_line_item(args);
@@ -56,7 +64,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     this.edit_hook(line_id);
     this.editing_id = this.getValueBySelector($(line_id), ".id"); // TODO: need to display the editing to user somehow, and allow them to clear it. (with an x next to the editing boxes)
     Element.remove(line_id);
-    this.update_hook();
+    this.do_update_hook();
   },
 
   copy: function (line_id) {
@@ -85,7 +93,10 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
 
   remove: function(line_id){
     Element.remove(line_id);
-    this.update_hook();
+    this.do_update_hook();
+  },
+
+  extra_link_hook: function(id, td, args) {
   },
 
   add_line_item: function (args){
@@ -95,6 +106,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     tr.id = id;
     this.make_hidden_hook(args, tr);
     td = document.createElement("td");
+    this.extra_link_hook(id, td, args);
     a = document.createElement("a");
     var self = this;
     a.onclick = function () {
@@ -132,7 +144,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     tr.appendChild(this.make_hidden("id", "", args['id']));
     $(this.prefix + '_lines').lastChild.insertBefore(tr, $(this.prefix + '_form'));
     this.counter++;
-    this.update_hook();
+    this.do_update_hook();
     this.editing_id = undefined;
   },
 
@@ -167,11 +179,11 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     var names = this.linelist;
 
     var last = null;
-    for(var i in names) {
-      if(this.is_enabled_visable_there_field_thing(names[i])) {
-        last = names[i];
+    names.each(function(i) {
+      if(this.is_enabled_visable_there_field_thing(i)) {
+        last = i;
       }
-    }
+    }, this);
 
     return last == event.target.id;
   },
@@ -191,7 +203,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     if(el.disabled) {
       return false;
     }
-    if(!el.visible) {
+    if(!el.visible()) {
       return false;
     }
     return true;
@@ -438,13 +450,21 @@ var ComponentLineItem = Class.create(LineItem, {
   }
 });
 
+// better way?
+function ryan_decode(str){
+  str = str.replace(/&quot;/g,'"');
+  str = str.replace(/&amp;/g,"&");
+  str = str.replace(/&lt;/g,"<");
+  str =  str.replace(/&gt;/g,">");
+  return str;
+}
 
 function get_name_from_select(select_id, value) {
   var hash = new Hash();
   var a = $(select_id).children;
   for(var i = 0; i < a.length; i++) {
     var x = a[i];
-    hash.set(x.value, x.innerHTML);
+    hash.set(x.value, ryan_decode(x.innerHTML));
   };
   return hash.get(value);
 }
@@ -487,7 +507,7 @@ var SelectBasedComponent = Class.create(LineItemComponent, {
 
   make_hidden_hook: function(args, tr) {
     var choosen_id = args[this.linelist[0]];
-    tr.appendChild(this.make_hidden("payment_type_id", get_name_from_select(this.linelist[0], choosen_id), choosen_id));
+    tr.appendChild(this.make_hidden(this.linelist[0], get_name_from_select(this.linelist[0], choosen_id), choosen_id));
   },
 
   set_args_from_form: function(args) {
@@ -515,6 +535,38 @@ var InputBasedComponent = Class.create(LineItemComponent, {
 
   set_args_from_form: function(args) {
     args[this.linelist[0]] = $(this.linelist[0]).value;
+  },
+});
+var CheckBoxBasedComponent = Class.create(InputBasedComponent, {
+  add_from_form_reject: function() {
+    return false;
+  },
+
+  edit_hook: function(thing){
+    $(this.linelist[0]).checked = this.getValueBySelector(thing, "." + this.linelist[0]) == "true";
+  },
+
+  clear_widget: function() {
+    $(this.linelist[0]).checked = $(this.linelist[0]).defaultChecked;
+  },
+
+  make_hidden_hook: function(args, tr) {
+    var value = args[this.linelist[0]];
+    tr.appendChild(this.make_hidden(this.linelist[0], value == "true" ? "yes" : "no", value));
+  },
+
+  set_args_from_form: function(args) {
+    args[this.linelist[0]] = $(this.linelist[0]).checked ? "true" : "false";
+  },
+});
+
+var HiddenBasedComponent = Class.create(InputBasedComponent, {
+  add_from_form_reject: function() {
+    return false;
+  },
+
+  clear_widget: function() {
+    $(this.linelist[0]).value = "";
   },
 });
 
@@ -550,10 +602,6 @@ var VolunteerShiftFrontend = Class.create(LineItem, {
   },
 
   add_from_form_hook: function() {
-    if((eexists('slot_number') && $('slot_number').value == '')) {
-      return true;
-    }
-
     args = new Object();
     if(eexists('slot_number')) {
       args['slot_number'] = $('slot_number').value;
@@ -729,3 +777,163 @@ var VolunteerResourceFrontend = Class.create(ComponentLineItem, {
   checkfor: [ResourceComponent, RosterComponent, StartTimeComponent, EndTimeComponent]
 });
 
+var DurationComponent = Class.create(InputBasedComponent, {
+  linelist: ['duration'],
+  add_from_form_reject: function() {
+    if($(this.linelist[0]).value == $(this.linelist[0]).defaultValue) {
+      return true;
+    }
+    var newTotal = parseFloat($(this.linelist[0]).value) + parseFloat($('total_today').innerHTML);
+    var ret = newTotal > 24;
+    if(ret) {
+      alert("You cannot log more than 24 hours in a day.");
+    }
+    return ret;
+  },
+});
+
+var JobComponent = Class.create(SelectBasedComponent, {
+  linelist: ['job_id'],
+});
+
+var OffsiteComponent = Class.create(CheckBoxBasedComponent, {
+  linelist: ['offsite'],
+});
+
+function get_hours_today () {
+  var total = 0.0;
+  var arr = find_these_lines('shifts');
+  for (var x = 0; x < arr.length; x++) {
+    total += parseFloat(getValueBySelector(arr[x], "td.duration"));
+ }
+  return total;
+}
+
+function shift_compute_totals () {
+    if(shift_do_ajax == 0) {
+       return;
+    }
+  var today = get_hours_today();
+  var myhash = new Hash();
+  myhash.set('worked_shift[hours_today]', today);
+  myhash.set('worked_shift[date_performed]', shifts_date);
+  myhash.set('worked_shift[contact_id]', shifts_worker);
+  var str = myhash.toQueryString();
+  new Ajax.Request(update_shift_totals_url + '?' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show(shifts_totals_loading_id);}});
+}
+
+var WorkedShiftFrontend = Class.create(ComponentLineItem, {
+  prefix: 'shifts',
+  copyable: true,
+  checkfor: [JobComponent, OffsiteComponent, DurationComponent],
+
+  add_on_save: true,
+
+  update_hook: function() {
+    this.update_shift_totals();
+    show_worked_shifts_changed();
+  },
+
+  update_shift_totals: function () {
+    shift_compute_totals ();
+    if(original_timeout_seconds > 0 && worked_shift_timeleft > 0) {
+      worked_shift_timeleft = original_timeout_seconds;
+    }
+  },
+
+  extra_link_hook: function(line_id, td, args) {
+    a = document.createElement("a");
+    var that = this;
+    a.onclick = function () {
+      that._update_hook_internal_enabled = false;
+      that.edit_hook(line_id);
+      that.editing_id = that.getValueBySelector($(line_id), ".id");
+      Element.remove(line_id);
+      var checked = $('offsite').checked;
+      $('duration').value = parseFloat($('duration').value) - 0.25;
+      that.add_from_form_hook();
+
+      $('duration').value = 0.25;
+      $('job_id').value = paid_break_job_id;
+      $('offsite').checked = checked;
+      that.add_from_form_hook();
+      that._update_hook_internal_enabled = true;
+      that.do_update_hook();
+    };
+    if(args['job_id'] != paid_break_job_id) {
+      a.appendChild(document.createTextNode('add break'));
+      a.className = 'disable_link';
+      td.appendChild(a);
+      td.appendChild(document.createTextNode(' | '));
+      }
+  },
+});
+
+var SerialComponent = Class.create(InputBasedComponent, {
+  linelist: ['serial_number'],
+});
+
+var SystemSerialComponent = Class.create(InputBasedComponent, {
+  linelist: ['system_serial_number'],
+  add_from_form_reject: function() {
+    return false;
+  },
+});
+
+var StatusComponent = Class.create(HiddenBasedComponent, {
+  linelist: ['status'],
+});
+
+var DriveFrontend = Class.create(ComponentLineItem, {
+  prefix: 'drives',
+  copyable: true,
+  checkfor: [SerialComponent, SystemSerialComponent, StatusComponent],
+
+//  update_all: function(args) {
+//    Element.show(batch_drive_loading_id);
+//    document.getElementsByTagName('form')[0].disable();
+//    var update = new Hash();
+//    var list = $$('table tr.line');
+//    for(var i = 0; i < list.length(); i++)
+//    {
+//      if(list[i].getElementsByClassName('status')[0].getElementsByTagName('input')[0].value != 'Will be marked destroyed') {
+//        update.set(list[i].id, list[i].getElementsByClassName('serial_number')[0].getElementsByTagName('input')[0].value);
+//      }
+//    }
+//    new Ajax.Request(update_all_drives_url + '?' + update.toQueryString(), {asynchronous:true, evalScripts:true});
+//  },
+
+  add_hook: function(args) {
+    if(args['status'] == '') {
+      Element.show(batch_drive_loading_id);
+      document.getElementsByTagName('form')[0].disable();
+      new Ajax.Request(update_one_drive_url + '?serial_number=' + args['serial_number'], {asynchronous:false, evalScripts:true});
+      args['status'] = updated_status;
+      Element.hide(batch_drive_loading_id);
+    }
+    return args;
+  },
+
+  extra_link_hook: function(line_id, td, args) {
+    a = document.createElement("a");
+    var that = this;
+    a.onclick = function () {
+      that._update_hook_internal_enabled = false;
+      that.edit_hook(line_id);
+      that.editing_id = that.getValueBySelector($(line_id), ".id");
+      Element.remove(line_id);
+      $('status').value = "Will be marked destroyed";
+      that.add_from_form_hook();
+      that._update_hook_internal_enabled = true;
+      that.do_update_hook();
+      $('status').value = "";
+    }
+    if(args['status'].search("Destroy") == -1 && args['status'].search("destroy") == -1) {
+      a.appendChild(document.createTextNode('mark destroyed'));
+      a.className = 'disable_link';
+      td.appendChild(a);
+      td.appendChild(document.createTextNode(' | '));
+    }
+  },
+  add_on_save: true,
+});

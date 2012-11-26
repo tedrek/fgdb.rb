@@ -3,7 +3,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
   validates_presence_of :end_time
   validates_presence_of :start_time
   validates_presence_of :slot_count
-  validates_presence_of :volunteer_task_type_id, :unless => Proc.new { |shift| shift.class_credit }
   belongs_to :volunteer_task_type
   belongs_to :volunteer_default_event
   belongs_to :program
@@ -17,6 +16,10 @@ class VolunteerDefaultShift < ActiveRecord::Base
   named_scope :on_weekday, lambda { |wday|
     { :conditions => ['weekday_id = ?', wday] }
   }
+
+  def validate
+    errors.add('slot_count', 'cannot be more than one for an intern shift') if self.not_numbered and self.slot_count > 1
+  end
 
   before_destroy :get_rid_of_available
   def get_rid_of_available
@@ -34,6 +37,14 @@ class VolunteerDefaultShift < ActiveRecord::Base
     ensure
       Thread.current['volskedj2_fillin_processing'].delete(self.id)
     end
+  end
+
+  def set_description
+    self.description
+  end
+
+  def set_description=(desc)
+    self.description=(desc)
   end
 
   def set_weekday_id=(val)
@@ -88,22 +99,40 @@ class VolunteerDefaultShift < ActiveRecord::Base
       Thread.current['volskedj2_fillin_processing'].push(self.id)
       slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
       slots = [nil] if self.not_numbered
-      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil?}.each{|x| x.destroy if slots.include?(x.slot_number)}
-      inputs = {}
+      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil? and !x.closed}.each{|x| x.destroy if slots.include?(x.slot_number)}
+      inputs_a = {}
+      inputs_b = {}
+      full = [(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]
       slots.each{|q|
-        inputs[q] = [[(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]]
+        inputs_a[q] = []
+        inputs_b[q] = []
       }
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).each{|x|
-        inputs[x.slot_number].push([(x.start_time), (x.end_time)]) if slots.include?(x.slot_number)
+        if slots.include?(x.slot_number)
+          if x.week.to_s.strip == '' or x.week.downcase == 'a'
+            inputs_a[x.slot_number].push([(x.start_time), (x.end_time)])
+          end
+          if x.week.to_s.strip == '' or x.week.downcase == 'b'
+            inputs_b[x.slot_number].push([(x.start_time), (x.end_time)])
+          end
+        end
       }
       slots.each{|q|
-        results = self.class.range_math(*inputs[q])
-        results.each{|x|
-          a = DefaultAssignment.new
-          a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
-          a.slot_number = q unless self.not_numbered
-          a.save!
-        }
+          a = inputs_a[q]
+          b = inputs_b[q]
+          both = a + b
+          both_results = self.class.range_math(full, *both)
+          a_result = self.class.range_math(full, *(both_results + a))
+          b_result = self.class.range_math(full, *(both_results + b))
+          [['', both_results], ['A', a_result], ['B', b_result]].each{|wk, results|
+            results.each{|x|
+              a = DefaultAssignment.new
+              a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
+              a.slot_number = q unless self.not_numbered
+              a.week = wk
+              a.save!
+            }
+          }
       }
     ensure
       Thread.current['volskedj2_fillin_processing'].delete(self.id)
@@ -117,7 +146,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
   after_save :fill_in_available
 
   def skedj_style(overlap, last)
-    overlap ? 'hardconflict' : 'shift'
+    'shift'
   end
 
   def describe
@@ -145,7 +174,58 @@ class VolunteerDefaultShift < ActiveRecord::Base
     self.end_time += val
   end
 
-  def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil)
+  def VolunteerDefaultShift.find_conflicts(startd, endd, gconditions = nil)
+    gconditions ||= Conditions.new
+    vs_conds = gconditions.dup
+    vs_conds.empty_enabled = "false"
+
+    vs_conds.date_enabled = "true"
+    vs_conds.date_date_type = 'arbitrary'
+    vs_conds.date_start_date = startd.to_s
+    vs_conds.date_end_date = endd.to_s
+
+    matches = VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event])
+  end
+
+  def VolunteerDefaultShift.find_conflicting_assignments(start_date, end_date, gconditions = nil)
+    ignore_these_shifts = VolunteerDefaultShift.find_conflicts(start_date, end_date, gconditions).map{|x| x.id}
+    if gconditions
+      gconditions = gconditions.dup
+      gconditions.empty_enabled = "false"
+    else
+      gconditions = Conditions.new
+    end
+    ret_arr = []
+    (start_date..end_date).map{|x|
+      next if Holiday.is_holiday?(x)
+      w = Weekday.find(x.wday)
+      ds_conds = gconditions.dup
+      ds_conds.effective_on_enabled = "true"
+      ds_conds.effective_on_start = x
+      ds_conds.effective_on_end = x + 1
+      ds_conds.weekday_enabled = "true"
+      ds_conds.weekday_id = w.id
+      ds_conds.week_enabled = "true"
+      ds_conds.week = VolunteerShift.week_for_date(x)
+      VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.roster_id, volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event]).map{|ds|
+        ds.default_assignments
+      }.flatten.select{|q| q.contact_id and (!q.contact.is_organization?)}.map{|da|
+        a = Assignment.new
+        a.start_time = da.start_time
+        a.end_time = da.end_time
+        a.contact_id = da.contact_id
+        a.internal_date_hack_value = x
+        [x.strftime('%Y%m%d'), da, a.find_overlappers(:for_contact).select{|aa| !ignore_these_shifts.include?(aa.volunteer_shift_id)}]
+      }.each{|x|
+        if x.last.length > 0 # da will have conflicts
+          ret_arr << x
+        end
+      }
+    }
+    return ret_arr
+  end
+
+  def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil, skip_these = [])
     if gconditions
       gconditions = gconditions.dup
       gconditions.empty_enabled = "false"
@@ -155,18 +235,15 @@ class VolunteerDefaultShift < ActiveRecord::Base
     (start_date..end_date).each{|x|
       next if Holiday.is_holiday?(x)
       w = Weekday.find(x.wday)
-#      next if !w.is_open
-      vs_conds = gconditions.dup
-      vs_conds.date_enabled = "true"
-      vs_conds.date_date_type = 'daily'
-      vs_conds.date_date = x
-      VolunteerShift.find(:all, :conditions => vs_conds.conditions(VolunteerShift), :include => [:volunteer_event]).each{|y| y.destroy} # TODO: destroy_all with the :include somehow..
+      #      next if !w.is_open
       ds_conds = gconditions.dup
       ds_conds.effective_on_enabled = "true"
       ds_conds.effective_on_start = x
       ds_conds.effective_on_end = x + 1
       ds_conds.weekday_enabled = "true"
       ds_conds.weekday_id = w.id
+      ds_conds.week_enabled = "true"
+      ds_conds.week = VolunteerShift.week_for_date(x)
       shifts = VolunteerDefaultShift.find(:all, :order => "volunteer_default_shifts.roster_id, volunteer_default_shifts.description", :conditions => ds_conds.conditions(VolunteerDefaultShift), :include => [:volunteer_default_event])
       shifts.each{|ds|
         ve = VolunteerEvent.find(:all, :conditions => ["volunteer_default_event_id = ? AND date = ?", ds.volunteer_default_event_id, x]).first
@@ -198,16 +275,18 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.roster_id = ds.roster_id
           s.class_credit = ds.class_credit
           s.save!
-          mats = ds.default_assignments.select{|q| q.contact_id and ((s.slot_number.nil?) || (q.slot_number == num))}
-          if mats.length > 0
-            mats.each{|da|
-              a = Assignment.new
-              a.start_time = da.start_time
-              a.end_time = da.end_time
-              a.volunteer_shift_id = s.id
-              a.contact_id = da.contact_id
-              a.save!
-            }
+          tweek = s.week.downcase
+          ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num)) and (q.week.to_s.strip.length == 0 or q.week.downcase == tweek)}.select{|da| !skip_these.include?(da.id)}.each{|da|
+            a = Assignment.new
+            a.start_time = da.start_time
+            a.end_time = da.end_time
+            a.volunteer_shift_id = s.id
+            a.contact_id = da.contact_id
+            a.closed = da.closed
+            a.save!
+          }
+          if s.assignments.length == 0
+            s.destroy
           end
           myl << slot_number
         }

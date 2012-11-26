@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  serial_number: MyString
+  destroyed_at: 2012-06-02 11:19:56
+  cashier_destroyed_by_id: 1
+  distest_run_id: 1
+  disktest_batch_id: 1
+
+two:
+  serial_number: MyString
+  destroyed_at: 2012-06-02 11:19:56
+  cashier_destroyed_by_id: 1
+  distest_run_id: 1
+  disktest_batch_id: 1

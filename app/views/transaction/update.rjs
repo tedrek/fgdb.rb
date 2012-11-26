@@ -4,8 +4,8 @@
 
 if @successful
   can_have_receipt = (@transaction_type == 'sale' and receipt_printer_enabled and params.include?("receipt_printer"))
-  printer = params["receipt_printer"]
-  is_receipt = (can_have_receipt and printer != "")
+  printer = params["receipt_printer"].to_s
+  is_receipt = (can_have_receipt and printer.match(receipt_printer_regexp))
   if can_have_receipt
       receipt_printer_set_default(printer)
   end

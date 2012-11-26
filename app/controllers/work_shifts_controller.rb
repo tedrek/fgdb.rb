@@ -1,38 +1,51 @@
 class WorkShiftsController < ApplicationController
   layout "skedjulnator"
 
+  def perpetual_meetings_publish
+    @readonly = true
+    perpetual_meetings
+    render :action => 'perpetual_meetings'
+  end
+
+  def perpetual_meetings
+    @meetings = Meeting.perpetual.effective_in_range(Date.today, Date.today + 30).generated
+  end
+
   protected
   before_filter :enable_multi
   def enable_multi
     @multi_enabled = true
   end
 
+  before_filter :update_skedjulnator_access_time, :except => [:staffsched, :perpetual_meetings, :staffsched_publish, :perpetual_meetings_publish]
+
   public
+
+  def edit_footnote
+    super
+  end
+
+  def save_footnote
+    super
+  end
+
+  def update_rollout_date
+    Default["staffsched_rollout_until"] = params[:date]
+    Notifier.deliver_text_report('scheduler_reports_to', "Schedule rolled out to #{params[:date]}", "The schedule rollout date was changed to #{params[:date]} by #{Thread.current['user'].to_s} at #{Time.now.strftime("%D %T")}.")
+    redirect_to :back
+  end
+
   def find_problems
-    @start_date = Date.parse(params[:start_date])
-    @end_date = Date.parse(params[:end_date])
+   begin
+      @start_date = Date.parse(params[:start_date])
+      @end_date = Date.parse(params[:end_date])
+    rescue
+      redirect_to :action => "index"
+      return
+    end
     @disp_end_date = @end_date
     max_end = WorkShift.maximum('shift_date')
-    @end_date = max_end if @end_date > max_end
-    @conflicts = DB.exec(DB.prepare_sql("SELECT w1.shift_date AS date,workers.name AS worker,COALESCE(job1.name,w1.meeting_name,w1.kind) AS job_1,COALESCE(job2.name,w2.meeting_name,w2.kind) AS job_2,w1.id AS shift_1,w2.id AS shift_2 FROM work_shifts AS w1 INNER JOIN work_shifts AS w2 ON w1.worker_id = w2.worker_id AND w1.shift_date = w2.shift_date AND ((w1.start_time < w2.end_time AND w2.start_time < w1.end_time) OR (w1.start_time > w2.end_time AND w2.start_time > w1.end_time)) AND w1.id < w2.id AND w1.worker_id != 0 LEFT JOIN jobs AS job1 ON job1.id = w1.job_id LEFT JOIN jobs AS job2 ON job2.id = w2.job_id LEFT JOIN workers ON w1.worker_id = workers.id WHERE w1.shift_date >= ? AND w1.shift_date <= ? ORDER BY 1,2;", @start_date, @end_date)).to_a
-    @unassigned = DB.exec(DB.prepare_sql("SELECT w1.shift_date AS date,COALESCE(job1.name,w1.meeting_name,w1.kind) AS job FROM work_shifts AS w1 LEFT JOIN jobs AS job1 ON job1.id = w1.job_id WHERE w1.worker_id = 0 AND w1.shift_date >= ? AND w1.shift_date <= ? ORDER BY 1,2;", @start_date, @end_date)).to_a
-    @all_dates = (@start_date..@end_date).to_a.select{|x| Weekday.find_by_id(x.wday).is_open}
-    @jobs = Job.find_all_by_coverage_type_id(CoverageType.find_by_name("full").id)
-    all_shifts = WorkShift.find(:all, :conditions => ['job_id IN (?) AND shift_date >= ? AND shift_date <= ?', @jobs.map{|x| x.id}, @start_date, @end_date])
-    @shift_gap_hash = {}
-    weekday_times = {}
-    Weekday.find(:all).each do |w|
-      weekday_times[w.id] = [w.open_time, w.close_time]
-    end
-    @jobs.each{|x|
-      @shift_gap_hash[x.id] = {}
-      @all_dates.each{|d|
-        @shift_gap_hash[x.id][d] = [weekday_times[d.wday]]
-      }
-    }
-    all_shifts.each{|x|
-      @shift_gap_hash[x.job_id][x.shift_date].push([x.start_time, x.end_time])
-    }
+    @end_date = max_end if @end_date > max_end and max_end > @start_date
     w_start = @start_date
     while w_start.wday != 1
       w_start -= 1
@@ -42,48 +55,12 @@ class WorkShiftsController < ApplicationController
       w_start -= 1
     end
     @weeks = (w_start..w_end).to_a.select{|x| x.wday == 1}
-    @workers_week_hash = {}
-    @workers_day_hash = {}
-    @workers = []
-    @workers_h = {}
-    all_scheduled = WorkShift.find(:all, :conditions => ['shift_date >= ? AND shift_date <= ? AND kind NOT LIKE ?', @weeks.first, (@weeks.last+6), 'Unavailability'], :order => 'shift_date ASC')
-    cur_week = @weeks.first
-    all_scheduled.each{|w|
-      if !@workers.include?(w.worker)
-        @workers << w.worker
-        @workers_h[w.worker_id] = w.worker
-        @workers_week_hash[w.worker_id] = {}
-        @weeks.each{|week|
-          @workers_week_hash[w.worker_id][week] = 0.0
-        }
-        @workers_day_hash[w.worker_id] = {}
-        (@all_dates).each{|day|
-          @workers_day_hash[w.worker_id][day] = [weekday_times[day.wday]]
-        }
-      end
-      if w.shift_date > (cur_week + 6)
-        cur_week += 7
-      end
-      @workers_week_hash[w.worker_id][cur_week] += ((w.end_time - w.start_time)/3600.0)
-      if @all_dates.include?(w.shift_date)
-        @workers_day_hash[w.worker_id][w.shift_date] << [w.start_time, w.end_time]
-      end
-    }
-    @workers_day_hash.keys.each{|w|
-      @workers_day_hash[w].keys.each{|d|
-        @workers_day_hash[w][d] = WorkShift.range_math(*@workers_day_hash[w][d])
-      }
-    }
-    @shift_gap_hash.keys.each{|x|
-      @shift_gap_hash[x].keys.each{|d|
-        @shift_gap_hash[x][d] = WorkShift.range_math(*@shift_gap_hash[x][d])
-      }
-    }
+    do_find_problems_report(WorkShift, "shift_date", @weeks, [@start_date, @end_date])
   end
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'staffsched_publish']}
+    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'perpetual_meetings', 'staffsched_publish', 'perpetual_meetings_publish']}
     a
   end
 
@@ -120,19 +97,37 @@ class WorkShiftsController < ApplicationController
     session["shift_return_action"] = "list"
 
     @skedj = Skedjul.new({
-      :conditions => ["worker", "job"],
+      :default_view => "by_worker",
+                           :views => {
+                             :by_job => {
+      :left_unique_value => "job_id",
+      :left_sort_value => "jobs.name",
+                               :left_method_name => "name_part",
+      :left_table_name => "jobs",
+      :thing_description => "display_worker_skedj",
+
+                             },
+                             :by_worker => {
+      :left_unique_value => "worker_id",
+      :left_method_name => "workers.name",
+      :left_table_name => "workers",
+      :thing_description => "display_name_skedj",
+      :left_extra_link_actions => ["absent", "vacation"],
+      :left_extra_link_confirm => "Are you sure you want to remove them from the schedule?",
+      :left_link_action => "edit",
+      :left_link_id => "workers.id",
+                             }
+                           },
+
+      :conditions => ["worker", "job", "shift_type"],
       :date_range_condition => "shift_date",
+      :rollout_default_name => "staffsched_rollout_until",
+      :rollout_default_action => "update_rollout_date",
 
       :block_method_name => "work_shifts.shift_date",
       :block_method_display => "work_shifts.shift_date_display",
       :block_start_time => "weekdays.start_time",
       :block_end_time => "weekdays.end_time",
-
-      :left_unique_value => "worker_id",
-      :left_method_name => "workers.name",
-      :left_table_name => "workers",
-      :left_link_action => "edit",
-      :left_link_id => "workers.id",
 
       :thing_start_time => "work_shifts.start_time",
       :thing_end_time => "work_shifts.end_time",
@@ -143,9 +138,37 @@ class WorkShiftsController < ApplicationController
 
       }, params)
 
-    @skedj.find({:include => [:job, :coverage_type, :worker, :weekday]})
+    @skedj.find({:include => [:job, :worker, :weekday]})
   end
 
+  def absent
+    w = Worker.find_by_id(params[:id])
+    d = nil
+    begin
+      d = Date.parse(params[:date])
+    rescue
+    end
+    if w and d
+      w.work_shifts_for_day(d).each(&:on_vacation)
+      WorkShiftFootnote.add_to_footnote(d, "#{w.name} is out.")
+    end
+    redirect_to :action => "list"
+  end
+
+  def vacation
+    w = Worker.find_by_id(params[:id])
+    d = nil
+    begin
+      d = Date.parse(params[:date])
+    rescue
+    end
+    if w and d
+      v = Vacation.new(:effective_date => d, :ineffective_date => d, :worker => w, :is_all_day => true)
+      v.save!
+      v.generate
+    end
+    redirect_to :action => "list"
+  end
 
   def show
     @work_shift = WorkShift.find(params[:id])
@@ -195,7 +218,11 @@ class WorkShiftsController < ApplicationController
   end
 
   def destroy
-    WorkShift.find(params[:id]).destroy
+    begin
+      WorkShift.find(params[:id]).destroy
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "That work shift is already gone."
+    end
     redirect_to :action => 'list'
   end
 end

@@ -3,26 +3,36 @@
     <th>Disktest Run ID</th>
 
     <th>Vendor</th>
+    <th>Form Factor</th>
+    <th>Size</th>
+    <th>Type</th>
     <th>Model</th>
     <th>Serial Number</th>
 
-    <th>Created at</th>
+    <th>Started At</th>
     <th>Completed At</th>
 
     <th>Status</th>
+    <th>Failure Reason</th>
+    <th>Find in Systems</th>
   </tr>
   <% for dr in @disktest_runs %>
     <tr>
-      <td><%= h(dr.id) %></td>
+      <td><%= link_to h(dr.id), {:action => "show", :id => dr.id} %></td>
 
       <td><%= h(dr.vendor) %></td>
+      <td><%= h(dr.form_factor) %></td>
+      <td><%= h(dr.display_size) %></td>
+      <td><%= h(dr.bus_type) %></td>
       <td><%= h(dr.model) %></td>
       <td><%= h(dr.serial_number) %></td>
 
-      <td><%= h(dr.created_at) %></td>
+      <td><%= h(dr.started_at) %></td>
       <td><%= h(dr.completed_at) %></td>
 
       <td><%= h(dr.result) %></td>
+      <td><%= h(dr.failure_details) %></td>
+      <td><%= link_to "Find in Systems", {:controller => "spec_sheets", :action => "search", :conditions => {:hard_drive_serial_number_enabled => true, :hard_drive_serial_number => dr.serial_number}} %></td>
     </tr>
   <% end %>
 </table>
