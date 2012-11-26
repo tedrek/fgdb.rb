@@ -11,7 +11,7 @@
     <th>Percentage</th>
     <th>Difference</th>
   </tr>
-  <% @results.each do |r| %>
+  <% @results.sort_by{|x| x['name']}.each do |r| %>
   <tr>
     <td><%= r['name'] %></td>
     <td><%= r['count'] %></td>
