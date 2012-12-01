@@ -8,6 +8,8 @@ fgdb.rb (1.0.108) released; urgency=low
   * Add T-Shirt and Tote Bag types to sales (Closes: #30244)
   * Fix bug in assignments update (Closes: #31824)
   * Support for generating worker ID badges on cardstock (Closes:
+  * Add 'Returns for store credit only.' to the text for SYSTEM WARRANTY
+    (Closes: #32270)
     #31779)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
