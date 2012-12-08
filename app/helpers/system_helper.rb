@@ -29,7 +29,7 @@ module SystemHelper
 
       # "Running Speed",
       # "Real Speed" (DISPLAY WARNING if different)
-      o[:running_processor_speed] = @processors.first.speed.downcase if @processors.first
+      o[:running_processor_speed] = @processors.first.speed.downcase if @processors.first && @processors.first.speed
       m = o[:processor_product].match(/([0-9.]+\s*[GM]HZ)/i)
       o[:product_processor_speed] = m ? m[0].downcase : nil
 
