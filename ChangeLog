@@ -1,8 +1,6 @@
 fgdb.rb (1.0.109) UNRELEASED; urgency=low
 
-  * Complete the cashier contributions report (Closes: #31828)
-  * Add 'Returns for store credit only.' to the text for SYSTEM WARRANTY
-    (Closes: #32270)
+	STORE PRICING CHANGES ARE HERE
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 01 Dec 2012 15:44:56 -0800
 
