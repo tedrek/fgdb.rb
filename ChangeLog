@@ -13,7 +13,7 @@ fgdb.rb (1.0.108) released; urgency=low
   * Complete the cashier contributions report (Closes: #31828)
   * Fix a crash in system pricing detection when there is no
     processor speed available within the data provided by printme
-    (Closes: #32361)
+    (Closes: #32361) 
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
 
