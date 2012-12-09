@@ -68,7 +68,7 @@ if checkit 2; then
 fi
 
 cd /var/www/fgdb.rb/
-sudo touch tmp/release.txt
+touch tmp/release.txt
 
 pg_dump fgdb_production > $BACKUP_DIR/pre-sprint-$NEW.sql
 
