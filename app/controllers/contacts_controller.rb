@@ -44,6 +44,9 @@ class ContactsController < ApplicationController
     @hide_full_name = (params[:hide_full_name] == "1")
     @include_first_name = (params[:include_first_name] == "1")
     @include_last_volunteer_date = (params[:include_last_volunteer_date] == "1")
+    @include_last_donated_date = (params[:include_last_donated_date] == "1")
+    @include_last_donated_contribution_only_date = (params[:include_last_donated_contribution_only_date] == "1")
+    @include_last_donated_gizmos_only_date = (params[:include_last_donated_gizmos_only_date] == "1")
 
     @conditions = Conditions.new
     if params[:conditions]
