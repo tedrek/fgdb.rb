@@ -15,7 +15,7 @@ fgdb.rb (1.0.108) released; urgency=low
   * Fix bug in assignments update (Closes: #31824)
   * Support for generating worker ID badges on cardstock (Closes: #31779)
   * Add 'Returns for store credit only.' to the text for SYSTEM WARRANTY
-    (Closes: #32270)
+    on receipts (Closes: #32270)
   * Complete the cashier contributions report (Closes: #31828)
   * Fix a crash in system pricing detection when there is no
     processor speed available within the data provided by printme
