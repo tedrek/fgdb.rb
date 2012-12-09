@@ -14,6 +14,6 @@ if @found.length >= 1
   fi = File.open(f, "w+")
   fi.write(@found.join("\n") + "\n")
   fi.close
-  system("mail -s 'database error report for #{Date.today.to_s}' ryan52 < #{f}")
+  system("mail -s 'database error report for #{Date.today.to_s}' database < #{f}")
   system("rm -f #{f}")
 end

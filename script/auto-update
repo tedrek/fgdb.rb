@@ -36,7 +36,7 @@ needs_pull () {
 
 PRODUCTION=/var/www/fgdb.rb
 LOGFILE="${PRODUCTION}/log/auto-update.log"
-DEVEL=/home/ryan52/fgdb.rb
+DEVEL=/home/dbadmin/fgdb.rb
 SCRIPT_BASE=$DEVEL/script
 UPSTREAM=origin
 CHECK_THESE="$@"
