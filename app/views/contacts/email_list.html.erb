@@ -65,7 +65,7 @@
 <% else %>
 <pre>
 <% end %><% for i in found -%>
-<%= is_table ? ("<tr>" + i.map{|x| "<td>" + x + "</td>"}.join("") + "</tr>") :  i %>
+<%= is_table ? ("<tr>" + i.select{|x| x}.map{|x| "<td>" + x + "</td>"}.join("") + "</tr>") :  i %>
 <% end %><% if is_table %>
 </table>
 <% else %>
@@ -97,7 +97,7 @@
 <% else %>
 <pre><% end %>
 <% for i in notfound -%>
-<%= is_table ? ("<tr>" + i.map{|x| "<td>" + x + "</td>"}.join("") + "</tr>") :  i %>
+<%= is_table ? ("<tr>" + i.select{|x| x}.map{|x| "<td>" + x + "</td>"}.join("") + "</tr>") :  i %>
 <% end %><% if is_table %>
 </table>
 <% else %>
