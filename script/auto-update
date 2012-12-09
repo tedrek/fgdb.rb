@@ -2,19 +2,28 @@
 
 set -e
 
+if [ "$(id -un)" != "dbadmin" ]; then
+    exec sudo su - dbadmin -c /home/dbadmin/auto-update
+    exit $?
+fi
+
 run_pull () {
     $SCRIPT_BASE/do_i_have_everything_installed_right
-    sudo git pull $UPSTREAM $BRANCH
+    sudo fix-permissions
+    git pull $UPSTREAM $BRANCH
     ./script/do_i_have_everything_installed_right
-    sudo rake db:migrate
-    sudo git checkout db/schema.rb
+    rake db:migrate
+    git checkout db/schema.rb
+    sudo fix-permissions
     $SCRIPT_BASE/nice-restart
 }
 
 run_full () {
     $SCRIPT_BASE/do_i_have_everything_installed_right
+    sudo fix-permissions
     $SCRIPT_BASE/pre_release.sh
     $SCRIPT_BASE/upgrade.sh
+    sudo fix-permissions
 }
 
 run_fail () {
@@ -95,6 +104,4 @@ else
 fi
 do_date "ending"
 }
-sudo touch "$LOGFILE"
-sudo chown "$USER" "$LOGFILE"
 main 2>&1 | tee -a "$LOGFILE"
