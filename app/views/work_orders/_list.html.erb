@@ -1,0 +1,28 @@
+<table>
+  <tr>
+    <th>Customer name</th>
+    <th>Box source</th>
+    <th>Box type</th>
+    <th>Ticket source</th>
+    <th>Phone number</th>
+    <th>Email</th>
+    <th>Issue</th>
+    <th>Os</th>
+  </tr>
+
+<% for work_order in @work_orders %>
+  <tr>
+    <td><%=h work_order.customer_name %></td>
+    <td><%=h work_order.box_source %></td>
+    <td><%=h work_order.box_type %></td>
+    <td><%=h work_order.ticket_source %></td>
+    <td><%=h work_order.phone_number %></td>
+    <td><%=h work_order.email %></td>
+    <td><%=h work_order.issue %></td>
+    <td><%=h work_order.os %></td>
+    <td><%= link_to 'Show', {:action => "show", :id => work_order.id} %></td>
+    <td><%= link_to 'Edit', {:action => "edit", :id => work_order.id} %></td>
+    <td><%= link_to 'Destroy', {:action => "destroy", :id => work_order.id}, :confirm => 'Are you sure?' %></td>
+  </tr>
+<% end %>
+</table>

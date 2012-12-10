@@ -1,0 +1,14 @@
+<h1>Editing work_order</h1>
+
+<% form_for(@work_order, :url => {:action => "update", :id => @work_order.id}) do |f| %>
+  <%# f.error_messages %>
+
+  <%= render :partial => "form", :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', {:action => "show", :id => @work_order.id} %> |
+<%= link_to 'Back', {:action => "index"} %>
