@@ -9,11 +9,16 @@ module RawReceiptHelper
     Default.is_pdx
   end
 
+  def is_receipt_user
+    (Default["raw_receipt_account_regexp"].nil? || (current_user and current_user.login.match(/#{Default["raw_receipt_account_regexp"]}/)))
+  end
+
   def receipt_printer_regexp
     Default["raw_receipt_printer_regexp"].nil? ? /^#{Default["raw_receipt_printer_default"]}$/ : /#{Default["raw_receipt_printer_regexp"]}/
   end
 
   def receipt_printer_default
+    return "" unless is_receipt_user
     if ((!session.keys.include?('raw_receipt_printer')) and receipt_printer_enabled)
       session['raw_receipt_printer'] = Default["raw_receipt_printer_default"]
     end
