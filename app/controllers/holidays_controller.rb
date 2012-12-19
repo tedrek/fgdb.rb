@@ -20,8 +20,8 @@ class HolidaysController < ApplicationController
     mstart = Date.parse(mstart) if mstart
     mend = Date.parse(mend) if mend
     @range_to_s = (mstart ? mstart.to_s : "the beginning of time") + " to " + (mend ? mend.to_s : "the end of time")
-    cond_str = 'is_all_day = ?'
-    cond_opts = [true]
+    cond_str = 'schedule_id = ? AND is_all_day = ?'
+    cond_opts = [Schedule.generate_from ? Schedule.generate_from.id : -1, true]
     if mstart
       cond_str += ' AND holiday_date >= ?'
       cond_opts << mstart

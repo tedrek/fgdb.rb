@@ -241,7 +241,12 @@ class VolunteerEventsController < ApplicationController
       end
     end
     new = old.copy_to(Date.parse(params[:copy][:date]), hours_val(params[:copy]), copy_for)
-    redirect_to :action => "show", :id => new.id
+    if new.class == VolunteerEvent
+      redirect_to :action => "show", :id => new.id
+    else
+      flash[:error] = "The following volunteers are already scheduled during that time: #{new.map{|x| x.contact.display_name}.join(", ")}"
+      redirect_to :back
+    end
   end
 
   def edit

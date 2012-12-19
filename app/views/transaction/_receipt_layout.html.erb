@@ -15,6 +15,9 @@
         <% elsif receipt_type == 'receipt' %>
           Invoice
         <% end %>
+        <% if @transaction.class == Disbursement %>
+          Transaction Record
+        <% else %>
         <strong>
           <% if @txn.invoiced? && (@transaction.class != Donation || receipt_type == 'invoice') %>
             <font color="#FF0000" size="+2"><%= @txn.invoice_resolved_at.nil? ? "" : "Paid " %>Invoice</font>
@@ -22,6 +25,7 @@
             Receipt
           <% end %>
         </strong>
+        <% end %>
       </td>
       <% if @context == 'donation' %>
         <td align="right"><%= h Default['tax id'] %></td>

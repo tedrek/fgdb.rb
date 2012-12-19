@@ -375,9 +375,40 @@ class Contact < ActiveRecord::Base
   def last_volunteered_date
     begin
       raise ArgumentError unless self.id
-      return Date.parse(DB.exec("SELECT MAX(date_performed) AS max FROM volunteer_tasks WHERE contact_id = ?", self.id).to_a.first["max"]).to_s
+      ret = (DB.exec("SELECT MAX(date_performed) AS max FROM volunteer_tasks WHERE contact_id = ?", self.id).to_a.first["max"])
+      return ret ? Date.parse(ret).to_s : ""
     rescue ArgumentError
-      return nil
+      return ""
+    end
+  end
+
+  def last_donated_date
+    begin
+      raise ArgumentError unless self.id
+      ret = (DB.exec("SELECT MAX(occurred_at) AS max FROM donations WHERE contact_id = ?", self.id).to_a.first["max"])
+      return ret ? Date.parse(ret).to_s : ""
+    rescue ArgumentError
+      return ""
+    end
+  end
+
+  def last_donated_contribution_only_date
+    begin
+      raise ArgumentError unless self.id
+      ret = (DB.exec("SELECT MAX(occurred_at) AS max FROM donations WHERE contact_id = ? AND donations.id IN (SELECT DISTINCT donation_id FROM payments WHERE donation_id IS NOT NULL) AND donations.id NOT IN (SELECT DISTINCT donation_id FROM gizmo_events WHERE donation_id IS NOT NULL)", self.id).to_a.first["max"])
+      return ret ? Date.parse(ret).to_s : ""
+    rescue ArgumentError
+      return ""
+    end
+  end
+
+  def last_donated_gizmos_only_date
+    begin
+      raise ArgumentError unless self.id
+      ret = DB.exec("SELECT MAX(occurred_at) AS max FROM donations WHERE contact_id = ? AND donations.id NOT IN (SELECT DISTINCT donation_id FROM payments WHERE donation_id IS NOT NULL) AND donations.id IN (SELECT DISTINCT donation_id FROM gizmo_events WHERE donation_id IS NOT NULL)", self.id).to_a.first["max"]
+      return ret ? Date.parse(ret).to_s : ""
+    rescue ArgumentError
+      return ""
     end
   end
 

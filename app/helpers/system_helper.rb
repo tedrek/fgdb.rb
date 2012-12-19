@@ -25,13 +25,17 @@ module SystemHelper
       o = {}
 
       # "Processor Description" (vendor & product) ..?
-      o[:processor_product] = @processors.first.processor if @processors.first
+      proc = @processors.select{|x| x.processor != "(N/A)"}.first
+      if proc
+        o[:processor_product] = proc.processor
 
-      # "Running Speed",
-      # "Real Speed" (DISPLAY WARNING if different)
-      o[:running_processor_speed] = @processors.first.speed.downcase if @processors.first
-      m = o[:processor_product].match(/([0-9.]+\s*[GM]HZ)/i)
-      o[:product_processor_speed] = m ? m[0].downcase : nil
+        # "Running Speed",
+        # "Real Speed" (DISPLAY WARNING if different)
+        o[:running_processor_speed] = proc.speed.downcase if proc.speed
+
+        m = o[:processor_product].match(/([0-9.]+\s*[GM]HZ)/i)
+        o[:product_processor_speed] = m ? m[0].downcase : nil
+      end
 
       # "Max L2/L3 cache" (Add  all 'em up, but use only L3 if it's there else L2.)
       o[:max_l2_l3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total).downcase.sub(/kb/, "k")
@@ -428,7 +432,7 @@ module SystemHelper
 
     def do_work
       @result = Nokogiri::PList::Parser.parse(@parser.my_node)
-      items = @items = @result.map{|x| x["_items"]}.flatten
+      items = @items = @result.map{|x| x["_items"]}.flatten.select{|x| x}
       t = items.select{|x| x["_name"] == "Built-in Ethernet"}.first
       @macaddr =  t["Ethernet"]["MAC Address"] if t && t["Ethernet"] && t["Ethernet"]["MAC Address"]
       @memories = items.select{|x| x["dimm_status"]}.map{|x|

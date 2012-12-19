@@ -98,7 +98,22 @@ class VolunteerDefaultEventsController < ApplicationController
   end
 
   def copy
-    redirect_to :action => "show", :id => VolunteerDefaultEvent.find_by_id(params[:id]).copy_to(Weekday.find_by_id(params[:copy][:weekday_id]), hours_val(params[:copy])).id
+    begin
+      vol_event = VolunteerDefaultEvent.find_by_id(params[:id])
+    rescue
+      flash[:error] = "Could not find volunteer event"
+      redirect_to :back
+      return
+    end
+    begin
+      weekday = Weekday.find_by_id(params[:copy][:weekday_id])
+    rescue
+      flash[:error] = "Could not find weekday, please select one"
+      redirect_to :back
+      return
+    end
+    new_event = vol_event.copy_to(weekday, hours_val(params[:copy]))
+    redirect_to :action => "show", :id => new_event.id
   end
 
   def create

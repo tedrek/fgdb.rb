@@ -5,6 +5,8 @@ class Conditions < ConditionsBase
       created_at recycled_at disbursed_at received_at
       worked_at bought_at date_performed donated_at occurred_at
       shift_date date updated_at last_build last_volunteer_date
+      last_donated_date last_donated_gizmos_only_date
+      last_donated_contribution_only_date
   ]
 
   CONDS = (%w[
@@ -709,6 +711,24 @@ class Conditions < ConditionsBase
   def last_volunteer_date_conditions(klass)
     ret = date_range(klass, 'MAX(date_performed)', 'last_volunteer_date')
     ret[0] = "id IN (SELECT contact_id FROM volunteer_tasks GROUP BY contact_id HAVING #{ret[0].gsub(/contacts.MAX/, "MAX")})"
+    return ret
+  end
+
+  def last_donated_date_conditions(klass)
+    ret = date_range(klass, 'MAX(donations.occurred_at)', 'last_donated_date')
+    ret[0] = "id IN (SELECT contact_id FROM donations GROUP BY contact_id HAVING #{ret[0].gsub(/contacts.MAX/, "MAX")})"
+    return ret
+  end
+
+  def last_donated_contribution_only_date_conditions(klass)
+    ret = date_range(klass, 'MAX(donations.occurred_at)', 'last_donated_contribution_only_date')
+    ret[0] = "id IN (SELECT contact_id FROM donations WHERE donations.id IN (SELECT DISTINCT donation_id FROM payments WHERE donation_id IS NOT NULL) AND donations.id NOT IN (SELECT DISTINCT donation_id FROM gizmo_events WHERE donation_id IS NOT NULL) GROUP BY contact_id HAVING #{ret[0].gsub(/contacts.MAX/, "MAX")})"
+    return ret
+  end
+
+  def last_donated_gizmos_only_date_conditions(klass)
+    ret = date_range(klass, 'MAX(donations.occurred_at)', 'last_donated_gizmos_only_date')
+    ret[0] = "id IN (SELECT contact_id FROM donations WHERE donations.id NOT IN (SELECT DISTINCT donation_id FROM payments WHERE donation_id IS NOT NULL) AND donations.id IN (SELECT DISTINCT donation_id FROM gizmo_events WHERE donation_id IS NOT NULL) GROUP BY contact_id HAVING #{ret[0].gsub(/contacts.MAX/, "MAX")})"
     return ret
   end
 
