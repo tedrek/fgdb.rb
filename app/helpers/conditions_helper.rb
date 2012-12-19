@@ -11,6 +11,10 @@ module ConditionsHelper
     select(params_key, "worker_type_id", WorkerType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
   end
 
+  def html_for_sale_type_condition(params_key)
+    select(params_key, "sale_type_id", SaleType.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] })
+  end
+
   def html_for_finalized_condition(params_key)
     ""
   end
