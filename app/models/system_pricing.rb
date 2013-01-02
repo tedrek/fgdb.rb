@@ -1,6 +1,7 @@
 class SystemPricing < ActiveRecord::Base
   has_and_belongs_to_many :pricing_values
   belongs_to :system
+  validates_existence_of :system, :allow_nil => true
   belongs_to :spec_sheet
   belongs_to :pricing_type
   has_one :gizmo_type, :through => :pricing_type

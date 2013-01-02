@@ -9,8 +9,10 @@ fgdb.rb (1.0.109) UNRELEASED; urgency=low
     #32571)
   * Fix the 'sold to' link in systems history to go to the new Show page
     for sales (Closes: #32598)
+  * Validate that the provided system ID is correct in system pricing,
+    if one is entered (Closes: #32850)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 02 Jan 2013 15:08:40 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 02 Jan 2013 15:19:49 -0800
 
 fgdb.rb (1.0.108) released; urgency=low
 
