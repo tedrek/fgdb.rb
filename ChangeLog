@@ -7,8 +7,10 @@ fgdb.rb (1.0.109) UNRELEASED; urgency=low
     user now.
   * Only show rolled out dates on the published staff schedule (Closes:
     #32571)
+  * Fix the 'sold to' link in systems history to go to the new Show page
+    for sales (Closes: #32598)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 02 Jan 2013 14:58:59 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 02 Jan 2013 15:08:40 -0800
 
 fgdb.rb (1.0.108) released; urgency=low
 
