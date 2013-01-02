@@ -5,8 +5,10 @@ fgdb.rb (1.0.109) UNRELEASED; urgency=low
     preventing online sales from accidently printing to the store
     (Closes: #32157). NOTE: requires consistent use of the store shared
     user now.
+  * Only show rolled out dates on the published staff schedule (Closes:
+    #32571)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 12 Dec 2012 17:55:37 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Wed, 02 Jan 2013 14:58:59 -0800
 
 fgdb.rb (1.0.108) released; urgency=low
 
