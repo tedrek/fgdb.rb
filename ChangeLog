@@ -16,6 +16,8 @@ fgdb.rb (1.0.108) released; urgency=low
     (Closes: #32361)
   * Only show rolled out dates on the published staff schedule (Closes:
     #32571)
+  * Validate that the provided system ID is correct in system pricing,
+    if one is entered (Closes: #32850)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
 
