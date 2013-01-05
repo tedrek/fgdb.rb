@@ -30,6 +30,7 @@ my %data = ();
 $data{"ID"} = $ticket->id;
 $data{"Subject"} = $ticket->subject;
 $data{"Queue"} = $ticket->queue;
+$data{"Created"} = $ticket->created;
 $data{"Adopter Name"} = $ticket->cf('AdopterName');
 $data{"Adopter ID"} = $ticket->cf('AdopterID');
 $data{"Phone"} = $ticket->cf('phone');

@@ -62,6 +62,6 @@ Problems/Diagnosis:<br />
 <%= value_or_none("Initial Content").gsub("\n", "<br />") %>
 </div>
 <br />
-<span style="font-size: 16pt; float: right;">Recv'd by: #<%= params[:contact_id].to_i %> Date: <%= Date.today.to_s %></span>
+<span style="font-size: 16pt; float: right;">Recv'd by: #<%= params[:contact_id].to_i %> Date: <%= Date.parse(value_or_none("Created")).to_s %></span>
 <% end %>
 
