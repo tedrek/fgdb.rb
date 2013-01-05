@@ -32,6 +32,14 @@ fgdb.rb (1.0.108) released; urgency=low
   * Fix a crash in system pricing detection when there is no
     processor speed available within the data provided by printme
     (Closes: #32361)
+  * Only show rolled out dates on the published staff schedule (Closes:
+    #32571)
+  * Validate that the provided system ID is correct in system pricing,
+    if one is entered (Closes: #32850)
+  * Fix the 'sold to' link in systems history to go to the new Show page
+    for sales (Closes: #32598)
+  * Clear out the created/updated fields in skedjulnator when copying
+    vacations (Closes: #32178)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
 

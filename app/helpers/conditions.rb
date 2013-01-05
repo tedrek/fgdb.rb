@@ -23,6 +23,7 @@ class Conditions < ConditionsBase
       logged_in_within signed_off_by payment_total organization_name
       model vendor result interface_type megabytes_size week unresolved_shipment
       volunteered_non_court_hours_in_days form_factor hard_drive_serial_number
+      sale_type
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -124,6 +125,8 @@ class Conditions < ConditionsBase
 
   attr_accessor :worker_type_id
 
+  attr_accessor :sale_type_id
+
   attr_accessor :role
 
   attr_accessor :action
@@ -170,6 +173,7 @@ class Conditions < ConditionsBase
     validate_exists('payment_method_id') if validate_integer('payment_method', 'payment_method_id')
     validate_exists('attendance_type_id') if validate_integer('attendance_type', 'attendance_type_id')
     validate_exists('worker_type_id') if validate_integer('worker_type', 'worker_type_id')
+    validate_exists('sale_type_id') if validate_integer('sale_type', 'sale_type_id')
     validate_exists('volunteer_task_type_id') if validate_integer('volunteer_task_type', 'volunteer_task_type_id')
     validate_exists('schedule_id') if validate_integer('schedule', 'schedule_id')
     validate_emptyness('store_credit_id')
@@ -385,6 +389,10 @@ class Conditions < ConditionsBase
     search_date = klass.table_name + "." + klass.conditions_date_field
     search_worker_id = klass.table_name + ".worker_id"
     ["(SELECT worker_type_id FROM workers_worker_types WHERE workers_worker_types.worker_id = #{search_worker_id} AND (#{search_date} >= workers_worker_types.effective_on OR workers_worker_types.effective_on IS NULL) AND (#{search_date} <= workers_worker_types.ineffective_on OR workers_worker_types.ineffective_on IS NULL) LIMIT 1) = ?", @worker_type_id.to_i]
+  end
+
+  def sale_type_conditions(klass)
+    ["#{klass.table_name}.sale_type_id = ?", @sale_type_id.to_i]
   end
 
   def worker_conditions(klass)
