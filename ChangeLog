@@ -22,6 +22,8 @@ fgdb.rb (1.0.108) released; urgency=low
     for sales (Closes: #32598)
   * Clear out the created/updated fields in skedjulnator when copying
     vacations (Closes: #32178)
+  * Fix bug when slot count isn't provided to validate nicely (Closes:
+    #32919)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
 
