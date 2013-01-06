@@ -33,6 +33,7 @@ $data{"Queue"} = $ticket->queue;
 $data{"Created"} = $ticket->created;
 $data{"Adopter Name"} = $ticket->cf('AdopterName');
 $data{"Adopter ID"} = $ticket->cf('AdopterID');
+$data{"Technician ID"} = $ticket->cf('Intake Technician ID');
 $data{"Phone"} = $ticket->cf('phone');
 $data{"Email"} = $ticket->cf('Email');
 $data{"Type of Box"} = $ticket->cf('Type of Box');
