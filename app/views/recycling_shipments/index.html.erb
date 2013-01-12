@@ -8,6 +8,7 @@
   <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
   <% filters = []; filters << 'contact'; filters << 'unresolved_shipment' %>
   <%= conditions_html("conditions", filters) %>
+  <%= conditions_html("conditions", ['empty']) %>
   <%= submit_tag "Search", :class => "submit" %>
   <% end %>
 
