@@ -27,10 +27,12 @@ class RecyclingShipmentsController < ApplicationController
 
   def new
     @recycling_shipment = RecyclingShipment.new
+    @back_url = redirect_location
   end
 
   def edit
     @recycling_shipment = RecyclingShipment.find(params[:id])
+    @back_url = redirect_location
   end
 
   def create
