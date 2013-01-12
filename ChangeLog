@@ -25,6 +25,7 @@ fgdb.rb (1.0.108) released; urgency=low
   * Fix bug when slot count isn't provided to validate nicely (Closes:
     #32919)
   * rename display action to show in sales (Closes: #32985)
+  * Enable empty conditions on recycling shipments (Closes: #33042)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
 
