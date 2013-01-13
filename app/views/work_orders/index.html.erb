@@ -1,7 +1,12 @@
-<h1>Listing work_orders</h1>
+<h1>work_orders</h1>
 
-<%= render :partial => "list" %>
-
+Should this ask for System ID or something?<br />
 <br />
+Probably should ask source (Ex: FD) later on to determine fields to be
+shown.<br />
+<br />
+<%= link_to 'New work_order', {:action => "new"} %><br />
+<br />
+<%= render :partial => "woform" %>
 
-<%= link_to 'New work_order', {:action => "new"} %>
+

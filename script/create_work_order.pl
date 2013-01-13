@@ -34,12 +34,22 @@ my $data = $json->decode($json_s);
 #use Data::Dumper;
 #print Dumper($data) . "\n";
 
-$data{}; # to be pushed into fields
+#$data{}; # to be pushed into fields
 
-exit;
+#exit;
 
-my $subject = $ARGV[0];
-my $requestor = 'ryan@freegeek.org'; # FIXME pull from JSON
+my $os = $data->{"OS"}; # already in initial content
+my $tech = $data->{"Technician ID"};
+my $type = $data->{"Type of Box"};
+my $issues = $data->{"Issues"};
+my $name = $data->{"Adopter Name"};
+my $email = $data->{"Email"};
+my $phone = $data->{"Phone"};
+my $source = $data->{"Source"};
+my $content = $data->{"Initial Content"};
+my $requestor = $data->{"Requestor"};
+my $subject = $name . " - " . $type . " - " . $issues;
+my @issues = split(", ", $issues);
 
 my $ticket = RT::Client::REST::Ticket->new(
     rt  => $rt,
@@ -47,10 +57,15 @@ my $ticket = RT::Client::REST::Ticket->new(
     requestors => [$requestor],
     queue => 'TechSupport',
     subject => $subject,
+    
     cf => {
-      'field one' => 'a',
-      'field two' => 'b',
+	'Box source' => $source,
+	'Type of Box' => $type,
+	'Email' => $email,
+	'phone' => $phone,
+      'AdopterName' => $name,
+      'Intake Technician ID' => $tech,
+	'Tech Support Issue' => \@issues
     },
-    )->store;
+    )->store(text => $content);
 print $ticket->id . "\n";
-

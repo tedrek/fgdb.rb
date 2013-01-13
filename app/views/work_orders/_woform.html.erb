@@ -1,0 +1,12 @@
+<div class="noprint">
+<% if @error %>
+<span class="error"><%= @error %><br /><br /></span>
+<% end %>
+<% form_for "", nil, :url => {:action => "show" }, :html => {:method => "get"} do |f| %>
+<%= f.label(:id, "RT Ticket #").sub(/\[id\]/, "id") %>
+<%= (f.text_field "id").sub(/\[id\]/, "id") %>
+<%= f.label(:contact_id, "Receiving Technician Contact ID").sub(/\[contact_id\]/, "contact_id") %>
+<%= (f.text_field "contact_id").sub(/\[contact_id\]/, "contact_id") %><br />
+<%= submit_tag 'Show Work Order', :style => "clear: left" %>
+<% end %>
+</div>

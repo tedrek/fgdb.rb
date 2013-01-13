@@ -37,6 +37,7 @@ $data{"Technician ID"} = $ticket->cf('Intake Technician ID');
 $data{"Phone"} = $ticket->cf('phone');
 $data{"Email"} = $ticket->cf('Email');
 $data{"Type of Box"} = $ticket->cf('Type of Box');
+$data{"Source"} = $ticket->cf('Box source');
 $data{"System ID"} = $ticket->cf('SystemID');
 $data{"Warranty"} = $ticket->cf('Warranty');
 my $issue = $ticket->cf('Tech Support Issue');
