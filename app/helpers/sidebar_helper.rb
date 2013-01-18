@@ -24,7 +24,6 @@ module SidebarHelper
     h.default_class = OH
     h["gizmo_returns"]["system"] = "tech support"
     h["spec_sheets"]["system"] = "tech support"
-    h["spec_sheets"]["workorder"] = "tech support"
     h
   end
 
@@ -32,6 +31,7 @@ module SidebarHelper
     {"recyclings" => "recyclings",
     "volunteer_tasks" => "hours",
     "sales" => "sales",
+    "workorders" => "tech support",
     "donations" => "donations",
     "disbursements" => "disbursements",
     "reports" => "reports",
@@ -92,7 +92,7 @@ module SidebarHelper
     sidebar_hash["recyclings"]["shipments"] = {:c => "recycling_shipments"}
     sidebar_hash["tech support"]["system returns"] = {:c => "gizmo_returns", :a => "system"}
     sidebar_hash["tech support"]["system history"] = {:c => "spec_sheets", :action => "system"}
-    sidebar_hash["tech support"]["work orders"] = {:c => "spec_sheets", :action => "workorder"}
+    sidebar_hash["tech support"]["work orders"] = {:c => "work_orders"}
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
     sidebar_hash["reports"]["cashier contributions"] = {:c => 'reports', :action => "cashier_contributions"}
     # contacts

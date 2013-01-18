@@ -1,32 +1,42 @@
+FIXME: pull from system.tech_support_source if we have a ID? or should we not be asking for that yet?
+
   <p>
     <%= f.label :customer_name %><br />
     <%= f.text_field :customer_name %>
   </p>
   <p>
     <%= f.label :box_source %><br />
-    <%= f.text_field :box_source %>
+    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p>
     <%= f.label :box_type %><br />
-    <%= f.text_field :box_type %>
+    <%= f.select :box_type, @rt_metadata["Type of Box"].map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p>
     <%= f.label :ticket_source %><br />
-    <%= f.text_field :ticket_source %>
+    <%= f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p>
-    <%= f.label :phone_number %><br />
+    <%= f.label :phone_number, "Phone Number (optional)" %><br />
     <%= f.text_field :phone_number %>
   </p>
   <p>
-    <%= f.label :email %><br />
+    <%= f.label :email, "Email (optional)" %><br />
     <%= f.text_field :email %>
   </p>
   <p>
     <%= f.label :issue %><br />
-    <%= f.text_field :issue %>
+    <% @rt_metadata["Tech Support Issue"].each do |x| %>
+    <div class='form-element'>
+      <%= f.check_box "issue[#{x}]", {:id => "issues_#{x}", :checked => (@work_order.issues || []).include?(x)}, x %>
+      <label for="issues_<%= x %>">
+	<%= x %>
+      </label>
+    </div>
+    <% end %>
   </p>
-  <p>
-    <%= f.label :os %><br />
+  <p style="clear: left">
+    <br />
+    <%= f.label :os, "Operating System (optional)" %><br />
     <%= f.text_field :os %>
   </p>
