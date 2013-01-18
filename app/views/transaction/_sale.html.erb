@@ -17,7 +17,7 @@
     <a onclick="window.open('<%= url_for(print_options) %>','Receipt_<%= sale.id %>','');" title="Print" style="cursor: pointer;">
       Print
     </a>
-    <a href="<%= url_for(print_options.merge(:action => 'display')) %>" title="Display Sale" style="cursor: pointer;">
+    <a href="<%= url_for(print_options.merge(:action => 'show')) %>" title="Display Sale" style="cursor: pointer;">
       Show
     </a>
     <%= render :partial=> "edit_update_transaction",
