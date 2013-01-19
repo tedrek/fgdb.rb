@@ -1,7 +1,13 @@
-<%= render :partial => "woform" %>
 <%= link_to 'Back', {:action => "index"} %>
 <% if @data %>
+<div class="noprint">
+<% if @error %>
+<span class="error"><%= @error %><br /><br /></span>
+<% end %>
 <INPUT type="button" id="print_button" value="Print"
        onclick="window.print();" >
+<% end %>
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => @system} %>
 <% end %>
+
+

@@ -48,16 +48,6 @@ class WorkOrdersController < ApplicationController
 
   def show
     if params[:id]
-      if !(@contact = Contact.find_by_id(params[:contact_id].to_i))
-        @data = nil
-        @error = "The provided technician contact doesn't exist."
-        return
-      end
-#      if (!@contact.user) or (!@contact.user.grantable_roles.include?(Role.find_by_name("TECH_SUPPORT")))
-#        @data = nil
-#        @error = "The provided technician contact doesn't have the tech support role."
-#        return
-#      end
       json = `#{RAILS_ROOT}/script/fetch_ts_data.pl #{params[:id].to_i}`
       begin
         @data = JSON.parse(json)
@@ -98,6 +88,18 @@ class WorkOrdersController < ApplicationController
     @data["Type of Box"] = @work_order.box_type
     @data["Initial Content"] = "Operating system info provided: " + @work_order.os
     @data["Technician ID"] = current_user ? current_user.contact_id.to_s : ""
+
+    if !(@contact = Contact.find_by_id(params[:contact_id].to_i))
+      @data = nil
+      @error = "The provided technician contact doesn't exist."
+      return
+    end
+      if (!@contact.user) or (!@contact.user.privileges.include?(Privilege.find_by_name("techsupport_workorders")))
+        @data = nil
+        @error = "The provided technician contact doesn't have the tech support role."
+        return
+      end
+
   end
 
   public
@@ -114,6 +116,8 @@ class WorkOrdersController < ApplicationController
   def submit
     parse_data
 
+    unless @error
+
     requestor = User.current_user ? (User.current_user.email || "") : ""
     @data["Requestor"] = requestor
 
@@ -126,6 +130,8 @@ class WorkOrdersController < ApplicationController
     t_id = `#{RAILS_ROOT}/script/create_work_order.pl #{tempfile}`
     File.delete(tempfile)
     redirect_to :action => :show, :id => t_id, :contact_id => current_user ? current_user.contact_id : nil
+
+    end
   end
 
   def update

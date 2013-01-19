@@ -1,4 +1,9 @@
+<% if @error %>
+<span class="error"><%= @error %><br /><br /></span>
+<% end %>
+
 <%= button_to "Edit Information", {:action => "new", :open_struct => params[:open_struct]} %> | 
+<% if @data %>
 <%= button_to "Submit Work Order", {:action => "submit", :open_struct => params[:open_struct]} %>
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => nil} %>
-
+<% end %>
