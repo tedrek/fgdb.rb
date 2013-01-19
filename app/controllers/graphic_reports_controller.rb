@@ -733,7 +733,7 @@ class PrintmeInfoTrend < TrendReport
 
     PRINTME_BOOLS = [:sixty_four_bit, :virtualization]
     PRINTME_OTHER = [:cpu_intel_product, :cpu_vendor]
-    PRINTME_COLUMNS = [:l1_cache_total, :l2_cache_total, :l3_cache_total, :processor_slot, :processor_product, :processor_speed, :north_bridge] + PRINTME_BOOLS + PRINTME_OTHER
+    PRINTME_COLUMNS = [:vendor, :mobo_vendor, :l1_cache_total, :l2_cache_total, :l3_cache_total, :processor_slot, :processor_product, :processor_speed, :north_bridge] + PRINTME_BOOLS + PRINTME_OTHER
     def self.extra_options(f)
       h = OH.new
       opts = PRINTME_COLUMNS.map(&:to_s).sort.map{|x| "<option value=\"#{x}\">#{x.humanize}</option>"}.join("")
