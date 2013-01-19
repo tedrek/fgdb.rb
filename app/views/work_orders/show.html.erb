@@ -1,5 +1,7 @@
 <%= render :partial => "woform" %>
 <%= link_to 'Back', {:action => "index"} %>
 <% if @data %>
+<INPUT type="button" id="print_button" value="Print"
+       onclick="window.print();" >
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => @system} %>
 <% end %>
