@@ -31,7 +31,7 @@ module SidebarHelper
     {"recyclings" => "recyclings",
     "volunteer_tasks" => "hours",
     "sales" => "sales",
-    "workorders" => "tech support",
+    "work_orders" => "tech support",
     "donations" => "donations",
     "disbursements" => "disbursements",
     "reports" => "reports",
