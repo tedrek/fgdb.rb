@@ -14,7 +14,6 @@
     <%= f.label :box_type %><br />
     <%= f.select :box_type, @rt_metadata["Type of Box"].map{|x| [x, x]}, :include_blank => true %>
   </p>
-    <%# f.label :ticket_source %>    <%# f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
     <%= f.hidden_field :ticket_source, :value => "Front Desk" %>
   <p>
     <%= f.label :phone_number, "Phone Number (optional)" %><br />

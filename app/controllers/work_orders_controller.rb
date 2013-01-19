@@ -36,7 +36,7 @@ class WorkOrdersController < ApplicationController
     if params[:open_struct]
       @work_order = OpenStruct.new(params[:open_struct])
       @work_order.issues = params[:open_struct][:issue].to_a.select{|x| x.first == x.last}.map{|x| x.first}
-      @work_order.issue = nil
+#      @work_order.issue = nil
     else
       @work_order = OpenStruct.new
     end
@@ -85,6 +85,7 @@ class WorkOrdersController < ApplicationController
     @data["Phone"] = @work_order.phone_number
     @data["OS"] = @work_order.os
     @data["Source"] = @work_order.box_source
+    @data["Ticket Source"] = @work_order.ticket_source
     @data["Type of Box"] = @work_order.box_type
     @data["Initial Content"] = "Operating system info provided: " + @work_order.os
 
