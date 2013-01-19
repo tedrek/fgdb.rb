@@ -4,7 +4,7 @@ class WorkOrdersController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_tech_support', 'role_front_desk']} # TODO: add a privilege? CLARIFY first.. they told me conflicting ideas.
+    a << {:privileges => ['techsupport_workorders']}
     return a
   end
   before_filter :ensure_metadata
