@@ -1,12 +1,12 @@
 fgdb.rb (1.0.109) UNRELEASED; urgency=low
 
-	STORE PRICING CHANGES ARE HERE - SO ARE TS WO's
   * Make raw text receipt printing the default only for the store user,
     preventing online sales from accidently printing to the store
     (Closes: #32157). NOTE: requires consistent use of the store shared
     user now.
+  * Beginning work on Tech Support WO and Store Pricing improvements
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Jan 2013 08:03:07 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Jan 2013 08:56:11 -0800
 
 fgdb.rb (1.0.108) released; urgency=low
 
