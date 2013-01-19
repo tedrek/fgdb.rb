@@ -3,7 +3,7 @@
     <%= f.text_field :customer_name %>
   </p>
   <p>
-    <%= f.label :receiver_contact_id %><br />
+    <%= f.label :receiver_contact_id, "Receiver Contact ID" %><br />
     <%= f.text_field :receiver_contact_id %>
   </p>
   <p>
@@ -15,7 +15,7 @@
     <%= f.select :box_type, @rt_metadata["Type of Box"].map{|x| [x, x]}, :include_blank => true %>
   </p>
     <%# f.label :ticket_source %>    <%# f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
-    <%= f.hidden :ticket_source, "Front Desk" %>
+    <%= f.hidden_field :ticket_source, :value => "Front Desk" %>
   <p>
     <%= f.label :phone_number, "Phone Number (optional)" %><br />
     <%= f.text_field :phone_number %>
@@ -26,14 +26,8 @@
   </p>
   <p>
     <%= f.label :issue %><br />
-    <% @rt_metadata["Tech Support Issue"].each do |x| %>
-    <div class='form-element'>
-      <%= f.check_box "issue[#{x}]", {:id => "issues_#{x}", :checked => (@work_order.issues || []).include?(x)}, x %>
-      <label for="issues_<%= x %>">
-	<%= x %>
-      </label>
-    </div>
-    <% end %>
+    <%= f.select :issue, @rt_metadata["Tech Support Issue"].map{|x| [x, x]}, :include_blank => true %>
+    <%# render :partial => 'issues' %>
   </p>
   <p style="clear: left">
     <br />

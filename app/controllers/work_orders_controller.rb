@@ -73,12 +73,12 @@ class WorkOrdersController < ApplicationController
   protected
   def parse_data
     @work_order = OpenStruct.new(params[:open_struct])
-    @work_order.issues = params[:open_struct][:issue].to_a.select{|x| x.first == x.last}.map{|x| x.first}
-    @work_order.issue = nil
+    @work_order.issues = params[:open_struct][:issue] #.to_a.select{|x| x.first == x.last}.map{|x| x.first}
+#    @work_order.issue = nil
+
 
     @data = {}
-    @data["Issues"] = @work_order.issues.join(", ")
-    @data["Technician ID"] = @work_order.receiver_contact_id
+    @data["Issues"] = @work_order.issues #.join(", ")
     @data["Adopter Name"] = @work_order.customer_name
     @data["ID"] = " not yet created"
     @data["Email"] = @work_order.email
@@ -87,14 +87,15 @@ class WorkOrdersController < ApplicationController
     @data["Source"] = @work_order.box_source
     @data["Type of Box"] = @work_order.box_type
     @data["Initial Content"] = "Operating system info provided: " + @work_order.os
-    @data["Technician ID"] = current_user ? current_user.contact_id.to_s : ""
 
-    if !(@contact = Contact.find_by_id(params[:contact_id].to_i))
+    if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))
       @data = nil
       @error = "The provided technician contact doesn't exist."
       return
+    else
+      @data["Technician ID"] = @contact.id.to_s
     end
-      if (!@contact.user) or (!@contact.user.privileges.include?(Privilege.find_by_name("techsupport_workorders")))
+      if (!@contact.user) or (!(@contact.user.privileges.include?("techsupport_workorders") or @contact.user.grantable_roles.include?(Role.find_by_name('ADMIN'))))
         @data = nil
         @error = "The provided technician contact doesn't have the tech support role."
         return
