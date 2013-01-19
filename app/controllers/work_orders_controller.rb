@@ -88,6 +88,7 @@ class WorkOrdersController < ApplicationController
 
     @data = {}
     @data["Issues"] = @work_order.issues.join(", ")
+    @data["Technician ID"] = @work_order.receiver_contact_id
     @data["Adopter Name"] = @work_order.customer_name
     @data["ID"] = " not yet created"
     @data["Email"] = @work_order.email
