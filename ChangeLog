@@ -5,6 +5,7 @@ fgdb.rb (1.0.109) released; urgency=low
     (Closes: #32157). NOTE: requires consistent use of the store shared
     user now.
   * Beginning work on Tech Support WO and Store Pricing improvements
+  * Change label to say 'Payment Total' in donations (Closes: #33154)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Jan 2013 08:58:34 -0800
 
