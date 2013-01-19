@@ -63,7 +63,7 @@ my $ticket = RT::Client::REST::Ticket->new(
 	'Type of Box' => $type,
 	'Email' => $email,
 	'phone' => $phone,
-      'AdopterName' => $name,
+      'Adopter Name' => $name,
       'Intake Technician ID' => $tech,
 	'Tech Support Issue' => \@issues
     },
