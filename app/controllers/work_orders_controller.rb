@@ -85,6 +85,7 @@ class WorkOrdersController < ApplicationController
     @data["Phone"] = @work_order.phone_number
     @data["OS"] = @work_order.os
     @data["Source"] = @work_order.box_source
+    @data["Ticket Source"] = @work_order.ticket_source
     @data["Type of Box"] = @work_order.box_type
     @data["Initial Content"] = "Operating system info provided: " + @work_order.os
 

@@ -46,6 +46,7 @@ my $name = $data->{"Adopter Name"};
 my $email = $data->{"Email"};
 my $phone = $data->{"Phone"};
 my $source = $data->{"Source"};
+my $ts_source = $data->{"Ticket Source"};
 my $content = $data->{"Initial Content"};
 my $requestor = $data->{"Requestor"};
 my $subject = $name . " - " . $type . " - " . $issues;
@@ -59,6 +60,8 @@ my $ticket = RT::Client::REST::Ticket->new(
     subject => $subject,
     
     cf => {
+        'Support Level' => 'Irrelevant',
+        'Ticket Source' => $ts_source,
 	'Box source' => $source,
 	'Type of Box' => $type,
 	'Email' => $email,
