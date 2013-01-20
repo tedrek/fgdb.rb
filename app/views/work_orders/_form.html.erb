@@ -3,12 +3,18 @@
     <%= f.text_field :customer_name %>
   </p>
   <p>
-    <%= f.label :receiver_contact_id, "Receiver Contact ID" %><br />
-    <%= f.text_field :receiver_contact_id %>
-  </p>
-  <p>
     <%= f.label :box_source %><br />
     <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, :include_blank => true %>
+  </p>
+  <% if @work_order.mode != 'fd' %>
+  <p>
+    <%= f.label :system_id, 'System ID' %>
+    <%= f.text_field :system_id %>
+  </p>
+  <% end %>
+  <p>
+    <%= f.label :receiver_contact_id, "Receiver Contact ID" %><br />
+    <%= f.text_field :receiver_contact_id %>
   </p>
   <p>
     <%= f.label :box_type %><br />
