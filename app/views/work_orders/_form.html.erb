@@ -1,10 +1,10 @@
   <p>
     <%= f.label :customer_name %><br />
-    <%= f.text_field :customer_name %>
+    <%= f.text_field :customer_name, :onkeydown => "if(is_tab(event)) { alert('FIXME'); $('open_struct_box_source').enable();}" %>
   </p>
   <p>
     <%= f.label :box_source %><br />
-    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, :include_blank => true %>
+    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true}, {:disabled => 'disabled', :onclick => 'alert("TODO: complete me! [to refocus if disabled]");'} %>
   </p>
   <% if @work_order.mode != 'fd' %>
   <p>
