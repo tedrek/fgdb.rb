@@ -1,0 +1,33 @@
+<p>
+  <b>System type:</b>
+  <%=h @warranty_length.system_type %>
+</p>
+
+<p>
+  <b>Box source:</b>
+  <%=h @warranty_length.box_source %>
+</p>
+
+<p>
+  <b>Os type:</b>
+  <%=h @warranty_length.os_type %>
+</p>
+
+<p>
+  <b>Length:</b>
+  <%=h @warranty_length.length %>
+</p>
+
+<p>
+  <b>Effecitve on:</b>
+  <%=h @warranty_length.effecitve_on %>
+</p>
+
+<p>
+  <b>Ineffective on:</b>
+  <%=h @warranty_length.ineffective_on %>
+</p>
+
+
+<%= link_to 'Edit', {:action => "edit", :id => @warranty_length.id} %> |
+<%= link_to 'Back', {:action => "index"} %>

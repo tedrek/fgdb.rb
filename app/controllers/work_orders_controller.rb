@@ -70,12 +70,21 @@ class WorkOrdersController < ApplicationController
     end
   end
 
+  OS_OPTIONS = ['Linux', 'Mac', 'Windows']
   protected
+
+  def find_warranty
+    # TODO: Type Of Box maps from types as field?
+    # FIXME: OS needs to be dropdown of mac linux or windows
+    date = @data['Date??']
+    w = WarrantyLength.find_warranty_for(date, @data["Type Of Box"], @data["Source"], @data["OS"])
+    return w.nil? ? nil : w.from_date(date)
+  end
+
   def parse_data
     @work_order = OpenStruct.new(params[:open_struct])
     @work_order.issues = params[:open_struct][:issue] #.to_a.select{|x| x.first == x.last}.map{|x| x.first}
 #    @work_order.issue = nil
-
 
     @data = {}
     @data["Issues"] = @work_order.issues #.join(", ")
@@ -87,6 +96,7 @@ class WorkOrdersController < ApplicationController
     @data["Source"] = @work_order.box_source
     @data["Ticket Source"] = @work_order.ticket_source
     @data["Type of Box"] = @work_order.box_type
+#    @data["Warranty"] = 
     @data["Initial Content"] = "Operating system info provided: " + @work_order.os
 
     if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))

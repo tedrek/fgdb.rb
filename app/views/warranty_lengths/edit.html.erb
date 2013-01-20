@@ -1,0 +1,14 @@
+<h1>Editing warranty_length</h1>
+
+<% form_for(@warranty_length, :url => {:action => "update", :id => @warranty_length.id}) do |f| %>
+  <%= f.error_messages %>
+
+  <%= render :partial => "form", :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', {:action => "show", :id => @warranty_length.id} %> |
+<%= link_to 'Back', {:action => "index"} %>
