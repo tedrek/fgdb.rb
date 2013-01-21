@@ -58,51 +58,6 @@ function find_these_lines(name){
   return $(name + "_lines").getElementsBySelector("tr.line");
 }
 
-function dollar_cent_value(amt) {
-  return dollar_value(cent_value(amt));
-}
-
-function dollar_value(cents) {
-  cents = "" + Math.floor(cents);
-  if (cents.length == 0) {
-    return "0.00";
-  }
-  else if (cents.length == 1) {
-    return "0.0" + cents;
-  }
-  else if (cents.length == 2) {
-    return "0." + cents;
-  }
-  else {
-    return cents.replace(/(\d\d)$/, ".$1");
-  }
-}
-
-function cent_value(value) {
-  var arr = ("" + value).split(".");
-  if (arr.length > 0) {
-    if(arr[0].length > 0)
-      value = parseInt(arr[0]) * 100;
-    else
-      value = 0;
-    if (arr.length > 1) {
-      if (arr[1].length == 1) {
-        value += parseInt(arr[1]) * 10;
-      } else if(arr[1].length > 2) {
-        var tempint = parseInt(arr[1][0] + arr[1][1]);
-        if(parseInt(arr[1][2]) >= 5) {
-          tempint++;
-        }
-        value += tempint;
-      }
-      else {
-        value += parseInt(arr[1]);
-      }
-    }
-  }
-  return value;
-}
-
 ////////////////////
 // LINE ITEM JUNK //
 ////////////////////

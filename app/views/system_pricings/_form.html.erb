@@ -59,8 +59,17 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
 </tr>
 <tr>
         <th>Calculated Price:</th>
-        <td><span id="calculated_price">$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></span><%= loading_indicator_tag("calculated_price") %></td>
+        <td><span id="calculated_price">$<%= @system_pricing.calculate_price_cents/100.0 %></span><%= loading_indicator_tag("calculated_price") %></td>
 </tr>
+<tr>
+        <th>Pricing Bonus:</th>
+        <td><span id="bonus_price">$<%= @system_pricing.pricing_bonus %></span></td>
+</tr>
+<tr>
+        <th>Total Price:</th>
+        <td><span id="total_price">$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></span></td>
+</tr>
+
 <% end %>
     </table>
     <%= javascript_tag "update_calc_url = #{url_for(:action => "calculate").to_json}; calculated_price_loading_id = #{loading_indicator_id("calculated_price").inspect};" %>
@@ -69,6 +78,19 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
 <% if @system_pricing.pricing_type %>
   <%= javascript_tag "update_calculated_price($(#{(f.object.id.nil? ? "new_system_pricing" : "edit_system_pricing_#{f.object.id}").inspect}));" %>
   <%= f.hidden_field :magic_bit, {:valud => "1"} %>
+
+<br />
+<fieldset>
+<center>Pricing Bonuses:</center>
+
+<% kdh = {:onkeydown => line_item_on_keydown("pricing_bonuses")} %>
+<% interface = OH.new; values = @system_pricing.pricing_bonuses.map{|x| x.to_hash(:amount, :reason, :id)} %>
+<% interface[:amount] = text_field_tag 'amount', nil, kdh.merge({}) %>
+<% interface[:reason] = text_field_tag 'reason', nil, kdh.merge({}) %>
+<%= line_item("pricing_bonuses", "PricingBonusFrontend", interface, values, true) %>
+
+</fieldset>
+
   <p>
     <%= f.label :notes %><br />
     <%= f.text_area :notes %>

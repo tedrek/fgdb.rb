@@ -521,7 +521,7 @@ var InputBasedComponent = Class.create(LineItemComponent, {
   },
 
   edit_hook: function(thing){
-    $(this.linelist[0]).value = this.getValueBySelector(thing, "." + this.linelist[0]);
+    $(this.linelist[0]).value = this.computer_to_value(this.getValueBySelector(thing, "." + this.linelist[0]));
   },
 
   clear_widget: function() {
@@ -530,7 +530,19 @@ var InputBasedComponent = Class.create(LineItemComponent, {
 
   make_hidden_hook: function(args, tr) {
     var value = args[this.linelist[0]];
-    tr.appendChild(this.make_hidden(this.linelist[0], value, value));
+    tr.appendChild(this.make_hidden(this.linelist[0], this.value_to_human(value), this.value_to_computer(value)));
+  },
+
+  value_to_human: function(value) {
+    return value;
+  },
+
+  value_to_computer: function(value) {
+    return value;
+  },
+
+  computer_to_value: function(value) {
+    return value;
   },
 
   set_args_from_form: function(args) {
@@ -775,6 +787,51 @@ var VolunteerResourceFrontend = Class.create(ComponentLineItem, {
   prefix: 'resources_volunteer_events',
   copyable: true,
   checkfor: [ResourceComponent, RosterComponent, StartTimeComponent, EndTimeComponent]
+});
+
+var ReasonComponent = Class.create(InputBasedComponent, {
+  linelist: ['reason'],
+});
+
+var AmountComponent = Class.create(InputBasedComponent, {
+  linelist: ['amount'],
+
+  value_to_human: function(value) {
+    return dollar_cent_value(value);
+  },
+
+  value_to_computer: function(value) {
+    return cent_value(value);
+  },
+
+  computer_to_value: function(value) {
+    return dollar_value(value);
+  },
+});
+
+var PricingBonusFrontend = Class.create(ComponentLineItem, {
+  prefix: 'pricing_bonuses',
+  copyable: true,
+  checkfor: [AmountComponent, ReasonComponent],
+
+  total: function() {
+    var value = 0;
+    var lines = $(this.prefix + "_lines").getElementsBySelector("tr.line");
+    for(var i = 0; i < lines.length; i++) {
+      value += parseInt(this.getValueBySelector(lines[i], ".amount"));
+    }
+    return dollar_value(value);
+  },
+
+  update_hook: function() {
+    var bonus = this.total();
+    var total = '$' + bonus;
+    bonus = cent_value(bonus);
+    $('bonus_price').innerHTML = total;
+    var calculated = cent_value($('calculated_price').innerHTML.replace('$', ''));
+    total = '$' + dollar_value(bonus + calculated);
+    $('total_price').innerHTML = total;
+  },
 });
 
 var DurationComponent = Class.create(InputBasedComponent, {

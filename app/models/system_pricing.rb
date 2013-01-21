@@ -29,7 +29,7 @@ class SystemPricing < ActiveRecord::Base
 
   before_save :set_calculated_price
   def set_calculated_price
-    self.calculated_price_cents = calculate_price_cents
+    self.calculated_price_cents = calculate_price_cents + pricing_bonus_cents
   end
 
   def cents_step_ceil(number, step)
@@ -57,10 +57,12 @@ class SystemPricing < ActiveRecord::Base
     total = pre_round_cents
     # FIXME there's an embedded extra /100.0 that should move out here.
     total = cents_step_ceil(total, self.pricing_type.round_by_cents) if self.pricing_type.round_by_cents
-    return total + pricing_bonuses_cents
+    return total
   end
 
-  def pricing_bonuses_cents
+  define_amount_methods_on :pricing_bonus
+
+  def pricing_bonus_cents
     self.pricing_bonuses.inject(0){|t, pb| t+=pb.amount_cents}
   end
 
