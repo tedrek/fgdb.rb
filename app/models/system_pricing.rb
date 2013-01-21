@@ -33,7 +33,7 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def cents_step_ceil(number, step)
-    float = number / 100.0
+    float = number
     int = float.ceil
     return int if step.nil? or step <= 1
     mod = (int % step)
@@ -44,18 +44,20 @@ class SystemPricing < ActiveRecord::Base
     end
   end
 
-  def pre_round_cents # FIXME: print with cents wrapper for .pre_round
+  define_amount_methods_on_fake_attr :pre_round
+
+  def pre_round_cents
     return 0 unless self.pricing_type
     total = self.pricing_type.base_value_cents
     self.pricing_values.each do |value|
       total += value.value_cents
     end
-    total = total * self.pricing_type.multiplier_cents
+    total = (total * self.pricing_type.multiplier_cents)/100.0
+    total.to_i
   end
 
   def calculate_price_cents
     total = pre_round_cents
-    # FIXME there's an embedded extra /100.0 that should move out here.
     total = cents_step_ceil(total, self.pricing_type.round_by_cents) if self.pricing_type.round_by_cents
     return total
   end
@@ -67,7 +69,7 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def to_equation
-    self.pricing_type.multiplier + ' * (' + self.pricing_type.pricing_expressions.map{|x| x.to_equation(self.pricing_values)}.join(' + ') + ') = ' + (pre_round_cents/10000.0).to_s
+    self.pricing_type.multiplier + ' * (' + self.pricing_type.pricing_expressions.map{|x| x.to_equation(self.pricing_values)}.join(' + ') + ') = ' + pre_round
   end
 
   def to_equation_text
