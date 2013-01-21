@@ -1,7 +1,8 @@
 fgdb.rb (1.0.110) UNRELEASED; urgency=low
 
+  * Implement multiple bonus fields for store pricings (Closes: #30241)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Jan 2013 08:59:08 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 20 Jan 2013 21:04:49 -0800
 
 fgdb.rb (1.0.109) released; urgency=low
 

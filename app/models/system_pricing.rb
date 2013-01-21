@@ -6,6 +6,7 @@ class SystemPricing < ActiveRecord::Base
   belongs_to :pricing_type
   has_one :gizmo_type, :through => :pricing_type
   define_amount_methods_on :calculated_price
+  has_many :pricing_bonuses, :class_name => 'PricingBonus'
 
   def gizmo_type
     if self.pricing_type && self.pricing_type.gizmo_type
@@ -56,7 +57,11 @@ class SystemPricing < ActiveRecord::Base
     total = pre_round_cents
     # FIXME there's an embedded extra /100.0 that should move out here.
     total = cents_step_ceil(total, self.pricing_type.round_by_cents) if self.pricing_type.round_by_cents
-    return total
+    return total + pricing_bonuses_cents
+  end
+
+  def pricing_bonuses_cents
+    self.pricing_bonuses.inject(0){|t, pb| t+=pb.amount_cents}
   end
 
   def to_equation
