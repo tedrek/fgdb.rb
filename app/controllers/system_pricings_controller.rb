@@ -21,10 +21,17 @@ class SystemPricingsController < ApplicationController
 
   def calculate
     @system_pricing = SystemPricing.new(params[:system_pricing])
+    diff = 0
+    if params[:pricing_bonuses]
+      params[:pricing_bonuses].each do |k, x|
+        diff += x.delete("amount").to_i
+      end
+    end
     @system_pricing.set_calculated_price
     render :update do |page|
       page.hide loading_indicator_id("calculated_price")
       page << '$("calculated_price").innerHTML = "$' + @system_pricing.calculated_price + '";'
+      page << '$("total_price").innerHTML = "$' + (@system_pricing.calculated_price_cents + diff).to_dollars + '";'
       page << '$("equation").innerHTML = "' + @system_pricing.to_equation + '";'
     end
   end
