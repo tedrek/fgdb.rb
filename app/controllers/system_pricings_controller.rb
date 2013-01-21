@@ -91,7 +91,7 @@ class SystemPricingsController < ApplicationController
 
   def update
     @system_pricing = SystemPricing.find(params[:id])
-
+    apply_line_item_data(@system_pricing, PricingBonus)
     @system = @system_pricing.system
     if @system
       @spec_sheet = @system_pricing.spec_sheet

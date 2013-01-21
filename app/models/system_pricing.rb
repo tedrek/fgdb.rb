@@ -6,7 +6,7 @@ class SystemPricing < ActiveRecord::Base
   belongs_to :pricing_type
   has_one :gizmo_type, :through => :pricing_type
   define_amount_methods_on :calculated_price
-  has_many :pricing_bonuses, :class_name => 'PricingBonus'
+  has_many :pricing_bonuses, :class_name => 'PricingBonus', :autosave => true
 
   def gizmo_type
     if self.pricing_type && self.pricing_type.gizmo_type
@@ -63,6 +63,10 @@ class SystemPricing < ActiveRecord::Base
   end
 
   define_amount_methods_on :pricing_bonus
+
+  def pricing_bonus=(value)
+    pricing_bonuses = value
+  end
 
   def pricing_bonus_cents
     self.pricing_bonuses.inject(0){|t, pb| t+=pb.amount_cents}
