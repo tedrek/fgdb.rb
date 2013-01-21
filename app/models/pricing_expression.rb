@@ -1,6 +1,6 @@
 class PricingExpression < ActiveRecord::Base
   has_and_belongs_to_many :pricing_components
-  belongs_to :pricing_types
+  belongs_to :pricing_type
   define_amount_methods_on :multiplier
 
   def to_equation_text

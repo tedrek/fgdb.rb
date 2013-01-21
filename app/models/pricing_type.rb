@@ -15,7 +15,7 @@ class PricingType < ActiveRecord::Base
 
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
 
-  def pricing_components # FIXME
+  def pricing_components
     self.pricing_expressions.map(&:pricing_components).flatten.uniq
   end
 

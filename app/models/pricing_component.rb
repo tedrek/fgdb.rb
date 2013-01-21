@@ -1,8 +1,13 @@
 class PricingComponent < ActiveRecord::Base
   has_many :pricing_values, :order => 'value_cents DESC', :conditions => 'pricing_values.ineffective_on IS NULL'
-  has_and_belongs_to_many :pricing_types, :conditions => 'pricing_types.ineffective_on IS NULL'
+  has_and_belongs_to_many :pricing_expressions
   validates_presence_of :name
   define_amount_methods_on :multiplier
+
+#  has_and_belongs_to_many :pricing_types, :through => :pricing_expressions, :conditions => 'pricing_types.ineffective_on IS NULL'
+  def pricing_types
+    self.pricing_expressions.map(&:pricing_type).select{|x| x.ineffective_on.nil?}
+  end
 
   def to_equation_text
     added = self.name.downcase.gsub(" ", "_").gsub("/", "_")
