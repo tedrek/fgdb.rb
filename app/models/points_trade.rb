@@ -8,6 +8,8 @@ class PointsTrade < ActiveRecord::Base
   validates_presence_of :to_contact_id
   validates_presence_of :from_contact_id
   validates_presence_of :points
+  validates_existence_of :to_contact
+  validates_existence_of :from_contact
 
   def self.allow_shared
     true
