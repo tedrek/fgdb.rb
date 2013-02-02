@@ -10,9 +10,9 @@ class PricingComponentsController < ApplicationController
   public
 
   def new
-    @pricing_type = PricingType.find(params[:pricing_type_id])
+    @pricing_expression = PricingExpression.find(params[:pricing_expression_id])
     @pricing_component = PricingComponent.new
-    @pricing_component.pricing_types << @pricing_type
+    @pricing_component.pricing_expressions << @pricing_expression
   end
 
   def edit
@@ -21,13 +21,13 @@ class PricingComponentsController < ApplicationController
   end
 
   def create
-    @pricing_type = PricingType.find(params[:pricing_type_id])
+    @pricing_expression = PricingExpression.find(params[:pricing_expression_id])
     @pricing_component = PricingComponent.new(params[:pricing_component])
-    @pricing_component.pricing_types << @pricing_type
+    @pricing_component.pricing_expressions << @pricing_expression
 
     if @pricing_component.save
       flash[:notice] = 'PricingComponent was successfully created.'
-      redirect_to({:action => "edit", :controller => "pricing_types", :id => @pricing_type.id})
+      redirect_to({:action => "edit", :controller => "pricing_types", :id => @pricing_expression.pricing_type.id})
     else
       render :action => "new"
     end
@@ -49,6 +49,6 @@ class PricingComponentsController < ApplicationController
     @pricing_component = PricingComponent.find(params[:id])
     @pricing_component.destroy
 
-    redirect_to({:action => "edit", :controller => "pricing_types", :id => @pricing_type.id})
+    redirect_to({:action => "index", :controller => "pricing_types"})
   end
 end
