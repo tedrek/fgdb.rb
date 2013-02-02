@@ -620,7 +620,11 @@ class Conditions < ConditionsBase
   end
 
   def is_pickup_conditions(klass)
-    return ["#{klass.table_name}.is_pickup = ?", true]
+    if klass == GizmoEvent
+      return ["(#{klass.table_name}.donation_id IS NOT NULL AND donations.is_pickup = ?)", true]
+    else
+      return ["#{klass.table_name}.is_pickup = ?", true]
+    end
   end
 
   def needs_attention_conditions(klass)
