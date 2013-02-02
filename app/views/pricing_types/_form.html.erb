@@ -3,20 +3,12 @@
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.label :gizmo_type_id, "Gizmo Type (falls back to printme type if blank)" %><br />
-    <%= f.select :gizmo_type_id, [["<to set automatically during sales entry>", nil]] + GizmoContext.sale.gizmo_types.sort_by(&:description).map{|x| [x.description, x.id]} %>
-  </p>
-  <p>
-    <%= f.label :base_value, "Base Price (before multiplier)" %><br />
-    <%= f.text_field :base_value %>
-  </p>
-  <p>
-    <%= f.label :multiplier, "Multiplier (for sum of base price and pricing component values)" %><br />
-    <%= f.text_field :multiplier %>
-  </p>
-  <p>
     <%= f.label :round_by, "Round By (dollar increments, or 0.00 for no rounding)" %><br />
     <%= f.text_field :round_by %>
+  </p>
+  <p>
+    <%= f.label :gizmo_type_id, "Gizmo Type (falls back to printme type if blank)" %><br />
+    <%= f.select :gizmo_type_id, [["<to set automatically during sales entry>", nil]] + GizmoContext.sale.gizmo_types.sort_by(&:description).map{|x| [x.description, x.id]} %>
   </p>
   <p>
     <%= f.label :type_ids, "Build Type (optional for automatic detection)" %><br />
