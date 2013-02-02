@@ -7,6 +7,7 @@ class CreatePricingBonus < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_foreign_key :pricing_bonus, :system_pricing_id, :system_pricings, :id, :on_delete => :cascade
   end
 
   def self.down
