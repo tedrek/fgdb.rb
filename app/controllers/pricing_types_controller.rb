@@ -62,6 +62,31 @@ class PricingTypesController < ApplicationController
     end
   end
 
+  def import_table
+    @struct = OpenStruct.new(params[:open_struct])
+    PricingData.load_from_csv(@struct.name, @struct.csv.read)
+    redirect_to :action => "show_table", :id => @struct.name
+  end
+
+  def remove_expression
+    PricingExpression.find_by_id(params[:pricing_expression_id]).destroy
+    redirect_to :back
+  end
+
+  def remove_term
+    #PricingExpression.find_by_id(params[:pricing_expression_id])
+    #expression, term
+  end
+
+  def add_expression
+    PricingExpression.new(:pricing_type_id => params[:pricing_type_id]).save
+    redirect_to :action => "edit", :id => params[:pricing_type_id]
+  end
+
+  def add_term
+    params[:pricing_expression_id] # TODO
+  end
+
   def destroy
     @pricing_type = PricingType.find(params[:id])
     @pricing_type.ineffective_on = DateTime.now
