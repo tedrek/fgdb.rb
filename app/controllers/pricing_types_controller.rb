@@ -47,6 +47,21 @@ class PricingTypesController < ApplicationController
     end
   end
 
+  def show_table
+    @printme_pull_from = params[:id]
+    pd = PricingData.find_all_by_printme_pull_from(@printme_pull_from)
+    cols = pd.map{|x| x.lookup_type}.uniq.sort
+    rows = pd.map{|x| x.printme_value}.uniq.sort
+    data = {}
+    pd.each{|x|
+      data[[x.lookup_type, x.printme_value]] = x.lookup_value
+    }
+    @table = [[@printme_pull_from, *cols]]
+    rows.each do |row|
+      @table << [row, *cols.map{|col| data[[col, row]]}]
+    end
+  end
+
   def destroy
     @pricing_type = PricingType.find(params[:id])
     @pricing_type.ineffective_on = DateTime.now

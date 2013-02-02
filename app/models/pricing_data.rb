@@ -20,4 +20,8 @@ class PricingData < ActiveRecord::Base
     pd = PricingData.find_by_printme_pull_from_and_printme_value_and_lookup_type(printme_pull_from, printme_value, lookup_type)
     return pd ? pd.lookup_value : nil
   end
+
+  def PricingData.tables
+    DB.exec("SELECT DISTINCT printme_pull_from FROM pricing_datas;").to_a.map{|x| x.values.first}
+  end
 end

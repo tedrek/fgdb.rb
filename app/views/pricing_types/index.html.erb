@@ -5,3 +5,12 @@
 <br />
 
 <%= link_to 'New pricing type', {:action => "new"} %>
+
+<h2>Pricing Tables</h2>
+
+Import: (name and csv for PricingData.load_from_csv)<br />
+<br />
+<% PricingData.tables.each do |t| %>
+<%= link_to "View #{t} table", {:action => "show_table", :id => t} %><br />
+<% end %>
+
