@@ -8,9 +8,17 @@
 
 <h2>Pricing Tables</h2>
 
-Import: (name and csv for PricingData.load_from_csv)<br />
-<br />
 <% PricingData.tables.each do |t| %>
 <%= link_to "View #{t} table", {:action => "show_table", :id => t} %><br />
+<% end %>
+
+<h3>Import Table:</h3>
+<% @import = OpenStruct.new %>
+<% form_for @import, :html => {:enctype => "multipart/form-data"}, :url => {:action => "import_table"} do |f| %>
+<%= f.label :name, "Name (any existing values will be overwritten)" %>
+<%= f.text_field :name %>
+<%= f.label :csv, "CSV file (with column headers)" %>
+<%= f.file_field :csv %><br />
+<%= f.submit "Import" %>
 <% end %>
 
