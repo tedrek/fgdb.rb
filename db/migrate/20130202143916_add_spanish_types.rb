@@ -3,8 +3,8 @@ class AddSpanishTypes < ActiveRecord::Migration
     for i in [:spanish_build, :spanish_adoption]
       ct = ContactType.new
       ct.for_who = 'per'
-      ct.description = i.to_s.sub("_", "")
-      ct.name = i
+      ct.description = i.to_s.sub("_", " ")
+      ct.name = i.to_s
       ct.instantiable = true
       ct.save!
     end
