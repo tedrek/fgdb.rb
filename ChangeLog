@@ -15,6 +15,7 @@ fgdb.rb (1.0.110) released; urgency=low
   * Fix the amount still due to not be displayed on resolved invoices
     (Closes: #33188)
   * Add is_pickup condition to the gizmos report
+  * Complex store pricing rules should be supported now (Closes: #30629)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 08:44:22 -0800
 
