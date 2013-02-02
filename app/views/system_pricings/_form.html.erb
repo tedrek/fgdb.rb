@@ -20,7 +20,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   </tr>
   <% end %>
 </table>
-<% if @system_pricing.pricing_type.values_to_lookup.length > 0 %>
+<% if @system_pricing.pricing_type && @system_pricing.pricing_type.values_to_lookup.length > 0 %>
   <br />
   <h2>Information pulled from lookup tables</h2>
   <% seen_v = [] %>
@@ -47,7 +47,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
       <tr>
 <% if @system_pricing.pricing_type %>
         <th>Pricing Type:</th>
-        <td><%= @system_pricing.pricing_type.name %> <%= f.hidden_field :pricing_type_id, {:value => @system_pricing.pricing_type_id} %>
+        <td><%= @system_pricing.pricing_type.name %> <%= f.hidden_field :pricing_type_id, {:value => @system_pricing.pricing_type_id} %> <%= link_to "Use a Different Type", {:action => "create", :system_pricing => {:system_id => @system_pricing.system_id, :noset_type => true}} %>
           <% if @system_pricing.pricing_type.replaced? or @system_pricing.pricing_values.select{|x| x.replaced?}.length > 0 %>
             <br /><b><span class="error">Warning: The pricing information used for this system is outdated.</span>
           <% end %>

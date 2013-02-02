@@ -35,11 +35,25 @@ class PricingTypesController < ApplicationController
   def update
     orig_pricing_type = PricingType.find(params[:id])
     @pricing_type = orig_pricing_type.clone
+    pe = []
+    orig_pricing_type.pricing_expressions.each do |e|
+      mult = params[:expr_mult][e.id.to_s]
+      new = e.clone
+      e.pricing_type = @pricing_type
+      e.multiplier = mult
+      pe << e
+    end
+    @pricing_type.pricing_expressions = pe
 
     if @pricing_type.update_attributes(params[:pricing_type]) && @pricing_type.save
       orig_pricing_type.replaced_by_id = @pricing_type.id
       orig_pricing_type.ineffective_on = DateTime.now
       orig_pricing_type.save!
+      params[:comp_mult].each do |k, v|
+        pc = PricingComponent.find_by_id(k)
+        pc.multiplier = v
+        pc.save
+      end
       flash[:notice] = 'PricingType was successfully updated.'
       redirect_to({:action => "edit", :id => @pricing_type.id})
     else
