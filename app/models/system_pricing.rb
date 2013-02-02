@@ -96,8 +96,10 @@ class SystemPricing < ActiveRecord::Base
     end
   end
 
+  attr_accessor :noset_type
+
   def autodetect_type_and_values
-    return unless self.spec_sheet
+    return unless self.spec_sheet and self.noset_type.nil?
     PricingType.active.automatic.sort_by(&:matching_conds).reverse.each do |pt|
       if pt.matches?(self.pricing_hash)
         self.pricing_type = pt

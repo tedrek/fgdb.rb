@@ -24,7 +24,7 @@ class PricingType < ActiveRecord::Base
   end
 
   def values_to_lookup
-    pricing_components.select{|x| !x.lookup_value.nil?}
+    pricing_components.select{|x| !x.lookup_type.nil?}
   end
 
   def to_equation_text
