@@ -3,6 +3,7 @@
 set -e
 
 if [ "$(id -un)" != "dbadmin" ]; then
+    sudo chown -R dbadmin:dbadmin /var/www/fgdb.rb/ /home/dbadmin/fgdb.rb/
     exec sudo su - dbadmin -c /home/dbadmin/auto-update
     exit $?
 fi
