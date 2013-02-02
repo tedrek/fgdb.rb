@@ -93,7 +93,7 @@
   <% if @donation.invoiced? %>
     <tr>
       <td>&nbsp;</td>
-        <td><strong>Amount Still Due:</strong></td>
+        <td><strong><%= @donation.resolved? ? "Amount:" : "Amount Still Due:" %></strong></td>
         <td><strong><%= my_number_to_currency(@donation.amount_invoiced_cents) %></strong></td>
     </tr>
   <% end %>
