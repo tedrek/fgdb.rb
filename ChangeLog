@@ -10,8 +10,10 @@ fgdb.rb (1.0.110) UNRELEASED; urgency=low
   * Add contact types for spanish build and adoption (Closes: #33506)
   * Add the T-Shirt type to disbursements for staff adoption
     disbursement purposes (Closes: #33469)
+  * Automatically change the contact type in sales to named when a
+    system type requiring an id is selected (Closes: #33341)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 06:45:33 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 06:51:45 -0800
 
 fgdb.rb (1.0.109) released; urgency=low
 
