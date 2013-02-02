@@ -1186,7 +1186,7 @@ function systems_type_selected() {
     return;
   if(system_types.include($('gizmo_type_id').value) || $('gizmo_type_id').value == "") {
     $('system_id').enable();
-    if($('sale_contact_type')) {
+    if($('sale_contact_type') && $('sale_contact_type').value != 'named') {
       $('sale_contact_type').value = 'named';
       trigger_change_on($('sale_contact_type'));
     }
