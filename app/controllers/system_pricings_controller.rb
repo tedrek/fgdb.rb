@@ -24,7 +24,7 @@ class SystemPricingsController < ApplicationController
     diff = 0
     if params[:pricing_bonuses]
       params[:pricing_bonuses].each do |k, x|
-        diff += x.delete("amount").to_i
+        diff += x.delete("amount_cents").to_i
       end
     end
     @system_pricing.set_calculated_price
@@ -60,7 +60,6 @@ class SystemPricingsController < ApplicationController
 
   def create
     @system_pricing = SystemPricing.new(params[:system_pricing])
-
     @system = @system_pricing.system
 
     unless @system_pricing.spec_sheet
@@ -81,7 +80,12 @@ class SystemPricingsController < ApplicationController
       @field_errors = @system_pricing.field_errors
     end
 
+    pricing_bonuses = apply_line_item_data(@system_pricing, PricingBonus, "pricing_bonuses")
+
+    @system_pricing.pricing_bonuses = pricing_bonuses
     if @system_pricing.magic_bit && @system_pricing.save
+      pricing_bonuses.each{|x| x.system_pricing = @system_pricing}
+      pricing_bonuses.each{|x| x.save}
       flash[:notice] = 'SystemPricing was successfully created.'
       redirect_to({:action => "show", :id => @system_pricing.id})
     else
@@ -91,7 +95,7 @@ class SystemPricingsController < ApplicationController
 
   def update
     @system_pricing = SystemPricing.find(params[:id])
-    apply_line_item_data(@system_pricing, PricingBonus)
+    pricing_bonuses = apply_line_item_data(@system_pricing, PricingBonus, "pricing_bonuses")
     @system = @system_pricing.system
     if @system
       @spec_sheet = @system_pricing.spec_sheet
@@ -99,7 +103,10 @@ class SystemPricingsController < ApplicationController
       @field_errors = @system_pricing.field_errors
     end
 
+    @system_pricing.pricing_bonuses = pricing_bonuses
     if @system_pricing.update_attributes(params[:system_pricing])
+      pricing_bonuses.each{|x| x.system_pricing = @system_pricing}
+      pricing_bonuses.each{|x| x.save}
       flash[:notice] = 'SystemPricing was successfully updated.'
       redirect_to({:action => "show", :id => @system_pricing.id})
     else

@@ -12,8 +12,10 @@ fgdb.rb (1.0.110) UNRELEASED; urgency=low
     disbursement purposes (Closes: #33469)
   * Automatically change the contact type in sales to named when a
     system type requiring an id is selected (Closes: #33341)
+  * Fix the amount still due to not be displayed on resolved invoices
+    (Closes: #33188)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 06:51:45 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 07:00:30 -0800
 
 fgdb.rb (1.0.109) released; urgency=low
 

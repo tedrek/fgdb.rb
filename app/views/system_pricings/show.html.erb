@@ -21,6 +21,17 @@
 </p>
 
 <p>
+  <b>Pricing Bonuses:</b>
+  <% if @system_pricing.pricing_bonuses.length == 0 %>
+    No Bonus Amounts
+  <% else %>
+    <% @system_pricing.pricing_bonuses.each do |b| %>
+      <br /><%= b.amount %>: <%= b.reason %>
+    <% end %>
+  <% end %>
+</p>
+
+<p>
   <b>Calculated Price:</b>
   $<%=h @system_pricing.calculated_price %>
 </p>
