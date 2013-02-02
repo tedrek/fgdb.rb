@@ -19,6 +19,7 @@ fgdb.rb (1.0.110) released; urgency=low
     system type requiring an id is selected (Closes: #33341)
   * Fix the amount still due to not be displayed on resolved invoices
     (Closes: #33188)
+  * Add is_pickup condition to the gizmos report
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 08:44:22 -0800
 
