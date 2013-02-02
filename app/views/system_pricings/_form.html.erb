@@ -20,6 +20,23 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   </tr>
   <% end %>
 </table>
+<% if @system_pricing.pricing_type.values_to_lookup.length > 0 %>
+  <br />
+  <h2>Information pulled from lookup tables</h2>
+  <% seen_v = [] %>
+  <table class="awesome" width="100%">
+  <% @system_pricing.pricing_type.values_to_lookup.each do |x| %>
+    <% unless seen_v.include?(x.lookup_type)
+         seen_v << x.lookup_type %>
+  <tr>
+    <th><%= x.lookup_type.titleize %>:</th>
+  <td><%= x.find_value(@system_pricing.pricing_hash) %> (<%= x.pull_from %>: <%= x.printme_pull(@system_pricing.pricing_hash) %>)</td>
+  </tr>
+    <% end %>
+  <% end %>
+</table>
+<% end %>
+<h2>
 </fieldset>
 <% end %>
   <p>
