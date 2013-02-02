@@ -82,6 +82,7 @@ class SystemPricingsController < ApplicationController
 
     pricing_bonuses = apply_line_item_data(@system_pricing, PricingBonus, "pricing_bonuses")
 
+    @system_pricing.pricing_bonuses = pricing_bonuses
     if @system_pricing.magic_bit && @system_pricing.save
       pricing_bonuses.each{|x| x.system_pricing = @system_pricing}
       pricing_bonuses.each{|x| x.save}
@@ -102,6 +103,7 @@ class SystemPricingsController < ApplicationController
       @field_errors = @system_pricing.field_errors
     end
 
+    @system_pricing.pricing_bonuses = pricing_bonuses
     if @system_pricing.update_attributes(params[:system_pricing])
       pricing_bonuses.each{|x| x.system_pricing = @system_pricing}
       pricing_bonuses.each{|x| x.save}

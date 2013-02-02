@@ -67,7 +67,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
 </tr>
 <tr>
         <th>Total Price:</th>
-        <td><span id="total_price">$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></span></td>
+        <td><span id="total_price">$<%= @system_pricing.calculated_price %></span></td>
 </tr>
 
 <% end %>
@@ -76,8 +76,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   </p>
   <% end %>
 <% if @system_pricing.pricing_type %>
-  <%= javascript_tag "update_calculated_price($(#{(f.object.id.nil? ? "new_system_pricing" : "edit_system_pricing_#{f.object.id}").inspect}));" %>
-  <%= f.hidden_field :magic_bit, {:valud => "1"} %>
+  <%= f.hidden_field :magic_bit, {:value => "1"} %>
 
 <br />
 <fieldset>
@@ -88,6 +87,8 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
 <% interface[:amount_cents] = text_field_tag 'amount_cents', nil, kdh.merge({}) %>
 <% interface[:reason] = text_field_tag 'reason', nil, kdh.merge({}) %>
 <%= line_item("pricing_bonuses", "PricingBonusFrontend", interface, values, true) %>
+
+<%= javascript_tag "update_calculated_price($(#{(f.object.id.nil? ? "new_system_pricing" : "edit_system_pricing_#{f.object.id}").inspect}));" %>
 
 </fieldset>
 
