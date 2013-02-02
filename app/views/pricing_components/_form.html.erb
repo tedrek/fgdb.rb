@@ -2,7 +2,7 @@
   Note: This component is part of the following Pricing Types: <%= f.object.pricing_types.map(&:name).join(", ")%>
 </p>
 <% unless f.object.id %>
-<%= hidden_field_tag :pricing_type_id, @pricing_type.id %>
+<%= hidden_field_tag :pricing_expression_id, @pricing_expression.id %>
 <% end %>
   <p>
     <%= f.label :name %><br />
