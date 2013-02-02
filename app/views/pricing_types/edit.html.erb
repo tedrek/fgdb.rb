@@ -3,6 +3,10 @@
 <% form_for(@pricing_type, :url => {:action => "update", :id => @pricing_type.id}) do |f| %>
   <%= f.error_messages %>
 
+Equation:
+  <%= @pricing_type.to_equation_text %> <br />
+  <%= f.text_field(:multiplier, :size => 6) + ' * (' + ([f.text_field(:base_value, :size => 6)] + @pricing_type.pricing_expressions.map{|x| '(' + ([f.text_field(:pricing_components, :size => 6)] + x.pricing_components.map{|y| '(' + f.text_field(:pricing_components, :size => 6) + ' * ' + y.name + ') [x]'} + [link_to "...", {}, :target => "_blank"]).join(" * ") + ') [x]'} + [link_to "...", {}, :target => "_blank"]).join(' + ') + ')' %>
+
   <%= render :partial => "form", :locals => {:f => f} %>
 
   <p style="clear: left">

@@ -77,7 +77,7 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def to_equation_text
-    self.pricing_type.multiplier + ' * (' + self.pricing_type.pricing_expressions.map{|x| x.to_equation_text}.join(' + ') + ')'
+    self.pricing_type.to_equation_text
   end
 
   def autodetect_values
