@@ -794,7 +794,7 @@ var ReasonComponent = Class.create(InputBasedComponent, {
 });
 
 var AmountComponent = Class.create(InputBasedComponent, {
-  linelist: ['amount'],
+  linelist: ['amount_cents'],
 
   value_to_human: function(value) {
     return dollar_cent_value(value);
@@ -818,7 +818,7 @@ var PricingBonusFrontend = Class.create(ComponentLineItem, {
     var value = 0;
     var lines = $(this.prefix + "_lines").getElementsBySelector("tr.line");
     for(var i = 0; i < lines.length; i++) {
-      value += parseInt(this.getValueBySelector(lines[i], ".amount"));
+      value += parseInt(this.getValueBySelector(lines[i], ".amount_cents"));
     }
     return dollar_value(value);
   },
