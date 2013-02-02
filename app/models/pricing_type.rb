@@ -15,6 +15,14 @@ class PricingType < ActiveRecord::Base
 
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
 
+  # FIXME
+  def borked=(v)
+  end
+
+  def borked
+    ""
+  end
+
   def to_equation_text
     multiplier + ' * (' + ((self.base_value_cents == 0 ? [] : [self.base_value]) + pricing_expressions.map{|x| x.to_equation_text}).join(' + ') + ')'
   end

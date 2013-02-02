@@ -6,7 +6,7 @@
 Equation:
   <%= @pricing_type.to_equation_text %> <br />
   WARNING: The inner most multiplier for individual components may affect multiple different pricing sheets which use that component. If you do not want to do this, use the multiplier outside of the subexpression.<br/><br/>
-  <%= f.text_field(:multiplier, :size => 6) + ' * (' + ([f.text_field(:base_value, :size => 6)] + @pricing_type.pricing_expressions.map{|x| '(' + ([f.text_field(:pricing_components, :size => 6)] + x.pricing_components.map{|y| '(' + f.text_field(:pricing_components, :size => 6) + ' * ' + y.name + ') [x]'} + [link_to "...", {}, :target => "_blank"]).join(" * ") + ') [x]'} + [link_to "...", {}, :target => "_blank"]).join(' + ') + ')' %>
+  <%= f.text_field(:multiplier, :size => 6) + ' * (' + ([f.text_field(:base_value, :size => 6)] + @pricing_type.pricing_expressions.map{|x| '(' + ([f.text_field(:borked, :size => 6)] + x.pricing_components.map{|y| '(' + f.text_field(:borked, :size => 6) + ' * ' + y.name + ') [x]'} + [link_to "...", {}, :target => "_blank"]).join(" * ") + ') [x]'} + [link_to "...", {}, :target => "_blank"]).join(' + ') + ')' %>
 <br/>
 <br />
 Equation modification instructions:<br />
