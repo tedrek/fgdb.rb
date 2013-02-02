@@ -1,12 +1,14 @@
   <p>
     <%= f.label :customer_name %><br />
-    <%= f.text_field :customer_name, :onkeydown => "if(is_tab(event)) { alert('FIXME'); $('open_struct_box_source').enable();}" %>
+    <%= f.text_field :customer_name %>
+    <%# , :onkeydown => "if(is_tab(event)) { alert('FIXME'); $('open_struct_box_source').enable();}" %>
   </p>
   <p>
     <%= f.label :box_source %><br />
-    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true}, {:disabled => 'disabled', :onclick => 'alert("TODO: complete me! [to refocus if disabled]");'} %>
+    <%# , {:disabled => 'disabled', :onclick => 'alert("TODO: complete me! [to refocus if disabled]");'} %>
+    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true} %>
   </p>
-  <% if @work_order.mode != 'fd' %>
+  <% if @work_order.mode == 'ts' %>
   <p>
     <%= f.label :system_id, 'System ID' %>
     <%= f.text_field :system_id %>
