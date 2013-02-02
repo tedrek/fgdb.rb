@@ -5,8 +5,13 @@ fgdb.rb (1.0.110) UNRELEASED; urgency=low
     #33227)
   * Include only assignments after today in the 'over 2 future shifts'
     warning (Closes: #33370)
+  * Add new generics for printme serial number detection (Closes:
+    #33508)
+  * Add contact types for spanish build and adoption (Closes: #33506)
+  * Add the T-Shirt type to disbursements for staff adoption
+    disbursement purposes (Closes: #33469)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 06:36:50 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 06:45:33 -0800
 
 fgdb.rb (1.0.109) released; urgency=low
 
