@@ -22,19 +22,9 @@
     <%= f.label :matcher, "Value to Match Pulled Value Against (if a pulled value is chosen)" %><br />
     <%= f.text_field :matcher %>
   </p>
-<% if f.object.id %>
-<div class="form-element" style="clear: both">
-  To add a new or existing component to this pricing type:
-</div>
-  <% PricingComponent.all.each do |x| %>
-      <% field_id = "pricing_component_#{x.id}" %>
-      <div class="form-element" style="clear: both">
-      <%# check_box_tag "#{f.object_name}[pricing_component_ids][]", x.id, f.object.pricing_components.include?(x), {:id => field_id} -%>
-      <%= label_tag field_id, x.display_name -%>
-      <%= link_to "Edit", :action => "edit", :id => x.id, :controller => "pricing_components" %>
-      </div><br />
+  <% if f.object.id %>
+    List of Pricing Components Used:<br />
+  <% @pricing_type.pricing_components.each do |x| %>
+    <%= x.display_name %> (<%= link_to "Edit", {:action => "edit", :id => x.id, :controller => "pricing_components"}, :target => "_blank" %>)<br />
   <% end %>
-  <div class="form-element" style="clear: both">
-    <%= link_to "Create a new component", {:action => "new", :pricing_type_id => f.object.id, :controller => "pricing_components"} %>
-  </div>
 <% end %>

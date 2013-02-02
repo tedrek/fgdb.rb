@@ -69,13 +69,15 @@ class PricingTypesController < ApplicationController
   end
 
   def remove_expression
-    PricingExpression.find_by_id(params[:pricing_expression_id]).destroy
-    redirect_to :back
+    pe = PricingExpression.find_by_id(params[:pricing_expression_id])
+    pe.destroy
+    redirect_to :action => "edit", :id => pe.pricing_type_id
   end
 
   def remove_term
-    #PricingExpression.find_by_id(params[:pricing_expression_id])
-    #expression, term
+    pe = PricingExpression.find_by_id(params[:pricing_expression_id])
+    pe.pricing_components.delete(PricingComponent.find_by_id(params[:pricing_component_id]))
+    redirect_to :action => "edit", :id => pe.pricing_type_id
   end
 
   def add_expression
@@ -84,7 +86,13 @@ class PricingTypesController < ApplicationController
   end
 
   def add_term
-    params[:pricing_expression_id] # TODO
+    pe = PricingExpression.find_by_id(params[:pricing_expression_id])
+    if params[:pricing_component_id]
+      pe.pricing_components << PricingComponent.find_by_id(params[:pricing_component_id])
+      redirect_to :action => "edit", :id => pe.pricing_type_id
+    else
+      @pricing_expression = pe
+    end
   end
 
   def destroy
