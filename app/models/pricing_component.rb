@@ -27,11 +27,20 @@ class PricingComponent < ActiveRecord::Base
     return n
   end
 
+  def find_value(pricing_hash)
+    return nil unless self.pull_from and self.pull_from.length > 0
+    v = pricing_hash[self.pull_from.to_sym]
+    return v unless self.lookup_type and self.lookup_type.length > 0
+    v = PricingData.lookup(self.pull_from, v, self.lookup_type)
+    return v
+  end
+
   def matched_pricing_value(pricing_hash)
     return [] unless self.pull_from and self.pull_from.length > 0
     list = []
+    expect = find_value(pricing_hash)
     self.pricing_values.each do |x|
-      if x.matches?(pricing_hash[self.pull_from.to_sym])
+      if x.matches?(expect)
         if self.required?
           return [x]
         else
