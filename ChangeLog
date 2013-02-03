@@ -1,5 +1,9 @@
 fgdb.rb (1.0.111) UNRELEASED; urgency=low
 
+  * Fix a corner case bug in the points calculations when the person
+    never received enough points back to adopt a computer and a year
+    has already passed, we should let them earn points again
+    (Closes: #33262)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 08:45:12 -0800
 
