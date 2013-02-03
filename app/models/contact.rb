@@ -141,11 +141,20 @@ class Contact < ActiveRecord::Base
   def points(trade_id = nil)
     effective_hours = hours_effective
     max = Default['max_effective_hours'].to_f
-    effective_hours = [effective_hours, max].min
     negative = points_traded_since_last_adoption("from", trade_id)
     positive = points_traded_since_last_adoption("to", trade_id)
+    positive = positive - effective_points_traded_over_a_year_ago(trade_id)
+    if positive < 0
+      effective_hours = effective_hours + positive
+      positive = 0
+    end
+    effective_hours = [effective_hours, max].min
     sum = effective_hours - negative + positive
     return sum
+  end
+
+  def effective_points_traded_over_a_year_ago(trade_id)
+    points_traded_since_last_adoption("from", trade_id, 1.year.ago)
   end
 
   def cleanup_string(str)
@@ -285,11 +294,15 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def find_volunteer_tasks(cutoff = nil, klass = VolunteerTask, contact_id_type = "", date_field = "date_performed")
+  def find_volunteer_tasks(cutoff = nil, klass = VolunteerTask, contact_id_type = "", date_field = "date_performed", max = nil)
     # if it's named volunteer_tasks it breaks everything
     contact_id_type = contact_id_type + "_" if contact_id_type.length > 0
-    if cutoff
+    if max and cutoff
+      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ? AND #{date_field} < ?", id, cutoff, max ]
+    elsif cutoff
       conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ?", id, cutoff ]
+    elsif max
+      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} < ?", id, max ]
     else
       conditions = [ "#{contact_id_type}contact_id = ?", id ]
     end
@@ -310,8 +323,13 @@ class Contact < ActiveRecord::Base
     BuilderTask.find(:all, :conditions => ["contact_id = ? AND builder_tasks.created_at > ? AND cashier_signed_off_by IS NOT NULL AND action_id = ?", self.id, date_of_last_adoption || Date.parse("2000-01-01"), Action.find_by_name(action_name).id])
   end
 
-  def points_traded_since_last_adoption(type, trade_id = nil)
-    find_volunteer_tasks(date_of_last_adoption ? date_of_last_adoption + 1 : nil, PointsTrade, type, "created_at").delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|
+  def points_traded_since_last_adoption(type, trade_id = nil, after = nil)
+    a = [date_of_last_adoption ? date_of_last_adoption + 1 : nil]
+    if type == "from" and after.nil?
+      a << (1.year.ago + 1).to_datetime # FIXME: Default variable?
+    end
+    date = a.select{|x| !x.nil?}.sort.last
+    find_volunteer_tasks(date, PointsTrade, type, "created_at", after).delete_if{|x| !trade_id.nil? && x.id == trade_id}.inject(0.0) do |t,r|
       t += r.points
     end
   end

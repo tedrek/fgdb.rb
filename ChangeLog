@@ -7,6 +7,10 @@ fgdb.rb (1.0.111) UNRELEASED; urgency=low
     volunteer shift model in addition to assignments, which allows it to
     be caught at the right time when creating a new_class to give a user
     friendly message instead of a crash (Closes: #33460)
+  * Fix a corner case bug in the points calculations when the person
+    never received enough points back to adopt a computer and a year
+    has already passed, we should let them earn points again
+    (Closes: #33262)
   * Implement ongoing shifts which only occur certain weeks of the month
     (Closes: #31869)
 
