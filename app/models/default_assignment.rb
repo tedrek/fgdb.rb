@@ -150,7 +150,8 @@ class DefaultAssignment < ActiveRecord::Base
   end
 
   def time_range_s
-    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "") + (self.week.to_s.strip.length > 0 ? " (week " + self.week + ")" : "")
+    list = [1, 2, 3, 4, 5].select{|n| self.send("week_#{n}_of_month")}
+    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "") + (list.length == 5 ? "" : " [weeks: #{list.join(", ")}]") + (self.week.to_s.strip.length > 0 ? " (week " + self.week + ")" : "")
   end
 
   def display_name

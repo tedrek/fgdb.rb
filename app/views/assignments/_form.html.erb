@@ -88,6 +88,15 @@
     <%= f.time_select :end_time, :ignore_date => true, :include_blank => false, :minute_step => 15 %>
   </p>
 
+  <% if (!is_r) %>
+  <% d = @assignment.volunteer_default_shift.volunteer_default_event.weekday.name %>
+  Weeks of month to generate for (for example, limiting to 1st <%= d %> only):
+    <% for n in [1, 2, 3, 4, 5] %>
+      <%= f.label "week_#{n}_of_month", "#{n.ordinalize} #{d}" %>
+      <%= f.check_box "week_#{n}_of_month" %>
+    <% end %>
+  <% end %>
+
   <% weekday = f.object.id.nil? ? Weekday.first : (is_r ? Weekday.find(f.object.volunteer_shift.volunteer_event.date.wday) : f.object.volunteer_default_shift.volunteer_default_event.weekday)  %>
   <% topts = [weekday.open_time.hour.to_json, weekday.close_time.hour.to_json].join(", ") %>
   <%= javascript_tag "cleanup_hour_select('#{is_r ? "" : "default_"}assignment_start_time_4i', #{topts}); cleanup_hour_select('#{is_r ? "" : "default_"}assignment_end_time_4i', #{topts});" %>

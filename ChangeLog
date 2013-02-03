@@ -7,8 +7,10 @@ fgdb.rb (1.0.111) UNRELEASED; urgency=low
     volunteer shift model in addition to assignments, which allows it to
     be caught at the right time when creating a new_class to give a user
     friendly message instead of a crash (Closes: #33460)
+  * Implement ongoing shifts which only occur certain weeks of the month
+    (Closes: #31869)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Feb 2013 09:38:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Feb 2013 13:24:11 -0800
 
 fgdb.rb (1.0.110) released; urgency=low
 
