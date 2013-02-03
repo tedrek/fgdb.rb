@@ -17,7 +17,7 @@ class WorkShiftsController < ApplicationController
     @multi_enabled = true
   end
 
-  before_filter :update_skedjulnator_access_time, :except => [:staffsched, :perpetual_meetings, :staffsched_publish, :perpetual_meetings_publish]
+  before_filter :update_skedjulnator_access_time, :except => [:staffsched, :staffsched_rollout_until, :staffsched_month, :perpetual_meetings, :staffsched_publish, :perpetual_meetings_publish]
 
   public
 
