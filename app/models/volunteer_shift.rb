@@ -22,6 +22,10 @@ class VolunteerShift < ActiveRecord::Base
     ((difference / 7) % 2 ) == 0 ? "A" : "B"
   end
 
+  def weeknum
+    1 + ((self.date.day - 1) / 7)
+  end
+
   def week
     VolunteerShift.week_for_date(self.date)
   end

@@ -358,7 +358,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.class_credit = ds.class_credit
           s.save!
           tweek = s.week.downcase
-          ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num)) and (q.week.to_s.strip.length == 0 or q.week.downcase == tweek)}.select{|da| !skip_these.include?(da.id)}.each{|da|
+          tweeknum = s.weeknum
+          ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num)) and (q.week.to_s.strip.length == 0 or q.week.downcase == tweek) and (q.send("week_#{tweeknum}_of_month"))}.select{|da| !skip_these.include?(da.id)}.each{|da|
             a = Assignment.new
             a.start_time = da.start_time
             a.end_time = da.end_time
