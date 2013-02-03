@@ -822,10 +822,6 @@ function validate_disbursement() {
 // HELPERS USED IN THE VIEWS //
 ///////////////////////////////
 
-function is_tab(event) {
-  return (event.keyCode==9 && !event.shiftKey);
-}
-
 function is_enabled_visable_there_field_thing(name) {
   var el = $(name);
   if(!el) {

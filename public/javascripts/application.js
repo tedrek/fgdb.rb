@@ -1,6 +1,14 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function handle_enabling(event, e) {
+  if(is_tab(event)) {$(e).enable();};
+}
+
+function is_tab(event) {
+  return (event.keyCode==9 && !event.shiftKey);
+}
+
 function magic_onkeyscroll(event) {
   var target = event.target;
   if(event.ctrlKey)
