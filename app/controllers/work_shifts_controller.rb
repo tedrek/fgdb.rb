@@ -77,9 +77,19 @@ class WorkShiftsController < ApplicationController
     staffsched
   end
 
+  def staffsched_rolled_out
+    @end_date = Default["staffsched_rollout_until"]
+    staffsched
+  end
+
+  def staffsched_month
+    @end_date = (Date.today + 30).to_s
+    staffsched
+  end
+
   def staffsched
     @readonly = true
-    @end_date ||= (Date.today + 60).to_s
+    @end_date ||= Date.today.to_s
     @vacations = Vacation.find(:all, :order => 'effective_date, ineffective_date', :conditions => ["ineffective_date >= ?", Date.today])
     params["conditions"] ||= {:shift_date_enabled => "true", :shift_date_end_date => @end_date, :shift_date_start_date => Date.today.to_s, }
     params["opts"] ||= {:presentation_mode => "Display"}

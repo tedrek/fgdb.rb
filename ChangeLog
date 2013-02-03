@@ -1,7 +1,10 @@
 fgdb.rb (1.0.111) UNRELEASED; urgency=low
 
+  * Add links and actions for today only (new default), rolled out
+    schedule and next 30 days to staff scheduling instead of the 60 day
+    default (Closes: #33513)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 08:45:12 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Feb 2013 09:31:27 -0800
 
 fgdb.rb (1.0.110) released; urgency=low
 
