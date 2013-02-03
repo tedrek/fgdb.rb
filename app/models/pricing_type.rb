@@ -15,14 +15,6 @@ class PricingType < ActiveRecord::Base
 
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
 
-  # FIXME
-  def borked=(v)
-  end
-
-  def borked
-    ""
-  end
-
   def values_to_lookup
     pricing_components.select{|x| !x.lookup_type.nil?}
   end

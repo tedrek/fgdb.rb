@@ -39,5 +39,5 @@
   <p style="clear: left">
     <br />
     <%= f.label :os, "Operating System (optional)" %><br />
-    <%= f.text_field :os %>
+    <%= f.select :box_type, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, :include_blank => true %>
   </p>

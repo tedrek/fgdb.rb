@@ -78,7 +78,6 @@ class WorkOrdersController < ApplicationController
 
   def find_warranty
     # TODO: Type Of Box maps from types as field?
-    # FIXME: OS needs to be dropdown of mac linux or windows
     date = @data['Date??']
     w = WarrantyLength.find_warranty_for(date, @data["Type Of Box"], @data["Source"], @data["OS"])
     return w.nil? ? nil : w.from_date(date)
