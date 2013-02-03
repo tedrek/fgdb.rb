@@ -1,21 +1,23 @@
+  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_box_source', 'open_struct_system_id', 'open_struct_receiver_contact_id', 'open_struct_box_type'];" %>
+  <%# NOTE could have requirelist if we need to force entry %>
   <p>
     <%= f.label :customer_name %><br />
-    <%= f.text_field :customer_name, :onkeydown => "handle_enabling(event, 'open_struct_box_source');" %>
+    <%= f.text_field :customer_name, :onkeydown => "handle_enabling(event, linelist);" %>
   </p>
   <p>
     <%= f.label :box_source %><br />
     onlick => focus on previous?
-    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true}, {:disabled => 'disabled', :onkeydown => "handle_enabling(event, 'open_struct_system_id');"} %>
+    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true}, {:disabled => 'disabled', :onkeydown => "handle_enabling(event, linelist);"} %>
   </p>
   <% if @work_order.mode == 'ts' %>
   <p>
     <%= f.label :system_id, 'System ID' %>
-    <%= f.text_field :system_id, {:disabled => 'disabled', :onkeydown => "handle_enabling(event, 'open_struct_receiver_contact_id');"} %>
+    <%= f.text_field :system_id, {:disabled => 'disabled', :onkeydown => "handle_enabling(event, linelist);"} %>
   </p>
   <% end %>
   <p>
     <%= f.label :receiver_contact_id, "Receiver Contact ID" %><br />
-    <%= f.text_field :receiver_contact_id, {:disabled => 'disabled', :onkeydown => "handle_enabling(event, 'open_struct_box_source');"} %>
+    <%= f.text_field :receiver_contact_id, {:disabled => 'disabled', :onkeydown => "handle_enabling(event, linelist);"} %>
   </p>
   <p>
     <%= f.label :box_type %><br />

@@ -1,8 +1,24 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-function handle_enabling(event, e) {
-  if(is_tab(event)) {$(e).enable();};
+function handle_enabling(event, linelist) {
+  if(is_tab(event)) {
+    var last = "NOT_IT";
+    var found = 0;
+    for(var i = 0; i < linelist.length; i++) {
+      var e = linelist[i];
+      if($(e)) {
+        if(last == event.target.id) {
+          $(e).enable();
+          found += 1;
+        }
+        last = e;
+      }
+    }
+    if(found != 1) {
+      alert("Unexpected field (" + found + "): " + event.target.id);
+    }
+  };
 }
 
 function is_tab(event) {
