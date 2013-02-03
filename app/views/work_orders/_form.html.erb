@@ -6,7 +6,7 @@
   </p>
   <p>
     <%= f.label :box_source %><br />
-    onlick => focus on previous?
+    onlick => focus on previous? see "focus_on_last_enabled" JS code, but onclick doesn't even respond when disabled so not sure how to trigger it...
     <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true}, {:disabled => 'disabled', :onkeydown => "handle_enabling(event, linelist);"} %>
   </p>
   <% if @work_order.mode == 'ts' %>

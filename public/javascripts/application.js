@@ -21,6 +21,19 @@ function handle_enabling(event, linelist) {
   };
 }
 
+function focus_on_last_enabled(linelist) {
+  var last = undefined;
+    for(var i = 0; i < linelist.length; i++) {
+      var e = linelist[i];
+      if($(e) && !$(e).disabled) {
+        last = e;
+      }
+    }
+  if(last) {
+    $(e).focus();
+  }
+}
+
 function is_tab(event) {
   return (event.keyCode==9 && !event.shiftKey);
 }
