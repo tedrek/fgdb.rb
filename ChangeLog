@@ -11,10 +11,12 @@ fgdb.rb (1.0.111) UNRELEASED; urgency=low
     never received enough points back to adopt a computer and a year
     has already passed, we should let them earn points again
     (Closes: #33262)
+  * Implement ongoing shifts which only occur certain weeks of the month
+    (Closes: #31869)
   * Improve the method used to detect generics to know about current
     system id's and add a bunch that I found now (Closes: #33525)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Feb 2013 09:38:21 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Feb 2013 13:24:11 -0800
 
 fgdb.rb (1.0.110) released; urgency=low
 
