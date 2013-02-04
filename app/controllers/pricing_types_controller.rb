@@ -61,7 +61,8 @@ class PricingTypesController < ApplicationController
     end
   end
 
-  def show_table
+  protected
+  def make_a_table
     @printme_pull_from = params[:id]
     pd = PricingData.find_all_by_printme_pull_from(@printme_pull_from)
     cols = pd.map{|x| x.lookup_type}.uniq.sort
@@ -74,6 +75,16 @@ class PricingTypesController < ApplicationController
     rows.each do |row|
       @table << [row, *cols.map{|col| data[[col, row]]}]
     end
+  end
+  public
+
+  def show_table
+    make_a_table
+  end
+
+  def to_csv
+    make_a_table
+    send_data @table.map{|x| gencsv(x)}.join(""), :type => 'text/csv; charset=utf-8; header=present', :disposition => "attachment; filename=#{params[:id]}.csv", :filename => "#{params[:id]}.csv"
   end
 
   def import_table

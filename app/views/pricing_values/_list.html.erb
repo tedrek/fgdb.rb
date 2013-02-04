@@ -1,31 +1,18 @@
 <table class="awesome">
   <tr>
-    <th>Pricing component</th>
-    <th>Name</th>
-    <% if @pricing_component and @pricing_component.pull_from %>
-    <% if @pricing_component.numerical? %>
-    <th>Minimum</th>
-    <th>Maximum</th>
-    <% else %>
-    <th>Matcher</th>
+    <% header = @table.shift; header.shift %>
+    <% header.each do |h| %>
+    <th><%= h %></th>
     <% end %>
-    <% end %>
-    <th>Value cents</th>
+    <th colspan="2"/>
   </tr>
 
-<% for pricing_value in @pricing_values %>
+<% for pricing_value in @table %>
+  <% p_id = pricing_value.shift %>
   <tr>
-    <td><%=h pricing_value.pricing_component_id %></td>
-    <td><%=h pricing_value.name %></td>
-    <% if @pricing_component and @pricing_component.pull_from %>
-    <% if @pricing_component.numerical? %>
-    <td><%=h pricing_value.minimum %></td>
-    <td><%=h pricing_value.maximum %></td>
-    <% else %>
-    <td><%=h pricing_value.matcher %></td>
+    <% for x in pricing_value %>
+      <td><%=h x %></td>
     <% end %>
-    <% end %>
-    <td><%=h pricing_value.value_cents %></td>
     <td><%= link_to 'Edit', {:controller => "pricing_values", :action => "edit", :id => pricing_value.id} %></td>
     <td><%= link_to 'Destroy', {:controller => "pricing_values", :action => "destroy", :id => pricing_value.id}, :confirm => 'Are you sure?' %></td>
   </tr>

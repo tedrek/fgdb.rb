@@ -21,7 +21,7 @@
     <%= f.check_box :multiple %>
   </p>
 <% if f.object.id %>
-<% @pricing_values = f.object.pricing_values %>
 <%= render :partial => "pricing_values/list" %>
+<%= link_to "Download as CSV", :action => "to_csv", :id => @pricing_component.id %> | 
 <%= link_to "Add new pricing value", {:controller => "pricing_values", :action => "new", :pricing_component_id => @pricing_component.id} %>
 <% end %>
