@@ -1,3 +1,4 @@
+<% unless params[:action] == "staffsched_publish" %>
 <div style="clear: left;">
 <% unless params[:conditions] && params[:conditions][:shift_date_start_date] == Date.today.to_s && params["conditions"][:shift_date_end_date] == Date.today.to_s %>
      <%= link_to "Show Today Only", {:action => "staffsched"} %>
@@ -9,4 +10,5 @@
      <%= link_to "Show Next 30 Days", {:action => "staffsched_month"} %>
 <% end %>
 </div>
+<% end %>
 <%= render :partial => "work_shifts/skedjulnator_footer" %>

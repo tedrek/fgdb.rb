@@ -13,8 +13,8 @@
     <% for x in pricing_value %>
       <td><%=h x %></td>
     <% end %>
-    <td><%= link_to 'Edit', {:controller => "pricing_values", :action => "edit", :id => pricing_value.id} %></td>
-    <td><%= link_to 'Destroy', {:controller => "pricing_values", :action => "destroy", :id => pricing_value.id}, :confirm => 'Are you sure?' %></td>
+    <td><%= link_to 'Edit', {:controller => "pricing_values", :action => "edit", :id => p_id} %></td>
+    <td><%= link_to 'Destroy', {:controller => "pricing_values", :action => "destroy", :id => p_id}, :confirm => 'Are you sure?' %></td>
   </tr>
 <% end %>
 </table>
