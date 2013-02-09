@@ -49,8 +49,8 @@ class SystemPricing < ActiveRecord::Base
   def pre_round_cents
     return 0 unless self.pricing_type
     total = self.pricing_type.base_value_cents
-    self.pricing_values.each do |value|
-      total += value.value_cents
+    self.pricing_type.pricing_expressions.each do |value|
+      total += value.amount(self.pricing_values)
     end
     total = (total * self.pricing_type.multiplier_cents)/100.0
     total.to_i
