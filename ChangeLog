@@ -1,4 +1,4 @@
-fgdb.rb (1.0.111) UNRELEASED; urgency=low
+fgdb.rb (1.0.111) released; urgency=low
 
   * Add links and actions for today only (new default), rolled out
     schedule and next 30 days to staff scheduling instead of the 60 day
@@ -16,7 +16,7 @@ fgdb.rb (1.0.111) UNRELEASED; urgency=low
   * Improve the method used to detect generics to know about current
     system id's and add a bunch that I found now (Closes: #33525)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 03 Feb 2013 13:24:11 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Feb 2013 08:54:08 -0800
 
 fgdb.rb (1.0.110) released; urgency=low
 
