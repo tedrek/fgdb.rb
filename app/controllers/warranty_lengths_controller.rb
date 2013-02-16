@@ -14,10 +14,6 @@ class WarrantyLengthsController < ApplicationController
     @warranty_lengths = WarrantyLength.find(:all)
   end
 
-  def show
-    @warranty_length = WarrantyLength.find(params[:id])
-  end
-
   def new
     @warranty_length = WarrantyLength.new
   end
@@ -31,7 +27,7 @@ class WarrantyLengthsController < ApplicationController
 
     if @warranty_length.save
       flash[:notice] = 'WarrantyLength was successfully created.'
-      redirect_to({:action => "show", :id => @warranty_length.id})
+      redirect_to({:action => "index", :id => @warranty_length.id})
     else
       render :action => "new"
     end
@@ -42,7 +38,7 @@ class WarrantyLengthsController < ApplicationController
 
     if @warranty_length.update_attributes(params[:warranty_length])
       flash[:notice] = 'WarrantyLength was successfully updated.'
-      redirect_to({:action => "show", :id => @warranty_length.id})
+      redirect_to({:action => "index", :id => @warranty_length.id})
     else
       render :action => "edit"
     end

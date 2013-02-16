@@ -7,12 +7,43 @@ class WarrantyLength < ActiveRecord::Base
     { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
   }
 
+  validates_numericality_of :length_number
+  validates_presence_of :length_unit
+
+  def length_number
+    read_attribute(:length).to_s.split(".")[0].to_s
+  end
+
+  attr_accessor :length_number_before_type_cast
+  def length_number=(setting)
+    @length_number_before_type_cast = setting
+    self.length = setting.to_i.to_s + "." + length_unit
+  end
+
+  def length_unit=(setting)
+    self.length = length_number + "." + UNITS.select{|x| x.to_s.match(setting)}.first.to_s
+  end
+
+  UNITS = [:years, :months, :days]
+
+  def length
+    eval_length.inspect
+  end
+
+  def length_unit
+    read_attribute(:length).to_s.split(".")[1].to_s.pluralize
+  end
+
   def self.find_warranty_for(date_out, system_type, box_source, os_type = nil)
     WarrantyLength.effective_on(date_out).select{|x| x.system_type == system_type && x.box_source == box_source && (x.os_type.nil? || os_type == x.os_type)}.first
   end
 
   def eval_length
-    eval(length)
+    if length_number.length > 0 && length_unit.length > 0
+      eval(read_attribute(:length))
+    else
+      nil
+    end
   end
 
   def from_date(d = nil)
