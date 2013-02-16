@@ -1,6 +1,6 @@
 class PricingData < ActiveRecord::Base
   def PricingData.load_from_csv(printme_pull_from, csv_data)
-    printme_pull_from = printme_pull_from,.downcase.gsub(' ', '_')
+    printme_pull_from = printme_pull_from.downcase.gsub(' ', '_')
     rows = CSV.parse(csv_data)
     row_header = rows.shift
     row_header.shift # should be == printme_pull_from ?
