@@ -94,7 +94,7 @@ class SystemPricing < ActiveRecord::Base
     return unless self.pricing_type
     self.pricing_type.pricing_components.select{|x| x.lookup_type.to_s.length > 0}.each do |c|
       match = c.matched_pricing_value(self.modified_pricing_hash)
-      self.pricing_values.reject_if{|x|
+      self.pricing_values.reject{|x|
         ! x.pricing_component_id == c.id
       }
       match.each do |m|
