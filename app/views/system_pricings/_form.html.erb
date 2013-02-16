@@ -62,8 +62,8 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
         <% (@system_pricing.pricing_type.pricing_components + @system_pricing.pricing_values.map{|x| x.pricing_component}).uniq.each do |pc| %>
           <tr>
             <th><%= pc.name %><% unless pc.required? %> (optional)<% end %></th>
-            <td><%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.sort_by(&:value_cents).map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids, :id => 'pricing_values_for_' + pc.id.to_s }, { :disabled => false && !pc.lookup_type.nil?, :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]', :onchange =>  "update_calculated_price(event.target.form);", :class => (@system_pricing.missing_required.include?(pc.name)) ? 'fieldWithErrors' : ''} -%></td>
-            <td id="pricing_component_<%= pc.id %>">Score: <%= @system_pricing.pricing_values.select{|x| x.pricing_component_id == pc.id}.inject(0){|t, x| t += x.value_cents}.to_dollars %></td>
+            <td><%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.sort_by(&:value_cents).map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :disabled => false && !pc.lookup_type.nil?, :id => 'pricing_values_for_' + pc.id.to_s, :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]', :onchange =>  "update_calculated_price(event.target.form);", :class => (@system_pricing.missing_required.include?(pc.name)) ? 'fieldWithErrors' : ''} -%></td>
+            <td id="pricing_component_<%= pc.id %>"><%= @system_pricing.pricing_values.select{|x| x.pricing_component_id == pc.id}.inject(0){|t, x| t += x.value_cents}.to_dollars %></td>
           </tr>
         <% end %>
       <% end %>

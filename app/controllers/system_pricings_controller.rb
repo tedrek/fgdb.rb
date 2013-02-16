@@ -36,15 +36,22 @@ class SystemPricingsController < ApplicationController
     end
     render :update do |page|
       @system_pricing.pricing_values.select{|x| x.pricing_component.lookup_type.to_s.length > 0}.each do |c|
-        page << '$("pricing_values_for_' + c.pricing_component_id + '").value = ' + c.name.to_json + ';'
+        page << '$("pricing_values_for_' + c.pricing_component_id.to_s + '").value = ' + c.name.to_json + ';'
       end
       page.hide loading_indicator_id("calculated_price")
       page << '$("calculated_price").innerHTML = "$' + @system_pricing.calculated_price + '";'
       page << '$("total_price").innerHTML = "$' + (@system_pricing.calculated_price_cents + diff).to_dollars + '";'
       page << '$("equation").innerHTML = "' + @system_pricing.to_equation + '";'
+      seen_c = []
       h.each do |k, v|
         page << '$("pricing_component_' + k.to_s + '").innerHTML = ' + v.inject(0){|t, x| t+= x.value_cents}.to_dollars.to_json + ';'
       end
+      @system_pricing.pricing_type.pricing_components.each do |c|
+        unless h.keys.include?(c.id)
+          page << '$("pricing_component_' + c.id.to_s + '").innerHTML = "0.00";'
+        end
+      end
+      
     end
   end
 
