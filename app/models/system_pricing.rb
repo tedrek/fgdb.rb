@@ -94,13 +94,14 @@ class SystemPricing < ActiveRecord::Base
     return unless self.pricing_type
     self.pricing_type.pricing_components.select{|x| x.lookup_type.to_s.length > 0}.each do |c|
       match = c.matched_pricing_value(self.modified_pricing_hash)
-      self.pricing_values.reject{|x|
-        ! x.pricing_component_id == c.id
-      }
-      match.each do |m|
-        self.pricing_values << m
+      if match.length > 0
+        self.pricing_values.reject{|x|
+          ! x.pricing_component_id == c.id
+        }
       end
-
+      match.each do |m|
+        self.pricing_values << m unless self.pricing_values.include?(m)
+      end
     end
   end
 
@@ -192,6 +193,6 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def self.valid_pulls
-    [:processor_product, :processor_speed, :max_l2_l3_cache, :memory_type, :memory_amount, :hd_type, :hd_size, :hd_count, :hd_size_total, :optical_drive, :battery_life]
+    [:processor_product, :processor_speed, :processor_count, :max_l2_l3_cache, :memory_type, :memory_amount, :hd_type, :hd_size, :hd_count, :hd_size_total, :optical_drive, :battery_life]
   end
 end
