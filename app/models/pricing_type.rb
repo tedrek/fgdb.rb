@@ -16,7 +16,7 @@ class PricingType < ActiveRecord::Base
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
 
   def values_to_lookup
-    pricing_components.select{|x| !(x.lookup_type.to_s.length == 0 or x.printme_pull.to_s.length == 0)}
+    pricing_components.select{|x| !(x.lookup_type.to_s.length == 0 or x.pull_from.to_s.length == 0)}
   end
 
   def to_equation_text
