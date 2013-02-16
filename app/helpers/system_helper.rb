@@ -36,6 +36,7 @@ module SystemHelper
         m = o[:processor_product].match(/([0-9.]+\s*[GM]HZ)/i)
         o[:product_processor_speed] = m ? m[0].downcase : nil
       end
+      o[:processor_count] = @processors.select{|x| x.processor != "(N/A)"}.length.to_s
 
       # "Max L2/L3 cache" (Add  all 'em up, but use only L3 if it's there else L2.)
       o[:max_l2_l3_cache] = (@l3_cache_total == "0B" ? @l2_cache_total : @l3_cache_total).downcase.sub(/kb/, "k")

@@ -18,8 +18,13 @@ class PricingData < ActiveRecord::Base
   end
 
   def PricingData.lookup(printme_pull_from, printme_value, lookup_type)
-    pd = PricingData.find_by_printme_pull_from_and_printme_value_and_lookup_type(printme_pull_from, printme_value, lookup_type)
-    return pd ? pd.lookup_value : nil
+    pd = nil
+    PricingData.find_all_by_printme_pull_from_and_lookup_type(printme_pull_from, lookup_type).each do |x|
+      if SystemPricing.does_match?(x.printme_value.to_s, printme_value.to_s)
+        pd = x.lookup_value
+      end
+    end
+    return pd
   end
 
   def PricingData.tables
