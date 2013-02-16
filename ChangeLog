@@ -1,11 +1,11 @@
-fgdb.rb (1.0.112) UNRELEASED; urgency=low
+fgdb.rb (1.0.112) released; urgency=low
 
   * If the shift a contact is signed up for has a description which
     distinguishes it more specifically, display it in the contacts
     display box in parenthesis along with the name of the area
     (Closes: #33833)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Feb 2013 08:54:53 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 16 Feb 2013 08:27:41 -0800
 
 fgdb.rb (1.0.111) released; urgency=low
 
