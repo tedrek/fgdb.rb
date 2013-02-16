@@ -64,7 +64,7 @@ class PricingTypesController < ApplicationController
   protected
   def make_a_table
     @printme_pull_from = params[:id]
-    pd = PricingData.find_all_by_printme_pull_from(@printme_pull_from)
+    pd = PricingData.find_all_by_printme_pull_from(@printme_pull_from.downcase.gsub(' ', '_'))
     cols = pd.map{|x| x.lookup_type}.uniq.sort
     rows = pd.map{|x| x.printme_value}.uniq.sort
     data = {}
