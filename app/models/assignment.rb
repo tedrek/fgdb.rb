@@ -156,7 +156,9 @@ class Assignment < ActiveRecord::Base
   end
 
   def slot_type_desc
-    (self.volunteer_shift.volunteer_task_type_id.nil? ? self.volunteer_shift.volunteer_event.description : self.volunteer_shift.volunteer_task_type.description)
+    b = (self.volunteer_shift.volunteer_task_type_id.nil? ? self.volunteer_shift.volunteer_event.description : self.volunteer_shift.volunteer_task_type.description)
+    b = b + " (#{self.volunteer_shift.description})" if self.volunteer_shift.description and self.volunteer_shift.description.length > 0
+    b
    end
 
   def display_name
