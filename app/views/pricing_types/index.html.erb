@@ -15,7 +15,7 @@
 <h3>Import Table:</h3>
 <% @import = OpenStruct.new %>
 <% form_for @import, :html => {:enctype => "multipart/form-data"}, :url => {:action => "import_table"} do |f| %>
-<%= f.label :name, "Name (any existing values will be overwritten)" %>
+<%= f.label :name, "Name (must match printme pull title, any existing values will be overwritten)" %>
 <%= f.text_field :name %>
 <%= f.label :csv, "CSV file (with column headers)" %>
 <%= f.file_field :csv %><br />

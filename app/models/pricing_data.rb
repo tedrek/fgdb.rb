@@ -1,5 +1,6 @@
 class PricingData < ActiveRecord::Base
   def PricingData.load_from_csv(printme_pull_from, csv_data)
+    printme_pull_from = printme_pull_from.downcase.gsub(' ', '_')
     rows = CSV.parse(csv_data)
     row_header = rows.shift
     row_header.shift # should be == printme_pull_from ?
@@ -22,6 +23,6 @@ class PricingData < ActiveRecord::Base
   end
 
   def PricingData.tables
-    DB.exec("SELECT DISTINCT printme_pull_from FROM pricing_datas;").to_a.map{|x| x.values.first}
+    DB.exec("SELECT DISTINCT printme_pull_from FROM pricing_datas;").to_a.map{|x| x.values.first.humanize}
   end
 end
