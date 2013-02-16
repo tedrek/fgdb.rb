@@ -22,9 +22,3 @@
     <%= f.label :matcher, "Value to Match Pulled Value Against (if a pulled value is chosen)" %><br />
     <%= f.text_field :matcher %>
   </p>
-  <% if f.object.id %>
-    List of Pricing Components Used:<br />
-  <% @pricing_type.pricing_components.each do |x| %>
-    <%= x.display_name %> (<%= link_to "Edit", {:action => "edit", :id => x.id, :controller => "pricing_components"}, :target => "_blank" %>)<br />
-  <% end %>
-<% end %>

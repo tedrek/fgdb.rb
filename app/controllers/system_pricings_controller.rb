@@ -28,11 +28,19 @@ class SystemPricingsController < ApplicationController
       end
     end
     @system_pricing.set_calculated_price
+    h = {}
+    @system_pricing.pricing_values.each do |x|
+      h[x.pricing_component_id] ||= []
+      h[x.pricing_component_id] << x
+    end
     render :update do |page|
       page.hide loading_indicator_id("calculated_price")
       page << '$("calculated_price").innerHTML = "$' + @system_pricing.calculated_price + '";'
       page << '$("total_price").innerHTML = "$' + (@system_pricing.calculated_price_cents + diff).to_dollars + '";'
       page << '$("equation").innerHTML = "' + @system_pricing.to_equation + '";'
+      h.each do |k, v|
+        page << '$("pricing_component_' + k.to_s + '").innerHTML = ' + v.inject(0){|t, x| t+= x.value_cents}.to_dollars.to_json + ';'
+      end
     end
   end
 
