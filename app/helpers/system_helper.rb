@@ -43,11 +43,22 @@ module SystemHelper
       # AND "RAM total", cause it can differ? DISPLAY WARNING)
       o[:total_ram] = @total_memory ? @total_memory.downcase : ""
       o[:individual_ram_total] = @added_total.to_bytes(1).downcase
+      mem_s = @memories.map{|x| x.description}.join(" ")
+      o[:memory_type] = "Unknown"
+      for i in ["DDR", "DDR2", "DDR3"]
+        if mem_s.match(/#{i}/i)
+          o[:memory_type] = i
+        end
+      end
 
       # "HD Size" (first, for now at least),
       if @harddrives.first
         o[:hd_size] = @harddrives.first.size
         o[:hd_size].downcase! unless o[:hd_size].match(/TB/)
+        o[:hd_count] = @harddrives.count
+        o[:hd_type] = @harddrives.first.my_type
+        o[:hd_size_total] = @total_hd_size
+        o[:hd_size_total].downcase! unless o[:hd_size_total].match(/TB/)
       end
 
       optic_cap = @opticals.collect{|x| (x.capabilities || "").split(/, (?:and )?/)}.flatten.uniq.to_sentence
@@ -101,6 +112,7 @@ module SystemHelper
       @l1_cache_total = 0
       @l2_cache_total = 0
       @l3_cache_total = 0
+      @total_hd_size = 0
 
       do_work
 
@@ -296,6 +308,7 @@ module SystemHelper
         h.vendor = @parser.xml_value_of("vendor")
         h.model = @parser.xml_value_of("product")
         h.size = @parser.xml_if("size") ? @parser.xml_value_of("size").to_bytes(0, false, false) : @parser.xml_if("capacity") ? @parser.xml_value_of("capacity").to_bytes(0, false, false) : nil
+        @total_hd_size += @parser.xml_if("size") ? @parser.xml_value_of("size").to_i : @parser.xml_value_of("capacity").to_i
         h.volumes = []
         @parser.xml_foreach(".//*[contains(@id, 'volume')]") do
           v = OpenStruct.new
@@ -306,6 +319,7 @@ module SystemHelper
         end
         @harddrives << h
       end
+      @total_hd_size = @total_hd_size.to_bytes(0, false, false)
 
       # memory
       @parser.xml_foreach("//*[contains(@id, 'memory')]") do
@@ -455,6 +469,7 @@ module SystemHelper
       @l3_cache_total = (@l3_cache.first || 0.to_bytes).gsub(/ /, "")
 
       items_items = items.map{|x| x["_items"]}.flatten.select{|x| !x.nil?}
+
       @harddrives = items_items.select{|x| x["removable_media"] == "no"}.map{|x|
         d = OpenStruct.new
         d.name = x["bsd_name"]
@@ -465,6 +480,7 @@ module SystemHelper
         d.volumes = []
         d
       }
+      @total_hd_size = 0.to_bytes(0, false, false) # TODO ?
       @opticals = items_items.select{|x| x["spata_protocol"] == "atapi"}.map{|x|
         d = OpenStruct.new
         d.name = x["_name"]
