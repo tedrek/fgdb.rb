@@ -32,6 +32,7 @@ module SidebarHelper
     "volunteer_tasks" => "hours",
     "sales" => "sales",
     "work_orders" => "tech support",
+    "warranty_lengths" => "tech support",
     "donations" => "donations",
     "disbursements" => "disbursements",
     "reports" => "reports",
@@ -93,6 +94,7 @@ module SidebarHelper
     sidebar_hash["tech support"]["system returns"] = {:c => "gizmo_returns", :a => "system"}
     sidebar_hash["tech support"]["system history"] = {:c => "spec_sheets", :action => "system"}
     sidebar_hash["tech support"]["work orders"] = {:c => "work_orders"}
+    sidebar_hash["tech support"]["warranty config"] = {:c => "warranty_lengths"}
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
     sidebar_hash["reports"]["cashier contributions"] = {:c => 'reports', :action => "cashier_contributions"}
     # contacts
