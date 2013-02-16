@@ -27,11 +27,15 @@ class SystemPricingsController < ApplicationController
         diff += x.delete("amount_cents").to_i
       end
     end
+    @system_pricing.autodetect_looked_up_values
     @system_pricing.set_calculated_price
     h = {}
     @system_pricing.pricing_values.each do |x|
       h[x.pricing_component_id] ||= []
       h[x.pricing_component_id] << x
+    end
+    @system_pricing.pricing_values.select{|x| x.pricing_component.lookup_type.to_s.length > 0}.each do |c|
+      page << '$("pricing_values_for_' + x.pricing_component_id + '").value = ' + c.name.to_json + ';'
     end
     render :update do |page|
       page.hide loading_indicator_id("calculated_price")

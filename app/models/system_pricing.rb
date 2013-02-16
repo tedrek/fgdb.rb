@@ -80,6 +80,30 @@ class SystemPricing < ActiveRecord::Base
     self.pricing_type.to_equation_text
   end
 
+  def modified_pricing_hash
+    h = self.pricing_hash.dup
+    self.pricing_values.each do |x|
+      if x.pricing_component.pull_from.to_s.length > 0 and x.pricing_component.lookup_type.to_s.length == 0
+        h[x.pricing_component.pull_from.to_sym] = x.matcher.to_s.length > 0 ? x.matcher : x.name
+      end
+    end
+    h
+  end
+
+  def autodetect_looked_up_values
+    return unless self.pricing_type
+    self.pricing_type.pricing_components.select{|x| x.lookup_type.to_s.length > 0}.each do |c|
+      match = c.matched_pricing_value(self.modified_pricing_hash)
+      self.pricing_values.reject_if{|x|
+        ! x.pricing_component_id == c.id
+      }
+      match.each do |m|
+        self.pricing_values << m
+      end
+
+    end
+  end
+
   def autodetect_values
     return unless self.pricing_type
     self.pricing_type.pricing_components.each do |c|
