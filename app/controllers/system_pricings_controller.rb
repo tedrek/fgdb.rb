@@ -36,7 +36,7 @@ class SystemPricingsController < ApplicationController
     end
     render :update do |page|
       @system_pricing.pricing_values.select{|x| x.pricing_component.lookup_type.to_s.length > 0}.each do |c|
-        page << '$("pricing_values_for_' + x.pricing_component_id + '").value = ' + c.name.to_json + ';'
+        page << '$("pricing_values_for_' + c.pricing_component_id + '").value = ' + c.name.to_json + ';'
       end
       page.hide loading_indicator_id("calculated_price")
       page << '$("calculated_price").innerHTML = "$' + @system_pricing.calculated_price + '";'
