@@ -27,9 +27,11 @@ function handle_enabling(event, linelist, optional) {
     for(var i = 0; i < linelist.length; i++) {
       var e = linelist[i];
       if($(e)) {
+        if(e == event.target.id) {
+          found += 1;
+        }
         if(last == event.target.id) {
           $(e).enable();
-          found += 1;
         }
         last = e;
       }

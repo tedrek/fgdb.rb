@@ -1,4 +1,4 @@
-  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_box_source', 'open_struct_system_id', 'open_struct_receiver_contact_id', 'open_struct_box_type', 'open_struct_phone_number', 'open_struct_email', 'open_struct_submit']; optional = ['open_struct_email', 'open_struct_phone_number'];" %>
+  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_box_source', 'open_struct_system_id', 'open_struct_receiver_contact_id', 'open_struct_box_type', 'open_struct_phone_number', 'open_struct_email', 'open_struct_issue', 'open_struct_os', 'open_struct_submit']; optional = ['open_struct_phone_number', 'open_struct_email', 'open_struct_os'];" %>  <p>
   <p>
     <%= f.label :customer_name %><br />
     <%= f.text_field :customer_name %>
@@ -31,5 +31,5 @@
   <p style="clear: left">
     <br />
     <%= f.label :os, "Operating System (optional)" %><br />
-    <%= f.select :box_type, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, :include_blank => true %>
+    <%= f.select :os, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, :include_blank => true %>
   </p>
