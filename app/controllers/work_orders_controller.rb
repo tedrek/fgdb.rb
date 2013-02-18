@@ -74,6 +74,20 @@ class WorkOrdersController < ApplicationController
   end
 
   OS_OPTIONS = ['Linux', 'Mac', 'Windows']
+
+  def get_system_info
+    @system = System.find_by_id(params[:id])
+    render :update do |page|
+      page.hide loading_indicator_id("system_info")
+    end
+  end
+
+  def get_warranty_info
+    render :update do |page|
+      page.hide loading_indicator_id("system_info")
+    end
+  end
+
   protected
 
   def find_warranty

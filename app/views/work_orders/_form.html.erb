@@ -1,3 +1,4 @@
+<%= javascript_tag "system_info_url = #{url_for(:action => "get_system_info").to_json}; warranty_info_url = #{url_for(:action => "get_warranty_info").to_json};" %>
 <% if @work_order.mode == 'ts' %>
   <%= render :partial => 'tech_support', :locals => {:f => f} %>
 <% else %>
