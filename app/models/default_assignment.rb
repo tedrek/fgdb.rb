@@ -69,6 +69,7 @@ class DefaultAssignment < ActiveRecord::Base
 
   def does_conflict?(other)
     return false if self.week.to_s.strip.length > 0 and other.week.to_s.strip.length > 0 and self.week.downcase != other.week.downcase
+    return false if (self.weeks_enabled & other.weeks_enabled).length == 0
     arr = [self, other]
     arr = arr.sort_by(&:start_time)
     a, b = arr
@@ -133,7 +134,7 @@ class DefaultAssignment < ActiveRecord::Base
     if self.contact_id.nil?
       return 'available'
     end
-    if overlap and !self.volshift_stuck and self.week.to_s.strip.length == 0
+    if overlap and !self.volshift_stuck and self.week.to_s.strip.length == 0 and self.weeks_enabled.length == 5 # FIXME
       return 'hardconflict'
     end
     if self.end_time > self.volunteer_default_shift.send(:read_attribute, :end_time) or self.start_time < self.volunteer_default_shift.send(:read_attribute, :start_time)
@@ -149,8 +150,13 @@ class DefaultAssignment < ActiveRecord::Base
     a.select{|x| x.to_s.length > 0}.join(", ")
   end
 
+  def weeks_enabled
+    [1, 2, 3, 4, 5].select{|n| self.send("week_#{n}_of_month")}
+  end
+
   def time_range_s
-    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "") + (self.week.to_s.strip.length > 0 ? " (week " + self.week + ")" : "")
+    list = weeks_enabled
+    (start_time.strftime("%I:%M") + ' - ' + end_time.strftime("%I:%M")).gsub( ':00', '' ).gsub( ' 0', ' ').gsub( ' - ', '-' ).gsub(/^0/, "") + (list.length == 5 ? "" : " [weeks: #{list.join(", ")}]") + (self.week.to_s.strip.length > 0 ? " (week " + self.week + ")" : "")
   end
 
   def display_name

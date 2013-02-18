@@ -1,6 +1,43 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
+function handle_enabling(event, linelist) {
+  if(is_tab(event)) {
+    var last = "NOT_IT";
+    var found = 0;
+    for(var i = 0; i < linelist.length; i++) {
+      var e = linelist[i];
+      if($(e)) {
+        if(last == event.target.id) {
+          $(e).enable();
+          found += 1;
+        }
+        last = e;
+      }
+    }
+    if(found != 1) {
+      alert("Unexpected field (" + found + "): " + event.target.id);
+    }
+  };
+}
+
+function focus_on_last_enabled(linelist) {
+  var last = undefined;
+    for(var i = 0; i < linelist.length; i++) {
+      var e = linelist[i];
+      if($(e) && !$(e).disabled) {
+        last = e;
+      }
+    }
+  if(last) {
+    $(e).focus();
+  }
+}
+
+function is_tab(event) {
+  return (event.keyCode==9 && !event.shiftKey);
+}
+
 function magic_onkeyscroll(event) {
   var target = event.target;
   if(event.ctrlKey)
@@ -614,6 +651,51 @@ function trigger_change_on(element) {
 
 function get_percentage_field_value(field_id) {
   return parseInt($(field_id).options[$(field_id).selectedIndex].text);
+}
+
+function dollar_cent_value(amt) {
+  return dollar_value(cent_value(amt));
+}
+
+function dollar_value(cents) {
+  cents = "" + Math.floor(cents);
+  if (cents.length == 0) {
+    return "0.00";
+  }
+  else if (cents.length == 1) {
+    return "0.0" + cents;
+  }
+  else if (cents.length == 2) {
+    return "0." + cents;
+  }
+  else {
+    return cents.replace(/(\d\d)$/, ".$1");
+  }
+}
+
+function cent_value(value) {
+  var arr = ("" + value).split(".");
+  if (arr.length > 0) {
+    if(arr[0].length > 0)
+      value = parseInt(arr[0]) * 100;
+    else
+      value = 0;
+    if (arr.length > 1) {
+      if (arr[1].length == 1) {
+        value += parseInt(arr[1]) * 10;
+      } else if(arr[1].length > 2) {
+        var tempint = parseInt(arr[1][0] + arr[1][1]);
+        if(parseInt(arr[1][2]) >= 5) {
+          tempint++;
+        }
+        value += tempint;
+      }
+      else {
+        value += parseInt(arr[1]);
+      }
+    }
+  }
+  return value;
 }
 
 function remove_condition(obj_name, value)

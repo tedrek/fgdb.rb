@@ -1,8 +1,13 @@
 class PricingComponent < ActiveRecord::Base
   has_many :pricing_values, :order => 'value_cents DESC', :conditions => 'pricing_values.ineffective_on IS NULL'
-  has_and_belongs_to_many :pricing_types, :conditions => 'pricing_types.ineffective_on IS NULL'
+  has_and_belongs_to_many :pricing_expressions
   validates_presence_of :name
   define_amount_methods_on :multiplier
+
+#  has_and_belongs_to_many :pricing_types, :through => :pricing_expressions, :conditions => 'pricing_types.ineffective_on IS NULL'
+  def pricing_types
+    self.pricing_expressions.map(&:pricing_type).select{|x| x.ineffective_on.nil?}
+  end
 
   def to_equation_text
     added = self.name.downcase.gsub(" ", "_").gsub("/", "_")
@@ -22,11 +27,24 @@ class PricingComponent < ActiveRecord::Base
     return n
   end
 
+  def printme_pull(pricing_hash)
+    pricing_hash[self.pull_from.to_sym]
+  end
+
+  def find_value(pricing_hash)
+    return nil unless self.pull_from and self.pull_from.length > 0
+    v = printme_pull(pricing_hash)
+    return v unless self.lookup_type and self.lookup_type.length > 0
+    v = PricingData.lookup(self.pull_from, v, self.lookup_type)
+    return v
+  end
+
   def matched_pricing_value(pricing_hash)
     return [] unless self.pull_from and self.pull_from.length > 0
     list = []
+    expect = find_value(pricing_hash)
     self.pricing_values.each do |x|
-      if x.matches?(pricing_hash[self.pull_from.to_sym])
+      if x.matches?(expect)
         if self.required?
           return [x]
         else

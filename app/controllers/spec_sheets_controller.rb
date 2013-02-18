@@ -17,40 +17,6 @@ class SpecSheetsController < ApplicationController
   end
   public
 
-  def workorder
-    if params[:id]
-      if !(@contact = Contact.find_by_id(params[:contact_id].to_i))
-        @data = nil
-        @error = "The provided technician contact doesn't exist."
-        return
-      end
-      if (!@contact.user) or (!@contact.user.grantable_roles.include?(Role.find_by_name("TECH_SUPPORT")))
-        @data = nil
-        @error = "The provided technician contact doesn't have the tech support role."
-        return
-      end
-      json = `#{RAILS_ROOT}/script/fetch_ts_data.pl #{params[:id].to_i}`
-      begin
-        @data = JSON.parse(json)
-      rescue
-        @data = nil
-      end
-      if @data.nil? || @data["ID"].to_i != params[:id].to_i
-        @data = nil
-        @error = "The provided ticket number does not exist."
-        return
-      end
-      if @data && @data["Queue"] != "TechSupport"
-        @data = nil
-        @error = "The provided ticket number does not reference a valid TechSupport ticket."
-        return
-      end
-      if @data && @data["System ID"]
-        @system = System.find_by_id(@data["System ID"].to_i)
-      end
-    end
-  end
-
   helper :system
   include SystemHelper
   MY_VERSION=9

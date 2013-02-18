@@ -1,1 +1,14 @@
+<% unless params[:action] == "staffsched_publish" %>
+<div style="clear: left;">
+<% unless params[:conditions] && params[:conditions][:shift_date_start_date] == Date.today.to_s && params["conditions"][:shift_date_end_date] == Date.today.to_s %>
+     <%= link_to "Show Today Only", {:action => "staffsched"} %>
+<% end %>
+<% unless params[:conditions] && params[:conditions][:shift_date_start_date] == Date.today.to_s && params[:conditions][:shift_date_end_date] == Default["staffsched_rollout_until"] %>
+     <%= link_to "Show Rolled Out Schedule (to #{Default["staffsched_rollout_until"]})", {:action => "staffsched_rolled_out"} %>
+<% end %>
+<% unless params[:conditions] && params[:conditions][:shift_date_start_date] == Date.today.to_s && params[:conditions][:shift_date_end_date] == (Date.today + 30).to_s %>
+     <%= link_to "Show Next 30 Days", {:action => "staffsched_month"} %>
+<% end %>
+</div>
+<% end %>
 <%= render :partial => "work_shifts/skedjulnator_footer" %>

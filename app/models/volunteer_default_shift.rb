@@ -18,7 +18,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
   }
 
   def validate
-    errors.add('slot_count', 'cannot be more than one for an intern shift') if self.not_numbered and self.slot_count > 1
+    errors.add('slot_count', 'cannot be more than one for an intern shift') if self.not_numbered and self.slot_count and self.slot_count > 1
   end
 
   before_destroy :get_rid_of_available
@@ -100,39 +100,121 @@ class VolunteerDefaultShift < ActiveRecord::Base
       slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
       slots = [nil] if self.not_numbered
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil? and !x.closed}.each{|x| x.destroy if slots.include?(x.slot_number)}
-      inputs_a = {}
-      inputs_b = {}
+      inputs = {}
+      inputs_always_nweek = {}
+      inputs_always_lweek = {}
+      inputs_always = {}
+      for letter in ['a', 'b']
+        for week in [1, 2, 3, 4, 5]
+          inputs[[letter, week]] = {}
+        end
+        inputs_always_nweek[letter] = {}
+      end
+      for week in [1, 2, 3, 4, 5]
+        inputs_always_lweek[week] = {}
+      end
       full = [(self.read_attribute(:start_time)), (self.read_attribute(:end_time))]
       slots.each{|q|
-        inputs_a[q] = []
-        inputs_b[q] = []
+        for letter in ['a', 'b']
+          for week in [1, 2, 3, 4, 5]
+            inputs[[letter, week]][q] = []
+          end
+          inputs_always_nweek[letter][q] = []
+        end
+        for week in [1, 2, 3, 4, 5]
+          inputs_always_lweek[week][q] = []
+        end
+        inputs_always[q] = []
       }
       DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).each{|x|
-        if slots.include?(x.slot_number)
-          if x.week.to_s.strip == '' or x.week.downcase == 'a'
-            inputs_a[x.slot_number].push([(x.start_time), (x.end_time)])
-          end
-          if x.week.to_s.strip == '' or x.week.downcase == 'b'
-            inputs_b[x.slot_number].push([(x.start_time), (x.end_time)])
+        slot = x.slot_number
+        if slots.include?(slot)
+          list = [1, 2, 3, 4, 5].select{|n| x.send("week_#{n}_of_month")}
+          letter = x.week.to_s.downcase.strip
+          t = [(x.start_time), (x.end_time)]
+          if letter == '' && list.length == 5
+            inputs_always[slot].push(t)
+            for week in [1, 2, 3, 4, 5]
+              inputs_always_lweek[week][slot].push(t)
+              for letter in ['a', 'b']
+                inputs[[letter, week]][slot].push(t)
+              end
+            end
+            for letter in ['a', 'b']
+              inputs_always_nweek[letter][slot].push(t)
+            end
+          elsif list.length == 5
+            inputs_always_nweek[letter][slot].push(t)
+            for week in [1, 2, 3, 4, 5]
+              inputs_always_lweek[week][slot].push(t)
+              inputs[[letter, week]][slot].push(t)
+            end
+            inputs_always[slot].push(t)
+          elsif letter == ''
+            for letter in ['a', 'b']
+              inputs_always_nweek[letter][slot].push(t)
+            end
+            list.each do |num|
+              inputs_always_lweek[num][slot].push(t)
+              for letter in ['a', 'b']
+                inputs[[letter, num]][slot].push(t)
+              end
+            end
+            inputs_always[slot].push(t)
+          else
+            inputs_always[slot].push(t)
+            list.each do |week|
+              inputs[[letter, week]][slot].push(t)
+              inputs_always_lweek[week][slot].push(t)
+            end
+            inputs_always_nweek[letter][slot].push(t)
           end
         end
       }
       slots.each{|q|
-          a = inputs_a[q]
-          b = inputs_b[q]
-          both = a + b
-          both_results = self.class.range_math(full, *both)
-          a_result = self.class.range_math(full, *(both_results + a))
-          b_result = self.class.range_math(full, *(both_results + b))
-          [['', both_results], ['A', a_result], ['B', b_result]].each{|wk, results|
-            results.each{|x|
-              a = DefaultAssignment.new
-              a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
-              a.slot_number = q unless self.not_numbered
-              a.week = wk
-              a.save!
+        # inputs_always looks only at inputs_always
+        # inputs_always_nweek looks at results_always and inputs_always_nweek
+        # inputs_always_lweek looks at results_always and inputs_always_lweek
+        # inputs looks at results_always, results_always_lweek, results_always_nweek
+        results_always_nweek = {}
+        results_always_lweek = {}
+        results = {}
+        results_always = self.class.range_math(full, *(inputs_always[q]))
+        for letter in ['a', 'b']
+          results_always_nweek[letter] = self.class.range_math(full, *(inputs_always_nweek[letter][q] + results_always))
+        end
+        for week in [1, 2, 3, 4, 5]
+          results_always_lweek[week] = self.class.range_math(full, *(inputs_always_lweek[week][q] + results_always))
+        end
+        for letter in ['a', 'b']
+          for week in [1, 2, 3, 4, 5]
+            results[[letter, week]] = self.class.range_math(full, *(inputs[[letter, week]][q] + results_always + results_always_lweek[week] + results_always_nweek[letter]))
+          end
+        end
+        list = [['', -1, results_always]]
+        list << ['A', -1, results_always_nweek['a']]
+        list << ['B', -1, results_always_nweek['b']]
+        for week in [1, 2, 3, 4, 5]
+          list << ['', week, results_always_lweek[week]]
+          list << ['A', week, results[['a', week]]]
+          list << ['B', week, results[['b', week]]]
+        end
+#          both_results = self.class.range_math(full, *both)
+#          a_result = self.class.range_math(full, *(both_results + a))
+#          b_result = self.class.range_math(full, *(both_results + b))
+        list.each{|letter, week, results|
+          results.each{|x|
+            a = DefaultAssignment.new
+            a.volunteer_default_shift_id, a.start_time, a.end_time = self.id, x[0], x[1]
+            a.slot_number = q unless self.not_numbered
+            a.week = letter
+            list = ((week == -1) ? [] : ([1, 2, 3, 4, 5] - [week]))
+            list.each {|n|
+              a.send("week_#{n}_of_month=", false)
             }
+            a.save!
           }
+        }
       }
     ensure
       Thread.current['volskedj2_fillin_processing'].delete(self.id)
@@ -276,7 +358,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
           s.class_credit = ds.class_credit
           s.save!
           tweek = s.week.downcase
-          ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num)) and (q.week.to_s.strip.length == 0 or q.week.downcase == tweek)}.select{|da| !skip_these.include?(da.id)}.each{|da|
+          tweeknum = s.weeknum
+          ds.default_assignments.select{|q| (q.contact_id or q.closed) and ((s.slot_number.nil?) || (q.slot_number == num)) and (q.week.to_s.strip.length == 0 or q.week.downcase == tweek) and (q.send("week_#{tweeknum}_of_month"))}.select{|da| !skip_these.include?(da.id)}.each{|da|
             a = Assignment.new
             a.start_time = da.start_time
             a.end_time = da.end_time

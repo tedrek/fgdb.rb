@@ -1,7 +1,7 @@
 class SalesController < TransactionController
   public
 
-  def display
+  def show
     @txn = @transaction = model.find(params[:id])
     @context = @transaction_type
     render :action => 'receipt'

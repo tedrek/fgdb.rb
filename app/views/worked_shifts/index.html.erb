@@ -122,3 +122,6 @@ Event.observe(window, 'load', function() {
 });
 " %>
 
+<% if @worker and @session_allowed %>
+<%= render :partial => "individual" %>
+<% end %>

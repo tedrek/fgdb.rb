@@ -20,6 +20,23 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   </tr>
   <% end %>
 </table>
+<% if @system_pricing.pricing_type && @system_pricing.pricing_type.values_to_lookup.length > 0 %>
+  <br />
+  <h2>Information pulled from lookup tables</h2>
+  <% seen_v = [] %>
+  <table class="awesome" width="100%">
+  <% @system_pricing.pricing_type.values_to_lookup.each do |x| %>
+    <% unless seen_v.include?(x.lookup_type)
+         seen_v << x.lookup_type %>
+  <tr>
+    <th><%= x.lookup_type.titleize %>:</th>
+  <td><%= x.find_value(@system_pricing.pricing_hash) %> (<%= x.pull_from %>: <%= x.printme_pull(@system_pricing.pricing_hash) %>)</td>
+  </tr>
+    <% end %>
+  <% end %>
+</table>
+<% end %>
+<h2>
 </fieldset>
 <% end %>
   <p>
@@ -30,7 +47,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
       <tr>
 <% if @system_pricing.pricing_type %>
         <th>Pricing Type:</th>
-        <td><%= @system_pricing.pricing_type.name %> <%= f.hidden_field :pricing_type_id, {:value => @system_pricing.pricing_type_id} %>
+        <td><%= @system_pricing.pricing_type.name %> <%= f.hidden_field :pricing_type_id, {:value => @system_pricing.pricing_type_id} %> <%= link_to "Use a Different Type", {:action => "create", :system_pricing => {:system_id => @system_pricing.system_id, :noset_type => true}} %>
           <% if @system_pricing.pricing_type.replaced? or @system_pricing.pricing_values.select{|x| x.replaced?}.length > 0 %>
             <br /><b><span class="error">Warning: The pricing information used for this system is outdated.</span>
           <% end %>
@@ -39,12 +56,14 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
         <th><%= f.label :pricing_type_id, "Choose a Pricing Type:" %></th>
         <td><%= f.select :pricing_type_id, PricingType.active.map{|x| [x.name, x.id]} %></td>
 <% end %>
+<th>Score:</th>
       </tr>
       <% if @system_pricing.pricing_type %>
         <% (@system_pricing.pricing_type.pricing_components + @system_pricing.pricing_values.map{|x| x.pricing_component}).uniq.each do |pc| %>
           <tr>
             <th><%= pc.name %><% unless pc.required? %> (optional)<% end %></th>
-            <td><%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.sort_by(&:value_cents).map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]', :onchange =>  "update_calculated_price(event.target.form);", :class => (@system_pricing.missing_required.include?(pc.name)) ? 'fieldWithErrors' : ''} -%></td>
+            <td><%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.sort_by(&:value_cents).map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :disabled => false && !pc.lookup_type.nil?, :id => 'pricing_values_for_' + pc.id.to_s, :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]', :onchange =>  "update_calculated_price(event.target.form);", :class => (@system_pricing.missing_required.include?(pc.name)) ? 'fieldWithErrors' : ''} -%></td>
+            <td id="pricing_component_<%= pc.id %>"><%= @system_pricing.pricing_values.select{|x| x.pricing_component_id == pc.id}.inject(0){|t, x| t += x.value_cents}.to_dollars %></td>
           </tr>
         <% end %>
       <% end %>
@@ -52,23 +71,36 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
 <tr>
         <th>Pricing Equation:</th>
         <td><span id="equation_used"><%= @system_pricing.to_equation_text %></span></td>
-</tr>
-<tr>
-        <th>Calculation:</th>
         <td><span id="equation"><%= @system_pricing.to_equation %></span></td>
 </tr>
 <tr>
-        <th>Calculated Price:</th>
-        <td><span id="calculated_price">$<%= @system_pricing.set_calculated_price; @system_pricing.calculated_price %></span><%= loading_indicator_tag("calculated_price") %></td>
+        <th>Total Price: <%= loading_indicator_tag("calculated_price") %></th>
+        <td>Calculated Price + Bonus = <span id="calculated_price">$<%= @system_pricing.calculate_price_cents/100.0 %></span> + <span id="bonus_price">$<%= @system_pricing.pricing_bonus %></span></td>
+        <td><span id="total_price">$<%= @system_pricing.calculated_price %></span></td>
 </tr>
+
 <% end %>
     </table>
     <%= javascript_tag "update_calc_url = #{url_for(:action => "calculate").to_json}; calculated_price_loading_id = #{loading_indicator_id("calculated_price").inspect};" %>
   </p>
   <% end %>
 <% if @system_pricing.pricing_type %>
-  <%= javascript_tag "update_calculated_price($(#{(f.object.id.nil? ? "new_system_pricing" : "edit_system_pricing_#{f.object.id}").inspect}));" %>
-  <%= f.hidden_field :magic_bit, {:valud => "1"} %>
+  <%= f.hidden_field :magic_bit, {:value => "1"} %>
+
+<br />
+<fieldset>
+<center>Pricing Bonuses:</center>
+
+<% kdh = {:onkeydown => line_item_on_keydown("pricing_bonuses")} %>
+<% interface = OH.new; values = @system_pricing.pricing_bonuses.map{|x| h = x.to_hash(:amount, :reason, :id); h["amount_cents"] = h[:amount]; h} %>
+<% interface[:amount_cents] = text_field_tag 'amount_cents', nil, kdh.merge({}) %>
+<% interface[:reason] = text_field_tag 'reason', nil, kdh.merge({}) %>
+<%= line_item("pricing_bonuses", "PricingBonusFrontend", interface, values, true) %>
+
+<%= javascript_tag "update_calculated_price($(#{(f.object.id.nil? ? "new_system_pricing" : "edit_system_pricing_#{f.object.id}").inspect}));" %>
+
+</fieldset>
+
   <p>
     <%= f.label :notes %><br />
     <%= f.text_area :notes %>

@@ -27,3 +27,4 @@
 /config/environment.local.rb
 /script/rt
 /mytagpending
+/config/rt_metadata.txt

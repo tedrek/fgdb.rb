@@ -15,7 +15,15 @@ class PricingType < ActiveRecord::Base
 
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
 
-  def pricing_components # FIXME
+  def values_to_lookup
+    pricing_components.select{|x| !(x.lookup_type.to_s.length == 0 or x.pull_from.to_s.length == 0)}
+  end
+
+  def to_equation_text
+    multiplier + ' * (' + ((self.base_value_cents == 0 ? [] : [self.base_value]) + pricing_expressions.map{|x| x.to_equation_text}).join(' + ') + ')'
+  end
+
+  def pricing_components
     self.pricing_expressions.map(&:pricing_components).flatten.uniq
   end
 

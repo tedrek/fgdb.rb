@@ -207,6 +207,10 @@ class Fixnum
 end
 
 class ActiveRecord::Base
+  def self.distinct(column, conds = [])
+    self.find(:all, :conditions => conds, :select => "distinct #{column}").map{|x| x.send(column)}
+  end
+
   def self.acts_as_userstamp
     include ActiveRecord::UserMonitor
   end

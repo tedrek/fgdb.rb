@@ -20,6 +20,13 @@ end
 
 class ApplicationController < ActionController::Base
   protected
+  def gencsv(*a)
+    s = ""
+    a = a.flatten
+    CSV.generate_row(a, a.length, s)
+    return s
+  end
+
   def edit_footnote
     @date = params[:date]
     if params[:controller] == 'shifts'

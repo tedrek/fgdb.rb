@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  system_type: MyString
+  box_source: MyString
+  os_type: MyString
+  length: MyString
+  effecitve_on: 2013-01-19
+  ineffective_on: 2013-01-19
+
+two:
+  system_type: MyString
+  box_source: MyString
+  os_type: MyString
+  length: MyString
+  effecitve_on: 2013-01-19
+  ineffective_on: 2013-01-19

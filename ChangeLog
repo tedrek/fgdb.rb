@@ -1,12 +1,70 @@
-fgdb.rb (1.0.109) UNRELEASED; urgency=low
+fgdb.rb (1.0.113) UNRELEASED; urgency=low
 
-	STORE PRICING CHANGES ARE HERE - SO ARE TS WO's
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 16 Feb 2013 08:28:06 -0800
+
+fgdb.rb (1.0.112) released; urgency=low
+
+  * If the shift a contact is signed up for has a description which
+    distinguishes it more specifically, display it in the contacts
+    display box in parenthesis along with the name of the area
+    (Closes: #33833)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 16 Feb 2013 08:27:41 -0800
+
+fgdb.rb (1.0.111) released; urgency=low
+
+  * Add links and actions for today only (new default), rolled out
+    schedule and next 30 days to staff scheduling instead of the 60 day
+    default (Closes: #33513)
+  * Add validation for end time being before the start time in the
+    volunteer shift model in addition to assignments, which allows it to
+    be caught at the right time when creating a new_class to give a user
+    friendly message instead of a crash (Closes: #33460)
+  * Fix a corner case bug in the points calculations when the person
+    never received enough points back to adopt a computer and a year
+    has already passed, we should let them earn points again
+    (Closes: #33262)
+  * Implement ongoing shifts which only occur certain weeks of the month
+    (Closes: #31869)
+  * Improve the method used to detect generics to know about current
+    system id's and add a bunch that I found now (Closes: #33525)
+  * deliver the overtime report to the management/staff mailing list if
+    there is one instead of hr
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 09 Feb 2013 08:54:08 -0800
+
+fgdb.rb (1.0.110) released; urgency=low
+
+  * Implement multiple bonus fields for store pricings (Closes: #30241)
+  * Show the individual report on the hours logging page (Closes:
+    #33227)
+  * Include only assignments after today in the 'over 2 future shifts'
+    warning (Closes: #33370)
+  * Add new generics for printme serial number detection (Closes:
+    #33508)
+  * Add contact types for spanish build and adoption (Closes: #33506)
+  * Add the T-Shirt type to disbursements for staff adoption
+    disbursement purposes (Closes: #33469)
+  * Automatically change the contact type in sales to named when a
+    system type requiring an id is selected (Closes: #33341)
+  * Fix the amount still due to not be displayed on resolved invoices
+    (Closes: #33188)
+  * Add is_pickup condition to the gizmos report
+  * Complex store pricing rules should be supported now (Closes: #30629)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 02 Feb 2013 08:44:22 -0800
+
+fgdb.rb (1.0.109) released; urgency=low
+
   * Make raw text receipt printing the default only for the store user,
     preventing online sales from accidently printing to the store
     (Closes: #32157). NOTE: requires consistent use of the store shared
     user now.
+  * Beginning work on Tech Support WO and Store Pricing improvements
+  * Change label to say 'Payment Total' in donations (Closes: #33154)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 05 Jan 2013 08:03:07 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 19 Jan 2013 08:58:34 -0800
 
 fgdb.rb (1.0.108) released; urgency=low
 
@@ -32,6 +90,13 @@ fgdb.rb (1.0.108) released; urgency=low
     for sales (Closes: #32598)
   * Clear out the created/updated fields in skedjulnator when copying
     vacations (Closes: #32178)
+  * Fix bug when slot count isn't provided to validate nicely (Closes:
+    #32919)
+  * rename display action to show in sales (Closes: #32985)
+  * Enable empty conditions on recycling shipments (Closes: #33042)
+  * Remember search conditions used when working on a particular
+    recycling shipment, and send the user back their when done (Closes:
+    #33040)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 03 Nov 2012 08:58:20 -0700
 

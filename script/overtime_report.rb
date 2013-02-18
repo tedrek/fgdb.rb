@@ -27,4 +27,5 @@ date_conds.each {|start, fin|
     data +=  "#{x["worker"]}, who's ceiling is #{x["ceiling"]}, worked #{t} hours\n" if t > x["ceiling"].to_f
   }
 }
-Notifier.deliver_text_report("hr_mailing_list", "Overtime Report", data)
+ml = ["management_mailing_list", "hr_mailing_list"].select{|x| Default.keys.include?(x)}.first
+Notifier.deliver_text_report(ml, "Overtime Report", data)

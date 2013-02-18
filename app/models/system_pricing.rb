@@ -6,6 +6,7 @@ class SystemPricing < ActiveRecord::Base
   belongs_to :pricing_type
   has_one :gizmo_type, :through => :pricing_type
   define_amount_methods_on :calculated_price
+  has_many :pricing_bonuses, :class_name => 'PricingBonus', :autosave => true
 
   def gizmo_type
     if self.pricing_type && self.pricing_type.gizmo_type
@@ -28,11 +29,11 @@ class SystemPricing < ActiveRecord::Base
 
   before_save :set_calculated_price
   def set_calculated_price
-    self.calculated_price_cents = calculate_price_cents
+    self.calculated_price_cents = calculate_price_cents + pricing_bonus_cents
   end
 
   def cents_step_ceil(number, step)
-    float = number / 100.0
+    float = number
     int = float.ceil
     return int if step.nil? or step <= 1
     mod = (int % step)
@@ -43,28 +44,65 @@ class SystemPricing < ActiveRecord::Base
     end
   end
 
-  def pre_round_cents # FIXME: print with cents wrapper for .pre_round
+  define_amount_methods_on_fake_attr :pre_round
+
+  def pre_round_cents
     return 0 unless self.pricing_type
     total = self.pricing_type.base_value_cents
-    self.pricing_values.each do |value|
-      total += value.value_cents
+    self.pricing_type.pricing_expressions.each do |value|
+      total += value.amount(self.pricing_values)
     end
-    total = total * self.pricing_type.multiplier_cents
+    total = (total * self.pricing_type.multiplier_cents)/100.0
+    total.to_i
   end
 
   def calculate_price_cents
     total = pre_round_cents
-    # FIXME there's an embedded extra /100.0 that should move out here.
     total = cents_step_ceil(total, self.pricing_type.round_by_cents) if self.pricing_type.round_by_cents
     return total
   end
 
+  define_amount_methods_on :pricing_bonus
+
+  def pricing_bonus=(value)
+    pricing_bonuses = value
+  end
+
+  def pricing_bonus_cents
+    self.pricing_bonuses.inject(0){|t, pb| t+=pb.amount_cents}
+  end
+
   def to_equation
-    self.pricing_type.multiplier + ' * (' + self.pricing_type.pricing_expressions.map{|x| x.to_equation(self.pricing_values)}.join(' + ') + ') = ' + (pre_round_cents/10000.0).to_s
+    self.pricing_type.multiplier + ' * (' + self.pricing_type.pricing_expressions.map{|x| x.to_equation(self.pricing_values)}.join(' + ') + ') = ' + pre_round
   end
 
   def to_equation_text
-    self.pricing_type.multiplier + ' * (' + self.pricing_type.pricing_expressions.map{|x| x.to_equation_text}.join(' + ') + ')'
+    self.pricing_type.to_equation_text
+  end
+
+  def modified_pricing_hash
+    h = self.pricing_hash.dup
+    self.pricing_values.each do |x|
+      if x.pricing_component.pull_from.to_s.length > 0 and x.pricing_component.lookup_type.to_s.length == 0
+        h[x.pricing_component.pull_from.to_sym] = x.matcher.to_s.length > 0 ? x.matcher : x.name
+      end
+    end
+    h
+  end
+
+  def autodetect_looked_up_values
+    return unless self.pricing_type
+    self.pricing_type.pricing_components.select{|x| x.lookup_type.to_s.length > 0}.each do |c|
+      match = c.matched_pricing_value(self.modified_pricing_hash)
+      if match.length > 0
+        self.pricing_values.reject{|x|
+          ! x.pricing_component_id == c.id
+        }
+      end
+      match.each do |m|
+        self.pricing_values << m unless self.pricing_values.include?(m)
+      end
+    end
   end
 
   def autodetect_values
@@ -83,8 +121,10 @@ class SystemPricing < ActiveRecord::Base
     end
   end
 
+  attr_accessor :noset_type
+
   def autodetect_type_and_values
-    return unless self.spec_sheet
+    return unless self.spec_sheet and self.noset_type.nil?
     PricingType.active.automatic.sort_by(&:matching_conds).reverse.each do |pt|
       if pt.matches?(self.pricing_hash)
         self.pricing_type = pt
@@ -153,6 +193,6 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def self.valid_pulls
-    [:processor_product, :processor_speed, :max_l2_l3_cache, :memory_amount, :hd_size, :optical_drive, :battery_life]
+    [:processor_product, :processor_speed, :processor_count, :max_l2_l3_cache, :memory_type, :memory_amount, :hd_type, :hd_size, :hd_count, :hd_size_total, :optical_drive, :battery_life]
   end
 end

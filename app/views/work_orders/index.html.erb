@@ -1,7 +1,10 @@
-<h1>Listing work_orders</h1>
+<h1>Work Orders</h1>
 
-<%= render :partial => "list" %>
+<%# Probably should ask source (Ex: FD) later on to determine fields to be shown. %>
+    <%# f.label :ticket_source %>    <%# f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
 
+<%= link_to 'New work_order', {:action => "new"} %><br />
 <br />
+<%= render :partial => "woform" %>
 
-<%= link_to 'New work_order', {:action => "new"} %>
+

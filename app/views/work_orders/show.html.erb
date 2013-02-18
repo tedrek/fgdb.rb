@@ -1,43 +1,13 @@
-<p>
-  <b>Customer name:</b>
-  <%=h @work_order.customer_name %>
-</p>
-
-<p>
-  <b>Box source:</b>
-  <%=h @work_order.box_source %>
-</p>
-
-<p>
-  <b>Box type:</b>
-  <%=h @work_order.box_type %>
-</p>
-
-<p>
-  <b>Ticket source:</b>
-  <%=h @work_order.ticket_source %>
-</p>
-
-<p>
-  <b>Phone number:</b>
-  <%=h @work_order.phone_number %>
-</p>
-
-<p>
-  <b>Email:</b>
-  <%=h @work_order.email %>
-</p>
-
-<p>
-  <b>Issue:</b>
-  <%=h @work_order.issue %>
-</p>
-
-<p>
-  <b>Os:</b>
-  <%=h @work_order.os %>
-</p>
-
-
-<%= link_to 'Edit', {:action => "edit", :id => @work_order.id} %> |
 <%= link_to 'Back', {:action => "index"} %>
+<% if @data %>
+<div class="noprint">
+<% if @error %>
+<span class="error"><%= @error %><br /><br /></span>
+<% end %>
+<INPUT type="button" id="print_button" value="Print"
+       onclick="window.print();" >
+</div>
+<%= render :partial => 'workorder', :locals => {:data => @data, :system => @system} %>
+<% end %>
+
+
