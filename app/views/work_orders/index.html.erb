@@ -3,8 +3,8 @@
 <%# Probably should ask source (Ex: FD) later on to determine fields to be shown. %>
     <%# f.label :ticket_source %>    <%# f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
 
-<%= link_to 'New quick work order', {:action => "new"} %> |
-<%= link_to 'New technician work order', {:action => "new", :mode => "ts"} %><br />
+<%= link_to 'New quick work order', {:action => "new"} %>
+<%# link_to 'New technician work order', {:action => "new", :mode => "ts"} %><br />
 <br />
 <%= render :partial => "woform" %>
 
