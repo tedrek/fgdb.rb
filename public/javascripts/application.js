@@ -5,7 +5,7 @@ function prep_disabled_list(list, optional) {
   for(var i = 0; i < list.length; i++) {
     var e = list[i];
     if($(e)) {
-      $(e).onkeydown = function(event) {handle_enabling(event, list, optional);};
+      $(e).onkeydown = function(event) {handle_enabling(event, list, optional, hook_list[event.target.id]);};
       if(i != 0) {
         $(e).disable();
       }
@@ -13,7 +13,7 @@ function prep_disabled_list(list, optional) {
   }
 }
 
-function handle_enabling(event, linelist, optional) {
+function handle_enabling(event, linelist, optional, hook) {
   var is_opt = false;
   for(var i = 0; i < optional.length; i++) {
     var e = optional[i];
@@ -22,6 +22,9 @@ function handle_enabling(event, linelist, optional) {
     }
   }
   if(is_tab(event) && (event.target.value != "" || is_opt)) {
+    if(hook) {
+      hook();
+    }
     var last = "NOT_IT";
     var found = 0;
     for(var i = 0; i < linelist.length; i++) {

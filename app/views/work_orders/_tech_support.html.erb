@@ -1,22 +1,27 @@
-  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_box_source', 'open_struct_system_id', 'open_struct_receiver_contact_id', 'open_struct_box_type', 'open_struct_phone_number', 'open_struct_email', 'open_struct_issue', 'open_struct_os', 'open_struct_submit']; optional = ['open_struct_phone_number', 'open_struct_email', 'open_struct_os'];" %>  <p>
-    <%= f.label :customer_name %><br />
+  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_system_id', 'open_struct_box_source', 'open_struct_box_type', 'open_struct_adopter_name', 'open_struct_adopter_id', 'open_struct_phone_number', 'open_struct_email', 'open_struct_issue', 'open_struct_ticket_source', 'open_struct_receiver_contact_id', 'open_struct_comment', 'open_struct_os', 'open_struct_warranty', 'open_struct_submit']; optional = ['open_struct_phone_number', 'open_struct_email', 'open_struct_os']; hook_list = [];" %>  <p>
+  <%= javascript_tag 'hook_list["open_struct_phone_number"] = function() {if($("open_struct_phone_number").value == "") {alert("Now would be a great time to remind the user we recycle unclaimed hardware after 45 days!");};};' %>
+     <%= f.label :customer_name %><br />
     <%= f.text_field :customer_name, :onkeydown => "handle_enabling(event, linelist);" %>
-  </p>
-  <p>
-    <%= f.label :box_source %><br />
-    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true} %>
   </p>
   <p>
     <%= f.label :system_id, 'System ID' %>
     <%= f.text_field :system_id %>
   </p>
   <p>
-    <%= f.label :receiver_contact_id, "Receiver Contact ID" %><br />
-    <%= f.text_field :receiver_contact_id %>
+    <%= f.label :box_source %><br />
+    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true} %>
   </p>
   <p>
     <%= f.label :box_type %><br />
     <%= f.select :box_type, @rt_metadata["Type of Box"].map{|x| [x, x]}, :include_blank => true %>
+  </p>
+  <p>
+    <%= f.label :adopter_name, "Adopter Name" %><br />
+    <%= f.text_field :adopter_name %>
+  </p>
+  <p>
+    <%= f.label :adopter_id, "Adopter ID" %><br />
+    <%= f.text_field :adopter_id %>
   </p>
   <p>
     <%= f.label :phone_number, "Phone Number (optional)" %><br />
@@ -31,9 +36,24 @@
     <%= f.select :issue, @rt_metadata["Tech Support Issue"].map{|x| [x, x]}, :include_blank => true %>
     <%# render :partial => 'issues' %>
   </p>
-  <p style="clear: left">
-    <br />
+  <p>
+    <%= f.label :ticket_source %><br />
+    <%= f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
+  </p>
+  <p>
+    <%= f.label :receiver_contact_id, "Receiving Technician ID" %><br />
+    <%= f.text_field :receiver_contact_id %>
+  </p>
+  <p>
+    <%= f.label :comment, "Description of issue" %>
+    <%= f.text_area :comment %>
+  </p>
+  <p>
     <%= f.label :os, "Operating System (optional)" %><br />
     <%= f.select :os, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, :include_blank => true %>
+  </p>
+  <p>
+    <%= f.label :warranty %><br />
+    <%= f.select :warranty, @rt_metadata["Warranty"].map{|x| [x, x]}, {:include_blank => true} %>
   </p>
 
