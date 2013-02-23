@@ -1,8 +1,8 @@
-fgdb.rb (1.0.113) UNRELEASED; urgency=low
+fgdb.rb (1.0.113) released; urgency=low
 
   * a seemingly quiet release, nothing to see here
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:31:09 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:33:39 -0800
 
 fgdb.rb (1.0.112) released; urgency=low
 
