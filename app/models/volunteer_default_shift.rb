@@ -314,6 +314,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
     else
       gconditions = Conditions.new
     end
+    Notifier.deliver_text_report('scheduler_reports_to', "Volunteer schedule portion rolled out from #{start_date} to #{end_date}", "For #{gconditions.to_s} by #{Thread.current['user'].to_s} at #{Time.now.strftime("%D %T")}.")
     (start_date..end_date).each{|x|
       next if Holiday.is_holiday?(x)
       w = Weekday.find(x.wday)
