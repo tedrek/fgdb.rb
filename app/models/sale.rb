@@ -1,6 +1,6 @@
 class Sale < ActiveRecord::Base
   acts_as_userstamp
-
+  validates_presence_of :discount_name
   include GizmoTransaction
   belongs_to :contact
   has_many :payments, :dependent => :destroy, :autosave => :true
