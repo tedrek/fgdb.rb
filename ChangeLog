@@ -1,6 +1,13 @@
 fgdb.rb (1.0.113) released; urgency=low
 
-  * a seemingly quiet release, nothing to see here
+  * Printme has new type options for xbmc and gaming systems
+  * The sales gizmo type list no longer has CRT as an option and a new
+    Adapter type has been added
+  * The volunteer schedule notes for Receiving are updated to include
+    time restrictions for first time volunteers
+  * There's a fixed bug in sales when no discount name was provided
+  * The date a contact was created is now displayed alongside their ID
+    in the contact search box
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:33:39 -0800
 
