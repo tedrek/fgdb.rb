@@ -84,7 +84,7 @@ class WorkOrdersController < ApplicationController
 
   def get_warranty_info
     render :update do |page|
-      page.hide loading_indicator_id("system_info")
+      page.hide loading_indicator_id("warranty_info")
     end
   end
 

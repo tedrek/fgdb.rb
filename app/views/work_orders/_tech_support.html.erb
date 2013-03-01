@@ -1,7 +1,7 @@
-  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_system_id', 'open_struct_box_source', 'open_struct_box_type', 'open_struct_adopter_name', 'open_struct_adopter_id', 'open_struct_phone_number', 'open_struct_email', 'open_struct_issue', 'open_struct_ticket_source', 'open_struct_receiver_contact_id', 'open_struct_comment', 'open_struct_os', 'open_struct_warranty', 'open_struct_submit']; optional = ['open_struct_phone_number', 'open_struct_email', 'open_struct_os']; hook_list = [];" %>
+  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_system_id', 'open_struct_box_source', 'open_struct_box_type', 'open_struct_adopter_name', 'open_struct_adopter_id', 'open_struct_phone_number', 'open_struct_email', 'open_struct_issue', 'open_struct_ticket_source', 'open_struct_sale_date', 'open_struct_sale_id', 'open_struct_receiver_contact_id', 'open_struct_comment', 'open_struct_os', 'open_struct_warranty', 'open_struct_submit']; optional = ['open_struct_phone_number', 'open_struct_email', 'open_struct_os']; hook_list = [];" %>
   <%= javascript_tag 'hook_list["open_struct_phone_number"] = function() {if($("open_struct_phone_number").value == "") {alert("Now would be a great time to remind the user we recycle unclaimed hardware after 45 days!");};};' %>
   <%= javascript_tag 'hook_list["open_struct_system_id"] = function () {Element.show("system_info_loading_indicator_id"); var myhash = new Hash(); myhash.set("id", $("open_struct_system_id").value); new Ajax.Request(system_info_url + "?" + myhash.toQueryString(), {asynchronous:false, evalScripts:true});}' %>
-  <%= javascript_tag 'hook_list["open_struct_os"] = function () {Element.show("warranty_info_loading_indicator_id"); var myhash = new Hash(); myhash.set('box_source', $('box_source').value); new Ajax.Request(warranty_info_url + "?" + myhash.toQueryString(), {asynchronous:false, evalScripts:true});}' %>
+  <%= javascript_tag 'hook_list["open_struct_os"] = function () {Element.show("warranty_info_loading_indicator_id"); var myhash = new Hash(); myhash.set("box_source", $("open_struct_box_source").value); new Ajax.Request(warranty_info_url + "?" + myhash.toQueryString(), {asynchronous:false, evalScripts:true});}' %>
 See http://dev:3000/warranty_lengths, make em match
 <p>
     <%= f.label :customer_name %><br />
@@ -47,6 +47,14 @@ See http://dev:3000/warranty_lengths, make em match
     <%= f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p>
+    <%= f.label :sale_date %><br />
+    <%= f.text_field :sale_date %>
+  </p>
+  <p>
+    <%= f.label :sale_id %><br />
+    <%= f.text_field :sale_id %>
+  </p>
+  <p>
     <%= f.label :receiver_contact_id, "Receiving Technician ID" %><br />
     <%= f.text_field :receiver_contact_id %>
   </p>
@@ -60,6 +68,6 @@ See http://dev:3000/warranty_lengths, make em match
   </p>
   <p>
     <%= f.label :warranty %><br />
-    <%= f.select :warranty, @rt_metadata["Warranty"].map{|x| [x, x]}, {:include_blank => true} %><%= loading_indicator_tag "system_info" %>
+    <%= f.select :warranty, @rt_metadata["Warranty"].map{|x| [x, x]}, {:include_blank => true} %><%= loading_indicator_tag "warranty_info" %>
   </p>
 
