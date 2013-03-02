@@ -3,6 +3,8 @@
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
+$regenerate_sandbox = true
+
 r = Roster.find_by_name('Sandbox')
 if r
   c = Conditions.new

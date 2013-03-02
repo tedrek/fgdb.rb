@@ -314,9 +314,11 @@ class VolunteerDefaultShift < ActiveRecord::Base
     else
       gconditions = Conditions.new
     end
-    string = gconditions.to_s
-    string = "Everything" if string.length == 0
-    Notifier.deliver_text_report('volskedj_reports_to', "Volunteer schedule rolled out for #{gconditions.to_s}", "Done for #{start_date} to #{end_date} by #{Thread.current['user'].to_s} at #{Time.now.strftime("%D %T")}.")
+    unless $regenerate_sandbox
+      string = gconditions.to_s
+      string = "Everything" if string.length == 0
+      Notifier.deliver_text_report('volskedj_reports_to', "Volunteer schedule rolled out for #{gconditions.to_s}", "Done for #{start_date} to #{end_date} by #{Thread.current['user'].to_s} at #{Time.now.strftime("%D %T")}.")
+    end
     (start_date..end_date).each{|x|
       next if Holiday.is_holiday?(x)
       w = Weekday.find(x.wday)
