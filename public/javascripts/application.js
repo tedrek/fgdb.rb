@@ -1,12 +1,12 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-function prep_disabled_list(list, optional) {
+function prep_disabled_list(list, optional, hook_list, disable) {
   for(var i = 0; i < list.length; i++) {
     var e = list[i];
     if($(e)) {
       $(e).onkeydown = function(event) {handle_enabling(event, list, optional, hook_list[event.target.id]);};
-      if(i != 0) {
+      if(i != 0 && disable) {
         $(e).disable();
       }
     }

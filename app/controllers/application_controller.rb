@@ -20,6 +20,21 @@ end
 
 class ApplicationController < ActionController::Base
   protected
+  def _parse_metadata_wo
+    h = {}
+    cur = nil
+    File.readlines(File.join(RAILS_ROOT, "config/rt_metadata.txt")).each do |line|
+      line.strip!
+      if line.match(/^== (.+) ==$/)
+        cur = $1
+        h[cur] = []
+      else
+        h[cur] << line.gsub(/^"(.+)"$/) do $1 end
+      end
+    end
+    return h
+  end
+
   def gencsv(*a)
     s = ""
     a = a.flatten

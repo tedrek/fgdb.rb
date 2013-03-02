@@ -25,16 +25,6 @@ class System < ActiveRecord::Base
     self.all_instances.map{|x| x.gizmo_events}.flatten.select{|x| (!x.sale_id.nil?) or (!x.disbursement_id.nil?) }.sort_by(&:occurred_at).last
   end
 
-  def went_out_date
-    gt = last_gizmo_event
-    if gt
-      starting_date = gt.occurred_at.to_date
-      return starting_date
-    else
-      return nil
-    end
-  end
-
   def tech_support_source
     gt = last_gizmo_event
     if gt
@@ -48,17 +38,6 @@ class System < ActiveRecord::Base
       else
         return "Store"
       end
-    else
-      return nil
-    end
-  end
-
-  def warranty_date
-    gt = last_gizmo_event
-    if gt
-      starting_date = gt.occurred_at
-      warranty_date = starting_date + ( gt.sale_id.nil? ? 1.year : 6.months )
-      return warranty_date.to_date
     else
       return nil
     end

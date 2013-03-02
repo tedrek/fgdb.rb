@@ -3,11 +3,11 @@
 <% end %>
 
 <% if @data %>
-<%= button_to "Edit Information", {:action => "new", :open_struct => params[:open_struct]} %>
-<%= button_to "Submit Work Order", {:action => "submit", :open_struct => params[:open_struct]} %>
+<%= button_to "Edit Information", {:mode => params[:mode], :action => "new", :open_struct => params[:open_struct]} %>
+<%= button_to "Submit Work Order", {:mode => params[:mode], :action => "submit", :open_struct => params[:open_struct]} %>
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => nil} %>
 <% else %>
-<% form_for(@work_order, :url => {:action => "create"}) do |f| %>
+<% form_for(@work_order, :url => {:action => "create", :mode => params[:mode]}) do |f| %>
   <%# f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>
@@ -17,4 +17,8 @@
   </p>
 <% end %>
 <% end %>
-<%= javascript_tag "prep_disabled_list(linelist, optional, hook_list);" %>
+<% if params[:open_struct] %>
+<%= javascript_tag "prep_disabled_list(linelist, optional, hook_list, false);" %>
+<% else %>
+<%= javascript_tag "prep_disabled_list(linelist, optional, hook_list, true);" %>
+<% end %>

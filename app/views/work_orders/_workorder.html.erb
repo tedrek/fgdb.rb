@@ -3,7 +3,8 @@
 </span>
 <center><h1>Tech Support Work Order<br /><br />Help Ticket #<%= data["ID"] %></h1></center>
 <hr style="clear: both; border: none;" />
-<% def value_or_none(data, val)
+<%
+def value_or_none(data, val)
    value = data[val] || ""
    value.length > 0 ? value : "&nbsp;"
 end
@@ -29,11 +30,11 @@ end
 <table width="100%">
 <tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "System ID") %></td></tr>
 <tr><td style="font-size: 12pt; padding-bottom: 25px;">System ID #</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= system_or_none(system, "went_out_date") %></td></tr>
+<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Transaction Date") %></td></tr>
 <tr><td style="font-size: 12pt; padding-bottom: 25px;">Sale/Disbursement Date</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= system_or_none(system, "warranty_date") %></td></tr>
+<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Warranty") %></td></tr>
 <tr><td style="font-size: 12pt; padding-bottom: 25px;">Warranty Status</td></tr>
-<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Source") %></td></tr>
+<tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Box Source") %></td></tr>
 <tr><td style="font-size: 12pt;">Source</td></tr>
 </table>
 </div>

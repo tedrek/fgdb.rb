@@ -9,22 +9,8 @@ class WorkOrdersController < ApplicationController
   end
   before_filter :ensure_metadata
   def ensure_metadata
-    @@rt_metadata ||= _parse_metadata
+    @@rt_metadata ||= _parse_metadata_wo
     @rt_metadata = @@rt_metadata
-  end
-  def _parse_metadata
-    h = {}
-    cur = nil
-    File.readlines(File.join(RAILS_ROOT, "config/rt_metadata.txt")).each do |line|
-      line.strip!
-      if line.match(/^== (.+) ==$/)
-        cur = $1
-        h[cur] = []
-      else
-        h[cur] << line.gsub(/^"(.+)"$/) do $1 end
-      end
-    end
-    return h
   end
   public
 
@@ -75,49 +61,98 @@ class WorkOrdersController < ApplicationController
 
   OS_OPTIONS = ['Linux', 'Mac', 'Windows']
 
+
   def get_system_info
-    @system = System.find_by_id(params[:id])
+    @system = System.find_by_id(params[:id].to_i)
     render :update do |page|
+      if @system
+        if (ge = @system.last_gizmo_event)
+          trans = ge.my_transaction
+          page << "$('open_struct_sale_id').value = '" + trans.id.to_s + "';"
+          page << "$('open_struct_sale_date').value = '" + ge.occurred_at.to_date.to_s + "';"
+          if trans.contact
+            page << "$('open_struct_adopter_name').value = '" + trans.contact.display_name + "';"
+            page << "$('open_struct_adopter_id').value = '" + trans.contact_id.to_s + "';"
+          end
+          source = trans.class == Sale ? source = "Store" : trans.disbursement_type.description
+          page << "$('open_struct_box_source').value = '" + source + "';"
+          desc = ge.gizmo_type.description
+          b_type = ""
+          if desc.match(/Mac/)
+            if desc.match(/Laptop/)
+              b_type = "Mac Laptop"
+            else
+              b_type = "Mac"
+            end
+          elsif desc.match(/Laptop/)
+            b_type = "Laptop"
+          elsif desc.match(/Server/)
+            b_type = "Server"
+          elsif desc.match(/System/)
+            b_type = "Desktop"
+          else
+            b_type = "Other Gizmo" # or Desktop?
+          end
+          page << "$('open_struct_box_type').value = '" + b_type + "';"
+        end
+      end
       page.hide loading_indicator_id("system_info")
     end
   end
 
   def get_warranty_info
+    date = params[:sale_date]
+    begin
+      date = Date.parse(date)
+    rescue
+      date = nil
+    end
+    b_type = params[:box_type]
+    source = params[:box_source]
+    os = params[:os]
     render :update do |page|
+      if date
+        wl = WarrantyLength.find_warranty_for(date, b_type, source, os)
+        if wl && wl.eval_length
+          ret = wl.is_in_warranty(date)
+          page << "$('open_struct_warranty').value = '" + (ret ? "In Warranty" : "Out of Warranty" ) + "';"
+        end
+      end
       page.hide loading_indicator_id("warranty_info")
     end
   end
 
   protected
 
-  def find_warranty
-    # TODO: Type Of Box maps from types as field?
-    date = @data['Date??']
-    w = WarrantyLength.find_warranty_for(date, @data["Type Of Box"], @data["Source"], @data["OS"])
-    return w.nil? ? nil : w.from_date(date)
-  end
-
   def parse_data
     @work_order = OpenStruct.new(params[:open_struct])
-    @work_order.issues = params[:open_struct][:issue] #.to_a.select{|x| x.first == x.last}.map{|x| x.first}
+    @work_order.issues = params[:open_struct][:issue] if params[:open_struct] #.to_a.select{|x| x.first == x.last}.map{|x| x.first}
 #    @work_order.issue = nil
 
     @data = {}
     @data["Issues"] = @work_order.issues #.join(", ")
-    @data["Adopter Name"] = @work_order.customer_name
+    @data["Name"] = @work_order.customer_name
+    @data["Adopter Name"] = @work_order.adopter_name || @work_order.customer_name
     @data["ID"] = " not yet created"
     @data["Email"] = @work_order.email
     @data["Phone"] = @work_order.phone_number
     @data["OS"] = @work_order.os
-    @data["Source"] = @work_order.box_source
+    @data["Box Source"] = @work_order.box_source
     @data["Ticket Source"] = @work_order.ticket_source
     @data["Type of Box"] = @work_order.box_type
-#    @data["Warranty"] = 
-    @data["Initial Content"] = "Operating system info provided: " + @work_order.os
+    @data["Warranty"] = @work_order.warranty
+    @data["Adopter ID"] = @work_order.adopter_id
+    @data["System ID"] = @work_order.system_id
+    @data["Transaction Date"] = @work_order.sale_date
+    @data["Transaction ID"] = @work_order.sale_id
+    @data["Initial Content"] = @work_order.comment.to_s
+    if !@work_order.os.to_s.empty?
+      @data["Initial Content"] = "Operating system info provided: " + @work_order.os + "\n" + @data["Initial Content"]
+    end
 
     if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))
       @data = nil
-      @error = "The provided technician contact doesn't exist."
+      @error = "The provided receiver/technician contact doesn't exist."
       return
     else
       @data["Technician ID"] = @contact.id.to_s
@@ -133,6 +168,9 @@ class WorkOrdersController < ApplicationController
   public
   def create
     parse_data
+    if params[:mode]
+      @work_order.mode = params[:mode]
+    end
 #    if @work_order.save
 #      flash[:notice] = 'OpenStruct was successfully created.'
 #      redirect_to({:action => "show", :id => @work_order.id})
