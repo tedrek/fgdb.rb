@@ -5,6 +5,9 @@ use warnings;
 
 my $config =  "/etc/svn/rtrc";
 
+use File::Basename qw< dirname >;
+use lib dirname(__FILE__) . '/working_rt_lib/';
+
 use RT::Client::REST;    
 use RT::Client::REST::Ticket;    
 
