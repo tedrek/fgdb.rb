@@ -35,7 +35,12 @@ class WarrantyLength < ActiveRecord::Base
   end
 
   def self.find_warranty_for(date_out, system_type, box_source, os_type = nil)
-    WarrantyLength.effective_on(date_out).select{|x| x.system_type == system_type && x.box_source == box_source && (x.os_type.nil? || os_type == x.os_type)}.first
+    WarrantyLength.effective_on(date_out).select{|x| x.system_type == system_type && x.box_source == box_source && (x.os_type.to_s.empty? || os_type.to_s == x.os_type.to_s)}.first
+  end
+
+  def is_in_warranty(date)
+    ends_at = date + eval_length
+    ends_at >= Date.today
   end
 
   def eval_length
@@ -44,10 +49,5 @@ class WarrantyLength < ActiveRecord::Base
     else
       nil
     end
-  end
-
-  def from_date(d = nil)
-    d ||= Date.today
-    d + eval_length
   end
 end

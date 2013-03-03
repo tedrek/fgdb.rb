@@ -5,6 +5,9 @@ use warnings;
 
 my $config =  "/etc/svn/rtrc";
 
+use File::Basename qw< dirname >;
+use lib dirname(__FILE__) . '/working_rt_lib/';
+
 use RT::Client::REST;    
 use RT::Client::REST::Ticket;    
 
@@ -29,15 +32,17 @@ my %data = ();
 
 $data{"ID"} = $ticket->id;
 $data{"Subject"} = $ticket->subject;
+$data{"Name"} = @{ [ split ' - ', $data{"Subject"} ] }[0];
 $data{"Queue"} = $ticket->queue;
 $data{"Created"} = $ticket->created;
 $data{"Adopter Name"} = $ticket->cf('Adopter Name');
-$data{"Adopter ID"} = $ticket->cf('AdopterID');
+$data{"Adopter ID"} = $ticket->cf('Contact ID');
 $data{"Technician ID"} = $ticket->cf('Intake Technician ID');
+$data{"Transaction Date"} = $ticket->cf('SaleDate');
 $data{"Phone"} = $ticket->cf('phone');
 $data{"Email"} = $ticket->cf('Email');
 $data{"Type of Box"} = $ticket->cf('Type of Box');
-$data{"Source"} = $ticket->cf('Box source');
+$data{"Box Source"} = $ticket->cf('Box source');
 $data{"System ID"} = $ticket->cf('SystemID');
 $data{"Warranty"} = $ticket->cf('Warranty');
 my $issue = $ticket->cf('Tech Support Issue');
@@ -51,3 +56,8 @@ $data{"Initial Content"} = $content;
 my $json = JSON->new->allow_nonref;
 print $json->encode(\%data) . "\n";
 
+#print $ticket->cf('Geek ID#') . "\n";
+#print $ticket->cf('Geek ID#', 55555) . "\n";
+#$ticket->store;
+#$ticket->retrieve;
+#print $ticket->cf('Geek ID#') . "\n";
