@@ -35,7 +35,7 @@ $data{"Subject"} = $ticket->subject;
 $data{"Queue"} = $ticket->queue;
 $data{"Created"} = $ticket->created;
 $data{"Adopter Name"} = $ticket->cf('Adopter Name');
-$data{"Adopter ID"} = $ticket->cf('Geek ID#');
+$data{"Adopter ID"} = $ticket->cf('Geek ID'); # NOTE: Geek ID# has # missing due to .. idk.
 $data{"Technician ID"} = $ticket->cf('Intake Technician ID');
 $data{"Transaction Date"} = $ticket->cf('SaleDate');
 $data{"Phone"} = $ticket->cf('phone');
@@ -54,4 +54,3 @@ $data{"Initial Content"} = $content;
 
 my $json = JSON->new->allow_nonref;
 print $json->encode(\%data) . "\n";
-
