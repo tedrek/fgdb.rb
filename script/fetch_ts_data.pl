@@ -32,6 +32,7 @@ my %data = ();
 
 $data{"ID"} = $ticket->id;
 $data{"Subject"} = $ticket->subject;
+$data{"Name"} = @{ [ split ' - ', $data{"Subject"} ] }[0];
 $data{"Queue"} = $ticket->queue;
 $data{"Created"} = $ticket->created;
 $data{"Adopter Name"} = $ticket->cf('Adopter Name');
@@ -54,3 +55,9 @@ $data{"Initial Content"} = $content;
 
 my $json = JSON->new->allow_nonref;
 print $json->encode(\%data) . "\n";
+
+#print $ticket->cf('Geek ID#') . "\n";
+#print $ticket->cf('Geek ID#', 55555) . "\n";
+#$ticket->store;
+#$ticket->retrieve;
+#print $ticket->cf('Geek ID#') . "\n";

@@ -134,7 +134,7 @@ class WorkOrdersController < ApplicationController
     @data = {}
     @data["Issues"] = @work_order.issues #.join(", ")
     @data["Name"] = @work_order.customer_name
-    @data["Adopter Name"] = @work_order.adopter_name || @work_order.customer_name
+    @data["Adopter Name"] = @work_order.adopter_name
     @data["ID"] = " not yet created"
     @data["Email"] = @work_order.email
     @data["Phone"] = @work_order.phone_number
