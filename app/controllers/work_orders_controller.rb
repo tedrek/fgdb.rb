@@ -73,6 +73,8 @@ class WorkOrdersController < ApplicationController
           if trans.contact
             page << "$('open_struct_adopter_name').value = '" + trans.contact.display_name + "';"
             page << "$('open_struct_adopter_id').value = '" + trans.contact_id.to_s + "';"
+            page << "$('open_struct_phone_number').value = '" + trans.contact.phone_number.to_s + "';"
+            page << "$('open_struct_email').value = '" + trans.contact.mailing_list_email.to_s + "';"
           end
           source = trans.class == Sale ? source = "Store" : trans.disbursement_type.description
           page << "$('open_struct_box_source').value = '" + source + "';"
@@ -148,6 +150,9 @@ class WorkOrdersController < ApplicationController
     @data["Initial Content"] = @work_order.comment.to_s
     if !@work_order.os.to_s.empty?
       @data["Initial Content"] = "Operating system info provided: " + @work_order.os + "\n" + @data["Initial Content"]
+    end
+    if !@work_order.additional_items.to_s.empty?
+      @data["Initial Content"] = "Additional items left with tech support: " + @work_order.additional_items + "\n" + @data["Initial Content"]
     end
 
     if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))

@@ -1,6 +1,7 @@
-  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_system_id', 'open_struct_box_source', 'open_struct_box_type', 'open_struct_adopter_name', 'open_struct_adopter_id', 'open_struct_phone_number', 'open_struct_email', 'open_struct_issue', 'open_struct_ticket_source', 'open_struct_sale_date', 'open_struct_sale_id', 'open_struct_receiver_contact_id', 'open_struct_comment', 'open_struct_os', 'open_struct_warranty', 'open_struct_submit']; optional = ['open_struct_phone_number', 'open_struct_email', 'open_struct_os']; hook_list = [];" %>
-  <%= javascript_tag 'hook_list["open_struct_phone_number"] = function() {if($("open_struct_phone_number").value == "") {alert("Now would be a great time to remind the user we recycle unclaimed hardware after 45 days!");};};' %>
+  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_system_id', 'open_struct_box_source', 'open_struct_box_type', 'open_struct_adopter_id', 'open_struct_adopter_name', 'open_struct_phone_number', 'open_struct_email', 'open_struct_issue', 'open_struct_ticket_source', 'open_struct_sale_date', 'open_struct_sale_id', 'open_struct_receiver_contact_id', 'open_struct_additional_items', 'open_struct_comment', 'open_struct_os', 'open_struct_warranty', 'open_struct_submit']; optional = ['open_struct_phone_number', 'open_struct_email', 'open_struct_os', 'open_struct_sale_id', 'open_struct_sale_date']; hook_list = [];" %>
+  <%= javascript_tag 'hook_list["open_struct_phone_number"] = function() {if($("open_struct_phone_number").value == "") {if(!confirm("Now would be a great time to remind the user we recycle unclaimed hardware after 45 days! Are you sure you do not want to provide a phone number?")){$("open_struct_adopter_name").focus();}};};' %>
   <%= javascript_tag 'hook_list["open_struct_system_id"] = function () {Element.show("system_info_loading_indicator_id"); var myhash = new Hash(); myhash.set("id", $("open_struct_system_id").value); new Ajax.Request(system_info_url + "?" + myhash.toQueryString(), {asynchronous:false, evalScripts:true});}' %>
+  <%= javascript_tag 'hook_list["open_struct_adopter_id"] = function () {if($("contact__display_name")){$("open_struct_adopter_name").value = $("contact__display_name").innerHTML;};if($("contact__phone_number")){$("open_struct_phone_number").value = $("contact__phone_number").innerHTML;};if($("contact__email")){$("open_struct_email").value = $("contact__email").innerHTML;};}' %>
   <%= javascript_tag 'hook_list["open_struct_os"] = function () {Element.show("warranty_info_loading_indicator_id"); var myhash = new Hash(); myhash.set("box_source", $("open_struct_box_source").value); myhash.set("os", $("open_struct_os").value); myhash.set("box_type", $("open_struct_box_type").value); myhash.set("sale_date", $("open_struct_sale_date").value); myhash.set("os", $("open_struct_os").value); new Ajax.Request(warranty_info_url + "?" + myhash.toQueryString(), {asynchronous:false, evalScripts:true});}' %>
 <p>
     <%= f.label :customer_name %><br />
@@ -8,7 +9,8 @@
   </p>
   <p>
     <%= f.label :system_id, 'System ID' %>
-    <%= f.text_field :system_id %><%= loading_indicator_tag "system_info" %>
+    <%= f.text_field :system_id %><%= loading_indicator_tag "system_info" %><br />
+    <%= button_to_function "No System ID Available", "wo_no_system_id();" %>
   </p>
   <p>
     <%= f.label :box_source %><br />
@@ -19,12 +21,12 @@
     <%= f.select :box_type, @rt_metadata["Type of Box"].map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p>
-    <%= f.label :adopter_name, "Adopter Name" %><br />
-    <%= f.text_field :adopter_name %>
+    <%= f.label :adopter_id, "Adopter ID" %><br />
+    <%= contact_field '@work_order', :adopter_id, :locals => {:options => {:object_name => f.object_name, :field_name => 'adopter_id'}} %>
   </p>
   <p>
-    <%= f.label :adopter_id, "Adopter ID" %><br />
-    <%= f.text_field :adopter_id %>
+    <%= f.label :adopter_name, "Adopter Name" %><br />
+    <%= f.text_field :adopter_name %>
   </p>
   <p>
     <%= f.label :phone_number, "Phone Number (optional)" %><br />
@@ -34,8 +36,6 @@
     <%= f.label :email, "Email (optional)" %><br />
     <%= f.text_field :email %>
   </p>
-
-
   <p>
     <%= f.label :issue %><br />
     <%= f.select :issue, @rt_metadata["Tech Support Issue"].map{|x| [x, x]}, :include_blank => true %>
@@ -46,16 +46,20 @@
     <%= f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p>
-    <%= f.label :sale_date %><br />
+    <%= f.label :sale_date, "Sale Date (optional)" %><br />
     <%= calendar_box f.object_name, :sale_date, :value => f.object.sale_date %>
   </p>
   <p>
-    <%= f.label :sale_id, "Sale ID#" %><br />
+    <%= f.label :sale_id, "Sale ID# (optional)" %><br />
     <%= f.text_field :sale_id %>
   </p>
   <p>
     <%= f.label :receiver_contact_id, "Receiving Technician ID" %><br />
     <%= f.text_field :receiver_contact_id %>
+  </p>
+  <p>
+    <%= f.label :additional_items, "Additional items left with tech support (or enter none)" %><br />
+    <%= f.text_field :additional_items %>
   </p>
   <p>
     <%= f.label :comment, "Description of issue" %>
