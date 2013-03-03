@@ -80,7 +80,7 @@ my $ticket = RT::Client::REST::Ticket->new(
         'SaleDate' => $txn_date,
         'SalesReceipt' => $txn_id,
         'SystemID' => $sys_id,
-        'Geek ID#' => $geek_id,
+        'Contact ID' => $geek_id,
         'Warranty' => $warranty,
     },
     )->store(text => $content);
