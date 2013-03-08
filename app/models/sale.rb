@@ -98,7 +98,7 @@ class Sale < ActiveRecord::Base
     head_lines =   ["+---------------------------+",
     "| Free Geek Thrift Store    |",
   "| 1731 SE 10th Ave. PDX     |",
-  "| 10-6 Tues. through Sat.   |",
+  "| 10-6 Mon. through Sat.    |",
   "| freegeek.org/thrift-store |",
    "+---------------------------+"].map{|x| ['center', x]}
     head_lines = head_lines + [[],

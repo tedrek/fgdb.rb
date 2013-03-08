@@ -13,6 +13,7 @@ fgdb.rb (1.0.113) released; urgency=low
   * There's a fixed bug in sales when no discount name was provided
   * The date a contact was created is now displayed alongside their ID
     in the contact search box
+  * Fix hours on sales receipt to say Monday (Closes: #34095)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:33:39 -0800
 

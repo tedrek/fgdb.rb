@@ -5,6 +5,9 @@ use warnings;
 
 my $config =  "/etc/svn/rtrc";
 
+use File::Basename qw< dirname >;
+use lib dirname(__FILE__) . '/working_rt_lib/';
+
 use RT::Client::REST;    
 use RT::Client::REST::Ticket;    
 
@@ -42,15 +45,21 @@ my $os = $data->{"OS"}; # already in initial content
 my $tech = $data->{"Technician ID"};
 my $type = $data->{"Type of Box"};
 my $issues = $data->{"Issues"};
-my $name = $data->{"Adopter Name"};
+my $name = $data->{"Name"};
+my $adopter_name = $data->{"Adopter Name"};
 my $email = $data->{"Email"};
 my $phone = $data->{"Phone"};
-my $source = $data->{"Source"};
+my $source = $data->{"Box Source"};
 my $ts_source = $data->{"Ticket Source"};
 my $content = $data->{"Initial Content"};
 my $requestor = $data->{"Requestor"};
 my $subject = $name . " - " . $type . " - " . $issues;
 my @issues = split(", ", $issues);
+my $txn_date = $data->{"Transaction Date"};
+my $txn_id = $data->{"Transaction ID"};
+my $sys_id = $data->{"System ID"};
+my $geek_id = $data->{"Adopter ID"};
+my $warranty = $data->{"Warranty"};
 
 my $ticket = RT::Client::REST::Ticket->new(
     rt  => $rt,
@@ -58,7 +67,6 @@ my $ticket = RT::Client::REST::Ticket->new(
     requestors => [$requestor],
     queue => 'TechSupport',
     subject => $subject,
-    
     cf => {
         'Support Level' => 'Irrelevant',
         'Ticket Source' => $ts_source,
@@ -66,9 +74,14 @@ my $ticket = RT::Client::REST::Ticket->new(
 	'Type of Box' => $type,
 	'Email' => $email,
 	'phone' => $phone,
-      'Adopter Name' => $name,
-      'Intake Technician ID' => $tech,
-	'Tech Support Issue' => \@issues
+        'Adopter Name' => $adopter_name,
+        'Intake Technician ID' => $tech,
+	'Tech Support Issue' => \@issues,
+        'SaleDate' => $txn_date,
+        'SalesReceipt' => $txn_id,
+        'SystemID' => $sys_id,
+        'Contact ID' => $geek_id,
+        'Warranty' => $warranty,
     },
     )->store(text => $content);
 print $ticket->id . "\n";

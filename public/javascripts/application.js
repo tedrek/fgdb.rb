@@ -1,16 +1,34 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-function prep_disabled_list(list, optional) {
+function prep_disabled_list(list, optional, hook_list, disable) {
   for(var i = 0; i < list.length; i++) {
     var e = list[i];
     if($(e)) {
       $(e).onkeydown = function(event) {handle_enabling(event, list, optional, hook_list[event.target.id]);};
-      if(i != 0) {
+      if(i != 0 && disable) {
         $(e).disable();
       }
     }
   }
+}
+
+function wo_no_system_id() {
+  if(confirm("Is this an actual system (not an Other Gizmo)?")) {
+    if(confirm("Check that this is a supported Free Geek system. Non-FG systems should only be accepted to perform data backups prior to donation. Is this a Non-FG system?")) {
+      $('open_struct_issue').value = 'Data Backup';
+      $('open_struct_box_source').hide();
+      $('open_struct_sale_date').hide();
+      $('open_struct_sale_id').hide();
+      $('open_struct_warranty').hide();
+      $('open_struct_system_id').hide();
+      $('open_struct_box_type').enable();
+    }
+  } else {
+    $('open_struct_box_type').value = 'Other Gizmo';
+  }
+  $('open_struct_system_id').hide();
+  $('open_struct_box_source').enable();
 }
 
 function handle_enabling(event, linelist, optional, hook) {
@@ -29,7 +47,7 @@ function handle_enabling(event, linelist, optional, hook) {
     var found = 0;
     for(var i = 0; i < linelist.length; i++) {
       var e = linelist[i];
-      if($(e)) {
+      if($(e) && $(e).visible()) {
         if(e == event.target.id) {
           found += 1;
         }

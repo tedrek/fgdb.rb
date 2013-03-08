@@ -8,6 +8,11 @@ class WarrantyLengthsController < ApplicationController
     a << {:privileges => ['role_admin']}
     a
   end
+  before_filter :ensure_metadata
+  def ensure_metadata
+    @@rt_metadata ||= _parse_metadata_wo
+    @rt_metadata = @@rt_metadata
+  end
   public
 
   def index
