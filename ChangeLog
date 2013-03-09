@@ -12,6 +12,7 @@ fgdb.rb (1.0.113) released; urgency=low
   * Fix bug in routing when a 'moved' hostname is being used and the
     user must authenticate so they do not receive the 'moved' message
     until actually visiting the homepage (Closes: #34242)
+  * Added CGS type (no ticket)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:33:39 -0800
 
