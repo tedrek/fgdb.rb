@@ -521,7 +521,7 @@ class ApplicationController < ActionController::Base
     else
       session[:unauthorized_error] = true
       session[:unauthorized_params] = params.inspect
-      redirect_to :controller => 'sidebar_links'
+      redirect_to :controller => 'sidebar_links', :action => 'index'
       return false
     end
   end
