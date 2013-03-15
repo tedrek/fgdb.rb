@@ -22,17 +22,15 @@ class WorkOrdersController < ApplicationController
     if params[:open_struct]
       @work_order = OpenStruct.new(params[:open_struct])
       @work_order.issues = params[:open_struct][:issue].to_a.select{|x| x.first == x.last}.map{|x| x.first}
+      parse_data
 #      @work_order.issue = nil
     else
       @work_order = OpenStruct.new
+      @work_order.errors = ActiveRecord::Errors.new(@work_order)
     end
     if params[:mode]
       @work_order.mode = params[:mode]
     end
-  end
-
-  def edit
-    @work_order = OpenStruct.new
   end
 
   def show
@@ -61,69 +59,6 @@ class WorkOrdersController < ApplicationController
 
   OS_OPTIONS = ['Linux', 'Mac', 'Windows']
 
-
-  def get_system_info
-    @system = System.find_by_id(params[:id].to_i)
-    render :update do |page|
-      if @system
-        if (ge = @system.last_gizmo_event)
-          trans = ge.my_transaction
-          page << "$('open_struct_sale_id').value = '" + trans.id.to_s + "';"
-          page << "$('open_struct_sale_date').value = '" + ge.occurred_at.to_date.to_s + "';"
-          if trans.contact
-            page << "$('open_struct_adopter_name').value = '" + trans.contact.display_name + "';"
-            page << "$('open_struct_adopter_id').value = '" + trans.contact_id.to_s + "';"
-            page << "$('open_struct_phone_number').value = '" + trans.contact.phone_number.to_s + "';"
-            page << "$('open_struct_email').value = '" + trans.contact.mailing_list_email.to_s + "';"
-          end
-          source = trans.class == Sale ? source = "Store" : trans.disbursement_type.description
-          page << "$('open_struct_box_source').value = '" + source + "';"
-          desc = ge.gizmo_type.description
-          b_type = ""
-          if desc.match(/Mac/)
-            if desc.match(/Laptop/)
-              b_type = "Mac Laptop"
-            else
-              b_type = "Mac"
-            end
-          elsif desc.match(/Laptop/)
-            b_type = "Laptop"
-          elsif desc.match(/Server/)
-            b_type = "Server"
-          elsif desc.match(/System/)
-            b_type = "Desktop"
-          else
-            b_type = "Other Gizmo" # or Desktop?
-          end
-          page << "$('open_struct_box_type').value = '" + b_type + "';"
-        end
-      end
-      page.hide loading_indicator_id("system_info")
-    end
-  end
-
-  def get_warranty_info
-    date = params[:sale_date]
-    begin
-      date = Date.parse(date)
-    rescue
-      date = nil
-    end
-    b_type = params[:box_type]
-    source = params[:box_source]
-    os = params[:os]
-    render :update do |page|
-      if date
-        wl = WarrantyLength.find_warranty_for(date, b_type, source, os)
-        if wl && wl.eval_length
-          ret = wl.is_in_warranty(date)
-          page << "$('open_struct_warranty').value = '" + (ret ? "In Warranty" : "Out of Warranty" ) + "';"
-        end
-      end
-      page.hide loading_indicator_id("warranty_info")
-    end
-  end
-
   protected
 
   def parse_data
@@ -131,23 +66,33 @@ class WorkOrdersController < ApplicationController
     @work_order.issues = params[:open_struct][:issue] if params[:open_struct] #.to_a.select{|x| x.first == x.last}.map{|x| x.first}
 #    @work_order.issue = nil
 
+    @errors = @work_order.errors = ActiveRecord::Errors.new(@work_order)
+    @warnings = []
+
+    pull_system_info
+    pull_warranty_info
+
     @data = {}
     @data["Issues"] = @work_order.issues #.join(", ")
     @data["Name"] = @work_order.customer_name
+    @errors.add("customer_name", "is mandatory information") if @data["Name"].to_s.length == 0
     @data["Adopter Name"] = @work_order.adopter_name
     @data["ID"] = " not yet created"
     @data["Email"] = @work_order.email
     @data["Phone"] = @work_order.phone_number
     @data["OS"] = @work_order.os
     @data["Box Source"] = @work_order.box_source
+    @errors.add("box_source", "is mandatory information (unless you provide a system ID)") if @work_order.box_type.to_s.match(/(Server|Desktop|Laptop)/) && @data["Box Source"].to_s.length == 0
     @data["Ticket Source"] = @work_order.ticket_source
     @data["Type of Box"] = @work_order.box_type
+    @errors.add("box_type", "is mandatory information") if @data["Type of Box"].to_s.length == 0
     @data["Warranty"] = @work_order.warranty
     @data["Adopter ID"] = @work_order.adopter_id
     @data["System ID"] = @work_order.system_id
     @data["Transaction Date"] = @work_order.sale_date
     @data["Transaction ID"] = @work_order.sale_id
     @data["Initial Content"] = @work_order.comment.to_s
+    @errors.add("comment", "in description is mandatory") if @data["Initial Content"].to_s.length == 0
     if !@work_order.os.to_s.empty?
       @data["Initial Content"] = "Operating system info provided: " + @work_order.os + "\n" + @data["Initial Content"]
     end
@@ -156,18 +101,60 @@ class WorkOrdersController < ApplicationController
     end
 
     if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))
-      @data = nil
-      @error = "The provided receiver/technician contact doesn't exist."
-      return
+      @work_order.errors.add("receiver_contact_id", "doesn't exist.")
     else
       @data["Technician ID"] = @contact.id.to_s
-    end
       if (!@contact.user) or (!(@contact.user.privileges.include?("techsupport_workorders") or @contact.user.grantable_roles.include?(Role.find_by_name('ADMIN'))))
-        @data = nil
-        @error = "The provided technician contact doesn't have the tech support role."
-        return
+        @work_order.errors.add("receiver_contact_id", "doesn't have the tech support role.")
       end
+    end
+    @warnings << "Now would be a great time to remind the user we recycle unclaimed hardware after 45 days! Are you sure you do not want to provide a phone number?" if @data["Phone"].to_s.strip.length == 0
 
+
+  end
+
+  def pull_system_info
+    if @work_order.system_id && @work_order.system_id.to_s.strip.length > 0
+      @system = System.find_by_id(@work_order.system_id.to_i)
+    else
+      return
+    end
+      if @system
+        if (ge = @system.last_gizmo_event)
+          trans = ge.my_transaction
+          @work_order.sale_id = trans.id.to_s
+          @work_order.sale_date = ge.occurred_at.to_date.to_s
+          if trans.contact
+            @work_order.adopter_name = trans.contact.display_name
+            @work_order.adopter_id = trans.contact_id.to_s
+            @work_order.phone_number = trans.contact.phone_number.to_s if @work_order.phone_number.to_s.strip.length == 0
+            @work_order.email = trans.contact.mailing_list_email.to_s if @work_order.email.to_s.strip.length == 0
+          end
+          source = trans.class == Sale ? "Store" : trans.disbursement_type.description
+          @work_order.box_source = source
+        end
+    end
+  end
+
+  def pull_warranty_info
+    date = nil
+    if @work_order.sale_date && @work_order.sale_date.to_s.strip.length > 0
+      date = @work_order.sale_date
+      begin
+        date = Date.parse(date)
+      rescue
+        date = nil
+      end
+    end
+    return unless date
+    b_type = @work_order.box_type
+    source = @work_order.box_source
+    os = @work_order.os
+    wl = WarrantyLength.find_warranty_for(date, b_type, source, os)
+    if wl && wl.eval_length
+      ret = wl.is_in_warranty(date)
+      @work_order.warranty = (ret ? "In Warranty" : "Out of Warranty" )
+    end
   end
 
   public
@@ -176,6 +163,7 @@ class WorkOrdersController < ApplicationController
     if params[:mode]
       @work_order.mode = params[:mode]
     end
+    @data = nil if @work_order.errors.length > 0
 #    if @work_order.save
 #      flash[:notice] = 'OpenStruct was successfully created.'
 #      redirect_to({:action => "show", :id => @work_order.id})

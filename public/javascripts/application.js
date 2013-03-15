@@ -2,6 +2,7 @@
 // This file is automatically included by javascript_include_tag :defaults
 
 function prep_disabled_list(list, optional, hook_list, disable) {
+  return;
   for(var i = 0; i < list.length; i++) {
     var e = list[i];
     if($(e)) {
