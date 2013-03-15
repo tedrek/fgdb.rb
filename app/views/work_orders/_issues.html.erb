@@ -1,8 +1,7 @@
     <% @rt_metadata["Tech Support Issue"].each do |x| %>
     <div class='form-element'>
-      <%= f.check_box "issue[#{x}]", {:id => "issues_#{x}", :checked => (@work_order.issues || []).include?(x)}, x %>
-      <label for="issues_<%= x %>">
-	<%= x %>
-      </label>
+      <%= f.radio_button "issue", x, {:checked => @work_order.issue == x} %>
+      <%= f.label "issue", x, :value => x %>
     </div>
     <% end %>
+

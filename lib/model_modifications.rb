@@ -206,6 +206,15 @@ class Fixnum
   end
 end
 
+class OpenStruct
+  def self.human_name
+    "Data"
+  end
+  def self.human_attribute_name(attr)
+    attr.humanize
+  end
+end
+
 class ActiveRecord::Base
   def self.distinct(column, conds = [])
     self.find(:all, :conditions => conds, :select => "distinct #{column}").map{|x| x.send(column)}
