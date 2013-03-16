@@ -1,7 +1,8 @@
 <%= javascript_tag "system_info_url = #{url_for(:action => "get_system_info").to_json}; warranty_info_url = #{url_for(:action => "get_warranty_info").to_json};" %>
 <% if @work_order.mode == 'ts' %>
   <%= render :partial => 'tech_support', :locals => {:f => f} %>
+  <%= f.hidden_field :ticket_source, :value => "Box Brought In" %>
 <% else %>
   <%= render :partial => 'front_desk', :locals => {:f => f} %>
-  <%= f.hidden_field :ticket_source, :value => "Front Desk" %>
+  <%= f.hidden_field :ticket_source, :value => "Box Brought In" %>
 <% end %>

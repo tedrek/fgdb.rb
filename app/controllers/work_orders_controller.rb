@@ -69,6 +69,8 @@ class WorkOrdersController < ApplicationController
     @errors = @work_order.errors = ActiveRecord::Errors.new(@work_order)
     @warnings = []
 
+    phone_number = @work_order.phone_number = [@work_order.phone_number1, @work_order.phone_number2, @work_order.phone_number3].select{|x| x.to_s.length > 0}.join("-")
+
     pull_system_info
     pull_warranty_info
 
@@ -79,10 +81,12 @@ class WorkOrdersController < ApplicationController
     @data["Adopter Name"] = @work_order.adopter_name
     @data["ID"] = " not yet created"
     @data["Email"] = @work_order.email
+    @errors.add("email", "must be a valid email address in the form XXX@XXXX.XXX") if @data["Email"].to_s.length > 0 && !@data["Email"].to_s.match(/^.+@[^.]+\..+$/)
+    @errors.add("phone_number", "must be a valid phone number in the form XXX-XXX-XXXX") if phone_number.length > 0 && !phone_number.match(/\d{3,}-\d{3,}-\d{4,}/)
     @data["Phone"] = @work_order.phone_number
     @data["OS"] = @work_order.os
     @data["Box Source"] = @work_order.box_source
-    @errors.add("box_source", "is mandatory information (unless you provide a system ID)") if @work_order.box_type.to_s.match(/(Server|Desktop|Laptop)/) && @data["Box Source"].to_s.length == 0
+    @errors.add("box_source", "is mandatory information (unless you provide a system ID that allows it to be determined from past records)") if @work_order.box_type.to_s.match(/(Server|Desktop|Laptop)/) && @data["Box Source"].to_s.length == 0
     @data["Ticket Source"] = @work_order.ticket_source
     @data["Type of Box"] = @work_order.box_type
     @errors.add("box_type", "is mandatory information") if @data["Type of Box"].to_s.length == 0
@@ -93,24 +97,26 @@ class WorkOrdersController < ApplicationController
     @data["Transaction ID"] = @work_order.sale_id
     @data["Initial Content"] = @work_order.comment.to_s
     @errors.add("comment", "in description is mandatory") if @data["Initial Content"].to_s.length == 0
+    ic = []
     if !@work_order.os.to_s.empty?
-      @data["Initial Content"] = "Operating system info provided: " + @work_order.os + "\n" + @data["Initial Content"]
+      ic << "Operating system info provided: " + @work_order.os
+      #+ "\n" + @data["Initial Content"]
     end
     if !@work_order.additional_items.to_s.empty?
-      @data["Initial Content"] = "Additional items left with tech support: " + @work_order.additional_items + "\n" + @data["Initial Content"]
+      ic << "Additional items left with tech support: " + @work_order.additional_items
     end
-
-    if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))
-      @work_order.errors.add("receiver_contact_id", "doesn't exist.")
-    else
-      @data["Technician ID"] = @contact.id.to_s
-      if (!@contact.user) or (!(@contact.user.privileges.include?("techsupport_workorders") or @contact.user.grantable_roles.include?(Role.find_by_name('ADMIN'))))
-        @work_order.errors.add("receiver_contact_id", "doesn't have the tech support role.")
-      end
-    end
+    ic = ic.join("\n")
+    @data["Initial Content"] = ic + "\n\n" + @data["Initial Content"] if ic.length > 0
+    @data["Technician ID"] = current_user.id.to_s
+#    if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))
+#      @work_order.errors.add("receiver_contact_id", "doesn't exist.")
+#    else
+#      @data["Technician ID"] = @contact.id.to_s
+#      if (!@contact.user) or (!(@contact.user.privileges.include?("techsupport_workorders") or @contact.user.grantable_roles.include?(Role.find_by_name('ADMIN'))))
+#        @work_order.errors.add("receiver_contact_id", "doesn't have the tech support role.")
+#      end
+#    end
     @warnings << "Now would be a great time to remind the user we recycle unclaimed hardware after 45 days! Are you sure you do not want to provide a phone number?" if @data["Phone"].to_s.strip.length == 0
-
-
   end
 
   def pull_system_info
@@ -138,6 +144,10 @@ class WorkOrdersController < ApplicationController
 
   def pull_warranty_info
     date = nil
+    unless @system and @system.last_gizmo_event
+      @work_order.warranty = "TBD"
+      return
+    end
     if @work_order.sale_date && @work_order.sale_date.to_s.strip.length > 0
       date = @work_order.sale_date
       begin
@@ -146,7 +156,10 @@ class WorkOrdersController < ApplicationController
         date = nil
       end
     end
-    return unless date
+    unless date
+      @work_order.warranty = "TBD"
+      return
+    end
     b_type = @work_order.box_type
     source = @work_order.box_source
     os = @work_order.os
@@ -154,6 +167,8 @@ class WorkOrdersController < ApplicationController
     if wl && wl.eval_length
       ret = wl.is_in_warranty(date)
       @work_order.warranty = (ret ? "In Warranty" : "Out of Warranty" )
+    else
+      @work_order.warranty = "TBD"
     end
   end
 
