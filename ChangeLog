@@ -15,6 +15,8 @@ fgdb.rb (1.0.113) released; urgency=low
   * Added CGS type (no ticket)
   * Add new NumberOfSystemsSoldByPrintmeType report
   * Implement a sales limit of 5 for Barebones System As-Is
+  * Send overtime, breaks and unlogged hours reports to managers list
+    and only include salaried workers on the first two (Closes: #34469)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:33:39 -0800
 
