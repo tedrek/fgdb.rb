@@ -714,6 +714,28 @@ class AverageFrontdeskIncomesTrend < TrendReport
       ["cashier_created_by"]
     end
 end
+class NumberOfSystemsSoldByPrintmeType < TrendReport
+  def category
+    "Gizmo"
+  end
+
+  def title
+    "Report of Spec Sheet Types Sold for #{@conditions[:data_type].to_s.humanize}"
+  end
+
+  def default_table_data_types
+    Hash.new("integer")
+  end
+
+  def get_for_timerange(args)
+    ret = {}
+    DB.exec("SELECT types.description, count(*) FROM (SELECT DISTINCT ON (spec_sheets.system_id) type_id AS type_id FROM spec_sheets JOIN gizmo_events ON spec_sheets.system_id = gizmo_events.system_id WHERE sale_id IS NOT NULL AND #{sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))} ORDER BY spec_sheets.system_id, spec_sheets.created_at DESC) AS data JOIN types ON data.type_id = types.id GROUP BY 1 ORDER BY 1;").to_a.each do |k, v|
+      ret[k] = v
+    end
+    return ret
+  end
+end
+
 class PrintmeInfoTrend < TrendReport
   def valid_conditions
     ['gizmo_context_id', 'type']
