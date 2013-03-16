@@ -30,4 +30,4 @@ results.each{|x|
   report += (fmt % [d, w.name, t.to_s, b.to_s])
 }
 #puts report # debug
-Notifier.deliver_text_report("hr_mailing_list", "Report of staff breaks logged yesterday", report)
+Notifier.deliver_text_report("management_mailing_list", "Report of staff breaks logged yesterday", report)
