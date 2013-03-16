@@ -17,7 +17,7 @@ date_conds.each {|start, fin|
   holidays = (start..fin).to_a.select{|x| Holiday.is_holiday?(x)}
   data +=  "\n"
   data +=  "Overtime for week of #{start.strftime("%D")}-#{fin.strftime("%D")}:\n"
-  DB.execute(["SELECT workers.id AS id, workers.name AS worker, workers.ceiling_hours AS ceiling, SUM( duration ) AS actual from worked_shifts JOIN workers ON worked_shifts.worker_id = workers.id WHERE date_performed >= ? AND date_performed <= ? group by 1,2,3 ORDER BY 1;", start, fin]).each{|x|
+  DB.execute(["SELECT workers.id AS id, workers.name AS worker, workers.ceiling_hours AS ceiling, SUM( duration ) AS actual from worked_shifts JOIN workers ON worked_shifts.worker_id = workers.id WHERE workers.salaried AND date_performed >= ? AND date_performed <= ? group by 1,2,3 ORDER BY 1;", start, fin]).each{|x|
     # having SUM( duration ) > workers.ceiling_hours
     w = Worker.find(x["id"])
     t = x["actual"].to_f
