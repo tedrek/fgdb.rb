@@ -71,7 +71,7 @@
   -->
   <p>
     <%= f.label :sale_date, "Date acquired" %><br />
-    <%= calendar_box f.object_name, :sale_date, :value => f.object.sale_date %>
+    <%= f.text_field :sale_date1, :size => 2 %>/<%= f.text_field :sale_date2, :size => 4 %>
   </p>
   </div>
   <h2>Support Information</h2>

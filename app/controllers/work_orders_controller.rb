@@ -70,6 +70,7 @@ class WorkOrdersController < ApplicationController
     @warnings = []
 
     phone_number = @work_order.phone_number = [@work_order.phone_number1, @work_order.phone_number2, @work_order.phone_number3].select{|x| x.to_s.length > 0}.join("-")
+    sale_date = @work_order.sale_date = [@work_order.sale_date1, @work_order.sale_date2].select{|x| x.to_s.length > 0}.join("/")
 
     pull_system_info
     pull_warranty_info
@@ -94,6 +95,7 @@ class WorkOrdersController < ApplicationController
     @data["Adopter ID"] = @work_order.adopter_id
     @data["System ID"] = @work_order.system_id
     @data["Transaction Date"] = @work_order.sale_date
+    @errors.add("sale_date", "must be a valid month in the form MM/YYYY") if sale_date.length > 0 && !sale_date.match(/\d{2,}\/\d{4,}/)
     @data["Transaction ID"] = @work_order.sale_id
     @data["Initial Content"] = @work_order.comment.to_s
     @errors.add("comment", "in description is mandatory") if @data["Initial Content"].to_s.length == 0
@@ -135,6 +137,25 @@ class WorkOrdersController < ApplicationController
             @work_order.adopter_id = trans.contact_id.to_s
             @work_order.phone_number = trans.contact.phone_number.to_s if @work_order.phone_number.to_s.strip.length == 0
             @work_order.email = trans.contact.mailing_list_email.to_s if @work_order.email.to_s.strip.length == 0
+
+          desc = ge.gizmo_type.description
+          b_type = nil
+          if desc.match(/Mac/)
+            if desc.match(/Laptop/)
+              b_type = "Mac Laptop"
+            else
+              b_type = "Mac"
+            end
+          elsif desc.match(/Laptop/)
+            b_type = "Laptop"
+          elsif desc.match(/Server/)
+            b_type = "Server"
+          elsif desc.match(/System/)
+            b_type = "Desktop"
+          end
+            if b_type && @work_order.box_type && b_type != @work_order.box_type
+              @warnings << "The selected gizmo type (#{@work_order.box_type}) does not match the type this gizmo went out as (#{desc})"
+            end
           end
           source = trans.class == Sale ? "Store" : trans.disbursement_type.description
           @work_order.box_source = source
