@@ -9,6 +9,11 @@ class DefaultAssignment < ActiveRecord::Base
   delegate :set_description, :set_description=, :to => :volunteer_shift
   validates_existence_of :contact, :allow_nil => true
 
+  def contact_id=(newval)
+    self.write_attribute(:contact_id, newval)
+    self.contact = Contact.find_by_id(newval)
+  end
+
   def next_cycle_date
     if self.week.to_s.strip.length == 0
       return ""

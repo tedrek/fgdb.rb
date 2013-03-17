@@ -492,7 +492,7 @@ class AssignmentsController < ApplicationController
         bc = x.contact_id
         ret = !!(x.update_attributes(params[:assignment]))
         if bc != x.contact_id and x.first_time_in_area?
-          alert = "#{Contact.find_by_id(x.contact_id).display_name} (##{x.contact_id}) has never logged hours for the #{x.volunteer_shift.volunteer_task_type.description} task type. Please remind the volunteer of the requirements for this area."
+          alert = "#{x.contact.display_name} (##{x.contact_id}) has never logged hours for the #{x.volunteer_shift.volunteer_task_type.description} task type. Please remind the volunteer of the requirements for this area."
           if x.volunteer_shift.volunteer_event and x.volunteer_shift.volunteer_event.notes and x.volunteer_shift.volunteer_event.notes.length > 0
             alert += "\n\nSome suggested notes saved in the database for this event are:\n" + x.volunteer_shift.volunteer_event.notes
           end
