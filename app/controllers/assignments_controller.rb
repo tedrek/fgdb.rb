@@ -271,9 +271,18 @@ class AssignmentsController < ApplicationController
     assigned, available = params[:id].split(",")
 
     # readonly
-    @assigned_orig = Assignment.find(assigned)
-    @available = Assignment.find(available)
+    begin
+      @assigned_orig = Assignment.find(assigned)
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{assigned}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+    end
+    begin
+      @available = Assignment.find(available)
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{available}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+    end
 
+    if @assigned_orig && @available
     if @available.volunteer_shift.stuck_to_assignment or @assigned_orig.volunteer_shift.stuck_to_assignment
       flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
     else
@@ -302,15 +311,22 @@ class AssignmentsController < ApplicationController
       @assigned.save!
       @new.save!
     end
+    end
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig.volunteer_shift.date_anchor)
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig ? @assigned_orig.volunteer_shift.date_anchor : "")
   end
 
   def attendance
-    @assignment = Assignment.find(params[:id])
     render :update do |page|
+      begin
+        @assignment = Assignment.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        page.alert("The assignment (##{params[:id]}) seems to have disappeared. It is possible somebody else has modified or deleted it.")
+      end
       page.hide loading_indicator_id("skedjul_#{params[:skedjul_loading_indicator_id]}_loading")
-      page << "show_message(#{(render :partial => "attendanceform").to_json});"
+      if @assignment
+        page << "show_message(#{(render :partial => "attendanceform").to_json});"
+      end
     end
   end
 
@@ -318,7 +334,7 @@ class AssignmentsController < ApplicationController
     success = false
     begin
       @assignment = Assignment.find(params[:id])
-    rescue
+    rescue ActiveRecord::RecordNotFound
     end
     if @assignment
       @assignment.attendance_type_id = params[:attendance][:attendance_type_id] if params[:attendance]
@@ -348,7 +364,7 @@ class AssignmentsController < ApplicationController
 #        page << "selection_toggle(#{params[:id]});"
 #        page << "popup1.hide();"
       else
-        page << "alert('attendance change failed. the record may be gone.');"
+        page.alert("The assignment (##{params[:id]}) seems to have disappeared. It is possible somebody else has modified or deleted it.")
       end
       page.hide loading_indicator_id("attendance_assignment_form")
     end

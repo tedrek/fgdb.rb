@@ -98,9 +98,19 @@ class DefaultAssignmentsController < ApplicationController
     assigned, available = params[:id].split(",")
 
     # readonly
-    @assigned_orig = DefaultAssignment.find(assigned)
-    @available = DefaultAssignment.find(available)
+    begin
+      @assigned_orig = DefaultAssignment.find(assigned)
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{assigned}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+    end
 
+    begin
+      @available = DefaultAssignment.find(available)
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{available}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+    end
+
+    if @assigned_orig && @available
     if @available.volunteer_default_shift.stuck_to_assignment or @assigned_orig.volunteer_default_shift.stuck_to_assignment
       flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
     else
@@ -131,8 +141,9 @@ class DefaultAssignmentsController < ApplicationController
       @assigned.save!
       @new.save!
     end
+    end
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig.volunteer_default_shift.volunteer_default_event.weekday.name)
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig ? @assigned_orig.volunteer_default_shift.volunteer_default_event.weekday.name : "")
   end
 
   def split

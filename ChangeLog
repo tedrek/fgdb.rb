@@ -19,6 +19,8 @@ fgdb.rb (1.0.113) released; urgency=low
     and only include salaried workers on the first two (Closes: #34469)
   * Implement protection against assigned contacts being changed
     accidently (Closes: #33881)
+  * Fix bugs when assignments are not found for reassign and attendance,
+    to handle with a nice error message alert
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:33:39 -0800
 
