@@ -68,6 +68,18 @@
 
   <%= f.hidden_field :redirect_to, :value => @referer %>
 
+  <% @assignments.each do |as| %>
+    <%= hidden_field_tag "lock_versions[#{as.id}]", as.lock_version %>
+  <% end %>
+
+  <% if @assigned_contacts &&  @assigned_contacts.length > 0 %>
+    <h2>Previously Assigned Contacts</h2>
+    <% @assigned_contacts.each do |c| %>
+      <%= label_tag "assigned_contacts[#{c.id}]", "Are you sure you want to remove the previously scheduled volunteer, #{c.display_name} (##{c.id}), from the assignment(s)?" %>
+      <%= check_box_tag "assigned_contacts[#{c.id}]", "replace", @replaced_contacts.include?(c.id) %>
+    <% end %>
+  <% end %>
+
     <%= f.label :contact_id %><br />
     <% @obj = f.object %>
       <%= contact_field("@obj", "contact_id",

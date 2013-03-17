@@ -456,18 +456,43 @@ class AssignmentsController < ApplicationController
       redirect_skedj(rt, "")
       return
     end
+    lv = params["lock_versions"]
+    ac = params["assigned_contacts"] || {}
+    @assigned_contacts = []
+    @replaced_contacts = []
+    ret = true
+    @assignments.each do |as|
+      as.lock_version = lv[as.id.to_s]
+      if as.lock_version_changed?
+        as.errors.add("lock_version", "is stale for this assignment, which means it has been edited by somebody else since you opened it, please try again")
+        ret = false
+      end
+      if as.contact_id && as.contact_id.to_s != params[:assignment][:contact_id].to_s
+        @assigned_contacts << as.contact
+        unless ac[as.contact_id.to_s] && ac[as.contact_id.to_s] == "replace"
+          as.errors.add("contact_id", "has been changed, please confirm below that the volunteer who is already assigned to the shift should be removed")
+          ret = false
+        else
+          @replaced_contacts << as.contact_id
+        end
+      end
+    end
     rt = params[:assignment].delete(:redirect_to)
 
     js_alert = nil
 
-    ret = true
+    if ! ret
+      @assignment = Assignment.new(params[:assignment])
+      @assignment.volunteer_shift = @assignments.first.volunteer_shift
+    end
+
     @assignments.each{|x|
       if ret
         @assignment = x
         bc = x.contact_id
         ret = !!(x.update_attributes(params[:assignment]))
         if bc != x.contact_id and x.first_time_in_area?
-          alert = "#{x.contact.display_name} (##{x.contact_id}) has never logged hours for the #{x.volunteer_shift.volunteer_task_type.description} task type. Please remind the volunteer of the requirements for this area."
+          alert = "#{Contact.find_by_id(x.contact_id).display_name} (##{x.contact_id}) has never logged hours for the #{x.volunteer_shift.volunteer_task_type.description} task type. Please remind the volunteer of the requirements for this area."
           if x.volunteer_shift.volunteer_event and x.volunteer_shift.volunteer_event.notes and x.volunteer_shift.volunteer_event.notes.length > 0
             alert += "\n\nSome suggested notes saved in the database for this event are:\n" + x.volunteer_shift.volunteer_event.notes
           end
@@ -476,7 +501,7 @@ class AssignmentsController < ApplicationController
       end
     }
 
-    if @assignment.contact and not @assignment.contact.is_old_enough?
+    if ret && @assignment.contact and not @assignment.contact.is_old_enough?
       msg = "This volunteer is not yet #{Default['minimum_volunteer_age']} years old (based on their saved birthday: #{@assignment.contact.birthday.to_s}).\nPlease remind the volunteer that they must have an adult with them to volunteer."
       if js_alert == nil
         js_alert = msg

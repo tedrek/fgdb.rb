@@ -17,6 +17,8 @@ fgdb.rb (1.0.113) released; urgency=low
   * Implement a sales limit of 5 for Barebones System As-Is
   * Send overtime, breaks and unlogged hours reports to managers list
     and only include salaried workers on the first two (Closes: #34469)
+  * Implement protection against assigned contacts being changed
+    accidently (Closes: #33881)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:33:39 -0800
 
