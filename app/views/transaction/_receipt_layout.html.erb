@@ -34,7 +34,7 @@
       <% end %>
     </tr>
     <tr>
-      <td colspan="3">Created by #<%=h User.find_by_id(@transaction.cashier_created_by).contact_id %></td>
+      <td colspan="3"><% if @transaction.cashier_created_by %>Created by #<%=h User.find_by_id(@transaction.cashier_created_by).contact_id %><% end %></td>
     </tr>
     <tr>
       <td>Date: <%= @txn.occurred_at.strftime("%m/%d/%Y") %></td>
