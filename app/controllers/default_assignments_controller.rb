@@ -201,9 +201,35 @@ class DefaultAssignmentsController < ApplicationController
   def update
     @my_url = {:action => "update", :id => params[:id]}
     @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
+
+    lv = params["lock_versions"]
+    ac = params["assigned_contacts"] || {}
+    @assigned_contacts = []
+    @replaced_contacts = []
+    ret = true
+    @assignments.each do |as|
+      as.lock_version = lv[as.id.to_s]
+      if as.lock_version_changed?
+        as.errors.add("lock_version", "is stale for this assignment, which means it has been edited by somebody else since you opened it, please try again")
+        ret = false
+      end
+      if as.contact_id && as.contact_id.to_s != params[:default_assignment][:contact_id].to_s
+        @assigned_contacts << as.contact
+        unless ac[as.contact_id.to_s] && ac[as.contact_id.to_s] == "replace"
+          as.errors.add("contact_id", "has been changed, please confirm below that the volunteer who is already assigned to the shift should be removed")
+          ret = false
+        else
+          @replaced_contacts << as.contact_id
+        end
+      end
+    end
     rt = params[:default_assignment].delete(:redirect_to)
 
-    ret = true
+    if ! ret
+      @assignment = DefaultAssignment.new(params[:default_assignment])
+      @assignment.volunteer_default_shift = @assignments.first.volunteer_default_shift
+    end
+
     @assignments.each{|x|
       if ret
         @assignment = x
