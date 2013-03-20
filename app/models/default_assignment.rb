@@ -11,7 +11,7 @@ class DefaultAssignment < ActiveRecord::Base
 
   def contact_id=(newval)
     self.write_attribute(:contact_id, newval)
-    self.contact = Contact.find_by_id(newval)
+    self.contact = Contact.find_by_id(newval.to_i)
   end
 
   def next_cycle_date

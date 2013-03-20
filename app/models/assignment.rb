@@ -17,7 +17,7 @@ class Assignment < ActiveRecord::Base
 
   def contact_id=(newval)
     self.write_attribute(:contact_id, newval)
-    self.contact = Contact.find_by_id(newval)
+    self.contact = Contact.find_by_id(newval.to_i)
   end
 
   def contact_id_and_by_today
