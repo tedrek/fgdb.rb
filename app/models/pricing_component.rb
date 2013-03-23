@@ -34,8 +34,9 @@ class PricingComponent < ActiveRecord::Base
   def find_value(pricing_hash)
     return nil unless self.pull_from and self.pull_from.length > 0
     v = printme_pull(pricing_hash)
-    return v unless self.lookup_type and self.lookup_type.length > 0
-    v = PricingData.lookup(self.pull_from, v, self.lookup_type)
+    return v unless self.lookup_column and self.lookup_column.length > 0
+    return v unless self.lookup_table and self.lookup_table.length > 0
+    v = PricingData.lookup(self.lookup_table, v, self.lookup_column)
     return v
   end
 
