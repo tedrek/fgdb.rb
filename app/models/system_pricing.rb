@@ -83,7 +83,7 @@ class SystemPricing < ActiveRecord::Base
   def modified_pricing_hash
     h = self.pricing_hash.dup
     self.pricing_values.each do |x|
-      if x.pricing_component.pull_from.to_s.length > 0 and x.pricing_component.lookup_type.to_s.length == 0
+      if x.pricing_component.pull_from.to_s.length > 0 and x.pricing_component.lookup_table.to_s.length == 0 and x.pricing_component.lookup_column.to_s.length == 0
         h[x.pricing_component.pull_from.to_sym] = x.matcher.to_s.length > 0 ? x.matcher : x.name
       end
     end
@@ -92,7 +92,7 @@ class SystemPricing < ActiveRecord::Base
 
   def autodetect_looked_up_values
     return unless self.pricing_type
-    self.pricing_type.pricing_components.select{|x| x.lookup_type.to_s.length > 0}.each do |c|
+    self.pricing_type.pricing_components.select{|x| x.lookup_table.to_s.length > 0 && x.lookup_column.to_s.length > 0}.each do |c|
       match = c.matched_pricing_value(self.modified_pricing_hash)
       if match.length > 0
         self.pricing_values.reject{|x|
