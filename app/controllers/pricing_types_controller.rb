@@ -63,15 +63,15 @@ class PricingTypesController < ApplicationController
 
   protected
   def make_a_table
-    @printme_pull_from = params[:id]
-    pd = PricingData.find_all_by_printme_pull_from(@printme_pull_from.downcase.gsub(' ', '_'))
+    @table_name = params[:id]
+    pd = PricingData.find_all_by_table_name(@table_name.downcase.gsub(' ', '_'))
     cols = pd.map{|x| x.lookup_type}.uniq.sort
     rows = pd.map{|x| x.printme_value}.uniq.sort
     data = {}
     pd.each{|x|
       data[[x.lookup_type, x.printme_value]] = x.lookup_value
     }
-    @table = [[@printme_pull_from, *cols]]
+    @table = [[@table_name, *cols]]
     rows.each do |row|
       @table << [row, *cols.map{|col| data[[col, row]]}]
     end
