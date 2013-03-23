@@ -35,7 +35,7 @@ class SystemPricingsController < ApplicationController
       h[x.pricing_component_id] << x
     end
     render :update do |page|
-      @system_pricing.pricing_values.select{|x| x.pricing_component.lookup_type.to_s.length > 0}.each do |c|
+      @system_pricing.pricing_values.select{|x| x.pricing_component.lookup_column.to_s.length > 0 && x.pricing_component.lookup_table.to_s.length > 0}.each do |c|
         page << '$("pricing_values_for_' + c.pricing_component_id.to_s + '").value = ' + c.id.to_s + ';'
       end
       page.hide loading_indicator_id("calculated_price")
