@@ -69,8 +69,8 @@ class WorkOrdersController < ApplicationController
     @errors = @work_order.errors = ActiveRecord::Errors.new(@work_order)
     @warnings = []
 
-    phone_number = @work_order.phone_number = [@work_order.phone_number1, @work_order.phone_number2, @work_order.phone_number3].select{|x| x.to_s.length > 0}.join("-")
-    sale_date = @work_order.sale_date = [@work_order.sale_date1, @work_order.sale_date2].select{|x| x.to_s.length > 0}.join("/")
+    phone_number = @work_order.phone_number = [@work_order.phone_number1, @work_order.phone_number2, @work_order.phone_number3].map{|x| x.to_s.strip}.select{|x| x.length > 0}.join("-")
+    sale_date = @work_order.sale_date = [@work_order.sale_date1, @work_order.sale_date2].map{|x| x.to_s.strip}.select{|x| x.length > 0}.join("/")
 
     pull_system_info
     pull_warranty_info
@@ -78,12 +78,14 @@ class WorkOrdersController < ApplicationController
     @data = {}
     @data["Issues"] = @work_order.issues #.join(", ")
     @data["Name"] = @work_order.customer_name
+    @data["Summary"] = @work_order.summary
+    @data["Subject"] = @data["Name"] + " - " + @data["Summary"]
     @errors.add("customer_name", "is mandatory information") if @data["Name"].to_s.length == 0
     @data["Adopter Name"] = @work_order.adopter_name
     @data["ID"] = " not yet created"
     @data["Email"] = @work_order.email
     @errors.add("email", "must be a valid email address in the form XXX@XXXX.XXX") if @data["Email"].to_s.length > 0 && !@data["Email"].to_s.match(/^.+@[^.]+\..+$/)
-    @errors.add("phone_number", "must be a valid phone number in the form XXX-XXX-XXXX") if phone_number.length > 0 && !phone_number.match(/\d{3,}-\d{3,}-\d{4,}/)
+    @errors.add("phone_number", "must be a valid phone number in the form XXX-XXX-XXXX") if phone_number.length > 0 && !phone_number.match(/\d{3}-\d{3}-\d{4}/)
     @data["Phone"] = @work_order.phone_number
     @data["OS"] = @work_order.os
     @data["Box Source"] = @work_order.box_source
@@ -99,6 +101,7 @@ class WorkOrdersController < ApplicationController
     @data["Transaction ID"] = @work_order.sale_id
     @data["Initial Content"] = @work_order.comment.to_s
     @errors.add("comment", "in description is mandatory") if @data["Initial Content"].to_s.length == 0
+    @errors.add("summary", "is mandatory") if @data["Summary"].to_s.length == 0
     ic = []
     if !@work_order.os.to_s.empty?
       ic << "Operating system info provided: " + @work_order.os

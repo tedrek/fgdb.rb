@@ -1,8 +1,6 @@
 <span class="onlyprint" style="float: left; clear: left;">
 <img src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
 </span>
-<center><h1>Tech Support Work Order<br /><br />Help Ticket #<%= data["ID"] %></h1></center>
-<hr style="clear: both; border: none;" />
 <%
 def value_or_none(data, val)
    value = data[val] || ""
@@ -14,6 +12,8 @@ def system_or_none(system, val)
    value && value.length > 0 ? value : "&nbsp;"
 end
 %>
+<center><h1>Tech Support Work Order<br /><br />Help Ticket #<%= data["ID"] %>:<br /><%= value_or_none(@data, "Subject") %></h1></center>
+<hr style="clear: both; border: none;" />
 <div style="float: left; clear: left; font-size: 16pt; width: 30%; border: 1px solid black; height: 300px;">
 <table width="100%">
 <tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Name") %></td></tr>

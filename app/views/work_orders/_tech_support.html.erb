@@ -86,7 +86,11 @@
   </p>
 <div style="clear: both">
   <p>
-    <%= f.label :comment, "Description of issue" %>
+    <%= f.label :summary, "Summary of issue" %>
+    <%= f.text_field :summary %>
+  </p>
+  <p>
+    <%= f.label :comment, "Description of issue, more details" %>
     <%= f.text_area :comment %>
   </p>
 </div>
