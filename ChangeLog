@@ -3,8 +3,10 @@ fgdb.rb (1.0.114) UNRELEASED; urgency=low
   * Add types for Vintage (Gizmo|Mac|System|Game) As IS
   * Require that the builder instructor who signs off a system is
     different frrom the builder (Closes: 34518)
+  * Impliment printme mistake tests for freekbox specs checking Core 2
+    Duo, Ram = 1.0gb and 120gb < HD Size < 160gb (Closes: #34522)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 16:25:59 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 16:54:18 -0700
 
 fgdb.rb (1.0.113) released; urgency=low
 

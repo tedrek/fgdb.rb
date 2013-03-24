@@ -1,4 +1,20 @@
+<% if defined?(@mistakes) && @mistakes != [] %>
+  <fieldset style="background-color: Red; width: auto; font-size: 16pt;">
+    <h1>
+      <%= @mistake_title || "Possible Mistakes:" %>
+    </h1>
+    <ul>
+      <% for mistake in @mistakes %>
+        <li>
+          <%= mistake %>
+        </li>
+      <% end %>
+    </ul>
+  <hr />
+<% else %>
 <fieldset style="background-color: Lime; width: auto">
+<% end %>
+
   <h1>
     Summary of this report:
   </h1>
@@ -130,18 +146,3 @@
     (If you are a build instructor, please email the report id to the buildteachers email list and tell us what was wrong)
   </p>
 </fieldset>
-<% if defined?(@mistakes) && @mistakes != [] %>
-  <fieldset style="background-color: Red; font-size: 15pt; width: auto;">
-    <h1>
-      <%= @mistake_title || "Possible Mistakes:" %>
-    </h1>
-    <ul>
-      <% for mistake in @mistakes %>
-        <li>
-          <%= mistake %>
-        </li>
-      <% end %>
-    </ul>
-  </fieldset>
-<% end %>
-

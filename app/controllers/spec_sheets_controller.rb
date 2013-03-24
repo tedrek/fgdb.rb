@@ -144,11 +144,31 @@ class SpecSheetsController < ApplicationController
       return
     end
     @system_parser = SystemParser.parse(output)
-    @mistake_title = "Things you might have done wrong: "
+    @mistake_title = "Possible mistakes found in this report:"
     @mistakes = []
     if @report.contact
       if @report.contact.is_organization==true
         @mistakes << "The technician that you entered is an organization<br />(an organization should normally not be a technician)<br />Click Edit to change the technician"
+      end
+      type_expect = 'freekbox'
+      if @report.type && @report.type.name == type_expect
+        phash = @report.pricing_hash
+        proc_expect = Default[type_expect + "_proc_expect"]
+        ram_expect = Default[type_expect + "_ram_expect"]
+        hd_min = Default[type_expect + "_hd_min"]
+        hd_max = Default[type_expect + "_hd_max"]
+        unless proc_expect.nil? || phash[:processor_product].match(proc_expect)
+          @mistakes << "This system was built as a #{type_expect}, but has a #{phash[:processor_product]} processor instead of the expected #{proc_expect}"
+        end
+        if ram_expect && phash[:total_ram] != ram_expect
+          @mistakes << "This system was built as a #{type_expect}, but has #{phash[:total_ram]} of memory instead of the expected #{ram_expect}"
+        end
+        if hd_min && phash[:hd_size_total].to_i < hd_min.to_i
+          @mistakes << "This system was built as a #{type_expect}, but has #{phash[:hd_size_total]} of hard drive space, which is below the #{hd_min} minimum expected"
+        end
+        if hd_max && phash[:hd_size_total].to_i > hd_max.to_i
+          @mistakes << "This system was built as a #{type_expect}, but has #{phash[:hd_size_total]} of hard drive space, which is above the #{hd_max} maximum expected"
+        end
       end
     end
     @seen = []
