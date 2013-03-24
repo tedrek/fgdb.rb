@@ -17,7 +17,7 @@
   </p>
   <p>
     <%= f.label :phone_number, "Phone Number (optional)" %><br />
-    <%= f.text_field :phone_number %>
+    <%= f.text_field :phone_number1, :size => 3 %>-<%= f.text_field :phone_number2, :size => 3 %>-<%= f.text_field :phone_number3, :size => 4 %>
   </p>
   <p>
     <%= f.label :email, "Email (optional)" %><br />
@@ -26,25 +26,39 @@
 
   <h2>Gizmo Information</h2>
   <%= f.label :box_type %>
+<table border="0">
+  <% midrow = false %>
     <% @rt_metadata["Type of Box"].each do |x| %>
-    <div class='form-element'>
-      <%= f.radio_button "box_type", x, {:checked => @work_order.box_type == x, :onclick => x.match(/(Server|Desktop|Laptop)/) ? "$('system_id_div').show();" : ""} %>
+      <% unless midrow %>
+        <tr>
+      <% end %>
+      <td>
+      <%= f.radio_button "box_type", x, {:checked => @work_order.box_type == x, :onclick => x.match(/(Mac|Server|Desktop|Laptop)/) ? "$('system_id_div').show();" : "$('system_id_div').hide(); $('system_info_div').hide();"} %>
       <%= f.label "box_type", x, :value => x %>
-    </div>
+      </td>
+      <% if midrow %>
+        </tr>
+      <% end %>
+      <% midrow = ! midrow %>
     <% end %>
+    <% if midrow %>
+      </tr>
+    <% end %>
+</table>
+
   <p style="clear: left">
-    <br />
     <%= f.label :additional_items, "Additional items left with tech support (or enter none)" %><br />
     <%= f.text_field :additional_items %>
   </p>
-  <div <% unless f.object.box_type.to_s.match(/(Server|Desktop|Laptop)/) %>style="display: none"<% end %> id="system_id_div">
+  <div <% unless f.object.box_type.to_s.match(/(Mac|Server|Desktop|Laptop)/) %>style="display: none"<% end %> id="system_id_div">
   <p>
     <%= f.label :system_id, 'System ID' %>
     <%= f.text_field :system_id %><%= loading_indicator_tag "system_info" %><br />
-    <%= button_to_function "No System ID Available", "$('system_info_div').show();" %>
+    <%= button_to_function "No System ID Available", "if($('system_info_div').visible()) {$('system_info_div').hide();} else {$('system_info_div').show();}" %>
   </p>
   </div>
-  <div <% unless f.object.box_type.to_s.match(/(Server|Desktop|Laptop)/) && f.object.system_id && f.object.system_id.to_s.length == 0  %>style="display: none"<% end %> id="system_info_div">
+  <% my_s = System.find_by_id(f.object.system_id.to_i) %>
+  <div <% unless f.object.box_type.to_s.match(/(Mac|Server|Desktop|Laptop)/) && f.object.system_id && (f.object.system_id.to_s.length == 0 || my_s.nil? || my_s.last_gizmo_event.nil?)  %>style="display: none"<% end %> id="system_info_div">
   <p>
     <%= f.label :box_source %><br />
     <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true} %>
@@ -56,18 +70,19 @@
   </p>
   -->
   <p>
-    <%= f.label :sale_date, "Date acquired" %><br />
-    <%= calendar_box f.object_name, :sale_date, :value => f.object.sale_date %>
+    <%= f.label :sale_date, "Date acquired (MM/YYYY)" %><br />
+    <%= f.text_field :sale_date1, :size => 2 %>/<%= f.text_field :sale_date2, :size => 4 %>
   </p>
   </div>
   <h2>Support Information</h2>
   <p>
-    <%= f.label :receiver_contact_id, "Receiving Technician ID" %><br />
-    <%= f.text_field :receiver_contact_id %>
-  </p>
-  <p>
     <%= f.label :os, "Operating System (optional)" %><br />
-    <%= f.select :os, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, :include_blank => true %>
+    <%= f.select :os, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, {:include_blank => true}, :onchange => 'if($("open_struct_os").value == "Linux") {$("os_warning").hide();} else {$("os_warning").show();}' %>
+  </p>
+  <p id="os_warning" style="display: none">
+    Remember that software support is offered *only* for Ubuntu; we can
+    only offer hardware support for users who wish to retain their operating
+    system.
   </p>
   <p>
     <%= f.label :issue %>
@@ -75,9 +90,12 @@
     <%= render :partial => 'issues', :locals => {:f => f} %>
   </p>
 <div style="clear: both">
-  <br />
   <p>
-    <%= f.label :comment, "Description of issue" %>
+    <%= f.label :summary, "Summary of issue" %>
+    <%= f.text_field :summary %>
+  </p>
+  <p>
+    <%= f.label :comment, "Description of issue, more details" %>
     <%= f.text_area :comment %>
   </p>
 </div>

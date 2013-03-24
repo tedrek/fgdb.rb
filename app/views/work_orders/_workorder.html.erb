@@ -1,8 +1,6 @@
 <span class="onlyprint" style="float: left; clear: left;">
 <img src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
 </span>
-<center><h1>Tech Support Work Order<br /><br />Help Ticket #<%= data["ID"] %></h1></center>
-<hr style="clear: both; border: none;" />
 <%
 def value_or_none(data, val)
    value = data[val] || ""
@@ -14,6 +12,8 @@ def system_or_none(system, val)
    value && value.length > 0 ? value : "&nbsp;"
 end
 %>
+<center><h1>Tech Support Work Order<br /><br />Help Ticket #<%= data["ID"] %></center>
+<hr style="clear: both; border: none;" />
 <div style="float: left; clear: left; font-size: 16pt; width: 30%; border: 1px solid black; height: 300px;">
 <table width="100%">
 <tr><td style="font-size: 16pt; border-bottom: 1px solid black;"><%= value_or_none(data, "Name") %></td></tr>
@@ -41,13 +41,19 @@ end
 <div style="float: left; clear: top; position: absolute; left: 62%; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black; width: 37%; font-size: 16pt; height: 300px;">
 <table width="100%">
 <tr><td style="font-size: 16pt;">Type:</td><td style="font-size: 16pt;"><%= value_or_none(data, "Type of Box") %></td></tr>
-<tr><td style="vertical-align: top; font-size: 16pt;">Issue(s):</td><td style="font-size: 12pt;"><%= value_or_none(data, "Issues").gsub(", ", "<br />") %></td></tr>
+<tr><td style="vertical-align: top; font-size: 16pt;" colspan="2">Issue(s):</td></tr>
+<tr><td style="font-size: 12pt;" colspan="2"><%= value_or_none(data, "Issues").gsub(", ", "<br />") %></td></tr>
 </table>
 </div>
 <hr style="clear: both; border: none;" />
 <div style="font-size: 16pt; clear: both; width: 100%; height: 400px; border: 1px solid black;">
-Problems/Diagnosis:<br />
+Subject: <%= value_or_none(@data, "Subject") %><br />
+Notes:<br />
 <%= value_or_none(data, "Initial Content").gsub("\n", "<br />") %>
 </div>
 <br />
 <span style="font-size: 16pt; float: right;">Recv'd by: #<%= value_or_none(data, "Technician ID") %> Date: <%= data["Created"].nil? ? Date.today : Date.parse(data["Created"]).to_s %></span>
+<div style="page-break-before: always; font-size: 16pt; clear: both; width: 100%; height: 800px; border: 1px solid black;">
+<center><h3>Tech Support Terms Of Service:</h3></center><br />
+Will go where this placeholder text is now.
+</div>

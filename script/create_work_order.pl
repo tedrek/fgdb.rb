@@ -5,9 +5,6 @@ use warnings;
 
 my $config =  "/etc/svn/rtrc";
 
-use File::Basename qw< dirname >;
-use lib dirname(__FILE__) . '/working_rt_lib/';
-
 use RT::Client::REST;    
 use RT::Client::REST::Ticket;    
 
@@ -53,7 +50,8 @@ my $source = $data->{"Box Source"};
 my $ts_source = $data->{"Ticket Source"};
 my $content = $data->{"Initial Content"};
 my $requestor = $data->{"Requestor"};
-my $subject = $name . " - " . $type . " - " . $issues;
+my $summary = $data->{"Summary"};
+my $subject = $data->{"Subject"};
 my @issues = split(", ", $issues);
 my $txn_date = $data->{"Transaction Date"};
 my $txn_id = $data->{"Transaction ID"};

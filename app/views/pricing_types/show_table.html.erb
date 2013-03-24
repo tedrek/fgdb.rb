@@ -1,4 +1,4 @@
-<h2>Showing pricing table for <%= @printme_pull_from %></h2>
+<h2>Showing pricing table for <%= @table_name %></h2>
 
 <table class="awesome">
   <% @table.each_with_index do |row, i| %>
@@ -14,5 +14,5 @@
   <% end %>
 </table>
 
-<%= link_to "Download as CSV", :action => "to_csv", :id => @printme_pull_from %> | 
+<%= link_to "Download as CSV", :action => "to_csv", :id => @table_name %> | 
 <%= link_to 'Back', :action => "index" %>

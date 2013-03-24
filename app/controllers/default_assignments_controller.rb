@@ -98,9 +98,19 @@ class DefaultAssignmentsController < ApplicationController
     assigned, available = params[:id].split(",")
 
     # readonly
-    @assigned_orig = DefaultAssignment.find(assigned)
-    @available = DefaultAssignment.find(available)
+    begin
+      @assigned_orig = DefaultAssignment.find(assigned)
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{assigned}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+    end
 
+    begin
+      @available = DefaultAssignment.find(available)
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{available}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+    end
+
+    if @assigned_orig && @available
     if @available.volunteer_default_shift.stuck_to_assignment or @assigned_orig.volunteer_default_shift.stuck_to_assignment
       flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
     else
@@ -131,8 +141,9 @@ class DefaultAssignmentsController < ApplicationController
       @assigned.save!
       @new.save!
     end
+    end
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig.volunteer_default_shift.volunteer_default_event.weekday.name)
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig ? @assigned_orig.volunteer_default_shift.volunteer_default_event.weekday.name : "")
   end
 
   def split
@@ -201,9 +212,35 @@ class DefaultAssignmentsController < ApplicationController
   def update
     @my_url = {:action => "update", :id => params[:id]}
     @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
+
+    lv = params["lock_versions"]
+    ac = params["assigned_contacts"] || {}
+    @assigned_contacts = []
+    @replaced_contacts = []
+    ret = true
+    @assignments.each do |as|
+      as.lock_version = lv[as.id.to_s]
+      if as.lock_version_changed?
+        as.errors.add("lock_version", "is stale for this assignment, which means it has been edited by somebody else since you opened it, please try again")
+        ret = false
+      end
+      if as.contact_id && as.contact_id.to_s != params[:default_assignment][:contact_id].to_s
+        @assigned_contacts << as.contact
+        unless ac[as.contact_id.to_s] && ac[as.contact_id.to_s] == "replace"
+          as.errors.add("contact_id", "has been changed, please confirm below that the volunteer who is already assigned to the shift should be removed")
+          ret = false
+        else
+          @replaced_contacts << as.contact_id
+        end
+      end
+    end
     rt = params[:default_assignment].delete(:redirect_to)
 
-    ret = true
+    if ! ret
+      @assignment = DefaultAssignment.new(params[:default_assignment])
+      @assignment.volunteer_default_shift = @assignments.first.volunteer_default_shift
+    end
+
     @assignments.each{|x|
       if ret
         @assignment = x

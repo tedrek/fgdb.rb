@@ -56,7 +56,7 @@ class Notifier < ActionMailer::Base
   end
 
   def staff_hours_summary_report(myworkers)
-    recipients Default['scheduler_reports_to']
+    recipients Default['management_mailing_list']
     from Default['my_email_address']
     headers 'return-path' => Default['return_path'] if Default['return_path']
     subject "Staff Hours Summary"

@@ -95,6 +95,13 @@ class GizmoEvent < ActiveRecord::Base
     StoreCredit.find_by_id(store_credit_hash_id)
   end
 
+  validate :sales_limit
+  def sales_limit
+    if self.gizmo_context == GizmoContext.sale && self.gizmo_type && self.gizmo_type.sales_limit && self.gizmo_type.sales_limit < self.gizmo_count
+      errors.add("gizmo_count", "cannot exceed the limit of #{self.gizmo_type.sales_limit} for #{self.gizmo_type}")
+    end
+  end
+
   validate :sc_h_ok
 
   def sc_h_ok

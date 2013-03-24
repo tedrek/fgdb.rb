@@ -102,7 +102,7 @@ class SpecSheetsController < ApplicationController
       redirect_to :action => 'system'
       return
     end
-    @system = @main_system.all_instances.select{|x| x.spec_sheets.length > 1}.sort_by(&:created_at).last
+    @system = @main_system.all_instances.select{|x| x.spec_sheets.length >= 1}.sort_by(&:created_at).last
     if !@system
       flash[:error] = "System id ##{params[:id]} has no spec sheets"
       redirect_to :action => 'system'

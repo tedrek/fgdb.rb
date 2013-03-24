@@ -24,7 +24,9 @@
 
 <fieldset>
 <% form_for(@assignment, :url => @my_url, :html => ((@assignment.class == Assignment) ? {:onSubmit => "return check_contact_limit();"} : {})) do |f| %>
-  <%= f.error_messages %>
+  <% @assignments.each do |x| %>
+    <%= error_messages_for 'assignment', :object => x %>
+  <% end %>
 
   <%= render :partial => "assignments/form", :locals => {:f => f} %>
 

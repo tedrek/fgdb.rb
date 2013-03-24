@@ -1,3 +1,4 @@
+<div class="noprint">
 <h1>New Work Order</h1>
 
 <% if @data %>
@@ -8,6 +9,7 @@
 <% end %>
 <%= button_to "Edit Information", {:mode => params[:mode], :action => "new", :open_struct => params[:open_struct]} %>
 <%= button_to "Submit Work Order", {:mode => params[:mode], :action => "submit", :open_struct => params[:open_struct]} %>
+</div>
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => nil} %>
 <% else %>
 <% form_for(@work_order, :url => {:action => "create", :mode => params[:mode]}) do |f| %>
