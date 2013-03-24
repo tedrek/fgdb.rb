@@ -1,7 +1,8 @@
 fgdb.rb (1.0.114) UNRELEASED; urgency=low
 
+  * Add types for Vintage (Gizmo|Mac|System|Game) As IS
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 23 Feb 2013 07:33:58 -0800
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 16:19:13 -0700
 
 fgdb.rb (1.0.113) released; urgency=low
 
