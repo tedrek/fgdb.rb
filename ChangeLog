@@ -7,8 +7,11 @@ fgdb.rb (1.0.114) UNRELEASED; urgency=low
     Duo, Ram = 1.0gb and 120gb < HD Size < 160gb (Closes: #34522)
   * Add support to dhtml-calendar and the contact birthday field parsing
     for dates in the format yyyy/mm/dd (Closes: #34344)
+  * Add an alert in volunteer scheduling when a volunteer has had NC/NS
+    instance(s) since their last successful check-in, to remind them
+    they must call (Closes: #34530)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 17:38:49 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 18:24:32 -0700
 
 fgdb.rb (1.0.113) released; urgency=low
 

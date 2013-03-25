@@ -15,6 +15,25 @@ class Assignment < ActiveRecord::Base
 
   has_one :contact_volunteer_task_type_count, :conditions => 'contact_volunteer_task_type_counts.contact_id = #{defined?(attributes) ? contact_id : "assignments.contact_id"}', :through => :volunteer_shift, :source => :contact_volunteer_task_type_counts
 
+  named_scope :no_call_no_show, :conditions => ['attendance_type_id = ?', AttendanceType.find_by_name("no call no show").id]
+  named_scope :arrived, :conditions => ['attendance_type_id = ?', AttendanceType.find_by_name("arrived").id]
+  named_scope :for_contact_id, lambda {|c| {:conditions => ['contact_id = ?', c]}}
+  named_scope :updated_since, lambda {|u_date| u_date ? {:conditions => ['updated_at > ?', u_date]} : {:conditions => []}}
+
+  def nc_ns_since_last_arrived
+    c = self.contact
+    list = []
+    return list unless c
+    since_when = Assignment.for_contact_id(c.id).arrived.max
+    since_when = since_when.date if since_when
+    list = Assignment.for_contact_id(c.id).updated_since(since_when).no_call_no_show
+    return list
+  end
+
+  def <=>(other)
+    self.date <=> other.date
+  end
+
   def contact_id=(newval)
     self.write_attribute(:contact_id, newval)
     self.contact = Contact.find_by_id(newval.to_i)

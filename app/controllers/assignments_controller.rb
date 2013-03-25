@@ -417,6 +417,11 @@ class AssignmentsController < ApplicationController
         if a.contact and not a.contact.is_old_enough?
           flash[:jsalert] = "This volunteer is not yet #{Default['minimum_volunteer_age']} years old (based on their saved birthday: #{a.contact.birthday.to_s}).\nPlease remind the volunteer that they must have an adult with them to volunteer."
         end
+        nc_ns = a.nc_ns_since_last_arrived
+        if nc_ns.length > 0
+          msg = "This volunteer had No Call/No Show instance(s) on #{nc_ns.map{|x| x.date}.uniq.to_sentence}.\nPlease remind them that they must call in if they are not able to come in."
+          flash[:jsalert] = flash[:jsalert] ? (flash[:jsalert] + "\n\n" + msg) : msg
+        end
       end
     rescue ActiveRecord::RecordNotFound
       flash[:jsalert] = "Assignment was deleted before it could be marked as arrived"
