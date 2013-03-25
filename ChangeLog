@@ -5,8 +5,10 @@ fgdb.rb (1.0.114) UNRELEASED; urgency=low
     different frrom the builder (Closes: 34518)
   * Impliment printme mistake tests for freekbox specs checking Core 2
     Duo, Ram = 1.0gb and 120gb < HD Size < 160gb (Closes: #34522)
+  * Add support to dhtml-calendar and the contact birthday field parsing
+    for dates in the format yyyy/mm/dd (Closes: #34344)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 16:54:18 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 17:38:49 -0700
 
 fgdb.rb (1.0.113) released; urgency=low
 

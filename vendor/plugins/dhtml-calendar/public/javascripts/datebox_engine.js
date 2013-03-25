@@ -509,6 +509,20 @@ var dateParsePatterns = [
 
         }
     },
+  // FG SPECIFIC: yyyy/mm/dd
+    {   re: /(\d{1,2})\/(\d{1,2})\/(\d{1,2})/,
+        handler: function(bits, calendarIfFormat) {
+
+            var d = new Date();
+            var yyyy = parseInt(bits[1], 10);
+            var dd = parseInt(bits[3], 10);
+            var mm = parseInt(bits[2], 10) - 1;
+
+            if ( DateInRange( yyyy, mm, dd ) )
+               return getDateObj(yyyy, mm, dd);
+
+        }
+    },
     // mm-dd (ISO style) omitted year
     {   re: /(\d{1,2})-(\d{1,2})/,
         handler: function(bits, calendarIfFormat) {

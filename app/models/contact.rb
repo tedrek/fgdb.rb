@@ -99,6 +99,16 @@ class Contact < ActiveRecord::Base
     true
   end
 
+  def birthday=(bday)
+    begin
+      parsed = Date.parse(bday)
+      write_attribute(:birthday, parsed)
+      return bday
+    rescue
+      return nil
+    end
+  end
+
   def mailing_list_email
     list = ContactMethodType.email_types_ordered.map{|x| x.id}
     list = list.reverse if self.organization
