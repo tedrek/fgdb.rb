@@ -1,6 +1,6 @@
 fgdb.rb (1.0.114) UNRELEASED; urgency=low
 
-  * Add types for Vintage (Gizmo|Mac|System|Game) As IS
+  * Add types for Vintage (Gizmo|Mac|System|Game|Misc) As IS
   * Require that the builder instructor who signs off a system is
     different frrom the builder (Closes: 34518)
   * Impliment printme mistake tests for freekbox specs checking Core 2
