@@ -89,8 +89,13 @@ class PricingTypesController < ApplicationController
 
   def import_table
     @struct = OpenStruct.new(params[:open_struct])
-    PricingData.load_from_csv(@struct.name, @struct.csv.read)
-    redirect_to :action => "show_table", :id => @struct.name
+    if @struct.csv
+      PricingData.load_from_csv(@struct.name, @struct.csv.read)
+      redirect_to :action => "show_table", :id => @struct.name
+    else
+      flash[:error] = "A CSV file to import must be uploaded"
+      redirect_to :action => "index"
+    end
   end
 
   def remove_expression
