@@ -1,6 +1,6 @@
 class AddVintageAsIsGizmoTypes < ActiveRecord::Migration
   def self.up
-    for i in [['gizmo', 'misc'], ['mac', 'system'], ['system', 'system'], ['game', 'misc'], ['misc', 'misc']]
+    for i in [['gizmo', 'misc'], ['mac', 'system'], ['system', 'system'], ['game', 'misc']]
       ad = GizmoType.new
       ad.gizmo_category = GizmoCategory.find_by_name(i.last)
       ad.parent_name = 'gizmo'

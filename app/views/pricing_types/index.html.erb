@@ -14,6 +14,9 @@
 
 <h3>Import Table:</h3>
 <% @import = OpenStruct.new %>
+<% if flash[:error] %>
+<span class="error"><%= flash[:error] %></span>
+<% end %>
 <% form_for @import, :html => {:enctype => "multipart/form-data"}, :url => {:action => "import_table"} do |f| %>
 <%= f.label :name, "Name (must match printme pull title, any existing values will be overwritten)" %>
 <%= f.text_field :name %>

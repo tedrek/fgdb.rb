@@ -338,7 +338,10 @@ class AssignmentsController < ApplicationController
     end
     if @assignment
       @assignment.attendance_type_id = params[:attendance][:attendance_type_id] if params[:attendance]
-      success = @assignment.save
+      begin
+        success = @assignment.save
+      rescue ActiveRecord::StaleObjectError
+      end
     end
     if success and params[:cancel]
       at = AttendanceType.find_by_name("cancelled")
@@ -413,7 +416,10 @@ class AssignmentsController < ApplicationController
       if !a.valid?
         flash[:jsalert] = a.errors.full_messages.join(", ")
       else
-        a.save! # if !a.save ? flash[:error] = "Failed to save record as arrived for unknown reason"
+        begin
+          a.save! # if !a.save ? flash[:error] = "Failed to save record as arrived for unknown reason"
+        rescue ActiveRecord::StaleObjectError
+        end
         if a.contact and not a.contact.is_old_enough?
           flash[:jsalert] = "This volunteer is not yet #{Default['minimum_volunteer_age']} years old (based on their saved birthday: #{a.contact.birthday.to_s}).\nPlease remind the volunteer that they must have an adult with them to volunteer."
         end

@@ -16,6 +16,8 @@ fgdb.rb (1.0.114) released; urgency=low
   * Add an alert in volunteer scheduling when a volunteer has had NC/NS
     instance(s) since their last successful check-in, to remind them
     they must call (Closes: #34530)
+  * Fix bug caused by duplicate requests by silently ignoring stale
+    object (Closes: #34606)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 18:27:00 -0700
 
