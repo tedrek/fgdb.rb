@@ -26,10 +26,10 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   <% seen_v = [] %>
   <table class="awesome" width="100%">
   <% @system_pricing.pricing_type.values_to_lookup.each do |x| %>
-    <% unless seen_v.include?(x.lookup_type)
-         seen_v << x.lookup_type %>
+    <% unless seen_v.include?(x.lookup_column)
+         seen_v << x.lookup_column %>
   <tr>
-    <th><%= x.lookup_type.titleize %>:</th>
+    <th><%= x.lookup_column.titleize %>:</th>
   <td><%= x.find_value(@system_pricing.pricing_hash) %> (<%= x.pull_from %>: <%= x.printme_pull(@system_pricing.pricing_hash) %>)</td>
   </tr>
     <% end %>
