@@ -4,8 +4,10 @@ fgdb.rb (1.0.115) UNRELEASED; urgency=low
     Adoption and Build programs (Closes: #34720)
   * Add a warning if a volunteer hasn't completed hardware id/system
     eval and are scheduled for system eval/build (Closes: #34739)
+  * Add new trend report of the final spec sheet completed by system
+    (Closes: #34718)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 29 Mar 2013 17:59:38 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Mar 2013 11:02:59 -0700
 
 fgdb.rb (1.0.114) released; urgency=low
 

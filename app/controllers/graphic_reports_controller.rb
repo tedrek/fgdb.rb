@@ -736,6 +736,32 @@ class NumberOfSystemsSoldByPrintmeType < TrendReport
   end
 end
 
+class NumberOfFinalBuilderTasksBySystem < TrendReport
+  def category
+    "Build"
+  end
+
+  def title
+    "Report of Final Builder Tasks Completed By System for #{@conditions[:data_type].to_s.humanize}"
+  end
+
+  def default_table_data_types
+    Hash.new("integer")
+  end
+
+  def get_for_timerange(args)
+    ret = {}
+    DB.exec("SELECT action, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id, action_id) actions.description AS action, type_id, action_id, system_id, spec_sheets.created_at FROM spec_sheets JOIN builder_tasks ON builder_task_id = builder_tasks.id JOIN actions ON actions.id = action_id ORDER BY spec_sheets.system_id, action_id, spec_sheets.created_at DESC) AS spec_sheets WHERE #{sql_for_report(SpecSheet, conditions_with_daterange_for_report(args, "created_at"))} GROUP BY 1 ORDER BY 1;").to_a.each do |r|
+      ret[r["action"]] = r["count"]
+    end
+    return ret
+  end
+
+  def valid_conditions
+    ['action', 'type']
+  end
+end
+
 class PrintmeInfoTrend < TrendReport
   def valid_conditions
     ['gizmo_context_id', 'type']
