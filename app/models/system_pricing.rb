@@ -171,7 +171,7 @@ class SystemPricing < ActiveRecord::Base
     @pricing_hash ||= begin
                           h = {}
                           self.class.display_pulls.each do |pull|
-                            h[pull] = "N/A"
+                            h[pull] = "N/A" unless self.class.optional_pulls.include?(pull)
                           end
                           oh = self.spec_sheet.pricing_hash
                           oh.each do |k, v|
@@ -184,6 +184,7 @@ class SystemPricing < ActiveRecord::Base
                           unless h[:battery_life] and h[:battery_life].length > 0
                             h[:battery_life] = "N/A"
                           end
+
                           h
                         end
   end
@@ -193,6 +194,10 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def self.valid_pulls
-    [:processor_product, :processor_speed, :processor_count, :max_l2_l3_cache, :memory_type, :memory_amount, :hd_type, :hd_size, :hd_count, :hd_size_total, :optical_drive, :battery_life]
+    [:processor_product, :processor_speed, :processor_count, :max_l2_l3_cache, :memory_type, :memory_amount, :hd_type, :hd_size, :hd_count, :hd_size_total, :optical_drive, :battery_life] + optional_pulls
+  end
+
+  def self.optional_pulls
+    DB.exec("SELECT name FROM spec_sheet_questions ORDER BY position;").to_a.map{|x| x["name"]}.uniq
   end
 end

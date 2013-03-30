@@ -20,6 +20,9 @@ class SpecSheet < ActiveRecord::Base
     @pricing_hash ||= begin
                           h = self.parser.pricing_hash
                           h[:build_type] = self.type ? self.type.name : nil
+                            self.spec_sheet_values.each do |x|
+                               h[x.spec_sheet_question.name] = x.value
+                            end
                           h
                         end
   end
