@@ -19,6 +19,7 @@ class SystemPricingsController < ApplicationController
     @system_pricings = SystemPricing.find(:all, :conditions => ['id IN (SELECT DISTINCT system_id FROM system_pricings) AND id NOT IN (SELECT DISTINCT system_id FROM gizmo_events)'])
   end
 
+  protected
   def calculate
     @system_pricing = SystemPricing.new(params[:system_pricing])
     diff = 0
