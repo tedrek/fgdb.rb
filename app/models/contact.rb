@@ -99,6 +99,19 @@ class Contact < ActiveRecord::Base
     true
   end
 
+  def schedule_counts
+    assns = self.assignments.is_after_today.roster_is_limited_by_program.not_cancelled
+    h = {}
+    assns.each do |a|
+      progs = a.real_programs
+      progs.each do |p|
+        h[p] ||= 0
+        h[p] += 1
+      end
+    end
+    h
+  end
+
   def birthday=(bday)
     begin
       parsed = Date.parse(bday)

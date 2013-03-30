@@ -1,6 +1,6 @@
 class Roster < ActiveRecord::Base
   has_and_belongs_to_many :skeds
-
+  belongs_to :contact_type
   named_scope :enabled, :conditions =>  ['enabled = ?', true]
 
   def skeds_s
