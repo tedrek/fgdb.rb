@@ -188,6 +188,20 @@ class SystemPricing < ActiveRecord::Base
                         end
   end
 
+  def pricing_component_values=(hash)
+    hash.each do |c_id, value|
+      self.pricing_values << PricingValue.find_or_create_by_pricing_component_id_and_value_cents(c_id, value.to_cents)
+    end
+  end
+
+  def pricing_component_values
+    h = {}
+    self.pricing_values.each do |x|
+      h[x.pricing_component_id] = x.value
+    end
+    return h
+  end
+
   def self.display_pulls
     [:build_type] + valid_pulls
   end
