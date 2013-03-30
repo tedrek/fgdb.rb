@@ -19,7 +19,6 @@ class SystemPricingsController < ApplicationController
     @system_pricings = SystemPricing.find(:all, :conditions => ['id IN (SELECT DISTINCT system_id FROM system_pricings) AND id NOT IN (SELECT DISTINCT system_id FROM gizmo_events)'])
   end
 
-  protected
   def calculate
     @system_pricing = SystemPricing.new(params[:system_pricing])
     diff = 0
@@ -37,7 +36,11 @@ class SystemPricingsController < ApplicationController
     end
     render :update do |page|
       @system_pricing.pricing_values.select{|x| x.pricing_component.lookup_column.to_s.length > 0 && x.pricing_component.lookup_table.to_s.length > 0}.each do |c|
-        page << '$("pricing_values_for_' + c.pricing_component_id.to_s + '").value = ' + c.id.to_s + ';'
+        if c.pricing_component.use_value_as_score
+          page << '$("system_pricing_pricing_component_values_component_' + c.pricing_component_id.to_s + '").value = ' + c.value + ';'
+        else
+          page << '$("pricing_values_for_' + c.pricing_component_id.to_s + '").value = ' + c.id.to_s + ';'
+        end
       end
       page.hide loading_indicator_id("calculated_price")
       page << '$("calculated_price").innerHTML = "$' + @system_pricing.calculated_price + '";'

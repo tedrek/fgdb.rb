@@ -74,7 +74,9 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
             <th><%= pc.name %><% unless pc.required? %> (optional)<% end %></th>
             <td>
               <% if pc.use_value_as_score %>
-                <%= f.text_field "pricing_component_values[#{pc.id}]" %>
+	      <% f.fields_for "pricing_component_values" do |v| %>
+                <%= v.text_field 'component_' + pc.id.to_s, :onchange =>  "update_calculated_price(event.target.form);", :value => f.object.pricing_component_values.send('component_' + pc.id.to_s) %>
+		<% end %>
               <% else %>
                 <%= collection_select :system_pricing, :pricing_value_ids, (pc.multiple ? [] : [[nil, "<Select One>"]]) + pc.pricing_values.sort_by(&:value_cents).map{|x| [x.id, x.name]}, :first, :last, { :selected => @system_pricing.pricing_value_ids }, { :disabled => false && !pc.lookup_type.nil?, :id => 'pricing_values_for_' + pc.id.to_s, :multiple => pc.multiple, :name => 'system_pricing[pricing_value_ids][]', :onchange =>  "update_calculated_price(event.target.form);", :class => (@system_pricing.missing_required.include?(pc.name)) ? 'fieldWithErrors' : ''} -%>
               <% end %>
