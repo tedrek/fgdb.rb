@@ -17,7 +17,7 @@
     for(var i = 0; i < my_real_programs.length; i++) {
       if(contact_shift_count[my_real_programs[i]] >= assignment_shift_limit) {
         contact_shift_count[my_real_programs[i]] = contact_shift_count[my_real_programs[i]] + 1;
-    if(!confirm('This contact will be scheduled for ' + contact_shift_count + ' future shifts now, which is over the limit of ' + assignment_shift_limit + ' shifts. Would you like to continue?')) {
+    if(!confirm('This contact will be scheduled for ' + contact_shift_count[my_real_programs[i]] + ' future ' + my_real_programs[i] + ' shifts now, which is over the limit of ' + assignment_shift_limit + ' shifts. Would you like to continue?')) {
       return false;
     }
       }
