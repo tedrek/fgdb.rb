@@ -10,6 +10,7 @@ class PricingExpression < ActiveRecord::Base
         v << (value.pricing_component.multiplier_cents * value.value_cents/10000.0)
       end
     end
+    return 0.0 if v.length == 1
     return v.inject(1.0){|t,x| t = t * x }
   end
 
