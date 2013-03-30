@@ -18,6 +18,7 @@ fgdb.rb (1.0.114) released; urgency=low
     they must call (Closes: #34530)
   * Fix bug caused by duplicate requests by silently ignoring stale
     object (Closes: #34606)
+  * Add new 30 day policy for servers (Closes: #34681)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 24 Mar 2013 18:27:00 -0700
 
