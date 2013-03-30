@@ -30,7 +30,11 @@
     <%= f.label :multiple, "Allow multiple selected? (as optional field)" %><br />
     <%= f.check_box :multiple %>
   </p>
-<% if f.object.id %>
+  <p>
+    <%= f.label :use_value_as_score, "Use value as score directly? (no pricing table value below)" %><br />
+    <%= f.check_box :use_value_as_score %>
+  </p>
+<% if f.object.id && !f.object.use_value_as_score %>
 <%= render :partial => "pricing_values/list" %>
 <%= link_to "Download as CSV", :action => "to_csv", :id => @pricing_component.id %> | 
 <%= link_to "Add new pricing value", {:controller => "pricing_values", :action => "new", :pricing_component_id => @pricing_component.id} %>
