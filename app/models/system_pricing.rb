@@ -96,7 +96,7 @@ class SystemPricing < ActiveRecord::Base
       match = c.matched_pricing_value(self.modified_pricing_hash)
       if match.length > 0
         self.pricing_values.reject{|x|
-          ! x.pricing_component_id == c.id
+          x.pricing_component_id == c.id
         }
       end
       match.each do |m|
@@ -105,10 +105,22 @@ class SystemPricing < ActiveRecord::Base
     end
   end
 
+  after_save :save_pricing_values
+  def save_pricing_values
+    self.pricing_values.each do |x|
+      x.save! unless x.id
+    end
+  end
+
   def autodetect_values
     return unless self.pricing_type
     self.pricing_type.pricing_components.each do |c|
       match = c.matched_pricing_value(self.pricing_hash)
+      if match.length > 0
+        self.pricing_values.reject{|x|
+          x.pricing_component_id == c.id
+        }
+      end
       match.each do |m|
         self.pricing_values << m
       end
@@ -191,14 +203,16 @@ class SystemPricing < ActiveRecord::Base
 
   def pricing_component_values=(hash)
     hash.each do |c_id, value|
+      c_id = c_id.sub("component_", "").to_i
+      self.pricing_values.reject{|x| x.pricing_component_id == c_id}
       self.pricing_values << PricingValue.find_or_create_by_pricing_component_id_and_value_cents(c_id, value.to_cents)
     end
   end
 
   def pricing_component_values
-    h = {}
+    h = OpenStruct.new
     self.pricing_values.each do |x|
-      h[x.pricing_component_id] = x.value
+      h.send("component_" + x.pricing_component_id.to_s + "=", x.value)
     end
     return h
   end
