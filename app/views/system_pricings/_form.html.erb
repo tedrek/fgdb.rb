@@ -14,10 +14,12 @@
 Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:controller => "spec_sheets", :action => "show", :id => @spec_sheet.id} %>:
 <table class="awesome" width="100%">
   <% SystemPricing.display_pulls.each do |k| %>
+  <% if @values.keys.include?(k) %>
   <tr>
     <th><%= k.to_s.titleize %>:</th>
     <td><%= @values[k] %><% if @field_errors && @field_errors[k] %><br /><b><span class="error">(Warning: <%= @field_errors[k] %>)</span><% end %></b></td>
   </tr>
+  <% end %>
   <% end %>
 </table>
 <% if @system_pricing.pricing_type && @system_pricing.pricing_type.values_to_lookup.length > 0 %>
