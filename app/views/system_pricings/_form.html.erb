@@ -26,12 +26,20 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   <% seen_v = [] %>
   <table class="awesome" width="100%">
   <% @system_pricing.pricing_type.values_to_lookup.each do |x| %>
-    <% unless seen_v.include?(x.lookup_column)
-         seen_v << x.lookup_column %>
-  <tr>
-    <th><%= x.lookup_column.titleize %>:</th>
-  <td><%= x.find_value(@system_pricing.pricing_hash) %> (<%= x.pull_from %>: <%= x.printme_pull(@system_pricing.pricing_hash) %>)</td>
-  </tr>
+    <% seen_v << [x.lookup_table, x.pull_from, x.printme_pull(@system_pricing.pricing_hash)] %>
+  <% end %>
+  <% seen_v.uniq.each do |tbl, pull_name, pull_value| %>
+    <tr>
+      <th><%= pull_name.titleize %></th>
+      <td><%= pull_value %></td>
+    </tr>
+    <% PricingData.table_columns(tbl).each do |column| %>
+    <% unless tbl.match(/cpu/i) && !["Cores", "Speed", "Speed ghz", "L2 cache", "L3 cache", "L2 total", "64-bit?", "Architecture"].include?(column) %>
+    <tr>
+      <td><%= column.titleize %>:</td>
+      <td><%= PricingData.lookup(tbl, pull_value, column) %></td>
+    </tr>
+    <% end %>
     <% end %>
   <% end %>
 </table>

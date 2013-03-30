@@ -30,4 +30,8 @@ class PricingData < ActiveRecord::Base
   def PricingData.tables
     DB.exec("SELECT DISTINCT table_name FROM pricing_datas;").to_a.map{|x| x.values.first.humanize}
   end
+
+  def PricingData.table_columns(tbl_name)
+    DB.exec(["SELECT DISTINCT lookup_type FROM pricing_datas WHERE table_name LIKE ?;", tbl_name]).to_a.map{|x| x.values.first.humanize}
+  end
 end
