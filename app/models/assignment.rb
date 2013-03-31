@@ -87,6 +87,9 @@ class Assignment < ActiveRecord::Base
   end
 
   def validate
+    if self.contact_id && self.contact_id_changed? && self.volunteer_shift && self.volunteer_shift.roster && self.volunteer_shift.roster.contact_type
+      errors.add("contact_id", "does not have the contact type required to sign up for a shift in this roster (#{self.volunteer_shift.roster.contact_type.description.humanize.downcase})") unless self.contact.contact_types.include?(self.volunteer_shift.roster.contact_type)
+    end
     if self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
       errors.add("contact_id", "is empty for an assignment-based shift") if self.contact_id.nil?
     end
