@@ -195,7 +195,7 @@ class AssignmentsController < ApplicationController
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned", "weekday"],
       :date_range_condition => "date",
       :forced_condition => "cancelled",
-      :maximum_date => "VolunteerEvent.maximum(:date)",
+                           :maximum_date => "newc = skedj.conditions.dup; newc.date_enabled = false; VolunteerEvent.maximum(:date, :conditions => newc.conditions(Assignment), :joins => 'INNER JOIN \"volunteer_shifts\" ON volunteer_shifts.volunteer_event_id = volunteer_events.id INNER JOIN \"assignments\" ON assignments.volunteer_shift_id = volunteer_shifts.id LEFT OUTER JOIN \"attendance_types\" ON \"attendance_types\".id = \"assignments\".attendance_type_id')",
 
       :block_method_name => "volunteer_shifts.volunteer_events.date",
       :block_anchor => 'volunteer_shifts.date_anchor',
