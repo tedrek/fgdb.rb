@@ -64,7 +64,7 @@ class PricingTypesController < ApplicationController
   protected
   def make_a_table
     @table_name = params[:id]
-    pd = PricingData.find_all_by_table_name(@table_name.downcase.gsub(' ', '_'))
+    pd = PricingData.find_all_by_table_name(@table_name)
     cols = pd.map{|x| x.lookup_type}.uniq.sort
     rows = pd.map{|x| x.printme_value}.uniq.sort
     data = {}
@@ -77,6 +77,11 @@ class PricingTypesController < ApplicationController
     end
   end
   public
+
+  def delete_table
+    PricingData.delete_table(params[:id])
+    redirect_to :action => 'index'
+  end
 
   def show_table
     make_a_table

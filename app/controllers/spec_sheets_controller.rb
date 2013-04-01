@@ -23,25 +23,22 @@ class SpecSheetsController < ApplicationController
 
   def lookup_proc
     @proc_name = params[:proc]
+    @tables = []
+    @table_data = {}
     if @proc_name
       relevant_tables = PricingData.tables.select{|x| x.match(/cpu/i)}
       pd = []
       relevant_tables.each do |tbl|
-        PricingData.table_columns(tbl).each do |column|
-          pd << [tbl, column, PricingData.lookup(tbl, @proc_name, column)]
-        end
-      end
-      @tables = pd.map(&:first).uniq.sort
-      @table_data = {}
-      @tables.each do |tbl|
-        @table_data[tbl] = {}
-        pd.select{|x| x.first == tbl}.each do |nothin, column, value|
-          @table_data[tbl][column] = value
+        match = PricingData.find_match(tbl, @proc_name)
+        if match
+          @tables << [tbl, match]
+          @table_data[tbl] = {}
+          PricingData.table_columns(tbl).each do |column|
+            @table_data[tbl][column] = PricingData.lookup(tbl, match, column)
+          end
         end
       end
     end
-    # TODO: render  pd data by table
-    # ( NOTE : need to display matched proc name in BOTH places, here and system pricings, in case of failed/incorrect match)
   end
 
   def sign_off

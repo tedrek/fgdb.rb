@@ -18,10 +18,11 @@ class SpecSheet < ActiveRecord::Base
 
   def pricing_hash
     @pricing_hash ||= begin
+                        h = {}
                           h = self.parser.pricing_hash
                           h[:build_type] = self.type ? self.type.name : nil
-                            self.spec_sheet_values.each do |x|
-                               h[x.spec_sheet_question.name] = x.value
+                        self.spec_sheet_values.each do |x|
+                               h[x.spec_sheet_question.name.underscore.to_sym] = x.value
                             end
                           h
                         end

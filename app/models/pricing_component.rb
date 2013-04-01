@@ -28,7 +28,7 @@ class PricingComponent < ActiveRecord::Base
   end
 
   def printme_pull(pricing_hash)
-    pricing_hash[self.pull_from.to_sym]
+    pricing_hash[self.pull_from.underscore.to_sym]
   end
 
   def find_value(pricing_hash)
@@ -36,8 +36,7 @@ class PricingComponent < ActiveRecord::Base
     v = printme_pull(pricing_hash)
     return v unless self.lookup_column and self.lookup_column.length > 0
     return v unless self.lookup_table and self.lookup_table.length > 0
-    v = PricingData.lookup(self.lookup_table, v, self.lookup_column)
-    v = v.last if v
+    v = PricingData.lookup(self.lookup_table, PricingData.find_match(self.lookup_table, v), self.lookup_column) # FIXME: optimize .. find_match should only happen once!
     return v
   end
 

@@ -6,15 +6,14 @@
 <% end %>
 
 <% if @proc_name %>
-  <% @tables.each do |tbl| %>
-    <h2>Result from <%= tbl %>:</h2>
+  <% @tables.each do |tbl, match| %>
+    <h2>Match in <%= tbl.titleize %> Database: <%= match %></h2>
     <table class="awesome">
     <% @table_data[tbl].keys.sort.each do |col| %>
       <% v = @table_data[tbl][col] %>
       <tr>
         <th><%= col %></th>
-        <td><%= v ? v.last : 'N/A' %></td>
-        <td>(matched <%= v.nil? ? 'nothing' : v.first %>)</td>
+        <td><%= v || 'N/A' %></td>
     <% end %>
     </table>
   <% end %>

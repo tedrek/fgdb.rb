@@ -231,6 +231,6 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def self.optional_pulls
-    DB.exec("SELECT name FROM spec_sheet_questions ORDER BY position;").to_a.map{|x| x["name"]}.uniq
+    DB.exec("SELECT name FROM spec_sheet_questions ORDER BY position;").to_a.map{|x| x["name"].underscore.to_sym}.uniq
   end
 end

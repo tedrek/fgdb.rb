@@ -32,14 +32,25 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
   <% end %>
   <% seen_v.uniq.each do |tbl, pull_name, pull_value| %>
     <tr>
-      <th><%= pull_name.titleize %></th>
+      <th><%= pull_name.titleize %>:</th>
       <td><%= pull_value %></td>
     </tr>
-    <% PricingData.table_columns(tbl).each do |column| %>
-    <% unless tbl.match(/cpu/i) && !["Cores", "Speed", "Speed ghz", "L2 cache", "L3 cache", "L2 total", "64-bit?", "Architecture"].include?(column) %>
+    <% result = PricingData.find_match(tbl, pull_value) %>
     <tr>
-      <td><%= column.titleize %>:</td>
-      <td><%= v = PricingData.lookup(tbl, pull_value, column); v ? v.last + " (matched #{v.first})" ; "" %></td>
+      <th><%= tbl.titleize %> Database Match:</th>
+      <td><%= result || 'Not Found' %></td>
+    </tr>
+    <% if result %>
+    <% h = {} %>
+    <% PricingData.table_columns(tbl).each do |column| %>
+    <% unless tbl.match(/cpu/i) && !["Cores", "Speed", "Speed GHz", "L2 Cache", "L3 Cache", "L2 Total", "64-bit?", "Architecture", "FG Spec"].include?(column) %>
+    <% h[column.titleize] =  PricingData.lookup(tbl, result, column) %>
+    <% end %>
+    <% end %>
+    <% h.keys.sort.each do |k| %>
+    <tr>
+      <td><%= k %>:</td>
+      <td><%= h[k] || 'N/A' %></td>
     </tr>
     <% end %>
     <% end %>
