@@ -21,6 +21,29 @@ class SpecSheetsController < ApplicationController
   include SystemHelper
   MY_VERSION=9
 
+  def lookup_proc
+    @proc_name = params[:proc]
+    if @proc_name
+      relevant_tables = PricingData.tables.select{|x| x.match(/cpu/i)}
+      pd = []
+      relevant_tables.each do |tbl|
+        PricingData.table_columns(tbl).each do |column|
+          pd << [tbl, column, PricingData.lookup(tbl, @proc_name, column)]
+        end
+      end
+      @tables = pd.map(&:first).uniq.sort
+      @table_data = {}
+      @tables.each do |tbl|
+        @table_data[tbl] = {}
+        pd.select{|x| x.first == tbl}.each do |nothin, column, value|
+          @table_data[tbl][column] = value
+        end
+      end
+    end
+    # TODO: render  pd data by table
+    # ( NOTE : need to display matched proc name in BOTH places, here and system pricings, in case of failed/incorrect match)
+  end
+
   def sign_off
     if params[:cashier_code] && params[:cashier_code].length == 4
       u = User.find_by_cashier_code(params[:cashier_code])

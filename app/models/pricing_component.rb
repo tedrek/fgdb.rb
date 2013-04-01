@@ -37,6 +37,7 @@ class PricingComponent < ActiveRecord::Base
     return v unless self.lookup_column and self.lookup_column.length > 0
     return v unless self.lookup_table and self.lookup_table.length > 0
     v = PricingData.lookup(self.lookup_table, v, self.lookup_column)
+    v = v.last if v
     return v
   end
 

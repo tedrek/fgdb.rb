@@ -1,0 +1,21 @@
+<h1>Proc Lookup<% if @proc_name %>: <%= @proc_name %><% end %></h1>
+<% form_tag :action => 'lookup_proc', :proc => nil do %>
+<%= label_tag 'proc', 'Processor query: ' %>
+<%= text_field_tag 'proc', @proc_name %><br />
+<%= submit_tag 'Lookup' %>
+<% end %>
+
+<% if @proc_name %>
+  <% @tables.each do |tbl| %>
+    <h2>Result from <%= tbl %>:</h2>
+    <table class="awesome">
+    <% @table_data[tbl].keys.sort.each do |col| %>
+      <% v = @table_data[tbl][col] %>
+      <tr>
+        <th><%= col %></th>
+        <td><%= v ? v.last : 'N/A' %></td>
+        <td>(matched <%= v.nil? ? 'nothing' : v.first %>)</td>
+    <% end %>
+    </table>
+  <% end %>
+<% end %>

@@ -6,8 +6,11 @@ fgdb.rb (1.0.115) UNRELEASED; urgency=low
     eval and are scheduled for system eval/build (Closes: #34739)
   * Add new trend report of the final spec sheet completed by system
     (Closes: #34718)
+  * Fix the maximum date displayed in volunteer scheduling to be
+    specific to the conditions you are currently looking at (closes:
+    #34609)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 30 Mar 2013 11:02:59 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 31 Mar 2013 17:46:57 -0700
 
 fgdb.rb (1.0.114) released; urgency=low
 
