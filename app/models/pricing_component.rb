@@ -45,9 +45,13 @@ class PricingComponent < ActiveRecord::Base
     list = []
     expect = find_value(pricing_hash)
     if self.use_value_as_score
-      if expect
+      if expect && expect.length > 0
         expect = expect.match(/(^[0-9.]+)/).to_s
-        return [PricingValue.find_or_create_by_pricing_component_id_and_value_cents(self.id, expect.to_cents)]
+        if expect.length > 0
+          return [PricingValue.find_or_create_by_pricing_component_id_and_value_cents(self.id, expect.to_cents)]
+        else
+          return []
+        end
       else
         return []
       end

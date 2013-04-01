@@ -4,8 +4,12 @@ class PricingValue < ActiveRecord::Base
   define_amount_methods_on :value
   belongs_to :replaced_by, :foreign_key => "replaced_by_id", :class_name => "PricingType"
   named_scope :active, :conditions => ['ineffective_on IS NULL']
-  validates_presence_of :name
+  validates_presence_of :name, :unless => :is_passthrough
   validates_presence_of :value_cents
+
+  def is_passthrough
+    self.pricing_component.use_value_as_score
+  end
 
   def replaced?
     !! self.replaced_by

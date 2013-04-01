@@ -205,7 +205,12 @@ class SystemPricing < ActiveRecord::Base
     hash.each do |c_id, value|
       c_id = c_id.sub("component_", "").to_i
       self.pricing_values.reject{|x| x.pricing_component_id == c_id}
-      self.pricing_values << PricingValue.find_or_create_by_pricing_component_id_and_value_cents(c_id, value.to_cents)
+      if value && value.length > 0
+        value = value.match(/(^[0-9.]+)/).to_s
+        if value.length > 0
+          self.pricing_values << PricingValue.find_or_create_by_pricing_component_id_and_value_cents(c_id, value.to_cents)
+        end
+      end
     end
   end
 
