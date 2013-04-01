@@ -41,7 +41,7 @@ module SidebarHelper
     "contacts" => "contacts",
     "contact_duplicates" => "contacts",
 #    "library" => "library",
-    "spec_sheets" => "fgss",
+    "spec_sheets" => "build",
     "gizmo_returns" => "sales",
     "till_adjustments" => "bean counters",
     "worked_shifts" => "staff",

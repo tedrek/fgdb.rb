@@ -340,6 +340,7 @@ function systems_stuff(args, tr){
         td.appendChild(document.createTextNode(args['system_id'] + "["));
         a = document.createElement("a");
         a.href = "/spec_sheets/fix_contract_edit?system_id=" + args['system_id'];
+        a.target = "_blank";
         a.appendChild(document.createTextNode(all_contracts_names[get_system_contract(args['system_id'])]));
         td.appendChild(a);
         td.appendChild(document.createTextNode("]"));
@@ -1049,7 +1050,7 @@ function coveredness_type_selected() {
   systems_invalid = false;
   if(gizmo_context == "sale" ? (system_types.include($('gizmo_type_id').value) || $('gizmo_type_id').value == "") : gizmo_types_covered[$('gizmo_type_id').value] == true) {
     if($('system_id') && $('system_id').value && !is_a_list($('system_id').value) && get_system_pricing($('system_id').value) != "nil") {
-      if($('unit_price').value == "") {
+      if($('unit_price') && $('unit_price').value == "") {
         $('unit_price').value = get_system_pricing_unit_price($('system_id').value);
       }
       if($('gizmo_type_id').value == "") {
