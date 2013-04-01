@@ -21,7 +21,7 @@ class PricingData < ActiveRecord::Base
     pd = nil
     PricingData.find_all_by_table_name_and_lookup_type(table_name, lookup_type).each do |x|
       if SystemPricing.does_match?(x.printme_value.to_s, printme_value.to_s)
-        pd = x.lookup_value
+        pd = [x.printme_value, x.lookup_value]
       end
     end
     return pd

@@ -39,7 +39,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
     <% unless tbl.match(/cpu/i) && !["Cores", "Speed", "Speed ghz", "L2 cache", "L3 cache", "L2 total", "64-bit?", "Architecture"].include?(column) %>
     <tr>
       <td><%= column.titleize %>:</td>
-      <td><%= PricingData.lookup(tbl, pull_value, column) %></td>
+      <td><%= v = PricingData.lookup(tbl, pull_value, column); v ? v.last + " (matched #{v.first})" ; "" %></td>
     </tr>
     <% end %>
     <% end %>

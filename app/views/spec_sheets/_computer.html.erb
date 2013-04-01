@@ -31,7 +31,7 @@
             Processor:
           </td>
           <td>
-            <%= x.processor %>
+            <%= link_to x.processor, {:action => "lookup_proc", :proc => x.processor} %>
           </td>
         </tr>
         <% if x.speed %>
