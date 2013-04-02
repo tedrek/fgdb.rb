@@ -812,7 +812,7 @@ var AmountComponent = Class.create(InputBasedComponent, {
 
 var PricingBonusFrontend = Class.create(ComponentLineItem, {
   prefix: 'pricing_bonuses',
-  copyable: true,
+  copyable: false,
   checkfor: [AmountComponent, ReasonComponent],
 
   total: function() {
