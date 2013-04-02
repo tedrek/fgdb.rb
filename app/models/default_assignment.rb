@@ -9,6 +9,12 @@ class DefaultAssignment < ActiveRecord::Base
   delegate :set_description, :set_description=, :to => :volunteer_shift
   validates_existence_of :contact, :allow_nil => true
 
+  def real_programs
+    return [] unless self.volunteer_default_shift && self.volunteer_default_shift.roster
+    return [] unless self.volunteer_default_shift.roster.limit_shift_signup_by_program
+    return self.volunteer_default_shift.roster.skeds.select{|x| x.category_type == "Program"}.map{|x| x.name}
+  end
+
   def contact_id=(newval)
     self.write_attribute(:contact_id, newval)
     self.contact = Contact.find_by_id(newval.to_i)
