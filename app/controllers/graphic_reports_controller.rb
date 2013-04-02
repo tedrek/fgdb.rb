@@ -25,7 +25,7 @@ class GraphicReportsController < ApplicationController
       @report.gnuplot_stuff(file, params[:graph_n].to_i)
     end
     respond_to do |format|
-      format.jpeg { render :text => File.read(file) }
+      format.gif { render :text => File.read(file) }
     end
     File.unlink(file)
   end
@@ -89,9 +89,9 @@ class TrendReport
 
   def gnuplot_stuff(tempfile, graph_n)
     Gnuplot.open do |gp|
-      Gnuplot::Plot.new( gp ) do |plot|
+      plot = Gnuplot::Plot.new( gp ) do |plot|
         plot.set "title", self.graph_titles[graph_n]
-        plot.set "terminal", "jpeg"
+        plot.set "terminal", "gif"
         plot.set "output", tempfile
         plot.ylabel ""
         plot.xlabel ""
