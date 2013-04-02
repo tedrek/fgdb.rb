@@ -32,9 +32,8 @@ class PricingData < ActiveRecord::Base
   end
 
   def PricingData.lookup(table_name, printme_value, lookup_type)
-    pd = PricingData.find_match(table_name, printme_value) if printme_value
     ret = nil
-    ret = PricingData.find_by_table_name_and_printme_value_and_lookup_type(table_name, pd, lookup_type) if pd
+    ret = PricingData.find_by_table_name_and_printme_value_and_lookup_type(table_name, printme_value, lookup_type) if printme_value
     ret = ret.lookup_value if ret
     return ret
   end
