@@ -99,9 +99,11 @@ class Contact < ActiveRecord::Base
     true
   end
 
+  # used to find when a volunteer is scheduled for more than 2 shifts
   def schedule_counts
-    assns = self.assignments.is_after_today.roster_is_limited_by_program.not_cancelled
     h = {}
+    return h if self.is_organization? # organizations may schedule as much as they like
+    assns = self.assignments.is_after_today.roster_is_limited_by_program.not_cancelled
     assns.each do |a|
       progs = a.real_programs
       progs.each do |p|
@@ -124,7 +126,7 @@ class Contact < ActiveRecord::Base
 
   def mailing_list_email
     list = ContactMethodType.email_types_ordered.map{|x| x.id}
-    list = list.reverse if self.organization
+    list = list.reverse if self.is_organization?
     result = self.contact_methods.select{|x| x.ok}.select{|x| list.include?(x.contact_method_type_id)}.sort{|a,b| r = (list.index(a.contact_method_type_id) <=> list.index(b.contact_method_type_id)); r == 0 ? ((b.updated_at || b.created_at) <=> (a.updated_at || a.created_at)) : r}.first
     result ? result.value : nil
   end
