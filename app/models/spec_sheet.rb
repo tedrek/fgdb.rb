@@ -24,6 +24,10 @@ class SpecSheet < ActiveRecord::Base
                         self.spec_sheet_values.each do |x|
                                h[x.spec_sheet_question.name.underscore.to_sym] = x.value
                             end
+                        # FIXME: underscore?
+                        if h["dimm type".to_sym] && h["dimm type".to_sym].match(/FB[ -]?DIMM/i) && h[:memory_type] = "DDR2"
+                          h[:memory_type] = "DDR2 FB-DIMM"
+                        end
                           h
                         end
   end
