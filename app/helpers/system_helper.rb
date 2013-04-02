@@ -55,7 +55,7 @@ module SystemHelper
       # "HD Size" (first, for now at least),
       if @harddrives.first
         o[:hd_size] = @harddrives.first.size
-        o[:hd_size].downcase! unless o[:hd_size].match(/TB/)
+        o[:hd_size].downcase! unless o[:hd_size].nil? or o[:hd_size].match(/TB/)
         o[:hd_count] = @harddrives.count
         o[:hd_type] = @harddrives.first.my_type
         o[:hd_size_total] = @total_hd_size
