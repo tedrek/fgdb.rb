@@ -106,6 +106,7 @@ var LineItem = Class.create(OneATimeLineItemBackend, {
     tr.id = id;
     this.make_hidden_hook(args, tr);
     td = document.createElement("td");
+    td.appendChild(document.createTextNode("\u00A0\u00A0\u00A0"));
     this.extra_link_hook(id, td, args);
     a = document.createElement("a");
     var self = this;
@@ -811,7 +812,7 @@ var AmountComponent = Class.create(InputBasedComponent, {
 
 var PricingBonusFrontend = Class.create(ComponentLineItem, {
   prefix: 'pricing_bonuses',
-  copyable: true,
+  copyable: false,
   checkfor: [AmountComponent, ReasonComponent],
 
   total: function() {

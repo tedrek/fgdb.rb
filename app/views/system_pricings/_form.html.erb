@@ -122,7 +122,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
 
 <% kdh = {:onkeydown => line_item_on_keydown("pricing_bonuses")} %>
 <% interface = OH.new; values = @system_pricing.pricing_bonuses.map{|x| h = x.to_hash(:amount, :reason, :id); h["amount_cents"] = h[:amount]; h} %>
-<% interface[:amount_cents] = text_field_tag 'amount_cents', nil, kdh.merge({}) %>
+<% interface[:amount] = text_field_tag 'amount_cents', nil, kdh.merge({}) %>
 <% interface[:reason] = text_field_tag 'reason', nil, kdh.merge({}) %>
 <%= line_item("pricing_bonuses", "PricingBonusFrontend", interface, values, true) %>
 
