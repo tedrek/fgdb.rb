@@ -31,6 +31,16 @@ class PricingData < ActiveRecord::Base
     return pd
   end
 
+  def PricingData.find_loose_match(table_name, printme_value)
+    pd = nil
+    PricingData.table_values(table_name).each do |x|
+      if SystemPricing.does_match?(printme_value.to_s, x.to_s)
+        pd = x
+      end
+    end
+    return pd
+  end
+
   def PricingData.lookup(table_name, printme_value, lookup_type)
     ret = nil
     ret = PricingData.find_by_table_name_and_printme_value_and_lookup_type(table_name, printme_value, lookup_type) if printme_value

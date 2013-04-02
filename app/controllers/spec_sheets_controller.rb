@@ -30,6 +30,7 @@ class SpecSheetsController < ApplicationController
       pd = []
       relevant_tables.each do |tbl|
         match = PricingData.find_match(tbl, @proc_name)
+        match = PricingData.find_loose_match(tbl, @proc_name) if ! match
         if match
           @tables << [tbl, match]
           @table_data[tbl] = {}
