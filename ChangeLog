@@ -1,4 +1,4 @@
-fgdb.rb (1.0.115) UNRELEASED; urgency=low
+fgdb.rb (1.0.115) released; urgency=low
 
   * Implement the 2 shift warning in volunteer scheduling within both
     Adoption and Build programs (Closes: #34720)
@@ -10,7 +10,7 @@ fgdb.rb (1.0.115) UNRELEASED; urgency=low
     specific to the conditions you are currently looking at (closes:
     #34609)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 31 Mar 2013 17:46:57 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 02 Apr 2013 09:05:36 -0700
 
 fgdb.rb (1.0.114) released; urgency=low
 
