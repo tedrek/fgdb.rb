@@ -41,6 +41,27 @@ class PricingData < ActiveRecord::Base
     return pd
   end
 
+  def PricingData.lookup_proc(proc_name)
+    relevant_tables = PricingData.cpu_tables
+    tables = []
+    relevant_tables.each do |tbl|
+      match = PricingData.find_match(tbl, proc_name)
+      match = PricingData.find_loose_match(tbl, proc_name) if ! match
+      if match
+        h = {}
+        tables << [tbl.titleize, match, h]
+        PricingData.table_columns(tbl).each do |column|
+          h[column] = PricingData.lookup(tbl, match, column)
+        end
+      end
+    end
+    return tables
+  end
+
+  def PricingData.cpu_tables
+    PricingData.tables.select{|x| x.match(/cpu/i)}
+  end
+
   def PricingData.lookup(table_name, printme_value, lookup_type)
     ret = nil
     ret = PricingData.find_by_table_name_and_printme_value_and_lookup_type(table_name, printme_value, lookup_type) if printme_value

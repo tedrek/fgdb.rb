@@ -7,7 +7,7 @@
 
 <% if @proc_name %>
   <% @tables.each do |tbl, match| %>
-    <h2>Match in <%= tbl.titleize %> Database: <%= match %></h2>
+    <h2>Match in <%= tbl %> Database: <%= match %></h2>
     <table class="awesome">
     <% @table_data[tbl].keys.sort.each do |col| %>
       <% v = @table_data[tbl][col] %>

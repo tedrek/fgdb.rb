@@ -26,18 +26,10 @@ class SpecSheetsController < ApplicationController
     @tables = []
     @table_data = {}
     if @proc_name
-      relevant_tables = PricingData.tables.select{|x| x.match(/cpu/i)}
-      pd = []
-      relevant_tables.each do |tbl|
-        match = PricingData.find_match(tbl, @proc_name)
-        match = PricingData.find_loose_match(tbl, @proc_name) if ! match
-        if match
-          @tables << [tbl, match]
-          @table_data[tbl] = {}
-          PricingData.table_columns(tbl).each do |column|
-            @table_data[tbl][column] = PricingData.lookup(tbl, match, column)
-          end
-        end
+      @tables = PricingData.lookup_proc(@proc_name)
+      @tables.each do |a|
+        tbl = a.first
+        @table_data[tbl] = a.delete_at(2)
       end
     end
   end
