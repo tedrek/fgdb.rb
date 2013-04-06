@@ -66,6 +66,7 @@ class Assignment < ActiveRecord::Base
   after_save { |record| VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available }
 
   def volunteer_shift_attributes=(attrs)
+    self.ensure_volshift
     self.volunteer_shift.attributes=(attrs) if self.volunteer_shift
   end
 
@@ -77,7 +78,12 @@ class Assignment < ActiveRecord::Base
     contact_id.nil? and !closed
   end
 
+  def ensure_volshift
+    self.volunteer_shift = VolunteerShift.find_by_id(self.volunteer_shift_id) if self.volunteer_shift.nil? && self.volunteer_shift_id
+  end
+
   def volshift_stuck
+    self.ensure_volshift
     self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
   end
 
