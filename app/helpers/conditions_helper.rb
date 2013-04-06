@@ -19,6 +19,10 @@ module ConditionsHelper
     select(params_key, "sale_type_id", SaleType.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] })
   end
 
+  def html_for_program_id_condition(params_key)
+    select(params_key, "program_id", Program.find_all_by_volunteer(true).sort_by(&:description).collect {|p| [ p.description, p.id ] })
+  end
+
   def html_for_finalized_condition(params_key)
     ""
   end
