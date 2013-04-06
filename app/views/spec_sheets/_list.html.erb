@@ -5,6 +5,7 @@
     <th>System</th>
     <th>Type</th>
     <th>Action</th>
+    <th>Processor</th>
     <th>OS</th>
     <th>Created at</th>
     <th>Flag</th>
@@ -28,6 +29,7 @@
       <td><%= builder_task.spec_sheet ? (link_to builder_task.spec_sheet.system_id.to_s, {:action => "system", :id => builder_task.spec_sheet.system_id}) : "" %></td>
       <td><%= h(builder_task.spec_sheet && builder_task.spec_sheet.type && builder_task.spec_sheet.type.description) || "Unknown" %></td>
       <td><%= h(builder_task.action && builder_task.action.description) || "Unknown" %></td>
+      <td><%= h builder_task.spec_sheet ? builder_task.spec_sheet.system.processor_product : "" %></td>
       <td><%= h builder_task.spec_sheet ? builder_task.spec_sheet.os : "" %></td>
       <td><%= builder_task.created_at.strftime("%D %I:%M%p") %></td>
       <td style="color: red;"><%= if builder_task.spec_sheet && builder_task.spec_sheet.flag; "FLAGGED"; else; ""; end %></td>
