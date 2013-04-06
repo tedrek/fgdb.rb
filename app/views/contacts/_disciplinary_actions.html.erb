@@ -4,19 +4,19 @@
     <% if @contact %>
       <% if @contact.has_areas_disciplined_from? %>
         Not allowed to volunteer in the following areas: <%= @contact.areas_disciplined_from.map(&:name).join(", ") %><br/>
-        Please check with the volunteer coordinator or a collective staff member for assistance.
+        Please check with the volunteer coordinator or a management staff member for assistance.
       <% end %>
-      <% @collective_cashier.contact_id = @contact.id %>
+      <% @management_cashier.contact_id = @contact.id %>
     <% end %>
     </div>
     <div class="form-element">
-    <% fields_for :collective_cashier do |f| %>
-    <%= f.label :cashier_code, "Enter PIN for more information (collective only):" %>
+    <% fields_for :management_cashier do |f| %>
+    <%= f.label :cashier_code, "Enter PIN for more information (management only):" %>
     <%= f.password_field :cashier_code, :autocomplete => :off %>
     <%= button_to_function "Load Confidential Information", remote_function(
-          :url => {:controller => "contacts", :action => "load_confidential_information", :collective_cashier => {:contact_id => @collective_cashier.contact_id}},
+          :url => {:controller => "contacts", :action => "load_confidential_information", :management_cashier => {:contact_id => @management_cashier.contact_id}},
                           :loading => "Element.show('#{loading_indicator_id("confidential_information")}');",
-                          :with => "{this_cashier_code: $('collective_cashier_cashier_code').value}") %>
+                          :with => "{this_cashier_code: $('management_cashier_cashier_code').value}") %>
     <% end %>
     </div>
     <% if @valid_cashier_code %>
