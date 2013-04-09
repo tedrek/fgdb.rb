@@ -2,8 +2,10 @@ fgdb.rb (1.0.116) UNRELEASED; urgency=low
 
   * Rename the collective worker type to management in the database
     (Closes: #34750)
+  * Add feedback link to the database, pointing to
+    technocrats.freegeek.org
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 06 Apr 2013 14:08:40 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Apr 2013 12:11:17 -0700
 
 fgdb.rb (1.0.115) released; urgency=low
 

@@ -143,6 +143,7 @@ module SidebarHelper
     # done
     sidebar_hash["admin"]["logs"] = {:c => "logs"}
     sidebar_hash["admin"]["deleted records"] = {:c => "logs", :a => "find_deleted"}
+    sidebar_hash["feedback"] = "http://technocrats.freegeek.org/cgi-bin/technocrats.pl?_submitted_new_$_=1&mode=new_technocrats&infrastructure=fgdb.rb/SPECIFICALLY?"
     return aliases, sidebar_hash
   end
 end
