@@ -139,7 +139,7 @@ class SpecSheetsController < ApplicationController
         return
       end
     end
-    @reports = BuilderTask.paginate(:page => params[:page], :conditions => @conditions.conditions(BuilderTask), :order => "builder_tasks.created_at ASC", :per_page => 50, :include => :spec_sheet)
+    @reports = BuilderTask.paginate(:page => params[:page], :conditions => @conditions.conditions(BuilderTask), :order => "builder_tasks.created_at ASC", :per_page => 50, :include => [:spec_sheet => :system])
     render :action => "index"
   end
 
