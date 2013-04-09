@@ -4,8 +4,10 @@ fgdb.rb (1.0.116) UNRELEASED; urgency=low
     (Closes: #34750)
   * Add feedback link to the database, pointing to
     technocrats.freegeek.org
+  * fix regenerate sandbox script to delete conflicting sandbox shifts
+    too
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Apr 2013 12:11:17 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 09 Apr 2013 15:51:52 -0700
 
 fgdb.rb (1.0.115) released; urgency=low
 

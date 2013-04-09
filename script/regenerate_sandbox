@@ -11,7 +11,9 @@ if r
   c.apply_conditions({})
   c.roster_enabled = true
   c.roster_id = r.id
-  VolunteerDefaultShift.generate(Date.today, Date.today + 30, c)
+  startd, endd = [Date.today, Date.today + 30]
+  VolunteerDefaultShift.find_conflicts(startd, endd, c).each{|y| y.destroy}
+  VolunteerDefaultShift.generate(startd, endd, c)
 else
   puts "WARNING: Could not find sandbox"
 end
