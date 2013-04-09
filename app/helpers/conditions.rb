@@ -23,7 +23,7 @@ class Conditions < ConditionsBase
       logged_in_within signed_off_by payment_total organization_name
       model vendor result interface_type megabytes_size week unresolved_shipment
       volunteered_non_court_hours_in_days form_factor hard_drive_serial_number
-      sale_type
+      sale_type processor_product program_id
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -38,6 +38,8 @@ class Conditions < ConditionsBase
   end
 
   attr_accessor :hard_drive_serial_number
+
+  attr_accessor :processor_product
 
   attr_accessor :shift_type
 
@@ -101,6 +103,8 @@ class Conditions < ConditionsBase
 
   attr_accessor :gizmo_type_id
 
+  attr_accessor :program_id
+
   attr_accessor :gizmo_type_group_id
 
   attr_accessor :gizmo_category_id
@@ -153,6 +157,7 @@ class Conditions < ConditionsBase
     validate_exists('weekday_id') if parse_and_validate_list('weekday', 'weekday_id')
     validate_exists('roster_id') if parse_and_validate_list('roster', 'roster_id')     # TODO: this _id needs to be consistent, really..
     validate_exists('gizmo_type_id') if parse_and_validate_list('gizmo_type_id')
+    validate_exists('program_id') if parse_and_validate_list('program_id')
     validate_exists('gizmo_type_group_id') if parse_and_validate_list('gizmo_type_group_id')
     # @errors.add("foo", "is bad") #if is_this_condition_enabled('foo') && @foo == 'bad'
     validate_integer('id')
@@ -349,6 +354,12 @@ class Conditions < ConditionsBase
   def hard_drive_serial_number_conditions(klass)
     klass = SpecSheet if klass == BuilderTask
     return ["#{klass.table_name}.cleaned_output ILIKE ?", '%<serial>' + @hard_drive_serial_number + '</serial>%']
+  end
+
+  def processor_product_conditions(klass)
+    klass = SpecSheet if klass == BuilderTask
+    klass = System if klass == SpecSheet
+    return ["#{klass.table_name}.processor_product LIKE ?", '%' + @processor_product + '%']
   end
 
   def week_conditions(klass)
@@ -854,6 +865,10 @@ class Conditions < ConditionsBase
 
   def gizmo_type_id_conditions(klass)
     return ["gizmo_events.gizmo_type_id IN (?)", (@gizmo_type_id)]
+  end
+
+  def program_id_conditions(klass)
+    return ["#{klass.table_name}.program_id IN (?)", (@program_id)]
   end
 
   def gizmo_context_id_conditions(klass)

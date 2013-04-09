@@ -509,8 +509,9 @@ class AssignmentsController < ApplicationController
     js_alert = nil
 
     if ! ret
-      @assignment = Assignment.new(params[:assignment])
+      @assignment = Assignment.new
       @assignment.volunteer_shift = @assignments.first.volunteer_shift
+      @assignment.attributes=(params[:assignment]) # .. ? .delete("volunteer_shift_attributes")
     end
 
     @assignments.each{|x|
