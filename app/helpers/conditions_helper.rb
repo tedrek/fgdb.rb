@@ -8,7 +8,7 @@ module ConditionsHelper
   end
 
   def html_for_processor_product_condition(params_key)
-    text_field(params_key, 'processor_product') + ' [% is a wildcard]'
+    text_field(params_key, 'processor_product')
   end
 
   def html_for_worker_type_condition(params_key)
