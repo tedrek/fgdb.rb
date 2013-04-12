@@ -60,7 +60,7 @@ class WorkShiftsController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'perpetual_meetings', 'staffsched_publish', 'perpetual_meetings_publish', 'staffsched_rollout_until', 'staffsched_month']}
+    a << {:privileges => ['skedjulnator'], :except => ['staffsched', 'perpetual_meetings', 'staffsched_publish', 'perpetual_meetings_publish', 'staffsched_rolled_out', 'staffsched_month']}
     a
   end
 
