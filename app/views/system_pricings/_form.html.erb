@@ -43,7 +43,7 @@ Information pulled from Spec Sheet <%= link_to "Report ##{@spec_sheet.id}", {:co
     <% if result %>
     <% h = {} %>
     <% PricingData.table_columns(tbl).each do |column| %>
-    <% unless tbl.match(/cpu/i) && !["Cores", "Speed", "Speed GHz", "L2 Cache", "L3 Cache", "L2 Total", "64-bit?", "Architecture", "FG Spec"].include?(column) %>
+    <% unless tbl.match(/cpu/i) && !["Cores", "Clock Speed", "L2 Cache", "L3 Cache", "L2 Total", "64-bit?", "Architecture", "Spec Level"].include?(column) %>
     <% h[column.titleize] =  PricingData.lookup(tbl, result, column) %>
     <% end %>
     <% end %>
