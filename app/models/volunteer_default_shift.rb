@@ -98,8 +98,12 @@ class VolunteerDefaultShift < ActiveRecord::Base
     begin
       Thread.current['volskedj2_fillin_processing'].push(self.id)
       slots = slot_num ? [slot_num] : (1 .. self.slot_count).to_a
-      slots = [nil] if self.not_numbered
-      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil? and !x.closed}.each{|x| x.destroy if slots.include?(x.slot_number)}
+      del_slots = slot_num ? [slot_num] : nil
+      if self.not_numbered
+        del_slots = [nil]
+        slots = [nil]
+      end
+      DefaultAssignment.find_all_by_volunteer_default_shift_id(self.id).select{|x| x.contact_id.nil? and !x.closed}.each{|x| x.destroy if (del_slots.nil? or del_slots.include?(x.slot_number))}
       inputs = {}
       inputs_always_nweek = {}
       inputs_always_lweek = {}
