@@ -9,6 +9,8 @@ fgdb.rb (1.0.115) released; urgency=low
   * Fix the maximum date displayed in volunteer scheduling to be
     specific to the conditions you are currently looking at (closes:
     #34609)
+  * Fix a tab completion typo in work_shifts permissions to allow access
+    to the rolled out schedule (Closes: #34926)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 02 Apr 2013 09:05:36 -0700
 
