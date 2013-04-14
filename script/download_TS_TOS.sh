@@ -2,6 +2,8 @@
 
 set -e
 
+cd $(dirname $(readlink -f $0))/..
+
 curl -s "http://wiki.freegeek.org/index.php?title=Tech_Support_Intake_Blurb&action=raw" | \
   sed -r -e 's/==(.+)==/<center><h3>\1<\/h3><\/center>/g' \
   -e 's/=(.+)=/<center><h2>\1<\/h2><\/center>/g' \
