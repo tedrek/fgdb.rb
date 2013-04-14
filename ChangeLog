@@ -12,8 +12,9 @@ fgdb.rb (1.0.116) UNRELEASED; urgency=low
     been decreased (Closes: #34946)
   * Fix bug that caused duplicate work shift footnotes, which made some
     disappear randomly (Closes: #34982)
+  * Add new Military, Senior and STNP discount names (Closes: #34978)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 14 Apr 2013 08:32:52 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 14 Apr 2013 08:49:11 -0700
 
 fgdb.rb (1.0.115) released; urgency=low
 
