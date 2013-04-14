@@ -1,8 +1,9 @@
 module ConditionsBaseHelper
-  def conditions_html(params_key = "conditions", these_things = [], klass = Conditions, multiselect_mode = "auto", date_range = nil, enable_advanced = false)
+  def conditions_html(params_key = "conditions", these_things = [], klass = Conditions, multiselect_mode = "auto", date_range = nil, enable_advanced = false, hide_end_text = false)
     @conditions_internal_date_range = date_range
     hash = {}
     obj = eval("@#{params_key}") || klass.new
+    end_text = hide_end_text ? "" : simple_end_text
     these_things.each{|x|
       if klass::DATES.include?(x)
         hash[x] = date_or_date_range_picker(params_key, x)
@@ -21,7 +22,7 @@ module ConditionsBaseHelper
     end
   end
 
-  def end_text
+  def simple_end_text
 '<div>
 [Note: % can be used as a wildcard for most text-based search conditions, for example "Test%" finds anything begining with Test.]
 </div>

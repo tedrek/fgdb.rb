@@ -13,10 +13,10 @@ The schedule used to generate can be chosen on the 'schedules' page.
   <p><label for="start_start_date">Start date:</label> <%= calendar_box skedj.opts[:generate_param_key], :start_date %></p>
   <p><label for="end_end_date">End date:</label> <%= calendar_box skedj.opts[:generate_param_key], :end_date %></p>
   <% params[:gconditions] = params[:conditions] ? params[:conditions].dup : {} %>
-  <%= conditions_html('gconditions', ["empty"]) %>
+  <%= conditions_html('gconditions', ["empty"], Conditions, "auto", nil, false, true) %>
   <% @gconditions = Conditions.new %>
   <% @gconditions.apply_conditions(params[:gconditions]) %>
-  <%= conditions_html('gconditions', skedj.opts[:generate_conditions]) if skedj.opts[:generate_conditions] %>
+  <%= conditions_html('gconditions', skedj.opts[:generate_conditions], Conditions, "auto", nil, false, true) if skedj.opts[:generate_conditions] %>
   <p><%= submit_tag "Generate" %></p>
 <% end %>
 </div>

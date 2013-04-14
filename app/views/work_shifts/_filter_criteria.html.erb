@@ -18,16 +18,16 @@
 
 <h3>Filter work shifts:</h3>
 <% form_tag({:action => params[:action]}, {:method => "get"}) do %>
-  <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi", date_range, true) %>
+  <%= conditions_html('conditions', skedj.opts[:conditions], Conditions, "multi", date_range, true, true) %>
 
 <% if skedj.opts[:forced_condition] %>
 <%  force_conds << skedj.opts[:forced_condition] %>
 <% end %>
 
 <% if force_conds.size > 1 %>
-  <%= conditions_html('conditions', force_conds, Conditions, "force", date_range).gsub(/To:/, "<br />To:") %>
+  <%= conditions_html('conditions', force_conds, Conditions, "force", date_range, false, true).gsub(/To:/, "<br />To:") %>
 <% else %>
-  <%= conditions_html('conditions', force_conds, Conditions, "auto", date_range)%>
+  <%= conditions_html('conditions', force_conds, Conditions, "auto", date_range, false, true)%>
 <% end %>
 
 <% if skedj.opts[:maximum_date] && defined?(maximum_date) %>
