@@ -20,13 +20,14 @@ class Contact < ActiveRecord::Base
   belongs_to :contract
   has_many :gizmo_returns
   has_one :worker
+  validates_numericality_of :birthday_year, :greater_than_or_equal_to => 1902, :less_than => 2038, :allow_nil => true
+
+  def birthday_year_before_type_cast # WTF..
+    self.birthday ? self.birthday.year : nil
+  end
+  alias_method :birthday_year, :birthday_year_before_type_cast
 
   has_many :disciplinary_actions, :autosave => true
-
-  validate :validate_bday
-  def validate_bday
-    errors.add('birthday', 'is out of range (past year 2038)') if self.birthday and self.birthday.year >= 2038
-  end
 
   def unresolved_donations
     donations.select(&:has_unresolved_invoice?)

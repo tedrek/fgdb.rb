@@ -13,8 +13,10 @@ fgdb.rb (1.0.116) UNRELEASED; urgency=low
   * Fix bug that caused duplicate work shift footnotes, which made some
     disappear randomly (Closes: #34982)
   * Add new Military, Senior and STNP discount names (Closes: #34978)
+  * Add validation ensuring the bday year for a contact is greater than
+    or equal to 1902, thanks ruby (Crash: jL413V)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 14 Apr 2013 08:49:11 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 14 Apr 2013 09:28:51 -0700
 
 fgdb.rb (1.0.115) released; urgency=low
 
