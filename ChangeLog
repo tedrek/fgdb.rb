@@ -10,8 +10,10 @@ fgdb.rb (1.0.116) UNRELEASED; urgency=low
   * Clean up and fix a glitch in regular volunteer scheduling where
     extra slots were still shown as available after the slot count had
     been decreased (Closes: #34946)
+  * Fix bug that caused duplicate work shift footnotes, which made some
+    disappear randomly (Closes: #34982)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 13 Apr 2013 16:21:16 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 14 Apr 2013 08:32:52 -0700
 
 fgdb.rb (1.0.115) released; urgency=low
 
