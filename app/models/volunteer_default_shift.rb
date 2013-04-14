@@ -30,7 +30,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
     begin
       Thread.current['volskedj2_fillin_processing'].push(self.id)
 
-      a = self.default_assignments.select{|x| x.contact_id.nil?}
+      a = self.default_assignments
       a.each{|x| x.destroy}
       self.default_assignments = []
 
