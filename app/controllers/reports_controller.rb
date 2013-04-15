@@ -702,7 +702,7 @@ GROUP BY 1, 2, 3;").to_a
 
   def volunteers
     @title = "Volunteers task types report"
-    @filters = ['program_id']
+    @filters = ['program_id', 'contact_type']
     if has_required_privileges('/contact_condition')
       @filters << 'contact'
     end
@@ -723,7 +723,7 @@ GROUP BY 1, 2, 3;").to_a
     @sections = [:community_service_type, :volunteer_task_types]
     @hours_type = "volunteer"
     @klass = VolunteerTask
-    @filters = ['program_id']
+    @filters = ['program_id', 'contact_type']
     if has_required_privileges('/contact_condition')
       @filters << 'contact'
     end
