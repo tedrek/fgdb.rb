@@ -18,8 +18,9 @@ fgdb.rb (1.0.116) UNRELEASED; urgency=low
   * Prevent bad default_assignments from being left over (Crash:
     dUTxaO)
   * do not include via referrer in crash report RT ticket title
+  * cleanup some contact types to be formatted consistently
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 14 Apr 2013 22:43:50 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 14 Apr 2013 23:08:03 -0700
 
 fgdb.rb (1.0.115) released; urgency=low
 
