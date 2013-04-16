@@ -24,7 +24,8 @@ class SystemPricing < ActiveRecord::Base
     for i in [/\s/, "-", ")", "("]
       values = values.map{|v| v.split(i)}.flatten
     end
-    matcher.split(/[\s-]+/).map(&:downcase).select{|x| !values.include?(x)}.length == 0
+    values = values.select{|x| x.length > 0}
+    matcher.split(/[\s-]+/).select{|x| x.length > 0}.map(&:downcase).select{|x| !values.include?(x)}.length == 0
   end
 
   before_save :set_calculated_price
