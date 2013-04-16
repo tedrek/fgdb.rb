@@ -101,7 +101,7 @@
   </p>
 
   <% if (!is_r) %>
-  <% d = @assignment.volunteer_default_shift.volunteer_default_event.weekday; d = d ? d.name : "Monday, etc" %>
+  <% d = @assignment.volunteer_default_shift.volunteer_default_event.weekday; d = d ? d.name : "________" %>
   Weeks of month to generate for (for example, limiting to 1st <%= d %> only):
     <% for n in [1, 2, 3, 4, 5] %>
       <%= f.label "week_#{n}_of_month", "#{n.ordinalize} #{d}" %>
