@@ -255,8 +255,8 @@ class ApplicationController < ActionController::Base
   include LineItemHelper
 
   def _civicrm_sync
-    ProcessorDaemon.add_to(params[:controller], params[:id], "civicrm")
-    render :text => "ok"
+    ret = ProcessorDaemon.add_to(params[:controller], params[:id], "civicrm")
+    render :text => (ret ? "ok" : "notok")
   end
 
   def hours_val(cp)
