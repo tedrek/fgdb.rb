@@ -52,9 +52,9 @@ Set it in the "civicrm" db on their contact: UPDATE civicrm_contact SET api_key 
 
 Add custom fields for fgdb id:
 To do this, go to Administer -> Customize -> Custom Data
-add a fgdb_contacts set for contacts
-add a fgdb_contact_id field, of integer type, make it searchable
-"leave empty, will be set by fgdb."
+add a "FGDB Contact Information" set for contacts
+add a "FGDB Contact ID" field, of integer type, make it searchable
+"Used for database syncronization: leave empty, will be set automatically."
 [do not select "view only", this breaks using API, and therefor our sync process]
 do this again for donations
 
