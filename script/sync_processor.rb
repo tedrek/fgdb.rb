@@ -46,7 +46,7 @@ class CiviCRMClient
   end
 
   def fgdb_field(table_name)
-    custom_field_id("fgdb_#{table_name}s", "fgdb_#{table_name}_id")
+    custom_field_id("FGDB #{table_name.humanize} Information", "FGDB #{table_name.humanize} ID")
   end
 
   def do_req(func, opts = {}, version = 3)
