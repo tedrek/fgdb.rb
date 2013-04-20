@@ -23,7 +23,7 @@ class PricingData < ActiveRecord::Base
 
   def PricingData.find_match(table_name, printme_value)
     pd = nil
-    PricingData.table_values(table_name).each do |x|
+    PricingData.table_values(table_name).sort_by(&:length).reverse.each do |x|
       if SystemPricing.does_match?(x.to_s, printme_value.to_s)
         pd = x
       end
@@ -33,7 +33,7 @@ class PricingData < ActiveRecord::Base
 
   def PricingData.find_loose_match(table_name, printme_value)
     pd = nil
-    PricingData.table_values(table_name).each do |x|
+    PricingData.table_values(table_name).sort_by(&:length).reverse.each do |x|
       if SystemPricing.does_match?(printme_value.to_s, x.to_s)
         pd = x
       end
