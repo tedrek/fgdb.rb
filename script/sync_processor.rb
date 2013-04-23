@@ -16,7 +16,7 @@ $civicrm_mode = true
 
 class Hash
   def r_to_params
-    self.map{|k,v| "#{k.to_s}=#{v.to_s}"}.join("&") # TODO: cgi escape
+    self.map{|k,v| "#{k.to_s}=#{URI.escape(v.to_s)}"}.join("&") # TODO: cgi escape
   end
 end
 
