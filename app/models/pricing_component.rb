@@ -56,7 +56,7 @@ class PricingComponent < ActiveRecord::Base
         return []
       end
     end
-    self.pricing_values.each do |x|
+    self.pricing_values.sort_by{|x| x.match_against.length}.reverse.each do |x|
       if x.matches?(expect)
         if self.required?
           return [x]
