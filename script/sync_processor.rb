@@ -122,7 +122,7 @@ class ContactObject
 
     # TODO: push email/phone
 
-    # TODO: push notes
+    c.notes = notes
 
     c.birthday = self.birthday
   end
@@ -149,7 +149,17 @@ class ContactObject
     self.notes = c.notes
   end
 
-  def from_civicrm(civicrm_contact)
+
+  def from_civicrm(my_client, civicrm_id)
+    civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id})["values"][civicrm_id]
+#  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}).inspect # will need to create/delete if needed
+    notes = my_client.do_req("civicrm/note/get", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB"})["values"]  # delete, then re-create it
+    if notes.length > 0
+      self.notes = notes.values.first["note"]
+    else
+      self.notes = ""
+    end
+
     self.is_organization = civicrm_contact["contact_type"] == "Organization"
     self.organization = civicrm_contact["organization_name"]
 
@@ -235,13 +245,8 @@ def sync_contact_from_civicrm(civicrm_id)
     c = Contact.new
   end
 
-  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id})["values"][civicrm_id]
-#  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}).inspect # will need to create/delete if needed
-#  puts my_client.do_req("civicrm/note/get", {"contact_id" => civicrm_id, "subject" => "FGDB"}).inspect # delete, then re-create it
-#  puts civicrm_contact.inspect
-
   co = ContactObject.new
-  co.from_civicrm(civicrm_contact)
+  co.from_civicrm(my_client, civicrm_id)
   co.to_fgdb(c)
   c.save!
   if @saved_civicrm
