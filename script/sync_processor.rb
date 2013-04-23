@@ -94,9 +94,11 @@ class ContactObject
   attr_accessor :is_organization, :organization
   attr_accessor :first_name, :middle_name, :last_name
 
-  attr_accessor :address, :address_extra, :city, :state, :postal_code
+  attr_accessor :address, :address_extra, :city, :state, :postal_code, :country
   attr_accessor :phone_numbers
   attr_accessor :emails
+
+  attr_accessor :notes, :birthday
 
   def contact_type
     is_organization ? "Organization" : "Individual"
@@ -104,40 +106,90 @@ class ContactObject
 
   def to_fgdb(c)
     c.created_by ||= 1
-    c.first_name = first_name 
-    c.surname = last_name 
     c.is_organization = is_organization 
     c.organization = organization 
-    c.postal_code = postal_code 
+
+    c.first_name = first_name 
+    c.middle_name = middle_name 
+    c.surname = last_name 
+
+    c.address = self.address
+    c.extra_address = self.address_extra
+    c.city = self.city
+    c.state_or_province = self.state
+    c.postal_code = self.postal_code
+    c.country = self.country
+
+    # TODO: push email/phone
+
+    # TODO: push notes
+
+    c.birthday = self.birthday
   end
 
   def from_fgdb(c)
     self.is_organization = c.is_organization
     self.organization = c.organization
+
     self.first_name = c.first_name
     self.middle_name = c.middle_name
     self.last_name = c.surname
+
+    self.address = c.address
+    self.address_extra = c.extra_address
+    self.city = c.city
+    self.state = c.state_or_province
     self.postal_code = c.postal_code
+    self.country = c.country
+
+    self.emails = c.mailing_list_email
+    self.phone_numbers = c.phone_number
+
+    self.birthday = c.birthday
+    self.notes = c.notes
   end
 
   def from_civicrm(civicrm_contact)
-    puts civicrm_contact.inspect
+    self.is_organization = civicrm_contact["contact_type"] == "Organization"
+    self.organization = civicrm_contact["organization_name"]
+
     self.first_name = civicrm_contact["first_name"]
     self.middle_name = civicrm_contact["middle_name"]
     self.last_name = civicrm_contact["last_name"]
-    self.is_organization = civicrm_contact["contact_type"] == "Organization"
-    self.organization = civicrm_contact["organization_name"]
+
+    self.phone_numbers = civicrm_contact["phone"]
+    self.emails = civicrm_contact["email"]
+    self.birthday = civicrm_contact["birth_date"]
+
+    self.address = civicrm_contact["street_address"]
+    self.address_extra = civicrm_contact["supplemental_address_1"]
+    self.city = civicrm_contact["city"]
+    self.state = civicrm_contact["state_province_name"]
+    self.country = civicrm_contact["country"]
     self.postal_code = civicrm_contact["postal_code"]
+    # TODO: pull notes
   end
 
   def to_civicrm
     hash = {}
     hash[:contact_type] = contact_type
     hash[:organization_name] = organization
+
     hash[:first_name] = first_name
     hash[:middle_name] = middle_name
     hash[:last_name] = last_name
-    hash[:postal_code] = postal_code
+
+    hash["phone"] = phone_numbers
+    hash["email"] = emails
+    hash["birth_date"] = birthday
+
+    hash["street_address"] = self.address
+    hash["supplemental_address_1"] = self.address_extra
+    hash["city"] = self.city
+    hash["state_province_name"] = self.state
+    hash["country"] = self.country
+    hash["postal_code"] = self.postal_code
+    # TODO: push notes
     return hash
   end
 end
@@ -162,7 +214,6 @@ def sync_contact_from_fgdb(fgdb_id)
   else
     hash["custom_#{my_custom}"] = fgdb_id
     ret = my_client.do_req("civicrm/contact/create", hash)
-    puts ret.inspect
     civicrm_id = ret["id"]
   end
 
@@ -204,8 +255,13 @@ def do_main
   success = false
   fgdb_id = nil
   civicrm_id = nil
+  raise ArgumentError unless ARGV.length == 3
   source, table, tid = ARGV
+  raise ArgumentError unless tid.to_i != 0
+  raise ArgumentError unless ["fgdb", "civicrm"].include?(source)
+  raise ArgumentError unless ["contacts"].include?(table)
   @saved_civicrm = false
+
 
   if source == "civicrm" && (ENV["SCRIPT"] && system(ENV["SCRIPT"], "find", "skip_civicrm", table, tid))
     system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
@@ -238,9 +294,10 @@ def do_main
     system(ENV["SCRIPT"], "take_a_break") or raise Exception
   end
   end
+  return success
 end
 
 if $0 == __FILE__
-  do_main
+  exit(do_main)
 end
 
