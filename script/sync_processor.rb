@@ -12,6 +12,8 @@ require 'uri'
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
+# TODO: remove r_to_params
+
 class Hash
   def r_to_params
     self.map{|k,v| "#{k.to_s}=#{v.to_s}"}.join("&") # TODO: cgi escape
@@ -47,11 +49,26 @@ class CiviCRMClient
     custom_field_id("fgdb_#{table_name}s", "fgdb_#{table_name}_id")
   end
 
-  def do_req(func, opts, version = 3)
-    get("http://#{server}/sites/all/modules/civicrm/extern/rest.php?version=#{version}&q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}")
+  def do_req(func, opts = {}, version = 3)
+    opts = opts.r_to_params if opts.class == Hash
+    url = "http://#{server}/sites/all/modules/civicrm/extern/rest.php?version=#{version}&q=#{func}&json=1&key=#{@site_key}&api_key=#{@key}&#{opts}"
+    if func.match(/get$/)
+      get(url)
+    else
+      post(url)
+    end
   end
 
   private
+  def post(url)
+    url = URI.parse(url)
+    req = Net::HTTP::Post.new(url.request_uri)
+    ret = Net::HTTP.start(url.host, url.port) {|http| http.request(req)}
+    ret = JSON.parse(ret.body)
+    raise ret["error_message"] if ret.class == Hash and ret["is_error"] == 1
+    ret
+  end
+
   def get(url)
     ret = JSON.parse(Net::HTTP.get(URI.parse(url)))
     raise ret["error_message"] if ret.class == Hash and ret["is_error"] == 1
@@ -88,7 +105,9 @@ def sync_contact_from_fgdb(fgdb_id)
     my_client.do_req("civicrm/contact/update", hash.r_to_params)
   else
     hash["custom_#{my_custom}"] = fgdb_id
-    civicrm_id = my_client.do_req("civicrm/contact/create", hash.r_to_params)["contact_id"]
+    ret = my_client.do_req("civicrm/contact/create", hash.r_to_params)
+    puts ret.inspect
+    civicrm_id = ret["id"]
   end
   return civicrm_id
 end
