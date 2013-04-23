@@ -143,6 +143,7 @@ class ContactObject
     self.postal_code = c.postal_code
     self.country = c.country
 
+    # TODO: handle multiple email/phone & types
     self.emails = c.mailing_list_email
     self.phone_numbers = c.phone_number
 
@@ -178,7 +179,6 @@ class ContactObject
     self.state = civicrm_contact["state_province_name"]
     self.country = civicrm_contact["country"]
     self.postal_code = civicrm_contact["postal_code"]
-    # TODO: pull notes
   end
 
   def to_civicrm
@@ -190,6 +190,7 @@ class ContactObject
     hash[:middle_name] = middle_name
     hash[:last_name] = last_name
 
+    # TODO: birthday is the only that works, not even address..
     hash["phone"] = phone_numbers
     hash["email"] = emails
     hash["birth_date"] = birthday
@@ -204,8 +205,8 @@ class ContactObject
   end
 
   def to_civicrm_extras(my_client, civicrm_id)
-    # TODO: push notes
-    my_notes = my_client.do_req("civicrm/note/get", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB"})["values"]  # FIXME: Date.today should be something else/
+    my_notes = my_client.do_req("civicrm/note/get", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB"})["values"] 
+    # FIXME: Date.today should be something else/
     my_notes.each.map(&:last).first["id"].each do |n|
       my_client.do_req("civicrm/note/delete", {:id => n})
     end
