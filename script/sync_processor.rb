@@ -9,6 +9,7 @@
 require 'json'
 require 'net/http'
 require 'uri'
+require 'cgi'
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
@@ -16,7 +17,7 @@ $civicrm_mode = true
 
 class Hash
   def r_to_params
-    self.map{|k,v| "#{k.to_s}=#{v.to_s}"}.join("&") # TODO: cgi escape
+    self.map{|k,v| "#{k.to_s}=#{CGI.escape(v.to_s)}"}.join("&")
   end
 end
 
@@ -122,7 +123,7 @@ class ContactObject
 
     # TODO: push email/phone
 
-    # TODO: push notes
+    c.notes = notes
 
     c.birthday = self.birthday
   end
@@ -142,6 +143,7 @@ class ContactObject
     self.postal_code = c.postal_code
     self.country = c.country
 
+    # TODO: handle multiple email/phone & types
     self.emails = c.mailing_list_email
     self.phone_numbers = c.phone_number
 
@@ -149,7 +151,17 @@ class ContactObject
     self.notes = c.notes
   end
 
-  def from_civicrm(civicrm_contact)
+
+  def from_civicrm(my_client, civicrm_id)
+    civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id})["values"][civicrm_id]
+#  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}).inspect # will need to create/delete if needed
+    my_notes = my_client.do_req("civicrm/note/get", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB"})["values"]  # delete, then re-create it
+    if my_notes.length > 0
+      self.notes = my_notes.values.first["note"]
+    else
+      self.notes = ""
+    end
+
     self.is_organization = civicrm_contact["contact_type"] == "Organization"
     self.organization = civicrm_contact["organization_name"]
 
@@ -167,7 +179,6 @@ class ContactObject
     self.state = civicrm_contact["state_province_name"]
     self.country = civicrm_contact["country"]
     self.postal_code = civicrm_contact["postal_code"]
-    # TODO: pull notes
   end
 
   def to_civicrm
@@ -179,6 +190,7 @@ class ContactObject
     hash[:middle_name] = middle_name
     hash[:last_name] = last_name
 
+    # TODO: birthday is the only that works, not even address..
     hash["phone"] = phone_numbers
     hash["email"] = emails
     hash["birth_date"] = birthday
@@ -189,8 +201,18 @@ class ContactObject
     hash["state_province_name"] = self.state
     hash["country"] = self.country
     hash["postal_code"] = self.postal_code
-    # TODO: push notes
     return hash
+  end
+
+  def to_civicrm_extras(my_client, civicrm_id)
+    my_notes = my_client.do_req("civicrm/note/get", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB"})["values"] 
+    # FIXME: Date.today should be something else/
+    my_notes.each.map(&:last).first["id"].each do |n|
+      my_client.do_req("civicrm/note/delete", {:id => n})
+    end
+    if self.notes && self.notes.length > 0
+      my_client.do_req("civicrm/note/create", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB", 'modified_date' => Date.today, 'note' => self.notes})["values"]
+    end
   end
 end
 
@@ -216,10 +238,10 @@ def sync_contact_from_fgdb(fgdb_id)
     ret = my_client.do_req("civicrm/contact/create", hash)
     civicrm_id = ret["id"]
   end
+  co.to_civicrm_extras(my_client, civicrm_id)
 
   return civicrm_id
 end
-
 
 def sync_contact_from_civicrm(civicrm_id)
   fgdb_id = nil
@@ -235,13 +257,8 @@ def sync_contact_from_civicrm(civicrm_id)
     c = Contact.new
   end
 
-  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id})["values"][civicrm_id]
-#  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}).inspect # will need to create/delete if needed
-#  puts my_client.do_req("civicrm/note/get", {"contact_id" => civicrm_id, "subject" => "FGDB"}).inspect # delete, then re-create it
-#  puts civicrm_contact.inspect
-
   co = ContactObject.new
-  co.from_civicrm(civicrm_contact)
+  co.from_civicrm(my_client, civicrm_id)
   co.to_fgdb(c)
   c.save!
   if @saved_civicrm
