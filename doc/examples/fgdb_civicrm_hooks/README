@@ -33,6 +33,9 @@ Then do what these URLs say to:
 /drupal/install.php
 /drupal/sites/all/modules/civicrm/install/index.php
 
+Quick install link (replace PASSWORD):
+http://localhost:8888//drupal/sites/all/modules/civicrm/install/index.php?mysql[username]=drupal7&mysql[server]=localhost&mysql[password]=PASSWORD&mysql[database]=civicrm&drupal[username]=drupal7&drupal[server]=localhost&drupal[password]=PASSWORD&drupal[database]=drupal7&go=1
+
 On install this module to be enabled here:
 http://civicrm/drupal6/?q=admin/build/modules
 
