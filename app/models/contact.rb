@@ -35,8 +35,10 @@ class Contact < ActiveRecord::Base
 
   validate :name_provided
   def name_provided
-    errors.add('organization', 'name must be provided for organizations') if is_organization? and (organization.nil? or organization.empty?)
-    errors.add('first_name', 'or surname must be provided for individuals') if is_person? and (first_name.nil? or first_name.empty?) and (surname.nil? or surname.empty?)
+    unless $civicrm_mode
+      errors.add('organization', 'name must be provided for organizations') if is_organization? and (organization.nil? or organization.empty?)
+      errors.add('first_name', 'or surname must be provided for individuals') if is_person? and (first_name.nil? or first_name.empty?) and (surname.nil? or surname.empty?)
+    end
   end
 
   def self.born_on_or_before
@@ -65,7 +67,7 @@ class Contact < ActiveRecord::Base
     self.disciplinary_actions.not_disabled.map(&:disciplinary_action_areas).flatten.uniq.sort_by(&:name)
   end
 
-  validates_presence_of :postal_code, :on => :create, :unless => :foreign_person?
+  validates_presence_of :postal_code, :on => :create, :unless => :foreign_person_or_civicrm?
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
@@ -83,6 +85,10 @@ class Contact < ActiveRecord::Base
   validates_length_of :state_or_province, :maximum => 15
   validates_length_of :postal_code, :maximum => 25
   validates_length_of :country, :maximum => 100
+
+  def foreign_person_or_civicrm?
+    foreign_person? or $civicrm_mode
+  end
 
   def foreign_person?
     Default["country"] != self.country

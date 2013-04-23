@@ -12,7 +12,7 @@ require 'uri'
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-# TODO: remove r_to_params
+$civicrm_mode = true
 
 class Hash
   def r_to_params
@@ -36,13 +36,14 @@ class CiviCRMClient
   end
 
   #               ex: "fgdb_donations" "fgdb_donation_id"
+
   def custom_field_id(group_name, field_name)
     res = self.do_req("civicrm/CustomField/get", "")
     hash = {}
     res["values"].each{|k,v|
       hash[v["name"]] = k
     }
-    return hash[field_name]
+    return hash[field_name.gsub(/ /, "_")]
   end
 
   def fgdb_field(table_name)
@@ -82,76 +83,119 @@ def sync_donation_from_fgdb(fgdb_id)
   return civicrm_id
 end
 
-def sync_contact_from_fgdb(fgdb_id)
-  civicrm_id = nil
-  my_client = CiviCRMClient.from_defaults
-  my_custom = my_client.fgdb_field("contact")
-  find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}")
-  civicrm_id = (find_arr["count"] == 1) ? find_arr["id"] : nil
-  c = Contact.find(fgdb_id)
-  hash = {}
-  if c.is_organization
-    hash[:contact_type] = "Organization"
-    hash[:organization_name] = c.organization
-  else
-    hash[:contact_type] = "Individual"
-    hash[:first_name] = c.first_name
-    hash[:middle_name] = c.middle_name
-    hash[:last_name] = c.surname
-  end
-  if civicrm_id
-    hash[:id] = civicrm_id
-    # TODO: return nil for FAIL if not success
-    my_client.do_req("civicrm/contact/update", hash.r_to_params)
-  else
-    hash["custom_#{my_custom}"] = fgdb_id
-    ret = my_client.do_req("civicrm/contact/create", hash.r_to_params)
-    puts ret.inspect
-    civicrm_id = ret["id"]
-  end
-  return civicrm_id
-end
-
 def sync_donation_from_civicrm(civicrm_id)
   fgdb_id = nil
   fgdb_id = 1
   return fgdb_id
 end
 
+
+class ContactObject
+  attr_accessor :is_organization, :organization
+  attr_accessor :first_name, :middle_name, :last_name
+
+  attr_accessor :address, :address_extra, :city, :state, :postal_code
+  attr_accessor :phone_numbers
+  attr_accessor :emails
+
+  def contact_type
+    is_organization ? "Organization" : "Individual"
+  end
+
+  def to_fgdb(c)
+    c.created_by ||= 1
+    c.first_name = first_name 
+    c.surname = last_name 
+    c.is_organization = is_organization 
+    c.organization = organization 
+    c.postal_code = postal_code 
+  end
+
+  def from_fgdb(c)
+    self.is_organization = c.is_organization
+    self.organization = c.organization
+    self.first_name = c.first_name
+    self.middle_name = c.middle_name
+    self.last_name = c.surname
+    self.postal_code = c.postal_code
+  end
+
+  def from_civicrm(civicrm_contact)
+    puts civicrm_contact.inspect
+    self.first_name = civicrm_contact["first_name"]
+    self.middle_name = civicrm_contact["middle_name"]
+    self.last_name = civicrm_contact["last_name"]
+    self.is_organization = civicrm_contact["contact_type"] == "Organization"
+    self.organization = civicrm_contact["organization_name"]
+    self.postal_code = civicrm_contact["postal_code"]
+  end
+
+  def to_civicrm
+    hash = {}
+    hash[:contact_type] = contact_type
+    hash[:organization_name] = organization
+    hash[:first_name] = first_name
+    hash[:middle_name] = middle_name
+    hash[:last_name] = last_name
+    hash[:postal_code] = postal_code
+    return hash
+  end
+end
+
+def sync_contact_from_fgdb(fgdb_id)
+  civicrm_id = nil
+  my_client = CiviCRMClient.from_defaults
+  my_custom = my_client.fgdb_field("contact")
+  find_arr = my_client.do_req("civicrm/contact/get", "custom_#{my_custom}=#{fgdb_id}")
+  civicrm_id = (find_arr["count"] == 1) ? find_arr["id"] : nil
+
+  c = Contact.find_by_id(fgdb_id)
+  return nil unless c
+  co = ContactObject.new
+  co.from_fgdb(c)
+  hash = co.to_civicrm
+
+  if civicrm_id
+    hash[:id] = civicrm_id
+    # TODO: return nil for FAIL if not success
+    my_client.do_req("civicrm/contact/update", hash)
+  else
+    hash["custom_#{my_custom}"] = fgdb_id
+    ret = my_client.do_req("civicrm/contact/create", hash)
+    puts ret.inspect
+    civicrm_id = ret["id"]
+  end
+
+  return civicrm_id
+end
+
+
 def sync_contact_from_civicrm(civicrm_id)
   fgdb_id = nil
   my_client = CiviCRMClient.from_defaults
   my_custom = my_client.fgdb_field("contact")
-  fgdb_id = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return_custom_#{my_custom}" => 1}.r_to_params)["values"][civicrm_id]["custom_#{my_custom}"]
+  ret_values = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return" => "custom_#{my_custom}"})["values"]
+  return nil if ret_values.length == 0
+  fgdb_id = ret_values.length > 0 ? ret_values[civicrm_id]["custom_#{my_custom}"].to_i : nil
   c = nil
-  @double_saved = false
   unless fgdb_id and (c = Contact.find_by_id(fgdb_id))
     fgdb_id = nil
     @saved_civicrm = true
     c = Contact.new
   end
-  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id}.r_to_params)["values"][civicrm_id]
-  c.first_name = civicrm_contact["first_name"]
-  c.created_by ||= 1
-  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}.r_to_params).inspect # will need to create/delete if needed
-  puts my_client.do_req("civicrm/note/get", {"contact_id" => civicrm_id, "subject" => "FGDB"}.r_to_params).inspect # delete, then re-create it
-  puts civicrm_contact.inspect
-  c.surname = civicrm_contact["last_name"]
-  c.is_organization = civicrm_contact["contact_type"] == "Organization"
-  c.organization = civicrm_contact["organization_name"]
-  c.postal_code = civicrm_contact["postal_code"]
-  if @saved_civicrm
-    c.postal_code ||= "CIVICRM_UNSETME"
-  end
+
+  civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id})["values"][civicrm_id]
+#  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}).inspect # will need to create/delete if needed
+#  puts my_client.do_req("civicrm/note/get", {"contact_id" => civicrm_id, "subject" => "FGDB"}).inspect # delete, then re-create it
+#  puts civicrm_contact.inspect
+
+  co = ContactObject.new
+  co.from_civicrm(civicrm_contact)
+  co.to_fgdb(c)
   c.save!
-  if c.postal_code == "CIVICRM_UNSETME"
-    @double_saved = true
-    c.postal_code = nil
-    c.save!
-  end
   if @saved_civicrm
     fgdb_id = c.id
-    my_client.do_req("civicrm/contact/update", {:id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id}.r_to_params)
+    my_client.do_req("civicrm/contact/update", {:id => civicrm_id, :contact_type => civicrm_contact["contact_type"], "custom_#{my_custom}" => fgdb_id})
   end
   return fgdb_id
 end
@@ -184,9 +228,6 @@ def do_main
     system(ENV["SCRIPT"], "rm", source, table, tid) or raise Exception
     if source == "civicrm"
       system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s) or raise Exception
-      if @double_saved
-        system(ENV["SCRIPT"], "rm", "fgdb", table, fgdb_id.to_s) or raise Exception
-      end
       if @saved_civicrm
         system(ENV["SCRIPT"], "add", "skip_civicrm", table, civicrm_id.to_s) or raise Exception
       end
