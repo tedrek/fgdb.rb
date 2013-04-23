@@ -11,6 +11,10 @@ and then:
 http://civicrm/drupal/?q=civicrm/upgrade&reset=1
 may need to be ran after upgrades.
 
+NOTE: After upgrading, you may have to back up the database,
+reinstall civicrm, then restore the old database before proceeding
+with the upgrade scripts (if the configuration file is broken)
+
 == Initial Setup ==
 
 The scripts provided here handle installation and monitoring of updates
@@ -40,6 +44,8 @@ http://localhost:8888//drupal/sites/all/modules/civicrm/install/index.php?mysql[
 
 On install this module to be enabled here:
 http://civicrm/drupal6/?q=admin/build/modules
+
+NOTE: After installing a new database, you may need to log out and back in.
 
 === Setting up account for syncing ===
 
