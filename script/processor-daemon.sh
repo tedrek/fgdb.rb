@@ -53,9 +53,12 @@ case "$MODE" in
             cp "$WORKDIR/filelist" "$WORKDIR/.filelist.processing"
             while read LINE; do
                 if "$SCRIPT" find "$LINE"; then
-                    "$WORK_SCRIPT" $LINE
+		    SUCCESS=0
+                    if ! "$WORK_SCRIPT" $LINE; then
+			SUCCESS="1"
+		    fi
                 fi
-                if [ -e "$WORKDIR/take_a_break" ]; then
+                if [ "$SUCCESS" != "0" -o -e "$WORKDIR/take_a_break" ]; then
                     echo "Sleeping for $BREAK_TIME seconds because of failure..."
                     sleep $BREAK_TIME
                     rm "$WORKDIR/take_a_break"
