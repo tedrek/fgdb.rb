@@ -1,0 +1,4 @@
+WORK_SCRIPT="$SCRIPT_BASE/civicrm_processor.sh"
+export FGDB=borked:3000
+
+
