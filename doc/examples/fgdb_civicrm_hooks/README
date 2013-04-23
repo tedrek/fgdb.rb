@@ -13,6 +13,8 @@ may need to be ran after upgrades.
 
 == Initial Setup ==
 
+The scripts provided here handle installation and monitoring of updates
+
 === Basic Installation ===
 
 Initial setup involves installing apache2, php5.
@@ -54,12 +56,19 @@ Set it in the "civicrm" db on their contact: UPDATE civicrm_contact SET api_key 
 === Customizations for our data ===
 
 Add custom fields for fgdb id:
-To do this, go to Administer -> Customize -> Custom Data
-add a "FGDB Contact Information" set for contacts
+To do this, go to Administer -> Custom Data and Screens -> Custom Filds
+add a "FGDB Contact Information" data group used for Contacts
 add a "FGDB Contact ID" field, of integer type, make it searchable
-"Used for database syncronization: leave empty, will be set automatically."
+"Used for database synchronization: leave empty, will be set automatically."
 [do not select "view only", this breaks using API, and therefor our sync process]
-do this again for donations
+
+Modify the options lists under administer tab for our contact method
+types:
+TODO
+
+=== Customizations we might do someday (but not yet) ===
+
+do this again for donations (actually, don't)
 
 For contacts, add custom fields:
 fgdb_default_contract, Alphanumeric Select, Options:
@@ -72,6 +81,3 @@ fgdb_pickup_fee, of type: Money, Text
 fgdb_fully_covered, of type: Boolean
 "can be left empty if unknown."
 
-Modify the options lists under administer tab for our contact method
-types:
-TODO
