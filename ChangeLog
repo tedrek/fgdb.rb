@@ -27,6 +27,8 @@ fgdb.rb (1.0.116) released; urgency=low
   * just add contact_type condition to volunteers report instead of
     adding a spanish build program (Closes: #34919)
   * Add 'Release Date' to netboot output from procdb
+  * Add the STORE role to give privileges for techsupport_workorders
+    (Closes: #35151)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 16 Apr 2013 08:38:00 -0700
 
