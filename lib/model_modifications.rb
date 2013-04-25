@@ -2,11 +2,11 @@ require File.join(File.dirname(__FILE__), "rails_fix.rb")
 
 class ProcessorDaemon
   def self.add_to(type, tid, source = "fgdb")
-    return if Default['civicrm_server'].nil?
+    return false if Default['civicrm_server'].nil?
     tid = tid.to_i.to_s
     arr = [File.join(RAILS_ROOT, "script", "processor-daemon.sh"), "add", source, type, tid]
 #    puts arr.inspect
-    system(*arr)
+    return system(*arr)
   end
 end
 

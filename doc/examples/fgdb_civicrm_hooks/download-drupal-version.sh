@@ -1,5 +1,8 @@
 #!/bin/sh
 
+CODE_DIR=/home/ryan52/code
+DRUPAL_DIR=$CODE_DIR/drupal
+
 set -e
 
 die() {
@@ -12,10 +15,10 @@ if [ -z "$VERSION" ];then
     die "Please specify a version to download"
 fi
 
-cd /home/ryan52/code/drupal
+cd $DRUPAL_DIR
 
 if [ -d "$VERSION" ]; then
-    die "$VERSION already exists, please remove/displace ~/code/drupal/$VERSION"
+    die "$VERSION already exists, please remove/displace $DRUPAL_DIR/$VERSION"
 fi
 
 mkdir "$VERSION"

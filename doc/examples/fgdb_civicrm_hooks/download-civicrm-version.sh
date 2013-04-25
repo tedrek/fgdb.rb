@@ -1,5 +1,8 @@
 #!/bin/sh
 
+CODE_DIR=/home/ryan52/code
+CIVICRM_DIR=$CODE_DIR/civicrm
+
 set -e
 
 die() {
@@ -12,10 +15,10 @@ if [ -z "$VERSION" ];then
     die "Please specify a version to download"
 fi
 
-cd /home/ryan52/code/civicrm/
+cd $CIVICRM_DIR
 
 if [ -d "$VERSION" ]; then
-    die "$VERSION already exists, please remove/displace ~/code/civicrm/$VERSION"
+    die "$VERSION already exists, please remove/displace $CIVICRM_DIR/$VERSION"
 fi
 
 mkdir "$VERSION"
