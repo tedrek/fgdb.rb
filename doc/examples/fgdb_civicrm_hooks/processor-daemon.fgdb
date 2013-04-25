@@ -1,0 +1,3 @@
+WORK_SCRIPT=$SCRIPT_BASE/sync_processor.rb
+TARGET_USER=ryan52
+#TARGET_USER=dbadmin
