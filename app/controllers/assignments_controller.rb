@@ -308,8 +308,15 @@ class AssignmentsController < ApplicationController
       @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
       @new.contact_id = cid
 
-      @assigned.save!
-      @new.save!
+      if @assigned.valid? && @new.valid?
+        @assigned.save!
+        @new.save!
+      else
+        @available.contact_id = cid
+        @available.save
+        errors = [@assigned.errors.full_messages, @new.errors.full_messages]
+        flash[:jsalert] = "Cannot reassign shifts (#{errors.join(", ")})"
+      end
     end
     end
 

@@ -28,5 +28,5 @@ MAILTO=database
 0 0 * * * root /var/www/fgdb.rb/script/runner 'Default["till_lock_end"] = Date.yesterday'
 0 * * * * root /var/www/fgdb.rb/script/pull_rt_metadata.sh
 
-#FIXME: enable or no? Probably not?
-#0 0 0 0 0 root /var/www/fgdb.rb/script/download_TS_TOS.sh
+# MAILTO?
+7 0 * * * root /var/www/fgdb.rb/script/generate_volskedj.rb

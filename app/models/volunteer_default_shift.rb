@@ -19,6 +19,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
 
   def validate
     errors.add('slot_count', 'cannot be more than one for an intern shift') if self.not_numbered and self.slot_count and self.slot_count > 1
+    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
   end
 
   before_destroy :get_rid_of_available

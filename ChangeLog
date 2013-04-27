@@ -1,7 +1,8 @@
 fgdb.rb (1.0.117) UNRELEASED; urgency=low
 
+  * Implement automatic rollout of volunteer schedules (Closes: #34620)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 16 Apr 2013 08:38:49 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Apr 2013 14:45:34 -0700
 
 fgdb.rb (1.0.116) released; urgency=low
 
