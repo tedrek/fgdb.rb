@@ -544,8 +544,12 @@ class TrendReport
       conditions_with_daterange_for_report(args, "occurred_at")
     end
 
+    def daterange_condition(args, field)
+      {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
+    end
+
     def conditions_with_daterange_for_report(args, field)
-      h = {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
+      h = daterange_condition(field)
       conditions_without_a_daterange_for_report(args, field, h)
     end
 
@@ -751,7 +755,7 @@ class NumberOfFinalBuilderTasksBySystem < TrendReport
 
   def get_for_timerange(args)
     ret = {}
-    DB.exec("SELECT action, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id, action_id) actions.description AS action, type_id, action_id, system_id, spec_sheets.created_at FROM spec_sheets JOIN builder_tasks ON builder_task_id = builder_tasks.id JOIN actions ON actions.id = action_id ORDER BY spec_sheets.system_id, action_id, spec_sheets.created_at DESC) AS spec_sheets WHERE #{sql_for_report(SpecSheet, conditions_with_daterange_for_report(args, "created_at"))} GROUP BY 1 ORDER BY 1;").to_a.each do |r|
+    DB.exec("SELECT action, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id, action_id) actions.description AS action, type_id, action_id, system_id, spec_sheets.created_at FROM spec_sheets JOIN builder_tasks ON builder_task_id = builder_tasks.id JOIN actions ON actions.id = action_id WHERE #{sql_for_report(SpecSheet, conditions_without_a_daterange_for_report(args, "created_at"))} ORDER BY spec_sheets.system_id, action_id, spec_sheets.created_at DESC) AS spec_sheets WHERE #{sql_for_report(SpecSheet, daterange_condition(args, "created_at"))} GROUP BY 1 ORDER BY 1;").to_a.each do |r|
       ret[r["action"]] = r["count"]
     end
     return ret
