@@ -31,15 +31,22 @@ class Roster < ActiveRecord::Base
 
   def auto_generate(from, to)
     puts "Generating #{self.name} roster from #{from} to #{to}.."
-    c = Conditions.new
-    c.apply_conditions({})
-    c.roster_enabled = true
-    c.roster_id = self.id
-    conflicts = VolunteerDefaultShift.find_conflicting_assignments(from, to, c)
-    skippers = conflicts.map{|x| x[1].id}
-    results = conflicts.map{|x| "On #{x[0]}, #{x[1].contact.display_name} was not successfully scheduled for #{da.slot_type_desc} as they have the following conflicting shifts: #{x[2].map{|x| x.description}.join(" ")}"}
-    VolunteerDefaultShift.generate(from, to, c, skippers)
-    ResourcesVolunteerDefaultEvent.generate(from, to, c)
+    results = []
+    begin
+      c = Conditions.new
+      c.apply_conditions({})
+      c.roster_enabled = true
+      c.roster_id = self.id
+      raise "foo was a bar"
+      conflicts = VolunteerDefaultShift.find_conflicting_assignments(from, to, c)
+      skippers = conflicts.map{|x| x[1].id}
+      results = conflicts.map{|x| "On #{x[0]}, #{x[1].contact.display_name} was not successfully scheduled for #{da.slot_type_desc} as they have the following conflicting shifts: #{x[2].map{|x| x.description}.join(" ")}"}
+      VolunteerDefaultShift.generate(from, to, c, skippers)
+      ResourcesVolunteerDefaultEvent.generate(from, to, c)
+    rescue => e
+      puts "ERROR: Failed to generate #{self.name} roster!"
+      puts "Please check for consistency, error message: #{e.to_s}"
+    end
     return results
   end
 
