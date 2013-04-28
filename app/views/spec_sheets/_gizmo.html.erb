@@ -65,6 +65,7 @@
         <%= @report.contact_id %>
       </td>
     </tr>
+    <% if @report.system %>
     <tr>
       <td>
         Contract:
@@ -82,6 +83,7 @@
         <%= h @report.system.covered.nil? ? "unknown" : @report.system.covered ? "yes" : "no" %>
       </td>
     </tr>
+    <% end %>
     <% end %>
     <tr>
       <td>
