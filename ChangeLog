@@ -27,6 +27,9 @@ fgdb.rb (1.0.116) released; urgency=low
   * Add sorting vol task type (RT#35167)
   * Clean up shifts which contained bad data to allow shift generate to
     succeed in the future (Closes: #35139)
+  * Choose slot numbers when generating volunteer shifts based on
+    assignment times in case they go over the shift times (Closes:
+    #35017)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 16 Apr 2013 08:38:00 -0700
 

@@ -347,7 +347,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
           ve.volunteer_default_event_id = ds.volunteer_default_event_id
           ve.date = x
         end
-        myl = VolunteerEvent.find(:all, :conditions => ["date = ?", x]).map{|y| y.id == ve.id ? ve : y}.map{|y| y.volunteer_shifts}.flatten.select{|y| (ds.volunteer_task_type_id.nil? ? (ds.volunteer_default_event.description == y.volunteer_event.description) : ((ds.volunteer_task_type_id == y.volunteer_task_type_id))) and ((ds.start_time >= y.start_time and ds.start_time < y.end_time) or (ds.end_time > y.start_time and ds.end_time <= y.end_time) or (ds.start_time < y.start_time and ds.end_time > y.end_time))}.map{|y| y.slot_number}
+        conflict_start_time = [ds.start_time, ds.default_assignments.map(&:start_time).min].min
+        conflict_end_time = [ds.end_time, ds.default_assignments.map(&:end_time).max].max
+        myl = VolunteerEvent.find(:all, :conditions => ["date = ?", x]).map{|y| y.id == ve.id ? ve : y}.map{|y| y.volunteer_shifts.map{|q| q.assignments}}.flatten.select{|y| (ds.volunteer_task_type_id.nil? ? (ds.volunteer_default_event.description == y.volunteer_event.description) : ((ds.volunteer_task_type_id == y.volunteer_task_type_id))) and ((conflict_start_time >= y.start_time and conflict_start_time < y.end_time) or (conflict_end_time > y.start_time and conflict_end_time <= y.end_time) or (conflict_start_time < y.start_time and conflict_end_time > y.end_time))}.map{|y| y.slot_number}
         ve.description = ds.volunteer_default_event.description
         ve.notes = ds.volunteer_default_event.notes
         ve.save!
