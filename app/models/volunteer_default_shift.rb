@@ -19,6 +19,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
 
   def validate
     errors.add('slot_count', 'cannot be more than one for an intern shift') if self.not_numbered and self.slot_count and self.slot_count > 1
+    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
   end
 
   before_destroy :get_rid_of_available
@@ -68,9 +69,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
     weekday ? weekday.name : nil
   end
 
-  def set_values_if_stuck
+  def set_values_if_stuck(in_assn = nil)
     return unless self.stuck_to_assignment
-    assn = self.default_assignments.first
+    assn = in_assn || self.default_assignments.first
     return unless assn
     self.start_time = assn.start_time
     self.end_time = assn.end_time

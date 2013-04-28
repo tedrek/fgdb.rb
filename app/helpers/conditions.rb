@@ -23,7 +23,7 @@ class Conditions < ConditionsBase
       logged_in_within signed_off_by payment_total organization_name
       model vendor result interface_type megabytes_size week unresolved_shipment
       volunteered_non_court_hours_in_days form_factor hard_drive_serial_number
-      sale_type processor_product program_id
+      sale_type processor_product program_id generated_shift
     ] + DATES).uniq
 
   CHECKBOXES = %w[ cancelled ]
@@ -513,6 +513,11 @@ class Conditions < ConditionsBase
 
   def extract_conditions(klass)
     return ["EXTRACT( #{@extract_type} FROM #{klass.table_name}.#{@extract_field} ) = ?", @extract_value]
+  end
+
+  def generated_shift_conditions(klass)
+    klass = VolunteerShift if klass == Assignment
+    return ["#{klass.table_name}.volunteer_default_shift_id IS NOT NULL"]
   end
 
   def volunteer_task_type_conditions(klass)

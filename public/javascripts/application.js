@@ -77,6 +77,22 @@ function focus_on_last_enabled(linelist) {
   }
 }
 
+function focus_on_next_enabled(linelist, lookfor) {
+  var found = undefined;
+    for(var i = 0; i < linelist.length; i++) {
+      var e = linelist[i];
+      if($(e) && !$(e).disabled) {
+        if(found) {
+          $(e).focus();
+          return;
+        }
+        if(e == lookfor) {
+          found = true;
+        }
+      }
+    }
+}
+
 function is_tab(event) {
   return (event.keyCode==9 && !event.shiftKey);
 }

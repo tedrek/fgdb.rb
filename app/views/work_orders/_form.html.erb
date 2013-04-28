@@ -1,7 +1,23 @@
 <%= javascript_tag "system_info_url = #{url_for(:action => "get_system_info").to_json}; warranty_info_url = #{url_for(:action => "get_warranty_info").to_json};" %>
+
+<% if @warnings && @warnings.length > 0 %>
+<% @warnings.each do |e| %>
+<span class="error">Warning: <%= e %><br /><br /></span>
+<% end %>
+<% end %>
+<%= error_messages_for :work_order %>
+
+  <%= javascript_tag "linelist = ['open_struct_customer_name', 'open_struct_phone_number1', 'open_struct_phone_number2', 'open_struct_phone_number3', 'open_struct_email', 'open_struct_system_id', 'open_struct_box_source', 'open_struct_box_type', 'open_struct_adopter_id', 'open_struct_adopter_name', 'open_struct_phone_number',  'open_struct_issue', 'open_struct_ticket_source', 'open_struct_sale_date', 'open_struct_sale_id', 'open_struct_receiver_contact_id', 'open_struct_additional_items', 'open_struct_comment', 'open_struct_os', 'open_struct_warranty', 'open_struct_submit']; optional = ['open_struct_phone_number', 'open_struct_email', 'open_struct_os', 'open_struct_sale_id', 'open_struct_sale_date']; hook_list = [];" %>
+  <%= javascript_tag 'hook_list["open_struct_phone_number"] = function() {if($("open_struct_phone_number").value == "") {if(!confirm("Now would be a great time to remind the user we recycle unclaimed hardware after 45 days! Are you sure you do not want to provide a phone number?")){$("open_struct_adopter_name").focus();}};};' %>
+  <%= javascript_tag 'hook_list["open_struct_system_id"] = function () {Element.show("system_info_loading_indicator_id"); var myhash = new Hash(); myhash.set("id", $("open_struct_system_id").value); new Ajax.Request(system_info_url + "?" + myhash.toQueryString(), {asynchronous:false, evalScripts:true});}' %>
+  <%= javascript_tag 'hook_list["open_struct_adopter_id"] = function () {if($("contact__display_name")){$("open_struct_adopter_name").value = $("contact__display_name").innerHTML;};if($("contact__phone_number")){$("open_struct_phone_number").value = $("contact__phone_number").innerHTML;};if($("contact__email")){$("open_struct_email").value = $("contact__email").innerHTML;};}' %>
+  <%= javascript_tag 'hook_list["open_struct_os"] = function () {Element.show("warranty_info_loading_indicator_id"); var myhash = new Hash(); myhash.set("box_source", $("open_struct_box_source").value); myhash.set("os", $("open_struct_os").value); myhash.set("box_type", $("open_struct_box_type").value); myhash.set("sale_date", $("open_struct_sale_date").value); myhash.set("os", $("open_struct_os").value); new Ajax.Request(warranty_info_url + "?" + myhash.toQueryString(), {asynchronous:false, evalScripts:true});}' %>
+
 <% if @work_order.mode == 'ts' %>
   <%= render :partial => 'tech_support', :locals => {:f => f} %>
   <%= f.hidden_field :ticket_source, :value => "Box Brought In" %>
+<% elsif @work_order.mode == 'phone'%>
+  <%= render :partial => 'phone', :locals => {:f => f} %>
 <% else %>
   <%= render :partial => 'front_desk', :locals => {:f => f} %>
   <%= f.hidden_field :ticket_source, :value => "Box Brought In" %>

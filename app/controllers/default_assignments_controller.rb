@@ -97,6 +97,7 @@ class DefaultAssignmentsController < ApplicationController
   def reassign
     assigned, available = params[:id].split(",")
 
+    Assignment.transaction do
     # readonly
     begin
       @assigned_orig = DefaultAssignment.find(assigned)
@@ -138,8 +139,35 @@ class DefaultAssignmentsController < ApplicationController
       @new.slot_number = @assigned_orig.slot_number
       @new.contact_id = cid
 
-      @assigned.save!
-      @new.save!
+      success = 0
+      if @assigned.valid?
+        begin
+          @assigned.save!
+          success += 1
+        rescue => e
+          errors = [e]
+          flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if success == 1 && @new.valid?
+        begin
+          @new.save!
+          success += 1
+        rescue => e
+          errors = [e]
+          flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if success != 2
+        errors = (success == 0) ? @assigned.errors.full_messages : @new.errors.full_messages
+        flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+        raise ActiveRecord::Rollback
+      end
+    end
     end
     end
 

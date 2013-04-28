@@ -63,6 +63,9 @@ class WorkOrdersController < ApplicationController
 
   def parse_data
     @work_order = OpenStruct.new(params[:open_struct])
+    if params[:mode]
+      @work_order.mode = params[:mode]
+    end
     @work_order.issues = params[:open_struct][:issue] if params[:open_struct] #.to_a.select{|x| x.first == x.last}.map{|x| x.first}
 #    @work_order.issue = nil
 
@@ -77,31 +80,38 @@ class WorkOrdersController < ApplicationController
 
     @data = {}
     @data["Issues"] = @work_order.issues #.join(", ")
-    @data["Name"] = @work_order.customer_name
-    @data["Summary"] = @work_order.summary
+    @data["Name"] = @work_order.customer_name || ""
+    @data["Summary"] = @work_order.summary || ""
     @data["Subject"] = @data["Name"] + " - " + @data["Summary"]
     @errors.add("customer_name", "is mandatory information") if @data["Name"].to_s.length == 0
-    @data["Adopter Name"] = @work_order.adopter_name
     @data["ID"] = " not yet created"
-    @data["Email"] = @work_order.email
-    @errors.add("email", "must be a valid email address in the form XXX@XXXX.XXX") if @data["Email"].to_s.length > 0 && !@data["Email"].to_s.match(/^.+@[^.]+\..+$/)
-    @errors.add("phone_number", "must be a valid phone number in the form XXX-XXX-XXXX") if phone_number.length > 0 && !phone_number.match(/\d{3}-\d{3}-\d{4}/)
-    @data["Phone"] = @work_order.phone_number
-    @data["OS"] = @work_order.os
-    @data["Box Source"] = @work_order.box_source
-    @errors.add("box_source", "is mandatory information (unless you provide a system ID that allows it to be determined from past records)") if @work_order.box_type.to_s.match(/(Server|Desktop|Laptop)/) && @data["Box Source"].to_s.length == 0
     @data["Ticket Source"] = @work_order.ticket_source
-    @data["Type of Box"] = @work_order.box_type
-    @errors.add("box_type", "is mandatory information") if @data["Type of Box"].to_s.length == 0
-    @data["Warranty"] = @work_order.warranty
-    @data["Adopter ID"] = @work_order.adopter_id
-    @data["System ID"] = @work_order.system_id
-    @data["Transaction Date"] = @work_order.sale_date
-    @errors.add("sale_date", "must be a valid month in the form MM/YYYY") if sale_date.length > 0 && !sale_date.match(/\d{2,}\/\d{4,}/)
-    @data["Transaction ID"] = @work_order.sale_id
+    @data["Phone"] = @work_order.phone_number
+    @data["Email"] = @work_order.email
+    if @data["Email"].to_s.length == 0 && phone_number.length == 0
+      @errors.add("phone_number", "must be provided#{@work_order.mode == 'phone' ? "" : " if an email address is not"}")
+      @errors.add("email", "must be provided if a phone number is not") unless @work_order.mode == 'phone'
+    end
+    @errors.add("phone_number", "must be a valid phone number in the form XXX-XXX-XXXX") if phone_number.length > 0 && !phone_number.match(/\d{3}-\d{3}-\d{4}/)
+    @errors.add("email", "must be a valid email address in the form XXX@XXXX.XXX") if @data["Email"].to_s.length > 0 && !@data["Email"].to_s.match(/^.+@[^.]+\..+$/)
+    @errors.add("ticket_source", "must be chosen") if @data["Ticket Source"].to_s.length == 0
+    if @work_order.mode == 'ts'
+      @data["Adopter Name"] = @work_order.adopter_name
+      @data["OS"] = @work_order.os
+      @errors.add("box_type", "is mandatory information") if @data["Type of Box"].to_s.length == 0
+      @data["Box Source"] = @work_order.box_source
+      @errors.add("box_source", "is mandatory information (unless you provide a system ID that allows it to be determined from past records)") if @work_order.box_type.to_s.match(/(Server|Desktop|Laptop)/) && @data["Box Source"].to_s.length == 0
+      @data["Type of Box"] = @work_order.box_type
+      @data["Warranty"] = @work_order.warranty
+      @data["Adopter ID"] = @work_order.adopter_id
+      @data["System ID"] = @work_order.system_id
+      @data["Transaction Date"] = @work_order.sale_date
+      @errors.add("sale_date", "must be a valid month in the form MM/YYYY") if sale_date.length > 0 && !sale_date.match(/\d{2,}\/\d{4,}/)
+      @data["Transaction ID"] = @work_order.sale_id
+    end
     @data["Initial Content"] = @work_order.comment.to_s
-    @errors.add("comment", "in description is mandatory") if @data["Initial Content"].to_s.length == 0
     @errors.add("summary", "is mandatory") if @data["Summary"].to_s.length == 0
+    @errors.add("comment", "in description is mandatory") if @data["Initial Content"].to_s.length == 0
     ic = []
     if !@work_order.os.to_s.empty?
       ic << "Operating system info provided: " + @work_order.os
