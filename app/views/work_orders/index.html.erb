@@ -3,8 +3,9 @@
 <%# Probably should ask source (Ex: FD) later on to determine fields to be shown. %>
 
 <h2>Create a New Work Order</h2>
+Select the ticket source:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;<%= link_to 'Tech Support', {:action => "new", :mode => "ts"} %><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<%# link_to 'Front Desk', {:action => "new"} %><br />
+<!-- &nbsp;&nbsp;&nbsp;&nbsp;<%# link_to 'Front Desk', {:action => "new"} %><br /> -->
 &nbsp;&nbsp;&nbsp;&nbsp;<%= link_to 'Phone', {:action => "new", :mode => "phone"} %><br />
 <br />
 <h2>Display Existing Work Order</h2>
