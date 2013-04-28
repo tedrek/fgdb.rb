@@ -1,6 +1,7 @@
 fgdb.rb (1.0.117) UNRELEASED; urgency=low
 
-  * Implement automatic rollout of volunteer schedules (Closes: #34620)
+  * Implement automatic rollout of volunteer schedules (needs info)
+    - Would have closed: #34620
   * Implement a proper fix for reassign to happen within a transaction,
     avoiding the need to deal with cleanup with things go wrong (Closes:
     #34959)
