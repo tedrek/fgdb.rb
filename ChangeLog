@@ -19,8 +19,10 @@ fgdb.rb (1.0.117) UNRELEASED; urgency=low
   * Fix a bad assumption (race condition?) in assignments and
     default_assignments reassign processing to no longer cause a crash
     and report a better error (Ex: xhkLa5, QhN9xL, ItGpkI)
+  * Fix editing a nonexistant default_assignment to give a better error
+    message (Crash: GNWjob)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 12:28:46 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 12:30:58 -0700
 
 fgdb.rb (1.0.116) released; urgency=low
 

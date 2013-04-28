@@ -238,8 +238,14 @@ class DefaultAssignmentsController < ApplicationController
     if @assignment
       @assignments = [@assignment]
     else
-      @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
-      @assignment = @assignments.first
+      begin
+        @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
+        @assignment = @assignments.first
+      rescue
+        flash[:error] = $!.to_s
+        redirect_skedj(request.env["HTTP_REFERER"], "")
+        return
+      end
     end
     @referer = request.env["HTTP_REFERER"]
     @my_url ||= {:action => "update", :id => params[:id]}
