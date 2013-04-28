@@ -1,12 +1,11 @@
 <h1>Tech Support Work Orders</h1>
 
 <%# Probably should ask source (Ex: FD) later on to determine fields to be shown. %>
-    <%# f.label :ticket_source %>    <%# f.select :ticket_source, @rt_metadata["Ticket Source"].map{|x| [x, x]}, :include_blank => true %>
 
 <h2>Create a New Work Order</h2>
 &nbsp;&nbsp;&nbsp;&nbsp;<%= link_to 'Tech Support', {:action => "new", :mode => "ts"} %><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<%# link_to 'Front Desk', {:action => "new"} %><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<%# link_to 'Phone', {:action => "new"} %><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to 'Phone', {:action => "new", :mode => "phone"} %><br />
 <br />
 <h2>Display Existing Work Order</h2>
 <%= render :partial => "woform" %>

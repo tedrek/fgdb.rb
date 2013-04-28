@@ -1,0 +1,15 @@
+  <p>
+    <%= f.label :customer_name %><br />
+    <%= f.text_field :customer_name %>
+  </p>
+  <p>
+    <%= f.label :phone_number, "Phone Number (optional)" %><br />
+    <%= f.text_field :phone_number1, :size => 3 %>-<%= f.text_field :phone_number2, :size => 3 %>-<%= f.text_field :phone_number3, :size => 4 %>
+  </p>
+  <% unless f.object.mode == 'phone' %>
+  <p>
+    <%= f.label :email, "Email (optional)" %><br />
+    <%= f.text_field :email %>
+  </p>
+  <% end %>
+
