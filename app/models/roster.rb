@@ -2,6 +2,8 @@ class Roster < ActiveRecord::Base
   has_and_belongs_to_many :skeds
   belongs_to :contact_type
   named_scope :enabled, :conditions =>  ['enabled = ?', true]
+  has_many :volunteer_shifts
+  has_many :volunteer_default_shifts
 
   def skeds_s
     self.skeds.map(&:name).sort.join(", ")
