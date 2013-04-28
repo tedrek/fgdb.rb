@@ -7,8 +7,9 @@ fgdb.rb (1.0.117) UNRELEASED; urgency=low
     #34959)
   * Fix bug in changing intern's scheduled time, fully understanding the
     problem finally (Closes: #34834)
+  * Implement fixed privileges for the TECH_SUPPORT role
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Apr 2013 17:12:18 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 06:32:09 -0700
 
 fgdb.rb (1.0.116) released; urgency=low
 
