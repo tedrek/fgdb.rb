@@ -1,0 +1,8 @@
+<% unless @readonly %>
+<%= has_privileges('admin_skedjul') ? (link_to "add intern", :action => "add_shift", :controller => (params[:controller] == "assignments") ? "volunteer_events" : "volunteer_default_events") : "" %>
+
+<% if params[:controller] == "volunteer_shifts" %>
+<%= link_to "Add new class event", :controller => "volunteer_events", :action => "new_class" %>
+<% end %>
+<%= has_privileges('admin_skedjul') ? (link_to "add new arbitrary event", :action => "new", :controller => (params[:controller] == "assignments") ? "volunteer_events" : "volunteer_default_events") : "" %>
+<% end %>

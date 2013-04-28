@@ -313,6 +313,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
   end
 
   def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil, skip_these = [])
+    VolunteerDefaultEvent.transaction do
     if gconditions
       gconditions = gconditions.dup
       gconditions.empty_enabled = "false"
@@ -391,6 +392,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
         }
       }
     }
+    end
   end
 
   def my_start_time(format = "%H:%M")

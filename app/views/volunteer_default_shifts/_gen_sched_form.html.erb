@@ -9,11 +9,11 @@
   <% @gconditions = Conditions.new %>
   <% @gconditions.apply_conditions(params[:gconditions]) %>
   <%= conditions_html('gconditions', skedj.opts[:generate_conditions], Conditions, "auto", nil, false, true) if skedj.opts[:generate_conditions] %>
-  Resources <%= check_box_tag skedj.opts[:generate_param_key] + "[do_resources]", 1, defined?(@do_resources) ? @do_resources :  true %>
-  Shifts <%= check_box_tag skedj.opts[:generate_param_key] + "[do_shifts]", 1, defined?(@do_shifts) ? @do_shifts : true %>
+  Resources: <%= check_box_tag skedj.opts[:generate_param_key] + "[do_resources]", 1, defined?(@do_resources) ? @do_resources :  true %>
+  Shifts: <%= check_box_tag skedj.opts[:generate_param_key] + "[do_shifts]", 1, defined?(@do_shifts) ? @do_shifts : true %>
   <% forcing = (defined?(@force_generate) && @force_generate) %>
   <% if forcing %>
-    Force Generate <%= check_box_tag skedj.opts[:generate_param_key] + "[force_generate]", 1, true %>
+    <br />Force Generate: <%= check_box_tag skedj.opts[:generate_param_key] + "[force_generate]", 1, true %>
   <% end %>
   <% if defined?(@conflicting_assignments) and @conflicting_assignments.length > 0 %>
     <h4 style='color: red'>Some shifts cannot be generated because it would create schedule conflicts for some contacts. Please choose what you would like to happen for these:</h4>
