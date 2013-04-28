@@ -29,4 +29,5 @@ MAILTO=database
 0 * * * * root /var/www/fgdb.rb/script/pull_rt_metadata.sh
 
 # MAILTO?
-7 0 * * * root /var/www/fgdb.rb/script/generate_volskedj.rb
+# 7 0 * * * root /var/www/fgdb.rb/script/generate_volskedj.rb
+# FIXME: DONT ROLLOUT UNTIL ROSTERS ARE LIMITED. Disable unused as well.
