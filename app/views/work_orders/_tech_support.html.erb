@@ -2,7 +2,9 @@
   <%= render :partial => "customer_info", :locals => {:f => f} %>
 
   <h2>Gizmo Information</h2>
+  <b>
   <%= f.label :box_type %>
+  </b>
 <table border="0">
   <% midrow = false %>
     <% @rt_metadata["Type of Box"].each do |x| %>
@@ -67,3 +69,4 @@
     <%= render :partial => 'issues', :locals => {:f => f} %>
   </p>
 <%= render :partial => "summary_form", :locals => {:f => f} %>
+

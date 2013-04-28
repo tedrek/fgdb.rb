@@ -3,14 +3,14 @@
     <%= f.text_field :customer_name %>
   </p>
   <p>
-    <%= f.label :phone_number, "Phone Number (optional)" %><br />
+    <%= f.label :phone_number, f.object.mode == 'phone' ? 'Phone Number' : "Phone Number (optional when email provided)" %><br />
 
     <% onchange = "if(event.keyCode != 9 && event.keyCode != 16 && event.keyCode != 17 && !event.ctrlKey && event.target.value.length == event.target.size) {focus_on_next_enabled(linelist, event.target.id)};" %>
     <%= f.text_field :phone_number1, :maxlength => 3, :onClick => "event.target.select()", :onKeyUp => onchange %>-<%= f.text_field :phone_number2, :maxlength => 3, :onClick => "event.target.select()", :onKeyUp => onchange %>-<%= f.text_field :phone_number3, :maxlength => 4, :onClick => "event.target.select()", :onKeyUp => onchange %>
   </p>
   <% unless f.object.mode == 'phone' %>
   <p>
-    <%= f.label :email, "Email (optional)" %><br />
+    <%= f.label :email, "Email (optional when phone number provided)" %><br />
     <%= f.text_field :email %>
   </p>
   <% end %>

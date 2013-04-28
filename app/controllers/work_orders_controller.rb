@@ -88,6 +88,10 @@ class WorkOrdersController < ApplicationController
     @data["Email"] = @work_order.email
     @errors.add("email", "must be a valid email address in the form XXX@XXXX.XXX") if @data["Email"].to_s.length > 0 && !@data["Email"].to_s.match(/^.+@[^.]+\..+$/)
     @errors.add("phone_number", "must be a valid phone number in the form XXX-XXX-XXXX") if phone_number.length > 0 && !phone_number.match(/\d{3}-\d{3}-\d{4}/)
+    if @data["Email"].to_s.length == 0 && phone_number.length == 0
+      @errors.add("email", "must be provided if a phone number is not")
+      @errors.add("phone_number", "must be provided if an email address is not")
+    end
     if @work_order.mode == 'ts'
       @data["Adopter Name"] = @work_order.adopter_name
       @data["OS"] = @work_order.os

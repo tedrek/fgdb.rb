@@ -9,8 +9,11 @@ fgdb.rb (1.0.117) UNRELEASED; urgency=low
     problem finally (Closes: #34834)
   * Implement fixed privileges for the TECH_SUPPORT role
   * Implement TS Intake form for phone calls / messages (Closes: #35216)
-  * Restrict number of digits in phone number entry and make the form
-    automatically jump to the next box when needed
+  * Implement improves to TS intake field verification (Closes: #35217)
+    - Require either an email address or phone number
+    - Bold the 'Box Type' label
+    - Restrict number of digits in phone number entry and make the form
+      automatically jump to the next box when needed
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 07:54:26 -0700
 
