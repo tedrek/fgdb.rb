@@ -112,7 +112,7 @@ class WorkOrdersController < ApplicationController
     end
     ic = ic.join("\n")
     @data["Initial Content"] = ic + "\n\n" + @data["Initial Content"] if ic.length > 0
-    @data["Technician ID"] = current_user.id.to_s
+    @data["Technician ID"] = current_user.contact_id.to_s
 #    if !(@contact = Contact.find_by_id(@work_order.receiver_contact_id.to_i))
 #      @work_order.errors.add("receiver_contact_id", "doesn't exist.")
 #    else
