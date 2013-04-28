@@ -25,6 +25,8 @@ fgdb.rb (1.0.116) released; urgency=low
   * Add the STORE role to give privileges for techsupport_workorders
     (Closes: #35151)
   * Add sorting vol task type (RT#35167)
+  * Clean up shifts which contained bad data to allow shift generate to
+    succeed in the future (Closes: #35139)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 16 Apr 2013 08:38:00 -0700
 
