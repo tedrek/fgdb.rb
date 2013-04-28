@@ -4,8 +4,10 @@ fgdb.rb (1.0.117) UNRELEASED; urgency=low
   * Implement a proper fix for reassign to happen within a transaction,
     avoiding the need to deal with cleanup with things go wrong (Closes:
     #34959)
+  * Fix bug in changing intern's scheduled time, fully understanding the
+    problem finally (Closes: #34834)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Apr 2013 16:23:06 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 27 Apr 2013 17:12:18 -0700
 
 fgdb.rb (1.0.116) released; urgency=low
 

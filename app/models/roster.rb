@@ -3,10 +3,14 @@ class Roster < ActiveRecord::Base
   belongs_to :contact_type
   named_scope :enabled, :conditions =>  ['enabled = ?', true]
 
+  def sandbox?
+    name.downcase == 'sandbox'
+  end
+
   def Roster.auto_generate_all
     fails = []
     if Roster.are_auto_generated?
-      Roster.enabled.select{|x| x.name != 'Sandbox'}.each do |r|
+      Roster.enabled.reject(&:sandbox?).each do |r|
         start_d = r.generated_to_date + 1
         end_d = Date.today + eval(Default["autogenerate_volskedj_out"])
         fails = fails + r.auto_generate(start_d, end_d) if start_d <= end_d

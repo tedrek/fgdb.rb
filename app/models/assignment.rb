@@ -58,7 +58,7 @@ class Assignment < ActiveRecord::Base
   before_validation :set_values_if_stuck
   def set_values_if_stuck
     return unless volshift_stuck
-    volunteer_shift.set_values_if_stuck
+    volunteer_shift.set_values_if_stuck(self)
   end
 
   after_destroy { |record| if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment; record.volunteer_shift.destroy; else VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available; end}
@@ -170,7 +170,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def sandbox?
-    self.volunteer_shift and self.volunteer_shift.roster and self.volunteer_shift.roster.name.downcase == 'sandbox'
+    self.volunteer_shift and self.volunteer_shift.roster and self.volunteer_shift.roster.sandbox?
   end
 
   def does_conflict?(other)
