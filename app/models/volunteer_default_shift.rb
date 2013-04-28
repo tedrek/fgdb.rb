@@ -69,9 +69,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
     weekday ? weekday.name : nil
   end
 
-  def set_values_if_stuck
+  def set_values_if_stuck(in_assn = nil)
     return unless self.stuck_to_assignment
-    assn = self.default_assignments.first
+    assn = in_assn || self.default_assignments.first
     return unless assn
     self.start_time = assn.start_time
     self.end_time = assn.end_time

@@ -56,7 +56,7 @@ class VolunteerShift < ActiveRecord::Base
     @set_date_set ? @set_date : self.volunteer_event.date
   end
 
-  def set_values_if_stuck(assn_in)
+  def set_values_if_stuck(assn_in = nil)
     return unless self.stuck_to_assignment
     assn = assn_in || self.assignments.first
     return unless assn

@@ -35,7 +35,7 @@ class DefaultAssignment < ActiveRecord::Base
 
   def set_values_if_stuck
     return unless volshift_stuck
-    volunteer_default_shift.set_values_if_stuck
+    volunteer_default_shift.set_values_if_stuck(self)
   end
 
   def volshift_stuck
