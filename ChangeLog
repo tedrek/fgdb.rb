@@ -1,4 +1,4 @@
-fgdb.rb (1.0.117) UNRELEASED; urgency=low
+fgdb.rb (1.0.117) released; urgency=low
 
   * Implement automatic rollout of volunteer schedules (needs info)
     - Would have closed: #34620
@@ -26,7 +26,7 @@ fgdb.rb (1.0.117) UNRELEASED; urgency=low
     associated
   * Add new generic ............ from System ID #420000
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 19:50:32 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 21:34:23 -0700
 
 fgdb.rb (1.0.116) released; urgency=low
 
