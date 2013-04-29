@@ -36,7 +36,6 @@ class Roster < ActiveRecord::Base
   end
 
   def auto_generate(from, to)
-    puts "Generating #{self.name} roster from #{from} to #{to}.."
     results = []
     begin
       c = Conditions.new
