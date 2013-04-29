@@ -1,4 +1,5 @@
 <div style="clear: left;">
+<% if params[:controller] == 'assignments' %>
 <% unless params[:conditions][:date_end_date] == Date.today.to_s and params[:conditions][:date_start_date] == Date.today.to_s %>
      <% newparams = params.dup %>
      <% newparams[:conditions] = newparams[:conditions].dup %>
@@ -20,4 +21,8 @@
      <% newparams[:conditions][:date_start_date] = Date.today %>
      <%= link_to "Show Whole Future Schedule (ends at #{maximum_date})", newparams %>
 <% end %>
+<% end %>
+<br />
+<%= render :partial => 'add_links' %>
 </div>
+

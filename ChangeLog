@@ -15,8 +15,18 @@ fgdb.rb (1.0.117) UNRELEASED; urgency=low
     - Restrict number of digits in phone number entry and make the form
       automatically jump to the next box when needed
   * Add L3 cache to spec_sheets output display
+  * do the generate process within a database transaction (Closes:
+    #35220)
+  * Fix a bad assumption (race condition?) in assignments and
+    default_assignments reassign processing to no longer cause a crash
+    and report a better error (Ex: xhkLa5, QhN9xL, ItGpkI)
+  * Fix editing a nonexistant default_assignment to give a better error
+    message (Crash: GNWjob)
+  * Fix crashes caused by spec_sheets that don't have a system
+    associated
+  * Add new generic ............ from System ID #420000
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 07:54:26 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 19:50:32 -0700
 
 fgdb.rb (1.0.116) released; urgency=low
 
