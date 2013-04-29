@@ -23,8 +23,9 @@ fgdb.rb (1.0.117) UNRELEASED; urgency=low
     message (Crash: GNWjob)
   * Fix crashes caused by spec_sheets that don't have a system
     associated
+  * Add new generic ............ from System ID #420000
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 13:23:24 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 19:50:32 -0700
 
 fgdb.rb (1.0.116) released; urgency=low
 
