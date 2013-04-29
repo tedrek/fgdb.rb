@@ -45,7 +45,7 @@ class Roster < ActiveRecord::Base
       c.roster_id = self.id
       conflicts = VolunteerDefaultShift.find_conflicting_assignments(from, to, c)
       skippers = conflicts.map{|x| x[1].id}
-      results = conflicts.map{|x| "On #{x[0]}, #{x[1].contact.display_name} was not successfully scheduled for #{da.slot_type_desc} as they have the following conflicting shifts: #{x[2].map{|x| x.description}.join(" ")}"}
+      results = conflicts.map{|x| "On #{x[0]}, #{x[1].contact.display_name} (#{x[1].contact_id}) was not successfully scheduled for #{da.slot_type_desc} (#{self.name} roster) as they have the following conflicting shifts: #{x[2].map{|x| x.description}.join(" ")}"}
       VolunteerDefaultShift.generate(from, to, c, skippers)
       ResourcesVolunteerDefaultEvent.generate(from, to, c)
     rescue => e
