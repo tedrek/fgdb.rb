@@ -1,0 +1,27 @@
+<% product = @report.pricing_hash[:processor_product] %>
+<% result = PricingData.lookup_proc(product).first if product %>
+<% if result %>
+<div id="procdb">
+  <h2>Processor DB result: <%= result.first %></h2>
+  <table>
+    <tr>
+      <td>
+        Processor searched for:
+      </td>
+      <td>
+        <%= product %>
+      </td>
+    </tr>
+    <% PricingData.display_fields.each do |f| %>
+      <tr>
+        <td>
+          <%= f %>
+        </td>
+        <td>
+          <%= result[2][f] %>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+</div>
+<% end %>

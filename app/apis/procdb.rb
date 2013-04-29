@@ -34,7 +34,7 @@ class ProcdbAPI < SOAP::SoapsBase
 
   public
   def display_fields
-    ["Brand", "Model", "Cores", "Clock Speed", "Spec Level", "Release Date"]
+    PricingData.display_fields
   end
 
   def find_results(cpu_name)
