@@ -36,7 +36,6 @@ class Roster < ActiveRecord::Base
   end
 
   def auto_generate(from, to)
-    puts "Generating #{self.name} roster from #{from} to #{to}.."
     results = []
     begin
       c = Conditions.new
@@ -45,7 +44,7 @@ class Roster < ActiveRecord::Base
       c.roster_id = self.id
       conflicts = VolunteerDefaultShift.find_conflicting_assignments(from, to, c)
       skippers = conflicts.map{|x| x[1].id}
-      results = conflicts.map{|x| "On #{x[0]}, #{x[1].contact.display_name} (#{x[1].contact_id}) was not successfully scheduled for #{x[1].slot_type_desc} (#{self.name} roster) as they have the following conflicting shifts: #{x[2].map{|x| x.description}.join(" ")}"}
+      results = conflicts.map{|x| "On #{x[0]}, #{x[1].contact.display_name} (##{x[1].contact_id}) was not successfully scheduled for #{x[1].slot_type_desc} (#{self.name} roster) as they have the following conflicting shifts: #{x[2].map{|x| x.description}.join(" ")}"}
       VolunteerDefaultShift.generate(from, to, c, skippers)
       ResourcesVolunteerDefaultEvent.generate(from, to, c)
     rescue => e
