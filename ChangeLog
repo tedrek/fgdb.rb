@@ -14,6 +14,7 @@ fgdb.rb (1.0.117) UNRELEASED; urgency=low
     - Bold the 'Box Type' label
     - Restrict number of digits in phone number entry and make the form
       automatically jump to the next box when needed
+  * Add L3 cache to spec_sheets output display
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 07:54:26 -0700
 

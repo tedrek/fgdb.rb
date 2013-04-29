@@ -61,6 +61,16 @@
             </td>
           </tr>
     <% end %>
+    <% @system_parser.l3_cache.each do |x| %>
+           <tr>
+            <td>
+              L3 Cache:
+            </td>
+            <td>
+              <%= x %>
+            </td>
+          </tr>
+    <% end %>
     <% if @system_parser.bios %>
     <tr>
       <td>
