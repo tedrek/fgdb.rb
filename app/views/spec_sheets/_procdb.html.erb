@@ -2,20 +2,28 @@
 <% result = PricingData.lookup_proc(product).first if product %>
 <% if result %>
 <div id="procdb">
-  <h2>Processor DB result: <%= result.first %></h2>
-  <table>
+  <h2>Processor DB info: <%= result[1] %></h2>
+  <table>    
     <tr>
       <td>
-        Processor searched for:
+        Proc detected:
       </td>
       <td>
         <%= product %>
       </td>
     </tr>
+    <tr>
+      <td>
+	Found in table:
+      </td>
+      <td>
+        <%= result[0] %>
+      </td>
+    </tr>
     <% PricingData.display_fields.each do |f| %>
       <tr>
         <td>
-          <%= f %>
+          <%= f %>:
         </td>
         <td>
           <%= result[2][f] %>
