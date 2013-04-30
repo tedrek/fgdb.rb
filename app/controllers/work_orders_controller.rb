@@ -98,10 +98,10 @@ class WorkOrdersController < ApplicationController
     if @work_order.mode == 'ts'
       @data["Adopter Name"] = @work_order.adopter_name
       @data["OS"] = @work_order.os
+      @data["Type of Box"] = @work_order.box_type
       @errors.add("box_type", "is mandatory information") if @data["Type of Box"].to_s.length == 0
       @data["Box Source"] = @work_order.box_source
       @errors.add("box_source", "is mandatory information (unless you provide a system ID that allows it to be determined from past records)") if @work_order.box_type.to_s.match(/(Server|Desktop|Laptop)/) && @data["Box Source"].to_s.length == 0
-      @data["Type of Box"] = @work_order.box_type
       @data["Warranty"] = @work_order.warranty
       @data["Adopter ID"] = @work_order.adopter_id
       @data["System ID"] = @work_order.system_id
