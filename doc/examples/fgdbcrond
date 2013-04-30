@@ -27,7 +27,5 @@ MAILTO=database
 # Set the till to be locked at midnight
 0 0 * * * root /var/www/fgdb.rb/script/runner 'Default["till_lock_end"] = Date.yesterday'
 0 * * * * root /var/www/fgdb.rb/script/pull_rt_metadata.sh
+7 0 * * * root /var/www/fgdb.rb/script/run_generate_volskedj
 
-# MAILTO?
-# 7 0 * * * root /var/www/fgdb.rb/script/generate_volskedj.rb
-# FIXME: DONT ROLLOUT UNTIL ROSTERS ARE LIMITED. Disable unused as well.
