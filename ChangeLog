@@ -33,6 +33,8 @@ fgdb.rb (1.0.117) released; urgency=low
   * Added proc db info to spec_sheets display
   * Add L3 cache to spec_sheets
   * Fix crash in volunteer shift management interface (Closes: #35231)
+  * set value for type of box in the correct location for validations
+    (Closes: #35235)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 21:34:23 -0700
 
