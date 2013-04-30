@@ -28,6 +28,6 @@ MAILTO=database
 0 0 * * * root /var/www/fgdb.rb/script/runner 'Default["till_lock_end"] = Date.yesterday'
 0 * * * * root /var/www/fgdb.rb/script/pull_rt_metadata.sh
 
-# MAILTO?
-# 7 0 * * * root /var/www/fgdb.rb/script/generate_volskedj.rb
+MAILTO?
+# 7 0 * * * root /var/www/fgdb.rb/script/generate_volskedj.rb | tee -a /var/www/fgdb.rb/log/volskedj.log
 # FIXME: DONT ROLLOUT UNTIL ROSTERS ARE LIMITED. Disable unused as well.
