@@ -349,8 +349,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
           ve.volunteer_default_event_id = ds.volunteer_default_event_id
           ve.date = x
         end
-        conflict_start_time = [ds.start_time, ds.default_assignments.map(&:start_time).min].min
-        conflict_end_time = [ds.end_time, ds.default_assignments.map(&:end_time).max].max
+        conflict_start_time = [ds.start_time, ds.default_assignments.map(&:start_time).min].select{|tt| !tt.nil?}.min
+        conflict_end_time = [ds.end_time, ds.default_assignments.map(&:end_time).max].select{|tt| !tt.nil?}.max
         myl = VolunteerEvent.find(:all, :conditions => ["date = ?", x], :include => [:volunteer_shifts => :assignments]).map{|y| y.id == ve.id ? ve : y}.map{|y| y.volunteer_shifts.map{|q| q.assignments}}.flatten.select{|y| (ds.volunteer_task_type_id.nil? ? (ds.volunteer_default_event.description == y.volunteer_shift.volunteer_event.description) : ((ds.volunteer_task_type_id == y.volunteer_shift.volunteer_task_type_id))) and ((conflict_start_time >= y.start_time and conflict_start_time < y.end_time) or (conflict_end_time > y.start_time and conflict_end_time <= y.end_time) or (conflict_start_time < y.start_time and conflict_end_time > y.end_time))}.map{|y| y.volunteer_shift.slot_number}
         ve.description = ds.volunteer_default_event.description
         ve.notes = ds.volunteer_default_event.notes
