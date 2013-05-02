@@ -31,6 +31,7 @@ fgdb.rb (1.0.117) released; urgency=low
   * set value for type of box in the correct location for validations
     (Closes: #35235)
   * Fix crash in saving default assignments (Closes: #35262)
+  * fix crash in graphic reports (ex: LQDyAc)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 21:34:23 -0700
 
