@@ -68,8 +68,8 @@ class DefaultAssignment < ActiveRecord::Base
   }
 
   def validate
-    if self.contact_id && self.contact_id_changed? && self.volunteer_shift && self.volunteer_shift.roster && self.volunteer_shift.roster.contact_type
-      errors.add("contact_id", "does not have the contact type required to sign up for a shift in this roster (#{self.volunteer_shift.roster.contact_type.description.humanize.downcase})") unless self.contact.contact_types.include?(self.volunteer_shift.roster.contact_type)
+    if self.contact_id && self.contact_id_changed? && self.volunteer_default_shift && self.volunteer_default_shift.roster && self.volunteer_default_shift.roster.contact_type
+      errors.add("contact_id", "does not have the contact type required to sign up for a shift in this roster (#{self.volunteer_default_shift.roster.contact_type.description.humanize.downcase})") unless self.contact.contact_types.include?(self.volunteer_default_shift.roster.contact_type)
     end
     if self.closed
       errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?

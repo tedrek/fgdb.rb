@@ -30,6 +30,7 @@ fgdb.rb (1.0.117) released; urgency=low
   * Fix crash in volunteer shift management interface (Closes: #35231)
   * set value for type of box in the correct location for validations
     (Closes: #35235)
+  * Fix crash in saving default assignments (Closes: #35262)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 28 Apr 2013 21:34:23 -0700
 
