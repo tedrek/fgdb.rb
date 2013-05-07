@@ -549,7 +549,7 @@ class TrendReport
     end
 
     def conditions_with_daterange_for_report(args, field)
-      h = daterange_condition(field)
+      h = daterange_condition(args, field)
       conditions_without_a_daterange_for_report(args, field, h)
     end
 
