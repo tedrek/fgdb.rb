@@ -1,7 +1,5 @@
 fgdb.rb (1.0.118) UNRELEASED; urgency=low
 
-  * Disable the Laptop question in printme about Wireless card type
-    (Closes: #35241)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 30 Apr 2013 13:59:56 -0700
 
