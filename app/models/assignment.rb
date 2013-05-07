@@ -20,6 +20,8 @@ class Assignment < ActiveRecord::Base
   named_scope :for_contact_id, lambda {|c| {:conditions => ['contact_id = ?', c]}}
   named_scope :updated_since, lambda {|u_date| u_date ? {:conditions => ['updated_at > ?', u_date]} : {:conditions => []}}
   named_scope :roster_is_limited_by_program, :conditions => ["roster_id IN (SELECT id FROM rosters WHERE limit_shift_signup_by_program = 't')"], :joins => [:volunteer_shift]
+  named_scope :within_n_days_of, lambda{|n, x| {:conditions => ['date > ? AND date < ?', x - n, x + n], :joins => [:volunteer_shift => [:volunteer_event]]} }
+  named_scope :for_sked_id,  lambda {|sked_id| {:conditions => ['roster_id in (?)', Sked.find_by_id(sked_id).roster_ids]}}
 
   def real_programs
     return [] unless self.volunteer_shift && self.volunteer_shift.roster
@@ -101,6 +103,10 @@ class Assignment < ActiveRecord::Base
       errors.add("volunteer_shift_id", "is already assigned during that time (#{self.find_overlappers(:for_slot).map{|x| "during " + x.time_range_s + " to " + x.contact_display}.join(", ")})") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
      end
     errors.add("end_time", "is before the start time") unless self.start_time < self.end_time
+    if self.contact && (!self.cancelled?) && self.volunteer_shift && self.volunteer_shift.roster && self.volunteer_shift.roster.restrict_from_sked && self.volunteer_shift.roster.restrict_to_every_n_days && self.volunteer_shift.volunteer_event && self.volunteer_shift.volunteer_event.date >= (Date.today + self.volunteer_shift.roster.restrict_to_every_n_days)
+      in_range = self.contact.assignments.not_cancelled.within_n_days_of(self.volunteer_shift.roster.restrict_to_every_n_days, self.volunteer_shift.volunteer_event.date).for_sked_id(self.volunteer_shift.roster.restrict_from_sked_id).select{|x| x.id != self.id}
+      errors.add("contact_id", "is already scheduled in #{self.volunteer_shift.roster.restrict_from_sked.name} within #{self.volunteer_shift.roster.restrict_to_every_n_days} days: #{in_range.map{|x| "in " + x.slot_type_desc + " on " + x.volunteer_shift.volunteer_event.date.to_s}.join(", ")}") if in_range.length > 0
+    end
   end
 
   def date
