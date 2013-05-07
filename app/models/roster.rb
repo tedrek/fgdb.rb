@@ -4,6 +4,7 @@ class Roster < ActiveRecord::Base
   named_scope :enabled, :conditions =>  ['enabled = ?', true]
   has_many :volunteer_shifts
   has_many :volunteer_default_shifts
+  belongs_to :restrict_from_sked, :class_name => "Sked"
 
   def sandbox?
     name.downcase == 'sandbox'
