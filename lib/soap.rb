@@ -1,3 +1,4 @@
+$LOAD_PATH.unshift(File.join(RAILS_ROOT, "vendor", "soap4r"))
 require 'xsd/datatypes'
 require 'soap/mapping'
 require 'soap/rpc/element'

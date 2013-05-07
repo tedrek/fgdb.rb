@@ -1,16 +1,26 @@
-module ActiveRecord
-  class SchemaDumper
-    
-    # A list of views which should not be dumped to the schema. 
-    # Acceptable values are strings as well as regexp.
-    # This setting is only used if ActiveRecord::Base.schema_format == :ruby
-    cattr_accessor :ignore_views 
-    @@ignore_views = []
+module RailsSqlViews
+  module SchemaDumper
+    def self.included(base)
+      base.alias_method_chain :trailer, :views
+      base.alias_method_chain :dump, :views
+      base.alias_method_chain :tables, :views_excluded
+      
+      # A list of views which should not be dumped to the schema. 
+      # Acceptable values are strings as well as regexp.
+      # This setting is only used if ActiveRecord::Base.schema_format == :ruby
+      base.cattr_accessor :ignore_views
+      base.ignore_views = []
+      # Optional: specify the order that in which views are created.
+      # This allows views to depend on and include fields from other views.
+      # It is not necessary to specify all the view names, just the ones that 
+      # need to be created first
+      base.cattr_accessor :view_creation_order
+      base.view_creation_order = []
+    end
     
     def trailer_with_views(stream)
       # do nothing...we'll call this later
     end
-    alias_method_chain :trailer, :views
     
     # Add views to the end of the dump stream
     def dump_with_views(stream)
@@ -29,16 +39,23 @@ module ActiveRecord
       trailer_without_views(stream)
       stream
     end
-    alias_method_chain :dump, :views
     
     # Add views to the stream
     def views(stream)
-      @connection.views.sort.each do |v|
-        next if ["schema_info", ignore_views].flatten.any? do |ignored|
+      if view_creation_order.empty?
+        sorted_views = @connection.views.sort
+      else
+        # set union, merge by joining arrays, removing dups
+        # this will float the view name sin view_creation_order to the top
+        # without requiring all the views to be specified
+        sorted_views = view_creation_order | @connection.views
+      end
+      sorted_views.each do |v|
+        next if [ActiveRecord::Migrator.schema_migrations_table_name, ignore_views].flatten.any? do |ignored|
           case ignored
-          when String: v == ignored
-          when Symbol: v == ignored.to_s
-          when Regexp: v =~ ignored
+          when String then v == ignored
+          when Symbol then v == ignored.to_s
+          when Regexp then v =~ ignored
           else
             raise StandardError, 'ActiveRecord::SchemaDumper.ignore_views accepts an array of String and / or Regexp values.'
           end
@@ -76,5 +93,20 @@ module ActiveRecord
       
       stream
     end
+
+    def tables_with_views_excluded(stream)
+      @connection.base_tables.sort.each do |tbl|
+        next if [ActiveRecord::Migrator.schema_migrations_table_name, ignore_tables].flatten.any? do |ignored|
+          case ignored
+          when String then tbl == ignored
+          when Regexp then tbl =~ ignored
+          else
+            raise StandardError, 'ActiveRecord::SchemaDumper.ignore_tables accepts an array of String and / or Regexp values.'
+          end
+        end
+        table(tbl, stream)
+      end
+    end
+
   end
 end
