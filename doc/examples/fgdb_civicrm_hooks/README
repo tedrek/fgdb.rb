@@ -68,9 +68,15 @@ add a "FGDB Contact ID" field, of integer type, make it searchable
 "Used for database synchronization: leave empty, will be set automatically."
 [do not select "view only", this breaks using API, and therefor our sync process]
 
-Modify the options lists under administer tab for our contact method
-types:
-TODO
+Modify the options lists our contact method types:
+Go to the "Administer" => "Customize Data and Screens" => "Dropdown
+Options" submenu and go to:
+
+Location Types:
+work, home, other
+
+Phone Types:
+fax, ip, emergency, mobile, other
 
 === Customizations we might do someday (but not yet) ===
 

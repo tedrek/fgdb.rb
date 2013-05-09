@@ -179,7 +179,7 @@ class Conditions < ConditionsBase
     validate_exists('attendance_type_id') if validate_integer('attendance_type', 'attendance_type_id')
     validate_exists('worker_type_id') if validate_integer('worker_type', 'worker_type_id')
     validate_exists('sale_type_id') if validate_integer('sale_type', 'sale_type_id')
-    validate_exists('volunteer_task_type_id') if validate_integer('volunteer_task_type', 'volunteer_task_type_id')
+    validate_exists('volunteer_task_type_id') if parse_and_validate_list('volunteer_task_type', 'volunteer_task_type_id')
     validate_exists('schedule_id') if validate_integer('schedule', 'schedule_id')
     validate_emptyness('store_credit_id')
     if is_this_condition_enabled('payment_amount')
@@ -524,7 +524,7 @@ class Conditions < ConditionsBase
     tbl = klass.table_name
     tbl = "volunteer_shifts" if tbl == "assignments"
     tbl = "volunteer_default_shifts" if tbl == "default_assignments"
-    return ["#{tbl}.volunteer_task_type_id = ?", @volunteer_task_type_id.to_i]
+    return ["#{tbl}.volunteer_task_type_id IN (?)", (@volunteer_task_type_id)]
   end
 
   def weekday_conditions(klass)

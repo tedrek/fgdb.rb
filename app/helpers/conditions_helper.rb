@@ -99,7 +99,7 @@ module ConditionsHelper
   end
 
   def html_for_volunteer_task_type_condition(params_key)
-    select(params_key, "volunteer_task_type_id", VolunteerTaskType.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] })
+    select(params_key, "volunteer_task_type_id", VolunteerTaskType.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts)
   end
 
   def html_for_can_login_condition(params_key)
