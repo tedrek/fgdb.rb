@@ -17,6 +17,10 @@ class PricingData < ActiveRecord::Base
     pd.each{|x| x.save}
   end
 
+  def PricingData.display_fields
+    ["Brand", "Model", "Cores", "Clock Speed", "Spec Level", "Release Date"]
+  end
+
   def PricingData.delete_table(table_name)
     PricingData.destroy_all ['table_name LIKE ?', table_name]
   end

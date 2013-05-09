@@ -544,8 +544,12 @@ class TrendReport
       conditions_with_daterange_for_report(args, "occurred_at")
     end
 
+    def daterange_condition(args, field)
+      {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
+    end
+
     def conditions_with_daterange_for_report(args, field)
-      h = {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
+      h = daterange_condition(args, field)
       conditions_without_a_daterange_for_report(args, field, h)
     end
 
@@ -751,7 +755,7 @@ class NumberOfFinalBuilderTasksBySystem < TrendReport
 
   def get_for_timerange(args)
     ret = {}
-    DB.exec("SELECT action, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id, action_id) actions.description AS action, type_id, action_id, system_id, spec_sheets.created_at FROM spec_sheets JOIN builder_tasks ON builder_task_id = builder_tasks.id JOIN actions ON actions.id = action_id ORDER BY spec_sheets.system_id, action_id, spec_sheets.created_at DESC) AS spec_sheets WHERE #{sql_for_report(SpecSheet, conditions_with_daterange_for_report(args, "created_at"))} GROUP BY 1 ORDER BY 1;").to_a.each do |r|
+    DB.exec("SELECT action, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id, action_id) actions.description AS action, type_id, action_id, system_id, spec_sheets.created_at FROM spec_sheets JOIN builder_tasks ON builder_task_id = builder_tasks.id JOIN actions ON actions.id = action_id WHERE #{sql_for_report(SpecSheet, conditions_without_a_daterange_for_report(args, "created_at"))} ORDER BY spec_sheets.system_id, action_id, spec_sheets.created_at DESC) AS spec_sheets WHERE #{sql_for_report(SpecSheet, daterange_condition(args, "created_at"))} GROUP BY 1 ORDER BY 1;").to_a.each do |r|
       ret[r["action"]] = r["count"]
     end
     return ret
@@ -1162,6 +1166,34 @@ class VolunteerHoursByProgramsTrend < TrendReport
       super - ["Hour"]
     end
 end
+class VolunteerHoursByTaskTypeTrend < TrendReport
+    def category
+      "Volunteer"
+    end
+
+    def get_for_timerange(args)
+      where_clause = sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))
+      res = DB.execute("SELECT volunteer_task_types.description, SUM( duration )
+  FROM volunteer_tasks
+  LEFT JOIN programs ON volunteer_tasks.program_id = programs.id
+  LEFT JOIN volunteer_task_types ON volunteer_tasks.volunteer_task_type_id = volunteer_task_types.id
+  WHERE #{where_clause}
+  GROUP BY volunteer_task_types.id, volunteer_task_types.description
+  ORDER BY volunteer_task_types.description;")
+      Hash[*res.to_a.collect{|x| [x["description"], x["sum"]]}.flatten]
+    end
+
+    def title
+      "Report of volunteer hours by task type"
+    end
+    def breakdown_types
+      super - ["Hour"]
+    end
+
+    def valid_conditions
+      ["volunteer_task_type", "program_id"]
+    end
+end
 class DonationsGizmoCountByTypesTrend < TrendReport
     def category
       "Gizmo"
@@ -1334,6 +1366,33 @@ class NumberOfSalesByCashiersTrend < TrendReport
       Hash[*res.to_a.collect{|x| [x["login"], x["count"]]}.flatten]
     end
 
+end
+class NumberOfItemsSoldByCashiersTrend < TrendReport
+    def category
+      "Gizmo"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def title
+      "Number of items sold by Cashier"
+    end
+    def get_for_timerange(args)
+      where_clause = sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at"))
+      res = DB.execute("SELECT SUM(gizmo_count) AS count, users.login FROM gizmo_events
+ INNER JOIN sales ON sales.id = sale_id
+ LEFT JOIN users ON users.id = sales.cashier_created_by
+ WHERE #{where_clause}
+ GROUP BY users.login
+ ORDER BY users.login")
+      Hash[*res.to_a.collect{|x| [x["login"], x["count"]]}.flatten]
+    end
+
+    def valid_conditions
+      ["gizmo_type_id", "gizmo_type_group_id", "gizmo_category_id"]
+    end
 end
 class TotalAmountOfSalesByCashiersTrend < TrendReport
     def category

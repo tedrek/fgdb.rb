@@ -66,7 +66,11 @@
         System ID:
       </td>
       <td>
-        <%= link_to @report.system.id, :action => "system", :id => @report.system.id %>
+        <% if @report.system %>
+          <%= link_to @report.system.id, :action => "system", :id => @report.system.id %>
+        <% else %>
+          N/A
+        <% end %>
       </td>
     </tr>
     <tr>
@@ -77,6 +81,7 @@
         <%= @report.type && h(@report.type.description) || "Unknown" %>
       </td>
     </tr>
+    <% if @report.system %>
     <tr>
       <td>
         Contract:
@@ -94,6 +99,7 @@
         <%= h @report.system.covered.nil? ? "unknown" : @report.system.covered ? "yes" : "no" %>
       </td>
     </tr>
+    <% end %>
     <% end %>
     <tr>
       <td>

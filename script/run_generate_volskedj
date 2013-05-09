@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+SCRIPT=`dirname $0`/generate_volskedj.rb
+OUTPUT=$($SCRIPT | tee -a /var/www/fgdb.rb/log/volskedj.log)
+MAILTO=$(./script/runner 'puts Default["management_mailing_list"]')
+
+if [ -n "$OUTPUT" ]; then
+   cat - <<EOF | mail -s 'Conflicts in automatic volunteer schedule' "$MAILTO"
+The following errors were encountered while automatically generating the volunteer schedule:
+${OUTPUT}
+EOF
+fi

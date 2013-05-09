@@ -19,6 +19,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
 
   def validate
     errors.add('slot_count', 'cannot be more than one for an intern shift') if self.not_numbered and self.slot_count and self.slot_count > 1
+    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
   end
 
   before_destroy :get_rid_of_available
@@ -68,9 +69,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
     weekday ? weekday.name : nil
   end
 
-  def set_values_if_stuck
+  def set_values_if_stuck(in_assn = nil)
     return unless self.stuck_to_assignment
-    assn = self.default_assignments.first
+    assn = in_assn || self.default_assignments.first
     return unless assn
     self.start_time = assn.start_time
     self.end_time = assn.end_time
@@ -312,6 +313,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
   end
 
   def VolunteerDefaultShift.generate(start_date, end_date, gconditions = nil, skip_these = [])
+    VolunteerDefaultEvent.transaction do
     if gconditions
       gconditions = gconditions.dup
       gconditions.empty_enabled = "false"
@@ -347,7 +349,9 @@ class VolunteerDefaultShift < ActiveRecord::Base
           ve.volunteer_default_event_id = ds.volunteer_default_event_id
           ve.date = x
         end
-        myl = VolunteerEvent.find(:all, :conditions => ["date = ?", x]).map{|y| y.id == ve.id ? ve : y}.map{|y| y.volunteer_shifts}.flatten.select{|y| (ds.volunteer_task_type_id.nil? ? (ds.volunteer_default_event.description == y.volunteer_event.description) : ((ds.volunteer_task_type_id == y.volunteer_task_type_id))) and ((ds.start_time >= y.start_time and ds.start_time < y.end_time) or (ds.end_time > y.start_time and ds.end_time <= y.end_time) or (ds.start_time < y.start_time and ds.end_time > y.end_time))}.map{|y| y.slot_number}
+        conflict_start_time = [ds.start_time, ds.default_assignments.map(&:start_time).min].select{|tt| !tt.nil?}.min
+        conflict_end_time = [ds.end_time, ds.default_assignments.map(&:end_time).max].select{|tt| !tt.nil?}.max
+        myl = VolunteerEvent.find(:all, :conditions => ["date = ?", x], :include => [:volunteer_shifts => :assignments]).map{|y| y.id == ve.id ? ve : y}.map{|y| y.volunteer_shifts.map{|q| q.assignments}}.flatten.select{|y| (ds.volunteer_task_type_id.nil? ? (ds.volunteer_default_event.description == y.volunteer_shift.volunteer_event.description) : ((ds.volunteer_task_type_id == y.volunteer_shift.volunteer_task_type_id))) and ((conflict_start_time >= y.start_time and conflict_start_time < y.end_time) or (conflict_end_time > y.start_time and conflict_end_time <= y.end_time) or (conflict_start_time < y.start_time and conflict_end_time > y.end_time))}.map{|y| y.volunteer_shift.slot_number}
         ve.description = ds.volunteer_default_event.description
         ve.notes = ds.volunteer_default_event.notes
         ve.save!
@@ -388,6 +392,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
         }
       }
     }
+    end
   end
 
   def my_start_time(format = "%H:%M")

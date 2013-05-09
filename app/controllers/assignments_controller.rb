@@ -270,6 +270,7 @@ class AssignmentsController < ApplicationController
   def reassign
     assigned, available = params[:id].split(",")
 
+    Assignment.transaction do
     # readonly
     begin
       @assigned_orig = Assignment.find(assigned)
@@ -293,23 +294,58 @@ class AssignmentsController < ApplicationController
       end
 
       # for write
-      @assigned = Assignment.find(assigned)
-      @new = Assignment.new # available
+      begin
+        @assigned = Assignment.find(assigned)
+      rescue ActiveRecord::RecordNotFound
+        flash[:jsalert] = "The assignment (##{assigned}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+      end
+      if @assigned
+        @new = Assignment.new # available
 
-      # do it
-      @assigned.volunteer_shift_id = @available.volunteer_shift_id
-      @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
-      @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
+        # do it
+        @assigned.volunteer_shift_id = @available.volunteer_shift_id
+        @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
+        @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
-      @new.start_time = @available.start_time
-      @new.start_time = @assigned_orig.start_time if (@new.start_time < @assigned_orig.start_time) or (@new.start_time >= @assigned_orig.start_time)
-      @new.end_time = @available.start_time
-      @new.end_time = @assigned_orig.end_time if (@new.end_time > @assigned_orig.end_time) or (@new.end_time <= @assigned_orig.end_time)
-      @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
-      @new.contact_id = cid
+        @new.start_time = @available.start_time
+        @new.start_time = @assigned_orig.start_time if (@new.start_time < @assigned_orig.start_time) or (@new.start_time >= @assigned_orig.start_time)
+        @new.end_time = @available.start_time
+        @new.end_time = @assigned_orig.end_time if (@new.end_time > @assigned_orig.end_time) or (@new.end_time <= @assigned_orig.end_time)
+        @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
+        @new.contact_id = cid
+      end
 
-      @assigned.save!
-      @new.save!
+      success = 0
+      if @assigned && @assigned.valid?
+        begin
+          @assigned.save!
+          success += 1
+        rescue => e
+          errors = [e]
+          flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if success == 1 && @new.valid?
+        begin
+          @new.save!
+          success += 1
+        rescue => e
+          errors = [e]
+          flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if @assigned && success != 2
+        errors = (success == 0) ? @assigned.errors.full_messages : @new.errors.full_messages
+        flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+      end
+      if success != 2
+        raise ActiveRecord::Rollback
+      end
+    end
     end
     end
 

@@ -97,6 +97,7 @@ class DefaultAssignmentsController < ApplicationController
   def reassign
     assigned, available = params[:id].split(",")
 
+    Assignment.transaction do
     # readonly
     begin
       @assigned_orig = DefaultAssignment.find(assigned)
@@ -121,25 +122,61 @@ class DefaultAssignmentsController < ApplicationController
       end
 
       # for write
-      @assigned = DefaultAssignment.find(assigned)
-      @new = DefaultAssignment.new # available
+      begin
+        @assigned = DefaultAssignment.find(assigned)
+      rescue ActiveRecord::RecordNotFound
+        flash[:jsalert] = "The assignment (##{assigned}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+      end
 
-      # do it
-      @assigned.volunteer_default_shift_id = @available.volunteer_default_shift_id
-      @assigned.slot_number = @available.slot_number
-      @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
-      @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
+      if @assigned
+        @new = DefaultAssignment.new # available
 
-      @new.start_time = @available.start_time
-      @new.start_time = @assigned_orig.start_time if (@new.start_time < @assigned_orig.start_time) or (@new.start_time >= @assigned_orig.start_time)
-      @new.end_time = @available.start_time
-      @new.end_time = @assigned_orig.end_time if (@new.end_time > @assigned_orig.end_time) or (@new.end_time <= @assigned_orig.end_time)
-      @new.volunteer_default_shift_id = @assigned_orig.volunteer_default_shift_id
-      @new.slot_number = @assigned_orig.slot_number
-      @new.contact_id = cid
+        # do it
+        @assigned.volunteer_default_shift_id = @available.volunteer_default_shift_id
+        @assigned.slot_number = @available.slot_number
+        @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
+        @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
-      @assigned.save!
-      @new.save!
+        @new.start_time = @available.start_time
+        @new.start_time = @assigned_orig.start_time if (@new.start_time < @assigned_orig.start_time) or (@new.start_time >= @assigned_orig.start_time)
+        @new.end_time = @available.start_time
+        @new.end_time = @assigned_orig.end_time if (@new.end_time > @assigned_orig.end_time) or (@new.end_time <= @assigned_orig.end_time)
+        @new.volunteer_default_shift_id = @assigned_orig.volunteer_default_shift_id
+        @new.slot_number = @assigned_orig.slot_number
+        @new.contact_id = cid
+      end
+
+      success = 0
+      if @assigned && @assigned.valid?
+        begin
+          @assigned.save!
+          success += 1
+        rescue => e
+          errors = [e]
+          flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if success == 1 && @new.valid?
+        begin
+          @new.save!
+          success += 1
+        rescue => e
+          errors = [e]
+          flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if @assigned && success != 2
+        errors = (success == 0) ? @assigned.errors.full_messages : @new.errors.full_messages
+        flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+      end
+      if success != 2
+        raise ActiveRecord::Rollback
+      end
+    end
     end
     end
 
@@ -201,8 +238,14 @@ class DefaultAssignmentsController < ApplicationController
     if @assignment
       @assignments = [@assignment]
     else
-      @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
-      @assignment = @assignments.first
+      begin
+        @assignments = params[:id].split(",").map{|x| DefaultAssignment.find(x)}
+        @assignment = @assignments.first
+      rescue
+        flash[:error] = $!.to_s
+        redirect_skedj(request.env["HTTP_REFERER"], "")
+        return
+      end
     end
     @referer = request.env["HTTP_REFERER"]
     @my_url ||= {:action => "update", :id => params[:id]}
