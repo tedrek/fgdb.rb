@@ -24,7 +24,7 @@ This script should even work for updating multiple releases.
 
 * Quick restart (for code changes in majority of fgdb application):
 
-sudo /home/dbadmin/script/nice-restart 
+sudo /home/dbadmin/script/nice-restart
 
 * Full restart (for rails or apache configuration):
 
@@ -100,19 +100,31 @@ updates), but the database should handle it better in most situations.
 
 * Updating the development data:
 
-In addition to watching for crash reports, an occasional maintenance task
-is to update the development data when it stops working due to
-incompatibilities upgrading through many releases.
+In addition to watching for crash reports, an occasional maintenance
+task is to update the development data when it stops working due to
+incompatibilities upgrading through many releases. There may also be
+changes necessary for the data_mutate script first, which scrambles
+our production data into development data, if there are new tables or
+fields that need to be scrambled now.
+
+I usually use git-log to find out when the development data (and
+schema.rb, specifically) was last updated and then do a diff to find
+all of the migrations (db/migrate) which changed since then.  After
+reviewing all of the changes to the database structure, I update the
+data_mutate script to scramble the new information and note that these
+parts of the data dump need manual verification to make sure no real
+data is left after the process completes (before committing!).
+
+Once data_mutate is updated properly, there are instructions for
+creating the new development data in doc/README_FOR_APP. This is also
+done on the production playground, "borked".  This machine should have
+ssh keys for scp purposes configured in the directory
+./script/update-devel-data, which will allow this process and the test
+migration process to happen without user intervention.
 
 How often this is necessary depends on how many installations of fgdb
 exist and how many major changes have been made at the current rate of
 development.
-
-There are instructions for creating new development data in
-doc/README_FOR_APP. This is also done on the production playground, "borked".
-This machine should have ssh keys for scp purposes configured in the
-directory ./script/update-devel-data, which will allow this process and
-the test migration process to happen without user intervention.
 
 * Updating printme's list of generic serial numbers:
 
