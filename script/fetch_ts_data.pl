@@ -15,7 +15,7 @@ open $F, $config;
 my %conf = ();
 foreach(<$F>) {
     my @a = split /\s+/, $_;
-    $conf{$a[0]} = $a[1];
+    $conf{$a[0]} = $a[1] if ($a[0]);
 }
 
 my $rt = RT::Client::REST->new(server => $conf{server});

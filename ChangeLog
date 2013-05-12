@@ -11,8 +11,10 @@ fgdb.rb (1.0.118) UNRELEASED; urgency=low
   * Implement a fix for the count of # of times volunteer in sorting to
     include past receiving shifts as well
   * Add a few more generics: NoneNoneNoneNone, :[ and April197
+  * Implement flagging customers with notes on the TS intake form
+    (Closes: #35314)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 12 May 2013 11:57:31 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 12 May 2013 14:38:38 -0700
 
 fgdb.rb (1.0.117) released; urgency=low
 

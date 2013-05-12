@@ -20,6 +20,7 @@ class Contact < ActiveRecord::Base
   belongs_to :contract
   has_many :gizmo_returns
   has_one :worker
+  has_one :tech_support_note
   validates_numericality_of :birthday_year, :greater_than_or_equal_to => 1902, :less_than => 2038, :allow_nil => true
 
   def birthday_year_before_type_cast # WTF..

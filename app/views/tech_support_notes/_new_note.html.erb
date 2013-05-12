@@ -1,0 +1,7 @@
+<% @contacts.each do %>
+Ctax 
+<% end %>
+todo: contact links
+<%= link_to_remote "Add new contact with name #{@name}", :url => {:action => "new_note_form", :name => @name}, :loading => "$(\"#{loading_indicator_id("ts-new-note")}\")" %>
+<%= loading_indicator_tag("ts-new-note") %>
+
