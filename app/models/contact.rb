@@ -147,6 +147,11 @@ class Contact < ActiveRecord::Base
     c = ContactVolunteerTaskTypeCount.find_or_create_by_contact_id_and_volunteer_task_type_id(self.id, vid)
     vtt = VolunteerTaskType.find(vid)
     c.count = self.volunteer_tasks.for_type_id(vtt.id).count
+    if vtt && vtt.name == 'sorting'
+      # FIXME: generalize solution?
+      vtt2 = VolunteerTaskType.find_by_name('receiving')
+      c.count += self.volunteer_tasks.for_type_id(vtt2.id).count if vtt2
+    end
     c.save!
   end
 

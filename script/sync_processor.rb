@@ -143,18 +143,62 @@ class ContactObject
     self.postal_code = c.postal_code
     self.country = c.country
 
-    # TODO: handle multiple email/phone & types
-    self.emails = c.mailing_list_email
-    self.phone_numbers = c.phone_number
+    self.emails = []
+    self.phone_numbers = []
+    c.contact_methods.each do |cm|
+      location = 'Other'
+      mytype = cm.contact_method_type.name
+      if mytype.match(/home/)
+        location = 'Home'
+      elsif mytype.match(/work/)
+        location = 'Work'
+      end
+
+      if mytype.match(/email/)
+        self.emails << [location, cm.value]
+      elsif mytype.match(/liason/)
+        nil
+      else
+        phone_type = 'Phone'
+        if mytype.match(/cell/)
+          phone_type = 'Mobile'
+        elsif mytype.match(/fax/)
+          phone_type = 'Fax'
+        elsif mytype.match(/ip/)
+          phone_type = 'IP'
+        elsif mytype.match(/emergency/)
+          phone_type = 'Emergency'
+        end
+        self.phone_numbers << [location, phone_type, cm.value]
+      end
+    end
+    puts self.emails.inspect
+    puts self.phones.inspect
+    raise "DONE"
 
     self.birthday = c.birthday
     self.notes = c.notes
   end
 
+  def getoptions(c, tbl, field)
+    h = {}
+    c.do_req("civicrm/#{tbl}/getoptions", {"field" => field})["values"].each do |k, v|
+      h[k] = v
+    end
+    return h
+  end
+
+  def by_name(h)
+    newh = {}
+    h.each do |k, v|
+      newh[v] = k
+    end
+    return newh
+  end
 
   def from_civicrm(my_client, civicrm_id)
     civicrm_contact = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id})["values"][civicrm_id]
-#  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}).inspect # will need to create/delete if needed
+  puts my_client.do_req("civicrm/entity_tag/get", {"contact_id" => civicrm_id}).inspect # will need to create/delete if needed
     my_notes = my_client.do_req("civicrm/note/get", {"entity_table" => "civicrm_contact", "entity_id" => civicrm_id, "subject" => "FGDB"})["values"]  # delete, then re-create it
     if my_notes.length > 0
       self.notes = my_notes.values.first["note"]
@@ -168,6 +212,46 @@ class ContactObject
     self.first_name = civicrm_contact["first_name"]
     self.middle_name = civicrm_contact["middle_name"]
     self.last_name = civicrm_contact["last_name"]
+
+    # FIXME: TODO: add support for only 1 address
+
+    loc_map = {"Home" => "home", "Work" => "work"}
+    loc_by_id = getoptions(my_client, "phone", "location_type_id")
+    c_map = {"Mobile" => "cell phone", "IP" => "ip phone", "Emergency" => "emergency phone", "Fax" => "fax"}
+    phone_by_id = getoptions(my_client, "phone", "phone_type_id")
+
+    self.phone_numbers = []
+    phones = my_client.do_req("civicrm/phone/get", {:contact_id => civicrm_id})["values"]
+    if phones.length > 0
+      phones.values.each do |x|
+        loc = loc_by_id[x["location_type_id"]]
+        ptype = phone_by_id[x["phone_type_id"]]
+        value = x["phone"]
+        
+        c_type = c_map[ptype] || 'phone'
+        if ["fax", "phone"].include?(c_type)
+          add_to = loc_map[loc]
+          c_type = add_to + " " + c_type if add_to
+          self.phone_numbers << [c_type, value]
+        end
+      end
+    end
+
+    self.emails = []
+    emails = my_client.do_req("civicrm/email/get", {:contact_id => civicrm_id})["values"]
+    if emails.length > 0
+      emails.values.each do |x|
+        location_type = loc_by_id[x["location_type_id"]]
+        value = x["email"]
+        c_type = [loc_map[location_type], "email"].select{|x| !!x}.join(" ")
+        self.emails << [c_type, value]
+        # Contact.method.find
+      end
+    end
+
+    raise self.emails.inspect
+
+    # phone_numbers.each
 
     self.phone_numbers = civicrm_contact["phone"]
     self.emails = civicrm_contact["email"]
@@ -250,15 +334,17 @@ def sync_contact_from_civicrm(civicrm_id)
   ret_values = my_client.do_req("civicrm/contact/get", {"contact_id" => civicrm_id, "return" => "custom_#{my_custom}"})["values"]
   return nil if ret_values.length == 0
   fgdb_id = ret_values.length > 0 ? ret_values[civicrm_id]["custom_#{my_custom}"].to_i : nil
+
+  co = ContactObject.new
+  co.from_civicrm(my_client, civicrm_id)
+
   c = nil
-  unless fgdb_id and (c = Contact.find_by_id(fgdb_id))
+  unless fgdb_id and false and (c = Contact.find_by_id(fgdb_id))
     fgdb_id = nil
     @saved_civicrm = true
     c = Contact.new
   end
 
-  co = ContactObject.new
-  co.from_civicrm(my_client, civicrm_id)
   co.to_fgdb(c)
   c.save!
   if @saved_civicrm
