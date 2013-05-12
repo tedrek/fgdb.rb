@@ -1,5 +1,11 @@
 fgdb.rb (1.0.118) UNRELEASED; urgency=low
 
+  * Update some installation details for new versions and also add a
+    new doc/README.maintenance document which includes many different
+    FG PDX specific instructions, such as installation information,
+    other details about routine tasks managing the installation and
+    project in general, and maintaining and upgrading the fgdb
+    installation in our environment (Closes: #32167)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 30 Apr 2013 13:59:56 -0700
 
