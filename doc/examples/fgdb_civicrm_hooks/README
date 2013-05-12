@@ -1,7 +1,7 @@
 == Upgrading ==
 
 All the symlinks from /usr/share/drupal6 to civicrm
-go to ~/code/latest, which is a manually updated
+go to code/foo/latest, which is a manually updated
 symlink (after "download-version.sh" is ran and all
 is good).
 
@@ -18,6 +18,14 @@ with the upgrade scripts (if the configuration file is broken)
 == Initial Setup ==
 
 The scripts provided here handle installation and monitoring of updates
+
+There needs to be a /srv/code directory containing a subdir for drupal
+and civicrm. The download scripts can be used to configure the initial
+versions of the software in that directory. Then, the check-version.sh
+script should be installed in cron to provide instructions for updates.
+
+Once drupal, civicrm and fgdb_civicrm_hooks are all installed into place,
+the normal installation procedures can mostly be followed, described below.
 
 === Basic Installation ===
 
@@ -78,7 +86,7 @@ work, home, other
 Phone Types:
 fax, ip, emergency, mobile, other
 
-=== Customizations we might do someday (but not yet) ===
+=== NOT USED: Customizations we might do someday (but not yet) ===
 
 do this again for donations (actually, don't)
 
