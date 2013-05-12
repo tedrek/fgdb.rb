@@ -3,6 +3,9 @@ provided in doc/README_FOR_APP, but this document is supplemental
 information documenting the processes used in maintaining the database
 installation in FG PDX.
 
+To apply a fix to the code, see the instructions on this page:
+http://wiki.freegeek.org/index.php/Committing_to_FGdb
+
 == Restarting the service ==
 
 * Automatically updating from git:
