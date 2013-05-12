@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CODE_DIR=/home/ryan52/code
+CODE_DIR=/srv/code
 DRUPAL_DIR=$CODE_DIR/drupal
 
 set -e

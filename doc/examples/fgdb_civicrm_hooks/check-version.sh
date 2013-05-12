@@ -2,7 +2,7 @@
 
 set -e
 
-CODE_DIR=/home/ryan52/code
+CODE_DIR=/srv/code
 DRUPAL_DIR=$CODE_DIR/drupal
 CIVICRM_DIR=$CODE_DIR/civicrm
 
