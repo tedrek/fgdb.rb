@@ -47,6 +47,12 @@ Then do what these URLs say to:
 /drupal/install.php
 /drupal/sites/all/modules/civicrm/install/index.php
 
+After installation, you want to fix sites/default/civicrm.settings.php:
+-define( 'CIVICRM_UF_BASEURL'      , 'http://localhost:8888/drupal/' );
++define( 'CIVICRM_UF_BASEURL'      , '/drupal/' );
+
+To use relative URLs, allowing for use over ssh tunnels and such.
+
 Quick install link (replace PASSWORD):
 http://localhost:8888//drupal/sites/all/modules/civicrm/install/index.php?mysql[username]=drupal7&mysql[server]=localhost&mysql[password]=PASSWORD&mysql[database]=civicrm&drupal[username]=drupal7&drupal[server]=localhost&drupal[password]=PASSWORD&drupal[database]=drupal7&go=1
 
