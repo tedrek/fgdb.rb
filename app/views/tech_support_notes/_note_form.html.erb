@@ -1,4 +1,17 @@
-<% form_remote_tag do  %>
+<b>
+<% if @note %>
+  Editing
+<% else %>
+  Adding
+<% end %>
+notes
+<% if @contact.id %>
+for: <%= @contact.display_name %> (<%= @contact.id %>)
+<% else %>
+for new contact with name: <%= @contact.display_name %>
+<% end %>
+</b>
+<% form_remote_tag :url => {:action => "save_note", :id => @contact.id, :name => @contact.display_name} do  %>
   <%= text_area_tag :notes %>
   <%= submit_tag "Save note" %>
 

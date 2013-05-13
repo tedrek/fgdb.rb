@@ -57,13 +57,14 @@ class TechSupportNotesController < ApplicationController
       note.notes = note_t
       note.save
     else
-      note = create_tech_support_note(:notes => note_t)
+      note = @contact.create_tech_support_note(:notes => note_t)
       note.save
     end
     # TODO: render fieldset contact
     render :update do |page|
-      page.hide loading_indicator_id("footnote-#{@date}")
-      page.replace_html "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
+#      page.hide loading_indicator_id("footnote-#{@date}")
+#      page.replace_html "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
+      page.alert("Success!")
     end
 
   end
@@ -84,11 +85,10 @@ class TechSupportNotesController < ApplicationController
     cid = params[:id]
     @contact = Contact.find(cid)
     @note = @contact.tech_support_note
-    render :partial => "note_form"
 
     render :update do |page|
-      page.hide loading_indicator_id("ts-note")
-      page.replace_html "fieldset-ts-note", :partial => ""
+      page.replace_html "ts-note-#{@contact.id}", :partial => "note_form"
+      page.hide loading_indicator_id("ts-new-note") # FIXME
     end
   end
 end

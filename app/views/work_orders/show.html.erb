@@ -8,26 +8,9 @@
 <% end %>
 <INPUT type="button" id="print_button" value="Print"
        onclick="window.print();" >
-<% if name = @data["Name"] %>
-<h3>Tech support notes matching name: <%= name %></h3>
-<% results = TechSupportNote.contacts_with_notes(name) %>
-<% if results.length == 0 %>
-None found.<br />
-<% end %>
-<% results.each do |result| %>
-<fieldset id="ts-note-<%= result.tech_support_note.id %>">
-<b>Tech support notes for <%= result.display_name %> (#<%= result.id%>):</b><br />
-<%= result.tech_support_note.notes.gsub("\n", "<br />") %>
-</fieldset>
-<% end %>
-<% end %>
-<% if TechSupportNotesController.sb_has_required_privileges("edit_note") %>
-<div id="ts-note-new">
-<%= link_to_remote "Add new notes", :url => {:controller => "tech_support_notes", :id => name, :action => "add_note"}, :loading => "$('#{loading_indicator_id("ts-new-note")}').show();" %>
-<%= loading_indicator_tag("ts-new-note") %>
+<%= render :partial => "ts_notes" %>
 </div>
-<% end %>
-</div>
+
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => @system} %>
 <% end %>
 
