@@ -13,8 +13,8 @@ class TechSupportNotesController < ApplicationController
   # TODO: later
   def find_footnotes
     render :update do |page|
+      page.replace "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
       page.hide loading_indicator_id("footnote-#{@date}")
-      page.replace_html "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
     end
     
   end
@@ -23,8 +23,8 @@ class TechSupportNotesController < ApplicationController
     @name = params[:id]
     @contacts = TechSupportNote.contacts_without_notes(@name)
     render :update do |page|
-      page.hide loading_indicator_id("ts-new-note")
       page.replace_html "ts-note-new", :partial => "new_note"
+      page.hide loading_indicator_id("ts-new-note")
     end
   end
 
@@ -37,8 +37,8 @@ class TechSupportNotesController < ApplicationController
       @contact = _create_contact(name)
     end
     render :update do |page|
-      page.hide loading_indicator_id("ts-new-note")
       page.replace_html "ts-note-new", :partial => "note_form"
+      page.hide loading_indicator_id("ts-new-note")
     end
   end
 
@@ -60,11 +60,10 @@ class TechSupportNotesController < ApplicationController
       note = @contact.create_tech_support_note(:notes => note_t)
       note.save
     end
-    # TODO: render fieldset contact
     render :update do |page|
+      page.replace "note-form-#{cid}", :partial => "tech_support_notes/note", :locals => {:contact => @contact}
 #      page.hide loading_indicator_id("footnote-#{@date}")
-#      page.replace_html "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
-      page.alert("Success!")
+#      page.alert("Success!")
     end
 
   end
@@ -87,7 +86,7 @@ class TechSupportNotesController < ApplicationController
     @note = @contact.tech_support_note
 
     render :update do |page|
-      page.replace_html "ts-note-#{@contact.id}", :partial => "note_form"
+      page.replace "ts-note-#{@contact.id}", :partial => "note_form"
       page.hide loading_indicator_id("ts-new-note") # FIXME
     end
   end

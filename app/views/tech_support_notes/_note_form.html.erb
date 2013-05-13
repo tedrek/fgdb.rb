@@ -1,3 +1,4 @@
+<div id="note-form-<%= @contact.id %>">
 <b>
 <% if @note %>
   Editing
@@ -12,7 +13,9 @@ for new contact with name: <%= @contact.display_name %>
 <% end %>
 </b>
 <% form_remote_tag :url => {:action => "save_note", :id => @contact.id, :name => @contact.display_name} do  %>
-  <%= text_area_tag :notes %>
+  <%= text_area_tag :notes, @note ? @note.notes : "" %><br />
   <%= submit_tag "Save note" %>
 
 <% end %>
+</div>
+
