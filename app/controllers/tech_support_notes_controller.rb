@@ -2,7 +2,7 @@ class TechSupportNotesController < ApplicationController
   protected
   def get_required_privileges
     a = super
-    a << {:privileges => ['role_admin'], :except => ['find_footnotes']}
+    a << {:privileges => ['staff'], :except => ['find_footnotes']}
     a << {:privileges => ['techsupport_workorders'], :only => ['find_footnotes']}
     a
   end
@@ -11,13 +11,12 @@ class TechSupportNotesController < ApplicationController
   # first on WO, then edit, then save, then dynamically too
 
   # TODO: later
-  def find_footnotes
-    render :update do |page|
-      page.replace "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
-      page.hide loading_indicator_id("footnote-#{@date}")
-    end
-    
-  end
+#  def find_footnotes
+#    render :update do |page|
+#      page.replace "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
+#      page.hide loading_indicator_id("footnote-#{@date}")
+#    end
+#  end
 
   def add_note
     @name = params[:id]
