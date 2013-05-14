@@ -1,4 +1,4 @@
-fgdb.rb (1.0.118) UNRELEASED; urgency=low
+fgdb.rb (1.0.118) released; urgency=low
 
   * Update some installation details for new versions and also add a
     new doc/README.maintenance document which includes many different
@@ -14,7 +14,7 @@ fgdb.rb (1.0.118) UNRELEASED; urgency=low
   * Implement flagging customers with notes on the TS intake form
     (Closes: #35314)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 12 May 2013 14:38:38 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 14 May 2013 08:54:49 -0700
 
 fgdb.rb (1.0.117) released; urgency=low
 
