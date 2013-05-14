@@ -23,6 +23,44 @@ class Contact < ActiveRecord::Base
   has_one :tech_support_note
   validates_numericality_of :birthday_year, :greater_than_or_equal_to => 1902, :less_than => 2038, :allow_nil => true
 
+  def merge_ts_notes
+    ActiveRecord::Base.transaction do
+      first_note = self.tech_support_note
+
+      max_up = first_note.updated_at
+      max_up_u = first_note.updated_by
+      min_c = first_note.created_at
+      min_c_u = first_note.created_by
+
+      if first_note
+        TechSupportNote.find_all_by_contact_id(self.id).each do |n|
+          if n.id != first_note.id
+            first_note.notes += "\n----\n#{n.notes}"
+            if n.updated_at && (max_up.nil? || n.updated_at > max_up)
+              max_up = n.updated_at
+              max_up_u = n.updated_by
+            end
+            if n.created_at && (min_c.nil? || n.created_at < min_c)
+              min_c = n.created_at
+              min_c_u = n.created_by
+            end
+            n.destroy
+          end
+        end
+      end
+
+      first_note.created_by = min_c_u
+      first_note.created_at = min_c
+      first_note.updated_by = max_up_u
+      first_note.updated_at = max_up
+      first_note.save!
+    end
+  end
+
+  def tech_support_notes
+    self.tech_support_note.notes if self.tech_support_note
+  end
+
   def birthday_year_before_type_cast # WTF..
     self.birthday ? self.birthday.year : nil
   end
@@ -230,6 +268,7 @@ class Contact < ActiveRecord::Base
   def merge_these_in(arr)
     for other in arr
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE tech_support_notes SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disciplinary_actions SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
@@ -267,6 +306,7 @@ class Contact < ActiveRecord::Base
       ContactDuplicate.delete(self.contact_duplicate)
     end
     self.update_all_task_counts
+    self.merge_ts_notes
   end
 
   def contact
