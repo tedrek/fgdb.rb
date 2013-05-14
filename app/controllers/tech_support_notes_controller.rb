@@ -9,8 +9,13 @@ class TechSupportNotesController < ApplicationController
   public
 
   # TODO: dynamically too later
-#  def find_footnotes
-#  end
+  def find_notes
+    name = params[:id]
+    render :update do |page|
+      page.replace_html "extra_form", :partial => "ts_notes", :locals => {:name => name}
+      page.hide loading_indicator_id("ts_customer_search")
+    end
+  end
 
   def add_note
     @name = params[:id]

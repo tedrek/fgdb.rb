@@ -8,7 +8,7 @@
 <% end %>
 <INPUT type="button" id="print_button" value="Print"
        onclick="window.print();" >
-<%= render :partial => "tech_support_notes/ts_notes" %>
+<%= render :partial => "tech_support_notes/ts_notes", :locals => {:name => @data["Name"]} %>
 </div>
 
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => @system} %>

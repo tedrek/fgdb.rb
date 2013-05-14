@@ -1,4 +1,4 @@
-<% if name = @data["Name"] %>
+<% if name %>
 <h3>Tech support notes matching name: <%= name %></h3>
 <div id="ts-notes-found">
 <% results = TechSupportNote.contacts_with_notes(name) %>
