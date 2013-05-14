@@ -143,6 +143,12 @@ class Contact < ActiveRecord::Base
     ["contact_#{self.id}", "has_contact"]
   end
 
+  def update_all_task_counts
+    self.volunteer_task_types.each do |vtt|
+      self.update_syseval_count(vtt.id)
+    end
+  end
+
   def update_syseval_count(vid)
     return unless vid
     c = ContactVolunteerTaskTypeCount.find_or_create_by_contact_id_and_volunteer_task_type_id(self.id, vid)
@@ -260,6 +266,7 @@ class Contact < ActiveRecord::Base
     if self.contact_duplicate && ContactDuplicate.find_all_by_dup_check(self.contact_duplicate.dup_check).length == 1
       ContactDuplicate.delete(self.contact_duplicate)
     end
+    self.update_all_task_counts
   end
 
   def contact
