@@ -46,6 +46,18 @@
 
     <tr>
       <th width="10%">
+        Tech Support Notes
+      </th>
+      <% for c in @contacts %>
+        <td align="right">
+          <%= h c.tech_support_notes %>
+        </td>
+      <% end %>
+    </tr>
+
+
+    <tr>
+      <th width="10%">
         Contact Types
       </th>
       <% for c in @contacts %>
