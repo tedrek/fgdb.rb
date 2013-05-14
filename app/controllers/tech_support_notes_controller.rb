@@ -8,14 +8,8 @@ class TechSupportNotesController < ApplicationController
   end
   public
 
-  # first on WO, then edit, then save, then dynamically too
-
-  # TODO: later
+  # TODO: dynamically too later
 #  def find_footnotes
-#    render :update do |page|
-#      page.replace "fieldset-footnote-#{@date}", :partial => "work_shifts/footnote", :locals => {:display_link => true, :note => @footnote.note.strip.empty? ? nil : @footnote, :current_date => @date, :schedule_id => @schedule, :vacs => @vacs}
-#      page.hide loading_indicator_id("footnote-#{@date}")
-#    end
 #  end
 
   def add_note
@@ -23,6 +17,7 @@ class TechSupportNotesController < ApplicationController
     @contacts = TechSupportNote.contacts_without_notes(@name)
     render :update do |page|
       page.replace_html "ts-note-new", :partial => "new_note"
+      page.hide "ts-notes-found"
       page.hide loading_indicator_id("ts-new-note")
     end
   end
@@ -61,10 +56,7 @@ class TechSupportNotesController < ApplicationController
     end
     render :update do |page|
       page.replace "note-form-#{cid}", :partial => "tech_support_notes/note", :locals => {:contact => @contact}
-#      page.hide loading_indicator_id("footnote-#{@date}")
-#      page.alert("Success!")
     end
-
   end
 
   private
@@ -86,7 +78,6 @@ class TechSupportNotesController < ApplicationController
 
     render :update do |page|
       page.replace "ts-note-#{@contact.id}", :partial => "note_form"
-      page.hide loading_indicator_id("ts-new-note") # FIXME
     end
   end
 end
