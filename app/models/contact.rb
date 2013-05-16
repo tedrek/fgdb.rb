@@ -27,12 +27,12 @@ class Contact < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       first_note = self.tech_support_note
 
-      max_up = first_note.updated_at
-      max_up_u = first_note.updated_by
-      min_c = first_note.created_at
-      min_c_u = first_note.created_by
-
       if first_note
+        max_up = first_note.updated_at
+        max_up_u = first_note.updated_by
+        min_c = first_note.created_at
+        min_c_u = first_note.created_by
+
         TechSupportNote.find_all_by_contact_id(self.id).each do |n|
           if n.id != first_note.id
             first_note.notes += "\n----\n#{n.notes}"
@@ -47,13 +47,13 @@ class Contact < ActiveRecord::Base
             n.destroy
           end
         end
-      end
 
-      first_note.created_by = min_c_u
-      first_note.created_at = min_c
-      first_note.updated_by = max_up_u
-      first_note.updated_at = max_up
-      first_note.save!
+        first_note.created_by = min_c_u
+        first_note.created_at = min_c
+        first_note.updated_by = max_up_u
+        first_note.updated_at = max_up
+        first_note.save!
+      end
     end
   end
 
