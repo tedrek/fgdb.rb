@@ -14,6 +14,7 @@ fgdb.rb (1.0.118) released; urgency=low
   * Add a few more generics: NoneNoneNoneNone, :[ and April197
   * Implement flagging customers with notes on the TS intake form
     (Closes: #35314)
+  * Fix merging contacts, oops (Crash ex: zE9z7Q)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 14 May 2013 08:54:49 -0700
 
