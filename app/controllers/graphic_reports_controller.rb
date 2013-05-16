@@ -835,10 +835,6 @@ class AverageSaleIncomesTrend < TrendReport
       total = sprintf("%.2f", total).to_f
       return {:total => total}
   end
-
-  def valid_conditions
-    ["sale_type"]
-  end
 end
 class IncomesTrend < TrendReport
     def category
