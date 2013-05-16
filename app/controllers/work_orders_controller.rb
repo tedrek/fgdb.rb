@@ -100,6 +100,7 @@ class WorkOrdersController < ApplicationController
       @data["OS"] = @work_order.os
       @data["Type of Box"] = @work_order.box_type
       @errors.add("box_type", "is mandatory information") if @data["Type of Box"].to_s.length == 0
+      @errors.add("box_type", "is set to external, but external systems are only accepted for data backups prior to donation") if @data["Type of Box"] && @data["Issues"] && @data["Type of Box"] == "External" && @data["Issues"] != "Data Backup"
       @data["Box Source"] = @work_order.box_source
       @errors.add("box_source", "is mandatory information (unless you provide a system ID that allows it to be determined from past records)") if @work_order.box_type.to_s.match(/(Server|Desktop|Laptop)/) && @data["Box Source"].to_s.length == 0
       @data["Warranty"] = @work_order.warranty
