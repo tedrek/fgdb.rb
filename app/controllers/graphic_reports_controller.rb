@@ -733,7 +733,7 @@ class NumberOfSystemsSoldByPrintmeType < TrendReport
 
   def get_for_timerange(args)
     ret = {}
-    DB.exec("SELECT types.description, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id) type_id AS type_id FROM spec_sheets JOIN gizmo_events ON spec_sheets.system_id = gizmo_events.system_id JOIN sales ON sales_id = sales.id WHERE sale_id IS NOT NULL AND #{sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))} ORDER BY spec_sheets.system_id, spec_sheets.created_at DESC) AS data JOIN types ON data.type_id = types.id GROUP BY 1 ORDER BY 1;").to_a.each do |r|
+    DB.exec("SELECT types.description, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id) type_id AS type_id FROM spec_sheets JOIN gizmo_events ON spec_sheets.system_id = gizmo_events.system_id JOIN sales ON sale_id = sales.id WHERE sale_id IS NOT NULL AND #{sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))} ORDER BY spec_sheets.system_id, spec_sheets.created_at DESC) AS data JOIN types ON data.type_id = types.id GROUP BY 1 ORDER BY 1;").to_a.each do |r|
       ret[r["description"]] = r["count"]
     end
     return ret
