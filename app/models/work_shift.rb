@@ -8,6 +8,15 @@ class WorkShift < ActiveRecord::Base
   belongs_to :weekday
   belongs_to :worker
 
+  def validate
+    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
+# FIXME: includes dates
+#    puts self.start_time.to_time
+#    puts  Time.parse("8:00")
+#    errors.add("end_time", "is after 8PM") unless self.end_time && self.end_time.to_time <= Time.parse("20:00")
+#    errors.add("start_time", "is before 8AM") unless self.start_time && self.start_time.to_time >= Time.parse("8:00")
+  end
+
   before_save :set_weekday_id
 
   before_save :set_standard_shift_if_none

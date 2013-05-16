@@ -6,6 +6,10 @@ class Shift < ActiveRecord::Base
   belongs_to :worker
   belongs_to :schedule
 
+  def validate
+    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
+  end
+
   def months_to_s
     "every #{self.repeats_every_months} months, repeating on month of #{self.repeats_on_day}"
   end
