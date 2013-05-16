@@ -8,6 +8,8 @@ class Shift < ActiveRecord::Base
 
   def validate
     errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
+    errors.add("end_time", "is after 8PM") unless self.end_time && Time.parse(self.end_time.hour.to_s + ":" + self.end_time.min.to_s) <= Time.parse("20:00")
+    errors.add("start_time", "is before 8AM") unless self.start_time && Time.parse(self.start_time.hour.to_s + ":" + self.start_time.min.to_s) >= Time.parse("8:00")
   end
 
   def months_to_s
