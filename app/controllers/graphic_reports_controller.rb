@@ -1372,12 +1372,17 @@ class AverageUnitPriceByGizmoTypesTrend < TrendReport
     end
 
     def get_for_timerange(args)
-      res = DB.execute("SELECT SUM( unit_price_cents * gizmo_count )/SUM(gizmo_count * 100.0) AS due
+      h = {}
+      res = DB.execute("SELECT gizmo_types.description as gt, SUM( unit_price_cents * gizmo_count )/SUM(gizmo_count * 100.0) AS avg
 FROM gizmo_events
 JOIN sales ON sale_id = sales.id
+JOIN gizmo_types ON gizmo_type_id = gizmo_types.id
 WHERE sale_id IS NOT NULL
-AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
-      return {:amount => res.first["due"]}
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}
+GROUP BY 1").to_a.each do |n|
+        h[n["gt"]] = n["avg"]
+      end
+      return h
     end
     def valid_conditions
       ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id", "sale_type"]
