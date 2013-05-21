@@ -8,6 +8,7 @@ Select workers:
 <%= check_box_tag "workers[#{w.id}]", w.id, @workers && @workers.include?(w) %><%= label_tag "workers[#{w.id}]", w.name %>
 </div>
 <% end %>
+
 <br />
 <div style="clear: left">
 <%= submit_tag "Generate Badges" %>
@@ -21,54 +22,3 @@ Select workers:
 
 <% end %>
 </div>
-
-<% if @workers %>
-<% cols = 4 %>
-<% rows = 2 %>
-<% t = 0 %>
-
-<% while @workers.length > 0 %>
-<% r = 0 %>
-<% t = t + 1 %>
-<table class="awesome badge <%= t > 1 ? "badgepage2" : "badgepage1" %>">
-<% while @workers.length > 0 && r < rows %>
-<% r = r + 1 %>
-<% c = 0 %>
-<tr>
-<% while c < cols %>
-<% c = c + 1 %>
-<td>
-<% worker = @workers.shift %>
-<% if worker %>
-<h1 style="vertical-align: center; clear: left; float: left; width: 1em; font-size: 3.3em; line-height: 0.75em; letter-spacing: 20px; margin-left: 5px;">S T A F F</h1>
-<img style="float: left; clear: left; margin-left: 5px; margin-top: 30px;" width="70px;" height="74px;" src="<%= h Default['logo'] || "/images/freegeeklogo.png" %>" alt="freegeeklogo.png"/>
-
-<img style="margin-top: 15px;" width="135px;" height="180px" src="/images/workers/<%= worker ? worker.id : 0 %>.png" />
-
-<div style="float: left; text-align: center; width: 60%; margin-top: 10px; margin-left: 5px;">
-<div style="height: 2em; margin-bottom: 5px;">
-<span style="font-size: 16pt"><%= worker ? (worker.contact ? worker.contact.first_name + "<br />" + worker.contact.surname : worker.name.sub(" ", "<br />")) : "No Worker" %></span>
-</div>
-<br />
-<% if worker && worker.contact %>
-<% n = worker.contact_id.to_s %>
-<% while n.length < 6 %>
-<% n = "0" + n %>
-<% end %>
-<%= barcode(worker.contact_id) %><br />
-#<%= n %>
-<% end %>
-</div>
-<% end %>
-</td>
-<% end %>
-</tr>
-<% end %>
-</table>
-<div style="page-break-after: always;">
-&nbsp;
-</div>
-<br />
-<% end %>
-<% end %>
-
