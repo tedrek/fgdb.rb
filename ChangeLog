@@ -1,8 +1,10 @@
 fgdb.rb (1.0.119) UNRELEASED; urgency=low
 
   * Add a field for volunteer intern titles
+  * Implement volunteer ID badges within the staff badge interface as
+    PDFs (Closes: #35528)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 21 May 2013 14:23:32 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 23 May 2013 11:36:41 -0700
 
 fgdb.rb (1.0.118) released; urgency=low
 

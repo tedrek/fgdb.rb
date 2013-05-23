@@ -1,24 +1,28 @@
-<div class="noprint">
 <% form_tag(:action => "badge") do %>
 <div>
-Select workers:
+Enter Contact ID #'s:
+<%= text_field_tag "contacts", params[:contacts] %>
 </div>
-<% Worker.on_date.sort_by(&:name).each do |w| %>
-<div class="form-element">
-<%= check_box_tag "workers[#{w.id}]", w.id, @workers && @workers.include?(w) %><%= label_tag "workers[#{w.id}]", w.name %>
-</div>
-<% end %>
 
 <br />
 <div style="clear: left">
-<%= submit_tag "Generate Badges" %>
+<%= submit_tag "Find Contacts" %>
 </div>
 
-<% if @workers %>
+<% end %>
+
+<% if @contacts %>
+<H2>Will generate badges for the following contacts:</H2>
+<% @contacts.each do |x| %>
+#<%= x.id %>: <%= x.first_name %> <%= x.surname %>, <% if !@workers.include?(x) %><%= x.intern_title %><% else %>Staff<% end %><br />
+<% end %>
+<br />
 <% @workers.each do |x| %>
-<%= link_to "Upload image for #{x.name}", {:action => "upload", :id => x.id}, :target => "_blank" %>
+<%= link_to "Upload staff image for #{x.worker.name}", {:action => "upload", :id => x.worker.id}, :target => "_blank" %> <br />
 <% end %>
-<% end %>
+<br />
+<%= button_to "Generate PDF", params.merge({:action => "generate_badges"}) %>
+<br />
+
 
 <% end %>
-</div>
