@@ -55,7 +55,7 @@ class WorkersController < ApplicationController
             pdf.text "STAFF", :size => 32, :align => :center
           end
           pdf.bounding_box [one_w, pdf.bounds.height], :width => two_w, :height => pdf.bounds.height do
-            pic = RAILS_ROOT + "/images/workers/#{contact.worker.id}.png"
+            pic = RAILS_ROOT + "/public/images/workers/#{contact.worker.id}.png"
             pdf.image pic, :position => :center, :fit => [two_w - 10, pdf.bounds.height - 26] if File.exists?(pic)
             pdf.y -= 2
             pdf.bounding_box [0, 26], :width => two_w - 10, :height => 26 do
