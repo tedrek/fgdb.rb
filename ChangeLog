@@ -17,6 +17,8 @@ fgdb.rb (1.0.118) released; urgency=low
   * Fix merging contacts, oops (Crash ex: zE9z7Q)
   * Implement a validation for the new External Type of Box, requiring
     the issue to be Data Backup (Closes: #35446)
+  * Implement Darren's new links for FD to find volunteer assignments
+    (Closes: #35551)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 14 May 2013 08:54:49 -0700
 
