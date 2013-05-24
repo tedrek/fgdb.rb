@@ -1,0 +1,3 @@
+module GraphicReportsHelper
+
+end

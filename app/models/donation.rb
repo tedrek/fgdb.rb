@@ -143,9 +143,9 @@ class Donation < ActiveRecord::Base
       type = "anon"
     else # named contact
       case self.contact.fully_covered_
-      when "nil": type = "unknown"
-      when "yes": type = "covered"
-      when "no": type = "uncovered"
+      when "nil" then type = "unknown"
+      when "yes" then type = "covered"
+      when "no" then type = "uncovered"
       end
     end
     if type == "anon" || type == "unknown"
@@ -378,18 +378,18 @@ class Donation < ActiveRecord::Base
 
   def cleanup_for_contact_type
     case contact_type
-    when 'named'
+    when 'named' then
       self.postal_code = nil
-    when 'anonymous'
+    when 'anonymous' then
       self.contact_id = nil
-    when 'dumped'
+    when 'dumped' then
       self.postal_code = self.contact_id = nil
     end
   end
 
   def add_dead_beat_discount
     under_pay = calculated_under_pay
-    if under_pay < 0:
+    if under_pay < 0
         gizmo_events.build({:unit_price_cents => under_pay,
                                          :gizmo_count => 1,
                                          :gizmo_type => GizmoType.fee_discount,
