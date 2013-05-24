@@ -2,7 +2,7 @@
 function fgdb_civicrm_hooks_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
 if(in_array($objectName, array('Individual', 'Organization', 'Contribution')) && in_array($op, array('create', 'edit'))) {
 $table = in_array($objectName, array('Individual', 'Organization')) ? "contacts" : "donations";
-$code_dir = "/home/ryan52/code";
+$code_dir = "/srv/code";
 $fgdb_dir = $code_dir . "/fgdb.rb";
 $cmdline = $fgdb_dir . "/script/processor-daemon.sh add " . $table . " " . $objectId;
 system($cmdline);

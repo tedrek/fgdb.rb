@@ -1,7 +1,7 @@
 == Upgrading ==
 
 All the symlinks from /usr/share/drupal6 to civicrm
-go to ~/code/latest, which is a manually updated
+go to code/foo/latest, which is a manually updated
 symlink (after "download-version.sh" is ran and all
 is good).
 
@@ -18,6 +18,14 @@ with the upgrade scripts (if the configuration file is broken)
 == Initial Setup ==
 
 The scripts provided here handle installation and monitoring of updates
+
+There needs to be a /srv/code directory containing a subdir for drupal
+and civicrm. The download scripts can be used to configure the initial
+versions of the software in that directory. Then, the check-version.sh
+script should be installed in cron to provide instructions for updates.
+
+Once drupal, civicrm and fgdb_civicrm_hooks are all installed into place,
+the normal installation procedures can mostly be followed, described below.
 
 === Basic Installation ===
 
@@ -38,6 +46,12 @@ GRANT ALL PRIVILEGES ON civicrm.* TO 'drupal7'@'localhost' IDENTIFIED BY 'passwo
 Then do what these URLs say to:
 /drupal/install.php
 /drupal/sites/all/modules/civicrm/install/index.php
+
+After installation, you want to fix sites/default/civicrm.settings.php:
+-define( 'CIVICRM_UF_BASEURL'      , 'http://localhost:8888/drupal/' );
++define( 'CIVICRM_UF_BASEURL'      , '/drupal/' );
+
+To use relative URLs, allowing for use over ssh tunnels and such.
 
 Quick install link (replace PASSWORD):
 http://localhost:8888//drupal/sites/all/modules/civicrm/install/index.php?mysql[username]=drupal7&mysql[server]=localhost&mysql[password]=PASSWORD&mysql[database]=civicrm&drupal[username]=drupal7&drupal[server]=localhost&drupal[password]=PASSWORD&drupal[database]=drupal7&go=1
@@ -68,11 +82,17 @@ add a "FGDB Contact ID" field, of integer type, make it searchable
 "Used for database synchronization: leave empty, will be set automatically."
 [do not select "view only", this breaks using API, and therefor our sync process]
 
-Modify the options lists under administer tab for our contact method
-types:
-TODO
+Modify the options lists our contact method types:
+Go to the "Administer" => "Customize Data and Screens" => "Dropdown
+Options" submenu and go to:
 
-=== Customizations we might do someday (but not yet) ===
+Location Types:
+work, home, other
+
+Phone Types:
+fax, ip, emergency, mobile, other
+
+=== NOT USED: Customizations we might do someday (but not yet) ===
 
 do this again for donations (actually, don't)
 

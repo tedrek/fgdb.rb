@@ -2,6 +2,8 @@
 
 == Install
 
+NOTE: Information specific to the installation at FG PDX is in doc/README.maintenance
+
 we made this on debian squeeze systems. alteration may be needed on other distros.
 
  To get a source repository checkout:
@@ -21,7 +23,12 @@ we made this on debian squeeze systems. alteration may be needed on other distro
  $> sudo apt-get install -y postgresql-8.4 rails ruby1.8 libnokogiri-ruby libbarby-ruby librmagick-ruby  libjson-ruby1.8 xmlstarlet thin curl socat libgnuplot-ruby libpgsql-ruby1.8 ruby libpdf-writer-ruby1.8 libjson-ruby1.8 libbluecloth-ruby irb
 
  Link to rails from within the fgdb.rb checkout:
+
+ If you are using Debian squeeze:
  $> ln -sf /usr/share/rails-ruby1.8/ vendor/rails
+
+ Or if you are using Debian wheezy:
+ $> ln -sf /usr/lib/ruby/vendor_ruby/rails vendor/rails
 
  Install FG-specific package requirements:
  $> echo 'deb http://apt.freegeek.org/ freegeek public debian' > /etc/apt/sources.list.d/freegeek_fgdb.list

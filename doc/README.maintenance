@@ -1,0 +1,168 @@
+General instructions pertaining to all installations of fgdb are
+provided in doc/README_FOR_APP, but this document is supplemental
+information documenting the processes used in maintaining the database
+installation in FG PDX.
+
+To apply a fix to the code, see the instructions on this page:
+http://wiki.freegeek.org/index.php/Committing_to_FGdb
+
+== Checking service status ==
+
+/var/www/fgdb.rb/script/fgdb-status will give current usage
+information about the fgdb.rb application, web server and database at
+the time it is ran.
+
+It's output may be helpful in investigating and documenting an outage.
+
+== Restarting the service ==
+
+* Automatically updating from git:
+
+Run the "./auto-update" script as dbadmin.
+
+If a new release branch is found, it will take the database offline
+(into maintenance mode), create a backup for the backup server,
+upgrade and migrate the database and finally create another backup
+before returning to an operational state. The backups are transfered
+to peabody nightly.
+
+If a new commit on the release branch in use is found, it will update
+the checkout in /var/www/, run db:migrate to update the database if
+needed, and finally do a quick restart of the database application
+to make changes to the code go into effect without interrupting service.
+
+This script should even work for updating multiple releases.
+
+* Quick restart (for code changes in majority of fgdb application):
+
+sudo /home/dbadmin/script/nice-restart
+
+* Full restart (for rails or apache configuration):
+
+sudo service apache2 restart
+
+* Restarting the SQL database:
+
+sudo service apache2 stop
+sudo service postgresql stop
+
+sudo service postgresql start
+sudo service apache2 start
+
+* Turning the database off (this puts it into 'maintenance mode'):
+
+If there is a reason to disable the database and display a maintenance
+error instead, it can be done easily by the following command:
+
+sudo touch /var/www/fgdb.rb/tmp/release.txt
+
+Then to turn it back on:
+
+sudo rm /var/www/fgdb.rb/tmp/release.txt
+
+== General information regarding the installation ==
+
+* General setup on zhora:
+
+FGDB.rb is hosted out of /home/dbadmin on zhora (the db server).
+
+There is a mail alias on george (the mail server) named database@ which
+receives crash reports and information for the database administrator to
+see. (Note: it also receives instructions for civicrm upgrades, which may
+be related to the database, but is hosted on civicrm:/home/ryan52/code/)
+
+Permissions may get messed up here and there, but in general it is
+okay to make dbadmin the owner and www-data the group (which should
+include dbadmin), but best to not fix something that isn't broken.
+
+The dbadmin user requires sudo access as outlined in script/dbadmin/80_fgdb
+with the scripts in the same directory being symlinked from /usr/local/bin/
+
+In addition to sudo, the logrotate and such (described in
+README_FOR_APP), and the database@ alias, there are a few cron jobs
+(and their ssh keys) that must be configured properly on zhora. In
+addition to the standard fgdbcrond, the script that copies backups to peabody:
+/home/dbadmin/fgdb.rb/script/incoming_db_release_backups is in cron.daily.
+and the script that updates the staff schedule published to art:
+/home/staffsched/trigger-update is in cron.hourly.
+(/home/staffsched/ is setup as an installation of doc/examples/staffsched/)
+
+* Handling new releases and the servers involved:
+
+Information about releasing and updating sprints is in RELEASING_NEW_SPRINT.
+
+This requires a machine to be set up alongside the database as a
+development playground in order to test migration against the
+production database. In adddition to this development machine, borked,
+we keep a "failover" database server, tulip, which receives hourly dumps
+from the real database server that could be loaded from /usr/local/zhora/
+in the event of a machine failure.
+
+* Watching crash reports:
+
+A summary of all crash reports that occurred is mailed to the
+database@ alias nightly, in addition to the ones which get a ticket
+created for them.
+
+Recent crash reports can also be viewed by database ADMINS by browsing
+to http://data/recent_crash, which provides all of the details collected
+at the time a crash occurs. Usually these are due to user (or recent
+updates), but the database should handle it better in most situations.
+
+* Updating the development data:
+
+In addition to watching for crash reports, an occasional maintenance
+task is to update the development data when it stops working due to
+incompatibilities upgrading through many releases. There may also be
+changes necessary for the data_mutate script first, which scrambles
+our production data into development data, if there are new tables or
+fields that need to be scrambled now.
+
+I usually use git-log to find out when the development data (and
+schema.rb, specifically) was last updated and then do a diff to find
+all of the migrations (db/migrate) which changed since then.  After
+reviewing all of the changes to the database structure, I update the
+data_mutate script to scramble the new information and note that these
+parts of the data dump need manual verification to make sure no real
+data is left after the process completes (before committing!).
+
+Once data_mutate is updated properly, there are instructions for
+creating the new development data in doc/README_FOR_APP. This is also
+done on the production playground, "borked".  This machine should have
+ssh keys for scp purposes configured in the directory
+./script/update-devel-data, which will allow this process and the test
+migration process to happen without user intervention.
+
+How often this is necessary depends on how many installations of fgdb
+exist and how many major changes have been made at the current rate of
+development.
+
+* Updating printme's list of generic serial numbers:
+
+Every few months it becomes necessary to check for generic serial numbers,
+such as "NoneNoneNoneNone", that printme has been using as "identifying
+information". This is done by running the following script:
+
+$ ./script/find-generics.sql
+
+That script will list the most commonly seen serial numbers, as well as
+a count, but it may still take a few pages of digging to get through to
+anything that is in fact a generic serial number. If one is found, it
+should be added to the "generics" table as part of a migration (so that
+other potential installations of fgdb.rb could benefit from it as well).
+
+This will cause affected systems to be issued new ID numbers based on
+the next most likely serial number or their MAC address the next
+time a printme is ran.
+
+== Information regarding the git repository ==
+
+The git repository is set up to automatically mark tickets that are
+'Closed' in the changelog as 'pending' when a fix is pushed to the
+master branch, and as 'resolved' when a fix is pushed to a release
+branch or tagged.
+
+Sometimes we remove a pending bug fix and forgot to change the status
+back to open, so it is useful to check for accidently pending tickets:
+
+http://todo.freegeek.org/Search/Results.html?Order=ASC&Query=%20Status%20=%20%27pending%27%20AND%20%28%20Queue%20=%20%27Distro%27%20OR%20Queue%20=%20%27SysAdmin%27%20OR%20Queue%20%3D%20%27Technocrats%27%20OR%20Queue%20%3D%20%27Coding%27%29&Rows=250&OrderBy=id&Page=1

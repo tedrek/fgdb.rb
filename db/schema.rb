@@ -915,6 +915,8 @@ END;
     t.boolean  "enabled",                       :default => true,  :null => false
     t.boolean  "limit_shift_signup_by_program", :default => false, :null => false
     t.integer  "contact_type_id"
+    t.integer  "restrict_to_every_n_days"
+    t.integer  "restrict_from_sked_id"
   end
 
   create_table "rosters_skeds", :id => false, :force => true do |t|
@@ -1602,6 +1604,8 @@ END;
   add_foreign_key "roles_users", ["user_id"], "users", ["id"], :on_delete => :cascade, :name => "roles_users_user_id_fkey"
 
   add_foreign_key "rosters", ["contact_type_id"], "contact_types", ["id"], :on_delete => :set_null, :name => "rosters_contact_type_id_fkey"
+  add_foreign_key "rosters", ["restrict_from_sked_id"], "skeds", ["id"], :on_delete => :restrict, :name => "rosters_restrict_from_sked_id_fkey"
+  add_foreign_key "rosters", ["restrict_from_sked_id"], "skeds", ["id"], :on_delete => :restrict, :name => "rosters_restrict_from_sked_id_fkey1"
 
   add_foreign_key "rosters_skeds", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "rosters_skeds_roster_id_fkey"
   add_foreign_key "rosters_skeds", ["sked_id"], "skeds", ["id"], :on_delete => :cascade, :name => "rosters_skeds_sked_id_fkey"
