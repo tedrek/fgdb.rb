@@ -236,10 +236,14 @@ class WorkOrdersController < ApplicationController
     f.write(json)
     f.close
 
-    t_id = `#{RAILS_ROOT}/script/create_work_order.pl #{tempfile}`
+    t_id = `#{RAILS_ROOT}/script/create_work_order.pl #{tempfile} 2>&1`
     File.delete(tempfile)
-    redirect_to :action => :show, :id => t_id, :contact_id => current_user ? current_user.contact_id : nil
-
+    t_id.gsub!(/Use of uninitialized value .+ line \d+./, "")
+    if t_id.to_i != 0
+      redirect_to :action => :show, :id => t_id, :contact_id => current_user ? current_user.contact_id : nil
+    else
+      redirect_to :action => :show, :error => t_id, :contact_id => current_user ? current_user.contact_id : nil
+    end
     end
   end
 
