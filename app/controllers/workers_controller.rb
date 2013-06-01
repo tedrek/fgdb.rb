@@ -50,9 +50,10 @@ class WorkersController < ApplicationController
         if @workers.include?(contact)
           one_w = 2 * pdf.bounds.width / 9.0
           two_w = 7 * pdf.bounds.width / 9.0
-          pdf.bounding_box [0, pdf.bounds.height], :width => one_w, :height => pdf.bounds.height do
+          pdf.bounding_box [0 + 5, pdf.bounds.height - 30], :width => one_w - 5, :height => pdf.bounds.height - 30 do
             pdf.y -= 2
-            pdf.text "STAFF", :size => 32, :align => :center
+            # 26, :style => [:bold]
+            pdf.text "<b>STAFF</b>", :size => 28, :align => :center, :leading => -8, :inline_format => true
           end
           pdf.bounding_box [one_w, pdf.bounds.height], :width => two_w, :height => pdf.bounds.height do
             pic = RAILS_ROOT + "/public/images/workers/#{contact.worker.id}.png"
