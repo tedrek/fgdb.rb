@@ -304,6 +304,7 @@ class Contact < ActiveRecord::Base
       if other.contact_duplicate
         ContactDuplicate.delete(other.contact_duplicate)
       end
+      connection.execute("DELETE FROM contact_volunteer_task_type_counts WHERE contact_id = #{other.id}")
       connection.execute("DELETE FROM contacts WHERE id = #{other.id}")
     end
     if self.contact_duplicate && ContactDuplicate.find_all_by_dup_check(self.contact_duplicate.dup_check).length == 1
