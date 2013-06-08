@@ -7,7 +7,7 @@
             h(c_t.description)
           }.sort << (@contact.is_organization ? 'organization' : 'person')
           ).join(', ') %>
-    (id: <%= @contact.id %><%= ", login: #{h @contact.user.login}" if @contact.user %>)
+    (id: <%= @contact.id %>, created: <%= @contact.created_at.nil? ? "unknown" : @contact.created_at.to_date %><%= ", login: #{h @contact.user.login}" if @contact.user %>)
   </div>
   <div class="name"><%= h @contact.display_name %></div>
   <% if @contact.is_birthday? %>
@@ -32,7 +32,7 @@
 <% if @contact.has_areas_disciplined_from? or (@contact.notes && @contact.notes != '') %>
   <div class="contact_comments">
     <% if @contact.has_areas_disciplined_from? %>
-      Cannot volunteer in these areas (check with a collective staff member for assistance):<br />
+      Cannot volunteer in these areas (check with a management staff member for assistance):<br />
       <ul>
         <% @contact.areas_disciplined_from.map(&:name).each do |d| %>
           <li><%= d %></li>
@@ -135,7 +135,10 @@ Attended Classes:<br />
 <div id="contact__default_discount_percentage" style="display: none"><%= Sale.new.discount_percentage.id %></div>
 <% end %>
 <div id="contact__contract" style="display: none"><%= @contact.contract.id %></div>
-<div id="contact__shift_count" style="display: none"><%= @contact.assignments.is_after_today.not_cancelled.length %></div>
+<div id="contact__display_name" style="display: none"><%= @contact.display_name.to_s %></div>
+<div id="contact__phone_number" style="display: none"><%= @contact.phone_number.to_s %></div>
+<div id="contact__email" style="display: none"><%= @contact.mailing_list_email %></div>
+<div id="contact__shift_count" style="display: none"><%= @contact.schedule_counts.to_json %></div>
 <div id="contact__has_areas_disciplined_from" style="display: none"><%= @contact.has_areas_disciplined_from? %></div>
 <div id="contact__areas_disciplined_from" style="display: none"><%= @contact.areas_disciplined_from.map(&:name).to_json %></div>
 </div>

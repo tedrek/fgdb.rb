@@ -195,7 +195,7 @@ class AssignmentsController < ApplicationController
       :conditions => ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned", "weekday"],
       :date_range_condition => "date",
       :forced_condition => "cancelled",
-      :maximum_date => "VolunteerEvent.maximum(:date)",
+                           :maximum_date => "newc = skedj.conditions.dup; newc.date_enabled = false; VolunteerEvent.maximum(:date, :conditions => newc.conditions(Assignment), :joins => 'INNER JOIN \"volunteer_shifts\" ON volunteer_shifts.volunteer_event_id = volunteer_events.id INNER JOIN \"assignments\" ON assignments.volunteer_shift_id = volunteer_shifts.id LEFT OUTER JOIN \"attendance_types\" ON \"attendance_types\".id = \"assignments\".attendance_type_id')",
 
       :block_method_name => "volunteer_shifts.volunteer_events.date",
       :block_anchor => 'volunteer_shifts.date_anchor',
@@ -270,10 +270,20 @@ class AssignmentsController < ApplicationController
   def reassign
     assigned, available = params[:id].split(",")
 
+    Assignment.transaction do
     # readonly
-    @assigned_orig = Assignment.find(assigned)
-    @available = Assignment.find(available)
+    begin
+      @assigned_orig = Assignment.find(assigned)
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{assigned}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+    end
+    begin
+      @available = Assignment.find(available)
+    rescue ActiveRecord::RecordNotFound
+      flash[:jsalert] = "The assignment (##{available}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+    end
 
+    if @assigned_orig && @available
     if @available.volunteer_shift.stuck_to_assignment or @assigned_orig.volunteer_shift.stuck_to_assignment
       flash[:jsalert] = "Cannot reassign an intern shift, please either delete the intern shift or assign it to somebody else"
     else
@@ -284,33 +294,75 @@ class AssignmentsController < ApplicationController
       end
 
       # for write
-      @assigned = Assignment.find(assigned)
-      @new = Assignment.new # available
+      begin
+        @assigned = Assignment.find(assigned)
+      rescue ActiveRecord::RecordNotFound
+        flash[:jsalert] = "The assignment (##{assigned}) seems to have disappeared. It is possible somebody else has modified or deleted it."
+      end
+      if @assigned
+        @new = Assignment.new # available
 
-      # do it
-      @assigned.volunteer_shift_id = @available.volunteer_shift_id
-      @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
-      @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
+        # do it
+        @assigned.volunteer_shift_id = @available.volunteer_shift_id
+        @assigned.start_time = @available.start_time if (@assigned.start_time < @available.start_time) or (@assigned.start_time >= @available.end_time)
+        @assigned.end_time = @available.end_time if (@assigned.end_time > @available.end_time) or (@assigned.end_time <= @available.start_time)
 
-      @new.start_time = @available.start_time
-      @new.start_time = @assigned_orig.start_time if (@new.start_time < @assigned_orig.start_time) or (@new.start_time >= @assigned_orig.start_time)
-      @new.end_time = @available.start_time
-      @new.end_time = @assigned_orig.end_time if (@new.end_time > @assigned_orig.end_time) or (@new.end_time <= @assigned_orig.end_time)
-      @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
-      @new.contact_id = cid
+        @new.start_time = @available.start_time
+        @new.start_time = @assigned_orig.start_time if (@new.start_time < @assigned_orig.start_time) or (@new.start_time >= @assigned_orig.start_time)
+        @new.end_time = @available.start_time
+        @new.end_time = @assigned_orig.end_time if (@new.end_time > @assigned_orig.end_time) or (@new.end_time <= @assigned_orig.end_time)
+        @new.volunteer_shift_id = @assigned_orig.volunteer_shift_id
+        @new.contact_id = cid
+      end
 
-      @assigned.save!
-      @new.save!
+      success = 0
+      if @assigned && @assigned.valid?
+        begin
+          @assigned.save!
+          success += 1
+        rescue => e
+          errors = [e]
+          flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if success == 1 && @new.valid?
+        begin
+          @new.save!
+          success += 1
+        rescue => e
+          errors = [e]
+          flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if @assigned && success != 2
+        errors = (success == 0) ? @assigned.errors.full_messages : @new.errors.full_messages
+        flash[:jsalert] = "Cannot reassign shifts: #{errors.join(", ")}"
+      end
+      if success != 2
+        raise ActiveRecord::Rollback
+      end
+    end
+    end
     end
 
-    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig.volunteer_shift.date_anchor)
+    redirect_skedj(request.env["HTTP_REFERER"], @assigned_orig ? @assigned_orig.volunteer_shift.date_anchor : "")
   end
 
   def attendance
-    @assignment = Assignment.find(params[:id])
     render :update do |page|
+      begin
+        @assignment = Assignment.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        page.alert("The assignment (##{params[:id]}) seems to have disappeared. It is possible somebody else has modified or deleted it.")
+      end
       page.hide loading_indicator_id("skedjul_#{params[:skedjul_loading_indicator_id]}_loading")
-      page << "show_message(#{(render :partial => "attendanceform").to_json});"
+      if @assignment
+        page << "show_message(#{(render :partial => "attendanceform").to_json});"
+      end
     end
   end
 
@@ -318,11 +370,14 @@ class AssignmentsController < ApplicationController
     success = false
     begin
       @assignment = Assignment.find(params[:id])
-    rescue
+    rescue ActiveRecord::RecordNotFound
     end
     if @assignment
       @assignment.attendance_type_id = params[:attendance][:attendance_type_id] if params[:attendance]
-      success = @assignment.save
+      begin
+        success = @assignment.save
+      rescue ActiveRecord::StaleObjectError
+      end
     end
     if success and params[:cancel]
       at = AttendanceType.find_by_name("cancelled")
@@ -348,7 +403,7 @@ class AssignmentsController < ApplicationController
 #        page << "selection_toggle(#{params[:id]});"
 #        page << "popup1.hide();"
       else
-        page << "alert('attendance change failed. the record may be gone.');"
+        page.alert("The assignment (##{params[:id]}) seems to have disappeared. It is possible somebody else has modified or deleted it.")
       end
       page.hide loading_indicator_id("attendance_assignment_form")
     end
@@ -397,9 +452,17 @@ class AssignmentsController < ApplicationController
       if !a.valid?
         flash[:jsalert] = a.errors.full_messages.join(", ")
       else
-        a.save! # if !a.save ? flash[:error] = "Failed to save record as arrived for unknown reason"
+        begin
+          a.save! # if !a.save ? flash[:error] = "Failed to save record as arrived for unknown reason"
+        rescue ActiveRecord::StaleObjectError
+        end
         if a.contact and not a.contact.is_old_enough?
           flash[:jsalert] = "This volunteer is not yet #{Default['minimum_volunteer_age']} years old (based on their saved birthday: #{a.contact.birthday.to_s}).\nPlease remind the volunteer that they must have an adult with them to volunteer."
+        end
+        nc_ns = a.nc_ns_since_last_arrived
+        if nc_ns.length > 0
+          msg = "This volunteer had No Call/No Show instance(s) on #{nc_ns.map{|x| x.date}.uniq.to_sentence}.\nPlease remind them that they must call in if they are not able to come in."
+          flash[:jsalert] = flash[:jsalert] ? (flash[:jsalert] + "\n\n" + msg) : msg
         end
       end
     rescue ActiveRecord::RecordNotFound
@@ -456,11 +519,37 @@ class AssignmentsController < ApplicationController
       redirect_skedj(rt, "")
       return
     end
+    lv = params["lock_versions"]
+    ac = params["assigned_contacts"] || {}
+    @assigned_contacts = []
+    @replaced_contacts = []
+    ret = true
+    @assignments.each do |as|
+      as.lock_version = lv[as.id.to_s]
+      if as.lock_version_changed?
+        as.errors.add("lock_version", "is stale for this assignment, which means it has been edited by somebody else since you opened it, please try again")
+        ret = false
+      end
+      if as.contact_id && as.contact_id.to_s != params[:assignment][:contact_id].to_s
+        @assigned_contacts << as.contact
+        unless ac[as.contact_id.to_s] && ac[as.contact_id.to_s] == "replace"
+          as.errors.add("contact_id", "has been changed, please confirm below that the volunteer who is already assigned to the shift should be removed")
+          ret = false
+        else
+          @replaced_contacts << as.contact_id
+        end
+      end
+    end
     rt = params[:assignment].delete(:redirect_to)
 
     js_alert = nil
 
-    ret = true
+    if ! ret
+      @assignment = Assignment.new
+      @assignment.volunteer_shift = @assignments.first.volunteer_shift
+      @assignment.attributes=(params[:assignment]) # .. ? .delete("volunteer_shift_attributes")
+    end
+
     @assignments.each{|x|
       if ret
         @assignment = x
@@ -476,7 +565,7 @@ class AssignmentsController < ApplicationController
       end
     }
 
-    if @assignment.contact and not @assignment.contact.is_old_enough?
+    if ret && @assignment.contact and not @assignment.contact.is_old_enough?
       msg = "This volunteer is not yet #{Default['minimum_volunteer_age']} years old (based on their saved birthday: #{@assignment.contact.birthday.to_s}).\nPlease remind the volunteer that they must have an adult with them to volunteer."
       if js_alert == nil
         js_alert = msg

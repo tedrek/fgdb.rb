@@ -52,6 +52,10 @@ class PricingComponentsController < ApplicationController
     @pricing_component = PricingComponent.find(params[:id])
     prep_table_headers
     @struct = OpenStruct.new(params[:open_struct])
+    if ! @struct.csv
+      flash[:error] = "A file to import must be uploaded"
+      redirect_to :action => "edit", :id => @pricing_component.id
+    end
     results = CSV.parse(@struct.csv.read)
     if results[0] == @table[0][1..-1]
       @pricing_component.pricing_values.destroy_all

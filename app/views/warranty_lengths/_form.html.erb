@@ -1,14 +1,14 @@
   <p>
     <%= f.label :system_type %><br />
-    <%= f.text_field :system_type %>
+    <%= f.select :system_type, @rt_metadata["Type of Box"].map{|x| [x, x]}, {:include_blank => true} %>
   </p>
   <p>
     <%= f.label :box_source %><br />
-    <%= f.text_field :box_source %>
+    <%= f.select :box_source, @rt_metadata["Box source"].map{|x| [x, x]}, {:include_blank => true} %>
   </p>
   <p>
     <%= f.label :os_type %><br />
-    <%= f.text_field :os_type %>
+    <%= f.select :os_type, WorkOrdersController::OS_OPTIONS.map{|x| [x, x]}, :include_blank => true %>
   </p>
   <p>
     <%= f.label :length_number, "Length" %><br />

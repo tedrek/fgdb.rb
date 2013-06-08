@@ -28,14 +28,15 @@ class PricingComponent < ActiveRecord::Base
   end
 
   def printme_pull(pricing_hash)
-    pricing_hash[self.pull_from.to_sym]
+    pricing_hash[self.pull_from.underscore.to_sym]
   end
 
   def find_value(pricing_hash)
     return nil unless self.pull_from and self.pull_from.length > 0
     v = printme_pull(pricing_hash)
-    return v unless self.lookup_type and self.lookup_type.length > 0
-    v = PricingData.lookup(self.pull_from, v, self.lookup_type)
+    return v unless self.lookup_column and self.lookup_column.length > 0
+    return v unless self.lookup_table and self.lookup_table.length > 0
+    v = PricingData.lookup(self.lookup_table, PricingData.find_match(self.lookup_table, v), self.lookup_column) # FIXME: optimize .. find_match should only happen once!
     return v
   end
 
@@ -43,7 +44,19 @@ class PricingComponent < ActiveRecord::Base
     return [] unless self.pull_from and self.pull_from.length > 0
     list = []
     expect = find_value(pricing_hash)
-    self.pricing_values.each do |x|
+    if self.use_value_as_score
+      if expect && expect.length > 0
+        expect = expect.match(/(^[0-9.]+)/).to_s
+        if expect.length > 0
+          return [PricingValue.find_or_create_by_pricing_component_id_and_value_cents(self.id, expect.to_cents)]
+        else
+          return []
+        end
+      else
+        return []
+      end
+    end
+    self.pricing_values.sort_by{|x| x.match_against.length}.reverse.each do |x|
       if x.matches?(expect)
         if self.required?
           return [x]

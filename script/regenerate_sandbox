@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
 
+ENV['RAILS_ENV']||="production"
+
 require File.dirname(__FILE__) + '/../config/boot'
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+$regenerate_sandbox = true
 
 r = Roster.find_by_name('Sandbox')
 if r
@@ -9,7 +13,9 @@ if r
   c.apply_conditions({})
   c.roster_enabled = true
   c.roster_id = r.id
-  VolunteerDefaultShift.generate(Date.today, Date.today + 30, c)
+  startd, endd = [Date.today, Date.today + 30]
+  VolunteerDefaultShift.find_conflicts(startd, endd, c).each{|y| y.destroy}
+  VolunteerDefaultShift.generate(startd, endd, c)
 else
   puts "WARNING: Could not find sandbox"
 end

@@ -41,7 +41,7 @@ module SidebarHelper
     "contacts" => "contacts",
     "contact_duplicates" => "contacts",
 #    "library" => "library",
-    "spec_sheets" => "fgss",
+    "spec_sheets" => "build",
     "gizmo_returns" => "sales",
     "till_adjustments" => "bean counters",
     "worked_shifts" => "staff",
@@ -137,11 +137,13 @@ module SidebarHelper
     # fgss
     sidebar_hash["build"]["printme"] = {:c => 'spec_sheets'}
     sidebar_hash["build"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled
+    sidebar_hash["build"]["proc db"] = {:c => 'spec_sheets', :a => 'lookup_proc'}
     sidebar_hash["data sec"]["disktest runs"] = {:c => "disktest_runs"}
     sidebar_hash["data sec"]["disktest batches"] = {:c => "disktest_batches"}
     # done
     sidebar_hash["admin"]["logs"] = {:c => "logs"}
     sidebar_hash["admin"]["deleted records"] = {:c => "logs", :a => "find_deleted"}
+    sidebar_hash["feedback"] = "http://technocrats.freegeek.org/cgi-bin/technocrats.pl?_submitted_new_$_=1&mode=new_technocrats&infrastructure=fgdb.rb/SPECIFICALLY?"
     return aliases, sidebar_hash
   end
 end

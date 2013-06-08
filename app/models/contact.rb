@@ -20,13 +20,57 @@ class Contact < ActiveRecord::Base
   belongs_to :contract
   has_many :gizmo_returns
   has_one :worker
+  has_one :tech_support_note
+  validates_numericality_of :birthday_year, :greater_than_or_equal_to => 1902, :less_than => 2038, :allow_nil => true
+
+  def intern_title
+    [self.volunteer_intern_title.to_s, "Intern"].select{|x| x.length > 0}.join(" ")
+  end
+
+  def merge_ts_notes
+    ActiveRecord::Base.transaction do
+      first_note = self.tech_support_note
+
+      if first_note
+        max_up = first_note.updated_at
+        max_up_u = first_note.updated_by
+        min_c = first_note.created_at
+        min_c_u = first_note.created_by
+
+        TechSupportNote.find_all_by_contact_id(self.id).each do |n|
+          if n.id != first_note.id
+            first_note.notes += "\n----\n#{n.notes}"
+            if n.updated_at && (max_up.nil? || n.updated_at > max_up)
+              max_up = n.updated_at
+              max_up_u = n.updated_by
+            end
+            if n.created_at && (min_c.nil? || n.created_at < min_c)
+              min_c = n.created_at
+              min_c_u = n.created_by
+            end
+            n.destroy
+          end
+        end
+
+        first_note.created_by = min_c_u
+        first_note.created_at = min_c
+        first_note.updated_by = max_up_u
+        first_note.updated_at = max_up
+        first_note.save!
+      end
+    end
+  end
+
+  def tech_support_notes
+    self.tech_support_note.notes if self.tech_support_note
+  end
+
+  def birthday_year_before_type_cast # WTF..
+    self.birthday ? self.birthday.year : nil
+  end
+  alias_method :birthday_year, :birthday_year_before_type_cast
 
   has_many :disciplinary_actions, :autosave => true
-
-  validate :validate_bday
-  def validate_bday
-    errors.add('birthday', 'is out of range (past year 2038)') if self.birthday and self.birthday.year >= 2038
-  end
 
   def unresolved_donations
     donations.select(&:has_unresolved_invoice?)
@@ -34,8 +78,10 @@ class Contact < ActiveRecord::Base
 
   validate :name_provided
   def name_provided
-    errors.add('organization', 'name must be provided for organizations') if is_organization? and (organization.nil? or organization.empty?)
-    errors.add('first_name', 'or surname must be provided for individuals') if is_person? and (first_name.nil? or first_name.empty?) and (surname.nil? or surname.empty?)
+    unless $civicrm_mode
+      errors.add('organization', 'name must be provided for organizations') if is_organization? and (organization.nil? or organization.empty?)
+      errors.add('first_name', 'or surname must be provided for individuals') if is_person? and (first_name.nil? or first_name.empty?) and (surname.nil? or surname.empty?)
+    end
   end
 
   def self.born_on_or_before
@@ -64,7 +110,7 @@ class Contact < ActiveRecord::Base
     self.disciplinary_actions.not_disabled.map(&:disciplinary_action_areas).flatten.uniq.sort_by(&:name)
   end
 
-  validates_presence_of :postal_code, :on => :create, :unless => :foreign_person?
+  validates_presence_of :postal_code, :on => :create, :unless => :foreign_person_or_civicrm?
   #validates_presence_of :created_by
   before_save :remove_empty_contact_methods
   before_save :ensure_consistent_contact_types
@@ -83,6 +129,10 @@ class Contact < ActiveRecord::Base
   validates_length_of :postal_code, :maximum => 25
   validates_length_of :country, :maximum => 100
 
+  def foreign_person_or_civicrm?
+    foreign_person? or $civicrm_mode
+  end
+
   def foreign_person?
     Default["country"] != self.country
   end
@@ -99,9 +149,34 @@ class Contact < ActiveRecord::Base
     true
   end
 
+  # used to find when a volunteer is scheduled for more than 2 shifts
+  def schedule_counts
+    h = {}
+    return h if self.is_organization? # organizations may schedule as much as they like
+    assns = self.assignments.is_after_today.roster_is_limited_by_program.not_cancelled
+    assns.each do |a|
+      progs = a.real_programs
+      progs.each do |p|
+        h[p] ||= 0
+        h[p] += 1
+      end
+    end
+    h
+  end
+
+  def birthday=(bday)
+    begin
+      parsed = Date.parse(bday)
+      write_attribute(:birthday, parsed)
+      return bday
+    rescue
+      return nil
+    end
+  end
+
   def mailing_list_email
     list = ContactMethodType.email_types_ordered.map{|x| x.id}
-    list = list.reverse if self.organization
+    list = list.reverse if self.is_organization?
     result = self.contact_methods.select{|x| x.ok}.select{|x| list.include?(x.contact_method_type_id)}.sort{|a,b| r = (list.index(a.contact_method_type_id) <=> list.index(b.contact_method_type_id)); r == 0 ? ((b.updated_at || b.created_at) <=> (a.updated_at || a.created_at)) : r}.first
     result ? result.value : nil
   end
@@ -110,11 +185,22 @@ class Contact < ActiveRecord::Base
     ["contact_#{self.id}", "has_contact"]
   end
 
+  def update_all_task_counts
+    self.volunteer_task_types.each do |vtt|
+      self.update_syseval_count(vtt.id)
+    end
+  end
+
   def update_syseval_count(vid)
     return unless vid
     c = ContactVolunteerTaskTypeCount.find_or_create_by_contact_id_and_volunteer_task_type_id(self.id, vid)
     vtt = VolunteerTaskType.find(vid)
     c.count = self.volunteer_tasks.for_type_id(vtt.id).count
+    if vtt && vtt.name == 'sorting'
+      # FIXME: generalize solution?
+      vtt2 = VolunteerTaskType.find_by_name('receiving')
+      c.count += self.volunteer_tasks.for_type_id(vtt2.id).count if vtt2
+    end
     c.save!
   end
 
@@ -186,6 +272,7 @@ class Contact < ActiveRecord::Base
   def merge_these_in(arr)
     for other in arr
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
+      connection.execute("UPDATE tech_support_notes SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE sales SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE disciplinary_actions SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
@@ -217,11 +304,14 @@ class Contact < ActiveRecord::Base
       if other.contact_duplicate
         ContactDuplicate.delete(other.contact_duplicate)
       end
+      connection.execute("DELETE FROM contact_volunteer_task_type_counts WHERE contact_id = #{other.id}")
       connection.execute("DELETE FROM contacts WHERE id = #{other.id}")
     end
     if self.contact_duplicate && ContactDuplicate.find_all_by_dup_check(self.contact_duplicate.dup_check).length == 1
       ContactDuplicate.delete(self.contact_duplicate)
     end
+    self.update_all_task_counts
+    self.merge_ts_notes
   end
 
   def contact

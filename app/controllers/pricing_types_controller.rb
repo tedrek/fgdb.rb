@@ -63,20 +63,25 @@ class PricingTypesController < ApplicationController
 
   protected
   def make_a_table
-    @printme_pull_from = params[:id]
-    pd = PricingData.find_all_by_printme_pull_from(@printme_pull_from.downcase.gsub(' ', '_'))
+    @table_name = params[:id]
+    pd = PricingData.find_all_by_table_name(@table_name)
     cols = pd.map{|x| x.lookup_type}.uniq.sort
     rows = pd.map{|x| x.printme_value}.uniq.sort
     data = {}
     pd.each{|x|
       data[[x.lookup_type, x.printme_value]] = x.lookup_value
     }
-    @table = [[@printme_pull_from, *cols]]
+    @table = [[@table_name, *cols]]
     rows.each do |row|
       @table << [row, *cols.map{|col| data[[col, row]]}]
     end
   end
   public
+
+  def delete_table
+    PricingData.delete_table(params[:id])
+    redirect_to :action => 'index'
+  end
 
   def show_table
     make_a_table
@@ -89,8 +94,13 @@ class PricingTypesController < ApplicationController
 
   def import_table
     @struct = OpenStruct.new(params[:open_struct])
-    PricingData.load_from_csv(@struct.name, @struct.csv.read)
-    redirect_to :action => "show_table", :id => @struct.name
+    if @struct.csv
+      PricingData.load_from_csv(@struct.name, @struct.csv.read)
+      redirect_to :action => "show_table", :id => @struct.name
+    else
+      flash[:error] = "A CSV file to import must be uploaded"
+      redirect_to :action => "index"
+    end
   end
 
   def remove_expression

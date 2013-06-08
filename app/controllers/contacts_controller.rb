@@ -4,16 +4,16 @@ class ContactsController < ApplicationController
   filter_parameter_logging "user_password", "user_password_confirmation"
 
   private
-  def set_collective_cashier
-    @collective_cashier = OpenStruct.new(params[:collective_cashier])
+  def set_management_cashier
+    @management_cashier = OpenStruct.new(params[:management_cashier])
   end
   public
-  before_filter :set_collective_cashier
+  before_filter :set_management_cashier
 
   def load_confidential_information
-    @contact = Contact.find_by_id(@collective_cashier.contact_id.to_i)
-    @collective_cashier.cashier_code = params[:this_cashier_code] if params[:this_cashier_code]
-    uid = @collective_cashier.cashier_code
+    @contact = Contact.find_by_id(@management_cashier.contact_id.to_i)
+    @management_cashier.cashier_code = params[:this_cashier_code] if params[:this_cashier_code]
+    uid = @management_cashier.cashier_code
     t = false
     u = nil
     if uid && (u = User.find_by_cashier_code(uid.to_i))
@@ -27,7 +27,7 @@ class ContactsController < ApplicationController
       t = false
     end
     @valid_cashier_code = t
-    @collective_cashier.cashier_code = "" unless @valid_cashier_code
+    @management_cashier.cashier_code = "" unless @valid_cashier_code
     render :update do |page|
       page.hide loading_indicator_id("confidential_information")
       page.replace_html 'confidential_information', :partial => 'disciplinary_actions'
@@ -236,7 +236,7 @@ class ContactsController < ApplicationController
   def update
       @contact = Contact.find(params[:id])
       @contact.attributes = params[:contact]
-      if (uid = @collective_cashier.cashier_code) && (u = User.find_by_cashier_code(uid.to_i)) && u.can_view_disciplinary_information?
+      if (uid = @management_cashier.cashier_code) && (u = User.find_by_cashier_code(uid.to_i)) && u.can_view_disciplinary_information?
         Thread.current['cashier'] = u
         u.will_not_updated_timestamps!
         u.last_logged_in = Date.today

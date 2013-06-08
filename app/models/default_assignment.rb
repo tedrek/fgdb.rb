@@ -6,8 +6,19 @@ class DefaultAssignment < ActiveRecord::Base
   delegate :effective_on, :effective_on=, :to => :volunteer_default_shift
   delegate :ineffective_on, :ineffective_on=, :to => :volunteer_default_shift
   before_validation :set_values_if_stuck
-  delegate :set_description, :set_description=, :to => :volunteer_shift
+  delegate :set_description, :set_description=, :to => :volunteer_default_shift
   validates_existence_of :contact, :allow_nil => true
+
+  def real_programs
+    return [] unless self.volunteer_default_shift && self.volunteer_default_shift.roster
+    return [] unless self.volunteer_default_shift.roster.limit_shift_signup_by_program
+    return self.volunteer_default_shift.roster.skeds.select{|x| x.category_type == "Program"}.map{|x| x.name}
+  end
+
+  def contact_id=(newval)
+    self.write_attribute(:contact_id, newval)
+    self.contact = Contact.find_by_id(newval.to_i)
+  end
 
   def next_cycle_date
     if self.week.to_s.strip.length == 0
@@ -24,7 +35,7 @@ class DefaultAssignment < ActiveRecord::Base
 
   def set_values_if_stuck
     return unless volshift_stuck
-    volunteer_default_shift.set_values_if_stuck
+    volunteer_default_shift.set_values_if_stuck(self)
   end
 
   def volshift_stuck
@@ -57,6 +68,9 @@ class DefaultAssignment < ActiveRecord::Base
   }
 
   def validate
+    if self.contact_id && self.contact_id_changed? && self.volunteer_default_shift && self.volunteer_default_shift.roster && self.volunteer_default_shift.roster.contact_type
+      errors.add("contact_id", "does not have the contact type required to sign up for a shift in this roster (#{self.volunteer_default_shift.roster.contact_type.description.humanize.downcase})") unless self.contact.contact_types.include?(self.volunteer_default_shift.roster.contact_type)
+    end
     if self.closed
       errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
     end

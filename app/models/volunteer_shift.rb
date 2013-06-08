@@ -13,7 +13,7 @@ class VolunteerShift < ActiveRecord::Base
   has_many :contact_volunteer_task_type_counts, :primary_key => 'volunteer_task_type_id', :foreign_key => 'volunteer_task_type_id' #:through => :volunteer_task_type
 
   def validate
-    errors.add("end_time", "is before the start time") unless self.start_time < self.end_time
+    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
   end
 
   def self.week_for_date(d)
@@ -56,9 +56,9 @@ class VolunteerShift < ActiveRecord::Base
     @set_date_set ? @set_date : self.volunteer_event.date
   end
 
-  def set_values_if_stuck
+  def set_values_if_stuck(assn_in = nil)
     return unless self.stuck_to_assignment
-    assn = self.assignments.first
+    assn = assn_in || self.assignments.first
     return unless assn
     self.start_time = assn.start_time
     self.end_time = assn.end_time

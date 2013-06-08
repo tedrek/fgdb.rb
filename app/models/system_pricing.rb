@@ -24,7 +24,8 @@ class SystemPricing < ActiveRecord::Base
     for i in [/\s/, "-", ")", "("]
       values = values.map{|v| v.split(i)}.flatten
     end
-    matcher.split(/[\s-]+/).map(&:downcase).select{|x| !values.include?(x)}.length == 0
+    values = values.select{|x| x.length > 0}
+    matcher.split(/[\s-]+/).select{|x| x.length > 0}.map(&:downcase).select{|x| !values.include?(x)}.length == 0
   end
 
   before_save :set_calculated_price
@@ -83,7 +84,7 @@ class SystemPricing < ActiveRecord::Base
   def modified_pricing_hash
     h = self.pricing_hash.dup
     self.pricing_values.each do |x|
-      if x.pricing_component.pull_from.to_s.length > 0 and x.pricing_component.lookup_type.to_s.length == 0
+      if x.pricing_component.pull_from.to_s.length > 0 and x.pricing_component.lookup_table.to_s.length == 0 and x.pricing_component.lookup_column.to_s.length == 0
         h[x.pricing_component.pull_from.to_sym] = x.matcher.to_s.length > 0 ? x.matcher : x.name
       end
     end
@@ -92,11 +93,11 @@ class SystemPricing < ActiveRecord::Base
 
   def autodetect_looked_up_values
     return unless self.pricing_type
-    self.pricing_type.pricing_components.select{|x| x.lookup_type.to_s.length > 0}.each do |c|
+    self.pricing_type.pricing_components.select{|x| x.lookup_table.to_s.length > 0 && x.lookup_column.to_s.length > 0}.each do |c|
       match = c.matched_pricing_value(self.modified_pricing_hash)
       if match.length > 0
         self.pricing_values.reject{|x|
-          ! x.pricing_component_id == c.id
+          x.pricing_component_id == c.id
         }
       end
       match.each do |m|
@@ -105,10 +106,22 @@ class SystemPricing < ActiveRecord::Base
     end
   end
 
+  after_save :save_pricing_values
+  def save_pricing_values
+    self.pricing_values.each do |x|
+      x.save! unless x.id
+    end
+  end
+
   def autodetect_values
     return unless self.pricing_type
     self.pricing_type.pricing_components.each do |c|
       match = c.matched_pricing_value(self.pricing_hash)
+      if match.length > 0
+        self.pricing_values.reject{|x|
+          x.pricing_component_id == c.id
+        }
+      end
       match.each do |m|
         self.pricing_values << m
       end
@@ -171,7 +184,7 @@ class SystemPricing < ActiveRecord::Base
     @pricing_hash ||= begin
                           h = {}
                           self.class.display_pulls.each do |pull|
-                            h[pull] = "N/A"
+                            h[pull] = "N/A" unless self.class.optional_pulls.include?(pull)
                           end
                           oh = self.spec_sheet.pricing_hash
                           oh.each do |k, v|
@@ -184,8 +197,30 @@ class SystemPricing < ActiveRecord::Base
                           unless h[:battery_life] and h[:battery_life].length > 0
                             h[:battery_life] = "N/A"
                           end
+
                           h
                         end
+  end
+
+  def pricing_component_values=(hash)
+    hash.each do |c_id, value|
+      c_id = c_id.sub("component_", "").to_i
+      self.pricing_values.reject{|x| x.pricing_component_id == c_id}
+      if value && value.length > 0
+        value = value.match(/(^[0-9.]+)/).to_s
+        if value.length > 0
+          self.pricing_values << PricingValue.find_or_create_by_pricing_component_id_and_value_cents(c_id, value.to_cents)
+        end
+      end
+    end
+  end
+
+  def pricing_component_values
+    h = OpenStruct.new
+    self.pricing_values.each do |x|
+      h.send("component_" + x.pricing_component_id.to_s + "=", x.value)
+    end
+    return h
   end
 
   def self.display_pulls
@@ -193,6 +228,10 @@ class SystemPricing < ActiveRecord::Base
   end
 
   def self.valid_pulls
-    [:processor_product, :processor_speed, :processor_count, :max_l2_l3_cache, :memory_type, :memory_amount, :hd_type, :hd_size, :hd_count, :hd_size_total, :optical_drive, :battery_life]
+    [:processor_product, :processor_speed, :processor_count, :max_l2_l3_cache, :memory_type, :memory_amount, :hd_type, :hd_size, :hd_count, :hd_size_total, :optical_drive, :battery_life] + optional_pulls
+  end
+
+  def self.optional_pulls
+    DB.exec("SELECT name FROM spec_sheet_questions ORDER BY position;").to_a.map{|x| x["name"].underscore.to_sym}.uniq
   end
 end

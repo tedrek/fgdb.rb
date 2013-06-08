@@ -1,0 +1,8 @@
+  <h2>Customer Information</h2>
+  <%= render :partial => "customer_info", :locals => {:f => f} %>
+
+  <h2>Support Information</h2>
+<%= f.label :ticket_source %>
+<%= f.select :ticket_source, @rt_metadata["Ticket Source"].select{|x| x.match(/phone/i)}.map{|x| [x, x]}, :include_blank => true %>
+
+<%= render :partial => "summary_form", :locals => {:f => f} %>

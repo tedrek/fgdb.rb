@@ -9,6 +9,10 @@ class SidebarLinksController < ApplicationController
   end
 
   public
+  def homepage_index
+    render :action => 'index'
+  end
+
   def recent_crash
     d = File.join(RAILS_ROOT, "tmp", "crash")
     @page = params[:page] || 1

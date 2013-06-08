@@ -14,8 +14,12 @@
   </p>
   <% if f.object.pull_from.to_s.length > 0 %>
   <p>
-    <%= f.label :lookup_type, "Lookup Pulled Value Against (Name of Table must match Pulled Value above exactly)" %><br />
-    <%= f.select :lookup_type, [["<optional for automatic database lookup>", nil]] + PricingData.distinct('lookup_type', ['printme_pull_from = ?', f.object.pull_from]).map{|x| [x.to_s, x.to_s]} %>
+    <%= f.label :lookup_table, "Name of Table to Lookup Pulled Value Against" %><br />
+    <%= f.select :lookup_table, [["<optional for automatic database lookup>", nil]] + PricingData.distinct('table_name').map{|x| [x.to_s, x.to_s]} %>
+  </p>
+  <p>
+    <%= f.label :lookup_column, "Column to Pull from Lookup Table" %><br />
+    <%= f.select :lookup_column, [["<optional for automatic database lookup>", nil]] + (f.object.lookup_table ? PricingData.distinct('lookup_type', ['table_name = ?', f.object.lookup_table]) : PricingData.distinct('lookup_type')).map{|x| [x.to_s, x.to_s]} %>
   </p>
   <% end %>
   <p>
@@ -26,7 +30,11 @@
     <%= f.label :multiple, "Allow multiple selected? (as optional field)" %><br />
     <%= f.check_box :multiple %>
   </p>
-<% if f.object.id %>
+  <p>
+    <%= f.label :use_value_as_score, "Use value as score directly? (no pricing table value below)" %><br />
+    <%= f.check_box :use_value_as_score %>
+  </p>
+<% if f.object.id && !f.object.use_value_as_score %>
 <%= render :partial => "pricing_values/list" %>
 <%= link_to "Download as CSV", :action => "to_csv", :id => @pricing_component.id %> | 
 <%= link_to "Add new pricing value", {:controller => "pricing_values", :action => "new", :pricing_component_id => @pricing_component.id} %>

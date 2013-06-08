@@ -4,6 +4,10 @@ class BuilderTask < ActiveRecord::Base
   belongs_to :action
   validates_existence_of :action
   validates_existence_of :contact
+  before_save :remove_signoff_if_contact_changed
+  def remove_signoff_if_contact_changed
+    self.cashier_signed_off_by = nil if contact_id_changed?
+  end
 
   named_scope :last_two_years, :conditions => ['created_at >= ?', 2.years.ago]
 

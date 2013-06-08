@@ -7,12 +7,20 @@ module ConditionsHelper
     text_field(params_key, 'organization_name')
   end
 
+  def html_for_processor_product_condition(params_key)
+    text_field(params_key, 'processor_product')
+  end
+
   def html_for_worker_type_condition(params_key)
     select(params_key, "worker_type_id", WorkerType.find(:all).sort_by(&:name).collect {|p| [ p.name, p.id ] })
   end
 
   def html_for_sale_type_condition(params_key)
     select(params_key, "sale_type_id", SaleType.find(:all).sort_by(&:description).collect {|p| [ p.description, p.id ] })
+  end
+
+  def html_for_program_id_condition(params_key)
+    select(params_key, "program_id", Program.find_all_by_volunteer(true).sort_by(&:description).collect {|p| [ p.description, p.id ] })
   end
 
   def html_for_finalized_condition(params_key)
@@ -91,7 +99,7 @@ module ConditionsHelper
   end
 
   def html_for_volunteer_task_type_condition(params_key)
-    select(params_key, "volunteer_task_type_id", VolunteerTaskType.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] })
+    select(params_key, "volunteer_task_type_id", VolunteerTaskType.find(:all).sort_by(&:name).collect {|p| [ p.description, p.id ] }, {}, _multi_html_opts)
   end
 
   def html_for_can_login_condition(params_key)

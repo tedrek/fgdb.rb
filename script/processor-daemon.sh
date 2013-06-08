@@ -52,13 +52,16 @@ case "$MODE" in
         while [ "$(cat "$WORKDIR/filelist" | wc -l)" != 0 ] || inotifywait -e modify "$WORKDIR/filelist"; do
             cp "$WORKDIR/filelist" "$WORKDIR/.filelist.processing"
             while read LINE; do
+		SUCCESS=0
                 if "$SCRIPT" find "$LINE"; then
-                    "$WORK_SCRIPT" $LINE
+                    if ! "$WORK_SCRIPT" $LINE; then
+			SUCCESS="1"
+		    fi
                 fi
-                if [ -e "$WORKDIR/take_a_break" ]; then
+                if [ "$SUCCESS" != "0" -o -e "$WORKDIR/take_a_break" ]; then
                     echo "Sleeping for $BREAK_TIME seconds because of failure..."
                     sleep $BREAK_TIME
-                    rm "$WORKDIR/take_a_break"
+                    rm -f "$WORKDIR/take_a_break"
                 fi
             done < "$WORKDIR/.filelist.processing"
             rm -f "$WORKDIR/.filelist.processing"

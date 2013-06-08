@@ -21,11 +21,26 @@ class SpecSheetsController < ApplicationController
   include SystemHelper
   MY_VERSION=9
 
+  def lookup_proc
+    @proc_name = params[:proc]
+    @tables = []
+    @table_data = {}
+    if @proc_name
+      @tables = PricingData.lookup_proc(@proc_name)
+      @tables.each do |a|
+        tbl = a.first
+        @table_data[tbl] = a.delete_at(2)
+      end
+    end
+  end
+
   def sign_off
     if params[:cashier_code] && params[:cashier_code].length == 4
       u = User.find_by_cashier_code(params[:cashier_code])
       s = SpecSheet.find(params[:id])
-      if u.has_privileges(required_privileges("show/sign_off").flatten.first) # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
+      # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
+          # do not allow when users is the contact for the BT
+      if u.contact_id != s.contact_id && u.has_privileges(required_privileges("show/sign_off").flatten.first)
         s.signed_off_by=(u)
         s.save!
       end
@@ -102,7 +117,7 @@ class SpecSheetsController < ApplicationController
       redirect_to :action => 'system'
       return
     end
-    @system = @main_system.all_instances.select{|x| x.spec_sheets.length > 1}.sort_by(&:created_at).last
+    @system = @main_system.all_instances.select{|x| x.spec_sheets.length >= 1}.sort_by(&:created_at).last
     if !@system
       flash[:error] = "System id ##{params[:id]} has no spec sheets"
       redirect_to :action => 'system'
@@ -124,7 +139,7 @@ class SpecSheetsController < ApplicationController
         return
       end
     end
-    @reports = BuilderTask.paginate(:page => params[:page], :conditions => @conditions.conditions(BuilderTask), :order => "builder_tasks.created_at ASC", :per_page => 50, :include => :spec_sheet)
+    @reports = BuilderTask.paginate(:page => params[:page], :conditions => @conditions.conditions(BuilderTask), :order => "builder_tasks.created_at ASC", :per_page => 50, :include => [:spec_sheet => :system])
     render :action => "index"
   end
 
@@ -142,11 +157,31 @@ class SpecSheetsController < ApplicationController
       return
     end
     @system_parser = SystemParser.parse(output)
-    @mistake_title = "Things you might have done wrong: "
+    @mistake_title = "Possible mistakes found in this report:"
     @mistakes = []
     if @report.contact
       if @report.contact.is_organization==true
         @mistakes << "The technician that you entered is an organization<br />(an organization should normally not be a technician)<br />Click Edit to change the technician"
+      end
+      type_expect = 'freekbox'
+      if @report.type && @report.type.name == type_expect
+        phash = @report.pricing_hash
+        proc_expect = Default[type_expect + "_proc_expect"]
+        ram_expect = Default[type_expect + "_ram_expect"]
+        hd_min = Default[type_expect + "_hd_min"]
+        hd_max = Default[type_expect + "_hd_max"]
+        unless proc_expect.nil? || phash[:processor_product].match(proc_expect)
+          @mistakes << "This system was built as a #{type_expect}, but has a #{phash[:processor_product]} processor instead of the expected #{proc_expect}"
+        end
+        if ram_expect && phash[:total_ram] != ram_expect
+          @mistakes << "This system was built as a #{type_expect}, but has #{phash[:total_ram]} of memory instead of the expected #{ram_expect}"
+        end
+        if hd_min && phash[:hd_size_total].to_i < hd_min.to_i
+          @mistakes << "This system was built as a #{type_expect}, but has #{phash[:hd_size_total]} of hard drive space, which is below the #{hd_min} minimum expected"
+        end
+        if hd_max && phash[:hd_size_total].to_i > hd_max.to_i
+          @mistakes << "This system was built as a #{type_expect}, but has #{phash[:hd_size_total]} of hard drive space, which is above the #{hd_max} maximum expected"
+        end
       end
     end
     @seen = []

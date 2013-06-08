@@ -1,16 +1,72 @@
 // Place your application-specific JavaScript functions and classes here
 // This file is automatically included by javascript_include_tag :defaults
 
-function handle_enabling(event, linelist) {
-  if(is_tab(event)) {
+function find_ts_customer_notes() {
+  if(typeof(timeoutID) != 'undefined') {
+    clearTimeout(timeoutID);
+  }
+  timeoutID = setTimeout("actually_find_ts_customer_notes();", 200);
+}
+
+function actually_find_ts_customer_notes() {
+  var str = $('open_struct_customer_name').value;
+  // FIXME : update_calc_url + '
+  new Ajax.Request('/tech_support_notes/find_notes/' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show("ts_customer_search_loading_indicator_id");}});
+}
+
+function prep_disabled_list(list, optional, hook_list, disable) {
+  return;
+  for(var i = 0; i < list.length; i++) {
+    var e = list[i];
+    if($(e)) {
+      $(e).onkeydown = function(event) {handle_enabling(event, list, optional, hook_list[event.target.id]);};
+      if(i != 0 && disable) {
+        $(e).disable();
+      }
+    }
+  }
+}
+
+function wo_no_system_id() {
+  if(confirm("Is this an actual system (not an Other Gizmo)?")) {
+    if(confirm("Check that this is a supported Free Geek system. Non-FG systems should only be accepted to perform data backups prior to donation. Is this a Non-FG system?")) {
+      $('open_struct_issue').value = 'Data Backup';
+      $('open_struct_box_source').hide();
+      $('open_struct_sale_date').hide();
+      $('open_struct_sale_id').hide();
+      $('open_struct_warranty').hide();
+      $('open_struct_system_id').hide();
+      $('open_struct_box_type').enable();
+    }
+  } else {
+    $('open_struct_box_type').value = 'Other Gizmo';
+  }
+  $('open_struct_system_id').hide();
+  $('open_struct_box_source').enable();
+}
+
+function handle_enabling(event, linelist, optional, hook) {
+  var is_opt = false;
+  for(var i = 0; i < optional.length; i++) {
+    var e = optional[i];
+    if(e == event.target.id) {
+      is_opt = true;
+    }
+  }
+  if(is_tab(event) && (event.target.value != "" || is_opt)) {
+    if(hook) {
+      hook();
+    }
     var last = "NOT_IT";
     var found = 0;
     for(var i = 0; i < linelist.length; i++) {
       var e = linelist[i];
-      if($(e)) {
+      if($(e) && $(e).visible()) {
+        if(e == event.target.id) {
+          found += 1;
+        }
         if(last == event.target.id) {
           $(e).enable();
-          found += 1;
         }
         last = e;
       }
@@ -32,6 +88,22 @@ function focus_on_last_enabled(linelist) {
   if(last) {
     $(e).focus();
   }
+}
+
+function focus_on_next_enabled(linelist, lookfor) {
+  var found = undefined;
+    for(var i = 0; i < linelist.length; i++) {
+      var e = linelist[i];
+      if($(e) && !$(e).disabled) {
+        if(found) {
+          $(e).focus();
+          return;
+        }
+        if(e == lookfor) {
+          found = true;
+        }
+      }
+    }
 }
 
 function is_tab(event) {

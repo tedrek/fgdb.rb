@@ -15,6 +15,39 @@ class Assignment < ActiveRecord::Base
 
   has_one :contact_volunteer_task_type_count, :conditions => 'contact_volunteer_task_type_counts.contact_id = #{defined?(attributes) ? contact_id : "assignments.contact_id"}', :through => :volunteer_shift, :source => :contact_volunteer_task_type_counts
 
+  named_scope :no_call_no_show, :conditions => ['attendance_type_id = ?', AttendanceType.find_by_name("no call no show").id]
+  named_scope :arrived, :conditions => ['attendance_type_id = ?', AttendanceType.find_by_name("arrived").id]
+  named_scope :for_contact_id, lambda {|c| {:conditions => ['contact_id = ?', c]}}
+  named_scope :updated_since, lambda {|u_date| u_date ? {:conditions => ['updated_at > ?', u_date]} : {:conditions => []}}
+  named_scope :roster_is_limited_by_program, :conditions => ["roster_id IN (SELECT id FROM rosters WHERE limit_shift_signup_by_program = 't')"], :joins => [:volunteer_shift]
+  named_scope :within_n_days_of, lambda{|n, x| {:conditions => ['date > ? AND date < ?', x - n, x + n], :joins => [:volunteer_shift => [:volunteer_event]]} }
+  named_scope :for_sked_id,  lambda {|sked_id| {:conditions => ['roster_id in (?)', Sked.find_by_id(sked_id).roster_ids]}}
+
+  def real_programs
+    return [] unless self.volunteer_shift && self.volunteer_shift.roster
+    return [] unless self.volunteer_shift.roster.limit_shift_signup_by_program
+    return self.volunteer_shift.roster.skeds.select{|x| x.category_type == "Program"}.map{|x| x.name}
+  end
+
+  def nc_ns_since_last_arrived
+    c = self.contact
+    list = []
+    return list unless c
+    since_when = Assignment.for_contact_id(c.id).arrived.max
+    since_when = since_when.date if since_when
+    list = Assignment.for_contact_id(c.id).updated_since(since_when).no_call_no_show
+    return list
+  end
+
+  def <=>(other)
+    self.date <=> other.date
+  end
+
+  def contact_id=(newval)
+    self.write_attribute(:contact_id, newval)
+    self.contact = Contact.find_by_id(newval.to_i)
+  end
+
   def contact_id_and_by_today
     # Unless the contact id is empty, or the event date is after today.
     !(contact_id.nil? || self.volunteer_shift.volunteer_event.date > Date.today)
@@ -27,7 +60,7 @@ class Assignment < ActiveRecord::Base
   before_validation :set_values_if_stuck
   def set_values_if_stuck
     return unless volshift_stuck
-    volunteer_shift.set_values_if_stuck
+    volunteer_shift.set_values_if_stuck(self)
   end
 
   after_destroy { |record| if record.volunteer_shift && record.volunteer_shift.stuck_to_assignment; record.volunteer_shift.destroy; else VolunteerShift.find_by_id(record.volunteer_shift_id).fill_in_available; end}
@@ -56,6 +89,9 @@ class Assignment < ActiveRecord::Base
   end
 
   def validate
+    if self.contact_id && self.contact_id_changed? && self.volunteer_shift && self.volunteer_shift.roster && self.volunteer_shift.roster.contact_type
+      errors.add("contact_id", "does not have the contact type required to sign up for a shift in this roster (#{self.volunteer_shift.roster.contact_type.description.humanize.downcase})") unless self.contact.contact_types.include?(self.volunteer_shift.roster.contact_type)
+    end
     if self.volunteer_shift && self.volunteer_shift.stuck_to_assignment
       errors.add("contact_id", "is empty for an assignment-based shift") if self.contact_id.nil?
     end
@@ -67,6 +103,10 @@ class Assignment < ActiveRecord::Base
       errors.add("volunteer_shift_id", "is already assigned during that time (#{self.find_overlappers(:for_slot).map{|x| "during " + x.time_range_s + " to " + x.contact_display}.join(", ")})") if self.volunteer_shift && !self.volunteer_shift.not_numbered && self.find_overlappers(:for_slot).length > 0
      end
     errors.add("end_time", "is before the start time") unless self.start_time < self.end_time
+    if self.contact_id && self.contact_id_changed? && self.contact && (!self.cancelled?) && self.volunteer_shift && self.volunteer_shift.roster && self.volunteer_shift.roster.restrict_from_sked && self.volunteer_shift.roster.restrict_to_every_n_days && self.volunteer_shift.volunteer_event && self.volunteer_shift.volunteer_event.date >= (Date.today + self.volunteer_shift.roster.restrict_to_every_n_days)
+      in_range = self.contact.assignments.not_cancelled.within_n_days_of(self.volunteer_shift.roster.restrict_to_every_n_days, self.volunteer_shift.volunteer_event.date).for_sked_id(self.volunteer_shift.roster.restrict_from_sked_id).select{|x| x.id != self.id}
+      errors.add("contact_id", "is already scheduled in #{self.volunteer_shift.roster.restrict_from_sked.name} within #{self.volunteer_shift.roster.restrict_to_every_n_days} days: #{in_range.map{|x| "in " + x.slot_type_desc + " on " + x.volunteer_shift.volunteer_event.date.to_s}.join(", ")}") if in_range.length > 0
+    end
   end
 
   def date
@@ -120,7 +160,11 @@ class Assignment < ActiveRecord::Base
   }
 
   def first_time_in_area?
-    self.contact and self.volunteer_shift and self.volunteer_shift.volunteer_task_type and !self.contact.volunteer_task_types.include?(self.volunteer_shift.volunteer_task_type) #  and self.contact_id_changed? moved outside because we use update_attributes
+    if self.contact and self.volunteer_shift and self.volunteer_shift.volunteer_task_type
+      return !ContactVolunteerTaskTypeCount.has_volunteered?(self.contact_id, self.volunteer_shift.volunteer_task_type_id)
+    else
+      return false
+    end #  and self.contact_id_changed? moved outside because we use update_attributes
   end
 
   def my_call_status
@@ -136,7 +180,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def sandbox?
-    self.volunteer_shift and self.volunteer_shift.roster and self.volunteer_shift.roster.name.downcase == 'sandbox'
+    self.volunteer_shift and self.volunteer_shift.roster and self.volunteer_shift.roster.sandbox?
   end
 
   def does_conflict?(other)

@@ -1,7 +1,7 @@
 == Upgrading ==
 
 All the symlinks from /usr/share/drupal6 to civicrm
-go to ~/code/latest, which is a manually updated
+go to code/foo/latest, which is a manually updated
 symlink (after "download-version.sh" is ran and all
 is good).
 
@@ -11,7 +11,21 @@ and then:
 http://civicrm/drupal/?q=civicrm/upgrade&reset=1
 may need to be ran after upgrades.
 
+NOTE: After upgrading, you may have to back up the database,
+reinstall civicrm, then restore the old database before proceeding
+with the upgrade scripts (if the configuration file is broken)
+
 == Initial Setup ==
+
+The scripts provided here handle installation and monitoring of updates
+
+There needs to be a /srv/code directory containing a subdir for drupal
+and civicrm. The download scripts can be used to configure the initial
+versions of the software in that directory. Then, the check-version.sh
+script should be installed in cron to provide instructions for updates.
+
+Once drupal, civicrm and fgdb_civicrm_hooks are all installed into place,
+the normal installation procedures can mostly be followed, described below.
 
 === Basic Installation ===
 
@@ -33,8 +47,19 @@ Then do what these URLs say to:
 /drupal/install.php
 /drupal/sites/all/modules/civicrm/install/index.php
 
+After installation, you want to fix sites/default/civicrm.settings.php:
+-define( 'CIVICRM_UF_BASEURL'      , 'http://localhost:8888/drupal/' );
++define( 'CIVICRM_UF_BASEURL'      , '/drupal/' );
+
+To use relative URLs, allowing for use over ssh tunnels and such.
+
+Quick install link (replace PASSWORD):
+http://localhost:8888//drupal/sites/all/modules/civicrm/install/index.php?mysql[username]=drupal7&mysql[server]=localhost&mysql[password]=PASSWORD&mysql[database]=civicrm&drupal[username]=drupal7&drupal[server]=localhost&drupal[password]=PASSWORD&drupal[database]=drupal7&go=1
+
 On install this module to be enabled here:
 http://civicrm/drupal6/?q=admin/build/modules
+
+NOTE: After installing a new database, you may need to log out and back in.
 
 === Setting up account for syncing ===
 
@@ -51,12 +76,25 @@ Set it in the "civicrm" db on their contact: UPDATE civicrm_contact SET api_key 
 === Customizations for our data ===
 
 Add custom fields for fgdb id:
-To do this, go to Administer -> Customize -> Custom Data
-add a fgdb_contacts set for contacts
-add a fgdb_contact_id field, of integer type, make it searchable
-"leave empty, will be set by fgdb."
+To do this, go to Administer -> Custom Data and Screens -> Custom Filds
+add a "FGDB Contact Information" data group used for Contacts
+add a "FGDB Contact ID" field, of integer type, make it searchable
+"Used for database synchronization: leave empty, will be set automatically."
 [do not select "view only", this breaks using API, and therefor our sync process]
-do this again for donations
+
+Modify the options lists our contact method types:
+Go to the "Administer" => "Customize Data and Screens" => "Dropdown
+Options" submenu and go to:
+
+Location Types:
+work, home, other
+
+Phone Types:
+fax, ip, emergency, mobile, other
+
+=== NOT USED: Customizations we might do someday (but not yet) ===
+
+do this again for donations (actually, don't)
 
 For contacts, add custom fields:
 fgdb_default_contract, Alphanumeric Select, Options:
@@ -69,6 +107,3 @@ fgdb_pickup_fee, of type: Money, Text
 fgdb_fully_covered, of type: Boolean
 "can be left empty if unknown."
 
-Modify the options lists under administer tab for our contact method
-types:
-TODO

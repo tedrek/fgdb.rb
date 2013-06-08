@@ -25,7 +25,7 @@ class GraphicReportsController < ApplicationController
       @report.gnuplot_stuff(file, params[:graph_n].to_i)
     end
     respond_to do |format|
-      format.jpeg { render :text => File.read(file) }
+      format.gif { render :text => File.read(file) }
     end
     File.unlink(file)
   end
@@ -89,9 +89,9 @@ class TrendReport
 
   def gnuplot_stuff(tempfile, graph_n)
     Gnuplot.open do |gp|
-      Gnuplot::Plot.new( gp ) do |plot|
+      plot = Gnuplot::Plot.new( gp ) do |plot|
         plot.set "title", self.graph_titles[graph_n]
-        plot.set "terminal", "jpeg"
+        plot.set "terminal", "gif"
         plot.set "output", tempfile
         plot.ylabel ""
         plot.xlabel ""
@@ -544,8 +544,12 @@ class TrendReport
       conditions_with_daterange_for_report(args, "occurred_at")
     end
 
+    def daterange_condition(args, field)
+      {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
+    end
+
     def conditions_with_daterange_for_report(args, field)
-      h = {"#{field}_enabled" => "true", "#{field}_date_type" => "arbitrary", "#{field}_start_date" => args[:start_date], "#{field}_end_date" => args[:end_date], "#{field}_enabled" => "true"}
+      h = daterange_condition(args, field)
       conditions_without_a_daterange_for_report(args, field, h)
     end
 
@@ -714,6 +718,58 @@ class AverageFrontdeskIncomesTrend < TrendReport
       ["cashier_created_by"]
     end
 end
+class NumberOfSystemsSoldByPrintmeType < TrendReport
+  def category
+    "Gizmo"
+  end
+
+  def title
+    "Report of Spec Sheet Types Sold for #{@conditions[:data_type].to_s.humanize}"
+  end
+
+  def default_table_data_types
+    Hash.new("integer")
+  end
+
+  def get_for_timerange(args)
+    ret = {}
+    DB.exec("SELECT types.description, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id) type_id AS type_id FROM spec_sheets JOIN gizmo_events ON spec_sheets.system_id = gizmo_events.system_id JOIN sales ON sale_id = sales.id WHERE sale_id IS NOT NULL AND #{sql_for_report(GizmoEvent, conditions_with_daterange_for_report(args, "occurred_at"))} ORDER BY spec_sheets.system_id, spec_sheets.created_at DESC) AS data JOIN types ON data.type_id = types.id GROUP BY 1 ORDER BY 1;").to_a.each do |r|
+      ret[r["description"]] = r["count"]
+    end
+    return ret
+  end
+
+  def valid_conditions
+    ["sale_type"]
+  end
+end
+
+class NumberOfFinalBuilderTasksBySystem < TrendReport
+  def category
+    "Build"
+  end
+
+  def title
+    "Report of Final Builder Tasks Completed By System for #{@conditions[:data_type].to_s.humanize}"
+  end
+
+  def default_table_data_types
+    Hash.new("integer")
+  end
+
+  def get_for_timerange(args)
+    ret = {}
+    DB.exec("SELECT action, count(*) AS count FROM (SELECT DISTINCT ON (spec_sheets.system_id, action_id) actions.description AS action, type_id, action_id, system_id, spec_sheets.created_at FROM spec_sheets JOIN builder_tasks ON builder_task_id = builder_tasks.id JOIN actions ON actions.id = action_id WHERE #{sql_for_report(SpecSheet, conditions_without_a_daterange_for_report(args, "created_at"))} ORDER BY spec_sheets.system_id, action_id, spec_sheets.created_at DESC) AS spec_sheets WHERE #{sql_for_report(SpecSheet, daterange_condition(args, "created_at"))} GROUP BY 1 ORDER BY 1;").to_a.each do |r|
+      ret[r["action"]] = r["count"]
+    end
+    return ret
+  end
+
+  def valid_conditions
+    ['action', 'type']
+  end
+end
+
 class PrintmeInfoTrend < TrendReport
   def valid_conditions
     ['gizmo_context_id', 'type']
@@ -1036,6 +1092,10 @@ class SalesTotalsTrend < TrendReport
     def title
       "Report of total sales in dollars"
     end
+
+  def valid_conditions
+    ["sale_type"]
+  end
 end
 class DonationTotalsTrend < TrendReport
     def category
@@ -1089,6 +1149,10 @@ class SalesCountsTrend < TrendReport
     def title
       "Report of number of sales"
     end
+
+  def valid_conditions
+    ["sale_type"]
+  end
 end
 class VolunteerHoursByProgramsTrend < TrendReport
     def category
@@ -1112,6 +1176,34 @@ class VolunteerHoursByProgramsTrend < TrendReport
     end
     def breakdown_types
       super - ["Hour"]
+    end
+end
+class VolunteerHoursByTaskTypeTrend < TrendReport
+    def category
+      "Volunteer"
+    end
+
+    def get_for_timerange(args)
+      where_clause = sql_for_report(VolunteerTask, conditions_with_daterange_for_report(args, "date_performed"))
+      res = DB.execute("SELECT volunteer_task_types.description, SUM( duration )
+  FROM volunteer_tasks
+  LEFT JOIN programs ON volunteer_tasks.program_id = programs.id
+  LEFT JOIN volunteer_task_types ON volunteer_tasks.volunteer_task_type_id = volunteer_task_types.id
+  WHERE #{where_clause}
+  GROUP BY volunteer_task_types.id, volunteer_task_types.description
+  ORDER BY volunteer_task_types.description;")
+      Hash[*res.to_a.collect{|x| [x["description"], x["sum"]]}.flatten]
+    end
+
+    def title
+      "Report of volunteer hours by task type"
+    end
+    def breakdown_types
+      super - ["Hour"]
+    end
+
+    def valid_conditions
+      ["volunteer_task_type", "program_id"]
     end
 end
 class DonationsGizmoCountByTypesTrend < TrendReport
@@ -1229,19 +1321,20 @@ class SalesGizmoCountByTypesTrend < TrendReport
     def get_for_timerange(args)
       res = DB.execute("SELECT SUM( gizmo_count ) AS count
 FROM gizmo_events
+JOIN sales ON sale_id = sales.id
 WHERE sale_id IS NOT NULL
 AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:count => res.first["count"]}
     end
 
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id", "sale_type"]
     end
     def title
       "Count of gizmos sold by type"
     end
 end
-class SalesAmountByGizmoTypesTrend < TrendReport
+class TotalSalesAmountByGizmoTypesTrend < TrendReport
     def category
       "Income"
     end
@@ -1253,15 +1346,45 @@ class SalesAmountByGizmoTypesTrend < TrendReport
     def get_for_timerange(args)
       res = DB.execute("SELECT SUM( unit_price_cents * gizmo_count )/100.0 AS due
 FROM gizmo_events
+JOIN sales ON sale_id = sales.id
 WHERE sale_id IS NOT NULL
 AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}")
       return {:amount => res.first["due"]}
     end
     def valid_conditions
-      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id"]
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id", "sale_type"]
     end
     def title
-      "Sales amount by gizmo type"
+      "Total sales amount by gizmo type"
+  end
+end
+class AverageUnitPriceByGizmoTypesTrend < TrendReport
+    def category
+      "Income"
+    end
+
+    def default_table_data_types
+      Hash.new("money")
+    end
+
+    def get_for_timerange(args)
+      h = {}
+      res = DB.execute("SELECT gizmo_types.description as gt, SUM( unit_price_cents * gizmo_count )/SUM(gizmo_count * 100.0) AS avg
+FROM gizmo_events
+JOIN sales ON sale_id = sales.id
+JOIN gizmo_types ON gizmo_type_id = gizmo_types.id
+WHERE sale_id IS NOT NULL
+AND #{sql_for_report(GizmoEvent, occurred_at_conditions_for_report(args))}
+GROUP BY 1").to_a.each do |n|
+        h[n["gt"]] = n["avg"]
+      end
+      return h
+    end
+    def valid_conditions
+      ["gizmo_category_id", "gizmo_type_id", "gizmo_type_group_id", "sale_type"]
+    end
+    def title
+      "Average unit price by gizmo type"
   end
 end
 class NumberOfSalesByCashiersTrend < TrendReport
@@ -1286,6 +1409,36 @@ class NumberOfSalesByCashiersTrend < TrendReport
       Hash[*res.to_a.collect{|x| [x["login"], x["count"]]}.flatten]
     end
 
+  def valid_conditions
+    ["sale_type"]
+  end
+end
+class NumberOfItemsSoldByCashiersTrend < TrendReport
+    def category
+      "Gizmo"
+    end
+
+    def default_table_data_types
+      Hash.new("integer")
+    end
+
+    def title
+      "Number of items sold by Cashier"
+    end
+    def get_for_timerange(args)
+      where_clause = sql_for_report(Sale, conditions_with_daterange_for_report(args, "created_at"))
+      res = DB.execute("SELECT SUM(gizmo_count) AS count, users.login FROM gizmo_events
+ INNER JOIN sales ON sales.id = sale_id
+ LEFT JOIN users ON users.id = sales.cashier_created_by
+ WHERE #{where_clause}
+ GROUP BY users.login
+ ORDER BY users.login")
+      Hash[*res.to_a.collect{|x| [x["login"], x["count"]]}.flatten]
+    end
+
+    def valid_conditions
+      ["gizmo_type_id", "gizmo_type_group_id", "gizmo_category_id", "sale_type"]
+    end
 end
 class TotalAmountOfSalesByCashiersTrend < TrendReport
     def category
@@ -1304,6 +1457,10 @@ class TotalAmountOfSalesByCashiersTrend < TrendReport
       res = DB.execute("SELECT users.login, SUM(payments.amount_cents) FROM payments INNER JOIN sales ON payments.sale_id = sales.id LEFT JOIN users ON users.id = sales.cashier_created_by WHERE #{where_clause} GROUP BY 1;")
       Hash[*res.to_a.collect{|x| [x["login"], x["sum"].to_i / 100.0]}.flatten]
     end
+
+  def valid_conditions
+    ["sale_type"]
+  end
 end
 class NumberOfHoursWorkedByWorkersTrend < TrendReport
     def get_for_timerange(args)

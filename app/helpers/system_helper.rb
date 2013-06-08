@@ -46,8 +46,9 @@ module SystemHelper
       o[:individual_ram_total] = @added_total.to_bytes(1).downcase
       mem_s = @memories.map{|x| x.description}.join(" ")
       o[:memory_type] = "Unknown"
-      for i in ["DDR", "DDR2", "DDR3"]
-        if mem_s.match(/#{i}/i)
+      for i in ["DDR", "DDR2", "DDR2 FB-DIMM", "DDR3"]
+        split = i.split(" ")
+        if mem_s.match(/#{split[0]}/i) && (split[1].nil? || mem_s.match(/#{split[1]}/i))
           o[:memory_type] = i
         end
       end
@@ -55,7 +56,7 @@ module SystemHelper
       # "HD Size" (first, for now at least),
       if @harddrives.first
         o[:hd_size] = @harddrives.first.size
-        o[:hd_size].downcase! unless o[:hd_size].match(/TB/)
+        o[:hd_size].downcase! unless o[:hd_size].nil? or o[:hd_size].match(/TB/)
         o[:hd_count] = @harddrives.count
         o[:hd_type] = @harddrives.first.my_type
         o[:hd_size_total] = @total_hd_size

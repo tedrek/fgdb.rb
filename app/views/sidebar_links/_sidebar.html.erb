@@ -21,6 +21,7 @@ Effect.SlideUp(thing + '_sidebar_section', { duration: the_speed });
 <% aliases, sidebar_hash = sidebar_stuff %>
 <% view_hash = OH.new
    sidebar_hash.each do |main_name, my_hash|
+     if my_hash.class == OH 
      my_hash.each do |this_name, opts|
        klass = eval(opts[:c].classify.pluralize + "Controller")
        if klass.sb_has_required_privileges(opts[:a] || "index")
@@ -28,11 +29,18 @@ Effect.SlideUp(thing + '_sidebar_section', { duration: the_speed });
          view_hash[main_name][this_name] = opts
        end
      end
+     else
+       view_hash[main_name] = my_hash
+     end
    end
    %>
 <div id="sidebar">
   <% view_hash.each do |main_name, my_hash| %>
     <% if my_hash.length > 0 %>
+      <% if my_hash.class == String %>
+      <%= link_to main_name, my_hash, {'target' => '_blank'} %>
+      <div></div>
+      <% else %>
       <a onClick="show_thing('<%= main_name %>')"><%= main_name %></a>
       <div></div>
       <div class="sidebar_section" id="<%= main_name %>_sidebar_section">
@@ -49,6 +57,7 @@ Effect.SlideUp(thing + '_sidebar_section', { duration: the_speed });
           </div>
         <% end %>
       </div>
+      <% end %>
     <% end %>
   <% end %>
 </div>

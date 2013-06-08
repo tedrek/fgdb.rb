@@ -1,6 +1,6 @@
 class Sale < ActiveRecord::Base
   acts_as_userstamp
-
+  validates_presence_of :discount_name
   include GizmoTransaction
   belongs_to :contact
   has_many :payments, :dependent => :destroy, :autosave => :true
@@ -98,7 +98,7 @@ class Sale < ActiveRecord::Base
     head_lines =   ["+---------------------------+",
     "| Free Geek Thrift Store    |",
   "| 1731 SE 10th Ave. PDX     |",
-  "| 10-6 Tues. through Sat.   |",
+  "| 10-6 Mon. through Sat.    |",
   "| freegeek.org/thrift-store |",
    "+---------------------------+"].map{|x| ['center', x]}
     head_lines = head_lines + [[],

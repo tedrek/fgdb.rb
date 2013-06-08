@@ -20,6 +20,21 @@ end
 
 class ApplicationController < ActionController::Base
   protected
+  def _parse_metadata_wo
+    h = Hash.new([])
+    cur = nil
+    File.readlines(File.join(RAILS_ROOT, "config/rt_metadata.txt")).each do |line|
+      line.strip!
+      if line.match(/^== (.+) ==$/)
+        cur = $1
+        h[cur] = []
+      else
+        h[cur] << line.gsub(/^"(.+)"$/) do $1 end
+      end
+    end
+    return h
+  end
+
   def gencsv(*a)
     s = ""
     a = a.flatten
@@ -240,8 +255,8 @@ class ApplicationController < ActionController::Base
   include LineItemHelper
 
   def _civicrm_sync
-    ProcessorDaemon.add_to(params[:controller], params[:id], "civicrm")
-    render :text => "ok"
+    ret = ProcessorDaemon.add_to(params[:controller], params[:id], "civicrm")
+    render :text => (ret ? "ok" : "notok")
   end
 
   def hours_val(cp)
@@ -506,7 +521,7 @@ class ApplicationController < ActionController::Base
     else
       session[:unauthorized_error] = true
       session[:unauthorized_params] = params.inspect
-      redirect_to :controller => 'sidebar_links'
+      redirect_to :controller => 'sidebar_links', :action => 'homepage_index'
       return false
     end
   end
