@@ -236,9 +236,9 @@ class WorkOrdersController < ApplicationController
     File.delete(tempfile)
     t_id.gsub!(/Use of uninitialized value .+ line \d+./, "")
     if t_id.to_i != 0
-      redirect_to :action => :show, :id => t_id, :contact_id => current_user ? current_user.contact_id : nil
+      redirect_to :action => :show, :id => t_id.strip
     else
-      redirect_to :action => :show, :error => t_id, :contact_id => current_user ? current_user.contact_id : nil
+      redirect_to :action => :show, :error => t_id
     end
     end
   end
