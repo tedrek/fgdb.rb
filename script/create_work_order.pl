@@ -80,6 +80,7 @@ my $ticket = RT::Client::REST::Ticket->new(
         'SystemID' => $sys_id,
         'Contact ID' => $geek_id,
         'Warranty' => $warranty,
+        'OS' => $os,
     },
     )->store(text => $content);
 print $ticket->id . "\n";
