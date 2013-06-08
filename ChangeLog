@@ -5,6 +5,8 @@ fgdb.rb (1.0.119) released; urgency=low
     PDFs (Closes: #35528)
   * Properly escape '/' and such when searching for names in TS notes
     (Crash ex: KNtIIS)
+  * Implement OS as a dropdown from the custom field in TS Intake
+    (Closes: #35859)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 26 May 2013 23:07:23 -0700
 
