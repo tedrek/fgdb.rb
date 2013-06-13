@@ -1,11 +1,34 @@
-fgdb.rb (1.0.118) UNRELEASED; urgency=low
+fgdb.rb (1.0.119) released; urgency=low
 
+  * Add a field for volunteer intern titles
+  * Implement volunteer ID badges within the staff badge interface as
+    PDFs (Closes: #35528)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 26 May 2013 23:07:23 -0700
+
+fgdb.rb (1.0.118) released; urgency=low
+
+  * Update some installation details for new versions and also add a
+    new doc/README.maintenance document which includes many different
+    FG PDX specific instructions, such as installation information,
+    other details about routine tasks managing the installation and
+    project in general, and maintaining and upgrading the fgdb
+    installation in our environment (Closes: #32167)
   * Implement warning when logging over 8 hours for volunteers (Closes:
     #35367)
   * Implement a fix for the count of # of times volunteer in sorting to
     include past receiving shifts as well
+    - Also add a fkey to this table, which was missing
+  * Add a few more generics: NoneNoneNoneNone, :[ and April197
+  * Implement flagging customers with notes on the TS intake form
+    (Closes: #35314)
+  * Fix merging contacts, oops (Crash ex: zE9z7Q)
+  * Implement a validation for the new External Type of Box, requiring
+    the issue to be Data Backup (Closes: #35446)
+  * Implement Darren's new links for FD to find volunteer assignments
+    (Closes: #35551)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 12 May 2013 06:50:58 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 14 May 2013 08:54:49 -0700
 
 fgdb.rb (1.0.117) released; urgency=low
 
