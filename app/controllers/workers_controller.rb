@@ -31,11 +31,23 @@ class WorkersController < ApplicationController
     render :action => 'list'
   end
 
-
   def badge
-    if params[:contacts]
+    if params[:contacts] or params[:contact]
+      params[:contacts] ||= ""
+      params[:contacts] += "," + params[:contact][:id] if params[:contact]
       @contacts = Contact.find_all_by_id(params[:contacts].split(/[, ]/).map(&:to_i)).sort_by(&:display_name)
       @workers = @contacts.select{|contact| contact.worker && (contact.volunteer_intern_title.nil? || contact.volunteer_intern_title.length == 0)}
+    end
+  end
+
+  def modify_intern_title
+    cid = params[:id]
+    @contact = Contact.find(cid)
+    @contact.volunteer_intern_title = params[:title]
+    @contact.save
+    render :update do |page|
+      page.hide loading_indicator_id("intern_contact_#{cid}")
+      page.reload
     end
   end
 

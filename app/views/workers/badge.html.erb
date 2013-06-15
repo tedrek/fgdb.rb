@@ -1,12 +1,13 @@
 <% form_tag(:action => "badge") do %>
 <div>
-Enter Contact ID #'s:
-<%= text_field_tag "contacts", params[:contacts] %>
+Find a contact to add to badge printout:
+<%= contact_field '@contacts', "contact_id" %>
+<%= hidden_field_tag "contacts", params[:contacts] %>
 </div>
 
 <br />
 <div style="clear: left">
-<%= submit_tag "Find Contacts" %>
+<%= submit_tag "Add Contact" %>
 </div>
 
 <% end %>
@@ -14,7 +15,13 @@ Enter Contact ID #'s:
 <% if @contacts %>
 <H2>Will generate badges for the following contacts:</H2>
 <% @contacts.each do |x| %>
-#<%= x.id %>: <%= x.first_name %> <%= x.surname %>, <% if !@workers.include?(x) %><%= x.intern_title %><% else %>Staff<% end %><br />
+#<%= x.id %>: <%= x.first_name %> <%= x.surname %>, <% if !@workers.include?(x) %><%= x.intern_title %>
+<% form_remote_tag :url => {:action => "modify_intern_title", :id => x.id}, :loading => "$(#{loading_indicator_id("intern_contact_#{x.id}").to_json}).show();" do %>
+<%= text_field_tag "title", x.volunteer_intern_title.to_s %>
+<%= loading_indicator_tag "intern_contact_#{x.id}" %>
+<%= submit_tag "Update title!" %>
+<% end %>
+<% else %>Staff<% end %><br />
 <% end %>
 <br />
 <% @workers.each do |x| %>
