@@ -271,6 +271,7 @@ class Contact < ActiveRecord::Base
 
   def merge_these_in(arr)
     for other in arr
+      raise if other.id == self.id
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE tech_support_notes SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
