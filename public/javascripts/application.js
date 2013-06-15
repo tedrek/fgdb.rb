@@ -9,7 +9,7 @@ function find_ts_customer_notes() {
 }
 
 function actually_find_ts_customer_notes() {
-  var str = $('open_struct_customer_name').value;
+  var str = encodeURIComponent($('open_struct_customer_name').value);
   // FIXME : update_calc_url + '
   new Ajax.Request('/tech_support_notes/find_notes/' + str, {asynchronous:true, evalScripts:true, onLoading:function(request) {Element.show("ts_customer_search_loading_indicator_id");}});
 }
