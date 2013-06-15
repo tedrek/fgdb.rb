@@ -674,7 +674,7 @@ class Contact < ActiveRecord::Base
 
   def remove_empty_contact_methods
     for contact_method in contact_methods
-      if contact_method.value.nil? or contact_method.value.empty?
+      if (contact_method.value.nil? or contact_method.value.empty?) && (contact_method.details.nil? or contact_method.details.empty?)
         contact_method.destroy
       end
     end
