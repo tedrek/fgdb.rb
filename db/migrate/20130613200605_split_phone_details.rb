@@ -1,6 +1,8 @@
 class SplitPhoneDetails < ActiveRecord::Migration
   def self.up
     add_column :contact_methods, :details, :string
+    DB.exec("ALTER TABLE contact_methods DROP CONSTRAINT contact_methods_not_empty;")
+    DB.exec("ALTER TABLE contact_methods ADD CONSTRAINT contact_methods_not_empty CHECK (char_length(value::text) > 0 OR char_length(details::text) > 0);")
 
     types = ContactMethodType.all.select{|x| x.name.match(/phone|fax/i)}.map(&:id)
     cmethods = ContactMethod.find(:all, :conditions => ['contact_method_type_id IN (?) AND length(value) > 32', types])
