@@ -15,13 +15,17 @@ Find a contact to add to badge printout:
 <% if @contacts %>
 <H2>Will generate badges for the following contacts:</H2>
 <% @contacts.each do |x| %>
-#<%= x.id %>: <%= x.first_name %> <%= x.surname %>, <% if !@workers.include?(x) %><%= x.intern_title %>
+#<%= x.id %>: <%= x.first_name %> <%= x.surname %>,
+<% if !@workers.include?(x) %><%= x.intern_title %>
+
 <% form_remote_tag :url => {:action => "modify_intern_title", :id => x.id}, :loading => "$(#{loading_indicator_id("intern_contact_#{x.id}").to_json}).show();" do %>
 <%= text_field_tag "title", x.volunteer_intern_title.to_s %>
 <%= loading_indicator_tag "intern_contact_#{x.id}" %>
 <%= submit_tag "Update title!" %>
 <% end %>
-<% else %>Staff<% end %><br />
+
+<% else %>Staff<% end %>(<%= link_to "Remove", params.merge(:contact => nil, :contacts => @contacts.map(&:id).select{|y| y != x.id}.join(",")) %>)
+<br />
 <% end %>
 <br />
 <% @workers.each do |x| %>
