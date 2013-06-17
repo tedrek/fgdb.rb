@@ -47,7 +47,7 @@ class WorkersController < ApplicationController
     @contact.save
     render :update do |page|
       page.hide loading_indicator_id("intern_contact_#{cid}")
-      page.reload
+      page << 'window.location.href = "' + url_for(params[:returnopts]) + '"'
     end
   end
 

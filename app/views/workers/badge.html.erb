@@ -26,7 +26,7 @@ Find a contact to add to badge printout:
 <% if !@workers.include?(x) %>
 <%= x.intern_title %> (<%= removeme %>)
 
-<% form_remote_tag :url => {:action => "modify_intern_title", :id => x.id}, :loading => "$(#{loading_indicator_id("intern_contact_#{x.id}").to_json}).show();" do %>
+<% form_remote_tag :url => {:action => "modify_intern_title", :returnopts => params, :id => x.id}, :loading => "$(#{loading_indicator_id("intern_contact_#{x.id}").to_json}).show();" do %>
 <%= text_field_tag "title", x.volunteer_intern_title.to_s %>
 <%= loading_indicator_tag "intern_contact_#{x.id}" %>
 <%= submit_tag "Update title!" %>
