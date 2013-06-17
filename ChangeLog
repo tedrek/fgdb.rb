@@ -1,7 +1,9 @@
 fgdb.rb (1.0.120) UNRELEASED; urgency=low
 
   * Add widget to modify intern title and to add contacts by search to
-    the badge printout set
+    the badge printout set (Closes: #35742)
+    - move widget for viewing/uploading staff image to badge page
+    - implement generating the back side of badges too
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Jun 2013 16:31:01 -0700
 
