@@ -1,3 +1,10 @@
+fgdb.rb (1.0.120) UNRELEASED; urgency=low
+
+  * Add widget to modify intern title and to add contacts by search to
+    the badge printout set
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 15 Jun 2013 16:31:01 -0700
+
 fgdb.rb (1.0.119) released; urgency=low
 
   * Add a field for volunteer intern titles
