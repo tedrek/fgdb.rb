@@ -136,14 +136,15 @@ class WorkersController < ApplicationController
     dir = RAILS_ROOT + "/public/images/workers/"
     filename = dir + "#{@worker.id}.png"
     if !File.writable?(dir)
-      @error = "Cannot write to #{filename}"
-    end
-    if @error.nil? && (io = params[:picture])
+      flash[:error] = "Cannot write to #{filename}"
+    else
       File.unlink(filename) if File.exists?(filename)
-      File.open(filename, 'w') do |f|
-        f.write(io.read)
+       File.open(filename, 'w') do |f|
+        f.write(params[:picture].read)
       end
+      flash[:notice] = "Uploaded new image for worker"
     end
+    redirect_to params[:returnopts]
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
