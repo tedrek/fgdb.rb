@@ -54,7 +54,27 @@ class WorkersController < ApplicationController
   def generate_badges
     badge
     tempf = `mktemp`
-    Prawn::Labels.generate(tempf, @contacts, :type => "Avery5390") do |pdf, contact|
+    orig_c = @contacts
+    for_gen = []
+    while orig_c.length > 0
+      f_new = orig_c.shift(8)
+      f_new += [Contact.new] until f_new.length == 8
+      for_gen = f_new + ([nil] * 8)
+    end
+    Prawn::Labels.generate(tempf, for_gen, :type => "Avery5390") do |pdf, contact|
+      if contact.nil?
+        small = 8
+        medium = 10
+        large = 17
+        pdf.bounding_box [25, pdf.bounds.height], :height => pdf.bounds.height, :width => pdf.bounds.width - 50 do
+          pdf.text "\nThis ID badge belongs to FREE GEEK. If found please return to:\n\n\n", :size => small
+          pdf.text "FREE GEEK\n", :size => large, :align => :center, :style => :bold # TODO: BOLD FIXME
+          pdf.text "1731 SE 10th Ave\nPortland, OR 97214\n\n\n", :size => medium,  :align => :center
+          pdf.text "503.232.9350\ninfo@freegeek.org\nwww.freegeek.org\n\n\n", :size => small, :align => :center
+          pdf.text "FREE GEEK is generally open between the hours of 10:00 am and 6:00 pm Tuesdays through Saturdays. Due to potential closures, it is wise to call before coming.", :size => small
+        end
+      else
+        unless contact.id.nil?
       top_h = 5 * pdf.bounds.height / 7.0
       low_h = 2 * pdf.bounds.height / 7.0
       name = contact.first_name + "\n" + contact.surname
@@ -98,10 +118,11 @@ class WorkersController < ApplicationController
           n = "#" + n
           pdf.text n, :align => :center
         end
-
+        end
       end
       #  pdf.stroke_color "000000"
       #  pdf.stroke_bounds # TODO: removeme
+      end
     end
     sdata = File.open(tempf).read
     File.delete(tempf)
