@@ -259,9 +259,9 @@ class Contact < ActiveRecord::Base
 
   def fully_covered_
     case self.fully_covered
-    when nil: 'nil'
-    when true: "yes"
-    when false: "no"
+    when nil then 'nil'
+    when true then "yes"
+    when false then "no"
     end
   end
 
