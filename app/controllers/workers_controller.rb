@@ -105,7 +105,7 @@ class WorkersController < ApplicationController
         one_w = 3 * pdf.bounds.width / 9.0
         two_w = 6 * pdf.bounds.width / 9.0
         pdf.bounding_box [0, pdf.bounds.height], :width => one_w, :height => pdf.bounds.height do
-          pdf.image "/var/www/fgdb.rb/public/images/freegeeklogo.png", :fit => [pdf.bounds.width - 10, low_h], :vposition => :center, :position => :center
+          pdf.image RAILS_ROOT + "/public/images/freegeeklogo.png", :fit => [pdf.bounds.width - 10, low_h], :vposition => :center, :position => :center
         end
         pdf.bounding_box [one_w, pdf.bounds.height], :width => two_w, :height => pdf.bounds.height do
           pdf.text name, :align => :center
