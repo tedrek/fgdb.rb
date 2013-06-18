@@ -1,12 +1,19 @@
+<% if flash[:error] %>
+<span class="error">
+Error: <%= flash[:error] %><br /><br />
+</span>
+<% end %>
+
 <% form_tag(:action => "badge") do %>
 <div>
-Enter Contact ID #'s:
-<%= text_field_tag "contacts", params[:contacts] %>
+Find a contact to add to badge printout:
+<%= contact_field '@contacts', "contact_id" %>
+<%= hidden_field_tag "contacts", params[:contacts] %>
 </div>
 
 <br />
 <div style="clear: left">
-<%= submit_tag "Find Contacts" %>
+<%= submit_tag "Add Contact" %>
 </div>
 
 <% end %>
@@ -14,11 +21,33 @@ Enter Contact ID #'s:
 <% if @contacts %>
 <H2>Will generate badges for the following contacts:</H2>
 <% @contacts.each do |x| %>
-#<%= x.id %>: <%= x.first_name %> <%= x.surname %>, <% if !@workers.include?(x) %><%= x.intern_title %><% else %>Staff<% end %><br />
+<% removeme = link_to "Remove", params.merge(:contact => nil, :contacts => @contacts.map(&:id).select{|y| y != x.id}.join(",")) %>
+#<%= x.id %>: <%= x.first_name %> <%= x.surname %>,
+<% if !@workers.include?(x) %>
+<%= x.intern_title %> (<%= removeme %>)
+
+<% form_remote_tag :url => {:action => "modify_intern_title", :returnopts => params, :id => x.id}, :loading => "$(#{loading_indicator_id("intern_contact_#{x.id}").to_json}).show();" do %>
+<%= text_field_tag "title", x.volunteer_intern_title.to_s %>
+<%= loading_indicator_tag "intern_contact_#{x.id}" %>
+<%= submit_tag "Update title!" %>
+<% end %>
+
+<% else %>
+Staff (<%= removeme %>)
+
+<br />Current image:
+<img style="max-height: 120px; max-width: 160px;" src="/images/workers/<%= x.worker ? x.worker.id : 0 %>.png" alt="none" /><br />
+Upload a .png image for <%= x.worker.name %>:
+<% form_tag({:action => "upload", :returnopts => params, :id => x.worker.id}, :multipart => true) do %>
+  <%= file_field_tag 'picture' %>
+  <%= submit_tag "Upload" %>
+<% end %>
+
+<% end %>
+<br />
 <% end %>
 <br />
 <% @workers.each do |x| %>
-<%= link_to "Upload staff image for #{x.worker.name}", {:action => "upload", :id => x.worker.id}, :target => "_blank" %> <br />
 <% end %>
 <br />
 <%= button_to "Generate PDF", params.merge({:action => "generate_badges"}) %>

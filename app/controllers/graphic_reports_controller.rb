@@ -1003,7 +1003,7 @@ class MasterGizmoFlowTrend < TrendReport
     @graph_titles[8] = "Sales Rate"
 
     @data[9] = OH.new
-    sales_totals = child_report_for_argslist(SalesAmountByGizmoTypesTrend, argslist)
+    sales_totals = child_report_for_argslist(TotalSalesAmountByGizmoTypesTrend, argslist)
     @data[9][:sales] = sales_totals.data[0][:amount]
     @data[9][:sold] = @data[0][:sold]
     @data[9][:avg_price] = []

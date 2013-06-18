@@ -42,6 +42,7 @@ $data{"Type of Box"} = $ticket->cf('Type of Box');
 $data{"Box Source"} = $ticket->cf('Box source');
 $data{"System ID"} = $ticket->cf('SystemID');
 $data{"Warranty"} = $ticket->cf('Warranty');
+$data{"OS"} = $ticket->cf('OS');
 my $issue = $ticket->cf('Tech Support Issue');
 if(ref($issue) =~ /ARRAY/) {
     $data{"Issues"} = join ", ", @{$issue};

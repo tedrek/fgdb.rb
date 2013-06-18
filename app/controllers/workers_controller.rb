@@ -31,18 +31,50 @@ class WorkersController < ApplicationController
     render :action => 'list'
   end
 
-
   def badge
-    if params[:contacts]
+    if params[:contacts] or params[:contact]
+      params[:contacts] ||= ""
+      params[:contacts] += "," + params[:contact][:id] if params[:contact]
       @contacts = Contact.find_all_by_id(params[:contacts].split(/[, ]/).map(&:to_i)).sort_by(&:display_name)
       @workers = @contacts.select{|contact| contact.worker && (contact.volunteer_intern_title.nil? || contact.volunteer_intern_title.length == 0)}
+    end
+  end
+
+  def modify_intern_title
+    cid = params[:id]
+    @contact = Contact.find(cid)
+    @contact.volunteer_intern_title = params[:title]
+    @contact.save
+    render :update do |page|
+      page.hide loading_indicator_id("intern_contact_#{cid}")
+      page << 'window.location.href = "' + url_for(params[:returnopts]) + '"'
     end
   end
 
   def generate_badges
     badge
     tempf = `mktemp`
-    Prawn::Labels.generate(tempf, @contacts, :type => "Avery5390") do |pdf, contact|
+    orig_c = @contacts
+    for_gen = []
+    while orig_c.length > 0
+      f_new = orig_c.shift(8)
+      f_new += [Contact.new] until f_new.length == 8
+      for_gen = f_new + ([nil] * 8)
+    end
+    Prawn::Labels.generate(tempf, for_gen, :type => "Avery5390") do |pdf, contact|
+      if contact.nil?
+        small = 8
+        medium = 10
+        large = 17
+        pdf.bounding_box [25, pdf.bounds.height], :height => pdf.bounds.height, :width => pdf.bounds.width - 50 do
+          pdf.text "\nThis ID badge belongs to FREE GEEK. If found please return to:\n\n\n", :size => small
+          pdf.text "FREE GEEK\n", :size => large, :align => :center, :style => :bold # TODO: BOLD FIXME
+          pdf.text "1731 SE 10th Ave\nPortland, OR 97214\n\n\n", :size => medium,  :align => :center
+          pdf.text "503.232.9350\ninfo@freegeek.org\nwww.freegeek.org\n\n\n", :size => small, :align => :center
+          pdf.text "FREE GEEK is generally open between the hours of 10:00 am and 6:00 pm Tuesdays through Saturdays. Due to potential closures, it is wise to call before coming.", :size => small
+        end
+      else
+        unless contact.id.nil?
       top_h = 5 * pdf.bounds.height / 7.0
       low_h = 2 * pdf.bounds.height / 7.0
       name = contact.first_name + "\n" + contact.surname
@@ -50,9 +82,10 @@ class WorkersController < ApplicationController
         if @workers.include?(contact)
           one_w = 2 * pdf.bounds.width / 9.0
           two_w = 7 * pdf.bounds.width / 9.0
-          pdf.bounding_box [0, pdf.bounds.height], :width => one_w, :height => pdf.bounds.height do
+          pdf.bounding_box [0 + 5, pdf.bounds.height - 30], :width => one_w - 5, :height => pdf.bounds.height - 30 do
             pdf.y -= 2
-            pdf.text "STAFF", :size => 32, :align => :center
+            # 26, :style => [:bold]
+            pdf.text "<b>STAFF</b>", :size => 28, :align => :center, :leading => -8, :inline_format => true
           end
           pdf.bounding_box [one_w, pdf.bounds.height], :width => two_w, :height => pdf.bounds.height do
             pic = RAILS_ROOT + "/public/images/workers/#{contact.worker.id}.png"
@@ -85,10 +118,11 @@ class WorkersController < ApplicationController
           n = "#" + n
           pdf.text n, :align => :center
         end
-
+        end
       end
       #  pdf.stroke_color "000000"
       #  pdf.stroke_bounds # TODO: removeme
+      end
     end
     sdata = File.open(tempf).read
     File.delete(tempf)
@@ -102,14 +136,15 @@ class WorkersController < ApplicationController
     dir = RAILS_ROOT + "/public/images/workers/"
     filename = dir + "#{@worker.id}.png"
     if !File.writable?(dir)
-      @error = "Cannot write to #{filename}"
-    end
-    if @error.nil? && (io = params[:picture])
+      flash[:error] = "Cannot write to #{filename}"
+    else
       File.unlink(filename) if File.exists?(filename)
-      File.open(filename, 'w') do |f|
-        f.write(io.read)
+       File.open(filename, 'w') do |f|
+        f.write(params[:picture].read)
       end
+      flash[:notice] = "Uploaded new image for worker"
     end
+    redirect_to params[:returnopts]
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)

@@ -114,10 +114,6 @@ class WorkOrdersController < ApplicationController
     @errors.add("summary", "is mandatory") if @data["Summary"].to_s.length == 0
     @errors.add("comment", "in description is mandatory") if @data["Initial Content"].to_s.length == 0
     ic = []
-    if !@work_order.os.to_s.empty?
-      ic << "Operating system info provided: " + @work_order.os
-      #+ "\n" + @data["Initial Content"]
-    end
     if !@work_order.additional_items.to_s.empty?
       ic << "Additional items left with tech support: " + @work_order.additional_items
     end
@@ -236,10 +232,14 @@ class WorkOrdersController < ApplicationController
     f.write(json)
     f.close
 
-    t_id = `#{RAILS_ROOT}/script/create_work_order.pl #{tempfile}`
+    t_id = `#{RAILS_ROOT}/script/create_work_order.pl #{tempfile} 2>&1`
     File.delete(tempfile)
-    redirect_to :action => :show, :id => t_id, :contact_id => current_user ? current_user.contact_id : nil
-
+    t_id.gsub!(/Use of uninitialized value .+ line \d+./, "")
+    if t_id.to_i != 0
+      redirect_to :action => :show, :id => t_id.strip
+    else
+      redirect_to :action => :show, :error => t_id
+    end
     end
   end
 

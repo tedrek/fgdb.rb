@@ -271,6 +271,7 @@ class Contact < ActiveRecord::Base
 
   def merge_these_in(arr)
     for other in arr
+      raise if other.id == self.id
       connection.execute("UPDATE volunteer_tasks SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE tech_support_notes SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
       connection.execute("UPDATE donations SET contact_id = #{self.id} WHERE contact_id = #{other.id}")
@@ -304,6 +305,7 @@ class Contact < ActiveRecord::Base
       if other.contact_duplicate
         ContactDuplicate.delete(other.contact_duplicate)
       end
+      connection.execute("DELETE FROM contact_volunteer_task_type_counts WHERE contact_id = #{other.id}")
       connection.execute("DELETE FROM contacts WHERE id = #{other.id}")
     end
     if self.contact_duplicate && ContactDuplicate.find_all_by_dup_check(self.contact_duplicate.dup_check).length == 1
@@ -673,7 +675,7 @@ class Contact < ActiveRecord::Base
 
   def remove_empty_contact_methods
     for contact_method in contact_methods
-      if contact_method.value.nil? or contact_method.value.empty?
+      if (contact_method.value.nil? or contact_method.value.empty?) && (contact_method.details.nil? or contact_method.details.empty?)
         contact_method.destroy
       end
     end
