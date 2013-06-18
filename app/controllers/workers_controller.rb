@@ -1,4 +1,5 @@
 require 'barby'
+require 'barby/barcode/code_39'
 require 'barby/outputter/rmagick_outputter'
 require 'stringio'
 require "prawn"
