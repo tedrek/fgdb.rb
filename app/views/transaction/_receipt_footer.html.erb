@@ -32,7 +32,7 @@
           <% end %>
           <% form_tag({:action => "mail_pdf", :id => params[:id], :gizmo_context_id => params[:gizmo_context_id]}) do %>
             <%= hidden_field_tag('show_suggested', @donation.invoiced? ? 'true' : 'false', {:id => "show_suggested_2"}) %>
-            <%= hash = {} %>
+            <% hash = {} %>
             <% if @txn.contact_id %>
               Choose an e-mail address to send to:</br >
               <% @txn.contact.contact_methods.select{|x| x.contact_method_type.name.match(/email/)}.each do |x| %>
