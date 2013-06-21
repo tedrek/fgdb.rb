@@ -502,7 +502,9 @@ class TransactionController < ApplicationController
     pdf = gen_pdf
     type = @txn.invoiced? ? "invoice" : "receipt"
     filename = "donation_#{type}_#{params[:id]}.pdf"
-    send_data pdf.render, :filename => filename,
+    sdata = pdf.render
+    sdata.force_encoding('BINARY')
+    send_data sdata, :filename => filename,
                     :type => "application/pdf"
   end
 

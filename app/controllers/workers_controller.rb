@@ -127,6 +127,7 @@ class WorkersController < ApplicationController
     end
     sdata = File.open(tempf).read
     File.delete(tempf)
+    sdata.force_encoding('BINARY')
     send_data sdata, :filename => "badges.pdf",
                     :type => "application/pdf"
   end

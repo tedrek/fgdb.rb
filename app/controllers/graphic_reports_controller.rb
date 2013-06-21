@@ -24,8 +24,10 @@ class GraphicReportsController < ApplicationController
       @report.generate_report_data
       @report.gnuplot_stuff(file, params[:graph_n].to_i)
     end
+    sdata = File.read(file)
+    sdata.force_encoding('BINARY')
     respond_to do |format|
-      format.gif { render :text => File.read(file) }
+      format.gif { render :text => sdata }
     end
     File.unlink(file)
   end
