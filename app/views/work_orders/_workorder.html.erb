@@ -55,5 +55,5 @@ Notes:<br />
 <br />
 <span style="font-size: 16pt; float: right;">Recv'd by: #<%= value_or_none(data, "Technician ID") %> Date: <%= data["Created"].nil? ? Date.today : Date.parse(data["Created"]).to_s %></span>
 <div style="page-break-before: always; font-size: 12px; clear: both; width: 100%; height: 930px; border: 1px solid black;">
-<%= File.readlines("config/TS_TOS.html").to_s %>
+<%= File.readlines("config/TS_TOS.html").join("") %>
 </div>
