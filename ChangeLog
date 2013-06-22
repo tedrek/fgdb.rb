@@ -4,6 +4,8 @@ fgdb.rb (1.0.120) released; urgency=low
     the badge printout set (Closes: #35742)
     - move widget for viewing/uploading staff image to badge page
     - implement generating the back side of badges too
+  * Do not preseed the contacts email address and phone number, in case
+    it is of the incorrect format or outdated
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 17 Jun 2013 19:11:14 -0700
 
@@ -19,6 +21,7 @@ fgdb.rb (1.0.119) released; urgency=low
   * Add gizmo limiting conditions to the gizmos report (Closes: #35976)
   * Split out long phone number values in contact methods to an
     additional details field for text explanation
+  * Fix parsing with new version of lshw in squeeze (Closes: #35847)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 26 May 2013 23:07:23 -0700
 
