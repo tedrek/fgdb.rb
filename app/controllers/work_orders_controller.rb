@@ -145,8 +145,8 @@ class WorkOrdersController < ApplicationController
           if trans.contact
             @work_order.adopter_name = trans.contact.display_name
             @work_order.adopter_id = trans.contact_id.to_s
-            @work_order.phone_number = trans.contact.phone_number.to_s if @work_order.phone_number.to_s.strip.length == 0
-            @work_order.email = trans.contact.mailing_list_email.to_s if @work_order.email.to_s.strip.length == 0
+#            @work_order.phone_number = trans.contact.phone_number.to_s if @work_order.phone_number.to_s.strip.length == 0
+#            @work_order.email = trans.contact.mailing_list_email.to_s if @work_order.email.to_s.strip.length == 0
 
           desc = ge.gizmo_type.description
           b_type = nil
