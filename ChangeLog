@@ -2,8 +2,9 @@ fgdb.rb (1.0.121) UNRELEASED; urgency=low
 
   * fix the discount field to update back to none when switching away
     from a named contact
+  * Add rendering system type to printme options (Closes: #36141)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 18 Jun 2013 18:15:03 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Fri, 21 Jun 2013 20:48:55 -0700
 
 fgdb.rb (1.0.120) released; urgency=low
 
