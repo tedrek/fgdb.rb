@@ -12,6 +12,8 @@ fgdb.rb (1.0.120) released; urgency=low
     the badge printout set (Closes: #35742)
     - move widget for viewing/uploading staff image to badge page
     - implement generating the back side of badges too
+  * Do not preseed the contacts email address and phone number, in case
+    it is of the incorrect format or outdated
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 17 Jun 2013 19:11:14 -0700
 
