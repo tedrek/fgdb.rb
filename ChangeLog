@@ -1,4 +1,4 @@
-fgdb.rb (1.0.121) UNRELEASED; urgency=low
+fgdb.rb (1.0.121) released; urgency=low
 
   * fix the discount field to update back to none when switching away
     from a named contact
@@ -9,7 +9,7 @@ fgdb.rb (1.0.121) UNRELEASED; urgency=low
 	desk, volunteers must have prerequisites checked and complete an
 	application approved by Lynnae.
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 23 Jun 2013 21:06:44 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 23 Jun 2013 21:37:52 -0700
 
 fgdb.rb (1.0.120) released; urgency=low
 
