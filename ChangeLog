@@ -4,6 +4,10 @@ fgdb.rb (1.0.121) UNRELEASED; urgency=low
     from a named contact
   * Add rendering system type to printme options (Closes: #36141)
   * Add Prebuild Volunteer Task Type (Closes: #36142)
+    - Also, when editing an available volunteer shift, alert the user:
+	NOTE: Laptop prebuild shifts should not be assigned by the front
+	desk, volunteers must have prerequisites checked and complete an
+	application approved by Lynnae.
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 23 Jun 2013 21:06:44 -0700
 
