@@ -8,7 +8,7 @@ class SoapsBase
 
   def add_method(name, *param)
     namespace = "urn:" + self.class.to_s.underscore.sub("soap_handler/", "").sub(/_api$/, "")
-    puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
+#    puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
     MyAPIPort.port.add_method(self, name, namespace, *param)
   end
 
@@ -23,7 +23,7 @@ end
 end
 
 Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
-puts "Loading: #{x}"
-  require x # TODO: require_dep ?
-SOAP::SoapsBase.subclasses.map{|x| x.constantize}.each{|x| x.new}
+# puts "Loading API: #{x}"
+ require_dependency x
 }
+SOAP::SoapsBase.subclasses.map{|x| x.constantize}.each{|x| x.new}

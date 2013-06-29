@@ -13,7 +13,6 @@ module Soap4r
     end
 
     def call(env)
-      puts env.keys
       if env['PATH_INFO'].match(self.class.endpoint) && !env['HTTP_SOAPACTION'].nil?
         handle(env)
       else

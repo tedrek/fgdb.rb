@@ -1,3 +1,5 @@
+require_dependency RAILS_ROOT + "/app/helpers/system_helper.rb"
+
 class PrintmeAPI < SOAP::SoapsBase
   include SystemHelper
 
@@ -255,7 +257,7 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def get_system_id(xml)
-    sp = SystemParser.parse(xml)
+    sp = SystemHelper::SystemParser.parse(xml)
     return sp.find_system_id
   end
 
@@ -267,3 +269,4 @@ class PrintmeAPI < SOAP::SoapsBase
   #####
   public
 end
+
