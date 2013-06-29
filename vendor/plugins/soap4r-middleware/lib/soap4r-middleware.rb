@@ -13,7 +13,8 @@ module Soap4r
     end
 
     def call(env)
-      if env['PATH_INFO'].match(self.class.endpoint) &&  #  FIXME: TODOO: todo    if env['HTTP_SOAPAction']
+      puts env.keys
+      if env['PATH_INFO'].match(self.class.endpoint) && !env['HTTP_SOAPACTION'].nil?
         handle(env)
       else
         # we can act as both a middleware and an app
@@ -36,7 +37,7 @@ module Soap4r
       status, headers, body = setup_response(conn_data, env)
       [ status, headers, body ]
     rescue => e
-      raise "Fixme"
+      raise
       message = e.message
       fault = SOAP::SOAPFault.new(SOAP::SOAPString.new("soaps"),
                           SOAP::SOAPString.new(message),

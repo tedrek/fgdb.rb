@@ -1,15 +1,14 @@
 class MyAPIPort
+  def initialize(router)
+    puts "ONCE"
+    @router = router
+  end
 end
 
 class MyAPIMiddleware < Soap4r::Middleware::Base
-  def initialize(*args)
-    puts "ONCE"
-    super(*args)
-  end
-
   setup do
     self.endpoint = %r{^/}
-    servant = MyAPIPort.new
+    servant = MyAPIPort.new(@router)
 #    MyAPIPort::Methods.each do |definitions|
 #      opt = definitions.last
 #      if opt[:request_style] == :document
@@ -32,28 +31,6 @@ class SOAP::RPC::Router
   end
 end
 
-module SOAP
-
-class SoapsBase
-#  include ApplicationHelper
-  def initialize(router)
-    @router = router
-    add_methods
-  end
-  def add_method(name, *param)
-    namespace = "urn:" + self.class.to_s.underscore.sub("soap_handler/", "").sub(/_api$/, "")
-#    puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
-    @router.send(:my_add_method, self, name, namespace, *param)
-  end
-  def error(e, msg = "")
-    ret = save_exception_data(e)
-    message = msg + e.message + " (crash id #{ret["crash_id"]})"
-    SOAP::SOAPFault.new(SOAP::SOAPString.new("soaps"),
-                        SOAP::SOAPString.new(message),
-                        SOAP::SOAPString.new(self.class.name))
-  end
-end
-end
 
 # TODO
 #Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
