@@ -1,14 +1,15 @@
+module SOAP
 class SoapsBase
   include ApplicationHelper
-  def initialize(router)
-    @router = router
+
+  def initialize
     add_methods
   end
 
   def add_method(name, *param)
     namespace = "urn:" + self.class.to_s.underscore.sub("soap_handler/", "").sub(/_api$/, "")
     puts "Adding soap method {#{namespace}}#{name}(#{param.join(", ")})"
-    @router.send(:my_add_method, self, name, namespace, *param)
+    MyAPIPort.port.add_method(self, name, namespace, *param)
   end
 
   def error(e, msg = "")
@@ -19,3 +20,10 @@ class SoapsBase
                         SOAP::SOAPString.new(self.class.name))
   end
 end
+end
+
+Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+puts "Loading: #{x}"
+  require x # TODO: require_dep ?
+SOAP::SoapsBase.subclasses.map{|x| x.constantize}.each{|x| x.new}
+}

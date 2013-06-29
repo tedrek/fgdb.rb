@@ -1,7 +1,20 @@
 class MyAPIPort
+  attr_reader :router
+
+  def self.port
+    @@port
+  end
+
   def initialize(router)
-    puts "ONCE"
     @router = router
+    @@port = self
+  end
+
+  def add_method(obj, name, namespace, *param)
+    qname = XSD::QName.new(namespace, name)
+    soapaction = nil
+    param_def = SOAP::RPC::SOAPMethod.derive_rpc_param_def(obj, name, *param)
+    @router.add_rpc_operation(obj, qname, soapaction, name, param_def)
   end
 end
 
@@ -14,28 +27,13 @@ class MyAPIMiddleware < Soap4r::Middleware::Base
 #      if opt[:request_style] == :document
 #        @router.add_document_operation(servant, *definitions)
 #      else
-#        @router.add_rpc_operation(servant, *definitions)
+#        @router
 #      end
 #    end
 #    self.mapping_registry = UrnMyAPIMappingRegistry::EncodedRegistry
 #    self.literal_mapping_registry = UrnMyAPIMappingRegistry::LiteralRegistry
   end
 end
-
-class SOAP::RPC::Router
-  def my_add_method(obj, name, namespace, *param)
-    qname = XSD::QName.new(namespace, name)
-    soapaction = nil
-    param_def = SOAP::RPC::SOAPMethod.derive_rpc_param_def(obj, name, *param)
-    self.add_rpc_operation(obj, qname, soapaction, name, param_def)
-  end
-end
-
-
-# TODO
-#Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
-#  require_dependency x
-#}
 
 #module SOAP
 #class SoapHandler
