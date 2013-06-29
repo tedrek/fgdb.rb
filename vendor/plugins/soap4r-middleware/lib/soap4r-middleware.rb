@@ -13,7 +13,7 @@ module Soap4r
     end
 
     def call(env)
-      if env['PATH_INFO'].match(self.class.endpoint)
+      if env['PATH_INFO'].match(self.class.endpoint) &&  #  FIXME: TODOO: todo    if env['HTTP_SOAPAction']
         handle(env)
       else
         # we can act as both a middleware and an app
@@ -30,14 +30,28 @@ module Soap4r
           'Allow' => 'POST',
           'Content-Type' => 'text/plain' }, []
       end
-
       conn_data = ::SOAP::StreamHandler::ConnectionData.new
       setup_request(conn_data, env)
       conn_data = self.class.router.route(conn_data)
       status, headers, body = setup_response(conn_data, env)
       [ status, headers, body ]
-    rescue
-      raise # TODO -- do we 500 right here, or let the exception bubble up?
+    rescue => e
+      raise "Fixme"
+      message = e.message
+      fault = SOAP::SOAPFault.new(SOAP::SOAPString.new("soaps"),
+                          SOAP::SOAPString.new(message),
+                          SOAP::SOAPString.new(self.class.name))
+
+      env = SOAPEnvelope.new(SOAPHeader.new, SOAPBody.new(fault, true))
+      opt = {}
+      opt[:external_content] = nil
+      response_string = SOAP::Processor.marshal(env, opt)
+      conn_data = StreamHandler::ConnectionData.new(response_string)
+      conn_data.is_fault = true
+      status, headers, body = setup_response(conn_data, env)
+      ret = [ status, headers, body ]
+      puts ret.inspect
+      ret
     end
 
     def setup_request(conn_data, env)
@@ -55,19 +69,15 @@ module Soap4r
       headers = {}
       body = []
       headers['content-type'] = conn_data.send_contenttype
-      # TODO: cookies?
-      if conn_data.is_nocontent
-        status = 202 # ACCEPTED
-      elsif conn_data.is_fault
+      if conn_data.is_fault
         # rather than sending the 500 here, let's bubble up the exception so the
         # parent application can do with it what it will. The only downside is
         # soap4r has already converted the exception into a soap response body at
         # this point, which isn't what we want at all.
         # maybe someday i'll re-parse the response or something. but not today.
-        raise conn_data.send_string
-      else
-        body << conn_data.send_string
+        status = 500
       end
+      body << conn_data.send_string
       return status, headers, body
     end
 
