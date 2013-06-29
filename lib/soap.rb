@@ -1,8 +1,27 @@
-$LOAD_PATH.unshift(File.join(RAILS_ROOT, "vendor", "soap4r"))
-require 'xsd/datatypes'
-require 'soap/mapping'
-require 'soap/rpc/element'
-require 'soap/rpc/soaplet'
+class MyAPIPort
+end
+
+class MyAPIMiddleware < Soap4r::Middleware::Base
+  def initialize(*args)
+    puts "ONCE"
+    super(*args)
+  end
+
+  setup do
+    self.endpoint = %r{^/}
+    servant = MyAPIPort.new
+#    MyAPIPort::Methods.each do |definitions|
+#      opt = definitions.last
+#      if opt[:request_style] == :document
+#        @router.add_document_operation(servant, *definitions)
+#      else
+#        @router.add_rpc_operation(servant, *definitions)
+#      end
+#    end
+#    self.mapping_registry = UrnMyAPIMappingRegistry::EncodedRegistry
+#    self.literal_mapping_registry = UrnMyAPIMappingRegistry::LiteralRegistry
+  end
+end
 
 class SOAP::RPC::Router
   def my_add_method(obj, name, namespace, *param)
@@ -16,7 +35,7 @@ end
 module SOAP
 
 class SoapsBase
-  include ApplicationHelper
+#  include ApplicationHelper
   def initialize(router)
     @router = router
     add_methods
@@ -36,44 +55,45 @@ class SoapsBase
 end
 end
 
-Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
-  require_dependency x
-}
+# TODO
+#Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+#  require_dependency x
+#}
 
-module SOAP
-class SoapHandler
-  def handle(req, res)
-    @mysoaplet.do_POST(req, res)
-    res
-  end
-
-  def setup
-    router = SOAP::RPC::Router.new("Soaps")
-Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
-  require_dependency x
-}
-
-
-#      puts "Loading api from " + x
-#    Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
-    SOAP::SoapsBase.subclasses.map{|x| x.constantize}.each{|x|
-      x.new(router)
-#      eval("SOAP::#{File.basename(x).capitalize.sub(/.rb$/, "")}API.new(router)")
-    }
-    SOAP::RPC::SOAPlet.new(router)
-  end
-
-  def initialize
-    # remember all of the stuff between requests if we are in production mode
-    @mysoaplet = setup
-  end
-end
-end
-
-# might regain its usefulness with rails 3:
-
-#class ActionController::CgiResponse
-#  def status=(thing)
+#module SOAP
+#class SoapHandler
+#  def handle(req, res)
+#    @mysoaplet.do_POST(req, res)
+#    res
+#  end
+#
+#  def setup
+#    router = SOAP::RPC::Router.new("Soaps")
+#Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+#  require_dependency x
+#}
+#
+#
+##      puts "Loading api from " + x
+##    Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+#    SOAP::SoapsBase.subclasses.map{|x| x.constantize}.each{|x|
+#      x.new(router)
+##      eval("SOAP::#{File.basename(x).capitalize.sub(/.rb$/, "")}API.new(router)")
+#    }
+#    SOAP::RPC::SOAPlet.new(router)
+#  end
+#
+#  def initialize
+#    # remember all of the stuff between requests if we are in production mode
+#    @mysoaplet = setup
+#  end
+#end
+#end
+#
+## might regain its usefulness with rails 3:
+#
+##class ActionController::CgiResponse
+##  def status=(thing)
 #    self.headers['Status'] = thing.to_s
 #  end
 #  def []=(a,b)

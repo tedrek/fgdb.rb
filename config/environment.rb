@@ -7,7 +7,15 @@ if File.exists?(__FILE__.sub(/\.rb$/, ".local.rb"))
 end
 
 # Bootstrap the Rails environment, frameworks, and default configuration
+
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', "vendor", "soap4r"))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', "vendor", "plugins", "soap4r-middleware", "lib"))
+
 require File.join(File.dirname(__FILE__), 'boot')
+
+require 'soap4r-middleware'
+
+require File.join(File.dirname(__FILE__), '..', 'lib', 'soap.rb')
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -18,6 +26,8 @@ Rails::Initializer.run do |config|
   # Skip frameworks you're not going to use. To use Rails without a database
   # you must remove the Active Record framework.
   # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
+
+  config.middleware.use MyAPIMiddleware
 
   # Specify gems that this application depends on. 
   # They can then be installed with "rake gems:install" on new installations.
