@@ -10,8 +10,10 @@ fgdb.rb (1.0.122) UNRELEASED; urgency=low
     section
   * Add monthly volunteer milestone report in parallel to the biweekly
     one (Closes: #35981)
+  * Add mode for disallowing walkin volunteers, which autocloses
+    available shifts (Closes: #36228)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Jun 2013 16:51:25 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Jun 2013 16:59:23 -0700
 
 fgdb.rb (1.0.121) released; urgency=low
 

@@ -9,6 +9,13 @@ class VolunteerEventsController < ApplicationController
   public
   layout :with_sidebar
 
+  def toggle_nowalkins
+    v = VolunteerEvent.find_by_id(params[:id])
+    v.nowalkins = !v.nowalkins
+    v.save!
+    redirect_to :back
+  end
+
   def index
     redirect_to :controller => "assignments"
     # @volunteer_events = VolunteerEvent.find(:all)
