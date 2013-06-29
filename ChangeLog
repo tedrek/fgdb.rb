@@ -6,8 +6,10 @@ fgdb.rb (1.0.122) UNRELEASED; urgency=low
     Pickup, Education, Tech Support and Other (Closes: #35808)
     - Note: reference info for TS ticket # can be added with Ctrl-<e>
       to the standard description field
+  * Add a link for adding repeating interns to the sked admin sidebar
+    section
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Jun 2013 16:35:45 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sat, 29 Jun 2013 16:38:56 -0700
 
 fgdb.rb (1.0.121) released; urgency=low
 
