@@ -7,7 +7,8 @@ fgdb.rb (1.0.122) UNRELEASED; urgency=low
     - Note: reference info for TS ticket # can be added with Ctrl-<e>
       to the standard description field
   * Add a link for adding repeating interns to the sked admin sidebar
-    section
+    section (Closes: #36012)
+    - TODO: still must cleanup data
   * Add monthly volunteer milestone report in parallel to the biweekly
     one (Closes: #35981)
   * Add mode for disallowing walkin volunteers, which autocloses
