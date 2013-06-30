@@ -211,10 +211,9 @@ module SystemHelper
         @real_system_parser = SystemParser.parse(d)
       }
       @real_system_parser.instance_variables.each{|x|
-        next if x == "@parser"
+        next if x == "@parser".to_sym
         self.instance_variable_set(x, @real_system_parser.instance_variable_get(x))
       }
-
       @parser.xml_foreach("//fgdb_printme") {
         @battery_life = @parser.xml_value_of("batterytest") if @parser.xml_if("batterytest")
         @maximum_memory = @parser.xml_value_of("max_capacity") if @parser.xml_if("max_capacity")
