@@ -13,8 +13,10 @@ class SoapsBase
   end
 
   def error(e, msg = "")
-    ret = save_exception_data(e)
-    message = msg + e.message + " (crash id #{ret["crash_id"]})"
+#    ret = save_exception_data(e)
+    # FIXME e handling .message
+    message = "HERE: " + msg + e.message # + " (crash id #{ret["crash_id"]})"
+    message += "\n\n" + e.backtrace.join("\n")
     SOAP::SOAPFault.new(SOAP::SOAPString.new("soaps"),
                         SOAP::SOAPString.new(message),
                         SOAP::SOAPString.new(self.class.name))

@@ -179,7 +179,7 @@ class PrintmeAPI < SOAP::SoapsBase
         begin
           raise "Invalid XML! Report id is #{report.id}. Please report this bug."
         rescue => e
-          return error(e) # TODO: should move into a wrapper
+          return error(e, "Could not parse the XML: ") # TODO: should move into a wrapper
         end
       end
     rescue => e
