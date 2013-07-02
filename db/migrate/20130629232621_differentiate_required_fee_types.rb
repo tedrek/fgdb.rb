@@ -1,6 +1,6 @@
 class DifferentiateRequiredFeeTypes < ActiveRecord::Migration
   def self.up
-    gt = GizmoType.find_by_name('service_fee_other')
+    gt = GizmoType.find_by_name('service_fee')
     gt_p = gt.clone
     gt_e = gt.clone
     gt_t = gt.clone
