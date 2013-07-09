@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '..', 'lib', 'manage_fixtures.rb')
+require File.join(File.dirname(__FILE__), '..', 'manage_fixtures.rb')
 
 desc "use rake db:fixtures:export_using_query SQL=\"select * from foo where id='bar'\" FIXTURE_NAME=foo"
 namespace :db do  
