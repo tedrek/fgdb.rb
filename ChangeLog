@@ -1,7 +1,33 @@
-fgdb.rb (1.0.121) UNRELEASED; urgency=low
+fgdb.rb (1.0.122) released; urgency=low
 
+  * Implement dateext with dateformat %s for hourly logrotated backups,
+    thanks Vagrant (Closes: #36026)
+  * Distinguish Required Service Fee on the receipt into 4 categories:
+    Pickup, Education, Tech Support and Other (Closes: #35808)
+    - Note: reference info for TS ticket # can be added with Ctrl-<e>
+      to the standard description field
+  * Add a link for adding repeating interns to the sked admin sidebar
+    section (Closes: #36012)
+    - TODO: still must cleanup data
+  * Add monthly volunteer milestone report in parallel to the biweekly
+    one (Closes: #35981)
+  * Add mode for disallowing walkin volunteers, which autocloses
+    available shifts (Closes: #36031)
 
- -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 17 Jun 2013 19:11:56 -0700
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 02 Jul 2013 08:40:53 -0700
+
+fgdb.rb (1.0.121) released; urgency=low
+
+  * fix the discount field to update back to none when switching away
+    from a named contact
+  * Add rendering system type to printme options (Closes: #36141)
+  * Add Prebuild Volunteer Task Type (Closes: #36142)
+    - Also, when editing an available volunteer shift, alert the user:
+	NOTE: Laptop prebuild shifts should not be assigned by the front
+	desk, volunteers must have prerequisites checked and complete an
+	application approved by Lynnae.
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 23 Jun 2013 21:37:52 -0700
 
 fgdb.rb (1.0.120) released; urgency=low
 
@@ -9,6 +35,8 @@ fgdb.rb (1.0.120) released; urgency=low
     the badge printout set (Closes: #35742)
     - move widget for viewing/uploading staff image to badge page
     - implement generating the back side of badges too
+  * Do not preseed the contacts email address and phone number, in case
+    it is of the incorrect format or outdated
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Mon, 17 Jun 2013 19:11:14 -0700
 
@@ -24,6 +52,7 @@ fgdb.rb (1.0.119) released; urgency=low
   * Add gizmo limiting conditions to the gizmos report (Closes: #35976)
   * Split out long phone number values in contact methods to an
     additional details field for text explanation
+  * Fix parsing with new version of lshw in squeeze (Closes: #35847)
 
  -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 26 May 2013 23:07:23 -0700
 
