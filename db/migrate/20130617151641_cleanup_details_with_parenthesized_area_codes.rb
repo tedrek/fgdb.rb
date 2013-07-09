@@ -15,7 +15,9 @@ class CleanupDetailsWithParenthesizedAreaCodes < ActiveRecord::Migration
         c.save!
       end
     end
-    DB.exec("UPDATE contact_methods SET details = REPLACE(details, '1-', '') WHERE details IS NOT NULL AND details LIKE '%1-';")
+
+    # The % needs to be escaped as this string gets passed through String#%
+    DB.exec(%q!UPDATE contact_methods SET details = REPLACE(details, '1-', '') WHERE details IS NOT NULL AND details LIKE '%%1-';!)
   end
 
   def self.down
