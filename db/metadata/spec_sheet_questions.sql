@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: spec_sheet_questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('spec_sheet_questions_id_seq', 22, true);
-
 
 --
 -- Data for Name: spec_sheet_questions; Type: TABLE DATA; Schema: public; Owner: -
@@ -53,6 +45,13 @@ COPY spec_sheet_questions (id, name, question, created_at, updated_at, "position
 
 
 ALTER TABLE spec_sheet_questions ENABLE TRIGGER ALL;
+
+--
+-- Name: spec_sheet_questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('spec_sheet_questions_id_seq', 22, true);
+
 
 --
 -- PostgreSQL database dump complete

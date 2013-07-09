@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: contact_method_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('contact_method_types_id_seq', 15, true);
-
 
 --
 -- Data for Name: contact_method_types; Type: TABLE DATA; Schema: public; Owner: -
@@ -44,6 +36,13 @@ COPY contact_method_types (id, description, parent_id, lock_version, updated_at,
 
 
 ALTER TABLE contact_method_types ENABLE TRIGGER ALL;
+
+--
+-- Name: contact_method_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('contact_method_types_id_seq', 15, true);
+
 
 --
 -- PostgreSQL database dump complete

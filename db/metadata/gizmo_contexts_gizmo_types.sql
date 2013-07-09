@@ -4,10 +4,9 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
 
@@ -183,6 +182,15 @@ COPY gizmo_contexts_gizmo_types (gizmo_context_id, gizmo_type_id, lock_version, 
 2	92	0	2006-10-10 12:11:56	2006-10-10 12:11:56
 2	93	0	2006-10-10 12:11:56	2006-10-10 12:11:56
 2	94	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	95	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	96	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	97	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	98	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	99	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+2	100	0	2006-10-10 12:11:56	2006-10-10 12:11:56
+1	101	1	2008-07-25 21:48:34.860361	2006-10-10 12:11:44
+1	102	1	2008-07-25 21:48:34.860361	2006-10-10 12:11:44
+1	103	1	2008-07-25 21:48:34.860361	2006-10-10 12:11:44
 \.
 
 

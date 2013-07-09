@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: customizations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('customizations_id_seq', 10, true);
-
 
 --
 -- Data for Name: customizations; Type: TABLE DATA; Schema: public; Owner: -
@@ -41,6 +33,13 @@ COPY customizations (id, key, value) FROM stdin;
 
 
 ALTER TABLE customizations ENABLE TRIGGER ALL;
+
+--
+-- Name: customizations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('customizations_id_seq', 10, true);
+
 
 --
 -- PostgreSQL database dump complete

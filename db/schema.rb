@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121103204048) do
+ActiveRecord::Schema.define(:version => 20130702173518) do
 
   create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-combine_four_sql
@@ -139,6 +139,7 @@ END
     t.text     "notes"
     t.integer  "call_status_type_id"
     t.boolean  "closed",              :default => false, :null => false
+    t.integer  "lock_version",        :default => 0,     :null => false
   end
 
   create_table "attendance_types", :force => true do |t|
@@ -201,6 +202,7 @@ END
     t.integer  "lock_version",                          :default => 0, :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
+    t.string   "details"
   end
 
   add_index "contact_methods", ["contact_id"], :name => "contact_methods_contact_id_index"
@@ -233,31 +235,33 @@ END
   end
 
   create_table "contacts", :force => true do |t|
-    t.boolean  "is_organization",                   :default => false
-    t.string   "sort_name",          :limit => 100
-    t.string   "first_name",         :limit => 25
-    t.string   "middle_name",        :limit => 25
-    t.string   "surname",            :limit => 50
-    t.string   "organization",       :limit => 100
-    t.string   "extra_address",      :limit => 52
-    t.string   "address",            :limit => 52
-    t.string   "city",               :limit => 30
-    t.string   "state_or_province",  :limit => 15
-    t.string   "postal_code",        :limit => 25
-    t.string   "country",            :limit => 100
+    t.boolean  "is_organization",                       :default => false
+    t.string   "sort_name",              :limit => 100
+    t.string   "first_name",             :limit => 25
+    t.string   "middle_name",            :limit => 25
+    t.string   "surname",                :limit => 50
+    t.string   "organization",           :limit => 100
+    t.string   "extra_address",          :limit => 52
+    t.string   "address",                :limit => 52
+    t.string   "city",                   :limit => 30
+    t.string   "state_or_province",      :limit => 15
+    t.string   "postal_code",            :limit => 25
+    t.string   "country",                :limit => 100
     t.text     "notes"
-    t.integer  "lock_version",                      :default => 0,     :null => false
+    t.integer  "lock_version",                          :default => 0,     :null => false
     t.datetime "updated_at"
     t.datetime "created_at"
-    t.integer  "created_by",                                           :null => false
+    t.integer  "created_by",                                               :null => false
     t.integer  "updated_by"
-    t.integer  "next_milestone",                    :default => 100
-    t.boolean  "addr_certified",                    :default => false, :null => false
-    t.integer  "contract_id",                       :default => 1,     :null => false
+    t.integer  "next_milestone",                        :default => 100
+    t.boolean  "addr_certified",                        :default => false, :null => false
+    t.integer  "contract_id",                           :default => 1,     :null => false
     t.integer  "cashier_created_by"
     t.integer  "cashier_updated_by"
     t.boolean  "fully_covered"
     t.date     "birthday"
+    t.string   "volunteer_intern_title"
+    t.integer  "next_monthly_milestone",                :default => 100
   end
 
   add_index "contacts", ["created_at"], :name => "index_contacts_on_created_at"
@@ -303,6 +307,12 @@ END
     t.integer  "slot_number"
     t.boolean  "closed",                                  :default => false, :null => false
     t.string   "week",                       :limit => 1
+    t.boolean  "week_1_of_month",                         :default => true,  :null => false
+    t.boolean  "week_2_of_month",                         :default => true,  :null => false
+    t.boolean  "week_3_of_month",                         :default => true,  :null => false
+    t.boolean  "week_4_of_month",                         :default => true,  :null => false
+    t.boolean  "week_5_of_month",                         :default => true,  :null => false
+    t.integer  "lock_version",                            :default => 0,     :null => false
   end
 
   create_table "defaults", :force => true do |t|
@@ -561,6 +571,7 @@ END
     t.boolean  "needs_id",                           :default => false,                 :null => false
     t.integer  "return_policy_id"
     t.boolean  "not_discounted",                     :default => false,                 :null => false
+    t.integer  "sales_limit"
   end
 
   create_table "holidays", :force => true do |t|
@@ -713,6 +724,14 @@ END
     t.datetime "updated_at"
   end
 
+  create_table "pricing_bonus", :force => true do |t|
+    t.integer  "system_pricing_id"
+    t.integer  "amount_cents"
+    t.string   "reason"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "pricing_components", :force => true do |t|
     t.string   "name"
     t.string   "pull_from"
@@ -720,8 +739,10 @@ END
     t.boolean  "multiple"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "lookup_type"
-    t.integer  "multiplier_cents", :default => 100, :null => false
+    t.string   "lookup_column"
+    t.integer  "multiplier_cents",   :default => 100,   :null => false
+    t.string   "lookup_table"
+    t.boolean  "use_value_as_score", :default => false, :null => false
   end
 
   create_table "pricing_components_pricing_expressions", :id => false, :force => true do |t|
@@ -730,7 +751,7 @@ END
   end
 
   create_table "pricing_datas", :force => true do |t|
-    t.string   "printme_pull_from"
+    t.string   "table_name"
     t.string   "printme_value"
     t.string   "lookup_type"
     t.string   "lookup_value"
@@ -890,7 +911,11 @@ END
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "enabled",    :default => true, :null => false
+    t.boolean  "enabled",                       :default => true,  :null => false
+    t.boolean  "limit_shift_signup_by_program", :default => false, :null => false
+    t.integer  "contact_type_id"
+    t.integer  "restrict_to_every_n_days"
+    t.integer  "restrict_from_sked_id"
   end
 
   create_table "rosters_skeds", :id => false, :force => true do |t|
@@ -1158,6 +1183,15 @@ END
   add_index "systems", ["system_serial_number"], :name => "systems_serial_number_index"
   add_index "systems", ["system_vendor"], :name => "systems_vendor_index"
 
+  create_table "tech_support_notes", :force => true do |t|
+    t.integer  "contact_id", :null => false
+    t.text     "notes"
+    t.integer  "created_by"
+    t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "till_adjustments", :force => true do |t|
     t.integer  "till_type_id"
     t.date     "till_date"
@@ -1256,6 +1290,7 @@ END
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "notes"
+    t.boolean  "nowalkins",                  :default => false, :null => false
   end
 
   create_table "volunteer_shifts", :force => true do |t|
@@ -1310,6 +1345,17 @@ END
   add_index "volunteer_tasks", ["duration"], :name => "index_volunteer_tasks_on_duration"
   add_index "volunteer_tasks", ["volunteer_task_type_id"], :name => "index_volunteer_tasks_on_volunteer_task_type_id"
   add_index "volunteer_tasks", ["contact_id"], :name => "volunteer_tasks_contact_id_index"
+
+  create_table "warranty_lengths", :force => true do |t|
+    t.string   "system_type",    :null => false
+    t.string   "box_source",     :null => false
+    t.string   "os_type"
+    t.string   "length",         :null => false
+    t.date     "effective_on"
+    t.date     "ineffective_on"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "wc_categories", :force => true do |t|
     t.string   "name"
@@ -1431,6 +1477,8 @@ END
   add_foreign_key "contact_types_contacts", ["contact_type_id"], "contact_types", ["id"], :on_delete => :restrict, :name => "contact_types_contacts_contact_types_contacts_fk"
   add_foreign_key "contact_types_contacts", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "contact_types_contacts_contacts_fk"
 
+  add_foreign_key "contact_volunteer_task_type_counts", ["contact_id"], "contacts", ["id"], :name => "contact_volunteer_task_type_counts_contact_id_fkey"
+
   add_foreign_key "contacts", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_cashier_created_by_fkey"
   add_foreign_key "contacts", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "contacts_cashier_updated_by_fkey"
   add_foreign_key "contacts", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "contacts_contract_id_fkey"
@@ -1440,8 +1488,8 @@ END
   add_foreign_key "contacts_mailings", ["contact_id"], "contacts", ["id"], :name => "contacts_mailings_contact_id_fkey"
   add_foreign_key "contacts_mailings", ["mailing_id"], "mailings", ["id"], :name => "contacts_mailings_mailing_id_fkey"
 
-  add_foreign_key "default_assignments", ["contact_id"], "contacts", ["id"], :on_delete => :restrict, :name => "default_assignments_contact_id_fkey"
-  add_foreign_key "default_assignments", ["volunteer_default_shift_id"], "volunteer_default_shifts", ["id"], :on_delete => :restrict, :name => "default_assignments_volunteer_default_shift_id_fkey"
+  add_foreign_key "default_assignments", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "default_assignments_contact_id_fkey"
+  add_foreign_key "default_assignments", ["volunteer_default_shift_id"], "volunteer_default_shifts", ["id"], :on_delete => :cascade, :name => "default_assignments_volunteer_default_shift_id_fkey"
 
   add_foreign_key "disbursements", ["cashier_created_by"], "users", ["id"], :on_delete => :restrict, :name => "disbursements_cashier_created_by_fkey"
   add_foreign_key "disbursements", ["cashier_updated_by"], "users", ["id"], :on_delete => :restrict, :name => "disbursements_cashier_updated_by_fkey"
@@ -1524,6 +1572,8 @@ END
 
   add_foreign_key "pricing_adjustments", ["system_pricing_id"], "system_pricings", ["id"], :on_delete => :cascade, :name => "pricing_adjustments_system_pricing_id_fkey"
 
+  add_foreign_key "pricing_bonus", ["system_pricing_id"], "system_pricings", ["id"], :on_delete => :cascade, :name => "pricing_bonus_system_pricing_id_fkey"
+
   add_foreign_key "pricing_components_pricing_expressions", ["pricing_component_id"], "pricing_components", ["id"], :on_delete => :cascade, :name => "pricing_components_pricing_expression_pricing_component_id_fkey"
   add_foreign_key "pricing_components_pricing_expressions", ["pricing_expression_id"], "pricing_expressions", ["id"], :on_delete => :cascade, :name => "pricing_components_pricing_expressio_pricing_expression_id_fkey"
 
@@ -1557,6 +1607,9 @@ END
 
   add_foreign_key "roles_users", ["role_id"], "roles", ["id"], :on_delete => :cascade, :name => "roles_users_role_id_fkey"
   add_foreign_key "roles_users", ["user_id"], "users", ["id"], :on_delete => :cascade, :name => "roles_users_user_id_fkey"
+
+  add_foreign_key "rosters", ["contact_type_id"], "contact_types", ["id"], :on_delete => :set_null, :name => "rosters_contact_type_id_fkey"
+  add_foreign_key "rosters", ["restrict_from_sked_id"], "skeds", ["id"], :on_delete => :restrict, :name => "rosters_restrict_from_sked_id_fkey"
 
   add_foreign_key "rosters_skeds", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "rosters_skeds_roster_id_fkey"
   add_foreign_key "rosters_skeds", ["sked_id"], "skeds", ["id"], :on_delete => :cascade, :name => "rosters_skeds_sked_id_fkey"
@@ -1608,6 +1661,10 @@ END
 
   add_foreign_key "systems", ["contract_id"], "contracts", ["id"], :on_delete => :restrict, :name => "systems_contract_id_fkey"
   add_foreign_key "systems", ["previous_id"], "systems", ["id"], :name => "systems_previous_id_fkey"
+
+  add_foreign_key "tech_support_notes", ["contact_id"], "contacts", ["id"], :on_delete => :cascade, :name => "tech_support_notes_contact_id_fkey"
+  add_foreign_key "tech_support_notes", ["created_by"], "users", ["id"], :on_delete => :restrict, :name => "tech_support_notes_created_by_fkey"
+  add_foreign_key "tech_support_notes", ["updated_by"], "users", ["id"], :on_delete => :restrict, :name => "tech_support_notes_updated_by_fkey"
 
   add_foreign_key "till_adjustments", ["till_type_id"], "till_types", ["id"], :on_delete => :restrict, :name => "till_adjustments_till_type_id_fkey"
 

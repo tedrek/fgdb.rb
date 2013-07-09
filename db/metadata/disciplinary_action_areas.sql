@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: disciplinary_action_areas_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('disciplinary_action_areas_id_seq', 13, true);
-
 
 --
 -- Data for Name: disciplinary_action_areas; Type: TABLE DATA; Schema: public; Owner: -
@@ -44,6 +36,13 @@ COPY disciplinary_action_areas (id, name, created_at, updated_at) FROM stdin;
 
 
 ALTER TABLE disciplinary_action_areas ENABLE TRIGGER ALL;
+
+--
+-- Name: disciplinary_action_areas_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('disciplinary_action_areas_id_seq', 13, true);
+
 
 --
 -- PostgreSQL database dump complete

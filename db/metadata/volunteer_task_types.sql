@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: volunteer_task_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('volunteer_task_types_id_seq', 62, true);
-
 
 --
 -- Data for Name: volunteer_task_types; Type: TABLE DATA; Schema: public; Owner: -
@@ -67,10 +59,18 @@ COPY volunteer_task_types (id, description, hours_multiplier, instantiable, lock
 50	tech support	1.000	t	3	2012-05-05 09:11:40.739159	2006-12-30 08:40:54	support	\N	\N	14	\N
 41	laptops	1.000	t	4	2012-05-05 09:31:05.809019	2006-12-30 08:40:54	laptops	\N	\N	2	t
 62	facilities	1.000	t	0	2012-12-08 05:39:56.176809	2012-12-08 05:39:56.176809	facilities	\N	\N	10	\N
+63	laptop prebuild	1.000	t	0	2013-07-09 11:51:52.068059	2013-07-09 11:51:52.068059	laptop_prebuild	\N	\N	1	f
 \.
 
 
 ALTER TABLE volunteer_task_types ENABLE TRIGGER ALL;
+
+--
+-- Name: volunteer_task_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('volunteer_task_types_id_seq', 63, true);
+
 
 --
 -- PostgreSQL database dump complete

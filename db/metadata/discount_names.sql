@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: discount_names_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('discount_names_id_seq', 10, true);
-
 
 --
 -- Data for Name: discount_names; Type: TABLE DATA; Schema: public; Owner: -
@@ -41,6 +33,13 @@ COPY discount_names (id, description, available, created_at, updated_at) FROM st
 
 
 ALTER TABLE discount_names ENABLE TRIGGER ALL;
+
+--
+-- Name: discount_names_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('discount_names_id_seq', 10, true);
+
 
 --
 -- PostgreSQL database dump complete

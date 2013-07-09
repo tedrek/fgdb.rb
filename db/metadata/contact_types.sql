@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: contact_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('contact_types_id_seq', 40, true);
-
 
 --
 -- Data for Name: contact_types; Type: TABLE DATA; Schema: public; Owner: -
@@ -49,10 +41,19 @@ COPY contact_types (id, description, for_who, lock_version, updated_at, created_
 38	completed commandline	per	0	2011-08-12 19:19:52.794098	2011-08-12 19:19:52.794098	t	completed_commandline
 39	enewsletter	any	0	2011-09-23 19:56:02.377911	2011-09-23 19:56:02.377911	t	enewsletter
 40	vnewsletter	any	0	2011-09-23 19:56:02.442628	2011-09-23 19:56:02.442628	t	vnewsletter
+41	spanish build	per	0	2013-07-09 11:42:17.599399	2013-07-09 11:42:17.599399	t	spanish_build
+42	spanish adoption	per	0	2013-07-09 11:42:17.613991	2013-07-09 11:42:17.613991	t	spanish_adoption
 \.
 
 
 ALTER TABLE contact_types ENABLE TRIGGER ALL;
+
+--
+-- Name: contact_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('contact_types_id_seq', 42, true);
+
 
 --
 -- PostgreSQL database dump complete

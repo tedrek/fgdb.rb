@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: defaults_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('defaults_id_seq', 38, true);
-
 
 --
 -- Data for Name: defaults; Type: TABLE DATA; Schema: public; Owner: -
@@ -62,10 +54,22 @@ COPY defaults (id, name, value, lock_version, updated_at, created_at) FROM stdin
 36	discount_percentage_id_for_volunteer_discount	5	0	2012-12-08 05:39:56.815796	2012-12-08 05:39:56.815796
 37	discount_name_id_for_volunteer_discount	5	0	2012-12-08 05:39:56.820669	2012-12-08 05:39:56.820669
 38	coding_ticket_owner	ryan52	0	2012-12-08 05:39:56.893217	2012-12-08 05:39:56.893217
+39	raw_receipt_account_regexp	store	0	2013-07-09 11:32:33.801471	2013-07-09 11:32:33.801471
+40	freekbox_proc_expect	Intel(R) Core(TM)2 Duo	0	2013-07-09 11:42:18.918283	2013-07-09 11:42:18.918283
+41	freekbox_ram_expect	1.0gb	0	2013-07-09 11:42:18.934282	2013-07-09 11:42:18.934282
+42	freekbox_hd_min	120gb	0	2013-07-09 11:42:18.949407	2013-07-09 11:42:18.949407
+43	freekbox_hd_max	160gb	0	2013-07-09 11:42:18.959161	2013-07-09 11:42:18.959161
 \.
 
 
 ALTER TABLE defaults ENABLE TRIGGER ALL;
+
+--
+-- Name: defaults_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('defaults_id_seq', 43, true);
+
 
 --
 -- PostgreSQL database dump complete

@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: postal_codes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('postal_codes_id_seq', 60, true);
-
 
 --
 -- Data for Name: postal_codes; Type: TABLE DATA; Schema: public; Owner: -
@@ -91,6 +83,13 @@ COPY postal_codes (id, postal_code, city, created_at, updated_at) FROM stdin;
 
 
 ALTER TABLE postal_codes ENABLE TRIGGER ALL;
+
+--
+-- Name: postal_codes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('postal_codes_id_seq', 60, true);
+
 
 --
 -- PostgreSQL database dump complete

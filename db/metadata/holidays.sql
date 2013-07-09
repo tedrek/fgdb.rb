@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: holidays_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('holidays_id_seq', 60, true);
-
 
 --
 -- Data for Name: holidays; Type: TABLE DATA; Schema: public; Owner: -
@@ -80,6 +72,13 @@ COPY holidays (id, name, holiday_date, is_all_day, start_time, end_time, frequen
 
 
 ALTER TABLE holidays ENABLE TRIGGER ALL;
+
+--
+-- Name: holidays_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('holidays_id_seq', 60, true);
+
 
 --
 -- PostgreSQL database dump complete

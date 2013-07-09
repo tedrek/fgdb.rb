@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: generics_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('generics_id_seq', 47, true);
-
 
 --
 -- Data for Name: generics; Type: TABLE DATA; Schema: public; Owner: -
@@ -74,10 +66,37 @@ COPY generics (id, value, only_serial, usable, created_at, updated_at) FROM stdi
 45	Ssystem manufacturer	f	t	2010-07-19 23:13:21.371785	2010-07-19 23:13:21.371785
 46	INVALID	f	t	\N	\N
 47	Not Applicable	t	t	2012-12-08 05:39:56.102717	2012-12-08 05:39:56.102717
+48	Base Board Serial Number	t	t	2013-07-09 11:42:17.677503	2013-07-09 11:42:17.677503
+49	= '00000000'	t	t	2013-07-09 11:42:17.794872	2013-07-09 11:42:17.794872
+50	EeePC-1234567890	t	t	2013-07-09 11:42:17.811072	2013-07-09 11:42:17.811072
+51	01234567	t	t	2013-07-09 11:42:17.822529	2013-07-09 11:42:17.822529
+52	..              .	t	t	2013-07-09 11:42:17.833972	2013-07-09 11:42:17.833972
+53	Unknow	t	t	2013-07-09 11:42:17.848306	2013-07-09 11:42:17.848306
+54	0123456789AB	t	t	2013-07-09 11:42:17.859881	2013-07-09 11:42:17.859881
+55	SystemSerialNumb	t	t	2013-07-09 11:42:17.871321	2013-07-09 11:42:17.871321
+56	12	t	t	2013-07-09 11:42:17.88258	2013-07-09 11:42:17.88258
+57	12 4	t	t	2013-07-09 11:42:17.89392	2013-07-09 11:42:17.89392
+58	SSN12345678901234567	t	t	2013-07-09 11:42:17.90873	2013-07-09 11:42:17.90873
+59	Not Available	t	t	2013-07-09 11:42:17.920064	2013-07-09 11:42:17.920064
+60	Bank0/1	t	t	2013-07-09 11:42:17.932369	2013-07-09 11:42:17.932369
+61	FIELD	t	t	2013-07-09 11:42:17.94368	2013-07-09 11:42:17.94368
+62	X312345678	t	t	2013-07-09 11:42:17.954799	2013-07-09 11:42:17.954799
+63	Sat May 05 22:08:37 2007	t	t	2013-07-09 11:42:17.966055	2013-07-09 11:42:17.966055
+64	............	f	t	2013-07-09 11:42:20.111776	2013-07-09 11:42:20.111776
+65	NoneNoneNoneNone	f	t	2013-07-09 11:42:20.310023	2013-07-09 11:42:20.318627
+66	:[	f	t	2013-07-09 11:42:20.328614	2013-07-09 11:42:20.341451
+67	April197	f	t	2013-07-09 11:42:20.352233	2013-07-09 11:42:20.360061
 \.
 
 
 ALTER TABLE generics ENABLE TRIGGER ALL;
+
+--
+-- Name: generics_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('generics_id_seq', 67, true);
+
 
 --
 -- PostgreSQL database dump complete

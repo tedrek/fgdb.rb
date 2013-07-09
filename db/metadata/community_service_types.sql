@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: community_service_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('community_service_types_id_seq', 2, true);
-
 
 --
 -- Data for Name: community_service_types; Type: TABLE DATA; Schema: public; Owner: -
@@ -33,6 +25,13 @@ COPY community_service_types (id, description, hours_multiplier, lock_version, u
 
 
 ALTER TABLE community_service_types ENABLE TRIGGER ALL;
+
+--
+-- Name: community_service_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('community_service_types_id_seq', 2, true);
+
 
 --
 -- PostgreSQL database dump complete

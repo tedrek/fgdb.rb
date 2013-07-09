@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: actions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('actions_id_seq', 5, true);
-
 
 --
 -- Data for Name: actions; Type: TABLE DATA; Schema: public; Owner: -
@@ -35,6 +27,13 @@ COPY actions (id, description, lock_version, updated_at, created_at, created_by,
 
 
 ALTER TABLE actions ENABLE TRIGGER ALL;
+
+--
+-- Name: actions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('actions_id_seq', 5, true);
+
 
 --
 -- PostgreSQL database dump complete

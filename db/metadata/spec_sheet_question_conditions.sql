@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: spec_sheet_question_conditions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('spec_sheet_question_conditions_id_seq', 31, true);
-
 
 --
 -- Data for Name: spec_sheet_question_conditions; Type: TABLE DATA; Schema: public; Owner: -
@@ -46,7 +38,6 @@ COPY spec_sheet_question_conditions (id, spec_sheet_question_id, name, operator,
 19	14	type_id	=	5	2012-03-31 00:37:35.706738	2012-03-31 00:37:35.706738
 20	14	type_id	=	3	2012-03-31 00:37:35.711526	2012-03-31 00:37:35.711526
 21	14	type_id	=	1	2012-03-31 00:37:35.716266	2012-03-31 00:37:35.716266
-22	15	type_id	=	4	2012-03-31 00:37:35.772176	2012-03-31 00:37:35.772176
 23	16	type_id	=	4	2012-03-31 00:37:35.782773	2012-03-31 00:37:35.782773
 24	17	has_wireless_switch	=~	^(y|Y)	2012-03-31 00:37:35.793948	2012-03-31 00:37:35.793948
 25	17	type_id	=	4	2012-03-31 00:37:35.798573	2012-03-31 00:37:35.798573
@@ -57,10 +48,18 @@ COPY spec_sheet_question_conditions (id, spec_sheet_question_id, name, operator,
 7	5	type_id	=	-1	\N	2012-12-08 05:39:52.102879
 30	21	type_id	=	7	2012-12-08 05:39:52.126888	2012-12-08 05:39:52.126888
 31	22	type_id	=	7	2012-12-08 05:39:52.261097	2012-12-08 05:39:52.261097
+22	15	type_id	=	-4	2012-03-31 00:37:35.772176	2012-03-31 00:37:35.772176
 \.
 
 
 ALTER TABLE spec_sheet_question_conditions ENABLE TRIGGER ALL;
+
+--
+-- Name: spec_sheet_question_conditions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('spec_sheet_question_conditions_id_seq', 31, true);
+
 
 --
 -- PostgreSQL database dump complete

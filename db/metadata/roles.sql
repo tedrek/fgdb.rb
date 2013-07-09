@@ -4,19 +4,11 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 SET search_path = public, pg_catalog;
-
---
--- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
---
-
-SELECT pg_catalog.setval('roles_id_seq', 22, true);
-
 
 --
 -- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: -
@@ -45,14 +37,21 @@ COPY roles (id, name, created_at, updated_at, notes) FROM stdin;
 17	VIEW_VOLUNTEER_SCHEDULE	2011-11-18 22:38:03.314853	2012-04-07 14:45:37.586436	Can view the volunteer schedule read-only
 3	VOLUNTEER_MANAGER	\N	2012-04-07 14:45:37.605862	Can create disbursements, modify contact information and schedule or log volunteer hours
 15	ADMIN_VOLSKEDJ	2011-06-04 15:52:53.76601	2012-04-07 14:50:09.85958	Can modify available volunteer slots and generate from the template schedules
-21	COLLECTIVE	\N	\N	This role will give access to a report which summarizes worked staff hours.
 22	DATA_SECURITY	2012-12-08 05:39:52.21079	2012-12-08 05:39:52.21079	This role gives access to manage data security records for certificates of destruction
 2	FRONT_DESK	\N	2012-12-08 05:39:52.743809	Can create and change disbursement records, but can only create donation, return and recycling records
 6	BEAN_COUNTER	2008-04-15 09:57:59.126816	2012-12-08 05:39:52.77808	Can modify past inventory and control settings, in addition to having unrestricted access to all transaction types and the ability to resolve invoices
+21	MANAGEMENT	\N	2013-07-09 11:42:19.403251	This role will give access to a report which summarizes worked staff hours.
 \.
 
 
 ALTER TABLE roles ENABLE TRIGGER ALL;
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('roles_id_seq', 22, true);
+
 
 --
 -- PostgreSQL database dump complete
