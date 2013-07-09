@@ -7,7 +7,7 @@ volunteer_task_types_024:
   hours_multiplier: 1.0
   name: front_desk
   description: front desk
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_013:
   updated_at: 2007-01-05 16:10:33
@@ -17,7 +17,7 @@ volunteer_task_types_013:
   hours_multiplier: 1.0
   name: macintosh
   description: macintosh
-  parent_id: "24"
+  program_id: 1
   created_at: 2007-01-05 16:10:33
 volunteer_task_types_002:
   updated_at: 2006-12-13 10:49:34
@@ -27,7 +27,7 @@ volunteer_task_types_002:
   hours_multiplier: 2.0
   name: monitors
   description: monitors
-  parent_id: "27"
+  program_id: 1
   created_at: 2006-12-13 10:46:55
 volunteer_task_types_025:
   updated_at: 2006-12-30 18:22:55
@@ -37,7 +37,7 @@ volunteer_task_types_025:
   hours_multiplier: 1.0
   name: misc
   description: misc
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_014:
   updated_at: 2006-12-13 10:48:21
@@ -47,7 +47,7 @@ volunteer_task_types_014:
   hours_multiplier: 1.0
   name: evaluation
   description: evaluation
-  parent_id: "24"
+  program_id: 1
   created_at: 2006-12-13 10:48:21
 volunteer_task_types_003:
   updated_at: 2006-12-13 10:49:54
@@ -57,7 +57,7 @@ volunteer_task_types_003:
   hours_multiplier: 1.0
   name: receiving
   description: receiving
-  parent_id: "27"
+  program_id: 1
   created_at: 2006-12-13 10:49:54
 volunteer_task_types_026:
   updated_at: 2006-12-30 18:22:56
@@ -67,7 +67,7 @@ volunteer_task_types_026:
   hours_multiplier: 1.0
   name: orientation
   description: orientation
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_015:
   updated_at: 2006-12-13 10:48:52
@@ -77,7 +77,7 @@ volunteer_task_types_015:
   hours_multiplier: 1.0
   name: build, assembly
   description: assembly
-  parent_id: "24"
+  program_id: 1
   created_at: 2006-12-13 10:48:52
 volunteer_task_types_004:
   updated_at: 2006-12-13 10:50:04
@@ -87,7 +87,7 @@ volunteer_task_types_004:
   hours_multiplier: 1.0
   name: recycling
   description: recycling
-  parent_id: "27"
+  program_id: 1
   created_at: 2006-12-13 10:50:04
 volunteer_task_types_027:
   updated_at: 2006-12-30 18:22:58
@@ -97,7 +97,7 @@ volunteer_task_types_027:
   hours_multiplier: 1.0
   name: outreach
   description: outreach
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_016:
   updated_at: 2006-12-13 10:49:16
@@ -107,7 +107,7 @@ volunteer_task_types_016:
   hours_multiplier: 1.0
   name: adoption
   description: adoption
-  parent_id:
+  program_id: 1
   created_at: 2006-12-13 10:49:16
 volunteer_task_types_005:
   updated_at: 2006-12-13 11:00:21
@@ -117,7 +117,7 @@ volunteer_task_types_005:
   hours_multiplier: 1.0
   name: quality_control
   description: quality_control
-  parent_id: "24"
+  program_id: 1
   created_at: 2006-12-13 10:46:44
 volunteer_task_types_028:
   updated_at: 2006-12-30 18:22:59
@@ -127,7 +127,7 @@ volunteer_task_types_028:
   hours_multiplier: 1.0
   name: printers
   description: printers
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_017:
   updated_at: 2006-12-13 11:04:23
@@ -137,7 +137,7 @@ volunteer_task_types_017:
   hours_multiplier: 1.0
   name: teaching
   description: teaching
-  parent_id:
+  program_id: 1
   created_at: 2006-12-13 11:04:23
 volunteer_task_types_006:
   updated_at: 2006-12-30 08:40:54.425307
@@ -147,7 +147,7 @@ volunteer_task_types_006:
   hours_multiplier: 1.0
   description: repair
   name: repair
-  parent_id: "24"
+  program_id: 1
   created_at: 2006-12-30 08:40:54.425307
 volunteer_task_types_029:
   updated_at: 2006-12-30 18:23:00
@@ -157,7 +157,7 @@ volunteer_task_types_029:
   hours_multiplier: 1.0
   description: programming
   name: programming
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_018:
   updated_at: 2006-12-13 11:04:35
@@ -167,7 +167,7 @@ volunteer_task_types_018:
   hours_multiplier: 4.0
   description: massage
   name: massage
-  parent_id:
+  program_id: 1
   created_at: 2006-12-13 11:04:35
 volunteer_task_types_007:
   updated_at: 2006-12-30 08:40:54.441757
@@ -177,7 +177,7 @@ volunteer_task_types_007:
   hours_multiplier: 1.0
   description: sorting
   name: sorting
-  parent_id: "24"
+  program_id: 1
   created_at: 2006-12-30 08:40:54.441757
 volunteer_task_types_030:
   updated_at: 2006-12-30 18:23:02
@@ -187,7 +187,7 @@ volunteer_task_types_030:
   hours_multiplier: 1.0
   description: sales
   name: sales
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_019:
   updated_at: 2006-12-13 21:14:14
@@ -197,7 +197,7 @@ volunteer_task_types_019:
   hours_multiplier: 0.0
   description: slacking
   name: slacking
-  parent_id:
+  program_id: 1
   created_at: 2006-12-13 21:14:14
 volunteer_task_types_008:
   updated_at: 2006-12-30 18:27:25
@@ -207,7 +207,7 @@ volunteer_task_types_008:
   hours_multiplier: 1.0
   description: advanced testing
   name: advanced_testing
-  parent_id: "24"
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_031:
   updated_at: 2006-12-30 18:23:03
@@ -217,7 +217,7 @@ volunteer_task_types_031:
   hours_multiplier: 1.0
   description: support
   name: support
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_020:
   updated_at: 2006-12-30 18:21:20
@@ -227,7 +227,7 @@ volunteer_task_types_020:
   hours_multiplier: 1.0
   description: admin
   name: admin
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_009:
   updated_at: 2006-12-30 18:27:34
@@ -237,7 +237,7 @@ volunteer_task_types_009:
   hours_multiplier: 1.0
   description: data entry
   name: data_entry
-  parent_id: "27"
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_032:
   updated_at: 2006-12-30 18:23:04
@@ -247,7 +247,7 @@ volunteer_task_types_032:
   hours_multiplier: 1.0
   description: system administration
   name: system_administration
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_021:
   updated_at: 2006-12-30 18:22:08
@@ -257,7 +257,7 @@ volunteer_task_types_021:
   hours_multiplier: 1.0
   description: computers for kids
   name: computers_for_kids
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_010:
   updated_at: 2006-12-30 18:27:40
@@ -267,7 +267,7 @@ volunteer_task_types_010:
   hours_multiplier: 1.0
   description: enterprise
   name: enterprise
-  parent_id: "24"
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_033:
   updated_at: 2006-12-13 10:47:39
@@ -277,7 +277,7 @@ volunteer_task_types_033:
   hours_multiplier: 1.0
   description: build
   name: build
-  parent_id:
+  program_id: 1
   created_at: 2006-12-13 10:47:39
 volunteer_task_types_022:
   updated_at: 2006-12-30 18:22:10
@@ -287,7 +287,7 @@ volunteer_task_types_022:
   hours_multiplier: 1.0
   description: CREAM
   name: cream
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_011:
   updated_at: 2006-12-30 18:27:45
@@ -297,7 +297,7 @@ volunteer_task_types_011:
   hours_multiplier: 1.0
   description: laptops
   name: laptops
-  parent_id: "24"
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_023:
   updated_at: 2006-12-30 18:22:11
@@ -307,7 +307,7 @@ volunteer_task_types_023:
   hours_multiplier: 1.0
   description: education
   name: education
-  parent_id:
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_012:
   updated_at: 2006-12-30 18:28:28
@@ -317,7 +317,7 @@ volunteer_task_types_012:
   hours_multiplier: 1.0
   description: testing
   name: testing
-  parent_id: "27"
+  program_id: 1
   created_at: 2006-12-30 08:40:54
 volunteer_task_types_001:
   updated_at: 2006-12-13 10:49:27
@@ -327,5 +327,5 @@ volunteer_task_types_001:
   hours_multiplier: 2.0
   description: cleaning
   name: cleaning
-  parent_id: "27"
+  program_id: 1
   created_at: 2006-12-13 10:47:07

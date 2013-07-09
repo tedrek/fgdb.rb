@@ -92,6 +92,11 @@ module Arts
                  "Content did not include:\n #{content.to_s}"
   end
   
+  # hack for rails 2.2.2
+  def with_output_buffer(lines=[], &block)
+    block.call
+  end
+
   protected
   
   def assert_response_contains(str, message)

@@ -1,5 +1,5 @@
 class GizmoEvent < ActiveRecord::Base
-  named_scope :not_discount, :conditions => ["gizmo_type_id != ?", GizmoType.find_by_name("fee_discount").id]
+  named_scope :not_discount, lambda {{:conditions => ["gizmo_type_id != ?", GizmoType.find_by_name("fee_discount").id]}}
 
   def GizmoEvent.is_gizmo_line?(event)
     !GizmoType.fee?(event.gizmo_type) && event.gizmo_type.name != 'invoice_resolved'

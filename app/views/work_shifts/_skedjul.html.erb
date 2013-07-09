@@ -137,7 +137,7 @@ end %>
 <% end %>
 </div>
 
-<% if defined?(maximum_date) && maximum_date && skedj.opts[:maximum_date] &&  skedj.opts[:date_range_condition] %>
+<% if defined?(maximum_date) && !maximum_date.nil? && skedj.opts[:maximum_date] &&  skedj.opts[:date_range_condition] %>
   <% if params[:conditions] && next_date && next_date < maximum_date %>
     <% newconds = params[:conditions].dup %>
     <% newconds[(skedj.opts[:date_range_condition] + "_end_date")] = maximum_date %>

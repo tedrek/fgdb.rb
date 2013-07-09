@@ -262,3 +262,9 @@ namespace :db do
   end
 
 end # namespace :db
+
+test_prepare = Rake::Task['db:test:prepare']
+test_prepare.enhance do
+  rails_env = 'test'
+  Rake::Task['db:metadata:load'].invoke
+end

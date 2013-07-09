@@ -11,6 +11,7 @@ development:
 test:
   adapter: postgresql
   database: fgdb_test
+  min_messages: WARNING
 #  username: fgdb
 #  password:
 #  host: localhost

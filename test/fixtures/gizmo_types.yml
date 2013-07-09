@@ -7,9 +7,8 @@ gizmo_types_046:
   lock_version: "0"
   gizmo_category_id: "2"
   id: "49"
-  parent_id: "1"
   description: CRT
-  required_fee_cents: "700"
+  required_fee_cents: "1000"
 gizmo_types_035: 
   name: laptop
   created_at: 2006-11-11 19:05:26
@@ -18,7 +17,6 @@ gizmo_types_035:
   lock_version: "2"
   gizmo_category_id: "1"
   id: "6"
-  parent_id: "4"
   description: Laptop
   required_fee_cents: "0"
 gizmo_types_024: 
@@ -29,7 +27,6 @@ gizmo_types_024:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "25"
-  parent_id: "13"
   description: Stereo System
   required_fee_cents: "0"
 gizmo_types_013: 
@@ -40,7 +37,6 @@ gizmo_types_013:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "20"
-  parent_id: "17"
   description: Old Data Schwag
   required_fee_cents: "0"
 gizmo_types_002: 
@@ -51,7 +47,6 @@ gizmo_types_002:
   lock_version: "5"
   gizmo_category_id: "4"
   id: "17"
-  parent_id: 
   description: Schwag
   required_fee_cents: "0"
 gizmo_types_047: 
@@ -62,7 +57,6 @@ gizmo_types_047:
   lock_version: "0"
   gizmo_category_id: "1"
   id: "50"
-  parent_id: "1"
   description: Sys w/ monitor
   required_fee_cents: "700"
 gizmo_types_036: 
@@ -73,7 +67,6 @@ gizmo_types_036:
   lock_version: "1"
   gizmo_category_id: "2"
   id: "21"
-  parent_id: "1"
   description: Old Data CRT
   required_fee_cents: "1000"
 gizmo_types_025: 
@@ -84,7 +77,6 @@ gizmo_types_025:
   lock_version: "3"
   gizmo_category_id: "4"
   id: "7"
-  parent_id: "13"
   description: VCR
   required_fee_cents: "0"
 gizmo_types_014: 
@@ -95,7 +87,6 @@ gizmo_types_014:
   lock_version: "4"
   gizmo_category_id: "2"
   id: "2"
-  parent_id: "1"
   description: LCD
   required_fee_cents: "0"
 gizmo_types_003: 
@@ -106,7 +97,6 @@ gizmo_types_003:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "35"
-  parent_id: "13"
   description: Case
   required_fee_cents: "0"
 gizmo_types_048: 
@@ -117,7 +107,6 @@ gizmo_types_048:
   lock_version: "1"
   gizmo_category_id: "1"
   id: "39"
-  parent_id: "4"
   description: Mac
   required_fee_cents: "0"
 gizmo_types_037: 
@@ -128,7 +117,6 @@ gizmo_types_037:
   lock_version: "2"
   gizmo_category_id: "3"
   id: "10"
-  parent_id: "13"
   description: Printer
   required_fee_cents: "0"
 gizmo_types_026: 
@@ -139,7 +127,6 @@ gizmo_types_026:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "40"
-  parent_id: "13"
   description: Laptop parts
   required_fee_cents: "0"
 gizmo_types_015: 
@@ -150,7 +137,6 @@ gizmo_types_015:
   lock_version: "3"
   gizmo_category_id: "4"
   id: "28"
-  parent_id: "13"
   description: Modem
   required_fee_cents: "0"
 gizmo_types_004: 
@@ -161,7 +147,6 @@ gizmo_types_004:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "45"
-  parent_id: 
   description: Gift Cert
   required_fee_cents: "0"
 gizmo_types_049: 
@@ -172,7 +157,6 @@ gizmo_types_049:
   lock_version: "1"
   gizmo_category_id: "1"
   id: "47"
-  parent_id: "19"
   description: Old Data System
   required_fee_cents: "0"
 gizmo_types_038: 
@@ -183,7 +167,6 @@ gizmo_types_038:
   lock_version: "2"
   gizmo_category_id: "3"
   id: "12"
-  parent_id: "13"
   description: Fax Machine
   required_fee_cents: "0"
 gizmo_types_027: 
@@ -194,7 +177,6 @@ gizmo_types_027:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "26"
-  parent_id: "13"
   description: Telephone
   required_fee_cents: "0"
 gizmo_types_016: 
@@ -205,7 +187,6 @@ gizmo_types_016:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "43"
-  parent_id: "13"
   description: Drive
   required_fee_cents: "0"
 gizmo_types_005: 
@@ -216,7 +197,6 @@ gizmo_types_005:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "44"
-  parent_id: "1"
   description: Television
   required_fee_cents: "1000"
 gizmo_types_050: 
@@ -227,7 +207,6 @@ gizmo_types_050:
   lock_version: "0"
   gizmo_category_id: "4"
   id: "51"
-  parent_id: "13"
   description: Mac Part
   required_fee_cents: "0"
 gizmo_types_039: 
@@ -238,7 +217,6 @@ gizmo_types_039:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "37"
-  parent_id: "13"
   description: Cable
   required_fee_cents: "0"
 gizmo_types_028: 
@@ -249,7 +227,6 @@ gizmo_types_028:
   lock_version: "3"
   gizmo_category_id: "4"
   id: "8"
-  parent_id: "13"
   description: DVD Player
   required_fee_cents: "0"
 gizmo_types_017: 
@@ -260,7 +237,6 @@ gizmo_types_017:
   lock_version: "3"
   gizmo_category_id: "4"
   id: "31"
-  parent_id: "13"
   description: Miscellaneous
   required_fee_cents: "0"
 gizmo_types_006: 
@@ -271,7 +247,6 @@ gizmo_types_006:
   lock_version: "5"
   gizmo_category_id: "4"
   id: "27"
-  parent_id: "43"
   description: Harddrive
   required_fee_cents: "0"
 gizmo_types_040: 
@@ -282,7 +257,6 @@ gizmo_types_040:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "23"
-  parent_id: "13"
   description: Mouse
   required_fee_cents: "0"
 gizmo_types_029: 
@@ -293,7 +267,6 @@ gizmo_types_029:
   lock_version: "7"
   gizmo_category_id: "1"
   id: "4"
-  parent_id: "13"
   description: System
   required_fee_cents: "0"
 gizmo_types_018: 
@@ -304,7 +277,6 @@ gizmo_types_018:
   lock_version: "3"
   gizmo_category_id: "4"
   id: "33"
-  parent_id: "30"
   description: Video Card
   required_fee_cents: "0"
 gizmo_types_007: 
@@ -315,7 +287,6 @@ gizmo_types_007:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "29"
-  parent_id: "13"
   description: Speakers
   required_fee_cents: "0"
 gizmo_types_041: 
@@ -326,7 +297,6 @@ gizmo_types_041:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "19"
-  parent_id: "13"
   description: Old Data Gizmo
   required_fee_cents: "0"
 gizmo_types_030: 
@@ -337,7 +307,6 @@ gizmo_types_030:
   lock_version: "8"
   gizmo_category_id: "2"
   id: "1"
-  parent_id: "13"
   description: Monitor
   required_fee_cents: "0"
 gizmo_types_019: 
@@ -348,7 +317,6 @@ gizmo_types_019:
   lock_version: "3"
   gizmo_category_id: "1"
   id: "18"
-  parent_id: "6"
   description: 1337 lappy
   required_fee_cents: "0"
 gizmo_types_008: 
@@ -359,7 +327,6 @@ gizmo_types_008:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "42"
-  parent_id: "13"
   description: Power supply
   required_fee_cents: "0"
 gizmo_types_042: 
@@ -370,7 +337,6 @@ gizmo_types_042:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "16"
-  parent_id: "17"
   description: T-Shirt
   required_fee_cents: "0"
 gizmo_types_031: 
@@ -381,7 +347,6 @@ gizmo_types_031:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "30"
-  parent_id: "13"
   description: Card
   required_fee_cents: "0"
 gizmo_types_020: 
@@ -392,7 +357,6 @@ gizmo_types_020:
   lock_version: "5"
   gizmo_category_id: "4"
   id: "13"
-  parent_id: 
   description: Gizmo
   required_fee_cents: "0"
 gizmo_types_009: 
@@ -403,7 +367,6 @@ gizmo_types_009:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "34"
-  parent_id: "30"
   description: Sound Card
   required_fee_cents: "0"
 gizmo_types_043: 
@@ -414,7 +377,6 @@ gizmo_types_043:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "15"
-  parent_id: "17"
   description: Sticker
   required_fee_cents: "0"
 gizmo_types_032: 
@@ -425,7 +387,6 @@ gizmo_types_032:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "22"
-  parent_id: "13"
   description: Keyboard
   required_fee_cents: "0"
 gizmo_types_021: 
@@ -436,7 +397,6 @@ gizmo_types_021:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "36"
-  parent_id: "13"
   description: Net Device
   required_fee_cents: "0"
 gizmo_types_010: 
@@ -447,7 +407,6 @@ gizmo_types_010:
   lock_version: "2"
   gizmo_category_id: "3"
   id: "11"
-  parent_id: "13"
   description: Scanner
   required_fee_cents: "0"
 gizmo_types_044: 
@@ -458,7 +417,6 @@ gizmo_types_044:
   lock_version: "4"
   gizmo_category_id: "2"
   id: "3"
-  parent_id: "1"
   description: Old Fee CRT
   required_fee_cents: "1000"
 gizmo_types_033: 
@@ -469,7 +427,6 @@ gizmo_types_033:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "41"
-  parent_id: "13"
   description: RAM
   required_fee_cents: "0"
 gizmo_types_022: 
@@ -480,7 +437,6 @@ gizmo_types_022:
   lock_version: "0"
   gizmo_category_id: "4"
   id: "48"
-  parent_id: 
   description: Fee Discount
   required_fee_cents: "0"
 gizmo_types_011: 
@@ -491,7 +447,6 @@ gizmo_types_011:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "0"
-  parent_id: 
   description: "[root]"
   required_fee_cents: "0"
 gizmo_types_045: 
@@ -502,7 +457,6 @@ gizmo_types_045:
   lock_version: "5"
   gizmo_category_id: "1"
   id: "5"
-  parent_id: "1"
   description: Old Fee Sys w/ monitor
   required_fee_cents: "1000"
 gizmo_types_034: 
@@ -513,7 +467,6 @@ gizmo_types_034:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "38"
-  parent_id: "17"
   description: Tuition
   required_fee_cents: "0"
 gizmo_types_023: 
@@ -524,7 +477,6 @@ gizmo_types_023:
   lock_version: "3"
   gizmo_category_id: "4"
   id: "32"
-  parent_id: "43"
   description: CD Burner
   required_fee_cents: "0"
 gizmo_types_012: 
@@ -535,7 +487,6 @@ gizmo_types_012:
   lock_version: "2"
   gizmo_category_id: "4"
   id: "14"
-  parent_id: "13"
   description: UPS
   required_fee_cents: "0"
 gizmo_types_001: 
@@ -546,6 +497,15 @@ gizmo_types_001:
   lock_version: "1"
   gizmo_category_id: "4"
   id: "46"
-  parent_id: 
   description: Service Fee
   required_fee_cents: "100"
+gizmo_types_112: 
+  name: store_credit
+  created_at: 2007-12-11 17:41:55
+  suggested_fee_cents: "0"
+  updated_at: 2008-05-30 22:30:58.699506
+  lock_version: "1"
+  gizmo_category_id: "4"
+  id: "112"
+  description: Store Credit
+  required_fee_cents: "0"

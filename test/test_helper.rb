@@ -25,10 +25,10 @@ class Test::Unit::TestCase
         gizmo_contexts_gizmo_types gizmo_events],
      %W[contacts contact_types contact_types_contacts
         contact_method_types contact_methods],
-     %W[volunteer_task_types community_service_types],
+     %W[programs volunteer_task_types community_service_types],
      %W[disbursement_types disbursements],
      %W[payment_methods],
-     %W[discount_schedules discount_schedules_gizmo_types sales],
+     %W[sales],
      %W[donations],
      %W[payments],
      %W[recyclings],
@@ -77,7 +77,7 @@ class Test::Unit::TestCase
       conn.execute "ALTER TABLE #{table} ENABLE TRIGGER ALL;"
     }
   end
-  alias_method_chain :load_fixtures, :trigger_disabling
+  #alias_method_chain :load_fixtures, :trigger_disabling
 
   # An hour of programming AGO days in the past
   def an_hour_of_programming(ago=2)

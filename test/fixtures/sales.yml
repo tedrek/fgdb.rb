@@ -2,42 +2,39 @@
 sales_001:
   reported_discount_amount_cents: "1100"
   updated_at: 2008-03-15 13:58:24.199857
+  occurred_at: 2008-03-15 13:58:24.199857
   postal_code: "97552"
   comments: ""
   created_by: "1"
   lock_version: "0"
   contact_id:
   updated_by:
-  discount_schedule_id: "4"
   id: "209108"
-  bulk:
   reported_amount_due_cents: "1100"
   created_at: 2008-03-15 13:58:24.199857
 sales_002:
   reported_discount_amount_cents: "700"
   updated_at: 2008-03-15 22:25:48.632596
+  occurred_at: 2008-03-15 22:25:48.632596
   postal_code: ""
   comments: ""
   created_by: "1"
   lock_version: "0"
   contact_id: "1"
   updated_by:
-  discount_schedule_id: "4"
   id: "209109"
-  bulk:
   reported_amount_due_cents: "700"
   created_at: 2008-03-15 22:25:48.632596
 sales_003:
   reported_discount_amount_cents: "4500"
   updated_at: 2008-03-15 22:26:33.074483
+  occurred_at: 2008-03-15 22:26:33.074483
   postal_code: ""
   comments: ""
   created_by: "1"
   lock_version: "0"
   contact_id: "2"
   updated_by:
-  discount_schedule_id: "4"
   id: "209110"
-  bulk:
   reported_amount_due_cents: "4500"
   created_at: 2008-03-15 22:26:33.074483

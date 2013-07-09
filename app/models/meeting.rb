@@ -10,7 +10,7 @@ class Meeting < Shift
   validates_presence_of :repeats_every_months
 
   named_scope :perpetual, :conditions => ['shift_date IS NULL']
-  named_scope :generated, :conditions => ['schedule_id = ?', Schedule.generate_from.id]
+  named_scope :generated, lambda {{:conditions => ['schedule_id = ?', Schedule.generate_from.id]}}
   named_scope :effective_in_range, lambda { |start, fin|
     {:conditions => ["(((effective_date <= ? OR effective_date IS NULL) AND (ineffective_date > ? OR ineffective_date IS NULL)) OR (effective_date > ? AND ineffective_date <= ?) OR ((ineffective_date is NULL or ineffective_date > ?) AND (effective_date IS NULL or effective_date <= ?)))", start, start, start, fin, fin, fin]}
   }

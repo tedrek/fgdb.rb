@@ -15,9 +15,16 @@ class Assignment < ActiveRecord::Base
 
   has_one :contact_volunteer_task_type_count, :conditions => 'contact_volunteer_task_type_counts.contact_id = #{defined?(attributes) ? contact_id : "assignments.contact_id"}', :through => :volunteer_shift, :source => :contact_volunteer_task_type_counts
 
-  named_scope :no_call_no_show, :conditions => ['attendance_type_id = ?', AttendanceType.find_by_name("no call no show").id]
-  named_scope :arrived, :conditions => ['attendance_type_id = ?', AttendanceType.find_by_name("arrived").id]
-  named_scope :for_contact_id, lambda {|c| {:conditions => ['contact_id = ?', c]}}
+  named_scope(:no_call_no_show,
+              lambda {{:conditions =>
+                  ['attendance_type_id = ?',
+                   AttendanceType.find_by_name("no call no show").id]}})
+  named_scope(:arrived,
+              lambda {{:conditions =>
+                  ['attendance_type_id = ?',
+                   AttendanceType.find_by_name("arrived").id]}})
+  named_scope(:for_contact_id,
+              lambda {|c| {:conditions => ['contact_id = ?', c]}})
   named_scope :updated_since, lambda {|u_date| u_date ? {:conditions => ['updated_at > ?', u_date]} : {:conditions => []}}
   named_scope :roster_is_limited_by_program, :conditions => ["roster_id IN (SELECT id FROM rosters WHERE limit_shift_signup_by_program = 't')"], :joins => [:volunteer_shift]
   named_scope :within_n_days_of, lambda{|n, x| {:conditions => ['date > ? AND date < ?', x - n, x + n], :joins => [:volunteer_shift => [:volunteer_event]]} }
