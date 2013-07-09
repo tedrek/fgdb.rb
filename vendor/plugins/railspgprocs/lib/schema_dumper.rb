@@ -38,12 +38,15 @@ module ActiveRecord
           args      = get_type(arg_types.split(" "))#.zip(arg_names.split(" "))
 
           stream.print "  create_proc(#{MyInflector.symbolize(name)}, [#{args}], :return => #{get_type(ret_type)}"
-          stream.print ", :resource => ['#{bin}', '#{src.gsub("'", "\\\\'")}']" unless bin == '-'
+          stream.print ", :resource => ['#{bin}', '#{src.gsub("'", "\\\\'")}']" unless (bin == '-' or bin.nil?)
           stream.print ", :set => true" if ret_set
           stream.print ", :strict => true" if is_strict
           stream.print ", :behavior => '#{behavior(volatile)}'" unless volatile == 'v'
           stream.print ", :lang => '#{lang}')"
-          stream.print " {\n    <<-#{(name).underscore}_sql\n#{src.chomp}\n    #{(name).underscore}_sql\n  }" if bin == '-'
+          if (bin == '-' or bin.nil?)
+            chomped_src = src.sub(/^\n+/, '').sub(/\n+$/, '')
+            stream.print " {\n    <<-#{(name).underscore}_sql\n#{chomped_src}\n    #{(name).underscore}_sql\n  }"
+          end
           stream.print "\n"
         }
       end
