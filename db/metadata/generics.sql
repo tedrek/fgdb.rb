@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: generics_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('generics_id_seq', 46, true);
+SELECT pg_catalog.setval('generics_id_seq', 47, true);
 
 
 --
@@ -73,6 +73,7 @@ COPY generics (id, value, only_serial, usable, created_at, updated_at) FROM stdi
 44	System product name	f	t	2010-07-19 23:13:21.359784	2010-07-19 23:13:21.359784
 45	Ssystem manufacturer	f	t	2010-07-19 23:13:21.371785	2010-07-19 23:13:21.371785
 46	INVALID	f	t	\N	\N
+47	Not Applicable	t	t	2012-12-08 05:39:56.102717	2012-12-08 05:39:56.102717
 \.
 
 

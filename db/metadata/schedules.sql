@@ -26,10 +26,10 @@ SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE schedules DISABLE TRIGGER ALL;
 
-COPY schedules (id, name, description, effective_date, ineffective_date, parent_id, repeats_every, repeats_on, lft, rgt) FROM stdin;
-50	A	Week A	2008-01-28	2008-01-28	1	2	0	2	3
-51	B	Week B	2008-01-28	2008-01-29	1	2	1	4	5
-1	main	Main Schedule	2005-01-01	2016-12-31	\N	1	0	1	6
+COPY schedules (id, name, description, effective_date, ineffective_date, repeats_every, repeats_on, generate_from, reference_from) FROM stdin;
+50	A	Week A	2008-01-28	2008-01-28	2	0	f	f
+51	B	Week B	2008-01-28	2008-01-29	2	1	f	f
+1	main	Main Schedule	2005-01-01	2016-12-31	1	0	t	f
 \.
 
 

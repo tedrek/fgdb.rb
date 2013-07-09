@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: spec_sheet_question_conditions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('spec_sheet_question_conditions_id_seq', 29, true);
+SELECT pg_catalog.setval('spec_sheet_question_conditions_id_seq', 31, true);
 
 
 --
@@ -33,9 +33,7 @@ COPY spec_sheet_question_conditions (id, spec_sheet_question_id, name, operator,
 4	3	type_id	=	7	\N	\N
 5	4	type_id	=	7	\N	\N
 6	4	maximum_power_supplies	>	1	\N	\N
-7	5	type_id	=	7	\N	\N
 8	6	type_id	=	7	\N	\N
-9	6	maximum_processors	>	1	\N	\N
 10	7	type_id	=	7	\N	\N
 11	8	type_id	=	7	\N	\N
 12	8	maximum_hard_drives	>	1	\N	\N
@@ -56,6 +54,9 @@ COPY spec_sheet_question_conditions (id, spec_sheet_question_id, name, operator,
 27	19	has_wireless_key_combo	=~	^(y|Y)	2012-03-31 00:37:35.820034	2012-03-31 00:37:35.820034
 28	19	type_id	=	4	2012-03-31 00:37:35.824606	2012-03-31 00:37:35.824606
 29	20	type_id	=	4	2012-03-31 00:37:35.834922	2012-03-31 00:37:35.834922
+7	5	type_id	=	-1	\N	2012-12-08 05:39:52.102879
+30	21	type_id	=	7	2012-12-08 05:39:52.126888	2012-12-08 05:39:52.126888
+31	22	type_id	=	7	2012-12-08 05:39:52.261097	2012-12-08 05:39:52.261097
 \.
 
 

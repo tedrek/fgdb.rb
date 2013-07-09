@@ -6,18 +6,18 @@ SCHEMADUMPFILE = 'db/schema.sql'
 DATADUMPFILE = ENV['FGDB_INTERNAL_DUMP_FILE'] || 'db/devel_data.sql'
 METADATADIR = 'db/metadata'
 METADATATABLES = %w[
-        contact_method_types contact_types discount_schedules
-        discount_schedules_gizmo_types gizmo_contexts
+        contact_method_types contact_types gizmo_contexts
+        discount_names discount_percentages
         gizmo_contexts_gizmo_types contracts generics
         gizmo_types payment_methods gizmo_categories
         volunteer_task_types disbursement_types defaults
         community_service_types roles actions types
-        coverage_types customizations return_policies
+        customizations return_policies
         holidays income_streams jobs programs till_types
         wc_categories rosters skeds rosters_skeds gizmo_type_groups
         spec_sheet_questions spec_sheet_question_conditions
         postal_codes disciplinary_action_areas schedules
-        weekdays
+        weekdays privileges
 ]
 MIGRATIONDIR = 'db/migrate'
 

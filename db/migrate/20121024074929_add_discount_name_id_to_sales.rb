@@ -13,7 +13,15 @@ class AddDiscountNameIdToSales < ActiveRecord::Migration
 
     discount_schedule_map = {}
     discount_name_map.each do |k, v|
-      discount_schedule_map[DiscountSchedule.find_by_name(k).id] = DiscountName.find_by_description(v).id
+      dn = DiscountName.find_by_description(v)
+      if dn.nil?
+        raise "Can't find DiscountName with description '#{v}'"
+      end
+      ds = DiscountSchedule.find_by_name(k)
+      if ds.nil?
+        raise "Can't find DiscountSchedule with name '#{k}'"
+      end
+      discount_schedule_map[ds.id] = dn.id
     end
 
     discount_schedule_map.each do |k, v|

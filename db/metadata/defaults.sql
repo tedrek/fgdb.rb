@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: defaults_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('defaults_id_seq', 34, true);
+SELECT pg_catalog.setval('defaults_id_seq', 38, true);
 
 
 --
@@ -58,6 +58,10 @@ COPY defaults (id, name, value, lock_version, updated_at, created_at) FROM stdin
 12	coveredness_enabled	0	1	2012-05-11 13:02:28.546352	2008-12-22 09:00:53.614147
 21	checksum_base	0123456789ABCDEF	2	2012-05-11 13:02:28.561298	2011-03-25 20:19:22.694195
 15	is-pdx	false	1	2012-05-11 19:36:34.668356	2008-12-22 09:01:02.01784
+35	meeting_minder_address	agendapoker@freegeek.org	0	2012-12-08 05:39:51.949967	2012-12-08 05:39:51.949967
+36	discount_percentage_id_for_volunteer_discount	5	0	2012-12-08 05:39:56.815796	2012-12-08 05:39:56.815796
+37	discount_name_id_for_volunteer_discount	5	0	2012-12-08 05:39:56.820669	2012-12-08 05:39:56.820669
+38	coding_ticket_owner	ryan52	0	2012-12-08 05:39:56.893217	2012-12-08 05:39:56.893217
 \.
 
 

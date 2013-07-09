@@ -30,7 +30,7 @@ COPY return_policies (id, name, description, text, created_at, updated_at) FROM 
 1	standard	14 DAY EXCHANGE	Unless otherwise specified, items may be returned within 14 days for a store credit. You must provide the original receipt at the time of return, and the items must be returned in the same condition in which they were sold.	2011-10-01 13:01:20.565775	2011-10-01 13:01:20.565775
 2	as_is	AS-IS	Items marked "As-Is" cannot be returned for any reason; the additional risk is reflected in the low, low price	2011-10-01 13:01:20.701818	2011-10-01 13:01:20.701818
 3	lcd	LCD MONITORS	may be returned for store credit within 30 days of purchase	2011-10-01 13:01:20.802989	2011-10-01 13:01:20.802989
-4	system	SYSTEM WARRANTY	Please see attached document for details of hardware warranty and tech support policies. Info may also be found at freegeek.org/thrift-store/warranty	2011-10-01 13:01:20.821799	2011-10-01 13:01:20.821799
+4	system	SYSTEM WARRANTY	Please see attached document for details of hardware warranty and tech support policies. Info may also be found at freegeek.org/system-warranty	2011-10-01 13:01:20.821799	2012-12-08 05:39:56.415646
 \.
 
 

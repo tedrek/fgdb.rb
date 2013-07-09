@@ -15,7 +15,7 @@ SET search_path = public, pg_catalog;
 -- Name: volunteer_task_types_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('volunteer_task_types_id_seq', 61, true);
+SELECT pg_catalog.setval('volunteer_task_types_id_seq', 62, true);
 
 
 --
@@ -66,6 +66,7 @@ COPY volunteer_task_types (id, description, hours_multiplier, instantiable, lock
 61	board work	1.000	t	0	2012-04-12 12:16:55.494388	2012-04-12 12:16:55.494388	board	\N	\N	10	\N
 50	tech support	1.000	t	3	2012-05-05 09:11:40.739159	2006-12-30 08:40:54	support	\N	\N	14	\N
 41	laptops	1.000	t	4	2012-05-05 09:31:05.809019	2006-12-30 08:40:54	laptops	\N	\N	2	t
+62	facilities	1.000	t	0	2012-12-08 05:39:56.176809	2012-12-08 05:39:56.176809	facilities	\N	\N	10	\N
 \.
 
 
