@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class GizmoEventTest < Test::Unit::TestCase
+class GizmoEventTest < ActiveSupport::TestCase
   fixtures :gizmo_types
 
   def setup

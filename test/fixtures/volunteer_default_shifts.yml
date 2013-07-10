@@ -1,9 +1,7 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  effective_at: 2010-11-20
-  ineffective_at: 2010-11-20
-  weekday_id: 1
+  volunteer_default_event_id: 1
   start_time: 2010-11-20 01:24:07
   end_time: 2010-11-20 01:24:07
   slot_count: 1
@@ -11,9 +9,7 @@ one:
   roster_id: 1
 
 two:
-  effective_at: 2010-11-20
-  ineffective_at: 2010-11-20
-  weekday_id: 1
+  volunteer_default_event_id: 1
   start_time: 2010-11-20 01:24:07
   end_time: 2010-11-20 01:24:07
   slot_count: 1

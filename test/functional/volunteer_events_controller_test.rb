@@ -1,10 +1,16 @@
 require 'test_helper'
 
 class VolunteerEventsControllerTest < ActionController::TestCase
+  fixtures :roles, :roles_users, :users
+  def setup
+    login_as :quentin
+  end
+ 
+  fixtures :volunteer_events
+
   def test_should_get_index
     get :index
-    assert_response :success
-    assert_not_nil assigns(:volunteer_events)
+    assert_response :redirect
   end
 
   def test_should_get_new
@@ -14,10 +20,12 @@ class VolunteerEventsControllerTest < ActionController::TestCase
 
   def test_should_create_volunteer_event
     assert_difference('VolunteerEvent.count') do
-      post :create, :volunteer_event => { }
+      post :create, :volunteer_event => {
+        :date => Date.today
+      }
     end
 
-    assert_redirected_to volunteer_event_path(assigns(:volunteer_event))
+    assert_response :redirect
   end
 
   def test_should_show_volunteer_event
@@ -32,7 +40,7 @@ class VolunteerEventsControllerTest < ActionController::TestCase
 
   def test_should_update_volunteer_event
     put :update, :id => volunteer_events(:one).id, :volunteer_event => { }
-    assert_redirected_to volunteer_event_path(assigns(:volunteer_event))
+    assert_response :redirect
   end
 
   def test_should_destroy_volunteer_event
@@ -40,6 +48,6 @@ class VolunteerEventsControllerTest < ActionController::TestCase
       delete :destroy, :id => volunteer_events(:one).id
     end
 
-    assert_redirected_to volunteer_events_path
+    assert_response :redirect
   end
 end

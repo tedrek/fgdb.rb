@@ -1,17 +1,20 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContactMethodTest < Test::Unit::TestCase
+class ContactMethodTest < ActiveSupport::TestCase
   fixtures :users, :contact_types, :contacts, :contact_method_types, :contact_methods
 
-  TYPE = ContactMethodType.new({:name=>'cat', :description => "cat"})
-  TYPE.save
-  CONTACT = Contact.new({:postal_code => '1', :first_name => "cat", :created_by => 1})
-  CONTACT.save
+  TYPE = ContactMethodType.find(:first)
+  CONTACT = nil
   NEW_CONTACT_METHOD = {:contact_method_type => TYPE, :contact => CONTACT}
   REQ_ATTR_NAMES        = %w( contact contact_method_type  )
   DUPLICATE_ATTR_NAMES = %w( )
 
   def setup
+    @contact = Contact.find(:first)
+    @contact_method_type = ContactMethodType.find(:first)
+    @new_contact_method = {:contact_method_type=>@contact_method_type,
+      :contact=>@contact}
+    assert !@contact.nil?
     # Retrieve fixtures via their name
     # @first = contact_methods(:first)
   end
@@ -28,7 +31,7 @@ class ContactMethodTest < Test::Unit::TestCase
   end
 
   def test_new
-    contact_method = ContactMethod.new(NEW_CONTACT_METHOD)
+    contact_method = ContactMethod.new(@new_contact_method)
     assert contact_method.valid?, "ContactMethod should be valid"
      NEW_CONTACT_METHOD.each do |attr_name|
       assert_equal NEW_CONTACT_METHOD[attr_name], contact_method.attributes[attr_name], "ContactMethod.@#{attr_name.to_s} incorrect"

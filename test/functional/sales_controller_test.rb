@@ -13,7 +13,12 @@ class SalesControllerTest < ActionController::TestCase
   def create_a_new_sale
     s = Sale.new({:contact_type => 'named', 
                    :created_by => 1, 
-                   :discount_schedule => DiscountSchedule.no_discount})
+                   :discount_percentage =>
+                   DiscountPercentage.find(:first,
+                                           :conditions => "percentage = 0"),
+                   :discount_name => 
+                   DiscountName.find(:first,
+                                     :conditions => "description = 'None'")})
     s.contact = Contact.find(:first)
     s.gizmo_events = [GizmoEvent.new(sold_system_event)]
     s.gizmo_events[0].unit_price = "20"

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CommunityServiceTypeTest < Test::Unit::TestCase
+class CommunityServiceTypeTest < ActiveSupport::TestCase
   fixtures :community_service_types
 
   # Replace this with your real tests.

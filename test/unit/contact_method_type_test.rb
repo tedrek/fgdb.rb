@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContactMethodTypeTest < Test::Unit::TestCase
+class ContactMethodTypeTest < ActiveSupport::TestCase
   fixtures :contact_method_types
 
   NEW_CONTACT_METHOD_TYPE = {}  # e.g. {:name => 'Test ContactMethodType', :description => 'Dummy'}

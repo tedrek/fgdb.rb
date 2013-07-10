@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class DonationTest < Test::Unit::TestCase
+class DonationTest < ActiveSupport::TestCase
 
 #   fixtures :contact_types, :contact_method_types, :contacts, :payment_methods, :gizmo_contexts,
 #     :gizmo_attrs, :gizmo_types, :gizmo_typeattrs,
@@ -128,8 +128,8 @@ class DonationTest < Test::Unit::TestCase
     assert ! donation.valid?
   end
 
-    Test::Unit::TestCase.integer_math_test(self, "Donation", "reported_suggested_fee")
-    Test::Unit::TestCase.integer_math_test(self, "Donation", "reported_required_fee")
+  ActiveSupport::TestCase.integer_math_test(self, "Donation", "reported_suggested_fee")
+  ActiveSupport::TestCase.integer_math_test(self, "Donation", "reported_required_fee")
 
   def test_that_donations_use_contact_type_first
     donation = Donation.new(with_too_much_contact_info)
@@ -145,18 +145,19 @@ class DonationTest < Test::Unit::TestCase
     donation = Donation.find(donation.id)
     event = donation.gizmo_events[0]
     assert_not_nil event.occurred_at
-    assert_equal donation.created_at, event.occurred_at
+    assert_equal donation.created_at.to_s, event.occurred_at.to_s
   end
   
   def test_that_gizmo_events_occurred_when_donated
     donation = Donation.new(WITH_CONTACT_INFO)
     yesterday = Date.today - 1
     donation.created_at = yesterday
+    donation.occurred_at = donation.created_at
     donation.gizmo_events = [GizmoEvent.new(recycled_system_event)]
     assert donation.save
     donation = Donation.find(donation.id)
     event = donation.gizmo_events[0]
-    assert_equal donation.created_at, event.occurred_at
-    assert_not_equal event.created_at, event.occurred_at
+    assert_equal donation.created_at.to_s, event.occurred_at.to_s
+    assert_not_equal event.created_at.to_s, event.occurred_at.to_s
   end
 end

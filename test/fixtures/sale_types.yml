@@ -1,9 +1,17 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  name: MyString
-  description: MyString
-
-two:
-  name: MyString
-  description: MyString
+retail:
+  name: retail
+  description: "Retail"
+  id: 1
+online:
+  name: online
+  description: "Online"
+  id: 2
+bulk:
+  name: bulk
+  description: "Bulk"
+  id: 3
+other:
+  name: other
+  description: "Other"
+  id: 4

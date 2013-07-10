@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class DisbursementTypeTest < Test::Unit::TestCase
+class DisbursementTypeTest < ActiveSupport::TestCase
   fixtures :disbursement_types
 
   # Replace this with your real tests.

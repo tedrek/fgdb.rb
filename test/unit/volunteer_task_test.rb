@@ -1,12 +1,13 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class VolunteerTaskTest < Test::Unit::TestCase
-  fixtures :volunteer_task_types, :volunteer_tasks, :contacts
+class VolunteerTaskTest < ActiveSupport::TestCase
+  fixtures :volunteer_task_types, :volunteer_tasks, :contacts, :programs
 
   def new_volunteer_task
     type = VolunteerTaskType.find_by_hours_multiplier(1.0)#new({:instantiable => true, :description => 'meowing', :hours_multiplier => 1.0})
     #type.save
     {
+      :program_id => 1,
       :duration => 1.5,
       :contact_id => 1,
       :date_performed => Date.today,
@@ -35,7 +36,7 @@ class VolunteerTaskTest < Test::Unit::TestCase
   def test_new
     volunteer_task = VolunteerTask.new(new_volunteer_task)
     assert volunteer_task.valid?, "VolunteerTask should be valid"
-        new_volunteer_task.each do |attr_name|
+    new_volunteer_task.each do |attr_name|
       assert_equal new_volunteer_task[attr_name], volunteer_task.attributes[attr_name], "VolunteerTask.@#{attr_name.to_s} incorrect"
     end
   end

@@ -1,12 +1,14 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
+  id: 1
   name: MyString
   pull_from: MyString
   numerical: false
   multiple: false
 
 two:
+  id: 2
   name: MyString
   pull_from: MyString
   numerical: false

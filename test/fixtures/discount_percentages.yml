@@ -1,9 +1,28 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  percentage: 1
+DiscountPercentage0:
+  percentage: 0
+  available: true
+DiscountPercentage1:
+  percentage: 5
   available: false
-
-two:
-  percentage: 1
+DiscountPercentage2:
+  percentage: 10
+  available: true
+DiscountPercentage3:
+  percentage: 15
+  available: true
+DiscountPercentage4:
+  percentage: 20
+  available: true
+DiscountPercentage5:
+  percentage: 25
+  available: true
+DiscountPercentage6:
+  percentage: 30
+  available: true
+DiscountPercentage7:
+  percentage: 35
+  available: true
+DiscountPercentage8:
+  percentage: 50
   available: false

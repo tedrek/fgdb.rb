@@ -111,3 +111,11 @@ contact_types_006:
   name: build
   description: build
   created_at: 2006-12-29 17:07:36.511086
+contact_types_contributor:
+  updated_at: 2006-12-29 17:07:36.511086
+  for_who: per
+  lock_version: "0"
+  id: 39
+  name: contributor
+  description: contributor
+  created_at: 2006-12-29 17:07:36.511086

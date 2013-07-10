@@ -1,6 +1,13 @@
 require 'test_helper'
 
 class SkedsControllerTest < ActionController::TestCase
+  fixtures :users, :roles_users, :roles
+  def setup
+    login_as :quentin
+  end
+
+  fixtures :skeds
+
   def test_should_get_index
     get :index
     assert_response :success
@@ -17,7 +24,7 @@ class SkedsControllerTest < ActionController::TestCase
       post :create, :sked => { }
     end
 
-    assert_redirected_to sked_path(assigns(:sked))
+    assert_response :redirect
   end
 
   def test_should_show_sked
@@ -32,7 +39,7 @@ class SkedsControllerTest < ActionController::TestCase
 
   def test_should_update_sked
     put :update, :id => skeds(:one).id, :sked => { }
-    assert_redirected_to sked_path(assigns(:sked))
+    assert_response :redirect
   end
 
   def test_should_destroy_sked
@@ -40,6 +47,6 @@ class SkedsControllerTest < ActionController::TestCase
       delete :destroy, :id => skeds(:one).id
     end
 
-    assert_redirected_to skeds_path
+    assert_response :redirect
   end
 end

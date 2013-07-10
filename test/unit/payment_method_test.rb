@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PaymentMethodTest < Test::Unit::TestCase
+class PaymentMethodTest < ActiveSupport::TestCase
   fixtures :payment_methods
 
 	NEW_PAYMENT_METHOD = {}	# e.g. {:name => 'Test PaymentMethod', :description => 'Dummy'}

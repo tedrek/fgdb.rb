@@ -1,15 +1,19 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
+  id: 1
   name: MyString
-  type_id: 1
+  gizmo_type_id: 33
   pull_from: MyString
   matcher: MyString
   base_value_cents: 1
-
+  multiplier_cents: 100
+  round_by_cents: 100
 two:
   name: MyString
-  type_id: 1
+  gizmo_type_id: 34
   pull_from: MyString
   matcher: MyString
   base_value_cents: 1
+  multiplier_cents: 100
+  round_by_cents: 100

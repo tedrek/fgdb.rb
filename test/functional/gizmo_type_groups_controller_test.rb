@@ -1,6 +1,12 @@
 require 'test_helper'
 
 class GizmoTypeGroupsControllerTest < ActionController::TestCase
+  fixtures :gizmo_type_groups, :users, :roles_users, :roles
+
+  def setup
+    login_as :quentin
+  end
+
   test "should get index" do
     get :index
     assert_response :success

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ConditionsTest < Test::Unit::TestCase
+class ConditionsTest < ActiveSupport::TestCase
   fixtures :payment_methods
 
   def test_joining_conditions

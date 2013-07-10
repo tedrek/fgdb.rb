@@ -3,6 +3,21 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 
 class Test::Unit::TestCase
+  class << self
+    def integer_math_test(my_test, class_name, field_name)
+      code= "def test_that_#{class_name}s_use_integer_math_for_#{field_name}
+      pmnt = #{class_name}.new
+      pmnt.#{field_name} = \"2.54\"
+      assert_equal 254, pmnt.#{field_name}_cents
+      pmnt.#{field_name}_cents = 514
+      assert_equal \"5.14\", (pmnt.#{field_name}_cents.to_f/100.0).to_s
+      end"
+      my_test.class_eval(code)
+    end
+  end
+end
+
+class ActiveSupport::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the
   # test database remains unchanged so your fixtures don't have to be reloaded
@@ -28,10 +43,11 @@ class Test::Unit::TestCase
      %W[programs volunteer_task_types community_service_types],
      %W[disbursement_types disbursements],
      %W[payment_methods],
-     %W[sales],
+     %W[sale_types sales],
      %W[donations],
      %W[payments],
      %W[recyclings],
+     %W[discount_names discount_percentages],
     ]
 
   class << self
@@ -90,17 +106,20 @@ class Test::Unit::TestCase
 
   # An hour of assembly AGO days in the past
   def an_hour_of_assembly(ago=2)
-    an_hour_of(26,ago)
+    an_hour_of(26,ago, 'build')
   end
 
   # An hour of monitors AGO days in the past
   def an_hour_of_monitors(ago=2)
-    an_hour_of(22,ago)
+    an_hour_of(22,ago, 'adoption')
   end
 
   # An hour of TYPE, AGO days in the past
-  def an_hour_of(type,ago=2)
+  def an_hour_of(type,ago=2,program='default')
     VolunteerTask.new({ :duration => 1.0,
+                        :program =>
+                        Program.find(:first,
+                                     :conditions => "name = '#{program}'"),
                         :created_by => 1,
                         :date_performed => Date.today - ago,
                         :volunteer_task_type => VolunteerTaskType.find(type) })

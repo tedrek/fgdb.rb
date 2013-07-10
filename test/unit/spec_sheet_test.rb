@@ -9,6 +9,7 @@ class SpecSheetTest < ActiveSupport::TestCase
     file = File.open(File.dirname(__FILE__) + "/../fixtures/laptop.xml")
     report = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => file.read}))
     file.close
+    assert report.valid?, report.errors.full_messages.join("\n")
     assert report.save
     assert_kind_of System, report.system
     assert_nothing_raised {report.system.serial_number}
@@ -24,6 +25,7 @@ class SpecSheetTest < ActiveSupport::TestCase
     file = File.open(File.dirname(__FILE__) + "/../fixtures/1967.xml")
     report = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => file.read}))
     file.close
+    assert report.valid?, report.errors.full_messages.join("\n")
     assert report.save
     assert_kind_of System, report.system
     assert_nothing_raised {report.system.serial_number}
@@ -40,6 +42,7 @@ class SpecSheetTest < ActiveSupport::TestCase
     data = file.read
     file.close
     report1 = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => data}))
+    assert report1.valid?, report1.errors.full_messages.join("\n")
     assert report1.save
     report2 = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => data}))
     assert report2.save
@@ -62,6 +65,7 @@ class SpecSheetTest < ActiveSupport::TestCase
     data4 = file4.read
     file4.close
     report1 = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => data1}))
+    assert report1.valid?, report1.errors.full_messages.join("\n")
     assert report1.save
     report2 = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => data2}))
     assert report2.save
@@ -75,15 +79,5 @@ class SpecSheetTest < ActiveSupport::TestCase
     assert_not_equal report2.system.id, report4.system.id
     assert_not_equal report1.system.id, report4.system.id
     assert_not_equal report2.system.id, report3.system.id
-  end
-
-  def test_good_but_not_containing_any_information_xml_files_succeed
-    file = File.open(File.dirname(__FILE__) + "/../fixtures/good_but_bad.xml")
-    report = SpecSheet.new(REQUIRED_DATA.merge({:lshw_output => file.read}))
-    file.close
-    assert report.save
-    assert_equal "(no serial number)", report.system.serial_number
-    assert_equal "(no vendor)", report.system.vendor
-    assert_equal "(no model)", report.system.model
   end
 end

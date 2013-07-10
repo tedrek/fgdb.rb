@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContactTypeTest < Test::Unit::TestCase
+class ContactTypeTest < ActiveSupport::TestCase
 
   load_all_fixtures()
 
@@ -62,8 +62,10 @@ class ContactTypeTest < Test::Unit::TestCase
         sale = Sale.new({ :contact => blank, :contact_type => 'named',
                           :payments => [paid_a_dollar],
                           :created_by => 1,
-                          :discount_schedule => DiscountSchedule.no_discount,
+                          :discount_name => DiscountName.find(:first),
+                          :discount_percentage => DiscountPercentage.find(:first, :conditions => "percentage = 0"),
                           :gizmo_events => [a_mouse_for_sale]})
+        assert sale.valid?, "#{name} is valid (Errors: #{sale.errors})"
         assert_nothing_raised {retval = sale.save}
         assert retval, "#{name} should have saved successfully"
       when :donation
@@ -89,8 +91,11 @@ class ContactTypeTest < Test::Unit::TestCase
   end
 
   def empty_contact
-    c = Contact.new({:first_name => 'foo', :postal_code => '1A', :created_by => 1})
-    c.save
+    c = Contact.new({:first_name=>"Joe", :middle_name=>'', :surname=> 'Strummer',
+    :organization=>'', :extra_address=>'', :address=>'Elsewhere',
+    :city=>'London', :state_or_province=>'UK', :postal_code=>'123',
+    :country=>'Britain', :notes=>'', :created_by=>1})
+    c.save!
     c
   end
 

@@ -1,13 +1,14 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'contacts_controller'
 
 # Re-raise errors caught by the controller.
 class ContactsController; def rescue_action(e) raise e end; end
 
-class ContactsControllerTest < Test::Unit::TestCase
-  fixtures :contacts, :volunteer_task_types, :discount_schedules, :users, :roles, :roles_users, :payment_methods
+class ContactsControllerTest < ActionController::TestCase
+  fixtures :contacts, :volunteer_task_types, :users, :roles, :roles_users, :payment_methods, :discount_names
 
   NEW_CONTACT = {
+    'first_name' => 'John',
+    'surname' => 'Smith',
     'postal_code' => '98982'
   }
   NEW_CONTACT_TYPES = []
@@ -23,7 +24,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     login_as :quentin
     post(:auto_complete_for_filter_contact_query,
          'filter_contact' => {'query' => 'foo'},
-         "amp;object_name" => 'filter_contact',
+         "object_name" => 'filter_contact',
          :field_name => 'query'
          )
     assert_response :success
@@ -65,7 +66,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'create.rjs'
     assert ! successful, "Should not be successful"
-    assert_match /Postal code can't be blank/i, @response.body #'
+    assert_match /First name or surname must be provided for individuals/i, @response.body
     assert_match /Form.enable/, @response.body
     assert_match /addClassName[^;]+fieldWithErrors/, @response.body
   end
@@ -77,7 +78,7 @@ class ContactsControllerTest < Test::Unit::TestCase
     contact, successful = check_attrs(%w(contact successful))
 #    assert successful, "Should be successful"
     contact.reload
-     NEW_CONTACT.each do |attr_name|
+    NEW_CONTACT.each do |attr_name|
       assert_equal NEW_CONTACT[attr_name], contact.attributes[attr_name], "@contact.#{attr_name.to_s} incorrect"
     end
     assert_equal contact_count, Contact.find(:all).length, "Number of Contacts should be the same"

@@ -1,6 +1,13 @@
 require 'test_helper'
 
 class ResourcesControllerTest < ActionController::TestCase
+  fixtures :users, :roles_users, :roles
+  def setup
+    login_as :quentin
+  end
+
+  fixtures :resources
+
   def test_should_get_index
     get :index
     assert_response :success
@@ -17,7 +24,7 @@ class ResourcesControllerTest < ActionController::TestCase
       post :create, :resource => { }
     end
 
-    assert_redirected_to resource_path(assigns(:resource))
+    assert_response :redirect
   end
 
   def test_should_show_resource
@@ -32,7 +39,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_should_update_resource
     put :update, :id => resources(:one).id, :resource => { }
-    assert_redirected_to resource_path(assigns(:resource))
+    assert_response :redirect
   end
 
   def test_should_destroy_resource
@@ -40,6 +47,6 @@ class ResourcesControllerTest < ActionController::TestCase
       delete :destroy, :id => resources(:one).id
     end
 
-    assert_redirected_to resources_path
+    assert_response :redirect
   end
 end

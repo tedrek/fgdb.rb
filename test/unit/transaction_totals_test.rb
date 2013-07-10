@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TransactionTotalsTest < Test::Unit::TestCase
+class TransactionTotalsTest < ActiveSupport::TestCase
 
 #   fixtures :contact_types, :contact_method_types, :contacts, :payment_methods, :gizmo_contexts,
 #     :gizmo_attrs, :gizmo_types, :gizmo_typeattrs,

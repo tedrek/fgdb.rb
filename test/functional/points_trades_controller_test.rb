@@ -1,6 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class PointsTradesControllerTest < ActionController::TestCase
+  fixtures :contacts, :points_trades, :users, :roles_users, :roles
+
+  def setup
+    login_as :quentin
+  end
+
   def test_should_get_index
     get :index
     assert_response :success
@@ -13,15 +19,21 @@ class PointsTradesControllerTest < ActionController::TestCase
   end
 
   def test_should_create_points_trade
+    t = VolunteerTask.new(:contact => contacts(:test_contact),
+                          :volunteer_task_type => VolunteerTaskType.find(:first),
+                          :community_service_type => CommunityServiceType.find(:first),
+                          :program => Program.find(:first),
+                          :duration => 4,
+                          :date_performed => Date.today)
+    assert t.save!
     assert_difference('PointsTrade.count') do
-      post :create, :points_trade => { }
+      post :create, :points_trade => {
+        :from_contact => contacts(:test_contact),
+        :to_contact => contacts(:contacts_003),
+        :points => 1
+      }
     end
 
-    assert_redirected_to points_trade_path(assigns(:points_trade))
-  end
-
-  def test_should_show_points_trade
-    get :show, :id => points_trades(:one).id
     assert_response :success
   end
 
@@ -32,7 +44,7 @@ class PointsTradesControllerTest < ActionController::TestCase
 
   def test_should_update_points_trade
     put :update, :id => points_trades(:one).id, :points_trade => { }
-    assert_redirected_to points_trade_path(assigns(:points_trade))
+    assert_response :success
   end
 
   def test_should_destroy_points_trade
@@ -40,6 +52,6 @@ class PointsTradesControllerTest < ActionController::TestCase
       delete :destroy, :id => points_trades(:one).id
     end
 
-    assert_redirected_to points_trades_path
+    assert_response :success
   end
 end

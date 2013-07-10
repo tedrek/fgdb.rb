@@ -1,9 +1,32 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  name: MyString
+discountName0:
+  description: "Old Coupon"
   available: false
-
-two:
-  name: MyString
+discountName1:
+  description: "Old Bulk"
   available: false
+discountName2:
+  description: "Old One Time"
+  available: false
+discountName3:
+  id: 1
+  description: "None"
+  available: true
+discountName4:
+  description: "Volunteer"
+  available: true
+discountName5:
+  description: "Donor"
+  available: true
+discountName6:
+  description: "Friend"
+  available: true
+discountName7:
+  description: "Chinook"
+  available: true
+discountName8:
+  description: "Student"
+  available: true
+discountName9:
+  description: "Grants"
+  available: true

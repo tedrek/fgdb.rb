@@ -267,3 +267,22 @@ contacts_001:
   surname: ""
   created_at: 2006-09-20 13:18:06-07
   middle_name: ""
+test_contact:
+  city: Vancouver
+  updated_at: 2012-11-26 23:23:24-08
+  postal_code: "V5K 2K4"
+  state_or_province: BC
+  sort_name: contact test
+  is_organization: f
+  lock_version: "5"
+  country: Canada
+  notes: ""
+  extra_address: ""
+  created_by: "1"
+  organization: FreeGeek Test
+  first_name: Test
+  address: 1731 SE 10th Ave
+  surname: Contact
+  created_at: 2012-11-26 23:23:24-08
+  middle_name: ""
+  

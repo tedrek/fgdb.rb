@@ -4,7 +4,7 @@ require 'volunteer_tasks_controller'
 # Re-raise errors caught by the controller.
 class VolunteerTasksController; def rescue_action(e) raise e end; end
 
-class VolunteerTasksControllerTest < Test::Unit::TestCase
+class VolunteerTasksControllerTest < ActionController::TestCase
   fixtures :contacts, :volunteer_task_types, :volunteer_tasks, :users, :roles, :roles_users
 
   NEW_VOLUNTEER_TASK = {
@@ -23,12 +23,17 @@ class VolunteerTasksControllerTest < Test::Unit::TestCase
   def test_list
     get :list
     assert_response :success
-    assert_template 'list'
   end
 
   def test_component_with_contact
     first = Contact.find(:first)
-    first.volunteer_tasks << an_hour_of_programming
+    first.volunteer_tasks << VolunteerTask.new(
+                          :volunteer_task_type => VolunteerTaskType.find(:first),
+                          :community_service_type => CommunityServiceType.find(:first),
+                          :program => Program.find(:first),
+                          :duration => 4,
+                          :date_performed => Date.today)
+    assert first.save!
     post :component, :contact_id => first.id, :limit_by_contact_id => true
     assert_response :success
     assert_template 'component'

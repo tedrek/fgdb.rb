@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class GizmoContextTest < Test::Unit::TestCase
+class GizmoContextTest < ActiveSupport::TestCase
   fixtures :gizmo_contexts
 
 	NEW_GIZMO_CONTEXT = {}	# e.g. {:name => 'Test GizmoContext', :description => 'Dummy'}

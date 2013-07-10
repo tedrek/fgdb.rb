@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class VolunteerTaskTypeTest < Test::Unit::TestCase
+class VolunteerTaskTypeTest < ActiveSupport::TestCase
   fixtures :volunteer_task_types
 
 	NEW_VOLUNTEER_TASK_TYPE = {}	# e.g. {:name => 'Test VolunteerTaskType', :description => 'Dummy'}

@@ -48,3 +48,15 @@ defaults_007:
   id: "1"
   value: Portland
   created_at: 2007-04-16 14:15:10
+defaults_hours_for_discount: 
+  name: hours_for_discount
+  updated_at: 2007-04-16 14:34:29
+  lock_version: "1"
+  value: 4
+  created_at: 2007-04-16 14:15:10
+defaults_days_for_discount: 
+  name: days_for_discount
+  updated_at: 2007-04-16 14:34:29
+  lock_version: "1"
+  value: 90
+  created_at: 2007-04-16 14:15:10
