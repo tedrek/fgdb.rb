@@ -20,8 +20,9 @@ module ActiveRecord
         query(<<-end_sql).collect {|row| TriggerDefinition.new(*row) }
           SELECT T.oid, C.relname, T.tgname, T.tgtype, P.proname
             FROM pg_trigger T
-            JOIN pg_class   C ON (T.tgrelid = C.OID AND C.relname = '#{table_name}' AND T.tgisconstraint = 'f')
+            JOIN pg_class   C ON (T.tgrelid = C.OID AND C.relname = '#{table_name}')
             JOIN pg_proc    P ON (T.tgfoid = P.OID)
+            WHERE T.tgname NOT LIKE 'RI_ConstraintTrigger%'
         end_sql
       end
 
