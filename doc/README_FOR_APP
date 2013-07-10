@@ -1,6 +1,82 @@
 = _F_ree_G_eek _D_ata_B_ase in _R_u_B_y
 
-== Install
+== Install on Ubuntu 12.04
+
+Currently the ruby versions on Ubuntu precise are a little out of
+date.  The preferred method for running fgdb.rb is via RVM.  The
+following process will setup a basic RVM environment which works for
+development purposes.  It assumes no existing RVM on the system.
+
+Please read all the instructions and modify appropriately for your
+environment.
+
+=== Source code
+
+To get a source code checkout, install git and clone the repository:
+  precise $ sudo apt-get install git
+  precise $ git clone -b migrate-1.9 https://github.com/tedrek/fgdb.rb.git \
+            /path/to/desired/checkout/location
+  precise $ cd /path/to/desired/checkout/location
+
+You should now have the latest dev code checked out.  You may wish to
+use a stable release instead.
+
+=== Software dependencies
+
+Install the dependencies required by FGDB.rb:
+  precise $ sudo apt-get update
+
+  # External utilities, including a database server
+  precise $ sudo apt-get install postgresql-9.1 xmlstarlet curl socat
+
+  # Install dependencies for ruby1.9.3
+  precise $ sudo apt-get install gawk libreadline6-dev zlib1g-dev libssl-dev \
+                 libyaml-dev libsqlite3-dev sqlite3 autoconf libgdbm-dev \
+                 libncurses5-dev automake libtool bison pkg-config libffi-dev
+
+  # Install rvm
+  precise $ curl https://get.rvm.io | /bin/bash -s stable
+
+  # Install ruby 1.9.3
+  precise $ rvm install 1.9.3
+
+  # Install bundler
+  precise $ gem install bundle
+
+  # Install dependencies for gems
+  precise $ sudo apt-get install libpq-dev libmagickcore-dev libmagickwand-dev
+
+  # Install gems
+  precise $ bundle install
+
+=== Configure your database
+
+This creates a user with full priveleges on the database server, it is
+possible to run with lesser priveleges but that is not currently
+documented.
+
+Create a user for FGDB on your postgres DB:
+  precise $ sudo -u postgres createuser -aP fgdb
+
+Point the application at your database by copying
+config/database.yml-example to config/database.yml and editing it.
+
+=== Initialize the database
+
+For production database replace 'development' with 'production'
+  precise $ export RAILS_ENV=development
+  precise $ rake db:create
+  precise $ rake db:schema:load
+  precise $ rake db:metadata:load
+  precise $ ./script/make_admin
+  precise $ rake db:migrate
+
+=== Setup complete
+
+You can now run ./scripts/server and should have a working setup.  For
+production, passenger is the recommended server.
+
+== Install on Debian Squeeze
 
 NOTE: Information specific to the installation at FG PDX is in doc/README.maintenance
 
