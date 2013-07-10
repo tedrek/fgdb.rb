@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
 # Api's we will use:
 ## http://wiki.civicrm.org/confluence/display/CRMDOC33/Contact+APIs
