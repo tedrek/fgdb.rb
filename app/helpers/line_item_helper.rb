@@ -53,7 +53,7 @@ module LineItemHelper
         arr << t
       end
     end
-    orig = object.send(tbl.to_sym).map{|x| x}
+    orig = object.send(prefix.to_sym).map{|x| x}
     object.send((tbl + "=").to_sym, arr)
     fkey_name = object.class.table_name.singularize + "_id"
     orig.map{|x| thing_klass.find_by_id(x.id)}.select{|x| !x.nil?}.each{|x| x.destroy if x.send(fkey_name.to_sym).nil?}
