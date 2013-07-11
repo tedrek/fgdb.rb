@@ -567,9 +567,9 @@ class Contact < ActiveRecord::Base
 
   def display_name_address
     disp = []
-    disp.concat(display_name.to_a) unless
+    disp.concat([display_name]) unless
       display_name.nil? or display_name.size == 0
-    disp.concat(display_address.to_a) unless
+    disp.concat([display_address]) unless
       display_address.nil? or display_address.size == 0
     return disp
   end
