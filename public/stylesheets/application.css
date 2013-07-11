@@ -9,20 +9,21 @@ div#logo {
 position: absolute;
 top: 0px;
 left: 5px;
-padding: 2px;
+padding: 0px;
 }
 div#sidebar {
 position: absolute;
 top: 140px;
 left: 0px;
 padding: 2px;
-margin: 10px;
+margin: 5px;
+min-width: 131px;
 background-color: #49F;
 }
 div#content {
 position: absolute;
 top: 40px;
-left: 145px;
+left: 140px;
 padding: 10px;
 width: 83%;
 }
