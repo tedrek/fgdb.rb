@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SpecSheetsControllerTest < ActionController::TestCase
-  fixtures :systems, :actions, :types
+  fixtures :systems, :types
   REQUIRED_DATA={:contact_id => 1, :action_id => 1, :type_id => 1, :contract_id => 1}
 
   # def test_that_things_fail_if_xml_output_is_empty

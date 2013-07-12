@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SpecSheetTest < ActiveSupport::TestCase
-  fixtures :actions, :types, :systems, :contacts, :spec_sheets, :generics, :users, :contracts
+  fixtures :types, :systems, :contacts, :spec_sheets, :generics, :users, :contracts
 
   REQUIRED_DATA={:contact_id => 1, :action_id => 1, :contract_id => 1, :type_id => 1}
 

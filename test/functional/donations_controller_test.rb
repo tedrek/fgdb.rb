@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class DonationsControllerTest < ActionController::TestCase
-  fixtures :payment_methods, :users, :roles, :roles_users, :gizmo_types, :gizmo_contexts, :contacts
+  fixtures :users, :roles_users, :contacts, :gizmo_events
 
   def create_a_new_donation
     d = Donation.new({:contact_type => 'anonymous', :postal_code => '12435'})

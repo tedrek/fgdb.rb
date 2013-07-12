@@ -49,6 +49,7 @@ class PricingTypesController < ApplicationController
       orig_pricing_type.replaced_by_id = @pricing_type.id
       orig_pricing_type.ineffective_on = DateTime.now
       orig_pricing_type.save!
+      params[:comp_mult] ||= []
       params[:comp_mult].each do |k, v|
         pc = PricingComponent.find_by_id(k)
         pc.multiplier = v

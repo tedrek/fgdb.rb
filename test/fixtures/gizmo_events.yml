@@ -12,7 +12,7 @@ gizmo_events_001:
   created_at: 2008-03-15 13:58:24.307307
   occurred_at: 2008-03-15 13:58:24.307307
   recycling_id:
-  unit_price_cents: 
+  unit_price_cents: 100
   as_is: false
 gizmo_events_002:
   updated_at: 2008-03-15 13:58:24.403711
@@ -27,7 +27,7 @@ gizmo_events_002:
   created_at: 2008-03-15 13:58:24.349981
   occurred_at: 2008-03-15 13:58:24.349981
   recycling_id:
-  unit_price_cents: 
+  unit_price_cents: 100
   as_is: false
 gizmo_events_003:
   updated_at: 2008-03-15 22:25:48.718076
@@ -42,7 +42,7 @@ gizmo_events_003:
   created_at: 2008-03-15 22:25:48.674547
   occurred_at: 2008-03-15 22:25:48.674547
   recycling_id:
-  unit_price_cents: 
+  unit_price_cents: 100
   as_is: false
 gizmo_events_004:
   updated_at: 2008-03-15 22:26:33.170754
@@ -57,7 +57,7 @@ gizmo_events_004:
   created_at: 2008-03-15 22:26:33.120218
   occurred_at: 2008-03-15 22:26:33.120218
   recycling_id:
-  unit_price_cents: 
+  unit_price_cents: 100
   as_is: false
 gizmo_events_005:
   updated_at: 2008-03-15 22:30:08.257453
@@ -72,5 +72,5 @@ gizmo_events_005:
   created_at: 2008-03-15 22:30:08.215574
   occurred_at: 2008-03-15 22:30:08.215574
   recycling_id:
-  unit_price_cents: 
+  unit_price_cents: 100
   as_is: false

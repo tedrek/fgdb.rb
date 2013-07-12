@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class GizmoEventTest < ActiveSupport::TestCase
-  fixtures :gizmo_types
-
   def setup
     # Retrieve fixtures via their name
     # @first = gizmo_events(:first)
@@ -13,7 +11,7 @@ class GizmoEventTest < ActiveSupport::TestCase
     assert ev.mostly_empty?
     ev.gizmo_count = 2
     assert ev.mostly_empty?
-    ev.gizmo_type = GizmoType.find(1)
+    ev.gizmo_type = GizmoType.find(:first)
     assert ! ev.mostly_empty?
   end
 

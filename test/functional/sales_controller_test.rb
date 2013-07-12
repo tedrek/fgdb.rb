@@ -11,12 +11,12 @@ class SalesControllerTest < ActionController::TestCase
   end
 
   def create_a_new_sale
-    s = Sale.new({:contact_type => 'named', 
-                   :created_by => 1, 
+    s = Sale.new({:contact_type => 'named',
+                   :created_by => 1,
                    :discount_percentage =>
                    DiscountPercentage.find(:first,
                                            :conditions => "percentage = 0"),
-                   :discount_name => 
+                   :discount_name =>
                    DiscountName.find(:first,
                                      :conditions => "description = 'None'")})
     s.contact = Contact.find(:first)
@@ -41,6 +41,7 @@ class SalesControllerTest < ActionController::TestCase
   def test_specific_unauthorized_actions_redirect
     sale = create_a_new_sale
     get :index
+    assert_not_nil sale
     get :destroy, :id => sale.id, :scaffold_id => 'sales'
     assert Sale.find(sale.id)
     assert_response :redirect

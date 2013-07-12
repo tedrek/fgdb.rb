@@ -4,13 +4,12 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContactsController; def rescue_action(e) raise e end; end
 
 class ContactsControllerTest < ActionController::TestCase
-  fixtures :contacts, :volunteer_task_types, :users, :roles, :roles_users, :payment_methods, :discount_names
+  fixtures :contacts, :users, :roles_users
 
-  NEW_CONTACT = {
-    'first_name' => 'John',
-    'surname' => 'Smith',
-    'postal_code' => '98982'
-  }
+  NEW_CONTACT = {:first_name=>"Joe", :middle_name=>'', :surname=> 'Strummer',
+    :organization=>'a', :extra_address=>'', :address=>'Elsewhere',
+    :city=>'London', :state_or_province=>'UK', :postal_code=>'123',
+    :country=>'Britain', :notes=>'', :created_by=>1}
   NEW_CONTACT_TYPES = []
 
   def setup

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContactMethodTest < ActiveSupport::TestCase
-  fixtures :users, :contact_types, :contacts, :contact_method_types, :contact_methods
+  fixtures :users, :contacts, :contact_methods
 
   TYPE = ContactMethodType.find(:first)
   CONTACT = nil
