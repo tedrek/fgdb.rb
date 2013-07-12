@@ -1,3 +1,4 @@
+require 'soap'
 module SOAP
 class SoapsBase
   include ApplicationHelper
@@ -24,8 +25,8 @@ class SoapsBase
 end
 end
 
-Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+Dir.glob(::Rails.root.to_s + "/app/apis/*.rb").each{|x|
 # puts "Loading API: #{x}"
  require_dependency x
 }
-SOAP::SoapsBase.subclasses.map{|x| x.constantize}.each{|x| x.new}
+SOAP::SoapsBase.subclasses.each{|x| x.new}

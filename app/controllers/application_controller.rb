@@ -19,6 +19,8 @@ module ActionController
 end
 
 class ApplicationController < ActionController::Base
+  protect_from_forgery
+
   protected
   def _parse_metadata_wo
     h = Hash.new([])

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 ruby '1.9.3'
-gem 'rails', '~>2.3'
+gem 'rails', '~>3.0.0'
 gem 'nokogiri'
 gem 'barby'
 gem 'rmagick'

@@ -1,3 +1,5 @@
+require 'soap4r-middleware'
+
 class MyAPIPort
   attr_reader :router
 
