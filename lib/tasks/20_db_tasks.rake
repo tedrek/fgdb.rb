@@ -176,7 +176,7 @@ def setup_environment(rails_env)
   return abcs, search_path
 end
 
-rails_env = ENV['RAILS_ENV'] || "production"
+rails_env = ENV['RAILS_ENV'] || "development"
 namespace :db do
 #   desc "Migrate from schema.sql to current"
 #   redefine_task :migrate => :environment do
