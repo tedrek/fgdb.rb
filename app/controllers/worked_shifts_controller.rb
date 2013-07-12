@@ -177,8 +177,6 @@ GROUP BY 1,2;")
 
   private
 
-  filter_parameter_logging "password"
-
   def applied_user
     has_required_privileges('/modify_all_workers') ? current_user : (@worker ? @worker.contact ? @worker.contact.user : nil : nil)
   end
