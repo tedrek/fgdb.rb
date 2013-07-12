@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class VolunteerTaskTest < ActiveSupport::TestCase
-  fixtures :volunteer_task_types, :volunteer_tasks, :contacts, :programs
+  fixtures :volunteer_tasks, :contacts
 
   def new_volunteer_task
     type = VolunteerTaskType.find_by_hours_multiplier(1.0)#new({:instantiable => true, :description => 'meowing', :hours_multiplier => 1.0})
@@ -62,7 +62,7 @@ class VolunteerTaskTest < ActiveSupport::TestCase
 
   def test_effective_duration
     assert_equal 2.0, an_hour_of_monitors.effective_duration
-    assert_equal 1.0, an_hour_of_assembly.effective_duration
+    assert_equal 1.0, an_hour_of_programming.effective_duration
     assert_equal 1.0, an_hour_of_testing.effective_duration
   end
 end

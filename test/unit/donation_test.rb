@@ -1,10 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class DonationTest < ActiveSupport::TestCase
-
-#   fixtures :contact_types, :contact_method_types, :contacts, :payment_methods, :gizmo_contexts,
-#     :gizmo_attrs, :gizmo_types, :gizmo_typeattrs,
-#     :gizmo_contexts_gizmo_typeattrs, :gizmo_contexts_gizmo_types, :donations
   load_all_fixtures
 
   def with_gizmo
@@ -38,8 +34,10 @@ class DonationTest < ActiveSupport::TestCase
   end
 
   def test_that_should_be_valid_when_dumped
-    donation = Donation.new(NO_INFO.merge({:gizmo_events => [GizmoEvent.new(crt_event)], :contact_type => 'dumped'}))
-    assert donation.valid?
+    donation = Donation.new(NO_INFO.merge({:gizmo_events =>
+                                            [GizmoEvent.new(crt_event)],
+                                            :contact_type => 'dumped'}))
+    assert donation.valid?, donation.errors.full_messages.join(', ')
   end
 
   def test_that_should_dumped_contact_type_should_be_remembered

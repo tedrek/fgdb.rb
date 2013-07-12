@@ -34,7 +34,7 @@ class AssignmentsControllerTest < ActionController::TestCase
 
   def test_should_update_assignment
     put :update, :id => assignments(:one).id, :assignment => { }
-    assert_redirected_to "/"
+    assert_redirected_to "/sidebar_links/homepage_index"
   end
 
 # Doesn't seem to destroy

@@ -69,18 +69,22 @@ class ContactTest < ActiveSupport::TestCase
     contact.volunteer_tasks = []
     assert_equal 0, contact.hours_effective
     contact.volunteer_tasks = [an_hour_of_testing]
+    contact.save!
+    assert_equal 1, contact.hours_actual
     assert_equal 1, contact.hours_effective
-    contact.volunteer_tasks = [an_hour_of_assembly]
-    assert_equal 1, contact.hours_effective
-    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_assembly]
+    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_testing]
+    contact.save
     assert_equal 2, contact.hours_effective
-    contact.volunteer_tasks = [an_hour_of_programming, an_hour_of_programming(1)]
+    contact.volunteer_tasks = [an_hour_of_programming,
+                               an_hour_of_programming(1)]
+    contact.save
     assert_equal 2, contact.hours_effective
   end
 
   def test_that_default_discount_can_be_calculated_appropriately
     contact = Contact.find(:first)
     contact.volunteer_tasks = []
+    contact.save
     assert_equal 'no_discount', contact.default_discount_schedule
     contact.volunteer_tasks = [an_hour_of_testing, an_hour_of_testing, an_hour_of_testing, an_hour_of_testing]
     assert_equal 'volunteer', contact.default_discount_schedule

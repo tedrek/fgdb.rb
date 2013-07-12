@@ -2,7 +2,7 @@ require 'test_helper'
 
 class NotesControllerTest < ActionController::TestCase
   fixtures :contacts, :notes, :systems, :users, :roles_users, :roles
-  
+
   def setup
     login_as :quentin
   end
@@ -21,7 +21,7 @@ class NotesControllerTest < ActionController::TestCase
       }
     end
 
-    assert_redirected_to "notes/show/#{assigns(:note).id}"
+    assert_redirected_to "/notes/show/#{assigns(:note).id}"
   end
 
   def test_should_show_note
@@ -36,6 +36,6 @@ class NotesControllerTest < ActionController::TestCase
 
   def test_should_update_note
     put :update, :id => notes(:one).id, :note => { :body => "Test body" }
-    assert_redirected_to "notes/show/#{notes(:one).id}"
+    assert_redirected_to "/notes/show/#{notes(:one).id}"
   end
 end

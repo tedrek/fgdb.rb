@@ -385,20 +385,27 @@ class Contact < ActiveRecord::Base
     end
   end
 
-  def find_volunteer_tasks(cutoff = nil, klass = VolunteerTask, contact_id_type = "", date_field = "date_performed", max = nil)
+  def find_volunteer_tasks(cutoff=nil, klass=VolunteerTask,
+                           contact_id_type="", date_field="date_performed",
+                           max = nil)
     # if it's named volunteer_tasks it breaks everything
     contact_id_type = contact_id_type + "_" if contact_id_type.length > 0
+    conditions = []
     if max and cutoff
-      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ? AND #{date_field} < ?", id, cutoff, max ]
+      conditions = [ "#{contact_id_type}contact_id = ? " +
+                     "AND #{date_field} >= ? AND #{date_field} < ?",
+                     id, cutoff, max ]
     elsif cutoff
-      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ?", id, cutoff ]
+      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} >= ?",
+                     id, cutoff ]
     elsif max
-      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} < ?", id, max ]
+      conditions = [ "#{contact_id_type}contact_id = ? AND #{date_field} < ?",
+                     id, max ]
     else
       conditions = [ "#{contact_id_type}contact_id = ?", id ]
     end
     klass.find(:all,
-                       :conditions => conditions)
+               :conditions => conditions)
   end
 
   def date_of_last_adoption

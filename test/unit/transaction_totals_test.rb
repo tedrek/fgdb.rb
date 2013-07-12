@@ -1,16 +1,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class TransactionTotalsTest < ActiveSupport::TestCase
-
-#   fixtures :contact_types, :contact_method_types, :contacts, :payment_methods, :gizmo_contexts,
-#     :gizmo_attrs, :gizmo_types, :gizmo_typeattrs,
-#     :gizmo_contexts_gizmo_typeattrs, :gizmo_contexts_gizmo_types, :donations
   load_all_fixtures
 
   def donate_a_crt
     don = Donation.new(WITH_CONTACT_INFO)
     crt = GizmoEvent.new(crt_event)
-    assert_equal 1000, crt.required_fee_cents
+    assert_equal 700, crt.required_fee_cents
     don.gizmo_events = [crt]
     return don
   end
@@ -19,22 +15,22 @@ class TransactionTotalsTest < ActiveSupport::TestCase
     don = donate_a_crt
     don.payments = [some_cash(1200)]
     assert don.save
-    assert_equal 1000, don.reported_required_fee_cents
+    assert_equal 700, don.reported_required_fee_cents
     totals = nil
     assert_nothing_raised { totals = Donation.totals(["donations.id = ?", don.id]) }
     assert totals
-    assert_cash_amount [1000, 200], totals
+    assert_cash_amount [700, 500], totals
   end
 
   def test_totals_across_multiple_cash_payments
     don = donate_a_crt
     don.payments = [some_cash(700), some_check(700), some_cash(1000)]
     assert don.save
-    assert_equal 1000, don.reported_required_fee_cents
+    assert_equal 700, don.reported_required_fee_cents
     totals = nil
     assert_nothing_raised { totals = Donation.totals(["donations.id = ?", don.id]) }
     assert totals
-    assert_cash_amount [1000,700], totals
+    assert_cash_amount [700, 1000], totals
     assert_check_amount [0, 700], totals
   end
 
@@ -42,12 +38,12 @@ class TransactionTotalsTest < ActiveSupport::TestCase
     don = donate_a_crt
     don.payments = [some_cash(700), some_check(700)]
     assert don.save
-    assert_equal 1000, don.reported_required_fee_cents
+    assert_equal 700, don.reported_required_fee_cents
     totals = nil
     assert_nothing_raised { totals = Donation.totals(["donations.id = ?", don.id]) }
     assert totals
     assert_cash_amount [700,0], totals
-    assert_check_amount [300,400], totals
+    assert_check_amount [0, 700], totals
   end
 
   def assert_cash_amount(tuple, totals)

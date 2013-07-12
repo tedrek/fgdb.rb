@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class VolunteerTaskTypeTest < ActiveSupport::TestCase
-  fixtures :volunteer_task_types
-
 	NEW_VOLUNTEER_TASK_TYPE = {}	# e.g. {:name => 'Test VolunteerTaskType', :description => 'Dummy'}
 	REQ_ATTR_NAMES 			 = %w( ) # name of fields that must be present, e.g. %(name description)
 	DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)

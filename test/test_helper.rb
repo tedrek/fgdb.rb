@@ -33,21 +33,15 @@ class ActiveSupport::TestCase
 
   ORDERED_TABLES =
     [
-     %W[defaults],
-     %W[contracts],
-     %W[users roles roles_users],
-     %W[gizmo_categories gizmo_contexts gizmo_types
-        gizmo_contexts_gizmo_types gizmo_events],
-     %W[contacts contact_types contact_types_contacts
-        contact_method_types contact_methods],
-     %W[programs volunteer_task_types community_service_types],
-     %W[disbursement_types disbursements],
-     %W[payment_methods],
+     %W[users roles_users],
+     %W[gizmo_events],
+     %W[contacts contact_types_contacts
+        contact_methods],
+     %W[disbursements],
      %W[sale_types sales],
      %W[donations],
      %W[payments],
      %W[recyclings],
-     %W[discount_names discount_percentages],
     ]
 
   class << self
@@ -115,7 +109,7 @@ class ActiveSupport::TestCase
   end
 
   # An hour of TYPE, AGO days in the past
-  def an_hour_of(type,ago=2,program='default')
+  def an_hour_of(type,ago=2,program='adoption')
     VolunteerTask.new({ :duration => 1.0,
                         :program =>
                         Program.find(:first,
@@ -130,7 +124,9 @@ class ActiveSupport::TestCase
 
   def crt_event
     {
-      :gizmo_type => GizmoType.find(:first, :conditions => ['description = ?', 'CRT']),
+      :gizmo_type => GizmoType.find(:first,
+                                    :conditions => ['description = ?',
+                                                    'Monitor-CRT']),
       :gizmo_count => 1,
       :gizmo_context => GizmoContext.donation,
       :as_is => false
@@ -142,7 +138,8 @@ class ActiveSupport::TestCase
       :gizmo_type_id => GizmoType.find(:first, :conditions => ['description = ?', 'System']).id,
       :gizmo_count => 1,
       :gizmo_context => GizmoContext.donation,
-      :as_is => false
+      :as_is => false,
+      :unit_price_cents => 100,
     }
   end
 
