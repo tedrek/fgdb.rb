@@ -252,11 +252,11 @@ module GizmoTransaction
   end
 
   def real_occurred_at
-    self.read_attribute(:occurred_at)
+    read_attribute(:occurred_at)
   end
 
   def set_occurred_at_on_transaction
-    self.write_attribute(:occurred_at, Time.now) if self.real_occurred_at.nil?
+    write_attribute(:occurred_at, Time.now) if self.real_occurred_at.nil?
   end
 
   def occurred_at
