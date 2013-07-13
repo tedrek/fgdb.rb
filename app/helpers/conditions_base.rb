@@ -64,7 +64,7 @@ class ConditionsBase
 
   def _validate
     if !defined?(@errors)
-      @errors = ActiveRecord::Errors.new(self)
+      @errors = ActiveModel::Errors.new(self)
       self.validate
     end
   end

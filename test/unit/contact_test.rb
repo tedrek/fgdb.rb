@@ -35,13 +35,15 @@ class ContactTest < ActiveSupport::TestCase
    end
 
   def test_validates_presence_of
-    REQ_ATTR_NAMES.each do |attr_name|
-      tmp_contact = NEW_CONTACT.clone
-      tmp_contact.delete attr_name.to_sym
-      contact = Contact.new(tmp_contact)
-      assert !contact.valid?, "Contact should be invalid, as @#{attr_name} is invalid"
-      assert contact.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
-    end
+    # An individual requires a first_name or a surname
+    tmp_contact = NEW_CONTACT.clone
+    tmp_contact.delete :first_name
+    tmp_contact.delete :surname
+    contact = Contact.new(tmp_contact)
+    assert(!contact.valid?,
+           "Contact should be invalid, as @first_name and @surname are invalid")
+    assert(contact.errors.invalid?(:first_name),
+           'Should be an error message for first_name')
   end
 
   def test_duplicate
