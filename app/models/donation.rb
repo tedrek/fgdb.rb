@@ -188,10 +188,10 @@ class Donation < ActiveRecord::Base
       gizmoless_data = {}
       methods = PaymentMethod.find(:all)
       methods.each {|method|
-        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
+        total_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1 << 64, 'max' => 0}
       }
       methods.each {|method|
-        gizmoless_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1<<64, 'max' => 0}
+        gizmoless_data[method.id] = {'amount' => 0, 'required' => 0, 'suggested' => 0, 'count' => 0, 'min' => 1 << 64, 'max' => 0}
       }
       self.connection.execute(
                               "SELECT payments.payment_method_id,
@@ -278,8 +278,8 @@ class Donation < ActiveRecord::Base
     end
 
     def paid_by_multiple_payments(conditions)
-      conditions[0] += " AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) > 1 "
-      self.find(:all, :conditions => conditions, :include => [:payments])
+      # conditions[0] += " AND (SELECT count(*) FROM payments WHERE payments.donation_id = donations.id) > 1 "
+      self.where(*conditions).includes(:payments).select{|d| d.payments.length > 1}
     end
   end
 
