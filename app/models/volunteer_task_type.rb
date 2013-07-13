@@ -2,7 +2,6 @@ class VolunteerTaskType < ActiveRecord::Base
   belongs_to :program
 
   has_many :contact_volunteer_task_type_counts
-# :primary_key => 'volunteer_task_type_id', :foreign_key => 'volunteer_task_type_id' # 
 
   def self.evaluation_type
     @@eval_type ||= VolunteerTaskType.find_by_name('evaluation')
@@ -12,10 +11,11 @@ class VolunteerTaskType < ActiveRecord::Base
     description
   end
 
-  named_scope :instantiables, { :conditions => {'instantiable' => true} }
-
-  named_scope :effective_on, lambda { |date|
-    { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
+  scope :instantiables, where(:instantiable => true)
+  scope :effective_on, lambda { |date|
+    where('(effective_on IS NULL OR effective_on <= :date) AND
+           (ineffective_on IS NULL OR ineffective_on > :date)',
+          {:date => date})
   }
 
   def self.find_actual(*ids)

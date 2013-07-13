@@ -10,8 +10,11 @@ class PricingType < ActiveRecord::Base
   validates_presence_of :matcher, :if => Proc.new{|t| !t.pull_from.blank?}, :message => "is required if there is a pulled value"
   validates_presence_of :pull_from, :if => Proc.new{|t| !t.matcher.blank?}, :message => "is required if there is a value to match"
 
-  named_scope :active, :conditions => ['ineffective_on IS NULL']
-  named_scope :automatic, :conditions => ["(pull_from IS NOT NULL AND pull_from <> '') OR id IN (SELECT pricing_type_id FROM pricing_types_types)"]
+  scope :active, where(:ineffective_on => nil)
+  scope :automatic, where("(pull_from IS NOT NULL
+                            AND pull_from <> '')
+                           OR id IN (SELECT pricing_type_id
+                                       FROM pricing_types_types)")
 
   HUMAN_NAMES = {:matcher => "Value to match", :pull_from => "Pulled value"}
 

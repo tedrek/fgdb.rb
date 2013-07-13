@@ -15,20 +15,34 @@ class Assignment < ActiveRecord::Base
 
   has_one :contact_volunteer_task_type_count, :conditions => 'contact_volunteer_task_type_counts.contact_id = #{defined?(attributes) ? contact_id : "assignments.contact_id"}', :through => :volunteer_shift, :source => :contact_volunteer_task_type_counts
 
-  named_scope(:no_call_no_show,
-              lambda {{:conditions =>
-                  ['attendance_type_id = ?',
-                   AttendanceType.find_by_name("no call no show").id]}})
-  named_scope(:arrived,
-              lambda {{:conditions =>
-                  ['attendance_type_id = ?',
-                   AttendanceType.find_by_name("arrived").id]}})
-  named_scope(:for_contact_id,
-              lambda {|c| {:conditions => ['contact_id = ?', c]}})
-  named_scope :updated_since, lambda {|u_date| u_date ? {:conditions => ['updated_at > ?', u_date]} : {:conditions => []}}
-  named_scope :roster_is_limited_by_program, :conditions => ["roster_id IN (SELECT id FROM rosters WHERE limit_shift_signup_by_program = 't')"], :joins => [:volunteer_shift]
-  named_scope :within_n_days_of, lambda{|n, x| {:conditions => ['date > ? AND date < ?', x - n, x + n], :joins => [:volunteer_shift => [:volunteer_event]]} }
-  named_scope :for_sked_id,  lambda {|sked_id| {:conditions => ['roster_id in (?)', Sked.find_by_id(sked_id).roster_ids]}}
+  scope(:no_call_no_show,
+        lambda {
+          where(:attendance_type_id =>
+                AttendanceType.find_by_name("no call no show").id)})
+  scope(:arrived,
+        lambda {
+          where(:attendance_type_id =>
+                AttendanceType.find_by_name("arrived").id)})
+  scope(:for_contact_id,
+        lambda {|c| where(:contact_id => c)})
+  scope(:updated_since,
+        lambda do |u_date|
+          u_date ? where('updated_at > ?', u_date) : where()
+        end)
+  scope(:roster_is_limited_by_program,
+        includes(:volunteer_shift).where(
+          "roster_id IN (SELECT id FROM rosters
+                           WHERE limit_shift_signup_by_program = 't')"
+                                         ))
+  scope(:within_n_days_of,
+        lambda { |n, x|
+          where('date > ? AND date < ?', x - n, x + n
+                ).join(:volunteer_shift => [:volunteer_event])
+        })
+  scope(:for_sked_id,
+        lambda { |sked_id|
+          where('roster_id in (?)', Sked.find_by_id(sked_id).roster_ids)
+        })
 
   def real_programs
     return [] unless self.volunteer_shift && self.volunteer_shift.roster
@@ -120,15 +134,21 @@ class Assignment < ActiveRecord::Base
     volunteer_shift.date
   end
 
-  named_scope :is_after_today, lambda {||
-    { :conditions => ['(SELECT date FROM volunteer_events WHERE id = (SELECT volunteer_event_id FROM volunteer_shifts WHERE id = assignments.volunteer_shift_id)) > ?', Date.today] }
-  }
+  scope(:is_after_today,
+        lambda {
+          where('(SELECT date FROM volunteer_events WHERE id = (
+                    SELECT volunteer_event_id FROM volunteer_shifts
+                      WHERE id = assignments.volunteer_shift_id)) > ? ',
+                Date.today)}
+        )
 
-  named_scope :on_or_after_today, lambda {||
-    { :conditions => ['(SELECT date FROM volunteer_events WHERE id = (SELECT volunteer_event_id FROM volunteer_shifts WHERE id = assignments.volunteer_shift_id)) >= ?', Date.today] }
-  }
+  scope :on_or_after_today, lambda {
+    where('(SELECT date FROM volunteer_events
+              WHERE id = (SELECT volunteer_event_id FROM volunteer_shifts
+                            WHERE id = assignments.volunteer_shift_id
+           )) >= ? ', Date.today)}
 
-  named_scope :not_yet_attended, :conditions => ['attendance_type_id IS NULL']
+  scope :not_yet_attended, where(:attendance_type_id => nil)
 
   def internal_date_hacks
     @internal_date_hack_value || self.volunteer_shift.volunteer_event.date
@@ -136,17 +156,29 @@ class Assignment < ActiveRecord::Base
 
   attr_writer :internal_date_hack_value
 
-  named_scope :potential_overlappers, lambda{|assignment|
+  scope :potential_overlappers, lambda { |assignment|
     tid = assignment.id
     tdate = assignment.internal_date_hacks
-    { :conditions => ['(id != ? OR ? IS NULL) AND (attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\')) AND volunteer_shift_id IN (SELECT volunteer_shifts.id FROM volunteer_shifts JOIN volunteer_events ON volunteer_events.id = volunteer_shifts.volunteer_event_id WHERE volunteer_events.date = ?)', tid, tid, tdate] }
+    where('(id != ? OR ? IS NULL)
+           AND (attendance_type_id IS NULL
+                OR attendance_type_id NOT IN (
+                    SELECT id FROM attendance_types WHERE cancelled = \'t\'))
+           AND volunteer_shift_id IN (
+               SELECT volunteer_shifts.id FROM volunteer_shifts
+                 JOIN volunteer_events
+                   ON volunteer_events.id = volunteer_shifts.volunteer_event_id
+                 WHERE volunteer_events.date = ?)',
+          tid, tid, tdate)
   }
 
-  named_scope :not_cancelled, :conditions => ['(attendance_type_id IS NULL OR attendance_type_id NOT IN (SELECT id FROM attendance_types WHERE cancelled = \'t\'))']
+  scope(:not_cancelled,
+        where('(attendance_type_id IS NULL
+                OR attendance_type_id NOT IN (
+                    SELECT id FROM attendance_types WHERE cancelled = \'t\'))'))
 
-  named_scope :for_contact, lambda{|assignment|
+  scope :for_contact, lambda{|assignment|
     tcid = assignment.contact.id
-    { :conditions => ['contact_id = ?', tcid] }
+    where(:contact_id => tcid)
   }
 
   named_scope :for_slot, lambda{|assignment|
@@ -156,12 +188,23 @@ class Assignment < ActiveRecord::Base
       rid = assignment.volunteer_shift.roster_id
       tslot = assignment.volunteer_shift.slot_number
       ttid = assignment.volunteer_shift.volunteer_task_type_id
-      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_task_type_id = ? AND roster_id = ?)', tslot, ttid, rid]}
+      ret = where('contact_id IS NOT NULL
+                   AND volunteer_shift_id IN (
+                       SELECT id FROM volunteer_shifts
+                         WHERE slot_number = ?
+                               AND volunteer_task_type_id = ?
+                               AND roster_id = ?)', tslot, ttid, rid)
     else
       rid = assignment.volunteer_shift.roster_id
       tslot = assignment.volunteer_shift.slot_number
       teid = assignment.volunteer_shift.volunteer_event_id
-      ret = {:conditions => ['contact_id IS NOT NULL AND volunteer_shift_id IN (SELECT id FROM volunteer_shifts WHERE slot_number = ? AND volunteer_event_id = ? AND volunteer_task_type_id IS NULL AND roster_id = ?)', tslot, teid, rid]}
+      ret = where('contact_id IS NOT NULL
+                   AND volunteer_shift_id IN (
+                       SELECT id FROM volunteer_shifts
+                         WHERE slot_number = ?
+                               AND volunteer_event_id = ?
+                               AND volunteer_task_type_id IS NULL
+                               AND roster_id = ?)', tslot, teid, rid)
     end
     ret
   }

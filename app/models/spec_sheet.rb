@@ -57,10 +57,12 @@ class SpecSheet < ActiveRecord::Base
 
   validates_existence_of :type
 
-  named_scope :good, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, true]
-  named_scope :bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, false]
-  named_scope :originally_bad, :conditions => ["cleaned_valid = ? AND original_valid = ?", true, false]
-  named_scope :clean_broke_it, :conditions => ["cleaned_valid = ? AND original_valid = ?", false, true]
+  scope :good, where("cleaned_valid = ? AND original_valid = ?", true, true)
+  scope :bad,  where("cleaned_valid = ? AND original_valid = ?", false, false)
+  scope :originally_bad, where("cleaned_valid = ? AND original_valid = ?",
+                               true, false)
+  scope :clean_broke_it, where("cleaned_valid = ? AND original_valid = ?",
+                               false, true)
 
   before_save :set_contract_id_and_covered
   before_save :builder_task

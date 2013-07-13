@@ -16,7 +16,8 @@ class VolunteerTask < ActiveRecord::Base
   after_save :set_contact_syseval_count
   after_destroy { |record| c = record.contact; if c; c.update_syseval_count(record.volunteer_task_type_id); end}
 
-  named_scope :for_type_id, lambda{|opt| {:conditions => ['volunteer_task_type_id = ?', opt]}}
+  scope :for_type_id, lambda { |opt|
+    where(:volunteer_task_type_id => opt)}
 
   def self.allow_shared
     true

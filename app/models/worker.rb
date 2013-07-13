@@ -78,9 +78,22 @@ class Worker < ActiveRecord::Base
     @@zero ||= Worker.find(:first, :conditions => 'id = 0')
   end
 
-  named_scope :effective_in_range, lambda { |*args|
+  scope :effective_in_range, lambda { |*args|
     start, fin = Worker._effective_in_range(args)
-    {:conditions => ["id IN (SELECT DISTINCT worker_id FROM workers_worker_types JOIN worker_types ON worker_type_id = worker_types.id WHERE worker_types.name != 'inactive' AND (((effective_on <= ? OR effective_on IS NULL) AND (ineffective_on > ? OR ineffective_on IS NULL)) OR (effective_on > ? AND ineffective_on <= ?) OR ((ineffective_on is NULL or ineffective_on > ?) AND (effective_on IS NULL or effective_on <= ?))))", start, start, start, fin, fin, fin]}
+    where("id IN (
+               SELECT DISTINCT worker_id FROM workers_worker_types
+                 JOIN worker_types ON worker_type_id = worker_types.id
+                 WHERE worker_types.name != 'inactive'
+                       AND (((effective_on <= ?
+                              OR effective_on IS NULL)
+                             AND (ineffective_on > ?
+                                  OR ineffective_on IS NULL))
+                            OR (effective_on > ? AND ineffective_on <= ?)
+                            OR ((ineffective_on is NULL
+                                 OR ineffective_on > ?)
+                                AND (effective_on IS NULL
+                                     OR effective_on <= ?))))",
+          start, start, start, fin, fin, fin)
   }
 
   def self._effective_in_range(args)
@@ -101,7 +114,7 @@ class Worker < ActiveRecord::Base
     return [my_start, my_end]
   end
 
-  named_scope :real_people, :conditions => {:virtual => false}
+  scope :real_people, where(:virtual => false)
 
   def sort_by
     self.contact ? (self.contact.surname + ", " + self.contact.first_name) : self.id.to_s
