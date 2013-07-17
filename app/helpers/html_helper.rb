@@ -1,4 +1,9 @@
 module HtmlHelper
+  def calendar_box(obj, field, bleh=nil, foo=nil)
+    %Q!<input type="text" class="date-picker" name="#{obj}[#{field}]" />!.
+      html_safe
+  end
+
   # due to prototype suckness, 'extend' may not be used as a choice name.
   def select_visibility(obj_name, method_name, choices = [], html_opts = {})
     #:TODO: scrub this first
@@ -7,9 +12,7 @@ module HtmlHelper
     # type choice
     display = %Q{ <div class="form-element"> %s %s </div> } %
       [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]}.sort_by(&:first) ),
-        observe_field( "#{obj_name}_#{method_name}",
-                       :function => "select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s }.join('", "')}\"), value); #{html_opts[:onchange].to_s}",
-                       :with => method_name )]
+        '']
     this_choice = obj.send(method_name)
     choices.each {|choice, content|
       if this_choice.to_s == choice.to_s
@@ -21,7 +24,7 @@ module HtmlHelper
     }
 
     display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s}.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")
-    return display
+    return display.html_safe
   end
 
   DISPLAY_ALIAS = {:updated_at => 'last_updated_at', :updated_by => 'last_updated_by', :cashier_updated_by => 'last_cashier_updated_by'}
