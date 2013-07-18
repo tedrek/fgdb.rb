@@ -7,7 +7,7 @@ class VolunteerShiftsController < ApplicationController
   end
   public
 
-  layout :with_sidebar
+  layout "with_sidebar.html.erb"
 
   helper :skedjul
 
@@ -38,16 +38,18 @@ class VolunteerShiftsController < ApplicationController
 
       }, params)
 
-    @skedj.find({:include => [:volunteer_task_type, :volunteer_event]})
-    render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
+      @skedj.find({:include => [:volunteer_task_type, :volunteer_event]})
+      render "work_shifts/_skedjul", :locals => {:skedj => @skedj }
     else
-      render :partial => "assignments/index", :layout => :with_sidebar
+      render "assignments/_index"
     end
   end
 
   def edit
     vs = VolunteerShift.find(params[:id])
-    redirect_to :controller => "volunteer_events", :id => vs.volunteer_event_id, :action => "edit"
+    redirect_to(:controller => "volunteer_events",
+                :id => vs.volunteer_event_id,
+                :action => "edit")
   end
 
   def destroy

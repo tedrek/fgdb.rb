@@ -7,7 +7,7 @@ class VolunteerDefaultShiftsController < ApplicationController
   end
   public
 
-  layout :with_sidebar
+  layout "with_sidebar.html.erb"
 
   helper :skedjul
 
@@ -43,9 +43,9 @@ class VolunteerDefaultShiftsController < ApplicationController
       }, params)
 
     @skedj.find({:include => [:volunteer_task_type => [], :volunteer_default_event => [:weekday]]})
-    render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
+    render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }
     else
-      render :partial => "assignments/index", :layout => :with_sidebar
+      render :partial => "assignments/index"
     end
   end
 
