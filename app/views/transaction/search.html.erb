@@ -40,10 +40,7 @@
 </div>
 <div class="list_refinement">
   <% refine_params = params.merge({:action => 'component_update'}) %>
-  <%# form_tag ({ :action => 'search'}, :method => "GET") do %>
-    <% form_remote_tag :url => { :action => 'component_update' },
-       :loading => "$('#{loading_indicator_id( "refine_#{@transaction_type}_loading" )}').show()",
-       :update => component_id( refine_params ) do %>
+  <%= form_tag({:action => 'component_update'}, {:remote => true}) do -%>
       <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
     <% if !@transactions.nil? && @transactions.length >= 1 %>
       <div style="float: right">
