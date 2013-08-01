@@ -5,7 +5,7 @@ require 'volunteer_tasks_controller'
 class VolunteerTasksController; def rescue_action(e) raise e end; end
 
 class VolunteerTasksControllerTest < ActionController::TestCase
-  fixtures :contacts, :volunteer_task_types, :volunteer_tasks, :users, :roles, :roles_users
+  fixtures :contacts, :volunteer_tasks, :users, :roles_users
 
   NEW_VOLUNTEER_TASK = {
     'duration' => 3,
@@ -48,8 +48,6 @@ class VolunteerTasksControllerTest < ActionController::TestCase
   end
 
   def test_update_task_types
-    assert_nothing_raised do
-      get :update_task_types, {:day => '2012-12-25'}
-    end
+    get :update_task_types, {:day => '2012-12-25'}
   end
 end

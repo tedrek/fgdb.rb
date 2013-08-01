@@ -12,4 +12,4 @@ u.password=pass
 u.password_confirmation=pass
 u.roles = [Role.find_by_name("ADMIN")]
 u.created_by = 1
-u.save_without_validation!
+u.save(:false)

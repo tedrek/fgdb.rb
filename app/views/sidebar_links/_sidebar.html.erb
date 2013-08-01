@@ -69,6 +69,6 @@ f_hideall();
 <% end %>
 <%= thing = controller_and_action_to_section[params[:controller]][params[:action]]
     thing = controller_to_section[params[:controller]] if thing.nil?
-   thing.nil? or thing.length == 0 ? "" : "$('#{thing}_sidebar_section').show()"
+   thing.nil? or thing.length == 0 ? "" : "$('#{thing}_sidebar_section').show()".html_safe
  %>
 </script>

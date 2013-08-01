@@ -158,12 +158,12 @@ module ApplicationHelper
   end
 
   def format_date(date)
-    format = ActiveSupport::CoreExtensions::Date::Conversions::DATE_FORMATS[:default] || "%m/%d/%Y"
+    format = Date::DATE_FORMATS[:default] || "%m/%d/%Y"
     date.strftime(format)
   end
 
   def format_time(time)
-    format = ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS[:default] || "%m/%d/%Y %I:%M %p"
+    format = Time::DATE_FORMATS[:default] || "%m/%d/%Y %I:%M %p"
     time.strftime(format)
   end
 

@@ -6,7 +6,7 @@
 <div class="header">
   <div class="actions">
     <% new_params = params.merge(:controller => '/volunteer_tasks', :action => 'new') %>
-    <%= loading_indicator_tag("new_volunteer_task_loading") %>
+    <%= loading_indicator_tag("new_volunteer_task_loading").html_safe %>
   </div>
 </div>
 <div class="messages-container">
@@ -34,7 +34,7 @@
 </table>
 <div class="footer">
   <td class="indicator-container">
-    <%= loading_indicator_tag("volunteer_task_footer_loading") %>
+    <%= loading_indicator_tag("volunteer_task_footer_loading").html_safe %>
   </td>
 
   <%= will_paginate @volunteer_tasks, :params => {:action => "component"},  :remote_options => {
