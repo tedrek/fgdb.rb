@@ -35,13 +35,13 @@ Install the dependencies required by FGDB.rb:
                  libncurses5-dev automake libtool bison pkg-config libffi-dev
 
   # Install rvm
-  precise $ curl https://get.rvm.io | /bin/bash -s stable
+  precise $ curl -L https://get.rvm.io | /bin/bash -s stable
 
   # Install ruby 1.9.3
   precise $ rvm install 1.9.3
 
   # Install bundler
-  precise $ gem install bundle
+  precise $ gem install bundler
 
   # Install dependencies for gems
   precise $ sudo apt-get install libpq-dev libmagickcore-dev libmagickwand-dev
@@ -73,7 +73,7 @@ For production database replace 'development' with 'production'
 
 === Setup complete
 
-You can now run ./scripts/server and should have a working setup.  For
+You can now run ./script/server and should have a working setup.  For
 production, passenger is the recommended server.
 
 == Install on Debian Squeeze
