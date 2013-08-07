@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Query Volunteer Numbers</title>
+  </head>
+  <body>
+    <%= render :partial => 'id/form' %>
+<% if @contact.nil? -%>
+  <p>No volunteer entry by that name could be found.  If you have
+  attended an orientation within the last week the database may not
+  have yet been updated.  Otherwise please see a staff member to find
+  your ID.</p>
+<% else -%>
+  <p><%= h @contact.first_name %>  <%= h @contact.surname %></p>
+  <p>Volunteer ID: <%= h @contact.id %></p>
+<% if @contact.contact_types.exists?(:name => 'adopter') -%>
+    <p>Enrolled in the adoption program</p>
+<% end -%>
+<% if @contact.last_ninety_days_of_effective_hours >= 12 -%>
+  <p>Is eligible for store discount</p>
+<% end -%>
+<% end -%>
+  </body>
+</html>
