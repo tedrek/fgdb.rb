@@ -5,7 +5,10 @@ module DonationsHelper
     return '/donations'
   end
 
-  def columns
+  # Ensure the column list is named uniquely
+  # all helpers are included in all views by default
+  # http://stackoverflow.com/q/1179865
+  def donation_columns
     [
      Column.new(Donation, :name => 'id'),
      Column.new(Donation, :name => 'payment',
