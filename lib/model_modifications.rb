@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), "rails_fix.rb")
-
 class ProcessorDaemon
   def self.add_to(type, tid, source = "fgdb")
     return false if Default['civicrm_server'].nil?

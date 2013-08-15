@@ -110,6 +110,7 @@ GEM
     ttfunk (1.0.3)
     tzinfo (0.3.37)
     validates_existence (0.8.0)
+    will_paginate (3.0.4)
 
 PLATFORMS
   ruby
@@ -129,3 +130,4 @@ DEPENDENCIES
   soap4r!
   thin
   validates_existence (>= 0.4)
+  will_paginate (~> 3.0)
