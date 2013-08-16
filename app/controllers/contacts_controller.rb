@@ -176,7 +176,10 @@ class ContactsController < ApplicationController
 
     @defaults = Conditions.new
     @defaults.apply_conditions(params[:defaults])
-    @contacts = Contact.paginate(:all, :per_page => 20, :page => params[:page], :conditions => @defaults.conditions(Contact), :order => "id ASC")
+    @contacts = Contact.paginate(:per_page => 20,
+                                 :page => params[:page],
+                                 :conditions => @defaults.conditions(Contact),
+                                 :order => "id ASC",)
   end
 
   def update_display_area
