@@ -17,11 +17,11 @@
 <% if flash[:error] %>
 <span class="error"><%= flash[:error] %></span>
 <% end %>
-<% form_for @import, :html => {:enctype => "multipart/form-data"}, :url => {:action => "import_table"} do |f| %>
-<%= f.label :name, "Name (must match printme pull title, any existing values will be overwritten)" %>
-<%= f.text_field :name %>
-<%= f.label :csv, "CSV file (with column headers)" %>
-<%= f.file_field :csv %><br />
-<%= f.submit "Import" %>
-<% end %>
-
+<% form_tag('/pricing_types/import_table',
+     :html => {:enctype => "multipart/form-data"}) do -%>
+<%= label_tag 'open_struct[name]', "Name (must match printme pull title, any existing values will be overwritten)" %>
+<%= text_field_tag 'open_struct[name]' %>
+<%= label_tag 'open_struct[csv]', "CSV file (with column headers)" %>
+<%= file_field_tag 'open_struct[csv]' %><br />
+<%= submit_tag "Import" %>
+<% end -%>
