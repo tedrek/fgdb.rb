@@ -1,32 +1,24 @@
-<% @options = options %>
-<% form_remote_tag(
-                   :url => @options.merge(:controller => 'contacts'),
-                   :loading => "Element.show('#{loading_indicator_id("form_for_contact_loading")}');
-                  Form.disable('floating_form');",
-                   :html => {:id => 'floating_form', :class => 'floating_form cashierable_form'}
-                   ) do %>
-
+<% @options = options -%>
+<% form_tag(@options.merge(:controller => 'contacts'),
+            :id => 'floating_form',
+            :class => 'floating_form cashierable_form',
+            :remote => true,
+   ) do -%>
   <%= cashiers_field %>
-
   <h4><%= (@options[:action]).titleize %> Contact</h4>
-
-  <div id="<%= contact_messages_id(@options) %>" class="messages-container"></div>
-
-  <input type="hidden" name="contact_query_id" value="<%= h contact_query_id(params) %>" />
+  <div id="<%= contact_messages_id(@options) %>" class="messages-container">
+  </div>
+  <%= hidden_field_tag :contact_query_id, contact_query_id(params) %>
   <input type="hidden" id="contact_cashier_code" name="cashier_code" value="" />
   <%= javascript_tag "var pcash = $('cashier_code'); if(pcash != null) {$('contact_cashier_code').value = pcash.value;}" %>
-
-  <% if @contact.id.nil? %>
+  <% if @contact.id.nil? -%>
     <%= javascript_tag "set_contact_name()" %>
-  <% end %>
-
+  <% end -%>
   <%= render :partial => 'form' %>
-
   <p class="form-footer">
     <%= loading_indicator_tag("form_for_contact_loading") %>
     <%= submit_tag (@options[:action]).titleize, :class => "submit save" %>
   </p>
-
   <%= cashiers_javascript %>
-<% end %>
+<% end -%>
 <%= javascript_tag "Form.focusFirstElement('floating_form');" %>
