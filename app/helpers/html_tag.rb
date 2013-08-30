@@ -9,12 +9,13 @@ class HtmlTag
   end
 
   def to_s
-    str = '<' + tag
+    str = '<'.html_safe
+    str << tag.html_safe
     str << ' ' if attrs.count > 0
-    str << attrs.map{|n,v| %Q!#{n}="#{v}"!}.join(' ') + '>' +
+    str << attrs.map{|n,v| %Q!#{n}="#{v}"!}.join(' ') + '>'.html_safe +
       children.map{|x| x.to_s}.join("\n") +
       content.to_s +
-      "</#{tag}>"
+      "</#{tag}>".html_safe
     return str
   end
 end

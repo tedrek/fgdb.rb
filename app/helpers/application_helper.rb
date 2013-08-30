@@ -264,11 +264,16 @@ module ApplicationHelper
   end
 
   def my_lightwindow_tag(options, html_options = {})
-    %Q[<a href="#{url_for(options[:url])}" class="#{html_options[:class]} lightwindow" onclick="return false"
-          id="#{options[:id]}" params="lightwindow_width=600,lightwindow_type=#{options[:type] || 'page'}">
-         #{options[:content]}
-       </a>] +
-      javascript_tag("if(myLightWindow) {myLightWindow._processLink($('#{options[:id]}'))};")
+    html = "".html_safe
+    html << %Q[<a href="].html_safe + url_for(options[:url])
+    html << %Q[" class="#{html_options[:class]} lightwindow" ].html_safe
+    html << %Q[onclick="return false" id="#{options[:id]}" ].html_safe
+    html << %Q[params="lightwindow_width=600,lightwindow_type=].html_safe
+    html << %Q[#{options[:type] || 'page'}">].html_safe
+    html << options[:content]
+    html << "</a>".html_safe
+    html << javascript_tag("if(myLightWindow) {myLightWindow._processLink($('#{options[:id]}'))};")
+    return html
   end
 
   def contact_element_prefix(options)
@@ -339,15 +344,15 @@ module ApplicationHelper
   end
 
   def show_loading_indicator(name)
-    "$(\"#{loading_indicator_id(name)}\").show();"
+    "$(\"#{loading_indicator_id(name)}\").show();".html_safe
   end
 
   def loading_indicator_id(prefix)
-    "#{prefix||'foo'}_loading_indicator_id"
+    "#{prefix||'foo'}_loading_indicator_id".html_safe
   end
 
   def loading_indicator_tag(prefix)
-    %Q[<span style="display:none" id="#{loading_indicator_id(prefix)}"><img src="/images/indicator.gif" alt="loading..."></img></span>]
+    %Q[<span style="display:none" id="#{loading_indicator_id(prefix)}"><img src="/images/indicator.gif" alt="loading..."></img></span>].html_safe
   end
 
   # start auth junk
@@ -464,5 +469,31 @@ module ApplicationHelper
       end
       return "<span class=\"noprint noblock\"><input onchange=process_hide() type=checkbox id=hideable_check " + (default ? "checked" : "") + " /><label id=hideable_label for=hideable_check>" + "show " + h(title) + "</label></span>" + "<div class=hideable>" + html + "</div>" + javascript_tag("process_hide()")
     end
+  end
+
+
+  def observe_field(field_id, options = {})
+    ActiveSupport::Deprecation.warn("observe_field has been deprecated, remove calls")
+    if options[:frequency] && options[:frequency] > 0
+      build_observer('Form.Element.Observer', field_id, options)
+    else
+      build_observer('Form.Element.EventObserver', field_id, options)
+    end
+  end
+
+  def build_observer(klass, name, options = {})
+    if options[:with] && (options[:with] !~ /[\{=(.]/)
+      options[:with] = "'#{options[:with]}=' + encodeURIComponent(value)"
+    else
+      options[:with] ||= 'value' unless options[:function]
+    end
+
+    callback = options[:function] || remote_function(options)
+    javascript  = "new #{klass}('#{name}', "
+    javascript << "#{options[:frequency]}, " if options[:frequency]
+    javascript << "function(element, value) {"
+    javascript << "#{callback}}"
+    javascript << ")"
+    javascript_tag(javascript)
   end
 end

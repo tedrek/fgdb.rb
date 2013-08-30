@@ -42,7 +42,6 @@ class ContactsControllerTest < ActionController::TestCase
     xhr :post, :new
     assert_response :success
     assert_template '_new_edit'
-    assert_match /Form.disable/, @response.body
   end
 
   def test_create_xhr
@@ -52,7 +51,7 @@ class ContactsControllerTest < ActionController::TestCase
     assert_response :success
     assert assigns(:contact)
     assert assigns(:successful)
-    assert_template 'create.rjs'
+    assert_template 'contacts/create'
     assert_equal contact_count + 1, Contact.find(:all).length, "Expected an additional Contact"
     contact, successful = check_attrs(%w(contact successful))
     assert contact.id, "Should have a contact id"
@@ -63,7 +62,7 @@ class ContactsControllerTest < ActionController::TestCase
     xhr :post, :create, {:contact => { }}
     contact, successful = check_attrs(%w(contact successful))
     assert_response :success
-    assert_template 'create.rjs'
+    assert_template 'contacts/create'
     assert ! successful, "Should not be successful"
     assert_match /First name or surname must be provided for individuals/i, @response.body
     assert_match /Form.enable/, @response.body
@@ -82,7 +81,7 @@ class ContactsControllerTest < ActionController::TestCase
     end
     assert_equal contact_count, Contact.find(:all).length, "Number of Contacts should be the same"
     assert_response :success
-    assert_template 'update.rjs'
+    assert_template 'contacts/update'
   end
 
   def test_destroy_xhr
@@ -91,14 +90,14 @@ class ContactsControllerTest < ActionController::TestCase
     xhr :post, :destroy, {:id => @first.id}
     assert_response :success
     assert_equal contact_count - 1, Contact.find(:all).length, "Number of Contacts should be one less"
-    assert_template 'destroy.rjs'
+    assert_template 'contacts/destroy'
   end
 
   def test_cancel_xhr
     login_as :quentin
     xhr :get, :cancel
     assert_response :success
-    assert_template 'cancel.rjs'
+    assert_template 'contacts/cancel'
     assert assigns(:successful)
     assert_rjs :remove, 'floating_form'
     assert_match /^Form.enable\(\$\('\w*contact_id'\)/, @response.body

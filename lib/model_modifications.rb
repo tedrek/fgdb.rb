@@ -15,7 +15,7 @@ module ActiveRecord
         alias_method_chain :create, :user
         alias_method_chain :update, :user
         class << self
-        def human_attribute_name_with_cashier_code(f)
+        def human_attribute_name_with_cashier_code(f, options={})
           if f == 'cashier_code'
             return 'PIN'
           else

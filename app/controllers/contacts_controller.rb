@@ -222,7 +222,7 @@ class ContactsController < ApplicationController
     #      flash[:error], @successful  = $!.to_s, false
     #    end
 
-    render :action => 'create.rjs'
+    render :action => 'create.rjs', :layout => nil
   end
 
   def edit
@@ -236,70 +236,75 @@ class ContactsController < ApplicationController
   end
 
   def update
-      @contact = Contact.find(params[:id])
-      @contact.attributes = params[:contact]
-      if (uid = @management_cashier.cashier_code) && (u = User.find_by_cashier_code(uid.to_i)) && u.can_view_disciplinary_information?
-        Thread.current['cashier'] = u
-        u.will_not_updated_timestamps!
-        u.last_logged_in = Date.today
-        u.save
-        @valid_cashier_code = true
+    @contact = Contact.find(params[:id])
+    @contact.attributes = params[:contact]
+    if ((uid = @management_cashier.cashier_code) &&
+        (u = User.find_by_cashier_code(uid.to_i)) &&
+        u.can_view_disciplinary_information?)
+      Thread.current['cashier'] = u
+      u.will_not_updated_timestamps!
+      u.last_logged_in = Date.today
+      u.save
+      @valid_cashier_code = true
 
-        if params[:disciplinary_action_new_add] == "1"
-          @contact.disciplinary_actions.build(params[:disciplinary_action_new])
-        end
-        @contact.disciplinary_actions.each do |da|
-          h = params[("disciplinary_action_" + (da.id || "new").to_s).to_sym]
-          unless h.nil?
-            if h["mark_for_destruction"] == "1"
-              h.delete("mark_for_destruction")
-              da.mark_for_destruction
-            else
-              da.attributes = h
-            end
+      if params[:disciplinary_action_new_add] == "1"
+        @contact.disciplinary_actions.build(params[:disciplinary_action_new])
+      end
+      @contact.disciplinary_actions.each do |da|
+        h = params[("disciplinary_action_" + (da.id || "new").to_s).to_sym]
+        unless h.nil?
+          if h["mark_for_destruction"] == "1"
+            h.delete("mark_for_destruction")
+            da.mark_for_destruction
+          else
+            da.attributes = h
           end
         end
       end
-      if has_required_privileges("/create_logins") or has_privileges("contact_#{@contact.id}")
-        if (params[:contact][:is_user].to_i != 0)
-          @contact.user = User.new if !@contact.user
-          unless has_required_privileges('/admin_user_accounts') or @contact.user.id.nil? or has_privileges("contact_#{@contact.id}")
-            params[:user].delete('password')
-            params[:user].delete('password_confirmation')
-          end
-          @contact.user.attributes = params[:user]
-          if has_required_privileges("/create_logins")
-            if params[:roles]
-              newroles = Role.find(params[:roles])
-              newroles = newroles + (@contact.user.roles - current_user.grantable_roles)
-              if (newroles - (@contact.user.roles + current_user.grantable_roles)).length > 0
-                raise RuntimeError.new("You are not authorized to grant those roles")
-              end
-              @contact.user.roles = newroles
-            else
-              @contact.user.roles = @contact.user.roles - current_user.grantable_roles
-            end
-          end
-        elsif (@contact.user)
-          @contact.user.destroy
-          @contact.user = nil
+    end
+    if (has_required_privileges("/create_logins") or
+        has_privileges("contact_#{@contact.id}"))
+      if (params[:contact][:is_user].to_i != 0)
+        @contact.user = User.new if !@contact.user
+        unless (has_required_privileges('/admin_user_accounts') or
+                @contact.user.id.nil? or
+                has_privileges("contact_#{@contact.id}"))
+          params[:user].delete('password')
+          params[:user].delete('password_confirmation')
         end
+        @contact.user.attributes = params[:user]
+        if has_required_privileges("/create_logins")
+          if params[:roles]
+            newroles = Role.find(params[:roles])
+            newroles = newroles + (@contact.user.roles - current_user.grantable_roles)
+            if (newroles - (@contact.user.roles + current_user.grantable_roles)).length > 0
+              raise RuntimeError.new("You are not authorized to grant those roles")
+            end
+            @contact.user.roles = newroles
+          else
+            @contact.user.roles = @contact.user.roles - current_user.grantable_roles
+          end
+        end
+      elsif (@contact.user)
+        @contact.user.destroy
+        @contact.user = nil
       end
-      @user = @contact.user
-      @successful = _save
+    end
+    @user = @contact.user
+    @successful = _save
 
-    render :action => 'update.rjs'
+    render :action => 'update.rjs', :layout => nil
   end
 
   def destroy
       @successful = Contact.find(params[:id]).destroy
 
-    render :action => 'destroy.rjs'
+    render :action => 'destroy.rjs', :layout => nil
   end
 
   def cancel
     @successful = true
-    render :action => 'cancel.rjs'
+    render :action => 'cancel.rjs', :layout => nil
   end
 
   def method_missing(symbol, *args)

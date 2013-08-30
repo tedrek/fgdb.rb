@@ -30,7 +30,7 @@ class Assignment < ActiveRecord::Base
           u_date ? where('updated_at > ?', u_date) : where()
         end)
   scope(:roster_is_limited_by_program,
-        includes(:volunteer_shift).where(
+        joins(:volunteer_shift).where(
           "roster_id IN (SELECT id FROM rosters
                            WHERE limit_shift_signup_by_program = 't')"
                                          ))

@@ -30,8 +30,8 @@ module HtmlHelper
   DISPLAY_ALIAS = {:updated_at => 'last_updated_at', :updated_by => 'last_updated_by', :cashier_updated_by => 'last_cashier_updated_by'}
 
   def multiselect_of_form_elements(obj_name, choices = {}, mode = "auto")
-    html = "<div id='#{obj_name}_container' class='conditions'>"
-    js = ""
+    html = "<div id='#{obj_name}_container' class='conditions'>".html_safe
+    js = "".html_safe
     for condition in choices.keys do
       html += hidden_field(obj_name, condition + "_enabled")
     end
@@ -61,7 +61,7 @@ module HtmlHelper
           page << "if($('#{obj_name}_#{condition}_enabled').value == 'true'){add_condition('#{obj_name}', '#{condition}');}"
         end
       end
-      js += "$('#{obj_name}_nil').selected = true;"
+      js += "$('#{obj_name}_nil').selected = true;".html_safe
     elsif mode == 'force'
       choices.each{|k,v|
         html += v
@@ -71,7 +71,7 @@ module HtmlHelper
         js += "$('#{obj_name}_nil').selected = true;"
       end
     end
-    html += "</div>"
+    html += "</div>".html_safe
     return html + javascript_tag(js)
   end
 

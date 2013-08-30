@@ -43,6 +43,7 @@ GEM
     builder (2.1.2)
     color (1.4.2)
     daemons (1.1.9)
+    dynamic_form (1.1.4)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     eventmachine (1.0.3)
@@ -118,6 +119,7 @@ PLATFORMS
 DEPENDENCIES
   barby
   bluecloth
+  dynamic_form
   gnuplot
   json
   nokogiri

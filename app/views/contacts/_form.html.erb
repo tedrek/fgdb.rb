@@ -6,7 +6,10 @@
         %>&nbsp;<label class="checkbox" for="contact_is_organization">organization</label>
   </div>
 
-  <%= observe_field 'contact_is_organization', :function => "contact_form_org_toggle();" + (@contact.id.nil? ? "if($('contact_is_organization').checked){ set_organization_name();}" : "") %>
+  <%= javascript_tag(
+        %Q[new Form.Element.EventObserver('contact_is_organization',] +
+        %Q[      function(element, value) {] +
+        (@contact.id.nil? ? "if($('contact_is_organization').checked){ set_organization_name();}" : "")) -%>
   <%= javascript_tag "contact_form_org_toggle();" %>
 
   <% for contact_type in ContactType.find_instantiable %>

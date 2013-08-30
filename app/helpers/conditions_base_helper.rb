@@ -1,5 +1,9 @@
 module ConditionsBaseHelper
-  def conditions_html(params_key = "conditions", these_things = [], klass = Conditions, multiselect_mode = "auto", date_range = nil, enable_advanced = false, hide_end_text = false)
+  def conditions_html(params_key = "conditions", these_things = [],
+                      klass = Conditions, multiselect_mode = "auto",
+                      date_range = nil, enable_advanced = false,
+                      hide_end_text = false)
+    html = "".html_safe
     @conditions_internal_date_range = date_range
     hash = {}
     obj = eval("@#{params_key}") || klass.new
@@ -13,20 +17,33 @@ module ConditionsBaseHelper
       else
         raise "Unknown condition: #{x}"
       end
-      hash[x] = "<div style=\"display: inline-block; float: left;\">" + label_tag("#{params_key}[#{x}_excluded]", "Exclude?") + check_box_tag("#{params_key}[#{x}_excluded]", "#{x}_excluded", obj.send("#{x}_excluded")) + "</div>" + hash[x] unless Conditions::CHECKBOXES.include?(x) or x == "empty" or multiselect_mode == "force"
+      unless (Conditions::CHECKBOXES.include?(x) or
+              x == "empty" or
+              multiselect_mode == "force")
+        hash[x] = ("".html_safe +
+                   '<div style="display: inline-block; float: left;">'.html_safe +
+                   label_tag("#{params_key}[#{x}_excluded]", "Exclude?") +
+                   check_box_tag("#{params_key}[#{x}_excluded]",
+                                 "#{x}_excluded", obj.send("#{x}_excluded")) +
+                   "</div>".html_safe +
+                   hash[x])
+      end
     }
+    html << multiselect_of_form_elements(params_key, hash, multiselect_mode)
     if enable_advanced
-      return multiselect_of_form_elements(params_key, hash, multiselect_mode) + conditions_radio_button(params_key, obj, these_things, multiselect_mode) + hide_forced_conds(params_key, obj, these_things, multiselect_mode) + end_text
-    else
-      return multiselect_of_form_elements(params_key, hash, multiselect_mode) + hide_forced_conds(params_key, obj, these_things, multiselect_mode) + end_text
+      html << conditions_radio_button(params_key, obj,
+                                      these_things, multiselect_mode)
     end
+    html << hide_forced_conds(params_key, obj, these_things, multiselect_mode)
+    html << end_text
+    return html
   end
 
   def simple_end_text
 '<div>
 [Note: % can be used as a wildcard for most text-based search conditions, for example "Test%" finds anything begining with Test.]
 </div>
-'
+'.html_safe
   end
 
   def hide_forced_conds(params_key, obj, these_things, mmode)
