@@ -29,7 +29,10 @@ class VolunteerTaskTest < ActiveSupport::TestCase
     else
       # If VolunteerTask has validation, then use the following:
       assert !volunteer_task.valid?, "VolunteerTask should not be valid without initialisation parameters"
-      REQ_ATTR_NAMES.each {|attr_name| assert volunteer_task.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+      REQ_ATTR_NAMES.each do |attr_name|
+        assert(volunteer_task.errors[attr_name.to_sym].any?,
+               "Should be an error message for :#{attr_name}")
+      end
     end
   end
 
@@ -47,16 +50,17 @@ class VolunteerTaskTest < ActiveSupport::TestCase
       tmp_volunteer_task.delete attr_name.to_sym
       volunteer_task = VolunteerTask.new(tmp_volunteer_task)
       assert !volunteer_task.valid?, "VolunteerTask should be invalid, as @#{attr_name} is invalid"
-      assert volunteer_task.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert volunteer_task.errors[attr_name.to_sym].any?, "Should be an error message for :#{attr_name}"
     end
   end
 
   def test_duplicate
     current_volunteer_task = VolunteerTask.find(:first)
-        DUPLICATE_ATTR_NAMES.each do |attr_name|
+    DUPLICATE_ATTR_NAMES.each do |attr_name|
       volunteer_task = VolunteerTask.new(new_volunteer_task.merge(attr_name.to_sym => current_volunteer_task[attr_name]))
       assert !volunteer_task.valid?, "VolunteerTask should be invalid, as @#{attr_name} is a duplicate"
-      assert volunteer_task.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert(volunteer_task.errors[attr_name.to_sym].any?,
+             "Should be an error message for :#{attr_name}")
     end
   end
 
@@ -66,4 +70,3 @@ class VolunteerTaskTest < ActiveSupport::TestCase
     assert_equal 1.0, an_hour_of_testing.effective_duration
   end
 end
-

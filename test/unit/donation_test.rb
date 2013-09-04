@@ -23,7 +23,6 @@ class DonationTest < ActiveSupport::TestCase
   def test_that_should_not_be_valid_without_contact_info
     donation = Donation.new(NO_INFO)
     assert ! donation.valid?
-    #assert donation.errors.invalid?(:contact_id), "Should require contact for initialization"
   end
 
   def test_that_should_be_valid_with_contact_info

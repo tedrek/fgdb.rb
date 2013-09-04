@@ -22,7 +22,10 @@ class ContactTest < ActiveSupport::TestCase
     else
       # If Contact has validation, then use the following:
       assert !contact.valid?, "Contact should not be valid without initialisation parameters"
-      REQ_ATTR_NAMES.each {|attr_name| assert contact.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+      REQ_ATTR_NAMES.each do |attr_name|
+        assert(contact.errors[attr_name.to_sym].any?,
+               "Should be an error message for :#{attr_name}")
+      end
     end
   end
 
@@ -42,7 +45,7 @@ class ContactTest < ActiveSupport::TestCase
     contact = Contact.new(tmp_contact)
     assert(!contact.valid?,
            "Contact should be invalid, as @first_name and @surname are invalid")
-    assert(contact.errors.invalid?(:first_name),
+    assert(contact.errors[:first_name].any?,
            'Should be an error message for first_name')
   end
 
@@ -51,7 +54,8 @@ class ContactTest < ActiveSupport::TestCase
      DUPLICATE_ATTR_NAMES.each do |attr_name|
        contact = Contact.new(NEW_CONTACT.merge(attr_name.to_sym => current_contact[attr_name]))
       assert !contact.valid?, "Contact should be invalid, as @#{attr_name} is a duplicate"
-      assert contact.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert(contact.errors[attr_name.to_sym].any?,
+             "Should be an error message for :#{attr_name}")
     end
   end
 
@@ -119,4 +123,3 @@ class ContactTest < ActiveSupport::TestCase
   end
 
 end
-

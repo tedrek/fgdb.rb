@@ -17,7 +17,10 @@ class ContactMethodTypeTest < ActiveSupport::TestCase
     else
       # If ContactMethodType has validation, then use the following:
       assert !contact_method_type.valid?, "ContactMethodType should not be valid without initialisation parameters"
-      REQ_ATTR_NAMES.each {|attr_name| assert contact_method_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+      REQ_ATTR_NAMES.each  do |attr_name|
+        assert(contact_method_type.errors[attr_name.to_sym].any?,
+               "Should be an error message for :#{attr_name}")
+      end
     end
   end
 
@@ -35,7 +38,8 @@ class ContactMethodTypeTest < ActiveSupport::TestCase
       tmp_contact_method_type.delete attr_name.to_sym
       contact_method_type = ContactMethodType.new(tmp_contact_method_type)
       assert !contact_method_type.valid?, "ContactMethodType should be invalid, as @#{attr_name} is invalid"
-      assert contact_method_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert(contact_method_type.errors[attr_name.to_sym].any?,
+             "Should be an error message for :#{attr_name}")
     end
    end
 
@@ -44,8 +48,8 @@ class ContactMethodTypeTest < ActiveSupport::TestCase
      DUPLICATE_ATTR_NAMES.each do |attr_name|
        contact_method_type = ContactMethodType.new(NEW_CONTACT_METHOD_TYPE.merge(attr_name.to_sym => current_contact_method_type[attr_name]))
       assert !contact_method_type.valid?, "ContactMethodType should be invalid, as @#{attr_name} is a duplicate"
-      assert contact_method_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert(contact_method_type.errors[attr_name.to_sym].any?,
+             "Should be an error message for :#{attr_name}")
     end
   end
 end
-

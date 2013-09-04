@@ -20,7 +20,10 @@ class ContactTypeTest < ActiveSupport::TestCase
     else
       # If ContactType has validation, then use the following:
       assert !contact_type.valid?, "ContactType should not be valid without initialisation parameters"
-      REQ_ATTR_NAMES.each {|attr_name| assert contact_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+      REQ_ATTR_NAMES.each do |attr_name|
+        assert(contact_type.errors[attr_name.to_sym].any?,
+               "Should be an error message for :#{attr_name}")
+      end
     end
   end
 
@@ -38,7 +41,8 @@ class ContactTypeTest < ActiveSupport::TestCase
       tmp_contact_type.delete attr_name.to_sym
       contact_type = ContactType.new(tmp_contact_type)
       assert !contact_type.valid?, "ContactType should be invalid, as @#{attr_name} is invalid"
-      assert contact_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert(contact_type.errors[attr_name.to_sym].any?,
+             "Should be an error message for :#{attr_name}")
     end
   end
 
@@ -47,7 +51,8 @@ class ContactTypeTest < ActiveSupport::TestCase
     DUPLICATE_ATTR_NAMES.each do |attr_name|
       contact_type = ContactType.new(NEW_CONTACT_TYPE.merge(attr_name.to_sym => current_contact_type[attr_name]))
       assert !contact_type.valid?, "ContactType should be invalid, as @#{attr_name} is a duplicate"
-      assert contact_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert(contact_type.errors[attr_name.to_sym].any?,
+             "Should be an error message for :#{attr_name}")
     end
   end
 
@@ -108,4 +113,3 @@ class ContactTypeTest < ActiveSupport::TestCase
                      :gizmo_context => GizmoContext.sale, :unit_price => "1.0", :as_is => false})
   end
 end
-

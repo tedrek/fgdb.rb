@@ -17,7 +17,10 @@ class GizmoTypeTest < ActiveSupport::TestCase
     else
       # If GizmoType has validation, then use the following:
       assert !gizmo_type.valid?, "GizmoType should not be valid without initialisation parameters"
-      REQ_ATTR_NAMES.each {|attr_name| assert gizmo_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"}
+      REQ_ATTR_NAMES.each do |attr_name|
+        assert(gizmo_type.errors[attr_name.to_sym].any?,
+               "Should be an error message for :#{attr_name}")
+      end
     end
   end
 
@@ -35,7 +38,8 @@ class GizmoTypeTest < ActiveSupport::TestCase
       tmp_gizmo_type.delete attr_name.to_sym
       gizmo_type = GizmoType.new(tmp_gizmo_type)
       assert !gizmo_type.valid?, "GizmoType should be invalid, as @#{attr_name} is invalid"
-      assert gizmo_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert(gizmo_type.errors[attr_name.to_sym].any?,
+             "Should be an error message for :#{attr_name}")
     end
   end
 
@@ -44,11 +48,11 @@ class GizmoTypeTest < ActiveSupport::TestCase
     DUPLICATE_ATTR_NAMES.each do |attr_name|
       gizmo_type = GizmoType.new(NEW_GIZMO_TYPE.merge(attr_name.to_sym => current_gizmo_type[attr_name]))
       assert !gizmo_type.valid?, "GizmoType should be invalid, as @#{attr_name} is a duplicate"
-      assert gizmo_type.errors.invalid?(attr_name.to_sym), "Should be an error message for :#{attr_name}"
+      assert(gizmo_type.errors[attr_name.to_sym].any?,
+             "Should be an error message for :#{attr_name}")
     end
   end
 
   Test::Unit::TestCase.integer_math_test(self, "GizmoType", "required_fee")
   Test::Unit::TestCase.integer_math_test(self, "GizmoType", "suggested_fee")
 end
-
