@@ -6,11 +6,7 @@ class Shift < ActiveRecord::Base
   belongs_to :worker
   belongs_to :schedule
 
-  def validate
-    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
-    errors.add("end_time", "is after 8PM") unless self.end_time && Time.parse(self.end_time.hour.to_s + ":" + self.end_time.min.to_s) <= Time.parse("20:00")
-    errors.add("start_time", "is before 8AM") unless self.start_time && Time.parse(self.start_time.hour.to_s + ":" + self.start_time.min.to_s) >= Time.parse("8:00")
-  end
+  validate :time_within_reason
 
   def months_to_s
     "every #{self.repeats_every_months} months, repeating on month of #{self.repeats_on_day}"
@@ -69,37 +65,37 @@ class Shift < ActiveRecord::Base
 
   def Shift.destroy_in_range(start, stop, sql_conditions = '') # work_shifts.
     sql_conditions = Shift.and_sql_conds(sql_conditions)
-      # check to see what we will be overwriting:
+    # check to see what we will be overwriting:
     sql = "SELECT id FROM work_shifts WHERE shift_date BETWEEN '#{start.to_s}' AND '#{stop.to_s}' AND #{sql_conditions} actual"
-      remove = WorkShift.find_by_sql( sql )
-      if remove.size > 0
-        warning = 'Delete all shifts between #{start.to_s} and #{stop.to_s} (#{remove.size} shifts)?'
-        in_clause = Array.new
-        remove.each do |shift| 
-          in_clause << shift.id
-        end
-        WorkShift.delete_all "id IN (#{in_clause.join(',')})"
+    remove = WorkShift.find_by_sql( sql )
+    if remove.size > 0
+      warning = 'Delete all shifts between #{start.to_s} and #{stop.to_s} (#{remove.size} shifts)?'
+      in_clause = Array.new
+      remove.each do |shift| 
+        in_clause << shift.id
       end
+      WorkShift.delete_all "id IN (#{in_clause.join(',')})"
+    end
   end
 
   def Shift.generate(start, stop, sql_conditions = '') # shifts.
     sql_conditions = Shift.and_sql_conds(sql_conditions)
     (start..stop).each do |day|
-        # check to see if it's a holiday, if so then skip
+      # check to see if it's a holiday, if so then skip
       holly = Holiday.is_holiday?(day)
       if holly
-          # insert a holiday shift:
+        # insert a holiday shift:
       else
-          # check to see if the schedule displays on that
-          #   weekday, if not then skip
+        # check to see if the schedule displays on that
+        #   weekday, if not then skip
         week_letter = VolunteerShift.week_for_date(day)
         weekday_id = day.strftime( '%w' )
         weekday = Weekday.find(:first, :conditions => ["id = ?", weekday_id])
-          # get standard shifts that match the day of week
-            #   order by workers.name, start_time
-            # ASSUMPTION: 
-            #   either the weekday_id is null
-            #   or the shift_date is null
+        # get standard shifts that match the day of week
+        #   order by workers.name, start_time
+        # ASSUMPTION: 
+        #   either the weekday_id is null
+        #   or the shift_date is null
         root_sched = Schedule.generate_from
         in_clause = root_sched.in_clause
         if footnote = ShiftFootnote.find_by_schedule_id_and_weekday_id(root_sched.id, weekday_id)
@@ -125,13 +121,13 @@ class Shift < ActiveRecord::Base
         )
     
 WHERE
-            #logger.info 'qqq where_clause: ' + where_clause
+        #logger.info 'qqq where_clause: ' + where_clause
         shifts = Shift.find(:all, {
-              :conditions => where_clause, 
-              :select => 'shifts.*, workers.name', 
-              :joins => 'LEFT JOIN workers ON shifts.worker_id = workers.id', 
-              :order => 'workers.name, start_time, end_time'} 
-            )
+                              :conditions => where_clause, 
+                              :select => 'shifts.*, workers.name', 
+                              :joins => 'LEFT JOIN workers ON shifts.worker_id = workers.id', 
+                              :order => 'workers.name, start_time, end_time'} 
+                            )
         shifts.each do |shift|
           if shift.generates_on_day?(day)
             shift.do_my_generate(day)
@@ -192,19 +188,32 @@ WHERE
     !(self.read_type == 'Meeting')
   end
 
-    def skedj_style(overlap, last)
-      shift_style = ""
-      if self.read_type == 'Meeting'
-        shift_style = 'meeting'
-      elsif self.read_type == 'Unavailability'
-        shift_style = 'unavailable'
-      elsif self.worker_id == 0
-        shift_style = 'unfilled'
-      elsif overlap
-        shift_style = 'hardconflict'
-      else
-        shift_style = self.proposed ? 'proposed' : self.training ? 'training' : 'shift'
-      end
-      return shift_style
+  def skedj_style(overlap, last)
+    shift_style = ""
+    if self.read_type == 'Meeting'
+      shift_style = 'meeting'
+    elsif self.read_type == 'Unavailability'
+      shift_style = 'unavailable'
+    elsif self.worker_id == 0
+      shift_style = 'unfilled'
+    elsif overlap
+      shift_style = 'hardconflict'
+    else
+      shift_style = self.proposed ? 'proposed' : self.training ? 'training' : 'shift'
     end
+    return shift_style
+  end
+
+  private
+  def time_within_reason
+    if self.start_time && self.end_time && self.start_time > self.end_time
+      errors.add(:end_time, "is before the start time")
+    end
+    if self.end_time && self.end_time.hour >= 20
+      errors.add("end_time", "is after 8PM")
+    end
+    if self.start_time && self.start_time.hour < 8
+      errors.add("start_time", "is before 8AM")
+    end
+  end
 end

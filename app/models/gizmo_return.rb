@@ -11,6 +11,8 @@ class GizmoReturn < ActiveRecord::Base
   acts_as_userstamp
   before_save :set_occurred_at_on_transaction
 
+  validate(:validate_inventory_modifications, :named_contact,
+           :has_gizmos, :store_credit_privileges)
   attr_accessor :contact_type  #anonymous or named
   before_save :strip_postal_code
   before_save :unzero_contact_id
@@ -33,20 +35,6 @@ class GizmoReturn < ActiveRecord::Base
 
   def self.default_sort_sql
     "gizmo_returns.created_at DESC"
-  end
-
-  def validate
-    validate_inventory_modifications
-    if contact_type == 'named'
-      errors.add_on_empty("contact_id")
-      if contact_id.to_i == 0 or !Contact.exists?(contact_id)
-        errors.add("contact_id", "does not refer to any single, unique contact")
-      end
-    else
-      errors.add_on_empty("postal_code")
-    end
-    errors.add("gizmos", "should include something") if gizmo_events_actual.empty?
-    storecredit_priv_check if self.store_credit and self.store_credit.amount_cents_changed? and self.store_credit.amount_cents > 0
   end
 
   def gizmo_context
@@ -79,5 +67,32 @@ class GizmoReturn < ActiveRecord::Base
 
   def link_text
     self.created_at.strftime("%m/%d/%Y") + " (" + self.gizmos + ", $" + self.storecredit_difference + ")"
+  end
+
+  private
+  def named_contact
+    if contact_type == 'named'
+      errors.add_on_empty("contact_id")
+      if contact_id.to_i == 0 or !Contact.exists?(contact_id)
+        errors.add("contact_id",
+                   "does not refer to any single, unique contact")
+      end
+    else
+      errors.add_on_empty("postal_code")
+    end
+  end
+
+  def has_gizmos
+    if gizmo_events_actual.empty?
+      errors.add("gizmos", "should include something")
+    end
+  end
+
+  def store_credit_privileges
+    if (self.store_credit and
+        self.store_credit.amount_cents_changed? and
+        self.store_credit.amount_cents > 0)
+      storecredit_priv_check
+    end
   end
 end

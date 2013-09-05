@@ -6,9 +6,7 @@ class VolunteerDefaultEvent < ActiveRecord::Base
   has_many :resources_volunteer_default_events, :dependent => :destroy
   validates_associated :volunteer_default_shifts
 
-  def validate
-    errors.add('next_cycle_date', 'cannot be set on a roster event') if self.week and self.week.length > 1 and self.description.match(/Roster #/)
-  end
+  validate :roster_event
 
   def next_cycle_date
     if self.week.to_s.strip.length == 0
@@ -79,5 +77,14 @@ class VolunteerDefaultEvent < ActiveRecord::Base
     new.save!
     new.volunteer_default_shifts.each{|x| x.save!}
     return new
+  end
+
+  private
+  def roster_event
+    if self.week &&
+        self.week.length > 1 &&
+        self.description.match(/Roster #/)
+      errors.add(:next_cycle_date, 'cannot be set on a roster event')
+    end
   end
 end

@@ -10,6 +10,13 @@ class Worker < ActiveRecord::Base
   validates_associated :workers_worker_types
   has_and_belongs_to_many :worker_types
 
+  validates(:sunday, :monday, :tuesday, :wednesday, :thursday, :friday,
+            :saturday, :pto_rate, :floor_hours, :celing_hours,
+            :presence => true)
+  validates_each :salaried do |rec, attr, val|
+    errors.add(attr, "can't be blank") if val.nil?
+  end
+
   def to_s
     name
   end
@@ -23,11 +30,6 @@ class Worker < ActiveRecord::Base
   end
 
   before_save :save_worker_types
-
-  def validate
-    errors.add_on_blank %w(sunday monday tuesday wednesday thursday friday saturday pto_rate floor_hours ceiling_hours)
-    errors.add("salaried", "can't be blank") if salaried.nil?
-  end
 
   def set_temp_worker_association
     if @already_set_it

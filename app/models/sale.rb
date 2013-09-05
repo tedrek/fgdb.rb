@@ -9,6 +9,12 @@ class Sale < ActiveRecord::Base
   has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
 
+  validate(:validate_inventory_modifications, :named_contact,
+           :sufficient_payment, :single_invoice, :has_gizmos,
+           :store_credit_use, :bubble_payments_errors,
+           :bubble_gizmo_events_errors,
+           :conserve_credit_without_privileges)
+
   def gizmo_context
     GizmoContext.sale
   end
@@ -161,44 +167,6 @@ thanks = [
     self.gizmo_events_actual.map{|x| x.store_credits}.flatten
   end
 
-  def validate
-    validate_inventory_modifications
-    unless is_adjustment?
-    if contact_type == 'named'
-      errors.add_on_empty("contact_id")
-      if contact_id.to_i == 0 or !Contact.exists?(contact_id)
-        errors.add("contact_id", "does not refer to any single, unique contact")
-      end
-    else
-      nil
-    end
-    end
-    errors.add("payments", "are too little to cover the cost") unless invoiced? or total_paid?
-    #errors.add("payments", "are too much") if overpaid?
-    errors.add("payments", "may only have one invoice") if invoices.length > 1
-    errors.add("gizmos", "should include something") if gizmo_events_actual.empty?
-    errors.add("payments", "use the same store credit multiple times") if storecredits_repeat
-
-    payments_actual.each{|x|
-      x.errors.each{|y, z|
-        errors.add("payments", z)
-      }
-    }
-    gizmo_events_actual.each{|x|
-      x.errors.each{|y, z|
-        errors.add("gizmos", z)
-      }
-    }
-
-    storecred_received = self.storecredits.inject(0){|t,x| t += x.amount_cents}
-    storecred_spent = amount_from_some_payments(store_credits_spent)
-    oldstorecredit = 0
-    if self.id
-      oldstorecredit = self.class.find_by_id(self.id).storecredits.inject(0){|t,x| t += x.amount_cents}
-    end
-    storecredit_priv_check if storecred_received > storecred_spent and storecred_received > oldstorecredit
-  end
-
   def storecredits_repeat
     sc = self.payments_actual.select{|x| x.payment_method == PaymentMethod.store_credit}.map{|x| x.store_credit_id}
     sc.length != sc.uniq.length
@@ -322,5 +290,71 @@ thanks = [
                                 :payment_method => PaymentMethod.cash})
     end
     @cash_back = cash_back
+  end
+
+  private
+  def named_contact
+    unless is_adjustment?
+      if contact_type == 'named'
+        errors.add_on_empty("contact_id")
+        if contact_id.to_i == 0 or !Contact.exists?(contact_id)
+          errors.add("contact_id",
+                     "does not refer to any single, unique contact")
+        end
+      end
+    end
+  end
+
+  def sufficient_payment
+    unless invoiced? or total_paid?
+      errors.add("payments", "are too little to cover the cost")
+    end
+  end
+
+  def single_invoice
+    errors.add("payments", "may only have one invoice") if invoices.length > 1
+  end
+
+  def has_gizmos
+    if gizmo_events_actual.empty?
+      errors.add("gizmos", "should include something")
+    end
+  end
+
+  def store_credit_use
+    if storecredits_repeat
+      errors.add("payments", "use the same store credit multiple times")
+    end
+  end
+
+  def bubble_payments_errors
+    payments_actual.each{|x|
+      x.errors.each{|y, z|
+        errors.add("payments", z)
+      }
+    }
+  end
+
+  def bubble_gizmo_events_errors
+    gizmo_events_actual.each{|x|
+      x.errors.each{|y, z|
+        errors.add("gizmos", z)
+      }
+    }
+  end
+
+  def conserve_credit_without_privileges
+    storecred_received = self.storecredits.inject(0){|t,x| t += x.amount_cents}
+    storecred_spent = amount_from_some_payments(store_credits_spent)
+    oldcredit = 0
+    if self.id
+      oldcredit = self.class.find_by_id(self.id).storecredits.inject(0) do |t,x|
+        t += x.amount_cents
+      end
+    end
+    if ((storecred_received > storecred_spent) and
+        (storecred_received > oldcredit))
+      storecredit_priv_check
+    end
   end
 end

@@ -8,6 +8,8 @@ class DefaultAssignment < ActiveRecord::Base
   before_validation :set_values_if_stuck
   delegate :set_description, :set_description=, :to => :volunteer_default_shift
   validates_existence_of :contact, :allow_nil => true
+  validate(:contact_type_for_roster, :closed_shift, :contact_for_assignment,
+           :overlapping_shifts)
 
   def real_programs
     return [] unless self.volunteer_default_shift && self.volunteer_default_shift.roster
@@ -68,20 +70,6 @@ class DefaultAssignment < ActiveRecord::Base
     end
     ret
   }
-
-  def validate
-    if self.contact_id && self.contact_id_changed? && self.volunteer_default_shift && self.volunteer_default_shift.roster && self.volunteer_default_shift.roster.contact_type
-      errors.add("contact_id", "does not have the contact type required to sign up for a shift in this roster (#{self.volunteer_default_shift.roster.contact_type.description.humanize.downcase})") unless self.contact.contact_types.include?(self.volunteer_default_shift.roster.contact_type)
-    end
-    if self.closed
-      errors.add("contact_id", "cannot be assigned to a closed shift") unless self.contact_id.nil?
-    end
-    if self.volunteer_default_shift && self.volunteer_default_shift.stuck_to_assignment
-      errors.add("contact_id", "is empty for an assignment-based shift") if self.contact_id.nil?
-    end
-    errors.add("contact_id", "is not an organization and is already scheduled during that time (#{self.find_overlappers(:for_contact).map{|x| "during " + x.time_range_s + " in " + x.slot_type_desc}.join(", ")})") if self.contact and !(self.contact.is_organization) and (self.find_overlappers(:for_contact).length > 0)
-    errors.add("volunteer_default_shift_id", "is already assigned during that time (#{self.find_overlappers(:for_slot).map{|x| "during " + x.time_range_s + " to " + x.contact_display}.join(", ")})") if self.volunteer_default_shift && !(self.volunteer_default_shift.not_numbered) && self.find_overlappers(:for_slot).length > 0
-  end
 
   def does_conflict?(other)
     return false if self.week.to_s.strip.length > 0 and other.week.to_s.strip.length > 0 and self.week.downcase != other.week.downcase
@@ -188,5 +176,53 @@ class DefaultAssignment < ActiveRecord::Base
       return self.contact.display_name
     end
   end
-end
 
+  private
+  def contact_type_for_roster
+    return unless (self.contact_id && self.contact_id_changed?)
+    return unless (self.volunteer_shift &&
+                   self.volunteer_shift.roster &&
+                   self.volunteer_shift.roster.contact_type)
+    unless (self.contact.contact_types.include?(
+              self.volunteer_shift.roster.contact_type))
+      ct = self.volunteer_shift.contact_type.description.humanize.downcase
+      errors.add(:contact, "does not have the correct type required to " +
+                 "sign up for a shift in this roster (#{ct})")
+    end
+  end
+
+  def closed_shift
+    if (self.closed && !self.contact_id.nil?)
+      errors.add("contact_id", "cannot be assigned to a closed shift")
+    end
+  end
+
+  def contact_for_assignment
+    if (self.volunteer_shift &&
+        self.volunteer_shift.stuck_to_assignment &&
+        self.contact_id.nil?)
+      errors.add(:contact_id, "is empty for an assignment-based shift")
+    end
+  end
+
+  def overlapping_shifts
+    unless self.contact.nil? and !self.contact.is_organization
+      overlappers = self.find_overlappers(:for_contact)
+      if overlappers.length > 0
+        errors.add(:contact, 'is not an organization and is already scheduled'\
+                   'during that time (' + overlappers.map do |x|
+                     'during ' + x.time_range_s + " in " + x.slot_type_desc
+                   end.join(',') + ')')
+      end
+    end
+    if self.volunteer_shift && !self.volunteer_shift.not_numbered
+      overlappers = self.find_overlappers(:for_slot)
+      if overlappers.length > 0
+        errors.add(:volunteer_shift, 'is already asigned during that time (' +
+                   overlappers.map do |x|
+                     'during ' + x.time_range_s + ' to ' + x.contact_display
+                   end.join(', ') + ')')
+      end
+    end
+  end
+end

@@ -6,6 +6,11 @@ class Disbursement < ActiveRecord::Base
   has_many :gizmo_types, :through => :gizmo_events
   acts_as_userstamp
 
+  validates(:disbursed_at, :disbursement_type_id, :gizmo_events,
+            :presence => true)
+
+  validate :validate_inventory_modifications, :associated_contact
+
   def is_fully_returned?
     gts = {}
     first = self.gizmo_events
@@ -27,19 +32,6 @@ class Disbursement < ActiveRecord::Base
     GizmoContext.disbursement
   end
 
-  def validate
-    validate_inventory_modifications
-    unless is_adjustment?
-    errors.add_on_empty("contact_id")
-    if contact_id.to_i == 0
-      errors.add("contact_id", "does not refer to any single, unique contact")
-    end
-    end
-    errors.add_on_empty("disbursed_at", "when?")
-    errors.add_on_empty("disbursement_type_id")
-    errors.add_on_empty("gizmo_events")
-  end
-
   before_save :set_occurred_at_on_gizmo_events
 
   class << self
@@ -50,5 +42,15 @@ class Disbursement < ActiveRecord::Base
 
   def recipient
     contact
+  end
+
+  private
+  def associated_contact
+    unless is_adjustment?
+      errors.add_on_empty("contact_id")
+      if contact_id.to_i == 0
+        errors.add("contact_id", "does not refer to any single, unique contact")
+      end
+    end
   end
 end

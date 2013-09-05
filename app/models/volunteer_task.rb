@@ -36,17 +36,11 @@ class VolunteerTask < ActiveRecord::Base
     VolunteerTaskType.instantiables.effective_on(self.date_performed || Date.today).sort_by{|x| x.description.downcase}
   end
 
-  def validate
-    if contact.nil?
-      errors.add(:contact_id, "must be choosen")
-    end
-    if duration.to_f <= 0.0
-      errors.add(:duration, "must be greater than zero")
-    end
-    if self.date_performed.nil?
-      errors.add(:date_performed, "Is not set")
-    elsif self.date_performed > Date.today
-      errors.add(:date_performed, "is in the future")
+  validates_associated :contact
+  validates :date_performed, :presence => true
+  validates_each :date_performed do |record, attr, value|
+    if (!value.nil?) && value > Date.today
+      record.errors.add(attr, 'Is in the future')
     end
   end
 

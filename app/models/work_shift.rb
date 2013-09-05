@@ -8,11 +8,7 @@ class WorkShift < ActiveRecord::Base
   belongs_to :weekday
   belongs_to :worker
 
-  def validate
-    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
-    errors.add("end_time", "is after 8PM") unless self.end_time && Time.parse(self.end_time.hour.to_s + ":" + self.end_time.min.to_s) <= Time.parse("20:00")
-    errors.add("start_time", "is before 8AM") unless self.start_time && Time.parse(self.start_time.hour.to_s + ":" + self.start_time.min.to_s) >= Time.parse("8:00")
-  end
+  validate :time_within_reason
 
   before_save :set_weekday_id
 
@@ -188,5 +184,18 @@ class WorkShift < ActiveRecord::Base
     ret.worker_id = shift.worker_id
     ret.weekday_id = shift.weekday_id
     ret
+  end
+
+  private
+  def time_within_reason
+    if self.start_time && self.end_time && self.start_time > self.end_time
+      errors.add(:end_time, "is before the start time")
+    end
+    if self.end_time && self.end_time.hour >= 20
+      errors.add("end_time", "is after 8PM")
+    end
+    if self.start_time && self.start_time.hour < 8
+      errors.add("start_time", "is before 8AM")
+    end
   end
 end

@@ -101,35 +101,10 @@ class Donation < ActiveRecord::Base
     Donation.connection.execute("SELECT count(*) FROM donations WHERE #{sanitize_sql_for_conditions(c.conditions(Donation))}").to_a[0]["count"].to_i
   end
 
-  def validate
-    validate_inventory_modifications
-    unless is_adjustment?
-    if contact_type == 'named'
-      errors.add_on_empty("contact_id")
-      if contact_id.to_i == 0 or !Contact.exists?(contact_id)
-        errors.add("contact_id", "does not refer to any single, unique contact")
-      end
-    elsif contact_type == 'anonymous'
-      errors.add_on_empty("postal_code")
-    elsif contact_type != 'dumped'
-      errors.add("contact_type", "should be one of 'named', 'anonymous', or 'dumped'")
-    end
+  validate(:validate_inventory_modifications, :contact_valid_type,
+           :bubble_gizmo_count, :covered_error_checking,
+           :includes_payment_or_gizmo, :maximum_invoices)
 
-    gizmo_events_actual.each do |gizmo|
-      errors.add("gizmos", "must have positive quantity") unless gizmo.valid_gizmo_count?
-    end
-
-    end
-
-    #errors.add("payments", "are too little to cover required fees") unless(invoiced? or required_paid? or contact_type == 'dumped')
-
-    errors.add("payments", "or gizmos should include some reason to call this a donation") if
-      gizmo_events_actual.empty? and payments.empty?
-
-    errors.add("payments", "may only have one invoice") if invoices.length > 1
-
-    covered_error_checking
-  end
 
   def covered_error_checking
     if Default["coveredness_enabled"] != "1" or is_adjustment?
@@ -396,5 +371,43 @@ class Donation < ActiveRecord::Base
                                          :gizmo_context => GizmoContext.donation,
                                          :covered => false})
     end
+  end
+
+  private
+  def contact_valid_type
+    unless is_adjustment?
+      if contact_type == 'named'
+        errors.add_on_empty("contact_id")
+        if contact_id.to_i == 0 or !Contact.exists?(contact_id)
+          errors.add("contact_id", "does not refer to any single, unique contact")
+        end
+      elsif contact_type == 'anonymous'
+        errors.add_on_empty("postal_code")
+      elsif contact_type != 'dumped'
+        errors.add("contact_type",
+                   "should be one of 'named', 'anonymous', or 'dumped'")
+      end
+    end
+  end
+
+  def bubble_gizmo_count
+    unless is_adjustment?
+      gizmo_events_actual.each do |gizmo|
+        if not gizmo.valid_gizmo_count?
+          errors.add("gizmos", "must have positive quantity")
+        end
+      end
+    end
+  end
+
+  def includes_payment_or_gizmo
+    if gizmo_events_actual.empty? and payments.empty?
+      errors.add("payments",
+                 "or gizmos should include some reason to call this a donation")
+    end
+  end
+
+  def maximum_invoices
+    errors.add("payments", "may only have one invoice") if invoices.length > 1
   end
 end

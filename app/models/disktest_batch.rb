@@ -7,6 +7,7 @@ class DisktestBatch < ActiveRecord::Base
   validates_presence_of :date
   validates_presence_of :contact_id
   validates_existence_of :contact
+  validate :user_for_finalizing, :no_untested_on_finalize
 
   def fake_status(serial)
     drive = self.disktest_batch_drives.new(:serial_number => serial)
@@ -17,11 +18,6 @@ class DisktestBatch < ActiveRecord::Base
 
   def count_number(sym)
     self.disktest_batch_drives.select{|x| x.send(sym)}.length
-  end
-
-  def validate
-    errors.add('disktest_batch_drives', 'are not all tested or destroyed, report cannot be finalized') if self.finalized and self.count_number(:untested?) > 0
-    errors.add('user_finalized_by', 'is not authorized to finalize reports') unless self.user_finalized_by.nil? or self.user_finalized_by.has_privileges('data_security')
   end
 
   def finalized
@@ -41,6 +37,21 @@ class DisktestBatch < ActiveRecord::Base
       self.disktest_batch_drives.each do |d|
         d.disktest_run_id = nil
       end
+    end
+  end
+
+  private
+  def user_for_finalizing
+    if self.user_finalized_by.nil? or
+        self.user_finalized_by.has_priviliges('data_security')
+      errors.add(:user_finalized_by, 'is not authorized to finalize reports')
+    end
+  end
+
+  def no_untested_on_finalize
+    if self.finalized && (self.count_number(:untested?) > 0)
+      errors.add(:disktest_batch_drives,
+                 'are not all tested or destroyed, report cannot be finalized')
     end
   end
 end

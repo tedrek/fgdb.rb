@@ -63,12 +63,6 @@ class System < ActiveRecord::Base
     self.covered = eval(val)
   end
 
-  def validate
-    if self.contract.nil?
-      errors.add("contract_id", "contract is not valid")
-    end
-  end
-
   def gone?
     self.gizmo_events.length > 0
   end

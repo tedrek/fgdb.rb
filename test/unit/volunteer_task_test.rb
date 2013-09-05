@@ -14,7 +14,7 @@ class VolunteerTaskTest < ActiveSupport::TestCase
       :volunteer_task_type_id => 46
     }
   end
-  REQ_ATTR_NAMES                         = %w( contact_id ) # name of fields that must be present, e.g. %(name description)
+  REQ_ATTR_NAMES                         = %w( contact ) # name of fields that must be present, e.g. %(name description)
   DUPLICATE_ATTR_NAMES = %w( ) # name of fields that cannot be a duplicate, e.g. %(name description)
 
   def setup
@@ -44,14 +44,12 @@ class VolunteerTaskTest < ActiveSupport::TestCase
     end
   end
 
-  def test_validates_presence_of
-    REQ_ATTR_NAMES.each do |attr_name|
-      tmp_volunteer_task = new_volunteer_task.clone
-      tmp_volunteer_task.delete attr_name.to_sym
-      volunteer_task = VolunteerTask.new(tmp_volunteer_task)
-      assert !volunteer_task.valid?, "VolunteerTask should be invalid, as @#{attr_name} is invalid"
-      assert volunteer_task.errors[attr_name.to_sym].any?, "Should be an error message for :#{attr_name}"
-    end
+  test "validating contact association" do
+    nvt = new_volunteer_task.clone
+    nvt.delete :contact_id
+    vt = VolunteerTask.new(nvt)
+    assert(!vt.valid?, "Volunteer task should be invalid as it has no contact")
+    assert(vt.errors[:contact].any?, "There should be an error for :contact")
   end
 
   def test_duplicate

@@ -3,6 +3,12 @@ class VolunteerShift < ActiveRecord::Base
   validates_presence_of :end_time
   validates_presence_of :start_time
 
+  validates_each :start_time do |rec, attr, val|
+    unless rec.start_time && rec.end_time && (rec.start_time < rec.end_time)
+      errors.add(:end_time, "is before start time")
+    end
+  end
+
   belongs_to :volunteer_task_type
   has_many :assignments
   belongs_to :program
@@ -11,10 +17,6 @@ class VolunteerShift < ActiveRecord::Base
   belongs_to :volunteer_event
 
   has_many :contact_volunteer_task_type_counts, :primary_key => 'volunteer_task_type_id', :foreign_key => 'volunteer_task_type_id' #:through => :volunteer_task_type
-
-  def validate
-    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
-  end
 
   def self.week_for_date(d)
     long_time_ago = Date.new(1901, 12, 22)

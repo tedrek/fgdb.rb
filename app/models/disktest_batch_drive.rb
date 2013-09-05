@@ -6,10 +6,7 @@ class DisktestBatchDrive < ActiveRecord::Base
   validates_presence_of :serial_number
 #  validates_presence_of :disktest_batch_id
 #  validates_existence_of :disktest_batch
-
-  def validate
-    errors.add('user_destroyed_by', 'is not authorized to mark drives destroyed') unless self.user_destroyed_by.nil? or self.user_destroyed_by.has_privileges('data_security')
-  end
+  validate :user_privileges
 
   def disktest_run
     DisktestRun.find_by_id(self.disktest_run_id) || (self.disktest_batch and self.disktest_batch.finalized ? nil : _find_run)
@@ -50,5 +47,14 @@ class DisktestBatchDrive < ActiveRecord::Base
   def finalize_run
     run = _find_run
     self.disktest_run_id = run ? run.id : nil
+  end
+
+  private
+  def user_privileges
+    unless (self.user_destroyed_by.nil? or
+            self.user_destroyed_by.has_privileges('data_security'))
+      errors.add('user_destroyed_by',
+                 'is not authorized to mark drives destroyed')
+    end
   end
 end

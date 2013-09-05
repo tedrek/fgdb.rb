@@ -7,6 +7,7 @@ class MeetingMinder < ActiveRecord::Base
   validates_presence_of :hour
   validates_format_of :script, :with => /^[a-z-]*$/, :message => "can only contain letters and dashes"
   validates_format_of :recipient, :with => /^.+@[^.]+\..+$/, :message => "must be a valid email address"
+  validate :script_body_interaction
 
   def short_desc
     "minder to #{recipient} #{days_before} days prior"
@@ -15,13 +16,6 @@ class MeetingMinder < ActiveRecord::Base
   def minder_variables(today)
     # are the scheduled meeting attendees important? could loop the work_shifts for the meeting_date
     {:meeting_name => meeting.meeting_name, :meeting_date => (today + days_before).strftime("%a, %B %d %Y"), :days_before => days_before, :todays_date => today.strftime("%a, %B %e %Y"), :last_meeting_date => meeting.last_meeting(today), :meeting_time => meeting.start_time.strftime("%I:%M %p").downcase.sub(/^0/, "")}
-  end
-
-  def validate
-    # could the script add on to the end of the text if there is some, allowing both as long as at least one is there?
-    errors.add('body', 'should not be specified if a script will be ran') if body.length > 0 and script.length > 0
-    errors.add('body', 'should be specified if no script will be ran') if body.length == 0 and script.length == 0
-    errors.add('script', 'does not exist in the ASS meetings directory') if script.length > 0 and !File.exists?(self.script_filename)
   end
 
   def self.minders_for_day(today, time)
@@ -97,5 +91,20 @@ class MeetingMinder < ActiveRecord::Base
 
   def processed_subject(today)
     return _process(self.subject, today)
+  end
+
+  private
+  def script_body_interaction
+    # could the script add on to the end of the text if there is some,
+    # allowing both as long as at least one is there?
+    if body.length > 0 and script.length > 0
+      errors.add('body', 'should not be specified if a script will be ran')
+    end
+    if body.length == 0 and script.length == 0
+      errors.add('body', 'should be specified if no script will be ran')
+    end
+    if script.length > 0 and !File.exists?(self.script_filename)
+      errors.add('script', 'does not exist in the ASS meetings directory')
+    end
   end
 end

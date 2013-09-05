@@ -8,11 +8,8 @@ class Recycling < ActiveRecord::Base
     GizmoContext.recycling
   end
 
-  def validate
-    validate_inventory_modifications
-    errors.add_on_empty("gizmo_events")
-    errors.add_on_empty("recycled_at", "when?")
-  end
+  validate :validate_inventory_modifications
+  validates :gizmo_events, :recycled_at, :presence => true
 
   before_save :set_occurred_at_on_gizmo_events
 

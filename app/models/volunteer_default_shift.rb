@@ -3,6 +3,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
   validates_presence_of :end_time
   validates_presence_of :start_time
   validates_presence_of :slot_count
+  validate :intern_shift_slot_count, :positive_time_span
+
   belongs_to :volunteer_task_type
   belongs_to :volunteer_default_event
   belongs_to :program
@@ -16,11 +18,6 @@ class VolunteerDefaultShift < ActiveRecord::Base
   named_scope :on_weekday, lambda { |wday|
     { :conditions => ['weekday_id = ?', wday] }
   }
-
-  def validate
-    errors.add('slot_count', 'cannot be more than one for an intern shift') if self.not_numbered and self.slot_count and self.slot_count > 1
-    errors.add("end_time", "is before the start time") unless self.start_time && self.end_time && self.start_time < self.end_time
-  end
 
   before_destroy :get_rid_of_available
   def get_rid_of_available
@@ -409,5 +406,23 @@ class VolunteerDefaultShift < ActiveRecord::Base
 
   def my_end_time=(str)
     write_attribute(:end_time, VolunteerShift._parse_time(str))
+  end
+
+  private
+  validate :intern_shift_slot_count, :positive_time_span
+  def intern_shift_slot_count
+    if self.not_numbered &&
+        self.slot_count &&
+        self.slot_count > 1
+      errors.add('slot_count', 'cannot be more than one for an intern shift')
+    end
+  end
+
+  def positive_time_span
+    if (self.start_time &&
+        self.end_time &&
+        (self.start_time > self.end_time))
+      errors.add(:end_time, 'is before the start time')
+    end
   end
 end
