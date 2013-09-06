@@ -3,8 +3,9 @@ class WarrantyLength < ActiveRecord::Base
   validates_presence_of :length
   validates_presence_of :box_source
 
-  named_scope :effective_on, lambda { |date|
-    { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
+  scope :effective_on, lambda { |date|
+    where('(effective_on IS NULL OR effective_on <= ?) AND ' +
+          '(ineffective_on IS NULL OR ineffective_on > ?)', date, date)
   }
 
   validates_numericality_of :length_number

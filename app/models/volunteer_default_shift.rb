@@ -12,11 +12,8 @@ class VolunteerDefaultShift < ActiveRecord::Base
 
   has_many :default_assignments
 
-#  named_scope :effective_at, lambda { |date|
-#    { :conditions => ['(effective_at IS NULL OR effective_at <= ?) AND (ineffective_at IS NULL OR ineffective_at > ?)', date, date] }
-#  }
-  named_scope :on_weekday, lambda { |wday|
-    { :conditions => ['weekday_id = ?', wday] }
+  scope :on_weekday, lambda { |wday|
+    where('weekday_id = ?', wday)
   }
 
   before_destroy :get_rid_of_available

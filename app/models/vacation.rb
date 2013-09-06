@@ -5,8 +5,8 @@ class Vacation < ActiveRecord::Base
 
   validate :worker_is_not_virtual
 
-  named_scope :on_date, lambda { |date|
-    { :conditions => ['? BETWEEN effective_date AND ineffective_date', date] }
+  scope :on_date, lambda { |date|
+    where('? BETWEEN effective_date AND ineffective_date', date)
   }
 
   def worker_is_not_virtual

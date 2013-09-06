@@ -8,9 +8,7 @@ class Donation < ActiveRecord::Base
   has_many :gizmo_events, :dependent => :destroy, :autosave => :true
   has_many :gizmo_types, :through => :gizmo_events
   has_one :resolved_by_gizmo_event, :class_name => "GizmoEvent", :foreign_key => :invoice_donation_id
-# Doesn't work, rails generates invalid SQL:
-#  named_scope :with_unresolved_invoice, :joins => [:payment_methods], :conditions => ["invoice_resolved_at IS NULL AND payment_methods.name LIKE 'invoice'"]
-#  named_scope :for_contact, lambda{|cid| {:conditions => ["contact_id = ?", cid]}}
+
   define_amount_methods_on_fake_attr :invoice_amount
   after_destroy {|rec| Thread.current['cashier'] ||= Thread.current['user']; rec.resolves.each do |d| d.invoice_resolved_at = nil; d.save!; end } # FIXME: ask for cashier code on destroy
 

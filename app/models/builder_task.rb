@@ -9,7 +9,7 @@ class BuilderTask < ActiveRecord::Base
     self.cashier_signed_off_by = nil if contact_id_changed?
   end
 
-  named_scope :last_two_years, :conditions => ['created_at >= ?', 2.years.ago]
+  scope :last_two_years, where('created_at >= ?', 2.years.ago)
 
   before_save :set_created_and_updated_at
   def set_created_and_updated_at
@@ -28,4 +28,3 @@ class BuilderTask < ActiveRecord::Base
     self.cashier_signed_off_by = (self.cashier_signed_off_by == new ? nil : new)
   end
 end
-

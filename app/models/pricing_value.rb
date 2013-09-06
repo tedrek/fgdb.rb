@@ -3,7 +3,7 @@ class PricingValue < ActiveRecord::Base
   belongs_to :pricing_component
   define_amount_methods_on :value
   belongs_to :replaced_by, :foreign_key => "replaced_by_id", :class_name => "PricingType"
-  named_scope :active, :conditions => ['ineffective_on IS NULL']
+  scope :active, where(:ineffective_on => nil)
   validates_presence_of :name, :unless => :is_passthrough
   validates_presence_of :value_cents
 

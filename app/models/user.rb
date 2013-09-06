@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   # anything else you want your user to change should be added here.
   attr_accessible :login, :email, :password, :password_confirmation, :can_login, :shared
 
-  named_scope :can_login, {:conditions => ["can_login = 't'"]}
+  scope :can_login, where(:can_login => true)
 
   def can_view_disciplinary_information?
     !! (self.contact and self.contact.worker and self.contact.worker.worker_type_today and self.contact.worker.worker_type_today.name == 'management')

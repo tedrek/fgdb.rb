@@ -165,12 +165,12 @@ class Assignment < ActiveRecord::Base
     where(:contact_id => tcid)
   }
 
-  named_scope :for_slot, lambda{|assignment|
+  scope :for_slot, lambda{|assignment|
     has_task_type = ! assignment.volunteer_shift.volunteer_task_type_id.nil?
     ret = nil
+    rid = assignment.volunteer_shift.roster_id
+    tslot = assignment.volunteer_shift.slot_number
     if has_task_type
-      rid = assignment.volunteer_shift.roster_id
-      tslot = assignment.volunteer_shift.slot_number
       ttid = assignment.volunteer_shift.volunteer_task_type_id
       ret = where('contact_id IS NOT NULL
                    AND volunteer_shift_id IN (
@@ -179,8 +179,6 @@ class Assignment < ActiveRecord::Base
                                AND volunteer_task_type_id = ?
                                AND roster_id = ?)', tslot, ttid, rid)
     else
-      rid = assignment.volunteer_shift.roster_id
-      tslot = assignment.volunteer_shift.slot_number
       teid = assignment.volunteer_shift.volunteer_event_id
       ret = where('contact_id IS NOT NULL
                    AND volunteer_shift_id IN (

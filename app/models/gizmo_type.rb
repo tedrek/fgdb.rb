@@ -10,11 +10,12 @@ class GizmoType < ActiveRecord::Base
   define_amount_methods_on("required_fee")
   define_amount_methods_on("suggested_fee")
 
-  named_scope :effective_on, lambda { |date|
-    { :conditions => ['(effective_on IS NULL OR effective_on <= ?) AND (ineffective_on IS NULL OR ineffective_on > ?)', date, date] }
+  scope :effective_on, lambda { |date|
+    where('(effective_on IS NULL OR effective_on <= ?) AND ' +
+          '(ineffective_on IS NULL OR ineffective_on > ?)', date, date)
   }
 
-  named_scope :for_systems, :conditions => ["needs_id = 't'"]
+  scope :for_systems, where(:needs_id => true)
 
   def downcase_desc
     description.to_s.downcase

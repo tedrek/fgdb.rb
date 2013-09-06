@@ -1,3 +1,3 @@
 class Action < ActiveRecord::Base
-  named_scope :usable
+  scope :usable
 end

@@ -57,16 +57,18 @@ class DefaultAssignment < ActiveRecord::Base
     contact_id.nil? and !closed
   end
 
-  named_scope :assigned, :conditions => ['contact_id IS NOT NULL']
+  scope :assigned, where('contact_id IS NOT NULL')
 
-  named_scope :for_slot, lambda{|assignment|
+  scope :for_slot, lambda{|assignment|
     slot = assignment.slot_number
-    shift_id = assignment.volunteer_default_shift_id || assignment.volunteer_default_shift.id
+    shift_id = assignment.volunteer_default_shift_id
+    shift_id ||= assignment.volunteer_default_shift.id
     week = assignment.week.to_s.strip
+    ret = where("contact_id IS NOT NULL")
+      .where(:slot_number => slot)
+      .where(:volunteer_default_shift_id => shift_id)
     if week.length > 0
-      ret = {:conditions => ["contact_id IS NOT NULL AND slot_number = ? AND volunteer_default_shift_id = ? AND (week IS NULL OR week IN ('', ' ', ?))", slot, shift_id, week]}
-    else
-      ret = {:conditions => ["contact_id IS NOT NULL AND slot_number = ? AND volunteer_default_shift_id = ?", slot, shift_id]}
+      ret = ret.where('(week IS NULL OR week IN ('', ' ', ?))', week)
     end
     ret
   }
@@ -84,38 +86,39 @@ class DefaultAssignment < ActiveRecord::Base
     self.class.potential_overlappers(self).send(type, self).overlaps_effective(self).select{|x| self.does_conflict?(x)}
   end
 
-  named_scope :overlaps_effective, lambda {|assignment|
-    cond = ""
-    opts = []
+  def overlaps_effective(assignment)
     if assignment.ineffective_on.nil? and assignment.effective_on.nil?
-      cond = "1 = 1"
-    else
-      if !(assignment.ineffective_on.nil? or assignment.effective_on.nil?)
-        cond = "((ineffective_on IS NULL OR ineffective_on > ?) AND (effective_on < ? OR effective_on IS NULL))"
-        opts = [assignment.effective_on, assignment.ineffective_on]
-      end
-      if assignment.ineffective_on.nil?
-        cond = "(ineffective_on IS NULL OR ineffective_on > ?)"
-        opts = [assignment.effective_on]
-      end
-      if assignment.effective_on.nil?
-        cond = "(effective_on < ? OR effective_on IS NULL)"
-        opts = [assignment.ineffective_on]
-      end
+      return scoped().where(:volunteer_default_shift_id =>
+                            VolunteerDefaultShift.select(:id))
     end
-    opts.unshift("volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts WHERE #{cond})")
-    {:conditions => opts}
-  }
 
-  named_scope :potential_overlappers, lambda{|assignment|
+    sq = VolunteerDefaultShift.select(:id)
+    if assignment.effective_on.nil?
+      sq = sq.where("(effective_on < ? OR effective_on IS NULL)",
+                    assignment.ineffective_on)
+    elsif assignment.ineffective_on.nil?
+      sq = sq.where("(ineffective_on IS NULL OR ineffective_on > ?)",
+                    assignment.effective_on)
+    elsif !(assignment.ineffective_on.nil? or assignment.effective_on.nil?)
+      sq = sq.where("((ineffective_on IS NULL OR ineffective_on > ?) AND " +
+                    " (effective_on < ? OR effective_on IS NULL))",
+                    assignment.effective_on, assignment.ineffective_on)
+    end
+    return scoped().where(:volunteer_default_shift_id => sq)
+  end
+
+  scope :potential_overlappers, lambda{|assignment|
     tid = assignment.id
     tday = assignment.volunteer_default_shift.volunteer_default_event.weekday_id
-    { :conditions => ['(id != ? OR ? IS NULL) AND volunteer_default_shift_id IN (SELECT volunteer_default_shifts.id FROM volunteer_default_shifts JOIN volunteer_default_events ON volunteer_default_events.id = volunteer_default_shifts.volunteer_default_event_id WHERE volunteer_default_events.weekday_id = ?)', tid, tid, tday] }
+    sq = VolunteerDefaultShift.select(:id).joins(:volunteer_default_events)
+    sq = sq.where('volunteer_default_event.weekday_id', tday)
+    ret = where('(id != ? OR ? IS NULL)', tid, tid)
+    ret = ret.where(:volunteer_default_shift_id => sq)
+    return ret
   }
 
-  named_scope :for_contact, lambda{|assignment|
-    tcid = assignment.contact.id
-    { :conditions => ['contact_id = ?', tcid] }
+  scope :for_contact, lambda{|assignment|
+    where(:contact_id => assignment.contact.id)
   }
 
   def volunteer_default_shift_attributes=(attrs)

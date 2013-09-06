@@ -1,7 +1,7 @@
 class Roster < ActiveRecord::Base
   has_and_belongs_to_many :skeds
   belongs_to :contact_type
-  named_scope :enabled, :conditions =>  ['enabled = ?', true]
+  scope :enabled, where(:enabled => true)
   has_many :volunteer_shifts
   has_many :volunteer_default_shifts
   belongs_to :restrict_from_sked, :class_name => "Sked"
