@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
   def _parse_metadata_wo
     h = Hash.new([])
     cur = nil
-    File.readlines(File.join(RAILS_ROOT, "config/rt_metadata.txt")).each do |line|
+    File.readlines(File.join(::Rails.root.to_s, "config/rt_metadata.txt")).each do |line|
       line.strip!
       if line.match(/^== (.+) ==$/)
         cur = $1

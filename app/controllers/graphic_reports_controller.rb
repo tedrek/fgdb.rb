@@ -6,17 +6,17 @@
 # it could also help clean up getting the second date range and the
 # number between them, which are messy right now.
 
-require_dependency RAILS_ROOT + '/app/helpers/conditions.rb'
-require_dependency RAILS_ROOT + '/app/controllers/reports_controller.rb'
-require_dependency RAILS_ROOT + '/app/models/sale.rb'
-require_dependency RAILS_ROOT + '/app/models/donation.rb'
+require_dependency ::Rails.root.to_s + '/app/helpers/conditions.rb'
+require_dependency ::Rails.root.to_s + '/app/controllers/reports_controller.rb'
+require_dependency ::Rails.root.to_s + '/app/models/sale.rb'
+require_dependency ::Rails.root.to_s + '/app/models/donation.rb'
 
 class GraphicReportsController < ApplicationController
   layout :with_sidebar
   helper :conditions
 
   def get_temp_file # TODO: move this all within?
-    file = File.join(RAILS_ROOT, "tmp", "tmp", params[:id].sub("$", "."))
+    file = File.join(::Rails.root.to_s, "tmp", "tmp", params[:id].sub("$", "."))
     if !File.exists?(file)
       find_report
       @report = @klass.new

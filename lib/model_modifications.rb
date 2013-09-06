@@ -2,7 +2,7 @@ class ProcessorDaemon
   def self.add_to(type, tid, source = "fgdb")
     return false if Default['civicrm_server'].nil?
     tid = tid.to_i.to_s
-    arr = [File.join(RAILS_ROOT, "script", "processor-daemon.sh"), "add", source, type, tid]
+    arr = [File.join(::Rails.root.to_s, "script", "processor-daemon.sh"), "add", source, type, tid]
 #    puts arr.inspect
     return system(*arr)
   end

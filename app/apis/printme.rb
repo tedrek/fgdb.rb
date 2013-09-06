@@ -1,4 +1,4 @@
-require_dependency RAILS_ROOT + "/app/helpers/system_helper.rb"
+require_dependency ::Rails.root.to_s + "/app/helpers/system_helper.rb"
 
 class PrintmeAPI < SOAP::SoapsBase
   include SystemHelper

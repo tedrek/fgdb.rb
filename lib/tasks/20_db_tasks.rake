@@ -256,8 +256,7 @@ namespace :db do
 
   namespace :schema do
     task :revert do
-#      system("svn revert #{RAILS_ROOT}/db/schema.rb")
-      system("git checkout #{RAILS_ROOT}/db/schema.rb")
+      system("git checkout #{::Rails.root.to_s}/db/schema.rb")
     end
   end
 

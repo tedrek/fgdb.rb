@@ -46,13 +46,13 @@ end
 #
 #  def setup
 #    router = SOAP::RPC::Router.new("Soaps")
-#Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+#Dir.glob(::Rails.root.to_s + "/app/apis/*.rb").each{|x|
 #  require_dependency x
 #}
 #
 #
 ##      puts "Loading api from " + x
-##    Dir.glob(RAILS_ROOT + "/app/apis/*.rb").each{|x|
+##    Dir.glob(::Rails.root.to_s + "/app/apis/*.rb").each{|x|
 #    SOAP::SoapsBase.subclasses.map{|x| x.constantize}.each{|x|
 #      x.new(router)
 ##      eval("SOAP::#{File.basename(x).capitalize.sub(/.rb$/, "")}API.new(router)")

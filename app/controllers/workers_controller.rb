@@ -89,7 +89,7 @@ class WorkersController < ApplicationController
             pdf.text "<b>STAFF</b>", :size => 28, :align => :center, :leading => -8, :inline_format => true
           end
           pdf.bounding_box [one_w, pdf.bounds.height], :width => two_w, :height => pdf.bounds.height do
-            pic = RAILS_ROOT + "/public/images/workers/#{contact.worker.id}.png"
+            pic = ::Rails.root.to_s + "/public/images/workers/#{contact.worker.id}.png"
             pdf.image pic, :position => :center, :fit => [two_w - 10, pdf.bounds.height - 26] if File.exists?(pic)
             pdf.y -= 2
             pdf.bounding_box [0, 26], :width => two_w - 10, :height => 26 do
@@ -106,7 +106,7 @@ class WorkersController < ApplicationController
         one_w = 3 * pdf.bounds.width / 9.0
         two_w = 6 * pdf.bounds.width / 9.0
         pdf.bounding_box [0, pdf.bounds.height], :width => one_w, :height => pdf.bounds.height do
-          pdf.image RAILS_ROOT + "/public/images/freegeeklogo.png", :fit => [pdf.bounds.width - 10, low_h], :vposition => :center, :position => :center
+          pdf.image ::Rails.root.to_s + "/public/images/freegeeklogo.png", :fit => [pdf.bounds.width - 10, low_h], :vposition => :center, :position => :center
         end
         pdf.bounding_box [one_w, pdf.bounds.height], :width => two_w, :height => pdf.bounds.height do
           pdf.text name, :align => :center, :size => 10
@@ -135,7 +135,7 @@ class WorkersController < ApplicationController
 
   def upload
     @worker = Worker.find_by_id(params[:id])
-    dir = RAILS_ROOT + "/public/images/workers/"
+    dir = ::Rails.root.to_s + "/public/images/workers/"
     filename = dir + "#{@worker.id}.png"
     if !File.writable?(dir)
       flash[:error] = "Cannot write to #{filename}"

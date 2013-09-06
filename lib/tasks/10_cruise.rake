@@ -52,7 +52,7 @@ end
 
 namespace :crash do
 task :prevent do
-  if system("grep -qR \"^require 'test_helper'$\" #{RAILS_ROOT}/test")
+  if system("grep -qR \"^require 'test_helper'$\" #{::Rails.root.to_s}/test")
     puts "GENERATORS are NOT perfect! ***TEST*** and ***TWEAK*** the code they generate BEFORE committing. and please, stop crashing my server. kthxbye."
     puts "To fix the tests, run this and commit: ./script/fix-tests"
     raise
@@ -62,13 +62,13 @@ end
 
 task :autodoc => :environment do
   abcs = setup_environment(RAILS_ENV)[0]
-  base_cmdline = "postgresql_autodoc -d #{abcs[RAILS_ENV]["database"]} -f #{RAILS_ROOT}/doc/autodoc/fgdb "
+  base_cmdline = "postgresql_autodoc -d #{abcs[RAILS_ENV]["database"]} -f #{::Rails.root.to_s}/doc/autodoc/fgdb "
   [
-   "mkdir -p #{RAILS_ROOT}/doc/autodoc",
+   "mkdir -p #{::Rails.root.to_s}/doc/autodoc",
    base_cmdline + "-t html",
    base_cmdline + "-t dot",
-   "dot -Tgif -o #{RAILS_ROOT}/doc/autodoc/fgdb.gif < #{RAILS_ROOT}/doc/autodoc/fgdb.dot",
-   "rm #{RAILS_ROOT}/doc/autodoc/fgdb.dot"
+   "dot -Tgif -o #{::Rails.root.to_s}/doc/autodoc/fgdb.gif < #{::Rails.root.to_s}/doc/autodoc/fgdb.dot",
+   "rm #{::Rails.root.to_s}/doc/autodoc/fgdb.dot"
 #  sed -i 's*<!-- Primary Index -->*<a href="fgdb.gif"><img src="fgdb.gif" /></a><!-- Primary Index -->*' fgdb.html
   ].each do |x|
     if !system(x)

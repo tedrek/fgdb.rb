@@ -14,7 +14,7 @@ class SidebarLinksController < ApplicationController
   end
 
   def recent_crash
-    d = File.join(RAILS_ROOT, "tmp", "crash")
+    d = File.join(::Rails.root.to_s, "tmp", "crash")
     @page = params[:page] || 1
     @page = @page.to_i
     @first = `ls -t #{d} | head -#{30 * @page}`.split("\n")
@@ -23,14 +23,14 @@ class SidebarLinksController < ApplicationController
     @first = @first.map{|x| x.split(".").last}
     @strs = {}
     for file in @first
-      f = File.join(RAILS_ROOT, "tmp", "crash", "crash." + file)
+      f = File.join(::Rails.root.to_s, "tmp", "crash", "crash." + file)
       data = JSON.parse(File.read(f))
       @strs[file] = data
     end
   end
 
   def crash
-    f = File.join(RAILS_ROOT, "tmp", "crash", "crash." + params[:id])
+    f = File.join(::Rails.root.to_s, "tmp", "crash", "crash." + params[:id])
     if !File.exist?(f)
       render :text => "oops, that crash id doesn't exist."
       return

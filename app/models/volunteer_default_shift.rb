@@ -318,7 +318,7 @@ class VolunteerDefaultShift < ActiveRecord::Base
       string = gconditions.to_s
       string = "for Everything" if string.length == 0
       logmsg = "Volunteer schedule rolled out #{string} from #{start_date} to #{end_date} by #{Thread.current['user'].to_s} at #{Time.now.strftime("%D %T")}."
-      f = File.open(File.join(RAILS_ROOT, "log", "volskedj.log"), "a+")
+      f = File.open(File.join(::Rails.root.to_s, "log", "volskedj.log"), "a+")
       f.write(logmsg + "\n")
       f.close
       Notifier.deliver_text_report('volskedj_reports_to', "Volunteer schedule rolled out #{string}", logmsg)

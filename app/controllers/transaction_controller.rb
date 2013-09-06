@@ -362,7 +362,7 @@ class TransactionController < ApplicationController
   include ActionView::Helpers::NumberHelper
   def gen_pdf_header(pdf, show_suggested, receipt_type, font_size = 12)
     w = 540/4.0
-    pdf.table([[{:image => RAILS_ROOT + "/public/images/freegeeklogo.png", :position => :left}, {:image => RAILS_ROOT + "/public/images/hdr-address.png", :position => :left, :scale => 1}, {:border_width => 0, :content => ""}, {:content => ([@txn.contact_information, @txn.hidable_contact_information].flatten).map{|x| x || ""}.join("\n")}]], :column_widths => [w, w, w, w], :cell_style => {:border_width => 0})
+    pdf.table([[{:image => ::Rails.root.to_s + "/public/images/freegeeklogo.png", :position => :left}, {:image => ::Rails.root.to_s + "/public/images/hdr-address.png", :position => :left, :scale => 1}, {:border_width => 0, :content => ""}, {:content => ([@txn.contact_information, @txn.hidable_contact_information].flatten).map{|x| x || ""}.join("\n")}]], :column_widths => [w, w, w, w], :cell_style => {:border_width => 0})
     pdf.y -= 5     # - moves down.. coordinate system is confusing, starts bottom left
 
     pdf.stroke_horizontal_rule

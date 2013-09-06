@@ -35,7 +35,7 @@ class WorkOrdersController < ApplicationController
 
   def show
     if params[:id]
-      json = `#{RAILS_ROOT}/script/fetch_ts_data.pl #{params[:id].to_i}`
+      json = `#{::Rails.root.to_s}/script/fetch_ts_data.pl #{params[:id].to_i}`
       begin
         @data = JSON.parse(json)
       rescue
@@ -226,13 +226,13 @@ class WorkOrdersController < ApplicationController
     requestor = User.current_user ? (User.current_user.email || "") : ""
     @data["Requestor"] = requestor
 
-    tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "tmp")}`.chomp 
+    tempfile = `mktemp -p #{File.join(::Rails.root.to_s, "tmp", "tmp")}`.chomp
     f = File.open(tempfile, 'w+')
     json = @data.to_json
     f.write(json)
     f.close
 
-    t_id = `#{RAILS_ROOT}/script/create_work_order.pl #{tempfile} 2>&1`
+    t_id = `#{::Rails.root.to_s}/script/create_work_order.pl #{tempfile} 2>&1`
     File.delete(tempfile)
     t_id.gsub!(/Use of uninitialized value .+ line \d+./, "")
     if t_id.to_i != 0

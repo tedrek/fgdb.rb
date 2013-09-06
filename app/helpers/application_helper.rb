@@ -32,7 +32,7 @@ module ApplicationHelper
   def save_exception_data(e)
     exception_data = process_exception_data(e)
     unless e.to_s.include?("jzebra.PrintApplet.class") or e.to_s.include?("/images/workers/")
-      tempfile = `mktemp -p #{File.join(RAILS_ROOT, "tmp", "crash")} crash.XXXXXX`.chomp
+      tempfile = `mktemp -p #{File.join(::Rails.root.to_s, "tmp", "crash")} crash.XXXXXX`.chomp
       crash_id = tempfile.match(/^.*\.([^.]+)$/)[1]
       exception_data["tempfile"] = tempfile
       exception_data["crash_id"] = crash_id
