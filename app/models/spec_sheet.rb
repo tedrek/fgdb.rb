@@ -12,6 +12,8 @@ class SpecSheet < ActiveRecord::Base
   validates_associated :builder_task
   validates_associated :spec_sheet_values
 
+  after_initialize :builder_task
+
   after_save :save_bt
 
   has_many :spec_sheet_values, :include => [:spec_sheet_question], :order => "spec_sheet_questions.position ASC"
@@ -98,10 +100,6 @@ class SpecSheet < ActiveRecord::Base
 
   def action_id=(val)
     self.builder_task.action_id = val
-  end
-
-  def after_initialize
-    builder_task
   end
 
   def signed_off_by
