@@ -11,19 +11,20 @@ class SkedsController < ApplicationController
 
   def move_higher
     @sked = Sked.find(params[:id])
-    @roster = @sked.rosters.select{|x| x.id == params[:roster_id].to_i}.first
+    @roster = Roster.find(params[:roster_id])
     raise unless @roster
-    @sked.rosters.move_higher(@roster)
-    @sked.save
+    SkedMember.where(:sked_id => @sked, :roster_id => @roster)
+      .first
+      .promote
+      .save
     redirect_to :back
   end
 
   def move_lower
     @sked = Sked.find(params[:id])
-    @roster = @sked.rosters.select{|x| x.id == params[:roster_id].to_i}.first
+    @roster = Roster.find(params[:roster_id])
     raise unless @roster
-    @sked.rosters.move_lower(@roster)
-    @sked.save
+    SkedMember.where(:sked_id => @sked, :roster_id => @roster).first.demote.save
     redirect_to :back
   end
 
@@ -45,11 +46,17 @@ class SkedsController < ApplicationController
 
   def create
     list = params[:sked].delete(:roster_ids)
+    list ||= []
     @sked = Sked.new(params[:sked])
 
     if @sked.save
-      @sked.roster_ids = list
-      @sked.save
+      i = 0
+      list.each do |m|
+        i += 1
+        member = SkedMember.create!(:sked => @sked,
+                                    :roster => Roster.find(m),
+                                    :position => i)
+      end
       flash[:notice] = 'Sked was successfully created.'
       redirect_to({:action => "show", :id => @sked.id})
     else

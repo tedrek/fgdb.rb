@@ -14,7 +14,7 @@ METADATATABLES = %w[
         community_service_types roles actions types
         customizations return_policies
         holidays income_streams jobs programs till_types
-        wc_categories rosters skeds rosters_skeds gizmo_type_groups
+        wc_categories rosters skeds sked_members gizmo_type_groups
         spec_sheet_questions spec_sheet_question_conditions
         postal_codes disciplinary_action_areas schedules
         weekdays privileges

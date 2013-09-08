@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130702173518) do
+ActiveRecord::Schema.define(:version => 20130907000817) do
 
   create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-combine_four_sql
@@ -815,10 +815,8 @@ END
   add_index "privileges", ["name"], :name => "index_privileges_on_name", :unique => true
 
   create_table "privileges_roles", :id => false, :force => true do |t|
-    t.integer  "privilege_id"
-    t.integer  "role_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer "privilege_id"
+    t.integer "role_id"
   end
 
   create_table "programs", :force => true do |t|
@@ -918,12 +916,6 @@ END
     t.integer  "contact_type_id"
     t.integer  "restrict_to_every_n_days"
     t.integer  "restrict_from_sked_id"
-  end
-
-  create_table "rosters_skeds", :id => false, :force => true do |t|
-    t.integer "sked_id"
-    t.integer "roster_id"
-    t.integer "position"
   end
 
   create_table "rr_items", :force => true do |t|
@@ -1061,6 +1053,12 @@ END
     t.integer  "repeats_every_months",              :default => 1,     :null => false
     t.integer  "repeats_on_months",                 :default => 0,     :null => false
     t.string   "week",                 :limit => 1
+  end
+
+  create_table "sked_members", :force => true do |t|
+    t.integer "sked_id",                  :null => false
+    t.integer "roster_id",                :null => false
+    t.integer "position",  :default => 1, :null => false
   end
 
   create_table "skedjulnator_accesses", :force => true do |t|
@@ -1612,9 +1610,6 @@ END
 
   add_foreign_key "rosters", ["contact_type_id"], "contact_types", ["id"], :on_delete => :set_null, :name => "rosters_contact_type_id_fkey"
   add_foreign_key "rosters", ["restrict_from_sked_id"], "skeds", ["id"], :on_delete => :restrict, :name => "rosters_restrict_from_sked_id_fkey"
-
-  add_foreign_key "rosters_skeds", ["roster_id"], "rosters", ["id"], :on_delete => :cascade, :name => "rosters_skeds_roster_id_fkey"
-  add_foreign_key "rosters_skeds", ["sked_id"], "skeds", ["id"], :on_delete => :cascade, :name => "rosters_skeds_sked_id_fkey"
 
   add_foreign_key "rr_items", ["rr_set_id"], "rr_sets", ["id"], :on_delete => :cascade, :name => "rr_items_rr_sets"
 

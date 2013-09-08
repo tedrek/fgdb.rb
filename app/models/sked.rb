@@ -1,5 +1,10 @@
 class Sked < ActiveRecord::Base
-  has_and_belongs_to_many :rosters, :list => true, :order => 'position'
+  has_many :sked_members,
+           :dependent => :destroy,
+           :order => :position
+  has_many :rosters,
+           :through => :sked_members,
+           :order => 'sked_members.position'
 
   def to_s
     if self.category_type.to_s.length == 0

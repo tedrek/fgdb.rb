@@ -21,12 +21,12 @@
 <%= roster.name %>
 </th>
 <td>
-<% unless @sked.rosters.first?(roster) %>
+<% unless @sked.rosters.first == roster -%>
 <%= link_to "Move up", {:action => "move_higher", :id => @sked.id, :roster_id => roster.id} %>
 <% end %>
 </td>
 <td>
-<% unless @sked.rosters.last?(roster) %>
+<% unless @sked.rosters.last == roster -%>
 <%= link_to "Move down", {:action => "move_lower", :id => @sked.id, :roster_id => roster.id} %>
 <% end %>
 </td>

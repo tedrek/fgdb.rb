@@ -1,5 +1,6 @@
 class Roster < ActiveRecord::Base
-  has_and_belongs_to_many :skeds
+  has_many :sked_members
+  has_many :skeds, :through => :sked_members
   belongs_to :contact_type
   scope :enabled, where(:enabled => true)
   has_many :volunteer_shifts
