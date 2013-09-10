@@ -4,7 +4,7 @@
 
 <% newaction = ({:index => :create, :new => :create, :edit => :update}[params[:action].to_sym] || params[:action]).to_s %>
 <div>
-  <% form_for(:points_trade,
+  <%= form_for(:points_trade,
               :html => {:id => "points-trade"},
               :remote => true) do |f| -%>
   <div style="float:left;padding:5px;">

@@ -4,7 +4,7 @@
   <%= @error %>
 </span>
 <% end %>
-<% form_tag() do %>
+<%= form_tag() do %>
   <%= label :search, :deleted_after %>
   <%= calendar_box("search", "deleted_after") %>
   <%= label :search, :created_before %>

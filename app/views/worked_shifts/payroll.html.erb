@@ -4,7 +4,7 @@
 
 <% @worked_shift = Struct.new(:date_performed, :end_date).new(Date.today, nil) %>
 
-<% form_for :worked_shift, nil, :url => { :action => "payroll_report" } do |f| %>
+<%= form_for :worked_shift, nil, :url => { :action => "payroll_report" } do |f| %>
 <% label :worked_shifts, :worker_id %>
 <%# label :worked_shifts, :date_performed %>
 Date:<br />

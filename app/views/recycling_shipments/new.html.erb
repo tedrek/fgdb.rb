@@ -1,6 +1,6 @@
 <h1>New recycling shipment</h1>
 
-<% form_for(@recycling_shipment, :url => {:action => "create"}) do |f| %>
+<%= form_for(@recycling_shipment, :url => {:action => "create"}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

@@ -1,6 +1,6 @@
 <h1>Editing job</h1>
 
-<% form_tag :action => 'update', :id => @job do %>
+<%= form_tag :action => 'update', :id => @job do %>
   <%= render :partial => 'form' %>
   <div class="follow_scroll right_side">
     <%= submit_tag 'Edit' %> <br />

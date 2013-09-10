@@ -1,7 +1,7 @@
   <b>Cashier signed off by:</b>
   <%= builder_task.signed_off_by %>
 
-        <% form_for "sign_off", :html => {:class => "cashierable_form"}, :url => {:action => "sign_off", :id => builder_task.id} do |f| %>
+        <%= form_for "sign_off", :html => {:class => "cashierable_form"}, :url => {:action => "sign_off", :id => builder_task.id} do |f| %>
           To sign off, enter <%= cashiers_field(true, "sign_off") %>
           <%= submit_tag "Sign off" %>
         <% end %>

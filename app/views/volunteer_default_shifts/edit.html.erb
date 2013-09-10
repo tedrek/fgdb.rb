@@ -1,6 +1,6 @@
 <h1>Editing volunteer_default_shift</h1>
 
-<% form_for(@volunteer_default_shift, :url => {:action => "update", :id => @volunteer_default_shift.id}) do |f| %>
+<%= form_for(@volunteer_default_shift, :url => {:action => "update", :id => @volunteer_default_shift.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

@@ -1,7 +1,7 @@
 <!-- TODO: this breaks the filter_criteria conditions_html. I don't think it can be used multiple times on a page. needs some refactoring probably. -->
 <div class='generate'>
 <h3>Generate:</h3>
-<% form_tag :action => 'generate', :controller => 'volunteer_default_shifts' do %>
+<%= form_tag :action => 'generate', :controller => 'volunteer_default_shifts' do %>
   <p><label for="start_start_date">Start date:</label> <%= calendar_box skedj.opts[:generate_param_key], :start_date, defined?(@start_date) ? {:value => @start_date} : {}  %></p>
   <p><label for="end_end_date">End date:</label> <%= calendar_box skedj.opts[:generate_param_key], :end_date, defined?(@end_date) ? {:value => @end_date} : {} %></p>
   <% params[:gconditions] = params[:conditions] ? params[:conditions].dup : {} %>

@@ -1,6 +1,6 @@
 <h1>Editing pricing type</h1>
 
-<% form_for(@pricing_type, :url => {:action => "update", :id => @pricing_type.id}) do |f| %>
+<%= form_for(@pricing_type, :url => {:action => "update", :id => @pricing_type.id}) do |f| %>
   <%= f.error_messages %>
 
     List of Pricing Components Used:<br />

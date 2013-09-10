@@ -7,13 +7,13 @@
 <%= flash[:error] %>
 </span>
 <% end %>
-<% form_for @import, :html => {:enctype => "multipart/form-data"}, :url => {:action => "import_table", :id => @pricing_component.id} do |f| %>
+<%= form_for @import, :html => {:enctype => "multipart/form-data"}, :url => {:action => "import_table", :id => @pricing_component.id} do |f| %>
 <%= f.label :csv, "CSV file (with correct column headers, download example below)" %>
 <%= f.file_field :csv %><br />
 <%= f.submit "Import" %>
 <% end %>
 
-<% form_for(@pricing_component, :url => {:action => "update", :id => @pricing_component.id}) do |f| %>
+<%= form_for(@pricing_component, :url => {:action => "update", :id => @pricing_component.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

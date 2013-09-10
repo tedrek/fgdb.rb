@@ -14,7 +14,7 @@
 </div>
 <%= render :partial => 'workorder', :locals => {:data => @data, :system => nil} %>
 <% else %>
-<% form_for(@work_order, :url => {:action => "create", :mode => params[:mode]}) do |f| %>
+<%= form_for(@work_order, :url => {:action => "create", :mode => params[:mode]}) do |f| %>
   <%# f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

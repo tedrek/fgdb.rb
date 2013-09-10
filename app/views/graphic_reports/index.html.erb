@@ -1,6 +1,6 @@
 <% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
 
-<% form_for :conditions, :url => {:action => "index2"} do |f| %>
+<%= form_for :conditions, :url => {:action => "index2"} do |f| %>
 <%= f.label "report_type", "Report Type" %>
 <% grouped_list = {} %>
 <% @report_types.each{|x| (grouped_list[x.category] ||= []) << x.name} %>

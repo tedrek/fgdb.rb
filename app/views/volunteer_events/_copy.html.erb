@@ -3,7 +3,7 @@
 <% if flash[:error] %>
 <span class="error"><%= flash[:error] %></span>
 <% end %>
-<% form_tag(:action => "copy", :id => @volunteer_event.id, :method => "post") do %>
+<%= form_tag(:action => "copy", :id => @volunteer_event.id, :method => "post") do %>
 <div>
 <% if @volunteer_event.class == VolunteerDefaultEvent %>
     <%= label "copy", :weekday_id %><br />

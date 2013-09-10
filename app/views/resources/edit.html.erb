@@ -1,6 +1,6 @@
 <h1>Editing resource</h1>
 
-<% form_for(@resource, :url => {:action => "update", :id => @resource.id}) do |f| %>
+<%= form_for(@resource, :url => {:action => "update", :id => @resource.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

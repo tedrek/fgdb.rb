@@ -1,6 +1,6 @@
 <h1>List of volunteer email addresses <%= @conditions ? @conditions.to_s : "" %></h1>
 
-<% form_tag do %>
+<%= form_tag do %>
 <%= check_box_tag 'include_comma', "1", @include_comma %><%= label_tag 'include_comma' %><br />
 <%= check_box_tag 'show_email', "1", @show_email %><%= label_tag 'show_email' %><br />
 <%= check_box_tag 'hide_full_name', "1", @hide_full_name %><%= label_tag 'hide_full_name' %><br />

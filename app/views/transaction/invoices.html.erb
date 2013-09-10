@@ -8,7 +8,7 @@
     <% if @invoices.length == 0 %>
       No unresolved invoices found.<br />
     <% else %>
-      <% form_for "", nil, :html => {:method => "post"} do |f| %>
+      <%= form_for "", nil, :html => {:method => "post"} do |f| %>
         <%= hidden_field('contact', 'id', :value => @contact.id) %>
         <div class="form-element">
           <%= javascript_tag "has_a_price = 1;" %>
@@ -34,7 +34,7 @@
       <% end %>
     <% end %>
   <% else %>
-    <% form_for "", nil, :html => {:method => "get"} do |f| %>
+    <%= form_for "", nil, :html => {:method => "get"} do |f| %>
       <%= contact_field('@nil', 'contact_id') %>
       <%= submit_tag "Load unresolved #{ @transaction_type } invoices" %>
     <% end %>

@@ -1,6 +1,6 @@
 <h1>Editing roster</h1>
 
-<% form_for(@roster, :url => {:action => "update", :id => @roster.id}) do |f| %>
+<%= form_for(@roster, :url => {:action => "update", :id => @roster.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

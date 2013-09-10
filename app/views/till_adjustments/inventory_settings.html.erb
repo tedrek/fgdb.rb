@@ -1,4 +1,4 @@
-<% form_tag( { :action => "save_inventory_settings" } ) do %>
+<%= form_tag( { :action => "save_inventory_settings" } ) do %>
   <%= label "settings", "date", "Inventory lock date (all dates prior are locked, leave blank for all unlocked)" %>
   <%= calendar_box "settings", "date" %>
   <%= submit_tag "save" %>

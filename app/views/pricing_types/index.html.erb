@@ -17,7 +17,7 @@
 <% if flash[:error] %>
 <span class="error"><%= flash[:error] %></span>
 <% end %>
-<% form_tag('/pricing_types/import_table',
+<%= form_tag('/pricing_types/import_table',
      :html => {:enctype => "multipart/form-data"}) do -%>
 <%= label_tag 'open_struct[name]', "Name (must match printme pull title, any existing values will be overwritten)" %>
 <%= text_field_tag 'open_struct[name]' %>

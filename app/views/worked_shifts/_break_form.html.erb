@@ -1,5 +1,5 @@
 <div class="noprint">
-<% form_for :worked_shift, nil, :url => { :action => "breaks_report" } do |f| %>
+<%= form_for :worked_shift, nil, :url => { :action => "breaks_report" } do |f| %>
 <%= conditions_html('conditions', ['date_performed']) %>
 <div class="form-element" style="clear: left">
 <%= f.submit "Run Report" %>

@@ -1,7 +1,7 @@
 <h1>Editing volunteer_event</h1>
 <%= render :partial => "copy" %>
 
-<% form_for(@volunteer_event, :url => {:action => "update", :id => @volunteer_event.id}) do |f| %>
+<%= form_for(@volunteer_event, :url => {:action => "update", :id => @volunteer_event.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

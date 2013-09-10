@@ -5,7 +5,7 @@
 <%= flash[:error] %>
 </span>
 
-<% form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
+<%= form_for :worked_shift, nil, :url => { :action => "index" } do |f| %>
 <% label :worked_shifts, :contact_id %>
 <%= select("worked_shift", "contact_id", Worker.real_people.select{|x| !!x.contact_id}.sort_by(&:name).collect {|p| [ p.name, p.contact_id ] }, :onchange => "$('worked_shift_L').value = $('worked_shift_contact_id').value;") %>
 <%# label :worked_shifts, :date_performed %>
@@ -60,7 +60,7 @@ Use "add break" below to insert a paid break, which should typically be 15 minut
 <%= javascript_tag "paid_break_job_id = #{break_job.id.to_json}" if !break_job.nil? %>
 <%= javascript_tag "shift_do_ajax = 0;"%>
 
-<% form_for :shifts, nil, :url => {:action => "save"} do |f| %>
+<%= form_for :shifts, nil, :url => {:action => "save"} do |f| %>
 <%= hidden_field "worked_shift", "date_performed", :value => @date %>
 <%= hidden_field "worked_shift", "contact_id", :value => @worker.contact_id %>
 <% javascript_tag "original_timeout_seconds = 0;" %>

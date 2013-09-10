@@ -1,6 +1,6 @@
-<% form_tag_hash = {:action => @property_type + "_" + action} %>
-<% form_tag_hash[:id] = @property.id if action=="update" %>
-<% form_tag(form_tag_hash) do |f| %>
+<%= form_tag_hash = {:action => @property_type + "_" + action} %>
+<%= form_tag_hash[:id] = @property.id if action=="update" %>
+<%= form_tag(form_tag_hash) do |f| %>
   <p>
     <b>Name</b><br />
     <%= text_field "property", :name %>

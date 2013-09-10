@@ -18,7 +18,7 @@ end %>
 <%= render :partial => "work_shifts/last_access" %>
 
 
-<% form_tag do %>
+<%= form_tag do %>
 <% if is_ws %>
   <%= calendar_box(nil, nil, :name => 'start_date', :id => 'start_date', :value => @start_date) %> - <%= calendar_box(nil, nil, :name => 'end_date', :id => 'end_date', :value => @disp_end_date) %>
 <% else %>

@@ -1,4 +1,4 @@
-<% form_for :conditions, :url => {:action => "view"} do |f| %>
+<%= form_for :conditions, :url => {:action => "view"} do |f| %>
 <%= f.error_messages :header_message => "Invalid report conditions" %>
 <%= f.label "report_type", "Report Type" %>
 <%= f.text_field "report_type", :value => params[:conditions][:report_type], :readonly => "readonly" %>

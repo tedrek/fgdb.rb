@@ -11,7 +11,7 @@
 <% end -%>
 
 <div id="main-section">
-  <% form_tag :action => 'search' do -%>
+  <%= form_tag :action => 'search' do -%>
   <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
 
   <% filters = []

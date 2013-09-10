@@ -1,5 +1,5 @@
 <h1>Proc Lookup<% if @proc_name %>: <%= @proc_name %><% end %></h1>
-<% form_tag :action => 'lookup_proc', :proc => nil do %>
+<%= form_tag :action => 'lookup_proc', :proc => nil do %>
 <%= label_tag 'proc', 'Processor query: ' %>
 <%= text_field_tag 'proc', @proc_name %><br />
 <%= submit_tag 'Lookup' %>

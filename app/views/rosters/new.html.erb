@@ -1,6 +1,6 @@
 <h1>New roster</h1>
 
-<% form_for(@roster, :url => {:action => "create"}) do |f| %>
+<%= form_for(@roster, :url => {:action => "create"}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

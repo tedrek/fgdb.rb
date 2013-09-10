@@ -1,6 +1,6 @@
 <h1>Editing note</h1>
 
-<% form_for(@note, :url => {:action => "update", :id => @note.id}) do |f| %>
+<%= form_for(@note, :url => {:action => "update", :id => @note.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

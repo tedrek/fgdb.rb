@@ -3,7 +3,7 @@
   <%= will_paginate @results, :params => {:conditions => params[:conditions]} %>
 <% end -%>
 
-  <% form_tag :action => 'search' do -%>
+  <%= form_tag :action => 'search' do -%>
   <% filters = ['contact', "sked", "roster", "volunteer_task_type", "needs_checkin", "assigned", 'attendance_type'] -%>
   <%= conditions_html("conditions", filters) %>
   <%= submit_tag "Search", :class => "submit" %>

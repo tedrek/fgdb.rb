@@ -13,13 +13,13 @@
 
   <div id="form-body">
     <% if action_name == "new" %>
-      <% form_opts = {:action => "create"} %>
+      <%= form_opts = {:action => "create"} %>
       <% string = "Create" %>
     <% elsif action_name == "edit" %>
-      <% form_opts = {:action => "update", :id => @report.id} %>
+      <%= form_opts = {:action => "update", :id => @report.id} %>
       <% string = "Update" %>
     <% end %>
-    <% form_tag(form_opts, {:multipart => true}) do %>
+    <%= form_tag(form_opts, {:multipart => true}) do %>
       <%= error_messages_for :report %>
       <%= error_messages_for :builder_task, :object => @report.builder_task %>
       <%= error_messages_for :spec_sheet_value, :object => @report.spec_sheet_values %>

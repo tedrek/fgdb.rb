@@ -8,14 +8,14 @@
 
 <h2>Show system history</h2>
 
-<% form_for "", nil, :url => {:action => "system" }, :html => {:method => "get"} do |f| %>
+<%= form_for "", nil, :url => {:action => "system" }, :html => {:method => "get"} do |f| %>
 <%= (f.text_field "id").sub(/\[id\]/, "id") %>
 <%= submit_tag 'Show' %>
 <% end %>
 
 <h2>Show system's latest printme</h2>
 
-<% form_for "", nil, :url => {:action => "latest" }, :html => {:method => "get"} do |f| %>
+<%= form_for "", nil, :url => {:action => "latest" }, :html => {:method => "get"} do |f| %>
 <%= (f.text_field "id").sub(/\[id\]/, "id") %>
 <%= submit_tag 'Show' %>
 <% end %>

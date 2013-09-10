@@ -1,6 +1,6 @@
 <h1>New pricing type</h1>
 
-<% form_for(@pricing_type, :url => {:action => "create"}) do |f| %>
+<%= form_for(@pricing_type, :url => {:action => "create"}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

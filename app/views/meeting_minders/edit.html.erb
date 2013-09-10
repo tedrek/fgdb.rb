@@ -6,7 +6,7 @@
 <%= link_to 'Destroy This Minder', {:action => "destroy", :id => @meeting_minder.id}, :confirm => 'Are you sure?' %>
 
 
-<% form_for(@meeting_minder, :url => {:action => "update", :id => @meeting_minder.id}) do |f| %>
+<%= form_for(@meeting_minder, :url => {:action => "update", :id => @meeting_minder.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

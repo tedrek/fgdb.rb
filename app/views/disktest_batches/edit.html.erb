@@ -1,6 +1,6 @@
 <h1>Editing disktest batch</h1>
 
-<% form_for(@disktest_batch, :url => {:action => "update", :id => @disktest_batch.id}) do |f| %>
+<%= form_for(@disktest_batch, :url => {:action => "update", :id => @disktest_batch.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

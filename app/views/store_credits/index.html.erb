@@ -6,7 +6,7 @@
 
 <h2>Show store credit's history</h2>
 
-<% form_for "", nil, :url => {:action => "history" }, :html => {:method => "get"} do |f| %>
+<%= form_for "", nil, :url => {:action => "history" }, :html => {:method => "get"} do |f| %>
 <%= (f.text_field "id").sub(/\[id\]/, "id") %>
 <%= submit_tag 'Show' %>
 <% end %>
@@ -19,7 +19,7 @@
 <% end -%>
 
 <div id="main-section">
-  <% form_tag :action => 'search' do -%>
+  <%= form_tag :action => 'search' do -%>
   <%= error_messages_for :conditions, :header_message  => "Invalid search conditions" %>
   <% filters = [] -%>
   <%# filters << 'contact' %>

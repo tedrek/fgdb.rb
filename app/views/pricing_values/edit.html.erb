@@ -1,6 +1,6 @@
 <h1>Editing pricing value for <%= @pricing_component.name %></h1>
 
-<% form_for(@pricing_value, :url => {:action => "update", :id => @pricing_value.id}) do |f| %>
+<%= form_for(@pricing_value, :url => {:action => "update", :id => @pricing_value.id}) do |f| %>
   <%= f.error_messages %>
 
   <%= render :partial => "form", :locals => {:f => f} %>

@@ -7,7 +7,7 @@
 
 <%= error_messages_for :volunteer_event %>
 
-<% form_for :klass, :url => {:action => "new_class"} do |f| %>
+<%= form_for :klass, :url => {:action => "new_class"} do |f| %>
   <p>
     <%= f.label :description %><br />
     <%= f.text_field :description %>
