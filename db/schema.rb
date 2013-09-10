@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130907000817) do
+ActiveRecord::Schema.define(:version => 20130910211017) do
 
   create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-combine_four_sql
@@ -486,11 +486,8 @@ END
   add_index "gizmo_contexts", ["name"], :name => "gizmo_contexts_name_uk", :unique => true
 
   create_table "gizmo_contexts_gizmo_types", :id => false, :force => true do |t|
-    t.integer  "gizmo_context_id",                :null => false
-    t.integer  "gizmo_type_id",                   :null => false
-    t.integer  "lock_version",     :default => 0, :null => false
-    t.datetime "updated_at"
-    t.datetime "created_at"
+    t.integer "gizmo_context_id", :null => false
+    t.integer "gizmo_type_id",    :null => false
   end
 
   create_table "gizmo_events", :force => true do |t|
