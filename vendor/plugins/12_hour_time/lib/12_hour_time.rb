@@ -25,12 +25,13 @@ end
 
 module ActionView::Helpers
   class DateTimeSelector
-    POSITION = {
-      :year => 1, :month => 2, :day => 3, :hour => 4, :minute => 5,
-      :second => 6, :ampm => 7
-    }
-    # XXX would like to do this, but it's frozen
-    # POSITION[:ampm] = 7
+    # Add the :ampm key to POSITION, as it is frozen we need to #dup first
+    # then remove the constant to avoid a warning.  ReFreeze afterwards to
+    # be explicit.
+    p = POSITION.dup
+    remove_const :POSITION
+    p[:ampm] = 7
+    POSITION = p.freeze
 
     # We give them negative values so can differentiate between normal
     # date/time values. The way the multi param stuff works, from what I
@@ -39,7 +40,7 @@ module ActionView::Helpers
     # present, to be last and have a negative value.
     AM = -1
     PM = -2
- 
+
     def select_hour_with_ampm
       unless @options[:twelve_hour]
         return select_hour_without_ampm
