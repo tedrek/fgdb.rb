@@ -53,8 +53,8 @@ module RawReceiptHelper
     if opts[:redirect]
       page << "redirect_after_print = #{opts[:redirect].to_json}"
     end
-    if RAILS_ENV == "development"
-      page << "alert('Would have printed to text receipt mode (but RAILS_ENV is development):' + #{text.to_json});"
+    if ::Rails.env == "development"
+      page << "alert('Would have printed to text receipt mode (but ::Rails.env is development):' + #{text.to_json});"
       page << "after_print_hook();"
     else
       page << "print_text(#{text.to_json});"

@@ -56,7 +56,7 @@ module ApplicationHelper
     :response => rescue_status,
     :params => new_params,
     :clean_message => e.clean_message,
-    :rails_env => RAILS_ENV,
+    :rails_env => ::Rails.env,
     }
     if defined?(params)
       h[:controller] = params[:controller]

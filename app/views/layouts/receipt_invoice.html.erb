@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <head>
   <title class="banner"><%= @context %></title>
-  <% if RAILS_ENV == "development" %>
+  <% if ::Rails.env == "development" %>
     <%= stylesheet_link_tag 'dev', :media => "all" %>
   <% end %>
   <%= stylesheet_link_tag 'application', :media => 'all' %>

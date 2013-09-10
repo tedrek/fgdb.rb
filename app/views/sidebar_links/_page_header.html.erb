@@ -8,7 +8,7 @@
       <%= (controller.action_name).titleize %> <% end %>
     </title>
     <% css_list = ['scaffold', 'lightwindow', 'application', 'common'] %>
-    <% css_list << 'dev' if RAILS_ENV == "development" %>
+    <% css_list << 'dev' if ::Rails.env == "development" %>
     <%= stylesheet_link_tag *(css_list + [{:media => 'all'}]) %>
     <%= stylesheet_link_tag 'no_print', :media => 'print' %>
     <%= stylesheet_link_tag 'ui-lightness/jquery-ui.css' %>
