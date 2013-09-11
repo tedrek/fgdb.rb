@@ -831,3 +831,44 @@ function toggle_discount(evt) {
   }
   return true;
 }
+
+
+(function($, undefined) {
+    var $document = $(document);
+    var fgdb;
+    $.fgdb = fgdb = {
+        // contact_type checkboxes which should also check the volunteer type
+        cascadedContactTypes: '#build, #adopter, #offsite',
+
+        // Check the volunteer checkbox when above boxes are checked
+        cascadeContactTypeSelections: function (e) {
+            if ($(e.target).is(':checked')) {
+                $('#volunteer').prop('checked', true);
+            }
+        },
+
+        // Toggle visibility of elements by checkbox
+        visibilityBy:  function (e) {
+            var ele = $j(e.target);
+            if (ele.attr('id') == undefined) {
+                return
+            }
+            var checked = ele.is(':checked')
+            $j('[data-visibility-by="#' + ele.attr('id') + '"]').each(
+                function (i, v) {
+                    if (ele.is(':checked')) {
+                        $j(v).fadeIn(250);
+                    }
+                    else {
+                        $j(v).fadeOut(250);
+                    }
+                });
+        },
+    };
+
+    $document.on('change.fgdb', 'input[type="checkbox"]', fgdb.visibilityBy)
+    $document.on('change.fgdb',
+                 fgdb.cascadedContactTypes,
+                 fgdb.cascadeContactTypeSelections)
+
+})( jQuery );

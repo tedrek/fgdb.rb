@@ -75,10 +75,7 @@ function get_chosen_address() {
             <label for="address">Enter an e-mail address: </label><%= text_field_tag 'address', nil, {:onchange => "check_contact_subscribed(get_chosen_address());"} %>
             <% if @txn.contact_id %>
               <label for="save">Save to contact record?</label> <%= check_box_tag "save" %>
-              <%= observe_field("save",
-                                :function => "{var x = $('contact_method_type_id'); if ($('save').checked) { x.show() } else { x.hide() }}"
-                                ) %>
-              <%= select_tag "contact_method_type_id", options_from_collection_for_select(ContactMethodType.find(:all).select{|x| x.name.match(/email/)}.sort_by(&:name), "id", "description"), :style => 'display: none' %>
+              <%= select_tag "contact_method_type_id", options_from_collection_for_select(ContactMethodType.find(:all).select{|x| x.name.match(/email/)}.sort_by(&:name), "id", "description"), :style => 'display: none', :data => {'visibility-by' => '#save' %>
             <% end %>
             </div>
             <br />

@@ -21,10 +21,6 @@
              />&nbsp;<label class="checkbox" for="<%= h contact_type.name %>"><%= h contact_type.description %></label>
     </div>
   <% end %>
-  <% check_vol = "if($('%s').checked) {$('volunteer').checked = true}" %>
-  <%= observe_field 'build', :function => check_vol % 'build' %>
-  <%= observe_field 'adopter', :function => check_vol % 'adopter' %>
-  <%= observe_field 'offsite', :function => check_vol % 'offsite' %>
 
   <% unless @contact.id.nil? %>
   <fieldset>
