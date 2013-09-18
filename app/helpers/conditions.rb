@@ -148,7 +148,7 @@ class Conditions < ConditionsBase
       return
     end
     if CONDS.select{|x| is_this_condition_enabled(x)}.length == 0
-      @errors.add_to_base('Conditions have not been chosen')
+      @errors.add(:base, 'Conditions have not been chosen')
       return
     end
     @errors.add("phone_number", "is not ten digits long") if validate_emptyness('phone_number') && @phone_number.to_s.gsub(/[^[:digit:]]/, "").length != 10
@@ -554,7 +554,7 @@ class Conditions < ConditionsBase
     klass = VolunteerShift if klass == Assignment
     klass = VolunteerDefaultShift if klass == DefaultAssignment
     tbl = klass.table_name
-    return ["#{tbl}.roster_id IN (SELECT roster_id FROM rosters_skeds WHERE sked_id = ?)", @sked_id.to_i]
+    return ["#{tbl}.roster_id IN (SELECT roster_id FROM sked_members WHERE sked_id = ?)", @sked_id.to_i]
   end
 
   def volunteer_hours_conditions(klass)
