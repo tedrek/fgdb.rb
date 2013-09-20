@@ -76,6 +76,21 @@ For production database replace 'development' with 'production'
 You can now run ./scripts/server and should have a working setup.  For
 production, passenger is the recommended server.
 
+=== Running the integration tests
+
+The integrations tests make use of PhantomJS (http://phantomjs.org/).  You will
+need to install it somewhere in your path in order to successfully run the
+integration tests.  The unit and functional tests will run without it.
+
+The following is one way of installing phantomjs to /usr/local/bin
+
+  wget -O /tmp/PJS.tar.bz2 \
+    https://phantomjs.googlecode.com/files/phantomjs-1.9.2-linux-x86_64.tar.bz2
+  cd /usr/local/bin
+  sudo tar xzf /tmp/PJS.tar.bz2 phantomjs-1.9.2-linux-x86_64/bin/phantomjs \
+    --strip-components 2
+  rm /tmp/PJS.tar.bz2
+
 == Install on Debian Squeeze
 
 NOTE: Information specific to the installation at FG PDX is in doc/README.maintenance

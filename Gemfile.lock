@@ -41,6 +41,13 @@ GEM
     barby (0.5.1)
     bluecloth (2.2.0)
     builder (2.1.2)
+    capybara (2.1.0)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      xpath (~> 2.0)
+    cliver (0.2.2)
     color (1.4.2)
     daemons (1.1.9)
     dynamic_form (1.1.4)
@@ -59,6 +66,7 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.23)
     mini_portile (0.5.1)
+    multi_json (1.8.0)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
     pdf-reader (1.3.3)
@@ -71,6 +79,11 @@ GEM
       color (>= 1.4.0)
       transaction-simple (~> 1.3)
     pg (0.15.1)
+    poltergeist (1.4.1)
+      capybara (~> 2.1.0)
+      cliver (~> 0.2.1)
+      multi_json (~> 1.0)
+      websocket-driver (>= 0.2.0)
     polyglot (0.3.3)
     prawn (0.12.0)
       pdf-reader (>= 0.9.0)
@@ -111,7 +124,10 @@ GEM
     ttfunk (1.0.3)
     tzinfo (0.3.37)
     validates_existence (0.8.0)
+    websocket-driver (0.3.0)
     will_paginate (3.0.4)
+    xpath (2.0.0)
+      nokogiri (~> 1.3)
 
 PLATFORMS
   ruby
@@ -119,12 +135,14 @@ PLATFORMS
 DEPENDENCIES
   barby
   bluecloth
+  capybara
   dynamic_form
   gnuplot
   json
   nokogiri
   pdf-writer
   pg
+  poltergeist
   prawn
   rails (~> 3.0.0)
   rdoc
