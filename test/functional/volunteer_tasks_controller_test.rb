@@ -47,6 +47,12 @@ class VolunteerTasksControllerTest < ActionController::TestCase
     }
   end
 
+  # Check a new form can be shown
+  def test_new_form
+    get :new
+    assert_response :success
+  end
+
   def test_update_task_types
     get :update_task_types, {:day => '2012-12-25'}
   end

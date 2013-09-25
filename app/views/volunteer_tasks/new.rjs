@@ -9,7 +9,7 @@
 if @successful
   page.insert_html :top, form_tbody_id(@options), :partial => 'new_edit'
   page.show element_row_id(@options)
-  page << "Form.focusFirstElement('#{element_form_id(@options)}');"
+#  page << "$('volunteer_task_form').focusFirstElement();"
   page.visual_effect :highlight, element_cell_id(@options)
   page.replace_html element_messages_id(@options), :partial => 'form_messages'
 else

@@ -88,7 +88,7 @@ class VolunteerTasksController < ApplicationController
     @volunteer_task.contact_id = get_contact_id if params[:limit_by_contact_id]
     @successful = true
 
-    return render(:action => 'new.rjs')
+    render :action => 'new.rjs', :layout => false
   end
 
   def create

@@ -847,6 +847,23 @@ function toggle_discount(evt) {
             }
         },
 
+        // Confirm long duration volunteer tasks are entered correctly
+        checkVolunteerTaskDuration: function (e) {
+            var duration = parseFloat($('#volunteer_task_duration').val());
+            if (duration > 8) {
+                if(!confirm('You are logging more than 8 hours for this '
+                            + 'volunteer, are you sure you would like to '
+                            + 'log this many hours?')) {
+                    $('#volunteer_task_duration').hide().show('highlight',
+                                                       {color: '#fcc'},
+                                                       'slow');
+                    $('#volunteer_task_duration').focus();
+                    return false;
+                }
+            }
+            return true;
+        },
+
         // Toggle visibility of elements by checkbox
         visibilityBy:  function (e) {
             var ele = $j(e.target);
@@ -866,9 +883,11 @@ function toggle_discount(evt) {
         },
     };
 
-    $document.on('change.fgdb', 'input[type="checkbox"]', fgdb.visibilityBy)
+    $document.on('change.fgdb', 'input[type="checkbox"]', fgdb.visibilityBy);
     $document.on('change.fgdb',
                  fgdb.cascadedContactTypes,
-                 fgdb.cascadeContactTypeSelections)
-
+                 fgdb.cascadeContactTypeSelections);
+    $document.on('ajax:before.fgdb',
+                 '#volunteer_task_form',
+                 fgdb.checkVolunteerTaskDuration)
 })( jQuery );
