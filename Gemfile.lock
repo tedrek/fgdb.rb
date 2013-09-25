@@ -54,6 +54,11 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     eventmachine (1.0.3)
+    factory_girl (4.2.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.2.1)
+      factory_girl (~> 4.2.0)
+      railties (>= 3.0.0)
     gnuplot (2.6.2)
     hashery (2.1.0)
     httpclient (2.3.3)
@@ -137,6 +142,7 @@ DEPENDENCIES
   bluecloth
   capybara
   dynamic_form
+  factory_girl_rails
   gnuplot
   json
   nokogiri

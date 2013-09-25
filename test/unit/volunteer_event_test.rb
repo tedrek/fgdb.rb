@@ -1,8 +1,9 @@
 require 'test_helper'
 
 class VolunteerEventTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+  def test_factory
+    event = FactoryGirl.build_stubbed(:volunteer_event)
+    assert_not_nil event
+    assert event.valid?
   end
 end
