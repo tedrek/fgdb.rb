@@ -101,7 +101,7 @@ class VolunteerTasksController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
 
-    return render(:action => 'create.rjs')
+    render :action => 'create.rjs', :layout => false
   end
 
   def edit
@@ -112,7 +112,7 @@ class VolunteerTasksController < ApplicationController
       flash[:error], @successful  = "<pre>#{$!.backtrace.to_yaml}</pre>", false
     end
 
-    return render(:action => 'edit.rjs')
+    render :action => 'edit.rjs', :layout => false
   end
 
   def update

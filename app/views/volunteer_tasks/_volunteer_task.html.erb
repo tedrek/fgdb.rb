@@ -1,10 +1,11 @@
-<% # The following is used when the browser doesn't have javascript enabled %>
-<% classAttr = cycle("", "class=\"even\"") %>
-<% @options = params.merge(:controller => '/volunteer_tasks', :action => "view", :id => volunteer_task.send("#{VolunteerTask.primary_key}")) %>
-
+<% # The following is used when the browser doesn't have javascript enabled -%>
+<% classAttr = cycle("", %Q!class="even"!.html_safe) -%>
+<% @options = params.merge(:controller => '/volunteer_tasks',
+                           :action => "view",
+                           :id => volunteer_task.send("#{VolunteerTask.primary_key}")) -%>
 <tr <%= classAttr %> id="<%= element_row_id(@options) %>" <%= "style=\"display: none;\"" if hidden %>>
   <% for column in columns %>
-    <% column_value = eval(column.eval) rescue nil %>
+    <% column_value = eval(column.eval) rescue nil -%>
     <td>
       <%= formated_value(column_value, column.sanitize?) %>
     </td>
@@ -12,18 +13,7 @@
   <td class="actions">
     <%= loading_indicator_tag("volunteer_task_#{volunteer_task.id}_loading") %>
     <% edit_options = @options.merge(:action => 'edit') %>
-    <%= edit_link("edit_#{volunteer_task.id}_link",
-                  {
-                    :url => edit_options,
-                    :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}')"
-                  },
-                  'foo_form_tbody') %>
-    <%= delete_link("delete_#{volunteer_task.id}_link",
-                    {
-                      :url => @options.merge(:action => 'destroy'),
-                      :confirm => "Are you sure?",
-                      :loading => "Element.show('#{loading_indicator_id("volunteer_task_#{volunteer_task.id}_loading")}');"
-                    },
-                    "foo_form_tbody") %>
+    <%= link_to('Edit', edit_options, :remote => true) %> -
+    <%= link_to('Destroy', @options.merge(:action => 'destroy'), :remote => true) %>
   </td>
 </tr>

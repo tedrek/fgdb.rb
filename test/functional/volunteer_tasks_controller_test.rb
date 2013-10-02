@@ -53,6 +53,19 @@ class VolunteerTasksControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "creating a new volunteer task" do
+    assert_difference 'VolunteerTask.count' do
+      post :create, volunteer_task: {
+        contact_id: '1',
+        date_performed: '2000-01-01',
+        duration: '1.5',
+        volunteer_task_type_id: '29',  # recycling (adoption)
+        program_id: '1', # adoption
+      }
+      assert_response :success
+    end
+  end
+
   def test_update_task_types
     get :update_task_types, {:day => '2012-12-25'}
   end

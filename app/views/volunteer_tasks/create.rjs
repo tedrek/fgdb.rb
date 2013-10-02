@@ -6,7 +6,7 @@
 @create_options = @options.merge(:action => "create", :id => params[:id])
 
 if @successful
-  page.insert_html :top, tbody_id(@options), :partial => 'volunteer_task', :locals => { :hidden => true }
+  page.insert_html :top, tbody_id(@options), :partial => 'volunteer_task', :locals => { :hidden => true, :volunteer_task => @volunteer_task }
   page.remove element_row_id(@create_options)
   page.show element_row_id(@options)
   page.replace_html messages_id(@options), :partial => 'messages'
