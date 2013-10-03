@@ -1,9 +1,7 @@
 module HtmlHelper
-  def calendar_box(obj, field, bleh=nil, foo=nil)
-    ret = "".html_safe
-    ret << %Q!<input type="text" class="date-picker" !.html_safe
-    ret << %Q!id="#{obj}_#{field}" name="#{obj}[#{field}]" />!.html_safe
-    ret
+  def calendar_box(obj, field, options={}, ignored=nil)
+    options[:class] = 'date-picker'
+    text_field(obj, field, options)
   end
 
   # due to prototype suckness, 'extend' may not be used as a choice name.

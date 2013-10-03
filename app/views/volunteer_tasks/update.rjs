@@ -7,7 +7,12 @@
 
 if @successful
   page.remove element_row_id(@options)
-  page.insert_html :top, tbody_id(@options), :partial => 'volunteer_task', :locals => { :hidden => true }
+  page.insert_html :top, tbody_id(@options),
+    :partial => 'volunteer_task',
+    :locals => {
+      :volunteer_task => @volunteer_task,
+      :hidden => true
+  }
   page.remove element_row_id(@update_options)
   page.show element_row_id(@options)
   page.replace_html messages_id(@options), :partial => 'messages'

@@ -125,7 +125,7 @@ class VolunteerTasksController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
 
-    return render(:action => 'update.rjs')
+    render :action => 'update.rjs', :layout => false
   end
 
   def destroy
@@ -137,7 +137,7 @@ class VolunteerTasksController < ApplicationController
       flash[:error], @successful  = $!.to_s, false
     end
 
-    return render(:action => 'destroy.rjs')
+    render :action => 'destroy.rjs', :layout => false
   end
 
   def cancel
