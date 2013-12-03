@@ -890,4 +890,12 @@ function toggle_discount(evt) {
     $document.on('ajax:before.fgdb',
                  '#volunteer_task_form',
                  fgdb.checkVolunteerTaskDuration)
+
+    // Add calendar popups to all date-picker elements
+    $('.date-picker').datepicker({
+        showOn: "button",
+        buttonImage: "/images/dhtml_calendar/calendar.gif",
+        buttonImageOnly: true,
+        dateFormat: "yy-mm-dd"
+    });
 })( jQuery );
