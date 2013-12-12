@@ -1,3 +1,3 @@
 class WorkerType < ActiveRecord::Base
-  has_many :workers
+  has_many :workers, :through => WorkersWorkerType
 end

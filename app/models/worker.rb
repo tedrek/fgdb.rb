@@ -1,6 +1,5 @@
 class Worker < ActiveRecord::Base
   has_many :standard_shifts
-  belongs_to :worker_type
   has_and_belongs_to_many :meetings
   has_many :work_shifts
   has_many :vacations
@@ -8,7 +7,7 @@ class Worker < ActiveRecord::Base
   validates_existence_of :contact, :allow_nil => false
   has_many :workers_worker_types
   validates_associated :workers_worker_types
-  has_and_belongs_to_many :worker_types
+  has_many :worker_types, :through => WorkersWorkerType
 
   validates(:sunday, :monday, :tuesday, :wednesday, :thursday, :friday,
             :saturday, :pto_rate, :floor_hours, :celing_hours,
