@@ -8,7 +8,7 @@ class DefaultAssignmentsController < ApplicationController
   end
   public
 
-  layout :with_sidebar
+  layout 'with_sidebar'
 
   helper :skedjul
 
@@ -88,9 +88,9 @@ class DefaultAssignmentsController < ApplicationController
       @conditions.effective_on_end = (Date.today + 60).to_s
 
     @skedj.find({:conditions => @skedj.where_clause, :include => [:contact => [], :volunteer_default_shift => [:volunteer_task_type, :volunteer_default_event]]})
-    render :partial => "work_shifts/skedjul", :locals => {:skedj => @skedj }, :layout => :with_sidebar
+    render "work_shifts/_skedjul", :locals => {:skedj => @skedj }, :layout => 'with_sidebar'
     else
-      render :partial => "index",  :layout => :with_sidebar
+      render "_index",  :layout => 'with_sidebar'
     end
   end
 
