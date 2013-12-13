@@ -6,12 +6,6 @@
         %>&nbsp;<label class="checkbox" for="contact_is_organization">organization</label>
   </div>
 
-  <%= javascript_tag(
-        %Q[new Form.Element.EventObserver('contact_is_organization',] +
-        %Q[      function(element, value) {] +
-        (@contact.id.nil? ? "if($('contact_is_organization').checked){ set_organization_name();}" : "")) -%>
-  <%= javascript_tag "contact_form_org_toggle();" %>
-
   <% for contact_type in ContactType.find_instantiable %>
     <div class="form-element <%= "#{h contact_type.long_for_who} " if contact_type.for_who %>form-element">
       <input type="checkbox" id="<%= h contact_type.name %>"
@@ -29,7 +23,8 @@
   </fieldset>
   <% end %>
 
-  <div style="clear: left;" class="organization form-element">
+  <div style="clear: left;display: <%= @contact.is_organization ? 'block' : 'none' %>;" class="organization form-element"
+       data-visibility-by="#contact_is_organization">
     <label for="contact_organization">Organization Name</label>
     <%= text_field 'contact', 'organization' , {:class=>"organization text-input"} %>
   </div>
