@@ -16,6 +16,7 @@ gem 'prawn'
 gem 'validates_existence', '>= 0.4'
 gem 'will_paginate', '~> 3.0'
 gem 'dynamic_form'
+gem 'country_select'
 
 group :test do
   gem 'capybara'
