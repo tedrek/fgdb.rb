@@ -12,10 +12,11 @@ class HtmlTag
     str = '<'.html_safe
     str << tag.html_safe
     str << ' ' if attrs.count > 0
-    str << attrs.map{|n,v| %Q!#{n}="#{v}"!}.join(' ') + '>'.html_safe +
-      children.map{|x| x.to_s}.join("\n") +
-      content.to_s +
-      "</#{tag}>".html_safe
+    str << attrs.map{|n,v| %Q!#{n}="#{v}"!}.join(' ').html_safe
+    str << '>'.html_safe
+    str << children.map {|i| ERB::Util.html_escape(i.to_s)}.join("\n").html_safe
+    str << content
+    str << "</#{tag}>".html_safe
     return str
   end
 end
