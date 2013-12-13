@@ -26,7 +26,7 @@
      v = ""
      e = nil
      if ( e = i.mailing_list_email );
-       v = (@hide_full_name ? e.strip : "#{i.display_name} &lt;#{e.strip}&gt;") + "#{@include_comma ? "," : ""}"
+       v = (@hide_full_name ? e.strip : "#{i.display_name} <#{e.strip}>") + "#{@include_comma ? "," : ""}"
      else;
        v = "#{i.display_name} (##{ i.id })";
      end;
