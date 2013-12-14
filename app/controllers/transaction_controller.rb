@@ -216,22 +216,20 @@ class TransactionController < ApplicationController
       _apply_line_item_data(@transaction)
       @successful =  @transaction.valid? && @transaction.save
 
-    render :action => 'create.rjs'
-  end
-
-  def create_without_ajax
-      @transaction = model.new(params[@transaction_type])
-      _apply_line_item_data(@transaction)
-      @successful =  @transaction.valid? && @transaction.save
-
-    if @successful
-      if @transaction_type == "sale" or (@transaction_type == "donation" and @transaction.contact_type != "dumped")
-        @receipt = @transaction.id
+    if request.xhr?
+      render :action => 'create.rjs'
+    else
+      if @successful
+        if (@transaction_type == "sale" or
+            (@transaction_type == "donation" and
+             @transaction.contact_type != "dumped"))
+          @receipt = @transaction.id
+        end
+        @transaction = model.new
       end
-      @transaction = model.new
+      new
+      render :action => 'new'
     end
-    new
-    render :action => 'new'
   end
 
   def edit
