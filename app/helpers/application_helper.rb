@@ -375,9 +375,9 @@ module ApplicationHelper
         var element = elem_#{ident};
         Event.extend(event);
         #{handler}
-      };"
+      };".html_safe
     event_types.each {|event_type|
-      js += "if(elem_#{ident}) {elem_#{ident}.addEventListener('#{event_type}', handler, false);} else {alert('#{element} not found!')}"
+      js += "if(elem_#{ident}) {elem_#{ident}.addEventListener('#{event_type}', handler, false);} else {alert('#{element} not found!')}".html_safe
     }
     javascript_tag(js)
   end
@@ -400,17 +400,24 @@ module ApplicationHelper
 
   def make_link(link_id, image_tag, title, options, form_id = nil)
     image_tag = title
-    html = %Q[
-      <a id="#{link_id}" title="#{title}"
-         onclick="return false">
-        #{image_tag}
-      </a>
-    ]
-    ify = form_id ? "$('#{form_id}') == null || form_has_not_been_edited('#{form_id}') ||" : ""
-    html += custom_observer(link_id,
-                            "if(#{ify} confirm('Current entry form will be lost.  Continue?')) {
-                                 #{remote_function(options)}
-                             }",
+    html = "".html_safe
+    html << %Q!<a id="!.html_safe
+    html << link_id
+    html << %Q!" title="!.html_safe
+    html << title
+    html << %Q!" onclick="return false">!.html_safe
+    html << image_tag
+    html << "</a>".html_safe
+
+    if_stmt = "".html_safe
+    if form_id
+      if_stmt << "$('#{form_id}') == null || " \
+                 "form_has_not_been_edited('#{form_id}') ||".html_safe
+    end
+    if_stmt << "confirm('Current entry form will be lost.  Continue?')"
+    html << custom_observer(link_id,
+                            "if (#{if_stmt}) {" \
+                              "#{remote_function(options)}}".html_safe,
                             'click')
     return html
   end
@@ -442,7 +449,7 @@ module ApplicationHelper
         #{image_tag}
       </a>
     ]
-    return html
+    return html.html_safe
   end
 
   def show_errors_for(name, object, page)

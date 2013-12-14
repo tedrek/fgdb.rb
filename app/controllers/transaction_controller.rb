@@ -255,7 +255,8 @@ class TransactionController < ApplicationController
       @successful =  @transaction.valid? && @transaction.save
 
     if @transaction
-      render :action => 'update.rjs'
+      flash[:info] = "#{@transaction_type} #{@transaction.id} updated"
+      redirect_to :action => 'new'
     else
       flash[:error] = "Error: Record has was already deleted, Failed to save: " + flash[:error]
       render :update do |page|
