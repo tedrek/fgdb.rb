@@ -648,3 +648,7 @@ table.badge tr {
   height: 3.5in;
   border-color: transparent;
 }
+
+.clear-left {
+    clear: left;
+}

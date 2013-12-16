@@ -569,13 +569,6 @@ function show_contract_notes() {
   contract_selected();
 }
 
-function select_visibility(obj_name, method_name, choices, value) {
-    for( var i = 0; i < choices.length; i++)
-    {var choice = choices[i]; if(choice == 'extend') {}
-        else if(choice == value) {$(obj_name + '_' + method_name + '_' + choice + '_choice').show();}
-        else {$(obj_name + '_' + method_name + '_' + choice + '_choice').hide();} }
-}
-
 // Called as:
 // confirmReplaceElementValue(elem_id, new_elem_value, confirm_message)
 function confirmReplaceElementValue(id, val, msg){
@@ -865,12 +858,12 @@ function toggle_discount(evt) {
         },
 
         // Toggle visibility of elements by checkbox
-        visibilityBy:  function (e) {
+        visibilityByCheckBox:  function (e) {
             var ele = $j(e.target);
             if (ele.attr('id') == undefined) {
                 return
             }
-            var checked = ele.is(':checked')
+            var checked = ele.is(':checked');
             $j('[data-visibility-by="#' + ele.attr('id') + '"]').each(
                 function (i, v) {
                     if (ele.is(':checked')) {
@@ -881,9 +874,31 @@ function toggle_discount(evt) {
                     }
                 });
         },
+
+        // Make one element visible per item in a selection box.
+        visibilityBySelect:  function (e) {
+            var ele = $j(e.target);
+            if (ele.attr('id') == undefined) {
+                return
+            }
+            var id = ele.attr('id');
+            var selection = ele.val();
+            $j('[data-visibility-by="#' + id + '"]').each(
+                function (i, v) {
+                    if (id + '_' + selection + '_choice' == $j(v).attr('id')) {
+                        $j(v).fadeIn(250);
+                    }
+                    else {
+                        $j(v).hide();
+                    }
+                });
+        },
     };
 
-    $document.on('change.fgdb', 'input[type="checkbox"]', fgdb.visibilityBy);
+    $document.on('change.fgdb', 'input[type="checkbox"]',
+                 fgdb.visibilityByCheckBox);
+    $document.on('change.fgdb', 'select',
+                 fgdb.visibilityBySelect);
     $document.on('change.fgdb',
                  fgdb.cascadedContactTypes,
                  fgdb.cascadeContactTypeSelections);

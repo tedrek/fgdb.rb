@@ -4,26 +4,35 @@ module HtmlHelper
     text_field(obj, field, options)
   end
 
-  # due to prototype suckness, 'extend' may not be used as a choice name.
   def select_visibility(obj_name, method_name, choices = [], html_opts = {})
     #:TODO: scrub this first
     obj = eval( "@#{obj_name}" )
 
     # type choice
-    display = %Q{ <div class="form-element"> %s %s </div> } %
-      [ select( obj_name, method_name, choices.map {|k,v| [k.to_s.gsub(/_/, ' '), k.to_s]}.sort_by(&:first) ),
-        '']
+    display = "".html_safe
+    display << %Q{<div class="form-element">}.html_safe
+    display << select(obj_name,
+                      method_name,
+                      choices.map { |k,v|
+                        [k.to_s.gsub(/_/, ' '), k.to_s]
+                      }.sort_by(&:first))
+    display << '</div>'.html_safe
+
     this_choice = obj.send(method_name)
-    choices.each {|choice, content|
+    choices.each do |choice, content|
       if this_choice.to_s == choice.to_s
         visibility = ''
       else
-        visibility = 'style="display:none;"'
+        visibility = ' style="display:none;"'
       end
-      display += %Q{ <div id="%s_%s_%s_choice" style="clear: left" class="form-element" %s>%s</div> } % [ obj_name, method_name, choice.to_s, visibility, content ]
-    }
+      c = %Q{<div id="%s_%s_%s_choice"} %
+        [ obj_name, method_name, choice.to_s]
+      c << %Q{class="form-element clear-left"}
+      c << %Q{data-visibility-by="#%s_%s"%s>%s</div> } %
+        [obj_name, method_name, visibility, content ]
+      display << c.html_safe
+    end
 
-    display += javascript_tag("select_visibility('#{obj_name}', '#{method_name}', new Array(\"#{choices.map {|k,v| k.to_s}.join('", "')}\"), $('#{obj_name}_#{method_name}').value);")
     return display.html_safe
   end
 
