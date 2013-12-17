@@ -9,7 +9,7 @@
   <fieldset class="noblock contact_flags">
     <legend>Contact flags</legend>
     <ul>
-      <% for contact_type in ContactType.find_instantiable do -%>
+      <%= for contact_type in ContactType.find_instantiable do -%>
       <li>
       <div class="form-element <%= "#{h contact_type.long_for_who} " if contact_type.for_who %>form-element">
         <input type="checkbox" id="<%= h contact_type.name %>"
