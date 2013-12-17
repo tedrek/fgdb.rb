@@ -1,3 +1,13 @@
+anonymous:
+  id: 0
+  created_by: 0
+  updated_by: 0
+  login: anonymous
+  email: anonymous@invalid
+  cashier_code: 0000
+  salt: cdef22a7d694f6e6445744ff3d6b074379cae5ef
+  crypted_password: 91da341baf2dca5b33beeafa129b143362a007fb # test
+  created_at: <%= 5.days.ago.to_s :db %>
 administrator:
   id: 3
   created_by: 1
