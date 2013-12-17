@@ -1,0 +1,66 @@
+<!DOCTYPE html
+          PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>
+      <% if defined?(@page_title) -%>
+        <%= @page_title %>
+      <% else -%>
+        Free Geek Database:
+        <%= (controller.class.name).titleize.sub(/ Controller/, '') %>:
+        <%= (controller.action_name).titleize %>
+      <% end -%>
+    </title>
+    <% css_list = ['application', 'common']
+       css_list << 'dev' if ::Rails.env == "development" -%>
+    <%= stylesheet_link_tag *(css_list + [{:media => 'all'}]) %>
+    <%= stylesheet_link_tag 'no_print', :media => 'print' %>
+    <%= stylesheet_link_tag 'ui-lightness/jquery-ui.css' %>
+    <%= javascript_include_tag 'jquery', 'jquery-ui' %>
+    <%= javascript_include_tag 'rails', 'application' %>
+    <%= stylesheet_link_tag 'schedule', :media => "all" %>
+  </head>
+  <body>
+    <%= form_tag '/punch_entry/punch' do -%>
+    <div class="punch-entry-form">
+      <% if !flash[:message].blank? -%>
+      <div class="message"><%= flash[:message] %></div>
+      <% end -%>
+      <fieldset>
+        <legend>Volunteer Identification</legend>
+        <label for="volunteer-id">Volunteer ID</label>
+        <input type="text" id="volunteer-id"
+               placeholder="Volunteer ID" name="volunteer_id" />
+        <span class="seperator">OR</span>
+        <label for="volunteer-first-name">First name</label>
+        <input type="text" id="volunteer-first-name"
+               placeholder="First name" name="first_name" />
+        <label for="volunteer-last-name">Last name</label>
+        <input type="text" id="volunteer-last-name"
+               placeholder="Last Name" name="last_name" />
+      </fieldset>
+      <fieldset>
+        <legend>Station</legend>
+          <select id="station" name="station">
+            <option value="">Select station when signing out</option>
+            <%= options_from_collection_for_select(VolunteerTaskType.
+                                                   instantiables.
+                                                   effective_on(Time.now).
+                                                   sort_by { |x|
+                                                     x.description.downcase
+                                                   },
+                                                 :id,
+                                                 :display_name)
+                %>
+          </select>
+      </fieldset>
+      <fieldset>
+        <legend>Action</legend>
+        <%= submit_tag "Sign in" %>
+        <%= submit_tag "Sign out" %>
+      </fieldset>
+    </div>
+    <% end -%>
+  </body>
+</html>

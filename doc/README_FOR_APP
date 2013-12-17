@@ -68,6 +68,7 @@ For production database replace 'development' with 'production'
   precise $ rake db:create
   precise $ rake db:schema:load
   precise $ rake db:metadata:load
+  precise $ rake db:seed
   precise $ ./script/make_admin
   precise $ rake db:migrate
 

@@ -670,3 +670,54 @@ table.badge tr {
 .clear-left {
     clear: left;
 }
+
+/* ======================
+   Punch Entry Styling */
+
+.punch-entry-form {
+    margin: 0px auto;
+    display: table;
+}
+
+.punch-entry-form .message {
+    width: 270px;
+    padding: 1px;
+    border-radius: 5px;
+    border: 1px solid #ded;
+    background: #e5eeee;
+    text-align: center;
+    margin: 2px auto;
+}
+
+.punch-entry-form label {
+    display: none;
+}
+
+.punch-entry-form .seperator {
+    display: block;
+    text-align: center;
+    width: 100%;
+    clear: both;
+}
+
+.punch-entry-form fieldset {
+    display: table;
+    border-radius: 5px;
+    border: 1px solid #ded;
+    background: #e9f7e9;
+    margin: 3px auto;
+    display: block;
+}
+
+.punch-entry-form legend {
+    background: #cddddd;
+    border-radius: 5px;
+    border: 1px solid #ded;
+}
+
+.punch-entry-form input {
+    width: 15em;
+    padding: 2px;
+    margin: 5px auto;
+    display: block;
+}

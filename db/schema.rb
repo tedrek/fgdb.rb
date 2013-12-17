@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130910211017) do
+ActiveRecord::Schema.define(:version => 20131217221841) do
 
   create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-combine_four_sql
@@ -823,6 +823,13 @@ END
     t.datetime "updated_at"
     t.boolean  "volunteer",       :default => false, :null => false
     t.boolean  "adoption_credit", :default => true,  :null => false
+  end
+
+  create_table "punch_entries", :force => true do |t|
+    t.integer  "contact_id",        :null => false
+    t.integer  "volunteer_task_id"
+    t.datetime "in_time",           :null => false
+    t.datetime "out_time"
   end
 
   create_table "recycling_shipments", :force => true do |t|

@@ -1,0 +1,38 @@
+<!DOCTYPE html
+          PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>
+      <% if defined?(@page_title) -%>
+        <%= @page_title %>
+      <% else -%>
+        Free Geek Database:
+        <%= (controller.class.name).titleize.sub(/ Controller/, '') %>:
+        <%= (controller.action_name).titleize %>
+      <% end -%>
+    </title>
+    <% css_list = ['application', 'common']
+       css_list << 'dev' if ::Rails.env == "development" -%>
+    <%= stylesheet_link_tag *(css_list + [{:media => 'all'}]) %>
+    <%= stylesheet_link_tag 'no_print', :media => 'print' %>
+    <%= stylesheet_link_tag 'ui-lightness/jquery-ui.css' %>
+    <%= javascript_include_tag 'jquery', 'jquery-ui' %>
+    <%= javascript_include_tag 'rails', 'application' %>
+    <%= stylesheet_link_tag 'schedule', :media => "all" %>
+  </head>
+  <body>
+    <div class="punch-entry-list">
+      <ul>
+        <% if @punch_entries.empty? -%>
+        <li>Nobody is currently signed in</li>
+        <% end -%>
+        <% @punch_entries.each do |p| -%>
+        <li><%= p.contact.first_name %> <%= p.contact.surname %>
+          <%= p.in_time.strftime('%F %R %Z') %>
+        </li>
+        <% end -%>
+        </ul>
+    </div>
+  </body>
+</html>
