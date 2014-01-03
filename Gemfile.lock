@@ -64,6 +64,9 @@ GEM
     hashery (2.1.0)
     httpclient (2.3.3)
     i18n (0.5.0)
+    jbuilder (1.5.3)
+      activesupport (>= 3.0.0)
+      multi_json (>= 1.2.0)
     json (1.8.0)
     mail (2.2.20)
       activesupport (>= 2.3.6)
@@ -146,6 +149,7 @@ DEPENDENCIES
   dynamic_form
   factory_girl_rails
   gnuplot
+  jbuilder
   json
   nokogiri
   pdf-writer
