@@ -1,0 +1,13 @@
+<% if !flash[:message].blank? -%>
+  <div class="message"><%= flash[:message] %></div>
+<% end -%>
+<div>
+<%= link_to "Sign In",
+            {controller: 'punch_entries', action: 'sign_in'},
+            {class: "button-link"}
+    %>
+<%= link_to 'Sign Out',
+            {controller: 'punch_entries', action: 'sign_out'},
+            {class: "button-link"}
+    %>
+</div>

@@ -1,0 +1,28 @@
+<%= form_tag '/punch_entries/punch_out' do -%>
+<div class="punch-entry-form">
+  <% if !flash[:message].blank? -%>
+  <div class="message"><%= flash[:message] %></div>
+  <% end -%>
+  <%= render partial: 'identification' %>
+  <fieldset>
+    <legend>Station</legend>
+    <select id="station" name="station">
+      <option value="">The station you spent most time at</option>
+      <%= options_from_collection_for_select(VolunteerTaskType.
+          instantiables.
+          effective_on(Time.now).
+          sort_by { |x|
+          x.description.downcase
+          },
+          :id,
+          :display_name)
+          %>
+    </select>
+  </fieldset>
+  <fieldset>
+    <legend>Action</legend>
+    <%= submit_tag "Sign out" %>
+    <%= link_to 'Cancel', {controller: 'punch_entries', action: 'index'} %>
+  </fieldset>
+</div>
+<% end -%>

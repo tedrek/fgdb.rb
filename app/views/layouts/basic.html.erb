@@ -22,17 +22,6 @@
     <%= stylesheet_link_tag 'schedule', :media => "all" %>
   </head>
   <body>
-    <div class="punch-entry-list">
-      <ul>
-        <% if @punch_entries.empty? -%>
-        <li>Nobody is currently signed in</li>
-        <% end -%>
-        <% @punch_entries.each do |p| -%>
-        <li><%= p.contact.first_name %> <%= p.contact.surname %>
-          <%= p.in_time.strftime('%F %R %Z') %>
-        </li>
-        <% end -%>
-        </ul>
-    </div>
+    <%= yield %>
   </body>
 </html>

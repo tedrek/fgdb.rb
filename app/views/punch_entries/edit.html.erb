@@ -1,0 +1,30 @@
+<% if !flash[:message].blank? -%>
+  <div class="message"><%= flash[:message] %></div>
+<% end -%>
+<%= form_for @punch_entry,
+             url: {action: 'update', id: @punch_entry.id} do |f| -%>
+  <p>Contact: <%= @punch_entry.contact %> (#<%= @punch_entry.contact.id %>)</p>
+  <label for="punch_entry_in_time">Sign-In time</label>
+  <%= f.text_field :in_time, class: 'date-picker' %>
+  <label for="punch_entry_out_time">Sign-Out time</label>
+  <%= f.text_field :out_time, class: 'date-picker' %>
+  <%= f.check_box :flagged %>
+  <label for="punch_entry_flagged">Flagged?</label>
+  <label for="punch_entry_station">Station</label>
+  <select id="punch_entry_station" name="punch_entry[station]">
+      <option value="">-- Select station --</option>
+      <%= options_from_collection_for_select(VolunteerTaskType.
+          instantiables.
+          effective_on(Time.now).
+          sort_by { |x|
+          x.description.downcase
+          },
+          :id,
+          :display_name,
+          @punch_entry.volunteer_task.nil? ?
+            nil : @punch_entry.volunteer_task.volunteer_task_type.id,
+          )
+          %>
+  </select>
+  <%= f.submit %>
+<% end -%>

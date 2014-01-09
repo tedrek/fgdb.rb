@@ -1,0 +1,13 @@
+<%= form_tag '/punch_entries/punch_in' do -%>
+<div class="punch-entry-form">
+  <% if !flash[:message].blank? -%>
+  <div class="message"><%= flash[:message] %></div>
+  <% end -%>
+  <%= render partial: 'identification' %>
+  <fieldset>
+    <legend>Action</legend>
+    <%= submit_tag "Sign in" %>
+    <%= link_to 'Cancel', {controller: 'punch_entries', action: 'index'} %>
+  </fieldset>
+</div>
+<% end -%>

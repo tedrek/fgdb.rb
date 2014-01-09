@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PunchEntryControllerTest < ActionController::TestCase
+class PunchEntriesControllerTest < ActionController::TestCase
   fixtures :contacts
 
   test "the default action works" do
@@ -8,15 +8,23 @@ class PunchEntryControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "viewing the sign in page" do
+    get :sign_in
+  end
+
+  test "viewing the sign out page" do
+    get :sign_out
+  end
+
   test "signing in with a volunteer ID" do
     assert_difference 'PunchEntry.count' do
-      post :punch, volunteer_id: 17, commit: 'Sign in'
+      post :punch_in, volunteer_id: 17, commit: 'Sign in'
     end
   end
 
   test "signing in with a volunteer name" do
     assert_difference 'PunchEntry.count' do
-      post(:punch,
+      post(:punch_in,
            first_name: 'Charles',
            last_name: 'McGeneneen',
            commit: 'Sign in')
@@ -30,7 +38,7 @@ class PunchEntryControllerTest < ActionController::TestCase
     p.in_time = Time.now - 1020 # 17 minutes ago
     p.save!
     id = p.id
-    post :punch, volunteer_id: 17, commit: 'Sign out', station: 42
+    post :punch_out, volunteer_id: 17, station: 42
     p = PunchEntry.find(id)
     assert_not_nil p
     assert_not_nil p.out_time
@@ -40,7 +48,7 @@ class PunchEntryControllerTest < ActionController::TestCase
   end
 
   test "signing out without sign in fails" do
-    post :punch, volunteer_id: 17, commit: 'Sign out', station: 42
+    post :punch_out, volunteer_id: 17, station: 42
     assert_response :redirect
     assert_equal flash[:message],
                  'Error signing out: Charles McGeneneen is not signed in'

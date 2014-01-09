@@ -1,0 +1,36 @@
+<h3>Sign in sheet</h3>
+<% if @punch_entries.empty? -%>
+<p>Nobody is currently signed in</p>
+<% else -%>
+<table class="punch-entries">
+  <tbody class="zebra">
+    <tr>
+      <% ['ID', 'Name', 'Sign-In', 'Sign-Out', 'Duration', 'Actions']
+         .each do |action| -%>
+      <th><%= action %></th>
+      <% end -%>
+    </tr>
+    <% @punch_entries.each do |p| -%>
+    <tr>
+      <td><%= p.contact.id %></td>
+      <td><%= p.contact.first_name %> <%= p.contact.surname %></td>
+      <td><%= p.in_time.strftime('%F %R %Z') %></td>
+      <td><%= p.out_time.nil? ? '-' : p.out_time.strftime('%F %R %Z') %></td>
+      <td><%= p.volunteer_task.nil? ? '-' : p.volunteer_task.duration %></td>
+      <td>
+        <%= link_to controller: :punch_entries, action: :edit, id: p.id do -%>
+          <img src="/icons/pencil.png" title="Edit sign in" />
+        <% end -%>
+        <%= link_to controller: :punch_entries, action: :foobar do -%>
+          <img src="/icons/user_go.png" title="Sign user out"/>
+        <% end -%>
+        <%= link_to controller: :punch_entries, action: :destroy do -%>
+          <img src="/icons/delete.png" title="Delete sign in" />
+        <% end -%>
+      </td>
+    </tr>
+    <% end -%>
+  </tbody>
+</table>
+<div><%= will_paginate @punch_entries %></div>
+<% end -%>
