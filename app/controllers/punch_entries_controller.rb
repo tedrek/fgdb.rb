@@ -20,7 +20,7 @@ class PunchEntriesController < ApplicationController
 
   # Punch a person in
   def punch_in
-    @punch_entry = PunchEntry.new(contact: @contact)
+    @punch_entry = PunchEntry.sign_in(@contact)
     if @punch_entry.save
       flash[:message] = "Signed in #{@contact.first_name} #{@contact.surname} "\
                         "(ID ##{@contact.id})"
@@ -80,7 +80,7 @@ class PunchEntriesController < ApplicationController
     else
       flash[:message] = "Error saving entry: #{@punch_entry.errors}"
     end
-    redirect_to action: :edit, id: @punch_entry.id
+    redirect_to action: :list
   end
 
   protected
