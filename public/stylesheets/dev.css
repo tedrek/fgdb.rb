@@ -1,4 +1,12 @@
-body {
-  background-image: url('/images/dev_bg.jpg');
-  background-repeat: repeat;
+body::after {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    opacity: 0.33;
+    background-image: url('/images/dev_bg.jpg');
+    background-repeat: repeat;
 }
