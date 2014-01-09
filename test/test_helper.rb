@@ -115,7 +115,7 @@ class ActiveSupport::TestCase
                         Program.find(:first,
                                      :conditions => "name = '#{program}'"),
                         :created_by => 1,
-                        :date_performed => Date.today - ago,
+                        :date_performed => Time.zone.now.to_date - ago,
                         :volunteer_task_type => VolunteerTaskType.find(type) })
   end
 

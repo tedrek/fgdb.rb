@@ -39,7 +39,7 @@ class VolunteerTask < ActiveRecord::Base
   validates_associated :contact
   validates :date_performed, :presence => true
   validates_each :date_performed do |record, attr, value|
-    if (!value.nil?) && value > Date.today
+    if (!value.nil?) && value > Time.zone.now.to_date
       record.errors.add(attr, 'Is in the future')
     end
   end

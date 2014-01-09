@@ -10,7 +10,7 @@ class VolunteerTaskTest < ActiveSupport::TestCase
       :program_id => 1,
       :duration => 1.5,
       :contact_id => 1,
-      :date_performed => Date.today,
+      :date_performed => Time.zone.now.to_date,
       :volunteer_task_type_id => 46
     }
   end
