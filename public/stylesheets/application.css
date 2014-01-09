@@ -674,12 +674,36 @@ table.badge tr {
 /* ======================
    Punch Entry Styling */
 
+.button-link {
+    position: absolute;
+    font-size: 140%;
+    padding: 2em 0em;
+    width: 45%;
+    border-radius: 5px;
+    border: 1px solid #ded;
+    background: #e9f7e9;
+    height: 1em;
+    text-align: center;
+    display: inline-block;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+}
+
+.button-link:nth-child(odd) {
+    left: 3.5%;
+}
+
+.button-link:nth-child(even) {
+    right: 3.5%;
+}
+
 .punch-entry-form {
     margin: 0px auto;
     display: table;
 }
 
-.punch-entry-form .message {
+.message {
     width: 270px;
     padding: 1px;
     border-radius: 5px;
@@ -687,6 +711,14 @@ table.badge tr {
     background: #e5eeee;
     text-align: center;
     margin: 2px auto;
+}
+
+.zebra > *:nth-child(odd) {
+    background: #e9f7e9;
+}
+
+.zebra > *:nth-child(even) {
+    background: #ffffff;
 }
 
 .punch-entry-form label {
@@ -720,4 +752,28 @@ table.badge tr {
     padding: 2px;
     margin: 5px auto;
     display: block;
+}
+
+table.punch-entries {
+    text-align: left;
+    display: inline-block;
+    border: 5px solid #e9f7e9;
+    border-radius: 5px;
+    margin: 0px;
+    padding: 0px;
+    border-collapse: collapse;
+}
+
+.punch-entries td, .punch-entries th {
+    border: 0px;
+    border-right: 1px solid #dddddd;
+    padding: 0.25em 2em 0.25em 0.5em;
+}
+
+.punch-entries td:last-child, .punch-entries th:last-child {
+  border-right: 0px;
+}
+
+.punch-entries th {
+    border-bottom: 1px solid #dddddd;
 }

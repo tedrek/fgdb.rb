@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131217221841) do
+ActiveRecord::Schema.define(:version => 20140107212758) do
 
   create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-combine_four_sql
@@ -162,6 +162,20 @@ END
 
   create_table "call_status_types", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "checks", :force => true do |t|
+    t.integer  "run_id"
+    t.string   "check_code",   :null => false
+    t.boolean  "passed",       :null => false
+    t.integer  "sequence_num", :null => false
+    t.integer  "status"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.string   "stdout_log"
+    t.string   "stderr_log"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -453,6 +467,22 @@ END
   add_index "donations", ["created_at"], :name => "donations_created_at_index"
   add_index "donations", ["contact_id"], :name => "index_donations_on_contact_id"
 
+  create_table "drives", :force => true do |t|
+    t.string   "manufacturer",         :limit => 100, :null => false
+    t.string   "model",                :limit => 100, :null => false
+    t.string   "serial",               :limit => 100, :null => false
+    t.integer  "size",                 :limit => 8,   :null => false
+    t.date     "manufacture_date"
+    t.string   "firmware_version"
+    t.string   "physical_form_factor"
+    t.string   "interface_type"
+    t.string   "disk_label"
+    t.string   "board"
+    t.string   "board_status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "engine_schema_info", :id => false, :force => true do |t|
     t.string  "engine_name"
     t.integer "version"
@@ -652,6 +682,15 @@ END
     t.datetime "updated_at"
   end
 
+  create_table "notations", :force => true do |t|
+    t.text     "content"
+    t.integer  "contact_id",     :null => false
+    t.integer  "notatable_id"
+    t.string   "notatable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "notes", :force => true do |t|
     t.integer  "contact_id"
     t.integer  "system_id"
@@ -826,10 +865,11 @@ END
   end
 
   create_table "punch_entries", :force => true do |t|
-    t.integer  "contact_id",        :null => false
+    t.integer  "contact_id",                           :null => false
     t.integer  "volunteer_task_id"
-    t.datetime "in_time",           :null => false
+    t.datetime "in_time",                              :null => false
     t.datetime "out_time"
+    t.boolean  "flagged",           :default => false, :null => false
   end
 
   create_table "recycling_shipments", :force => true do |t|
@@ -961,6 +1001,16 @@ END
     t.date    "effective_date"
     t.date    "ineffective_date"
     t.integer "match_mode",       :default => 0
+  end
+
+  create_table "runs", :force => true do |t|
+    t.integer  "drive_id"
+    t.string   "device_name"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.string   "result"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "sale_types", :force => true do |t|
