@@ -7,13 +7,6 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Daley', :city => cities.first)
 
-# Create the anonymous contact
-c = Contact.new(first_name: 'Anonymous', surname: 'Anonymous')
-c.updated_by = 0
-c.created_by = 0
-c.id = 0
-c.save
-
 # Create the anonymous user
 u = User.new(login: 'anonymous',
              email: 'anonymous@invalid',
@@ -22,6 +15,15 @@ u = User.new(login: 'anonymous',
 u.updated_by = 0
 u.created_by = 0
 u.can_login = false
-u.contact_id = 0
 u.id = 0
+u.save
+
+# Create the anonymous contact
+c = Contact.new(first_name: 'Anonymous', surname: 'Anonymous')
+c.updated_by = 0
+c.created_by = 0
+c.id = 0
+c.save
+
+u.contact_id = 0
 u.save
