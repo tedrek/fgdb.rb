@@ -13,3 +13,11 @@ u.password_confirmation=pass
 u.roles = [Role.find_by_name("ADMIN")]
 u.created_by = 1
 u.save(:false)
+
+c = Contact.new(first_name: 'Administrator', surname: 'Administrator')
+c.updated_by = 1
+c.created_by = 1
+c.save(:false)
+
+u.contact_id = c.id
+u.save(:false)

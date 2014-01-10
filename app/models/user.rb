@@ -137,16 +137,15 @@ class User < ActiveRecord::Base
   # start auth junk
 
   def User.current_user
-    Thread.current['user'] || User.fake_new
+    u = Thread.current['user']
+    unless u
+      u = User.find(0)
+      u.fake_logged_in = true
+    end
+    u
   end
 
   attr_accessor :fake_logged_in
-
-  def User.fake_new
-    u = User.new
-    u.fake_logged_in = true
-    u
-  end
 
   def logged_in
     ! fake_logged_in
