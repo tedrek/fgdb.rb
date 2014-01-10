@@ -1,0 +1,9 @@
+<%= form_tag '/notations/create',
+             remote: true,
+             'data-type' => 'json',
+             class: 'notation-form' do -%>
+  <%= hidden_field_tag 'notatable_type', type %>
+  <%= hidden_field_tag 'notatable_id', id %>
+  <%= text_area_tag 'content', nil, placeholder: 'Add note...' %>
+  <%= submit_tag 'Add note' %>
+<% end -%>

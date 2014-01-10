@@ -1,0 +1,9 @@
+<div class="notation-container">
+  <h3>Notes:</h3>
+  <% notations.each do |n| -%>
+  <p><%= n.content %></p>
+  <p class="author">
+    <%= "%s %s" % [n.contact.first_name, n.contact.surname]%>
+  </p>
+  <% end -%>
+</div>

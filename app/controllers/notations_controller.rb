@@ -7,9 +7,9 @@ class NotationsController < ApplicationController
                              notatable_type: params[:notatable_type],
                              notatable_id: params[:notatable_id])
     if @notation.save
-      render '_notation', format: :json
+      render 'notation'
     else
-      render '_errors', format: :json
+      render 'errors'
     end
   end
 end
