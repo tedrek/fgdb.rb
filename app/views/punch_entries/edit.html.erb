@@ -27,11 +27,9 @@
           %>
   </select>
   <%= f.submit %>
-
-  <% unless @punch_entry.notations.empty? -%>
-  <h3>Notes:</h3>
-  <% end -%>
-  <% @punch_entry.notations.each do |n| -%>
-  <p><%= n.content %></p>
-  <% end -%>
 <% end -%>
+<%= render(partial: 'notations/display',
+           locals: {notations: @punch_entry.notations}) %>
+<%= render(partial: 'notations/form',
+           locals: {type: 'PunchEntry',
+                    id: @punch_entry.id}) %>

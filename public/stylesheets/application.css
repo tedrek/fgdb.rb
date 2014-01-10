@@ -777,3 +777,9 @@ table.punch-entries {
 .punch-entries th {
     border-bottom: 1px solid #dddddd;
 }
+
+.author {
+    text-align: right;
+    font-size: 75%;
+    font-color: #444444;
+}

@@ -893,6 +893,26 @@ function toggle_discount(evt) {
                     }
                 });
         },
+
+        // Functions for dealing with notations
+        notations: {
+            toggleLoading: function (e, xhr, settings) {
+                var ele = $('.notation-form input[type="submit"]');
+                ele.prop('disabled', !ele.prop('disabled'));
+            },
+
+            displayNotation: function(e, data, status, xhr) {
+                if (data.error) {
+                    alert(JSON.stringify(data));
+                }
+                else {
+                    $('.notation-container')
+                        .append('<p>' + data.content + '</p>' +
+                                '<p class="author">' + data.author + '</p>');
+                    $('.notation-form textarea').val('');
+                }
+            },
+        },
     };
 
     $document.on('change.fgdb', 'input[type="checkbox"]',
@@ -906,8 +926,21 @@ function toggle_discount(evt) {
                  '#volunteer_task_form',
                  fgdb.checkVolunteerTaskDuration)
 
+    $document.on('ajax:beforeSend.fgdb',
+                 '.notation-form',
+                 fgdb.notations.toggleLoading)
+    $document.on('ajax:complete.fgdb',
+                 '.notation-form',
+                 fgdb.notations.toggleLoading)
+    $document.on('ajax:success.fgdb',
+                 '.notation-form',
+                 fgdb.notations.displayNotation)
+    $document.on('ajax:error.fgdb',
+                 '.notation-form',
+                 fgdb.notations.displayError)
+
     // Add calendar popups to all date-picker elements
-    $('.date-picker').datepicker({
+    $j('.date-picker').datepicker({
         showOn: "button",
         buttonImage: "/images/dhtml_calendar/calendar.gif",
         buttonImageOnly: true,
