@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Load the rvm config
+. ~/.rvm/environments/ruby-1.9.3-p484
+
+cd ~/deploy
+
+bundle install
