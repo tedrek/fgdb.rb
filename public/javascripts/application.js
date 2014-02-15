@@ -946,4 +946,21 @@ function toggle_discount(evt) {
         buttonImageOnly: true,
         dateFormat: "yy-mm-dd"
     });
+
+    // FIXME: RJS is used in places to load forms which have date
+    // picker elements in them.  This is a serious hack to make them function.
+    // The correct thing would probably be to have necessary forms fire
+    // A decorate event or some such.
+    var running = false;
+    $document.on('DOMNodeInserted', function () {
+        if (running) {return;}
+        running = true;
+        $j('.date-picker').not('.hasDatepicker').datepicker({
+            showOn: "button",
+            buttonImage: "/images/dhtml_calendar/calendar.gif",
+            buttonImageOnly: true,
+            dateFormat: "yy-mm-dd"
+        });
+        running = false;
+    });
 })( jQuery );
