@@ -9,22 +9,22 @@
   <fieldset class="noblock contact_flags">
     <legend>Contact flags</legend>
     <ul>
-      <%= for contact_type in ContactType.find_instantiable do -%>
+      <% for contact_type in ContactType.find_instantiable do -%>
       <li>
-      <div class="form-element <%= "#{h contact_type.long_for_who} " if contact_type.for_who %>form-element">
-        <input type="checkbox" id="<%= h contact_type.name %>"
-               name="contact_types[]"
-               value="<%= contact_type.id %>"
-               <% if @contact.contact_types.include? contact_type -%>
-               checked="checked"
-               <% end -%>
-               />
-      <label class="checkbox" for="<%= contact_type.name %>">
-        <%= contact_type.description %>
-      </label>
+        <div class="form-element <%= "#{h contact_type.long_for_who} " if contact_type.for_who %>form-element">
+          <input type="checkbox" id="<%= h contact_type.name %>"
+                 name="contact_types[]"
+                 value="<%= contact_type.id %>"
+                 <% if @contact.contact_types.include? contact_type -%>
+                 checked="checked"
+                 <% end -%>
+                 />
+          <label class="checkbox" for="<%= contact_type.name %>">
+            <%= contact_type.description %>
+          </label>
+        </div>
       </li>
-    </div>
-  <% end -%>
+      <% end -%>
   </ul>
   </fieldset>
   <% unless @contact.id.nil? %>
