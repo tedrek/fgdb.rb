@@ -26,6 +26,14 @@ RewriteEngine On
 #   Alias /myrailsapp /path/to/myrailsapp/public
 #   RewriteBase /myrailsapp
 
+ErrorDocument 503 /release.html
+
+# Return a 503 Service Unavailable when tmp/stop.txt exists.
+RewriteCond %{REQUEST_URI} !^/release.html$
+RewriteCond %{DOCUMENT_ROOT}/../tmp/stop.txt -f
+RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /$1 [R=503,L]
+
 RewriteCond %{HTTP_HOST} "printme.fglan" [OR]
 RewriteCond %{HTTP_HOST} "printme" [OR]
 RewriteCond %{HTTP_HOST} "fgss.fglan" [OR]

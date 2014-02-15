@@ -5,4 +5,13 @@
 
 cd ~/deploy
 
+# Put the application into maintenance mode
+touch tmp/stop.txt
+
 bundle install
+
+export RAILS_ENV=production
+rake db:migrate
+
+touch tmp/restart.txt
+rm tmp/stop.txt
