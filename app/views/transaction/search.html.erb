@@ -26,11 +26,7 @@
     <%= loading_indicator_tag("#{@transaction_type}_paginate_loading") %>
   </td>
   <% if !@transactions.nil? -%>
-    <%= will_paginate @transactions, :remote_options => {
-          :method => :get,
-          :update => component_id(params),
-          :loading => "Element.show('#{loading_indicator_id("#{@transaction_type}_paginate_loading")}');",
-        },
+    <%= will_paginate @transactions,
         :params => {
           :conditions => params[:conditions],
           :dont_show_wrapper => 'true',

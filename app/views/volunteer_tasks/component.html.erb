@@ -37,10 +37,7 @@
     <%= loading_indicator_tag("volunteer_task_footer_loading").html_safe %>
   </td>
 
-  <%= will_paginate @volunteer_tasks, :params => {:action => "component"},  :remote_options => {
-        :method => :get, :update => component_id(params), :loading => "Element.show('#{loading_indicator_id("volunteer_task_footer_loading")}');"
-      }
-      %>
+  <%= will_paginate @volunteer_tasks %>
 </div>
 
 <% if @show_wrapper %>
