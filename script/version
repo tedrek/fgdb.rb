@@ -3,9 +3,12 @@
 cd `dirname $0`/..
 VERSION=$(head -1 ChangeLog | awk '{print $2}' | sed 's/[()]//g')
 DIST=$(head -1 ChangeLog | awk '{print $3}' | sed 's/[;]//g')
+BUILD=""
+if [ -f .git-exported-version ]; then
+  BUILD=$(cat .git-exported-version)
+fi
 if [ "$DIST" = "UNRELEASED" ]; then
-    echo "$VERSION (UNRELEASED)"
+    echo "$VERSION build:$BUILD (UNRELEASED)"
 else
     echo "$VERSION"
 fi
-
