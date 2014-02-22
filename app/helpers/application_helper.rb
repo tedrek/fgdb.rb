@@ -382,14 +382,6 @@ module ApplicationHelper
     javascript_tag(js)
   end
 
-  def edit_link(link_id, options, form_id = nil)
-    make_link(link_id,
-              "E",
-              "Edit",
-              options,
-              form_id)
-  end
-
   def delete_link(link_id, options, form_id = nill)
     make_link(link_id,
               "D",
