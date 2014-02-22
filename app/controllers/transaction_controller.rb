@@ -299,7 +299,7 @@ class TransactionController < ApplicationController
       end
     end
     @successful = @transaction.destroy if @successful
-    render :action => "destroy.rjs"
+    redirect_to request.referer
   end
 
   def needs_attention
