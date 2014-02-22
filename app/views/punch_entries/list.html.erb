@@ -19,13 +19,13 @@
       <td><%= p.volunteer_task.nil? ? '-' : p.volunteer_task.duration %></td>
       <td>
         <%= link_to controller: :punch_entries, action: :edit, id: p.id do -%>
-          <img src="/icons/pencil.png" title="Edit sign in" />
+          <img src="/images/icons/pencil.png" title="Edit sign in" />
         <% end -%>
         <%= link_to controller: :punch_entries, action: :foobar do -%>
-          <img src="/icons/user_go.png" title="Sign user out"/>
+          <img src="/images/icons/user_go.png" title="Sign user out"/>
         <% end -%>
         <%= link_to controller: :punch_entries, action: :destroy do -%>
-          <img src="/icons/delete.png" title="Delete sign in" />
+          <img src="/images/icons/delete.png" title="Delete sign in" />
         <% end -%>
       </td>
     </tr>
