@@ -5,9 +5,32 @@
              url: {action: 'update', id: @punch_entry.id} do |f| -%>
   <p>Contact: <%= @punch_entry.contact %> (#<%= @punch_entry.contact.id %>)</p>
   <label for="punch_entry_in_time">Sign-In time</label>
-  <%= f.text_field :in_time, class: 'date-picker' %>
+  <%= text_field_tag 'punch_entry[in_time][date]',
+                     @punch_entry.in_time.to_date,
+                     maxlength: 10,
+                     size: 10,
+                     class: 'date-picker'
+      %>
+  <%= text_field_tag 'punch_entry[in_time][time]',
+                     @punch_entry.in_time.strftime('%R'),
+                     maxlength: 10,
+                     size: 5,
+                     class: 'time-picker'
+      %>
   <label for="punch_entry_out_time">Sign-Out time</label>
-  <%= f.text_field :out_time, class: 'date-picker' %>
+  <%= text_field_tag 'punch_entry[out_time][date]',
+                     @punch_entry.out_time.to_date,
+                     maxlength: 10,
+                     size: 10,
+                     class: 'date-picker'
+      %>
+  <%= text_field_tag 'punch_entry[out_time][time]',
+                     @punch_entry.out_time.strftime('%R'),
+                     maxlength: 10,
+                     size: 5,
+                     class: 'time-picker'
+      %>
+  <br />
   <%= f.check_box :flagged %>
   <label for="punch_entry_flagged">Flagged?</label>
   <label for="punch_entry_station">Station</label>

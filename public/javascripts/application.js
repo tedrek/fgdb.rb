@@ -939,6 +939,12 @@ function toggle_discount(evt) {
                  '.notation-form',
                  fgdb.notations.displayError)
 
+    $(function () {
+        $('.time-picker').pickatime({
+            format: 'HH:i',
+            interval: 15});
+    });
+
     // Add calendar popups to all date-picker elements
     $j('.date-picker').datepicker({
         showOn: "button",

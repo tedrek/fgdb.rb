@@ -75,6 +75,17 @@ class PunchEntriesController < ApplicationController
 
   def update
     @punch_entry = PunchEntry.find(params[:id])
+
+    date = Time.zone.parse(params[:punch_entry][:in_time][:date])
+    time = Time.zone.parse(params[:punch_entry][:in_time][:time])
+    params[:punch_entry][:in_time] = date.change(hour: time.hour,
+                                                 min: time.min)
+
+    date = Time.zone.parse(params[:punch_entry][:out_time][:date])
+    time = Time.zone.parse(params[:punch_entry][:out_time][:time])
+    params[:punch_entry][:out_time] = date.change(hour: time.hour,
+                                                  min: time.min)
+
     if @punch_entry.update_attributes(params[:punch_entry])
       flash[:message] = "Updated PunchEntry ##{@punch_entry.id}"
     else
