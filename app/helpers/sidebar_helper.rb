@@ -59,7 +59,8 @@ module SidebarHelper
     "system_pricings" => "sales",
     "pricing_types" => "sales",
     "pricing_components" => "sales",
-    "pricing_values" => "sales" # Going away?
+    "pricing_values" => "sales", # Going away?
+      'punch_entries' => 'Sign ins',
     }
   end
 
@@ -71,6 +72,11 @@ module SidebarHelper
     # hours
     sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks"}
     sidebar_hash["hours"]["points trade"] = {:c => 'points_trades'}
+    sidebar_hash["Sign ins"] = {
+      "Today" => {c: 'punch_entries', a: 'today'},
+      "Flagged" => {c: 'punch_entries', a: 'flagged'},
+      "All" => {c: 'punch_entries', a: 'list'},
+    }
     # transactions
     for i in [:donation, :sale, :recycling, :disbursement, :gizmo_return] do
       pl = i.to_s.pluralize

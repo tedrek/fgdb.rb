@@ -73,6 +73,25 @@ class PunchEntriesController < ApplicationController
                                          order: 'id ASC')
   end
 
+  def today
+    @punch_entries = PunchEntry
+      .where('in_time >= ?',
+            [Date.today.to_time_in_current_zone])
+      .paginate(per_page: 25,
+                page: params[:page],
+                order: 'id ASC')
+    render :list
+  end
+
+  def flagged
+    @punch_entries = PunchEntry
+      .where(flagged: true)
+      .paginate(per_page: 25,
+                page: params[:page],
+                order: 'id ASC')
+    render :list
+  end
+
   def update
     @punch_entry = PunchEntry.find(params[:id])
 
