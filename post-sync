@@ -11,6 +11,7 @@ touch tmp/stop.txt
 bundle install
 
 export RAILS_ENV=production
+rake db:backup
 rake db:migrate
 
 touch tmp/restart.txt

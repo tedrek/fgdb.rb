@@ -178,17 +178,28 @@ end
 
 rails_env = ENV['RAILS_ENV'] || "development"
 namespace :db do
-#   desc "Migrate from schema.sql to current"
-#   redefine_task :migrate => :environment do
-#     migrate_from_schema(rails_env)
-#   end
-
-#   desc "Setup a new database"
-#   task :setup => :environment do
-#     load_schema(rails_env)
-#     load_metadata(rails_env)
-#     migrate_from_schema(rails_env)
-#   end
+  desc "Backup the database to a timestamped file in db/"
+  task :backup => :environment do
+    config, search_path = setup_environment(rails_env)
+    case config[rails_env]["adapter"]
+    when "postgresql"
+      output_file = "db/backup-#{rails_env}-" +
+        Time.zone.now.strftime('%Y-%m-%d-%H%M') +
+        ".sql.gz"
+      print "Backing up the database..."
+      args = ['pg_dump', '-c', '-x', '--disable-triggers', '-O',
+             '-Z', '7',
+             '-U', config[rails_env]["username"],
+             '-f', output_file]
+      args << search_path unless search_path.nil?
+      system(*args,
+             config[rails_env]['database'])
+      raise "Error dumping database" if $?.exitstatus == 1
+      puts " done."
+    else
+      raise "Task not supported by '#{config["test"]["adapter"]}'"
+    end
+  end
 
   namespace :metadata do
 
