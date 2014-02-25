@@ -36,12 +36,8 @@
   <label for="punch_entry_station">Station</label>
   <select id="punch_entry_station" name="punch_entry[station]">
       <option value="">-- Select station --</option>
-      <%= options_from_collection_for_select(VolunteerTaskType.
-          instantiables.
-          effective_on(Time.now).
-          sort_by { |x|
-          x.description.downcase
-          },
+      <%= options_from_collection_for_select(
+          VolunteerTaskType.current,
           :id,
           :display_name,
           @punch_entry.volunteer_task.nil? ?
