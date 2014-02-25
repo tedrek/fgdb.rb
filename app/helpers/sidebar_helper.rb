@@ -73,6 +73,7 @@ module SidebarHelper
     sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks"}
     sidebar_hash["hours"]["points trade"] = {:c => 'points_trades'}
     sidebar_hash["Sign ins"] = {
+      "Volunteer form" => {c: 'punch_entries'},
       "Today" => {c: 'punch_entries', a: 'today'},
       "Flagged" => {c: 'punch_entries', a: 'flagged'},
       "All" => {c: 'punch_entries', a: 'list'},
