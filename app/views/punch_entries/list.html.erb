@@ -14,8 +14,8 @@
     <tr>
       <td><%= p.contact.id %></td>
       <td><%= p.contact.first_name %> <%= p.contact.surname %></td>
-      <td><%= p.in_time.strftime('%F %R %Z') %></td>
-      <td><%= p.out_time.nil? ? '-' : p.out_time.strftime('%F %R %Z') %></td>
+      <td><%= l p.in_time, format: :short %></td>
+      <td><%= p.out_time.nil? ? '-' : l(p.out_time, format: :short) %></td>
       <td><%= p.volunteer_task.nil? ? '-' : p.volunteer_task.duration %></td>
       <td>
         <%= link_to controller: :punch_entries, action: :edit, id: p.id do -%>
