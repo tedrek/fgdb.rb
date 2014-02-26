@@ -963,7 +963,7 @@ function toggle_discount(evt) {
         running = true;
         $j('.date-picker').not('.hasDatepicker').datepicker({
             showOn: "button",
-            buttonImage: "/images/dhtml_calendar/calendar.gif",
+            buttonImage: "/images/icons/calendar.png",
             buttonImageOnly: true,
             dateFormat: "yy-mm-dd"
         });
