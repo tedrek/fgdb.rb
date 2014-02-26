@@ -57,6 +57,7 @@ class PunchEntriesController < ApplicationController
     end
     @punch_entry.station = @station
     @punch_entry.out_time = Time.zone.now
+    @punch_entry.flagged = true if @station.hours_multiplier != 1
     if @punch_entry.save
       flash[:message] = "Signed out #{@contact.first_name} #{@contact.surname}"\
                         " with #{@punch_entry.duration} hours"
