@@ -72,12 +72,10 @@ module SidebarHelper
     # hours
     sidebar_hash["hours"]["entry"] = {:c => "volunteer_tasks"}
     sidebar_hash["hours"]["points trade"] = {:c => 'points_trades'}
-    sidebar_hash["Sign ins"] = {
-      "Volunteer form" => {c: 'punch_entries'},
-      "Today" => {c: 'punch_entries', a: 'today'},
-      "Flagged" => {c: 'punch_entries', a: 'flagged'},
-      "All" => {c: 'punch_entries', a: 'list'},
-    }
+    sidebar_hash["Sign ins"]['Volunteer form'] = {c: 'punch_entries', a: 'index'}
+    sidebar_hash["Sign ins"]["Today"] = {c: 'punch_entries', a: 'today'}
+    sidebar_hash["Sign ins"]["Flagged"] = {c: 'punch_entries', a: 'flagged'}
+    sidebar_hash["Sign ins"]["All"] = {c: 'punch_entries', a: 'list'}
     # transactions
     for i in [:donation, :sale, :recycling, :disbursement, :gizmo_return] do
       pl = i.to_s.pluralize

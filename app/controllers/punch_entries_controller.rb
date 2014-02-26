@@ -2,6 +2,13 @@ class PunchEntriesController < ApplicationController
   layout 'with_sidebar'
   before_filter :find_contact, only: [:punch_in, :punch_out]
 
+  def get_required_privileges
+    a = super
+    a << {:only => ['edit', 'list', 'today', 'flagged', 'update'],
+          :privileges => ['admin_punch_entries']}
+    return a
+  end
+
   #
   # The basic user interface, to be accessible by anonymous users
   #
