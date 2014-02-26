@@ -19,7 +19,6 @@ SET SESSION AUTHORIZATION DEFAULT;
 ALTER TABLE volunteer_task_types DISABLE TRIGGER ALL;
 
 COPY volunteer_task_types (id, description, hours_multiplier, instantiable, lock_version, updated_at, created_at, name, effective_on, ineffective_on, program_id, adoption_credit) FROM stdin;
-42	misc	1.000	t	2	2010-03-27 01:54:34.727845	2006-12-30 08:40:54	misc	\N	\N	10	\N
 28	receiving	1.000	t	1	2010-03-27 01:54:34.767845	2006-12-13 10:49:54	receiving	\N	\N	1	\N
 51	system administration	1.000	t	2	2010-03-27 01:54:34.879847	2006-12-30 08:40:54	system_administration	\N	\N	10	\N
 33	admin	1.000	t	2	2010-03-27 01:54:34.895848	2006-12-30 08:40:54	admin	\N	\N	10	\N
@@ -32,13 +31,7 @@ COPY volunteer_task_types (id, description, hours_multiplier, instantiable, lock
 26	build, assembly	1.000	t	1	2010-03-27 01:54:35.127851	2006-12-13 10:48:52	assembly	\N	\N	2	\N
 55	cleaning	1.000	t	3	2010-03-27 01:54:35.183852	2006-12-13 10:47:07	cleaning	2009-10-02 00:00:00	\N	1	\N
 49	hardware id	1.000	t	1	2010-03-27 01:54:35.271854	2006-12-30 08:40:54.441757	sorting	\N	\N	2	\N
-56	monitors	1.000	t	3	2010-03-27 01:54:35.215853	2006-12-13 10:46:55	monitors	2009-10-02 00:00:00	2011-07-31 00:00:00	1	\N
-31	massage	4.000	t	1	2010-03-27 01:54:34.711845	2006-12-13 11:04:35	massage	\N	2011-07-31 00:00:00	10	\N
-47	repair	1.000	t	1	2010-03-27 01:54:34.739845	2006-12-30 08:40:54.425307	repair	\N	2011-07-31 00:00:00	2	\N
-35	computers for kids	1.000	t	2	2010-03-27 01:54:34.831847	2006-12-30 08:40:54	computers_for_kids	\N	2011-07-31 00:00:00	10	\N
 46	programming	1.000	t	2	2010-03-27 01:54:34.923848	2006-12-30 08:40:54	programming	\N	2011-07-31 00:00:00	10	\N
-36	CREAM	1.000	t	2	2010-03-27 01:54:34.955849	2006-12-30 08:40:54	cream	\N	2011-07-31 00:00:00	10	\N
-37	data entry	1.000	t	2	2010-03-27 01:54:34.967849	2006-12-30 08:40:54	data_entry	\N	2011-07-31 00:00:00	1	\N
 43	orientation	1.000	t	2	2010-03-27 01:54:35.05185	2006-12-30 08:40:54	orientation	\N	2011-07-31 00:00:00	10	\N
 54	case management	1.000	t	1	2010-03-27 01:54:35.155852	2008-12-12 17:17:50.467874	case management	\N	2011-07-31 00:00:00	2	\N
 23	cleaning	2.000	t	3	2010-03-27 01:54:35.171852	2006-12-13 10:47:07	cleaning	\N	2011-07-31 00:00:00	1	\N
@@ -60,6 +53,8 @@ COPY volunteer_task_types (id, description, hours_multiplier, instantiable, lock
 41	laptops	1.000	t	4	2012-05-05 09:31:05.809019	2006-12-30 08:40:54	laptops	\N	\N	2	t
 62	facilities	1.000	t	0	2012-12-08 05:39:56.176809	2012-12-08 05:39:56.176809	facilities	\N	\N	10	\N
 63	laptop prebuild	1.000	t	0	2013-07-09 11:51:52.068059	2013-07-09 11:51:52.068059	laptop_prebuild	\N	\N	1	f
+31	massage	4.000	t	3	2014-02-25 02:14:58.349335	2006-12-13 11:04:35	massage	2010-01-01 08:00:00	2011-07-31 00:00:00	5	f
+42	misc	1.000	t	4	2014-02-26 21:55:47.68826	2006-12-30 08:40:54	misc	\N	\N	10	\N
 \.
 
 

@@ -1,0 +1,12 @@
+<p id="notice"><%= notice %></p>
+
+<h3><%= @station.name %></h3>
+<p>Program: <%= @station.program.name %></p>
+<p>Description: <%= @station.description %></p>
+<p>Start date: <%= d = @station.effective_on; d.nil? ? '-' : l(d.to_date)%></p>
+<p>End date: <%= d = @station.ineffective_on; d.nil? ? '-' : l(d.to_date)%></p>
+<p>Multiplier: <%= @station.hours_multiplier %></p>
+<p>Adoption credit: <%= @station.adoption_credit ? '✓' : '✗' %></p>
+
+<%= link_to 'Edit', edit_volunteer_task_type_path(@station) %> |
+<%= link_to 'Back', volunteer_task_types_path %>

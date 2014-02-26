@@ -1,0 +1,27 @@
+<%= form_for(@station) do |f| %>
+  <% if @station.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@station.errors.count, "error") %> prohibited this station from being saved:</h2>
+
+      <ul>
+      <% @station.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= f.label :name %><%= f.text_field :name %>
+  <%= f.label :description%><%= f.text_field :description %>
+  <%= f.label :program %>
+  <%= f.collection_select(:program_id, Program.all, :id, :name) %>
+  <%= f.label :effective_on %>
+  <%= f.text_field :effective_on, class: 'date-picker' %>
+  <%= f.label :ineffective_on%>
+  <%= f.text_field :ineffective_on, class: 'date-picker' %>
+  <%= f.label :hours_multiplier%><%= f.text_field :hours_multiplier %>
+  <%= f.label :adoption_credit %><%= f.check_box :adoption_credit %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,44 @@
+<h1>Listing stations</h1>
+
+<table>
+  <tbody class="zebra">
+  <tr>
+    <th>name</th>
+    <th>Program</th>
+    <th>Start date</th>
+    <th>End date</th>
+    <th>Multiplier</th>
+    <th>Credit</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @stations.each do |station| %>
+  <tr>
+    <td><%= station.name %></td>
+    <td><%= station.program.name %></td>
+    <td><%= d = station.effective_on; d.nil? ? '-' : l(d.to_date)%></td>
+    <td><%= d = station.ineffective_on; d.nil? ? '-' : l(d.to_date)%></td>
+    <td><%= station.hours_multiplier %></td>
+    <td><%= station.adoption_credit ? '✓' : '✗' %></td>
+    <td><%= link_to 'Show', station %></td>
+    <td><%= link_to 'Edit', edit_volunteer_task_type_path(station) %></td>
+    <td><%= if station.instantiable
+              link_to('Disable',
+                      disable_volunteer_task_type_path(station),
+                      method: :post)
+            else
+              link_to('Enable',
+                      enable_volunteer_task_type_path(station),
+                      method: :post)
+            end
+            %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<br />
+
+<%= link_to 'New Station', new_volunteer_task_type_path %>

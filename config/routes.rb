@@ -2,6 +2,13 @@ Fgdb::Application.routes.draw do
   resources :gizmo_type_groups
   resources :users
   resource :session
+  resources :stations, as: 'volunteer_task_types' do
+    member do
+      post 'disable'
+      post 'enable'
+    end
+  end
+
   match '/' => 'sidebar_links#index'
   match '/:controller(/:action(/:id))'
   match 'barcode/:id.:format' => 'barcode#barcode'
