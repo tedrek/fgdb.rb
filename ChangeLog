@@ -1,6 +1,7 @@
 fgdb.rb (1.2.0-yvr) UNRELEASED; urgency=low
 
   * Add a station/volunteer_task_type management interface
+  * Add a volunteer punch-in/out interface for hours tracking
   * Migrate to rails 3.0
 
  -- Tyler Hamilton <tyler@freegeekvancouver.org> Fri, 21 February 2014
