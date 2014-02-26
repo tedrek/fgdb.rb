@@ -3,6 +3,7 @@
           "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
+    <%= csrf_meta_tag %>
     <title><% if defined?(@page_title) %><%= @page_title %><% else %> Free Geek Database:
       <%= (controller.class.name).titleize.sub(/ Controller/, '') %>:
       <%= (controller.action_name).titleize %> <% end %>
