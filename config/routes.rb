@@ -1,4 +1,12 @@
+require 'api_constraints'
+
 Fgdb::Application.routes.draw do
+  namespace :api, defaults: {format: 'json'} do
+    scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+      resources :drives
+    end
+  end
+
   resources :gizmo_type_groups
   resources :users
   resource :session
