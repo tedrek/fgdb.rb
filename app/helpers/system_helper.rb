@@ -11,8 +11,11 @@ module SystemHelper
     include XmlHelper
 
     def SystemParser.parse(in_string)
+      puts "Parsing XML"
       sp = nil
-      parser = Parsers.select{|x| in_string.match(/#{x.match_string}/)}.first or return false
+      parser = Parsers.select do |x|
+        in_string.match(/#{x.match_string}/)
+      end.first or return false
       begin
         sp = parser.new(in_string)
       rescue SystemParserException

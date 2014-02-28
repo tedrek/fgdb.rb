@@ -1,6 +1,10 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+libdir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+$:.unshift(libdir) unless
+    $:.include?(File.join('..', File.dirname(__FILE__))) || $:.include?(libdir)
+require 'soap'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -13,7 +17,7 @@ module Fgdb
     # in config/initializers -- all .rb files in that directory are
     # automatically loaded.
 
-    # config.middleware.use MyAPIMiddleware
+    config.middleware.use ::MyAPIMiddleware
 
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/lib)
