@@ -53,4 +53,8 @@ class PunchEntriesControllerTest < ActionController::TestCase
     assert_equal flash[:message],
                  'Error signing out: Charles McGeneneen is not signed in'
   end
+
+  test "listing punch entries" do
+    get :list
+  end
 end

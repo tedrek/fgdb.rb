@@ -110,8 +110,12 @@ class PunchEntriesController < ApplicationController
 
     date = Time.zone.parse(params[:punch_entry][:out_time][:date])
     time = Time.zone.parse(params[:punch_entry][:out_time][:time])
-    params[:punch_entry][:out_time] = date.change(hour: time.hour,
-                                                  min: time.min)
+    if !time.nil?
+      params[:punch_entry][:out_time] = date.change(hour: time.hour,
+                                                    min: time.min)
+    else
+      params[:punch_entry].delete(:out_time)
+    end
 
     if @punch_entry.update_attributes(params[:punch_entry])
       flash[:message] = "Updated PunchEntry ##{@punch_entry.id}"
