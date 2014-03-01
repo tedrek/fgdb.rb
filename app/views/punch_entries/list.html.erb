@@ -5,7 +5,7 @@
 <table class="punch-entries">
   <tbody class="zebra">
     <tr>
-      <% ['ID', 'Name', 'Sign-In', 'Sign-Out', 'Duration', 'Actions']
+      <% ['ID', 'Name', 'Sign-In', 'Sign-Out', 'Duration', 'Station', 'Actions']
          .each do |action| -%>
       <th><%= action %></th>
       <% end -%>
@@ -16,7 +16,12 @@
       <td><%= p.contact.first_name %> <%= p.contact.surname %></td>
       <td><%= l p.in_time, format: :short %></td>
       <td><%= p.out_time.nil? ? '-' : l(p.out_time, format: :short) %></td>
-      <td><%= p.volunteer_task.nil? ? '-' : p.volunteer_task.duration %></td>
+      <% if p.volunteer_task.nil? -%>
+      <td>-</td><td>-</td>
+      <% else -%>
+      <td><%= p.volunteer_task.duration %></td>
+      <td><%= p.volunteer_task.volunteer_task_type.name %></td>
+      <% end -%>
       <td>
         <%= link_to controller: :punch_entries, action: :edit, id: p.id do -%>
           <img src="/images/icons/pencil.png" title="Edit sign in" />
