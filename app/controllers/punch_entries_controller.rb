@@ -76,7 +76,11 @@ class PunchEntriesController < ApplicationController
     if @punch_entry.destroy
       flash[:message] = "Destroyed PunchEntry ##{@punch_entry.id}"
     end
-    redirect_to action: :list
+    if session[:last_punch_entry_list].nil?
+      redirect_to action: :list
+    else
+      redirect_to action: session.delete(:last_punch_entry_list)
+    end
   end
 
   def edit
@@ -84,12 +88,14 @@ class PunchEntriesController < ApplicationController
   end
 
   def list
+    session[:last_punch_entry_list] = :list
     @punch_entries = PunchEntry.paginate(per_page: 25,
                                          page: params[:page],
                                          order: 'id ASC')
   end
 
   def today
+    session[:last_punch_entry_list] = :today
     @punch_entries = PunchEntry
       .where('in_time >= ?',
             [Date.today.to_time_in_current_zone])
@@ -100,6 +106,7 @@ class PunchEntriesController < ApplicationController
   end
 
   def flagged
+    session[:last_punch_entry_list] = :flagged
     @punch_entries = PunchEntry
       .where(flagged: true)
       .paginate(per_page: 25,
@@ -130,7 +137,11 @@ class PunchEntriesController < ApplicationController
     else
       flash[:message] = "Error saving entry: #{@punch_entry.errors}"
     end
-    redirect_to action: :list
+    if session[:last_punch_entry_list].nil?
+      redirect_to action: :list
+    else
+      redirect_to action: session.delete(:last_punch_entry_list)
+    end
   end
 
   protected
