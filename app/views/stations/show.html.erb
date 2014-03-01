@@ -2,7 +2,7 @@
 
 <h3><%= @station.name %></h3>
 <p>Program: <%= @station.program.name %></p>
-<p>Description: <%= @station.description %></p>
+<p>Display name: <%= @station.description %></p>
 <p>Start date: <%= d = @station.effective_on; d.nil? ? '-' : l(d.to_date)%></p>
 <p>End date: <%= d = @station.ineffective_on; d.nil? ? '-' : l(d.to_date)%></p>
 <p>Multiplier: <%= @station.hours_multiplier %></p>

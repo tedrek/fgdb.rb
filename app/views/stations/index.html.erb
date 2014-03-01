@@ -4,6 +4,7 @@
   <tbody class="zebra">
   <tr>
     <th>name</th>
+    <th>Display name</th>
     <th>Program</th>
     <th>Start date</th>
     <th>End date</th>
@@ -17,6 +18,7 @@
 <% @stations.each do |station| %>
   <tr>
     <td><%= station.name %></td>
+    <td><%= station.description %></td>
     <td><%= station.program.name %></td>
     <td><%= d = station.effective_on; d.nil? ? '-' : l(d.to_date)%></td>
     <td><%= d = station.ineffective_on; d.nil? ? '-' : l(d.to_date)%></td>
