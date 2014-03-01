@@ -21,7 +21,7 @@
         <%= link_to controller: :punch_entries, action: :edit, id: p.id do -%>
           <img src="/images/icons/pencil.png" title="Edit sign in" />
         <% end -%>
-        <%= link_to controller: :punch_entries, action: :destroy do -%>
+        <%= link_to controller: :punch_entries, action: :destroy, id: p.id do -%>
           <img src="/images/icons/delete.png" title="Delete sign in" />
         <% end -%>
       </td>

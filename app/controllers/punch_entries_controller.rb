@@ -4,7 +4,7 @@ class PunchEntriesController < ApplicationController
 
   def get_required_privileges
     a = super
-    a << {:only => ['edit', 'list', 'today', 'flagged', 'update'],
+    a << {:only => ['edit', 'list', 'today', 'flagged', 'update', 'destroy'],
           :privileges => ['admin_punch_entries']}
     return a
   end
@@ -70,6 +70,14 @@ class PunchEntriesController < ApplicationController
   #
   # Admin level actions
   #
+
+  def destroy
+    @punch_entry = PunchEntry.find(params[:id])
+    if @punch_entry.destroy
+      flash[:message] = "Destroyed PunchEntry ##{@punch_entry.id}"
+    end
+    redirect_to action: :list
+  end
 
   def edit
     @punch_entry = PunchEntry.find(params[:id])
