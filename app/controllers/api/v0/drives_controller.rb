@@ -2,12 +2,22 @@ module Api
   module V0
     class DrivesController < ApplicationController
       def create
-        @drive = Drive.create(params[:drive])
+        new_drive = true
+        if params[:drive][:generic]
+          @drive = Drive.create_generic(size: params[:drive][:size])
+        else
+          @drive = Drive.where(manufacturer: params[:drive][:manufacturer],
+                               model: params[:drive][:model],
+                               serial: params[:drive][:serial]).first
+          new_drive = false unless @drive.nil?
+          @drive ||= Drive.create(params[:drive])
+        end
+
         if @drive.save
           render '_drive', {
             locals: {drive: @drive},
             format: :json,
-            status: :created,
+            status: new_drive ? :created : :ok,
             location: "/api/v0/drives/#{@drive.id}",
           }
         end
