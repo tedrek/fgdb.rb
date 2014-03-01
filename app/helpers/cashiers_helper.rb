@@ -12,8 +12,15 @@ module CashiersHelper
   end
 
   def cashiers_field(force = false, pass_in = nil)
+    return '' unless (cashierable or force)
     pass_in = pass_in.nil? ? "null" : "'#{pass_in}'"
-    "<label for=\"cashier_code\">PIN:</label><input name=\"cashier_code\" type=\"password\" id=\"cashier_code\" onKeyUp=\"update_cashier_code(#{pass_in})\" autocomplete=\"off\"/>#{loading_indicator_tag("cashier_loading")}" if cashierable or force
+    ret = ''.html_safe
+    ret << '<label for="cashier_code">PIN:</label>'.html_safe
+    ret << '<input name="cashier_code" type="password" '.html_safe
+    ret << 'id="cashier_code" onKeyUp="update_cashier_code('.html_safe
+    ret << pass_in
+    ret << ')" autocomplete="off"/>'.html_safe
+    ret << loading_indicator_tag("cashier_loading")
   end
 
   def cashiers_javascript(force = false, pass_in = nil)
