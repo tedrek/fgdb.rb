@@ -5,8 +5,7 @@ module Api
 
       def create
         @attachment = Attachment.new(file: params[:file],
-                                     attachable_type: params[:attachable_type],
-                                     attachable_id: params[:attachable_id])
+                                     attachable: find_attachable)
         if @attachment.save
           render 'success', format: :json
         else
@@ -23,6 +22,20 @@ module Api
         send_file @attachment.filename,
           filename: @attachment.name,
           type: @attachment.content_type
+      end
+
+      private
+      def find_attachable
+        if params.has_key? :attachable_id
+          return params[:attachable_type].
+            classify.constantize.find(params[:attachabl_id])
+        end
+        params.each do |n,v|
+          if n =~ /(.+)_id$/
+            return $1.classify.constantize.find(v)
+          end
+        end
+        raise ActiveRecord::RecordNotFound.new("No attachable specified")
       end
     end
   end
