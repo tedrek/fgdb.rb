@@ -8,7 +8,9 @@ Fgdb::Application.routes.draw do
           get 'data'
         end
       end
-      resources :checks
+      resources :checks do
+        resources :attachments, shallow: true
+      end
       resources :drives
       resources :runs
     end
