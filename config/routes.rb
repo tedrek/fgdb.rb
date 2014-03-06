@@ -3,6 +3,12 @@ require 'api_constraints'
 Fgdb::Application.routes.draw do
   namespace :api, defaults: {format: 'json'} do
     scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+      resources :attachments, only: [:create, :show] do
+        member do
+          get 'data'
+        end
+      end
+      resources :checks
       resources :drives
       resources :runs
     end

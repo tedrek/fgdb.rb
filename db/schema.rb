@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140226233446) do
+ActiveRecord::Schema.define(:version => 20140302011229) do
 
   create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-combine_four_sql
@@ -142,6 +142,15 @@ END
     t.integer  "call_status_type_id"
     t.boolean  "closed",              :default => false, :null => false
     t.integer  "lock_version",        :default => 0,     :null => false
+  end
+
+  create_table "attachments", :force => true do |t|
+    t.string   "name"
+    t.string   "content_type"
+    t.integer  "attachable_id"
+    t.string   "attachable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "attendance_types", :force => true do |t|
