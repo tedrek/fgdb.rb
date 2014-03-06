@@ -12,7 +12,9 @@ Fgdb::Application.routes.draw do
         resources :attachments, shallow: true
       end
       resources :drives
-      resources :runs
+      resources :runs do
+        resources :checks, only: [:index, :create]
+      end
     end
   end
 

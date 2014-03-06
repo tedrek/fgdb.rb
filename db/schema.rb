@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140302011229) do
+ActiveRecord::Schema.define(:version => 20140307000117) do
 
   create_proc(:combine_four, [:varchar, :varchar, :varchar, :varchar], :return => :varchar, :lang => 'plpgsql') {
     <<-combine_four_sql
@@ -183,10 +183,9 @@ END
     t.integer  "status"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.string   "stdout_log"
-    t.string   "stderr_log"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "check_name"
   end
 
   create_table "community_service_types", :force => true do |t|
