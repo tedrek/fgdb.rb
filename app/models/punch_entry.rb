@@ -4,6 +4,7 @@ class PunchEntry < ActiveRecord::Base
   has_many :notations, as: :notatable, dependent: :destroy
 
   validates :in_time, presence: true
+  validates :breaks, presence: true
   validates :contact, presence: true
   validate :station_available
 
@@ -36,6 +37,62 @@ class PunchEntry < ActiveRecord::Base
     previous_entry.save!
 
     return new(contact: person)
+  end
+
+  def consume_earlier
+    # They went offsite, we assume they signed out before going offsite
+    # We also assume they've included the time offsite in their total breaks
+    # So we find the earlier entry(s) in the day and collapse them into one.
+
+    # We also assume they didn't volunteer in what they consider more
+    # than one session
+
+    # Find entries within the previous 12 hours to consume
+    previous = PunchEntry.
+      where('contact_id = ? AND in_time >= ? AND flagged = ? AND id != ?',
+            contact_id,
+            (out_time || Time.zone.now) - 12.hours,
+            false,
+            self.id).
+      order(:in_time).
+      all
+
+    # No entries to consume
+    if previous.empty?
+      notations.create(content: "Attempted to collapse earlier entries "\
+                                "in the day to one but couldn't find any",
+                       contact: contact)
+      return
+    end
+
+    # Total the logged time for previous entries
+    t = previous.inject(0) do |r,p|
+      r += (p.out_time - p.in_time)
+    end
+
+    actual_time_offsite = (in_time - previous.first.in_time - t) / 3600.0
+
+    self.in_time = previous.first.in_time
+
+    note = "Includes #{actual_time_offsite} hours offsite from "
+    note << previous.length == 1 ? "this entry\n" : "these entries\n"
+    transaction do
+      previous.each do |p|
+        note << p.in_time.to_s + '-' + p.out_time.to_s + "\n"
+        # What happens when the stations between the two sign outs don't match?
+        p.destroy
+      end
+      notations.create(content: note, contact: contact)
+      save!
+    end
+  end
+
+  def breaks
+    read_attribute(:breaks) / 60.0
+  end
+
+  def breaks=(v)
+    write_attribute(:breaks, v * 60)
   end
 
   def duration

@@ -55,9 +55,19 @@ class PunchEntriesController < ApplicationController
       redirect_to action: :index
       return
     end
+
+    @punch_entry.breaks = params[:break_duration].to_f
+
     @punch_entry.station = @station
     @punch_entry.out_time = Time.zone.now
     @punch_entry.flagged = true if @station.hours_multiplier != 1
+
+    if params[:offsite] == "1"
+      @punch_entry.consume_earlier
+      # TODO: Show them a confirmation of the amount of time they are
+      # being credited with
+    end
+
     if @punch_entry.save
       flash[:message] = "Signed out #{@contact.first_name} #{@contact.surname}"\
                         " with #{@punch_entry.duration} hours"
@@ -130,6 +140,10 @@ class PunchEntriesController < ApplicationController
                                                     min: time.min)
     else
       params[:punch_entry].delete(:out_time)
+    end
+
+    if params[:punch_entry].has_key? :breaks
+      params[:punch_entry][:breaks] = params[:punch_entry][:breaks].to_f
     end
 
     if @punch_entry.update_attributes(params[:punch_entry])

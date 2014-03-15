@@ -90,4 +90,33 @@ class PunchEntryTest < ActiveSupport::TestCase
     p.out_time = p.in_time + 1350
     assert_equal p.duration, 0.5
   end
+
+  test "it collapses earlier entries into one" do
+    t = Time.zone.now
+    p = PunchEntry.new(contact: Contact.first)
+    p.in_time = t - 25.hours
+    p.out_time = t - 24.hours
+    p.station = VolunteerTaskType.first
+    assert p.save, "Create a record for yesterday"
+
+    p = PunchEntry.new(contact: Contact.first)
+    p.in_time = t - 3.hours
+    p.out_time = t - 2.hours
+    p.station = VolunteerTaskType.first
+    assert p.save, "Create an earlier record for today"
+    id = p.id
+
+    p = PunchEntry.new(contact: Contact.first)
+    p.in_time = t - 2.hours
+    p.out_time = Time.zone.now
+    p.station = VolunteerTaskType.first
+    assert p.save, "Create the record which will consume the earlier record"
+
+    d = p.duration
+    assert_difference 'PunchEntry.count', -1 do
+      p.consume_earlier
+    end
+
+    assert p.duration > d, "Duration has increased"
+  end
 end

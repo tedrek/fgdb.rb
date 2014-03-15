@@ -7,13 +7,29 @@
   <fieldset>
     <legend>Station</legend>
     <select id="station" name="station">
-      <option value="">The station you spent most time at</option>
+      <option value="" disabled selected>Spent the most time at</option>
       <%= options_from_collection_for_select(
           VolunteerTaskType.current,
           :id,
           :display_name
           )
           %>
+    </select>
+  </fieldset>
+  <fieldset>
+    <legend>Breaks</legend>
+    <select id="duration" name="break_duration">
+      <option value="0" disabled selected>Total length of breaks</option>
+      <option value="0.25">&frac14; hour</option>
+      <option value="0.5">&frac12; hour</option>
+      <option value="0.75">&frac34; hour</option>
+      <option value="1">1 hour</option>
+      <option value="2">2 hours</option>
+    </select>
+    <select id="offsite" name="offsite">
+      <option value="" disabled selected>Signed out during a break(s)</option>
+      <option value="0">No</option>
+      <option value="1">Yes</option>
     </select>
   </fieldset>
   <fieldset>

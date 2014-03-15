@@ -746,7 +746,7 @@ table.badge tr {
     border: 1px solid #ded;
 }
 
-.punch-entry-form input {
+.punch-entry-form input, .punch-entry-form select {
     width: 15em;
     padding: 2px;
     margin: 5px auto;

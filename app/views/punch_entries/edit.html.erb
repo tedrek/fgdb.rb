@@ -8,6 +8,8 @@
   <%= datetime_entry :punch_entry, :in_time %>
   <label for="punch_entry_out_time">Sign-Out time</label>
   <%= datetime_entry :punch_entry, :out_time %>
+  <label for="punch_entry_breaks">Breaks</label>
+  <%= f.text_field :breaks %>
   <br />
   <%= f.check_box :flagged %>
   <label for="punch_entry_flagged">Flagged?</label>
