@@ -52,14 +52,14 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def is_valid_contact(contact_id)
-    !! Contact.find_by_id(contact_id.to_i)
+    !! ::Contact.find_by_id(contact_id.to_i)
   end
 
   SpecSheetQuestionStruct = Struct.new(:id_name, :name, :question, :conditions) if !defined?(SpecSheetQuestionStruct)
   SpecSheetConditionStruct = Struct.new(:field_name, :operator, :expected_value) if !defined?(SpecSheetConditionStruct)
 
   def get_extra_questions
-    SpecSheetQuestion.find(:all).sort_by(&:position).map{|x|
+    ::SpecSheetQuestion.find(:all).sort_by(&:position).map{|x|
       a = x.spec_sheet_question_conditions.map{|y|
         SpecSheetConditionStruct.new(y.name, y.operator, y.expected_value)
       }
@@ -130,25 +130,25 @@ class PrintmeAPI < SOAP::SoapsBase
 
   public
   def actions
-    Action.usable.map{|x| ActionStruct.new(x.name, x.description, x.id)}
+    ::Action.usable.map{|x| ActionStruct.new(x.name, x.description, x.id)}
   end
   def types
-    Type.usable.map{|x| TypeStruct.new(x.name, x.description, x.id)}
+    ::Type.usable.map{|x| TypeStruct.new(x.name, x.description, x.id)}
   end
   def contracts
-    Contract.usable.map{|x| ContractStruct.new(x.name, x.label, x.id)}
+    ::Contract.usable.map{|x| ContractStruct.new(x.name, x.label, x.id)}
   end
   def default_action_description
-    Action.find_by_name('checker').description
+    ::Action.find_by_name('checker').description
   end
   def default_type_description
-    Type.find_by_name('regular').description
+    ::Type.find_by_name('regular').description
   end
   def default_contract_label
-    Contract.find_by_name('default').label
+    ::Contract.find_by_name('default').label
   end
   def coveredness_enabled
-    Default["coveredness_enabled"] == "1"
+    ::Default["coveredness_enabled"] == "1"
   end
 
   ###########
@@ -167,10 +167,10 @@ class PrintmeAPI < SOAP::SoapsBase
       input = printme_struct
     else
       struct = PrintmeStruct.new
-      struct.members.each{|x| struct.send(x + "=", printme_struct.send(x))}
+      struct.members.each{|x| struct.send(x.to_s + "=", printme_struct.send(x))}
       input = struct.to_hash
     end
-    report = SpecSheet.new(input)
+    report = ::SpecSheet.new(input)
     begin
       report.save!
       if report.xml_is_good
@@ -198,7 +198,7 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def submit_notes(notes_struct)
-    notes = Note.new(:contact_id => notes_struct.contact_id, :body => notes_struct.body, :lshw_output => notes_struct.lshw_output)
+    notes = ::Note.new(:contact_id => notes_struct.contact_id, :body => notes_struct.body, :lshw_output => notes_struct.lshw_output)
     begin
       notes.save!
     rescue => e
@@ -208,7 +208,7 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def get_system_for_note(note_id)
-    return Note.find_by_id(note_id).system.id
+    return ::Note.find_by_id(note_id).system.id
   end
 
   ###############
@@ -216,15 +216,15 @@ class PrintmeAPI < SOAP::SoapsBase
   ###############
 
   def get_system_for_report(report_id)
-    SpecSheet.find_by_id(report_id).system.id
+    ::SpecSheet.find_by_id(report_id).system.id
   end
 
   def contract_label_for_system(system_id)
-    System.find_by_id(system_id).contract.label
+    ::System.find_by_id(system_id).contract.label
   end
 
   def type_description_for_system(system_id)
-    sys = System.find_by_id(system_id)
+    sys = ::System.find_by_id(system_id)
     spec = sys ? sys.spec_sheets.sort_by{|x| x.created_at}.last : nil
     if spec
       return spec.type.description
@@ -234,7 +234,7 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def question_defaults(system_id)
-    sys = System.find_by_id(system_id)
+    sys = ::System.find_by_id(system_id)
     spec = sys ? sys.spec_sheets.sort_by{|x| x.created_at}.last : nil
     values = spec ? spec.spec_sheet_values : []
     hash = {}
@@ -245,7 +245,7 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def covered_for_system(system_id)
-    System.find_by_id(system_id).covered
+    ::System.find_by_id(system_id).covered
   end
 
   def spec_sheet_url(report_id)
@@ -257,12 +257,12 @@ class PrintmeAPI < SOAP::SoapsBase
   end
 
   def get_system_id(xml)
-    sp = SystemHelper::SystemParser.parse(xml)
+    sp = ::SystemHelper::SystemParser.parse(xml)
     return sp.find_system_id
   end
 
   def is_system_gone(system_id)
-    System.find(system_id).gone?
+    ::System.find(system_id).gone?
   end
 
   #####
