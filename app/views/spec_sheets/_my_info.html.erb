@@ -33,12 +33,12 @@
       </td>
       <td>
         <%= @report.signed_off_by %>
-        <%= form_for "sign_off", :html => {:class => "cashierable_form"}, :url => {:action => "sign_off", :id => @report.id} do |f| %>
-          To sign off, enter <%= cashiers_field(true, "sign_off") %>
+        <% if current_user && current_user.has_privileges('sign_off_spec_sheets') -%>
+        <%= form_for('sign_off',
+                     url: {action: 'sign_off', id: @report.id}) do |f| -%>
           <%= submit_tag "Sign off" %>
-        <% end %>
-
-          <%= cashiers_javascript(true, "sign_off") %>
+        <% end -%>
+        <% end -%>
      </td>
     </tr>
     <tr>

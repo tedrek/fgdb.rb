@@ -35,15 +35,12 @@ class SpecSheetsController < ApplicationController
   end
 
   def sign_off
-    if params[:cashier_code] && params[:cashier_code].length == 4
-      u = User.find_by_cashier_code(params[:cashier_code])
-      s = SpecSheet.find(params[:id])
-      # if no admins, only people with actual build_instructor role, do this: u.privileges.include?(required_privileges("show/sign_off").flatten.first)
-          # do not allow when users is the contact for the BT
-      if u.contact_id != s.contact_id && u.has_privileges(required_privileges("show/sign_off").flatten.first)
-        s.signed_off_by=(u)
-        s.save!
-      end
+    s = SpecSheet.find(params[:id])
+    if current_user.id != s.contact_id
+      s.signed_off_by = current_user
+      s.save!
+    else
+      flash[:message] = "Unable to sign off your own sheets"
     end
     redirect_to :back
   end
