@@ -18,6 +18,7 @@ Fgdb::Application.routes.draw do
     end
   end
 
+  resources :attachments, only: [:show]
   resources :gizmo_type_groups
   resources :users
   resource :session
