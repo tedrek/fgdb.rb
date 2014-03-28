@@ -1,5 +1,29 @@
+require 'api_constraints'
+
 Fgdb::Application.routes.draw do
+  namespace :api, defaults: {format: 'json'} do
+    scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
+      resources :attachments, only: [:create, :show] do
+        member do
+          get 'data'
+        end
+      end
+      resources :checks do
+        resources :attachments, shallow: true
+      end
+      resources :drives do
+        resources :runs, shallow: true
+      end
+      resources :runs do
+        resources :checks, only: [:index, :create]
+      end
+    end
+  end
+
+  resources :attachments, only: [:show]
+  resources :drives
   resources :gizmo_type_groups
+  resources :runs
   resources :users
   resource :session
   resources :stations, as: 'volunteer_task_types' do

@@ -1,0 +1,1 @@
+json.array! @checks, partial: 'api/v0/checks/check', as: :check

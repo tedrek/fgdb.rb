@@ -1,0 +1,27 @@
+<table class="drives">
+  <tbody class="zebra">
+    <tr>
+      <% ['ID', 'Manufacturer', 'Model', 'Serial', 'Size', 'Wiped', 'Status']
+         .each do |action| -%>
+      <th><%= action %></th>
+      <% end -%>
+    </tr>
+    <% @drives.each do |d| -%>
+    <tr>
+      <td><%= link_to d.id, drive_url(d) %></td>
+      <td><%= d.manufacturer %></td>
+      <td><%= d.model %></td>
+      <td><%= d.serial %></td>
+      <td><%= d.size %>MB</td>
+      <% latest_run = d.runs.order(:end_time).last -%>
+      <% if latest_run.nil? || latest_run.end_time.nil? -%>
+      <td>-</td>
+      <% else -%>
+      <td><%= l(latest_run.end_time, format: :short) %></td>
+      <% end -%>
+      <td><%= latest_run.nil? ? '-' : latest_run.result %></td>
+    </tr>
+    <% end -%>
+  </tbody>
+</table>
+<div><%= will_paginate @drives %></div>

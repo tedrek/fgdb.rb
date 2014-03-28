@@ -3,6 +3,7 @@
 /config/database.yml
 /doc/autodoc
 /log/*.log*
+public/attachments/*
 /public/plugin_assets
 /public/images/dhtml_calendar
 /public/images/active_scaffold/DO_NOT_EDIT

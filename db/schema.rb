@@ -144,6 +144,15 @@ END
     t.integer  "lock_version",        :default => 0,     :null => false
   end
 
+  create_table "attachments", :force => true do |t|
+    t.string   "name"
+    t.string   "content_type"
+    t.integer  "attachable_id"
+    t.string   "attachable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "attendance_types", :force => true do |t|
     t.string   "name"
     t.boolean  "cancelled"
@@ -174,10 +183,9 @@ END
     t.integer  "status"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.string   "stdout_log"
-    t.string   "stderr_log"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "check_name"
   end
 
   create_table "community_service_types", :force => true do |t|

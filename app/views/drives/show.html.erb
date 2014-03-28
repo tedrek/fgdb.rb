@@ -1,0 +1,32 @@
+<p>id: <%= @drive.id %></p>
+<p>manufacturer: <%= @drive.manufacturer %></p>
+<p>model: <%= @drive.model %></p>
+<p>serial: <%= @drive.serial %></p>
+<p>size: <%= @drive.size %></p>
+<p>manufacture_date: <%= @drive.manufacture_date %></p>
+<p>firmware_version: <%= @drive.firmware_version %></p>
+<p>physical_form_factor: <%= @drive.physical_form_factor %></p>
+<p>interface_type: <%= @drive.interface_type %></p>
+<p>disk_label: <%= @drive.disk_label %></p>
+<p>board: <%= @drive.board %></p>
+<p>board_status: <%= @drive.board_status %></p>
+<p>created_at: <%= @drive.created_at %></p>
+<p>updated_at: <%= @drive.updated_at %></p>
+<h3>Wipe runs</h3>
+<table>
+  <tbody class="zebra">
+    <tr>
+      <% %w(ID Start End Result).each do |field| -%>
+      <th><%= field %></th>
+      <% end -%>
+    </tr>
+    <% @drive.runs.order(:start_time).each do |run| -%>
+    <tr>
+      <td><%= link_to run.id, run_url(run) %></td>
+      <td><%= run.start_time.nil? ? '-' : l(run.start_time) %></td>
+      <td><%= run.end_time.nil? ? '-' : l(run.end_time) %></td>
+      <td><%= run.result %></td>
+    </tr>
+    <% end -%>
+  </tbody>
+</table>
