@@ -25,7 +25,9 @@ module Api
       # - run[device_name]: The device name during this run
       # - run[drive_id]: The id of the drive which this run is associated with
       def create
+        params[:run][:drive_id] = params[:drive_id] if params.has_key? :drive_id
         params[:run][:start_time] ||= Time.zone.now
+        params[:run][:result] ||= 'In progress'
         @run = Run.create(params[:run])
         if @run.save
           render '_run', {
@@ -34,6 +36,10 @@ module Api
             status: :created,
             location: "/api/v0/runs/#{@run.id}",
           }
+        else
+          render('api/v0/json/_error',
+                 status: :bad_request,
+                 locals: {errors: @run.errors.to_a})
         end
       end
 
