@@ -21,9 +21,10 @@ Effect.SlideUp(thing + '_sidebar_section', { duration: the_speed });
 <% aliases, sidebar_hash = sidebar_stuff %>
 <% view_hash = OH.new
    sidebar_hash.each do |main_name, my_hash|
-     if my_hash.class == OH 
+     if my_hash.class == OH
      my_hash.each do |this_name, opts|
-       klass = eval(opts[:c].classify.pluralize + "Controller")
+       klass = DrivesController if opts[:c] == 'drives'
+       klass ||= eval(opts[:c].classify.pluralize + "Controller")
        if klass.sb_has_required_privileges(opts[:a] || "index")
          view_hash[main_name] ||= OH.new
          view_hash[main_name][this_name] = opts

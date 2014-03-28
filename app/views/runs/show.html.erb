@@ -1,0 +1,30 @@
+<p>device_name: <%= @run.device_name %></p>
+<p>start_time: <%= @run.start_time %></p>
+<p>end_time: <%= @run.end_time %></p>
+<p>result: <%= @run.result %></p>
+<h2>Checks</h2>
+<table>
+  <tbody class="zebra">
+    <tr>
+      <% %w(Name Duration Passed Logs).each do |field| -%>
+      <th><%= field %></th>
+      <% end -%>
+    </tr>
+    <% @run.checks.order(:sequence_num).each do |check| -%>
+    <tr>
+      <td><%= check.check_name %></td>
+      <td><%= (check.end_time - check.start_time) % 60.0 %> Minutes</td>
+      <td><%= check.passed %></td>
+      <% if check.attachments.size > 0 -%>
+      <td>
+        <%= check.attachments.map do |a|
+             link_to a.name, url_for(a)
+            end.join(', '.html_safe).html_safe -%>
+      </td>
+      <% else -%>
+      <td>-</td>
+      <% end -%>
+    </tr>
+    <% end -%>
+  </tbody>
+</table>

@@ -61,6 +61,7 @@ module SidebarHelper
     "pricing_components" => "sales",
     "pricing_values" => "sales", # Going away?
       'punch_entries' => 'Sign ins',
+      'drives' => 'Disk wipe',
     }
   end
 
@@ -103,7 +104,7 @@ module SidebarHelper
     sidebar_hash["reports"]["trends"] = {:c => 'graphic_reports'}
     sidebar_hash["reports"]["cashier contrib."] = {:c => 'reports', :action => "cashier_contributions"}
     # contacts
-    sidebar_hash["contacts"]["contacts"] = {:c => "contacts"}
+p    sidebar_hash["contacts"]["contacts"] = {:c => "contacts"}
     sidebar_hash["contacts"]["dedup"] = {:c => 'contact_duplicates'}
     sidebar_hash["contacts"]["duplicates list"] = {:c => 'contact_duplicates', :a => "list_dups"}
     sidebar_hash["contacts"]["email list"] = {:c => 'contacts', :a => "email_list"}
@@ -144,8 +145,7 @@ module SidebarHelper
     sidebar_hash["build"]["printme"] = {:c => 'spec_sheets'}
     sidebar_hash["build"]["fix contract"] = {:c => 'spec_sheets', :a => "fix_contract"} if contract_enabled
     sidebar_hash["build"]["proc db"] = {:c => 'spec_sheets', :a => 'lookup_proc'}
-    sidebar_hash["data sec"]["disktest runs"] = {:c => "disktest_runs"}
-    sidebar_hash["data sec"]["disktest batches"] = {:c => "disktest_batches"}
+    sidebar_hash['Disk wipe']['Drive listing'] = {:c => 'drives'}
     # done
     sidebar_hash["admin"]["Stations"] = {c: 'stations'}
     sidebar_hash["admin"]["logs"] = {:c => "logs"}

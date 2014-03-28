@@ -11,7 +11,9 @@ Fgdb::Application.routes.draw do
       resources :checks do
         resources :attachments, shallow: true
       end
-      resources :drives
+      resources :drives do
+        resources :runs, shallow: true
+      end
       resources :runs do
         resources :checks, only: [:index, :create]
       end
@@ -19,7 +21,9 @@ Fgdb::Application.routes.draw do
   end
 
   resources :attachments, only: [:show]
+  resources :drives
   resources :gizmo_type_groups
+  resources :runs
   resources :users
   resource :session
   resources :stations, as: 'volunteer_task_types' do
